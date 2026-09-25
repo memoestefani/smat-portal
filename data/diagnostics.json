@@ -1,0 +1,64 @@
+{
+  "diagnostics": [
+    {
+      "id": "cavitacion_abrasion",
+      "title_es": "¿Tu impulsor dura menos de 3 meses por picadura o abrasión severa?",
+      "title_en": "Is your impeller failing prematurely in under 3 months due to pitting or severe abrasion?",
+      "symptom_es": "Desprendimiento esponjoso de metal en el ojo o álabe de ataque, ruido de cascabeleo o pérdida rápida de presión en el cajón de descarga.",
+      "symptom_en": "Spongy metal loss at blade leading edge, gravel-like cavitation noise, or rapid head drop at discharge sump.",
+      "root_cause_es": "Caída crítica de NPSH disponible por altitud serrana (>2,000 msnm) o recirculación agresiva de pulpa gruesa.",
+      "root_cause_en": "Critical drop in available NPSH at high altitude (>2,000 MASL) or severe recirculation of coarse abrasive solids.",
+      "recommended_action_es": "Revisión de holgura axial y evaluación de aleación Alto Cromo 27% (A05) con tratamiento térmico o elastómero.",
+      "recommended_action_en": "Axial clearance inspection and metallurgical upgrade to High Chrome 27% (A05) or natural rubber.",
+      "target_role": "impulsor"
+    },
+    {
+      "id": "rotor_flotacion",
+      "title_es": "¿Desgaste acelerado en rotor o difusor de tu celda de flotación?",
+      "title_en": "Accelerated wear or uneven froth dispersion in flotation rotor and disperser?",
+      "symptom_es": "Pérdida de inducción de aire, turbulencia excesiva en la superficie de la celda y caída en la ley de recuperación.",
+      "symptom_en": "Loss of air induction, boiling pulp surface turbulence, and dropping concentrate recovery grades.",
+      "root_cause_es": "Desgaste asimétrico por sólidos gruesos o desbalance dinámico del mecanismo suspendido.",
+      "root_cause_en": "Asymmetric abrasive wear from coarse feed or dynamic unbalance of suspended mechanism shaft.",
+      "recommended_action_es": "Sustitución de mecanismo suspendido por ensamble SMAT balanceado dinámicamente con rotor vulcanizado.",
+      "recommended_action_en": "Replacement with SMAT dynamically balanced suspended mechanism featuring heavy vulcanized rotor.",
+      "target_role": "rotor_estator"
+    },
+    {
+      "id": "fuga_sello_rodamientos",
+      "title_es": "¿Fuga continua en prensaestopa o sobrecalentamiento de rodamientos?",
+      "title_en": "Continuous slurry leak at stuffing box or bearing pedestal overheating?",
+      "symptom_es": "Pérdida continua de pulpa hacia el piso de la bomba, contaminación de lubricante y alta temperatura en soporte.",
+      "symptom_en": "Constant slurry leak flooding the pump base, grease contamination, and high pedestal bearing temperature.",
+      "root_cause_es": "Presión excesiva de succión o desgaste del anillo expulsor dinámico.",
+      "root_cause_en": "Excessive suction head pressure or mechanical wear of dynamic expeller ring sleeve.",
+      "recommended_action_es": "Conversión a sello dinámico de alto perfil o instalación de ensamble de rodamientos SMAT de servicio pesado.",
+      "recommended_action_en": "Conversion to high-efficiency dynamic seal or replacement with heavy-duty SMAT bearing assembly.",
+      "target_role": "sello"
+    },
+    {
+      "id": "desgaste_placas_telas",
+      "title_es": "¿Rotura prematura de telas filtrantes o goteo constante entre placas?",
+      "title_en": "Premature filter cloth tearing or persistent slurry drip between plates?",
+      "symptom_es": "Filtrado turbio con paso de finos, queque con humedad >18% y tiempo de ciclo excesivo en prensa.",
+      "symptom_en": "Turbid filtrate carrying fines, high cake moisture exceeding 18%, and extended press cycle duration.",
+      "root_cause_es": "Selección inadecuada de permeabilidad del polipropileno o presión irregular en paquete electrohidráulico.",
+      "root_cause_en": "Suboptimal cloth weave permeability selection or pressure drift across electrohydraulic ram package.",
+      "recommended_action_es": "Suministro de telas cortadas por láser con sellado perimetral y revisión de sellos de placa.",
+      "recommended_action_en": "Supply of precision laser-cut sealed cloths and plate gasket overhaul.",
+      "target_role": "placas_telas"
+    },
+    {
+      "id": "otra_falla",
+      "title_es": "¿Otro síntoma mecánico, vibración o problema de proceso no listado?",
+      "title_en": "Another mechanical vibration, hydraulic wear, or unlisted process issue?",
+      "symptom_es": "Cualquier comportamiento anómalo en transporte de pulpa, desgaste prematuro o problema de separación.",
+      "symptom_en": "Any unusual pulp transport behavior, early mechanical failure, or process bottleneck.",
+      "root_cause_es": "Diagnóstico personalizado por ingenieros de aplicaciones en Durango.",
+      "root_cause_en": "Customized failure analysis by SMAT application engineering staff in Durango.",
+      "recommended_action_es": "Envío de fotografía o descripción libre vía WhatsApp directo para revisión inmediata.",
+      "recommended_action_en": "Direct WhatsApp photo upload or consultation for immediate technical review.",
+      "target_role": "impulsor"
+    }
+  ]
+}

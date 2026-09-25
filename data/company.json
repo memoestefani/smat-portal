@@ -1,0 +1,55 @@
+{
+  "name": "SMAT Minerals",
+  "legal_name": "SMAT Minerals",
+  "heritage_years": 20,
+  "founding_location": "Durango, Dgo., México",
+  "domain": "https://www.smatminerals.com",
+  "address": {
+    "street": "Mariano Salas #114",
+    "colonia": "Col. Primer Presidente",
+    "city": "Durango",
+    "state": "Durango",
+    "postal_code": "34166",
+    "country": "México",
+    "country_code": "MX",
+    "coordinates": {
+      "latitude": 24.0277,
+      "longitude": -104.6538
+    }
+  },
+  "contact": {
+    "phones": [
+      {
+        "display": "(618) 810-4408",
+        "e164": "+526188104408",
+        "type": "direct_line"
+      },
+      {
+        "display": "(618) 810-4428",
+        "e164": "+526188104428",
+        "type": "office_line"
+      }
+    ],
+    "whatsapp": {
+      "display": "+52 (618) 810-4408",
+      "e164": "526188104408",
+      "emergency_hotline": true
+    },
+    "emails": [
+      {
+        "address": "ventas@smatminerals.com",
+        "type": "sales_rfq"
+      },
+      {
+        "address": "contacto@smatminerals.com",
+        "type": "general_inquiry"
+      }
+    ]
+  },
+  "logistics": {
+    "warehouse_hours": "Lunes a Viernes 08:00 a 18:00 (Hora Centro / Durango)",
+    "local_pickup_badge": "Retiro directo en Almacén Central Durango (Coordinado con folio formal)",
+    "maneuvers_access": "Acceso apto para transporte de carga pesada: camión unitario (rabón), torton y tractocamión con plataforma articulada",
+    "client_inspection_protocol": "Disponibilidad de presenciar balanceo dinámico de impulsores y verificación dimensional en presencia del cliente previo a la sujeción de carga"
+  }
+}

@@ -1,0 +1,12 @@
+[package]
+name = "smat-gate"
+version = "0.1.0"
+edition = "2021"
+authors = ["SMAT Minerals Engineering"]
+description = "Sovereign Invariant Gate and Deterministic Validator for SMAT Minerals Web Architecture"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+regex = "1.10"
+walkdir = "2.4"

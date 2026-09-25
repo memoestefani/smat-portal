@@ -1,0 +1,198 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import SharePurchasing from '../../../components/SharePurchasing.astro';
+import WhatsAppButton from '../../../components/WhatsAppButton.astro';
+---
+
+<BaseLayout 
+  title="Polypropylene Filter Plates & Filter Cloths | SMAT Minerals"
+  description="Recessed chamber plates, membrane squeeze plates, and heavy monofilament / multifilament filter cloths for mining dewatering from our Durango facility, Mexico."
+  lang="en"
+  canonicalPath="/en/filtration/parts/"
+  alternateEsPath="/filtracion/repuestos/"
+  alternateEnPath="/en/filtration/parts/"
+>
+  <Header slot="header" lang="en" currentPath="/en/filtration/parts/" alternatePath="/filtracion/repuestos/" />
+
+  <section class="page-hero">
+    <div class="container text-center">
+      <span class="badge badge-emergency">OPEX • DURANGO FACILITY STOCK</span>
+      <h1>Filter Plates & Replacement Cloths</h1>
+      <p class="subtitle">Replacement filter components to maintain uninterrupted tailings dewatering operations.</p>
+    </div>
+  </section>
+
+  <section class="section-spacing">
+    <div class="container content-container">
+      <div class="card detail-card">
+        <h2>Virgin Polypropylene Plates & Heavy-Duty Woven Fabrics</h2>
+        <p>
+          Blinded or torn filter cloths sharply degrade hourly filtration rates and drive cake moisture beyond transport limits. SMAT Minerals stocks synthetic filter fabrics calibrated to your slurry particle size distribution ($P_{80}$) and replacement virgin high-density polypropylene plates engineered for thermal and chemical stability.
+        </p>
+
+        <table class="tech-table">
+          <thead>
+            <tr>
+              <th>Replacement Part</th>
+              <th>Material & Engineering Specifications</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Recessed Chamber Plates</td>
+              <td>100% virgin engineering-grade polypropylene resisting chemical attack and aggressive tailings acids</td>
+            </tr>
+            <tr>
+              <td>Membrane Squeeze Plates</td>
+              <td>Welded or replaceable thermoplastic elastomer (TPE) membrane sheets for secondary water squeeze</td>
+            </tr>
+            <tr>
+              <td>Filter Cloth Fabrics</td>
+              <td>Precision woven monofilament, multifilament, or composite blends of polypropylene (PP), polyamide, and polyester</td>
+            </tr>
+            <tr>
+              <td>Gaskets & Hardware</td>
+              <td>Perimeter rubber seal rings, center/corner feed bushings, and heavy-duty plate hanging handles</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <SharePurchasing 
+          roleTitle="Polypropylene Filter Plates & Filter Cloths"
+          series="Standard dimensions 800x800, 1000x1000, 1200x1200, 1500x1500 mm"
+          metallurgy="High Density Virgin Polypropylene (PP) / Synthetic Woven Media"
+          specs="Recessed chamber plates and calibrated filter cloths for tailings and concentrate dewatering with anti-blinding properties."
+          lang="en"
+        />
+
+        <div class="cta-rfq-box">
+          <div class="cta-rfq-header">
+            <span class="badge badge-copper">IMMEDIATE DISPATCH FROM DURANGO FACILITY</span>
+            <h3>Need virgin polypropylene plate packs or tailored filter cloths?</h3>
+            <p>Generate your official serialized technical requisition with plate dimensions and weave specifications.</p>
+          </div>
+          <div class="cta-rfq-actions">
+            <a href="/en/?equipo=placas_telas#rfq" class="btn btn-primary btn-lg">
+              Quote Plates & Cloths in Central Workbench →
+            </a>
+            <a href="https://wa.me/526188104408?text=Hello%20SMAT%20Minerals,%20I%20would%20like%20to%20quote%20Filter%20Plates%20and%20Cloths" target="_blank" rel="noopener noreferrer" class="btn btn-emergency btn-lg">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> Inquire Plant Stock via WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <WhatsAppButton lang="en" />
+  <Footer slot="footer" lang="en" />
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 4.5rem 0 3.5rem;
+    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+
+  .text-center {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .page-hero h1 {
+    color: #090d16;
+    margin-top: 0.75rem;
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    margin-top: 0.75rem;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .content-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .detail-card {
+    background-color: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: 14px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  }
+
+  .detail-card h2 {
+    color: #090d16;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--color-accent-copper);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+  }
+
+  .detail-card p {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    color: #334155;
+  }
+
+  .tech-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+  }
+
+  .tech-table th, .tech-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--smat-border-light);
+    text-align: left;
+  }
+
+  .tech-table th {
+    background-color: #f8fafc;
+    color: #090d16;
+    font-weight: 700;
+  }
+
+  .tech-table td {
+    color: #334155;
+  }
+
+  .cta-rfq-box {
+    margin-top: 3rem;
+    padding: 2.5rem;
+    background: linear-gradient(180deg, #fafaf9 0%, #f1f5f9 100%);
+    border: 1px solid var(--smat-border-light);
+    border-radius: 12px;
+    text-align: center;
+  }
+
+  .cta-rfq-header h3 {
+    font-size: 1.4rem;
+    color: #090d16;
+    margin: 0.75rem 0 0.5rem;
+  }
+
+  .cta-rfq-header p {
+    color: #475569;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-rfq-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+</style>

@@ -1,0 +1,87 @@
+backend:
+  name: github
+  repo: smatminerals/smat-web
+  branch: preview
+  base_url: https://auth.smatminerals.com
+  auth_endpoint: /auth
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+site_url: "https://smatminerals.com"
+display_url: "https://smatminerals.com"
+logo_url: "/images/logo.png"
+
+collections:
+  - name: "configuracion"
+    label: "Datos de Empresa y Logística"
+    files:
+      - name: "empresa"
+        label: "Información Oficial (NAP y Planta)"
+        file: "data/company.json"
+        fields:
+          - { label: "Nombre Comercial", name: "trade_name", widget: "string" }
+          - { label: "Razón Social", name: "legal_name", widget: "string" }
+          - { label: "Calle y Número", name: "street", widget: "string" }
+          - { label: "Colonia", name: "neighborhood", widget: "string" }
+          - { label: "Ciudad", name: "city", widget: "string" }
+          - { label: "Estado", name: "state", widget: "string" }
+          - { label: "Código Postal", name: "postal_code", widget: "string" }
+          - { label: "Teléfono Principal", name: "phone_primary", widget: "string" }
+          - { label: "Teléfono Secundario", name: "phone_secondary", widget: "string" }
+          - { label: "Correo Ventas", name: "email_sales", widget: "string" }
+          - { label: "Correo Soporte", name: "email_support", widget: "string" }
+          - { label: "WhatsApp Directo", name: "whatsapp_number", widget: "string" }
+          - { label: "Horario Almacén", name: "warehouse_hours", widget: "string" }
+          - { label: "Acceso Maniobras", name: "maneuver_access", widget: "string" }
+
+  - name: "catalogo"
+    label: "Catálogo de Líneas y Roles"
+    files:
+      - name: "roles_comerciales"
+        label: "Líneas de Bombeo, Flotación y Filtración"
+        file: "data/roles.json"
+        fields:
+          - name: "categories"
+            label: "Categorías"
+            widget: "list"
+            fields:
+              - { label: "ID Categoría", name: "id", widget: "string" }
+              - { label: "Título Español", name: "title_es", widget: "string" }
+              - { label: "Título Inglés", name: "title_en", widget: "string" }
+              - { label: "Descripción Español", name: "description_es", widget: "text" }
+              - { label: "Descripción Inglés", name: "description_en", widget: "text" }
+              - name: "items"
+                label: "Equipos y Refacciones"
+                widget: "list"
+                fields:
+                  - { label: "ID Rol", name: "role_id", widget: "string" }
+                  - { label: "Tipo (CapEx / OpEx)", name: "type", widget: "select", options: ["capex", "opex"] }
+                  - { label: "Nombre ES", name: "name_es", widget: "string" }
+                  - { label: "Nombre EN", name: "name_en", widget: "string" }
+                  - { label: "Ruta Slug ES", name: "slug_es", widget: "string" }
+                  - { label: "Ruta Slug EN", name: "slug_en", widget: "string" }
+                  - { label: "Especificación Clave", name: "specs", widget: "string" }
+                  - { label: "Metalurgia / Material", name: "materials", widget: "string" }
+                  - { label: "Resumen ES", name: "summary_es", widget: "text" }
+                  - { label: "Resumen EN", name: "summary_en", widget: "text" }
+
+  - name: "diagnosticos"
+    label: "Diagnósticos de Falla en Campo"
+    files:
+      - name: "sintomas"
+        label: "Tarjetas de Daño Mecánico"
+        file: "data/diagnostics.json"
+        fields:
+          - name: "symptoms"
+            label: "Síntomas Reportados"
+            widget: "list"
+            fields:
+              - { label: "ID Síntoma", name: "id", widget: "string" }
+              - { label: "Título ES", name: "title_es", widget: "string" }
+              - { label: "Título EN", name: "title_en", widget: "string" }
+              - { label: "Causa Probable ES", name: "probable_cause_es", widget: "text" }
+              - { label: "Causa Probable EN", name: "probable_cause_en", widget: "text" }
+              - { label: "Solución Recomendada ES", name: "solution_es", widget: "text" }
+              - { label: "Solución Recomendada EN", name: "solution_en", widget: "text" }
+              - { label: "Urgencia", name: "urgency", widget: "select", options: ["emergencia_paro", "mantenimiento_programado", "mejora_vida_util"] }

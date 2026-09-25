@@ -1,0 +1,385 @@
+---
+// src/components/PerspectiveSelector.astro
+// Decisión 3-A: Selector de Perspectiva por Rol en Planta (Venta Multi-Comprador)
+interface Props {
+  lang?: 'es' | 'en';
+}
+
+const { lang = 'es' } = Astro.props;
+const isEn = lang === 'en';
+
+const perspectives = [
+  {
+    id: 'paro_urgente',
+    label_es: 'Paro de Planta / Refacción Urgente',
+    label_en: 'Urgent Plant Shutdown Spares',
+    icon_svg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+    title_es: 'Refaccionamiento Crítico Disponible en Almacén Durango',
+    title_en: 'Critical Spares Available at Durango Warehouse',
+    lead_es: 'Sabemos lo que cuesta una línea detenida. Stock verificado en Almacén Central Durango listo para cargar en camión.',
+    lead_en: 'We understand the cost of downtime. Physical stock verified at Durango Central Warehouse ready for prompt carrier loading.',
+    bullets_es: [
+      'Intercambiabilidad dimensional 1:1 con bombas estándar tipo slurry marcos C, D, E y F.',
+      'Protocolo de balanceo dinámico en banco de pruebas con reporte de inspección.',
+      'Inspección dimensional previa a carga en presencia del transportista o cliente.',
+      'Línea de atención técnica de planta y logística: (618) 810-4408 (L-V 08:00 a 18:00 CST).'
+    ],
+    bullets_en: [
+      'Guaranteed 1:1 dimensional interchange with standard C, D, E, F frame slurry pumps.',
+      'Dynamic balancing verified on shop test bench with inspection report.',
+      'Pre-load dimensional verification available in presence of transport driver or customer.',
+      'Direct plant technical line and transport logistics: +52 (618) 810-4408 (Mon-Fri 08:00-18:00 CST).'
+    ],
+    cta_text_es: 'Reportar Paro y Revisar Refacción ➔',
+    cta_text_en: 'Report Breakdown & Check Spares ➔',
+    cta_link_es: '/diagnostico/',
+    cta_link_en: '/en/diagnostics/'
+  },
+  {
+    id: 'desgaste_proceso',
+    label_es: 'Desgaste Recurrente / Proceso',
+    label_en: 'Wear & Slurry Metallurgy',
+    icon_svg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+    title_es: 'Optimización de Vida Útil en Pulpas Abrasivas de Cuarzo y Flotación',
+    title_en: 'Wear Life Optimization for Quartz Slurries and Flotation Circuits',
+    lead_es: 'Soluciones metalúrgicas para plantas que sufren desgaste prematuro en impulsores, volutas o dispersores de celdas.',
+    lead_en: 'Metallurgical solutions for processing plants facing premature wear on impellers, volutes, or cell dispersers.',
+    bullets_es: [
+      'Aleación High Chrome 27% (A05) con dureza 650+ HB resistente a partículas duras de cuarzo y abrasión severa.',
+      'Álabes de bombeo trasero diseñados para aliviar presión sobre el prensaestopa y evitar recirculación interna.',
+      'Celdas mecánicas con dispersores y rotores de hule de alto módulo que garantizan burbujas finas homogéneas.',
+      'Filtros prensa hidráulicos de hasta 16 bar produciendo tortas con humedad < 15% para depósitos de jales secos.'
+    ],
+    bullets_en: [
+      'High Chrome 27% alloy (A05) with 650+ HB hardness resistant to hard quartz particles and severe abrasion.',
+      'Clearing back-vanes engineered to relieve stuffing box pressure and eliminate internal pulp slip.',
+      'Flotation mechanisms with high-modulus rubber dispersers ensuring uniform fine bubble generation.',
+      'Hydraulic filter presses up to 16 bar delivering cakes with < 15% residual moisture for dry tailings stacking.'
+    ],
+    cta_text_es: 'Explorar Circuitos y Reglas de Pulpa ➔',
+    cta_text_en: 'Explore Circuits & Pulp Rules ➔',
+    cta_link_es: '#circuitos',
+    cta_link_en: '#circuitos'
+  },
+  {
+    id: 'requisicion_capex',
+    label_es: 'Requisición Formal / CapEx',
+    label_en: 'Formal RFQ & CapEx',
+    icon_svg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="8" x2="16" y1="10" y2="10"/><line x1="8" x2="12" y1="14" y2="14"/></svg>',
+    title_es: 'Suministro Certificado para Adquisiciones y Proyectos de Inversión',
+    title_en: 'Certified Supply for Capital Projects & Formal Purchasing',
+    lead_es: 'Equipos completos en skid, respaldo documental y folio institucional listo para su comité de compras o ERP.',
+    lead_en: 'Complete skid-mounted systems, full documentation backing and formal institutional folio ready for ERP / SAP.',
+    bullets_es: [
+      'Bombas completas sobre skid estructural en canal C con motor, poleas, guardas y ensamble de rodamientos Timken.',
+      'Folio formal SMAT-2026-XXXX con vista membretada para impresión (@media print) lista para adjuntar en SAP Ariba.',
+      'Certificados de colada química de fundición y cartas de garantía por número de serie emitidas en Durango.',
+      'Facturación fiscal mexicana (CFDI 4.0 con complementos) y despacho FOB Almacén Central Durango.'
+    ],
+    bullets_en: [
+      'Complete pumps on structural channel skid with motor, pulleys, guards, and Timken bearing assemblies.',
+      'Formal requisition folio SMAT-2026-XXXX with executive printable view (@media print) ready for SAP Ariba.',
+      'Heat melt chemical foundry certificates and warranty declarations issued per equipment serial number in Durango.',
+      'Official Mexican fiscal invoicing (CFDI 4.0) and FOB Durango warehouse yard dispatch.'
+    ],
+    cta_text_es: 'Generar Requisición Formal con Folio ➔',
+    cta_text_en: 'Generate Formal Requisition with Folio ➔',
+    cta_link_es: '#rfq',
+    cta_link_en: '#rfq'
+  }
+];
+---
+
+<section class="perspective-section" aria-label={isEn ? "Plant Operational Missions" : "Misiones Operativas de Planta"}>
+  <div class="perspective-container">
+    <div class="perspective-header">
+      <span class="role-badge">
+        {isEn ? "OPERATIONAL MISSION CONTROL" : "CONTROL DE MISIÓN OPERATIVA"}
+      </span>
+      <h2 class="perspective-title">
+        {isEn ? "¿What is your plant's immediate operating requirement?" : "¿Cuál es el requerimiento operativo de su planta hoy?"}
+      </h2>
+      <p class="perspective-lead">
+        {isEn 
+          ? "Select your objective to align Durango facility supply: urgent breakdown response, severe slurry wear mitigation, or formal capital bids." 
+          : "Seleccione su objetivo para alinear el suministro de planta en Durango: atención de paros, optimización de desgaste severo o licitaciones de capital."}
+      </p>
+
+      <!-- Segmented Control Buttons -->
+      <div class="role-switchers" role="tablist">
+        {perspectives.map((p, idx) => (
+          <button 
+            type="button" 
+            role="tab"
+            class={`role-btn ${idx === 0 ? 'active' : ''}`}
+            data-role-target={p.id}
+            aria-selected={idx === 0 ? "true" : "false"}
+            id={`role-tab-${p.id}`}
+          >
+            <span class="role-icon" set:html={p.icon_svg} />
+            <span class="role-name">{isEn ? p.label_en : p.label_es}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Perspective Display Cards -->
+    <div class="perspective-cards-wrapper">
+      {perspectives.map((p, idx) => (
+        <div 
+          class={`perspective-card ${idx === 0 ? 'active' : ''}`}
+          id={`perspective-card-${p.id}`}
+          role="tabpanel"
+          aria-labelledby={`role-tab-${p.id}`}
+        >
+          <div class="card-glow-bar"></div>
+          <div class="card-inner">
+            <h3 class="card-heading">{isEn ? p.title_en : p.title_es}</h3>
+            <p class="card-lead-text">{isEn ? p.lead_en : p.lead_es}</p>
+            
+            <ul class="card-bullets">
+              {(isEn ? p.bullets_en : p.bullets_es).map(bullet => (
+                <li class="bullet-item">
+                  <span class="check-icon">✓</span>
+                  <span>{bullet}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div class="card-action">
+              <a href={isEn ? p.cta_link_en : p.cta_link_es} class="perspective-action-btn">
+                {isEn ? p.cta_text_en : p.cta_text_es}
+              </a>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .perspective-section {
+    padding: 4.5rem 1.5rem;
+    background: #ffffff;
+    border-top: 1px solid var(--smat-border-light);
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+
+  .perspective-container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .perspective-header {
+    text-align: center;
+    max-width: 780px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .role-badge {
+    display: inline-block;
+    padding: 0.3rem 0.85rem;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: var(--smat-radius-pill);
+    color: #1e40af;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: var(--smat-font-mono);
+    letter-spacing: 0.06em;
+    margin-bottom: 1rem;
+  }
+
+  .perspective-title {
+    font-size: 2.15rem;
+    color: #090d16;
+    line-height: 1.25;
+    margin-bottom: 0.85rem;
+  }
+
+  .perspective-lead {
+    font-size: 1.05rem;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .role-switchers {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .role-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.8rem 1.4rem;
+    background: #f8fafc;
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-md);
+    color: #334155;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .role-btn:hover {
+    background: #f1f5f9;
+    color: #090d16;
+    border-color: #cbd5e1;
+  }
+
+  .role-btn.active {
+    background: #0b132b;
+    color: #ffffff;
+    border-color: #0b132b;
+    box-shadow: 0 4px 12px rgba(11, 19, 43, 0.2);
+  }
+
+  .role-icon {
+    font-size: 1.15rem;
+  }
+
+  .perspective-cards-wrapper {
+    position: relative;
+    margin-top: 2rem;
+  }
+
+  .perspective-card {
+    display: none;
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-lg);
+    box-shadow: var(--smat-shadow-card);
+    overflow: hidden;
+    animation: slideUp 0.25s ease;
+  }
+
+  .perspective-card.active {
+    display: block;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-glow-bar {
+    height: 4px;
+    background: linear-gradient(90deg, #c25e00, #f59e0b);
+  }
+
+  .card-inner {
+    padding: 2.5rem;
+  }
+
+  .card-heading {
+    font-size: 1.5rem;
+    color: #090d16;
+    line-height: 1.3;
+    margin-bottom: 0.85rem;
+  }
+
+  .card-lead-text {
+    font-size: 1.05rem;
+    color: #475569;
+    margin-bottom: 1.75rem;
+    line-height: 1.6;
+  }
+
+  .card-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2.25rem 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.15rem;
+  }
+
+  .bullet-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+    color: #1e293b;
+    line-height: 1.5;
+  }
+
+  .check-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: #ecfdf5;
+    border: 1px solid #10b981;
+    border-radius: 50%;
+    color: #065f46;
+    font-size: 0.75rem;
+    font-weight: 800;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .card-action {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .perspective-action-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.8rem 1.6rem;
+    background: #c25e00;
+    color: #ffffff;
+    border-radius: var(--smat-radius-md);
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 2px 6px rgba(194, 94, 0, 0.25);
+  }
+
+  .perspective-action-btn:hover {
+    background: #9a4a00;
+    transform: translateY(-1px);
+  }
+</style>
+
+<script>
+  function setupPerspectiveSelector() {
+    const roleButtons = document.querySelectorAll('.role-btn');
+    const cards = document.querySelectorAll('.perspective-card');
+
+    roleButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-role-target');
+
+        roleButtons.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        cards.forEach(c => c.classList.remove('active'));
+
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+
+        const targetCard = document.getElementById(`perspective-card-${targetId}`);
+        if (targetCard) {
+          targetCard.classList.add('active');
+        }
+
+        try {
+          window.dispatchEvent(new CustomEvent('smat:mission', { detail: { mission: targetId } }));
+        } catch (err) {}
+      });
+    });
+  }
+
+  setupPerspectiveSelector();
+  document.addEventListener('astro:page-load', setupPerspectiveSelector);
+</script>

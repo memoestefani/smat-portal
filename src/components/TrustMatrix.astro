@@ -1,0 +1,269 @@
+---
+// src/components/TrustMatrix.astro
+// Decisión 2-C y 7-C: 3 Tarjetas Físicas de Inspección de Patio y Certidumbre Mineral (Cero Debris)
+interface Props {
+  lang?: 'es' | 'en';
+  compact?: boolean;
+  hideBoundaries?: boolean;
+}
+
+const { lang = 'es', compact = false, hideBoundaries = false } = Astro.props;
+const isEn = lang === 'en';
+---
+
+<div class={`trust-matrix-wrapper ${compact ? 'compact' : ''}`}>
+  <!-- 3 TARJETAS DE CERTEZA FÍSICA DE PATIO Y LÍMITES HONESTOS (Decisión 7-C & Decisión 2-C) -->
+  <div class="physical-certainty-grid">
+    <!-- Tarjeta 1: Almacén Durango -->
+    <div class="certainty-card">
+      <div class="certainty-badge">
+        <span class="live-dot"></span>
+        {isEn ? "DURANGO TEST RIG & INSPECTION" : "INSPECCIÓN Y PRUEBA EN DURANGO"}
+      </div>
+      <h3 class="certainty-title">
+        {isEn ? "What We Test on Shop Bench" : "Lo que Probamos en Banco de Almacén"}
+      </h3>
+      <p class="certainty-lead">
+        {isEn 
+          ? "Every component dispatched undergoes rigorous dimensional and physical verification in our Durango facility prior to site shipment." 
+          : "Cada refacción y ensamble despachado pasa por inspección dimensional y física rigurosa en nuestras instalaciones de Durango antes de salir a mina."}
+      </p>
+      <ul class="certainty-list">
+        <li><strong>{isEn ? "Dynamic Balancing:" : "Balanceo Dinámico:"}</strong> {isEn ? "ISO 1940 Grade G2.5 shop balanced to prevent bearing vibration." : "Grado G2.5 en banco propio para eliminar vibración en cojinetes."}</li>
+        <li><strong>{isEn ? "1:1 Bolt Alignment:" : "Acople Barrenado 1:1:"}</strong> {isEn ? "Template verification ensuring exact bolt-hole match with existing plant housings." : "Plantilla de barrenos para garantizar ensamble exacto con carcasas de planta."}</li>
+        <li><strong>{isEn ? "Axial Clearance Check:" : "Ajuste de Claro Axial:"}</strong> {isEn ? "Precise 0.75 mm clearance set to avoid internal recirculating erosion." : "Ajuste milimétrico a 0.75 mm para prevenir recirculación erosiva interna."}</li>
+      </ul>
+    </div>
+
+    <!-- Tarjeta 2: Respaldo de Fundición OEM -->
+    <div class="certainty-card">
+      <div class="certainty-badge badge-oem">
+        {isEn ? "OEM FOUNDRY METALLURGY" : "METALURGIA DE FUNDICIÓN OEM"}
+      </div>
+      <h3 class="certainty-title">
+        {isEn ? "What Manufacturing Covers" : "Lo que Cubre la Fundición Fabricante"}
+      </h3>
+      <p class="certainty-lead">
+        {isEn 
+          ? "Certified casting integrity backed by chemical spectrometry and ultrasonic non-destructive testing at partner foundries." 
+          : "Integridad de colada certificada con espectrometría química y ensayos no destructivos por ultrasonido en fundiciones asociadas."}
+      </p>
+      <ul class="certainty-list">
+        <li><strong>{isEn ? "ASTM A532 Alloy:" : "Aleación ASTM A532:"}</strong> {isEn ? "High Chrome 27% Cr (>650 HB hardness) certified chemistry per batch." : "Alto Cromo 27% Cr (>650 HB dureza) certificado por colada metalúrgica."}</li>
+        <li><strong>{isEn ? "Casting Flaws:" : "Defectos de Colada:"}</strong> {isEn ? "100% replacement warranty against internal blowholes, porosity or shrinkage." : "Garantía total de reposición contra porosidades internas o grietas de enfriamiento."}</li>
+        <li><strong>{isEn ? "Vulcanized Bond:" : "Adherencia de Caucho:"}</strong> {isEn ? "High-resilience natural rubber with verified steel-substrate bonding." : "Elastómero natural vulcanizado con adhesión probada al núcleo de acero."}</li>
+      </ul>
+    </div>
+
+    <!-- Tarjeta 3: Límites Honestos -->
+    <div class="certainty-card certainty-card-boundary">
+      <div class="certainty-badge badge-boundary">
+        {isEn ? "HONEST TECHNICAL BOUNDARIES" : "LÍMITES HONESTOS DE INGENIERÍA"}
+      </div>
+      <h3 class="certainty-title">
+        {isEn ? "When We Decline to Quote" : "Cuándo Decimos NO de Frente"}
+      </h3>
+      <p class="certainty-lead">
+        {isEn 
+          ? "Protecting your concentrator plant means knowing our operating limits. We never compromise safety for a blind sale." 
+          : "Cuidar la continuidad de su concentradora exige conocer nuestros límites. Jamás arriesgamos su planta por cerrar una venta a ciegas."}
+      </p>
+      <ul class="certainty-list certainty-list-boundary">
+        <li><strong>{isEn ? "1. Pumping / Cavitation:" : "1. Bombeo / Cavitación:"}</strong> {isEn ? "We decline quotes if suction NPSHa is severely deficient without piping redesign." : "No cotizamos si el NPSHa de succión es insuficiente sin corregir la tubería."}</li>
+        <li><strong>{isEn ? "2. Flotation / Instability:" : "2. Flotación / Hidrodinámica:"}</strong> {isEn ? "We reject supply if excessive airflow rate destroys the quiescent mineral froth layer." : "Declinamos suministrar si la sobre-aireación revienta el colchón de espuma."}</li>
+        <li><strong>{isEn ? "3. Filtration / Cloth Blinding:" : "3. Filtración / Colmatación:"}</strong> {isEn ? "We decline standard filter cloths if ultrafine clay tailings lack conditioning." : "Rechazamos telas si los jales finos colmatarán placas sin floculación previa."}</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Snippet de Enlace a Garantía para Portada o Protocolo -->
+  {hideBoundaries ? (
+    <div class="boundaries-snippet">
+      <div class="boundaries-snippet-content">
+        <span class="snippet-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </span>
+        <p>
+          <strong>{isEn ? "Quality Protocol:" : "Compromiso de Planta:"}</strong>{" "}
+          {isEn 
+            ? "We do not quote blindly or compromise the safety of your operation. " 
+            : "No cotizamos a ciegas ni arriesgamos la seguridad de su operación. "}
+          <a href={isEn ? "/en/warranty/" : "/garantia/"} class="snippet-link">
+            {isEn ? "View our technical limits and warranty protocol →" : "Conozca nuestros límites técnicos y protocolo de garantía →"}
+          </a>
+        </p>
+      </div>
+    </div>
+  ) : (
+    <div class="boundaries-snippet">
+      <div class="boundaries-snippet-content">
+        <span class="snippet-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </span>
+        <p>
+          <strong>{isEn ? "Plant Commitment:" : "Compromiso de Planta:"}</strong>{" "}
+          {isEn 
+            ? "Every spare part is covered by our 100% replacement warranty against manufacturing defects." 
+            : "Cada refacción está respaldada por nuestra garantía de reposición al 100% contra defectos de fabricación."}
+        </p>
+      </div>
+    </div>
+  )}
+</div>
+
+<style>
+  .trust-matrix-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .physical-certainty-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  @media (max-width: 960px) {
+    .physical-certainty-grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+  }
+
+  .certainty-card {
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-md);
+    padding: 1.75rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .certainty-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--smat-shadow-md);
+    border-color: rgba(194, 94, 0, 0.35);
+  }
+
+  .certainty-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--smat-text-primary);
+    background: #f8fafc;
+    border: 1px solid var(--smat-border-light);
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--smat-radius-sm);
+    width: fit-content;
+    margin-bottom: 1rem;
+  }
+
+  .badge-oem {
+    color: var(--smat-text-primary);
+    background: #f8fafc;
+  }
+
+  .badge-boundary {
+    color: #9a3412;
+    background: #fbfbfc;
+    border-color: rgba(194, 94, 0, 0.25);
+  }
+
+  .certainty-title {
+    font-family: var(--smat-font-ui);
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--smat-text-primary);
+    line-height: 1.3;
+    margin-bottom: 0.65rem;
+  }
+
+  .certainty-lead {
+    font-size: 0.88rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.55;
+    margin-bottom: 1.25rem;
+  }
+
+  .certainty-list {
+    list-style: none;
+    padding: 0;
+    margin: auto 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    border-top: 1px solid var(--smat-border-light);
+    padding-top: 1rem;
+    font-size: 0.82rem;
+    color: var(--smat-text-secondary);
+  }
+
+  .certainty-list li strong {
+    color: var(--smat-text-primary);
+  }
+
+  .certainty-list-boundary li strong {
+    color: #9a3412;
+  }
+
+  .live-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: #10b981;
+    border-radius: 50%;
+  }
+
+  .boundaries-snippet {
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-left: 3px solid var(--smat-copper);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  }
+
+  .boundaries-snippet-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .boundaries-snippet-content p {
+    margin: 0;
+    font-size: 0.88rem;
+    color: #334155;
+    line-height: 1.5;
+  }
+
+  .snippet-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .snippet-link {
+    color: var(--smat-copper);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.15s ease;
+  }
+
+  .snippet-link:hover {
+    color: #964800;
+  }
+
+  @media (max-width: 768px) {
+    .trust-matrix-wrapper {
+      gap: 1.5rem;
+    }
+  }
+</style>

@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+---
+
+<BaseLayout 
+  title="Nosotros y Trayectoria en Ingeniería Minera"
+  description="Más de 20 años de ingeniería mecánica aplicada en transporte severo de pulpas abrasivas, celdas de flotación y filtración. Base central de operaciones en Durango, México."
+  lang="es"
+  canonicalPath="/nosotros/"
+  alternateEsPath="/nosotros/"
+  alternateEnPath="/en/about/"
+>
+  <Header slot="header" lang="es" currentPath="/nosotros/" alternatePath="/en/about/" />
+
+  <section class="page-hero">
+    <div class="container text-center">
+      <span class="badge badge-copper">TRAYECTORIA EN INGENIERÍA MINERA</span>
+      <h1>SMAT Minerals</h1>
+      <p class="subtitle">Dos décadas resolviendo el desgaste extremo en la minería de México y Norteamérica.</p>
+    </div>
+  </section>
+
+  <section class="section-spacing">
+    <div class="container content-container">
+      <div class="story-grid">
+        <div class="story-text">
+          <h2>Origen y Evolución</h2>
+          <p>
+            SMAT Minerals nació hace más de 20 años en el corazón minero del norte de México, en la ciudad de Durango.
+          </p>
+          <p>
+            Desde sus inicios, el enfoque no fue simplemente comercializar componentes genéricos, sino resolver el problema físico del desgaste prematuro en plantas de beneficio donde las pulpas abrasivas destruyen bombas y mecanismos en cuestión de semanas si no cuentan con la metalurgia y el balance hidrodinámico adecuado.
+          </p>
+          <p>
+            Hoy en día, conservamos ese rigor de ingeniería en cada bomba montada en skid estructural, en cada celda de flotación mecánica de 50 a 300 ft³ y en cada impulsor colado en aleación <strong>High Chrome 27% (A05)</strong> con dureza certificada superior a 650 HB.
+          </p>
+        </div>
+
+        <div class="card facility-card">
+          <h3>Infraestructura Operativa y Almacén</h3>
+          <ul class="infra-list">
+            <li>
+              <strong>Domicilio Fiscal y Almacén Central:</strong> Domicilio fiscal en Mariano Salas #114, Col. Primer Presidente, C.P. 34166. Almacén Central y patio de maniobras en Durango, Dgo.
+            </li>
+            <li>
+              <strong>Acceso a Maniobras Pesadas:</strong> Patio logístico diseñado para el ingreso de transporte tipo rabón, torton y tractocamión con plataforma para carga pesada.
+            </li>
+            <li>
+              <strong>Balanceo Dinámico en Presencia del Cliente:</strong> Todo impulsor y conjunto rotativo cuenta con protocolo de verificación dimensional y balanceo dinámico antes de salir de nuestras instalaciones.
+            </li>
+            <li>
+              <strong>Atención Técnica Directa:</strong> Conexión directa entre el personal técnico de mantenimiento y nuestro equipo de aplicaciones en Durango, facilitando la selección de refacciones y soporte operativo sin intermediarios.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <WhatsAppButton lang="es" />
+  <Footer slot="footer" lang="es" />
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 4rem 0 3rem;
+    background: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 80%);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .text-center {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    margin-top: 1rem;
+    color: var(--color-text-muted);
+  }
+
+  .content-container {
+    max-width: 1000px;
+  }
+
+  .story-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .story-text h2 {
+    margin-bottom: 1.25rem;
+  }
+
+  .story-text p {
+    margin-bottom: 1.25rem;
+    line-height: 1.7;
+    font-size: 1.0625rem;
+  }
+
+  .facility-card {
+    background-color: #131c2e;
+  }
+
+  .facility-card h3 {
+    margin-bottom: 1.25rem;
+    color: var(--color-accent-copper);
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: 0.5rem;
+  }
+
+  .infra-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .infra-list li {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+  }
+
+  .infra-list strong {
+    color: #ffffff;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  @media (max-width: 868px) {
+    .story-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

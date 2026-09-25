@@ -1,0 +1,362 @@
+---
+import LogoSmat from './LogoSmat.astro';
+
+interface Props {
+  lang?: 'es' | 'en';
+  currentPath?: string;
+  alternatePath?: string;
+}
+
+const { lang = 'es', currentPath = '/', alternatePath = '/en/' } = Astro.props;
+const isEs = lang === 'es';
+
+const productCategories = isEs ? [
+  { href: '/bombeo/', label: 'Bombas de Pulpa y Refacciones', sub: 'Impulsores A05, volutas, sellos y skids' },
+  { href: '/flotacion/', label: 'Celdas y Mecanismos de Flotación', sub: 'Celdas 50-300 ft³, rotores y estatores' },
+  { href: '/filtracion/', label: 'Filtración y Jales Secos', sub: 'Filtros prensa 16 bar y placas filtrantes' },
+] : [
+  { href: '/en/pumping/', label: 'Slurry Pumps & Spares', sub: 'A05 impellers, liners, seals & skids' },
+  { href: '/en/flotation/', label: 'Flotation Cells & Mechanisms', sub: '50-300 ft³ cells, rotors & stators' },
+  { href: '/en/filtration/', label: 'Filtration & Tailings', sub: '16-bar filter presses & filter plates' },
+];
+---
+
+<header class="site-header">
+  <!-- Cabecera Esbelta Unificada (Decisión 2-C / Ahorro de 50px de Altura) -->
+  <div class="header-utility-strip">
+    <div class="container utility-inner">
+      <div class="utility-badge">
+        <span class="live-dot"></span>
+        <span>{isEs ? 'Almacén Central Durango • Despacho Prioritario a Mina' : 'Durango Central Warehouse • Direct Mine Dispatch'}</span>
+      </div>
+      <div class="utility-contact">
+        <span class="utility-label">{isEs ? 'Atención de Planta / WhatsApp:' : 'Plant Engineering / WhatsApp:'}</span>
+        <a href="https://wa.me/526188104408?text=%5BCONSULTA%20DURANGO%5D%20Hola%20SMAT%20Minerals%2C%20solicito%20atenci%C3%B3n%20t%C3%A9cnica." target="_blank" rel="noopener noreferrer" class="utility-phone font-mono-tech">(618) 810-4408</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container main-nav-container">
+    <a href={isEs ? '/' : '/en/'} class="brand-logo" aria-label="SMAT Minerals Home">
+      <LogoSmat variant="light" height={36} />
+    </a>
+
+    <nav class="desktop-nav" aria-label="Navegación Principal">
+      <ul class="nav-list">
+        <!-- Menú Desplegable: Equipos y Refacciones -->
+        <li class="nav-dropdown-item">
+          <a href={isEs ? '/bombeo/' : '/en/pumping/'} class="nav-item has-dropdown">
+            {isEs ? 'Equipos & Refacciones' : 'Equipment & Parts'}
+            <span class="dropdown-arrow">▾</span>
+          </a>
+          <div class="dropdown-menu">
+            {productCategories.map(cat => (
+              <a href={cat.href} class="dropdown-link">
+                <strong>{cat.label}</strong>
+                <small>{cat.sub}</small>
+              </a>
+            ))}
+          </div>
+        </li>
+
+        <!-- Enlace al Catálogo Digital A4/Móvil -->
+        <li>
+          <a href={isEs ? '/catalogo/' : '/en/catalog/'} class:list={['nav-item', { active: currentPath.includes('catalogo') || currentPath.includes('catalog') }]}>
+            {isEs ? 'Catálogo Digital' : 'Digital Catalog'}
+          </a>
+        </li>
+
+        <!-- Enlaces Rápidos Directos -->
+        <li>
+          <a href={isEs ? '/diagnostico/' : '/en/diagnostics/'} class:list={['nav-item', { active: currentPath.includes('diagnostico') || currentPath.includes('diagnostics') }]}>
+            {isEs ? 'Diagnóstico de Fallas' : 'Failure Diagnostics'}
+          </a>
+        </li>
+        <li>
+          <a href={isEs ? '/garantia/' : '/en/warranty/'} class:list={['nav-item', { active: currentPath.includes('garantia') || currentPath.includes('warranty') }]}>
+            {isEs ? 'Garantía & Pruebas' : 'Warranty & Tests'}
+          </a>
+        </li>
+        <li>
+          <a href={isEs ? '/nosotros/' : '/en/about/'} class:list={['nav-item', { active: currentPath.includes('nosotros') || currentPath.includes('about') }]}>
+            {isEs ? 'Nosotros' : 'About'}
+          </a>
+        </li>
+        <li>
+          <a href={isEs ? '/contacto/' : '/en/contact/'} class:list={['nav-item', { active: currentPath.includes('contacto') || currentPath.includes('contact') }]}>
+            {isEs ? 'Contacto' : 'Contact'}
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <!-- Conmutador de Idioma ES | EN -->
+      <div class="lang-switch" role="group" aria-label="Selector de Idioma">
+        <a 
+          href={isEs ? currentPath : alternatePath} 
+          class:list={['lang-btn', { active: isEs }]}
+          data-lang="es"
+          title="Español"
+        >
+          ES
+        </a>
+        <span class="lang-sep">/</span>
+        <a 
+          href={!isEs ? currentPath : alternatePath} 
+          class:list={['lang-btn', { active: !isEs }]}
+          data-lang="en"
+          title="English"
+        >
+          EN
+        </a>
+      </div>
+
+      <!-- Botón Rey Renombrado (Decisión 2-C / Sustituye 'Abrir Consola') -->
+      <a href={isEs ? "/#rfq" : "/en/#rfq"} class="btn btn-primary btn-sm header-rfq-btn">
+        {isEs ? 'Cotizar Refacción' : 'Quote Spares'}
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Manejo de scroll suave si ya está en la página principal con el cotizador montado
+  const headerBtn = document.querySelector('.header-rfq-btn');
+  if (headerBtn) {
+    headerBtn.addEventListener('click', (e) => {
+      const targetEl = document.getElementById('rfq');
+      if (targetEl && (window.location.pathname === '/' || window.location.pathname === '/en/')) {
+        e.preventDefault();
+        targetEl.scrollIntoView({ behavior: 'smooth' });
+        history.replaceState(null, '', '#rfq');
+      }
+    });
+  }
+</script>
+
+<style>
+  .site-header {
+    background: #ffffff;
+    border-bottom: 1px solid var(--smat-border-light);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+
+  .header-utility-strip {
+    background: var(--smat-navy-deep);
+    color: #94a3b8;
+    font-size: 0.72rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid var(--smat-navy-border);
+  }
+
+  .utility-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .utility-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #e2e8f0;
+    font-weight: 600;
+  }
+
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    background: #10b981;
+    border-radius: 50%;
+    animation: pulseGlow 1.5s infinite;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.6; }
+  }
+
+  .utility-contact {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .utility-label {
+    color: #94a3b8;
+  }
+
+  .utility-phone {
+    color: #fb923c;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .utility-phone:hover {
+    color: #ea580c;
+    text-decoration: underline;
+  }
+
+  .main-nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.55rem;
+    padding-bottom: 0.55rem;
+    gap: 1.25rem;
+  }
+
+  /* Logo Corporativo Vectorial SMAT */
+  .brand-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .brand-logo:hover {
+    opacity: 0.92;
+    transform: translateY(-0.5px);
+  }
+
+  /* Desktop Nav */
+  .desktop-nav {
+    display: flex;
+  }
+
+  .nav-list {
+    display: flex;
+    align-items: center;
+    gap: 1.15rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-item {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--smat-text-secondary);
+    text-decoration: none;
+    padding: 0.35rem 0.2rem;
+    transition: color 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .nav-item:hover, .nav-item.active {
+    color: var(--smat-copper-accent);
+  }
+
+  /* Dropdown */
+  .nav-dropdown-item {
+    position: relative;
+  }
+
+  .dropdown-arrow {
+    font-size: 0.72rem;
+    color: #94a3b8;
+  }
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 280px;
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-md);
+    box-shadow: var(--smat-shadow-md);
+    padding: 0.5rem;
+    z-index: 200;
+  }
+
+  .nav-dropdown-item:hover .dropdown-menu {
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.15s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .dropdown-link {
+    padding: 0.55rem 0.75rem;
+    border-radius: var(--smat-radius-sm);
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+
+  .dropdown-link:hover {
+    background: #f8fafc;
+  }
+
+  .dropdown-link strong {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--smat-text-primary);
+  }
+
+  .dropdown-link small {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--smat-text-muted);
+    margin-top: 0.1rem;
+  }
+
+  /* Actions */
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .lang-switch {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.76rem;
+    font-weight: 700;
+    background: #f1f5f9;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--smat-radius-sm);
+  }
+
+  .lang-btn {
+    color: #64748b;
+    text-decoration: none;
+  }
+
+  .lang-btn.active {
+    color: var(--smat-text-primary);
+    font-weight: 800;
+  }
+
+  .lang-sep {
+    color: #cbd5e1;
+  }
+
+  .header-rfq-btn {
+    padding: 0.45rem 0.95rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  @media (max-width: 960px) {
+    .desktop-nav {
+      display: none;
+    }
+    .utility-badge span:last-child {
+      font-size: 0.68rem;
+    }
+  }
+</style>

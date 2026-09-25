@@ -1,0 +1,159 @@
+{
+  "circuits": [
+    {
+      "id": "bombeo_ciclones",
+      "name_es": "Circuito de Molienda y Bombeo a Hidrociclones",
+      "name_en": "Grinding & Slurry Classification Circuit",
+      "subtitle_es": "Servicio severo: 45% a 60% de sólidos en peso, alta abrasividad por partículas angulares de cuarzo.",
+      "subtitle_en": "Severe slurry service: 45% to 60% solids by weight, high quartz abrasiveness.",
+      "nodes": [
+        {
+          "id": "cajon_descarga",
+          "name_es": "1. Cajón de Pulpa de Molino",
+          "name_en": "1. Mill Discharge Sump",
+          "role_id": "skid_bomba",
+          "equipment_es": "Bomba Completa en Skid 8x6 / 10x8",
+          "equipment_en": "Complete 8x6 / 10x8 Slurry Pump Skid",
+          "challenge_es": "Fluctuaciones bruscas de nivel, picos de carga en arranque y turbulencia con sólidos gruesos.",
+          "challenge_en": "Surge feed variations, high startup torque, and coarse solids turbulence.",
+          "solution_es": "Montaje en viga estructural pesada con motor WEG de alto par y pruebas hidrostáticas en Durango.",
+          "solution_en": "Heavy-duty skid mounting with high-torque motor and shop hydrostatic verification in Durango.",
+          "stock_es": "Disponibilidad inmediata en patio Durango",
+          "stock_en": "Immediate availability at Durango stockyard",
+          "link_es": "/bombeo/skid/",
+          "link_en": "/en/pumping/skid/"
+        },
+        {
+          "id": "impulsor_ciclones",
+          "name_es": "2. Rodete Impulsor de Corte",
+          "name_en": "2. High-Head Slurry Impeller",
+          "role_id": "impulsor",
+          "equipment_es": "Impulsor Cerrado A05 (27% Cr)",
+          "equipment_en": "Closed High Chrome A05 Impeller",
+          "challenge_es": "Desgaste acelerado por impacto de partículas de cuarzo y pérdida de presión hacia ciclones.",
+          "challenge_en": "Severe impact wear from silica solids and loss of classification head.",
+          "solution_es": "Fundición blanca 650+ HB con balanceo dinámico en banco de pruebas en Durango.",
+          "solution_en": "650+ HB white iron with shop dynamic balancing on Durango test bench.",
+          "stock_es": "Stock para marcos C, D, E, F en Almacén Durango",
+          "stock_en": "Stocked for C, D, E, F frames at Durango Warehouse",
+          "link_es": "/bombeo/impulsor/",
+          "link_en": "/en/pumping/impeller/"
+        },
+        {
+          "id": "voluta_desgaste",
+          "name_es": "3. Carcasa y Voluta Partida",
+          "name_en": "3. Split Volute Casing & Liners",
+          "role_id": "revestimientos",
+          "equipment_es": "Revestimiento de Voluta Heavy-Duty",
+          "equipment_en": "Heavy-Duty Slurry Volute Liners",
+          "challenge_es": "Riesgo de perforación por corte hidrodinámico (cutwater) y paradas imprevistas de línea.",
+          "challenge_en": "High risk of cutwater perforation and unplanned grinding circuit shutdown.",
+          "solution_es": "Espesores de pared reforzados de hasta 45 mm para máxima vida útil entre paros programados.",
+          "solution_en": "Reinforced liner wall thickness up to 45 mm for extended campaign run-time.",
+          "stock_es": "Disponibilidad en Almacén Durango para entrega inmediata a mina",
+          "stock_en": "Available in Durango Warehouse for immediate dispatch to mine",
+          "link_es": "/bombeo/revestimientos/",
+          "link_en": "/en/pumping/liners/"
+        },
+        {
+          "id": "caja_sello",
+          "name_es": "4. Sistema de Sello y Eje",
+          "name_en": "4. Shaft Sealing & Expeller",
+          "role_id": "sello",
+          "equipment_es": "Expulsor Centrífugo Dinámico",
+          "equipment_en": "Dynamic Centrifugal Expeller",
+          "challenge_es": "Falta de agua limpia de sello a presión y contaminación de rodamientos.",
+          "challenge_en": "Lack of high-pressure gland seal water and bearing slurry contamination.",
+          "solution_es": "Sello dinámico seco sin consumo de agua exterior y rodamientos Timken en baño de aceite.",
+          "solution_en": "Dry dynamic expeller seal eliminating external flush water and Timken bearings.",
+          "stock_es": "Juegos completos de sellos y empaques en Durango",
+          "stock_en": "Complete seal kits and packings in Durango",
+          "link_es": "/bombeo/sello/",
+          "link_en": "/en/pumping/seal/"
+        }
+      ]
+    },
+    {
+      "id": "flotacion_polimetalica",
+      "name_es": "Circuito de Flotación Polimetálica (Pb-Zn-Cu-Ag)",
+      "name_en": "Polymetallic Flotation Circuit (Pb-Zn-Cu-Ag)",
+      "subtitle_es": "Continuidad hidrodinámica: dispersión uniforme de aire, vertederos ajustables y control de nivel.",
+      "subtitle_en": "Hydrodynamic continuity: uniform air dispersion, adjustable weirs, and pulp level control.",
+      "nodes": [
+        {
+          "id": "bancos_rougher",
+          "name_es": "1. Bancos Rougher / Scavenger",
+          "name_en": "1. Rougher / Scavenger Banks",
+          "role_id": "celda_completa",
+          "equipment_es": "Celdas Mecánicas de 50 a 300 ft³",
+          "equipment_en": "50 to 300 ft³ Mechanical Flotation Cells",
+          "challenge_es": "Embancamiento de sólidos densos en fondo de tanque y cortocircuitos de pulpa mineral.",
+          "challenge_en": "Heavy solids sanding at cell bottoms and pulp short-circuiting.",
+          "solution_es": "Tanques cilíndricos y rectangulares con recubrimiento de hule vulcanizado de 6 mm y vertederos reforzados.",
+          "solution_en": "Cylindrical/rectangular tanks with 6 mm hot-vulcanized rubber lining and heavy weirs.",
+          "stock_es": "Fabricación e ingeniería de montaje bajo especificación",
+          "stock_en": "Engineered fabrication and skid modular assembly",
+          "link_es": "/flotacion/celdas/",
+          "link_en": "/en/flotation/cells/"
+        },
+        {
+          "id": "mecanismo_rotor",
+          "name_es": "2. Mecanismo Suspendido Rotor-Estator",
+          "name_en": "2. Suspended Rotor-Stator Mechanism",
+          "role_id": "mecanismos_flotacion",
+          "equipment_es": "Mecanismo en Hule de Alto Módulo",
+          "equipment_en": "High-Modulus Molded Rubber Mechanism",
+          "challenge_es": "Desgaste de difusor por reactivos químicos corrosivos y caída en la inducción de burbujas.",
+          "challenge_en": "Stator finger chemical corrosion and loss of bubble generation capacity.",
+          "solution_es": "Eje central maquinado en acero 4140 bonificado, rodamientos oscilantes y difusores anti-cavitación.",
+          "solution_en": "4140 quenched and tempered steel shaft, heavy bearings, and anti-cavitation dispersers.",
+          "stock_es": "Mecanismos listos para izaje y reemplazo rápido",
+          "stock_en": "Pre-assembled mechanisms ready for rapid crane installation",
+          "link_es": "/flotacion/mecanismos/",
+          "link_en": "/en/flotation/mechanisms/"
+        }
+      ]
+    },
+    {
+      "id": "jales_filtracion",
+      "name_es": "Circuito de Filtración y Jales Secos (Dry Tailings)",
+      "name_en": "Filtration & Dry Tailings Circuit",
+      "subtitle_es": "Recuperación de agua de proceso: humedad en torta < 15% para estabilidad geotécnica de depósitos.",
+      "subtitle_en": "Process water recovery: residual cake moisture < 15% for geotechnical dry stack stability.",
+      "nodes": [
+        {
+          "id": "filtro_prensa_jales",
+          "name_es": "1. Filtro Prensa Automático de Alta Presión",
+          "name_en": "1. Automatic High-Pressure Filter Press",
+          "role_id": "prensa_completa",
+          "equipment_es": "Filtro Prensa de 800 mm a 1500 mm",
+          "equipment_en": "800 mm to 1500 mm Heavy Filter Press",
+          "challenge_es": "Tortas pegajosas, tiempos de ciclo prolongados y alto costo energético por compresión lenta.",
+          "challenge_en": "Sticky filter cakes, long cycle times, and high power consumption under slow squeeze.",
+          "solution_es": "Paquete electrohidráulico de 16 bar con placas de membrana y ciclo rápido de apertura automatizada.",
+          "solution_en": "16 bar electro-hydraulic power pack with membrane squeeze plates and fast opening.",
+          "stock_es": "Proyectos de suministro e ingeniería llave en mano",
+          "stock_en": "Turnkey equipment supply and engineering projects",
+          "link_es": "/filtracion/prensa/",
+          "link_en": "/en/filtration/press/"
+        },
+        {
+          "id": "telas_placas_repuesto",
+          "name_es": "2. Telas Filtrantes y Placas de Membrana",
+          "name_en": "2. Filter Cloths & Polypropylene Plates",
+          "role_id": "repuestos_prensa",
+          "equipment_es": "Telas Termoselladas y Placas Cámara",
+          "equipment_en": "Heat-Sealed Cloths & Chamber Plates",
+          "challenge_es": "Cegado prematuro de poros por finos arcillosos y rotura de bordes por abrasión.",
+          "challenge_en": "Pore blinding from clay fines and peripheral cloth fraying from abrasive solids.",
+          "solution_es": "Polipropileno monofilamento de desprendimiento limpio y placas vírgenes resistentes a 16 bar.",
+          "solution_en": "Clean-cake discharge monofilament polypropylene cloths and 16 bar rated plates.",
+          "stock_es": "Telas y refacciones con entrega inmediata en México",
+          "stock_en": "Replacement cloths and plates ready for immediate dispatch in Mexico",
+          "link_es": "/filtracion/repuestos/",
+          "link_en": "/en/filtration/parts/"
+        }
+      ]
+    }
+  ]
+}

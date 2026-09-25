@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="vortex-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#051B2E"/>
+      <stop offset="50%" stop-color="#0D78C6"/>
+      <stop offset="100%" stop-color="#4FAEEB"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .vortex-core { fill: #051B2E; }
+    .vortex-blade-1 { fill: #051B2E; }
+    .vortex-blade-2 { fill: #083860; }
+    .vortex-blade-3 { fill: #0D78C6; }
+    .vortex-blade-4 { fill: #4FAEEB; }
+    @media (prefers-color-scheme: dark) {
+      .vortex-core { fill: #FFFFFF; }
+      .vortex-blade-1 { fill: #FFFFFF; }
+      .vortex-blade-2 { fill: #38BDF8; }
+      .vortex-blade-3 { fill: #4FAEEB; }
+      .vortex-blade-4 { fill: #0D78C6; }
+    }
+  </style>
+  <g transform="translate(32, 32)">
+    <path class="vortex-blade-1" d="M 0 -28 C 12 -28 24 -18 24 -4 C 24 6 16 12 6 8 C -2 4 -4 -6 -3 -16 Z" />
+    <path class="vortex-blade-2" d="M 28 0 C 28 12 18 24 4 24 C -6 24 -12 16 -8 6 C -4 -2 6 -4 16 -3 Z" />
+    <path class="vortex-blade-3" d="M 0 28 C -12 28 -24 18 -24 4 C -24 -6 -16 -12 -6 -8 C 2 -4 4 6 3 16 Z" />
+    <path class="vortex-blade-4" d="M -28 0 C -28 -12 -18 -24 -4 -24 C 6 -24 12 -16 8 -6 C 4 2 -6 4 -16 3 Z" />
+    <circle class="vortex-core" cx="0" cy="0" r="4.5" />
+  </g>
+</svg>

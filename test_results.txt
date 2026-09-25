@@ -1,0 +1,343 @@
+✔ 1. Resolución Inteligente de Dominios Mineros (Decisión 3-A) (4.4179ms)
+✔ 2. Protocolo Técnico de Almacén Central y Domicilio Fiscal Durango (Decisión 1-C y Opción C) (0.4642ms)
+✔ 3. Generación de Parámetros URL para Vista ERP / Acuse (Decisión 2-A & 7-A) (0.3137ms)
+✔ 4. Esquema y Resiliencia del Perfil de Usuario Recurrente (Decisión 1-A) (0.2343ms)
+✔ 5. Invariante de Erradicación de Promesas Falsas ("< 45 min" y "24/7") (8.12ms)
+✔ 6. Formateo de Requisición SAP Plaintext con 3 Modalidades Logísticas (Decisiones 6-C y 8-C) (2.2324ms)
+✔ 7. Formateo de Enlaces RFC 6068 y WhatsApp (Decisión 6-C) (0.5213ms)
+✔ 8. Contrato de EventBus Soberano (Decisión 5-C) (0.1028ms)
+✔ 9. Verificación de Existencia y Accesibilidad de las 40 Rutas Estáticas (Decisión 7-C) (2.5441ms)
+✔ 10. Calibración de Lenguaje Digno y Respetuoso (Decisiones 1-C y 5-C) (5.1604ms)
+✔ 11. Manejo y Formateo de Equipos No Listados / Custom Intake (Decisión 3-C) (0.2979ms)
+✔ 12. Invariante de Erradicación Total de "taller" y "workshop" en Código y Datos (Decisión 2-C y Ethos) (11.9091ms)
+✔ 13. Parsing de Parámetros de Contexto URL con parseUrlContextParams (Decisión 5-C) (0.8103ms)
+✔ 14. Invariante de Paridad de Catálogo (data/roles.json === data/roles.copy.json) (0.6875ms)
+✔ 15. Selector de Misión y Paquetes de Equipamiento de Circuito (Decisión 3-C) (0.3919ms)
+✔ 16. Preferencias de Canal de Contacto y Privacidad Directa (Decisión 6-C) (0.3564ms)
+✔ 17. Invariante de Higiene de Propiedad Intelectual y Marcas Registradas (Decisión 4-C) (12.9099ms)
+✔ 18. Estructura y Metadatos de Catálogo Digital (Decisión 5-C) (1.1047ms)
+✔ 19. Invariante de Ausencia de Marcas Comerciales de Transporte (Decisión 4-C) (13.0855ms)
+✔ 20. Verificación de Cláusula de Acompañamiento Pre-Ingeniería / Laboratorio (Decisión 1-C) (1.0566ms)
+✔ 21. Resiliencia de Modalidades Logísticas Neutras y Canales de Contacto (Decisiones 4-C y 6-C) (0.2182ms)
+✔ 22. Jerarquía de Exportación de Cotizador con Botón Rey PDF (Decisión 4-C) (1.0455ms)
+✔ 23. Estandarización Global en Lienzo Mineral Editorial (Decisión 3-C) (1.6645ms)
+✔ 24. Invariante de Lenguaje de Mina Sobrio y Accesible - Test Don Manuel (Decisión 5-C) (3.5238ms)
+✔ 25. Visión Multiequipo Integral en Portada ES y EN (Décima Ola & Ola 20 - Decisión 1-C) (0.4321ms)
+✔ 26. Saneamiento de las 18 Subpáginas de Silo de Producto (Novena Ola - Decisión 5-C) (1.8616ms)
+✔ 27. Descenso Limpio a Hardware y Cero Promesas Falsas (Décima Primera Ola & Ola 20 - Decisión 3-C) (1.2187ms)
+✔ 28. Segmented Control de Canales y Revelación Just-in-Time en QuoteWizard (Décima Ola - Decisiones 2-C y 5-C) (0.9571ms)
+✔ 29. Reubicación de Límites Técnicos y Micro-Compromiso en Home (Décima Ola - Decisión 3-C) (0.5916ms)
+✔ 30. Tarjetas Arquitectónicas Minerales en FlightDeck (Décima Ola - Decisión 6-C) (0.1835ms)
+✔ 31. Conciliación de Domicilio Fiscal y Almacén Central Durango (Opción C) (1.4784ms)
+✔ 32. Sanitización Total de Nombres de Minas y Clientes Específicos en UI y Placeholders (1.1079ms)
+✔ 33. Modalidades Logísticas Neutras con Retiro en Almacén Central Coordinado con Folio (0.7485ms)
+✔ 34. Formateo y Coherencia de Enlaces RFC 6068 y WhatsApp con Almacén Central Durango (0.1798ms)
+✔ 35. Invariante de Domicilio Fiscal para Facturación y Alta de Proveedores (0.1873ms)
+✔ 36. Invariante de Cero Promesas Falsas de Rendimiento en Todo el Sitio (5.753ms)
+✔ 37. Generador de Código de Configuración Institucional SMAT Limpio (Decisión 3-B & 6-A) (0.2284ms)
+✔ 38. Formateador de Requisición en Tabla TSV para SAP / Excel (Decisión 10-A) (0.3288ms)
+✖ 39. Tabla Paramétrica Rápida de Series y Marcos en Catálogo ES/EN (Decisión 2-A & Ola 20 Decisión 9-C) (1.0072ms)
+✔ 40. Semáforo Visual Durand y Micro-Calculador TCO en QuoteWizard (Decisiones 3-A y 5-A) (1.0206ms)
+✔ 41. Ingesta Confidencial de Placa y Dossier Dual Mantenimiento/SAP (Decisiones 6-A y 8-A) (0.9573ms)
+✔ 42. Puente Contextual de Diagnóstico a Requisición (Decisión 7-A & 9-C) (0.2797ms)
+✔ 43. Protocolos de Calidad y Ensayos a Solicitud Formal (Decisión 1-A) (0.3883ms)
+✔ 44. Invariante de Cero Fugas de Conteo Cuantitativo de Inventario en Web Pública (Decisión 9-A) (2.0248ms)
+✔ 45. Invariante de Cero Números de Parte o Marcas OEM en Todo el Árbol Público (2.884ms)
+✖ 46. Decodificador Inteligente de Código SMAT (Decisión 6-A) (0.9201ms)
+✔ 47. Esquema SVG Reactivo de Cotas Clave de Montaje en Catálogo (Decisión 2-A) (0.3847ms)
+✔ 48. Conmutador TCO de Aleación y Ahorro en Paros de Turno (Decisión 3-A) (0.6692ms)
+✔ 49. Filtro Reactivo por Síntoma en Hub de Diagnóstico (Decisión 7-A & Ola 20 Decisión 10-C) (0.2109ms)
+✔ 50. Justificación Técnica Normalizada para Órdenes de Compra ERP (Decisión 8-A) (1.1575ms)
+✔ 51. Facsímil Interactivo de Certificado de Calidad ASTM A532 (Decisión 1-A) (0.971ms)
+✔ 52. Persistencia de Sesión en sessionStorage (Decisión 4-A) (0.7863ms)
+✔ 53. Sistema de Tokens Apple Industrial y Superficies Especulares (Decisión 1-A) (0.6339ms)
+✔ 54. Tipografía Tabular SF Mono y Cero Layout Shift (Decisión 2-A) (1.0313ms)
+✔ 55. Microfísica de Resortes Apple en Controles Interactivos (Decisión 3-A) (0.9514ms)
+✔ 56. Sincronización Bidireccional SVG-Tabla Paramétrica en Catálogo (Decisión 4-A) (0.4945ms)
+✔ 57. Visual Haptic Feedback Grado Stripe en Copia TSV/SAP (Decisión 5-A) (0.9429ms)
+✔ 58. Telemetría Crítica con LEDs Pulsantes en Tiempo Real (Decisión 6-A) (0.7691ms)
+✔ 59. Píldoras Táctiles Sin Íconos Accesibles para Don Manuel (Decisión 7-A & Ola 20 Decisión 10-C) (0.2157ms)
+✔ 60. Facsímil Metrológico ASTM A532 Glassmorphism y Pro Keybindings Globales (Decisiones 8-A, 9-A, 10-A) (1.5342ms)
+✖ 61. Invariante de Erradicación Total de Emojis Consumer en Componentes Clave (Decisión 2-A) (2.7477ms)
+✔ 62. Sistema Canónico de Malla Espacial de 8 Puntos (Decisión 1-A & 5-A) (0.4177ms)
+✔ 63. Arquitectura Monolítica de Live Dossier A4 sin Cajas Punteadas (Decisión 4-A) (1.2673ms)
+✔ 64. Ergonomía de 3 Actos Tranquilos y Progressive Disclosure (Decisión 3-A) (0.897ms)
+✔ 65. Consola Paramétrica de Catálogo con Separación de 32px y Tipografía Tabular (Decisión 6-A) (0.4565ms)
+✔ 66. Superficies Minerales Planas y Erradicación de Fondos Pastel (Decisión 1-A & 8-A) (0.2048ms)
+✔ 67. Ritmo Vertical Monumental de 80px en Páginas Maestras ES y EN (Decisión 5-A) (0.2855ms)
+✔ 68. Invariante Hermética de Cero Debris y Pureza Estilística (Decisión 1-A a 10-A) (0.2539ms)
+✔ 69. Vitrina Táctil de 3 Equipos Clave en Portada ES y EN (Decisión 1-C) (0.2604ms)
+✔ 70. Invariante de Erradicación de Verbórrea Académica en Titulares (Decisión 2-C) (1.2798ms)
+✔ 71. Invariante de Ausencia de Acordeones Dobles Anidados en QuoteWizard (Decisión 3-C) (2.3028ms)
+✔ 72. Reubicación Discreta del Decodificador SMAT Fuera del Flujo Principal (Decisión 4-C) (1.1051ms)
+✔ 73. Live Dossier Continuo A4 Unificado con Soporte de Impresión (Decisión 5-C) (0.9727ms)
+✔ 74. Matriz de Certeza Física en 3 Tarjetas de Patio sin Tabla Horizontal Obligatoria (Decisión 7-C) (0.2285ms)
+✔ 75. Conexión Paramétrica Bidireccional Catálogo -> Cotizador (Decisión 10-C) (0.3633ms)
+✔ 76. Invariante de Costo $0/mes, Cero Dependencias Runtime y 40 Rutas Estáticas (Ola 16) (1.4665ms)
+✔ 77. Verificación de Cero Dead Affordances en Componentes Clave (Decisión 4-C) (0.4349ms)
+✔ 78. Invariante de Encabezado Único en Diagnóstico ES y EN (Decisión 3-C) (0.3835ms)
+✔ 79. Poda Total de Debris en Matriz de Confianza (Decisión 2-C y 7-C) (0.2105ms)
+✔ 80. Invariante de Erradicación de CapEx/OpEx en Vitrina de Portada y Catálogo (Decisión 7-C & Ola 20 Decisión 4-C) (0.4614ms)
+✔ 81. Invariante de Armonización Cromática 90/10 en CaseCards (Decisión 6-C) (0.1763ms)
+✔ 82. Inyección y Parseo de Síntoma en Diagnóstico ➔ Requisición (Decisión 9-C) (0.9154ms)
+✔ 83. Ergonomía de Live Dossier para Pantallas de Laptops Mineras (Decisión 8-C) (1.1034ms)
+✔ 84. Matriz Fiduciaria TCO Multi-Equipo en Portada ES y EN (Decisión 5-C & Ola 20 Item 11) (0.4601ms)
+✔ 85. Metáfora de Hoja Física A4 en Live Dossier (Decisión 1-C / GOLD-169) (1.0704ms)
+✔ 86. Conmutador Estricto de Pestañas Mantenimiento vs. SAP (Decisión 3-C / D3) (1.3896ms)
+✔ 87. Poda de Muro de Texto ERP con Resumen Ejecutivo y Drawer Desplegable (Decisión 5-C / GOLD-170) (1.3352ms)
+✔ 88. Rejilla Micro-Tipográfica Semántica de Pares Clave-Valor (Decisión 4-C / GOLD-171) (1.0708ms)
+✔ 89. Sello Metrológico Oficial de Inspección en Banco Durango (Decisión 7-C / GOLD-173) (1.7444ms)
+✔ 90. Micro-Interacción de Tinta Viva Causa-Efecto (Decisión 9-C / GOLD-172) (2.2781ms)
+✔ 91. Barra de Exportación Adosada con Botón Rey PDF Dominante (Decisión 8-C / D8) (1.0238ms)
+✔ 92. Muelle Unificado de Instrumentación en Slate Suave (Decisión 1-C / GOLD-174) (0.6976ms)
+✔ 93. Pozos de Entrada en Blanco Puro con Bisel Interior (Decisión 2-C / GOLD-178) (0.5319ms)
+✔ 94. Señalética Tipográfica Formal Estrictamente Sin Íconos (Decisión 3-C / GOLD-175) (0.7068ms)
+✔ 95. Oclusión Ambiental Multicapa de Hoja Física A4 (Decisión 4-C / GOLD-176) (0.7231ms)
+✔ 96. Pestañas de Expediente Técnico Adosadas Físicamente (Decisión 5-C / GOLD-177) (0.8569ms)
+✔ 97. Preservación Absoluta de IDs y Compuertas Soberanas (Decisión 10-C) (0.9928ms)
+✔ 98. Invariante de Erradicación del Síndrome de Tarjetas Blancas Gemelas (Decisión 1-C & 2-C) (0.822ms)
+✔ 99. Hero Multi-Equipo de 3 Circuitos y Poda de Mini-Cajas (Ola 20 - Decisiones 1-C, 2-C y 3-C) (0.3759ms)
+✔ 100. Cabecera Esbelta Unificada y Renombramiento a Cotizar Refacción (Ola 20 - Decisión 2-C) (0.2207ms)
+✔ 101. Tarjetas de Hardware en Formato Apple Pro Key-Specs para los 3 Circuitos (Ola 20 - Decisión 4-C) (0.6133ms)
+✔ 102. Armonización Multi-Equipo de Cuándo Decimos NO de Frente (Ola 20 - Item 12) (0.2554ms)
+✔ 103. Píldoras Táctiles de Diagnóstico Estrictamente Sin Íconos (Ola 20 - Decisión 10-C) (0.3657ms)
+✔ 104. Service Worker Offline-First <5KB y Auto-Save smat_workbench_draft (Ola 20 - Decisión 7-C) (1.0588ms)
+✔ 105. Ficha de Cotejo Dimensional ANSI 1:1 y Tolerancia <0.05 mm (Ola 20 - Decisión 6-C) (1.4595ms)
+✔ 106. Erradicación del Botón Neón Flotante de WhatsApp y Deep-Links RFC Catálogo (Ola 20 - Decisiones 8-C y 9-C) (0.5401ms)
+✔ 107. Conmutador Multi-Circuito y Paneles Condicionales (Ola 21 - Decisión 8-C) (0.7516ms)
+✔ 108. Kits de Paro Mayores vs Despiece Asistido y Aviso de Recirculación (Ola 21 - Decisión 1-C) (1.1911ms)
+✔ 109. Blindfold Comercial de Diámetros de Tubería sin Fuga de Bastidor (Ola 21 - Decisión 2-C) (1.4522ms)
+✔ 110. Píldoras Táctiles de Síntomas de Desgaste Clínico sin Fuga Metalúrgica (Ola 21 - Decisión 3-C) (1.1015ms)
+✔ 111. Generación de Códigos Institucionales SMAT Sanitizados y Blindados (Ola 21) (0.8556ms)
+✔ 112. Ingesta Asistida de Pieza Desgastada con Flexómetro y Medidas 1:1 (Ola 21 - Decisión 6-C) (0.5765ms)
+✔ 113. Parámetros Específicos para Flotación y Filtración en QuoteWizard (Ola 21 - Decisión 8-C) (0.6174ms)
+✔ 114. Metadatos Dinámicos en Live Dossier y WhatsApp por Circuito (Ola 21) (0.6323ms)
+✔ 115. Invariante Ética de Facilitación de RFQ / Requisición (Cero Falsas Promesas de 1 Minuto) (0.8383ms)
+ℹ tests 115
+ℹ suites 0
+ℹ pass 112
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 393.2485
+
+✖ failing tests:
+
+test at tests\b2b_functions.test.mjs:977:1
+✖ 39. Tabla Paramétrica Rápida de Series y Marcos en Catálogo ES/EN (Decisión 2-A & Ola 20 Decisión 9-C) (1.0072ms)
+  AssertionError [ERR_ASSERTION]: catalogo.astro debe contener enlaces directos al RFQ por serie
+      at TestContext.<anonymous> (file:///C:/Users/52331/Documents/Proyectos/2_smat/site/tests/b2b_functions.test.mjs:993:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests\b2b_functions.test.mjs:1132:1
+✖ 46. Decodificador Inteligente de Código SMAT (Decisión 6-A) (0.9201ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'solo_impulsor'
+  - 'impulsor'
+  
+      at TestContext.<anonymous> (file:///C:/Users/52331/Documents/Proyectos/2_smat/site/tests/b2b_functions.test.mjs:1137:10)
+      at async Test.run (node:internal/test_runner/test:1113:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'solo_impulsor',
+    expected: 'impulsor',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\b2b_functions.test.mjs:1312:1
+✖ 61. Invariante de Erradicación Total de Emojis Consumer en Componentes Clave (Decisión 2-A) (2.7477ms)
+  AssertionError [ERR_ASSERTION]: El archivo src/components/QuoteWizard.astro contiene emoji consumer arcaico prohibido: 🟢
+  + actual - expected
+  
+  + [
+  +   '🟢',
+  +   groups: undefined,
+  +   index: 69234,
+  +   input: '---\n' +
+  +     "import miningGroupsData from '../../data/mining_groups.json';\n" +
+  +     '\n' +
+  +     'interface Props {\n' +
+  +     "  lang?: 'es' | 'en';\n" +
+  +     '  defaultRole?: string;\n' +
+  +     "  defaultType?: 'capex' | 'opex';\n" +
+  +     '}\n' +
+  +     '\n' +
+  +     "const { lang = 'es', defaultRole = '', defaultType = 'opex' } = Astro.props;\n" +
+  +     "const isEs = lang === 'es';\n" +
+  +     'const miningGroupsJson = JSON.stringify(miningGroupsData.groups);\n' +
+  +     '---\n' +
+  +     '\n' +
+  +     '<div class="workbench-container" id="rfq" data-default-role={defaultRole} data-default-type={defaultType} data-mining-groups={miningGroupsJson} data-lang={lang}>\n' +
+  +     '  <!-- Cabecera de la Estación de Trabajo -->\n' +
+  +     '  <div class="workbench-header">\n' +
+  +     '    <div class="badge-row">\n' +
+  +     '      <span class="badge badge-copper">\n' +
+  +     '        <span class="live-dot"></span>\n' +
+  +     "        {isEs ? 'CONSOLA DE INGENIERÍA Y ALMACÉN DURANGO' : 'DURANGO ENGINEERING & CENTRAL WAREHOUSE'}\n" +
+  +     '      </span>\n' +
+  +     '      <span class="badge badge-emerald">\n' +
+  +     "        {isEs ? 'ATENCIÓN AL CLIENTE: LUN-VIE 08:00 A 18:00 CST' : 'CUSTOMER SERVICE: MON-FRI 08:00 TO 18:00 CST'}\n" +
+  +     '      </span>\n' +
+  +     '    </div>\n' +
+  +     '    <h2 class="workbench-title">\n' +
+  +     "      {isEs ? 'Facilite su Requisición o Solicitud de Información (RFQ)' : 'Streamline Your Technical Requisition or RFQ'}\n" +
+  +     '    </h2>\n' +
+  +     '    <p class="workbench-subtitle">\n' +
+  +     '      {isEs \n' +
+  +     "        ? 'Especifique la necesidad operativa de su circuito para generar su hoja de requerimiento formal y coordinar atención directa con ingeniería en Durango.'\n" +
+  +     "        : 'Specify your operational circuit needs to generate your formal technical RFQ and coordinate direct engineering support from Durango.'}\n" +
+  +     '    </p>\n' +
+  +     '  </div>\n' +
+  +     '\n' +
+  +     '  <!-- Contenedor Dividido (Split-Screen Workbench) -->\n' +
+  +     '  <div class="workbench-split">\n' +
+  +     '    \n' +
+  +     '    <!-- PANEL IZQUIERDO: Muelle de Instrumentación Slate (Decisión 1-C / GOLD-174) -->\n' +
+  +     '    <div class="workbench-controls-panel console-bay">\n' +
+  +     `      <div class="console-bay-banner">{isEs ? '1. PANEL DE ENTRADA • CONFIGURACIÓN DE EQUIPO' : '1. INPUT CONTROL PANEL • EQUIPMENT CONFIGURATION'}</div>\n` +
+  +     '      \n' +
+  +     '      <!-- Indicador de Red para Campamento en Sierra (Decisión 7-C / GOLD-180) -->\n' +
+  +     '      <div id="offline-network-pill" class="offline-network-pill hidden" role="status">\n' +
+  +     '        <span class="offline-dot"></span>\n' +
+  +     "        <span>{isEs ? 'RED DE MINA: MODO DESCONECTADO • FICHA GUARDADA EN MEMORIA LOCAL' : 'MINE NETWORK: OFFLINE MODE • SPEC SAVED TO LOCAL STORAGE'}</span>\n" +
+  +     '      </div>\n' +
+  +     '      <div id="returning-user-chip" class="returning-user-chip hidden">\n' +
+  +     '        <div class="user-chip-content">\n' +
+  +     '          <span class="user-chip-icon">\n' +
+  +     '            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>\n' +
+  +     '          </span>\n' +
+  +     `          <span class="user-chip-text" id="user-chip-text">{isEs ? 'Reconociendo a:' : 'Recognized user:'} <strong></strong></span>\n` +
+  +     '        </div>\n' +
+  +     `        <button type="button" class="user-chip-reset" id="user-chip-reset" title={isEs ? 'Cambiar de usuario' : 'Switch user'}>\n` +
+  +     "          [{isEs ? 'Cambiar perfil' : 'Change profile'}]\n" +
+  +     '        </button>\n' +
+  +     '      </div>\n' +
+  +     '\n' +
+  +     '      <!-- Sección 1: Selección de Equipo o Refacción (Decisión 1-C, 3-A) -->\n' +
+  +     '      <div class="control-card">\n' +
+  +     '        <div class="control-card-header">\n' +
+  +     '          <span class="step-num">01</span>\n' +
+  +     "          <h3>{isEs ? 'Selección de Equipo o Refacción' : 'Equipment or Replacement Part'}</h3>\n" +
+  +     '        </div>\n' +
+  +     '\n' +
+  +     '        <div class="intent-selector">\n' +
+  +     '          <label class="intent-btn selected" id="btn-intent-opex">\n' +
+  +     '            <input type="radio" name="intent" value="opex_paro" checked />\n' +
+  +     '            <span class="intent-icon">\n' +
+  +     '              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>\n' +
+  +     '            </span>\n' +
+  +     '            <div class="intent-info">\n' +
+  +     "              <strong>{isEs ? 'Refacciones de Desgaste / Paro' : 'Wear Spares / Plant Shutdown'}</strong>\n" +
+  +     "              <small>{isEs ? 'Impulsores A05, volutas, rotores, estatores y telas' : 'A05 impellers, volutes, rotors, stators & cloths'}</small>\n" +
+  +     '            </div>\n' +
+  +     '          </label>\n' +
+  +     '\n' +
+  +     '          <label class="intent-btn" id="btn-intent-capex">\n' +
+  +     '            <input type="radio" name="intent" value="capex_proyecto" />\n' +
+  +     '            <span class="intent-icon">\n' +
+  +     '              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg>\n' +
+  +     '            </span>\n' +
+  +     '            <div class="intent-info">\n' +
+  +     "              <strong>{isEs ? 'Equipos Completos / Circuito' : 'Complete Equipment / Circuit Package'}</strong>\n" +
+  +     "              <small>{isEs ? 'Bombas en skid con motor, celdas o filtros prensa' : 'Skid pumps with motor, cells or filter presses'}</small>\n" +
+  +     '            </div>\n' +
+  +     '          </label>\n' +
+  +     '        </div>\n' +
+  +     '\n' +
+  +     '        <!-- Panel de Paquete de Circuito Completo (Decisión 3-C) -->\n' +
+  +     '        <div id="package-bundle-panel" class="package-bundle-panel hidden">\n' +
+  +     '          <div class="package-bundle-header">\n' +
+  +     "            <strong>{isEs ? 'Seleccione las partidas requeridas para su circuito:' : 'Select required circuit equipment:'}</strong>\n" +
+  +     "            <small>{isEs ? 'Puede marcar varias opciones para recibir una cotización consolidada.' : 'Check all items you need quoted as a consolidated package.'}</small>\n" +
+  +     '          </div>\n' +
+  +     '          <div class="package-bundle-grid">\n' +
+  +     '            <label class="package-check-label">\n' +
+  +     '              <input type="checkbox" name="pkg_item" value="bomba_skid" checked />\n' +
+  +     "              <span>{isEs ? 'Bomba para Lodos en Skid con Motor' : 'Slurry Pump Skid with Motor'}</span>\n" +
+  +     '            </label>\n' +
+  +     '            <label class="package-check-label">\n' +
+  +     '              <input type="checkbox" name="pkg_item" value="celdas_flotacion" />\n' +
+  +     "              <span>{isEs ? 'Batería de Celdas de Flotación' : 'Flotation Cell Bank'}</span>\n" +
+  +     '            </label>\n' +
+  +     '            <label class="package-check-label">\n' +
+  +     '              <input type="checkbox" name="pkg_item" value="filtro_prensa" />\n' +
+  +     "              <span>{isEs ? 'Filtro Prensa para Jales Secos' : 'Filter Press for Dry Tailings'}</span>\n" +
+  +     '            </label>\n' +
+  +     '            <label class="package-check-label">\n' +
+  +     '              <input type="checkbox" name="pkg_item" value="refacciones_inicio" />\n' +
+  +     "              <span>{isEs ? 'Paquete Inicial de Refacciones A05' : 'Initial A05 Wear Spares Pack'}</span>\n" +
+  +     '            </label>\n' +
+  +     '          </div>\n' +
+  +     '        </div>\n' +
+  +     '\n' +
+  +     '\n' +
+  +     '\n' +
+  +     '        <!-- Selector de Circuito de Planta (Decisión 8-C: Arquitectura Multi-Equipo) -->\n' +
+  +     '        <div class="circuit-selector-group">\n' +
+  +     '          <label id="circuit-selector-label" class="circuit-selector-label">\n' +
+  +     "            <strong>{isEs ? 'Circuito de Proceso en Planta:' : 'Plant Mineral Processing Circuit:'}</strong>\n" +
+  +     '          </label>\n' +
+  +     '          <div class="circuit-pills-grid" role="group" aria-labelledby="circuit-selector-label">\n' +
+  +     '            <button type="button" class="circuit-pill active" data-circuit="bombeo" aria-pressed="true">\n' +
+  +     "              [ {isEs ? 'BOMBEO DE PULPA' : 'SLURRY PUMPING'} ]\n" +
+  +     '            </button>\n' +
+  +     '            <button type="button" class="circuit-pill" data-circuit="flotacion" aria-pressed="false">\n' +
+  +     "              [ {isEs ? 'FLOTACIÓN DE MINERALES' : 'MINERAL FLOTATION'} ]\n" +
+  +     '            </button>\n' +
+  +     '            <button type="button" class="circuit-pill" data-circuit="filtracion" aria-pressed="false">\n' +
+  +     "              [ {isEs ? 'FILTRACIÓN / JALES SECOS' : 'FILTRATION / DRY TAILINGS'} ]\n" +
+  +     '            </button>\n' +
+  +     '          </div>\n' +
+  +     '          <input type="hidden" name="process_circuit" id="wb-process-circuit" value="bombeo" />\n' +
+  +     '        </div>\n' +
+  +     '\n' +
+  +     '        <!-- PANEL CIRCUITO 1: BOMBEO DE PULPA (Kits Agnósticos y Síntomas de Desgaste) -->\n' +
+  +     '        <div id="circuit-panel-bombeo" class="circuit-panel">\n' +
+  +     '          <div class="circuit-context-banner">\n' +
+  +     '            <span class="context-tag font-mono-tech">[PARÁMETROS DE BOMBEO]</span>\n' +
+  +     "            <span>{isEs ? 'Selección exclusiva por línea de tubería y condición de desgaste en planta.' : 'Slurry pipeline diameter and plant wear condition parameters.'}</span>\n" +
+  +     '          </div>\n' +
+  +     '\n' +
+  +     '          <div class="form-group">\n' +
+  +     `            <label for="wb-role"><strong>{isEs ? 'Kit de Paro o Refacción Requerida en Bomba:' : 'Required Slurry Pump Shutdown Kit:'}</strong></label>\n` +
+  +     '            <select id="wb-role" name="role_id" class="wb-select">\n' +
+  +     `              <option value="kit_wet_end" selected>{isEs ? 'Kit Extremo Húmedo Completo (Impulsor + Voluta + Garganta + Plato + Sellos)' : 'Complete Wet-End Kit (Impeller + Volute + Throatbush + Frame Plate + Seals)'}</option>\n` +
+  +     `              <option value="kit_sellado">{isEs ? 'Kit de Sellado Dinámico / Expulsor (Expulsor + Anillo + Camisa + Empaques)' : 'Dynamic Expeller Seal Kit (Expeller + Ring + Sleeve + Gland Packing)'}</option>\n` +
+  +     `              <option value="kit_rodamientos">{isEs ? 'Cartucho de Rodamientos Completo (Flecha + Baleros de Carga + Laberintos)' : 'Complete Bearing Cartridge Assembly (Shaft + Bearings + Labyrinths)'}</option>\n` +
+  +     `              <option value="skid_bomba">{isEs ? 'Bomba Completa sobre Skid en Canal C con Motor' : 'Complete Pump Skid Package on C-Channel with Motor'}</option>\n` +
+  +     `              <option value="solo_impulsor">{isEs ? 'Solo Impulsor de Desgaste [Desglose asistido]' : 'Impeller Only [Assisted breakdown]'}</option>\n` +
+  +     `              <option value="solo_voluta">{isEs ? 'Solo Voluta de Desgaste [D`... 199315 more characters
+  + ]
+  - null
+  
+      at TestContext.<anonymous> (file:///C:/Users/52331/Documents/Proyectos/2_smat/site/tests/b2b_functions.test.mjs:1336:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ '🟢', index: 69234, input: `---\nimport miningGroupsData from '../../data/mining_groups.json';\n\ninterface Props {\n  lang?: 'es' | 'en';\n  defaultRole?: string;\n  defaultType?: 'capex' | 'opex';\n}\n\nconst { lang = 'es', defaultRole = '', defaultType = 'opex' } = Astro.props;\nconst isEs = lang === 'es';\nconst miningGroupsJson = JSON.stringify(miningGroupsData.groups);\n---\n\n<div class="workbench-container" id="rfq" data-default-role={defaultRole} data-default-type={defaultType} data-mining-groups={miningGroupsJson} data-lang={lang}>\n  <!-- Cabecera de la Estación de Trabajo -->\n  <div class="workbench-header">\n    <div class="badge-row">\n      <span class="badge badge-copper">\n        <span class="live-dot"></span>\n        {isEs ? 'CONSOLA DE INGENIERÍA Y ALMACÉN DURANGO' : 'DURANGO ENGINEERING & CENTRAL WAREHOUSE'}\n      </span>\n      <span class="badge badge-emerald">\n        {isEs ? 'ATENCIÓN AL CLIENTE: LUN-VIE 08:00 A 18:00 CST' : 'CUSTOMER SERVICE: MON-FRI 08:00 TO 18:00 CST'}\n      </span>\n    </div>\n    <h2 class="workbench-title">\n      {isEs ? 'Facilite su Requisición o Solicitud de Información (RFQ)' : 'Streamline Your Technical Requisition or RFQ'}\n    </h2>\n    <p class="workbench-subtitle">\n      {isEs \n        ? 'Especifique la necesidad operativa de su circuito para generar su hoja de requerimiento formal y coordinar atención directa con ingeniería en Durango.'\n        : 'Specify your operational circuit needs to generate your formal technical RFQ and coordinate direct engineering support from Durango.'}\n    </p>\n  </div>\n\n  <!-- Contenedor Dividido (Split-Screen Workbench) -->\n  <div class="workbench-split">\n    \n    <!-- PANEL IZQUIERDO: Muelle de Instrumentación Slate (Decisión 1-C / GOLD-174) -->\n    <div class="workbench-controls-panel console-bay">\n      <div class="console-bay-banner">{isEs ? '1. PANEL DE ENTRADA • CONFIGURACIÓN DE EQUIPO' : '1. INPUT CONTROL PANEL • EQUIPMENT CONFIGURATION'}</div>\n      \n      <!-- Indicador de Red para Campamento en Sierra (Decisión 7-C / GOLD-180) -->\n      <div id="offline-network-pill" class="offline-network-pill hidden" role="status">\n        <span class="offline-dot"></span>\n        <span>{isEs ? 'RED DE MINA: MODO DESCONECTADO • FICHA GUARDADA EN MEMORIA LOCAL' : 'MINE NETWORK: OFFLINE MODE • SPEC SAVED TO LOCAL STORAGE'}</span>\n      </div>\n      <div id="returning-user-chip" class="returning-user-chip hidden">\n        <div class="user-chip-content">\n          <span class="user-chip-icon">\n            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>\n          </span>\n          <span class="user-chip-text" id="user-chip-text">{isEs ? 'Reconociendo a:' : 'Recognized user:'} <strong></strong></span>\n        </div>\n        <button type="button" class="user-chip-reset" id="user-chip-reset" title={isEs ? 'Cambiar de usuario' : 'Switch user'}>\n          [{isEs ? 'Cambiar perfil' : 'Change profile'}]\n        </button>\n      </div>\n\n      <!-- Sección 1: Selección de Equipo o Refacción (Decisión 1-C, 3-A) -->\n      <div class="control-card">\n        <div class="control-card-header">\n          <span class="step-num">01</span>\n          <h3>{isEs ? 'Selección de Equipo o Refacción' : 'Equipment or Replacement Part'}</h3>\n        </div>\n\n        <div class="intent-selector">\n          <label class="intent-btn selected" id="btn-intent-opex">\n            <input type="radio" name="intent" value="opex_paro" checked />\n            <span class="intent-icon">\n              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>\n            </span>\n            <div class="intent-info">\n              <strong>{isEs ? 'Refacciones de Desgaste / Paro' : 'Wear Spares / Plant Shutdown'}</strong>\n              <small>{isEs ? 'Impulsores A05, volutas, rotores, estatores y telas' : 'A05 impellers, volutes, rotors, stators & cloths'}</small>\n            </div>\n          </label>\n\n          <label class="intent-btn" id="btn-intent-capex">\n            <input type="radio" name="intent" value="capex_proyecto" />\n            <span class="intent-icon">\n              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg>\n            </span>\n            <div class="intent-info">\n              <strong>{isEs ? 'Equipos Completos / Circuito' : 'Complete Equipment / Circuit Package'}</strong>\n              <small>{isEs ? 'Bombas en skid con motor, celdas o filtros prensa' : 'Skid pumps with motor, cells or filter presses'}</small>\n            </div>\n          </label>\n        </div>\n\n        <!-- Panel de Paquete de Circuito Completo (Decisión 3-C) -->\n        <div id="package-bundle-panel" class="package-bundle-panel hidden">\n          <div class="package-bundle-header">\n            <strong>{isEs ? 'Seleccione las partidas requeridas para su circuito:' : 'Select required circuit equipment:'}</strong>\n            <small>{isEs ? 'Puede marcar varias opciones para recibir una cotización consolidada.' : 'Check all items you need quoted as a consolidated package.'}</small>\n          </div>\n          <div class="package-bundle-grid">\n            <label class="package-check-label">\n              <input type="checkbox" name="pkg_item" value="bomba_skid" checked />\n              <span>{isEs ? 'Bomba para Lodos en Skid con Motor' : 'Slurry Pump Skid with Motor'}</span>\n            </label>\n            <label class="package-check-label">\n              <input type="checkbox" name="pkg_item" value="celdas_flotacion" />\n              <span>{isEs ? 'Batería de Celdas de Flotación' : 'Flotation Cell Bank'}</span>\n            </label>\n            <label class="package-check-label">\n              <input type="checkbox" name="pkg_item" value="filtro_prensa" />\n              <span>{isEs ? 'Filtro Prensa para Jales Secos' : 'Filter Press for Dry Tailings'}</span>\n            </label>\n            <label class="package-check-label">\n              <input type="checkbox" name="pkg_item" value="refacciones_inicio" />\n              <span>{isEs ? 'Paquete Inicial de Refacciones A05' : 'Initial A05 Wear Spares Pack'}</span>\n            </label>\n          </div>\n        </div>\n\n\n\n        <!-- Selector de Circuito de Planta (Decisión 8-C: Arquitectura Multi-Equipo) -->\n        <div class="circuit-selector-group">\n          <label id="circuit-selector-label" class="circuit-selector-label">\n            <strong>{isEs ? 'Circuito de Proceso en Planta:' : 'Plant Mineral Processing Circuit:'}</strong>\n          </label>\n          <div class="circuit-pills-grid" role="group" aria-labelledby="circuit-selector-label">\n            <button type="button" class="circuit-pill active" data-circuit="bombeo" aria-pressed="true">\n              [ {isEs ? 'BOMBEO DE PULPA' : 'SLURRY PUMPING'} ]\n            </button>\n            <button type="button" class="circuit-pill" data-circuit="flotacion" aria-pressed="false">\n              [ {isEs ? 'FLOTACIÓN DE MINERALES' : 'MINERAL FLOTATION'} ]\n            </button>\n            <button type="button" class="circuit-pill" data-circuit="filtracion" aria-pressed="false">\n              [ {isEs ? 'FILTRACIÓN / JALES SECOS' : 'FILTRATION / DRY TAILINGS'} ]\n            </button>\n          </div>\n          <input type="hidden" name="process_circuit" id="wb-process-circuit" value="bombeo" />\n        </div>\n\n        <!-- PANEL CIRCUITO 1: BOMBEO DE PULPA (Kits Agnósticos y Síntomas de Desgaste) -->\n        <div id="circuit-panel-bombeo" class="circuit-panel">\n          <div class="circuit-context-banner">\n            <span class="context-tag font-mono-tech">[PARÁMETROS DE BOMBEO]</span>\n            <span>{isEs ? 'Selección exclusiva por línea de tubería y condición de desgaste en planta.' : 'Slurry pipeline diameter and plant wear condition parameters.'}</span>\n          </div>\n\n          <div class="form-group">\n            <label for="wb-role"><strong>{isEs ? 'Kit de Paro o Refacción Requerida en Bomba:' : 'Required Slurry Pump Shutdown Kit:'}</strong></label>\n            <select id="wb-role" name="role_id" class="wb-select">\n              <option value="kit_wet_end" selected>{isEs ? 'Kit Extremo Húmedo Completo (Impulsor + Voluta + Garganta + Plato + Sellos)' : 'Complete Wet-End Kit (Impeller + Volute + Throatbush + Frame Plate + Seals)'}</option>\n              <option value="kit_sellado">{isEs ? 'Kit de Sellado Dinámico / Expulsor (Expulsor + Anillo + Camisa + Empaques)' : 'Dynamic Expeller Seal Kit (Expeller + Ring + Sleeve + Gland Packing)'}</option>\n              <option value="kit_rodamientos">{isEs ? 'Cartucho de Rodamientos Completo (Flecha + Baleros de Carga + Laberintos)' : 'Complete Bearing Cartridge Assembly (Shaft + Bearings + Labyrinths)'}</option>\n              <option value="skid_bomba">{isEs ? 'Bomba Completa sobre Skid en Canal C con Motor' : 'Complete Pump Skid Package on C-Channel with Motor'}</option>\n              <option value="solo_impulsor">{isEs ? 'Solo Impulsor de Desgaste [Desglose asistido]' : 'Impeller Only [Assisted breakdown]'}</option>\n              <option value="solo_voluta">{isEs ? 'Solo Voluta de Desgaste [D`... 199315 more characters, groups: undefined ],
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

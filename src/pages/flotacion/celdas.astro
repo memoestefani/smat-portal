@@ -1,0 +1,203 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SharePurchasing from '../../components/SharePurchasing.astro';
+import WhatsAppButton from '../../components/WhatsAppButton.astro';
+---
+
+<BaseLayout 
+  title="Celdas de Flotación Mecánicas (50 a 300 ft³) | SMAT Minerals"
+  description="Celdas de flotación sub-aireadas para circuitos Rougher, Cleaner y Scavenger en tanques cilíndricos y rectangulares con mecanismos suspendidos de alta cinética."
+  lang="es"
+  canonicalPath="/flotacion/celdas/"
+  alternateEsPath="/flotacion/celdas/"
+  alternateEnPath="/en/flotation/cells/"
+>
+  <Header slot="header" lang="es" currentPath="/flotacion/celdas/" alternatePath="/en/flotation/cells/" />
+
+  <section class="page-hero">
+    <div class="container text-center">
+      <span class="badge badge-capex">CAPEX • LÍNEA COMERCIAL ACTIVA</span>
+      <h1>Celdas de Flotación Mecánicas Completas</h1>
+      <p class="subtitle">Volúmenes estándar de 50 a 300 ft³ (1.4 a 8.5 m³) para máxima recuperación de concentrado mineral.</p>
+    </div>
+  </section>
+
+  <section class="section-spacing">
+    <div class="container content-container">
+      <div class="card detail-card">
+        <h2>Diseño Hidrodinámico de Alta Cinética</h2>
+        <p>
+          Las celdas de flotación SMAT Minerals son una línea comercial activa diseñada para maximizar la colisión entre partículas de mineral valioso y micro-burbujas de aire. Su geometría de fondo en artesa minimiza las zonas muertas y evita la sedimentación prematura de arenas gruesas en el fondo del tanque.
+        </p>
+
+        <table class="tech-table">
+          <thead>
+            <tr>
+              <th>Parámetro de Operación</th>
+              <th>Especificación Técnica SMAT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Rango de Capacidad</td>
+              <td>50 ft³ (1.4 m³), 100 ft³ (2.8 m³), 200 ft³ (5.6 m³), 300 ft³ (8.5 m³)</td>
+            </tr>
+            <tr>
+              <td>Configuración de Circuitos</td>
+              <td>Etapas de desbaste (Rougher), limpieza (Cleaner) y barrido (Scavenger)</td>
+            </tr>
+            <tr>
+              <td>Tipo de Aireación</td>
+              <td>Auto-aspirante o asistida por soplador de baja presión con dispersión radial homogénea</td>
+            </tr>
+            <tr>
+              <td>Tanque y Estructura</td>
+              <td>Acero estructural soldado con labio de rebose perimetral ajustable y compuertas tipo dardo</td>
+            </tr>
+            <tr>
+              <td>Control de Nivel</td>
+              <td>Caja de colas con actuadores automáticos / manuales de nivel de pulpa</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <SharePurchasing 
+          roleTitle="Celda de Flotación Mecánica Completa"
+          series="Capacidades de 50 a 300 ft³ (1.4 a 8.5 m³)"
+          metallurgy="Tanque Acero Estructural A36, Mecanismo Elastómero / Poliuretano"
+          specs="Celda mecánica completa con tanque, mecanismo suspendido, eje hueco de aireación, canaleta de concentrado y compuerta de nivel tipo dardo."
+          lang="es"
+        />
+
+        <div class="cta-rfq-box">
+          <div class="cta-rfq-header">
+            <span class="badge badge-copper">COTIZACIÓN INSTANTÁNEA EN ALMACÉN DURANGO</span>
+            <h3>¿Requiere celdas de flotación para ampliar su circuito?</h3>
+            <p>Configure su requisición formal de celdas o bancos completos con folio único institucional.</p>
+          </div>
+          <div class="cta-rfq-actions">
+            <a href="/?equipo=celda_flotacion#rfq" class="btn btn-primary btn-lg">
+              Cotizar Celda de Flotación en Consola Central →
+            </a>
+            <a href="https://wa.me/526188104408?text=Hola%20SMAT%20Minerals,%20requiero%20cotizar%20Celda%20de%20Flotaci%C3%B3n" target="_blank" rel="noopener noreferrer" class="btn btn-emergency btn-lg">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              Consultar Disponibilidad por WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <WhatsAppButton lang="es" />
+  <Footer slot="footer" lang="es" />
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 4.5rem 0 3.5rem;
+    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+
+  .text-center {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .page-hero h1 {
+    color: #090d16;
+    margin-top: 0.75rem;
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    margin-top: 0.75rem;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .content-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .detail-card {
+    background-color: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: 14px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  }
+
+  .detail-card h2 {
+    color: #090d16;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--color-accent-copper);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+  }
+
+  .detail-card p {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    color: #334155;
+  }
+
+  .tech-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+  }
+
+  .tech-table th, .tech-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--smat-border-light);
+    text-align: left;
+  }
+
+  .tech-table th {
+    background-color: #f8fafc;
+    color: #090d16;
+    font-weight: 700;
+  }
+
+  .tech-table td {
+    color: #334155;
+  }
+
+  .cta-rfq-box {
+    margin-top: 3rem;
+    padding: 2.5rem;
+    background: linear-gradient(180deg, #fafaf9 0%, #f1f5f9 100%);
+    border: 1px solid var(--smat-border-light);
+    border-radius: 12px;
+    text-align: center;
+  }
+
+  .cta-rfq-header h3 {
+    font-size: 1.4rem;
+    color: #090d16;
+    margin: 0.75rem 0 0.5rem;
+  }
+
+  .cta-rfq-header p {
+    color: #475569;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-rfq-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+</style>

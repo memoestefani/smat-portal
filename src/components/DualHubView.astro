@@ -1,0 +1,344 @@
+---
+interface Props {
+  lang?: 'es' | 'en';
+}
+
+const { lang = 'es' } = Astro.props;
+const isEs = lang === 'es';
+
+// Cargar catálogo de roles desde data/roles.json
+import rolesData from '../../data/roles.json';
+const verticals = rolesData.verticals;
+---
+
+<section class="dual-hub-section" id="catalogo">
+  <div class="container">
+    <div class="hub-header">
+      <div class="badge badge-copper">{isEs ? 'Propuesta Dual' : 'Dual Mining Scope'}</div>
+      <h2>{isEs ? 'Equipos de Proceso y Refaccionamiento Estratégico' : 'Process Systems & Strategic Wear Replacements'}</h2>
+      <p>
+        {isEs 
+          ? 'Alterne según su requerimiento de inversión de capital (CapEx) o mantenimiento preventivo / de paro de planta (OpEx).'
+          : 'Toggle depending on your capital equipment requirements (CapEx) or operational maintenance & urgent shut-down parts (OpEx).'}
+      </p>
+
+      <!-- Segmented Control de 48px Ergonómico -->
+      <div class="segmented-control-wrapper">
+        <div class="segmented-control" role="tablist" aria-label={isEs ? 'Selector CapEx u OpEx' : 'CapEx vs OpEx Selector'}>
+          <button 
+            type="button" 
+            class="control-btn active" 
+            data-target="capex" 
+            role="tab" 
+            aria-selected="true"
+            id="tab-capex"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:6px;" aria-hidden="true"><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>{isEs ? 'Equipos Completos (CapEx)' : 'Complete Equipment (CapEx)'}
+          </button>
+          <button 
+            type="button" 
+            class="control-btn" 
+            data-target="opex" 
+            role="tab" 
+            aria-selected="false"
+            id="tab-opex"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:6px;" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>{isEs ? 'Refacciones Críticas (OpEx)' : 'Critical Wear Parts (OpEx)'}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenedor CapEx -->
+    <div class="catalog-grid" id="view-capex">
+      {verticals.map((vert) => (
+        vert.capex.map((item: any) => (
+          <div class="card product-card">
+            <div class="card-top">
+              <span class="badge badge-capex">CapEx • {isEs ? vert.name_es : vert.name_en}</span>
+              <span class="series-tag">{item.series}</span>
+            </div>
+            <h3 class="product-title">{isEs ? item.title_es : item.title_en}</h3>
+            <p class="product-desc">{isEs ? item.spec_summary_es : item.spec_summary_en}</p>
+            
+            <div class="product-specs">
+              {item.power_range && (
+                <div class="spec-row">
+                  <span class="spec-label">{isEs ? 'Potencia:' : 'Power:'}</span>
+                  <span class="spec-val">{item.power_range}</span>
+                </div>
+              )}
+              {item.flow_range && (
+                <div class="spec-row">
+                  <span class="spec-label">{isEs ? 'Capacidad:' : 'Capacity:'}</span>
+                  <span class="spec-val">{item.flow_range}</span>
+                </div>
+              )}
+              {item.volume_range && (
+                <div class="spec-row">
+                  <span class="spec-label">{isEs ? 'Volumen:' : 'Volume:'}</span>
+                  <span class="spec-val">{item.volume_range}</span>
+                </div>
+              )}
+            </div>
+
+            {item.decision_criteria && (
+              <div class="decision-criteria-box">
+                <span class="criteria-badge">{isEs ? 'CRITERIO DE INGENIERÍA & LÍMITES:' : 'ENGINEERING CRITERIA & LIMITS:'}</span>
+                <p class="criteria-rule">{isEs ? item.decision_criteria.metallurgy_rule_es : item.decision_criteria.metallurgy_rule_en}</p>
+                <span class="criteria-risk">✓ {isEs ? item.decision_criteria.risk_avoided_es : item.decision_criteria.risk_avoided_en}</span>
+              </div>
+            )}
+
+            <div class="card-actions">
+              <a href={isEs ? item.slug_es : item.slug_en} class="btn btn-outline btn-sm">
+                {isEs ? 'Ficha Técnica' : 'Technical Spec'}
+              </a>
+              <a 
+                href={`${isEs ? '/contacto/' : '/en/contact/'}?rol=${item.role_id}&tipo=capex#rfq`} 
+                class="btn btn-primary btn-sm"
+              >
+                {isEs ? 'Cotizar Proyecto' : 'Request Quotation'}
+              </a>
+            </div>
+          </div>
+        ))
+      ))}
+    </div>
+
+    <!-- Contenedor OpEx -->
+    <div class="catalog-grid hidden" id="view-opex">
+      {verticals.map((vert) => (
+        vert.opex.map((item: any) => (
+          <div class="card product-card">
+            <div class="card-top">
+              <span class="badge badge-opex">OpEx • {isEs ? vert.name_es : vert.name_en}</span>
+              <span class="dispatch-tag"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:3px;" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>{isEs ? 'En Stock Durango' : 'In Stock Durango'}</span>
+            </div>
+            <h3 class="product-title">{isEs ? item.title_es : item.title_en}</h3>
+            <p class="product-desc">{isEs ? item.spec_summary_es : item.spec_summary_en}</p>
+            
+            <div class="product-specs">
+              {item.metallurgy && (
+                <div class="spec-row">
+                  <span class="spec-label">{isEs ? 'Metalurgia:' : 'Metallurgy:'}</span>
+                  <span class="spec-val highlight-val">{item.metallurgy}</span>
+                </div>
+              )}
+              {item.series && (
+                <div class="spec-row">
+                  <span class="spec-label">{isEs ? 'Compatibilidad:' : 'Compatibility:'}</span>
+                  <span class="spec-val">{item.series}</span>
+                </div>
+              )}
+            </div>
+
+            {item.decision_criteria && (
+              <div class="decision-criteria-box">
+                <span class="criteria-badge">{isEs ? 'REGLA DE METALURGIA & PULPA:' : 'METALLURGY & SLURRY RULE:'}</span>
+                <p class="criteria-rule">{isEs ? item.decision_criteria.metallurgy_rule_es : item.decision_criteria.metallurgy_rule_en}</p>
+                <span class="criteria-risk">✓ {isEs ? item.decision_criteria.risk_avoided_es : item.decision_criteria.risk_avoided_en}</span>
+              </div>
+            )}
+
+            <div class="card-actions">
+              <a href={isEs ? item.slug_es : item.slug_en} class="btn btn-outline btn-sm">
+                {isEs ? 'Ficha Técnica' : 'Technical Spec'}
+              </a>
+              <a 
+                href={`${isEs ? '/contacto/' : '/en/contact/'}?rol=${item.role_id}&tipo=opex#rfq`} 
+                class="btn btn-emergency btn-sm"
+              >
+                {isEs ? 'Cotizar Paro' : 'Urgent Quote'}
+              </a>
+            </div>
+          </div>
+        ))
+      ))}
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (function() {
+    const btnCapex = document.getElementById('tab-capex');
+    const btnOpex = document.getElementById('tab-opex');
+    const viewCapex = document.getElementById('view-capex');
+    const viewOpex = document.getElementById('view-opex');
+
+    if (btnCapex && btnOpex && viewCapex && viewOpex) {
+      btnCapex.addEventListener('click', function() {
+        btnCapex.classList.add('active');
+        btnCapex.setAttribute('aria-selected', 'true');
+        btnOpex.classList.remove('active');
+        btnOpex.setAttribute('aria-selected', 'false');
+
+        viewCapex.classList.remove('hidden');
+        viewOpex.classList.add('hidden');
+      });
+
+      btnOpex.addEventListener('click', function() {
+        btnOpex.classList.add('active');
+        btnOpex.setAttribute('aria-selected', 'true');
+        btnCapex.classList.remove('active');
+        btnCapex.setAttribute('aria-selected', 'false');
+
+        viewOpex.classList.remove('hidden');
+        viewCapex.classList.add('hidden');
+      });
+    }
+  })();
+</script>
+
+<style>
+  .dual-hub-section {
+    padding-top: 4rem;
+    padding-bottom: 5rem;
+    background-color: #0b1322;
+  }
+
+  .hub-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 3rem auto;
+  }
+
+  .hub-header h2 {
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .segmented-control-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.75rem;
+  }
+
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .catalog-grid.hidden {
+    display: none;
+  }
+
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 0.5rem;
+  }
+
+  .series-tag, .dispatch-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    background-color: var(--color-bg-surface);
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+  }
+
+  .dispatch-tag {
+    color: #fca5a5;
+    background-color: #450a0a;
+    border-color: #7f1d1d;
+  }
+
+  .product-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    color: #ffffff;
+  }
+
+  .product-desc {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+    flex-grow: 1;
+  }
+
+  .product-specs {
+    background-color: #111a2c;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .spec-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8125rem;
+  }
+
+  .spec-label {
+    color: var(--color-text-muted);
+  }
+
+  .spec-val {
+    color: #e2e8f0;
+    font-weight: 600;
+  }
+
+  .highlight-val {
+    color: #f59e0b;
+  }
+
+  .card-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: auto;
+  }
+
+  .btn-sm {
+    min-height: 42px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .decision-criteria-box {
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(249, 115, 22, 0.25);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 0.85rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .criteria-badge {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #f97316;
+    letter-spacing: 0.05em;
+  }
+
+  .criteria-rule {
+    font-size: 0.8rem;
+    color: #cbd5e1;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .criteria-risk {
+    font-size: 0.75rem;
+    color: #34d399;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+</style>

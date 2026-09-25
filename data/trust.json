@@ -1,0 +1,84 @@
+{
+  "title_es": "Pacto de Certeza Técnica y Garantía Comercial",
+  "title_en": "Commercial Trust & Engineering Warranty Charter",
+  "subtitle_es": "Respaldo operativo en Almacén Central Durango. Conozca con exactitud nuestro alcance de garantía de ensamble, compatibilidad dimensional y límites de aplicación técnica.",
+  "subtitle_en": "Operational assurance at our Durango Central Warehouse. Clear clarity on assembly warranty, dimensional interchangeability, and technical application boundaries.",
+  "protocol_policy_es": "Los protocolos formales de ensayo, dureza Brinell ASTM A532 (>650 HB) y reportes de balanceo dinámico en banco se entregan como anexo técnico oficial a solicitud del cliente al generar su folio de cotización formal.",
+  "protocol_policy_en": "Formal testing protocols, ASTM A532 Brinell hardness (>650 HB) certs, and shop dynamic balancing reports are delivered as official technical addenda upon customer request when generating their serialized quote folio.",
+  "pillars": [
+    {
+      "id": "planta_durango",
+      "title_es": "1. Inspección y Verificación Dimensional en Almacén Durango",
+      "title_en": "1. Dimensional Inspection & Fit Verification at Durango Warehouse",
+      "description_es": "Toda refacción y ensamble es sometido a verificación metrológica en nuestras instalaciones de Durango previo a su liberación. Garantizamos compatibilidad milimétrica con marcos estándar de bombeo y celdas sin requerir maquinados ni adaptaciones con soplete en la mina.",
+      "description_en": "Every component and assembly undergoes metrological dimensional verification at our Durango facilities prior to dispatch. We guarantee 100% interchangeable fit with standard frames without field torch adaptations."
+    },
+    {
+      "id": "balanceo_dinamico",
+      "title_es": "2. Balanceo Dinámico y Concentricidad de Eje en Banco de Pruebas",
+      "title_en": "2. Dynamic Balancing & Shaft Concentricity on Testing Rig",
+      "description_es": "Los impulsores y mecanismos rotatorios son balanceados dinámicamente en nuestro banco de pruebas en Durango, verificando concentricidad y reducción de vibraciones antes del despacho.",
+      "description_en": "Impellers and rotating mechanisms undergo dynamic balancing on our test bench in Durango, verifying concentricity and vibration reduction prior to dispatch."
+    },
+    {
+      "id": "certificados_colada",
+      "title_es": "3. Trazabilidad Metalúrgica y Control de Dureza",
+      "title_en": "3. Metallurgical Integrity & Hardness Testing",
+      "description_es": "Fundición en Alto Cromo 27% (A05) con dureza verificada superior a 650 HB (Brinell) para pulpas de alta fricción, elastómeros vulcanizados resistentes al impacto y polipropileno técnico para filtración.",
+      "description_en": "High Chrome 27% (A05) casting with verified hardness exceeding 650 HB (Brinell) for high-wear slurry duty, impact-resistant vulcanized elastomers, and engineering polypropylene for filtration."
+    },
+    {
+      "id": "patio_entrega",
+      "title_es": "4. Logística y Despacho en Almacén (Acceso Torton y Plataforma)",
+      "title_en": "4. Warehouse Logistics & Immediate Dispatch (Torton & Flatbed Access)",
+      "description_es": "Instalaciones de Almacén Durango habilitadas con maniobra de montacargas para carga en camión unitario, torton o plataforma. Despacho ágil a cualquier corredor minero del país.",
+      "description_en": "Durango Warehouse facilities equipped with forklift maneuvering for loading onto rigid trucks, torton, or flatbed trailers with direct freight across Mexico."
+    }
+  ],
+  "matrix": [
+    {
+      "scope_es": "Compatibilidad dimensional y ajuste mecánico",
+      "scope_en": "Dimensional fit & mechanical compatibility",
+      "smat_covers_es": "Garantía total de intercambio 1:1 con marcos C, D, E, F y celdas 50-300 ft³.",
+      "smat_covers_en": "100% replacement guarantee for dimensional interchange with C, D, E, F frames.",
+      "manufacturer_covers_es": "Planos certificados y matrices de fundición normalizadas.",
+      "manufacturer_covers_en": "Certified manufacturing drawings and standardized casting tooling."
+    },
+    {
+      "scope_es": "Integridad metalúrgica y defectos de fundición",
+      "scope_en": "Metallurgical integrity & casting defects",
+      "smat_covers_es": "Inspección visual y dimensional previa para detección de discontinuidades externas.",
+      "smat_covers_en": "Pre-shipment visual and dimensional screening for surface defects.",
+      "manufacturer_covers_es": "Garantía de reposición de pieza ante grietas internas o porosidad estructural oculta.",
+      "manufacturer_covers_en": "Full replacement warranty against internal alloy fissures or structural shrinkage porosity."
+    },
+    {
+      "scope_es": "Balanceo y vibración en operación",
+      "scope_en": "Dynamic balance & operational vibration",
+      "smat_covers_es": "Verificación y balanceo dinámico en banco de pruebas en Durango previo al embarque.",
+      "smat_covers_en": "Pre-shipment dynamic balancing and verification on our Durango test bench.",
+      "manufacturer_covers_es": "Pre-balanceo estático de desbaste en planta de manufactura.",
+      "manufacturer_covers_en": "Rough static pre-balancing at manufacturing foundry."
+    }
+  ],
+  "boundaries": [
+    {
+      "title_es": "Aplicaciones químicas ácidas extremas sin aleaciones nobles",
+      "title_en": "Extreme acidic slurry duty without noble alloys",
+      "reason_es": "Declinamos cotizar piezas estándar de A05 o hule natural en soluciones de lixiviación ácida con pH < 2.0 a temperaturas mayores a 60°C. Estas condiciones requieren aceros superausteníticos (Hastelloy, Titanio) que evaluamos exclusivamente bajo proyecto especial.",
+      "reason_en": "We decline standard A05 or natural rubber quotes for acid leach solutions with pH < 2.0 above 60°C. These conditions require special alloys (Hastelloy, Titanium) evaluated strictly as custom projects."
+    },
+    {
+      "title_es": "Cotizaciones a ciegas sin datos mínimos de proceso",
+      "title_en": "Blind inquiries without baseline process parameters",
+      "reason_es": "No cotizamos bombas completas ni configuraciones de impulsor si el cliente no puede indicar al menos el caudal aproximado, la gravedad específica estimada y si la pulpa contiene sólidos angulares cortantes. Cotizar a ciegas compromete la seguridad de su planta.",
+      "reason_en": "We do not quote complete slurry skids or impeller specs if baseline flow, slurry SG, and particle abrasiveness are missing. Quoting blindly endangers your plant operations."
+    },
+    {
+      "title_es": "Modificaciones de campo no homologadas",
+      "title_en": "Unapproved field modifications",
+      "reason_es": "La garantía de patio se invalida si la pieza es sometida a soldadura estructural no homologada o rectificados abrasivos en la mina que alteren la distribución de masa del balanceo dinámico.",
+      "reason_en": "Yard warranty is voided if components undergo uncertified field structural welding or abrasive grinding at the mine site altering dynamic balance mass distribution."
+    }
+  ]
+}

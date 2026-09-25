@@ -1,0 +1,122 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import WhatsAppButton from '../../components/WhatsAppButton.astro';
+---
+
+<BaseLayout 
+  title="Privacy Policy & Industrial Data Governance"
+  description="Comprehensive privacy policy for SMAT Minerals in compliance with Mexican data protection laws (LFPDPPP)."
+  lang="en"
+  canonicalPath="/en/privacy/"
+  alternateEsPath="/aviso/"
+  alternateEnPath="/en/privacy/"
+>
+  <Header slot="header" lang="en" currentPath="/en/privacy/" alternatePath="/aviso/" />
+
+  <section class="page-hero">
+    <div class="container text-center">
+      <span class="badge badge-copper">B2B LEGAL GOVERNANCE</span>
+      <h1>Privacy Policy</h1>
+      <p class="subtitle">Confidential handling of plant operational parameters and industrial contact data.</p>
+    </div>
+  </section>
+
+  <section class="section-spacing">
+    <div class="container legal-container">
+      <div class="card legal-card">
+        <h2>1. Identity and Headquarters of the Data Controller</h2>
+        <p>
+          <strong>SMAT Minerals</strong>, with physical and operating address at <strong>Mariano Salas #114, Col. Primer Presidente, Durango, Dgo., Postal Code 34166, Mexico</strong>, is responsible for the lawful processing and safeguarding of your business and personal data pursuant to the Federal Law on the Protection of Personal Data in Possession of Private Parties (LFPDPPP).
+        </p>
+
+        <h2>2. Data Processing Purposes</h2>
+        <p>The information submitted through our RFQ forms, WhatsApp hotline, or corporate email is used strictly for:</p>
+        <ul>
+          <li>Preparation and delivery of formal technical quotations and wear part specifications.</li>
+          <li>Urgent logistics dispatch from our central warehouse in Durango for plant shutdown remediation.</li>
+          <li>Issuance of fiscal invoices and transport waybills for freight loading.</li>
+          <li>Direct engineering communication between plant superintendents and our engineering department.</li>
+        </ul>
+
+        <h2>3. Confidentiality of Mine Site Technical Data</h2>
+        <p>
+          SMAT Minerals does not distribute, sell, or disclose to third parties any specific slurry parameters, densities, metallurgical analyses, dimensional drawings, or equipment failure photographs submitted for mechanical damage diagnostics. All such data is treated under strict industrial confidentiality.
+        </p>
+
+        <h2>4. ARCO Rights (Access, Rectification, Cancellation, and Opposition)</h2>
+        <p>
+          You retain the right to access, rectify, cancel, or oppose the processing of your contact information. To exercise your ARCO rights, please contact our data compliance officer at: <a href="mailto:contacto@smatminerals.com">contacto@smatminerals.com</a>.
+        </p>
+
+        <p class="legal-date"><em>Last modified: January 2026.</em></p>
+      </div>
+    </div>
+  </section>
+
+  <WhatsAppButton lang="en" />
+  <Footer slot="footer" lang="en" />
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 4rem 0 3rem;
+    background: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 80%);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .text-center {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    margin-top: 1rem;
+    color: var(--color-text-muted);
+  }
+
+  .legal-container {
+    max-width: 860px;
+  }
+
+  .legal-card {
+    background-color: #121c2e;
+    padding: 3rem 2.5rem;
+  }
+
+  .legal-card h2 {
+    font-size: 1.25rem;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: #ffffff;
+  }
+
+  .legal-card h2:first-child {
+    margin-top: 0;
+  }
+
+  .legal-card p, .legal-card ul {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    color: var(--color-text-muted);
+  }
+
+  .legal-card ul {
+    padding-left: 1.5rem;
+  }
+
+  .legal-card li {
+    margin-bottom: 0.5rem;
+  }
+
+  .legal-date {
+    margin-top: 2rem;
+    border-top: 1px solid var(--color-border);
+    padding-top: 1rem;
+    font-size: 0.8125rem;
+  }
+</style>

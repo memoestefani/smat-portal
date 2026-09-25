@@ -1,0 +1,198 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import WhatsAppButton from '../../../components/WhatsAppButton.astro';
+import rolesData from '../../../../data/roles.json';
+
+const flotacionVertical = rolesData.verticals.find(v => v.id === 'flotacion')!;
+---
+
+<BaseLayout 
+  title="Flotation Cells & Separation Systems | SMAT Minerals"
+  description="Complete mechanical sub-aerated flotation cells (50 to 300 ft³) for Rougher, Cleaner, and Scavenger circuits, and replacement rotors and stators from Durango, Mexico."
+  lang="en"
+  canonicalPath="/en/flotation/"
+  alternateEsPath="/flotacion/"
+  alternateEnPath="/en/flotation/"
+>
+  <Header slot="header" lang="en" currentPath="/en/flotation/" alternatePath="/flotacion/" />
+
+  <section class="page-hero">
+    <div class="container text-center">
+      <span class="badge badge-copper">BENEFICIATION & SEPARATION SILO</span>
+      <h1>{flotacionVertical.name_en}</h1>
+      <p class="subtitle">Active commercial line of sub-aerated mechanical flotation cells and high-kinetic suspended rotor-stator replacement mechanisms.</p>
+    </div>
+  </section>
+
+  <section class="section-spacing">
+    <div class="container">
+      <div class="silo-block">
+        <div class="silo-block-header">
+          <span class="badge badge-capex">CAPEX • ACTIVE COMMERCIAL LINE</span>
+          <h2>Complete Mechanical Flotation Cells</h2>
+        </div>
+        <div class="catalog-grid">
+          {flotacionVertical.capex.map((item: any) => (
+            <div class="card product-card">
+              <span class="series-tag">{item.series}</span>
+              <h3>{item.title_en}</h3>
+              <p class="product-desc">{item.spec_summary_en}</p>
+              <div class="card-specs">
+                <div><strong>Volume Range:</strong> {item.volume_range}</div>
+              </div>
+              <div class="card-actions">
+                <a href={item.slug_en} class="btn btn-outline btn-sm">Technical Spec</a>
+                <a href={`/en/contact/?rol=${item.role_id}&tipo=capex#rfq`} class="btn btn-primary btn-sm">Request Quote</a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="silo-block" style="margin-top: 4rem;">
+        <div class="silo-block-header">
+          <span class="badge badge-opex">OPEX • IMMEDIATE DURANGO DISPATCH</span>
+          <h2>Replacement Rotor & Stator Mechanisms</h2>
+        </div>
+        <div class="catalog-grid">
+          {flotacionVertical.opex.map(item => (
+            <div class="card product-card">
+              <span class="dispatch-tag">{item.series}</span>
+              <h3>{item.title_en}</h3>
+              <p class="product-desc">{item.spec_summary_en}</p>
+              <div class="card-specs">
+                <div><strong>Lining:</strong> <span class="highlight-val">{item.metallurgy}</span></div>
+              </div>
+              <div class="card-actions">
+                <a href={item.slug_en} class="btn btn-outline btn-sm">Technical Spec</a>
+                <a href={`/en/contact/?rol=${item.role_id}&tipo=opex#rfq`} class="btn btn-emergency btn-sm">Urgent RFQ</a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <WhatsAppButton lang="en" />
+  <Footer slot="footer" lang="en" />
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 4.5rem 0 3.5rem;
+    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+
+  .text-center {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .page-hero h1 {
+    color: #090d16;
+    margin-top: 0.75rem;
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    margin-top: 0.75rem;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .silo-block-header {
+    margin-bottom: 2rem;
+  }
+
+  .silo-block-header h2 {
+    margin-top: 0.5rem;
+    color: #090d16;
+  }
+
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: 12px;
+    padding: 1.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .series-tag, .dispatch-tag {
+    align-self: flex-start;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #475569;
+    background-color: #f1f5f9;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--smat-border-light);
+  }
+
+  .dispatch-tag {
+    color: #991b1b;
+    background-color: #fee2e2;
+    border-color: #fca5a5;
+  }
+
+  .product-card h3 {
+    font-size: 1.25rem;
+    color: #090d16;
+    margin-bottom: 0.75rem;
+  }
+
+  .product-desc {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+    flex-grow: 1;
+    color: #475569;
+  }
+
+  .card-specs {
+    background-color: #f8fafc;
+    border: 1px solid var(--smat-border-light);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.8125rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    color: #334155;
+  }
+
+  .highlight-val {
+    color: #b45309;
+    font-weight: 600;
+  }
+
+  .card-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: auto;
+  }
+
+  .btn-sm {
+    min-height: 42px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+</style>

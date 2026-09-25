@@ -1,0 +1,135 @@
+---
+import faqsData from '../../data/faqs.json';
+
+interface Props {
+  canonicalPath?: string;
+  lang?: 'es' | 'en';
+}
+
+const { canonicalPath = '/', lang = 'es' } = Astro.props;
+const isEs = lang === 'es';
+const siteUrl = 'https://smatminerals.com';
+const fullCanonicalUrl = `${siteUrl}${canonicalPath}`;
+
+// Breadcrumbs jerárquicos
+const pathSegments = canonicalPath.split('/').filter(Boolean);
+const breadcrumbItems = [
+  {
+    '@type': 'ListItem',
+    'position': 1,
+    'name': isEs ? 'Inicio' : 'Home',
+    'item': isEs ? `${siteUrl}/` : `${siteUrl}/en/`
+  }
+];
+
+let accumulatedPath = isEs ? '' : '/en';
+pathSegments.forEach((segment) => {
+  if (segment === 'en') return;
+  accumulatedPath += `/${segment}`;
+  breadcrumbItems.push({
+    '@type': 'ListItem',
+    'position': breadcrumbItems.length + 1,
+    'name': segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' '),
+    'item': `${siteUrl}${accumulatedPath}/`
+  });
+});
+
+export const schemaOrgData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': ['Organization', 'LocalBusiness', 'WholesaleStore'],
+      '@id': 'https://smatminerals.com/#organization',
+      'name': 'SMAT Minerals',
+      'alternateName': 'SMAT',
+      'legalName': 'SMAT Minerals S.A. de C.V.',
+      'url': 'https://smatminerals.com',
+      'logo': 'https://smatminerals.com/images/logo-smat.png',
+      'image': 'https://smatminerals.com/images/og-card.jpg',
+      'description': 'Fabricación de bombas completas para pulpas abrasivas en skid estructural, celdas de flotación mecánicas, filtros prensa y refaccionamiento crítico de desgaste en High Chrome 27% (A05) y elastómero con despacho en Durango, México.',
+      'telephone': ['+52-618-810-4408', '+52-618-810-4428'],
+      'email': 'ventas@smatminerals.com',
+      'address': {
+        '@type': 'PostalAddress',
+        'streetAddress': 'Mariano Salas #114, Col. Primer Presidente',
+        'addressLocality': 'Durango',
+        'addressRegion': 'Durango',
+        'postalCode': '34166',
+        'addressCountry': 'MX'
+      },
+      'geo': {
+        '@type': 'GeoCoordinates',
+        'latitude': 24.0277,
+        'longitude': -104.6532
+      },
+      'openingHoursSpecification': [
+        {
+          '@type': 'OpeningHoursSpecification',
+          'dayOfWeek': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+          'opens': '08:00',
+          'closes': '18:00'
+        }
+      ],
+      'areaServed': ['Mexico', 'United States', 'Canada', 'Peru', 'Chile'],
+      'hasOfferCatalog': {
+        '@type': 'OfferCatalog',
+        'name': isEs ? 'Catálogo Industrial de Equipos y Refacciones' : 'Industrial Equipment & Spares Catalog',
+        'itemListElement': [
+          {
+            '@type': 'OfferCatalog',
+            'name': isEs ? '1. Circuito de Bombeo de Pulpa' : '1. Slurry Pumping Circuit',
+            'description': 'Bombas horizontales de pulpa, kits húmedos High Chrome 27% (A05) e impulsores de alta eficiencia.'
+          },
+          {
+            '@type': 'OfferCatalog',
+            'name': isEs ? '2. Circuito de Flotación' : '2. Flotation Circuit',
+            'description': 'Mecanismos rotor-estator, difusores y componentes de celda de flotación mecánica.'
+          },
+          {
+            '@type': 'OfferCatalog',
+            'name': isEs ? '3. Circuito de Filtración' : '3. Filtration Circuit',
+            'description': 'Placas de polipropileno virgen, lonas filtrantes y componentes hidráulicos para deshidratación de jales.'
+          },
+          {
+            '@type': 'OfferCatalog',
+            'name': isEs ? '4. Circuito de Hidrociclones' : '4. Hydrocyclone Circuit',
+            'description': 'Liners de carburo de silicio, ápex y vortex finders para clasificación de molienda.'
+          }
+        ]
+      },
+      'knowsAbout': [
+        'Slurry Pumps',
+        'Bombas de Pulpa',
+        'High Chrome 27% A05',
+        'Flotation Cells',
+        'Celdas de Flotación',
+        'Filter Presses',
+        'Filtros Prensa',
+        'Hydrocyclones',
+        'Hidrociclones',
+        'Dry Tailings',
+        'Jales Secos'
+      ]
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${fullCanonicalUrl}#breadcrumb`,
+      'itemListElement': breadcrumbItems
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${siteUrl}/#faq`,
+      'mainEntity': (faqsData.faqs as Array<{ question_es: string; question_en: string; answer_es: string; answer_en: string }>).map((faq) => ({
+        '@type': 'Question',
+        'name': isEs ? faq.question_es : faq.question_en,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': isEs ? faq.answer_es : faq.answer_en
+        }
+      }))
+    }
+  ]
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schemaOrgData)} />

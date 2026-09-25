@@ -1,0 +1,395 @@
+/* SMAT Minerals - Sistema de Diseño Luminous Executive Editorial */
+@import './tokens.css';
+
+:root {
+  --color-bg-primary: var(--smat-bg-page);
+  --color-bg-surface: var(--smat-bg-surface);
+  --color-bg-card: var(--smat-bg-surface);
+  --color-bg-subtle: var(--smat-bg-subtle);
+  
+  --color-text-main: var(--smat-text-primary);
+  --color-text-muted: var(--smat-text-muted);
+  --color-text-dark: var(--smat-text-primary);
+  
+  --color-accent-copper: var(--smat-copper-accent);
+  --color-accent-copper-hover: var(--smat-copper-hover);
+  --color-accent-amber-light: var(--smat-copper-light);
+  --color-emergency-red: var(--smat-emergency-red);
+  --color-emergency-bg: var(--smat-emergency-bg);
+  --color-success-green: var(--smat-emerald-stock);
+  --color-border: var(--smat-border-light);
+  --color-border-focus: var(--smat-border-focus);
+
+  --font-family-sans: var(--smat-font-ui);
+  --font-family-serif: var(--smat-font-editorial);
+  --font-family-mono: var(--smat-font-mono);
+
+  --radius-sm: var(--smat-radius-sm);
+  --radius-md: var(--smat-radius-md);
+  --radius-lg: var(--smat-radius-lg);
+  
+  --shadow-sm: var(--smat-shadow-sm);
+  --shadow-md: var(--smat-shadow-md);
+  --shadow-lg: var(--smat-shadow-lg);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-family-sans);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-main);
+}
+
+main {
+  flex: 1;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Tipografía Híbrida: Serif Editorial para Títulos de Peso */
+h1, h2 {
+  font-family: var(--font-family-serif);
+  color: var(--smat-text-primary);
+  line-height: 1.18;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+h3, h4, h5, h6 {
+  font-family: var(--font-family-sans);
+  color: var(--smat-text-primary);
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: clamp(2.4rem, 5vw, 3.75rem); }
+h2 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); }
+h3 { font-size: clamp(1.2rem, 2vw, 1.5rem); }
+
+p {
+  color: var(--smat-text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.font-editorial {
+  font-family: var(--font-family-serif);
+}
+
+.font-mono-tech {
+  font-family: var(--font-family-mono);
+  letter-spacing: -0.02em;
+}
+
+/* Layout y Contenedores */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.75rem;
+  padding-right: 1.75rem;
+}
+
+.section-spacing {
+  padding-top: var(--smat-space-2xl, 80px);
+  padding-bottom: var(--smat-space-2xl, 80px);
+}
+
+.section-pro-spacing {
+  padding: var(--smat-space-2xl, 80px) 1rem;
+}
+
+/* Botones y Componentes Táctiles (Mínimo 48px para ergonomía) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0.75rem 1.6rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+  font-family: var(--font-family-sans);
+}
+
+.btn-primary {
+  background-color: var(--color-accent-copper);
+  color: #ffffff;
+  border-color: var(--color-accent-copper);
+  box-shadow: 0 2px 4px rgba(194, 94, 0, 0.2);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-accent-copper-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(194, 94, 0, 0.3);
+}
+
+.btn-emergency {
+  background-color: #0b132b;
+  color: #ffffff;
+  border-color: #0b132b;
+}
+
+.btn-emergency:hover {
+  background-color: #1c2541;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: #ffffff;
+  color: var(--smat-text-primary);
+  border-color: var(--smat-border-medium);
+}
+
+.btn-secondary:hover {
+  background-color: #f8fafc;
+  border-color: var(--smat-text-primary);
+  color: #000000;
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--smat-text-primary);
+  border-color: var(--smat-border-medium);
+}
+
+.btn-outline:hover {
+  border-color: var(--color-accent-copper);
+  color: var(--color-accent-copper);
+}
+
+/* Tarjetas en Blanco Puro con Borde Hairline */
+.card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--smat-shadow-card);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  border-color: var(--smat-border-medium);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+}
+
+/* Badges e Insignias Refinadas */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-family-mono);
+}
+
+.badge-emergency {
+  background-color: var(--smat-bg-surface, #ffffff);
+  color: #991b1b;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
+.badge-capex {
+  background-color: var(--smat-bg-surface, #ffffff);
+  color: #1e40af;
+  border: 1px solid rgba(30, 64, 175, 0.25);
+}
+
+.badge-opex {
+  background-color: var(--smat-bg-surface, #ffffff);
+  color: #065f46;
+  border: 1px solid rgba(5, 150, 105, 0.25);
+}
+
+.badge-copper {
+  background-color: var(--smat-bg-surface, #ffffff);
+  color: #9a3412;
+  border: 1px solid rgba(194, 94, 0, 0.3);
+}
+
+.badge-emerald {
+  background-color: var(--smat-bg-surface, #ffffff);
+  color: #065f46;
+  border: 1px solid rgba(5, 150, 105, 0.25);
+}
+
+/* Tablas Técnicas Limpias */
+.tech-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.92rem;
+}
+
+.tech-table th, .tech-table td {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--smat-border-light);
+  text-align: left;
+}
+
+.tech-table th {
+  background-color: #f8fafc;
+  color: var(--smat-text-primary);
+  font-weight: 700;
+}
+
+.tech-table td {
+  color: var(--smat-text-secondary);
+}
+
+/* Segmented Control Ergonómico */
+.segmented-control {
+  display: inline-flex;
+  background-color: #f1f5f9;
+  padding: 0.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--smat-border-light);
+  width: 100%;
+  max-width: 480px;
+}
+
+.segmented-control button {
+  flex: 1;
+  min-height: 44px;
+  border: none;
+  background: transparent;
+  color: var(--smat-text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.segmented-control button.active {
+  background-color: #ffffff;
+  color: var(--smat-text-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* --- CLASES DE UTILIDAD APPLE INDUSTRIAL & RESORTE (Décima Cuarta Ola) --- */
+.pro-tabular-nums {
+  font-family: var(--apple-font-mono, monospace);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.apple-industrial-card {
+  background: var(--apple-bg-surface, #111622);
+  border: 1px solid var(--apple-border-standard, rgba(255, 255, 255, 0.10));
+  box-shadow: var(--apple-shadow-elevation, 0 8px 32px -4px rgba(0, 0, 0, 0.6));
+  border-radius: 12px;
+  position: relative;
+}
+
+.apple-specular-border {
+  box-shadow: var(--apple-border-specular, inset 0 1px 0 rgba(255, 255, 255, 0.12));
+}
+
+/* Pulsing Status Dot para Telemetría de Misión Crítica */
+.pulsing-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.pulsing-dot-green {
+  background-color: var(--apple-status-green, #10b981);
+  animation: status-pulse-green 2s infinite cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pulsing-dot-amber {
+  background-color: var(--apple-status-amber, #f59e0b);
+  animation: status-pulse-amber 1.6s infinite cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pulsing-dot-red {
+  background-color: var(--apple-status-red, #ef4444);
+  animation: status-pulse-red 1.2s infinite cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes status-pulse-green {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+@keyframes status-pulse-amber {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
+
+@keyframes status-pulse-red {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* Resaltado Tipográfico Spotlight */
+.pro-search-highlight {
+  background-color: rgba(245, 158, 11, 0.25);
+  color: #fbbf24;
+  padding: 0.1em 0.25em;
+  border-radius: 3px;
+  font-weight: 700;
+}
+
+/* Badge de Atajo de Teclado */
+.pro-kbd-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem 0.4rem;
+  font-size: 0.72rem;
+  font-family: var(--apple-font-mono, monospace);
+  font-weight: 700;
+  color: var(--apple-titanium, #94a3b8);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  margin-left: 0.35rem;
+}
+

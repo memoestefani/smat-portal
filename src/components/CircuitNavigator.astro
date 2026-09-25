@@ -1,0 +1,426 @@
+---
+// src/components/CircuitNavigator.astro
+// Decisión 1-A: Navegador de Circuitos Mineros Reales (Zero-Debris, Semantic SVG)
+import circuitsData from '../../data/circuits.json';
+
+interface Props {
+  lang?: 'es' | 'en';
+}
+
+const { lang = 'es' } = Astro.props;
+const isEn = lang === 'en';
+const circuits = circuitsData.circuits;
+---
+
+<section class="circuit-navigator-section" aria-label={isEn ? "Mining Process Circuit Navigator" : "Navegador de Circuitos de Proceso Mineral"}>
+  <div class="circuit-container">
+    <div class="circuit-header">
+      <div class="badge-tag">
+        <span class="pulse-dot"></span>
+        {isEn ? "CIRCUIT-LEVEL GROUNDING" : "MAPEO DIRECTO DE PROCESO"}
+      </div>
+      <h2 class="circuit-title">
+        {isEn ? "Select Your Plant Circuit" : "Identifique su Circuito de Planta"}
+      </h2>
+      <p class="circuit-lead">
+        {isEn 
+          ? "Connect your slurry classification, flotation, or dry tailings bottlenecks directly with available stock in Durango." 
+          : "Conecte sus puntos críticos de bombeo, flotación o desaguado de jales directamente con stock disponible en patio Durango."}
+      </p>
+
+      <!-- Selector de Pestañas de Circuito -->
+      <div class="circuit-tabs" role="tablist">
+        {circuits.map((circ, idx) => (
+          <button 
+            type="button"
+            role="tab"
+            class={`circuit-tab-btn ${idx === 0 ? 'active' : ''}`}
+            data-circuit-id={circ.id}
+            aria-selected={idx === 0 ? "true" : "false"}
+            id={`tab-${circ.id}`}
+          >
+            <span class="tab-index">0{idx + 1}</span>
+            <span class="tab-label">{isEn ? circ.name_en : circ.name_es}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Paneles de Circuito -->
+    <div class="circuit-panels">
+      {circuits.map((circ, cIdx) => (
+        <div 
+          class={`circuit-panel ${cIdx === 0 ? 'active' : ''}`}
+          id={`panel-${circ.id}`}
+          role="tabpanel"
+          aria-labelledby={`tab-${circ.id}`}
+        >
+          <div class="circuit-meta">
+            <span class="circuit-subtitle-text">
+              {isEn ? circ.subtitle_en : circ.subtitle_es}
+            </span>
+          </div>
+
+          <!-- P&ID Schematic Vectorial Minimalista -->
+          <div class="schematic-canvas">
+            <div class="schematic-flow-line"></div>
+            
+            <div class="nodes-grid">
+              {circ.nodes.map((node, nIdx) => (
+                <div class="node-card" data-node-id={node.id}>
+                  <div class="node-header">
+                    <span class="node-badge">{nIdx + 1}</span>
+                    <h3 class="node-name">{isEn ? node.name_en : node.name_es}</h3>
+                  </div>
+
+                  <div class="node-equipment">
+                    <strong class="equipment-highlight">{isEn ? node.equipment_en : node.equipment_es}</strong>
+                  </div>
+
+                  <div class="node-challenge">
+                    <span class="node-label-small">{isEn ? "PULP CONDITION & CHALLENGE:" : "CONDICIÓN Y RETO DE PULPA:"}</span>
+                    <p class="challenge-text">{isEn ? node.challenge_en : node.challenge_es}</p>
+                  </div>
+
+                  <div class="node-solution">
+                    <span class="node-label-small">{isEn ? "ENGINEERING SPECIFICATION:" : "ESPECIFICACIÓN DE INGENIERÍA:"}</span>
+                    <p class="solution-text">{isEn ? node.solution_en : node.solution_es}</p>
+                  </div>
+
+                  <div class="node-footer">
+                    <span class="stock-badge">
+                      <span class="stock-dot"></span>
+                      {isEn ? node.stock_en : node.stock_es}
+                    </span>
+                    <div class="node-actions-group">
+                      <a href={isEn ? node.link_en : node.link_es} class="node-cta node-cta-sheet">
+                        {isEn ? "View Specs →" : "Ver Ficha →"}
+                      </a>
+                      <a href={isEn ? "/en/?equipo=skid_bomba#rfq" : "/?equipo=skid_bomba#rfq"} class="node-cta node-cta-rfq" data-node-name={isEn ? node.name_en : node.name_es}>
+                        {isEn ? "Quote" : "Cotizar"}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .circuit-navigator-section {
+    padding: 4.5rem 1.5rem;
+    background: #fafaf9;
+    border-top: 1px solid var(--smat-border-light);
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+
+  .circuit-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .circuit-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .badge-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.85rem;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: var(--smat-radius-pill);
+    color: #9a3412;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: var(--smat-font-mono);
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+  }
+
+  .pulse-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #c25e00;
+    border-radius: 50%;
+  }
+
+  .circuit-title {
+    font-size: 2.15rem;
+    color: #090d16;
+    line-height: 1.25;
+    margin-bottom: 0.85rem;
+  }
+
+  .circuit-lead {
+    font-size: 1.05rem;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .circuit-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .circuit-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1.35rem;
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-md);
+    color: #334155;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .circuit-tab-btn:hover {
+    background: #f1f5f9;
+    color: #090d16;
+    border-color: #cbd5e1;
+  }
+
+  .circuit-tab-btn.active {
+    background: #0b132b;
+    color: #ffffff;
+    border-color: #0b132b;
+    box-shadow: 0 4px 12px rgba(11, 19, 43, 0.2);
+  }
+
+  .tab-index {
+    font-family: var(--smat-font-mono);
+    font-size: 0.75rem;
+    opacity: 0.85;
+  }
+
+  .circuit-panel {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .circuit-panel.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .circuit-meta {
+    background: #ffffff;
+    border-left: 3px solid #c25e00;
+    border: 1px solid var(--smat-border-light);
+    border-left-width: 4px;
+    padding: 1rem 1.5rem;
+    border-radius: var(--smat-radius-sm);
+    margin-bottom: 2rem;
+    box-shadow: var(--smat-shadow-sm);
+  }
+
+  .circuit-subtitle-text {
+    font-size: 0.98rem;
+    color: #334155;
+    font-style: italic;
+  }
+
+  .nodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .node-card {
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-md);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    box-shadow: var(--smat-shadow-card);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .node-card:hover {
+    transform: translateY(-2px);
+    border-color: #cbd5e1;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+  }
+
+  .node-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .node-badge {
+    width: 24px;
+    height: 24px;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 50%;
+    color: #c25e00;
+    font-size: 0.75rem;
+    font-weight: 800;
+    font-family: var(--smat-font-mono);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .node-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #090d16;
+    margin: 0;
+  }
+
+  .node-equipment {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+
+  .equipment-highlight {
+    color: #0b132b;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .node-label-small {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+  }
+
+  .challenge-text, .solution-text {
+    font-size: 0.88rem;
+    color: #334155;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .node-footer {
+    margin-top: auto;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--smat-border-light);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .stock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    color: #065f46;
+    font-weight: 700;
+    font-family: var(--smat-font-mono);
+  }
+
+  .stock-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #10b981;
+    border-radius: 50%;
+  }
+
+  .node-actions-group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .node-cta {
+    display: inline-block;
+    text-align: center;
+    padding: 0.45rem 0.75rem;
+    border-radius: var(--smat-radius-sm);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .node-cta-sheet {
+    background: #f8fafc;
+    border: 1px solid var(--smat-border-light);
+    color: #334155;
+  }
+
+  .node-cta-sheet:hover {
+    background: #f1f5f9;
+    color: #090d16;
+  }
+
+  .node-cta-rfq {
+    background: #c25e00;
+    border: 1px solid #c25e00;
+    color: #ffffff;
+  }
+
+  .node-cta-rfq:hover {
+    background: #9a4a00;
+  }
+</style>
+
+<script>
+  function setupCircuitTabs() {
+    const tabButtons = document.querySelectorAll('.circuit-tab-btn');
+    const panels = document.querySelectorAll('.circuit-panel');
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-circuit-id');
+        
+        tabButtons.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        panels.forEach(p => p.classList.remove('active'));
+
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        
+        const targetPanel = document.getElementById(`panel-${targetId}`);
+        if (targetPanel) {
+          targetPanel.classList.add('active');
+        }
+      });
+    });
+
+    // Delegación para botones de cotización rápida
+    document.querySelectorAll('.node-cta-rfq').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const rfqTarget = document.getElementById('rfq');
+        if (rfqTarget) {
+          rfqTarget.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+  }
+
+  // Ejecutar en carga inicial y soporte de View Transitions
+  setupCircuitTabs();
+  document.addEventListener('astro:page-load', setupCircuitTabs);
+</script>

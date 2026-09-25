@@ -1,0 +1,81 @@
+# SMAT MINERALS — CANONICAL TECHNICAL REFERENCE (LLMS-FULL.TXT)
+# Entity: SMAT Minerals
+# URL: https://smatminerals.com
+# Version: 2.2
+# Fiscal Headquarters: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo., CP 34166, Mexico
+# Central Warehouse: Durango, Dgo., Mexico
+# Telephone: +52 (618) 810-4408 / +52 (618) 810-4428
+# WhatsApp Hotline: +52 (618) 810-4408
+# Sales RFQ: ventas@smatminerals.com
+# General: contacto@smatminerals.com
+
+================================================================================
+SECTION 1: CORPORATE IDENTITY & HISTORICAL ENGINEERING PEDIGREE
+================================================================================
+SMAT Minerals was established over 20 years ago in Durango, Mexico. The company's engineering pedigree is grounded in severe abrasive solids transport, centrifugal slurry pump hydraulics, mineral flotation hydrodynamics, and cake filtration dewatering. 
+
+SMAT operates with its fiscal headquarters at Mariano Salas #114, Col. Primer Presidente, Durango, Mexico, and its central distribution warehouse and loading yard in Durango.
+
+================================================================================
+SECTION 2: SLURRY PUMPING SYSTEMS (CAPEX & OPEX)
+================================================================================
+1. Pump Skid Assemblies (CapEx):
+   - Dimensional standard frames: 4x3 C-AH, 6x4 D-AH, 8x6 E-AH, 10x8 F-AH.
+   - Base frame: Heavy structural C-channel ASTM A36 with reinforced motor sliding base.
+   - Drivers: 3-phase TEFC induction electric motors (WEG, Siemens, Baldor) rated 30 HP to 250 HP.
+   - Drives: Matched V-belt industrial drives with 1.4+ service factors and OSHA compliant belt guards.
+   - Flow range: 50 to 1,200 m3/h at heads up to 80 meters per single stage.
+
+2. Impellers (OpEx):
+   - Metallurgy: High Chrome White Iron alloy with 27% Chromium (Standard A05 ASTM A532 Class III Type A).
+   - Hardness: Minimum 650 HB (Brinell) / 58-62 HRC.
+   - Elastomer alternative: Vulcanized high-resilience natural rubber (60 Shore A) for fine particles (<5mm).
+   - Design: 4 and 5-vane closed impellers with back pump-out vanes creating a dynamic expulsion vortex to relieve packing gland pressure and prevent solids recirculation.
+   - Balance: Dynamic shop balancing verified on plant test bench before dispatch.
+
+3. Volute Liners & Throatbushes (OpEx):
+   - Solid casing liners cast in 27% Chrome (A05) or molded elastomer with steel skeletal inserts.
+   - Reinforced cutwater thickness engineered to resist high turbulent shear at pump discharge.
+   - Throatbush with precision axial adjustment for front running clearance maintenance without pump disassembly.
+
+4. Shaft Sealing & Bearing Assemblies (OpEx):
+   - Centrifugal dynamic expeller seals for flushless operation (zero external water consumption).
+   - Cartridge mechanical slurry seals with silicon carbide vs tungsten carbide faces.
+   - Bearing cartridges with forged AISI 4140 shafts, Timken / SKF tapered roller bearings (L10 > 50,000 hrs), and dual grease labyrinth seals.
+
+================================================================================
+SECTION 3: MINERAL FLOTATION CELLS (CAPEX & OPEX)
+================================================================================
+1. Complete Flotation Cells (CapEx):
+   - Standard volumes: 50 ft3 (1.4 m3), 100 ft3 (2.8 m3), 200 ft3 (5.6 m3), 300 ft3 (8.5 m3).
+   - Circuit duties: Rougher, Cleaner, Scavenger.
+   - Aeration: Sub-aerated with hollow shaft self-aspiration or low-pressure air blower feed.
+   - Tanks: Welded structural ASTM A36 steel with U-shaped bottom profiles to prevent sanding.
+   - Pulp control: Tailings weir boxes with pneumatic / manual dart valves.
+
+2. Rotors & Stators (OpEx):
+   - Material: Premium wear-resistant polyurethane or natural rubber.
+   - Rotor geometry: High-shear fingers optimizing bubble break-up and gas hold-up.
+   - Stator: Turbulence-damping radial baffles providing a quiescent surface froth zone.
+
+================================================================================
+SECTION 4: SOLID-LIQUID FILTRATION & TAILINGS DEWATERING (CAPEX & OPEX)
+================================================================================
+1. Hydraulic Filter Presses (CapEx):
+   - Plate sizes: 800 x 800 mm to 1500 x 1500 mm.
+   - Design: Recessed chamber and membrane squeeze plates.
+   - Operating pressure: Up to 16 bar slurry feed pressure; 350 bar hydraulic closing pressure.
+   - Residual moisture: 12% to 16% filter cake for sustainable dry tailings stacking.
+   - Control: Automated PLC with touch HMI for cake washing, air blowout, and plate shifting.
+
+2. Filter Plates & Cloths (OpEx):
+   - Plates: 100% virgin high-density polypropylene (PP).
+   - Cloths: Monofilament, multifilament, and composite synthetic fabrics calibrated to slurry P80.
+
+================================================================================
+SECTION 5: LOGISTICS, CENTRAL PLANT PROTOCOL & DISPATCH
+================================================================================
+- Facility: Mariano Salas #114, Durango, Dgo., Mexico.
+- Maneuvering yard: Direct truck ingress for rabón, torton, and semi-trailer flatbeds.
+- Inspection protocol: Client or carrier presence during dynamic balancing and dimensional check.
+- Technical Support: Direct engineering assistance during business hours (Mon-Fri 08:00 to 18:00 CST) and fast emergency response for plant shutdowns.

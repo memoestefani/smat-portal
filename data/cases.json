@@ -1,0 +1,47 @@
+{
+  "title_es": "Casos de Servicio en Planta: Evidencia de Campo",
+  "title_en": "Plant Service Cases: Field Engineering Evidence",
+  "subtitle_es": "Registros técnicos anonimizados basados en condiciones reales de pulpa mineral en operaciones de la región Sierra Madre Occidental (Durango, Zacatecas, Chihuahua).",
+  "subtitle_en": "Anonymized engineering records based on real mineral slurry operating conditions in Sierra Madre Occidental mining districts (Durango, Zacatecas, Chihuahua).",
+  "cases": [
+    {
+      "id": "caso_bombeo_durango",
+      "discipline_es": "Bombeo de Pulpas",
+      "discipline_en": "Slurry Pumping",
+      "location_es": "Distrito Minero de Durango (1,200 t/d)",
+      "location_en": "Durango Mining District (1,200 t/d)",
+      "condition_es": "Lodos de descarga de molino de bolas al 52% de sólidos en peso, gravedad específica 1.68, presencia de partículas angulares de cuarzo d80 de 180 micrones. Falla recurrente del impulsor anterior a los 20-22 días por corte hidrodinámico en zona de álabes traseros.",
+      "condition_en": "Ball mill discharge slurry at 52% solids by weight, specific gravity 1.68, d80 180 microns angular silica solids. Pre-existing impellers suffered severe hydrodynamic erosion within 20-22 operational days.",
+      "solution_es": "Instalación de impulsor cerrado de 5 álabes en aleación High Chrome A05 (dureza 665 HB) con balanceo dinámico ejecutado en banco de pruebas en Durango y ajuste milimétrico exterior de claro axial a 0.75 mm.",
+      "solution_en": "Installation of 5-vane closed High Chrome A05 impeller (665 HB hardness) with dynamic balancing verified in Durango shop test bench and external axial clearance set to 0.75 mm.",
+      "result_es": "Campaña operativa extendida a 54 días continuos sin pérdida de presión en hidrociclones. Reducción de 2.5 paros no programados de línea al mes.",
+      "result_en": "Operating campaign extended to 54 continuous days with sustained cyclone classification head. Unscheduled monthly maintenance shutdowns reduced by 2.5 events."
+    },
+    {
+      "id": "caso_flotacion_zacatecas",
+      "discipline_es": "Flotación de Minerales",
+      "discipline_en": "Mineral Flotation",
+      "location_es": "Distrito Minero de Zacatecas (800 t/d)",
+      "location_en": "Zacatecas Mining District (800 t/d)",
+      "condition_es": "Bancos de celdas de flotación de 100 ft³ para circuito de sulfuros de plomo y zinc. Desgaste severo del estator y vibración en el eje central debido a reactivos colectores ácidos y alta turbulencia, provocando caída en la recuperación de plata.",
+      "condition_en": "100 ft³ flotation cell banks in a lead-zinc sulfide circuit. Severe stator wear and shaft vibration from aggressive collector reagents causing diminished silver metallurgical recovery.",
+      "solution_es": "Suministro de mecanismo suspendido completo con eje maquinado en acero bonificado 4140, rodamientos oscilantes sellados y conjunto rotor-estator vulcanizado en elastómero de alto módulo anti-abrasión química.",
+      "solution_en": "Supply of complete suspended mechanism with 4140 alloy steel shaft, double spherical bearings, and high-modulus molded rubber rotor-disperser assembly.",
+      "result_es": "Inducción homogénea de burbujas en todo el volumen de celda y reducción del consumo de energía motriz en 11%. Incremento medido de +1.4% en recuperación metalúrgica de concentrado.",
+      "result_en": "Homogeneous bubble induction across cell volume and 11% motor power reduction. Verified +1.4% increase in metallurgical concentrate recovery."
+    },
+    {
+      "id": "caso_filtracion_chihuahua",
+      "discipline_es": "Filtración de Jales",
+      "discipline_en": "Tailings Filtration",
+      "location_es": "Operación Subterránea en Chihuahua",
+      "location_en": "Underground Mining Operation in Chihuahua",
+      "condition_es": "Transición operativa hacia presa de jales secos (dry stacking). Filtración de colas finales con alta fracción de lamas finas (< 35 micrones) que causaban cegado rápido de telas y tortas con humedad excesiva (> 19%) inestables para apilamiento.",
+      "condition_en": "Operational transition to dry stack tailings. High ultrafine slime content (< 35 microns) in tailings slurry causing rapid cloth blinding and wet, uncompactable filter cakes (> 19% moisture).",
+      "solution_es": "Optimización del paquete de filtración con placas de membrana de alta resistencia a 16 bar y telas de polipropileno monofilamento con sellado perimetral térmico por corte láser.",
+      "solution_en": "Filtration package optimization featuring 16 bar membrane squeeze plates and laser-cut heat-sealed monofilament polypropylene filter cloths.",
+      "result_es": "Humedad residual de torta reducida a 12.8%, permitiendo compactación geotécnica inmediata en depósito seco y recuperación de 140 m³/día de agua clara de proceso.",
+      "result_en": "Residual cake moisture reduced to 12.8%, enabling immediate dry stack geotechnical compaction and recovery of 140 m³/day of clarified process water."
+    }
+  ]
+}

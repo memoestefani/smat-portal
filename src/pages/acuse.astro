@@ -1,0 +1,445 @@
+---
+// src/pages/acuse.astro
+// Decisión 7-A: Acuse Formal Imprimible (@media print) para ERPs (SAP Ariba / Coupa / Oracle)
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout 
+  title="Comprobante Institucional de Requisición Técnica"
+  description="Acuse formal de requisición técnica con folio institucional para departamentos de compras y sistemas ERP corporativos."
+  lang="es"
+  canonicalPath="/acuse/"
+  alternateEsPath="/acuse/"
+  alternateEnPath="/en/thank-you/"
+>
+  <Header slot="header" lang="es" currentPath="/acuse/" alternatePath="/en/thank-you/" />
+
+  <main class="ack-main">
+    <div class="container ack-container">
+      
+      <!-- Hoja Ejecutiva Imprimible -->
+      <div class="requisition-sheet" id="print-sheet">
+        <!-- Membrete Corporativo Imprimible -->
+        <div class="sheet-header">
+          <div class="company-brand">
+            <span class="brand-logo-text">SMAT MINERALS</span>
+            <span class="brand-legacy">Equipos de Proceso y Refaccionamiento Minero</span>
+            <span class="brand-address">Domicilio Fiscal: Mariano Salas #114, Durango, Dgo. CP 34166 • Almacén Central Durango</span>
+            <span class="brand-contact">Tel: (618) 810-4408 / 4428 • ventas@smatminerals.com • smatminerals.com</span>
+          </div>
+          <div class="folio-box">
+            <span class="folio-label">FOLIO DE REQUISICIÓN</span>
+            <strong class="folio-value" id="display-folio">SMAT-2026-RFQ</strong>
+            <span class="folio-date" id="display-date">Fecha de Emisión</span>
+            <span class="folio-status" id="display-urgency">ESTATUS: RECIBIDO</span>
+          </div>
+        </div>
+
+        <div class="sheet-divider"></div>
+
+        <div class="sheet-title-bar">
+          <h2>ACUSE FORMAL DE SOLICITUD DE COTIZACIÓN TÉCNICA</h2>
+          <span class="badge-sla">SLA MISMO DÍA HÁBIL • ATENCIÓN EN CURSO</span>
+        </div>
+
+        <!-- Tabla de Datos del Solicitante -->
+        <div class="sheet-section">
+          <h3 class="section-title">1. DATOS DEL SOLICITANTE Y UNIDAD MINERA</h3>
+          <table class="sheet-table">
+            <tbody>
+              <tr>
+                <th style="width: 25%;">Solicitante / Cargo:</th>
+                <td style="width: 35%;" id="field-name">No especificado</td>
+                <th style="width: 20%;">Mina / Empresa:</th>
+                <td style="width: 20%;" id="field-company">No especificado</td>
+              </tr>
+              <tr>
+                <th>Teléfono / WhatsApp:</th>
+                <td id="field-phone">No especificado</td>
+                <th>Correo Corporativo:</th>
+                <td id="field-email">No especificado</td>
+              </tr>
+              <tr>
+                <th>Destino de Entrega:</th>
+                <td colspan="3" id="field-destination">Almacén Central Durango / Retiro Coordinado con Folio</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Tabla de Especificación Técnica Solicitada -->
+        <div class="sheet-section">
+          <h3 class="section-title">2. ESPECIFICACIÓN TÉCNICA DEL COMPONENTE / EQUIPO</h3>
+          <table class="sheet-table">
+            <tbody>
+              <tr>
+                <th style="width: 25%;">Línea / Componente:</th>
+                <td colspan="3" id="field-role" class="highlight-spec">Equipo en evaluación</td>
+              </tr>
+              <tr>
+                <th>Condiciones y Notas:</th>
+                <td colspan="3" id="field-details">Revisión de parámetros de pulpa según protocolo de ingeniería.</td>
+              </tr>
+              <tr>
+                <th>Tipo de Solicitud:</th>
+                <td id="field-type">OpEx / Reemplazo</td>
+                <th>Inspección en Almacén:</th>
+                <td>Almacén Central Durango (Banco de Pruebas)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Protocolo Técnico y Cláusula de Almacén Durango (Decisiones 1-C, 2-C y 6-C) -->
+        <div class="sheet-section terms-section">
+          <h3 class="section-title">3. PROTOCOLO TÉCNICO Y CONTROL DE CALIDAD EN ALMACÉN CENTRAL</h3>
+          <p class="terms-text">
+            Este acuse certifica el registro formal de su requerimiento en los sistemas de SMAT Minerals. Todo conjunto rotativo, impulsor y carcasa suministrada cuenta con protocolo de balanceo dinámico en banco de pruebas de almacén central, colada High Chrome 27% (A05) con dureza garantizada &gt;650 HB y verificación de acople dimensional 1:1 en instalaciones de SMAT Durango (Domicilio fiscal para facturación: Mariano Salas #114).
+          </p>
+          <div class="coyote-seal-notice facility-guarantee-notice">
+            <strong>Cláusula de Validez de Almacén Central:</strong> Esta propuesta técnica y su respaldo operativo son válidos para componentes inspeccionados y despachados en Almacén Central SMAT Durango. Equipos y skids completos se configuran bajo pedido según variables de pulpa del cliente; refacciones de desgaste comunes en rotación continua de inventario.
+          </div>
+          <div class="signatures-row">
+            <div class="sig-block">
+              <span class="sig-line"></span>
+              <span class="sig-caption">Ingeniería y Ventas Técnicas<br />SMAT Minerals México</span>
+            </div>
+            <div class="sig-block">
+              <span class="sig-line"></span>
+              <span class="sig-caption">Recepción de Solicitud<br />Área de Compras / Mantenimiento</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barra de Acciones en Pantalla (Oculta al Imprimir) -->
+      <div class="screen-actions no-print">
+        <button type="button" class="btn btn-primary btn-print" id="print-btn" onclick="window.print()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Imprimir / Guardar en PDF (SAP / Coupa)
+        </button>
+        <a href="/" class="btn btn-secondary">
+          Volver al Inicio
+        </a>
+        <a href="https://wa.me/526188104408" class="btn btn-emergency" target="_blank" rel="noopener noreferrer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Seguimiento Inmediato por WhatsApp
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <div class="no-print">
+    <Footer slot="footer" lang="es" />
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  (function() {
+    function populateSheet() {
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      const folio = urlParams.get('folio') || 'SMAT-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+      const nombre = urlParams.get('nombre') || urlParams.get('name') || 'Ingeniero / Solicitante de Planta';
+      const empresa = urlParams.get('empresa') || urlParams.get('company') || 'Operación Minera Registrada';
+      const telefono = urlParams.get('telefono') || urlParams.get('phone') || '(618) 810-4408';
+      const correo = urlParams.get('correo') || urlParams.get('email') || 'ventas@smatminerals.com';
+      const equipo = urlParams.get('equipo') || urlParams.get('role') || 'Refaccionamiento Crítico de Pulpa / Bombeo';
+      const detalles = urlParams.get('detalles') || urlParams.get('specs') || 'Requisición técnica sujeta a validación dimensional de patio Durango.';
+      const destino = urlParams.get('destino') || 'Retiro en Almacén Central Durango (Coordinado con Folio)';
+      const urgencia = urlParams.get('urgencia');
+
+      const elFolio = document.getElementById('display-folio');
+      if (elFolio) elFolio.textContent = folio;
+
+      const elDate = document.getElementById('display-date');
+      if (elDate) {
+        const now = new Date();
+        elDate.textContent = now.toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      }
+
+      const elUrgency = document.getElementById('display-urgency');
+      if (elUrgency) {
+        elUrgency.textContent = urgencia === 'paro' ? 'PRIORIDAD: [PARO DE PLANTA]' : 'PRIORIDAD: [PROYECTO / PROGRAMADO]';
+        if (urgencia === 'paro') elUrgency.style.color = '#ef4444';
+      }
+
+      const setText = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+
+      setText('field-name', nombre);
+      setText('field-company', empresa);
+      setText('field-phone', telefono);
+      setText('field-email', correo);
+      setText('field-destination', destino);
+      setText('field-role', equipo);
+      setText('field-details', detalles);
+      setText('field-type', urgencia === 'paro' ? 'OpEx - Paro Operativo Prioritario (Prioridad Alta en Planta)' : 'CapEx / Requisición Formal');
+    }
+
+    populateSheet();
+    document.addEventListener('astro:page-load', populateSheet);
+  })();
+</script>
+
+<style>
+  .ack-main {
+    padding: 3rem 1.5rem 5rem;
+    background-color: var(--color-bg-base);
+  }
+
+  .ack-container {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+
+  .requisition-sheet {
+    background: #ffffff;
+    color: #0f172a;
+    border-radius: 8px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  .sheet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .company-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .brand-logo-text {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #ea580c;
+    letter-spacing: -0.02em;
+  }
+
+  .brand-legacy {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #475569;
+  }
+
+  .brand-address, .brand-contact {
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+
+  .folio-box {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .folio-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #64748b;
+    letter-spacing: 0.05em;
+  }
+
+  .folio-value {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #0f172a;
+    font-family: monospace;
+  }
+
+  .folio-date {
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+
+  .folio-status {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #16a34a;
+    margin-top: 0.25rem;
+  }
+
+  .sheet-divider {
+    height: 2px;
+    background: #e2e8f0;
+    margin: 1.5rem 0;
+  }
+
+  .sheet-title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .sheet-title-bar h2 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .badge-sla {
+    background: #ffedd5;
+    color: #c2410c;
+    border: 1px solid #fed7aa;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+
+  .sheet-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #334155;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid #cbd5e1;
+    padding-bottom: 0.35rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .sheet-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  .sheet-table th, .sheet-table td {
+    border: 1px solid #e2e8f0;
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+  }
+
+  .sheet-table th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 700;
+  }
+
+  .sheet-table td {
+    color: #0f172a;
+  }
+
+  .highlight-spec {
+    font-weight: 700;
+    color: #ea580c;
+  }
+
+  .terms-text {
+    font-size: 0.78rem;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+  }
+
+  .coyote-seal-notice {
+    font-size: 0.74rem;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-left: 3px solid #ea580c;
+    padding: 0.75rem 1rem;
+    color: #334155;
+    line-height: 1.45;
+    margin-bottom: 2rem;
+    border-radius: 4px;
+  }
+
+  .signatures-row {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 3rem;
+  }
+
+  .sig-block {
+    text-align: center;
+    width: 240px;
+  }
+
+  .sig-line {
+    display: block;
+    border-top: 1px solid #94a3b8;
+    margin-bottom: 0.5rem;
+  }
+
+  .sig-caption {
+    font-size: 0.75rem;
+    color: #475569;
+    line-height: 1.35;
+  }
+
+  .screen-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-print {
+    background: #0284c7;
+    color: #ffffff;
+    font-size: 0.95rem;
+    padding: 0.75rem 1.5rem;
+  }
+
+  .btn-print:hover {
+    background: #0369a1;
+  }
+
+  /* ESTILOS DE IMPRESIÓN ESTRICTOS PARA ERP (SAP/COUPA) */
+  @media print {
+    body {
+      background: #ffffff !important;
+      color: #000000 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .no-print, header, footer, .screen-actions, #nav-header, #main-footer {
+      display: none !important;
+    }
+
+    .ack-main {
+      padding: 0 !important;
+      background: none !important;
+    }
+
+    .ack-container {
+      max-width: 100% !important;
+      margin: 0 !important;
+    }
+
+    .requisition-sheet {
+      box-shadow: none !important;
+      padding: 0 !important;
+      border: none !important;
+      border-radius: 0 !important;
+    }
+
+    @page {
+      margin: 1.5cm;
+      size: letter portrait;
+    }
+  }
+</style>

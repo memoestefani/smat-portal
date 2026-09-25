@@ -1,0 +1,215 @@
+---
+// src/components/CaseCards.astro
+// Decisión 5-A: Casos de Éxito Anonimizados por Condición de Servicio Severo (Gong/Samsara Pattern)
+import casesData from '../../data/cases.json';
+
+interface Props {
+  lang?: 'es' | 'en';
+}
+
+const { lang = 'es' } = Astro.props;
+const isEn = lang === 'en';
+const { title_es, title_en, subtitle_es, subtitle_en, cases } = casesData;
+---
+
+<section class="cases-section" aria-label={isEn ? "Field Engineering Cases" : "Casos de Ingeniería en Planta"}>
+  <div class="cases-container">
+    <div class="cases-header">
+      <span class="evidence-badge">
+        {isEn ? "SHIFT LOGS & HARD OPERATIONAL DATA" : "REGISTROS DE TURNO Y DATOS DUROS EN MINA"}
+      </span>
+      <h2 class="cases-title">{isEn ? title_en : title_es}</h2>
+      <p class="cases-lead">{isEn ? subtitle_en : subtitle_es}</p>
+    </div>
+
+    <div class="cases-grid">
+      {cases.map(item => (
+        <article class="case-card">
+          <div class="case-top-meta">
+            <span class="discipline-tag">{isEn ? item.discipline_en : item.discipline_es}</span>
+            <span class="location-text">{isEn ? item.location_en : item.location_es}</span>
+          </div>
+
+          <div class="case-block">
+            <span class="case-label">{isEn ? "PLANT SLURRY CONDITION:" : "CONDICIÓN DEL LODO EN PLANTA:"}</span>
+            <p class="case-text">{isEn ? item.condition_en : item.condition_es}</p>
+          </div>
+
+          <div class="case-block">
+            <span class="case-label">{isEn ? "WEAR PART INSTALLED & SHOP FIT:" : "REFACCIÓN INSTALADA Y AJUSTE:"}</span>
+            <p class="case-text">{isEn ? item.solution_en : item.solution_es}</p>
+          </div>
+
+          <div class="case-result-box">
+            <span class="result-label">{isEn ? "MEASURED GAINS & DOWNTIME AVOIDED:" : "DÍAS GANADOS Y PAROS EVITADOS:"}</span>
+            <p class="result-text">{isEn ? item.result_en : item.result_es}</p>
+          </div>
+
+          <div class="case-footer">
+            <a href={isEn ? "/en/pumping/" : "/bombeo/"} class="case-circuit-link">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              {isEn ? "View Process Circuit in P&ID →" : "Ver Circuito de Proceso en P&ID →"}
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cases-section {
+    padding: 3.5rem 1.5rem;
+    background: #0b1120;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .cases-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .cases-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .evidence-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: rgba(194, 94, 0, 0.15);
+    border: 1px solid rgba(194, 94, 0, 0.4);
+    border-radius: 9999px;
+    color: #f59e0b;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+  }
+
+  .cases-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.25;
+    margin-bottom: 0.75rem;
+  }
+
+  .cases-lead {
+    font-size: 1rem;
+    color: #94a3b8;
+    line-height: 1.5;
+  }
+
+  .cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .case-card {
+    background: #151d2e;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .case-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(52, 211, 153, 0.4);
+  }
+
+  .case-top-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .discipline-tag {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #f97316;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .location-text {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .case-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .case-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
+  }
+
+  .case-text {
+    font-size: 0.88rem;
+    color: #cbd5e1;
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  .case-result-box {
+    margin-top: auto;
+    background: rgba(194, 94, 0, 0.08);
+    border: 1px solid rgba(194, 94, 0, 0.25);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+  }
+
+  .result-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #f59e0b;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+  }
+
+  .result-text {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .case-footer {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .case-circuit-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #f97316;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .case-circuit-link:hover {
+    color: #fb923c;
+    text-decoration: underline;
+  }
+</style>

@@ -1,0 +1,208 @@
+---
+// src/pages/en/warranty.astro
+// Decisión 2-A: Commercial Trust & Engineering Warranty Charter in Durango
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import TrustMatrix from '../../components/TrustMatrix.astro';
+import WhatsAppButton from '../../components/WhatsAppButton.astro';
+import QualityReportModal from '../../components/QualityReportModal.astro';
+---
+
+<BaseLayout 
+  title="Commercial Trust & Engineering Warranty Charter"
+  description="Warranty charter of Durango Central Warehouse & Fiscal HQ Mariano Salas #114: Dimensional verification, test bench balancing, High Chrome >650 HB metallurgy."
+  lang="en"
+  canonicalPath="/en/warranty/"
+  alternateEsPath="/garantia/"
+  alternateEnPath="/en/warranty/"
+>
+  <Header slot="header" lang="en" currentPath="/en/warranty/" alternatePath="/garantia/" />
+
+  <main class="trust-page-main">
+    <div class="container">
+      <div class="page-header">
+        <span class="trust-badge">RADICAL TRANSPARENCY POLICY</span>
+        <h1 class="page-title">Commercial Trust & Engineering Warranty Charter</h1>
+        <p class="page-lead">
+          In mining procurement, trust is not requested: it is demonstrated. At SMAT Minerals, we transparently disclose what our Durango Central Warehouse inspection covers (Fiscal HQ at Mariano Salas #114), what partner foundries certify, and under what process conditions we decline to quote to protect your plant's operational continuity.
+        </p>
+      </div>
+
+      <!-- Trust Matrix & Boundaries -->
+      <TrustMatrix lang="en" />
+
+      <!-- Quality & Testing Protocols on Request (Decision 1-A) -->
+      <div class="protocol-request-card">
+        <div class="protocol-card-header">
+          <span class="protocol-badge">OFFICIAL TECHNICAL ADDENDUM</span>
+          <h3>Metallurgical Hardness & Dynamic Balancing Protocols On-Request</h3>
+        </div>
+        <p>
+          To safeguard engineering integrity and prevent unauthorized reproduction of technical specs, certified ASTM A532 (>650 HB) foundry heats, spectrometry curves, and shop dynamic balancing balance sheets are provided as official technical addenda upon serialized quote generation.
+        </p>
+        <div class="protocol-card-action">
+          <button type="button" class="btn btn-primary btn-open-quality-facsimile" id="btn-view-sample-report">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg>
+            View ASTM A532 Quality Certificate Facsimile
+          </button>
+          <a href="/en/#rfq" class="btn btn-secondary">Generate Folio to Request Official Technical Addenda →</a>
+        </div>
+      </div>
+
+      <QualityReportModal lang="en" />
+
+      <!-- Stockyard Pickup Banner -->
+      <div class="pickup-banner">
+        <div class="pickup-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" x2="12" y1="22.08" y2="12"/></svg>
+        </div>
+        <div class="pickup-text">
+          <h3>Direct Warehouse Pickup in Durango, Mexico</h3>
+          <p>
+            Industrial yard equipped for truck loading onto torton or flatbed trailers upon confirmed quote folio. Your engineering crew is welcome to witness shop dynamic balancing prior to truck dispatch.
+          </p>
+        </div>
+        <div class="pickup-action">
+          <a href="https://wa.me/526188104408?text=Hello%20SMAT,%20I%20wish%20to%20coordinate%20parts%20collection%20at%20Durango%20warehouse" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+            Coordinate Warehouse Pickup ➔
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <WhatsAppButton lang="en" />
+  <Footer slot="footer" lang="en" />
+</BaseLayout>
+
+<style>
+  .trust-page-main {
+    padding-top: 3.5rem;
+    padding-bottom: 4.5rem;
+    background-color: #fafaf9;
+  }
+
+  .page-header {
+    text-align: center;
+    max-width: 840px;
+    margin: 0 auto 3rem;
+  }
+
+  .trust-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: var(--smat-radius-pill);
+    color: var(--smat-copper-accent);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-title {
+    font-family: var(--smat-font-editorial);
+    font-size: clamp(2rem, 3.5vw, 2.7rem);
+    font-weight: 800;
+    color: var(--smat-text-primary);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .page-lead {
+    font-size: 1.05rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .protocol-request-card {
+    margin-top: 2.5rem;
+    background: #f8fafc;
+    border: 1px solid var(--smat-border-medium);
+    border-radius: var(--smat-radius-md);
+    padding: 1.5rem 1.75rem;
+  }
+
+  .protocol-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .protocol-badge {
+    font-size: 0.68rem;
+    font-weight: 800;
+    font-family: var(--smat-font-mono);
+    background: var(--smat-slate-dark, #1e293b);
+    color: #ffffff;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--smat-radius-sm);
+  }
+
+  .protocol-card-header h3 {
+    font-family: var(--smat-font-ui);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--smat-text-primary);
+    margin: 0;
+  }
+
+  .protocol-request-card p {
+    font-size: 0.88rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.5;
+    margin: 0 0 1rem;
+  }
+
+  .protocol-card-action {
+    display: flex;
+  }
+
+  .pickup-banner {
+    margin-top: 2rem;
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-left: 4px solid var(--smat-copper-accent);
+    border-radius: var(--smat-radius-md);
+    padding: 1.75rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    box-shadow: var(--smat-shadow-sm);
+  }
+
+  .pickup-icon {
+    font-size: 2.2rem;
+    flex-shrink: 0;
+  }
+
+  .pickup-text {
+    flex: 1 1 400px;
+  }
+
+  .pickup-text h3 {
+    font-family: var(--smat-font-ui);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--smat-text-primary);
+    margin: 0 0 0.35rem 0;
+  }
+
+  .pickup-text p {
+    font-size: 0.85rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  .pickup-action {
+    flex-shrink: 0;
+  }
+</style>

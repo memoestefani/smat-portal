@@ -1,0 +1,208 @@
+---
+// src/pages/garantia.astro
+// Decisión 2-A: Pacto de Certeza Técnica y Garantía Comercial en Patio Durango
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import TrustMatrix from '../components/TrustMatrix.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import QualityReportModal from '../components/QualityReportModal.astro';
+---
+
+<BaseLayout 
+  title="Pacto de Certeza y Garantía en Almacén Durango"
+  description="Garantía de Almacén Central Durango y Domicilio Fiscal Mariano Salas #114: Verificación dimensional de refacciones, balanceo dinámico en banco de pruebas y aleación High Chrome >650 HB."
+  lang="es"
+  canonicalPath="/garantia/"
+  alternateEsPath="/garantia/"
+  alternateEnPath="/en/warranty/"
+>
+  <Header slot="header" lang="es" currentPath="/garantia/" alternatePath="/en/warranty/" />
+
+  <main class="trust-page-main">
+    <div class="container">
+      <div class="page-header">
+        <span class="trust-badge">POLÍTICA INSTITUCIONAL DE TRANSPARENCIA</span>
+        <h1 class="page-title">Pacto de Certeza Técnica y Garantía en Almacén Durango</h1>
+        <p class="page-lead">
+          En compras industriales mineras, la confianza no se pide: se exhibe. En SMAT Minerals delimitamos con exactitud qué cubre nuestro protocolo en el Almacén Central Durango (con domicilio fiscal en Mariano Salas #114), qué certifican las fundiciones de manufactura y bajo qué condiciones técnicas declinamos cotizar para no poner en riesgo la continuidad de su turno.
+        </p>
+      </div>
+
+      <!-- Matriz de Garantía y Límites -->
+      <TrustMatrix lang="es" />
+
+      <!-- Protocolos de Calidad y Ensayos a Solicitud Formal (Decisión 1-A) -->
+      <div class="protocol-request-card">
+        <div class="protocol-card-header">
+          <span class="protocol-badge">ANEXO TÉCNICO FORMAL</span>
+          <h3>Protocolos de Ensayo Metalúrgico y Balanceo Dinámico a Solicitud</h3>
+        </div>
+        <p>
+          Para salvaguardar la trazabilidad de ingeniería y prevenir uso indebido de documentación técnica, los reportes certificados de colada ASTM A532 (>650 HB), curvas de espectrometría y hojas de balanceo dinámico en banco se adjuntan como anexo formal a su propuesta técnico-económica al generar su folio institucional de cotización.
+        </p>
+        <div class="protocol-card-action">
+          <button type="button" class="btn btn-primary btn-open-quality-facsimile" id="btn-view-sample-report">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg>
+            Ver Facsímil Tipo de Certificado de Calidad ASTM A532
+          </button>
+          <a href="/#rfq" class="btn btn-secondary">Generar Folio para Solicitar Anexo Técnico Oficial →</a>
+        </div>
+      </div>
+
+      <QualityReportModal lang="es" />
+
+      <!-- Banner de Retiro en Patio -->
+      <div class="pickup-banner">
+        <div class="pickup-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" x2="12" y1="22.08" y2="12"/></svg>
+        </div>
+        <div class="pickup-text">
+          <h3>Retiro y Maniobra en Almacén Central Durango</h3>
+          <p>
+            Instalaciones habilitadas para carga en camión unitario, torton o plataforma previa confirmación de folio. Su personal técnico puede presenciar el balanceo dinámico en banco antes de que la unidad salga hacia su mina.
+          </p>
+        </div>
+        <div class="pickup-action">
+          <a href="https://wa.me/526188104408?text=Hola%20SMAT,%20deseo%20coordinar%20retiro%20de%20refacciones%20en%20almacen%20Durango" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+            Coordinar Retiro en Almacén ➔
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <WhatsAppButton lang="es" />
+  <Footer slot="footer" lang="es" />
+</BaseLayout>
+
+<style>
+  .trust-page-main {
+    padding-top: 3.5rem;
+    padding-bottom: 4.5rem;
+    background-color: #fafaf9;
+  }
+
+  .page-header {
+    text-align: center;
+    max-width: 840px;
+    margin: 0 auto 3rem;
+  }
+
+  .trust-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: var(--smat-radius-pill);
+    color: var(--smat-copper-accent);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-title {
+    font-family: var(--smat-font-editorial);
+    font-size: clamp(2rem, 3.5vw, 2.7rem);
+    font-weight: 800;
+    color: var(--smat-text-primary);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .page-lead {
+    font-size: 1.05rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .protocol-request-card {
+    margin-top: 2.5rem;
+    background: #f8fafc;
+    border: 1px solid var(--smat-border-medium);
+    border-radius: var(--smat-radius-md);
+    padding: 1.5rem 1.75rem;
+  }
+
+  .protocol-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .protocol-badge {
+    font-size: 0.68rem;
+    font-weight: 800;
+    font-family: var(--smat-font-mono);
+    background: var(--smat-slate-dark, #1e293b);
+    color: #ffffff;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--smat-radius-sm);
+  }
+
+  .protocol-card-header h3 {
+    font-family: var(--smat-font-ui);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--smat-text-primary);
+    margin: 0;
+  }
+
+  .protocol-request-card p {
+    font-size: 0.88rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.5;
+    margin: 0 0 1rem;
+  }
+
+  .protocol-card-action {
+    display: flex;
+  }
+
+  .pickup-banner {
+    margin-top: 2rem;
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-left: 4px solid var(--smat-copper-accent);
+    border-radius: var(--smat-radius-md);
+    padding: 1.75rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    box-shadow: var(--smat-shadow-sm);
+  }
+
+  .pickup-icon {
+    font-size: 2.2rem;
+    flex-shrink: 0;
+  }
+
+  .pickup-text {
+    flex: 1 1 400px;
+  }
+
+  .pickup-text h3 {
+    font-family: var(--smat-font-ui);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--smat-text-primary);
+    margin: 0 0 0.35rem 0;
+  }
+
+  .pickup-text p {
+    font-size: 0.85rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  .pickup-action {
+    flex-shrink: 0;
+  }
+</style>

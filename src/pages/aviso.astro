@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+---
+
+<BaseLayout 
+  title="Aviso de Privacidad y Tratamiento de Datos"
+  description="Aviso de privacidad legal e industrial de SMAT Minerals conforme a las leyes aplicables en los Estados Unidos Mexicanos."
+  lang="es"
+  canonicalPath="/aviso/"
+  alternateEsPath="/aviso/"
+  alternateEnPath="/en/privacy/"
+>
+  <Header slot="header" lang="es" currentPath="/aviso/" alternatePath="/en/privacy/" />
+
+  <section class="page-hero">
+    <div class="container text-center">
+      <span class="badge badge-copper">MARCO LEGAL B2B</span>
+      <h1>Aviso de Privacidad Integral</h1>
+      <p class="subtitle">Tratamiento confidencial de especificaciones de planta y datos de contacto industrial.</p>
+    </div>
+  </section>
+
+  <section class="section-spacing">
+    <div class="container legal-container">
+      <div class="card legal-card">
+        <h2>1. Identidad y Domicilio del Responsable</h2>
+        <p>
+          <strong>SMAT Minerals</strong>, con domicilio operativo y fiscal en <strong>Mariano Salas #114, Col. Primer Presidente, Durango, Dgo., C.P. 34166, México</strong>, es responsable del uso y protección de sus datos personales y técnicos conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP).
+        </p>
+
+        <h2>2. Finalidades del Tratamiento de Datos</h2>
+        <p>Los datos recabados a través de formularios, WhatsApp o correo institucional serán utilizados exclusivamente para:</p>
+        <ul>
+          <li>Elaboración y envío formal de cotizaciones técnicas y comerciales de equipos y refacciones mineras.</li>
+          <li>Atención expedita y logística de paros de planta con despacho desde nuestras instalaciones en Durango.</li>
+          <li>Emisión de facturas fiscales y guías de transporte para maniobras de carga pesada.</li>
+          <li>Comunicación técnica directa entre ingenieros de planta y nuestro departamento técnico.</li>
+        </ul>
+
+        <h2>3. Confidencialidad de Información Operativa de Mina</h2>
+        <p>
+          SMAT Minerals no comercializa, transfiere ni difunde a terceros las características operativas de sus pulpas, densidades, flujos, planos dimensionales o fotografías compartidas para diagnóstico de daño mecánico. Dicha información se mantiene bajo estricto secreto industrial y profesional.
+        </p>
+
+        <h2>4. Derechos ARCO</h2>
+        <p>
+          Usted tiene derecho a conocer qué datos personales tenemos, para qué los utilizamos y las condiciones del uso que les damos (Acceso). Asimismo, es su derecho solicitar la corrección de su información (Rectificación), que la eliminemos de nuestros registros (Cancelación), oponerse al uso de sus datos para fines específicos (Oposición). Para ejercer cualquiera de los derechos ARCO, envíe una solicitud por escrito a: <a href="mailto:contacto@smatminerals.com">contacto@smatminerals.com</a>.
+        </p>
+
+        <h2>5. Modificaciones al Aviso de Privacidad</h2>
+        <p>
+          El presente aviso de privacidad puede sufrir modificaciones derivadas de requerimientos legales o de nuestras prácticas de operación. Cualquier cambio sustancial será publicado en esta misma sección.
+        </p>
+        <p class="legal-date"><em>Última actualización: Enero 2026.</em></p>
+      </div>
+    </div>
+  </section>
+
+  <WhatsAppButton lang="es" />
+  <Footer slot="footer" lang="es" />
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 4rem 0 3rem;
+    background: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 80%);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .text-center {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    margin-top: 1rem;
+    color: var(--color-text-muted);
+  }
+
+  .legal-container {
+    max-width: 860px;
+  }
+
+  .legal-card {
+    background-color: #121c2e;
+    padding: 3rem 2.5rem;
+  }
+
+  .legal-card h2 {
+    font-size: 1.25rem;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: #ffffff;
+  }
+
+  .legal-card h2:first-child {
+    margin-top: 0;
+  }
+
+  .legal-card p, .legal-card ul {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    color: var(--color-text-muted);
+  }
+
+  .legal-card ul {
+    padding-left: 1.5rem;
+  }
+
+  .legal-card li {
+    margin-bottom: 0.5rem;
+  }
+
+  .legal-date {
+    margin-top: 2rem;
+    border-top: 1px solid var(--color-border);
+    padding-top: 1rem;
+    font-size: 0.8125rem;
+  }
+</style>

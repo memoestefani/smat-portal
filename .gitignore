@@ -1,0 +1,23 @@
+# Build and Dependency Artifacts
+node_modules/
+dist/
+.astro/
+target/
+**/target/
+
+# Environment and Secrets
+.env
+.env.*
+!.env.example
+
+# Temporary files and OS debris
+*.tmp
+*~
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Private Internal Catalog and Archeology
+data/roles.copy.json
+tools/seed_archeology/

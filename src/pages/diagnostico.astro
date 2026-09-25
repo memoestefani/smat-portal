@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import DiagnosticsHub from '../components/DiagnosticsHub.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+---
+
+<BaseLayout 
+  title="Guía Visual de Diagnóstico y Fallas en Planta | SMAT Minerals"
+  description="Identificación práctica de fallas mecánicas y selección de refacciones para bombas de pulpa, celdas de flotación y filtros prensa desde Durango, México."
+  lang="es"
+  canonicalPath="/diagnostico/"
+  alternateEsPath="/diagnostico/"
+  alternateEnPath="/en/diagnostics/"
+>
+  <Header slot="header" lang="es" currentPath="/diagnostico/" alternatePath="/en/diagnostics/" />
+
+  <DiagnosticsHub lang="es" />
+
+  <WhatsAppButton lang="es" />
+  <Footer slot="footer" lang="es" />
+</BaseLayout>
+
+

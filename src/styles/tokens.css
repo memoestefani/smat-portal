@@ -1,0 +1,112 @@
+/* SMAT Minerals - Design Tokens & Executive Editorial Industrial Palette */
+/* Conciliación estética: Elegancia editorial financiera (Garamond/Newsreader, papel blanco nítido, tinta carbón) */
+/* combinada con precisión de instrumental de ingeniería de planta y cobrizos industriales */
+
+:root {
+  /* --- TIPOGRAFÍA HÍBRIDA (Decisión 1-C) --- */
+  --smat-font-editorial: 'Newsreader', 'EB Garamond', Garamond, Georgia, serif;
+  --smat-font-ui: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --smat-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* --- PALETA LUMINOUS EXECUTIVE EDITORIAL & CORPORATE IDENTITY (Decisiones 1-B, 2-B, 3-B) --- */
+  /* Paleta Corporativa Oficial SMAT Minerals (Identidad de Logotipo) */
+  --smat-navy-deep: #051B2E;         /* Fondo oscuro abisal / Lienzo institucional */
+  --smat-navy-surface: #083860;      /* Superficie técnica / MINERALS exacto */
+  --smat-navy-border: #0E4A7D;       /* Delimitación estructural 1px */
+  --smat-navy-highlight: #145994;    /* Resalte suave en interacción */
+
+  --smat-blue-royal: #0D78C6;        /* Primario Instrumental / SMAT exacto */
+  --smat-blue-royal-hover: #0B68AB;  /* Hover de controles primarios */
+  --smat-blue-royal-soft: rgba(13, 120, 198, 0.08); /* Fondo de selección */
+
+  --smat-blue-vortex: #4FAEEB;       /* Acento de flujo hidrodinámico */
+  --smat-blue-vortex-glow: #7AC8F5;  /* Resplandor superior de vórtice */
+  --smat-blue-vortex-light: #E0F2FE; /* Superficie secundaria de ingeniería */
+  --smat-blue-vortex-bg: #F0F9FF;    /* Fondo de notas y badges de precisión */
+
+  --smat-specular-vortex: linear-gradient(90deg, transparent, rgba(79, 174, 235, 0.45), transparent);
+  --smat-focus-ring-blue: 0 0 0 3px rgba(13, 120, 198, 0.20);
+
+  /* Fondos y Superficies Principales (Lienzo Claro Editorial) */
+  --smat-bg-page: #fafaf9;           /* Papel blanco cálido nítido */
+  --smat-canvas-bg: #fafaf9;          /* Alias lienzo claro */
+  --smat-bg-surface: #ffffff;        /* Tarjetas y módulos en blanco puro */
+  --smat-bg-subtle: #f4f4f5;         /* Superficies secundarias de apoyo */
+  --smat-bg-contrast: var(--smat-navy-deep);       /* Marco Deep Mineral Navy para acentos */
+  --smat-navy-950: var(--smat-navy-deep);          /* Alias Deep Mineral Navy */
+
+  /* Textos y Jerarquía Tipográfica */
+  --smat-text-primary: #090d16;      /* Tinta carbón profundo (máxima legibilidad) */
+  --smat-text-secondary: #334155;    /* Gris pizarra editorial */
+  --smat-text-muted: #64748b;        /* Subtítulos y metadatos */
+  --smat-text-inverse: #ffffff;      /* Texto sobre fondos oscuros */
+
+  /* Bordes y Líneas de Precisión */
+  --smat-border-light: #e2e8f0;      /* Línea fina milimétrica */
+  --smat-border-medium: #cbd5e1;     /* Borde de tarjeta y tabla */
+  --smat-border-focus: #c25e00;      /* Enfoque en cobre mineral */
+
+  /* Acentos de Planta e Industria Metalúrgica */
+  --smat-copper-accent: #c25e00;     /* Cobre forjado / Acción primaria */
+  --smat-copper-hover: #9a4a00;
+  --smat-copper-light: #fff7ed;      /* Fondo tenue cobre */
+  --smat-copper-border: #ea580c;
+  --smat-copper-glow: rgba(194, 94, 0, 0.15);
+
+  /* Estatus Operativo & Disponibilidad en Planta */
+  --smat-emerald-stock: #059669;     /* Verde disponibilidad e inspección en planta */
+  --smat-emerald-bg: #ecfdf5;
+  --smat-emerald-border: #10b981;
+  --smat-emerald-text: #065f46;
+
+  /* Paro Urgente de Planta & Alertas */
+  --smat-emergency-red: #dc2626;
+  --smat-emergency-bg: #fef2f2;
+  --smat-emergency-border: #fca5a5;
+  --smat-emergency-text: #991b1b;
+
+  /* Geometría y Ergonomía */
+  --smat-radius-sm: 4px;
+  --smat-radius-md: 8px;
+  --smat-radius-lg: 12px;
+  --smat-radius-pill: 9999px;
+
+  /* Sombras Editoriales Sutiles */
+  --smat-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --smat-shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --smat-shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.08), 0 4px 8px -4px rgba(0, 0, 0, 0.04);
+  --smat-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.05), 0 10px 25px -5px rgba(0, 0, 0, 0.04);
+
+  /* --- MALLA ESPACIAL DE 8 PUNTOS & CALMA METROLÓGICA (Decisión 5-A) --- */
+  --smat-space-2xs: 4px;
+  --smat-space-xs: 8px;
+  --smat-space-sm: 16px;
+  --smat-space-md: 24px;
+  --smat-space-lg: 32px;
+  --smat-space-xl: 48px;
+  --smat-space-2xl: 80px;
+  --smat-space-3xl: 96px;
+
+  /* --- APPLE INDUSTRIAL DESIGN TOKENS & SPECULAR ARCHITECTURE (Décima Cuarta Ola) --- */
+  --apple-bg-canvas: #0a0d14;
+  --apple-bg-surface: #111622;
+  --apple-bg-surface-elevated: #161d2e;
+  --apple-bg-surface-hover: #1d263b;
+  
+  --apple-border-subtle: rgba(255, 255, 255, 0.06);
+  --apple-border-standard: rgba(255, 255, 255, 0.10);
+  --apple-border-specular: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --apple-shadow-elevation: 0 8px 32px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  
+  --apple-font-mono: "SF Mono", "Roboto Mono", "JetBrains Mono", ui-monospace, monospace;
+  
+  --apple-status-green: #10b981;
+  --apple-status-amber: #f59e0b;
+  --apple-status-red: #ef4444;
+  --apple-accent-blue: #38bdf8;
+  --apple-titanium: #94a3b8;
+  
+  --apple-spring-snappy: cubic-bezier(0.16, 1, 0.3, 1);
+  --apple-spring-smooth: 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+

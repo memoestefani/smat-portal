@@ -1,0 +1,234 @@
+{
+  "version": "1.0.0",
+  "country": "MX",
+  "total_groups": 25,
+  "groups": [
+    {
+      "id": "first-majestic",
+      "name": "First Majestic Silver Corp.",
+      "domains": ["firstmajestic.com"],
+      "units": [
+        { "name": "San Dimas (Tayoltita, Durango)", "pulp_profile": "Cuarzo-Oro-Plata, molienda fina" },
+        { "name": "Santa Elena (Banámichi, Sonora)", "pulp_profile": "Cianuración y flotación" },
+        { "name": "La Encantada (Ocampo, Coahuila)", "pulp_profile": "Plomo-Plata oxidado" }
+      ]
+    },
+    {
+      "id": "fresnillo-plc",
+      "name": "Fresnillo plc",
+      "domains": ["fresnilloplc.com"],
+      "units": [
+        { "name": "Mina Fresnillo (Fresnillo, Zacatecas)", "pulp_profile": "Sulfuros masivos Pb-Zn-Ag abrasivo" },
+        { "name": "Saucito (Fresnillo, Zacatecas)", "pulp_profile": "Alta densidad de pulpa a ciclones" },
+        { "name": "Ciénega (Santiago Papasquiaro, Durango)", "pulp_profile": "Oro-Plata en veta angosta" },
+        { "name": "Herradura (Caborca, Sonora)", "pulp_profile": "Lixiviación y desaguado" },
+        { "name": "Juanicipio (Fresnillo, Zacatecas)", "pulp_profile": "Flotación Pb-Zn alta ley" }
+      ]
+    },
+    {
+      "id": "penoles",
+      "name": "Industrias Peñoles",
+      "domains": ["penoles.com.mx"],
+      "units": [
+        { "name": "Velardeña (Cuencamé, Durango)", "pulp_profile": "Sulfuros polimetálicos Pb-Zn-Cu" },
+        { "name": "Tizapa (Zacazonapan, Edo. Méx.)", "pulp_profile": "Polimetálico complejo de grano fino" },
+        { "name": "Capela (Teloloapan, Guerrero)", "pulp_profile": "Sulfuros polimetálicos densos" },
+        { "name": "Sabinas (Sombrerete, Zacatecas)", "pulp_profile": "Bombeo de pulpas abrasivas severas" },
+        { "name": "Rey de Plata (Teloloapan, Guerrero)", "pulp_profile": "Flotación diferencial" }
+      ]
+    },
+    {
+      "id": "alamos-gold",
+      "name": "Alamos Gold Inc.",
+      "domains": ["alamosgold.com"],
+      "units": [
+        { "name": "Mulatos (Sahuaripa, Sonora)", "pulp_profile": "Mineral sulfurado refractario de oro" }
+      ]
+    },
+    {
+      "id": "pan-american-silver",
+      "name": "Pan American Silver",
+      "domains": ["panamericansilver.com"],
+      "units": [
+        { "name": "La Colorada (Chalchihuites, Zacatecas)", "pulp_profile": "Sulfuros polimetálicos de alta presión" },
+        { "name": "Dolores (Madera, Chihuahua)", "pulp_profile": "Desaguado y filtración de jales" }
+      ]
+    },
+    {
+      "id": "grupo-mexico",
+      "name": "Grupo México (Americas Mining)",
+      "domains": ["gmexico.com", "mm.gmexico.com"],
+      "units": [
+        { "name": "Buenavista del Cobre (Cananea, Sonora)", "pulp_profile": "Flotación masiva de cobre a gran escala" },
+        { "name": "La Caridad (Nacozari, Sonora)", "pulp_profile": "Cobre-Molibdeno alto tonelaje" },
+        { "name": "San Martín (Sombrerete, Zacatecas)", "pulp_profile": "Cobre-Zinc-Plomo servicio severo" },
+        { "name": "Charcas (Charcas, San Luis Potosí)", "pulp_profile": "Flotación de zinc y plomo" },
+        { "name": "Taxco (Taxco, Guerrero)", "pulp_profile": "Mineral polimetálico tradicional" }
+      ]
+    },
+    {
+      "id": "torex-gold",
+      "name": "Torex Gold Resources",
+      "domains": ["torexgold.com"],
+      "units": [
+        { "name": "El Limón Guajes (Cocula, Guerrero)", "pulp_profile": "Skarn de oro-cobre-hierro" },
+        { "name": "Media Luna (Cocula, Guerrero)", "pulp_profile": "Sulfuros de cobre-oro" }
+      ]
+    },
+    {
+      "id": "coeur-mining",
+      "name": "Coeur Mining",
+      "domains": ["coeur.com"],
+      "units": [
+        { "name": "Palmarejo (Chínipas, Chihuahua)", "pulp_profile": "Flotación y cianuración intensiva de plata" }
+      ]
+    },
+    {
+      "id": "endeavour-silver",
+      "name": "Endeavour Silver",
+      "domains": ["edrsilver.com"],
+      "units": [
+        { "name": "Guanaceví (Guanaceví, Durango)", "pulp_profile": "Pulpas de alta densidad en veta angosta" },
+        { "name": "Bolañitos (Guanajuato, Guanajuato)", "pulp_profile": "Flotación bulk de plata y oro" },
+        { "name": "Terronera (San Sebastián del Oeste, Jalisco)", "pulp_profile": "Circuito nuevo de flotación" }
+      ]
+    },
+    {
+      "id": "minera-frisco",
+      "name": "Minera Frisco",
+      "domains": ["minerafrisco.com.mx"],
+      "units": [
+        { "name": "San Francisco del Oro (San Fco. del Oro, Chihuahua)", "pulp_profile": "Polimetálico histórico Pb-Zn-Cu-Au" },
+        { "name": "Tayahua (Mazapil, Zacatecas)", "pulp_profile": "Cobre primario y zinc" },
+        { "name": "Asientos (Asientos, Aguascalientes)", "pulp_profile": "Cobre-Plomo-Zinc" },
+        { "name": "Concheño (Ocampo, Chihuahua)", "pulp_profile": "Flotación y molienda autógena" }
+      ]
+    },
+    {
+      "id": "argonaut-gold",
+      "name": "Argonaut Gold / Florida Canyon",
+      "domains": ["argonautgold.com"],
+      "units": [
+        { "name": "San Agustín (San Juan del Río, Durango)", "pulp_profile": "Lixiviación y bombeo de soluciones" },
+        { "name": "El Castillo (San Juan del Río, Durango)", "pulp_profile": "Manejo de lodos y escurrimientos" }
+      ]
+    },
+    {
+      "id": "agnico-eagle",
+      "name": "Agnico Eagle Mines",
+      "domains": ["agnicoeagle.com"],
+      "units": [
+        { "name": "Pinos Altos (Ocampo, Chihuahua)", "pulp_profile": "Flotación y cianuración agitada" },
+        { "name": "La India (Sahuaripa, Sonora)", "pulp_profile": "Oro en lixiviación" }
+      ]
+    },
+    {
+      "id": "newmont",
+      "name": "Newmont Corporation",
+      "domains": ["newmont.com"],
+      "units": [
+        { "name": "Peñasquito (Mazapil, Zacatecas)", "pulp_profile": "Flotación polimetálica a mega escala (130 kt/d)" }
+      ]
+    },
+    {
+      "id": "gatos-silver",
+      "name": "Gatos Silver",
+      "domains": ["gatossilver.com"],
+      "units": [
+        { "name": "Cerro Los Gatos (Satevó, Chihuahua)", "pulp_profile": "Sulfuros polimetálicos Pb-Zn-Ag alta ley" }
+      ]
+    },
+    {
+      "id": "equinox-gold",
+      "name": "Equinox Gold",
+      "domains": ["equinoxgold.com"],
+      "units": [
+        { "name": "Los Filos (Eduardo Neri, Guerrero)", "pulp_profile": "Flotación de carbón y lixiviación" }
+      ]
+    },
+    {
+      "id": "fortuna-silver",
+      "name": "Fortuna Silver Mines",
+      "domains": ["fortunasilver.com"],
+      "units": [
+        { "name": "San José (San Jerónimo Taviche, Oaxaca)", "pulp_profile": "Plata-Oro en cuarzo abrasivo" }
+      ]
+    },
+    {
+      "id": "santacruz-silver",
+      "name": "Santacruz Silver Mining",
+      "domains": ["santacruzsilver.com"],
+      "units": [
+        { "name": "Zimapán (Zimapán, Hidalgo)", "pulp_profile": "Polimetálico en skarn Pb-Zn-Cu" }
+      ]
+    },
+    {
+      "id": "gogold-resources",
+      "name": "GoGold Resources",
+      "domains": ["gogoldresources.com"],
+      "units": [
+        { "name": "Parral Tailings (Hidalgo del Parral, Chihuahua)", "pulp_profile": "Reprocesamiento de jales antiguos" }
+      ]
+    },
+    {
+      "id": "sierra-metals",
+      "name": "Sierra Metals",
+      "domains": ["sierrametals.com"],
+      "units": [
+        { "name": "Bolívar (Urique, Chihuahua)", "pulp_profile": "Cobre-Zinc en skarn" },
+        { "name": "Cusi (Cusihuiriachi, Chihuahua)", "pulp_profile": "Plata en veta epitermal" }
+      ]
+    },
+    {
+      "id": "luca-mining",
+      "name": "Luca Mining Corp.",
+      "domains": ["lucamining.com"],
+      "units": [
+        { "name": "Campo Morado (Arcelia, Guerrero)", "pulp_profile": "Sulfuros masivos volcanogénicos polimetálicos" },
+        { "name": "Tahuehueto (Tamazula, Durango)", "pulp_profile": "Veta epitermal polimetálica Oro-Plata" }
+      ]
+    },
+    {
+      "id": "avino-silver",
+      "name": "Avino Silver & Gold Mines",
+      "domains": ["avino.com"],
+      "units": [
+        { "name": "Avino (Pánuco de Coronado, Durango)", "pulp_profile": "Plata-Cobre-Oro histórico con cuarzo" }
+      ]
+    },
+    {
+      "id": "vizsla-silver",
+      "name": "Vizsla Silver Corp.",
+      "domains": ["vizslasilver.com"],
+      "units": [
+        { "name": "Pánuco (Concordia, Sinaloa)", "pulp_profile": "Distrito de plata y oro de alta ley" }
+      ]
+    },
+    {
+      "id": "silvercrest-metals",
+      "name": "SilverCrest Metals",
+      "domains": ["silvercrestmetals.com"],
+      "units": [
+        { "name": "Las Chispas (Arizpe, Sonora)", "pulp_profile": "Molienda fina de plata y oro de alta ley" }
+      ]
+    },
+    {
+      "id": "guanajuato-silver",
+      "name": "Guanajuato Silver Co.",
+      "domains": ["gsilver.com"],
+      "units": [
+        { "name": "El Cubo (Guanajuato, Gto.)", "pulp_profile": "Flotación y cianuración tradicional" },
+        { "name": "Topia (Topia, Durango)", "pulp_profile": "Sulfuros polimetálicos Pb-Zn-Ag alta ley" },
+        { "name": "Valenciana (Guanajuato, Gto.)", "pulp_profile": "Plata y oro en veta histórica" }
+      ]
+    },
+    {
+      "id": "southern-copper",
+      "name": "Southern Copper Corporation",
+      "domains": ["southerncoppermineral.com", "asur.com.mx"],
+      "units": [
+        { "name": "Santa Bárbara (Santa Bárbara, Chihuahua)", "pulp_profile": "Complejo polimetálico centenario Pb-Zn-Cu" }
+      ]
+    }
+  ]
+}

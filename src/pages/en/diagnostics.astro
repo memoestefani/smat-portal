@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import DiagnosticsHub from '../../components/DiagnosticsHub.astro';
+import WhatsAppButton from '../../components/WhatsAppButton.astro';
+---
+
+<BaseLayout 
+  title="Visual Failure & Wear Diagnostics Guide | SMAT Minerals"
+  description="Practical diagnostic guide and wear part selection for slurry pumps, flotation cells, and filter presses from Durango, Mexico."
+  lang="en"
+  canonicalPath="/en/diagnostics/"
+  alternateEsPath="/diagnostico/"
+  alternateEnPath="/en/diagnostics/"
+>
+  <Header slot="header" lang="en" currentPath="/en/diagnostics/" alternatePath="/diagnostico/" />
+
+  <DiagnosticsHub lang="en" />
+
+  <WhatsAppButton lang="en" />
+  <Footer slot="footer" lang="en" />
+</BaseLayout>

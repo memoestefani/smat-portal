@@ -1,0 +1,646 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FlightDeck from '../components/FlightDeck.astro';
+import TrustMatrix from '../components/TrustMatrix.astro';
+import CaseCards from '../components/CaseCards.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+---
+
+<BaseLayout 
+  title="Equipos de Proceso y Refacciones Listas en Durango | SMAT Minerals"
+  description="SMAT Minerals: Bombas de pulpa en skid, celdas de flotación, filtros prensa y refaccionamiento de desgaste Alto Cromo A05 con despacho en 24-48h desde Durango, México."
+  lang="es"
+  canonicalPath="/"
+  alternateEsPath="/"
+  alternateEnPath="/en/"
+>
+  <Header slot="header" lang="es" currentPath="/" alternatePath="/en/" />
+
+  <!-- Hero Section Editorial & Luminous (Decisión 1-C Multi-Equipo & Decisión 3-C Poda de Mini-Cajas) -->
+  <section class="hero-section">
+    <div class="container hero-container">
+      <div class="hero-badge-wrap">
+        <span class="badge badge-copper">
+          <span class="live-dot"></span>
+          ALMACÉN CENTRAL DURANGO • SUMINISTRO DIRECTO A MINA
+        </span>
+      </div>
+
+      <h1 class="hero-title">
+        Equipos de Proceso y Refacciones Listas en Durango <br />
+        <span class="serif-italic">Bombeo de pulpa, celdas de flotación y filtración de jales para que su concentradora nunca se detenga</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Stock local, verificación dimensional en banco y entrega inmediata en mina. Evite paros de molino sin esperar 16 semanas de importación de ultramar.
+      </p>
+
+      <!-- Botones de Acción Directa Apple Pro (Ergonomía Don Manuel) -->
+      <div class="hero-actions">
+        <a href="#rfq" class="btn btn-primary btn-lg hero-cta-btn">
+          <span>Facilitar Requisición / RFQ</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-left:6px;"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        </a>
+        <a href="/catalogo/" class="btn btn-secondary btn-lg hero-catalog-btn">
+          <span>Ver Catálogo Digital</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-left:6px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VITRINA DE HARDWARE: LOS 3 CIRCUITOS DE PLANTA HÚMEDA (Decisión 1-C & 4-C Key-Specs) -->
+  <section class="equipment-showcase-section" id="equipos-clave">
+    <div class="container">
+      <div class="section-header-editorial">
+        <span class="badge badge-copper">SUMINISTRO PROBADO EN PATIO</span>
+        <h2>Los 3 Circuitos Clave del Área Húmeda</h2>
+        <p>Maquinaria pesada y componentes de desgaste verificados en banco en Durango, listos para envío inmediato a su concentradora.</p>
+      </div>
+
+      <div class="showcase-grid">
+        <!-- Tarjeta 1: Bombeo y Molienda -->
+        <article class="showcase-card">
+          <div class="showcase-card-header">
+            <span class="showcase-tag">Circuito 1: Molienda y Bombeo</span>
+            <span class="showcase-metric font-mono-tech">4x3 C a 10x8 F</span>
+          </div>
+          <h3 class="showcase-title">Bombas de Pulpa en Skid y Refacciones A05</h3>
+          <p class="showcase-desc">
+            Carcasa bipartida reforzada con motor sobre canal C e interiores en Alto Cromo. Lista para montar y bombear sin paros.
+          </p>
+
+          <div class="pro-keyspecs-box">
+            <div class="keyspec-row">
+              <span class="keyspec-label">Caudal:</span>
+              <strong class="keyspec-val pro-tabular-nums">30 a 1,200 m³/h (hasta 80 mca)</strong>
+            </div>
+            <div class="keyspec-row">
+              <span class="keyspec-label">Metalurgia:</span>
+              <strong class="keyspec-val">ASTM A532 A05 (≥650 HB) / NR-60</strong>
+            </div>
+            <div class="keyspec-row">
+              <span class="keyspec-label">Balanceo:</span>
+              <strong class="keyspec-val">ISO 1940 Grado G2.5 en banco Durango</strong>
+            </div>
+            <div class="keyspec-row">
+              <span class="keyspec-label">Acople:</span>
+              <strong class="keyspec-val">Bridas y barrenos ANSI estándar 1:1</strong>
+            </div>
+          </div>
+
+          <div class="showcase-action">
+            <a href="/?equipo=skid_bomba#rfq" class="btn-showcase-quote">
+              <span>Configurar Bomba o Refacción ↓</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- Tarjeta 2: Flotación de Minerales -->
+        <article class="showcase-card showcase-card-featured">
+          <div class="showcase-card-header">
+            <span class="showcase-tag featured-tag">Circuito 2: Concentración</span>
+            <span class="showcase-metric font-mono-tech">50 a 300 ft³</span>
+          </div>
+          <h3 class="showcase-title">Celdas de Flotación y Mecanismos Rotor-Estator</h3>
+          <p class="showcase-desc">
+            Dispersión micro-burbuja homogénea y alta cinética de recuperación metalúrgica para circuitos Rougher, Cleaner y Scavenger.
+          </p>
+
+          <div class="pro-keyspecs-box">
+            <div class="keyspec-row">
+              <span class="keyspec-label">Capacidad:</span>
+              <strong class="keyspec-val pro-tabular-nums">50 a 300 ft³ (individual / batería)</strong>
+            </div>
+            <div class="keyspec-row">
+              <span class="keyspec-label">Mecanismo:</span>
+              <strong class="keyspec-val">Rotor y estator en elastómero anti-corte</strong>
+            </div>
+            <div class="keyspec-row">
+              <span class="keyspec-label">Flecha:</span>
+              <strong class="keyspec-val">Acero aleado AISI 4140 templado</strong>
+            </div>
+            <div class="keyspec-row">
+              <span class="keyspec-label">Aireación:</span>
+              <strong class="keyspec-val">Inyección forzada de baja turbulencia</strong>
+            </div>
+          </div>
+
+          <div class="showcase-action">
+            <a href="/?equipo=celda_flotacion#rfq" class="btn-showcase-quote btn-showcase-featured">
+              <span>Configurar Celda o Rotor ↓</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- Tarjeta 3: Filtración de Jales Secos -->
+        <article class="showcase-card">
+          <div class="showcase-card-header">
+            <span class="showcase-tag">Circuito 3: Jales Secos</span>
+            <span class="showcase-metric font-mono-tech">16 bar Prensado</span>
+          </div>
+          <h3 class="showcase-title">Filtros Prensa Automáticos y Placas Filtrantes</h3>
+          <p class="showcase-desc">
+            Deshidratación de relaves y recuperación de agua de proceso. Torta seca lista para apilamiento ecológico seguro.
+          </p>
+
+          <div class="pro-keyspecs-box">
+            <div class="keyspec-row">
+              <span class="keyspec-label">Presión:</span>
+              <strong class="keyspec-val pro-tabular-nums">16 bar electrohidráulico de cierre</strong>
+            </div>
+            <div class="keyspec-row">
+              <span class="keyspec-label">Placas:</span>
+              <strong class="keyspec-val">Polipropileno virgen cámara / membrana</strong>
+            </div>
+            <div class="keyspec-row">
+              <span class="keyspec-label">Telas:</span>
+              <strong class="keyspec-val">Monofilamento despegue instantáneo</strong>
+            </div>
+            <div class="keyspec-row">
+              <span class="keyspec-label">Ciclo:</span>
+              <strong class="keyspec-val">Apertura rápida y purga automatizada</strong>
+            </div>
+          </div>
+
+          <div class="showcase-action">
+            <a href="/?equipo=filtro_prensa#rfq" class="btn-showcase-quote">
+              <span>Configurar Filtro Prensa ↓</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+            </a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- MATRIZ FIDUCIARIA DE TCO COMPARATIVA (Ítem 11 - Ola 20) -->
+  <section class="tco-matrix-section" id="tco-analisis">
+    <div class="container">
+      <div class="tco-comparison-card">
+        <div class="tco-card-header">
+          <span class="badge badge-copper">CERTEZA ECONÓMICA DE PLANTA</span>
+          <h3>Stock Estratégico en Durango vs. Importación Tradicional</h3>
+          <p>La diferencia cuantitativa entre mantener el molino produciendo o absorber paros no programados por falta de refacción.</p>
+        </div>
+
+        <div class="tco-comparison-matrix">
+          <div class="tco-row tco-row-header">
+            <span class="tco-cell tco-crit">Criterio Crítico</span>
+            <span class="tco-cell tco-trad">Importación Tradicional (Ultramar)</span>
+            <span class="tco-cell tco-smat">Suministro SMAT (Almacén Durango)</span>
+          </div>
+
+          <div class="tco-row">
+            <span class="tco-cell tco-crit"><strong>Disponibilidad de Fierro</strong></span>
+            <span class="tco-cell tco-trad">16 a 24 semanas en contenedor marítimo sujeto a retrasos aduanales.</span>
+            <span class="tco-cell tco-smat"><strong>Despacho en 24 a 48 horas</strong> a mina o retiro el mismo día en patio con folio.</span>
+          </div>
+
+          <div class="tco-row">
+            <span class="tco-cell tco-crit"><strong>Prueba y Ajuste Dimensional</strong></span>
+            <span class="tco-cell tco-trad">Se comprueba directo en la bomba parada en mina; riesgo de desajuste en barrenos.</span>
+            <span class="tco-cell tco-smat"><strong>Cotejo 1:1 en banco</strong> con reloj comparador (&lt;0.05 mm) y balanceo ISO 1940 G2.5 antes del flete.</span>
+          </div>
+
+          <div class="tco-row">
+            <span class="tco-cell tco-crit"><strong>Riesgo Financiero / TCO</strong></span>
+            <span class="tco-cell tco-trad">Sobreprecio monopólico (+60%) y riesgo de paros de molino a <strong>40,000 USD/hora</strong>.</span>
+            <span class="tco-cell tco-smat"><strong>Amortiguador de inventario</strong> que paga el valor de la refacción protegiendo la producción.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- UNIFIED FLIGHT DECK (Cotizador Interactivo Oficial con Muelle Slate y Hoja A4) -->
+  <section class="flight-deck-section">
+    <div class="container">
+      <FlightDeck lang="es" />
+    </div>
+  </section>
+
+  <!-- MATRIZ DE CERTEZA TÉCNICA & LÍMITES DE INGENIERÍA (Decisión 4-C & Ítem 12) -->
+  <section class="trust-section" id="garantia">
+    <div class="container">
+      <div class="section-header-editorial">
+        <span class="badge badge-copper">CERTEZA EN PATIO Y LÍMITES HONESTOS</span>
+        <h2>Certeza Técnica, Trazabilidad Física y Límites de Ingeniería</h2>
+        <p>Conozca el alcance de nuestras garantías en Almacén Durango, balanceo dinámico de banco y las condiciones de aplicación técnica para proteger su proceso.</p>
+      </div>
+      <TrustMatrix lang="es" hideBoundaries={true} />
+    </div>
+  </section>
+
+  <!-- CASOS DE EVIDENCIA EN CAMPO -->
+  <section class="cases-section">
+    <div class="container">
+      <CaseCards lang="es" />
+    </div>
+  </section>
+
+  <WhatsAppButton lang="es" />
+  <Footer slot="footer" lang="es" />
+</BaseLayout>
+
+<style>
+  .hero-section {
+    padding-top: 4.5rem;
+    padding-bottom: 3.5rem;
+    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
+    border-bottom: 1px solid var(--smat-border-light);
+    text-align: center;
+  }
+
+  .hero-container {
+    max-width: 920px;
+  }
+
+  .hero-badge-wrap {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-title {
+    margin-bottom: 1.25rem;
+    color: #090d16;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .serif-italic {
+    font-style: italic;
+    color: #0b132b;
+    font-size: 0.85em;
+    font-weight: 500;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+    line-height: 1.65;
+    margin-bottom: 2rem;
+    max-width: 780px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #475569;
+  }
+
+  .hero-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-cta-btn {
+    padding: 0.85rem 1.75rem;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .hero-catalog-btn {
+    padding: 0.85rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .live-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    background: #10b981;
+    border-radius: 50%;
+    margin-right: 5px;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  .equipment-showcase-section {
+    padding: var(--smat-space-2xl, 80px) 0;
+    background: #ffffff;
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  @media (max-width: 960px) {
+    .showcase-grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+  }
+
+  .showcase-card {
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-md);
+    padding: 1.75rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .showcase-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--smat-shadow-md);
+    border-color: rgba(194, 94, 0, 0.35);
+  }
+
+  .showcase-card-featured {
+    border-color: var(--smat-copper-accent);
+    background: linear-gradient(180deg, #ffffff 0%, #fffdfa 100%);
+    box-shadow: 0 4px 14px rgba(194, 94, 0, 0.08);
+  }
+
+  .showcase-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 0.5rem;
+  }
+
+  .showcase-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--smat-text-secondary);
+    background: #f1f5f9;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--smat-radius-sm);
+  }
+
+  .featured-tag {
+    color: #9a3412;
+    background: rgba(194, 94, 0, 0.1);
+  }
+
+  .showcase-metric {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--smat-copper-accent);
+  }
+
+  .showcase-title {
+    font-family: var(--smat-font-ui);
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--smat-text-primary);
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+  }
+
+  .showcase-desc {
+    font-size: 0.86rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  /* Rejilla Tabular Apple Pro Key-Specs (Decisión 4-C) */
+  .pro-keyspecs-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--smat-radius-sm);
+    padding: 0.75rem 0.85rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .keyspec-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.78rem;
+    gap: 0.5rem;
+    border-bottom: 1px solid #edf2f7;
+    padding-bottom: 0.35rem;
+  }
+
+  .keyspec-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .keyspec-label {
+    color: #64748b;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .keyspec-val {
+    color: #0f172a;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  .showcase-action {
+    margin-top: auto;
+  }
+
+  .btn-showcase-quote {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: #f8fafc;
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-sm);
+    color: var(--smat-text-primary);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-showcase-quote:hover {
+    background: #f1f5f9;
+    border-color: var(--smat-text-primary);
+    color: var(--smat-text-primary);
+  }
+
+  .btn-showcase-featured {
+    background: var(--smat-copper-accent);
+    color: #ffffff;
+    border-color: var(--smat-copper-accent);
+  }
+
+  .btn-showcase-featured:hover {
+    background: #a34e00;
+    border-color: #a34e00;
+    color: #ffffff;
+  }
+
+  /* MATRIZ DE TCO COMPARATIVA (Ítem 11) */
+  .tco-matrix-section {
+    padding: 3rem 0;
+    background: #fafaf9;
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+
+  .tco-comparison-card {
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-md);
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+
+  .tco-card-header {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 1.75rem;
+  }
+
+  .tco-card-header h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--smat-text-primary);
+    margin: 0.5rem 0;
+  }
+
+  .tco-card-header p {
+    font-size: 0.9rem;
+    color: var(--smat-text-secondary);
+  }
+
+  .tco-comparison-matrix {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--smat-radius-sm);
+    overflow: hidden;
+  }
+
+  .tco-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.84rem;
+  }
+
+  .tco-row:last-child {
+    border-bottom: none;
+  }
+
+  .tco-row-header {
+    background: #090d16;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tco-row-header .tco-cell {
+    padding: 0.75rem 1rem;
+  }
+
+  .tco-cell {
+    padding: 0.85rem 1rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .tco-crit {
+    background: #f8fafc;
+    border-right: 1px solid #e2e8f0;
+    color: #334155;
+  }
+
+  .tco-trad {
+    border-right: 1px solid #e2e8f0;
+    color: #64748b;
+    background: #fafaf9;
+  }
+
+  .tco-smat {
+    background: #ffffff;
+    color: #0f172a;
+  }
+
+  .tco-smat strong {
+    color: var(--smat-copper-accent);
+  }
+
+  @media (max-width: 800px) {
+    .tco-row {
+      grid-template-columns: 1fr;
+    }
+    .tco-row-header {
+      display: none;
+    }
+    .tco-crit {
+      border-right: none;
+      font-weight: 800;
+      background: #e2e8f0;
+      padding: 0.5rem 1rem;
+    }
+    .tco-trad {
+      border-right: none;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+  }
+
+  .flight-deck-section {
+    padding: var(--smat-space-2xl, 80px) 0;
+    background: #fafaf9;
+  }
+
+  .trust-section {
+    padding: var(--smat-space-2xl, 80px) 0;
+    background: #ffffff;
+    border-top: 1px solid var(--smat-border-light);
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+
+  .section-header-editorial {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto 3rem;
+  }
+
+  .section-header-editorial h2 {
+    font-family: var(--smat-font-editorial);
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    color: var(--smat-text-primary);
+    margin: 0.75rem 0;
+    letter-spacing: -0.02em;
+  }
+
+  .section-header-editorial p {
+    font-size: 1rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.6;
+  }
+
+  .cases-section {
+    padding: var(--smat-space-2xl, 80px) 0;
+    background: #fafaf9;
+  }
+</style>

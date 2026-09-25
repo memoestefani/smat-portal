@@ -1,0 +1,471 @@
+---
+interface Props {
+  lang?: 'es' | 'en';
+}
+
+const { lang = 'es' } = Astro.props;
+const isEs = lang === 'es';
+
+import diagData from '../../data/diagnostics.json';
+const diagnostics = diagData.diagnostics;
+---
+
+<section class="diagnostics-section" id="diagnostico">
+  <div class="container">
+    <div class="diagnostics-header">
+      <span class="badge badge-emergency">{isEs ? 'ASISTENTE MECÁNICO DE CAMPO' : 'FIELD MECHANIC ASSISTANT'}</span>
+      <h1 class="diagnostics-title">{isEs ? 'Guía Visual de Diagnóstico de Fallas en Planta' : 'Visual Failure Diagnostics & Replacement Parts'}</h1>
+      <p class="diagnostics-lead">
+        {isEs 
+          ? 'Guía práctica para superintendentes y mecánicos de mina. Identifique el síntoma físico en sus bombas, celdas o filtros para resolver la causa raíz con refacciones de alta durabilidad en Durango.'
+          : 'Practical guide for superintendents and plant mechanics. Identify physical symptoms across pumps, flotation cells, or filters to resolve root causes with high-durability spares in Durango.'}
+      </p>
+
+      <!-- Píldoras Táctiles Mecánicas de 1 Clic Sin Íconos (Decisión 10-C / GOLD-181) -->
+      <div class="diag-filters-wrap">
+        <span class="diag-filter-legend">{isEs ? 'SELECCIONE SÍNTOMA O FALLA MECÁNICA (1 CLIC):' : 'SELECT MECHANICAL SYMPTOM OR DEFECT (1 CLICK):'}</span>
+        <div class="diag-filter-chips" role="group" aria-label={isEs ? 'Filtro de fallas mecánicas por componente' : 'Mechanical failure filter by component'}>
+          <button type="button" class="diag-pill active" data-filter="all" aria-pressed="true">
+            {isEs ? 'TODOS' : 'ALL'}
+          </button>
+          <button type="button" class="diag-pill" data-filter="impulsor" aria-pressed="false">
+            {isEs ? 'IMPULSOR DESGASTADO' : 'WORN IMPELLER'}
+          </button>
+          <button type="button" class="diag-pill" data-filter="cavitacion" aria-pressed="false">
+            {isEs ? 'CAVITACIÓN / RUIDO' : 'CAVITATION / NOISE'}
+          </button>
+          <button type="button" class="diag-pill" data-filter="fuga" aria-pressed="false">
+            {isEs ? 'FUGA EN PRENSAESTOPA' : 'PACKING GLAND LEAK'}
+          </button>
+          <button type="button" class="diag-pill" data-filter="vibracion" aria-pressed="false">
+            {isEs ? 'VIBRACIÓN EN EJE' : 'SHAFT VIBRATION'}
+          </button>
+          <button type="button" class="diag-pill" data-filter="filtro" aria-pressed="false">
+            {isEs ? 'TELAS DE FILTRO' : 'FILTER CLOTHS'}
+          </button>
+        </div>
+        <span class="diag-search-count" id="diag-search-count">{isEs ? 'Mostrando todos los diagnósticos' : 'Showing all diagnostics'}</span>
+      </div>
+    </div>
+
+    <div class="diagnostics-grid">
+      {diagnostics.map((item) => (
+        <div class="card diag-card" data-tags={`${item.id} ${item.title_es} ${item.title_en} ${item.target_role}`.toLowerCase()}>
+          <div class="diag-header">
+            <span class="pulsing-dot pulsing-dot-amber"></span>
+            <h3 class="diag-title">{isEs ? item.title_es : item.title_en}</h3>
+          </div>
+          
+          <div class="diag-body">
+            <div class="diag-field">
+              <span class="field-label">{isEs ? 'Síntoma en Planta:' : 'Plant Symptom:'}</span>
+              <p class="field-text">{isEs ? item.symptom_es : item.symptom_en}</p>
+            </div>
+
+            <div class="diag-field">
+              <span class="field-label">{isEs ? 'Causa Raíz:' : 'Root Cause:'}</span>
+              <p class="field-text">{isEs ? item.root_cause_es : item.root_cause_en}</p>
+            </div>
+
+            <div class="diag-field solution-field">
+              <span class="field-label">{isEs ? 'Qué pieza poner y qué revisar en la bomba:' : 'Action & Recommended Replacement Part:'}</span>
+              <p class="field-text highlight">{isEs ? item.recommended_action_es : item.recommended_action_en}</p>
+            </div>
+          </div>
+
+          <div class="diag-footer">
+            <a 
+              href={`https://wa.me/526188104408?text=${encodeURIComponent(
+                isEs 
+                  ? `[ATENCIÓN TÉCNICA] Hola SMAT Minerals, tengo una falla tipo '${item.title_es}' en mi planta. Requiero disponibilidad de refacción en Durango.`
+                  : `[TECHNICAL INQUIRY] Hello SMAT Minerals, I have a '${item.title_en}' failure in my plant. Checking replacement part availability in Durango.`
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-emergency btn-sm diag-action-btn"
+              onclick="if(typeof window.smatTrack==='function') window.smatTrack('lead_paro_urgente', { symptom_id: item.id });"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              {isEs ? 'WhatsApp Técnico' : 'Technical WhatsApp'}
+            </a>
+            <a 
+              href={isEs ? `/#rfq?equipo=${item.target_role}&origen=diagnostico&falla=${item.id}&sintoma=${encodeURIComponent(item.title_es)}&urgencia=paro` : `/en/#rfq?equipo=${item.target_role}&origen=diagnostico&falla=${item.id}&sintoma=${encodeURIComponent(item.title_en)}&urgencia=paro`}
+              class="btn btn-secondary btn-sm diag-action-btn diag-quote-btn"
+              data-symptom={item.title_es}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              {isEs ? 'Cotizar Refacción →' : 'Quote Spares →'}
+            </a>
+          </div>
+        </div>
+      ))}
+
+      <!-- Tarjeta 5: Falla no listada -->
+      <div class="card diag-card unlisted-card" data-tags="otra_falla pulpa severa especial acida">
+        <div class="diag-header">
+          <span class="pulsing-dot pulsing-dot-green"></span>
+          <h3 class="diag-title">{isEs ? 'Falla No Listada o Pulpa Severa Especial' : 'Unlisted Failure or Extreme Slurry Condition'}</h3>
+        </div>
+        
+        <div class="diag-body">
+          <div class="diag-field">
+            <span class="field-label">{isEs ? 'Condición:' : 'Condition:'}</span>
+            <p class="field-text">
+              {isEs 
+                ? 'Pulpas ácidas, temperaturas elevadas, jales finos o desgaste no identificado que afecte la vida útil de sus componentes.'
+                : 'Acidic slurries, elevated temperatures, fine tailings, or unidentified wear affecting component lifespan.'}
+            </p>
+          </div>
+
+          <div class="diag-field solution-field">
+            <span class="field-label">{isEs ? 'Protocolo:' : 'Protocol:'}</span>
+            <p class="field-text highlight">
+              {isEs 
+                ? 'Revisión técnica directa con el equipo de ingeniería SMAT en Durango.'
+                : 'Direct technical review with SMAT engineering team in Durango.'}
+            </p>
+          </div>
+        </div>
+
+        <div class="diag-footer">
+          <a 
+            href={`https://wa.me/526188104408?text=${encodeURIComponent(
+              isEs 
+                ? '[CONSULTA MECÁNICA] Hola SMAT Minerals, tengo una condición no listada en planta. Envío foto del componente para revisión.'
+                : '[TECHNICAL INQUIRY] Hello SMAT Minerals, I have an unlisted slurry condition at my plant. Attaching component picture for analysis.'
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-emergency btn-sm diag-action-btn"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            {isEs ? 'WhatsApp SMAT Durango' : 'SMAT Durango WhatsApp'}
+          </a>
+          <a 
+            href={isEs ? "/#rfq?equipo=impulsor&origen=diagnostico&falla=otra_falla" : "/en/#rfq?equipo=impulsor&origen=diagnostico&falla=otra_falla"} 
+            class="btn btn-secondary btn-sm diag-action-btn"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            {isEs ? 'Requisición Formal con Folio →' : 'Formal Requisition with Folio →'}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .diagnostics-section {
+    padding-top: 4rem;
+    padding-bottom: 4.5rem;
+    background-color: #fafaf9;
+  }
+
+  .diagnostics-header {
+    text-align: center;
+    max-width: 840px;
+    margin: 0 auto 3rem;
+  }
+
+  .diagnostics-title {
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    font-family: var(--smat-font-editorial);
+    color: var(--smat-text-primary);
+    margin: 1rem 0;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .diagnostics-lead {
+    font-size: 1.05rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  /* Píldoras Táctiles Sin Íconos (Decisión 10-C / GOLD-181) */
+  .diag-filters-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .diag-filter-legend {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--smat-text-muted, #64748b);
+    letter-spacing: 0.05em;
+    font-family: var(--smat-font-mono, monospace);
+  }
+
+  .diag-filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    max-width: 820px;
+  }
+
+  .diag-pill {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+    padding: 0.5rem 0.95rem;
+    border-radius: var(--smat-radius-sm, 4px);
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    transition: all 0.15s ease;
+  }
+
+  .diag-pill:hover {
+    border-color: var(--smat-copper-accent, #c25e00);
+    color: var(--smat-copper-accent, #c25e00);
+    background: #fffdfa;
+  }
+
+  .diag-pill.active, .diag-pill[aria-pressed="true"] {
+    background: #090d16;
+    color: #ffffff;
+    border-color: #090d16;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .diag-search-count {
+    font-size: 0.78rem;
+    font-family: var(--smat-font-mono, monospace);
+    color: var(--smat-text-muted, #64748b);
+    margin-top: 0.25rem;
+  }
+
+  .diagnostics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 860px) {
+    .diagnostics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .diag-card {
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-md);
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .diag-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--smat-shadow-md);
+    border-color: rgba(194, 94, 0, 0.3);
+  }
+
+  .diag-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--smat-border-light);
+    padding-bottom: 0.75rem;
+  }
+
+  .diag-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--smat-text-primary);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .pulsing-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .pulsing-dot-amber {
+    background-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+  }
+
+  .pulsing-dot-green {
+    background-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  }
+
+  .diag-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .diag-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .field-label {
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--smat-text-muted);
+  }
+
+  .field-text {
+    font-size: 0.88rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .solution-field {
+    background-color: #f8fafc;
+    border-left: 3px solid var(--smat-copper-accent);
+    padding: 0.75rem 1rem;
+    border-radius: 0 var(--smat-radius-sm) var(--smat-radius-sm) 0;
+  }
+
+  .field-text.highlight {
+    color: var(--smat-text-primary);
+    font-weight: 600;
+  }
+
+  .diag-footer {
+    display: flex;
+    gap: 0.75rem;
+    border-top: 1px solid var(--smat-border-light);
+    padding-top: 1rem;
+  }
+
+  .diag-action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.55rem 1rem;
+    border-radius: var(--smat-radius-sm);
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .btn-emergency {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    color: #ffffff;
+  }
+
+  .btn-emergency:hover {
+    background: var(--smat-copper-accent, #c25e00);
+    border-color: var(--smat-copper-accent, #c25e00);
+    color: #ffffff;
+  }
+
+  .btn-secondary {
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light, #e2e8f0);
+    color: var(--smat-text-primary, #0f172a);
+  }
+
+  .btn-secondary:hover {
+    background: #f8fafc;
+    border-color: var(--smat-text-secondary, #64748b);
+  }
+</style>
+
+<script>
+  function initDiagFilters() {
+    const pills = document.querySelectorAll<HTMLButtonElement>('.diag-pill');
+    const cards = document.querySelectorAll<HTMLElement>('.diag-card');
+    const countEl = document.getElementById('diag-search-count');
+
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        // Toggle active state
+        pills.forEach(p => {
+          p.classList.remove('active');
+          p.setAttribute('aria-pressed', 'false');
+        });
+        pill.classList.add('active');
+        pill.setAttribute('aria-pressed', 'true');
+
+        const filter = pill.getAttribute('data-filter') || 'all';
+        let visible = 0;
+
+        cards.forEach(card => {
+          const tags = card.getAttribute('data-tags') || card.textContent?.toLowerCase() || '';
+          if (filter === 'all') {
+            card.style.display = '';
+            visible++;
+          } else if (filter === 'impulsor' && (tags.includes('impulsor') || tags.includes('álabes') || tags.includes('impeller'))) {
+            card.style.display = '';
+            visible++;
+          } else if (filter === 'cavitacion' && (tags.includes('cavitación') || tags.includes('cavitacion') || tags.includes('ruido') || tags.includes('cavitation'))) {
+            card.style.display = '';
+            visible++;
+          } else if (filter === 'fuga' && (tags.includes('fuga') || tags.includes('prensaestopa') || tags.includes('sello') || tags.includes('leak'))) {
+            card.style.display = '';
+            visible++;
+          } else if (filter === 'vibracion' && (tags.includes('vibración') || tags.includes('vibracion') || tags.includes('eje') || tags.includes('flecha') || tags.includes('bearing'))) {
+            card.style.display = '';
+            visible++;
+          } else if (filter === 'filtro' && (tags.includes('filtro') || tags.includes('tela') || tags.includes('prensa') || tags.includes('cloth'))) {
+            card.style.display = '';
+            visible++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        if (countEl) {
+          if (filter === 'all') {
+            countEl.textContent = 'Mostrando todos los diagnósticos';
+          } else {
+            countEl.textContent = `${visible} diagnóstico(s) filtrado(s)`;
+          }
+        }
+      });
+    });
+
+    // Conexión fluida con el cotizador (Decisión 9-C)
+    const quoteBtns = document.querySelectorAll<HTMLAnchorElement>('.diag-quote-btn');
+    quoteBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const href = btn.getAttribute('href');
+        if (href && (href.startsWith('/#rfq') || href.startsWith('#rfq') || href.startsWith('/en/#rfq'))) {
+          const rfqSection = document.getElementById('rfq');
+          if (rfqSection) {
+            e.preventDefault();
+            const url = new URL(btn.href, window.location.origin);
+            history.pushState(null, '', url.pathname + url.search + url.hash);
+            rfqSection.scrollIntoView({ behavior: 'smooth' });
+            window.dispatchEvent(new HashChangeEvent('hashchange'));
+          }
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDiagFilters);
+  } else {
+    initDiagFilters();
+  }
+</script>

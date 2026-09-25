@@ -1,0 +1,153 @@
+---
+// src/components/FlightDeck.astro
+// Decisión 1-C (Octava Ola): Unified Ergonomic Workbench Canvas
+// Concentra la experiencia en la consola reactiva QuoteWizard y provee accesos directos a Circuitos P&ID y Diagnóstico de Fallas.
+
+import QuoteWizard from './QuoteWizard.astro';
+
+interface Props {
+  lang?: 'es' | 'en';
+}
+
+const { lang = 'es' } = Astro.props;
+const isEs = lang === 'es';
+---
+
+<div class="flight-deck-wrapper" id="flight-deck">
+  <!-- Consola de Requisición y Ficha Técnica -->
+  <div class="flight-deck-main">
+    <QuoteWizard lang={lang} />
+  </div>
+
+  <!-- Tarjetas de Navegación Ergonómica a Módulos Especializados (Decisión 6-C) -->
+  <div class="flight-deck-extensions">
+    <a href={isEs ? "/bombeo/" : "/en/pumping/"} class="extension-card">
+      <div class="ext-badge-col">
+        <span class="ext-badge">P&ID</span>
+        <div class="ext-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+      </div>
+      <div class="ext-content">
+        <strong>{isEs ? 'Mapeo de Circuitos Mineros' : 'Process Circuit Diagrams'}</strong>
+        <p>{isEs ? 'Consulte puntos críticos de desgaste en Molienda SAG, Flotación y Jales Espesados.' : 'Review critical wear points across SAG Grinding, Flotation & Thickened Tailings.'}</p>
+        <span class="ext-link">{isEs ? 'Explorar Circuitos →' : 'Explore Circuits →'}</span>
+      </div>
+    </a>
+
+    <a href={isEs ? "/diagnostico/" : "/en/diagnostics/"} class="extension-card">
+      <div class="ext-badge-col">
+        <span class="ext-badge">{isEs ? 'DIAGNÓSTICO' : 'DIAGNOSTICS'}</span>
+        <div class="ext-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+      </div>
+      <div class="ext-content">
+        <strong>{isEs ? 'Diagnóstico Rápido de Fallas Mecánicas' : 'Field Failure & Wear Diagnostics'}</strong>
+        <p>{isEs ? 'Identifique patrones de cavitación, fuga en prensaestopa o desbalance y encuentre la refacción exacta.' : 'Identify cavitation patterns, gland leaks, or dynamic unbalance and find the exact replacement part.'}</p>
+        <span class="ext-link">{isEs ? 'Identificar Falla en Planta →' : 'Troubleshoot Equipment →'}</span>
+      </div>
+    </a>
+  </div>
+</div>
+
+<style>
+  .flight-deck-wrapper {
+    background: var(--smat-bg-surface);
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-lg);
+    box-shadow: var(--smat-shadow-card);
+    overflow: hidden;
+    margin: 1.5rem auto;
+  }
+
+  .flight-deck-main {
+    background: #ffffff;
+  }
+
+  /* Extension Cards */
+  .flight-deck-extensions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-top: 1px solid var(--smat-border-light);
+  }
+
+  @media (max-width: 768px) {
+    .flight-deck-extensions {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .extension-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.15rem;
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-md);
+    padding: 1.25rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  }
+
+  .extension-card:hover {
+    border-color: var(--smat-copper-accent);
+    transform: translateY(-2px);
+    box-shadow: var(--smat-shadow-md);
+  }
+
+  .ext-badge-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+  }
+
+  .ext-badge {
+    font-size: 0.65rem;
+    font-weight: 800;
+    font-family: var(--smat-font-mono);
+    color: var(--smat-copper-accent);
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .ext-icon {
+    font-size: 1.5rem;
+  }
+
+  .ext-content strong {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--smat-text-primary);
+    margin-bottom: 0.25rem;
+    font-weight: 700;
+  }
+
+  .ext-content p {
+    font-size: 0.82rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.45;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .ext-link {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--smat-copper-accent);
+    transition: transform 0.15s ease;
+    display: inline-block;
+  }
+
+  .extension-card:hover .ext-link {
+    transform: translateX(3px);
+  }
+</style>

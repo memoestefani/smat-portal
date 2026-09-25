@@ -1,0 +1,202 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import SharePurchasing from '../../../components/SharePurchasing.astro';
+import WhatsAppButton from '../../../components/WhatsAppButton.astro';
+---
+
+<BaseLayout 
+  title="Hydraulic Filter Presses for Dry Tailings & Concentrates | SMAT Minerals"
+  description="High-pressure hydraulic filter presses (up to 16 bar) for dry tailings dewatering and concentrate recovery. Heavy structural manufacturing in Durango, Mexico."
+  lang="en"
+  canonicalPath="/en/filtration/press/"
+  alternateEsPath="/filtracion/prensa/"
+  alternateEnPath="/en/filtration/press/"
+>
+  <Header slot="header" lang="en" currentPath="/en/filtration/press/" alternatePath="/filtracion/prensa/" />
+
+  <section class="page-hero">
+    <div class="container text-center">
+      <span class="badge badge-capex">CAPEX • ENGINEERED PROJECT SYSTEMS</span>
+      <h1>Hydraulic Filter Presses for Dry Tailings</h1>
+      <p class="subtitle">High-tonnage mechanical dewatering systems for sustainable tailings dry stacking.</p>
+    </div>
+  </section>
+
+  <section class="section-spacing">
+    <div class="container content-container">
+      <div class="card detail-card">
+        <h2>Mechanical Dewatering for Tailings Storage Facility (TSF) Safety</h2>
+        <p>
+          Modern mine tailings stewardship requires shifting toward dry filtered cake deposition to mitigate dam failure catastrophic risks and maximize process water recycling. SMAT Minerals hydraulic filter presses achieve residual cake moistures between 12% and 16%, allowing safe, compactable, and stackable tailings.
+        </p>
+
+        <table class="tech-table">
+          <thead>
+            <tr>
+              <th>Design Parameter</th>
+              <th>SMAT Project Specification</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Plate Size Range</td>
+              <td>Recessed chamber and membrane squeeze plates from 800 x 800 mm to 1500 x 1500 mm</td>
+            </tr>
+            <tr>
+              <td>Hydraulic Clamping Force</td>
+              <td>Heavy hydraulic cylinder delivering clamping pressure up to 350 bar</td>
+            </tr>
+            <tr>
+              <td>Feed Slurry Pressure</td>
+              <td>Slurry positive displacement feeding at 8 bar to 16 bar filtration pressure</td>
+            </tr>
+            <tr>
+              <td>Plate Shifting Mechanism</td>
+              <td>Automated transfer carriage plate shifting or simultaneous block-opening system</td>
+            </tr>
+            <tr>
+              <td>Plant Automation</td>
+              <td>PLC control cabinet with color touch HMI managing feed, press, air blow, and cake discharge</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <SharePurchasing 
+          roleTitle="Hydraulic Filter Press for Dry Tailings"
+          series="Plates 800x800 to 1500x1500 mm (Pressure up to 16 bar)"
+          metallurgy="Heavy Structural Steel Side Beams, Virgin Polypropylene Plates"
+          specs="Heavy-duty hydraulic filter press for tailings dewatering with automated PLC sequencing and dry cake discharge."
+          lang="en"
+        />
+
+        <div class="cta-rfq-box">
+          <div class="cta-rfq-header">
+            <span class="badge badge-copper">INSTANT QUOTE DIRECT FROM CENTRAL FACILITY</span>
+            <h3>Need filter presses for tailings dewatering or concentrate recovery?</h3>
+            <p>Configure your project in the central workbench to receive a formal technical-commercial proposal with sizing analysis.</p>
+          </div>
+          <div class="cta-rfq-actions">
+            <a href="/en/?equipo=filtro_prensa#rfq" class="btn btn-primary btn-lg">
+              Quote Filter Press in Central Workbench →
+            </a>
+            <a href="https://wa.me/526188104408?text=Hello%20SMAT%20Minerals,%20I%20would%20like%20to%20quote%20Filter%20Presses" target="_blank" rel="noopener noreferrer" class="btn btn-emergency btn-lg">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> Inquire Project via WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <WhatsAppButton lang="en" />
+  <Footer slot="footer" lang="en" />
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 4.5rem 0 3.5rem;
+    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+
+  .text-center {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .page-hero h1 {
+    color: #090d16;
+    margin-top: 0.75rem;
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    margin-top: 0.75rem;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .content-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .detail-card {
+    background-color: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: 14px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  }
+
+  .detail-card h2 {
+    color: #090d16;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--color-accent-copper);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+  }
+
+  .detail-card p {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    color: #334155;
+  }
+
+  .tech-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+  }
+
+  .tech-table th, .tech-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--smat-border-light);
+    text-align: left;
+  }
+
+  .tech-table th {
+    background-color: #f8fafc;
+    color: #090d16;
+    font-weight: 700;
+  }
+
+  .tech-table td {
+    color: #334155;
+  }
+
+  .cta-rfq-box {
+    margin-top: 3rem;
+    padding: 2.5rem;
+    background: linear-gradient(180deg, #fafaf9 0%, #f1f5f9 100%);
+    border: 1px solid var(--smat-border-light);
+    border-radius: 12px;
+    text-align: center;
+  }
+
+  .cta-rfq-header h3 {
+    font-size: 1.4rem;
+    color: #090d16;
+    margin: 0.75rem 0 0.5rem;
+  }
+
+  .cta-rfq-header p {
+    color: #475569;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-rfq-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+</style>

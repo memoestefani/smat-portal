@@ -1,0 +1,26 @@
+# Robots.txt for SMAT Minerals (https://smatminerals.com)
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /_astro/
+
+# Permisos explícitos para motores de IA y LLM crawlers
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://smatminerals.com/sitemap-index.xml

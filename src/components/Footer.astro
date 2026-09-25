@@ -1,0 +1,247 @@
+---
+import LogoSmat from './LogoSmat.astro';
+
+interface Props {
+  lang?: 'es' | 'en';
+}
+
+const { lang = 'es' } = Astro.props;
+const isEs = lang === 'es';
+---
+
+<footer class="site-footer">
+  <div class="container footer-content">
+    <div class="footer-grid">
+      <!-- Columna 1: Identidad, Legado y Planta Central Durango (NAP) -->
+      <div class="footer-col brand-col">
+        <div class="footer-brand">
+          <LogoSmat variant="dark" height={36} />
+          <span class="brand-sub">{isEs ? 'Equipos de Proceso y Refaccionamiento' : 'Process Equipment & Critical Spares'}</span>
+        </div>
+        <p class="brand-desc">
+          {isEs 
+            ? 'Dos décadas de ingeniería mecánica en Durango, especializados en bombas de pulpa abrasiva, celdas de flotación y filtros prensa para la minería de Norteamérica.'
+            : 'Two decades of mechanical engineering in Durango, Mexico, specialized in abrasive slurry pumps, flotation cells, and filter presses for North American mining.'}
+        </p>
+        <div class="nap-box">
+          <p class="nap-item">
+            <strong>{isEs ? 'Domicilio Fiscal (Facturación / Alta):' : 'Fiscal HQ (Invoicing / Vendor Reg):'}</strong><br />
+            Mariano Salas #114, Col. Primer Presidente<br />
+            Durango, Dgo., C.P. 34166, México
+          </p>
+          <p class="nap-item">
+            <strong>{isEs ? 'Almacén Central y Despacho:' : 'Central Warehouse & Dispatch:'}</strong><br />
+            {isEs ? 'Durango, Dgo. (Retiro en patio coordinado con folio)' : 'Durango, Mexico (Yard pickup scheduled with folio)'}
+          </p>
+          <p class="nap-item">
+            <strong>{isEs ? 'Horario de Atención:' : 'Operating Hours:'}</strong><br />
+            {isEs ? 'Lun - Vie: 08:00 a 18:00 (Hora Centro)' : 'Mon - Fri: 08:00 to 18:00 (CST)'}
+          </p>
+          <p class="nap-item">
+            <strong>{isEs ? 'Teléfonos de Atención:' : 'Office Lines:'}</strong><br />
+            <a href="tel:+526188104408">(618) 810-4408</a> / <a href="tel:+526188104428">(618) 810-4428</a>
+          </p>
+          <p class="nap-item">
+            <strong>Email:</strong> <a href="mailto:ventas@smatminerals.com">ventas@smatminerals.com</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- Columna 2: Línea de Bombeo de Pulpa (6 Rutas) -->
+      <div class="footer-col">
+        <h4 class="col-heading">{isEs ? 'Línea de Bombeo de Pulpa' : 'Slurry Pumping Line'}</h4>
+        <ul class="footer-links">
+          <li><a href={isEs ? '/bombeo/' : '/en/pumping/'}><strong>{isEs ? 'Hub de Bombeo y Selección' : 'Slurry Pumping Hub'}</strong></a></li>
+          <li><a href={isEs ? '/bombeo/skid/' : '/en/pumping/skid/'}>{isEs ? 'Bombas Completas en Skid' : 'Complete Pump Skids'}</a></li>
+          <li><a href={isEs ? '/bombeo/impulsor/' : '/en/pumping/impeller/'}>{isEs ? 'Impulsores High Chrome A05' : 'High Chrome A05 Impellers'}</a></li>
+          <li><a href={isEs ? '/bombeo/revestimientos/' : '/en/pumping/liners/'}>{isEs ? 'Volutas y Gargantas de Desgaste' : 'Volutes & Throatbushes'}</a></li>
+          <li><a href={isEs ? '/bombeo/sello/' : '/en/pumping/seal/'}>{isEs ? 'Sellos Dinámicos y Prensaestopas' : 'Dynamic Seals & Packing'}</a></li>
+          <li><a href={isEs ? '/bombeo/soporte/' : '/en/pumping/bearing-assembly/'}>{isEs ? 'Ensambles de Rodamientos Timken' : 'Bearing Assembly Cartridges'}</a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 3: Flotación, Filtración y Diagnóstico (7 Rutas) -->
+      <div class="footer-col">
+        <h4 class="col-heading">{isEs ? 'Flotación, Jales y Diagnóstico' : 'Flotation, Tailings & Diagnostics'}</h4>
+        <ul class="footer-links">
+          <li><a href={isEs ? '/flotacion/' : '/en/flotation/'}><strong>{isEs ? 'Hub de Celdas de Flotación' : 'Flotation Systems Hub'}</strong></a></li>
+          <li><a href={isEs ? '/flotacion/celdas/' : '/en/flotation/cells/'}>{isEs ? 'Celdas Mecánicas (50 a 300 ft³)' : 'Flotation Cells (50 to 300 ft³)'}</a></li>
+          <li><a href={isEs ? '/flotacion/mecanismos/' : '/en/flotation/mechanisms/'}>{isEs ? 'Rotores y Estatores de Flotación' : 'Rotors & Stator Diffusers'}</a></li>
+          <li><a href={isEs ? '/filtracion/' : '/en/filtration/'}><strong>{isEs ? 'Hub de Filtración y Jales Secos' : 'Dry Tailings Filtration Hub'}</strong></a></li>
+          <li><a href={isEs ? '/filtracion/prensa/' : '/en/filtration/press/'}>{isEs ? 'Filtros Prensa de 16 bar' : '16-Bar Slurry Filter Presses'}</a></li>
+          <li><a href={isEs ? '/filtracion/repuestos/' : '/en/filtration/parts/'}>{isEs ? 'Placas y Telas Filtrantes' : 'Recessed Plates & Filter Cloths'}</a></li>
+          <li><a href={isEs ? '/diagnostico/' : '/en/diagnostics/'}>{isEs ? 'Guía de Diagnóstico de Fallas en Planta' : 'Plant Equipment Failure Diagnostics'}</a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 4: Instalaciones Durango, Despacho y Protocolos -->
+      <div class="footer-col">
+        <h4 class="col-heading">{isEs ? 'Almacén & Protocolo' : 'Warehouse & Protocol'}</h4>
+        <ul class="footer-links" style="margin-bottom: 1rem;">
+          <li><a href={isEs ? '/catalogo/' : '/en/catalog/'}><strong>{isEs ? 'Catálogo Digital (PDF / Móvil)' : 'Digital Catalog (PDF / Mobile)'}</strong></a></li>
+          <li><a href={isEs ? '/garantia/' : '/en/warranty/'}>{isEs ? 'Garantía de Ensamble y Banco de Pruebas' : 'Assembly Warranty & Dynamic Bench Balancing'}</a></li>
+          <li><a href={isEs ? '/nosotros/' : '/en/about/'}>{isEs ? 'Almacén Central y Capacidad de Ensamble' : 'Central Warehouse & Assembly Rig'}</a></li>
+          <li><a href={isEs ? '/contacto/' : '/en/contact/'}>{isEs ? 'Atención Técnica y Despacho' : 'Technical Hotline & Dispatch'}</a></li>
+          <li><a href={isEs ? '/acuse/' : '/en/thank-you/'}>{isEs ? 'Acuse Formal Imprimible ERP' : 'Printable ERP Requisition Form'}</a></li>
+        </ul>
+        <div class="logistics-card">
+          <div class="logistics-badge-title">
+            <span class="truck-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle;"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><circle cx="7" cy="18" r="2"/><path d="M15 18H9"/><circle cx="17" cy="18" r="2"/><path d="M19 18h2a1 1 0 0 0 1-1v-5l-3-4h-5v10z"/></svg>
+            </span>
+            <strong>{isEs ? 'Acceso a Maniobras' : 'Heavy Truck Loading'}</strong>
+          </div>
+          <p class="logistics-text">
+            {isEs 
+              ? 'Patio operativo en Durango para camión rabón, torton y plataforma articulada. Inspección dimensional y balanceo dinámico previo a la carga.'
+              : 'Durango yard engineered for rigid trucks, tandem heavy haulers, and flatbeds. Dimensional check and dynamic balancing prior to loading.'}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="copyright">
+        © {new Date().getFullYear()} SMAT Minerals. {isEs ? 'Todos los derechos reservados.' : 'All rights reserved.'}
+      </p>
+      <div class="legal-links">
+        <a href={isEs ? '/aviso/' : '/en/privacy/'}>{isEs ? 'Aviso de Privacidad' : 'Privacy Notice'}</a>
+        <span>•</span>
+        <a href={isEs ? '/contacto/' : '/en/contact/'}>{isEs ? 'Contacto Directo' : 'Direct Contact'}</a>
+        <span>•</span>
+        <a href={isEs ? '/garantia/' : '/en/warranty/'}>{isEs ? 'Garantía de Planta' : 'Facility Warranty'}</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background-color: var(--smat-navy-deep);
+    border-top: 1px solid var(--smat-navy-border);
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+    margin-top: auto;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2.5rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .brand-title {
+    font-size: 1.25rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    color: #f8fafc;
+  }
+
+  .brand-sub {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-accent-copper);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .brand-desc {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .heritage-tag {
+    display: inline-block;
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    padding: 0.35rem 0.65rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .col-heading {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1.25rem;
+    border-bottom: 2px solid var(--color-accent-copper);
+    padding-bottom: 0.35rem;
+    display: inline-block;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .footer-links a {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover {
+    color: var(--color-accent-copper);
+    padding-left: 4px;
+  }
+
+  .nap-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .nap-item a {
+    color: #cbd5e1;
+    text-decoration: underline;
+  }
+
+  .logistics-card {
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+  }
+
+  .logistics-badge-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: #f59e0b;
+    margin-bottom: 0.25rem;
+  }
+
+  .logistics-text {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+
+  .legal-links {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .legal-links a:hover {
+    color: var(--color-text-main);
+  }
+</style>

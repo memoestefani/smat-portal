@@ -1,0 +1,207 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SharePurchasing from '../../components/SharePurchasing.astro';
+import WhatsAppButton from '../../components/WhatsAppButton.astro';
+---
+
+<BaseLayout 
+  title="Bomba Completa en Skid Estructural | SMAT Minerals"
+  description="Paquetes completos de bombeo para pulpas mineras montados en canal C estructural, motor eléctrico TEFC normalizado, transmisión por bandas y guarda industrial. Durango, México."
+  lang="es"
+  canonicalPath="/bombeo/skid/"
+  alternateEsPath="/bombeo/skid/"
+  alternateEnPath="/en/pumping/skid/"
+>
+  <Header slot="header" lang="es" currentPath="/bombeo/skid/" alternatePath="/en/pumping/skid/" />
+
+  <section class="page-hero">
+    <div class="container text-center">
+      <span class="badge badge-capex">CAPEX • SISTEMA INTEGRADO</span>
+      <h1>Bomba Completa en Skid Estructural</h1>
+      <p class="subtitle">Solución llave en mano para transporte de pulpas abrasivas de 4x3 a 10x8.</p>
+    </div>
+  </section>
+
+  <section class="section-spacing">
+    <div class="container content-container">
+      <div class="card detail-card">
+        <h2>Especificaciones de Ingeniería</h2>
+        <p>
+          Los paquetes de bombeo integrados de SMAT Minerals se construyen sobre una base rígida de canal estructural C electro-soldada con tolerancias estrictas de nivelación, eliminando desalineaciones angulares y paralelas causadas por la torsión en arranques de alta inercia.
+        </p>
+
+        <table class="tech-table">
+          <thead>
+            <tr>
+              <th>Parámetro</th>
+              <th>Especificación de Ingeniería SMAT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Rango Dimensional</td>
+              <td>Series estándar 4x3 C-AH, 6x4 D-AH, 8x6 E-AH, 10x8 F-AH</td>
+            </tr>
+            <tr>
+              <td>Rango de Potencia</td>
+              <td>30 HP a 250 HP trifásico (WEG / Siemens / Baldor)</td>
+            </tr>
+            <tr>
+              <td>Capacidad Hidráulica</td>
+              <td>50 a 1,200 m³/h según gravedad específica del sólido</td>
+            </tr>
+            <tr>
+              <td>Estructura de Base</td>
+              <td>Canal estructural ASTM A36 con anclajes normalizados y cáncamos de izaje</td>
+            </tr>
+            <tr>
+              <td>Transmisión y Seguridad</td>
+              <td>Poleas y bandas industriales calculadas al 1.4 de factor de servicio con guarda perimetral</td>
+            </tr>
+            <tr>
+              <td>Control de Calidad</td>
+              <td>Prueba de alineación láser y rodaje de rodamientos previo a despacho en Durango</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <SharePurchasing 
+          roleTitle="Bomba Completa en Skid Estructural"
+          series="Series 4x3 a 10x8"
+          metallurgy="Base Canal C A36, Bomba Slurry A05 / Elastómero"
+          specs="Montaje integral en skid estructural C, motor TEFC normalizado, transmisión por bandas con guarda de seguridad e inspección dimensional en Durango."
+          lang="es"
+        />
+
+        <div class="cta-rfq-box">
+          <div class="cta-rfq-header">
+            <span class="badge badge-copper">COTIZACIÓN INSTANTÁNEA EN ALMACÉN DURANGO</span>
+            <h3>¿Requiere este paquete de bombeo en su mina?</h3>
+            <p>Configure su requisición formal con folio único institucional y respaldo de ingeniería en la consola central.</p>
+          </div>
+          <div class="cta-rfq-actions">
+            <a href="/?equipo=skid_bomba#rfq" class="btn btn-primary btn-lg">
+              Cotizar Bomba en Skid en Consola Central →
+            </a>
+            <a href="https://wa.me/526188104408?text=Hola%20SMAT%20Minerals,%20requiero%20cotizar%20Bomba%20Completa%20en%20Skid%20Estructural" target="_blank" rel="noopener noreferrer" class="btn btn-emergency btn-lg">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              Consultar Disponibilidad por WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <WhatsAppButton lang="es" />
+  <Footer slot="footer" lang="es" />
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 4.5rem 0 3.5rem;
+    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+
+  .text-center {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .page-hero h1 {
+    color: #090d16;
+    margin-top: 0.75rem;
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    margin-top: 0.75rem;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .content-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .detail-card {
+    background-color: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: 14px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  }
+
+  .detail-card h2 {
+    color: #090d16;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--color-accent-copper);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+  }
+
+  .detail-card p {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    color: #334155;
+  }
+
+  .tech-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+  }
+
+  .tech-table th, .tech-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--smat-border-light);
+    text-align: left;
+  }
+
+  .tech-table th {
+    background-color: #f8fafc;
+    color: #090d16;
+    font-weight: 700;
+  }
+
+  .tech-table td {
+    color: #334155;
+  }
+
+  .cta-rfq-box {
+    margin-top: 3rem;
+    padding: 2.5rem;
+    background: linear-gradient(180deg, #fafaf9 0%, #f1f5f9 100%);
+    border: 1px solid var(--smat-border-light);
+    border-radius: 12px;
+    text-align: center;
+  }
+
+  .cta-rfq-header h3 {
+    font-size: 1.4rem;
+    color: #090d16;
+    margin: 0.75rem 0 0.5rem;
+  }
+
+  .cta-rfq-header p {
+    color: #475569;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-rfq-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+</style>

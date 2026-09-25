@@ -1,0 +1,31 @@
+{
+  "name": "smat-minerals-site",
+  "type": "module",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "check": "astro check",
+    "test": "node --test tests/*.test.mjs",
+    "preview": "astro preview",
+    "astro": "astro",
+    "gate": "cargo run --manifest-path crates/smat-gate/Cargo.toml -- --check",
+    "gate:test": "cargo test --manifest-path crates/smat-gate/Cargo.toml",
+    "clean": "powershell -ExecutionPolicy Bypass -File tools/clean_debris.ps1",
+    "preflight": "astro check && npm test && npm run gate && astro build"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^12.2.0",
+    "@astrojs/partytown": "^2.1.3",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^5.4.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^22.13.9",
+    "potrace": "^2.1.8",
+    "typescript": "^5.7.3"
+  }
+}

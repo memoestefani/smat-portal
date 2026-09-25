@@ -1,0 +1,224 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import QuoteWizard from '../../components/QuoteWizard.astro';
+import WhatsAppButton from '../../components/WhatsAppButton.astro';
+---
+
+<BaseLayout 
+  title="Contact & Durango Dispatch Facility"
+  description="Commercial contact, fiscal invoicing, and central warehouse dispatch for SMAT Minerals in Durango, Mexico. Fiscal HQ at Mariano Salas #114."
+  lang="en"
+  canonicalPath="/en/contact/"
+  alternateEsPath="/contacto/"
+  alternateEnPath="/en/contact/"
+>
+  <Header slot="header" lang="en" currentPath="/en/contact/" alternatePath="/contacto/" />
+
+  <section class="page-hero">
+    <div class="container text-center">
+      <span class="badge badge-emerald">SAME-DAY TECHNICAL ATTENTION</span>
+      <h1>Contact & Dispatch Facility</h1>
+      <p class="subtitle">Direct engineering communication and central warehouse access in Durango, Mexico.</p>
+    </div>
+  </section>
+
+  <section class="section-spacing">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="card nap-detail-card">
+          <h2>Central Warehouse & Fiscal HQ</h2>
+          <div class="contact-block">
+            <span class="block-label">Fiscal HQ (Invoicing & Vendor Registration):</span>
+            <p class="block-val">
+              <strong>SMAT Minerals</strong><br />
+              Mariano Salas #114, Col. Primer Presidente<br />
+              Durango, Dgo., Postal Code 34166, Mexico
+            </p>
+          </div>
+
+          <div class="contact-block">
+            <span class="block-label">Central Warehouse & Physical Dispatch:</span>
+            <p class="block-val">
+              <strong>Distribution Center & Loading Yard:</strong> Durango, Mexico<br />
+              <em>* Direct yard pickup scheduled upon confirmed quote folio or purchase order.</em>
+            </p>
+          </div>
+
+          <div class="contact-block">
+            <span class="block-label">Office & Engineering Lines:</span>
+            <p class="block-val">
+              <a href="tel:+526188104408" class="phone-highlight">+52 (618) 810-4408 (Direct Line)</a><br />
+              <a href="tel:+526188104428" class="phone-highlight">+52 (618) 810-4428 (Main Office)</a>
+            </p>
+          </div>
+
+          <div class="contact-block">
+            <span class="block-label">Official Correspondence:</span>
+            <p class="block-val">
+              Quotations & RFQs: <a href="mailto:ventas@smatminerals.com">ventas@smatminerals.com</a><br />
+              General Inquiries: <a href="mailto:contacto@smatminerals.com">contacto@smatminerals.com</a>
+            </p>
+          </div>
+
+          <div class="contact-block">
+            <span class="block-label">Warehouse & Dispatch Hours:</span>
+            <p class="block-val">
+              Monday to Friday: 08:00 to 18:00 (Central Standard Time)<br />
+              <em>* WhatsApp inquiries reviewed promptly by our engineering staff.</em>
+            </p>
+          </div>
+
+          <div class="logistics-protocol-box">
+            <h4>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><rect width="16" height="13" x="1" y="3" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              Heavy Truck Logistics Protocol
+            </h4>
+            <p>
+              Facility equipped with dedicated turning radius and clearance for semi-trailer flatbeds, tandem trucks, and rigid heavy haulers.
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <QuoteWizard lang="en" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <WhatsAppButton lang="en" />
+  <Footer slot="footer" lang="en" />
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 3.5rem 0 2.5rem;
+    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+
+  .text-center {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .page-hero h1 {
+    font-family: var(--smat-font-editorial);
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    color: var(--smat-text-primary);
+    margin: 0.75rem 0 0.5rem;
+  }
+
+  .subtitle {
+    font-size: 1.05rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.5;
+  }
+
+  .section-spacing {
+    padding: 2.5rem 0;
+    background: #fafaf9;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .nap-detail-card {
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-md);
+    padding: 2rem;
+    box-shadow: var(--smat-shadow-sm);
+  }
+
+  .nap-detail-card h2 {
+    font-family: var(--smat-font-editorial);
+    font-size: 1.4rem;
+    color: var(--smat-text-primary);
+    margin: 0 0 1.5rem;
+    border-bottom: 2px solid var(--smat-copper-accent);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+  }
+
+  .contact-block {
+    margin-bottom: 1.25rem;
+  }
+
+  .block-label {
+    display: block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--smat-copper-accent);
+    margin-bottom: 0.25rem;
+  }
+
+  .block-val {
+    font-size: 0.9rem;
+    color: var(--smat-text-primary);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .phone-highlight {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--smat-copper-accent);
+    display: inline-block;
+    margin-top: 0.2rem;
+    text-decoration: none;
+    font-family: var(--smat-font-mono);
+  }
+
+  .phone-highlight:hover {
+    text-decoration: underline;
+  }
+
+  .block-val a {
+    color: var(--smat-copper-accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .block-val a:hover {
+    text-decoration: underline;
+  }
+
+  .logistics-protocol-box {
+    background: #f8fafc;
+    border: 1px solid var(--smat-border-light);
+    border-left: 3px solid var(--smat-copper-accent);
+    padding: 1rem;
+    border-radius: var(--smat-radius-sm);
+    margin-top: 1.5rem;
+  }
+
+  .logistics-protocol-box h4 {
+    color: var(--smat-text-primary);
+    margin: 0 0 0.35rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .logistics-protocol-box p {
+    font-size: 0.8rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  @media (max-width: 900px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

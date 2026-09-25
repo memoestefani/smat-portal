@@ -1,0 +1,39 @@
+{
+  "faqs": [
+    {
+      "id": "faq_tiempos_durango",
+      "question_es": "¿Cuál es el esquema de suministro de refacciones en Durango y disponibilidad para minería?",
+      "question_en": "What is the delivery lead time and supply model for slurry pump parts from Durango?",
+      "answer_es": "Las refacciones de alta rotación (impulsores A05, volutas, sellos de expulsor y prensaestopas) se mantienen en inventario amortiguador en nuestro Almacén Durango. Esto permite a las operaciones mineras programar recolección inmediata con folio o despacho terrestre directo (24 a 48 hrs a Durango, Zacatecas, Chihuahua y Sonora), resolviendo la necesidad de inmovilizar capital o gestionar largos procesos de importación internacional.",
+      "answer_en": "High-demand slurry wear parts (A05 impellers, volutes, expellers, and mechanical seals) are maintained in inventory buffer at our Durango Warehouse. This allows mining operations to schedule prompt collection with quote folio or overland delivery (24 to 48 hrs across northern and central Mexico mining districts), removing the need for mining teams to tie up working capital or manage lengthy international import logistics."
+    },
+    {
+      "id": "faq_balanceo_dinamico",
+      "question_es": "¿Qué pruebas de balanceo dinámico realizan a los impulsores de lodos abrasivos?",
+      "question_en": "What dynamic balancing tests are performed on slurry pump impellers?",
+      "answer_es": "Todos los impulsores y mecanismos rotatorios son sometidos a balanceo dinámico e inspección de concentricidad en banco de pruebas en Durango. Verificamos la reducción de vibraciones antes del despacho para proteger los ensambles de rodamientos de su planta.",
+      "answer_en": "All slurry impellers and rotating components undergo shop dynamic balancing and concentricity inspection on our Durango test rig. Vibration reduction is verified prior to dispatch to protect your plant bearing assemblies."
+    },
+    {
+      "id": "faq_compatibilidad_marcos",
+      "question_es": "¿Sus repuestos son intercambiables con bombas existentes en plantas de beneficio?",
+      "question_en": "Are your replacement spare parts 100% interchangeable with existing plant pumps?",
+      "answer_es": "Sí. Nuestros componentes cuentan con verificación dimensional milimétrica para intercambio directo 1:1 con marcos dimensionales estándar (series 4x3 C-AH hasta 10x8 F-AH), respetando el patrón de pernos, conos de flecha y claros de succión sin necesidad de adaptaciones de soldadura en planta.",
+      "answer_en": "Yes. Our replacement parts undergo tight metrological verification for 1:1 direct interchangeability with industry-standard frames (4x3 C-AH through 10x8 F-AH series), matching bolt circles, shaft tapers, and suction clearances without field torch modifications."
+    },
+    {
+      "id": "faq_garantia_metalurgia",
+      "question_es": "¿Qué garantía ofrecen ante desgaste prematuro o defectos de fundición en Alto Cromo A05?",
+      "question_en": "What warranty covers casting defects and wear life in High Chrome A05 alloy?",
+      "answer_es": "Respaldamos cada lote con certificados de colada química que acreditan 27% de cromo y una dureza superior a 650 HB (Brinell). En caso de presentarse una grieta o sopladura interna no visible en la inspección de patio, se ejecuta la reposición física inmediata de la pieza sin trámites burocráticos.",
+      "answer_en": "We back every heat with chemical melt certificates verifying 27% chromium content and 650+ HB Brinell hardness. In the rare event of internal casting blowholes or shrinkage porosity, immediate replacement is executed at our yard without administrative friction."
+    },
+    {
+      "id": "faq_cotizacion_sla",
+      "question_es": "¿Cuál es el tiempo de respuesta para una requisición formal o solicitud de cotización?",
+      "question_en": "What is the turnaround time for a formal commercial RFQ or quote requisition?",
+      "answer_es": "Nuestro equipo de ingeniería atiende requisiciones y solicitudes de cotización en el mismo día hábil. Para proyectos de celdas de flotación o filtros prensa de jales secos, estructuramos la propuesta técnico-económica preliminar con tiempos claros de entrega y despacho directo desde Durango.",
+      "answer_en": "Our engineering team responds to formal quote requisitions within the same business day. For flotation cell projects or dry tailings filter press packages, we formulate preliminary technical-commercial proposals with clear delivery timelines dispatched from Durango."
+    }
+  ]
+}
