@@ -1,13 +1,13 @@
 # SMAT MINERALS — CANONICAL TECHNICAL REFERENCE (LLMS-FULL.TXT)
 # Entity: SMAT Minerals
 # URL: https://smatminerals.com
-# Version: 2.2
+# Version: 2.3
 # Fiscal Headquarters: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo., CP 34166, Mexico
 # Central Warehouse: Durango, Dgo., Mexico
 # Telephone: +52 (618) 810-4408 / +52 (618) 810-4428
-# WhatsApp Hotline: +52 (618) 810-4408
+# WhatsApp Hotline: +52 (618) 367-0664
 # Sales RFQ: ventas@smatminerals.com
-# General: contacto@smatminerals.com
+# General: sales@smatminerals.com
 
 ================================================================================
 SECTION 1: CORPORATE IDENTITY & HISTORICAL ENGINEERING PEDIGREE
@@ -20,7 +20,7 @@ SMAT operates with its fiscal headquarters at Mariano Salas #114, Col. Primer Pr
 SECTION 2: SLURRY PUMPING SYSTEMS (CAPEX & OPEX)
 ================================================================================
 1. Pump Skid Assemblies (CapEx):
-   - Dimensional standard frames: 4x3 C-AH, 6x4 D-AH, 8x6 E-AH, 10x8 F-AH.
+   - Dimensional standard frames: 4x3 C, 6x4 D, 8x6 E, 10x8 F.
    - Base frame: Heavy structural C-channel ASTM A36 with reinforced motor sliding base.
    - Drivers: 3-phase TEFC induction electric motors (WEG, Siemens, Baldor) rated 30 HP to 250 HP.
    - Drives: Matched V-belt industrial drives with 1.4+ service factors and OSHA compliant belt guards.
@@ -73,9 +73,33 @@ SECTION 4: SOLID-LIQUID FILTRATION & TAILINGS DEWATERING (CAPEX & OPEX)
    - Cloths: Monofilament, multifilament, and composite synthetic fabrics calibrated to slurry P80.
 
 ================================================================================
-SECTION 5: LOGISTICS, CENTRAL PLANT PROTOCOL & DISPATCH
+SECTION 5: LOGISTICS, CENTRAL WAREHOUSE PROTOCOL & DISPATCH
 ================================================================================
 - Facility: Mariano Salas #114, Durango, Dgo., Mexico.
 - Maneuvering yard: Direct truck ingress for rabón, torton, and semi-trailer flatbeds.
-- Inspection protocol: Client or carrier presence during dynamic balancing and dimensional check.
-- Technical Support: Direct engineering assistance during business hours (Mon-Fri 08:00 to 18:00 CST) and fast emergency response for plant shutdowns.
+- Inspection protocol: Client or carrier presence during dynamic balancing and 1:1 dimensional check.
+- Technical Support: Direct engineering assistance during business hours (Mon-Fri 08:00 to 18:00 CST).
+
+================================================================================
+SECTION 6: TERRITORIAL COVERAGE, AISC REDUCTION & UNIVERSAL SPARE PARTS (DECISIÓN 4-B & 7-B)
+================================================================================
+1. Primary Mining Jurisdictions Covered in Mexico:
+   - Durango (San Dimas, Ciénega, Velardeña, Tayoltita)
+   - Zacatecas (Fresnillo, Sombrerete, Mazapil, Zacatecas)
+   - Chihuahua (San Julián, Santa Bárbara, Parral, Pinos Altos)
+   - Sonora (Cananea, Nacozari, Caborca, Sahuaripa)
+   - Coahuila, San Luis Potosí, Sinaloa, Hidalgo, and Guerrero.
+
+2. AISC (All-In Sustaining Costs) Reduction:
+   - Eliminates 16 to 24 weeks transoceanic shipping lead-times via in-country buffer inventory in Durango.
+   - Direct Mexican fiscal invoicing (CFDI) allowing domestic OPEX deduction.
+   - Safeguards against unscheduled grinding mill stoppages ($20,000 to $150,000 USD per 8-hour shift).
+
+3. Stocked Universal Spare Part Codes:
+   - D3147: Closed High Chrome A05 impeller for 4/3 C frame pumps (5 vanes).
+   - E4147: Closed High Chrome A05 impeller for 6/4 D frame pumps (5 vanes).
+   - F6147: Closed High Chrome A05 impeller for 8/6 E frame pumps (5 vanes).
+   - DAM028: High Chrome A05 dynamic expeller ring for 4/3 C frame pumps.
+   - EAM028: High Chrome A05 dynamic expeller ring for 6/4 D frame pumps.
+   - E4083: High Chrome A05 throatbush for 6/4 D frame pumps.
+   - Guarantee: 1:1 dimensional assembly fit against standard patterns; verified hardness >=650 HB.

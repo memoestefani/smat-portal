@@ -238,7 +238,7 @@ test('7. Formateo de Enlaces RFC 6068 y WhatsApp (Decisión 6-C)', () => {
   assert.ok(mailto.includes('SMAT-2026-1102'), 'Debe incluir el folio en asunto');
 
   const wa = formatWhatsappUrl(payload);
-  assert.ok(wa.startsWith('https://wa.me/526188104408'), 'Debe dirigir a la línea oficial de Durango');
+  assert.ok(wa.startsWith('https://wa.me/526183670664'), 'Debe dirigir a la línea oficial de WhatsApp Durango');
   assert.ok(wa.includes('SMAT-2026-1102'), 'Debe incluir el folio en el mensaje de WhatsApp');
 });
 
@@ -1196,17 +1196,17 @@ test('50. Justificación Técnica Normalizada para Órdenes de Compra ERP (Decis
   assert.ok(wizard.includes('pane-sap'), 'QuoteWizard debe tener pestaña #pane-sap');
 });
 
-test('51. Facsímil Interactivo de Certificado de Calidad ASTM A532 (Decisión 1-A)', () => {
+test('51. Protocolo de Cotejo Dimensional 1:1 e Invariante de Extirpación de Debris de Laboratorio (Decisión 2-B)', () => {
   const garantia = fs.readFileSync(path.join(siteRoot, 'src/pages/garantia.astro'), 'utf-8');
   const warranty = fs.readFileSync(path.join(siteRoot, 'src/pages/en/warranty.astro'), 'utf-8');
-  const modal = fs.readFileSync(path.join(siteRoot, 'src/components/QualityReportModal.astro'), 'utf-8');
+  const modalExists = fs.existsSync(path.join(siteRoot, 'src/components/QualityReportModal.astro'));
 
-  assert.ok(garantia.includes('QualityReportModal'), 'garantia.astro debe importar QualityReportModal');
-  assert.ok(warranty.includes('QualityReportModal'), 'en/warranty.astro debe importar QualityReportModal');
-  assert.ok(garantia.includes('btn-view-sample-report'), 'garantia.astro debe incluir botón trigger #btn-view-sample-report');
-  assert.ok(modal.includes('658 HBW'), 'Facsímil debe exhibir dureza 658 HBW');
-  assert.ok(modal.includes('ISO 1940-1 G2.5') || modal.includes('ISO 1940 G2.5'), 'Facsímil debe certificar balanceo ISO 1940');
-  assert.ok(modal.includes('CONFIDENCIAL'), 'Facsímil debe anonimizar datos de cliente');
+  assert.strictEqual(modalExists, false, 'QualityReportModal.astro debe estar extirpado como debris');
+  assert.ok(!garantia.includes('QualityReportModal'), 'garantia.astro no debe importar QualityReportModal');
+  assert.ok(!warranty.includes('QualityReportModal'), 'en/warranty.astro no debe importar QualityReportModal');
+  assert.ok(garantia.includes('Protocolo de Cotejo Dimensional 1:1'), 'garantia.astro debe incluir protocolo de cotejo dimensional 1:1');
+  assert.ok(garantia.includes('≥650 HB') || garantia.includes('>650 HB'), 'garantia.astro debe certificar dureza Brinell');
+  assert.ok(warranty.includes('1:1 Dimensional Cross-Check'), 'en/warranty.astro debe incluir protocolo dimensional 1:1');
 });
 
 test('52. Persistencia de Sesión en sessionStorage (Decisión 4-A)', async () => {
@@ -1296,13 +1296,10 @@ test('59. Píldoras Táctiles Sin Íconos Accesibles para Don Manuel (Decisión 
   assert.ok(!diag.includes('class="diag-pill"><svg'), 'Las píldoras táctiles no deben contener iconos SVG (estrictamente tipográficas per Decisión 10-C)');
 });
 
-test('60. Facsímil Metrológico ASTM A532 Glassmorphism y Pro Keybindings Globales (Decisiones 8-A, 9-A, 10-A)', () => {
-  const modal = fs.readFileSync(path.join(siteRoot, 'src/components/QualityReportModal.astro'), 'utf-8');
+test('60. Superficies Glassmorphism y Pro Keybindings Globales (Decisiones 8-A, 9-A, 10-A)', () => {
   const wizard = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
   const globalCss = fs.readFileSync(path.join(siteRoot, 'src/styles/global.css'), 'utf-8');
 
-  assert.ok(modal.includes('backdrop-filter: blur(20px)'), 'QualityReportModal debe aplicar blur de 20px glassmorphism');
-  assert.ok(modal.includes('var(--apple-border-specular'), 'QualityReportModal debe incluir borde especular');
   assert.ok(globalCss.includes('.pro-kbd-badge'), 'global.css debe incluir estilos para atajos de teclado .pro-kbd-badge');
   assert.ok(wizard.includes("e.key === '1'"), 'QuoteWizard debe responder a tecla rápida 1');
   assert.ok(wizard.includes("e.key === '2'"), 'QuoteWizard debe responder a tecla rápida 2');
@@ -1321,7 +1318,6 @@ test('61. Invariante de Erradicación Total de Emojis Consumer en Componentes Cl
     'src/components/DiagnosticsHub.astro',
     'src/components/CaseCards.astro',
     'src/components/TrustMatrix.astro',
-    'src/components/QualityReportModal.astro',
     'src/components/WhatsAppButton.astro',
     'src/components/SharePurchasing.astro'
   ];
@@ -1764,7 +1760,7 @@ test('97. Preservación Absoluta de IDs y Compuertas Soberanas (Decisión 10-C)'
 
 test('98. Invariante de Erradicación del Síndrome de Tarjetas Blancas Gemelas (Decisión 1-C & 2-C)', () => {
   const wizard = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
-  assert.ok(wizard.includes('.control-card {\n    background: transparent;'), 'control-card debe tener background transparente para evitar tarjetas blancas gemelas');
+  assert.ok(/\.control-card\s*\{[\s\r\n]*background:\s*transparent;/i.test(wizard), 'control-card debe tener background transparente para evitar tarjetas blancas gemelas');
 });
 
 test('99. Hero Multi-Equipo de 3 Circuitos y Poda de Mini-Cajas (Ola 20 - Decisiones 1-C, 2-C y 3-C)', () => {
@@ -1796,8 +1792,8 @@ test('100. Cabecera Esbelta Unificada y Renombramiento a Cotizar Refacción (Ola
   assert.ok(header.includes('Quote Spares'), 'Header debe contener botón Quote Spares en EN');
 
   // Integración de canal telefónico directo en cabecera
-  assert.ok(header.includes('(618) 810-4408'), 'Header debe incluir teléfono directo de planta');
-  assert.ok(header.includes('wa.me/526188104408'), 'Header debe incluir guardia WhatsApp');
+  assert.ok(header.includes('(618) 367-0664'), 'Header debe incluir teléfono directo o WhatsApp');
+  assert.ok(header.includes('wa.me/526183670664'), 'Header debe incluir guardia WhatsApp');
 });
 
 test('101. Tarjetas de Hardware en Formato Apple Pro Key-Specs para los 3 Circuitos (Ola 20 - Decisión 4-C)', () => {
@@ -2070,7 +2066,6 @@ test('116. Ghost State en Píldoras Interactivas y Condición Pendiente de Dicta
 
 test('117. Cero Fugas de Bastidor y Aleación en Live Dossier y Códigos Limpios (Decisión 1-B, 3-B, 4-A)', () => {
   const wizard = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
-  const qualityModal = fs.readFileSync(path.join(siteRoot, 'src/components/QualityReportModal.astro'), 'utf-8');
 
   // Input de tag de planta limpio sin cadenas fijas arcaicas
   assert.ok(
@@ -2086,9 +2081,8 @@ test('117. Cero Fugas de Bastidor y Aleación en Live Dossier y Códigos Limpios
   );
   assert.ok(!wizard.includes('Ej. SMAT-PUMP-6X4D-A05-EXP'), 'No debe contener placeholder viejo con frame letter');
 
-  // Facsímil de calidad limpio
-  assert.ok(qualityModal.includes('SMAT-PUMP-6X4-IMP'), 'QualityReportModal debe usar código limpio SMAT-PUMP-6X4-IMP');
-  assert.ok(!qualityModal.includes('SMAT-PUMP-6X4D-A05-IMP'), 'QualityReportModal no debe contener frame letter ni aleación en código');
+  // Ausencia de QualityReportModal de coladas ficticias
+  assert.strictEqual(fs.existsSync(path.join(siteRoot, 'src/components/QualityReportModal.astro')), false, 'QualityReportModal no debe existir en repo');
 
   // Generación institucional limpia en workbenchBus
   const codeWetKit = generateSmatPartCode({ circuit: 'bombeo', series: '6x4', role: 'kit_wet_end' });
@@ -2407,6 +2401,124 @@ test('135. Archivo _headers de Seguridad y Comando Preflight Unificado (Decisió
   assert.ok(pkg.scripts.preflight.includes('npm run gate'), 'preflight debe ejecutar npm run gate');
   assert.ok(pkg.scripts.preflight.includes('astro build'), 'preflight debe ejecutar astro build');
 });
+
+test('136. Fichas Atómicas de Refacciones Universales con getStaticPaths (Decisión 4-B)', () => {
+  const partsPath = path.join(siteRoot, 'data/atomic_parts.json');
+  assert.ok(fs.existsSync(partsPath), 'data/atomic_parts.json debe existir');
+
+  const parts = JSON.parse(fs.readFileSync(partsPath, 'utf-8'));
+  const requiredCodes = ['d3147', 'e4147', 'f6147', 'dam028', 'eam028', 'e4083'];
+  
+  assert.equal(parts.length, 6, 'Deben existir exactamente 6 refacciones atómicas');
+  for (const code of requiredCodes) {
+    const found = parts.find((p) => p.code === code);
+    assert.ok(found, `Debe existir refacción con código ${code}`);
+    assert.ok(found.frame, `Refacción ${code} debe tener marco especificado`);
+    assert.ok(found.hardness.includes('≥ 650 HB') || found.hardness.includes('650 HB'), `Refacción ${code} debe certificar dureza`);
+    assert.ok(found.fit_guarantee_es.includes('1:1'), `Refacción ${code} debe garantizar acople 1:1`);
+  }
+
+  const esRoute = path.join(siteRoot, 'src/pages/catalogo/[code].astro');
+  const enRoute = path.join(siteRoot, 'src/pages/en/catalog/[code].astro');
+  assert.ok(fs.existsSync(esRoute), 'src/pages/catalogo/[code].astro debe existir');
+  assert.ok(fs.existsSync(enRoute), 'src/pages/en/catalog/[code].astro debe existir');
+
+  const esContent = fs.readFileSync(esRoute, 'utf-8');
+  const enContent = fs.readFileSync(enRoute, 'utf-8');
+
+  assert.ok(esContent.includes('export function getStaticPaths'), 'Ruta ES debe definir getStaticPaths');
+  assert.ok(enContent.includes('export function getStaticPaths'), 'Ruta EN debe definir getStaticPaths');
+  assert.ok(esContent.includes('@type": "Product"'), 'Ruta ES debe estructurar Schema.org Product');
+  assert.ok(enContent.includes('@type": "Product"'), 'Ruta EN debe estructurar Schema.org Product');
+  assert.ok(esContent.includes('https://wa.me/526183670664?text='), 'Ruta ES debe contener botón de WhatsApp con texto codificado');
+  assert.ok(enContent.includes('https://wa.me/526183670664?text='), 'Ruta EN debe contener botón de WhatsApp con texto codificado');
+});
+
+test('137. Invariante Anti-Scraping de Catálogo y Avisos de Confidencialidad (Decisión 4-B)', () => {
+  const esRoute = fs.readFileSync(path.join(siteRoot, 'src/pages/catalogo/[code].astro'), 'utf-8');
+  const enRoute = fs.readFileSync(path.join(siteRoot, 'src/pages/en/catalog/[code].astro'), 'utf-8');
+  const esCatalog = fs.readFileSync(path.join(siteRoot, 'src/pages/catalogo.astro'), 'utf-8');
+  const enCatalog = fs.readFileSync(path.join(siteRoot, 'src/pages/en/catalog.astro'), 'utf-8');
+
+  // Ninguna página de catálogo debe ofrecer enlaces a descargas masivas de bases de datos o CADs
+  const forbiddenScrapeKeywords = ['descargar-cad', 'download-cad.zip', 'tolerancias_completas.csv', 'database_dump.json'];
+  for (const kw of forbiddenScrapeKeywords) {
+    assert.ok(!esRoute.toLowerCase().includes(kw), `Ficha ES no debe contener enlace a dump masivo: ${kw}`);
+    assert.ok(!enRoute.toLowerCase().includes(kw), `Ficha EN no debe contener enlace a dump masivo: ${kw}`);
+    assert.ok(!esCatalog.toLowerCase().includes(kw), `Catálogo ES no debe contener enlace a dump masivo: ${kw}`);
+    assert.ok(!enCatalog.toLowerCase().includes(kw), `Catálogo EN no debe contener enlace a dump masivo: ${kw}`);
+  }
+
+  // Aviso explícito de confidencialidad de planos en fichas
+  assert.ok(esRoute.includes('anti-scraping-notice'), 'Ficha ES debe incluir bloque .anti-scraping-notice');
+  assert.ok(enRoute.includes('anti-scraping-notice'), 'Ficha EN debe incluir bloque .anti-scraping-notice');
+});
+
+test('138. Simetría Bilingüe y Profundidad del Briefing Ejecutivo de AISC (Decisión 6-B)', () => {
+  const nosotros = fs.readFileSync(path.join(siteRoot, 'src/pages/nosotros.astro'), 'utf-8');
+  const about = fs.readFileSync(path.join(siteRoot, 'src/pages/en/about.astro'), 'utf-8');
+
+  // Métricas económicas de paro de molienda
+  assert.ok(nosotros.includes('20k – 150k') || nosotros.includes('20,000 y 150,000 USD'), 'nosotros.astro debe consignar costo de paro de molino');
+  assert.ok(about.includes('20k – 150k') || about.includes('20,000 and 150,000 USD'), 'about.astro debe consignar costo de paro en inglés');
+
+  // Reducción de tiempo de tránsito marítimo
+  assert.ok(nosotros.includes('16 a 24 semanas') || nosotros.includes('16 – 24'), 'nosotros.astro debe enunciar ahorro de 16 a 24 semanas');
+  assert.ok(about.includes('16 to 24') || about.includes('16 – 24'), 'about.astro debe enunciar ahorro de 16 a 24 semanas');
+
+  // Compresión de AISC y facturación CFDI
+  assert.ok(nosotros.includes('AISC') && nosotros.includes('CFDI'), 'nosotros.astro debe articular reducción de AISC y CFDI');
+  assert.ok(about.includes('AISC') && about.includes('CFDI'), 'about.astro debe articular reducción de AISC y CFDI');
+
+  // Cobertura de los 3 circuitos de concentradora
+  assert.ok(nosotros.includes('Bombeo') && nosotros.includes('Flotación') && nosotros.includes('Filtración'), 'nosotros.astro debe cubrir los 3 circuitos');
+  assert.ok(about.includes('Pumping') && about.includes('Flotation') && about.includes('Filtration'), 'about.astro debe cubrir los 3 circuitos');
+
+  // Domicilio fiscal en Durango
+  assert.ok(nosotros.includes('Mariano Salas #114'), 'nosotros.astro debe registrar domicilio fiscal');
+  assert.ok(about.includes('Mariano Salas #114'), 'about.astro debe registrar domicilio fiscal');
+});
+
+test('139. Inyección Territorial Invisible de los 9 Estados Mineros en Schema.org (Decisión 7-B)', () => {
+  const schemaContent = fs.readFileSync(path.join(siteRoot, 'src/components/SchemaOrg.astro'), 'utf-8');
+
+  const requiredStates = [
+    'Durango',
+    'Zacatecas',
+    'Chihuahua',
+    'Sonora',
+    'Coahuila',
+    'San Luis Potosí',
+    'Sinaloa',
+    'Hidalgo',
+    'Guerrero'
+  ];
+
+  for (const state of requiredStates) {
+    assert.ok(schemaContent.includes(`'${state}'`), `SchemaOrg areaServed debe incluir estado minero '${state}'`);
+  }
+});
+
+test('140. Manifiestos GEO llms.txt y llms-full.txt v2.3 con Soberanía Operativa (Decisión 7-B)', () => {
+  const llms = fs.readFileSync(path.join(siteRoot, 'public/llms.txt'), 'utf-8');
+  const llmsFull = fs.readFileSync(path.join(siteRoot, 'public/llms-full.txt'), 'utf-8');
+
+  assert.ok(llms.includes('# Version: 2.3'), 'public/llms.txt debe estar en versión 2.3');
+  assert.ok(llmsFull.includes('# Version: 2.3'), 'public/llms-full.txt debe estar en versión 2.3');
+
+  // Cero marcas ajenas en manifiestos LLM
+  assert.ok(!llms.toLowerCase().includes('warman'), 'llms.txt no debe mencionar marcas ajenas');
+  assert.ok(!llmsFull.toLowerCase().includes('warman'), 'llms-full.txt no debe mencionar marcas ajenas');
+
+  // Presencia de estados mineros clave
+  assert.ok(llms.includes('Durango') && llms.includes('Zacatecas') && llms.includes('Chihuahua') && llms.includes('Sonora'), 'llms.txt debe incluir estados clave');
+  assert.ok(llmsFull.includes('Durango') && llmsFull.includes('Zacatecas') && llmsFull.includes('Chihuahua') && llmsFull.includes('Sonora'), 'llms-full.txt debe incluir estados clave');
+
+  // Presencia de refacciones clave
+  assert.ok(llms.includes('D3147') && llms.includes('E4147') && llms.includes('F6147'), 'llms.txt debe citar refacciones clave');
+  assert.ok(llmsFull.includes('D3147') && llmsFull.includes('E4147') && llmsFull.includes('F6147'), 'llms-full.txt debe citar refacciones clave');
+});
+
 
 
 

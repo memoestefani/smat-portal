@@ -313,6 +313,21 @@
 
 ---
 
+## ⚡ Matriz de Decisiones Estratégicas B2B — Vigésimo Tercera Ola: Fichas Atómicas Anti-Scraping, Briefing Ejecutivo de AISC Simétrico ES/EN, Inyección Territorial Invisible y WhatsApp Oficial 6183670664 (25 de Septiembre de 2026)
+
+| # | Decisión | Alternativa Seleccionada | Justificación Técnica y Operativa |
+|---|---|---|---|
+| **1-B** | Identidad de Marca Institucional | **SMAT Minerals Sobrio (Sin R ni sufijos)** | Eliminación de símbolos de marca ruidosos o sufijos redundantes. La marca se expresa como SMAT Minerals, sobria, directa y con presencia industrial. |
+| **2-B** | Honestidad Operativa y Poda de Certificados Ficticios | **Erradicación de Debris y Garantía 1:1 en Banco Durango** | Purgado completo del componente de laboratorio ficticio (`QualityReportModal.astro`). Cero afirmaciones sobre espectrometría in-house o escaneo láser. La garantía se fundamenta en dureza Brinell verificada ($\ge 650$ HB) y ajuste dimensional 1:1 en ensamble. |
+| **3-B** | Presencia Multi-Equipo Equilibrada | **3 Circuitos de Planta Húmeda sin Encajonamiento** | Se mantiene la paridad visual e informativa entre Bombeo/Molienda, Flotación y Filtración, facilitando que compradores de pulpa encuentren lo que buscan sin encasillar a SMAT como simple tienda de bombas. |
+| **4-B** | Protección Anti-Scraping y Fichas Atómicas | **6 Fichas Atómicas Universales Indexadas con Cero Dumps** | Creación de rutas dedicadas `catalogo/[code]` y `en/catalog/[code]` para 6 partes canónicas (`d3147`, `e4147`, `f6147`, `dam028`, `eam028`, `e4083`). Se bloquea la descarga masiva de CADs, matrices de tolerancia completas o bases de datos crudas para evitar el scraping de competidores. |
+| **5-B** | Facilitador de RFQ y Protocolo de Cotejo | **RFQ de Contacto Directo con Directiva de Flexómetro** | El configurador funciona como facilitador de requisición técnica orientado a detonar contacto humano calificado. Se erradican promesas de cotización en 15 minutos; se instruye el envío de fotografía con flexómetro para cotejo 1:1. |
+| **6-B** | Briefing Ejecutivo de AISC Simétrico ES/EN | **Briefing Corporativo de Impacto Económico en Mina** | Desarrollo simétrico en `/nosotros` y `/en/about` abordando el costo de paro de molino (20k a 150k USD/turno), la eliminación de tiempos de espera ultramarinos (16 a 24 semanas) mediante stock estratégico en Durango, y el impacto directo en el AISC de las operaciones mineras. |
+| **7-B** | Inteligencia Territorial Invisible y WhatsApp Oficial | **Inyección en Schema.org `areaServed`, llms.txt v2.3 y WhatsApp `6183670664`** | Los 9 estados mineros prioritarios (Durango, Zacatecas, Chihuahua, Sonora, Coahuila, San Luis Potosí, Sinaloa, Hidalgo, Guerrero) se indexan para motores de búsqueda y LLMs sin exponer públicamente el censo privado de 116 operaciones. Actualización canónica de WhatsApp oficial a `+52 (618) 367-0664` (`526183670664`). |
+| **Calidad** | Verificación Integral de Compilación y Gates | **147 Tests Green, 20 Gates Rust, 0 Errores en Build** | Verificación completa de suite unitaria de 147 pruebas, 20 compuertas soberanas en Rust (`crates/smat-gate`), preflight de compilación sin errores y generación de 52 rutas estáticas. |
+
+---
+
 ## 🔒 Regla de Oro Invariable
 > *"El sitio web de SMAT Minerals es la puerta pública del negocio, no el negocio completo. Protege los secretos comerciales y el software privado de ingeniería, garantiza TTFB < 50ms a costo $0 USD/mes, y asiste al comprador minero con rigor técnico, honestidad operativa y sin adjetivos vacíos."*
 

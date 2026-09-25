@@ -1,4 +1,6 @@
 ---
+// src/pages/nosotros.astro
+// Decisión 6-B: Briefing Ejecutivo B2B de Resiliencia de Suministro y Reducción del AISC en México
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -6,8 +8,8 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
 ---
 
 <BaseLayout 
-  title="Nosotros y Trayectoria en Ingeniería Minera"
-  description="Más de 20 años de ingeniería mecánica aplicada en transporte severo de pulpas abrasivas, celdas de flotación y filtración. Base central de operaciones en Durango, México."
+  title="Resiliencia de Suministro Minero y Reducción del AISC | SMAT Minerals"
+  description="Estrategia de amortiguamiento de inventario en Durango, México: Mitigación del costo de paro no programado (20k-150k USD/turno), reducción del AISC y abastecimiento integral de concentradora (bombeo, flotación y filtración)."
   lang="es"
   canonicalPath="/nosotros/"
   alternateEsPath="/nosotros/"
@@ -15,48 +17,138 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
 >
   <Header slot="header" lang="es" currentPath="/nosotros/" alternatePath="/en/about/" />
 
+  <!-- Hero Ejecutivo -->
   <section class="page-hero">
     <div class="container text-center">
-      <span class="badge badge-copper">TRAYECTORIA EN INGENIERÍA MINERA</span>
-      <h1>SMAT Minerals</h1>
-      <p class="subtitle">Dos décadas resolviendo el desgaste extremo en la minería de México y Norteamérica.</p>
+      <span class="badge badge-copper">BRIEFING EJECUTIVO PARA DIRECCIÓN DE OPERACIONES Y COMPRAS</span>
+      <h1>Resiliencia de Suministro Minero y Reducción del Costo por Tonelada en México</h1>
+      <p class="subtitle">
+        Cómo el amortiguamiento estratégico de inventario en Durango elimina 16 a 24 semanas de flete marítimo, blinda la molienda continua y comprime el AISC (All-In Sustaining Costs) en plantas concentradoras.
+      </p>
     </div>
   </section>
 
-  <section class="section-spacing">
-    <div class="container content-container">
-      <div class="story-grid">
-        <div class="story-text">
-          <h2>Origen y Evolución</h2>
-          <p>
-            SMAT Minerals nació hace más de 20 años en el corazón minero del norte de México, en la ciudad de Durango.
-          </p>
-          <p>
-            Desde sus inicios, el enfoque no fue simplemente comercializar componentes genéricos, sino resolver el problema físico del desgaste prematuro en plantas de beneficio donde las pulpas abrasivas destruyen bombas y mecanismos en cuestión de semanas si no cuentan con la metalurgia y el balance hidrodinámico adecuado.
-          </p>
-          <p>
-            Hoy en día, conservamos ese rigor de ingeniería en cada bomba montada en skid estructural, en cada celda de flotación mecánica de 50 a 300 ft³ y en cada impulsor colado en aleación <strong>High Chrome 27% (A05)</strong> con dureza certificada superior a 650 HB.
-          </p>
+  <!-- Métricas Clave de Negocio -->
+  <section class="metrics-bar">
+    <div class="container">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <span class="metric-val">20k – 150k</span>
+          <span class="metric-unit">USD / Turno</span>
+          <p class="metric-label">Costo económico por paro no programado en línea de molienda</p>
         </div>
-
-        <div class="card facility-card">
-          <h3>Infraestructura Operativa y Almacén</h3>
-          <ul class="infra-list">
-            <li>
-              <strong>Domicilio Fiscal y Almacén Central:</strong> Domicilio fiscal en Mariano Salas #114, Col. Primer Presidente, C.P. 34166. Almacén Central y patio de maniobras en Durango, Dgo.
-            </li>
-            <li>
-              <strong>Acceso a Maniobras Pesadas:</strong> Patio logístico diseñado para el ingreso de transporte tipo rabón, torton y tractocamión con plataforma para carga pesada.
-            </li>
-            <li>
-              <strong>Balanceo Dinámico en Presencia del Cliente:</strong> Todo impulsor y conjunto rotativo cuenta con protocolo de verificación dimensional y balanceo dinámico antes de salir de nuestras instalaciones.
-            </li>
-            <li>
-              <strong>Atención Técnica Directa:</strong> Conexión directa entre el personal técnico de mantenimiento y nuestro equipo de aplicaciones en Durango, facilitando la selección de refacciones y soporte operativo sin intermediarios.
-            </li>
-          </ul>
+        <div class="metric-card">
+          <span class="metric-val">16 – 24</span>
+          <span class="metric-unit">Semanas</span>
+          <p class="metric-label">Tiempo de tránsito transoceánico eliminado vía inventario local</p>
+        </div>
+        <div class="metric-card">
+          <span class="metric-val">≥ 650 HB</span>
+          <span class="metric-unit">Brinell</span>
+          <p class="metric-label">Dureza metalúrgica garantizada en aleación High Chrome A05</p>
+        </div>
+        <div class="metric-card">
+          <span class="metric-val">3</span>
+          <span class="metric-unit">Circuitos Clave</span>
+          <p class="metric-label">Cobertura integral de concentradora: Bombeo, Flotación y Filtración</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Argumentación Central de Primeros Principios -->
+  <section class="section-spacing briefing-content">
+    <div class="container content-container">
+      
+      <div class="briefing-block">
+        <div class="block-tag">PRIMER PRINCIPIO: FÍSICA & ECONOMÍA DE CONCENTRADORA</div>
+        <h2>1. El Costo Real del Desgaste y el Mito del Precio Unitario</h2>
+        <p>
+          En la gran minería metálica, el desgaste mecánico no es una contingencia: es una certeza matemática impuesta por la dureza del mineral sobre el acero. Cuando una bomba centrífuga de pulpa sufre perforación de voluta o fractura de impulsor en la descarga de molino de bolas, el costo de la refacción es insignificante comparado con la pérdida de tonelaje procesado: <strong>un paro no programado destruye entre 20,000 y 150,000 USD por cada turno de 8 horas</strong> en mineral que deja de flotarse.
+        </p>
+        <p>
+          Evaluar refacciones de desgaste únicamente por su costo unitario de adquisición es una distorsión fiduciaria. La verdadera métrica de rentabilidad es el <em>costo total por tonelada procesada</em> y la certeza de que el repuesto está físicamente disponible antes de que la línea se detenga.
+        </p>
+      </div>
+
+      <div class="briefing-block">
+        <div class="block-tag">DES-RIESGO LOGÍSTICO & SOBERANÍA OPERATIVA</div>
+        <h2>2. Des-riesgo Logístico: De 24 Semanas de Marítimo a Días en México</h2>
+        <p>
+          La dependencia de cadenas de suministro transoceánicas expone a las operaciones mexicanas a cuellos de botella portuarios, demoras de aduana y tiempos de espera de 16 a 24 semanas para refaccionamiento pesado.
+        </p>
+        <p>
+          En <strong>SMAT Minerals</strong> convertimos el riesgo logístico global en resiliencia doméstica. Mantenemos stock estratégico amortiguador en nuestro <strong>Almacén Central de Durango</strong>, localizado geográficamente en el centro del eje minero del país. Desde aquí abastecemos con despacho terrestre expedito a los distritos de Durango, Zacatecas, Chihuahua, Sonora, Coahuila, San Luis Potosí y Sinaloa, permitiendo a las minas operar con niveles de inventario de seguridad más esbeltos sin arriesgar la continuidad de planta.
+        </p>
+      </div>
+
+      <div class="briefing-block">
+        <div class="block-tag">IMPACTO EN EL AISC & FACTURACIÓN DOMÉSTICA</div>
+        <h2>3. Compresión Directa del AISC (All-In Sustaining Costs)</h2>
+        <p>
+          El AISC es la métrica rectora que evalúan los fondos de inversión y directores corporativos en Toronto, Vancouver y las principales plazas mineras de Norteamérica. Las ineficiencias de compras de emergencia —tales como fletes aéreos exprés no planificados, costos de corretaje aduanal y sobreprecios de distribuidores intermediarios— inflan artificialmente el costo sostenido de producción.
+        </p>
+        <p>
+          Al asociarse con SMAT Minerals:
+        </p>
+        <ul class="briefing-list">
+          <li><strong>Compras Locales OPEX:</strong> Transacciones comerciales directas en pesos o dólares con facturación electrónica CFDI emitida en México, 100% deducible y sin contingencias de importación para el comprador.</li>
+          <li><strong>Cero Costos Ocultos de Corretaje:</strong> Suministro directo desde almacén central sin recargos de comisionistas ni intermediarios comerciales.</li>
+          <li><strong>Optimización del Capital de Trabajo:</strong> La mina no requiere inmovilizar millones de dólares en almacenes propios de refacciones que tardan meses en rotar; SMAT asume el amortiguamiento de inventario.</li>
+        </ul>
+      </div>
+
+      <div class="briefing-block">
+        <div class="block-tag">ALCANCE INTEGRAL DE PLANTA HÚMEDA</div>
+        <h2>4. Capacidad Multiproceso: La Concentradora como Sistema Único</h2>
+        <p>
+          SMAT Minerals no es un comercializador genérico ni un distribuidor enfocado exclusivamente en bombas. Nuestra ingeniería aborda el flujo mineralúrgico completo de la concentradora a través de sus tres circuitos medulares:
+        </p>
+        <div class="circuits-summary-grid">
+          <div class="circuit-summary-card">
+            <h3>1. Molienda y Bombeo de Pulpa</h3>
+            <p>Bombas completas sobre skid estructural ASTM A36 con motor trifásico y transmisión calculada. Refaccionamiento de alta rotación (impulsores A05 ≥650 HB, volutas partidas, gargantas de succión y sellos dinámicos secos) para series 4x3 a 10x8.</p>
+          </div>
+          <div class="circuit-summary-card">
+            <h3>2. Celdas de Flotación Mecánica</h3>
+            <p>Equipos completos de 50 a 300 ft³ y mecanismos de desgaste rotor-estator moldeados en poliuretano y caucho de alta resiliencia elástica para máxima dispersión de burbuja en circuitos Rougher, Cleaner y Scavenger.</p>
+          </div>
+          <div class="circuit-summary-card">
+            <h3>3. Filtración y Jales Secos</h3>
+            <p>Filtros prensa hidráulicos de alta presión, placas de polipropileno virgen de 800 a 1500 mm y lonas filtrantes calibradas para deshidratación eficiente de relaves (12-16% humedad) en cumplimiento con normativas ambientales.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Infraestructura Durango -->
+      <div class="card facility-full-card">
+        <h3>Infraestructura Operativa y Protocolo en Almacén Durango</h3>
+        <div class="facility-flex">
+          <div class="facility-item">
+            <strong>Domicilio Fiscal y Almacén Central:</strong>
+            <p>Mariano Salas #114, Col. Primer Presidente, CP 34166, Durango, Dgo., México. Patio habilitado para maniobras con camión unitario (rabón), torton y tractocamión con plataforma articulada.</p>
+          </div>
+          <div class="facility-item">
+            <strong>Cotejo Físico y Balanceo en Banco:</strong>
+            <p>Cada componente se verifica físicamente con patrón dimensional (bridas ANSI, barrenado y cuñeros de flecha) y prueba de balanceo dinámico antes del embarque hacia la unidad minera.</p>
+          </div>
+          <div class="facility-item">
+            <strong>Atención Directa de Ingeniería:</strong>
+            <p>Interlocución directa entre jefes de mantenimiento de mina y nuestro personal técnico en Durango, agilizando la determinación de códigos y logística de entrega sin filtros administrativos innecesarios.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA de Homologación de Proveedores -->
+      <div class="briefing-cta-box">
+        <h3>Inicie la Homologación de Proveedor para su Unidad Minera</h3>
+        <p>Ponemos a disposición de su departamento de compras y planeación de mantenimiento nuestras credenciales fiscales, catálogos técnicos y capacidad de suministro inmediato.</p>
+        <div class="cta-actions">
+          <a href="/#rfq" class="btn btn-primary">Generar Requisición / RFQ Técnica →</a>
+          <a href="https://wa.me/526183670664?text=Hola%20SMAT%20Minerals,%20deseamos%20iniciar%20homologacion%20de%20proveedor%20para%20nuestra%20unidad%20minera" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">Contactar a Dirección Técnica vía WhatsApp</a>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -66,78 +158,295 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
 
 <style>
   .page-hero {
-    padding: 4rem 0 3rem;
+    padding: 4.5rem 0 3.5rem;
     background: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 80%);
     border-bottom: 1px solid var(--color-border);
   }
 
   .text-center {
     text-align: center;
-    max-width: 800px;
+    max-width: 920px;
     margin: 0 auto;
   }
 
+  .page-hero h1 {
+    font-family: var(--smat-font-editorial);
+    font-size: 2.75rem;
+    line-height: 1.15;
+    color: #ffffff;
+    margin: 1.25rem 0 1rem;
+  }
+
   .subtitle {
-    font-size: 1.125rem;
-    margin-top: 1rem;
-    color: var(--color-text-muted);
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #94a3b8;
+  }
+
+  .badge-copper {
+    display: inline-block;
+    padding: 0.3rem 0.85rem;
+    background: rgba(194, 65, 12, 0.15);
+    border: 1px solid rgba(234, 88, 12, 0.4);
+    border-radius: var(--smat-radius-pill);
+    color: #fb923c;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+  }
+
+  /* Metrics Bar */
+  .metrics-bar {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 2rem 0;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .metrics-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .metric-card {
+    text-align: center;
+    padding: 1rem 0.5rem;
+    border-right: 1px solid #f1f5f9;
+  }
+
+  .metric-card:last-child {
+    border-right: none;
+  }
+
+  .metric-val {
+    display: block;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1;
+  }
+
+  .metric-unit {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--smat-copper-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.35rem;
+  }
+
+  .metric-label {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+    line-height: 1.4;
+  }
+
+  /* Content */
+  .briefing-content {
+    background-color: #f8fafc;
+    padding: 4rem 0;
   }
 
   .content-container {
-    max-width: 1000px;
+    max-width: 900px;
+    margin: 0 auto;
   }
 
-  .story-grid {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 3rem;
-    align-items: start;
+  .briefing-block {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
   }
 
-  .story-text h2 {
+  .block-tag {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--smat-copper-accent);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.75rem;
+  }
+
+  .briefing-block h2 {
+    font-family: var(--smat-font-editorial);
+    font-size: 1.65rem;
+    color: #0f172a;
     margin-bottom: 1.25rem;
+    line-height: 1.25;
   }
 
-  .story-text p {
-    margin-bottom: 1.25rem;
+  .briefing-block p {
+    font-size: 1.05rem;
     line-height: 1.7;
-    font-size: 1.0625rem;
-  }
-
-  .facility-card {
-    background-color: #131c2e;
-  }
-
-  .facility-card h3 {
+    color: #334155;
     margin-bottom: 1.25rem;
-    color: var(--color-accent-copper);
-    border-bottom: 2px solid var(--color-border);
-    padding-bottom: 0.5rem;
   }
 
-  .infra-list {
-    list-style: none;
+  .briefing-block p:last-child {
+    margin-bottom: 0;
+  }
+
+  .briefing-list {
+    margin: 1.25rem 0 0 1.5rem;
     display: flex;
     flex-direction: column;
+    gap: 0.85rem;
+    font-size: 1rem;
+    color: #334155;
+    line-height: 1.6;
+  }
+
+  .circuits-summary-grid {
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 1.25rem;
+    margin-top: 1.75rem;
   }
 
-  .infra-list li {
-    font-size: 0.9375rem;
-    line-height: 1.5;
-    color: var(--color-text-muted);
-  }
-
-  .infra-list strong {
-    color: #ffffff;
-    display: block;
-    margin-bottom: 0.25rem;
-  }
-
-  @media (max-width: 868px) {
-    .story-grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
+  @media (min-width: 768px) {
+    .circuits-summary-grid {
+      grid-template-columns: repeat(3, 1fr);
     }
+  }
+
+  .circuit-summary-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+
+  .circuit-summary-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.65rem;
+  }
+
+  .circuit-summary-card p {
+    font-size: 0.88rem;
+    color: #64748b;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* Facility Card */
+  .facility-full-card {
+    background: #0f172a;
+    color: #ffffff;
+    border-radius: 12px;
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .facility-full-card h3 {
+    font-family: var(--smat-font-editorial);
+    font-size: 1.6rem;
+    color: #ffffff;
+    margin-bottom: 1.75rem;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 0.75rem;
+  }
+
+  .facility-flex {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .facility-flex {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .facility-item strong {
+    display: block;
+    color: #f97316;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .facility-item p {
+    font-size: 0.88rem;
+    color: #cbd5e1;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* CTA Box */
+  .briefing-cta-box {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  }
+
+  .briefing-cta-box h3 {
+    font-family: var(--smat-font-editorial);
+    font-size: 1.75rem;
+    color: #0f172a;
+    margin-bottom: 0.75rem;
+  }
+
+  .briefing-cta-box p {
+    font-size: 1.05rem;
+    color: #64748b;
+    max-width: 680px;
+    margin: 0 auto 1.75rem;
+    line-height: 1.6;
+  }
+
+  .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.95rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary {
+    background: var(--smat-copper-accent);
+    color: #ffffff;
+    border: 1px solid var(--smat-copper-accent);
+  }
+
+  .btn-primary:hover {
+    background: #9a3412;
+    border-color: #9a3412;
+  }
+
+  .btn-secondary {
+    background: #0f172a;
+    color: #ffffff;
+    border: 1px solid #0f172a;
+  }
+
+  .btn-secondary:hover {
+    background: #1e293b;
+    border-color: #1e293b;
   }
 </style>

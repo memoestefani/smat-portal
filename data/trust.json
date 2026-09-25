@@ -3,8 +3,8 @@
   "title_en": "Commercial Trust & Engineering Warranty Charter",
   "subtitle_es": "Respaldo operativo en Almacén Central Durango. Conozca con exactitud nuestro alcance de garantía de ensamble, compatibilidad dimensional y límites de aplicación técnica.",
   "subtitle_en": "Operational assurance at our Durango Central Warehouse. Clear clarity on assembly warranty, dimensional interchangeability, and technical application boundaries.",
-  "protocol_policy_es": "Los protocolos formales de ensayo, dureza Brinell ASTM A532 (>650 HB) y reportes de balanceo dinámico en banco se entregan como anexo técnico oficial a solicitud del cliente al generar su folio de cotización formal.",
-  "protocol_policy_en": "Formal testing protocols, ASTM A532 Brinell hardness (>650 HB) certs, and shop dynamic balancing reports are delivered as official technical addenda upon customer request when generating their serialized quote folio.",
+  "protocol_policy_es": "Los componentes son sometidos a verificación dimensional 1:1 contra carcasas estándar, prueba de giro en flechas e inspección de dureza Brinell en nuestro almacén de Durango previo al embarque.",
+  "protocol_policy_en": "Components undergo 1:1 dimensional verification against standard casings, shaft rotation testing, and Brinell hardness inspection at our Durango warehouse prior to shipment.",
   "pillars": [
     {
       "id": "planta_durango",

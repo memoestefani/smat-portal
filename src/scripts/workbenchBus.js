@@ -235,7 +235,7 @@ export function formatWhatsappUrl(data = {}) {
   
   const text = `Hola SMAT Durango, requiero cotización y confirmación de stock para:\n*Folio:* ${folio}\n*Circuito:* ${circuit}\n*Mina:* ${company} (${requester})\n*Equipo/Partida:* ${partName}\n*Código SMAT:* ${smatCode}\n\n*Instrucción de Almacén Durango:* Favor de adjuntar fotografía de la pieza con un flexómetro de referencia para cotejo 1:1.\n\nFavor de confirmar tiempo de despacho en Almacén Central Durango.`;
   
-  const phone = '526188104408';
+  const phone = '526183670664';
   return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
 }
 

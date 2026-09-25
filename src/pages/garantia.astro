@@ -1,12 +1,11 @@
 ---
 // src/pages/garantia.astro
-// Decisión 2-A: Pacto de Certeza Técnica y Garantía Comercial en Patio Durango
+// Decisión 2-B: Pacto de Certeza Técnica y Garantía Comercial en Patio Durango
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import TrustMatrix from '../components/TrustMatrix.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
-import QualityReportModal from '../components/QualityReportModal.astro';
 ---
 
 <BaseLayout 
@@ -25,32 +24,27 @@ import QualityReportModal from '../components/QualityReportModal.astro';
         <span class="trust-badge">POLÍTICA INSTITUCIONAL DE TRANSPARENCIA</span>
         <h1 class="page-title">Pacto de Certeza Técnica y Garantía en Almacén Durango</h1>
         <p class="page-lead">
-          En compras industriales mineras, la confianza no se pide: se exhibe. En SMAT Minerals delimitamos con exactitud qué cubre nuestro protocolo en el Almacén Central Durango (con domicilio fiscal en Mariano Salas #114), qué certifican las fundiciones de manufactura y bajo qué condiciones técnicas declinamos cotizar para no poner en riesgo la continuidad de su turno.
+          En compras industriales mineras, la confianza no se pide: se exhibe. En SMAT Minerals delimitamos con exactitud qué cubre nuestro protocolo en el Almacén Central Durango (con domicilio fiscal en Mariano Salas #114): verificación dimensional de ensamble, compatibilidad 1:1 con marcos estándar de la industria y despacho verificado en almacén.
         </p>
       </div>
 
       <!-- Matriz de Garantía y Límites -->
       <TrustMatrix lang="es" />
 
-      <!-- Protocolos de Calidad y Ensayos a Solicitud Formal (Decisión 1-A) -->
+      <!-- Protocolos de Verificación Dimensional en Almacén Durango -->
       <div class="protocol-request-card">
         <div class="protocol-card-header">
-          <span class="protocol-badge">ANEXO TÉCNICO FORMAL</span>
-          <h3>Protocolos de Ensayo Metalúrgico y Balanceo Dinámico a Solicitud</h3>
+          <span class="protocol-badge">VERIFICACIÓN PREVIA AL EMBARQUE</span>
+          <h3>Protocolo de Cotejo Dimensional 1:1 e Inspección Física de Ajuste</h3>
         </div>
         <p>
-          Para salvaguardar la trazabilidad de ingeniería y prevenir uso indebido de documentación técnica, los reportes certificados de colada ASTM A532 (>650 HB), curvas de espectrometría y hojas de balanceo dinámico en banco se adjuntan como anexo formal a su propuesta técnico-económica al generar su folio institucional de cotización.
+          Para salvaguardar la confiabilidad en el montaje, cada componente despachado desde nuestro Almacén Central en Durango se coteja físicamente contra el patrón dimensional de carcasa (bridas ANSI, barrenado y cuñeros de flecha) y se somete a prueba de giro y dureza Brinell (≥650 HB) antes de ser cargado a plataforma o fletera.
         </p>
         <div class="protocol-card-action">
-          <button type="button" class="btn btn-primary btn-open-quality-facsimile" id="btn-view-sample-report">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg>
-            Ver Facsímil Tipo de Certificado de Calidad ASTM A532
-          </button>
-          <a href="/#rfq" class="btn btn-secondary">Generar Folio para Solicitar Anexo Técnico Oficial →</a>
+          <a href="/#rfq" class="btn btn-primary">Generar Requisición / RFQ Técnica →</a>
+          <a href="https://wa.me/526183670664?text=Hola%20SMAT%20Minerals,%20deseo%20confirmar%20compatibilidad%20dimensional%20para%20mi%20circuito" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">Consultar Ajuste con Ingeniería vía WhatsApp</a>
         </div>
       </div>
-
-      <QualityReportModal lang="es" />
 
       <!-- Banner de Retiro en Patio -->
       <div class="pickup-banner">
@@ -64,7 +58,7 @@ import QualityReportModal from '../components/QualityReportModal.astro';
           </p>
         </div>
         <div class="pickup-action">
-          <a href="https://wa.me/526188104408?text=Hola%20SMAT,%20deseo%20coordinar%20retiro%20de%20refacciones%20en%20almacen%20Durango" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          <a href="https://wa.me/526183670664?text=Hola%20SMAT,%20deseo%20coordinar%20retiro%20de%20refacciones%20en%20almacen%20Durango" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
             Coordinar Retiro en Almacén ➔
           </a>
         </div>

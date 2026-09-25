@@ -1,29 +1,39 @@
 # SMAT Minerals — Generative Engine Optimization (GEO) Summary
 # Domain: https://smatminerals.com
 # Identity: SMAT Minerals
+# Version: 2.3
 # Fiscal Headquarters: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo., 34166, Mexico
 # Central Warehouse & Distribution: Durango, Dgo., Mexico
 # Direct Phones: +52 (618) 810-4408, +52 (618) 810-4428
-# Contacts: ventas@smatminerals.com, contacto@smatminerals.com
+# WhatsApp Line: +52 (618) 367-0664
+# Contacts: ventas@smatminerals.com, sales@smatminerals.com
 
 ## Company Overview
-SMAT Minerals is a heavy mechanical engineering manufacturer founded over 20 years ago in Durango, Mexico. The company specializes in the engineering, fabrication, and urgent dispatch of severe abrasive slurry pumping systems, mineral flotation cells, and solid-liquid dewatering filter presses for the mining and metallurgical industries across Mexico, the United States, Canada, Peru, and Chile.
+SMAT Minerals is an industrial engineering and equipment supply partner founded over 20 years ago in Durango, Mexico. The company specializes in the engineering, assembly, and expedited in-country dispatch of severe abrasive slurry pumping equipment, mineral flotation cells, and dry tailings filter presses for the mining and metallurgical industries across Mexico, the United States, and Canada.
+
+## Strategic Territory & Operational Coverage (Decisión 7-B)
+SMAT operates from its Central Warehouse and Yard in Durango, Mexico, providing fast logistics and direct CFDI invoicing to operations across Mexico's primary mining jurisdictions:
+- Durango (San Dimas, Ciénega, Velardeña, Tayoltita)
+- Zacatecas (Fresnillo, Sombrerete, Mazapil, Zacatecas)
+- Chihuahua (San Julián, Santa Bárbara, Parral, Pinos Altos)
+- Sonora (Cananea, Nacozari, Caborca, Sahuaripa)
+- Coahuila, San Luis Potosí, Sinaloa, Hidalgo, and Guerrero.
 
 ## Commercial Scope & Value Proposition
 
 ### 1. Integrated Equipment Packages (CapEx)
-- **Slurry Pumps on C-Channel Skid:** Standard series 4x3 C-AH, 6x4 D-AH, 8x6 E-AH, 10x8 F-AH mounted on structural ASTM A36 C-channel skids, paired with TEFC electric motors (30 to 250 HP), calculated V-belt transmission, and OSHA guards.
+- **Slurry Pumps on C-Channel Skid:** Standard series 4x3 C, 6x4 D, 8x6 E, 10x8 F mounted on structural ASTM A36 C-channel skids, paired with TEFC electric motors (30 to 250 HP), calculated V-belt transmission, and OSHA guards.
 - **Mechanical Flotation Cells:** Sub-aerated commercial line from 50 to 300 ft³ (1.4 to 8.5 m³) for Rougher, Cleaner, and Scavenger circuits in welded structural steel tanks.
 - **Hydraulic Filter Presses:** High-pressure dewatering systems with recessed chamber and membrane squeeze plates (800x800 to 1500x1500 mm) for dry tailings disposal (12-16% moisture).
 
-### 2. Critical Wear Replacement Spares (OpEx - Fast Dispatch)
-- **Slurry Impellers:** Closed 4 and 5-vane impellers cast in High Chrome 27% Cr (A05, ASTM A532 Class III Type A, hardness >= 650 HB) and pressure-vulcanized natural rubber.
-- **Liners & Volutes:** Split volute casings and throatbushes with reinforced cutwater thickness.
-- **Seals & Bearings:** Dynamic centrifugal expeller seals (flush-free), mechanical slurry cartridges, and heavy-duty bearing assemblies with Timken/SKF roller bearings.
+### 2. Critical Wear Replacement Spares (OpEx - In-Country Stock)
+- **Universal Slurry Impellers:** Closed 4 and 5-vane impellers cast in High Chrome 27% Cr (A05, ASTM A532 Class III Type A, hardness >= 650 HB) and pressure-vulcanized natural rubber. Key codes stocked: D3147 (4/3 C), E4147 (6/4 D), F6147 (8/6 E).
+- **Dynamic Sealing Rings:** Centrifugal expeller rings (codes DAM028, EAM028) for waterless dynamic seals, preventing pulp dilution.
+- **Throatbushes & Liners:** Split volute casings and throatbushes (code E4083) with reinforced cutwater thickness.
 - **Flotation Rotors & Stators:** Polyurethane and natural rubber molded mechanisms.
 - **Filter Plates & Cloths:** 100% virgin polypropylene plates and synthetic woven cloths.
 
-## Logistics and Quality Assurance
-- **Direct Warehouse Pickup:** Central Warehouse & Loading Yard in Durango, Dgo., Mexico (scheduled upon confirmed quote folio).
-- **Inspection Protocol:** Dynamic balancing on test bench and dimensional verification in the client's presence prior to loading.
-- **Technical Dispatch:** Specialized engineering response during business hours (Mon-Fri 08:00 to 18:00 CST) and emergency line for plant shutdowns.
+## Logistics, AISC Reduction & Quality Assurance
+- **AISC Optimization:** Reduces All-In Sustaining Costs by replacing 16-24 week transoceanic shipping with prompt domestic OPEX orders and official Mexican CFDI invoices.
+- **Downtime Protection:** Mitigates unscheduled mill shutdown losses ($20,000 to $150,000 USD per 8-hour shift) through strategic stocking in Durango.
+- **1:1 Dimensional Fit Guarantee:** Every part is physically matched against industry-standard patterns and verified for hardness (>=650 HB) before dispatch.

@@ -1,0 +1,498 @@
+---
+// src/pages/catalogo/[code].astro
+// Decisión 4-B: Ficha Atómica de Refacción Universal con Blindaje Anti-Scraping
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import WhatsAppButton from '../../components/WhatsAppButton.astro';
+import atomicParts from '../../../data/atomic_parts.json';
+
+export function getStaticPaths() {
+  return atomicParts.map((part) => ({
+    params: { code: part.code },
+    props: { part }
+  }));
+}
+
+const { part } = Astro.props;
+const siteUrl = 'https://smatminerals.com';
+const canonicalPath = `/catalogo/${part.code}/`;
+const alternateEnPath = `/en/catalog/${part.code}/`;
+
+const title = `${part.part_number} — ${part.name_es} | SMAT Minerals`;
+const description = `Refacción ${part.part_number}: ${part.type_es} para marco ${part.frame} en aleación ${part.metallurgy} con dureza ${part.hardness}. Despacho verificado desde Almacén Central Durango.`;
+
+const waText = encodeURIComponent(`Hola SMAT Minerals, requiero cotización y disponibilidad en Almacén Durango de la refacción ${part.part_number} para marco ${part.frame}.`);
+const waUrl = `https://wa.me/526183670664?text=${waText}`;
+
+const productSchema = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": `${part.part_number} — ${part.name_es}`,
+  "image": `${siteUrl}/images/og-card.jpg`,
+  "description": part.summary_es,
+  "sku": part.part_number,
+  "mpn": part.part_number,
+  "brand": {
+    "@type": "Brand",
+    "name": "SMAT Minerals"
+  },
+  "material": part.metallurgy,
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock",
+    "itemCondition": "https://schema.org/NewCondition",
+    "seller": {
+      "@type": "Organization",
+      "name": "SMAT Minerals",
+      "url": siteUrl
+    }
+  }
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  lang="es"
+  canonicalPath={canonicalPath}
+  alternateEsPath={canonicalPath}
+  alternateEnPath={alternateEnPath}
+>
+  <Header slot="header" lang="es" currentPath={canonicalPath} alternatePath={alternateEnPath} />
+
+  <main class="part-page-main">
+    <div class="container">
+      
+      <!-- Migas de Pan B2B -->
+      <nav class="breadcrumb-nav" aria-label="Breadcrumbs">
+        <a href="/">Inicio</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="/catalogo/">Catálogo</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">{part.part_number}</span>
+      </nav>
+
+      <div class="part-layout-grid">
+        <!-- Columna Izquierda: Especificación Técnica Formal -->
+        <article class="part-spec-card">
+          <div class="spec-header">
+            <span class="part-badge">REFACCIÓN ESTÁNDAR UNIVERSAL</span>
+            <h1 class="part-title">{part.part_number}</h1>
+            <p class="part-subtitle">{part.name_es}</p>
+          </div>
+
+          <div class="spec-body">
+            <p class="part-lead">{part.summary_es}</p>
+
+            <h2 class="section-title">Parámetros Metalúrgicos y Compatibilidad Dimensional</h2>
+            <div class="table-responsive">
+              <table class="spec-table">
+                <tbody>
+                  <tr>
+                    <th>Código Universal:</th>
+                    <td><strong>{part.part_number}</strong></td>
+                  </tr>
+                  <tr>
+                    <th>Marco Compatible:</th>
+                    <td>Bomba centrífuga de lodos marco {part.frame}</td>
+                  </tr>
+                  <tr>
+                    <th>Tipo de Componente:</th>
+                    <td>{part.type_es}</td>
+                  </tr>
+                  <tr>
+                    <th>Metalurgia:</th>
+                    <td>{part.metallurgy}</td>
+                  </tr>
+                  <tr>
+                    <th>Dureza Verificada:</th>
+                    <td><span class="hardness-badge">{part.hardness}</span></td>
+                  </tr>
+                  {part.vanes > 0 && (
+                    <tr>
+                      <th>Geometría de Álabes:</th>
+                      <td>{part.vanes} álabes cerrados con bombeo trasero dinámico</td>
+                    </tr>
+                  )}
+                  <tr>
+                    <th>Aplicación Crítica:</th>
+                    <td>{part.circuit_es}</td>
+                  </tr>
+                  <tr>
+                    <th>Garantía de Ensamble:</th>
+                    <td>{part.fit_guarantee_es}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Protocolo de Certeza en Patio Durango -->
+            <div class="assurance-block">
+              <div class="assurance-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 11 12 14 22 4"/></svg>
+              </div>
+              <div class="assurance-text">
+                <h3>Garantía de Compatibilidad Dimensional 1:1</h3>
+                <p>
+                  Cada pieza {part.part_number} es verificada físicamente antes de ser despachada desde nuestro Almacén Central en Durango. Aseguramos el acople 1:1 en bastidores estándar de la industria. Si una refacción no calza perfectamente con el marco correspondiente en su planta, se reemplaza de inmediato con nuestro stock en piso.
+                </p>
+              </div>
+            </div>
+
+            <!-- Aviso de Protección Anti-Scraping -->
+            <div class="anti-scraping-notice">
+              <span class="notice-label">PROTECCIÓN TÉCNICA CONFIDENCIAL:</span>
+              <p>
+                Las cotas finas de tolerancia milimétrica y planos de ensamble no se exponen en tablas masivas públicas para proteger el proceso operativo de nuestros clientes. La memoria técnica dimensional se entrega de forma confidencial a solicitud del área de ingeniería o compras.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Columna Derecha: Muelle de Acción Rápida (WhatsApp & RFQ) -->
+        <aside class="part-action-dock">
+          <div class="action-card">
+            <span class="dock-badge">DISPONIBILIDAD INMEDIATA</span>
+            <h3>Requisición de {part.part_number}</h3>
+            <p class="dock-desc">
+              Atención directa con nuestro equipo de ingeniería en Durango para cotización inmediata, verificación de existencias y logística de embarque.
+            </p>
+
+            <div class="dock-ctas">
+              <a href={waUrl} target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp-king">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                <span>Consultar Disponibilidad vía WhatsApp</span>
+              </a>
+
+              <a href={`/#rfq?codigo=${part.part_number}&circuito=bombeo`} class="btn btn-rfq-wizard">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span>Generar Requisición Formal / Acuse A4</span>
+              </a>
+            </div>
+
+            <div class="dock-facts">
+              <div class="fact-item">
+                <span class="fact-label">Centro de Distribución:</span>
+                <span class="fact-val">Durango, Dgo., México</span>
+              </div>
+              <div class="fact-item">
+                <span class="fact-label">Modalidad de Retiro:</span>
+                <span class="fact-val">Carga en patio o fletera a mina</span>
+              </div>
+              <div class="fact-item">
+                <span class="fact-label">Facturación:</span>
+                <span class="fact-val">CFDI Directo en México (OPEX)</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+    </div>
+  </main>
+
+  <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+
+  <WhatsAppButton lang="es" />
+  <Footer slot="footer" lang="es" />
+</BaseLayout>
+
+<style>
+  .part-page-main {
+    padding: 2.5rem 0 4.5rem;
+    background-color: #f8fafc;
+    min-height: 85vh;
+  }
+
+  .breadcrumb-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 2rem;
+  }
+
+  .breadcrumb-nav a {
+    color: #475569;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .breadcrumb-nav a:hover {
+    color: var(--smat-copper-accent);
+    text-decoration: underline;
+  }
+
+  .breadcrumb-sep {
+    color: #cbd5e1;
+  }
+
+  .breadcrumb-current {
+    color: #0f172a;
+    font-weight: 700;
+  }
+
+  .part-layout-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  @media (min-width: 992px) {
+    .part-layout-grid {
+      grid-template-columns: 1.6fr 1fr;
+      align-items: start;
+    }
+  }
+
+  .part-spec-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  }
+
+  .part-badge {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 4px;
+    color: var(--smat-copper-accent);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+  }
+
+  .part-title {
+    font-family: var(--smat-font-editorial);
+    font-size: 2.5rem;
+    line-height: 1.1;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+  }
+
+  .part-subtitle {
+    font-size: 1.25rem;
+    color: #475569;
+    margin-bottom: 1.75rem;
+    font-weight: 500;
+  }
+
+  .part-lead {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #334155;
+    margin-bottom: 2rem;
+  }
+
+  .section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 0.5rem;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    margin-bottom: 2rem;
+  }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    text-align: left;
+  }
+
+  .spec-table th {
+    width: 32%;
+    color: #64748b;
+    font-weight: 600;
+    background-color: #f8fafc;
+  }
+
+  .spec-table td {
+    color: #1e293b;
+  }
+
+  .hardness-badge {
+    display: inline-block;
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+
+  .assurance-block {
+    display: flex;
+    gap: 1.25rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid var(--smat-copper-accent);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .assurance-icon {
+    color: var(--smat-copper-accent);
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+
+  .assurance-text h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+  }
+
+  .assurance-text p {
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .anti-scraping-notice {
+    background: #fffbeb;
+    border: 1px solid #fef3c7;
+    border-radius: 8px;
+    padding: 1.25rem;
+    font-size: 0.85rem;
+    color: #92400e;
+    line-height: 1.5;
+  }
+
+  .notice-label {
+    font-weight: 800;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .anti-scraping-notice p {
+    margin: 0;
+  }
+
+  /* Dock Lateral */
+  .part-action-dock {
+    position: sticky;
+    top: 2rem;
+  }
+
+  .action-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  .dock-badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+    border-radius: 4px;
+    color: #166534;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+  }
+
+  .action-card h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+  }
+
+  .dock-desc {
+    font-size: 0.9rem;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 1.75rem;
+  }
+
+  .dock-ctas {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-bottom: 2rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    padding: 0.95rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+
+  .btn-whatsapp-king {
+    background: #0f172a;
+    color: #ffffff;
+    border: 1px solid #0f172a;
+  }
+
+  .btn-whatsapp-king:hover {
+    background: var(--smat-copper-accent);
+    border-color: var(--smat-copper-accent);
+    color: #ffffff;
+  }
+
+  .btn-rfq-wizard {
+    background: #ffffff;
+    color: #0f172a;
+    border: 1px solid #cbd5e1;
+  }
+
+  .btn-rfq-wizard:hover {
+    border-color: #0f172a;
+    background: #f8fafc;
+  }
+
+  .dock-facts {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .fact-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    color: #64748b;
+  }
+
+  .fact-val {
+    font-weight: 600;
+    color: #1e293b;
+    text-align: right;
+  }
+</style>

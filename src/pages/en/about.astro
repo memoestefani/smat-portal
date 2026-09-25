@@ -1,4 +1,6 @@
 ---
+// src/pages/en/about.astro
+// Decisión 6-B: Symmetrical Executive B2B Briefing on In-Country Supply Resilience & AISC Reduction
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
@@ -6,8 +8,8 @@ import WhatsAppButton from '../../components/WhatsAppButton.astro';
 ---
 
 <BaseLayout 
-  title="About Us & Mining Engineering Heritage"
-  description="Over 20 years of applied mechanical engineering solving severe abrasive slurry pumping, flotation, and tailings dewatering. Headquarters in Durango, Mexico."
+  title="In-Country Supply Chain Resilience for Mining Operations in Mexico | SMAT Minerals"
+  description="Inventory buffer strategy in Durango, Mexico: Mitigating unscheduled grinding mill downtime (20k-150k USD/shift), compressing AISC, and supporting full wet plant concentrator circuits (pumping, flotation, filtration)."
   lang="en"
   canonicalPath="/en/about/"
   alternateEsPath="/nosotros/"
@@ -15,48 +17,138 @@ import WhatsAppButton from '../../components/WhatsAppButton.astro';
 >
   <Header slot="header" lang="en" currentPath="/en/about/" alternatePath="/nosotros/" />
 
+  <!-- Executive Hero -->
   <section class="page-hero">
     <div class="container text-center">
-      <span class="badge badge-copper">MINING ENGINEERING HERITAGE</span>
-      <h1>SMAT Minerals</h1>
-      <p class="subtitle">Two decades solving severe abrasive wear across Mexican and North American mining operations.</p>
+      <span class="badge badge-copper">EXECUTIVE BRIEFING FOR VP OF OPERATIONS & SUPPLY CHAIN</span>
+      <h1>In-Country Supply Chain Resilience for Mining Operations in Mexico</h1>
+      <p class="subtitle">
+        How strategic inventory buffering in Durango eliminates 16 to 24 weeks of transpacific shipping lead-times, safeguards continuous grinding availability, and compresses AISC (All-In Sustaining Costs) across Mexican concentrators.
+      </p>
     </div>
   </section>
 
-  <section class="section-spacing">
-    <div class="container content-container">
-      <div class="story-grid">
-        <div class="story-text">
-          <h2>Origins and Pedigree</h2>
-          <p>
-            SMAT Minerals was founded over 20 years ago in the heart of northern Mexico's mining belt in Durango.
-          </p>
-          <p>
-            From the very beginning, our purpose was never simply distributing generic parts, but solving the severe physical reality of premature mechanical failure in processing plants where abrasive slurry erodes standard impellers and casings in weeks without proper metallurgy and hydrodynamic balance.
-          </p>
-          <p>
-            Today, we uphold that engineering rigor across every structural skid-mounted pump package, every 50 to 300 ft³ flotation cell, and every replacement impeller cast in certified <strong>High Chrome 27% (A05)</strong> alloy exceeding 650 HB hardness.
-          </p>
+  <!-- Key Executive Metrics -->
+  <section class="metrics-bar">
+    <div class="container">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <span class="metric-val">20k – 150k</span>
+          <span class="metric-unit">USD / Shift</span>
+          <p class="metric-label">Economic loss per unscheduled 8-hour mill line shutdown</p>
         </div>
-
-        <div class="card facility-card">
-          <h3>Operational Infrastructure & Warehouse</h3>
-          <ul class="infra-list">
-            <li>
-              <strong>Fiscal HQ & Central Warehouse:</strong> Fiscal HQ at Mariano Salas #114, Durango, Mexico, Postal Code 34166. Central Warehouse and loading yard in Durango.
-            </li>
-            <li>
-              <strong>Heavy Hauler Access:</strong> Logistics yard engineered for rigid trucks, tandem heavy haulers, and semi-trailer flatbeds.
-            </li>
-            <li>
-              <strong>Dynamic Balancing in Client Presence:</strong> Every rotating assembly and impeller undergoes dynamic balancing and dimensional verification prior to loading.
-            </li>
-            <li>
-              <strong>Direct Technical Support:</strong> Direct communication between mine maintenance personnel and our Durango engineering team, streamlining parts selection and plant support without bureaucratic delays.
-            </li>
-          </ul>
+        <div class="metric-card">
+          <span class="metric-val">16 – 24</span>
+          <span class="metric-unit">Weeks</span>
+          <p class="metric-label">Transoceanic shipping lead-time eliminated via in-country stock</p>
+        </div>
+        <div class="metric-card">
+          <span class="metric-val">≥ 650 HB</span>
+          <span class="metric-unit">Brinell</span>
+          <p class="metric-label">Guaranteed metallurgy in certified High Chrome A05 alloy</p>
+        </div>
+        <div class="metric-card">
+          <span class="metric-val">3</span>
+          <span class="metric-unit">Core Circuits</span>
+          <p class="metric-label">Full wet plant coverage: Slurry Pumping, Flotation & Filtration</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- First Principles Core Briefing -->
+  <section class="section-spacing briefing-content">
+    <div class="container content-container">
+      
+      <div class="briefing-block">
+        <div class="block-tag">FIRST PRINCIPLE: CONCENTRATOR PHYSICS & ECONOMICS</div>
+        <h2>1. The Real Cost of Abrasive Wear vs. The Unit Price Fallacy</h2>
+        <p>
+          In hard-rock base and precious metals mining, mechanical wear is not an operational accident—it is a physical certainty dictated by mineral hardness against alloy surfaces. When a primary slurry pump suffers volute cutwater perforation or impeller vane failure at the ball mill discharge, the unit price of the replacement casting is immaterial compared to the value of lost throughput: <strong>an unscheduled concentrator shutdown destroys between 20,000 and 150,000 USD per 8-hour shift</strong> in unfloated metal.
+        </p>
+        <p>
+          Procuring wear spares solely on initial unit quote price is a fiduciary blind spot. The only relevant financial metric is the <em>total cost per processed dry metric ton</em> and the certainty that replacement wear iron is physically staged in-country before the line experiences cavitation or failure.
+        </p>
+      </div>
+
+      <div class="briefing-block">
+        <div class="block-tag">LOGISTICS DE-RISKING & OPERATIONAL SOVEREIGNTY</div>
+        <h2>2. Strategic Logistics De-Risking: From 24 Weeks to Days in Mexico</h2>
+        <p>
+          Heavy reliance on transoceanic supply chains exposes Mexican mining operations to severe maritime congestion, canal delays, and 16 to 24-week delivery cycles for heavy high-chrome castings.
+        </p>
+        <p>
+          At <strong>SMAT Minerals</strong>, we convert global logistics vulnerability into domestic operational resilience. We maintain strategic buffer stock at our <strong>Durango Central Warehouse</strong>, geographically centered within Mexico's primary mining corridor. From Durango, we provide expedited truckload dispatch to major operations across Durango, Zacatecas, Chihuahua, Sonora, Coahuila, San Luis Potosí, and Sinaloa—enabling mines to run leaner site safety stock without jeopardizing plant availability.
+        </p>
+      </div>
+
+      <div class="briefing-block">
+        <div class="block-tag">AISC COMPRESSION & DOMESTIC TAX DEDUCTIBILITY</div>
+        <h2>3. Direct AISC (All-In Sustaining Costs) Compression</h2>
+        <p>
+          AISC is the governing metric scrutinized by mining analysts and corporate boards in Toronto, Vancouver, and across North America. Inefficient procurement practices—such as unplanned transpacific air freight charters, customs brokerage fees, and emergency reseller premiums—directly inflate site sustaining capital and cash costs.
+        </p>
+        <p>
+          Partnering with SMAT Minerals delivers:
+        </p>
+        <ul class="briefing-list">
+          <li><strong>Domestic OPEX Procurement:</strong> Commercial transactions executed directly in Mexico with official SAT-compliant CFDI electronic invoicing, enabling immediate corporate tax deduction without import exposure.</li>
+          <li><strong>Zero Brokerage Overhead:</strong> Factory-direct stocking from our Durango hub eliminates third-party markups and customs clearing bottlenecks.</li>
+          <li><strong>Working Capital Optimization:</strong> Mine operators avoid immobilizing millions in stagnant site inventory; SMAT shoulders the inventory carrying cost in-country.</li>
+        </ul>
+      </div>
+
+      <div class="briefing-block">
+        <div class="block-tag">COMPREHENSIVE WET PLANT CONCENTRATOR CAPABILITY</div>
+        <h2>4. Multiprocess Engineering: The Concentrator as an Integrated System</h2>
+        <p>
+          SMAT Minerals is neither a generic parts broker nor a simple pump reseller. We deliver severe-duty wear solutions engineered across the concentrator's three primary physical circuits:
+        </p>
+        <div class="circuits-summary-grid">
+          <div class="circuit-summary-card">
+            <h3>1. Grinding & Slurry Pumping</h3>
+            <p>Complete structural C-channel skid packages with premium 3-phase electric drives. High-turnover universal wear parts (impellers A05 ≥650 HB, split volute liners, throatbushes, and flush-free dynamic expeller seals) for series 4x3 to 10x8.</p>
+          </div>
+          <div class="circuit-summary-card">
+            <h3>2. Mechanical Flotation Cells</h3>
+            <p>Complete sub-aerated cell units from 50 to 300 ft³ and high-shear rotor-stator replacement mechanisms molded in wear-resistant polyurethane and high-rebound natural rubber for Rougher, Cleaner, and Scavenger circuits.</p>
+          </div>
+          <div class="circuit-summary-card">
+            <h3>3. Dewatering & Dry Tailings Filtration</h3>
+            <p>Heavy-duty hydraulic filter presses, virgin polypropylene chamber plates (800 to 1500 mm), and synthetic filter cloths engineered for dry cake discharge (12-16% residual moisture) meeting strict environmental standards.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Durango Facility Card -->
+      <div class="card facility-full-card">
+        <h3>Operational Infrastructure & Quality Protocol in Durango, Mexico</h3>
+        <div class="facility-flex">
+          <div class="facility-item">
+            <strong>Fiscal HQ & Central Warehouse:</strong>
+            <p>Mariano Salas #114, Col. Primer Presidente, Postal Code 34166, Durango, Mexico. Industrial yard equipped for rigid trucks, tandem heavy haulers, and flatbed trailers.</p>
+          </div>
+          <div class="facility-item">
+            <strong>1:1 Fit & Dynamic Bench Balancing:</strong>
+            <p>Every component undergoes 1:1 physical pattern matching against standard ANSI bolt circles and shaft keyways, followed by dynamic balancing before carrier loading.</p>
+          </div>
+          <div class="facility-item">
+            <strong>Direct Engineering Channel:</strong>
+            <p>Direct communication between plant maintenance superintendents and our Durango technical desk, accelerating part identification and logistics without administrative delays.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vendor Qualification CTA -->
+      <div class="briefing-cta-box">
+        <h3>Initiate Corporate Vendor Qualification for Your Mine</h3>
+        <p>Our corporate credentials, tax compliance documentation, and technical catalogs are readily available for your procurement and plant maintenance teams.</p>
+        <div class="cta-actions">
+          <a href="/en/#rfq" class="btn btn-primary">Generate Technical Requisition / RFQ →</a>
+          <a href="https://wa.me/526183670664?text=Hello%20SMAT%20Minerals,%20we%20would%20like%20to%20initiate%20vendor%20qualification%20for%20our%20mine%20operation" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">Contact Technical Desk via WhatsApp</a>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -66,78 +158,295 @@ import WhatsAppButton from '../../components/WhatsAppButton.astro';
 
 <style>
   .page-hero {
-    padding: 4rem 0 3rem;
+    padding: 4.5rem 0 3.5rem;
     background: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 80%);
     border-bottom: 1px solid var(--color-border);
   }
 
   .text-center {
     text-align: center;
-    max-width: 800px;
+    max-width: 920px;
     margin: 0 auto;
   }
 
+  .page-hero h1 {
+    font-family: var(--smat-font-editorial);
+    font-size: 2.75rem;
+    line-height: 1.15;
+    color: #ffffff;
+    margin: 1.25rem 0 1rem;
+  }
+
   .subtitle {
-    font-size: 1.125rem;
-    margin-top: 1rem;
-    color: var(--color-text-muted);
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #94a3b8;
+  }
+
+  .badge-copper {
+    display: inline-block;
+    padding: 0.3rem 0.85rem;
+    background: rgba(194, 65, 12, 0.15);
+    border: 1px solid rgba(234, 88, 12, 0.4);
+    border-radius: var(--smat-radius-pill);
+    color: #fb923c;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+  }
+
+  /* Metrics Bar */
+  .metrics-bar {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 2rem 0;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .metrics-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .metric-card {
+    text-align: center;
+    padding: 1rem 0.5rem;
+    border-right: 1px solid #f1f5f9;
+  }
+
+  .metric-card:last-child {
+    border-right: none;
+  }
+
+  .metric-val {
+    display: block;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1;
+  }
+
+  .metric-unit {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--smat-copper-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.35rem;
+  }
+
+  .metric-label {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+    line-height: 1.4;
+  }
+
+  /* Content */
+  .briefing-content {
+    background-color: #f8fafc;
+    padding: 4rem 0;
   }
 
   .content-container {
-    max-width: 1000px;
+    max-width: 900px;
+    margin: 0 auto;
   }
 
-  .story-grid {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 3rem;
-    align-items: start;
+  .briefing-block {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
   }
 
-  .story-text h2 {
+  .block-tag {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--smat-copper-accent);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.75rem;
+  }
+
+  .briefing-block h2 {
+    font-family: var(--smat-font-editorial);
+    font-size: 1.65rem;
+    color: #0f172a;
     margin-bottom: 1.25rem;
+    line-height: 1.25;
   }
 
-  .story-text p {
-    margin-bottom: 1.25rem;
+  .briefing-block p {
+    font-size: 1.05rem;
     line-height: 1.7;
-    font-size: 1.0625rem;
-  }
-
-  .facility-card {
-    background-color: #131c2e;
-  }
-
-  .facility-card h3 {
+    color: #334155;
     margin-bottom: 1.25rem;
-    color: var(--color-accent-copper);
-    border-bottom: 2px solid var(--color-border);
-    padding-bottom: 0.5rem;
   }
 
-  .infra-list {
-    list-style: none;
+  .briefing-block p:last-child {
+    margin-bottom: 0;
+  }
+
+  .briefing-list {
+    margin: 1.25rem 0 0 1.5rem;
     display: flex;
     flex-direction: column;
+    gap: 0.85rem;
+    font-size: 1rem;
+    color: #334155;
+    line-height: 1.6;
+  }
+
+  .circuits-summary-grid {
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 1.25rem;
+    margin-top: 1.75rem;
   }
 
-  .infra-list li {
-    font-size: 0.9375rem;
-    line-height: 1.5;
-    color: var(--color-text-muted);
-  }
-
-  .infra-list strong {
-    color: #ffffff;
-    display: block;
-    margin-bottom: 0.25rem;
-  }
-
-  @media (max-width: 868px) {
-    .story-grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
+  @media (min-width: 768px) {
+    .circuits-summary-grid {
+      grid-template-columns: repeat(3, 1fr);
     }
+  }
+
+  .circuit-summary-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+
+  .circuit-summary-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.65rem;
+  }
+
+  .circuit-summary-card p {
+    font-size: 0.88rem;
+    color: #64748b;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* Facility Card */
+  .facility-full-card {
+    background: #0f172a;
+    color: #ffffff;
+    border-radius: 12px;
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .facility-full-card h3 {
+    font-family: var(--smat-font-editorial);
+    font-size: 1.6rem;
+    color: #ffffff;
+    margin-bottom: 1.75rem;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 0.75rem;
+  }
+
+  .facility-flex {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .facility-flex {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .facility-item strong {
+    display: block;
+    color: #f97316;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .facility-item p {
+    font-size: 0.88rem;
+    color: #cbd5e1;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* CTA Box */
+  .briefing-cta-box {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  }
+
+  .briefing-cta-box h3 {
+    font-family: var(--smat-font-editorial);
+    font-size: 1.75rem;
+    color: #0f172a;
+    margin-bottom: 0.75rem;
+  }
+
+  .briefing-cta-box p {
+    font-size: 1.05rem;
+    color: #64748b;
+    max-width: 680px;
+    margin: 0 auto 1.75rem;
+    line-height: 1.6;
+  }
+
+  .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.95rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary {
+    background: var(--smat-copper-accent);
+    color: #ffffff;
+    border: 1px solid var(--smat-copper-accent);
+  }
+
+  .btn-primary:hover {
+    background: #9a3412;
+    border-color: #9a3412;
+  }
+
+  .btn-secondary {
+    background: #0f172a;
+    color: #ffffff;
+    border: 1px solid #0f172a;
+  }
+
+  .btn-secondary:hover {
+    background: #1e293b;
+    border-color: #1e293b;
   }
 </style>

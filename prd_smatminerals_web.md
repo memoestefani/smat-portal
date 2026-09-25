@@ -2,14 +2,14 @@
 id: "prd.smat.site.v1"
 title: "SMAT Minerals Site — PRD"
 type: "prd"
-version: "2.0"
+version: "2.3"
 status: "active"
 owner: "SMAT"
-last_updated: "2026-09-22"
-replaces: "PRD_smatminerals_web.md v1.9"
+last_updated: "2026-09-25"
+replaces: "PRD_smatminerals_web.md v2.0"
 repo: "smat-minerals-site"
 domain: "https://www.smatminerals.com/"
-summary: "Sitio público B2B bilingüe (español/inglés) de contacto para SMAT Minerals (Solid Mechanical Advanced Technologies, 20+ años de ingeniería en Durango). Propuesta de valor dual: Equipos Completos CapEx (bombas en skid, celdas de flotación activas, filtros prensa) y Refaccionamiento Crítico OpEx (piezas de desgaste A05/hule con despacho de emergencia). Optimizado para SEO vertical por silos y descubrimiento por LLMs (GEO). Arquitectura Astro SSG en Cloudflare Pages ($0/mes), portal de revisión amigable para marketing con Sveltia CMS (GOLD-148), selector FSM en 3 pasos (GOLD-149) y compuerta soberana de contratos en Rust (crates/smat-gate)."
+summary: "Sitio público B2B bilingüe (español/inglés) de contacto para SMAT Minerals (20+ años de ingeniería en Durango). Propuesta de valor multi-equipo de planta húmeda: Bombeo/Molienda, Flotación y Filtración. Optimizado para SEO vertical por silos y descubrimiento por LLMs (GEO) con fichas atómicas anti-scraping y briefing de impacto económico AISC. Arquitectura Astro SSG en Cloudflare Pages ($0/mes), WhatsApp oficial 6183670664 y compuerta soberana de contratos en Rust (crates/smat-gate)."
 keywords:
   - site
   - b2b
@@ -2191,7 +2191,7 @@ No se bloquea el repositorio por ello.
 * [ ] **Infraestructura Dominio:** Delegar Nameservers de GoDaddy hacia Cloudflare;
 * [ ] **Infraestructura DNS & CDN:** Configurar zona DNS en Cloudflare y conectar repositorio a Cloudflare Pages;
 * [ ] **Infraestructura Correo:** Configurar registros MX de Google Workspace, SPF (`include:_spf.google.com`), DKIM y DMARC en Cloudflare DNS;
-* [ ] **WhatsApp:** Configurar número comercial y enlace universal `https://wa.me/` con prellenado contextual.
+* [x] **WhatsApp:** Configurado número comercial oficial 6183670664 (+52 618 367 0664) y enlace universal `https://wa.me/526183670664` con prellenado contextual de folio, circuito y solicitud de fotografía con flexómetro.
 
 ## Fase 1 — Contratos y Compuerta Soberana en Rust
 
