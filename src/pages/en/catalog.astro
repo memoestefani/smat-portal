@@ -1,10 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DualHubView from '../../components/DualHubView.astro';
+import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
 import atomicParts from '../../../data/atomic_parts.json';
 
-const title = "Official Digital Catalog 2026 | Slurry Pumps, Flotation Cells & Filter Presses | SMAT Minerals";
-const description = "Technical digital catalog of heavy abrasive slurry centrifugal pumps, mechanical flotation cells, tailings filter presses and A05 replacement wear spares dispatched from Durango, Mexico.";
+const title = "Official Technical Catalog 2026 | Slurry Pumps, Flotation Mechanisms, Filter Presses & Scales | SMAT Minerals";
+const description = "Technical digital catalog with CAD diagrams of slurry pumps, wet-end wear lots (High Chrome, Rubber & Polyurethane), Bearing Assembly / Housing, flotation mechanisms, filter presses and Marcy pulp density scales.";
 ---
 
 <BaseLayout title={title} description={description} lang="en">
@@ -14,7 +15,7 @@ const description = "Technical digital catalog of heavy abrasive slurry centrifu
     <div class="catalog-action-bar no-print">
       <div class="action-bar-left">
         <a href="/en/" class="btn-back">← Back to Home</a>
-        <span class="catalog-edition-pill">EXECUTIVE EDITION 2026</span>
+        <span class="catalog-edition-pill">TECHNICAL EDITION V3.2 • 2026</span>
       </div>
       <div class="action-bar-right">
         <button type="button" class="btn-action btn-print" onclick="window.print()">
@@ -32,13 +33,13 @@ const description = "Technical digital catalog of heavy abrasive slurry centrifu
     <header class="catalog-official-header">
       <div class="header-brand-block">
         <h1 class="brand-title">SMAT MINERALS</h1>
-        <span class="brand-tagline">HEAVY MECHANICAL ENGINEERING & MINING EQUIPMENT SUPPLY</span>
+        <span class="brand-tagline">SLURRY PUMPS, WET-END PARTS, FLOTATION, FILTER PRESSES & PULP SCALES</span>
         <span class="brand-location">Fiscal HQ: Mariano Salas #114, Durango, Mexico. CP 34166 | Durango Central Warehouse</span>
       </div>
       <div class="header-meta-block">
-        <span class="doc-badge">OFFICIAL TECHNICAL CATALOG</span>
+        <span class="doc-badge">TECHNICAL CATALOG WITH CAD DIAGRAMS</span>
         <span class="doc-code">REF: SMAT-CAT-2026-EN</span>
-        <span class="doc-contact">Phone: +52 (618) 810-4408 • ventas@smatminerals.com</span>
+        <span class="doc-contact">Phone: +52 (618) 810-4408 • Hotline: +52 (618) 367-0664 • ventas@smatminerals.com</span>
       </div>
     </header>
 
@@ -47,51 +48,65 @@ const description = "Technical digital catalog of heavy abrasive slurry centrifu
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
       </div>
       <div class="intro-text">
-        <strong>Digital Catalog for Mining Buyers & Process Engineers</strong>
-        <p>Review dimensional series, metallurgical specifications, and complete equipment or wear replacement options for grinding, flotation, and tailings dewatering circuits. Save or print this document in clean PDF format using the top button to share internally.</p>
+        <strong>Technical Catalog with Exploded CAD Diagrams for Plant Engineering & Mining Procurement</strong>
+        <p>Review horizontal slurry pumps (1.5x1" to 14x12"), balanced wet-end wear lots (e.g. 5 impellers, 5 throatbushes, and 4 volute liners in High Chrome, Rubber, and Polyurethane), complete <strong>Bearing Assembly / Housing</strong> units, mechanisms for flotation cells and pulp conditioners, filter presses (800 to 1500 mm), and Marcy-type pulp density scales.</p>
       </div>
     </div>
 
-    <!-- SECTION 1: SLURRY & ABRASIVE PUMPING SYSTEMS -->
+    <!-- SECTION 1: SLURRY PUMPS & WET-END WEAR PARTS -->
     <section class="catalog-section" id="pumping">
       <div class="section-title-wrap">
         <span class="section-num">01</span>
         <div>
-          <h2>Heavy Abrasive Slurry Pumping Systems</h2>
-          <span class="section-subtitle">Complete skid mounted packages and severe wear spare parts for slurry duties</span>
+          <h2>Slurry Pumps & Wet-End Wear Parts (Pumping Circuit)</h2>
+          <span class="section-subtitle">Horizontal slurry pumps, 5-5-4 wet-end lots in High Chrome, Rubber & Polyurethane, and complete Bearing Assembly / Housing</span>
         </div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <TechnicalDiagrams diagram="pump" lang="en" />
       </div>
 
       <div class="catalog-grid-2">
         <div class="catalog-card">
-          <div class="card-tag">Complete Skid Package with Motor & Skid</div>
-          <h3>Centrifugal Slurry Pumps on Structural Skid</h3>
-          <p class="card-desc">Fully integrated heavy slurry pumping packages mounted on reinforced ASTM A36 C-channel base frames, paired with standard 3-phase electric motors (WEG/Siemens), calculated industrial V-belt drives with OSHA guards, and dynamic shop balancing in Durango prior to dispatch.</p>
+          <div class="card-tag">Horizontal Slurry Pumps & Drive End</div>
+          <h3>Slurry Pumps (1.5x1" to 14x12") & Bearing Assembly / Housing</h3>
+          <p class="card-desc">Heavy-duty horizontal centrifugal slurry pumps for mill discharge, cyclone feed, flotation, and tailings transfer, paired with complete assembled <strong>Bearing Assembly / Housing</strong> units ready for fast drop-in installation.</p>
           <ul class="card-specs">
-            <li><strong>Dimensional Series:</strong> 4x3 C, 6x4 D, 8x6 E, 10x8 F (Industry Standard Interchangeability).</li>
-            <li><strong>Flow Capacity:</strong> 50 to 1,200 m³/h @ Total dynamic heads up to 80 meters per single stage.</li>
-            <li><strong>Power Range:</strong> 30 HP to 250 HP TEFC 3-phase electric motor.</li>
+            <li><strong>Pump Size Range:</strong> From 1.5x1" up to 14x12" (4x3 C, 6x4 D, 8x6 E, 10x8 F series with 1:1 dimensional interchangeability).</li>
+            <li><strong>Bearing Assembly / Housing:</strong> Complete assembled cartridge (cylindrical housing, alloy steel shaft, Timken tapered roller bearings, and labyrinth end seals).</li>
+            <li><strong>Shaft Sealing:</strong> Dry centrifugal expeller and stuffing box with lantern ring. <strong>We do not supply mechanical seals</strong> due to severe slurry corrosion and abrasion.</li>
             <li><strong>Interchangeability:</strong> 1:1 dimensional fit with standard ANSI flanges and bedplates.</li>
           </ul>
-          <div class="card-footer-action no-print">
-            <a href="/en/?equipo=skid_bomba#rfq" class="btn-card-quote">Quote Skid Pump →</a>
+          <div class="card-footer-action no-print" style="display:flex; gap:1rem; flex-wrap:wrap;">
+            <a href="/en/#rfq?equipo=skid_bomba" class="btn-card-quote">Quote Slurry Pump →</a>
+            <a href="/en/#rfq?equipo=soporte" class="btn-card-quote">Quote Bearing Assembly →</a>
           </div>
         </div>
 
         <div class="catalog-card">
-          <div class="card-tag">Critical Wet-End Wear Spares</div>
-          <h3>Impellers, Volute Liners & Shaft Sealing</h3>
-          <p class="card-desc">Critical wet-end wear parts cast in High Chrome 27% Chromium white iron or molded in pressure-vulcanized natural rubber for maximum service life under severe erosion and gouging abrasion.</p>
+          <div class="card-tag">Balanced Wet-End Lot Supply (5 – 5 – 4)</div>
+          <h3>Impellers, Throatbushes & Volutes (High Chrome, Rubber & Polyurethane)</h3>
+          <p class="card-desc">Wet-end wear parts supplied in balanced plant maintenance lots matched to real component wear ratios (for example: <strong>5 Impellers + 5 Throatbushes + 4 Volute Liners</strong>) to prevent clearance mismatch and recirculation.</p>
           <ul class="card-specs">
-            <li><strong>High Chrome A05 Metallurgy:</strong> ASTM A532 Class III Type A, Minimum 650 HB (58-62 HRC).</li>
-            <li><strong>Elastomers:</strong> Pressure-vulcanized 60 Shore A natural rubber for fine solids and reagents.</li>
-            <li><strong>Impellers:</strong> Closed 4 and 5-vane impellers with dynamic back pump-out vanes.</li>
-            <li><strong>Sealing:</strong> Flushless centrifugal expeller dynamic seals and heavy-duty stuffing boxes.</li>
-            <li><strong>Bearings:</strong> Heavy-duty Timken tapered roller bearing cartridges (L10 > 50,000 hrs).</li>
+            <li><strong>Available Materials:</strong> High Chrome 27% Cr white iron (ASTM A532 ≥650 HB), pressure-vulcanized natural rubber, and mining-grade polyurethane.</li>
+            <li><strong>Impellers:</strong> Closed 5-vane and wide-passage impellers with back pump-out vanes to relieve stuffing box pressure.</li>
+            <li><strong>Throatbushes & Liners:</strong> Adjustable suction throatbushes (front clearance take-up), volute liners, and frame plate liner inserts (FPL).</li>
+            <li><strong>Shop Balancing:</strong> Verified hardness and ISO 1940 G2.5 dynamic balancing in Durango.</li>
           </ul>
-          <div class="card-footer-action no-print">
-            <a href="/en/?equipo=impulsor#rfq" class="btn-card-quote">Quote Wear Spares →</a>
+          <div class="card-footer-action no-print" style="display:flex; gap:1rem; flex-wrap:wrap;">
+            <a href="/en/#rfq?equipo=revestimientos" class="btn-card-quote">Quote Wet-End Lot (5-5-4) →</a>
+            <a href="/en/#rfq?equipo=impulsor" class="btn-card-quote">Quote Impellers →</a>
           </div>
+        </div>
+      </div>
+
+      <div class="catalog-grid-2" style="margin-bottom: 1.5rem;">
+        <div>
+          <TechnicalDiagrams diagram="liners" lang="en" compact={true} />
+        </div>
+        <div>
+          <TechnicalDiagrams diagram="bearing" lang="en" compact={true} />
         </div>
       </div>
 
@@ -100,7 +115,7 @@ const description = "Technical digital catalog of heavy abrasive slurry centrifu
         <div class="table-header-flex">
           <div>
             <h4 class="table-title">Rapid Parametric Matrix — Slurry Pumping Series (4x3 to 10x8)</h4>
-            <span class="table-subtitle">Consolidated dimensional frames, max solids passage (Top Size), power ratings, and flow ranges (<15s inspection)</span>
+            <span class="table-subtitle">Consolidated dimensional frames, max solids passage (Top Size), power ratings, and flow ranges (&lt;15s inspection)</span>
           </div>
           <span class="matrix-badge">1:1 FIT STANDARD</span>
         </div>
@@ -154,7 +169,7 @@ const description = "Technical digital catalog of heavy abrasive slurry centrifu
               <th>Dynamic Head (TDH)</th>
               <th>Top Size (Max Solids)</th>
               <th>Motor Power</th>
-              <th>Metallurgy / Hardness</th>
+              <th>Wet-End Materials</th>
               <th>Plant Application</th>
               <th class="no-print">Quick Action</th>
             </tr>
@@ -167,7 +182,7 @@ const description = "Technical digital catalog of heavy abrasive slurry centrifu
               <td>10 – 45 m</td>
               <td><strong>28 mm</strong></td>
               <td>30 – 50 HP (22-37 kW)</td>
-              <td>A05 (>650 HB) / Rubber</td>
+              <td>High Chrome (&gt;650 HB) / Rubber / Polyurethane</td>
               <td>Flotation feed, sumps, and fine tailings transfer.</td>
               <td class="no-print"><a href="/en/#rfq?equipo=skid_bomba&serie=4x3" class="btn-table-cta">Quote 4x3 →</a></td>
             </tr>
@@ -178,7 +193,7 @@ const description = "Technical digital catalog of heavy abrasive slurry centrifu
               <td>15 – 60 m</td>
               <td><strong>45 mm</strong></td>
               <td>50 – 100 HP (37-75 kW)</td>
-              <td>A05 (>650 HB)</td>
+              <td>High Chrome (&gt;650 HB) / Rubber / Polyurethane</td>
               <td>SAG / Ball mill discharge to cyclone clusters (200-600 t/d).</td>
               <td class="no-print"><a href="/en/#rfq?equipo=skid_bomba&serie=6x4" class="btn-table-cta">Quote 6x4 →</a></td>
             </tr>
@@ -189,7 +204,7 @@ const description = "Technical digital catalog of heavy abrasive slurry centrifu
               <td>20 – 70 m</td>
               <td><strong>63 mm</strong></td>
               <td>100 – 200 HP (75-150 kW)</td>
-              <td>A05 (>650 HB)</td>
+              <td>High Chrome (&gt;650 HB) / Rubber</td>
               <td>Primary grinding circuit discharge and thickened tailings.</td>
               <td class="no-print"><a href="/en/#rfq?equipo=skid_bomba&serie=8x6" class="btn-table-cta">Quote 8x6 →</a></td>
             </tr>
@@ -200,8 +215,8 @@ const description = "Technical digital catalog of heavy abrasive slurry centrifu
               <td>25 – 80 m</td>
               <td><strong>86 mm</strong></td>
               <td>150 – 250 HP (110-185 kW)</td>
-              <td>A05 (>650 HB) / Rubber</td>
-              <td>Large throughput tailings disposal and plants >1,500 t/d.</td>
+              <td>High Chrome (&gt;650 HB) / Rubber</td>
+              <td>Large throughput tailings disposal and plants &gt;1,500 t/d.</td>
               <td class="no-print"><a href="/en/#rfq?equipo=skid_bomba&serie=10x8" class="btn-table-cta">Quote 10x8 →</a></td>
             </tr>
           </tbody>
@@ -212,7 +227,7 @@ const description = "Technical digital catalog of heavy abrasive slurry centrifu
       <div class="atomic-parts-catalog-block" id="atomic-part-sheets">
         <div class="table-header-flex">
           <div>
-            <h4 class="table-title">Universal Part Number Technical Sheets (Wet-End & Centrifugal Expeller)</h4>
+            <h4 class="table-title">Universal Part Number Technical Sheets (Impellers, Throatbushes & Expeller Rings)</h4>
             <span class="table-subtitle">Select any universal part code to view its individual metallurgical specification, verified hardness, and 1:1 dimensional fit</span>
           </div>
           <span class="matrix-badge">6 ATOMIC SHEETS</span>
@@ -236,88 +251,128 @@ const description = "Technical digital catalog of heavy abrasive slurry centrifu
       </div>
     </section>
 
-    <!-- SECTION 2: MINERAL FLOTATION CELLS -->
+    <!-- SECTION 2: MECHANISMS FOR FLOTATION CELLS & CONDITIONERS -->
     <section class="catalog-section" id="flotation">
       <div class="section-title-wrap">
         <span class="section-num">02</span>
         <div>
-          <h2>Mechanical Mineral Flotation Line</h2>
-          <span class="section-subtitle">Complete cells and replacement rotor/stator mechanisms for Rougher, Cleaner and Scavenger circuits</span>
+          <h2>Mechanisms for Flotation Cells & Pulp Conditioners</h2>
+          <span class="section-subtitle">Drive heads, shafts, standpipes, pulp conditioners, and rotor/stator mechanisms (50 to 300 ft³)</span>
         </div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <TechnicalDiagrams diagram="flotation" lang="en" />
       </div>
 
       <div class="catalog-grid-2">
         <div class="catalog-card">
-          <div class="card-tag">Flotation Cells & Mechanism Assembly</div>
-          <h3>Sub-Aerated Mechanical Flotation Cells (50 to 300 ft³)</h3>
-          <p class="card-desc">Welded structural ASTM A36 steel tanks with U-shaped bottom profiles to prevent sanding, heavy-duty drive shafts, matched V-belt drives, and tailings discharge boxes with pneumatic or manual dart valves.</p>
+          <div class="card-tag">Complete Drive Mechanisms & Conditioners</div>
+          <h3>Mechanisms for Flotation Cells & Conditioning Tanks (50 to 300 ft³)</h3>
+          <p class="card-desc">Complete vertical drive assemblies (upper bearing housing, grooved V-belt sheave, concentric air standpipe with control valve, and alloy steel shaft) for Rougher, Cleaner, and Scavenger banks, plus agitation mechanisms for pulp conditioning tanks.</p>
           <ul class="card-specs">
-            <li><strong>Available Volumes:</strong> 50 ft³ (1.4 m³), 100 ft³ (2.8 m³), 200 ft³ (5.6 m³), 300 ft³ (8.5 m³).</li>
-            <li><strong>Configuration:</strong> Cascade banks of 2 to 6 interconnected cells.</li>
-            <li><strong>Aeration:</strong> Hollow shaft self-aspiration or low-pressure blower feed.</li>
-            <li><strong>Froth Control:</strong> Rotating paddle scrapers and adjustable overflow weirs.</li>
+            <li><strong>Cell Volumes:</strong> 50 ft³ (1.4 m³), 100 ft³ (2.8 m³), 200 ft³ (5.6 m³), 300 ft³ (8.5 m³).</li>
+            <li><strong>Pulp Conditioners:</strong> Axial circulation mechanisms with central draft tube and elastomer-lined propeller.</li>
+            <li><strong>Aeration:</strong> Hollow standpipe self-aspiration or low-pressure forced air feed.</li>
+            <li><strong>Mounting:</strong> Direct bolt-on replacement onto existing cell structural bridges.</li>
           </ul>
           <div class="card-footer-action no-print">
-            <a href="/en/?equipo=celda_flotacion#rfq" class="btn-card-quote">Quote Flotation Bank →</a>
+            <a href="/en/#rfq?equipo=celda_flotacion" class="btn-card-quote">Quote Mechanism or Conditioner →</a>
           </div>
         </div>
 
         <div class="catalog-card">
-          <div class="card-tag">OpEx • Mechanism Replacement</div>
-          <h3>Wear Rotors & Stators</h3>
-          <p class="card-desc">Hydrodynamic mechanisms cast in mining-grade polyurethane or resilient natural rubber, dynamically balanced for homogenous bubble dispersion and maximum metallurgical recovery.</p>
+          <div class="card-tag">Rubber & Polyurethane Wear Parts</div>
+          <h3>Rotors, Stators, Propellers & Shafts</h3>
+          <p class="card-desc">Hydrodynamic rotors, stators/diffusers, and conditioner propellers molded over steel cores in high-resilience natural rubber or mining-grade polyurethane.</p>
           <ul class="card-specs">
-            <li><strong>Materials:</strong> Reagent-resistant polyurethane and vulcanized natural rubber.</li>
-            <li><strong>Rotors:</strong> High-shear finger geometry maximizing air-slurry interfacial area.</li>
-            <li><strong>Stators:</strong> Radial baffles damping vortex energy to create a quiescent surface froth zone.</li>
-            <li><strong>Compatibility:</strong> 1:1 drop-in replacement mechanisms for standard industrial cells.</li>
+            <li><strong>Materials:</strong> Vulcanized natural rubber (60-65 Shore A) and reagent-resistant polyurethane.</li>
+            <li><strong>Rotors:</strong> Radial star geometry maximizing air-slurry shear without elastomer delamination.</li>
+            <li><strong>Stators:</strong> Stabilizing radial blades damping vortex energy to preserve a quiescent froth zone.</li>
+            <li><strong>Compatibility:</strong> 1:1 drop-in replacement mechanisms for standard industrial flotation cells.</li>
           </ul>
           <div class="card-footer-action no-print">
-            <a href="/en/?equipo=rotor_estator#rfq" class="btn-card-quote">Quote Mechanisms →</a>
+            <a href="/en/#rfq?equipo=rotor_estator" class="btn-card-quote">Quote Rotors & Stators →</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 3: FILTRATION & TAILINGS DEWATERING -->
+    <!-- SECTION 3: FILTER PRESSES, PLATES & FILTER CLOTHS -->
     <section class="catalog-section" id="filtration">
       <div class="section-title-wrap">
         <span class="section-num">03</span>
         <div>
-          <h2>Solid-Liquid Filtration & Tailings Dewatering</h2>
-          <span class="section-subtitle">High-pressure hydraulic filter presses and filter consumables for dry tailings stacking</span>
+          <h2>Filter Presses, Filter Plates & Cloths (Concentrate & Tailings Filtration)</h2>
+          <span class="section-subtitle">Recessed chamber filter presses (800 to 1500 mm), virgin polypropylene plates, and needle-felt filter cloths</span>
         </div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <TechnicalDiagrams diagram="filter" lang="en" />
       </div>
 
       <div class="catalog-grid-2">
         <div class="catalog-card">
-          <div class="card-tag">Tailings Filter Presses</div>
-          <h3>Automated Hydraulic Filter Presses</h3>
-          <p class="card-desc">High-pressure dewatering systems designed for concentrate and thickened tailings filtration, producing dry filter cakes with 12% to 16% residual moisture for sustainable dry stacking and maximum process water recycling.</p>
+          <div class="card-tag">Recessed Chamber Filter Presses</div>
+          <h3>Electro-Hydraulic Filter Presses (800 mm to 1500 mm)</h3>
+          <p class="card-desc">Heavy-duty recessed chamber filter presses engineered for mineral concentrate and thickened tailings dewatering (up to 16 bar slurry feed pressure), delivering solid filter cakes with low residual moisture and high process water recovery.</p>
           <ul class="card-specs">
-            <li><strong>Plate Dimensions:</strong> 800 x 800 mm, 1000 x 1000 mm, 1250 x 1250 mm, 1500 x 1500 mm.</li>
-            <li><strong>Feed Pressure:</strong> Up to 16 bar slurry injection.</li>
-            <li><strong>Hydraulic Clamping:</strong> Double-acting hydraulic cylinder with up to 350 bar clamping force.</li>
-            <li><strong>Automation:</strong> Touch HMI / PLC control panel for cake washing, air blowdown, and plate shifting.</li>
+            <li><strong>Plate Dimensions:</strong> Recessed chamber sizes of 800 x 800 mm, 1000 x 1000 mm, 1250 x 1250 mm, and 1500 x 1500 mm.</li>
+            <li><strong>Filtration Pressure:</strong> Up to 16 bar slurry feed pressure.</li>
+            <li><strong>Hydraulic Clamping:</strong> Double-acting hydraulic cylinder (up to 350 bar) with HPU and pressure-holding check valves.</li>
+            <li><strong>Operation:</strong> Moving follower head, reinforced side bars, and automatic plate shifter.</li>
           </ul>
           <div class="card-footer-action no-print">
-            <a href="/en/?equipo=filtro_prensa#rfq" class="btn-card-quote">Quote Filter Press →</a>
+            <a href="/en/#rfq?equipo=filtro_prensa" class="btn-card-quote">Quote Filter Press →</a>
           </div>
         </div>
 
         <div class="catalog-card">
-          <div class="card-tag">OpEx • Consumables & Plates</div>
-          <h3>Polypropylene Plates & Woven Filter Cloths</h3>
-          <p class="card-desc">Recessed chamber and membrane squeeze plates molded from 100% virgin high-density polypropylene, paired with synthetic woven filter fabrics engineered for high mechanical tensile strength.</p>
+          <div class="card-tag">Filter Plates & Cloths</div>
+          <h3>Virgin Polypropylene Plates & Needle-Felt Filter Cloths</h3>
+          <p class="card-desc">Recessed chamber filter plates molded from virgin copolymer polypropylene and laser-cut needle-felt filter cloths with thermally sealed edges.</p>
           <ul class="card-specs">
-            <li><strong>Plates:</strong> Recessed chamber and inflatable membrane plates for moisture squeeze.</li>
-            <li><strong>Filter Cloths:</strong> Monofilament, multifilament, and composite fabrics calibrated to slurry P80.</li>
-            <li><strong>Chemical Resistance:</strong> Chemically inert to acidic pH, cyanide, and flotation reagents.</li>
-            <li><strong>Spares & Accessories:</strong> Slurry diaphragm gauges, gaskets, and heavy slurry feed pumps.</li>
+            <li><strong>Filter Plates:</strong> High-density virgin copolymer polypropylene for 800 mm to 1500 mm chambers.</li>
+            <li><strong>Filter Cloths:</strong> Needle-felt and monofilament/multifilament fabrics calibrated to mineral P80 (barrel neck, grommets, and velcro).</li>
+            <li><strong>Chemical Resistance:</strong> Inert to acidic/alkaline pH and flotation reagents.</li>
+            <li><strong>Hydraulic Spares:</strong> Cylinder seal kits, valves, slurry feed pumps, and diaphragm pressure gauges.</li>
           </ul>
           <div class="card-footer-action no-print">
-            <a href="/en/?equipo=placas_telas#rfq" class="btn-card-quote">Quote Plates & Cloths →</a>
+            <a href="/en/#rfq?equipo=placas_telas" class="btn-card-quote">Quote Plates & Cloths →</a>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: PULP DENSITY SCALES (MARCY TYPE) -->
+    <section class="catalog-section" id="scales">
+      <div class="section-title-wrap">
+        <span class="section-num">04</span>
+        <div>
+          <h2>Pulp Density & % Solids Scales (Marcy Type)</h2>
+          <span class="section-subtitle">Direct-reading metallurgical instrumentation for grinding, classification, and flotation control</span>
+        </div>
+      </div>
+
+      <div class="catalog-grid-2" style="align-items: center;">
+        <div class="catalog-card">
+          <div class="card-tag">Plant Metallurgical Control</div>
+          <h3>Direct-Reading Hanging Pulp Density Scale with 1000 cm³ Container</h3>
+          <p class="card-desc">Direct-reading mechanical hanging scale to determine pulp specific gravity, sample weight in grams, and percent solids by weight instantaneously without manual tables or calculations.</p>
+          <ul class="card-specs">
+            <li><strong>Calibrated Container (1000 cm³):</strong> Available in stainless steel or clear acrylic with lateral overflow holes and bottom drain plug.</li>
+            <li><strong>12 Interchangeable Dials:</strong> Cover dry mineral specific gravity ranges from SG 1.2 up to SG 7.8.</li>
+            <li><strong>Zero Tare Adjustment:</strong> Top zeroing knob calibrated with the container filled with 1000 g of clean water.</li>
+            <li><strong>Application:</strong> Mill discharge, hydrocyclone overflow/underflow, flotation feed, and thickeners.</li>
+          </ul>
+          <div class="card-footer-action no-print">
+            <a href="/en/#rfq?equipo=balanza_marcy" class="btn-card-quote">Quote Pulp Scale →</a>
+          </div>
+        </div>
+
+        <div>
+          <TechnicalDiagrams diagram="marcy" lang="en" />
         </div>
       </div>
     </section>
@@ -325,10 +380,10 @@ const description = "Technical digital catalog of heavy abrasive slurry centrifu
     <!-- INTERACTIVE 9-ROLE MATRIX & METALLURGICAL RULES (data/roles.json) -->
     <DualHubView lang="en" />
 
-    <!-- SECTION 4: WAREHOUSE PROTOCOL & DISPATCH -->
+    <!-- SECTION 5: WAREHOUSE PROTOCOL & DISPATCH -->
     <section class="catalog-section" id="logistics">
       <div class="section-title-wrap">
-        <span class="section-num">04</span>
+        <span class="section-num">05</span>
         <div>
           <h2>Quality Protocol, Central Warehouse & Logistics</h2>
           <span class="section-subtitle">Physical inspection in Durango, dynamic balancing and reliable mine delivery modes</span>
@@ -348,8 +403,8 @@ const description = "Technical digital catalog of heavy abrasive slurry centrifu
           <span class="t-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>
           </span>
-          <h4>High Chrome 27% (A05) Metallurgy</h4>
-          <p>Alloy castings with verified 27% Chromium content (A05) and hardness over 650 HB (Brinell) to withstand high-quartz abrasive mineral impact and heavy slurry duty.</p>
+          <h4>High Chrome 27% Cr (A05), Rubber & Polyurethane</h4>
+          <p>Alloy castings with verified 27% Chromium content (≥650 HB) and Rubber / Polyurethane elastomers matched to the abrasion, particle size, and pH of each circuit.</p>
         </div>
 
         <div class="trust-box">
@@ -357,7 +412,7 @@ const description = "Technical digital catalog of heavy abrasive slurry centrifu
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="16" height="13" x="1" y="3" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
           </span>
           <h4>3 Nationwide Dispatch Modes</h4>
-          <p>1. Direct warehouse pickup in Durango (scheduled and released with formal folio).<br/>2. Consolidated national freight carrier (nearest destination terminal).<br/>3. Dedicated direct truckload or multimodal maritime link to remote / peninsular sites.</p>
+          <p>1. Direct warehouse pickup in Almacén Central Durango (scheduled and released with formal folio).<br/>2. Consolidated national freight carrier (nearest destination terminal).<br/>3. Dedicated direct truckload or multimodal maritime link to remote / peninsular sites.</p>
         </div>
 
         <div class="trust-box">
@@ -365,7 +420,7 @@ const description = "Technical digital catalog of heavy abrasive slurry centrifu
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           </span>
           <h4>Dedicated Technical Support</h4>
-          <p>Customer service hours: Monday to Friday 08:00 to 18:00 CST. Dedicated hotline for plant shutdown emergency requirements.</p>
+          <p>Customer service hours: Monday to Friday 08:00 to 18:00 CST. Direct technical assistance for lot quotations and mine shipment scheduling.</p>
         </div>
       </div>
     </section>

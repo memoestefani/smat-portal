@@ -1,10 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import DualHubView from '../components/DualHubView.astro';
+import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
 import atomicParts from '../../data/atomic_parts.json';
 
-const title = "Catálogo Ejecutivo Digital 2026 | Bombas de Lodos, Celdas y Filtros Prensa | SMAT Minerals";
-const description = "Catálogo técnico digital de bombas centrífugas para lodos abrasivos, celdas de flotación mecánicas, filtros prensa de jales y refaccionamiento A05 con despacho en Durango, México.";
+const title = "Catálogo Técnico Digital 2026 | Bombas para Lodos, Mecanismos de Flotación, Filtros Prensa y Balanzas | SMAT Minerals";
+const description = "Catálogo técnico digital con diagramas CAD de bombas para lodos, lotes de contacto húmedo (Alto Cromo, Hule y Poliuretano), Bearing Assembly / Housing, mecanismos de flotación, filtros prensa y balanzas Marcy.";
 ---
 
 <BaseLayout title={title} description={description} lang="es">
@@ -14,7 +15,7 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
     <div class="catalog-action-bar no-print">
       <div class="action-bar-left">
         <a href="/" class="btn-back">← Volver al Inicio</a>
-        <span class="catalog-edition-pill">EDICIÓN EJECUTIVA 2026</span>
+        <span class="catalog-edition-pill">EDICIÓN TÉCNICA V3.2 • 2026</span>
       </div>
       <div class="action-bar-right">
         <button type="button" class="btn-action btn-print" onclick="window.print()">
@@ -32,13 +33,13 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
     <header class="catalog-official-header">
       <div class="header-brand-block">
         <h1 class="brand-title">SMAT MINERALS</h1>
-        <span class="brand-tagline">INGENIERÍA MECÁNICA PESADA & SUMINISTRO MINERO</span>
+        <span class="brand-tagline">BOMBAS PARA LODOS, CONTACTO HÚMEDO, FLOTACIÓN, FILTROS PRENSA Y BALANZAS</span>
         <span class="brand-location">Domicilio Fiscal: Mariano Salas #114, Durango, Dgo. CP 34166 | Almacén Central Durango</span>
       </div>
       <div class="header-meta-block">
-        <span class="doc-badge">CATÁLOGO TÉCNICO OFICIAL</span>
+        <span class="doc-badge">CATÁLOGO TÉCNICO CON DIAGRAMAS CAD</span>
         <span class="doc-code">REF: SMAT-CAT-2026</span>
-        <span class="doc-contact">Tel: (618) 810-4408 • ventas@smatminerals.com</span>
+        <span class="doc-contact">Tel: (618) 810-4408 • Guardia: (618) 367-0664 • ventas@smatminerals.com</span>
       </div>
     </header>
 
@@ -47,51 +48,65 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
       </div>
       <div class="intro-text">
-        <strong>Catálogo Digital para Compradores e Ingenieros de Planta</strong>
-        <p>Consulte las series dimensionales, especificaciones metalúrgicas y opciones de equipo completo o refaccionamiento de desgaste para circuitos de molienda, flotación y filtración. Puede guardar este documento en PDF con el botón superior para compartirlo internamente.</p>
+        <strong>Catálogo Técnico con Diagramas de Despiece para Ingeniería de Planta y Compras Mineras</strong>
+        <p>Consulte las bombas para lodos (1.5x1" a 14x12"), programación de lotes en contacto húmedo (ej. 5 impulsores, 5 cuellos y 4 volutas en Alto Cromo, Hule y Poliuretano), <strong>Bearing Assembly / Housing</strong> completos, mecanismos para celdas de flotación y acondicionadores, filtros prensa (800 a 1500 mm) y balanzas de densidad de pulpa tipo Marcy.</p>
       </div>
     </div>
 
-    <!-- SECCIÓN 1: BOMBAS DE LODOS Y PULPAS ABRASIVAS -->
+    <!-- SECCIÓN 1: BOMBAS PARA LODOS Y PIEZAS EN CONTACTO HÚMEDO -->
     <section class="catalog-section" id="bombeo">
       <div class="section-title-wrap">
         <span class="section-num">01</span>
         <div>
-          <h2>Línea de Bombeo de Lodos y Pulpas Abrasivas</h2>
-          <span class="section-subtitle">Bombas completas en Skid y refaccionamiento de desgaste para pulpas pesadas</span>
+          <h2>Bombas para Lodos y Piezas en Contacto Húmedo (Circuito de Bombeo)</h2>
+          <span class="section-subtitle">Bombas horizontales para lodos, lotes 5-5-4 en Alto Cromo, Hule y Poliuretano, y Bearing Assembly / Housing completo</span>
         </div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <TechnicalDiagrams diagram="pump" lang="es" />
       </div>
 
       <div class="catalog-grid-2">
         <div class="catalog-card">
-          <div class="card-tag">Equipo Completo con Motor y Patín</div>
-          <h3>Bombas Centrífugas para Lodos sobre Skid</h3>
-          <p class="card-desc">Paquetes integrados de bombeo de pulpas pesadas montados sobre base estructural de canal C de alta rigidez, motor eléctrico trifásico normalizado (WEG/Siemens), transmisión calculada por bandas y poleas con guarda industrial y pruebas mecánicas en banco en Durango.</p>
+          <div class="card-tag">Bombas Horizontales y Conjunto Motriz</div>
+          <h3>Bombas para Lodos (1.5x1" a 14x12") y Bearing Assembly / Housing</h3>
+          <p class="card-desc">Bombas centrífugas horizontales de servicio pesado para descarga de molino, alimentación a ciclones, flotación y jales, junto con <strong>Bearing Assembly / Housing</strong> completos listos para montaje rápido en campo.</p>
           <ul class="card-specs">
-            <li><strong>Series Disponibles:</strong> 4x3 C, 6x4 D, 8x6 E, 10x8 F (Estándar Dimensional de la Industria).</li>
-            <li><strong>Rango de Flujo:</strong> 50 a 1,200 m³/h @ Cargas dinámicas de hasta 80 metros por etapa.</li>
-            <li><strong>Rango de Potencia:</strong> 30 HP a 250 HP en 440V / 460V trifásico.</li>
+            <li><strong>Rango de Bombas:</strong> Desde 1.5x1" hasta 14x12" (Series 4x3 C, 6x4 D, 8x6 E, 10x8 F con acople 1:1).</li>
+            <li><strong>Bearing Assembly / Housing:</strong> Conjunto completo ensamblado (carcasa cilíndrica, flecha de acero aleado, rodamientos cónicos Timken y sellos laberinto).</li>
+            <li><strong>Sellado de Flecha:</strong> Expulsor centrífugo en seco y prensaestopa con anillo linterna. <strong>No vendemos sello mecánico</strong> por la alta corrosión y abrasión del lodo.</li>
             <li><strong>Intercambiabilidad:</strong> Acople dimensional 1:1 con bancadas y bridas ANSI estándar.</li>
           </ul>
-          <div class="card-footer-action no-print">
-            <a href="/?equipo=skid_bomba#rfq" class="btn-card-quote">Cotizar Bomba en Skid →</a>
+          <div class="card-footer-action no-print" style="display:flex; gap:1rem; flex-wrap:wrap;">
+            <a href="/#rfq?equipo=skid_bomba" class="btn-card-quote">Cotizar Bomba para Lodos →</a>
+            <a href="/#rfq?equipo=soporte" class="btn-card-quote">Cotizar Bearing Assembly →</a>
           </div>
         </div>
 
         <div class="catalog-card">
-          <div class="card-tag">Refacciones Críticas de Desgaste</div>
-          <h3>Impulsores, Volutas y Cajas de Sellado</h3>
-          <p class="card-desc">Componentes de desgaste fundidos en aleación High Chrome con 27% de Cromo o moldeados en caucho natural vulcanizado a presión para máxima vida útil contra erosión y abrasión severa.</p>
+          <div class="card-tag">Suministro por Lote en Contacto Húmedo (5 – 5 – 4)</div>
+          <h3>Impulsores, Cuellos y Volutas (Alto Cromo, Hule y Poliuretano)</h3>
+          <p class="card-desc">Piezas en contacto húmedo suministradas por lote balanceado según la rotación real de desgaste en planta (por ejemplo: <strong>5 Impulsores + 5 Cuellos + 4 Volutas</strong>) para evitar paros por desajuste de holguras.</p>
           <ul class="card-specs">
-            <li><strong>Metalurgia High Chrome A05:</strong> ASTM A532 Class III Type A, Dureza mínima 650 HB (58-62 HRC).</li>
-            <li><strong>Elastómero:</strong> Caucho natural vulcanizado 60 Shore A para pulpas finas y reactivos.</li>
-            <li><strong>Impulsores:</strong> Cerrados de 4 y 5 álabes con bombeo trasero dinámico antipresurización.</li>
-            <li><strong>Sellado:</strong> Sellos dinámicos centrífugos expulsores (sin agua de sello) y prensaestopas.</li>
-            <li><strong>Rodamientos:</strong> Ensambles de rodamientos Timken de rodillos cónicos (L10 > 50,000 h).</li>
+            <li><strong>Materiales Disponibles:</strong> Aleación de Alto Cromo 27% Cr (ASTM A532 ≥650 HB), Hule natural vulcanizado y Poliuretano grado minero.</li>
+            <li><strong>Impulsores:</strong> Cerrados de 5 álabes y de paso amplio con álabes expulsores traseros para aliviar presión en prensaestopa.</li>
+            <li><strong>Cuellos y Volutas:</strong> Cuellos de succión (ajustables para compensar desgaste frontal), volutas y platos posteriores (FPL).</li>
+            <li><strong>Balanceo en Banco:</strong> Verificación de dureza y balanceo dinámico ISO 1940 G2.5 en Durango.</li>
           </ul>
-          <div class="card-footer-action no-print">
-            <a href="/?equipo=impulsor#rfq" class="btn-card-quote">Cotizar Refacciones →</a>
+          <div class="card-footer-action no-print" style="display:flex; gap:1rem; flex-wrap:wrap;">
+            <a href="/#rfq?equipo=revestimientos" class="btn-card-quote">Cotizar Lote Húmedo (5-5-4) →</a>
+            <a href="/#rfq?equipo=impulsor" class="btn-card-quote">Cotizar Impulsores →</a>
           </div>
+        </div>
+      </div>
+
+      <div class="catalog-grid-2" style="margin-bottom: 1.5rem;">
+        <div>
+          <TechnicalDiagrams diagram="liners" lang="es" compact={true} />
+        </div>
+        <div>
+          <TechnicalDiagrams diagram="bearing" lang="es" compact={true} />
         </div>
       </div>
 
@@ -100,7 +115,7 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
         <div class="table-header-flex">
           <div>
             <h4 class="table-title">Matriz Paramétrica Rápida — Series de Bombeo de Pulpa (4x3 a 10x8)</h4>
-            <span class="table-subtitle">Consolidado dimensional de marcos, pasaje de sólidos (Top Size), potencias y caudales (<15s de inspección)</span>
+            <span class="table-subtitle">Consolidado dimensional de marcos, pasaje de sólidos (Top Size), potencias y caudales (&lt;15s de inspección)</span>
           </div>
           <span class="matrix-badge">NORMA DIMENSIONAL 1:1</span>
         </div>
@@ -154,7 +169,7 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
               <th>Carga Dinámica (TDH)</th>
               <th>Top Size (Sólidos máx)</th>
               <th>Potencia de Motor</th>
-              <th>Metalurgia / Dureza</th>
+              <th>Materiales en Contacto Húmedo</th>
               <th>Aplicación en Planta</th>
               <th class="no-print">Acción Rápida</th>
             </tr>
@@ -167,7 +182,7 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
               <td>10 – 45 m</td>
               <td><strong>28 mm</strong></td>
               <td>30 – 50 HP (22-37 kW)</td>
-              <td>A05 (>650 HB) / Caucho</td>
+              <td>Alto Cromo (&gt;650 HB) / Hule / Poliuretano</td>
               <td>Alimentación a celdas, sumideros y finos.</td>
               <td class="no-print"><a href="/#rfq?equipo=skid_bomba&serie=4x3" class="btn-table-cta">Cotizar 4x3 →</a></td>
             </tr>
@@ -178,7 +193,7 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
               <td>15 – 60 m</td>
               <td><strong>45 mm</strong></td>
               <td>50 – 100 HP (37-75 kW)</td>
-              <td>A05 (>650 HB)</td>
+              <td>Alto Cromo (&gt;650 HB) / Hule / Poliuretano</td>
               <td>Descarga de molinos SAG a hidrociclones.</td>
               <td class="no-print"><a href="/#rfq?equipo=skid_bomba&serie=6x4" class="btn-table-cta">Cotizar 6x4 →</a></td>
             </tr>
@@ -189,7 +204,7 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
               <td>20 – 70 m</td>
               <td><strong>63 mm</strong></td>
               <td>100 – 200 HP (75-150 kW)</td>
-              <td>A05 (>650 HB)</td>
+              <td>Alto Cromo (&gt;650 HB) / Hule</td>
               <td>Molienda primaria y jales espesados.</td>
               <td class="no-print"><a href="/#rfq?equipo=skid_bomba&serie=8x6" class="btn-table-cta">Cotizar 8x6 →</a></td>
             </tr>
@@ -200,8 +215,8 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
               <td>25 – 80 m</td>
               <td><strong>86 mm</strong></td>
               <td>150 – 250 HP (110-185 kW)</td>
-              <td>A05 (>650 HB) / Caucho</td>
-              <td>Gran caudal de relaves y plantas >1,500 t/d.</td>
+              <td>Alto Cromo (&gt;650 HB) / Hule</td>
+              <td>Gran caudal de relaves y plantas &gt;1,500 t/d.</td>
               <td class="no-print"><a href="/#rfq?equipo=skid_bomba&serie=10x8" class="btn-table-cta">Cotizar 10x8 →</a></td>
             </tr>
           </tbody>
@@ -212,7 +227,7 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
       <div class="atomic-parts-catalog-block" id="fichas-atomicas">
         <div class="table-header-flex">
           <div>
-            <h4 class="table-title">Fichas Técnicas por Número de Parte Universal (Contacto Húmedo y Sello Centrífugo)</h4>
+            <h4 class="table-title">Fichas Técnicas por Número de Parte Universal (Impulsores, Cuellos y Anillos Expulsores)</h4>
             <span class="table-subtitle">Seleccione el código universal para abrir su especificación metalúrgica individual, dureza certificada y acople dimensional 1:1</span>
           </div>
           <span class="matrix-badge">6 FICHAS ATÓMICAS</span>
@@ -236,88 +251,128 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
       </div>
     </section>
 
-    <!-- SECCIÓN 2: CELDAS DE FLOTACIÓN MECÁNICAS -->
+    <!-- SECCIÓN 2: MECANISMOS PARA CELDAS DE FLOTACIÓN Y ACONDICIONADORES -->
     <section class="catalog-section" id="flotacion">
       <div class="section-title-wrap">
         <span class="section-num">02</span>
         <div>
-          <h2>Línea de Flotación Mecánica de Minerales</h2>
-          <span class="section-subtitle">Celdas completas y mecanismos rotor/estator para circuitos Rougher, Cleaner y Scavenger</span>
+          <h2>Mecanismos para Celdas de Flotación y Acondicionadores</h2>
+          <span class="section-subtitle">Cabezales motrices, flechas, tubos de aire, acondicionadores y mecanismos rotor/estator (50 a 300 ft³)</span>
         </div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <TechnicalDiagrams diagram="flotation" lang="es" />
       </div>
 
       <div class="catalog-grid-2">
         <div class="catalog-card">
-          <div class="card-tag">Celdas de Flotación Mecánicas</div>
-          <h3>Celdas Mecánicas Sub-Aireadas (50 a 300 ft³)</h3>
-          <p class="card-desc">Tanques estructurales soldados en placa de acero ASTM A36 con fondo en U para evitar asentamiento de pulpa, equipados con árbol de accionamiento, poleas de servicio pesado y cajones de descarga con válvulas dardo neumáticas o manuales.</p>
+          <div class="card-tag">Mecanismos Completos y Acondicionadores</div>
+          <h3>Mecanismos para Celdas de Flotación y Tanques Acondicionadores (50 a 300 ft³)</h3>
+          <p class="card-desc">Conjuntos motrices completos (cabezal porta-rodamientos vertical, polea acanalada, tubo de aire concéntrico con válvula de control y flecha de acero aleado) para bancos Rougher, Cleaner y Scavenger, así como mecanismos de agitación para acondicionadores de pulpa.</p>
           <ul class="card-specs">
-            <li><strong>Volúmenes Disponibles:</strong> 50 ft³ (1.4 m³), 100 ft³ (2.8 m³), 200 ft³ (5.6 m³), 300 ft³ (8.5 m³).</li>
-            <li><strong>Configuración:</strong> Baterías en cascada de 2 a 6 celdas interconectadas.</li>
-            <li><strong>Aireación:</strong> Auto-aspiración por eje hueco o soplador de baja presión.</li>
-            <li><strong>Control de Espuma:</strong> Paletas mecánicas giratorias y vertederos ajustables.</li>
+            <li><strong>Volúmenes de Celda:</strong> 50 ft³ (1.4 m³), 100 ft³ (2.8 m³), 200 ft³ (5.6 m³), 300 ft³ (8.5 m³).</li>
+            <li><strong>Acondicionadores de Pulpa:</strong> Mecanismos de circulación axial con tubo difusor central y propela recubierta.</li>
+            <li><strong>Aireación:</strong> Auto-aspiración por columna concéntrica o alimentación de aire a baja presión.</li>
+            <li><strong>Montaje:</strong> Sustitución directa sobre puente estructural de celdas existentes.</li>
           </ul>
           <div class="card-footer-action no-print">
-            <a href="/?equipo=celda_flotacion#rfq" class="btn-card-quote">Cotizar Batería de Celdas →</a>
+            <a href="/#rfq?equipo=celda_flotacion" class="btn-card-quote">Cotizar Mecanismo o Acondicionador →</a>
           </div>
         </div>
 
         <div class="catalog-card">
-          <div class="card-tag">Mecanismos Rotor y Estator</div>
-          <h3>Rotores y Estatores de Desgaste</h3>
-          <p class="card-desc">Mecanismos hidrodinámicos moldeados en elastómero de alta resiliencia o poliuretano de grado minero, balanceados dinámicamente para dispersión homogénea de burbujas y máxima recuperación metalúrgica.</p>
+          <div class="card-tag">Piezas de Desgaste en Hule y Poliuretano</div>
+          <h3>Rotores, Estatores, Propelas y Flechas</h3>
+          <p class="card-desc">Impulsores/rotores, difusores/estatores y propelas de acondicionador moldeados sobre alma metálica en hule natural de alta resiliencia o poliuretano grado minero.</p>
           <ul class="card-specs">
-            <li><strong>Materiales:</strong> Poliuretano resistente a reactivos y Caucho natural vulcanizado.</li>
-            <li><strong>Rotores:</strong> Diseño de dedos de alto corte que maximizan la interfaz aire-pulpa.</li>
-            <li><strong>Estatores:</strong> Alabes radiales que rompen el vórtice y generan una zona de espuma tranquila.</li>
-            <li><strong>Compatibilidad:</strong> Mecanismos de recambio 1:1 para celdas industriales estándar.</li>
+            <li><strong>Materiales:</strong> Hule natural vulcanizado (60-65 Shore A) y Poliuretano resistente a reactivos.</li>
+            <li><strong>Rotores:</strong> Geometría radial que maximiza el cizallamiento aire-pulpa sin desprendimiento.</li>
+            <li><strong>Estatores:</strong> Álabes estabilizadores que eliminan el vórtice y mantienen una cama de espuma estable.</li>
+            <li><strong>Compatibilidad:</strong> Recambio dimensional 1:1 para mecanismos de celdas industriales estándar.</li>
           </ul>
           <div class="card-footer-action no-print">
-            <a href="/?equipo=rotor_estator#rfq" class="btn-card-quote">Cotizar Mecanismos →</a>
+            <a href="/#rfq?equipo=rotor_estator" class="btn-card-quote">Cotizar Rotores y Estatores →</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SECCIÓN 3: FILTRACIÓN Y DESHIDRATACIÓN DE JALES -->
+    <!-- SECCIÓN 3: FILTROS PRENSA, PLACAS Y TELAS FILTRANTES -->
     <section class="catalog-section" id="filtracion">
       <div class="section-title-wrap">
         <span class="section-num">03</span>
         <div>
-          <h2>Línea de Filtración y Deshidratación de Jales Secos</h2>
-          <span class="section-subtitle">Filtros prensa hidráulicos de alta presión y consumibles para recuperación de agua</span>
+          <h2>Filtros Prensa, Placas Filtrantes y Telas (Filtración de Concentrados y Jales)</h2>
+          <span class="section-subtitle">Filtros prensa de cámara empotrada (800 a 1500 mm), placas de polipropileno virgen y telas en fieltro agujado</span>
         </div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <TechnicalDiagrams diagram="filter" lang="es" />
       </div>
 
       <div class="catalog-grid-2">
         <div class="catalog-card">
-          <div class="card-tag">Filtros Prensa para Jales</div>
-          <h3>Filtros Prensa Hidráulicos Automáticos</h3>
-          <p class="card-desc">Equipos de filtración de alta presión diseñados para la deshidratación de concentrados y jales espesados, entregando tortas filtradas con 12% a 16% de humedad para disposición de relaves secos (dry stacking) y máxima recuperación de agua de proceso.</p>
+          <div class="card-tag">Filtros Prensa de Placas</div>
+          <h3>Filtros Prensa Electrohidráulicos (800 mm a 1500 mm)</h3>
+          <p class="card-desc">Filtros prensa de cámara empotrada diseñados para el desaguado de concentrados minerales y jales espesados (hasta 16 bar de presión de alimentación), entregando tortas sólidas con baja humedad residual y alta recuperación de agua.</p>
           <ul class="card-specs">
-            <li><strong>Dimensiones de Placa:</strong> 800 x 800 mm, 1000 x 1000 mm, 1250 x 1250 mm, 1500 x 1500 mm.</li>
-            <li><strong>Presión de Alimentación:</strong> Hasta 16 bar de inyección de pulpa.</li>
-            <li><strong>Cierre Hidráulico:</strong> Cilindro de doble efecto de hasta 350 bar de presión de apriete.</li>
-            <li><strong>Automatización:</strong> Tablero de control con PLC para ciclo de llenado, soplado de aire y sacudido de placas.</li>
+            <li><strong>Dimensiones de Placa:</strong> Cámara empotrada de 800 x 800 mm, 1000 x 1000 mm, 1250 x 1250 mm y 1500 x 1500 mm.</li>
+            <li><strong>Presión de Filtrado:</strong> Alimentación de pulpa hasta 16 bar.</li>
+            <li><strong>Cierre Hidráulico:</strong> Cilindro hidráulico de doble efecto (hasta 350 bar) con unidad de potencia y válvulas de retención.</li>
+            <li><strong>Operación:</strong> Cabezal móvil, vigas laterales reforzadas y sistema desplazador de placas.</li>
           </ul>
           <div class="card-footer-action no-print">
-            <a href="/?equipo=filtro_prensa#rfq" class="btn-card-quote">Cotizar Filtro Prensa →</a>
+            <a href="/#rfq?equipo=filtro_prensa" class="btn-card-quote">Cotizar Filtro Prensa →</a>
           </div>
         </div>
 
         <div class="catalog-card">
           <div class="card-tag">Placas Filtrantes y Telas</div>
-          <h3>Placas de Polipropileno y Telas Filtrantes</h3>
-          <p class="card-desc">Placas filtrantes de cámara recesada y membrana de compresión inyectadas en 100% polipropileno virgen, combinadas con telas filtrantes sintéticas tejidas de alta resistencia mecánica.</p>
+          <h3>Placas de Polipropileno Virgen y Telas Filtrantes</h3>
+          <p class="card-desc">Placas filtrantes de cámara empotrada moldeadas en polipropileno virgen copolímero y telas filtrantes en fieltro agujado cortadas por láser con sellado perimetral térmico.</p>
           <ul class="card-specs">
-            <li><strong>Placas:</strong> Cámara recesada y membrana inflable para exprimir humedad residual.</li>
-            <li><strong>Telas Filtrantes:</strong> Monofilamento y multifilamento calibradas a la curva granulométrica P80.</li>
-            <li><strong>Resistencia Química:</strong> Inertes ante pH ácido, cianuración y reactivos de flotación.</li>
-            <li><strong>Repuestos de Sellado:</strong> Empaques, manómetros de diafragma y bombas de lodo de alimentación.</li>
+            <li><strong>Placas Filtrantes:</strong> Polipropileno virgen copolímero de alta densidad para cámaras de 800 mm a 1500 mm.</li>
+            <li><strong>Telas Filtrantes:</strong> Fieltro agujado y tejido monofilamento/multifilamento calibrado al P80 del mineral (cuello central, ojillos y velcro).</li>
+            <li><strong>Resistencia Química:</strong> Inertes frente a reactivos de flotación, acidez y alcalinidad.</li>
+            <li><strong>Repuestos Hidráulicos:</strong> Sellos de cilindro, válvulas, bombas de alimentación de lodo y manómetros con sello de diafragma.</li>
           </ul>
           <div class="card-footer-action no-print">
-            <a href="/?equipo=placas_telas#rfq" class="btn-card-quote">Cotizar Placas y Telas →</a>
+            <a href="/#rfq?equipo=placas_telas" class="btn-card-quote">Cotizar Placas y Telas →</a>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 4: BALANZAS DE DENSIDAD DE PULPA (TIPO MARCY) -->
+    <section class="catalog-section" id="balanzas">
+      <div class="section-title-wrap">
+        <span class="section-num">04</span>
+        <div>
+          <h2>Balanzas para Densidad de Pulpa y % de Sólidos (Tipo Marcy)</h2>
+          <span class="section-subtitle">Instrumentación metalúrgica de lectura directa para control en molienda, clasificación y flotación</span>
+        </div>
+      </div>
+
+      <div class="catalog-grid-2" style="align-items: center;">
+        <div class="catalog-card">
+          <div class="card-tag">Instrumentación de Control en Planta</div>
+          <h3>Balanza Colgante de Densidad de Pulpa con Recipiente de 1000 cm³</h3>
+          <p class="card-desc">Balanza mecánica colgante de lectura directa para determinar al instante la gravedad específica de la pulpa, el peso en gramos y el porcentaje de sólidos en peso sin necesidad de tablas ni cálculos manuales.</p>
+          <ul class="card-specs">
+            <li><strong>Recipiente Calibrado (1000 cm³):</strong> Disponible en acero inoxidable o acrílico transparente con orificios laterales de rebose y tapón inferior de vaciado rápido.</li>
+            <li><strong>12 Carátulas Intercambiables:</strong> Cubren rangos de gravedad específica de mineral seco desde SG 1.2 hasta SG 7.8.</li>
+            <li><strong>Ajuste de Tara:</strong> Perilla superior de puesta a cero con recipiente lleno de agua limpia a 1000 g.</li>
+            <li><strong>Aplicación:</strong> Descarga de molinos, overflow/underflow de hidrociclones, alimentación a flotación y espesadores.</li>
+          </ul>
+          <div class="card-footer-action no-print">
+            <a href="/#rfq?equipo=balanza_marcy" class="btn-card-quote">Cotizar Balanza de Pulpa →</a>
+          </div>
+        </div>
+
+        <div>
+          <TechnicalDiagrams diagram="marcy" lang="es" />
         </div>
       </div>
     </section>
@@ -325,13 +380,13 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
     <!-- MATRIZ INTERACTIVA DE 9 ROLES Y REGLAS METALÚRGICAS (data/roles.json) -->
     <DualHubView lang="es" />
 
-    <!-- SECCIÓN 4: PROTOCOLO DE ALMACÉN Y LOGÍSTICA -->
+    <!-- SECCIÓN 5: PROTOCOLO DE ALMACÉN Y LOGÍSTICA -->
     <section class="catalog-section" id="logistica">
       <div class="section-title-wrap">
-        <span class="section-num">04</span>
+        <span class="section-num">05</span>
         <div>
           <h2>Protocolo de Calidad, Almacén Central y Despacho</h2>
-          <span class="section-subtitle">Garantía física en Durango, balanceo dinámico y opciones de entrega en mina</span>
+          <span class="section-subtitle">Verificación física en Durango, balanceo dinámico y modalidades de entrega en mina</span>
         </div>
       </div>
 
@@ -348,8 +403,8 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
           <span class="t-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>
           </span>
-          <h4>Metalurgia High Chrome 27% (A05)</h4>
-          <p>Coladas de fundición con aleación de Cromo al 27% y dureza verificada superior a 650 HB (Brinell) para resistir el impacto de minerales abrasivos y pulpas pesadas.</p>
+          <h4>Alto Cromo 27% Cr (A05), Hule y Poliuretano</h4>
+          <p>Coladas de fundición con aleación de Cromo al 27% (≥650 HB) y elastómeros en Hule y Poliuretano seleccionados según la abrasión, tamaño de partícula y pH de cada circuito.</p>
         </div>
 
         <div class="trust-box">
@@ -365,7 +420,7 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           </span>
           <h4>Atención Técnica Especializada</h4>
-          <p>Horario de atención de planta: Lunes a Viernes de 08:00 a 18:00 CST. Atención técnica directa para cotizaciones y programación de embarques a mina.</p>
+          <p>Horario de atención de planta: Lunes a Viernes de 08:00 a 18:00 CST. Atención técnica directa para cotizaciones por lote y programación de embarques a mina.</p>
         </div>
       </div>
     </section>
