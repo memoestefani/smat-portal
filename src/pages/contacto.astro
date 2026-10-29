@@ -1,9 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
 import QuoteWizard from '../components/QuoteWizard.astro';
-import WhatsAppButton from '../components/WhatsAppButton.astro';
 import companyData from '../../data/company.json';
 ---
 
@@ -15,8 +12,6 @@ import companyData from '../../data/company.json';
   alternateEsPath="/contacto/"
   alternateEnPath="/en/contact/"
 >
-  <Header slot="header" lang="es" currentPath="/contacto/" alternatePath="/en/contact/" />
-
   <section class="page-hero">
     <div class="container text-center">
       <span class="badge badge-emerald">ATENCIÓN EN EL MISMO DÍA HÁBIL</span>
@@ -91,9 +86,6 @@ import companyData from '../../data/company.json';
       </div>
     </div>
   </section>
-
-  <WhatsAppButton lang="es" />
-  <Footer slot="footer" lang="es" />
 </BaseLayout>
 
 <style>

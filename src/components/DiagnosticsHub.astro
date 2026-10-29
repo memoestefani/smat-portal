@@ -40,6 +40,9 @@ const diagnostics = diagData.diagnostics;
           <button type="button" class="diag-pill" data-filter="vibracion" aria-pressed="false">
             {isEs ? 'VIBRACIÓN EN EJE' : 'SHAFT VIBRATION'}
           </button>
+          <button type="button" class="diag-pill" data-filter="rotor" aria-pressed="false">
+            {isEs ? 'ROTOR DE FLOTACIÓN' : 'FLOTATION ROTOR'}
+          </button>
           <button type="button" class="diag-pill" data-filter="filtro" aria-pressed="false">
             {isEs ? 'TELAS DE FILTRO' : 'FILTER CLOTHS'}
           </button>
@@ -424,6 +427,9 @@ const diagnostics = diagData.diagnostics;
             card.style.display = '';
             visible++;
           } else if (filter === 'vibracion' && (tags.includes('vibración') || tags.includes('vibracion') || tags.includes('eje') || tags.includes('flecha') || tags.includes('bearing'))) {
+            card.style.display = '';
+            visible++;
+          } else if (filter === 'rotor' && (tags.includes('rotor') || tags.includes('flotación') || tags.includes('flotacion') || tags.includes('flotation'))) {
             card.style.display = '';
             visible++;
           } else if (filter === 'filtro' && (tags.includes('filtro') || tags.includes('tela') || tags.includes('prensa') || tags.includes('cloth'))) {

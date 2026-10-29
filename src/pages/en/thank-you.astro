@@ -2,8 +2,6 @@
 // src/pages/en/thank-you.astro
 // Decisión 7-A: Formal Printable Requisition Sheet (@media print) for ERPs (SAP Ariba / Coupa / Oracle)
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
 ---
 
 <BaseLayout 
@@ -14,8 +12,6 @@ import Footer from '../../components/Footer.astro';
   alternateEsPath="/acuse/"
   alternateEnPath="/en/thank-you/"
 >
-  <Header slot="header" lang="en" currentPath="/en/thank-you/" alternatePath="/acuse/" />
-
   <main class="ack-main">
     <div class="container ack-container">
       
@@ -76,15 +72,31 @@ import Footer from '../../components/Footer.astro';
             <tbody>
               <tr>
                 <th style="width: 25%;">Line / Component:</th>
-                <td colspan="3" id="field-role" class="highlight-spec">Equipment under review</td>
+                <td style="width: 35%;" id="field-role" class="highlight-spec">Equipment under review</td>
+                <th style="width: 20%;">SMAT / Part Code:</th>
+                <td style="width: 20%; font-family: monospace; font-weight: 700;" id="field-code">To be assigned on review</td>
+              </tr>
+              <tr>
+                <th>Internal Reference / Tag:</th>
+                <td id="field-client-ref">No nameplate reference declared</td>
+                <th>Field Dimensions (Tape Measure):</th>
+                <td id="field-dimensions">1:1 pattern check at Durango warehouse</td>
               </tr>
               <tr>
                 <th>Process Slurry Notes:</th>
                 <td colspan="3" id="field-details">Technical review in accordance with engineering protocols.</td>
               </tr>
               <tr>
+                <th>Hydraulic Memory (Durand):</th>
+                <td colspan="3" id="field-hydraulics">Hydraulic calculation subject to plant flow rate and % solids confirmation.</td>
+              </tr>
+              <tr>
+                <th>Continuity & Slurry Profile:</th>
+                <td colspan="3" id="field-tco">Operational continuity assessment at Durango Central Warehouse.</td>
+              </tr>
+              <tr>
                 <th>Requisition Type:</th>
-                <td id="field-type">OpEx / Replacement</td>
+                <td id="field-type">Wear Spare Part / Operational Continuity</td>
                 <th>Warehouse Inspection:</th>
                 <td>Durango Central Warehouse (Shop Test Bench)</td>
               </tr>
@@ -129,26 +141,34 @@ import Footer from '../../components/Footer.astro';
 
     </div>
   </main>
-
-  <div class="no-print">
-    <Footer slot="footer" lang="en" />
-  </div>
 </BaseLayout>
 
 <script is:inline>
   (function() {
     function populateSheet() {
       const urlParams = new URLSearchParams(window.location.search);
-      
-      const folio = urlParams.get('folio') || 'SMAT-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
-      const nombre = urlParams.get('nombre') || urlParams.get('name') || 'Plant Engineer / Requisitioner';
-      const empresa = urlParams.get('empresa') || urlParams.get('company') || 'Registered Mining Operation';
-      const telefono = urlParams.get('telefono') || urlParams.get('phone') || '+52 (618) 810-4408';
-      const correo = urlParams.get('correo') || urlParams.get('email') || 'ventas@smatminerals.com';
-      const equipo = urlParams.get('equipo') || urlParams.get('role') || 'Critical Slurry Pumping Wear Replacement';
-      const detalles = urlParams.get('detalles') || urlParams.get('specs') || 'Technical requisition subject to Durango yard dimensional inspection.';
-      const destino = urlParams.get('destino') || 'Durango Central Warehouse Pickup (Folio Scheduled)';
-      const urgencia = urlParams.get('urgencia');
+      let cached = {};
+      try {
+        const raw = sessionStorage.getItem('smat_last_rfq_payload');
+        if (raw) cached = JSON.parse(raw) || {};
+      } catch (_e) {}
+
+      const folio = urlParams.get('folio') || cached.folio || 'SMAT-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+      const nombre = urlParams.get('nombre') || urlParams.get('name') || cached.nombre || 'Plant Engineer / Requisitioner';
+      const empresa = urlParams.get('empresa') || urlParams.get('company') || cached.empresa || 'Registered Mining Operation';
+      const telefono = urlParams.get('telefono') || urlParams.get('phone') || cached.telefono || '+52 (618) 810-4408';
+      const correo = urlParams.get('correo') || urlParams.get('email') || cached.correo || 'ventas@smatminerals.com';
+      const equipo = urlParams.get('equipo') || urlParams.get('role') || cached.equipo || 'Critical Slurry Pumping Wear Replacement';
+      const codigo = urlParams.get('codigo') || cached.codigo_smat || '';
+      const pieza = urlParams.get('pieza') || cached.codigo_pieza_atomica || '';
+      const refCliente = urlParams.get('ref_cliente') || cached.referencia_cliente || 'No internal reference declared';
+      const medidas = urlParams.get('medidas') || cached.medidas_flexometro || '1:1 dimensional verification at Durango Warehouse';
+      const perfilPulpa = urlParams.get('perfil_pulpa') || cached.perfil_pulpa_mina || '';
+      const hidraulica = urlParams.get('hidraulica') || cached.memoria_hidraulica_durand || 'Hydraulic calculation subject to plant flow rate and % solids confirmation.';
+      const tco = urlParams.get('tco') || cached.proyeccion_tco || '';
+      const detalles = urlParams.get('detalles') || urlParams.get('specs') || cached.especificacion_tecnica || 'Technical requisition subject to Durango yard dimensional inspection.';
+      const destino = urlParams.get('destino') || cached.modalidad_logistica || 'Durango Central Warehouse Pickup (Folio Scheduled)';
+      const urgencia = urlParams.get('urgencia') || (cached.urgencia && cached.urgencia.includes('PARO') ? 'paro' : 'proyecto');
 
       const elFolio = document.getElementById('display-folio');
       if (elFolio) elFolio.textContent = folio;
@@ -161,7 +181,7 @@ import Footer from '../../components/Footer.astro';
 
       const elUrgency = document.getElementById('display-urgency');
       if (elUrgency) {
-        elUrgency.textContent = urgencia === 'paro' ? 'PRIORITY: PLANT SHUTDOWN' : 'PRIORITY: SCHEDULED CAPEX';
+        elUrgency.textContent = urgencia === 'paro' ? 'PRIORITY: PLANT SHUTDOWN' : 'PRIORITY: SCHEDULED PROJECT';
         if (urgencia === 'paro') elUrgency.style.color = '#ef4444';
       }
 
@@ -170,14 +190,25 @@ import Footer from '../../components/Footer.astro';
         if (el) el.textContent = val;
       };
 
+      const fullCode = [codigo, pieza ? `[Part: ${pieza}]` : ''].filter(Boolean).join(' ') || 'SMAT-STD (1:1 Fit)';
+      const fullTcoAndProfile = [
+        perfilPulpa ? `Mineral Profile: ${perfilPulpa}` : '',
+        tco ? `Operational Impact: ${tco}` : ''
+      ].filter(Boolean).join(' • ') || 'Operational continuity assessment at Durango Central Warehouse.';
+
       setText('field-name', nombre);
       setText('field-company', empresa);
       setText('field-phone', telefono);
       setText('field-email', correo);
       setText('field-destination', destino);
       setText('field-role', equipo);
+      setText('field-code', fullCode);
+      setText('field-client-ref', refCliente);
+      setText('field-dimensions', medidas);
       setText('field-details', detalles);
-      setText('field-type', urgencia === 'paro' ? 'OpEx - Emergency Shutdown (High Operational Priority)' : 'CapEx / Formal Requisition');
+      setText('field-hydraulics', hidraulica);
+      setText('field-tco', fullTcoAndProfile);
+      setText('field-type', urgencia === 'paro' ? 'Emergency Plant Shutdown (High Operational Priority)' : 'Formal Equipment Requisition / Project');
     }
 
     populateSheet();

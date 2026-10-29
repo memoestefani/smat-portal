@@ -1,9 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import Header from '../../../components/Header.astro';
-import Footer from '../../../components/Footer.astro';
 import SharePurchasing from '../../../components/SharePurchasing.astro';
-import WhatsAppButton from '../../../components/WhatsAppButton.astro';
 import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
 ---
 
@@ -15,8 +12,6 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
   alternateEsPath="/filtracion/repuestos/"
   alternateEnPath="/en/filtration/parts/"
 >
-  <Header slot="header" lang="en" currentPath="/en/filtration/parts/" alternatePath="/filtracion/repuestos/" />
-
   <section class="page-hero">
     <div class="container text-center">
       <span class="badge badge-emergency">RECESSED CHAMBER • 800 MM TO 1500 MM</span>
@@ -68,6 +63,8 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
           series="Recessed chamber from 800 mm to 1500 mm"
           metallurgy="Virgin Copolymer Polypropylene & Needled Felt"
           specs="Laser-cut filter cloths with thermal perimeter sealing and high-chemical-resistance polypropylene plates."
+          roleId="placas_telas"
+          circuit="filtracion"
           lang="en"
         />
 
@@ -89,9 +86,6 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
       </div>
     </div>
   </section>
-
-  <WhatsAppButton lang="en" />
-  <Footer slot="footer" lang="en" />
 </BaseLayout>
 
 <style>

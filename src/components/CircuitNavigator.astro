@@ -5,11 +5,33 @@ import circuitsData from '../../data/circuits.json';
 
 interface Props {
   lang?: 'es' | 'en';
+  defaultCircuit?: 'bombeo_ciclones' | 'flotacion_polimetalica' | 'jales_filtracion';
 }
 
-const { lang = 'es' } = Astro.props;
+const { lang = 'es', defaultCircuit = 'bombeo_ciclones' } = Astro.props;
 const isEn = lang === 'en';
 const circuits = circuitsData.circuits;
+
+function mapNodeRfqHref(circuitId: string, roleId: string, en: boolean) {
+  const basePath = en ? '/en/' : '/';
+  if (roleId === 'skid_bomba') {
+    return `${basePath}?equipo=skid_bomba#rfq`;
+  }
+  const roleAliasMap: Record<string, { circuit: string; equipo: string }> = {
+    impulsor: { circuit: 'bombeo', equipo: 'solo_impulsor' },
+    revestimientos: { circuit: 'bombeo', equipo: 'kit_wet_end' },
+    sello: { circuit: 'bombeo', equipo: 'kit_sellado' },
+    celda_completa: { circuit: 'flotacion', equipo: 'celda_flotacion' },
+    mecanismos_flotacion: { circuit: 'flotacion', equipo: 'rotor_estator' },
+    prensa_completa: { circuit: 'filtracion', equipo: 'filtro_prensa' },
+    repuestos_prensa: { circuit: 'filtracion', equipo: 'placas_telas' }
+  };
+  const mapped = roleAliasMap[roleId] || {
+    circuit: circuitId.includes('flotacion') ? 'flotacion' : (circuitId.includes('filtracion') ? 'filtracion' : 'bombeo'),
+    equipo: roleId
+  };
+  return `${basePath}?circuito=${mapped.circuit}&equipo=${mapped.equipo}#rfq`;
+}
 ---
 
 <section class="circuit-navigator-section" aria-label={isEn ? "Mining Process Circuit Navigator" : "Navegador de Circuitos de Proceso Mineral"}>
@@ -30,31 +52,36 @@ const circuits = circuitsData.circuits;
 
       <!-- Selector de Pestañas de Circuito -->
       <div class="circuit-tabs" role="tablist">
-        {circuits.map((circ, idx) => (
-          <button 
-            type="button"
-            role="tab"
-            class={`circuit-tab-btn ${idx === 0 ? 'active' : ''}`}
-            data-circuit-id={circ.id}
-            aria-selected={idx === 0 ? "true" : "false"}
-            id={`tab-${circ.id}`}
-          >
-            <span class="tab-index">0{idx + 1}</span>
-            <span class="tab-label">{isEn ? circ.name_en : circ.name_es}</span>
-          </button>
-        ))}
+        {circuits.map((circ, idx) => {
+          const isActive = circ.id === defaultCircuit;
+          return (
+            <button 
+              type="button"
+              role="tab"
+              class={`circuit-tab-btn ${isActive ? 'active' : ''}`}
+              data-circuit-id={circ.id}
+              aria-selected={isActive ? "true" : "false"}
+              id={`tab-${circ.id}`}
+            >
+              <span class="tab-index">0{idx + 1}</span>
+              <span class="tab-label">{isEn ? circ.name_en : circ.name_es}</span>
+            </button>
+          );
+        })}
       </div>
     </div>
 
     <!-- Paneles de Circuito -->
     <div class="circuit-panels">
-      {circuits.map((circ, cIdx) => (
-        <div 
-          class={`circuit-panel ${cIdx === 0 ? 'active' : ''}`}
-          id={`panel-${circ.id}`}
-          role="tabpanel"
-          aria-labelledby={`tab-${circ.id}`}
-        >
+      {circuits.map((circ) => {
+        const isActive = circ.id === defaultCircuit;
+        return (
+          <div 
+            class={`circuit-panel ${isActive ? 'active' : ''}`}
+            id={`panel-${circ.id}`}
+            role="tabpanel"
+            aria-labelledby={`tab-${circ.id}`}
+          >
           <div class="circuit-meta">
             <span class="circuit-subtitle-text">
               {isEn ? circ.subtitle_en : circ.subtitle_es}
@@ -96,7 +123,13 @@ const circuits = circuitsData.circuits;
                       <a href={isEn ? node.link_en : node.link_es} class="node-cta node-cta-sheet">
                         {isEn ? "View Specs →" : "Ver Ficha →"}
                       </a>
-                      <a href={isEn ? "/en/?equipo=skid_bomba#rfq" : "/?equipo=skid_bomba#rfq"} class="node-cta node-cta-rfq" data-node-name={isEn ? node.name_en : node.name_es}>
+                      <a
+                        href={mapNodeRfqHref(circ.id, node.role_id, isEn)}
+                        class="node-cta node-cta-rfq"
+                        data-role-id={node.role_id}
+                        data-circuit-id={circ.id}
+                        data-node-name={isEn ? node.name_en : node.name_es}
+                      >
                         {isEn ? "Quote" : "Cotizar"}
                       </a>
                     </div>
@@ -105,8 +138,9 @@ const circuits = circuitsData.circuits;
               ))}
             </div>
           </div>
-        </div>
-      ))}
+          </div>
+        );
+      })}
     </div>
   </div>
 </section>

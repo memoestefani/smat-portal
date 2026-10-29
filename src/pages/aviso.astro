@@ -1,8 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import WhatsAppButton from '../components/WhatsAppButton.astro';
 ---
 
 <BaseLayout 
@@ -13,8 +10,6 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
   alternateEsPath="/aviso/"
   alternateEnPath="/en/privacy/"
 >
-  <Header slot="header" lang="es" currentPath="/aviso/" alternatePath="/en/privacy/" />
-
   <section class="page-hero">
     <div class="container text-center">
       <span class="badge badge-copper">MARCO LEGAL B2B</span>
@@ -58,16 +53,13 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
       </div>
     </div>
   </section>
-
-  <WhatsAppButton lang="es" />
-  <Footer slot="footer" lang="es" />
 </BaseLayout>
 
 <style>
   .page-hero {
-    padding: 4rem 0 3rem;
-    background: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 80%);
-    border-bottom: 1px solid var(--color-border);
+    padding: 3.5rem 0 2.5rem;
+    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
+    border-bottom: 1px solid var(--smat-border-light);
   }
 
   .text-center {
@@ -77,9 +69,9 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
   }
 
   .subtitle {
-    font-size: 1.125rem;
-    margin-top: 1rem;
-    color: var(--color-text-muted);
+    font-size: 1.08rem;
+    margin-top: 0.75rem;
+    color: var(--smat-text-secondary);
   }
 
   .legal-container {
@@ -87,15 +79,16 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
   }
 
   .legal-card {
-    background-color: #121c2e;
-    padding: 3rem 2.5rem;
+    background-color: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    padding: 2.75rem 2.5rem;
   }
 
   .legal-card h2 {
     font-size: 1.25rem;
     margin-top: 2rem;
     margin-bottom: 0.75rem;
-    color: #ffffff;
+    color: var(--smat-text-primary);
   }
 
   .legal-card h2:first-child {
@@ -103,10 +96,10 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
   }
 
   .legal-card p, .legal-card ul {
-    font-size: 0.9375rem;
+    font-size: 0.95rem;
     line-height: 1.7;
     margin-bottom: 1rem;
-    color: var(--color-text-muted);
+    color: var(--smat-text-secondary);
   }
 
   .legal-card ul {
@@ -119,8 +112,8 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
 
   .legal-date {
     margin-top: 2rem;
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--smat-border-light);
     padding-top: 1rem;
-    font-size: 0.8125rem;
+    font-size: 0.82rem;
   }
 </style>

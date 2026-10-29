@@ -1,5 +1,6 @@
 ---
 import faqsData from '../../data/faqs.json';
+import companyData from '../../data/company.json';
 
 interface Props {
   canonicalPath?: string;
@@ -34,33 +35,33 @@ pathSegments.forEach((segment) => {
   });
 });
 
-export const schemaOrgData = {
+const schemaOrgData = {
   '@context': 'https://schema.org',
   '@graph': [
     {
       '@type': ['Organization', 'LocalBusiness', 'WholesaleStore'],
       '@id': 'https://smatminerals.com/#organization',
-      'name': 'SMAT Minerals',
+      'name': companyData.name || 'SMAT Minerals',
       'alternateName': 'SMAT',
-      'legalName': 'SMAT Minerals S.A. de C.V.',
+      'legalName': companyData.legal_name || 'SMAT Minerals S.A. de C.V.',
       'url': 'https://smatminerals.com',
       'logo': 'https://smatminerals.com/images/logo-smat.png',
       'image': 'https://smatminerals.com/images/og-card.jpg',
       'description': 'Suministro de bombas para lodos y refacciones en Alto Cromo (A05), Hule y Poliuretano, mecanismos para celdas de flotación y acondicionadores, filtros prensa y balanzas Marcy en Durango, México.',
       'telephone': ['+52-618-810-4408', '+52-618-810-4428'],
-      'email': 'ventas@smatminerals.com',
+      'email': companyData.contact?.emails?.[0]?.address || 'ventas@smatminerals.com',
       'address': {
         '@type': 'PostalAddress',
-        'streetAddress': 'Mariano Salas #114, Col. Primer Presidente',
-        'addressLocality': 'Durango',
-        'addressRegion': 'Durango',
-        'postalCode': '34166',
-        'addressCountry': 'MX'
+        'streetAddress': companyData.address?.street ? `${companyData.address.street}, ${companyData.address.colonia}` : 'Mariano Salas #114, Col. Primer Presidente',
+        'addressLocality': companyData.address?.city || 'Durango',
+        'addressRegion': companyData.address?.state || 'Durango',
+        'postalCode': companyData.address?.postal_code || '34166',
+        'addressCountry': companyData.address?.country_code || 'MX'
       },
       'geo': {
         '@type': 'GeoCoordinates',
-        'latitude': 24.0277,
-        'longitude': -104.6532
+        'latitude': companyData.address?.coordinates?.latitude || 24.0277,
+        'longitude': companyData.address?.coordinates?.longitude || -104.6532
       },
       'openingHoursSpecification': [
         {
@@ -82,7 +83,9 @@ export const schemaOrgData = {
         'Guerrero',
         'Mexico',
         'United States',
-        'Canada'
+        'Canada',
+        'Peru',
+        'Chile'
       ],
       'hasOfferCatalog': {
         '@type': 'OfferCatalog',
@@ -91,22 +94,17 @@ export const schemaOrgData = {
           {
             '@type': 'OfferCatalog',
             'name': isEs ? '1. Circuito de Bombeo de Pulpa' : '1. Slurry Pumping Circuit',
-            'description': 'Bombas horizontales de pulpa, kits húmedos High Chrome 27% (A05) e impulsores de alta eficiencia.'
+            'description': 'Bombas horizontales para lodos, lotes húmedos High Chrome 27% (A05), Hule y Poliuretano, y Bearing Assembly / Housing.'
           },
           {
             '@type': 'OfferCatalog',
-            'name': isEs ? '2. Circuito de Flotación' : '2. Flotation Circuit',
-            'description': 'Mecanismos rotor-estator, difusores y componentes de celda de flotación mecánica.'
+            'name': isEs ? '2. Circuito de Flotación y Acondicionamiento' : '2. Flotation & Conditioning Circuit',
+            'description': 'Mecanismos para celdas de flotación y acondicionadores (50 a 300 ft³), rotores, estatores y difusores.'
           },
           {
             '@type': 'OfferCatalog',
-            'name': isEs ? '3. Circuito de Filtración' : '3. Filtration Circuit',
-            'description': 'Placas de polipropileno virgen, lonas filtrantes y componentes hidráulicos para deshidratación de jales.'
-          },
-          {
-            '@type': 'OfferCatalog',
-            'name': isEs ? '4. Circuito de Hidrociclones' : '4. Hydrocyclone Circuit',
-            'description': 'Liners de carburo de silicio, ápex y vortex finders para clasificación de molienda.'
+            'name': isEs ? '3. Circuito de Filtración y Control de Pulpa' : '3. Filtration & Pulp Density Control Circuit',
+            'description': 'Filtros prensa (800 a 1500 mm), placas de polipropileno, telas filtrantes y balanzas de densidad de pulpa tipo Marcy.'
           }
         ]
       },
@@ -118,10 +116,9 @@ export const schemaOrgData = {
         'Celdas de Flotación',
         'Filter Presses',
         'Filtros Prensa',
-        'Hydrocyclones',
-        'Hidrociclones',
         'Dry Tailings',
-        'Jales Secos'
+        'Jales Secos',
+        'Marcy Pulp Density Scales'
       ]
     },
     {

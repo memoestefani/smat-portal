@@ -2,9 +2,6 @@
 // src/pages/nosotros.astro
 // Decisión 6-B: Briefing Ejecutivo B2B de Resiliencia de Suministro y Reducción del AISC en México
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import WhatsAppButton from '../components/WhatsAppButton.astro';
 ---
 
 <BaseLayout 
@@ -15,8 +12,6 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
   alternateEsPath="/nosotros/"
   alternateEnPath="/en/about/"
 >
-  <Header slot="header" lang="es" currentPath="/nosotros/" alternatePath="/en/about/" />
-
   <!-- Hero Ejecutivo -->
   <section class="page-hero">
     <div class="container text-center">
@@ -151,9 +146,6 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
 
     </div>
   </section>
-
-  <WhatsAppButton lang="es" />
-  <Footer slot="footer" lang="es" />
 </BaseLayout>
 
 <style>

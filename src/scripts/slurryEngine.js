@@ -106,7 +106,6 @@ export const MECHANICAL_DIAGNOSTICS = {
 /**
  * Calcula la corrección por altitud minera (msnm) para presión atmosférica, NPSHa y derating de motor (Normas HI / IEC 60034-1)
  * @param {number} altitudeM - Altitud sobre el nivel del mar en metros
- * @returns {Object}
  */
 export function calculateAltitudeCorrection(altitudeM = 0) {
   const alt = Math.max(0, Math.min(5000, Number(altitudeM) || 0));

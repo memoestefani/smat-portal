@@ -10,78 +10,313 @@ public_folder: "/images/uploads"
 
 site_url: "https://smatminerals.com"
 display_url: "https://smatminerals.com"
-logo_url: "/images/logo.png"
+logo_url: "/images/logo-smat.png"
 
 collections:
   - name: "configuracion"
-    label: "Datos de Empresa y Logística"
+    label: "1. Datos de Empresa, Contacto y Logística"
     files:
       - name: "empresa"
-        label: "Información Oficial (NAP y Planta)"
+        label: "Información Oficial (data/company.json)"
         file: "data/company.json"
         fields:
-          - { label: "Nombre Comercial", name: "trade_name", widget: "string" }
+          - { label: "Nombre Comercial", name: "name", widget: "string" }
           - { label: "Razón Social", name: "legal_name", widget: "string" }
-          - { label: "Calle y Número", name: "street", widget: "string" }
-          - { label: "Colonia", name: "neighborhood", widget: "string" }
-          - { label: "Ciudad", name: "city", widget: "string" }
-          - { label: "Estado", name: "state", widget: "string" }
-          - { label: "Código Postal", name: "postal_code", widget: "string" }
-          - { label: "Teléfono Principal", name: "phone_primary", widget: "string" }
-          - { label: "Teléfono Secundario", name: "phone_secondary", widget: "string" }
-          - { label: "Correo Ventas", name: "email_sales", widget: "string" }
-          - { label: "Correo Soporte", name: "email_support", widget: "string" }
-          - { label: "WhatsApp Directo", name: "whatsapp_number", widget: "string" }
-          - { label: "Horario Almacén", name: "warehouse_hours", widget: "string" }
-          - { label: "Acceso Maniobras", name: "maneuver_access", widget: "string" }
+          - { label: "Años de Trayectoria", name: "heritage_years", widget: "number" }
+          - { label: "Sede de Fundación", name: "founding_location", widget: "string" }
+          - { label: "Dominio Web Oficial", name: "domain", widget: "string" }
+          - name: "address"
+            label: "Domicilio Fiscal y Coordenadas"
+            widget: "object"
+            fields:
+              - { label: "Calle y Número", name: "street", widget: "string" }
+              - { label: "Colonia", name: "colonia", widget: "string" }
+              - { label: "Ciudad", name: "city", widget: "string" }
+              - { label: "Estado", name: "state", widget: "string" }
+              - { label: "Código Postal", name: "postal_code", widget: "string" }
+              - { label: "País", name: "country", widget: "string" }
+              - { label: "Código País ISO", name: "country_code", widget: "string" }
+              - name: "coordinates"
+                label: "Coordenadas Geográficas"
+                widget: "object"
+                fields:
+                  - { label: "Latitud", name: "latitude", widget: "number", value_type: "float" }
+                  - { label: "Longitud", name: "longitude", widget: "number", value_type: "float" }
+          - name: "contact"
+            label: "Canales Oficiales de Contacto"
+            widget: "object"
+            fields:
+              - name: "phones"
+                label: "Líneas Telefónicas"
+                widget: "list"
+                fields:
+                  - { label: "Formato Visible", name: "display", widget: "string" }
+                  - { label: "Formato E.164", name: "e164", widget: "string" }
+                  - { label: "Tipo de Línea", name: "type", widget: "string" }
+              - name: "whatsapp"
+                label: "Línea WhatsApp Planta Durango"
+                widget: "object"
+                fields:
+                  - { label: "Formato Visible", name: "display", widget: "string" }
+                  - { label: "Número E.164 (wa.me)", name: "e164", widget: "string" }
+                  - { label: "Atención Prioritaria", name: "emergency_hotline", widget: "boolean" }
+              - name: "emails"
+                label: "Correos Corporativos"
+                widget: "list"
+                fields:
+                  - { label: "Dirección de Correo", name: "address", widget: "string" }
+                  - { label: "Uso / Área", name: "type", widget: "string" }
+          - name: "logistics"
+            label: "Protocolo Logístico Almacén Central Durango"
+            widget: "object"
+            fields:
+              - { label: "Horario de Almacén", name: "warehouse_hours", widget: "string" }
+              - { label: "Insignia de Retiro Local", name: "local_pickup_badge", widget: "string" }
+              - { label: "Acceso de Maniobras Pesadas", name: "maneuvers_access", widget: "text" }
+              - { label: "Protocolo de Inspección Presencial", name: "client_inspection_protocol", widget: "text" }
 
   - name: "catalogo"
-    label: "Catálogo de Líneas y Roles"
+    label: "2. Catálogo de Líneas, Roles y Piezas Atómicas"
     files:
       - name: "roles_comerciales"
-        label: "Líneas de Bombeo, Flotación y Filtración"
+        label: "Verticales y Criterios Metalúrgicos (data/roles.json)"
         file: "data/roles.json"
         fields:
-          - name: "categories"
-            label: "Categorías"
+          - name: "verticals"
+            label: "Verticales de Proceso (Bombeo, Flotación, Filtración)"
             widget: "list"
             fields:
-              - { label: "ID Categoría", name: "id", widget: "string" }
-              - { label: "Título Español", name: "title_es", widget: "string" }
-              - { label: "Título Inglés", name: "title_en", widget: "string" }
-              - { label: "Descripción Español", name: "description_es", widget: "text" }
-              - { label: "Descripción Inglés", name: "description_en", widget: "text" }
-              - name: "items"
-                label: "Equipos y Refacciones"
+              - { label: "ID Vertical", name: "id", widget: "string" }
+              - { label: "Nombre ES", name: "name_es", widget: "string" }
+              - { label: "Nombre EN", name: "name_en", widget: "string" }
+              - { label: "Ruta Slug ES", name: "slug_es", widget: "string" }
+              - { label: "Ruta Slug EN", name: "slug_en", widget: "string" }
+              - name: "capex"
+                label: "Equipos Completos y Proyectos (CapEx)"
                 widget: "list"
                 fields:
                   - { label: "ID Rol", name: "role_id", widget: "string" }
-                  - { label: "Tipo (CapEx / OpEx)", name: "type", widget: "select", options: ["capex", "opex"] }
-                  - { label: "Nombre ES", name: "name_es", widget: "string" }
-                  - { label: "Nombre EN", name: "name_en", widget: "string" }
                   - { label: "Ruta Slug ES", name: "slug_es", widget: "string" }
                   - { label: "Ruta Slug EN", name: "slug_en", widget: "string" }
-                  - { label: "Especificación Clave", name: "specs", widget: "string" }
-                  - { label: "Metalurgia / Material", name: "materials", widget: "string" }
-                  - { label: "Resumen ES", name: "summary_es", widget: "text" }
-                  - { label: "Resumen EN", name: "summary_en", widget: "text" }
+                  - { label: "Título ES", name: "title_es", widget: "string" }
+                  - { label: "Título EN", name: "title_en", widget: "string" }
+                  - { label: "Series / Dimensiones", name: "series", widget: "string" }
+                  - { label: "Rango de Potencia / Presión", name: "power_range", widget: "string", required: false }
+                  - { label: "Rango de Flujo / Ciclo", name: "flow_range", widget: "string", required: false }
+                  - { label: "Resumen Técnico ES", name: "spec_summary_es", widget: "text" }
+                  - { label: "Resumen Técnico EN", name: "spec_summary_en", widget: "text" }
+                  - name: "decision_criteria"
+                    label: "Criterios de Decisión Metalúrgica y Riesgo Evitado"
+                    widget: "object"
+                    fields:
+                      - { label: "Variables de Pulpa Requeridas ES", name: "required_slurry_vars_es", widget: "text" }
+                      - { label: "Variables de Pulpa Requeridas EN", name: "required_slurry_vars_en", widget: "text" }
+                      - { label: "Regla Metalúrgica ES", name: "metallurgy_rule_es", widget: "text" }
+                      - { label: "Regla Metalúrgica EN", name: "metallurgy_rule_en", widget: "text" }
+                      - { label: "Riesgo Evitado en Planta ES", name: "risk_avoided_es", widget: "text" }
+                      - { label: "Riesgo Evitado en Planta EN", name: "risk_avoided_en", widget: "text" }
+              - name: "opex"
+                label: "Refacciones Críticas de Desgaste (OpEx)"
+                widget: "list"
+                fields:
+                  - { label: "ID Rol", name: "role_id", widget: "string" }
+                  - { label: "Ruta Slug ES", name: "slug_es", widget: "string" }
+                  - { label: "Ruta Slug EN", name: "slug_en", widget: "string" }
+                  - { label: "Título ES", name: "title_es", widget: "string" }
+                  - { label: "Título EN", name: "title_en", widget: "string" }
+                  - { label: "Metalurgia / Materiales", name: "metallurgy", widget: "string", required: false }
+                  - { label: "Series Compatibles", name: "series", widget: "string" }
+                  - { label: "Resumen Técnico ES", name: "spec_summary_es", widget: "text" }
+                  - { label: "Resumen Técnico EN", name: "spec_summary_en", widget: "text" }
+                  - name: "decision_criteria"
+                    label: "Criterios de Decisión Metalúrgica y Riesgo Evitado"
+                    widget: "object"
+                    fields:
+                      - { label: "Variables de Pulpa Requeridas ES", name: "required_slurry_vars_es", widget: "text" }
+                      - { label: "Variables de Pulpa Requeridas EN", name: "required_slurry_vars_en", widget: "text" }
+                      - { label: "Regla Metalúrgica ES", name: "metallurgy_rule_es", widget: "text" }
+                      - { label: "Regla Metalúrgica EN", name: "metallurgy_rule_en", widget: "text" }
+                      - { label: "Riesgo Evitado en Planta ES", name: "risk_avoided_es", widget: "text" }
+                      - { label: "Riesgo Evitado en Planta EN", name: "risk_avoided_en", widget: "text" }
 
-  - name: "diagnosticos"
-    label: "Diagnósticos de Falla en Campo"
-    files:
-      - name: "sintomas"
-        label: "Tarjetas de Daño Mecánico"
-        file: "data/diagnostics.json"
+      - name: "piezas_atomicas"
+        label: "Fichas Atómicas Universales (data/atomic_parts.json)"
+        file: "data/atomic_parts.json"
         fields:
-          - name: "symptoms"
-            label: "Síntomas Reportados"
+          - name: "items"
+            label: "Refacciones Universales (D3147, E4147, F6147, DAM028, EAM028, E4083)"
             widget: "list"
             fields:
-              - { label: "ID Síntoma", name: "id", widget: "string" }
+              - { label: "Código Slug URL (minúsculas)", name: "code", widget: "string" }
+              - { label: "Número de Parte Universal", name: "part_number", widget: "string" }
+              - { label: "Marco / Serie", name: "frame", widget: "string" }
+              - { label: "Nombre ES", name: "name_es", widget: "string" }
+              - { label: "Nombre EN", name: "name_en", widget: "string" }
+              - { label: "Tipo Componente ES", name: "type_es", widget: "string" }
+              - { label: "Tipo Componente EN", name: "type_en", widget: "string" }
+              - { label: "Norma Metalúrgica", name: "metallurgy", widget: "string" }
+              - { label: "Dureza Certificada", name: "hardness", widget: "string" }
+              - { label: "Número de Álabes", name: "vanes", widget: "number" }
+              - { label: "Circuito de Aplicación ES", name: "circuit_es", widget: "string" }
+              - { label: "Circuito de Aplicación EN", name: "circuit_en", widget: "string" }
+              - { label: "Garantía de Ajuste 1:1 ES", name: "fit_guarantee_es", widget: "text" }
+              - { label: "Garantía de Ajuste 1:1 EN", name: "fit_guarantee_en", widget: "text" }
+              - { label: "Resumen Técnico ES", name: "summary_es", widget: "text" }
+              - { label: "Resumen Técnico EN", name: "summary_en", widget: "text" }
+
+      - name: "circuitos_pid"
+        label: "Nodos de Circuito P&ID (data/circuits.json)"
+        file: "data/circuits.json"
+        fields:
+          - name: "circuits"
+            label: "Circuitos de Planta Concentradora"
+            widget: "list"
+            fields:
+              - { label: "ID Circuito", name: "id", widget: "string" }
+              - { label: "Nombre ES", name: "name_es", widget: "string" }
+              - { label: "Nombre EN", name: "name_en", widget: "string" }
+              - { label: "Subtítulo ES", name: "subtitle_es", widget: "text" }
+              - { label: "Subtítulo EN", name: "subtitle_en", widget: "text" }
+              - name: "nodes"
+                label: "Nodos del Diagrama P&ID"
+                widget: "list"
+                fields:
+                  - { label: "ID Nodo", name: "id", widget: "string" }
+                  - { label: "Nombre ES", name: "name_es", widget: "string" }
+                  - { label: "Nombre EN", name: "name_en", widget: "string" }
+                  - { label: "ID Rol Vinculado", name: "role_id", widget: "string" }
+                  - { label: "Equipo ES", name: "equipment_es", widget: "string" }
+                  - { label: "Equipo EN", name: "equipment_en", widget: "string" }
+                  - { label: "Desafío Operativo ES", name: "challenge_es", widget: "text" }
+                  - { label: "Desafío Operativo EN", name: "challenge_en", widget: "text" }
+                  - { label: "Solución SMAT ES", name: "solution_es", widget: "text" }
+                  - { label: "Solución SMAT EN", name: "solution_en", widget: "text" }
+                  - { label: "Esquema de Suministro ES", name: "stock_es", widget: "string" }
+                  - { label: "Esquema de Suministro EN", name: "stock_en", widget: "string" }
+                  - { label: "Enlace Técnico ES", name: "link_es", widget: "string" }
+                  - { label: "Enlace Técnico EN", name: "link_en", widget: "string" }
+
+  - name: "diagnosticos_y_casos"
+    label: "3. Diagnósticos de Falla y Casos de Campo"
+    files:
+      - name: "diagnosticos"
+        label: "Tarjetas de Diagnóstico Mecánico (data/diagnostics.json)"
+        file: "data/diagnostics.json"
+        fields:
+          - name: "diagnostics"
+            label: "Diagnósticos de Falla en Planta"
+            widget: "list"
+            fields:
+              - { label: "ID Diagnóstico", name: "id", widget: "string" }
+              - { label: "Pregunta / Título ES", name: "title_es", widget: "string" }
+              - { label: "Pregunta / Título EN", name: "title_en", widget: "string" }
+              - { label: "Síntoma Físico ES", name: "symptom_es", widget: "text" }
+              - { label: "Síntoma Físico EN", name: "symptom_en", widget: "text" }
+              - { label: "Causa Raíz ES", name: "root_cause_es", widget: "text" }
+              - { label: "Causa Raíz EN", name: "root_cause_en", widget: "text" }
+              - { label: "Acción y Pieza Recomendada ES", name: "recommended_action_es", widget: "text" }
+              - { label: "Acción y Pieza Recomendada EN", name: "recommended_action_en", widget: "text" }
+              - { label: "Rol Destino en Cotizador", name: "target_role", widget: "select", options: ["impulsor", "rotor_estator", "sello", "placas_telas", "revestimientos", "soporte", "skid_bomba"] }
+
+      - name: "casos_campo"
+        label: "Casos de Servicio en Planta (data/cases.json)"
+        file: "data/cases.json"
+        fields:
+          - { label: "Título Sección ES", name: "title_es", widget: "string" }
+          - { label: "Título Sección EN", name: "title_en", widget: "string" }
+          - { label: "Subtítulo ES", name: "subtitle_es", widget: "text" }
+          - { label: "Subtítulo EN", name: "subtitle_en", widget: "text" }
+          - name: "cases"
+            label: "Casos Documentados"
+            widget: "list"
+            fields:
+              - { label: "ID Caso", name: "id", widget: "string" }
+              - { label: "Disciplina ES", name: "discipline_es", widget: "string" }
+              - { label: "Disciplina EN", name: "discipline_en", widget: "string" }
+              - { label: "Distrito / Ubicación ES", name: "location_es", widget: "string" }
+              - { label: "Distrito / Ubicación EN", name: "location_en", widget: "string" }
+              - { label: "Condición del Lodo ES", name: "condition_es", widget: "text" }
+              - { label: "Condición del Lodo EN", name: "condition_en", widget: "text" }
+              - { label: "Refacción Instalada y Ajuste ES", name: "solution_es", widget: "text" }
+              - { label: "Refacción Instalada y Ajuste EN", name: "solution_en", widget: "text" }
+              - { label: "Resultado Medido ES", name: "result_es", widget: "text" }
+              - { label: "Resultado Medido EN", name: "result_en", widget: "text" }
+
+  - name: "garantia_y_inteligencia"
+    label: "4. Certeza Técnica, FAQs y Grupos Mineros"
+    files:
+      - name: "certeza_tecnica"
+        label: "Matriz de Garantía y Límites Honestos (data/trust.json)"
+        file: "data/trust.json"
+        fields:
+          - { label: "Título ES", name: "title_es", widget: "string" }
+          - { label: "Título EN", name: "title_en", widget: "string" }
+          - { label: "Subtítulo ES", name: "subtitle_es", widget: "text" }
+          - { label: "Subtítulo EN", name: "subtitle_en", widget: "text" }
+          - { label: "Política de Protocolo ES", name: "protocol_policy_es", widget: "text" }
+          - { label: "Política de Protocolo EN", name: "protocol_policy_en", widget: "text" }
+          - name: "pillars"
+            label: "4 Pilares de Inspección en Almacén Durango"
+            widget: "list"
+            fields:
+              - { label: "ID Pilar", name: "id", widget: "string" }
               - { label: "Título ES", name: "title_es", widget: "string" }
               - { label: "Título EN", name: "title_en", widget: "string" }
-              - { label: "Causa Probable ES", name: "probable_cause_es", widget: "text" }
-              - { label: "Causa Probable EN", name: "probable_cause_en", widget: "text" }
-              - { label: "Solución Recomendada ES", name: "solution_es", widget: "text" }
-              - { label: "Solución Recomendada EN", name: "solution_en", widget: "text" }
-              - { label: "Urgencia", name: "urgency", widget: "select", options: ["emergencia_paro", "mantenimiento_programado", "mejora_vida_util"] }
+              - { label: "Descripción ES", name: "description_es", widget: "text" }
+              - { label: "Descripción EN", name: "description_en", widget: "text" }
+          - name: "matrix"
+            label: "Matriz de Cobertura SMAT vs Fundición"
+            widget: "list"
+            fields:
+              - { label: "Alcance ES", name: "scope_es", widget: "string" }
+              - { label: "Alcance EN", name: "scope_en", widget: "string" }
+              - { label: "SMAT Durango Cubre ES", name: "smat_covers_es", widget: "text" }
+              - { label: "SMAT Durango Cubre EN", name: "smat_covers_en", widget: "text" }
+              - { label: "Fundición Fabricante Cubre ES", name: "manufacturer_covers_es", widget: "text" }
+              - { label: "Fundición Fabricante Cubre EN", name: "manufacturer_covers_en", widget: "text" }
+          - name: "boundaries"
+            label: "Límites Honestos (Cuándo Declinamos Cotizar)"
+            widget: "list"
+            fields:
+              - { label: "Título Límite ES", name: "title_es", widget: "string" }
+              - { label: "Título Límite EN", name: "title_en", widget: "string" }
+              - { label: "Razón Técnica ES", name: "reason_es", widget: "text" }
+              - { label: "Razón Técnica EN", name: "reason_en", widget: "text" }
+
+      - name: "preguntas_frecuentes"
+        label: "Preguntas Frecuentes Técnicas (data/faqs.json)"
+        file: "data/faqs.json"
+        fields:
+          - name: "faqs"
+            label: "Listado de Preguntas Frecuentes"
+            widget: "list"
+            fields:
+              - { label: "ID FAQ", name: "id", widget: "string" }
+              - { label: "Pregunta ES", name: "question_es", widget: "string" }
+              - { label: "Pregunta EN", name: "question_en", widget: "string" }
+              - { label: "Respuesta Técnica ES", name: "answer_es", widget: "text" }
+              - { label: "Respuesta Técnica EN", name: "answer_en", widget: "text" }
+
+      - name: "grupos_mineros"
+        label: "Directorio de Grupos y Unidades Mineras (data/mining_groups.json)"
+        file: "data/mining_groups.json"
+        fields:
+          - { label: "Versión Dataset", name: "version", widget: "string" }
+          - { label: "País", name: "country", widget: "string" }
+          - { label: "Total de Grupos", name: "total_groups", widget: "number" }
+          - name: "groups"
+            label: "Grupos Mineros Corporativos"
+            widget: "list"
+            fields:
+              - { label: "ID Grupo", name: "id", widget: "string" }
+              - { label: "Nombre Corporativo", name: "name", widget: "string" }
+              - name: "domains"
+                label: "Dominios de Correo Corporativo"
+                widget: "list"
+                field: { label: "Dominio", name: "domain", widget: "string" }
+              - name: "units"
+                label: "Unidades Mineras y Perfil de Pulpa"
+                widget: "list"
+                fields:
+                  - { label: "Nombre de Unidad y Ubicación", name: "name", widget: "string" }
+                  - { label: "Perfil de Pulpa Mineral", name: "pulp_profile", widget: "string" }

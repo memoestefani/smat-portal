@@ -2,6 +2,7 @@
 // src/pages/flotacion/index.astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
+import CircuitNavigator from '../../components/CircuitNavigator.astro';
 ---
 
 <BaseLayout 
@@ -48,6 +49,12 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="section" style="background-color: #ffffff; border-top: 1px solid var(--smat-border-light); border-bottom: 1px solid var(--smat-border-light);">
+    <div class="container">
+      <CircuitNavigator lang="es" defaultCircuit="flotacion_polimetalica" />
     </div>
   </section>
 

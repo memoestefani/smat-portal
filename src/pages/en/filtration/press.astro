@@ -1,9 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import Header from '../../../components/Header.astro';
-import Footer from '../../../components/Footer.astro';
 import SharePurchasing from '../../../components/SharePurchasing.astro';
-import WhatsAppButton from '../../../components/WhatsAppButton.astro';
 import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
 ---
 
@@ -15,8 +12,6 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
   alternateEsPath="/filtracion/prensa/"
   alternateEnPath="/en/filtration/press/"
 >
-  <Header slot="header" lang="en" currentPath="/en/filtration/press/" alternatePath="/filtracion/prensa/" />
-
   <section class="page-hero">
     <div class="container text-center">
       <span class="badge badge-capex">FILTRATION EQUIPMENT • 800 TO 1500 MM</span>
@@ -72,6 +67,8 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
           series="Plates 800x800 to 1500x1500 mm (Pressure up to 16 bar)"
           metallurgy="Heavy Structural Steel Side Beams, Virgin Polypropylene Plates"
           specs="Hydraulic filter press with clamping cylinder, virgin polypropylene plate pack, and filter cloths."
+          roleId="filtro_prensa"
+          circuit="filtracion"
           lang="en"
         />
 
@@ -93,9 +90,6 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
       </div>
     </div>
   </section>
-
-  <WhatsAppButton lang="en" />
-  <Footer slot="footer" lang="en" />
 </BaseLayout>
 
 <style>

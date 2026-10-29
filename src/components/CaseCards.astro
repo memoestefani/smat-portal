@@ -10,6 +10,24 @@ interface Props {
 const { lang = 'es' } = Astro.props;
 const isEn = lang === 'en';
 const { title_es, title_en, subtitle_es, subtitle_en, cases } = casesData;
+
+const caseRouteMap: Record<string, { circuitPathEs: string; circuitPathEn: string; rfqQuery: string }> = {
+  caso_bombeo_durango: {
+    circuitPathEs: '/bombeo/',
+    circuitPathEn: '/en/pumping/',
+    rfqQuery: 'circuito=bombeo&equipo=solo_impulsor&serie=6x4&flow=380&solids=52&d80=180'
+  },
+  caso_flotacion_zacatecas: {
+    circuitPathEs: '/flotacion/',
+    circuitPathEn: '/en/flotation/',
+    rfqQuery: 'circuito=flotacion&equipo=mecanismo_completo&serie=100ft&flow=320&solids=38&d80=110'
+  },
+  caso_filtracion_chihuahua: {
+    circuitPathEs: '/filtracion/',
+    circuitPathEn: '/en/filtration/',
+    rfqQuery: 'circuito=filtracion&equipo=kit_placas_telas&serie=1500&flow=180&solids=55&d80=35'
+  }
+};
 ---
 
 <section class="cases-section" aria-label={isEn ? "Field Engineering Cases" : "Casos de Ingeniería en Planta"}>
@@ -46,10 +64,33 @@ const { title_es, title_en, subtitle_es, subtitle_en, cases } = casesData;
           </div>
 
           <div class="case-footer">
-            <a href={isEn ? "/en/pumping/" : "/bombeo/"} class="case-circuit-link">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-              {isEn ? "View Process Circuit in P&ID →" : "Ver Circuito de Proceso en P&ID →"}
-            </a>
+            {(() => {
+              const routeInfo = caseRouteMap[item.id] || caseRouteMap.caso_bombeo_durango;
+              const simHref = isEn ? `/en/#rfq?${routeInfo.rfqQuery}` : `/#rfq?${routeInfo.rfqQuery}`;
+              return (
+                <div class="case-footer-actions">
+                  {item.id === 'caso_flotacion_zacatecas' ? (
+                    <a href={isEn ? "/en/flotation/" : "/flotacion/"} class="case-circuit-link">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                      {isEn ? "View Process Circuit →" : "Ver Circuito P&ID →"}
+                    </a>
+                  ) : item.id === 'caso_filtracion_chihuahua' ? (
+                    <a href={isEn ? "/en/filtration/" : "/filtracion/"} class="case-circuit-link">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                      {isEn ? "View Process Circuit →" : "Ver Circuito P&ID →"}
+                    </a>
+                  ) : (
+                    <a href={isEn ? "/en/pumping/" : "/bombeo/"} class="case-circuit-link">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                      {isEn ? "View Process Circuit →" : "Ver Circuito P&ID →"}
+                    </a>
+                  )}
+                  <a href={simHref} class="case-sim-link">
+                    {isEn ? "Load Case in Simulator →" : "Cargar Caso en Simulador →"}
+                  </a>
+                </div>
+              );
+            })()}
           </div>
         </article>
       ))}
@@ -197,6 +238,14 @@ const { title_es, title_en, subtitle_es, subtitle_en, cases } = casesData;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
   }
 
+  .case-footer-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
   .case-circuit-link {
     display: inline-flex;
     align-items: center;
@@ -212,4 +261,47 @@ const { title_es, title_en, subtitle_es, subtitle_en, cases } = casesData;
     color: #fb923c;
     text-decoration: underline;
   }
+
+  .case-sim-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    padding: 0.3rem 0.65rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .case-sim-link:hover {
+    background: rgba(245, 158, 11, 0.16);
+    border-color: #f59e0b;
+    color: #ffffff;
+  }
 </style>
+
+<script>
+  function initCaseSimLinks() {
+    const simLinks = document.querySelectorAll<HTMLAnchorElement>('.case-sim-link');
+    simLinks.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        const rfqSection = document.getElementById('rfq');
+        if (rfqSection) {
+          e.preventDefault();
+          const url = new URL(btn.href, window.location.origin);
+          history.pushState(null, '', url.pathname + url.search + url.hash);
+          rfqSection.scrollIntoView({ behavior: 'smooth' });
+          window.dispatchEvent(new HashChangeEvent('hashchange'));
+        }
+      });
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCaseSimLinks);
+  } else {
+    initCaseSimLinks();
+  }
+</script>

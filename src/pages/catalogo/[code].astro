@@ -2,9 +2,6 @@
 // src/pages/catalogo/[code].astro
 // Decisión 4-B: Ficha Atómica de Refacción Universal con Blindaje Anti-Scraping
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
-import WhatsAppButton from '../../components/WhatsAppButton.astro';
 import atomicParts from '../../../data/atomic_parts.json';
 
 export function getStaticPaths() {
@@ -60,8 +57,6 @@ const productSchema = {
   alternateEsPath={canonicalPath}
   alternateEnPath={alternateEnPath}
 >
-  <Header slot="header" lang="es" currentPath={canonicalPath} alternatePath={alternateEnPath} />
-
   <main class="part-page-main">
     <div class="container">
       
@@ -183,7 +178,7 @@ const productSchema = {
               </div>
               <div class="fact-item">
                 <span class="fact-label">Facturación:</span>
-                <span class="fact-val">CFDI Directo en México (OPEX)</span>
+                <span class="fact-val">Facturación Nacional Directa (CFDI 4.0)</span>
               </div>
             </div>
           </div>
@@ -194,9 +189,6 @@ const productSchema = {
   </main>
 
   <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
-
-  <WhatsAppButton lang="es" />
-  <Footer slot="footer" lang="es" />
 </BaseLayout>
 
 <style>

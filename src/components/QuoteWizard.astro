@@ -2,6 +2,7 @@
 import miningGroupsData from '../../data/mining_groups.json';
 import companyData from '../../data/company.json';
 import rolesData from '../../data/roles.json';
+import atomicPartsData from '../../data/atomic_parts.json';
 import { SLURRY_PRESETS, MECHANICAL_DIAGNOSTICS, calculateSlurryMetrics, calculateAltitudeCorrection } from '../scripts/slurryEngine.js';
 import { SMAT_WORKBENCH_EVENT } from '../scripts/workbenchBus.js';
 
@@ -14,6 +15,8 @@ interface Props {
 const { lang = 'es', defaultRole = '', defaultType = 'opex' } = Astro.props;
 const isEs = lang === 'es';
 const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
+const atomicPartsJson = JSON.stringify(atomicPartsData);
+const leadEndpointUrl = import.meta.env.PUBLIC_LEAD_INTAKE_URL || '';
 const mechDiagnosticsList = Object.values(MECHANICAL_DIAGNOSTICS);
 const defaultSimMetrics = calculateSlurryMetrics({ flowM3H: 180, solidsWeightPercent: 45, particleSizeD80Microns: 180, altitudeM: 2400 });
 const defaultAltData = calculateAltitudeCorrection(2400);
@@ -34,7 +37,7 @@ for (const v of rolesData.verticals) {
 const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
 ---
 
-<div class="workbench-container" id="rfq" data-default-role={defaultRole} data-default-type={defaultType} data-mining-groups={miningGroupsJson} data-roles-criteria={rolesCriteriaJson} data-lang={lang} data-workbench-event={SMAT_WORKBENCH_EVENT} data-hq-city={companyData.address.city} data-presets={JSON.stringify(SLURRY_PRESETS)}>
+<div class="workbench-container" id="rfq" data-default-role={defaultRole} data-default-type={defaultType} data-mining-groups={miningGroupsJson} data-atomic-parts={atomicPartsJson} data-lead-endpoint={leadEndpointUrl} data-roles-criteria={rolesCriteriaJson} data-lang={lang} data-workbench-event={SMAT_WORKBENCH_EVENT} data-hq-city={companyData.address.city} data-presets={JSON.stringify(SLURRY_PRESETS)}>
   <!-- Cabecera de la Estación de Trabajo -->
   <div class="workbench-header">
     <div class="badge-row">
@@ -336,6 +339,20 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
           <input type="text" id="wb-details" name="spec_details" class="wb-input" placeholder={isEs ? 'Ej. Bomba #2 Cabecera / Tag B-201' : 'e.g. Header Pump #2 / Tag B-201'} />
         </div>
 
+        <!-- Barra de Asistencia Rápida Mutuamente Excluyente (Decisión 3-B) -->
+        <div class="assist-pills-bar" role="group" aria-label={isEs ? 'Herramientas de asistencia para identificación de pieza' : 'Part identification assistance tools'}>
+          <span class="assist-pills-label font-mono-tech">{isEs ? 'ASISTENCIA RÁPIDA:' : 'QUICK ASSIST:'}</span>
+          <button type="button" class="assist-pill-btn" data-assist-target="worn-piece-details" aria-expanded="false">
+            [ {isEs ? 'Medir con Flexómetro' : 'Tape Measure 1:1'} ]
+          </button>
+          <button type="button" class="assist-pill-btn" data-assist-target="smat-decoder-details" aria-expanded="false">
+            [ {isEs ? 'Tengo Código SMAT' : 'Load SMAT Code'} ]
+          </button>
+          <button type="button" class="assist-pill-btn" data-assist-target="custom-equip-details" aria-expanded="false">
+            [ {isEs ? 'Equipo Especial' : 'Custom Equipment'} ]
+          </button>
+        </div>
+
         <!-- Contenedor Guiado para Pieza Desgastada o Placa Ilegible (Decisión 6-C / GOLD-188) -->
         <div class="form-group">
           <details class="worn-piece-details" id="worn-piece-details">
@@ -445,11 +462,31 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
               <span class="step-num">02</span>
               <div class="sim-header-title">
                 <h3 id="sim-headline-text">{isEs ? 'Transporte hidráulico y velocidad crítica (Durand)' : 'Slurry Hydraulic Transport & Critical Velocity (Durand)'}</h3>
-                <span class="sim-pill">{isEs ? 'Asistente de Planta' : 'Plant Assistant'}</span>
+                <span class="sim-pill" id="sim-circuit-context-pill">{isEs ? 'Asistente de Planta' : 'Plant Assistant'}</span>
               </div>
             </div>
             <span class="accordion-arrow">▼</span>
           </summary>
+
+          <!-- Barra de Resumen Hidráulico y Metalúrgico Siempre Visible (Decisión 2-C & 4-B) -->
+          <div class="sim-quick-summary-bar" id="sim-quick-summary-bar" aria-live="polite">
+            <span class="quick-metric-chip">
+              <small>Vc:</small>
+              <strong id="quick-vc" class="pro-tabular-nums">{defaultSimMetrics.results.criticalSettlingVelocityMs} m/s</strong>
+            </span>
+            <span class="quick-metric-chip">
+              <small>Sm/Cv:</small>
+              <strong id="quick-sm-cv" class="pro-tabular-nums">{defaultSimMetrics.results.slurrySpecificGravity.toFixed(2)} kg/L ({defaultSimMetrics.results.solidsVolumetricPercent}% Cv)</strong>
+            </span>
+            <span class="quick-metric-chip">
+              <small>HR/IEC:</small>
+              <strong id="quick-hr-derating" class="pro-tabular-nums">HR {defaultSimMetrics.results.headDeratingFactorHr.toFixed(2)} • Motor {(defaultAltData.motorDeratingFactor * 100).toFixed(0)}%</strong>
+            </span>
+            <span class="quick-metric-chip quick-metric-highlight">
+              <small>{isEs ? 'Sugerencia:' : 'Dictated:'}</small>
+              <strong id="quick-alloy-ratio" class="pro-tabular-nums">{defaultSimMetrics.results.recommendedMaterial} ({defaultSimMetrics.results.wearLifeRatio}×)</strong>
+            </span>
+          </div>
 
           <div class="durand-accordion-body">
             <!-- Nota de Acompañamiento Técnico / Laboratorio (Reubicada Just-in-Time) -->
@@ -590,8 +627,13 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
               </div>
               <div class="sim-metric">
                 <span class="sim-metric-label">{isEs ? 'Vida Útil Estimada:' : 'Estimated Life:'}</span>
-                <strong class="sim-metric-val pro-tabular-nums" id="metric-life">~2,400 h</strong>
+                <strong class="sim-metric-val pro-tabular-nums" id="metric-life">~2,400 h ({defaultSimMetrics.results.wearLifeRatio}×)</strong>
               </div>
+            </div>
+
+            <!-- Dictamen Metalúrgico Dinámico (rationaleEs / rationaleEn de slurryEngine.js) -->
+            <div class="sim-rationale-banner" id="metric-rationale">
+              {isEs ? defaultSimMetrics.results.rationaleEs : defaultSimMetrics.results.rationaleEn}
             </div>
 
             <!-- Semáforo Visual de Régimen de Flujo Durand (Decisión 5-A) -->
@@ -1258,6 +1300,12 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
   }
 
   @media (max-width: 1200px) {
+    .workbench-split {
+      gap: 1.1rem;
+    }
+  }
+
+  @media (max-width: 1024px) {
     .workbench-split {
       grid-template-columns: 1fr;
     }
@@ -3140,10 +3188,98 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
     justify-content: space-between;
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1024px) {
     .mini-dossier-bar {
       display: flex;
     }
+  }
+
+  .assist-pills-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0.5rem 0 0.75rem;
+    padding: 0.45rem 0.6rem;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+  }
+
+  .assist-pills-label {
+    font-size: 0.66rem;
+    font-weight: 800;
+    color: #475569;
+    margin-right: 0.25rem;
+  }
+
+  .assist-pill-btn {
+    padding: 0.28rem 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: var(--smat-font-mono, monospace);
+    color: #1e293b;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .assist-pill-btn:hover {
+    border-color: var(--smat-copper-accent, #c25e00);
+    color: var(--smat-copper-accent, #c25e00);
+  }
+
+  .assist-pill-btn.active {
+    background: var(--smat-navy-deep, #051B2E);
+    color: #ffffff;
+    border-color: var(--smat-blue-royal, #0D78C6);
+  }
+
+  .sim-quick-summary-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.55rem;
+    padding: 0.45rem 0.65rem;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+  }
+
+  .quick-metric-chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    font-size: 0.72rem;
+    padding: 0.15rem 0.45rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    color: #0f172a;
+  }
+
+  .quick-metric-chip small {
+    color: #64748b;
+    font-weight: 700;
+  }
+
+  .quick-metric-highlight {
+    background: #fff7ed;
+    border-color: #fed7aa;
+    color: #9a3412;
+  }
+
+  .sim-rationale-banner {
+    margin-top: 0.6rem;
+    padding: 0.55rem 0.75rem;
+    background: #f8fafc;
+    border-left: 3px solid var(--smat-copper-accent, #c25e00);
+    border-radius: 4px;
+    font-size: 0.76rem;
+    color: #1e293b;
+    line-height: 1.4;
   }
 
   .mini-folio {
@@ -3478,7 +3614,32 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
   .hidden { display: none !important; }
 </style>
 
-<script is:inline>
+<script>
+  // @ts-nocheck
+  import {
+    calculateSlurryMetrics,
+    calculateAltitudeCorrection,
+    SLURRY_PRESETS,
+    MECHANICAL_DIAGNOSTICS
+  } from '../scripts/slurryEngine.js';
+  import {
+    ATOMIC_PARTS_CATALOG,
+    resolveAtomicPartCode,
+    publishWorkbenchUpdate,
+    subscribeWorkbenchUpdate,
+    parseUrlContextParams,
+    formatSapPlaintext,
+    formatSapTsv,
+    formatMailtoUrl,
+    formatWhatsappUrl,
+    generateSmatPartCode,
+    parseSmatPartCode,
+    buildAcuseUrlParams,
+    sendLeadToServer,
+    saveWorkbenchSession,
+    loadWorkbenchSession
+  } from '../scripts/workbenchBus.js';
+
   (function() {
     var container = document.getElementById('rfq');
     if (!container) return;
@@ -3646,21 +3807,25 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
         else panelFiltracion.classList.add('hidden');
       }
 
-      // Adaptación de Título de Simulación sin Jerga Regional (Decisión 6-B)
+      // Adaptación de Título de Simulación sin Jerga Regional (Decisión 6-B & 4-B)
       var simHeadline = document.getElementById('sim-headline-text');
+      var simContextPill = document.getElementById('sim-circuit-context-pill');
       if (simHeadline) {
         if (currentCircuit === 'flotacion') {
           simHeadline.textContent = isEs 
             ? 'Cinética de celda y retención de volumen' 
             : 'Cell Kinetics & Volume Retention';
+          if (simContextPill) simContextPill.textContent = isEs ? 'Flotación • Agitación' : 'Flotation • Kinetics';
         } else if (currentCircuit === 'filtracion') {
           simHeadline.textContent = isEs 
             ? 'Deshidratación de torta y ciclo de filtrado' 
             : 'Cake Dewatering & Filter Cycle';
+          if (simContextPill) simContextPill.textContent = isEs ? 'Filtración • 16 bar' : 'Filtration • 16 bar';
         } else {
           simHeadline.textContent = isEs 
             ? 'Transporte hidráulico y velocidad crítica (Durand)' 
             : 'Slurry Hydraulic Transport & Critical Velocity (Durand)';
+          if (simContextPill) simContextPill.textContent = isEs ? 'Bombeo • Durand' : 'Pumping • Durand';
         }
       }
 
@@ -3670,7 +3835,51 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
     circuitPills.forEach(function(pill) {
       pill.addEventListener('click', function() {
         var c = pill.getAttribute('data-circuit');
-        if (c) setCircuit(c);
+        if (c) {
+          setCircuit(c);
+          publishWorkbenchUpdate({ circuit: c, intent: isOpex ? 'opex' : 'capex', source: 'QuoteWizard' });
+        }
+      });
+    });
+
+    // Barra de Asistencia Mutuamente Excluyente en Paso 01 (Decisión 3-B)
+    var assistPills = document.querySelectorAll('.assist-pill-btn');
+    var assistDrawers = ['worn-piece-details', 'smat-decoder-details', 'custom-equip-details']
+      .map(function(id) { return document.getElementById(id); })
+      .filter(Boolean);
+
+    function syncAssistPillsState() {
+      assistPills.forEach(function(btn) {
+        var targetId = btn.getAttribute('data-assist-target');
+        var targetEl = targetId ? document.getElementById(targetId) : null;
+        var isOpen = Boolean(targetEl && targetEl.open);
+        btn.classList.toggle('active', isOpen);
+        btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    }
+
+    assistPills.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var targetId = btn.getAttribute('data-assist-target');
+        var targetEl = targetId ? document.getElementById(targetId) : null;
+        if (!targetEl) return;
+        var willOpen = !targetEl.open;
+        assistDrawers.forEach(function(d) {
+          if (d && d !== targetEl) d.open = false;
+        });
+        targetEl.open = willOpen;
+        syncAssistPillsState();
+      });
+    });
+
+    assistDrawers.forEach(function(drawer) {
+      drawer.addEventListener('toggle', function() {
+        if (drawer.open) {
+          assistDrawers.forEach(function(other) {
+            if (other && other !== drawer) other.open = false;
+          });
+        }
+        syncAssistPillsState();
       });
     });
 
@@ -3793,10 +4002,46 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
       return 'SMAT-PUMP-' + pipeTag + '-WETKIT';
     }
 
-    // Decodificador de Código SMAT (Decisión 6-A)
+    // Catálogo de Piezas Atómicas Universales (D3147..E4083) y Estado de Métricas
+    var atomicPartsList = [];
+    try {
+      var rawAtomic = container?.getAttribute('data-atomic-parts');
+      if (rawAtomic) atomicPartsList = JSON.parse(rawAtomic);
+    } catch(e) {}
+    var leadEndpointUrl = container?.getAttribute('data-lead-endpoint') || '';
+    var currentAtomicCode = '';
+    var currentHydraulicMetrics = {};
+    var currentTcoMetrics = {};
+
+    var atomicRolePipeMap = {
+      D3147: { role: 'solo_impulsor', size: '3x2', smat: 'SMAT-PUMP-3X2-IMP' },
+      E4147: { role: 'solo_impulsor', size: '6x4', smat: 'SMAT-PUMP-6X4-IMP' },
+      F6147: { role: 'solo_impulsor', size: '8x6', smat: 'SMAT-PUMP-8X6-IMP' },
+      DAM028: { role: 'kit_sellado', size: '3x2', smat: 'SMAT-SEAL-3X2-EXP' },
+      EAM028: { role: 'kit_sellado', size: '6x4', smat: 'SMAT-SEAL-6X4-EXP' },
+      E4083: { role: 'solo_voluta', size: '6x4', smat: 'SMAT-PUMP-6X4-VOL' }
+    };
+
+    // Decodificador de Código SMAT y Refacciones Atómicas (Decisión 6-A & 4-B)
     function decodeSmatCode(codeStr) {
       if (!codeStr) return null;
       var c = codeStr.toUpperCase().trim();
+
+      if (atomicRolePipeMap[c]) {
+        var mapEntry = atomicRolePipeMap[c];
+        var foundPart = atomicPartsList.find(function(p) { return p.part_number === c || p.code.toUpperCase() === c; });
+        var partLabel = foundPart ? (isEs ? foundPart.name_es : foundPart.name_en) : ('Refacción ' + c);
+        return {
+          circuit: 'bombeo',
+          role: mapEntry.role,
+          size: mapEntry.size,
+          code: mapEntry.smat,
+          atomic_code: c,
+          atomic_label: partLabel,
+          atomic_metallurgy: foundPart ? foundPart.metallurgy : 'High Chrome A05 (27% Cr, ≥ 650 HB)'
+        };
+      }
+
       if (!c.startsWith('SMAT-')) return null;
 
       var circuit = 'bombeo';
@@ -3833,14 +4078,14 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
         else size = '6x4';
       }
 
-      return { circuit: circuit, role: role, size: size, code: c };
+      return { circuit: circuit, role: role, size: size, code: c, atomic_code: '' };
     }
 
     function handleDecodeAction() {
       var rawCode = inputDecoder?.value.trim();
       if (!rawCode) {
         if (decoderStatus) {
-          decoderStatus.textContent = isEs ? 'Ingrese un código SMAT válido (ej. SMAT-PUMP-6X4-WETKIT)' : 'Enter a valid SMAT code (e.g. SMAT-PUMP-6X4-WETKIT)';
+          decoderStatus.textContent = isEs ? 'Ingrese un código SMAT o refacción válido (ej. E4083 o SMAT-PUMP-6X4-WETKIT)' : 'Enter a valid SMAT or part code (e.g. E4083 or SMAT-PUMP-6X4-WETKIT)';
           decoderStatus.className = 'decoder-status error';
         }
         return;
@@ -3848,6 +4093,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
 
       var decoded = decodeSmatCode(rawCode);
       if (decoded) {
+        currentAtomicCode = decoded.atomic_code || '';
         setCircuit(decoded.circuit);
         if (decoded.circuit === 'bombeo') {
           if (selectRole) selectRole.value = decoded.role;
@@ -3860,12 +4106,18 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
           if (selectFiltCapacity) selectFiltCapacity.value = decoded.size;
         }
         if (inputDetails) {
-          inputDetails.value = 'Configuración según código institucional ' + decoded.code + '. Verificación dimensional 1:1 en banco Durango.';
+          if (decoded.atomic_code) {
+            inputDetails.value = (isEs ? 'Refacción específica ' : 'Specific spare ') + decoded.atomic_code + ' (' + decoded.atomic_label + ') - ' + decoded.atomic_metallurgy + '. Verificación dimensional 1:1 en banco Durango.';
+          } else {
+            inputDetails.value = 'Configuración según código institucional ' + decoded.code + '. Verificación dimensional 1:1 en banco Durango.';
+          }
         }
         if (decoderStatus) {
-          decoderStatus.textContent = isEs ? 'Configuración cargada: ' + decoded.code : 'Configuration loaded: ' + decoded.code;
+          var statusLabel = decoded.atomic_code ? (decoded.atomic_code + ' → ' + decoded.code) : decoded.code;
+          decoderStatus.textContent = isEs ? 'Configuración cargada: ' + statusLabel : 'Configuration loaded: ' + statusLabel;
           decoderStatus.className = 'decoder-status success';
         }
+        updateRoleCriteriaBar();
         runSlurryCalculation();
         updateDossier();
       } else {
@@ -3886,12 +4138,12 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
       });
     }
 
-    // Presets Definitions синхronizados con SLURRY_PRESETS (slurryEngine.js) y IDs reales de <select>
+    // Presets Definitions sincronizados con SLURRY_PRESETS (slurryEngine.js) y IDs reales de <select>
     var presetsMap = {
-      sag_primary: { flow: 450, solids: 28, d80: 450, circuit: 'bombeo', role: 'solo_impulsor', pipeSize: '8x6' },
-      flotation_rougher: { flow: 300, solids: 18, d80: 74, circuit: 'flotacion', role: 'rotor_estator', flotCap: '100ft' },
-      tailings_thickened: { flow: 600, solids: 55, d80: 150, circuit: 'bombeo', role: 'skid_bomba', pipeSize: '8x6' },
-      emergency_6x4: { flow: 350, solids: 32, d80: 300, circuit: 'bombeo', role: 'kit_wet_end', pipeSize: '6x4' }
+      sag_primary: { flow: SLURRY_PRESETS.sag_primary.flowM3H, solids: SLURRY_PRESETS.sag_primary.solidsWeightPercent, d80: SLURRY_PRESETS.sag_primary.particleSizeD80Microns, circuit: 'bombeo', role: 'solo_impulsor', pipeSize: '8x6' },
+      flotation_rougher: { flow: SLURRY_PRESETS.flotation_rougher.flowM3H, solids: SLURRY_PRESETS.flotation_rougher.solidsWeightPercent, d80: SLURRY_PRESETS.flotation_rougher.particleSizeD80Microns, circuit: 'flotacion', role: 'rotor_estator', flotCap: '100ft' },
+      tailings_thickened: { flow: SLURRY_PRESETS.tailings_thickened.flowM3H, solids: SLURRY_PRESETS.tailings_thickened.solidsWeightPercent, d80: SLURRY_PRESETS.tailings_thickened.particleSizeD80Microns, circuit: 'bombeo', role: 'skid_bomba', pipeSize: '8x6' },
+      emergency_6x4: { flow: SLURRY_PRESETS.emergency_6x4.flowM3H, solids: SLURRY_PRESETS.emergency_6x4.solidsWeightPercent, d80: SLURRY_PRESETS.emergency_6x4.particleSizeD80Microns, circuit: 'bombeo', role: 'kit_wet_end', pipeSize: '6x4' }
     };
 
     // Preset Clicks
@@ -3903,6 +4155,9 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
 
         presetChips.forEach(function(c) { c.classList.remove('active'); });
         chip.classList.add('active');
+
+        var durandAcc = document.getElementById('durand-accordion');
+        if (durandAcc) durandAcc.open = true;
 
         if (p.circuit) setCircuit(p.circuit);
         if (sliderFlow) sliderFlow.value = p.flow;
@@ -4063,24 +4318,33 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
       });
     });
 
-    // Cálculo Durand, Semáforo y TCO Costo de Paro (Decisiones 3-A y 5-A)
+    // Cálculo Durand, Semáforo y TCO Costo de Paro unificado con slurryEngine.js (Decisiones 1-B, 2-C, 4-B)
     function runSlurryCalculation() {
       var Q = Number(sliderFlow?.value) || 180;
       var Cw = Number(sliderSolids?.value) || 45;
       var d80 = Number(sliderD80?.value) || 180;
       var downtimeHours = Number(sliderDowntime?.value) || 4;
       var Ss = 2.7;
-      var D_m = 0.150; // Tubería estándar 6" (150 mm)
 
       if (valFlow) valFlow.textContent = Q + ' m³/h';
       if (valSolids) valSolids.textContent = Cw + '%';
       if (valD80) valD80.textContent = d80 + ' µm';
       if (valDowntime) valDowntime.textContent = downtimeHours + ' hrs';
 
-      // Corrección de Altitud Minera y NPSH (Decisión 5-A)
-      var pAtm = Math.max(5.0, 10.33 - (selectedAltitude / 900));
-      var deltaNpsh = 10.33 - pAtm;
-      var kh = selectedAltitude > 1000 ? Math.max(0.70, 1.0 - (selectedAltitude - 1000) / 10000) : 1.0;
+      var simOut = calculateSlurryMetrics({
+        flowM3H: Q,
+        solidsWeightPercent: Cw,
+        particleSizeD80Microns: d80,
+        solidsSpecificGravity: Ss,
+        pipeDiameterMm: 150,
+        altitudeM: selectedAltitude
+      });
+      var res = simOut.results;
+      var altData = calculateAltitudeCorrection(selectedAltitude);
+
+      var pAtm = altData.pAtmHeadMca;
+      var deltaNpsh = altData.deltaNpshLossM;
+      var kh = altData.motorDeratingFactor;
 
       if (altitudeNpshHint) {
         if (selectedAltitude >= 2400) {
@@ -4098,20 +4362,13 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
         }
       }
 
-      var Sm = 100 / ((Cw / Ss) + (100 - Cw));
-      var Cv = (Cw * Sm) / Ss;
-
-      var FL = 1.32 * Math.pow(d80 / 150, 0.12);
-      if (Cv < 15) FL *= 0.90;
-      else if (Cv > 35) FL *= 1.05;
-      FL = Math.max(0.92, Math.min(1.48, FL));
-
-      var Vc = FL * Math.sqrt(2 * 9.81 * D_m * (Ss - 1));
-      var Vrec = Vc * 1.25;
-
-      // Velocidad real en tubería de 150 mm
-      var pipeArea = (Math.PI / 4) * Math.pow(D_m, 2);
-      var V_actual = (Q / 3600) / pipeArea;
+      var Sm = res.slurrySpecificGravity;
+      var Cv = res.solidsVolumetricPercent;
+      var Vc = res.criticalSettlingVelocityMs;
+      var Vrec = res.recommendedPipeVelocityMs;
+      var V_actual = res.actualPipeVelocityMs;
+      var hrFactor = res.headDeratingFactorHr;
+      var wearRatio = res.wearLifeRatio;
 
       // Semáforo de Transporte Hidráulico (Decisión 5-A)
       if (regimePill && regimeDetail) {
@@ -4151,25 +4408,56 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
         }
       }
 
-      var matName = d80 > 150
-        ? 'High Chrome A05 (>650 HB)'
-        : (d80 < 75 && Cw < 40
-          ? (isEs ? 'Caucho Natural Vulcanizado' : 'Natural Vulcanized Rubber')
-          : 'High Chrome A05 (>650 HB)');
-      var lifeHrs = d80 > 150 ? Math.round(2400 / ((Cw / 45) * Math.pow(d80 / 180, 0.35))) : 2800;
+      var matName = res.recommendedMaterial === 'RUBBER'
+        ? (isEs ? 'Caucho Natural Vulcanizado' : 'Natural Vulcanized Rubber')
+        : 'High Chrome A05 (>650 HB)';
+      var lifeHrs = res.estimatedImpellerLifeHours;
 
-      // Cave / McElvain Head Derating Factor HR (INV-SMAT-PHY-001)
-      var headLossK = 0.000385 * Math.pow(d80 / 100, 0.35) * (Ss - 1) * Cw;
-      var hrFactor = Math.max(0.65, Math.min(0.99, 1.0 - headLossK));
+      currentHydraulicMetrics = {
+        flow_m3h: Q,
+        solids_cw: Cw,
+        d80_um: d80,
+        solid_sg: Ss,
+        slurry_sg: Number(Sm.toFixed(2)),
+        solids_cv: Number(Cv.toFixed(1)),
+        critical_velocity_ms: Number(Vc.toFixed(2)),
+        safe_velocity_ms: Number(Vrec.toFixed(2)),
+        line_velocity_ms: Number(V_actual.toFixed(2)),
+        head_ratio: Number(hrFactor.toFixed(2)),
+        motor_derating_iec: Number(kh.toFixed(3)),
+        wear_life_ratio: wearRatio,
+        altitude_msnm: selectedAltitude,
+        patm_mca: Number(pAtm.toFixed(2)),
+        recommended_alloy: matName,
+        estimated_life_hrs: lifeHrs
+      };
+
+      currentTcoMetrics = {
+        tco_downtime_hrs: downtimeHours,
+        tco_tons_at_risk: tonsAtRisk,
+        tco_alloy: selectedTcoAlloy,
+        tco_summary: tcoSavingsVal ? tcoSavingsVal.textContent : ''
+      };
 
       var metricSmCv = document.getElementById('metric-sm-cv');
       var metricDeratingHr = document.getElementById('metric-derating-hr');
+      var metricRationale = document.getElementById('metric-rationale');
+      var quickVc = document.getElementById('quick-vc');
+      var quickSmCv = document.getElementById('quick-sm-cv');
+      var quickHrDerating = document.getElementById('quick-hr-derating');
+      var quickAlloyRatio = document.getElementById('quick-alloy-ratio');
 
       if (metricVc) metricVc.textContent = Vc.toFixed(2) + ' m/s';
       if (metricSmCv) metricSmCv.textContent = Sm.toFixed(2) + ' kg/L (' + Cv.toFixed(1) + '% Cv)';
       if (metricDeratingHr) metricDeratingHr.textContent = 'HR ' + hrFactor.toFixed(2);
       if (metricMaterial) metricMaterial.textContent = matName;
-      if (metricLife) metricLife.textContent = '~' + lifeHrs + ' h';
+      if (metricLife) metricLife.textContent = '~' + lifeHrs + ' h (' + wearRatio.toFixed(1) + '×)';
+      if (metricRationale) metricRationale.textContent = isEs ? res.rationaleEs : res.rationaleEn;
+
+      if (quickVc) quickVc.textContent = Vc.toFixed(2) + ' m/s';
+      if (quickSmCv) quickSmCv.textContent = Sm.toFixed(2) + ' kg/L (' + Cv.toFixed(1) + '% Cv)';
+      if (quickHrDerating) quickHrDerating.textContent = 'HR ' + hrFactor.toFixed(2) + ' • Motor ' + (kh * 100).toFixed(0) + '%';
+      if (quickAlloyRatio) quickAlloyRatio.textContent = res.recommendedMaterial + ' (' + wearRatio.toFixed(1) + '×)';
       if (miniAlloyBadge) miniAlloyBadge.textContent = isEs ? 'Acople 1:1 Certificado' : 'Certified 1:1 Fit';
 
       if (liveTableFlow) liveTableFlow.textContent = Q + ' m³/h @ ' + Cw + '% Sólidos (Sm = ' + Sm.toFixed(2) + ' kg/L, Cv = ' + Cv.toFixed(1) + '%, HR = ' + hrFactor.toFixed(2) + ')';
@@ -4788,7 +5076,13 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
         role: role, role_id: roleId,
         size_val: sizeVal,
         condition_val: condVal,
-        smat_code: smatCode, details: details, client_reference: clientRef,
+        smat_code: smatCode,
+        atomic_code: currentAtomicCode || '',
+        pulp_profile: selectedUnitPulpProfile || '',
+        metrics: currentHydraulicMetrics || {},
+        tco: currentTcoMetrics || {},
+        alloy: (currentHydraulicMetrics && currentHydraulicMetrics.recommended_alloy) || 'High Chrome A05 (>650 HB)',
+        details: details, client_reference: clientRef,
         dim_outer_dia: dimDia, dim_shaft_bore: dimBore,
         destination: destination, isOpex: isOpex,
         channel_preference: channelPref,
@@ -4802,66 +5096,21 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
     }
 
     function buildSpecText(d) {
-      var tag = d.isOpex ? '[REFACCIONES / PARO DE PLANTA]' : '[EQUIPOS COMPLETOS / CIRCUITO]';
-      var chanText = d.channel_preference === 'llamada' ? 'Llamada Telefónica Directa' : (d.channel_preference === 'correo' ? 'Correo Formal con PDF' : 'WhatsApp de Planta (L-V 08:00-18:00)');
-      var pkgLines = '';
-      if (d.package_items && d.package_items.length > 0) {
-        pkgLines = '   Partidas Requeridas en Circuito:\n';
-        d.package_items.forEach(function(it) {
-          pkgLines += '     • ' + it + '\n';
-        });
-      }
-      return (
-        '===================================================\n' +
-        '   SMAT MINERALS - REQUISICIÓN TÉCNICA FORMAL\n' +
-        '   FOLIO ÚNICO: ' + d.folio + '\n' +
-        '   CIRCUITO DE PROCESO: ' + d.circuit.toUpperCase() + '\n' +
-        '   CÓDIGO DE CONFIGURACIÓN SMAT: ' + d.smat_code + '\n' +
-        '   DOMICILIO FISCAL: Mariano Salas #114, Durango, Dgo. CP 34166\n' +
-        '   ALMACÉN CENTRAL: Durango, Dgo. (Coordinación con folio)\n' +
-        '   TELÉFONO DE ATENCIÓN: (618) 810-4408 | ventas@smatminerals.com\n' +
-        '===================================================\n\n' +
-        '1. DATOS DEL SOLICITANTE:\n' +
-        '   Solicitante: ' + d.name + '\n' +
-        '   Mina / Empresa: ' + d.company + '\n' +
-        '   Teléfono / WhatsApp: ' + d.phone + '\n' +
-        '   Correo: ' + d.email + '\n' +
-        '   Canal de Respuesta: ' + chanText + '\n' +
-        '   Modalidad / Destino: ' + d.destination + '\n\n' +
-        '2. PARTIDA Y APLICACIÓN:\n' +
-        '   Circuito: ' + d.circuit.toUpperCase() + '\n' +
-        '   Tipo de Solicitud: ' + tag + '\n' +
-        '   Equipo / Requerimiento: ' + d.role + '\n' +
-        '   Código SMAT: ' + d.smat_code + '\n' +
-        (d.dim_outer_dia || d.dim_shaft_bore ? '   Medidas Flexómetro: DE ~' + (d.dim_outer_dia || 'N/A') + ', Barreno/Flecha ~' + (d.dim_shaft_bore || 'N/A') + '\n' : '') +
-        (d.client_reference ? '   Referencia Interna Cliente (Confidencial): ' + d.client_reference + '\n' : '') +
-        pkgLines +
-        (d.is_custom ? '   Equipo Especial: ' + d.custom_notes + '\n' : '') +
-        '   Detalles: ' + d.details + '\n\n' +
-        '3. PROTOCOLO DE ALMACÉN Y GARANTÍA:\n' +
-        '   Garantía válida para componentes con balanceo dinámico en banco\n' +
-        '   de pruebas, verificación dimensional 1:1 y especificación técnica\n' +
-        '   inspeccionados y despachados en Almacén Central SMAT Durango.\n' +
-        '==================================================='
-      );
+      return formatSapPlaintext(d);
     }
 
     function buildTsvText(d) {
-      var headers = ['FOLIO_SMAT', 'FECHA', 'PARTIDA_DESCRIPCION', 'CODIGO_CONFIGURACION_SMAT', 'CANTIDAD', 'MATERIAL_ESPECIFICADO', 'REF_CLIENTE_CONFIDENCIAL', 'DESTINO_LOGISTICO', 'SOLICITANTE', 'EMPRESA', 'CONTACTO'];
-      var row = [
-        d.folio,
-        new Date().toISOString().split('T')[0],
-        d.role.replace(/[\t\n\r]/g, ' '),
-        d.smat_code,
-        1,
-        (d.alloy || 'High Chrome A05 (>650 HB)').replace(/[\t\n\r]/g, ' '),
-        (d.client_reference || 'CONFIDENCIAL-1:1').replace(/[\t\n\r]/g, ' '),
-        d.destination.replace(/[\t\n\r]/g, ' '),
-        d.name.replace(/[\t\n\r]/g, ' '),
-        d.company.replace(/[\t\n\r]/g, ' '),
-        d.phone.replace(/[\t\n\r]/g, ' ')
-      ];
-      return headers.join('\t') + '\n' + row.join('\t');
+      return formatSapTsv(d);
+    }
+
+    function buildAcuseParams(d) {
+      return buildAcuseUrlParams(d);
+    }
+
+    function dispatchLeadToBackend(d, channelOrigin) {
+      if (!d) return;
+      saveWorkbenchSession(d);
+      sendLeadToServer(d, channelOrigin || 'web_quote_wizard', leadEndpointUrl);
     }
 
     // Export Actions con Feedback Háptico Visual Stripe-Grade (Decisión 5-A)
@@ -4887,6 +5136,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
     btnCopyPlain?.addEventListener('click', function() {
       var d = collectData();
       if (!d) return;
+      dispatchLeadToBackend(d, 'sap_plaintext_copy');
       var text = buildSpecText(d);
       navigator.clipboard.writeText(text).then(function() {
         triggerCopyFeedback(btnCopyPlain, isEs ? '✓ COPIADO AL PORTAPAPELES' : '✓ COPIED TO CLIPBOARD');
@@ -4903,6 +5153,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
     btnCopyTsv?.addEventListener('click', function() {
       var d = collectData();
       if (!d) return;
+      dispatchLeadToBackend(d, 'sap_tsv_copy');
       var tsv = buildTsvText(d);
       navigator.clipboard.writeText(tsv).then(function() {
         triggerCopyFeedback(btnCopyTsv, isEs ? '✓ TSV COPIADO PARA EXCEL / SAP' : '✓ TSV COPIED FOR EXCEL / SAP');
@@ -4961,11 +5212,8 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
     document.getElementById('wb-pdf-btn')?.addEventListener('click', function() {
       var d = collectData();
       if (!d) return;
-      var params = new URLSearchParams({
-        folio: d.folio, nombre: d.name, empresa: d.company, telefono: d.phone,
-        correo: d.email, equipo: d.role, codigo: d.smat_code, detalles: d.details, destino: d.destination,
-        urgencia: d.isOpex ? 'paro' : 'proyecto'
-      });
+      dispatchLeadToBackend(d, 'pdf_acuse');
+      var params = buildAcuseParams(d);
       var isEnPage = window.location.pathname.startsWith('/en');
       window.location.href = isEnPage ? `/en/thank-you/?${params.toString()}` : `/acuse/?${params.toString()}`;
     });
@@ -4973,6 +5221,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
     var triggerMailto = function() {
       var d = collectData();
       if (!d) return;
+      dispatchLeadToBackend(d, 'mailto_rfc6068');
       var subject = encodeURIComponent(`Requisición Técnica Folio ${d.folio} [${d.smat_code}] - ${d.company}`);
       var body = encodeURIComponent(buildSpecText(d));
       window.location.href = `mailto:ventas@smatminerals.com?subject=${subject}&body=${body}`;
@@ -4984,13 +5233,20 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
     document.getElementById('wb-whatsapp-btn')?.addEventListener('click', function() {
       var d = collectData();
       if (!d) return;
+      dispatchLeadToBackend(d, 'whatsapp_durango');
+      var m = d.metrics || {};
+      var hydLine = (m.flow_m3h !== undefined)
+        ? `Hidráulica Durand: ${encodeURIComponent(m.flow_m3h + ' m³/h @ ' + m.solids_cw + '% Cw, Sm=' + m.slurry_sg + ' kg/L, Vc=' + m.critical_velocity_ms + ' m/s, HR=' + m.head_ratio)}%0A`
+        : '';
       var tag = d.isOpex ? '[PARO DE PLANTA]' : '[PROYECTO CAPEX]';
       var msg = `${tag} Folio: ${d.folio}%0A` +
         `Circuito: ${encodeURIComponent(d.circuit.toUpperCase())}%0A` +
-        `Código SMAT: ${encodeURIComponent(d.smat_code)}%0A` +
+        `Código SMAT: ${encodeURIComponent(d.smat_code)}${d.atomic_code ? encodeURIComponent(' (Refacción: ' + d.atomic_code + ')') : ''}%0A` +
         `Contacto: ${encodeURIComponent(d.name)} (${encodeURIComponent(d.company)})%0A` +
+        (d.pulp_profile ? `Perfil Mineral: ${encodeURIComponent(d.pulp_profile)}%0A` : '') +
         `Teléfono: ${encodeURIComponent(d.phone)}%0A` +
         `Requerimiento: ${encodeURIComponent(d.role)}%0A` +
+        hydLine +
         (d.dim_outer_dia || d.dim_shaft_bore ? `Medidas flexómetro: DE ${encodeURIComponent(d.dim_outer_dia || 'N/A')}, Barreno ${encodeURIComponent(d.dim_shaft_bore || 'N/A')}%0A` : '') +
         `Detalles: ${encodeURIComponent(d.details)}%0A` +
         (d.client_reference ? `Ref Cliente: ${encodeURIComponent(d.client_reference)}%0A` : '') +
@@ -4998,11 +5254,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
         `Garantía: Inspección y verificación dimensional 1:1 Almacén Central Durango` +
         (hasProcessedPhoto ? '%0A%0A[Adjunto foto de placa/equipo para cotejo 1:1]' : '');
       
-      var params = new URLSearchParams({
-        folio: d.folio, nombre: d.name, empresa: d.company, telefono: d.phone,
-        correo: d.email, equipo: d.role, codigo: d.smat_code, detalles: d.details, destino: d.destination,
-        urgencia: d.isOpex ? 'paro' : 'proyecto'
-      });
+      var params = buildAcuseParams(d);
       var isEnPage = window.location.pathname.startsWith('/en');
       var targetAcuse = isEnPage ? `/en/thank-you/?${params.toString()}` : `/acuse/?${params.toString()}`;
 
@@ -5082,7 +5334,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
       custom: 'balanza_marcy'
     };
 
-    // Deep Linking Determinista (#rfq?circuito=...&equipo=...&serie=...&falla=...) (Decisión 4-A & 7-A)
+    // Deep Linking Determinista (#rfq?codigo=E4083&circuito=...&equipo=...&serie=...&falla=...) (Decisión 4-A & 7-A)
     function checkUrlContext() {
       var rawHashOrSearch = window.location.hash || window.location.search || '';
       if (!rawHashOrSearch) return;
@@ -5093,6 +5345,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
 
       try {
         var params = new URLSearchParams(qStr);
+        var urlCodigo = params.get('codigo') || params.get('code');
         var urlCircuit = params.get('circuito') || params.get('circuit');
         var rawUrlRole = params.get('rol') || params.get('role') || params.get('equipo');
         var urlRole = rawUrlRole ? (roleAliasMap[rawUrlRole] || rawUrlRole) : '';
@@ -5101,39 +5354,82 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
         var urlSintoma = params.get('sintoma');
         var urlMina = params.get('mina') || params.get('empresa');
         var urlUrgencia = params.get('urgencia') || params.get('tipo');
+        var urlFlow = params.get('flow');
+        var urlSolids = params.get('solids');
+        var urlD80 = params.get('d80');
 
-        if (urlCircuit) {
-          setCircuit(urlCircuit);
-        } else if (rawUrlRole) {
-          var rLower = rawUrlRole.toLowerCase();
-          if (rLower.includes('flot') || rLower.includes('celda') || rLower.includes('rotor') || rLower.includes('mecanismo')) {
-            setCircuit('flotacion');
-          } else if (rLower.includes('filt') || rLower.includes('prensa') || rLower.includes('placa') || rLower.includes('tela') || rLower.includes('balanza') || rLower === 'custom') {
-            setCircuit('filtracion');
-          } else {
-            setCircuit('bombeo');
-          }
+        if (urlFlow && sliderFlow) sliderFlow.value = urlFlow;
+        if (urlSolids && sliderSolids) sliderSolids.value = urlSolids;
+        if (urlD80 && sliderD80) sliderD80.value = urlD80;
+        if (urlFlow || urlSolids || urlD80) {
+          var durandAcc = document.getElementById('durand-accordion');
+          if (durandAcc) durandAcc.open = true;
         }
 
-        if (urlRole && currentCircuit === 'bombeo' && selectRole) {
-          for (var i = 0; i < selectRole.options.length; i++) {
-            if (selectRole.options[i].value === urlRole || selectRole.options[i].text.toLowerCase().includes(urlRole.toLowerCase())) {
-              selectRole.selectedIndex = i;
-              break;
+        if (urlCodigo) {
+          var cleanCodigo = urlCodigo.trim().toUpperCase();
+          if (inputDecoder) inputDecoder.value = cleanCodigo;
+          var decoded = decodeSmatCode(cleanCodigo);
+          if (decoded) {
+            currentAtomicCode = decoded.atomic_code || '';
+            setCircuit(decoded.circuit);
+            if (decoded.circuit === 'bombeo') {
+              if (selectRole) selectRole.value = decoded.role;
+              if (selectPipeSize) selectPipeSize.value = decoded.size;
+            } else if (decoded.circuit === 'flotacion') {
+              if (selectRoleFlot) selectRoleFlot.value = decoded.role;
+              if (selectFlotCapacity) selectFlotCapacity.value = decoded.size;
+            } else if (decoded.circuit === 'filtracion') {
+              if (selectRoleFilt) selectRoleFilt.value = decoded.role;
+              if (selectFiltCapacity) selectFiltCapacity.value = decoded.size;
+            }
+            if (inputDetails) {
+              if (decoded.atomic_code) {
+                inputDetails.value = (isEs ? 'Refacción específica ' : 'Specific spare ') + decoded.atomic_code + ' (' + decoded.atomic_label + ') - ' + decoded.atomic_metallurgy + '. Verificación dimensional 1:1 en banco Durango.';
+              } else {
+                inputDetails.value = 'Configuración según código institucional ' + decoded.code + '. Verificación dimensional 1:1 en banco Durango.';
+              }
+            }
+            if (decoderStatus) {
+              var statusLbl = decoded.atomic_code ? (decoded.atomic_code + ' → ' + decoded.code) : decoded.code;
+              decoderStatus.textContent = isEs ? 'Configuración cargada: ' + statusLbl : 'Configuration loaded: ' + statusLbl;
+              decoderStatus.className = 'decoder-status success';
             }
           }
-        } else if (urlRole && currentCircuit === 'flotacion' && selectRoleFlot) {
-          for (var j = 0; j < selectRoleFlot.options.length; j++) {
-            if (selectRoleFlot.options[j].value === urlRole || selectRoleFlot.options[j].text.toLowerCase().includes(urlRole.toLowerCase())) {
-              selectRoleFlot.selectedIndex = j;
-              break;
+        } else {
+          if (urlCircuit) {
+            setCircuit(urlCircuit);
+          } else if (rawUrlRole) {
+            var rLower = rawUrlRole.toLowerCase();
+            if (rLower.includes('flot') || rLower.includes('celda') || rLower.includes('rotor') || rLower.includes('mecanismo')) {
+              setCircuit('flotacion');
+            } else if (rLower.includes('filt') || rLower.includes('prensa') || rLower.includes('placa') || rLower.includes('tela') || rLower.includes('balanza') || rLower === 'custom') {
+              setCircuit('filtracion');
+            } else {
+              setCircuit('bombeo');
             }
           }
-        } else if (urlRole && currentCircuit === 'filtracion' && selectRoleFilt) {
-          for (var k = 0; k < selectRoleFilt.options.length; k++) {
-            if (selectRoleFilt.options[k].value === urlRole || selectRoleFilt.options[k].text.toLowerCase().includes(urlRole.toLowerCase())) {
-              selectRoleFilt.selectedIndex = k;
-              break;
+
+          if (urlRole && currentCircuit === 'bombeo' && selectRole) {
+            for (var i = 0; i < selectRole.options.length; i++) {
+              if (selectRole.options[i].value === urlRole || selectRole.options[i].text.toLowerCase().includes(urlRole.toLowerCase())) {
+                selectRole.selectedIndex = i;
+                break;
+              }
+            }
+          } else if (urlRole && currentCircuit === 'flotacion' && selectRoleFlot) {
+            for (var j = 0; j < selectRoleFlot.options.length; j++) {
+              if (selectRoleFlot.options[j].value === urlRole || selectRoleFlot.options[j].text.toLowerCase().includes(urlRole.toLowerCase())) {
+                selectRoleFlot.selectedIndex = j;
+                break;
+              }
+            }
+          } else if (urlRole && currentCircuit === 'filtracion' && selectRoleFilt) {
+            for (var k = 0; k < selectRoleFilt.options.length; k++) {
+              if (selectRoleFilt.options[k].value === urlRole || selectRoleFilt.options[k].text.toLowerCase().includes(urlRole.toLowerCase())) {
+                selectRoleFilt.selectedIndex = k;
+                break;
+              }
             }
           }
         }
@@ -5151,11 +5447,19 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
           } catch(e) {}
         }
 
-        if (urlSerie && inputDetails) {
+        if (urlSerie && selectPipeSize && currentCircuit === 'bombeo') {
+          var sNorm = urlSerie.toLowerCase();
+          if (sNorm.includes('4x3') || sNorm.includes('3x2')) selectPipeSize.value = '3x2';
+          else if (sNorm.includes('6x4')) selectPipeSize.value = '6x4';
+          else if (sNorm.includes('8x6')) selectPipeSize.value = '8x6';
+          else if (sNorm.includes('10x8')) selectPipeSize.value = '10x8';
+        }
+
+        if (urlSerie && inputDetails && !urlCodigo) {
           inputDetails.value = 'Requerimiento ' + urlSerie + ' - Verificación dimensional 1:1 en banco Durango';
         }
 
-        if ((urlSintoma || urlFalla) && inputDetails && !urlSerie) {
+        if ((urlSintoma || urlFalla) && inputDetails && !urlSerie && !urlCodigo) {
           var desc = urlSintoma || urlFalla.replace(/_/g, ' ');
           inputDetails.value = 'Reemplazo prioritario por ' + desc + ' detectado en diagnóstico de planta';
         }
@@ -5170,6 +5474,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
           btnOpex?.click();
         }
 
+        runSlurryCalculation();
         updateRoleCriteriaBar();
         updateDossier();
 

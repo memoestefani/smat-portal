@@ -1,9 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import Header from '../../../components/Header.astro';
-import Footer from '../../../components/Footer.astro';
 import SharePurchasing from '../../../components/SharePurchasing.astro';
-import WhatsAppButton from '../../../components/WhatsAppButton.astro';
 import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
 ---
 
@@ -15,8 +12,6 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
   alternateEsPath="/flotacion/mecanismos/"
   alternateEnPath="/en/flotation/mechanisms/"
 >
-  <Header slot="header" lang="en" currentPath="/en/flotation/mechanisms/" alternatePath="/flotacion/mecanismos/" />
-
   <section class="page-hero">
     <div class="container text-center">
       <span class="badge badge-emergency">FLOTATION SPARES • POLYURETHANE & RUBBER</span>
@@ -68,6 +63,8 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
           series="Compatibility with 50 to 300 ft³ cells"
           metallurgy="Reagent-Resistant Polyurethane / Natural Rubber"
           specs="Impeller and diffuser with steel core and elastomer coating resistant to slurry abrasion and collector chemical attack."
+          roleId="rotor_estator"
+          circuit="flotacion"
           lang="en"
         />
 
@@ -89,9 +86,6 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
       </div>
     </div>
   </section>
-
-  <WhatsAppButton lang="en" />
-  <Footer slot="footer" lang="en" />
 </BaseLayout>
 
 <style>

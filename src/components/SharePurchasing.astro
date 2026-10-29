@@ -1,110 +1,148 @@
 ---
+import { generateSmatPartCode } from '../scripts/workbenchBus.js';
+
 interface Props {
   roleTitle: string;
   specs: string;
   metallurgy?: string;
   series?: string;
+  roleId?: string;
+  circuit?: 'bombeo' | 'flotacion' | 'filtracion';
   lang?: 'es' | 'en';
 }
 
-const { roleTitle, specs, metallurgy = 'High Chrome 27% (A05) / Caucho Natural', series = 'Estándar Industrial', lang = 'es' } = Astro.props;
+const {
+  roleTitle,
+  specs,
+  metallurgy = 'High Chrome 27% (A05) / Caucho Natural',
+  series = 'Estándar Industrial',
+  roleId = 'kit_wet_end',
+  circuit = 'bombeo',
+  lang = 'es'
+} = Astro.props;
 const isEs = lang === 'es';
+const smatCode = generateSmatPartCode({ circuit, role_id: roleId, details: `${roleTitle} ${series}` });
+const acuseHref = isEs
+  ? `/acuse/?equipo=${encodeURIComponent(roleTitle)}&codigo=${encodeURIComponent(smatCode)}&detalle=${encodeURIComponent(`${series} • ${metallurgy} • ${specs}`)}&urgencia=proyecto`
+  : `/en/thank-you/?equipo=${encodeURIComponent(roleTitle)}&codigo=${encodeURIComponent(smatCode)}&detalle=${encodeURIComponent(`${series} • ${metallurgy} • ${specs}`)}&urgencia=proyecto`;
 ---
 
 <div class="share-purchasing-widget">
   <div class="share-box">
     <div class="share-info">
-      <span class="share-badge">{isEs ? 'Requisición de Compras' : 'Procurement Spec'}</span>
+      <span class="share-badge">{isEs ? 'Requisición para Compras / ERP' : 'Procurement & ERP Spec'}</span>
       <p class="share-desc">
         {isEs 
-          ? '¿Necesita enviar la especificación técnica formal a su departamento de compras o adquisiciones?'
-          : 'Need to forward this formal engineering spec to your purchasing department?'}
+          ? 'Copie la especificación técnica en formato SAP/ERP o abra el acuse membretado A4 listo para impresión.'
+          : 'Copy the technical specification in SAP/ERP format or open the printable A4 requisition sheet.'}
       </p>
     </div>
     <div class="share-actions">
       <button 
         type="button" 
-        class="btn btn-secondary btn-sm copy-spec-btn" 
+        class="btn btn-outline btn-sm copy-spec-btn" 
         id="copy-spec-btn"
         data-title={roleTitle}
         data-specs={specs}
         data-metallurgy={metallurgy}
         data-series={series}
+        data-code={smatCode}
+        data-circuit={circuit}
       >
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-        {isEs ? 'Copiar Ficha Limpia' : 'Copy Clean Spec'}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="display:inline-block; vertical-align:middle; margin-right:6px;" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+        {isEs ? 'Copiar Ficha SAP / ERP' : 'Copy SAP / ERP Spec'}
       </button>
       <a 
-        href={isEs ? `/acuse/?equipo=${encodeURIComponent(roleTitle)}&urgencia=proyecto` : `/en/thank-you/?equipo=${encodeURIComponent(roleTitle)}&urgencia=proyecto`} 
-        class="btn btn-outline btn-sm print-view-btn"
+        href={acuseHref} 
+        class="btn btn-primary btn-sm print-view-btn"
       >
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
-        {isEs ? 'Ver Acuse Imprimible' : 'Printable Requisition'}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="display:inline-block; vertical-align:middle; margin-right:6px;" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+        {isEs ? 'Ver Acuse Imprimible A4' : 'Printable A4 Requisition'}
       </a>
     </div>
   </div>
-  <div id="copy-toast" class="copy-toast hidden">
-    ✓ {isEs ? 'Ficha técnica copiada al portapapeles. Lista para pegar en correo o ERP.' : 'Technical specification copied to clipboard.'}
+  <div id="copy-toast" class="copy-toast hidden" role="status" aria-live="polite">
+    ✓ {isEs ? 'Especificación técnica SAP/ERP copiada al portapapeles.' : 'SAP/ERP technical specification copied to clipboard.'}
   </div>
 </div>
 
-<script is:inline>
-  document.getElementById('copy-spec-btn')?.addEventListener('click', function() {
-    const title = this.getAttribute('data-title');
-    const specs = this.getAttribute('data-specs');
-    const metallurgy = this.getAttribute('data-metallurgy');
-    const series = this.getAttribute('data-series');
+<script>
+  import { formatSapPlaintext } from '../scripts/workbenchBus.js';
 
-    const textToCopy = 
-      `ESPECIFICACIÓN TÉCNICA PARA REQUISICIÓN DE COMPRA\n` +
-      `--------------------------------------------------\n` +
-      `Equipo / Componente: ${title}\n` +
-      `Serie / Tamaño: ${series}\n` +
-      `Metalurgia / Material: ${metallurgy}\n` +
-      `Especificación: ${specs}\n` +
-      `Proveedor Sugerido: SMAT Minerals\n` +
-      `Domicilio Fiscal: Mariano Salas #114, Durango, Dgo. CP 34166 | Almacén Central Durango\n` +
-      `Contacto Directo: (618) 810-4408 / ventas@smatminerals.com\n` +
-      `--------------------------------------------------`;
+  function initSharePurchasing() {
+    document.querySelectorAll('.copy-spec-btn').forEach((btn) => {
+      if (btn.getAttribute('data-bound') === 'true') return;
+      btn.setAttribute('data-bound', 'true');
 
-    navigator.clipboard.writeText(textToCopy).then(() => {
-      const toast = document.getElementById('copy-toast');
-      if (toast) {
-        toast.classList.remove('hidden');
-        setTimeout(() => toast.classList.add('hidden'), 3500);
-      }
-      if (typeof window.smatTrack === 'function') {
-        window.smatTrack('rfq_forward_purchasing', { equipment: title });
-      }
+      btn.addEventListener('click', () => {
+        const title = btn.getAttribute('data-title') || 'Equipo Industrial SMAT';
+        const specs = btn.getAttribute('data-specs') || '';
+        const metallurgy = btn.getAttribute('data-metallurgy') || '';
+        const series = btn.getAttribute('data-series') || '';
+        const code = btn.getAttribute('data-code') || 'SMAT-PUMP-6X4-WETKIT';
+        const circuit = btn.getAttribute('data-circuit') || 'bombeo';
+
+        const textToCopy = formatSapPlaintext({
+          part_name: `${title} (${series})`,
+          smat_code: code,
+          circuit,
+          details: `${metallurgy} | ${specs}`
+        });
+
+        navigator.clipboard?.writeText(textToCopy).then(() => {
+          const widget = btn.closest('.share-purchasing-widget');
+          const toast = widget?.querySelector('.copy-toast');
+          if (toast) {
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3500);
+          }
+          if (typeof (window as any).smatTrack === 'function') {
+            (window as any).smatTrack('rfq_forward_purchasing', { equipment: title, smat_code: code });
+          }
+        });
+      });
     });
-  });
+  }
+
+  initSharePurchasing();
+  document.addEventListener('astro:page-load', initSharePurchasing);
 </script>
 
 <style>
   .share-purchasing-widget {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    margin-top: 1.75rem;
+    margin-bottom: 1.75rem;
   }
 
   .share-box {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #121c2e;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: 1.25rem 1.5rem;
-    gap: 1.5rem;
+    background-color: #f8fafc;
+    border: 1px solid var(--smat-border-strong, #cbd5e1);
+    border-left: 4px solid var(--smat-copper-accent, #c25e00);
+    border-radius: var(--smat-radius-md, 8px);
+    padding: 1.15rem 1.4rem;
+    gap: 1.25rem;
     flex-wrap: wrap;
   }
 
   .share-badge {
     display: inline-block;
-    font-size: 0.75rem;
-    font-weight: 700;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #60a5fa;
+    color: var(--smat-copper-accent, #c25e00);
     margin-bottom: 0.25rem;
+  }
+
+  .share-desc {
+    font-size: 0.88rem;
+    color: var(--smat-text-secondary, #475569);
+    margin: 0;
+    line-height: 1.5;
   }
 
   .share-actions {
@@ -113,40 +151,15 @@ const isEs = lang === 'es';
     flex-wrap: wrap;
   }
 
-  .print-view-btn {
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #e2e8f0;
-    padding: 0.5rem 0.85rem;
-    border-radius: var(--radius-md);
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
-  }
-
-  .print-view-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-    border-color: #38bdf8;
-  }
-
-  .share-desc {
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
-    margin: 0;
-  }
-
   .copy-toast {
-    background-color: #14532d;
-    color: #86efac;
-    border: 1px solid #166534;
-    padding: 0.75rem 1rem;
-    border-radius: var(--radius-sm);
-    margin-top: 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 600;
+    background-color: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    padding: 0.65rem 1rem;
+    border-radius: var(--smat-radius-sm, 6px);
+    margin-top: 0.65rem;
+    font-size: 0.84rem;
+    font-weight: 700;
   }
 
   .copy-toast.hidden {

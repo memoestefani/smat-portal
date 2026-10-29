@@ -2,10 +2,7 @@
 // src/pages/garantia.astro
 // Decisión 2-B: Pacto de Certeza Técnica y Garantía Comercial en Patio Durango
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
 import TrustMatrix from '../components/TrustMatrix.astro';
-import WhatsAppButton from '../components/WhatsAppButton.astro';
 ---
 
 <BaseLayout 
@@ -16,8 +13,6 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
   alternateEsPath="/garantia/"
   alternateEnPath="/en/warranty/"
 >
-  <Header slot="header" lang="es" currentPath="/garantia/" alternatePath="/en/warranty/" />
-
   <main class="trust-page-main">
     <div class="container">
       <div class="page-header">
@@ -65,9 +60,6 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
       </div>
     </div>
   </main>
-
-  <WhatsAppButton lang="es" />
-  <Footer slot="footer" lang="es" />
 </BaseLayout>
 
 <style>

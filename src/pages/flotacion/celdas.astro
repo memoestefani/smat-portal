@@ -1,9 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
 import SharePurchasing from '../../components/SharePurchasing.astro';
-import WhatsAppButton from '../../components/WhatsAppButton.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
 ---
 
@@ -15,8 +12,6 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
   alternateEsPath="/flotacion/celdas/"
   alternateEnPath="/en/flotation/cells/"
 >
-  <Header slot="header" lang="es" currentPath="/flotacion/celdas/" alternatePath="/en/flotation/cells/" />
-
   <section class="page-hero">
     <div class="container text-center">
       <span class="badge badge-capex">CIRCUITO DE CONCENTRACIÓN • 50 A 300 FT³</span>
@@ -72,6 +67,8 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
           series="Capacidades de 50 a 300 ft³ (1.4 a 8.5 m³)"
           metallurgy="Acero Estructural A36, Impulsor y Difusor en Poliuretano / Hule"
           specs="Mecanismo suspendido completo con cabezal de rodamientos, eje de aireación, tubo de tiro e impulsor-difusor."
+          roleId="celda_flotacion"
+          circuit="flotacion"
           lang="es"
         />
 
@@ -94,9 +91,6 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
       </div>
     </div>
   </section>
-
-  <WhatsAppButton lang="es" />
-  <Footer slot="footer" lang="es" />
 </BaseLayout>
 
 <style>

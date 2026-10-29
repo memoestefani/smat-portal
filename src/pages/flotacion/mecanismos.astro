@@ -1,9 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
 import SharePurchasing from '../../components/SharePurchasing.astro';
-import WhatsAppButton from '../../components/WhatsAppButton.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
 ---
 
@@ -15,8 +12,6 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
   alternateEsPath="/flotacion/mecanismos/"
   alternateEnPath="/en/flotation/mechanisms/"
 >
-  <Header slot="header" lang="es" currentPath="/flotacion/mecanismos/" alternatePath="/en/flotation/mechanisms/" />
-
   <section class="page-hero">
     <div class="container text-center">
       <span class="badge badge-emergency">REFACCIONES DE FLOTACIÓN • POLIURETANO Y HULE</span>
@@ -68,6 +63,8 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
           series="Compatibilidad con celdas de 50 a 300 ft³"
           metallurgy="Poliuretano Resistente a Reactivos de Flotación / Hule Natural"
           specs="Impulsor y difusor con alma de acero y recubrimiento resistente a la abrasión de pulpa y ataque químico de colectores."
+          roleId="rotor_estator"
+          circuit="flotacion"
           lang="es"
         />
 
@@ -90,9 +87,6 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
       </div>
     </div>
   </section>
-
-  <WhatsAppButton lang="es" />
-  <Footer slot="footer" lang="es" />
 </BaseLayout>
 
 <style>

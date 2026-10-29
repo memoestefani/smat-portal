@@ -1,9 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
 import SharePurchasing from '../../components/SharePurchasing.astro';
-import WhatsAppButton from '../../components/WhatsAppButton.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
 ---
 
@@ -15,8 +12,6 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
   alternateEsPath="/filtracion/repuestos/"
   alternateEnPath="/en/filtration/parts/"
 >
-  <Header slot="header" lang="es" currentPath="/filtracion/repuestos/" alternatePath="/en/filtration/parts/" />
-
   <section class="page-hero">
     <div class="container text-center">
       <span class="badge badge-emergency">CÁMARA EMPOTRADA • 800 MM A 1500 MM</span>
@@ -68,6 +63,8 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
           series="Cámara empotrada de 800 mm a 1500 mm"
           metallurgy="Polipropileno Virgen Copolímero y Fieltro Agujado"
           specs="Telas filtrantes cortadas por láser con sellado perimetral térmico y placas de polipropileno de alta resistencia química."
+          roleId="placas_telas"
+          circuit="filtracion"
           lang="es"
         />
 
@@ -90,9 +87,6 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
       </div>
     </div>
   </section>
-
-  <WhatsAppButton lang="es" />
-  <Footer slot="footer" lang="es" />
 </BaseLayout>
 
 <style>

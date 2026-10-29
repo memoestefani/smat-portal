@@ -351,30 +351,24 @@ const perspectives = [
 </style>
 
 <script>
-  import { publishWorkbenchUpdate } from '../scripts/workbenchBus.js';
+  import { publishWorkbenchUpdate, subscribeWorkbenchUpdate } from '../scripts/workbenchBus.js';
 
   function setupPerspectiveSelector() {
     const roleButtons = document.querySelectorAll('.role-btn');
     const cards = document.querySelectorAll('.perspective-card');
 
-    roleButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetId = btn.getAttribute('data-role-target');
+    function activatePerspective(targetId: string, emit = false) {
+      if (!targetId) return;
+      roleButtons.forEach(b => {
+        const isMatch = b.getAttribute('data-role-target') === targetId;
+        b.classList.toggle('active', isMatch);
+        b.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+      });
+      cards.forEach(c => {
+        c.classList.toggle('active', c.id === `perspective-card-${targetId}`);
+      });
 
-        roleButtons.forEach(b => {
-          b.classList.remove('active');
-          b.setAttribute('aria-selected', 'false');
-        });
-        cards.forEach(c => c.classList.remove('active'));
-
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
-
-        const targetCard = document.getElementById(`perspective-card-${targetId}`);
-        if (targetCard) {
-          targetCard.classList.add('active');
-        }
-
+      if (emit) {
         try {
           window.dispatchEvent(new CustomEvent('smat:mission', { detail: { mission: targetId } }));
           publishWorkbenchUpdate({
@@ -383,8 +377,26 @@ const perspectives = [
             preset: targetId === 'paro_urgente' ? 'emergency_6x4' : (targetId === 'desgaste_proceso' ? 'sag_primary' : ''),
             source: 'PerspectiveSelector'
           });
-        } catch (err) {}
+        } catch (_err) {}
+      }
+    }
+
+    roleButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-role-target') || '';
+        activatePerspective(targetId, true);
       });
+    });
+
+    subscribeWorkbenchUpdate((detail: any) => {
+      if (!detail || detail.source === 'PerspectiveSelector') return;
+      if (detail.mission === 'equipos' || detail.intent === 'capex' || detail.mission === 'requisicion_capex') {
+        activatePerspective('requisicion_capex', false);
+      } else if (detail.mission === 'desgaste_proceso') {
+        activatePerspective('desgaste_proceso', false);
+      } else if (detail.mission === 'refacciones' || detail.intent === 'opex' || detail.mission === 'paro_urgente') {
+        activatePerspective('paro_urgente', false);
+      }
     });
   }
 

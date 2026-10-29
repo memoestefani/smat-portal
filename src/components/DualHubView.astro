@@ -47,6 +47,22 @@ const verticals = rolesData.verticals;
           </button>
         </div>
       </div>
+
+      <!-- Filtro de Circuito Reactivo (Decisión 5-B) -->
+      <div class="circuit-filter-bar" role="group" aria-label={isEs ? 'Filtrar roles por circuito de planta' : 'Filter roles by plant circuit'}>
+        <button type="button" class="circuit-filter-pill active" data-circuit-filter="all">
+          {isEs ? 'Todos los Circuitos (9)' : 'All Circuits (9)'}
+        </button>
+        <button type="button" class="circuit-filter-pill" data-circuit-filter="bombeo">
+          {isEs ? 'Bombeo de Lodos (5)' : 'Slurry Pumping (5)'}
+        </button>
+        <button type="button" class="circuit-filter-pill" data-circuit-filter="flotacion">
+          {isEs ? 'Flotación Polimetálica (2)' : 'Polymetallic Flotation (2)'}
+        </button>
+        <button type="button" class="circuit-filter-pill" data-circuit-filter="filtracion">
+          {isEs ? 'Jales y Filtración (2)' : 'Tailings & Filtration (2)'}
+        </button>
+      </div>
     </div>
 
     <!-- Contenedor Refacciones / OpEx (Visible por defecto) -->
@@ -176,35 +192,86 @@ const verticals = rolesData.verticals;
 </section>
 
 <script>
-  import { publishWorkbenchUpdate } from '../scripts/workbenchBus.js';
+  import { publishWorkbenchUpdate, subscribeWorkbenchUpdate } from '../scripts/workbenchBus.js';
 
   function initDualHubView() {
     const btnCapex = document.getElementById('tab-capex');
     const btnOpex = document.getElementById('tab-opex');
     const viewCapex = document.getElementById('view-capex');
     const viewOpex = document.getElementById('view-opex');
+    const filterPills = document.querySelectorAll('.circuit-filter-pill');
+    const allCards = document.querySelectorAll('.dual-hub-section .product-card');
 
-    if (btnCapex && btnOpex && viewCapex && viewOpex) {
-      btnCapex.addEventListener('click', () => {
+    function setIntentTab(intent: 'opex' | 'capex', emit = false) {
+      if (!btnCapex || !btnOpex || !viewCapex || !viewOpex) return;
+      if (intent === 'capex') {
         btnCapex.classList.add('active');
         btnCapex.setAttribute('aria-selected', 'true');
         btnOpex.classList.remove('active');
         btnOpex.setAttribute('aria-selected', 'false');
-
         viewCapex.classList.remove('hidden');
         viewOpex.classList.add('hidden');
-      });
-
-      btnOpex.addEventListener('click', () => {
+      } else {
         btnOpex.classList.add('active');
         btnOpex.setAttribute('aria-selected', 'true');
         btnCapex.classList.remove('active');
         btnCapex.setAttribute('aria-selected', 'false');
-
         viewOpex.classList.remove('hidden');
         viewCapex.classList.add('hidden');
+      }
+      if (emit) {
+        publishWorkbenchUpdate({
+          intent,
+          mission: intent === 'capex' ? 'equipos' : 'refacciones',
+          source: 'DualHubView'
+        });
+      }
+    }
+
+    function applyCircuitFilter(circuitId: string) {
+      filterPills.forEach((pill) => {
+        const val = pill.getAttribute('data-circuit-filter') || 'all';
+        pill.classList.toggle('active', val === circuitId);
+      });
+      allCards.forEach((card) => {
+        const cardCircuit = card.getAttribute('data-circuit-id') || '';
+        const show = circuitId === 'all' || cardCircuit === circuitId;
+        (card as HTMLElement).style.display = show ? '' : 'none';
       });
     }
+
+    if (btnCapex && btnOpex) {
+      btnCapex.addEventListener('click', () => setIntentTab('capex', true));
+      btnOpex.addEventListener('click', () => setIntentTab('opex', true));
+    }
+
+    filterPills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        const filterVal = pill.getAttribute('data-circuit-filter') || 'all';
+        applyCircuitFilter(filterVal);
+        if (filterVal !== 'all') {
+          publishWorkbenchUpdate({ circuit: filterVal, source: 'DualHubView' });
+        }
+      });
+    });
+
+    subscribeWorkbenchUpdate((detail: any) => {
+      if (!detail || detail.source === 'DualHubView') return;
+      if (detail.intent === 'capex' || detail.mission === 'equipos' || detail.mission === 'requisicion_capex') {
+        setIntentTab('capex', false);
+      } else if (detail.intent === 'opex' || detail.mission === 'refacciones' || detail.mission === 'paro_urgente' || detail.mission === 'desgaste_proceso') {
+        setIntentTab('opex', false);
+      }
+      if (detail.circuit && ['bombeo', 'flotacion', 'filtracion'].includes(detail.circuit)) {
+        applyCircuitFilter(detail.circuit);
+      }
+      if (detail.role) {
+        allCards.forEach((card) => {
+          const isMatch = card.getAttribute('data-role-id') === detail.role;
+          card.classList.toggle('role-card-highlighted', isMatch);
+        });
+      }
+    });
 
     document.querySelectorAll('.dual-hub-quote-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
@@ -291,6 +358,42 @@ const verticals = rolesData.verticals;
     background: #ffffff;
     color: var(--smat-text-primary);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .circuit-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.45rem;
+    margin-top: 0.9rem;
+  }
+
+  .circuit-filter-pill {
+    padding: 0.38rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #475569;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .circuit-filter-pill:hover {
+    border-color: #94a3b8;
+    color: #0f172a;
+  }
+
+  .circuit-filter-pill.active {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+  }
+
+  .product-card.role-card-highlighted {
+    border-color: #b45309;
+    box-shadow: 0 0 0 2px rgba(180, 83, 9, 0.2);
   }
 
   .catalog-grid {

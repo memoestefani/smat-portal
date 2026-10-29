@@ -98,6 +98,24 @@ const isEn = lang === 'en';
     </div>
   ) : (
     <div class="smat-extended-trust-sections">
+      <!-- 4 Pilares Oficiales de Inspección y Logística en Almacén Durango (data/trust.json pillars) -->
+      <div class="smat-pillars-panel">
+        <h4 class="smat-subpanel-title">
+          {isEn ? trustData.title_en : trustData.title_es}
+        </h4>
+        <p class="smat-subpanel-lead">
+          {isEn ? trustData.subtitle_en : trustData.subtitle_es}
+        </p>
+        <div class="smat-charter-cards">
+          {trustData.pillars.map((pillar) => (
+            <div class="smat-pillar-item" data-pillar-id={pillar.id}>
+              <strong>{isEn ? pillar.title_en : pillar.title_es}</strong>
+              <p>{isEn ? pillar.description_en : pillar.description_es}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <!-- Matriz Comparativa de Alcance SMAT Durango vs Fundición (data/trust.json matrix) -->
       <div class="smat-scope-comparison-panel">
         <h4 class="smat-subpanel-title">
@@ -306,6 +324,46 @@ const isEn = lang === 'en';
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+  }
+
+  .smat-pillars-panel {
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-md);
+    padding: 1.5rem;
+  }
+
+  .smat-charter-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .smat-charter-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .smat-pillar-item {
+    background: #f8fafc;
+    border: 1px solid var(--smat-border-light);
+    border-radius: 6px;
+    padding: 1rem;
+  }
+
+  .smat-pillar-item strong {
+    display: block;
+    font-size: 0.86rem;
+    color: var(--smat-text-primary);
+    margin-bottom: 0.35rem;
+  }
+
+  .smat-pillar-item p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.45;
   }
 
   .smat-scope-comparison-panel {

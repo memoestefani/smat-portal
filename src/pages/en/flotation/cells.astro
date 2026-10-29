@@ -1,9 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import Header from '../../../components/Header.astro';
-import Footer from '../../../components/Footer.astro';
 import SharePurchasing from '../../../components/SharePurchasing.astro';
-import WhatsAppButton from '../../../components/WhatsAppButton.astro';
 import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
 ---
 
@@ -15,8 +12,6 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
   alternateEsPath="/flotacion/celdas/"
   alternateEnPath="/en/flotation/cells/"
 >
-  <Header slot="header" lang="en" currentPath="/en/flotation/cells/" alternatePath="/flotacion/celdas/" />
-
   <section class="page-hero">
     <div class="container text-center">
       <span class="badge badge-capex">CONCENTRATION CIRCUIT • 50 TO 300 FT³</span>
@@ -72,6 +67,8 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
           series="Capacities from 50 to 300 ft³ (1.4 to 8.5 m³)"
           metallurgy="A36 Structural Steel, Polyurethane / Rubber Impeller & Diffuser"
           specs="Complete suspended mechanism with bearing housing, hollow aeration shaft, standpipe, and impeller-diffuser."
+          roleId="celda_flotacion"
+          circuit="flotacion"
           lang="en"
         />
 
@@ -93,9 +90,6 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
       </div>
     </div>
   </section>
-
-  <WhatsAppButton lang="en" />
-  <Footer slot="footer" lang="en" />
 </BaseLayout>
 
 <style>

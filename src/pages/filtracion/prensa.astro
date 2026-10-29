@@ -1,9 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
 import SharePurchasing from '../../components/SharePurchasing.astro';
-import WhatsAppButton from '../../components/WhatsAppButton.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
 ---
 
@@ -15,8 +12,6 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
   alternateEsPath="/filtracion/prensa/"
   alternateEnPath="/en/filtration/press/"
 >
-  <Header slot="header" lang="es" currentPath="/filtracion/prensa/" alternatePath="/en/filtration/press/" />
-
   <section class="page-hero">
     <div class="container text-center">
       <span class="badge badge-capex">EQUIPOS DE FILTRACIÓN • 800 A 1500 MM</span>
@@ -72,6 +67,8 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
           series="Placas de 800x800 a 1500x1500 mm (Presión hasta 16 bar)"
           metallurgy="Vigas de Acero Estructural Pesado, Placas de Polipropileno Virgen"
           specs="Filtro prensa con cilindro de cierre hidráulico, paquete de placas de polipropileno y telas filtrantes."
+          roleId="filtro_prensa"
+          circuit="filtracion"
           lang="es"
         />
 
@@ -94,9 +91,6 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
       </div>
     </div>
   </section>
-
-  <WhatsAppButton lang="es" />
-  <Footer slot="footer" lang="es" />
 </BaseLayout>
 
 <style>

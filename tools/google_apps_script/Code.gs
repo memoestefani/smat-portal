@@ -1,7 +1,7 @@
 /**
  * SMAT MINERALS - Google Apps Script Lead Intake Webhook
  * Archivo: tools/google_apps_script/Code.gs
- * Versión: 2.0 (GOLD-131 / GOLD-140 / Decisión 8-A)
+ * Versión: 3.0 (Pipeline Transaccional Completo + Memoria Hidráulica Durand + TCO + Piezas Atómicas)
  * 
  * Instrucciones de Despliegue en Google Workspace:
  * 1. Cree una Google Sheet con nombre "SMAT_LEADS_OPERACION" en su Google Drive.
@@ -11,7 +11,7 @@
  * 5. Tipo: "Aplicación web".
  * 6. Ejecutar como: "Yo (propietario de la cuenta)".
  * 7. Quién tiene acceso: "Cualquier persona" (permite a Cloudflare Pages hacer fetch POST).
- * 8. Copie la URL del Webhook generada.
+ * 8. Copie la URL del Webhook generada y configúrela en PUBLIC_LEAD_WEBHOOK_URL.
  */
 
 function doPost(e) {
@@ -56,6 +56,13 @@ function doPost(e) {
         "telefono",
         "correo",
         "equipo_solicitado",
+        "codigo_smat",
+        "codigo_pieza_atomica",
+        "referencia_cliente",
+        "medidas_flexometro",
+        "perfil_pulpa_mina",
+        "memoria_hidraulica_durand",
+        "proyeccion_tco",
         "detalles_pulpa",
         "destino_entrega",
         "canal_origen",
@@ -75,6 +82,13 @@ function doPost(e) {
     var telefono = params.telefono || params.phone_number || "";
     var correo = params.correo || params.email_address || "";
     var equipo = params.equipo || params.role_id || "";
+    var codigoSmat = params.codigo || params.smat_code || "";
+    var codigoAtomico = params.atomic_code || params.pieza || "";
+    var refCliente = params.referencia_cliente || params.client_reference || "";
+    var medidasFlex = params.medidas_flexometro || params.medidas || "";
+    var perfilPulpa = params.perfil_pulpa || params.pulp_profile || "";
+    var memoriaHidraulica = params.memoria_hidraulica || params.hidraulica || "";
+    var tcoResumen = params.tco_resumen || params.tco || "";
     var detalles = params.detalles || params.spec_details || "";
     var destino = params.destino || params.destination || "Durango";
     var canal = params.canal || "web_quote_wizard";
@@ -90,6 +104,13 @@ function doPost(e) {
       telefono,
       correo,
       equipo,
+      codigoSmat,
+      codigoAtomico,
+      refCliente,
+      medidasFlex,
+      perfilPulpa,
+      memoriaHidraulica,
+      tcoResumen,
       detalles,
       destino,
       canal,
@@ -105,17 +126,24 @@ function doPost(e) {
       "NUEVA SOLICITUD RECIBIDA EN SMATMINERALS.COM\n" +
       "--------------------------------------------------\n" +
       "Folio Formal: " + folio + "\n" +
-      "Prioridad: " + (urgencia === "paro" ? "🚨 PARO DE PLANTA / PRIORIDAD" : "🏭 PROYECTO CAPEX") + "\n" +
+      "Código SMAT: " + codigoSmat + (codigoAtomico ? " (Refacción: " + codigoAtomico + ")" : "") + "\n" +
+      "Prioridad: " + (urgencia === "paro" ? "🚨 PARO DE PLANTA / PRIORIDAD" : "🏭 PROYECTO DE EQUIPAMIENTO") + "\n" +
+      "Canal de Salida: " + canal + "\n" +
       "Fecha: " + createdAt + "\n\n" +
       "DATOS DEL CONTACTO:\n" +
       "Nombre: " + nombre + "\n" +
       "Mina / Empresa: " + empresa + "\n" +
+      (perfilPulpa ? "Perfil Mineral Detectado: " + perfilPulpa + "\n" : "") +
       "Teléfono / WhatsApp: " + telefono + "\n" +
       "Correo: " + correo + "\n" +
       "Destino: " + destino + "\n\n" +
-      "ESPECIFICACIÓN:\n" +
+      "ESPECIFICACIÓN E INGENIERÍA:\n" +
       "Línea / Equipo: " + equipo + "\n" +
-      "Detalles de Pulpa: " + detalles + "\n\n" +
+      (refCliente ? "Referencia Interna Cliente: " + refCliente + "\n" : "") +
+      (medidasFlex ? "Medidas de Campo (Flexómetro): " + medidasFlex + "\n" : "") +
+      (memoriaHidraulica ? "Memoria Hidráulica Durand: " + memoriaHidraulica + "\n" : "") +
+      (tcoResumen ? "Proyección TCO / Continuidad: " + tcoResumen + "\n" : "") +
+      "Detalles de Operación: " + detalles + "\n\n" +
       "--------------------------------------------------\n" +
       "Ver Fila en Google Sheets:\n" + sheetUrl + "\n";
 

@@ -2,9 +2,6 @@
 // src/pages/en/catalog/[code].astro
 // Decisión 4-B: Atomic Universal Spare Part Technical Sheet with Anti-Scraping Guard
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import Header from '../../../components/Header.astro';
-import Footer from '../../../components/Footer.astro';
-import WhatsAppButton from '../../../components/WhatsAppButton.astro';
 import atomicParts from '../../../../data/atomic_parts.json';
 
 export function getStaticPaths() {
@@ -60,8 +57,6 @@ const productSchema = {
   alternateEsPath={alternateEsPath}
   alternateEnPath={canonicalPath}
 >
-  <Header slot="header" lang="en" currentPath={canonicalPath} alternatePath={alternateEsPath} />
-
   <main class="part-page-main">
     <div class="container">
       
@@ -183,7 +178,7 @@ const productSchema = {
               </div>
               <div class="fact-item">
                 <span class="fact-label">Tax Compliance:</span>
-                <span class="fact-val">Local Mexican CFDI / OPEX billing</span>
+                <span class="fact-val">Direct Domestic Tax Invoice (CFDI 4.0)</span>
               </div>
             </div>
           </div>
@@ -194,9 +189,6 @@ const productSchema = {
   </main>
 
   <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
-
-  <WhatsAppButton lang="en" />
-  <Footer slot="footer" lang="en" />
 </BaseLayout>
 
 <style>
