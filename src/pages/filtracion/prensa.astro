@@ -4,11 +4,12 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import SharePurchasing from '../../components/SharePurchasing.astro';
 import WhatsAppButton from '../../components/WhatsAppButton.astro';
+import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
 ---
 
 <BaseLayout 
-  title="Filtros Prensa para Jales Secos y Concentrados | SMAT Minerals"
-  description="Filtros prensa hidráulicos de alta presión (hasta 16 bar) para desaguado de jales mineros (dry tailings) y filtración de concentrados. Durango, México."
+  title="Filtros Prensa | SMAT Minerals"
+  description="Filtros prensa hidráulicos (hasta 16 bar) para filtración de concentrados y jales secos (dry tailings) con placas de 800 a 1500 mm. Durango, México."
   lang="es"
   canonicalPath="/filtracion/prensa/"
   alternateEsPath="/filtracion/prensa/"
@@ -18,25 +19,28 @@ import WhatsAppButton from '../../components/WhatsAppButton.astro';
 
   <section class="page-hero">
     <div class="container text-center">
-      <span class="badge badge-capex">CAPEX • PROYECTOS BAJO ESPECIFICACIÓN</span>
-      <h1>Filtros Prensa Hidráulicos para Jales Secos</h1>
-      <p class="subtitle">Sistemas de desaguado de alto tonelaje para disposición sustentable de jales (dry tailings).</p>
+      <span class="badge badge-capex">EQUIPOS DE FILTRACIÓN • 800 A 1500 MM</span>
+      <h1>Filtros Prensa</h1>
+      <p class="subtitle">Equipos hidráulicos de filtración para concentrados minerales y deshidratación de jales (dry tailings).</p>
     </div>
   </section>
 
   <section class="section-spacing">
     <div class="container content-container">
       <div class="card detail-card">
-        <h2>Desaguado Mecánico para Estabilidad de Presas de Jales</h2>
+        <div style="margin-bottom: 1.75rem;">
+          <TechnicalDiagrams type="filter" lang="es" />
+        </div>
+        <h2>Especificaciones del Filtro Prensa</h2>
         <p>
-          La gestión moderna de residuos mineros exige la transición hacia el depósito de jales secos para mitigar riesgos de falla de presas y maximizar la recuperación de agua de proceso. Los filtros prensa hidráulicos SMAT Minerals proporcionan tortas de filtración con humedades residuales del 12% al 16%, permitiendo el apilamiento en seco seguro y compactable.
+          Los filtros prensa SMAT Minerals están diseñados para obtener tortas de filtración con humedades residuales del 12% al 16%, facilitando el manejo de concentrados y la recuperación de agua de proceso.
         </p>
 
         <table class="tech-table">
           <thead>
             <tr>
               <th>Parámetro de Diseño</th>
-              <th>Especificación de Proyecto SMAT</th>
+              <th>Especificación Técnica SMAT</th>
             </tr>
           </thead>
           <tbody>
@@ -54,36 +58,36 @@ import WhatsAppButton from '../../components/WhatsAppButton.astro';
             </tr>
             <tr>
               <td>Apertura y Descarga</td>
-              <td>Sistema de apertura automática de placas por carro transfer o apertura sincronizada en bloque</td>
+              <td>Sistema de apertura automática de placas por carro transfer o apertura en bloque</td>
             </tr>
             <tr>
-              <td>Automatización</td>
-              <td>Gabinete de control PLC con pantalla HMI táctil para ciclos de llenado, prensado y soplado de torta</td>
+              <td>Control</td>
+              <td>Gabinete de control PLC para ciclos de llenado, prensado y soplado de torta</td>
             </tr>
           </tbody>
         </table>
 
         <SharePurchasing 
-          roleTitle="Filtro Prensa Hidráulico para Jales Secos"
+          roleTitle="Filtro Prensa"
           series="Placas de 800x800 a 1500x1500 mm (Presión hasta 16 bar)"
           metallurgy="Vigas de Acero Estructural Pesado, Placas de Polipropileno Virgen"
-          specs="Filtro prensa para desaguado de jales con cilindro de cierre hidráulico, colector de filtrado y ciclo automático por PLC."
+          specs="Filtro prensa con cilindro de cierre hidráulico, paquete de placas de polipropileno y telas filtrantes."
           lang="es"
         />
 
         <div class="cta-rfq-box">
           <div class="cta-rfq-header">
-            <span class="badge badge-copper">COTIZACIÓN INSTANTÁNEA EN ALMACÉN DURANGO</span>
-            <h3>¿Requiere filtros prensa para desaguado de concentrados o jales?</h3>
-            <p>Configure su proyecto en la consola central para recibir propuesta técnico-económica con dimensionamiento preliminar.</p>
+            <span class="badge badge-copper">ATENCIÓN TÉCNICA EN DURANGO</span>
+            <h3>¿Requiere cotizar un filtro prensa para concentrados o jales?</h3>
+            <p>Solicite su cotización indicando tamaño de placa o tonelaje por turno.</p>
           </div>
           <div class="cta-rfq-actions">
             <a href="/?equipo=filtro_prensa#rfq" class="btn btn-primary btn-lg">
-              Cotizar Filtro Prensa en Consola Central →
+              Solicitar Cotización →
             </a>
             <a href="https://wa.me/526183670664?text=Hola%20SMAT%20Minerals,%20requiero%20cotizar%20Filtro%20Prensa" target="_blank" rel="noopener noreferrer" class="btn btn-emergency btn-lg">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-              Consultar Proyecto por WhatsApp
+              Cotizar por WhatsApp
             </a>
           </div>
         </div>

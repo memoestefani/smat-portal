@@ -1,206 +1,88 @@
 ---
+// src/pages/en/pumping/skid.astro
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import Header from '../../../components/Header.astro';
-import Footer from '../../../components/Footer.astro';
-import SharePurchasing from '../../../components/SharePurchasing.astro';
-import WhatsAppButton from '../../../components/WhatsAppButton.astro';
+import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
 ---
 
 <BaseLayout 
-  title="Complete Slurry Pump Skid Packages | SMAT Minerals"
-  description="Turnkey skid-mounted slurry pump packages built on heavy structural C-channel with TEFC motor, calculated V-belt transmission, and safety guards. Durango, Mexico."
+  title="Slurry Pumps | SMAT Minerals"
+  description="Horizontal centrifugal slurry pumps for abrasive and corrosive slurries in grinding, classification, flotation, and tailings."
   lang="en"
-  canonicalPath="/en/pumping/skid/"
-  alternateEsPath="/bombeo/skid/"
-  alternateEnPath="/en/pumping/skid/"
 >
-  <Header slot="header" lang="en" currentPath="/en/pumping/skid/" alternatePath="/bombeo/skid/" />
-
   <section class="page-hero">
-    <div class="container text-center">
-      <span class="badge badge-capex">CAPEX • COMPLETE PACKAGE</span>
-      <h1>Complete Slurry Pump Skid Package</h1>
-      <p class="subtitle">Turnkey severe solids transport solutions from 4x3 to 10x8 frames.</p>
+    <div class="container">
+      <a href="/en/pumping/" class="back-link">← Back to Slurry Pumps</a>
+      <div style="margin-top: 1rem;">
+        <span class="badge badge-copper">COMPLETE PUMP</span>
+      </div>
+      <h1>Slurry Pumps</h1>
+      <p style="font-size: 1.08rem; max-width: 700px; color: var(--smat-text-secondary);">
+        Heavy-duty horizontal centrifugal slurry pumps for mill discharge, hydrocyclone feed, flotation circuits, and tailings disposal.
+      </p>
     </div>
   </section>
 
-  <section class="section-spacing">
-    <div class="container content-container">
-      <div class="card detail-card">
-        <h2>Application Engineering & Structural Rigidity</h2>
-        <p>
-          SMAT Minerals integrated pump packages are manufactured upon a heavy-duty ASTM A36 structural C-channel base with strict leveling tolerances. This eliminates angular and parallel misalignments caused by torsional deflection during high-inertia slurry start-up cycles.
-        </p>
+  <section class="section">
+    <div class="container">
+      <TechnicalDiagrams diagram="pump" lang="en" />
 
-        <table class="tech-table">
-          <thead>
-            <tr>
-              <th>Parameter</th>
-              <th>SMAT Shop Specification</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Dimensional Range</td>
-              <td>Standard series 4x3 C-AH, 6x4 D-AH, 8x6 E-AH, 10x8 F-AH</td>
-            </tr>
-            <tr>
-              <td>Power Range</td>
-              <td>30 HP to 250 HP 3-phase TEFC (WEG / Siemens / Baldor)</td>
-            </tr>
-            <tr>
-              <td>Hydraulic Capacity</td>
-              <td>50 to 1,200 m³/h depending on slurry specific gravity</td>
-            </tr>
-            <tr>
-              <td>Base Structure</td>
-              <td>ASTM A36 C-channel with standardized anchor slots and certified lifting lugs</td>
-            </tr>
-            <tr>
-              <td>Drive & Safety</td>
-              <td>Calculated V-belt drive with 1.4 service factor and OSHA-compliant safety guard</td>
-            </tr>
-            <tr>
-              <td>Quality Assurance</td>
-              <td>Laser alignment and bearing run-in testing in Durango prior to dispatch</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <SharePurchasing 
-          roleTitle="Complete Slurry Pump Skid Package"
-          series="4x3 to 10x8 Frames"
-          metallurgy="A36 Structural Channel Base, A05 / Rubber Lined Slurry Pump"
-          specs="Heavy-duty C-channel skid package, TEFC 3-phase motor, calculated V-belt transmission with safety guard and dimensional pre-loading verification in Durango."
-          lang="en"
-        />
-
-        <div class="cta-rfq-box">
-          <div class="cta-rfq-header">
-            <span class="badge badge-copper">INSTANT QUOTE DIRECT FROM CENTRAL FACILITY</span>
-            <h3>Need this slurry pump package configured for your mine site?</h3>
-            <p>Generate your official serialized requisition with application backing in our central workbench.</p>
+      <div class="grid-2" style="margin-top: 1.75rem;">
+        <div>
+          <h2>Slurry Pump Configuration</h2>
+          <p>
+            Engineered for high-density slurries with abrasive or corrosive solids. Each pump integrates a split outer casing, interchangeable wet-end wear parts (impeller, throatbush, volute liner, and frame plate liner insert), centrifugal expeller and stuffing box sealing (no mechanical seal), and a complete <strong>Bearing Assembly / Housing</strong> unit.
+          </p>
+          
+          <h3 style="margin-top: 1.75rem;">Technical Specifications</h3>
+          <div class="table-wrapper">
+            <table>
+              <tbody>
+                <tr>
+                  <th>Available Sizes</th>
+                  <td>1.5x1", 2x1.5", 3x2", 4x3", 6x4", 8x6", 10x8", 12x10", 14x12"</td>
+                </tr>
+                <tr>
+                  <th>Wet-End Materials</th>
+                  <td>High Chrome, Rubber, and Polyurethane</td>
+                </tr>
+                <tr>
+                  <th>Bearing Unit</th>
+                  <td>Complete Bearing Assembly / Housing with external axial adjustment</td>
+                </tr>
+                <tr>
+                  <th>Shaft Sealing</th>
+                  <td>Dry centrifugal expeller and stuffing box (no mechanical seals)</td>
+                </tr>
+                <tr>
+                  <th>Drive Arrangement</th>
+                  <td>V-belt and pulley drive or direct coupling</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="cta-rfq-actions">
-            <a href="/en/?equipo=skid_bomba#rfq" class="btn btn-primary btn-lg">
-              Quote Pump Skid in Central Workbench →
-            </a>
-            <a href="https://wa.me/526183670664?text=Hello%20SMAT%20Minerals,%20I%20would%20like%20to%20quote%20Complete%20Slurry%20Pump%20Skid%20Package" target="_blank" rel="noopener noreferrer" class="btn btn-emergency btn-lg">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> Inquire Availability via WhatsApp
-            </a>
+        </div>
+
+        <div>
+          <div class="card" style="background-color: #f8fafc;">
+            <h3>Plant Applications</h3>
+            <ul>
+              <li><strong>Mill Discharge & Cyclone Feed:</strong> High Chrome impeller and liners for coarse rock impact.</li>
+              <li><strong>Flotation & Regrind:</strong> Rubber or Polyurethane liners for fine particles and corrosive reagents.</li>
+              <li><strong>Tailings & Thickener Underflow:</strong> Continuous single-stage or series pumping.</li>
+            </ul>
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light);">
+              <a href="/en/#rfq?equipo=skid_bomba" class="btn btn-primary" style="width: 100%;">Quote Slurry Pump →</a>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
-
-  <WhatsAppButton lang="en" />
-  <Footer slot="footer" lang="en" />
 </BaseLayout>
 
 <style>
-  .page-hero {
-    padding: 4.5rem 0 3.5rem;
-    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
-    border-bottom: 1px solid var(--smat-border-light);
-  }
-
-  .text-center {
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .page-hero h1 {
-    color: #090d16;
-    margin-top: 0.75rem;
-    font-size: clamp(2rem, 3.5vw, 2.75rem);
-    letter-spacing: -0.02em;
-  }
-
-  .subtitle {
-    font-size: 1.125rem;
-    margin-top: 0.75rem;
-    color: #475569;
-    line-height: 1.6;
-  }
-
-  .content-container {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .detail-card {
-    background-color: #ffffff;
-    border: 1px solid var(--smat-border-light);
-    border-radius: 14px;
-    padding: 2.5rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-  }
-
-  .detail-card h2 {
-    color: #090d16;
-    margin-bottom: 1rem;
-    border-bottom: 2px solid var(--color-accent-copper);
-    padding-bottom: 0.5rem;
-    display: inline-block;
-  }
-
-  .detail-card p {
-    font-size: 1.0625rem;
-    line-height: 1.7;
-    margin-bottom: 1.5rem;
-    color: #334155;
-  }
-
-  .tech-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 2rem;
-    font-size: 0.95rem;
-  }
-
-  .tech-table th, .tech-table td {
-    padding: 0.85rem 1rem;
-    border-bottom: 1px solid var(--smat-border-light);
-    text-align: left;
-  }
-
-  .tech-table th {
-    background-color: #f8fafc;
-    color: #090d16;
-    font-weight: 700;
-  }
-
-  .tech-table td {
-    color: #334155;
-  }
-
-  .cta-rfq-box {
-    margin-top: 3rem;
-    padding: 2.5rem;
-    background: linear-gradient(180deg, #fafaf9 0%, #f1f5f9 100%);
-    border: 1px solid var(--smat-border-light);
-    border-radius: 12px;
-    text-align: center;
-  }
-
-  .cta-rfq-header h3 {
-    font-size: 1.4rem;
-    color: #090d16;
-    margin: 0.75rem 0 0.5rem;
-  }
-
-  .cta-rfq-header p {
-    color: #475569;
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .cta-rfq-actions {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
+  .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 2.75rem 0; border-bottom: 2px solid var(--smat-copper-accent); }
+  .page-hero h1 { color: var(--smat-text-primary); margin-top: 0.5rem; }
+  .back-link { color: var(--smat-copper-accent); font-size: 0.9rem; font-weight: 700; text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
 </style>

@@ -19,5 +19,4 @@ Thumbs.db
 desktop.ini
 
 # Private Internal Catalog and Archeology
-data/roles.copy.json
 tools/seed_archeology/

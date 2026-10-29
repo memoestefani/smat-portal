@@ -652,23 +652,23 @@ test('25. Visión Multiequipo Integral en Portada ES y EN (Décima Ola & Ola 20 
   const esHome = fs.readFileSync(path.join(siteRoot, 'src/pages/index.astro'), 'utf-8');
   const enHome = fs.readFileSync(path.join(siteRoot, 'src/pages/en/index.astro'), 'utf-8');
 
-  // Enfoque de proceso concentrador en H1 cubriendo los 3 circuitos
+  // Enfoque directo Don Manuel: Bombas para Lodos, Mecanismos de Flotación, Filtros Prensa y Balanzas
   assert.ok(
-    esHome.includes('Equipos de Proceso y Refacciones Listas en Durango') && esHome.includes('Bombeo de pulpa, celdas de flotación y filtración'),
-    'index.astro debe incluir Equipos de Proceso y Refacciones Listas en Durango y los 3 circuitos en su H1'
+    esHome.includes('Bombas para Lodos y Refacciones') && esHome.includes('Mecanismos de Flotación, Filtros Prensa y Balanzas'),
+    'index.astro debe incluir Bombas para Lodos, Mecanismos de Flotación, Filtros Prensa y Balanzas en su H1'
   );
   assert.ok(
-    enHome.includes('Mineral Processing Equipment & Spares Ready in Durango') && enHome.includes('Slurry pumping, flotation cells, and dry tailings filtration'),
-    'en/index.astro debe incluir Mineral Processing Equipment & Spares Ready in Durango y los 3 circuitos en EN'
+    enHome.includes('Slurry Pumps & Wear Spares') && enHome.includes('Flotation Mechanisms, Filter Presses & Pulp Density Scales'),
+    'en/index.astro debe incluir Slurry Pumps, Flotation Mechanisms, Filter Presses & Pulp Density Scales en EN'
   );
 
   // Badge único sobrio con live-dot
   assert.ok(
-    esHome.includes('ALMACÉN CENTRAL DURANGO • SUMINISTRO DIRECTO A MINA') && esHome.includes('live-dot'),
+    esHome.includes('SMAT MINERALS') && esHome.includes('live-dot'),
     'index.astro debe contar con la pastilla sobria única con live-dot'
   );
   assert.ok(
-    enHome.includes('DURANGO CENTRAL WAREHOUSE • DIRECT MINE SHIPMENT') && enHome.includes('live-dot'),
+    enHome.includes('SMAT MINERALS') && enHome.includes('live-dot'),
     'en/index.astro debe contar con la pastilla sobria en inglés con live-dot'
   );
 });
@@ -1643,14 +1643,14 @@ test('84. Matriz Fiduciaria TCO Multi-Equipo en Portada ES y EN (Decisión 5-C &
   assert.ok(indexEs.includes('tco-matrix-section'), 'index.astro debe contener .tco-matrix-section');
   assert.ok(indexEs.includes('tco-comparison-matrix'), 'index.astro debe contener tabla .tco-comparison-matrix');
   assert.ok(indexEs.includes('16 a 24 semanas'), 'index.astro debe contrastar tiempo de importación ultramarina');
-  assert.ok(indexEs.includes('24 a 48 horas'), 'index.astro debe exhibir entrega de stock Durango');
+  assert.ok(indexEs.includes('5 Impulsores + 5 Cuellos + 4 Volutas'), 'index.astro debe exhibir suministro por lote húmedo');
   assert.ok(indexEs.includes('40,000 USD/hora'), 'index.astro debe documentar costo de paro de molino');
 
   // Portada EN
   assert.ok(indexEn.includes('tco-matrix-section'), 'en/index.astro debe contener .tco-matrix-section');
   assert.ok(indexEn.includes('tco-comparison-matrix'), 'en/index.astro debe contener tabla .tco-comparison-matrix');
   assert.ok(indexEn.includes('16 to 24 weeks'), 'en/index.astro debe contrastar tiempo en EN');
-  assert.ok(indexEn.includes('24 to 48 hours'), 'en/index.astro debe exhibir entrega en EN');
+  assert.ok(indexEn.includes('5 Impellers + 5 Throatbushes + 4 Volutes'), 'en/index.astro debe exhibir suministro por lote en EN');
   assert.ok(indexEn.includes('40,000 USD/hour'), 'en/index.astro debe documentar costo de paro en EN');
 });
 
@@ -1767,14 +1767,14 @@ test('99. Hero Multi-Equipo de 3 Circuitos y Poda de Mini-Cajas (Ola 20 - Decisi
   const esHome = fs.readFileSync(path.join(siteRoot, 'src/pages/index.astro'), 'utf-8');
   const enHome = fs.readFileSync(path.join(siteRoot, 'src/pages/en/index.astro'), 'utf-8');
 
-  // Cobertura de los 3 circuitos de planta húmeda en el H1
+  // Cobertura directa Don Manuel en el H1
   assert.ok(
-    esHome.includes('Equipos de Proceso y Refacciones Listas en Durango') && esHome.includes('Bombeo de pulpa, celdas de flotación y filtración de jales'),
-    'H1 en ES debe enunciar los 3 circuitos'
+    esHome.includes('Bombas para Lodos y Refacciones') && esHome.includes('Mecanismos de Flotación, Filtros Prensa y Balanzas'),
+    'H1 en ES debe enunciar Bombas para Lodos, Mecanismos de Flotación, Filtros Prensa y Balanzas'
   );
   assert.ok(
-    enHome.includes('Mineral Processing Equipment & Spares Ready in Durango') && enHome.includes('Slurry pumping, flotation cells, and dry tailings filtration'),
-    'H1 en EN debe enunciar los 3 circuitos'
+    enHome.includes('Slurry Pumps & Wear Spares') && enHome.includes('Flotation Mechanisms, Filter Presses & Pulp Density Scales'),
+    'H1 en EN debe enunciar Slurry Pumps, Flotation Mechanisms, Filter Presses & Pulp Density Scales'
   );
 
   // Poda radical de las 4 mini-cajas intermedias (.hero-kpis / .hero-stats)
@@ -2020,17 +2020,17 @@ test('115. Invariante Ética de Facilitación de RFQ / Requisición (Cero Falsas
   const indexEs = fs.readFileSync(path.join(siteRoot, 'src/pages/index.astro'), 'utf-8');
   const indexEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/index.astro'), 'utf-8');
 
-  // Título en QuoteWizard enfocado en facilitar RFQ / Requisición
+  // Título en QuoteWizard directo y blindado contra 'Luis'
   assert.ok(
-    wizard.includes('Facilite su Requisición o Solicitud de Información (RFQ)') ||
-    wizard.includes('Streamline Your Technical Requisition or RFQ'),
-    'QuoteWizard debe rotular Facilitación de Requisición / RFQ'
+    wizard.includes('Solicitar Cotización de Equipos y Refacciones') ||
+    wizard.includes('Request a Quotation for Equipment & Spares'),
+    'QuoteWizard debe rotular Solicitar Cotización de Equipos y Refacciones'
   );
   assert.ok(!wizard.includes('Cotice su Equipo o Refacción en 1 Minuto'), 'QuoteWizard no debe prometer cotización en 1 minuto');
 
   // Hero CTAs
-  assert.ok(indexEs.includes('Facilitar Requisición / RFQ'), 'Portada ES debe invitar a Facilitar Requisición / RFQ');
-  assert.ok(indexEn.includes('Streamline Requisition / RFQ'), 'Portada EN debe invitar a Streamline Requisition / RFQ');
+  assert.ok(indexEs.includes('Solicitar Cotización'), 'Portada ES debe invitar a Solicitar Cotización');
+  assert.ok(indexEn.includes('Request Quotation'), 'Portada EN debe invitar a Request Quotation');
   assert.ok(!indexEs.includes('Cotizar Refacción en 1 Minuto'), 'Portada ES no debe decir Cotizar en 1 Minuto');
   assert.ok(!indexEn.includes('Quote Parts in 1 Minute'), 'Portada EN no debe decir Quote Parts in 1 Minute');
 });

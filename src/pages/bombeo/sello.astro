@@ -1,199 +1,82 @@
 ---
+// src/pages/bombeo/sello.astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
-import SharePurchasing from '../../components/SharePurchasing.astro';
-import WhatsAppButton from '../../components/WhatsAppButton.astro';
+import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
 ---
 
 <BaseLayout 
-  title="Sellos Mecánicos, Expulsores y Prensaestopas | SMAT Minerals"
-  description="Soluciones de sellado dinámico para bombas de pulpa: anillos expulsores centrífugos, cajas de empaque grafitado y sellos mecánicos para lodos pesados. Durango, México."
+  title="Expulsor Centrífugo y Prensaestopa (Sin Sello Mecánico) | SMAT Minerals"
+  description="Sistemas de sellado por expulsor centrífugo, anillo expulsor, camisa de flecha y prensaestopa para bombas de lodos. No vendemos sello mecánico por alta corrosión y abrasión."
   lang="es"
-  canonicalPath="/bombeo/sello/"
-  alternateEsPath="/bombeo/sello/"
-  alternateEnPath="/en/pumping/seal/"
 >
-  <Header slot="header" lang="es" currentPath="/bombeo/sello/" alternatePath="/en/pumping/seal/" />
-
   <section class="page-hero">
-    <div class="container text-center">
-      <span class="badge badge-emergency">OPEX • STOCK EN ALMACÉN DURANGO</span>
-      <h1>Sellos Mecánicos y Ensambles Prensaestopa</h1>
-      <p class="subtitle">Eliminación de fugas severas de pulpa y operación con o sin agua de inyección externa.</p>
+    <div class="container">
+      <a href="/bombeo/" class="back-link">← Volver a Bombas para Lodos</a>
+      <div style="margin-top: 1rem;">
+        <span class="badge badge-copper">SELLADO CENTRÍFUGO Y PRENSAESTOPA</span>
+      </div>
+      <h1>Expulsor Centrífugo y Prensaestopa</h1>
+      <p style="font-size: 1.08rem; max-width: 720px; color: var(--smat-text-secondary);">
+        Piezas de sellado centrífugo para bombas de lodos: expulsor, anillo expulsor, camisa de flecha y prensaestopa con empaquetadura. <strong>No vendemos sello mecánico</strong> porque las bombas para lodos operan en condiciones altamente abrasivas y corrosivas.
+      </p>
     </div>
   </section>
 
-  <section class="section-spacing">
-    <div class="container content-container">
-      <div class="card detail-card">
-        <h2>Sistemas de Sellado para Pulpas Severas</h2>
-        <p>
-          Las fallas en el sellado del eje son la causa número uno de paro y contaminación de rodamientos en bombas de jales y concentrados. SMAT ofrece tres configuraciones probadas en campo para responder a cada balance hídrico de planta:
-        </p>
+  <section class="section">
+    <div class="container">
+      <TechnicalDiagrams diagram="expeller" lang="es" />
 
-        <table class="tech-table">
-          <thead>
-            <tr>
-              <th>Tipo de Sellado</th>
-              <th>Ventajas Operativas</th>
-              <th>Requerimiento de Agua</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Sello Dinámico por Expulsor Centrífugo</td>
-              <td>Impulsor auxiliar trasero que expulsa pulpa por fuerza centrífuga; empaque estático en paro.</td>
-              <td><strong>Cero agua de sello requerida</strong> (ideal para zonas desérticas y plantas secas).</td>
-            </tr>
-            <tr>
-              <td>Caja de Prensaestopa Estándar</td>
-              <td>Empaquetadura grafitada o de PTFE reforzado con anillo linterna para inyección de agua limpia.</td>
-              <td>Agua limpia a presión superior a la presión de descarga de la bomba.</td>
-            </tr>
-            <tr>
-              <td>Sello Mecánico en Cartucho</td>
-              <td>Caras de carburo de silicio contra carburo de tungsteno lubricadas por la propia pulpa o fluido auxiliar.</td>
-              <td>Sin dilución de producto y fuga cero visible en piso de planta.</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="grid-2" style="margin-top: 1.75rem;">
+        <div>
+          <h2>Por Qué Empleamos Expulsor y Prensaestopa (Sin Sello Mecánico)</h2>
+          <p>
+            En el bombeo de lodos minerales con reactivos corrosivos y sólidos en suspensión, los sellos mecánicos de caras planas se fracturan o se atascan rápidamente. Nuestras bombas para lodos utilizan un <strong>expulsor centrífugo</strong> combinado con <strong>anillo expulsor y prensaestopa</strong> de empaquetadura trenzada, permitiendo operar en seco sin inyectar agua externa que diluya la pulpa.
+          </p>
 
-        <SharePurchasing 
-          roleTitle="Sello Dinámico / Mecánico de Bomba de Pulpa"
-          series="Compatibilidad universal para marcos de bomba C, D, E, F"
-          metallurgy="Carburo de Silicio / Carburo de Tungsteno / PTFE Grafitado"
-          specs="Sistemas de sellado dinámico con expulsor para operación sin agua de sello exterior o sellos en cartucho de alta resistencia abrasiva."
-          lang="es"
-        />
-
-        <div class="cta-rfq-box">
-          <div class="cta-rfq-header">
-            <span class="badge badge-copper">DESPACHO INMEDIATO DESDE DURANGO</span>
-            <h3>¿Requiere ensambles de sellado para evitar paros por fuga?</h3>
-            <p>Emita de inmediato su requisición técnica formal con especificación de sello y compatibilidad de marco.</p>
+          <h3 style="margin-top: 1.75rem;">Componentes del Conjunto de Sellado</h3>
+          <div class="table-wrapper">
+            <table>
+              <tbody>
+                <tr>
+                  <th>Expulsor Centrífugo</th>
+                  <td>Alto Cromo o Hule; genera un anillo de presión negativa que repele el lodo del eje</td>
+                </tr>
+                <tr>
+                  <th>Anillo Expulsor y Prensaestopa</th>
+                  <td>Fundición de alta resistencia con cámara para empaquetadura y anillo linterna</td>
+                </tr>
+                <tr>
+                  <th>Camisa de Flecha</th>
+                  <td>Acero inoxidable endurecido para proteger la flecha del Bearing Assembly</td>
+                </tr>
+                <tr>
+                  <th>Empaquetadura</th>
+                  <td>Fibra sintética con PTFE y grafito para cierre secundario en paro</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="cta-rfq-actions">
-            <a href="/?equipo=sello#rfq" class="btn btn-primary btn-lg">
-              Cotizar Sello Mecánico / Expulsor en Consola Central →
-            </a>
-            <a href="https://wa.me/526183670664?text=Hola%20SMAT%20Minerals,%20requiero%20cotizar%20Sello%20o%20Prensaestopa" target="_blank" rel="noopener noreferrer" class="btn btn-emergency btn-lg">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-              Consultar Stock en Almacén por WhatsApp
-            </a>
+        </div>
+
+        <div>
+          <div class="card" style="background-color: #f8fafc;">
+            <h3>Cero Dilución de Pulpa</h3>
+            <p>
+              El sellado por expulsor centrífugo evita introducir agua de sello al circuito, manteniendo estable la densidad de pulpa hacia los hidrociclones y las celdas de flotación.
+            </p>
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light);">
+              <a href="/#rfq?equipo=sello" class="btn btn-primary" style="width: 100%;">Cotizar Expulsor y Prensaestopa →</a>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
-
-  <WhatsAppButton lang="es" />
-  <Footer slot="footer" lang="es" />
 </BaseLayout>
 
 <style>
-  .page-hero {
-    padding: 4.5rem 0 3.5rem;
-    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
-    border-bottom: 1px solid var(--smat-border-light);
-  }
-
-  .text-center {
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .page-hero h1 {
-    color: #090d16;
-    margin-top: 0.75rem;
-    font-size: clamp(2rem, 3.5vw, 2.75rem);
-    letter-spacing: -0.02em;
-  }
-
-  .subtitle {
-    font-size: 1.125rem;
-    margin-top: 0.75rem;
-    color: #475569;
-    line-height: 1.6;
-  }
-
-  .content-container {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .detail-card {
-    background-color: #ffffff;
-    border: 1px solid var(--smat-border-light);
-    border-radius: 14px;
-    padding: 2.5rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-  }
-
-  .detail-card h2 {
-    color: #090d16;
-    margin-bottom: 1rem;
-    border-bottom: 2px solid var(--color-accent-copper);
-    padding-bottom: 0.5rem;
-    display: inline-block;
-  }
-
-  .detail-card p {
-    font-size: 1.0625rem;
-    line-height: 1.7;
-    margin-bottom: 1.5rem;
-    color: #334155;
-  }
-
-  .tech-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 2rem;
-    font-size: 0.95rem;
-  }
-
-  .tech-table th, .tech-table td {
-    padding: 0.85rem 1rem;
-    border-bottom: 1px solid var(--smat-border-light);
-    text-align: left;
-  }
-
-  .tech-table th {
-    background-color: #f8fafc;
-    color: #090d16;
-    font-weight: 700;
-  }
-
-  .tech-table td {
-    color: #334155;
-  }
-
-  .cta-rfq-box {
-    margin-top: 3rem;
-    padding: 2.5rem;
-    background: linear-gradient(180deg, #fafaf9 0%, #f1f5f9 100%);
-    border: 1px solid var(--smat-border-light);
-    border-radius: 12px;
-    text-align: center;
-  }
-
-  .cta-rfq-header h3 {
-    font-size: 1.4rem;
-    color: #090d16;
-    margin: 0.75rem 0 0.5rem;
-  }
-
-  .cta-rfq-header p {
-    color: #475569;
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .cta-rfq-actions {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
+  .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 2.75rem 0; border-bottom: 2px solid var(--smat-copper-accent); }
+  .page-hero h1 { color: var(--smat-text-primary); margin-top: 0.5rem; }
+  .back-link { color: var(--smat-copper-accent); font-size: 0.9rem; font-weight: 700; text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
 </style>

@@ -1,198 +1,70 @@
 ---
+// src/pages/flotacion/index.astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
-import WhatsAppButton from '../../components/WhatsAppButton.astro';
-import rolesData from '../../../data/roles.json';
-
-const flotacionVertical = rolesData.verticals.find(v => v.id === 'flotacion')!;
+import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
 ---
 
 <BaseLayout 
-  title="Celdas y Mecanismos de Flotación de Minerales | SMAT Minerals"
-  description="Celdas de flotación mecánicas completas (50 a 300 ft³) para etapas Rougher, Cleaner y Scavenger, y refaccionamiento de rotores y estatores con despacho en Durango."
+  title="Mecanismos para Celdas de Flotación y Acondicionadores | SMAT Minerals"
+  description="Mecanismos para celdas de flotación, acondicionadores de pulpa, cabezales motrices, flechas, rotores y estatores."
   lang="es"
-  canonicalPath="/flotacion/"
-  alternateEsPath="/flotacion/"
-  alternateEnPath="/en/flotation/"
 >
-  <Header slot="header" lang="es" currentPath="/flotacion/" alternatePath="/en/flotation/" />
-
   <section class="page-hero">
-    <div class="container text-center">
-      <span class="badge badge-copper">SILO DE SEPARACIÓN Y BENEFICIO</span>
-      <h1>{flotacionVertical.name_es}</h1>
-      <p class="subtitle">Línea activa de celdas de flotación mecánicas sub-aireadas y mecanismos suspendidos de rotor-estator de alta eficiencia cinética.</p>
-    </div>
-  </section>
-
-  <section class="section-spacing">
     <div class="container">
-      <div class="silo-block">
-        <div class="silo-block-header">
-          <span class="badge badge-capex">CAPEX • LÍNEA COMERCIAL ACTIVA</span>
-          <h2>Celdas de Flotación Mecánicas Completas</h2>
-        </div>
-        <div class="catalog-grid">
-          {flotacionVertical.capex.map((item: any) => (
-            <div class="card product-card">
-              <span class="series-tag">{item.series}</span>
-              <h3>{item.title_es}</h3>
-              <p class="product-desc">{item.spec_summary_es}</p>
-              <div class="card-specs">
-                <div><strong>Rango de Volumen:</strong> {item.volume_range}</div>
-              </div>
-              <div class="card-actions">
-                <a href={item.slug_es} class="btn btn-outline btn-sm">Ver Especificación</a>
-                <a href={`/contacto/?rol=${item.role_id}&tipo=capex#rfq`} class="btn btn-primary btn-sm">Cotizar Celda</a>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <span class="badge badge-copper">FLOTACIÓN Y ACONDICIONAMIENTO</span>
+      <h1>Mecanismos para Celdas de Flotación y Acondicionadores</h1>
+      <p style="font-size: 1.08rem; max-width: 720px; color: var(--smat-text-secondary);">
+        Mecanismos completos de agitación, acondicionadores de pulpa, cabezales de transmisión, tubos de aire y conjuntos rotor-estator en hule y poliuretano.
+      </p>
+    </div>
+  </section>
 
-      <div class="silo-block" style="margin-top: 4rem;">
-        <div class="silo-block-header">
-          <span class="badge badge-opex">OPEX • STOCK EN ALMACÉN DURANGO</span>
-          <h2>Mecanismos Rotor y Estator de Repuesto</h2>
+  <section class="section">
+    <div class="container">
+      <TechnicalDiagrams diagram="flotation" lang="es" />
+
+      <div class="grid-2" style="margin-top: 1.75rem;">
+        <div class="card">
+          <h3>Mecanismos para Celdas de Flotación y Acondicionadores</h3>
+          <p>
+            Conjuntos motrices completos (cabezal porta-rodamientos vertical, polea, columna de aire concéntrica y flecha) para bancos de flotación Rougher, Cleaner y Scavenger, así como mecanismos para tanques acondicionadores de reactivos.
+          </p>
+          <p style="font-family: var(--smat-font-mono); font-size: 0.85rem;"><strong>Capacidad:</strong> 50 ft³ a 300 ft³</p>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="/flotacion/celdas/" class="btn btn-outline">Ficha Técnica</a>
+            <a href="/#rfq?equipo=celda_flotacion" class="btn btn-primary">Cotizar →</a>
+          </div>
         </div>
-        <div class="catalog-grid">
-          {flotacionVertical.opex.map(item => (
-            <div class="card product-card">
-              <span class="dispatch-tag">{item.series}</span>
-              <h3>{item.title_es}</h3>
-              <p class="product-desc">{item.spec_summary_es}</p>
-              <div class="card-specs">
-                <div><strong>Revestimiento:</strong> <span class="highlight-val">{item.metallurgy}</span></div>
-              </div>
-              <div class="card-actions">
-                <a href={item.slug_es} class="btn btn-outline btn-sm">Ficha Técnica</a>
-                <a href={`/contacto/?rol=${item.role_id}&tipo=opex#rfq`} class="btn btn-emergency btn-sm">Cotizar Paro</a>
-              </div>
-            </div>
-          ))}
+
+        <div class="card">
+          <h3>Rotores, Estatores, Propelas y Flechas</h3>
+          <p>
+            Impulsores/rotores, difusores/estatores y propelas de acondicionador recubiertos en hule natural moldeado o poliuretano para resistir la abrasión de la pulpa mineral y mantener la dispersión de aire.
+          </p>
+          <p style="font-family: var(--smat-font-mono); font-size: 0.85rem;"><strong>Material:</strong> Hule y Poliuretano</p>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="/flotacion/mecanismos/" class="btn btn-outline">Ficha Técnica</a>
+            <a href="/#rfq?equipo=rotor_estator" class="btn btn-primary">Cotizar →</a>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <WhatsAppButton lang="es" />
-  <Footer slot="footer" lang="es" />
+  <section class="section">
+    <div class="container">
+      <div class="card" style="background: #f8fafc; border: 1px solid var(--smat-border-strong); padding: 2.25rem; text-align: center;">
+        <h2 style="margin-bottom: 0.6rem;">Solicitar Cotización de Mecanismos o Acondicionadores</h2>
+        <p style="max-width: 600px; margin: 0 auto 1.25rem; color: var(--smat-text-secondary);">
+          Indique el volumen de su celda o tanque acondicionador y las piezas que requiere cotizar.
+        </p>
+        <a href="/#rfq?equipo=celda_flotacion" class="btn btn-primary">Solicitar Cotización →</a>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
-  .page-hero {
-    padding: 4.5rem 0 3.5rem;
-    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
-    border-bottom: 1px solid var(--smat-border-light);
-  }
-
-  .text-center {
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .page-hero h1 {
-    color: #090d16;
-    margin-top: 0.75rem;
-    font-size: clamp(2rem, 3.5vw, 2.75rem);
-    letter-spacing: -0.02em;
-  }
-
-  .subtitle {
-    font-size: 1.125rem;
-    margin-top: 0.75rem;
-    color: #475569;
-    line-height: 1.6;
-  }
-
-  .silo-block-header {
-    margin-bottom: 2rem;
-  }
-
-  .silo-block-header h2 {
-    margin-top: 0.5rem;
-    color: #090d16;
-  }
-
-  .catalog-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .product-card {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    background: #ffffff;
-    border: 1px solid var(--smat-border-light);
-    border-radius: 12px;
-    padding: 1.75rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  }
-
-  .series-tag, .dispatch-tag {
-    align-self: flex-start;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #475569;
-    background-color: #f1f5f9;
-    padding: 0.25rem 0.6rem;
-    border-radius: 6px;
-    margin-bottom: 0.75rem;
-    border: 1px solid var(--smat-border-light);
-  }
-
-  .dispatch-tag {
-    color: #991b1b;
-    background-color: #fee2e2;
-    border-color: #fca5a5;
-  }
-
-  .product-card h3 {
-    font-size: 1.25rem;
-    color: #090d16;
-    margin-bottom: 0.75rem;
-  }
-
-  .product-desc {
-    font-size: 0.875rem;
-    line-height: 1.5;
-    margin-bottom: 1.25rem;
-    flex-grow: 1;
-    color: #475569;
-  }
-
-  .card-specs {
-    background-color: #f8fafc;
-    border: 1px solid var(--smat-border-light);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    margin-bottom: 1.5rem;
-    font-size: 0.8125rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    color: #334155;
-  }
-
-  .highlight-val {
-    color: #b45309;
-    font-weight: 600;
-  }
-
-  .card-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-    margin-top: auto;
-  }
-
-  .btn-sm {
-    min-height: 42px;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-  }
+  .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 3rem 0; border-bottom: 2px solid var(--smat-copper-accent); }
+  .page-hero h1 { color: var(--smat-text-primary); margin-top: 0.65rem; }
 </style>

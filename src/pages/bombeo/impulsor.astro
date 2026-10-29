@@ -1,203 +1,82 @@
 ---
+// src/pages/bombeo/impulsor.astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
-import SharePurchasing from '../../components/SharePurchasing.astro';
-import WhatsAppButton from '../../components/WhatsAppButton.astro';
+import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
 ---
 
 <BaseLayout 
-  title="Impulsores de Bomba Slurry High Chrome 27% (A05) | SMAT Minerals"
-  description="Impulsores y rodetes cerrados de alta resistencia al desgaste para pulpas abrasivas. Aleación High Chrome A05 (650+ HB) y Caucho Natural desde Almacén Durango."
+  title="Impulsor para Bomba de Lodos | SMAT Minerals"
+  description="Impulsores cerrados de 5 álabes y de paso amplio en Alto Cromo, Hule y Poliuretano para bombas de lodos."
   lang="es"
-  canonicalPath="/bombeo/impulsor/"
-  alternateEsPath="/bombeo/impulsor/"
-  alternateEnPath="/en/pumping/impeller/"
 >
-  <Header slot="header" lang="es" currentPath="/bombeo/impulsor/" alternatePath="/en/pumping/impeller/" />
-
   <section class="page-hero">
-    <div class="container text-center">
-      <span class="badge badge-emergency">OPEX • STOCK EN ALMACÉN DURANGO</span>
-      <h1>Impulsor / Rodete de Pulpa Abrasiva</h1>
-      <p class="subtitle">Aleación High Chrome 27% (A05) y Caucho Natural vulcanizado para marcos 4x3 a 10x8.</p>
+    <div class="container">
+      <a href="/bombeo/" class="back-link">← Volver a Bombas para Lodos</a>
+      <div style="margin-top: 1rem;">
+        <span class="badge badge-copper">PIEZA EN CONTACTO HÚMEDO</span>
+      </div>
+      <h1>Impulsor para Bomba de Lodos</h1>
+      <p style="font-size: 1.08rem; max-width: 700px; color: var(--smat-text-secondary);">
+        Impulsor de servicio pesado con álabes principales de paso amplio y álabes expulsores en ambas caras para bombas de lodos en molienda, clasificación y jales.
+      </p>
     </div>
   </section>
 
-  <section class="section-spacing">
-    <div class="container content-container">
-      <div class="card detail-card">
-        <h2>Ingeniería Hidrodinámica y Resistencia al Corte</h2>
-        <p>
-          Los impulsores SMAT Minerals cuentan con diseño cerrado de 4 y 5 álabes gruesos optimizados para el flujo de pulpas pesadas. Incorporan álabes de bombeo trasero (*pump-out vanes*) que generan un vórtice diferencial para expulsar sólidos de la zona del sello y aliviar la presión sobre el prensaestopa, duplicando la vida útil operativa del empaque.
-        </p>
+  <section class="section">
+    <div class="container">
+      <TechnicalDiagrams diagram="impeller" lang="es" />
 
-        <table class="tech-table">
-          <thead>
-            <tr>
-              <th>Propiedad del Material</th>
-              <th>Especificación Comprobada SMAT</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Aleación Metálica Principal</td>
-              <td>Hierro blanco aleado al Alto Cromo (27% Cr, A05 ASTM A532 Class III)</td>
-            </tr>
-            <tr>
-              <td>Dureza Superficial</td>
-              <td>Mínimo 650 HB (Brinell) / 58-62 HRC tratado térmicamente</td>
-            </tr>
-            <tr>
-              <td>Opción Elastómero</td>
-              <td>Caucho Natural vulcanizado de alta resiliencia para partículas finas &lt; 5 mm</td>
-            </tr>
-            <tr>
-              <td>Balanceo Dinámico</td>
-              <td>Balanceo dinámico en banco de pruebas en Durango</td>
-            </tr>
-            <tr>
-              <td>Roscado de Eje</td>
-              <td>Rosca trapezoidal mecanizada con inserto desmontable para desensamble seguro</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="grid-2" style="margin-top: 1.75rem;">
+        <div>
+          <h2>Características del Impulsor</h2>
+          <p>
+            El impulsor transfiere la energía centrífuga a la pulpa mineral y recibe el mayor impacto cinético de los sólidos en suspensión. Su geometría incorpora álabes expulsores frontales y traseros que reducen la recirculación hacia el cuello y disminuyen la presión sobre el prensaestopa.
+          </p>
 
-        <SharePurchasing 
-          roleTitle="Impulsor de Bomba Slurry High Chrome 27% (A05)"
-          series="Compatibilidad estándar 4x3 C-AH, 6x4 D-AH, 8x6 E-AH, 10x8 F-AH"
-          metallurgy="High Chrome 27% Cr (A05, 650+ HB) / Caucho Natural"
-          specs="Impulsor cerrado de 4-5 álabes con álabes de despeje trasero, balanceo dinámico en presencia del cliente y despacho programado desde Almacén Central Durango."
-          lang="es"
-        />
-
-        <div class="cta-rfq-box">
-          <div class="cta-rfq-header">
-            <span class="badge badge-copper">DESPACHO INMEDIATO DESDE DURANGO</span>
-            <h3>¿Requiere impulsores de reemplazo para paro o stock de seguridad?</h3>
-            <p>Emita de inmediato su requisición técnica formal con número de parte y balanceo de banco verificado.</p>
+          <h3 style="margin-top: 1.75rem;">Especificaciones del Impulsor</h3>
+          <div class="table-wrapper">
+            <table>
+              <tbody>
+                <tr>
+                  <th>Materiales Disponibles</th>
+                  <td>Alto Cromo (ASTM A532 ≥ 650 HB), Hule y Poliuretano</td>
+                </tr>
+                <tr>
+                  <th>Geometría de Álabes</th>
+                  <td>Cerrado de 5 álabes (alta eficiencia) o 4 álabes de paso amplio</td>
+                </tr>
+                <tr>
+                  <th>Álabes Expulsores</th>
+                  <td>Álabes auxiliares en cara frontal y posterior para control de recirculación</td>
+                </tr>
+                <tr>
+                  <th>Rosca de Montaje</th>
+                  <td>Maquinado de precisión para acoplamiento directo en flecha del Bearing Assembly</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="cta-rfq-actions">
-            <a href="/?equipo=impulsor#rfq" class="btn btn-primary btn-lg">
-              Cotizar Impulsor A05 en Consola Central →
-            </a>
-            <a href="https://wa.me/526183670664?text=Hola%20SMAT%20Minerals,%20requiero%20cotizar%20Impulsor%20A05%20de%20reemplazo" target="_blank" rel="noopener noreferrer" class="btn btn-emergency btn-lg">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-              Consultar Stock en Almacén por WhatsApp
-            </a>
+        </div>
+
+        <div>
+          <div class="card" style="background-color: #f8fafc;">
+            <h3>Suministro en Lote de Contacto Húmedo</h3>
+            <p>
+              Por su desgaste frente al resto de la carcasa, las plantas mineras suelen programar el impulsor en lotes combinados con cuellos y volutas (por ejemplo: <strong>5 impulsores, 5 cuellos y 4 volutas</strong>) para asegurar el ajuste hidráulico en cada cambio.
+            </p>
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light);">
+              <a href="/#rfq?equipo=impulsor" class="btn btn-primary" style="width: 100%;">Cotizar Impulsores →</a>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
-
-  <WhatsAppButton lang="es" />
-  <Footer slot="footer" lang="es" />
 </BaseLayout>
 
 <style>
-  .page-hero {
-    padding: 4.5rem 0 3.5rem;
-    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
-    border-bottom: 1px solid var(--smat-border-light);
-  }
-
-  .text-center {
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .page-hero h1 {
-    color: #090d16;
-    margin-top: 0.75rem;
-    font-size: clamp(2rem, 3.5vw, 2.75rem);
-    letter-spacing: -0.02em;
-  }
-
-  .subtitle {
-    font-size: 1.125rem;
-    margin-top: 0.75rem;
-    color: #475569;
-    line-height: 1.6;
-  }
-
-  .content-container {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .detail-card {
-    background-color: #ffffff;
-    border: 1px solid var(--smat-border-light);
-    border-radius: 14px;
-    padding: 2.5rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-  }
-
-  .detail-card h2 {
-    color: #090d16;
-    margin-bottom: 1rem;
-    border-bottom: 2px solid var(--color-accent-copper);
-    padding-bottom: 0.5rem;
-    display: inline-block;
-  }
-
-  .detail-card p {
-    font-size: 1.0625rem;
-    line-height: 1.7;
-    margin-bottom: 1.5rem;
-    color: #334155;
-  }
-
-  .tech-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 2rem;
-    font-size: 0.95rem;
-  }
-
-  .tech-table th, .tech-table td {
-    padding: 0.85rem 1rem;
-    border-bottom: 1px solid var(--smat-border-light);
-    text-align: left;
-  }
-
-  .tech-table th {
-    background-color: #f8fafc;
-    color: #090d16;
-    font-weight: 700;
-  }
-
-  .tech-table td {
-    color: #334155;
-  }
-
-  .cta-rfq-box {
-    margin-top: 3rem;
-    padding: 2.5rem;
-    background: linear-gradient(180deg, #fafaf9 0%, #f1f5f9 100%);
-    border: 1px solid var(--smat-border-light);
-    border-radius: 12px;
-    text-align: center;
-  }
-
-  .cta-rfq-header h3 {
-    font-size: 1.4rem;
-    color: #090d16;
-    margin: 0.75rem 0 0.5rem;
-  }
-
-  .cta-rfq-header p {
-    color: #475569;
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .cta-rfq-actions {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
+  .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 2.75rem 0; border-bottom: 2px solid var(--smat-copper-accent); }
+  .page-hero h1 { color: var(--smat-text-primary); margin-top: 0.5rem; }
+  .back-link { color: var(--smat-copper-accent); font-size: 0.9rem; font-weight: 700; text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
 </style>

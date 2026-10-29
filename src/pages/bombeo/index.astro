@@ -1,199 +1,135 @@
 ---
+// src/pages/bombeo/index.astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
-import WhatsAppButton from '../../components/WhatsAppButton.astro';
-import rolesData from '../../../data/roles.json';
-
-const bombeoVertical = rolesData.verticals.find(v => v.id === 'bombeo')!;
+import CircuitNavigator from '../../components/CircuitNavigator.astro';
+import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
 ---
 
 <BaseLayout 
-  title="Bombas de Pulpa y Lodos Abrasivos | SMAT Minerals"
-  description="Equipos completos de bombeo en skid estructural y refaccionamiento crítico de desgaste en High Chrome 27% (A05) para pulpas mineras severas. Almacén central en Durango."
+  title="Bombas para Lodos y Piezas en Contacto Húmedo | SMAT Minerals"
+  description="Bombas para lodos, impulsores, revestimientos, volutas y cuellos en Alto Cromo, Hule y Poliuretano, y Bearing Assembly / Housing completo."
   lang="es"
-  canonicalPath="/bombeo/"
-  alternateEsPath="/bombeo/"
-  alternateEnPath="/en/pumping/"
 >
-  <Header slot="header" lang="es" currentPath="/bombeo/" alternatePath="/en/pumping/" />
-
   <section class="page-hero">
-    <div class="container text-center">
-      <span class="badge badge-copper">SILO DE TRANSPORTE SEVERO DE SÓLIDOS</span>
-      <h1>{bombeoVertical.name_es}</h1>
-      <p class="subtitle">Bombas completas montadas sobre skid estructural C y refaccionamiento de desgaste de alta aleación con despacho en Durango.</p>
-    </div>
-  </section>
-
-  <section class="section-spacing">
     <div class="container">
-      <div class="silo-block">
-        <div class="silo-block-header">
-          <span class="badge badge-capex">CAPEX • PROYECTOS INTEGRALES</span>
-          <h2>Equipos de Bombeo Completos</h2>
+      <span class="badge badge-copper">BOMBAS PARA LODOS Y REFACCIONES</span>
+      <h1>Bombas para Lodos</h1>
+      <p style="font-size: 1.08rem; max-width: 720px; color: var(--smat-text-secondary);">
+        Bombas centrífugas horizontales para lodos, conjuntos completos <strong>Bearing Assembly / Housing</strong> y piezas en contacto húmedo suministradas por lote en <strong>Alto Cromo, Hule y Poliuretano</strong>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <TechnicalDiagrams diagram="pump" lang="es" />
+
+      <div class="wet-lot-callout">
+        <div>
+          <strong>Pedido por Lote de Contacto Húmedo (5 – 5 – 4)</strong>
+          <p>
+            En planta no se compra pieza por pieza suelta: se programa el lote de piezas en contacto húmedo de acuerdo con su rotación real (por ejemplo, <strong>5 impulsores, 5 cuellos y 4 volutas</strong>) en Alto Cromo, Hule o Poliuretano. No manejamos sello mecánico debido a la alta corrosión y abrasión de los lodos mineros; empleamos expulsor centrífugo y prensaestopa.
+          </p>
         </div>
-        <div class="catalog-grid">
-          {bombeoVertical.capex.map(item => (
-            <div class="card product-card">
-              <span class="series-tag">{item.series}</span>
-              <h3>{item.title_es}</h3>
-              <p class="product-desc">{item.spec_summary_es}</p>
-              <div class="card-specs">
-                <div><strong>Potencia:</strong> {item.power_range}</div>
-                <div><strong>Capacidad:</strong> {item.flow_range}</div>
-              </div>
-              <div class="card-actions">
-                <a href={item.slug_es} class="btn btn-outline btn-sm">Ver Especificación</a>
-                <a href={`/contacto/?rol=${item.role_id}&tipo=capex#rfq`} class="btn btn-primary btn-sm">Cotizar Proyecto</a>
-              </div>
-            </div>
-          ))}
-        </div>
+        <a href="/#rfq?equipo=revestimientos" class="btn btn-primary">Cotizar Lote Húmedo →</a>
       </div>
 
-      <div class="silo-block" style="margin-top: 4rem;">
-        <div class="silo-block-header">
-          <span class="badge badge-opex">OPEX • STOCK EN ALMACÉN DURANGO</span>
-          <h2>Refaccionamiento Crítico de Desgaste</h2>
+      <h2 style="margin-top: 2rem;">Bombas y Piezas de Reemplazo</h2>
+      <div class="grid-2" style="margin-top: 1.5rem;">
+        <div class="card">
+          <h3>Bombas Completas para Lodos</h3>
+          <p>Bombas centrífugas horizontales de servicio pesado desde 1.5x1" hasta 14x12" para descarga de molino, alimentación a ciclones, flotación y jales.</p>
+          <p style="font-family: var(--smat-font-mono); font-size: 0.85rem;"><strong>Rango:</strong> 1.5x1" a 14x12"</p>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="/bombeo/skid/" class="btn btn-outline">Ver Diagrama y Datos</a>
+            <a href="/#rfq?equipo=skid_bomba" class="btn btn-primary">Cotizar →</a>
+          </div>
         </div>
-        <div class="catalog-grid">
-          {bombeoVertical.opex.map(item => (
-            <div class="card product-card">
-              <span class="dispatch-tag">{item.series}</span>
-              <h3>{item.title_es}</h3>
-              <p class="product-desc">{item.spec_summary_es}</p>
-              <div class="card-specs">
-                <div><strong>Metalurgia:</strong> <span class="highlight-val">{item.metallurgy}</span></div>
-              </div>
-              <div class="card-actions">
-                <a href={item.slug_es} class="btn btn-outline btn-sm">Ficha Técnica</a>
-                <a href={`/contacto/?rol=${item.role_id}&tipo=opex#rfq`} class="btn btn-emergency btn-sm">Cotizar Paro</a>
-              </div>
-            </div>
-          ))}
+
+        <div class="card">
+          <h3>Bearing Assembly / Housing</h3>
+          <p>Equipo completo ensamblado listo para montaje: carcasa cilíndrica, flecha de acero aleado, rodamientos cónicos de servicio pesado y sellos laberinto.</p>
+          <p style="font-family: var(--smat-font-mono); font-size: 0.85rem;"><strong>Suministro:</strong> Conjunto Completo Ensamblado</p>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="/bombeo/soporte/" class="btn btn-outline">Ver Bearing Assembly</a>
+            <a href="/#rfq?equipo=soporte" class="btn btn-primary">Cotizar →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Impulsor</h3>
+          <p>Impulsores cerrados de 5 álabes y de paso amplio con álabes expulsores traseros para reducir la presión en el prensaestopa y controlar la recirculación.</p>
+          <p style="font-family: var(--smat-font-mono); font-size: 0.85rem;"><strong>Materiales:</strong> Alto Cromo, Hule y Poliuretano</p>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="/bombeo/impulsor/" class="btn btn-outline">Características del Impulsor</a>
+            <a href="/#rfq?equipo=impulsor" class="btn btn-primary">Cotizar →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Revestimientos, Volutas y Cuellos</h3>
+          <p>Volutas, cuellos y platos posteriores para las zonas en contacto húmedo. Disponibles por lote programado de desgaste.</p>
+          <p style="font-family: var(--smat-font-mono); font-size: 0.85rem;"><strong>Materiales:</strong> Alto Cromo, Hule y Poliuretano</p>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="/bombeo/revestimientos/" class="btn btn-outline">Ver Piezas y Lotes</a>
+            <a href="/#rfq?equipo=revestimientos" class="btn btn-primary">Cotizar →</a>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <WhatsAppButton lang="es" />
-  <Footer slot="footer" lang="es" />
+  <section class="section" style="background-color: #ffffff; border-top: 1px solid var(--smat-border-light); border-bottom: 1px solid var(--smat-border-light);">
+    <div class="container">
+      <CircuitNavigator lang="es" />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="card" style="background: #f8fafc; border: 1px solid var(--smat-border-strong); padding: 2.25rem; text-align: center;">
+        <h2 style="margin-bottom: 0.6rem;">Solicitar Cotización de Bombas o Lote de Piezas</h2>
+        <p style="max-width: 620px; margin: 0 auto 1.25rem; color: var(--smat-text-secondary);">
+          Indique el tamaño de su bomba o las cantidades de su lote en contacto húmedo (impulsores, cuellos, volutas o Bearing Assembly / Housing).
+        </p>
+        <a href="/#rfq?equipo=skid_bomba" class="btn btn-primary">Solicitar Cotización →</a>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
   .page-hero {
-    padding: 4.5rem 0 3.5rem;
-    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
-    border-bottom: 1px solid var(--smat-border-light);
+    background-color: #ffffff;
+    color: var(--smat-text-primary);
+    padding: 3rem 0;
+    border-bottom: 2px solid var(--smat-copper-accent);
   }
-
-  .text-center {
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .page-hero h1 {
-    color: #090d16;
-    margin-top: 0.75rem;
-    font-size: clamp(2rem, 3.5vw, 2.75rem);
-    letter-spacing: -0.02em;
-  }
-
-  .subtitle {
-    font-size: 1.125rem;
-    margin-top: 0.75rem;
-    color: #475569;
-    line-height: 1.6;
-  }
-
-  .silo-block-header {
-    margin-bottom: 2rem;
-  }
-
-  .silo-block-header h2 {
-    margin-top: 0.5rem;
-    color: #090d16;
-  }
-
-  .catalog-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .product-card {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    background: #ffffff;
-    border: 1px solid var(--smat-border-light);
-    border-radius: 12px;
-    padding: 1.75rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  }
-
-  .series-tag, .dispatch-tag {
-    align-self: flex-start;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #475569;
-    background-color: #f1f5f9;
-    padding: 0.25rem 0.6rem;
-    border-radius: 6px;
-    margin-bottom: 0.75rem;
-    border: 1px solid var(--smat-border-light);
-  }
-
-  .dispatch-tag {
-    color: #991b1b;
-    background-color: #fee2e2;
-    border-color: #fca5a5;
-  }
-
-  .product-card h3 {
-    font-size: 1.25rem;
-    color: #090d16;
-    margin-bottom: 0.75rem;
-  }
-
-  .product-desc {
-    font-size: 0.875rem;
-    line-height: 1.5;
-    margin-bottom: 1.25rem;
-    flex-grow: 1;
-    color: #475569;
-  }
-
-  .card-specs {
-    background-color: #f8fafc;
-    border: 1px solid var(--smat-border-light);
+  .page-hero h1 { color: var(--smat-text-primary); margin-top: 0.65rem; }
+  .wet-lot-callout {
+    margin: 1.5rem 0;
+    padding: 1.35rem 1.5rem;
+    background: #fff7ed;
+    border: 1px solid #fdba74;
+    border-left: 4px solid var(--smat-copper-accent);
     border-radius: 8px;
-    padding: 0.75rem 1rem;
-    margin-bottom: 1.5rem;
-    font-size: 0.8125rem;
     display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .wet-lot-callout strong {
+    display: block;
+    font-size: 1rem;
+    color: var(--smat-text-primary);
+    margin-bottom: 0.3rem;
+  }
+  .wet-lot-callout p {
+    margin: 0;
+    font-size: 0.9rem;
     color: #334155;
-  }
-
-  .highlight-val {
-    color: #b45309;
-    font-weight: 600;
-  }
-
-  .card-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-    margin-top: auto;
-  }
-
-  .btn-sm {
-    min-height: 42px;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
+    max-width: 720px;
+    line-height: 1.5;
   }
 </style>

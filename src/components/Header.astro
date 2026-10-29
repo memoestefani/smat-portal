@@ -11,9 +11,9 @@ const { lang = 'es', currentPath = '/', alternatePath = '/en/' } = Astro.props;
 const isEs = lang === 'es';
 
 const productCategories = isEs ? [
-  { href: '/bombeo/', label: 'Bombas de Pulpa y Refacciones', sub: 'Impulsores A05, volutas, sellos y skids' },
-  { href: '/flotacion/', label: 'Celdas y Mecanismos de Flotación', sub: 'Celdas 50-300 ft³, rotores y estatores' },
-  { href: '/filtracion/', label: 'Filtración y Jales Secos', sub: 'Filtros prensa 16 bar y placas filtrantes' },
+  { href: '/bombeo/', label: 'Bombas para Lodos y Refacciones', sub: 'Impulsores, cuellos, volutas y Bearing Assembly / Housing' },
+  { href: '/flotacion/', label: 'Mecanismos para Celdas de Flotación y Acondicionadores', sub: 'Mecanismos 50-300 ft³, rotores y estatores' },
+  { href: '/filtracion/', label: 'Filtros Prensa y Balanzas', sub: 'Filtros prensa, placas 800-1500 mm y balanzas de pulpa' },
 ] : [
   { href: '/en/pumping/', label: 'Slurry Pumps & Spares', sub: 'A05 impellers, liners, seals & skids' },
   { href: '/en/flotation/', label: 'Flotation Cells & Mechanisms', sub: '50-300 ft³ cells, rotors & stators' },

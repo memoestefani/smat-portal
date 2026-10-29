@@ -25,12 +25,12 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
       </span>
     </div>
     <h2 class="workbench-title">
-      {isEs ? 'Facilite su Requisición o Solicitud de Información (RFQ)' : 'Streamline Your Technical Requisition or RFQ'}
+      {isEs ? 'Solicitar Cotización de Equipos y Refacciones' : 'Request a Quotation for Equipment & Spares'}
     </h2>
     <p class="workbench-subtitle">
       {isEs 
-        ? 'Especifique la necesidad operativa de su circuito para generar su hoja de requerimiento formal y coordinar atención directa con ingeniería en Durango.'
-        : 'Specify your operational circuit needs to generate your formal technical RFQ and coordinate direct engineering support from Durango.'}
+        ? 'Seleccione las piezas, lotes de contacto húmedo (impulsores, cuellos y volutas), balanzas o equipos que requiere cotizar.'
+        : 'Select the wear parts, wet-end lots (impellers, throatbushes, and volutes), pulp scales, or equipment you need to quote.'}
     </p>
   </div>
 
@@ -144,14 +144,14 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
           </div>
 
           <div class="form-group">
-            <label for="wb-role"><strong>{isEs ? 'Kit de Paro o Refacción Requerida en Bomba:' : 'Required Slurry Pump Shutdown Kit:'}</strong></label>
+            <label for="wb-role"><strong>{isEs ? 'Lote de Contacto Húmedo o Equipo Requerido:' : 'Required Wet-End Lot or Equipment:'}</strong></label>
             <select id="wb-role" name="role_id" class="wb-select">
-              <option value="kit_wet_end" selected>{isEs ? 'Kit Extremo Húmedo Completo (Impulsor + Voluta + Garganta + Plato + Sellos)' : 'Complete Wet-End Kit (Impeller + Volute + Throatbush + Frame Plate + Seals)'}</option>
-              <option value="kit_sellado">{isEs ? 'Kit de Sellado Dinámico / Expulsor (Expulsor + Anillo + Camisa + Empaques)' : 'Dynamic Expeller Seal Kit (Expeller + Ring + Sleeve + Gland Packing)'}</option>
-              <option value="kit_rodamientos">{isEs ? 'Cartucho de Rodamientos Completo (Flecha + Baleros de Carga + Laberintos)' : 'Complete Bearing Cartridge Assembly (Shaft + Bearings + Labyrinths)'}</option>
-              <option value="skid_bomba">{isEs ? 'Bomba Completa sobre Skid en Canal C con Motor' : 'Complete Pump Skid Package on C-Channel with Motor'}</option>
-              <option value="solo_impulsor">{isEs ? 'Solo Impulsor de Desgaste [Desglose asistido]' : 'Impeller Only [Assisted breakdown]'}</option>
-              <option value="solo_voluta">{isEs ? 'Solo Voluta de Desgaste [Desglose asistido]' : 'Volute Liner Only [Assisted breakdown]'}</option>
+              <option value="kit_wet_end" selected>{isEs ? 'Lote de Contacto Húmedo (ej. 5 Impulsores + 5 Cuellos + 4 Volutas)' : 'Wet-End Lot (e.g. 5 Impellers + 5 Throatbushes + 4 Volutes)'}</option>
+              <option value="kit_sellado">{isEs ? 'Expulsor Centrífugo y Prensaestopa (Sin Sello Mecánico)' : 'Centrifugal Expeller & Stuffing Box (No Mechanical Seal)'}</option>
+              <option value="kit_rodamientos">{isEs ? 'Bearing Assembly / Housing Completo (Cartucho Ensamblado)' : 'Complete Bearing Assembly / Housing (Assembled Cartridge)'}</option>
+              <option value="skid_bomba">{isEs ? 'Bomba Completa para Lodos' : 'Complete Slurry Pump'}</option>
+              <option value="solo_impulsor">{isEs ? 'Solo Impulsor [Desglose asistido]' : 'Impeller Only [Assisted breakdown]'}</option>
+              <option value="solo_voluta">{isEs ? 'Solo Voluta / Cuello [Desglose asistido]' : 'Volute / Throatbush Only [Assisted breakdown]'}</option>
             </select>
           </div>
 

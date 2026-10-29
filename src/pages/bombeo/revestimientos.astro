@@ -1,199 +1,82 @@
 ---
+// src/pages/bombeo/revestimientos.astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
-import SharePurchasing from '../../components/SharePurchasing.astro';
-import WhatsAppButton from '../../components/WhatsAppButton.astro';
+import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
 ---
 
 <BaseLayout 
-  title="Revestimientos y Volutas de Bomba Slurry | SMAT Minerals"
-  description="Volutas partidas de alta masa, gargantas (throatbushes) y platos de desgaste en High Chrome 27% (A05) y elastómero. Despacho urgente desde Durango."
+  title="Revestimientos, Volutas y Cuellos en Alto Cromo, Hule y Poliuretano | SMAT Minerals"
+  description="Suministro de revestimientos, volutas, cuellos y platos posteriores en Alto Cromo, Hule y Poliuretano por lote de contacto húmedo."
   lang="es"
-  canonicalPath="/bombeo/revestimientos/"
-  alternateEsPath="/bombeo/revestimientos/"
-  alternateEnPath="/en/pumping/liners/"
 >
-  <Header slot="header" lang="es" currentPath="/bombeo/revestimientos/" alternatePath="/en/pumping/liners/" />
-
   <section class="page-hero">
-    <div class="container text-center">
-      <span class="badge badge-emergency">OPEX • STOCK EN ALMACÉN DURANGO</span>
-      <h1>Revestimientos, Volutas y Gargantas</h1>
-      <p class="subtitle">Blindaje de desgaste para carcasas partidas de 4x3 a 10x8 en pulpas abrasivas severas.</p>
+    <div class="container">
+      <a href="/bombeo/" class="back-link">← Volver a Bombas para Lodos</a>
+      <div style="margin-top: 1rem;">
+        <span class="badge badge-copper">PIEZAS EN CONTACTO HÚMEDO</span>
+      </div>
+      <h1>Revestimientos, Volutas y Cuellos</h1>
+      <p style="font-size: 1.08rem; max-width: 720px; color: var(--smat-text-secondary);">
+        Piezas de desgaste en contacto húmedo fabricadas en <strong>Alto Cromo, Hule y Poliuretano</strong>: volutas, cuellos y platos posteriores para bombas de lodos.
+      </p>
     </div>
   </section>
 
-  <section class="section-spacing">
-    <div class="container content-container">
-      <div class="card detail-card">
-        <h2>Espesores Reforzados en la Zona de Corte Hidrodinámico</h2>
-        <p>
-          Las volutas de pulpa SMAT Minerals presentan secciones de pared sobredimensionadas en el área del espolón de descarga (*cutwater*), punto donde la turbulencia y el impacto cinético de las partículas duras provocan desgaste por erosión localizada.
-        </p>
+  <section class="section">
+    <div class="container">
+      <TechnicalDiagrams diagram="liners" lang="es" />
 
-        <table class="tech-table">
-          <thead>
-            <tr>
-              <th>Componente</th>
-              <th>Materiales y Opciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Voluta / Carcasa Interior</td>
-              <td>Hierro blanco High Chrome 27% Cr (A05) o Caucho vulcanizado sobre esqueleto de acero</td>
-            </tr>
-            <tr>
-              <td>Garganta (Throatbush)</td>
-              <td>A05 maquinado para ajuste de tolerancia frontal micrométrica con el impulsor</td>
-            </tr>
-            <tr>
-              <td>Plato Marco (Frame Plate Liner)</td>
-              <td>Inserto de alta resistencia al impacto abrasivo y corrosión de pulpas ácidas</td>
-            </tr>
-            <tr>
-              <td>Juntas y Sellos de Cara</td>
-              <td>O-rings de nitrilo / EPDM para retención hermética sin fugas perimetrales</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="grid-2" style="margin-top: 1.75rem;">
+        <div>
+          <h2>Compra por Lote de Contacto Húmedo</h2>
+          <p>
+            En la operación minera, las piezas que están en contacto húmedo no se compran de una por una. Para mantener la bomba trabajando en su punto de eficiencia y evitar paros por faltantes en almacén, se adquieren en lotes balanceados de acuerdo con la rotación de cada componente (por ejemplo: <strong>5 impulsores, 5 cuellos y 4 volutas</strong>).
+          </p>
 
-        <SharePurchasing 
-          roleTitle="Volutas y Revestimientos de Bomba Slurry"
-          series="Compatibilidad estándar para bombas 4x3 C, 6x4 D, 8x6 E, 10x8 F"
-          metallurgy="High Chrome 27% (A05) / Elastómero"
-          specs="Volutas de alta masa con espesor reforzado en espolón de corte hidrodinámico y ajuste frontal de garganta para mínima recirculación interna."
-          lang="es"
-        />
-
-        <div class="cta-rfq-box">
-          <div class="cta-rfq-header">
-            <span class="badge badge-copper">DESPACHO INMEDIATO DESDE DURANGO</span>
-            <h3>¿Requiere volutas o gargantas A05 para paro programado?</h3>
-            <p>Configure su requisición técnica formal con número de parte y acople dimensional 1:1.</p>
+          <h3 style="margin-top: 1.75rem;">Materiales y Componentes Disponibles</h3>
+          <div class="table-wrapper">
+            <table>
+              <tbody>
+                <tr>
+                  <th>Materiales de Revestimiento</th>
+                  <td><strong>Alto Cromo, Hule y Poliuretano</strong></td>
+                </tr>
+                <tr>
+                  <th>Piezas en Contacto Húmedo</th>
+                  <td>Voluta, Cuello (<em>Throatbush</em>), Plato Posterior (<em>Frame Plate Liner Insert</em>) e Impulsor</td>
+                </tr>
+                <tr>
+                  <th>Alto Cromo</th>
+                  <td>Fundición blanca al alto cromo (≥ 650 HB) para descarga de molinos y partículas gruesas con bordes cortantes</td>
+                </tr>
+                <tr>
+                  <th>Hule y Poliuretano</th>
+                  <td>Elastómeros moldeados por compresión y poliuretano de alta resistencia al rasgado para partículas finas, ciclones, flotación y pulpas corrosivas</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="cta-rfq-actions">
-            <a href="/?equipo=revestimientos#rfq" class="btn btn-primary btn-lg">
-              Cotizar Voluta / Revestimiento en Consola Central →
-            </a>
-            <a href="https://wa.me/526183670664?text=Hola%20SMAT%20Minerals,%20requiero%20cotizar%20Volutas%20y%20Revestimientos%20A05" target="_blank" rel="noopener noreferrer" class="btn btn-emergency btn-lg">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-              Consultar Stock en Almacén por WhatsApp
-            </a>
+        </div>
+
+        <div>
+          <div class="card" style="background-color: #f8fafc;">
+            <h3>Ejemplo de Lote Programado para Planta</h3>
+            <p>
+              El <strong>cuello</strong> y el <strong>impulsor</strong> trabajan con una holgura frontal reducida y presentan mayor frecuencia de recambio que la voluta. Configurar su pedido por lote (ej. 5 impulsores + 5 cuellos + 4 volutas) evita instalar un impulsor nuevo contra un cuello desgastado.
+            </p>
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light);">
+              <a href="/#rfq?equipo=revestimientos" class="btn btn-primary" style="width: 100%;">Cotizar Lote de Contacto Húmedo →</a>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
-
-  <WhatsAppButton lang="es" />
-  <Footer slot="footer" lang="es" />
 </BaseLayout>
 
 <style>
-  .page-hero {
-    padding: 4.5rem 0 3.5rem;
-    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
-    border-bottom: 1px solid var(--smat-border-light);
-  }
-
-  .text-center {
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .page-hero h1 {
-    color: #090d16;
-    margin-top: 0.75rem;
-    font-size: clamp(2rem, 3.5vw, 2.75rem);
-    letter-spacing: -0.02em;
-  }
-
-  .subtitle {
-    font-size: 1.125rem;
-    margin-top: 0.75rem;
-    color: #475569;
-    line-height: 1.6;
-  }
-
-  .content-container {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .detail-card {
-    background-color: #ffffff;
-    border: 1px solid var(--smat-border-light);
-    border-radius: 14px;
-    padding: 2.5rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-  }
-
-  .detail-card h2 {
-    color: #090d16;
-    margin-bottom: 1rem;
-    border-bottom: 2px solid var(--color-accent-copper);
-    padding-bottom: 0.5rem;
-    display: inline-block;
-  }
-
-  .detail-card p {
-    font-size: 1.0625rem;
-    line-height: 1.7;
-    margin-bottom: 1.5rem;
-    color: #334155;
-  }
-
-  .tech-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 2rem;
-    font-size: 0.95rem;
-  }
-
-  .tech-table th, .tech-table td {
-    padding: 0.85rem 1rem;
-    border-bottom: 1px solid var(--smat-border-light);
-    text-align: left;
-  }
-
-  .tech-table th {
-    background-color: #f8fafc;
-    color: #090d16;
-    font-weight: 700;
-  }
-
-  .tech-table td {
-    color: #334155;
-  }
-
-  .cta-rfq-box {
-    margin-top: 3rem;
-    padding: 2.5rem;
-    background: linear-gradient(180deg, #fafaf9 0%, #f1f5f9 100%);
-    border: 1px solid var(--smat-border-light);
-    border-radius: 12px;
-    text-align: center;
-  }
-
-  .cta-rfq-header h3 {
-    font-size: 1.4rem;
-    color: #090d16;
-    margin: 0.75rem 0 0.5rem;
-  }
-
-  .cta-rfq-header p {
-    color: #475569;
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .cta-rfq-actions {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
+  .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 2.75rem 0; border-bottom: 2px solid var(--smat-copper-accent); }
+  .page-hero h1 { color: var(--smat-text-primary); margin-top: 0.5rem; }
+  .back-link { color: var(--smat-copper-accent); font-size: 0.9rem; font-weight: 700; text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
 </style>
