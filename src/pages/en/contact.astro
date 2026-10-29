@@ -4,6 +4,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import QuoteWizard from '../../components/QuoteWizard.astro';
 import WhatsAppButton from '../../components/WhatsAppButton.astro';
+import companyData from '../../../data/company.json';
 ---
 
 <BaseLayout 
@@ -71,13 +72,13 @@ import WhatsAppButton from '../../components/WhatsAppButton.astro';
             </p>
           </div>
 
-          <div class="logistics-protocol-box">
+          <div class="logistics-protocol-box" data-hq-city={companyData.address.city}>
             <h4>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><rect width="16" height="13" x="1" y="3" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-              Heavy Truck Logistics Protocol
+              Heavy Truck Logistics & Witnessed Inspection Protocol
             </h4>
             <p>
-              Facility equipped with dedicated turning radius and clearance for semi-trailer flatbeds, tandem trucks, and rigid heavy haulers.
+              Facility equipped with dedicated turning radius and clearance for semi-trailer flatbeds, tandem trucks, and rigid heavy haulers. Availability for client-witnessed impeller dynamic balancing and dimensional verification prior to cargo lashing.
             </p>
           </div>
         </div>

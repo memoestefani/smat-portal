@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import QuoteWizard from '../components/QuoteWizard.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
+import companyData from '../../data/company.json';
 ---
 
 <BaseLayout 
@@ -75,10 +76,10 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
           <div class="logistics-protocol-box">
             <h4>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><rect width="16" height="13" x="1" y="3" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-              Acceso para Transporte Pesado
+              Acceso para Transporte Pesado y Protocolo de Inspección
             </h4>
             <p>
-              Instalaciones preparadas con radio de giro y altura para tractocamión con semirremolque / plataforma, torton y camiones rabón.
+              {companyData.logistics.maneuvers_access}. {companyData.logistics.client_inspection_protocol}.
             </p>
           </div>
         </div>

@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import DualHubView from '../components/DualHubView.astro';
+import atomicParts from '../../data/atomic_parts.json';
 
 const title = "Catálogo Ejecutivo Digital 2026 | Bombas de Lodos, Celdas y Filtros Prensa | SMAT Minerals";
 const description = "Catálogo técnico digital de bombas centrífugas para lodos abrasivos, celdas de flotación mecánicas, filtros prensa de jales y refaccionamiento A05 con despacho en Durango, México.";
@@ -205,6 +207,33 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
           </tbody>
         </table>
       </div>
+
+      <!-- Fichas Técnicas Atómicas de Piezas de Desgaste (atomic_parts.json) -->
+      <div class="atomic-parts-catalog-block" id="fichas-atomicas">
+        <div class="table-header-flex">
+          <div>
+            <h4 class="table-title">Fichas Técnicas por Número de Parte Universal (Contacto Húmedo y Sello Centrífugo)</h4>
+            <span class="table-subtitle">Seleccione el código universal para abrir su especificación metalúrgica individual, dureza certificada y acople dimensional 1:1</span>
+          </div>
+          <span class="matrix-badge">6 FICHAS ATÓMICAS</span>
+        </div>
+        <div class="atomic-parts-grid">
+          {atomicParts.map((part) => (
+            <div class="atomic-part-card">
+              <div class="atomic-part-top">
+                <span class="series-pill highlight">{part.part_number}</span>
+                <span class="atomic-frame-badge">Marco {part.frame}</span>
+              </div>
+              <strong class="atomic-part-title">{part.name_es}</strong>
+              <p class="atomic-part-desc">{part.type_es} • {part.hardness}</p>
+              <div class="atomic-part-actions no-print">
+                <a href={`/catalogo/${part.code}/`} class="btn-table-cta">Ver Ficha {part.part_number} →</a>
+                <a href={`/#rfq?codigo=${part.part_number}&circuito=bombeo`} class="btn-card-quote">Cotizar →</a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
 
     <!-- SECCIÓN 2: CELDAS DE FLOTACIÓN MECÁNICAS -->
@@ -292,6 +321,9 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
         </div>
       </div>
     </section>
+
+    <!-- MATRIZ INTERACTIVA DE 9 ROLES Y REGLAS METALÚRGICAS (data/roles.json) -->
+    <DualHubView lang="es" />
 
     <!-- SECCIÓN 4: PROTOCOLO DE ALMACÉN Y LOGÍSTICA -->
     <section class="catalog-section" id="logistica">
@@ -816,6 +848,65 @@ const description = "Catálogo técnico digital de bombas centrífugas para lodo
 
   .catalog-table tr:hover td {
     background: #f8fafc;
+  }
+
+  .atomic-parts-catalog-block {
+    margin-top: 1.5rem;
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-md);
+    padding: 1.25rem;
+  }
+
+  .atomic-parts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 0.85rem;
+  }
+
+  .atomic-part-card {
+    background: #f8fafc;
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-sm);
+    padding: 0.95rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .atomic-part-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .atomic-frame-badge {
+    font-family: var(--smat-font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--smat-text-secondary);
+  }
+
+  .atomic-part-title {
+    font-size: 0.88rem;
+    color: var(--smat-text-primary);
+    line-height: 1.35;
+  }
+
+  .atomic-part-desc {
+    font-size: 0.76rem;
+    color: var(--smat-text-secondary);
+    margin: 0 0 0.35rem 0;
+  }
+
+  .atomic-part-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 0.45rem;
+    border-top: 1px dashed #e2e8f0;
   }
 
   /* Trust Charter Grid */

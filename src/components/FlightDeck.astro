@@ -4,6 +4,7 @@
 // Concentra la experiencia en la consola reactiva QuoteWizard y provee accesos directos a Circuitos P&ID y Diagnóstico de Fallas.
 
 import QuoteWizard from './QuoteWizard.astro';
+import PerspectiveSelector from './PerspectiveSelector.astro';
 
 interface Props {
   lang?: 'es' | 'en';
@@ -14,6 +15,9 @@ const isEs = lang === 'es';
 ---
 
 <div class="flight-deck-wrapper" id="flight-deck">
+  <!-- Selector de Misión Operativa por Rol en Planta (PerspectiveSelector + workbenchBus) -->
+  <PerspectiveSelector lang={lang} />
+
   <!-- Consola de Requisición y Ficha Técnica -->
   <div class="flight-deck-main">
     <QuoteWizard lang={lang} />

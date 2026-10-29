@@ -3,6 +3,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CircuitNavigator from '../../components/CircuitNavigator.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
+import atomicParts from '../../../data/atomic_parts.json';
 ---
 
 <BaseLayout 
@@ -76,6 +77,30 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
           </div>
         </div>
       </div>
+
+      <!-- Fichas Técnicas por Código Universal (atomic_parts.json) -->
+      <div class="atomic-silo-block" style="margin-top: 2.5rem;">
+        <h2 style="margin-bottom: 0.4rem;">Fichas Técnicas por Número de Parte Universal (Contacto Húmedo)</h2>
+        <p style="color: var(--smat-text-secondary); margin-bottom: 1.25rem;">
+          Consulte las especificaciones individuales de impulsores cerrados, cuellos de succión y anillos expulsores con verificación dimensional 1:1 en Almacén Central Durango.
+        </p>
+        <div class="grid-3-atomic">
+          {atomicParts.map((part) => (
+            <div class="card atomic-silo-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span class="badge badge-copper">{part.part_number}</span>
+                <span style="font-family: var(--smat-font-mono); font-size: 0.78rem; font-weight: 700; color: var(--smat-text-secondary);">Marco {part.frame}</span>
+              </div>
+              <h3 style="font-size: 1.02rem; margin-bottom: 0.35rem;">{part.name_es}</h3>
+              <p style="font-size: 0.84rem; color: var(--smat-text-secondary); margin-bottom: 0.85rem;">{part.type_es} • {part.hardness}</p>
+              <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: auto;">
+                <a href={`/catalogo/${part.code}/`} class="btn btn-outline" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;">Ver Ficha {part.part_number}</a>
+                <a href={`/#rfq?codigo=${part.part_number}&circuito=bombeo`} class="btn btn-primary" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;">Cotizar →</a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   </section>
 
@@ -131,5 +156,14 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
     color: #334155;
     max-width: 720px;
     line-height: 1.5;
+  }
+  .grid-3-atomic {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.15rem;
+  }
+  .atomic-silo-card {
+    display: flex;
+    flex-direction: column;
   }
 </style>

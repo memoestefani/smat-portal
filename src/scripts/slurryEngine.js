@@ -232,6 +232,11 @@ export function calculateSlurryMetrics({
   const severityFactor = (Cw / 45) * Math.pow(d80 / 180, 0.35) * (actualPipeVelocity / 3.0);
   const estimatedImpellerLifeHours = Math.round(baseHours / Math.max(0.5, Math.min(2.5, severityFactor)));
 
+  // 10. Factor de Abatimiento de Carga y Eficiencia Hidráulica Cave / McElvain (INV-SMAT-PHY-001)
+  const headLossK = 0.000385 * Math.pow(d80 / 100, 0.35) * (Ss - 1) * Cw;
+  const headDeratingFactorHr = Math.max(0.65, Math.min(0.99, 1.0 - headLossK));
+  const effDeratingFactorEr = Math.max(0.60, Math.min(0.98, headDeratingFactorHr - 0.02 * (Cv / 20)));
+
   return {
     inputs: { flowM3H: Q, solidsWeightPercent: Cw, particleSizeD80Microns: d80, solidsSpecificGravity: Ss, pipeDiameterMm: D_mm, altitudeM: altitudeData.altitudeM },
     results: {
@@ -241,6 +246,8 @@ export function calculateSlurryMetrics({
       criticalSettlingVelocityMs: Number(Vc.toFixed(2)),
       recommendedPipeVelocityMs: Number(recommendedPipeVelocity.toFixed(2)),
       actualPipeVelocityMs: Number(actualPipeVelocity.toFixed(2)),
+      headDeratingFactorHr: Number(headDeratingFactorHr.toFixed(3)),
+      effDeratingFactorEr: Number(effDeratingFactorEr.toFixed(3)),
       flowCondition,
       flowConditionText,
       recommendedMaterial,

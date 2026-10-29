@@ -1,5 +1,9 @@
 ---
 import miningGroupsData from '../../data/mining_groups.json';
+import companyData from '../../data/company.json';
+import rolesData from '../../data/roles.json';
+import { SLURRY_PRESETS, MECHANICAL_DIAGNOSTICS, calculateSlurryMetrics, calculateAltitudeCorrection } from '../scripts/slurryEngine.js';
+import { SMAT_WORKBENCH_EVENT } from '../scripts/workbenchBus.js';
 
 interface Props {
   lang?: 'es' | 'en';
@@ -10,9 +14,27 @@ interface Props {
 const { lang = 'es', defaultRole = '', defaultType = 'opex' } = Astro.props;
 const isEs = lang === 'es';
 const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
+const mechDiagnosticsList = Object.values(MECHANICAL_DIAGNOSTICS);
+const defaultSimMetrics = calculateSlurryMetrics({ flowM3H: 180, solidsWeightPercent: 45, particleSizeD80Microns: 180, altitudeM: 2400 });
+const defaultAltData = calculateAltitudeCorrection(2400);
+
+const rolesCriteriaMap: Record<string, { rule_es: string; rule_en: string; risk_es: string; risk_en: string }> = {};
+for (const v of rolesData.verticals) {
+  for (const r of [...(v.capex || []), ...(v.opex || [])]) {
+    if (r.decision_criteria) {
+      rolesCriteriaMap[r.role_id] = {
+        rule_es: r.decision_criteria.metallurgy_rule_es,
+        rule_en: r.decision_criteria.metallurgy_rule_en,
+        risk_es: r.decision_criteria.risk_avoided_es,
+        risk_en: r.decision_criteria.risk_avoided_en,
+      };
+    }
+  }
+}
+const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
 ---
 
-<div class="workbench-container" id="rfq" data-default-role={defaultRole} data-default-type={defaultType} data-mining-groups={miningGroupsJson} data-lang={lang}>
+<div class="workbench-container" id="rfq" data-default-role={defaultRole} data-default-type={defaultType} data-mining-groups={miningGroupsJson} data-roles-criteria={rolesCriteriaJson} data-lang={lang} data-workbench-event={SMAT_WORKBENCH_EVENT} data-hq-city={companyData.address.city} data-presets={JSON.stringify(SLURRY_PRESETS)}>
   <!-- Cabecera de la Estación de Trabajo -->
   <div class="workbench-header">
     <div class="badge-row">
@@ -152,6 +174,7 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
               <option value="skid_bomba">{isEs ? 'Bomba Completa para Lodos' : 'Complete Slurry Pump'}</option>
               <option value="solo_impulsor">{isEs ? 'Solo Impulsor [Desglose asistido]' : 'Impeller Only [Assisted breakdown]'}</option>
               <option value="solo_voluta">{isEs ? 'Solo Voluta / Cuello [Desglose asistido]' : 'Volute / Throatbush Only [Assisted breakdown]'}</option>
+              <option value="balanza_marcy">{isEs ? 'Balanza de Densidad de Pulpa (Tipo Marcy) — 1000 cm³ y 12 Diales' : 'Pulp Density Scale (Marcy Type) — 1000 cm³ & 12 Dials'}</option>
             </select>
           </div>
 
@@ -212,7 +235,7 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
             <label for="wb-role-flot"><strong>{isEs ? 'Equipo o Componente Requerido en Flotación:' : 'Required Flotation Equipment or Part:'}</strong></label>
             <select id="wb-role-flot" name="role_id_flot" class="wb-select">
               <option value="rotor_estator" selected>{isEs ? 'Mecanismo Rotor y Estator de Elastómero (Desgaste)' : 'Elastomer Rotor & Stator Mechanism (Wear Spares)'}</option>
-              <option value="celda_flotacion">{isEs ? 'Celda Mecánica de Flotación Completa (Tanque + Mecanismo + Motor)' : 'Complete Mechanical Flotation Cell (Tank + Mechanism + Motor)'}</option>
+              <option value="celda_flotacion">{isEs ? 'Mecanismo para Celda de Flotación Completa y Acondicionador' : 'Complete Flotation Cell Mechanism & Pulp Conditioner'}</option>
               <option value="bateria_celdas">{isEs ? 'Batería Modular de Celdas Rougher / Scavenger' : 'Rougher / Scavenger Modular Cell Bank'}</option>
               <option value="manto_difusor">{isEs ? 'Difusor de Fondo y Manto de Protección Antidesgaste' : 'Bottom Diffuser & Protective Wear Shroud'}</option>
             </select>
@@ -256,12 +279,13 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
           </div>
 
           <div class="form-group">
-            <label for="wb-role-filt"><strong>{isEs ? 'Equipo o Refacción Requerida en Filtración:' : 'Required Filtration Equipment or Part:'}</strong></label>
+            <label for="wb-role-filt"><strong>{isEs ? 'Equipo o Refacción Requerida en Filtración e Instrumentación:' : 'Required Filtration or Instrumentation Equipment:'}</strong></label>
             <select id="wb-role-filt" name="role_id_filt" class="wb-select">
               <option value="placas_telas" selected>{isEs ? 'Paquete de Placas de Polipropileno y Telas Filtrantes' : 'Polypropylene Plates & Filter Cloths Pack'}</option>
               <option value="filtro_prensa">{isEs ? 'Filtro Prensa Hidráulico Automático (16 bar)' : 'Automatic Hydraulic Filter Press (16 bar)'}</option>
               <option value="placas_membrana">{isEs ? 'Placas de Membrana para Exprimido a Alta Presión' : 'Membrane Squeeze Plates Pack'}</option>
               <option value="bomba_prensa">{isEs ? 'Bomba de Pulpa para Alimentación de Filtro Prensa' : 'Slurry Feed Pump for Filter Press'}</option>
+              <option value="balanza_marcy">{isEs ? 'Balanza de Densidad de Pulpa (Tipo Marcy) — Recipiente 1000 cm³ y 12 Diales' : 'Pulp Density Scale (Marcy Type) — 1000 cm³ Container & 12 Dials'}</option>
             </select>
           </div>
 
@@ -292,6 +316,18 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
               </button>
             </div>
             <input type="hidden" name="filt_condition" id="wb-filt-condition" value="" />
+          </div>
+        </div>
+
+        <!-- Criterio Metalúrgico y Riesgo Evitado en Vivo (Conectado a data/roles.json) -->
+        <div id="wb-role-criteria-bar" class="role-criteria-inline-bar">
+          <div class="criteria-inline-row">
+            <span class="criteria-inline-tag font-mono-tech">[REGLA METALÚRGICA]</span>
+            <span id="wb-criteria-rule">{isEs ? rolesCriteriaMap.revestimientos?.rule_es : rolesCriteriaMap.revestimientos?.rule_en}</span>
+          </div>
+          <div class="criteria-inline-row">
+            <span class="criteria-inline-tag criteria-tag-risk font-mono-tech">[RIESGO EVITADO]</span>
+            <span id="wb-criteria-risk">{isEs ? rolesCriteriaMap.revestimientos?.risk_es : rolesCriteriaMap.revestimientos?.risk_en}</span>
           </div>
         </div>
 
@@ -340,10 +376,10 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
           </details>
         </div>
 
-        <!-- Campo Seguro de Ingesta Confidencial de Placa / Tag (Decisión 6-A) -->
+        <!-- Campo Seguro de Ingesta Confidencial de Folio / Orden Interna (Decisión 6-A) -->
         <div class="form-group">
-          <label for="wb-client-ref"><strong>{isEs ? 'Referencia Interna Cliente / Tag de Planta:' : 'Client Internal Reference / Plant Tag:'}</strong></label>
-          <input type="text" id="wb-client-ref" name="client_reference" class="wb-input" placeholder={isEs ? 'Ej. Bomba #2 Cabecera / Tag B-201' : 'e.g. Header Pump #2 / Tag B-201'} />
+          <label for="wb-client-ref"><strong>{isEs ? 'Folio de Requisición Interna / Orden de Mantenimiento (Opcional):' : 'Internal Requisition Folio / Work Order (Optional):'}</strong></label>
+          <input type="text" id="wb-client-ref" name="client_reference" class="wb-input" placeholder={isEs ? 'Ej. REQ-2026-084 / OM-4410' : 'e.g. REQ-2026-084 / WO-4410'} />
           <small class="confidential-hint">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             {isEs ? 'Información protegida para cotejo dimensional 1:1 en privado (cero divulgación a terceros).' : 'Confidential data for 1:1 dimensional check in private.'}
@@ -534,11 +570,19 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
               </div>
             </div>
 
-            <!-- Resultados Rápidos del Simulador -->
+            <!-- Resultados Rápidos del Simulador (slurryEngine.js: Vc, Sm, Cv, HR Cave, Aleación, Vida) -->
             <div class="sim-output-box">
               <div class="sim-metric">
                 <span class="sim-metric-label">{isEs ? 'Velocidad Crítica (Vc):' : 'Critical Velocity (Vc):'}</span>
-                <strong class="sim-metric-val pro-tabular-nums" id="metric-vc">2.42 m/s</strong>
+                <strong class="sim-metric-val pro-tabular-nums" id="metric-vc">{defaultSimMetrics.results.criticalSettlingVelocityMs} m/s</strong>
+              </div>
+              <div class="sim-metric">
+                <span class="sim-metric-label">{isEs ? 'Densidad Pulpa (Sm / Cv):' : 'Slurry Density (Sm / Cv):'}</span>
+                <strong class="sim-metric-val pro-tabular-nums" id="metric-sm-cv">{defaultSimMetrics.results.slurrySpecificGravity.toFixed(2)} kg/L ({defaultSimMetrics.results.solidsVolumetricPercent}% Cv)</strong>
+              </div>
+              <div class="sim-metric">
+                <span class="sim-metric-label">{isEs ? 'Factor Cabeza (HR Cave):' : 'Head Derating (HR Cave):'}</span>
+                <strong class="sim-metric-val pro-tabular-nums" id="metric-derating-hr">HR {defaultSimMetrics.results.headDeratingFactorHr.toFixed(2)}</strong>
               </div>
               <div class="sim-metric">
                 <span class="sim-metric-label">{isEs ? 'Material Recomendado:' : 'Recommended Alloy:'}</span>
@@ -555,7 +599,20 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
               <span class="regime-label">{isEs ? 'Semáforo de Transporte Hidráulico (Durand):' : 'Hydraulic Transport Regime (Durand):'}</span>
               <div class="regime-status-bar" id="regime-status-bar">
                 <span class="regime-pill safe" id="regime-pill"><span class="pulsing-dot pulsing-dot-green"></span>{isEs ? 'Régimen Seguro / Flujo Homogéneo (V > 1.25 Vc)' : 'Safe Regime / Homogeneous Flow (V > 1.25 Vc)'}</span>
-                <small class="regime-detail" id="regime-detail">{isEs ? 'Velocidad recomendada: >3.02 m/s' : 'Recommended velocity: >3.02 m/s'}</small>
+                <small class="regime-detail" id="regime-detail">{isEs ? `Velocidad recomendada: >${defaultSimMetrics.results.recommendedPipeVelocityMs} m/s (Patm ${(defaultAltData as any).pAtmHeadMca} mca)` : `Recommended velocity: >${defaultSimMetrics.results.recommendedPipeVelocityMs} m/s (Patm ${(defaultAltData as any).pAtmHeadMca} mca)`}</small>
+              </div>
+            </div>
+
+            <!-- Reglas de Diagnóstico Mecánico de Campo (MECHANICAL_DIAGNOSTICS de slurryEngine.js) -->
+            <div class="mech-diagnostics-inline-box" id="mech-diagnostics-inline">
+              <span class="regime-label">{isEs ? 'Guía Rápida de Síntomas Mecánicos y Correctivos:' : 'Quick Mechanical Symptom & Action Guide:'}</span>
+              <div class="mech-diag-mini-grid">
+                {mechDiagnosticsList.map((diag) => (
+                  <div class="mech-diag-mini-item" data-diag-id={diag.id} data-diag-role={diag.recommendedRole}>
+                    <strong>{isEs ? diag.symptomEs : diag.symptomEn}</strong>
+                    <small>{isEs ? diag.actionEs : diag.actionEn}</small>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -651,6 +708,7 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
                 {isEs ? 'Grupo Detectado:' : 'Detected Group:'} <strong id="hint-group-name"></strong>
               </span>
               <div class="unit-chips" id="unit-chips-container"></div>
+              <div id="unit-pulp-profile-badge" class="unit-pulp-profile-badge hidden"></div>
             </div>
           </div>
         </div>
@@ -888,7 +946,7 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
                       <span id="sap-live-part">{isEs ? 'Kit Extremo Húmedo Completo' : 'Complete Wet-End Kit'}</span>
                       <small class="sap-code-badge" id="sap-live-code">SMAT-PUMP-6X4-WETKIT</small>
                       <div class="sap-tag-line font-mono-tech" style="font-size:0.65rem; color:#0369a1; margin-top:2px;">
-                        TAG: <strong id="sap-live-tag">CIRCUIT-BOMBEO</strong> • SAT: 8413.91.01 • Entrega: 24-48h Durango
+                        TAG: <strong id="sap-live-tag">CIRCUIT-BOMBEO</strong> • SAT: 8413.91.01 • Despacho: Almacén Central Durango
                       </div>
                     </td>
                     <td id="sap-live-mat">{isEs ? 'Dictamen según severidad de pulpa (Durango)' : 'Metallurgy dictated by slurry severity (Durango)'}</td>
@@ -3319,6 +3377,104 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
     transform: translateY(-1px);
   }
 
+  .mech-diagnostics-inline-box {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: var(--smat-bg-elevated, #f8fafc);
+    border: 1px solid var(--smat-border, #cbd5e1);
+    border-radius: 6px;
+  }
+
+  .mech-diag-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .mech-diag-badge {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--smat-accent-hover, #b45309);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .mech-diag-mini-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px;
+  }
+
+  .mech-diag-mini-item {
+    background: var(--smat-bg-surface, #ffffff);
+    border: 1px solid var(--smat-border, #e2e8f0);
+    border-radius: 5px;
+    padding: 7px 9px;
+    font-size: 0.75rem;
+    line-height: 1.35;
+  }
+
+  .mech-diag-mini-title {
+    font-weight: 800;
+    color: var(--smat-text-primary, #1e293b);
+    margin-bottom: 3px;
+  }
+
+  .mech-diag-mini-cause {
+    color: var(--smat-text-secondary, #475569);
+    margin-bottom: 3px;
+  }
+
+  .mech-diag-mini-fix {
+    color: #047857;
+    font-weight: 600;
+  }
+
+  .unit-pulp-profile-badge {
+    margin-top: 8px;
+    padding: 6px 10px;
+    background: rgba(217, 119, 6, 0.08);
+    border-left: 3px solid var(--smat-accent, #d97706);
+    border-radius: 4px;
+    font-size: 0.78rem;
+    color: var(--smat-text-primary, #1e293b);
+    font-weight: 600;
+  }
+
+  .role-criteria-inline-bar {
+    margin: 0.75rem 0 1rem;
+    padding: 0.65rem 0.85rem;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-left: 3px solid #d97706;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: #1e293b;
+  }
+
+  .criteria-inline-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: baseline;
+  }
+
+  .criteria-inline-tag {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #9a3412;
+  }
+
+  .criteria-tag-risk {
+    color: #065f46;
+  }
+
   .hidden { display: none !important; }
 </style>
 
@@ -3730,12 +3886,12 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
       });
     }
 
-    // Presets Definitions
+    // Presets Definitions синхronizados con SLURRY_PRESETS (slurryEngine.js) y IDs reales de <select>
     var presetsMap = {
-      sag_primary: { flow: 450, solids: 28, d80: 450, role: 'impulsor' },
-      flotation_rougher: { flow: 300, solids: 18, d80: 74, role: 'rotor_estator' },
-      tailings_thickened: { flow: 600, solids: 55, d80: 150, role: 'skid_bomba' },
-      emergency_6x4: { flow: 350, solids: 32, d80: 300, role: 'revestimientos' }
+      sag_primary: { flow: 450, solids: 28, d80: 450, circuit: 'bombeo', role: 'solo_impulsor', pipeSize: '8x6' },
+      flotation_rougher: { flow: 300, solids: 18, d80: 74, circuit: 'flotacion', role: 'rotor_estator', flotCap: '100ft' },
+      tailings_thickened: { flow: 600, solids: 55, d80: 150, circuit: 'bombeo', role: 'skid_bomba', pipeSize: '8x6' },
+      emergency_6x4: { flow: 350, solids: 32, d80: 300, circuit: 'bombeo', role: 'kit_wet_end', pipeSize: '6x4' }
     };
 
     // Preset Clicks
@@ -3748,10 +3904,18 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
         presetChips.forEach(function(c) { c.classList.remove('active'); });
         chip.classList.add('active');
 
+        if (p.circuit) setCircuit(p.circuit);
         if (sliderFlow) sliderFlow.value = p.flow;
         if (sliderSolids) sliderSolids.value = p.solids;
         if (sliderD80) sliderD80.value = p.d80;
-        if (selectRole && p.role) selectRole.value = p.role;
+
+        if (p.circuit === 'flotacion') {
+          if (selectRoleFlot && p.role) selectRoleFlot.value = p.role;
+          if (selectFlotCapacity && p.flotCap) selectFlotCapacity.value = p.flotCap;
+        } else {
+          if (selectRole && p.role) selectRole.value = p.role;
+          if (selectPipeSize && p.pipeSize) selectPipeSize.value = p.pipeSize;
+        }
 
         runSlurryCalculation();
         updateDossier();
@@ -3823,29 +3987,6 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
     document.querySelectorAll('input[name="pkg_item"]').forEach(function(cb) {
       cb.addEventListener('change', updateDossier);
     });
-
-    // Pestañas Duales / Enfoque Continuo (Decisión 5-C & 8-A)
-    if (tabBtnMaint && tabBtnSap && paneMaint && paneSap) {
-      tabBtnMaint.addEventListener('click', function() {
-        tabBtnMaint.classList.add('active');
-        tabBtnSap.classList.remove('active');
-        tabBtnMaint.setAttribute('aria-selected', 'true');
-        tabBtnSap.setAttribute('aria-selected', 'false');
-        paneMaint.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        paneMaint.classList.add('dossier-focus-highlight');
-        paneSap.classList.remove('dossier-focus-highlight');
-      });
-
-      tabBtnSap.addEventListener('click', function() {
-        tabBtnSap.classList.add('active');
-        tabBtnMaint.classList.remove('active');
-        tabBtnSap.setAttribute('aria-selected', 'true');
-        tabBtnMaint.setAttribute('aria-selected', 'false');
-        paneSap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        paneSap.classList.add('dossier-focus-highlight');
-        paneMaint.classList.remove('dossier-focus-highlight');
-      });
-    }
 
     // Manejo Ligero de Fotos en Cliente con Reducción en Canvas (Decisión 6-C)
     var photoInput = document.getElementById('wb-photo-input');
@@ -4010,15 +4151,28 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
         }
       }
 
-      var matName = d80 > 150 ? 'High Chrome A05 (>650 HB)' : (d80 < 75 && Cw < 40 ? 'Caucho Natural Vulcanizado' : 'High Chrome A05 (>650 HB)');
+      var matName = d80 > 150
+        ? 'High Chrome A05 (>650 HB)'
+        : (d80 < 75 && Cw < 40
+          ? (isEs ? 'Caucho Natural Vulcanizado' : 'Natural Vulcanized Rubber')
+          : 'High Chrome A05 (>650 HB)');
       var lifeHrs = d80 > 150 ? Math.round(2400 / ((Cw / 45) * Math.pow(d80 / 180, 0.35))) : 2800;
 
+      // Cave / McElvain Head Derating Factor HR (INV-SMAT-PHY-001)
+      var headLossK = 0.000385 * Math.pow(d80 / 100, 0.35) * (Ss - 1) * Cw;
+      var hrFactor = Math.max(0.65, Math.min(0.99, 1.0 - headLossK));
+
+      var metricSmCv = document.getElementById('metric-sm-cv');
+      var metricDeratingHr = document.getElementById('metric-derating-hr');
+
       if (metricVc) metricVc.textContent = Vc.toFixed(2) + ' m/s';
-      if (metricMaterial) metricMaterial.textContent = isEs ? 'Dureza Metalúrgica Certificada' : 'Certified Metallurgy Hardness';
+      if (metricSmCv) metricSmCv.textContent = Sm.toFixed(2) + ' kg/L (' + Cv.toFixed(1) + '% Cv)';
+      if (metricDeratingHr) metricDeratingHr.textContent = 'HR ' + hrFactor.toFixed(2);
+      if (metricMaterial) metricMaterial.textContent = matName;
       if (metricLife) metricLife.textContent = '~' + lifeHrs + ' h';
       if (miniAlloyBadge) miniAlloyBadge.textContent = isEs ? 'Acople 1:1 Certificado' : 'Certified 1:1 Fit';
 
-      if (liveTableFlow) liveTableFlow.textContent = Q + ' m³/h @ ' + Cw + '% Sólidos (Cp)';
+      if (liveTableFlow) liveTableFlow.textContent = Q + ' m³/h @ ' + Cw + '% Sólidos (Sm = ' + Sm.toFixed(2) + ' kg/L, Cv = ' + Cv.toFixed(1) + '%, HR = ' + hrFactor.toFixed(2) + ')';
       if (liveTableD80) liveTableD80.textContent = 'd80 = ' + d80 + ' µm (' + (d80 > 150 ? 'Cuarzo / Abrasivo Grueso' : 'Finos de Flotación') + ')';
       if (liveTableVc) liveTableVc.textContent = Vc.toFixed(2) + ' m/s (Margen seguro: ' + Vrec.toFixed(2) + ' m/s)';
       
@@ -4518,6 +4672,8 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
     var hintBox = document.getElementById('mining-group-hint');
     var hintName = document.getElementById('hint-group-name');
     var unitChips = document.getElementById('unit-chips-container');
+    var unitPulpBadge = document.getElementById('unit-pulp-profile-badge');
+    var selectedUnitPulpProfile = '';
 
     function checkMiningDomain() {
       var email = inputEmail?.value.trim() || '';
@@ -4536,15 +4692,33 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
           inputCompany.dataset.autofilled = 'true';
         }
         unitChips.innerHTML = '';
-        if (match.units) {
+        if (match.units && match.units.length > 0) {
+          var firstUnit = match.units[0];
+          if (unitPulpBadge && firstUnit.pulp_profile) {
+            unitPulpBadge.classList.remove('hidden');
+            unitPulpBadge.textContent = (isEs ? 'Perfil Mineral de Unidad (' : 'Unit Mineral Profile (') + firstUnit.name + '): ' + firstUnit.pulp_profile;
+          }
           match.units.forEach(function(u) {
             var chip = document.createElement('button');
             chip.type = 'button';
             chip.className = 'unit-chip-btn';
             chip.textContent = u.name;
+            if (u.pulp_profile) {
+              chip.title = u.pulp_profile;
+              chip.setAttribute('data-pulp-profile', u.pulp_profile);
+            }
             chip.addEventListener('click', function() {
               if (inputDest) inputDest.value = u.name;
               if (inputCompany) inputCompany.value = match.name + ' / ' + u.name.split('(')[0].trim();
+              selectedUnitPulpProfile = u.pulp_profile || '';
+              if (unitPulpBadge && u.pulp_profile) {
+                unitPulpBadge.classList.remove('hidden');
+                unitPulpBadge.textContent = (isEs ? 'Perfil Mineral Detectado (' : 'Detected Mineral Profile (') + u.name + '): ' + u.pulp_profile;
+              }
+              if (inputDetails && u.pulp_profile && !inputDetails.value.includes(u.pulp_profile)) {
+                var baseDet = inputDetails.value.trim();
+                inputDetails.value = (baseDet ? baseDet + ' | ' : '') + (isEs ? 'Perfil de pulpa: ' : 'Pulp profile: ') + u.pulp_profile;
+              }
               updateDossier();
             });
             unitChips.appendChild(chip);
@@ -4838,6 +5012,76 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
       }, 350);
     });
 
+    // Conexión a data/roles.json (Criterio Metalúrgico y Riesgo Evitado por Rol)
+    var rolesCriteriaAttr = container.getAttribute('data-roles-criteria');
+    var rolesCriteriaData = {};
+    try { rolesCriteriaData = JSON.parse(rolesCriteriaAttr || '{}'); } catch(e) {}
+
+    var roleToCriteriaKey = {
+      kit_wet_end: 'revestimientos',
+      kit_sellado: 'sello',
+      kit_rodamientos: 'soporte',
+      skid_bomba: 'skid_bomba',
+      solo_impulsor: 'impulsor',
+      solo_voluta: 'revestimientos',
+      rotor_estator: 'mecanismos_flotacion',
+      celda_flotacion: 'celda_completa',
+      bateria_celdas: 'celda_completa',
+      manto_difusor: 'mecanismos_flotacion',
+      placas_telas: 'repuestos_prensa',
+      filtro_prensa: 'prensa_completa',
+      placas_membrana: 'repuestos_prensa',
+      bomba_prensa: 'skid_bomba',
+      balanza_marcy: 'repuestos_prensa'
+    };
+
+    function updateRoleCriteriaBar() {
+      var ruleEl = document.getElementById('wb-criteria-rule');
+      var riskEl = document.getElementById('wb-criteria-risk');
+      if (!ruleEl || !riskEl) return;
+
+      var activeRoleVal = 'kit_wet_end';
+      if (currentCircuit === 'bombeo' && selectRole) activeRoleVal = selectRole.value;
+      else if (currentCircuit === 'flotacion' && selectRoleFlot) activeRoleVal = selectRoleFlot.value;
+      else if (currentCircuit === 'filtracion' && selectRoleFilt) activeRoleVal = selectRoleFilt.value;
+
+      if (activeRoleVal === 'balanza_marcy') {
+        ruleEl.textContent = isEs
+          ? 'Recipiente calibrado de 1000 cm³ en acero inoxidable o acrílico con 12 carátulas intercambiables (SG 1.2 a 7.8).'
+          : 'Calibrated 1000 cm³ stainless steel or acrylic container with 12 interchangeable dials (SG 1.2 to 7.8).';
+        riskEl.textContent = isEs
+          ? 'Evita errores de dosificación de reactivos y desbalance metalúrgico por lecturas inexactas de % de sólidos en pulpa.'
+          : 'Prevents reagent dosing errors and metallurgical imbalance caused by inaccurate % solids readings.';
+        return;
+      }
+
+      var cKey = roleToCriteriaKey[activeRoleVal] || 'revestimientos';
+      var cObj = rolesCriteriaData[cKey];
+      if (cObj) {
+        ruleEl.textContent = isEs ? cObj.rule_es : cObj.rule_en;
+        riskEl.textContent = isEs ? cObj.risk_es : cObj.risk_en;
+      }
+    }
+
+    [selectRole, selectRoleFlot, selectRoleFilt].forEach(function(sel) {
+      if (sel) sel.addEventListener('change', updateRoleCriteriaBar);
+    });
+
+    // Conexión al Bus de Eventos Reactivo (workbenchBus.js: smat:workbench_update & smat:mission) y Hashchange
+    var roleAliasMap = {
+      impulsor: 'solo_impulsor',
+      revestimientos: 'kit_wet_end',
+      sello: 'kit_sellado',
+      soporte: 'kit_rodamientos',
+      skid_bomba: 'skid_bomba',
+      celda_completa: 'celda_flotacion',
+      mecanismos_flotacion: 'rotor_estator',
+      prensa_completa: 'filtro_prensa',
+      repuestos_prensa: 'placas_telas',
+      balanza_marcy: 'balanza_marcy',
+      custom: 'balanza_marcy'
+    };
+
     // Deep Linking Determinista (#rfq?circuito=...&equipo=...&serie=...&falla=...) (Decisión 4-A & 7-A)
     function checkUrlContext() {
       var rawHashOrSearch = window.location.hash || window.location.search || '';
@@ -4850,7 +5094,8 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
       try {
         var params = new URLSearchParams(qStr);
         var urlCircuit = params.get('circuito') || params.get('circuit');
-        var urlRole = params.get('rol') || params.get('role') || params.get('equipo');
+        var rawUrlRole = params.get('rol') || params.get('role') || params.get('equipo');
+        var urlRole = rawUrlRole ? (roleAliasMap[rawUrlRole] || rawUrlRole) : '';
         var urlSerie = params.get('serie');
         var urlFalla = params.get('falla');
         var urlSintoma = params.get('sintoma');
@@ -4859,11 +5104,11 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
 
         if (urlCircuit) {
           setCircuit(urlCircuit);
-        } else if (urlRole) {
-          var rLower = urlRole.toLowerCase();
-          if (rLower.includes('flot') || rLower.includes('celda') || rLower.includes('rotor')) {
+        } else if (rawUrlRole) {
+          var rLower = rawUrlRole.toLowerCase();
+          if (rLower.includes('flot') || rLower.includes('celda') || rLower.includes('rotor') || rLower.includes('mecanismo')) {
             setCircuit('flotacion');
-          } else if (rLower.includes('filt') || rLower.includes('prensa') || rLower.includes('placa') || rLower.includes('tela')) {
+          } else if (rLower.includes('filt') || rLower.includes('prensa') || rLower.includes('placa') || rLower.includes('tela') || rLower.includes('balanza') || rLower === 'custom') {
             setCircuit('filtracion');
           } else {
             setCircuit('bombeo');
@@ -4925,6 +5170,7 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
           btnOpex?.click();
         }
 
+        updateRoleCriteriaBar();
         updateDossier();
 
         if (window.location.hash.includes('rfq')) {
@@ -5007,12 +5253,59 @@ const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
     window.addEventListener('offline', updateNetworkStatus);
     updateNetworkStatus();
 
+    window.addEventListener('smat:workbench_update', function(evt) {
+      var detail = evt.detail || {};
+      if (detail.intent === 'capex') btnCapex?.click();
+      else if (detail.intent === 'opex') btnOpex?.click();
+
+      if (detail.circuit) setCircuit(detail.circuit);
+      if (detail.role) {
+        var mappedRole = roleAliasMap[detail.role] || detail.role;
+        if (currentCircuit === 'bombeo' && selectRole) selectRole.value = mappedRole;
+        else if (currentCircuit === 'flotacion' && selectRoleFlot) selectRoleFlot.value = mappedRole;
+        else if (currentCircuit === 'filtracion' && selectRoleFilt) selectRoleFilt.value = mappedRole;
+      }
+      if (detail.preset) {
+        var presetChipEl = document.querySelector('.preset-chip[data-preset="' + detail.preset + '"]');
+        if (presetChipEl) presetChipEl.click();
+      }
+      updateRoleCriteriaBar();
+      runSlurryCalculation();
+      updateDossier();
+    });
+
+    window.addEventListener('smat:mission', function(evt) {
+      var m = evt.detail && evt.detail.mission;
+      if (m === 'requisicion_capex') btnCapex?.click();
+      else if (m === 'paro_urgente' || m === 'desgaste_proceso') btnOpex?.click();
+      updateDossier();
+    });
+
+    window.addEventListener('hashchange', checkUrlContext);
+
+    document.addEventListener('click', function(e) {
+      var anchor = e.target && e.target.closest ? e.target.closest('a[href*="#rfq"]') : null;
+      if (!anchor) return;
+      var href = anchor.getAttribute('href') || '';
+      try {
+        var targetUrl = new URL(href, window.location.origin);
+        if (targetUrl.pathname === window.location.pathname) {
+          e.preventDefault();
+          history.pushState(null, '', targetUrl.search + targetUrl.hash);
+          checkUrlContext();
+          var rfqEl = document.getElementById('rfq');
+          if (rfqEl) rfqEl.scrollIntoView({ behavior: 'smooth' });
+        }
+      } catch(err) {}
+    });
+
     // Init (Decisiones 1-B a 10-A)
     sanitizeAndMigrateStorage();
     loadSessionState();
     runSlurryCalculation();
     initProfile();
     checkUrlContext();
+    updateRoleCriteriaBar();
     switchDossierTab('maint');
     updateDossier();
   })();

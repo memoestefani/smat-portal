@@ -1,5 +1,6 @@
 ---
 import LogoSmat from './LogoSmat.astro';
+import companyData from '../../data/company.json';
 
 interface Props {
   lang?: 'es' | 'en';
@@ -25,7 +26,7 @@ const productCategories = isEs ? [
   <!-- Cabecera Esbelta Unificada (Decisión 2-C / Ahorro de 50px de Altura) -->
   <div class="header-utility-strip">
     <div class="container utility-inner">
-      <div class="utility-badge">
+      <div class="utility-badge" title={companyData.logistics.local_pickup_badge}>
         <span class="live-dot"></span>
         <span>{isEs ? 'Almacén Central Durango • Despacho Prioritario a Mina' : 'Durango Central Warehouse • Direct Mine Dispatch'}</span>
       </div>

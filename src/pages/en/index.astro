@@ -2,9 +2,12 @@
 // src/pages/en/index.astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FlightDeck from '../../components/FlightDeck.astro';
+import DualHubView from '../../components/DualHubView.astro';
 import CaseCards from '../../components/CaseCards.astro';
 import TrustMatrix from '../../components/TrustMatrix.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
+import atomicParts from '../../../data/atomic_parts.json';
+import faqsData from '../../../data/faqs.json';
 ---
 
 <BaseLayout 
@@ -64,6 +67,14 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
             <div class="keyspec-row">
               <span class="ks-label">Drive End:</span>
               <span class="ks-val">Complete Bearing Assembly / Housing</span>
+            </div>
+            <div class="atomic-pills-row">
+              <span class="ks-label">Part Sheets:</span>
+              <div class="atomic-pills-wrap">
+                {atomicParts.map((part) => (
+                  <a href={`/en/catalog/${part.code}/`} class="atomic-code-pill" title={part.name_en}>{part.part_number}</a>
+                ))}
+              </div>
             </div>
           </div>
           <div class="showcase-links">
@@ -205,6 +216,29 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
   </section>
 
   <CaseCards lang="en" />
+
+  <DualHubView lang="en" />
+
+  <!-- ENGINEERING & SUPPLY FAQ SECTION (data/faqs.json) -->
+  <section class="faq-home-section" aria-label="Frequently Asked Questions on Equipment & Spares">
+    <div class="container">
+      <div class="tco-matrix-header">
+        <span class="section-eyebrow">TECHNICAL & OPERATIONAL ANSWERS</span>
+        <h2>Frequently Asked Questions on Supply, Balancing & Warranty</h2>
+        <p>Direct answers regarding Durango warehouse buffer stock, 1:1 dimensional interchangeability, and test bench protocols.</p>
+      </div>
+      <div class="faq-accordion-list">
+        {faqsData.faqs.map((faq) => (
+          <details class="faq-accordion-item">
+            <summary class="faq-accordion-summary">{faq.question_en}</summary>
+            <div class="faq-accordion-body">
+              <p>{faq.answer_en}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
 
   <TrustMatrix lang="en" hideBoundaries={true} />
 </BaseLayout>
@@ -529,5 +563,77 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
     font-weight: 700;
     color: #090d16;
     border-left: 2px solid var(--smat-copper-accent);
+  }
+
+  .atomic-pills-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding-top: 0.35rem;
+    border-top: 1px dashed #e2e8f0;
+  }
+
+  .atomic-pills-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .atomic-code-pill {
+    font-family: var(--smat-font-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--smat-copper-accent);
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    padding: 0.12rem 0.4rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+
+  .atomic-code-pill:hover {
+    background: var(--smat-copper-accent);
+    color: #ffffff;
+  }
+
+  .faq-home-section {
+    padding: 3.5rem 0;
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+
+  .faq-accordion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 900px;
+  }
+
+  .faq-accordion-item {
+    background: #f8fafc;
+    border: 1px solid var(--smat-border-strong, #cbd5e1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .faq-accordion-summary {
+    padding: 1rem 1.25rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--smat-text-primary);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .faq-accordion-body {
+    padding: 0 1.25rem 1rem 1.25rem;
+    font-size: 0.88rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.55;
+  }
+
+  .faq-accordion-body p {
+    margin: 0;
   }
 </style>

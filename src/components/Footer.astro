@@ -1,5 +1,6 @@
 ---
 import LogoSmat from './LogoSmat.astro';
+import companyData from '../../data/company.json';
 
 interface Props {
   lang?: 'es' | 'en';
@@ -93,7 +94,7 @@ const isEs = lang === 'es';
           </div>
           <p class="logistics-text">
             {isEs 
-              ? 'Patio operativo en Durango para camión rabón, torton y plataforma articulada. Inspección dimensional y balanceo dinámico previo a la carga.'
+              ? `${companyData.logistics.maneuvers_access}. ${companyData.logistics.client_inspection_protocol}.`
               : 'Durango yard engineered for rigid trucks, tandem heavy haulers, and flatbeds. Dimensional check and dynamic balancing prior to loading.'}
           </p>
         </div>

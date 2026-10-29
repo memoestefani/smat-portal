@@ -80,8 +80,8 @@
           "decision_criteria": {
             "required_slurry_vars_es": "Presion en la succion (bar / psi), disponibilidad de agua limpia de sello a presion positiva y presencia de reactivos espumantes.",
             "required_slurry_vars_en": "Suction pressure (bar / psi), gland flush clean water availability at positive head, and frother chemical content.",
-            "metallurgy_rule_es": "Expulsor dinamico centrifugo cuando no se cuenta con agua clara de sello en carcamo. Sello mecanico tipo cartucho de carburo de silicio cuando se prohibe dilucion de pulpa.",
-            "metallurgy_rule_en": "Centrifugal dynamic expeller when gland flush water is unavailable in sumps. Cartridge silicon carbide mechanical seal when slurry dilution is restricted.",
+            "metallurgy_rule_es": "Expulsor dinamico centrifugo en Alto Cromo A05 cuando no se cuenta con agua clara de sello en carcamo; prensaestopa con empaque trenzado de PTFE/grafito cuando se dispone de agua de sello a presion positiva (sin sello mecanico).",
+            "metallurgy_rule_en": "High Chrome A05 centrifugal dynamic expeller when gland flush water is unavailable in sumps; braided PTFE/graphite stuffing box when positive-pressure gland water is available (no mechanical seal).",
             "risk_avoided_es": "Elimina el rayado de camisa de eje y la inundacion de rodamientos por fuga de pulpa a traves de la caja prensaestopa.",
             "risk_avoided_en": "Eliminates shaft sleeve scoring and bearing contamination caused by slurry ingress through the stuffing box."
           }

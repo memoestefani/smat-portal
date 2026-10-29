@@ -56,10 +56,10 @@ const perspectives = [
       'Flotation mechanisms with high-modulus rubber dispersers ensuring uniform fine bubble generation.',
       'Hydraulic filter presses up to 16 bar delivering cakes with < 15% residual moisture for dry tailings stacking.'
     ],
-    cta_text_es: 'Explorar Circuitos y Reglas de Pulpa ➔',
-    cta_text_en: 'Explore Circuits & Pulp Rules ➔',
-    cta_link_es: '#circuitos',
-    cta_link_en: '#circuitos'
+    cta_text_es: 'Explorar Reglas de Pulpa y Metalurgia ➔',
+    cta_text_en: 'Explore Slurry & Metallurgy Rules ➔',
+    cta_link_es: '#matriz-roles-ingenieria',
+    cta_link_en: '#matriz-roles-ingenieria'
   },
   {
     id: 'requisicion_capex',
@@ -351,6 +351,8 @@ const perspectives = [
 </style>
 
 <script>
+  import { publishWorkbenchUpdate } from '../scripts/workbenchBus.js';
+
   function setupPerspectiveSelector() {
     const roleButtons = document.querySelectorAll('.role-btn');
     const cards = document.querySelectorAll('.perspective-card');
@@ -375,6 +377,12 @@ const perspectives = [
 
         try {
           window.dispatchEvent(new CustomEvent('smat:mission', { detail: { mission: targetId } }));
+          publishWorkbenchUpdate({
+            mission: targetId,
+            intent: targetId === 'requisicion_capex' ? 'capex' : 'opex',
+            preset: targetId === 'paro_urgente' ? 'emergency_6x4' : (targetId === 'desgaste_proceso' ? 'sag_primary' : ''),
+            source: 'PerspectiveSelector'
+          });
         } catch (err) {}
       });
     });

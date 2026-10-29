@@ -1,6 +1,8 @@
 ---
 // src/components/TrustMatrix.astro
 // Decisión 2-C y 7-C: 3 Tarjetas Físicas de Inspección de Patio y Certidumbre Mineral (Cero Debris)
+import trustData from '../../data/trust.json';
+
 interface Props {
   lang?: 'es' | 'en';
   compact?: boolean;
@@ -95,17 +97,56 @@ const isEn = lang === 'en';
       </div>
     </div>
   ) : (
-    <div class="boundaries-snippet">
-      <div class="boundaries-snippet-content">
-        <span class="snippet-icon">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        </span>
-        <p>
-          <strong>{isEn ? "Plant Commitment:" : "Compromiso de Planta:"}</strong>{" "}
-          {isEn 
-            ? "Every spare part is covered by our 100% replacement warranty against manufacturing defects." 
-            : "Cada refacción está respaldada por nuestra garantía de reposición al 100% contra defectos de fabricación."}
+    <div class="smat-extended-trust-sections">
+      <!-- Matriz Comparativa de Alcance SMAT Durango vs Fundición (data/trust.json matrix) -->
+      <div class="smat-scope-comparison-panel">
+        <h4 class="smat-subpanel-title">
+          {isEn ? "Warranty Coverage Matrix: SMAT Durango vs. Partner Foundry" : "Matriz de Cobertura: Almacén SMAT Durango vs. Fundición Fabricante"}
+        </h4>
+        <p class="smat-subpanel-lead">
+          {isEn ? trustData.protocol_policy_en : trustData.protocol_policy_es}
         </p>
+        <div class="smat-scope-cards">
+          {trustData.matrix.map((row) => (
+            <div class="smat-scope-row-card">
+              <strong class="smat-scope-topic">{isEn ? row.scope_en : row.scope_es}</strong>
+              <div class="smat-scope-cols">
+                <div class="smat-scope-col">
+                  <span class="smat-col-tag">{isEn ? "SMAT Durango Covers:" : "SMAT Durango Cubre:"}</span>
+                  <p>{isEn ? row.smat_covers_en : row.smat_covers_es}</p>
+                </div>
+                <div class="smat-scope-col">
+                  <span class="smat-col-tag">{isEn ? "Foundry Covers:" : "Fundición Fabricante Cubre:"}</span>
+                  <p>{isEn ? row.manufacturer_covers_en : row.manufacturer_covers_es}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Límites Químicos y Operativos Detallados (data/trust.json boundaries) -->
+      <div class="smat-honest-limits-grid">
+        {trustData.boundaries.map((b) => (
+          <div class="smat-limit-detail-card">
+            <strong>{isEn ? b.title_en : b.title_es}</strong>
+            <p>{isEn ? b.reason_en : b.reason_es}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="boundaries-snippet">
+        <div class="boundaries-snippet-content">
+          <span class="snippet-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </span>
+          <p>
+            <strong>{isEn ? "Plant Commitment:" : "Compromiso de Planta:"}</strong>{" "}
+            {isEn 
+              ? "Every spare part is covered by our 100% replacement warranty against manufacturing defects." 
+              : "Cada refacción está respaldada por nuestra garantía de reposición al 100% contra defectos de fabricación."}
+          </p>
+        </div>
       </div>
     </div>
   )}
@@ -259,6 +300,116 @@ const isEn = lang === 'en';
 
   .snippet-link:hover {
     color: #964800;
+  }
+
+  .smat-extended-trust-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .smat-scope-comparison-panel {
+    background: #ffffff;
+    border: 1px solid var(--smat-border-light);
+    border-radius: var(--smat-radius-md);
+    padding: 1.5rem;
+  }
+
+  .smat-subpanel-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--smat-text-primary);
+    margin: 0 0 0.35rem 0;
+  }
+
+  .smat-subpanel-lead {
+    font-size: 0.85rem;
+    color: var(--smat-text-secondary);
+    margin: 0 0 1rem 0;
+    line-height: 1.5;
+  }
+
+  .smat-scope-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .smat-scope-row-card {
+    background: #f8fafc;
+    border: 1px solid var(--smat-border-light);
+    border-radius: 6px;
+    padding: 0.85rem 1rem;
+  }
+
+  .smat-scope-topic {
+    display: block;
+    font-size: 0.86rem;
+    color: var(--smat-text-primary);
+    margin-bottom: 0.45rem;
+  }
+
+  .smat-scope-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .smat-scope-cols {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .smat-col-tag {
+    display: block;
+    font-family: var(--smat-font-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--smat-copper-accent);
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+  }
+
+  .smat-scope-col p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--smat-text-secondary);
+    line-height: 1.45;
+  }
+
+  .smat-honest-limits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 900px) {
+    .smat-honest-limits-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .smat-limit-detail-card {
+    background: #fffaf5;
+    border: 1px solid #fed7aa;
+    border-left: 3px solid #9a3412;
+    border-radius: 6px;
+    padding: 1rem;
+  }
+
+  .smat-limit-detail-card strong {
+    display: block;
+    font-size: 0.85rem;
+    color: #9a3412;
+    margin-bottom: 0.35rem;
+  }
+
+  .smat-limit-detail-card p {
+    margin: 0;
+    font-size: 0.78rem;
+    color: #334155;
+    line-height: 1.45;
   }
 
   @media (max-width: 768px) {

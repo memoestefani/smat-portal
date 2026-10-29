@@ -3,13 +3,17 @@
 // Diagramas técnicos esquemáticos en línea (CAD/corte técnico) para bombas para lodos, piezas de contacto húmedo,
 // Bearing Assembly / Housing, mecanismos de flotación/acondicionadores, filtros prensa y balanzas Marcy.
 
+type DiagramKind = 'pump' | 'impeller' | 'liners' | 'bearing' | 'expeller' | 'flotation' | 'filter' | 'marcy';
+
 interface Props {
-  diagram: 'pump' | 'impeller' | 'liners' | 'bearing' | 'expeller' | 'flotation' | 'filter' | 'marcy';
+  diagram?: DiagramKind;
+  type?: DiagramKind;
   lang?: 'es' | 'en';
   compact?: boolean;
 }
 
-const { diagram, lang = 'es', compact = false } = Astro.props;
+const { lang = 'es', compact = false } = Astro.props;
+const diagram: DiagramKind = Astro.props.diagram ?? Astro.props.type ?? 'pump';
 const isEs = lang === 'es';
 ---
 

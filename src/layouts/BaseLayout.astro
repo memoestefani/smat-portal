@@ -1,6 +1,9 @@
 ---
 import '../styles/global.css';
 import faqsData from '../../data/faqs.json';
+import companyData from '../../data/company.json';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 
 interface Props {
   title: string;
@@ -11,16 +14,47 @@ interface Props {
   alternateEnPath?: string;
 }
 
+const ROUTE_ES_TO_EN: Record<string, string> = {
+  '/': '/en/',
+  '/catalogo/': '/en/catalog/',
+  '/bombeo/': '/en/pumping/',
+  '/bombeo/skid/': '/en/pumping/skid/',
+  '/bombeo/impulsor/': '/en/pumping/impeller/',
+  '/bombeo/revestimientos/': '/en/pumping/liners/',
+  '/bombeo/sello/': '/en/pumping/seal/',
+  '/bombeo/soporte/': '/en/pumping/bearing-assembly/',
+  '/flotacion/': '/en/flotation/',
+  '/flotacion/celdas/': '/en/flotation/cells/',
+  '/flotacion/mecanismos/': '/en/flotation/mechanisms/',
+  '/filtracion/': '/en/filtration/',
+  '/filtracion/prensa/': '/en/filtration/press/',
+  '/filtracion/repuestos/': '/en/filtration/parts/',
+  '/diagnostico/': '/en/diagnostics/',
+  '/garantia/': '/en/warranty/',
+  '/nosotros/': '/en/about/',
+  '/contacto/': '/en/contact/',
+  '/aviso/': '/en/privacy/',
+  '/acuse/': '/en/thank-you/',
+};
+
+const ROUTE_EN_TO_ES: Record<string, string> = Object.fromEntries(
+  Object.entries(ROUTE_ES_TO_EN).map(([es, en]) => [en, es])
+);
+
+const rawPathname = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const isEs = (Astro.props.lang ?? 'es') === 'es';
+const defaultCanonical = Astro.props.canonicalPath ?? rawPathname;
+const defaultEsPath = Astro.props.alternateEsPath ?? (isEs ? defaultCanonical : (ROUTE_EN_TO_ES[defaultCanonical] ?? '/'));
+const defaultEnPath = Astro.props.alternateEnPath ?? (!isEs ? defaultCanonical : (ROUTE_ES_TO_EN[defaultCanonical] ?? '/en/'));
+
 const {
   title,
   description,
   lang = 'es',
-  canonicalPath = '/',
-  alternateEsPath = '/',
-  alternateEnPath = '/en/',
+  canonicalPath = defaultCanonical,
+  alternateEsPath = defaultEsPath,
+  alternateEnPath = defaultEnPath,
 } = Astro.props;
-
-const isEs = lang === 'es';
 const siteUrl = 'https://smatminerals.com';
 const fullCanonicalUrl = `${siteUrl}${canonicalPath}`;
 const fullEsUrl = `${siteUrl}${alternateEsPath}`;
@@ -56,26 +90,26 @@ const schemaOrgData = {
     {
       '@type': ['Organization', 'LocalBusiness', 'WholesaleStore'],
       '@id': 'https://smatminerals.com/#organization',
-      'name': 'SMAT Minerals',
+      'name': companyData.name || 'SMAT Minerals',
       'alternateName': 'SMAT',
-      'legalName': 'SMAT Minerals S.A. de C.V.',
+      'legalName': companyData.legal_name || 'SMAT Minerals S.A. de C.V.',
       'url': 'https://smatminerals.com',
       'logo': 'https://smatminerals.com/images/logo-smat.png',
       'description': 'Suministro de bombas para lodos y refacciones en Alto Cromo (A05), Hule y Poliuretano, mecanismos para celdas de flotación y acondicionadores, filtros prensa y balanzas Marcy en Durango, México.',
       'telephone': ['+52-618-810-4408', '+52-618-810-4428'],
-      'email': 'ventas@smatminerals.com',
+      'email': companyData.contact?.emails?.[0]?.address || 'ventas@smatminerals.com',
       'address': {
         '@type': 'PostalAddress',
-        'streetAddress': 'Mariano Salas #114, Col. Primer Presidente',
-        'addressLocality': 'Durango',
-        'addressRegion': 'Durango',
-        'postalCode': '34166',
-        'addressCountry': 'MX'
+        'streetAddress': companyData.address?.street ? `${companyData.address.street}, ${companyData.address.colonia}` : 'Mariano Salas #114, Col. Primer Presidente',
+        'addressLocality': companyData.address?.city || 'Durango',
+        'addressRegion': companyData.address?.state || 'Durango',
+        'postalCode': companyData.address?.postal_code || '34166',
+        'addressCountry': companyData.address?.country_code || 'MX'
       },
       'geo': {
         '@type': 'GeoCoordinates',
-        'latitude': 24.0277,
-        'longitude': -104.6532
+        'latitude': companyData.address?.coordinates?.latitude || 24.0277,
+        'longitude': companyData.address?.coordinates?.longitude || -104.6532
       },
       'openingHoursSpecification': [
         {
@@ -95,7 +129,8 @@ const schemaOrgData = {
         'Filter Presses',
         'Filtros Prensa',
         'Dry Tailings',
-        'Jales Secos'
+        'Jales Secos',
+        'Marcy Pulp Density Scales'
       ]
     },
     {
@@ -133,10 +168,63 @@ const schemaOrgData = {
     <link rel="alternate" hreflang="en" href={fullEnUrl} />
     <link rel="alternate" hreflang="x-default" href={fullEsUrl} />
 
-    <!-- Google Fonts: Newsreader (Editorial Serif), Inter (UI Sans) & JetBrains Mono (Technical Data) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400..800;1,6..72,400..700&display=swap" rel="stylesheet" />
+    <!-- Tipografía Soberana Local / System Stack y Geometría Táctil Fitts >= 48x48 px (Zero External CDN Leak) -->
+    <style is:inline>
+      a,
+      button,
+      select,
+      input:not([type="hidden"]),
+      .btn,
+      .nav-link,
+      .lang-btn,
+      .phone-pill,
+      .header-cta,
+      .footer-links a,
+      .atomic-code-pill,
+      .showcase-cta-primary,
+      .showcase-cta-secondary,
+      .perspective-action-btn,
+      .case-circuit-link,
+      .snippet-link,
+      .btn-table-cta,
+      .btn-action,
+      .btn-back,
+      .circuit-pill,
+      .stress-chip,
+      .flot-chip,
+      .filt-chip,
+      .preset-chip,
+      .alt-chip,
+      .role-tab {
+        min-height: 48px !important;
+        min-width: 48px !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+      }
+      select,
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"],
+      textarea {
+        display: block;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+      input[type="radio"],
+      input[type="checkbox"] {
+        width: 24px;
+        height: 24px;
+        min-width: 48px !important;
+        min-height: 48px !important;
+        cursor: pointer;
+      }
+      input[type="range"] {
+        min-height: 48px !important;
+        cursor: pointer;
+      }
+    </style>
 
     <!-- Favicon Vectorial Dinámico + Fallback ICO (Decisión 1-B) -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -191,11 +279,19 @@ const schemaOrgData = {
     )}
   </head>
   <body>
-    <slot name="header" />
+    <slot name="header">
+      <Header
+        lang={lang}
+        currentPath={canonicalPath}
+        alternatePath={isEs ? alternateEnPath : alternateEsPath}
+      />
+    </slot>
     <main>
       <slot />
     </main>
-    <slot name="footer" />
+    <slot name="footer">
+      <Footer lang={lang} />
+    </slot>
 
     <!-- Script de Registro de Eventos Analíticos de SMAT -->
     <script is:inline>
