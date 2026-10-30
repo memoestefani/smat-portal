@@ -157,6 +157,9 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
             <button type="button" class="circuit-pill" data-circuit="filtracion" aria-pressed="false">
               [ {isEs ? 'FILTRACIÓN / JALES SECOS' : 'FILTRATION / DRY TAILINGS'} ]
             </button>
+            <button type="button" class="circuit-pill" data-circuit="control_procesos" aria-pressed="false">
+              [ {isEs ? 'CONTROL DE PROCESOS' : 'PROCESS CONTROL'} ]
+            </button>
           </div>
           <input type="hidden" name="process_circuit" id="wb-process-circuit" value="bombeo" />
         </div>
@@ -319,6 +322,33 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
               </button>
             </div>
             <input type="hidden" name="filt_condition" id="wb-filt-condition" value="" />
+          </div>
+        </div>
+
+        <!-- PANEL CIRCUITO 4: CONTROL DE PROCESOS Y LABORATORIO METALÚRGICO -->
+        <div id="circuit-panel-control" class="circuit-panel hidden">
+          <div class="circuit-context-banner">
+            <span class="context-tag font-mono-tech">[CONTROL DE PROCESOS]</span>
+            <span>{isEs ? 'Instrumentación gravimétrica de pulpa, desaguado neumático de muestras y granulometría certificada.' : 'Gravimetric pulp instrumentation, pneumatic sample dewatering, and certified particle sizing.'}</span>
+          </div>
+
+          <div class="form-group">
+            <label for="wb-role-ctrl"><strong>{isEs ? 'Instrumento o Paquete de Control Requerido:' : 'Required Process Control Instrument or Package:'}</strong></label>
+            <select id="wb-role-ctrl" name="role_id_ctrl" class="wb-select">
+              <option value="balanza_marcy" selected>{isEs ? 'Balanza de Densidad de Pulpa y % de Sólidos (Tipo Marcy) — Vaso 1000 cm³ + 12 Anillos' : 'Pulp Density & % Solids Scale (Marcy Type) — 1000 cm³ Cup + 12 Rings'}</option>
+              <option value="filtro_batch_lab">{isEs ? 'Filtro de Presión Batch de Laboratorio SMAT (60–100 psi / Husillo en T)' : 'SMAT Laboratory Batch Pressure Filter (60–100 psi / T-Bar Clamp)'}</option>
+              <option value="tamices_laboratorio">{isEs ? 'Tamices de Laboratorio Certificados ASTM E11 / ISO 3310 (5" a #635 / 20 µm) y Tamizadores' : 'Certified ASTM E11 / ISO 3310 Test Sieves (5" to #635 / 20 µm) & Shakers'}</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-top: 0.75rem;">
+            <label for="wb-ctrl-spec"><strong>{isEs ? 'Rango de Gravedad Específica (Ss) o Serie de Mallas:' : 'Ore Specific Gravity (Ss) Range or Sieve Series:'}</strong></label>
+            <select id="wb-ctrl-spec" name="ctrl_spec" class="wb-select">
+              <option value="marcy_12_rings" selected>{isEs ? 'Juego Completo 12 Carátulas (Ss 2.2 a 4.4) + Vaso 1000 cm³ Acero Inoxidable 304' : 'Full 12-Ring Dial Set (Ss 2.2 to 4.4) + 1000 cm³ 304 Stainless Steel Cup'}</option>
+              <option value="batch_100psi">{isEs ? 'Cámara de Presión Batch de Acero Pesado (60 a 100 psi) + Columnas Guía y Drenaje' : 'Heavy-Duty Steel Batch Pressure Barrel (60 to 100 psi) + Twin Guide Rods'}</option>
+              <option value="astm_8in_inox">{isEs ? 'Columna de Tamices 8" en Acero Inoxidable (Corte P80 #40 a #400 / #635) + Tapa y Fondo' : '8" Stainless Steel Sieve Stack (P80 Control #40 to #400 / #635) + Cover & Pan'}</option>
+              <option value="astm_12in_bronce">{isEs ? 'Columna de Tamices 12" en Bronce / Inox + Tamizador Mecánico y Cuarteador' : '12" Brass / Stainless Sieve Stack + Mechanical Sieve Shaker & Splitter'}</option>
+            </select>
           </div>
         </div>
 
@@ -3665,6 +3695,9 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
     var panelBombeo = document.getElementById('circuit-panel-bombeo');
     var panelFlotacion = document.getElementById('circuit-panel-flotacion');
     var panelFiltracion = document.getElementById('circuit-panel-filtracion');
+    var panelControl = document.getElementById('circuit-panel-control');
+    var selectRoleCtrl = document.getElementById('wb-role-ctrl');
+    var selectCtrlSpec = document.getElementById('wb-ctrl-spec');
 
     // Parámetros Circuito 1: Bombeo de Pulpa
     var selectPipeSize = document.getElementById('wb-pipe-size');
@@ -3806,6 +3839,10 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
         if (currentCircuit === 'filtracion') panelFiltracion.classList.remove('hidden');
         else panelFiltracion.classList.add('hidden');
       }
+      if (panelControl) {
+        if (currentCircuit === 'control_procesos') panelControl.classList.remove('hidden');
+        else panelControl.classList.add('hidden');
+      }
 
       // Adaptación de Título de Simulación sin Jerga Regional (Decisión 6-B & 4-B)
       var simHeadline = document.getElementById('sim-headline-text');
@@ -3821,6 +3858,11 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
             ? 'Deshidratación de torta y ciclo de filtrado' 
             : 'Cake Dewatering & Filter Cycle';
           if (simContextPill) simContextPill.textContent = isEs ? 'Filtración • 16 bar' : 'Filtration • 16 bar';
+        } else if (currentCircuit === 'control_procesos') {
+          simHeadline.textContent = isEs 
+            ? 'Control gravimétrico de pulpa y granulometría (Marcy / ASTM E11)' 
+            : 'Pulp Gravimetric Control & Particle Sizing (Marcy / ASTM E11)';
+          if (simContextPill) simContextPill.textContent = isEs ? 'Control • Laboratorio' : 'Control • Lab';
         } else {
           simHeadline.textContent = isEs 
             ? 'Transporte hidráulico y velocidad crítica (Durand)' 
@@ -3951,7 +3993,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
       var sizeVal = '';
       var conditionVal = '';
 
-      if (arg1 === 'bombeo' || arg1 === 'flotacion' || arg1 === 'filtracion') {
+      if (arg1 === 'bombeo' || arg1 === 'flotacion' || arg1 === 'filtracion' || arg1 === 'control_procesos') {
         circuit = arg1;
         roleVal = String(arg2 || '').toLowerCase();
         sizeVal = String(arg3 || '').toLowerCase();
@@ -3959,7 +4001,9 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
       } else {
         roleVal = String(arg1 || '').toLowerCase();
         var detailsStr = String(arg2 || '').toUpperCase();
-        if (roleVal.includes('celda') || roleVal.includes('flotacion') || roleVal.includes('rotor')) {
+        if (roleVal.includes('marcy') || roleVal.includes('balanza') || roleVal.includes('batch') || roleVal.includes('tamiz') || roleVal.includes('tamices')) {
+          circuit = 'control_procesos';
+        } else if (roleVal.includes('celda') || roleVal.includes('flotacion') || roleVal.includes('rotor')) {
           circuit = 'flotacion';
           sizeVal = detailsStr.includes('50') ? '50ft' : (detailsStr.includes('200') ? '200ft' : (detailsStr.includes('300') ? '300ft' : '100ft'));
         } else if (roleVal.includes('filtro') || roleVal.includes('prensa') || roleVal.includes('placa')) {
@@ -3973,6 +4017,12 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
           else if (detailsStr.includes('10X8')) sizeVal = '10x8';
           else sizeVal = '6x4';
         }
+      }
+
+      if (circuit === 'control_procesos') {
+        if (roleVal.includes('batch')) return 'SMAT-CTRL-BATCH-LAB';
+        if (roleVal.includes('tamiz') || roleVal.includes('tamices') || roleVal.includes('sieve')) return 'SMAT-CTRL-SIEVE-ASTM';
+        return 'SMAT-CTRL-MARCY-1000';
       }
 
       if (circuit === 'flotacion') {
@@ -4690,6 +4740,29 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
 
         if (recircAlertBox) recircAlertBox.classList.add('hidden');
         if (recircWarnDossier) recircWarnDossier.classList.add('hidden');
+      } else if (currentCircuit === 'control_procesos') {
+        var selectedOptCtrl = selectRoleCtrl?.options[selectRoleCtrl.selectedIndex];
+        roleVal = selectRoleCtrl?.value || 'balanza_marcy';
+        roleText = selectedOptCtrl ? selectedOptCtrl.text : 'Balanza de Densidad de Pulpa y % de Sólidos (Tipo Marcy)';
+
+        var ctrlSpecOpt = selectCtrlSpec?.options[selectCtrlSpec.selectedIndex];
+        var ctrlSpecVal = selectCtrlSpec?.value || 'marcy_12_rings';
+        sizeText = ctrlSpecOpt ? ctrlSpecOpt.text : 'Juego Completo 12 Carátulas (Ss 2.2 a 4.4) + Vaso 1000 cm³';
+        condText = isEs ? 'Control metrológico de laboratorio y planta concentradora' : 'Metallurgical laboratory & concentrator plant control';
+
+        smatCode = buildSmatCode('control_procesos', roleVal, ctrlSpecVal, '');
+        sapMatText = roleVal === 'tamices_laboratorio'
+          ? (isEs ? 'Acero Inoxidable / Bronce Certificado ASTM E11' : 'ASTM E11 Certified Stainless Steel / Brass')
+          : (isEs ? 'Instrumentación Metrológica Acero Inoxidable 304 / Acero Bridado' : '304 Stainless Steel / Flanged Steel Instrumentation');
+
+        if (livePipeHeader) livePipeHeader.textContent = isEs ? 'Especificación Metrológica:' : 'Metrological Specification:';
+        if (livePipeText) livePipeText.textContent = sizeText;
+        if (liveStressHeader) liveStressHeader.textContent = isEs ? 'Aplicación de Control:' : 'Control Application:';
+        if (liveStressText) liveStressText.textContent = condText;
+        if (liveTableMat) liveTableMat.textContent = sapMatText;
+
+        if (recircAlertBox) recircAlertBox.classList.add('hidden');
+        if (recircWarnDossier) recircWarnDossier.classList.add('hidden');
       }
 
       var detailsText = inputDetails?.value.trim() || (isEs ? 'Verificación dimensional de acople 1:1 en banco de pruebas de almacén central Durango.' : '1:1 dimensional check on test bench at Durango central warehouse.');
@@ -5052,6 +5125,12 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
         roleId = selectRoleFlot?.value || 'rotor_estator';
         sizeVal = selectFlotCapacity?.value || '100ft';
         condVal = inputFlotCondition?.value || 'sulfuros_alta_agitacion';
+      } else if (circuit === 'control_procesos') {
+        var roleOptC = selectRoleCtrl?.options[selectRoleCtrl.selectedIndex];
+        role = roleOptC ? roleOptC.text : 'Balanza de Densidad de Pulpa (Tipo Marcy)';
+        roleId = selectRoleCtrl?.value || 'balanza_marcy';
+        sizeVal = selectCtrlSpec?.value || 'marcy_12_rings';
+        condVal = 'control_laboratorio';
       } else {
         var roleOptP = selectRoleFilt?.options[selectRoleFilt.selectedIndex];
         role = roleOptP ? roleOptP.text : 'Placas y Telas Filtrantes';
@@ -5284,7 +5363,9 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
       filtro_prensa: 'prensa_completa',
       placas_membrana: 'repuestos_prensa',
       bomba_prensa: 'skid_bomba',
-      balanza_marcy: 'repuestos_prensa'
+      balanza_marcy: 'balanza_marcy',
+      filtro_batch_lab: 'filtro_batch_lab',
+      tamices_laboratorio: 'tamices_laboratorio'
     };
 
     function updateRoleCriteriaBar() {
@@ -5296,16 +5377,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
       if (currentCircuit === 'bombeo' && selectRole) activeRoleVal = selectRole.value;
       else if (currentCircuit === 'flotacion' && selectRoleFlot) activeRoleVal = selectRoleFlot.value;
       else if (currentCircuit === 'filtracion' && selectRoleFilt) activeRoleVal = selectRoleFilt.value;
-
-      if (activeRoleVal === 'balanza_marcy') {
-        ruleEl.textContent = isEs
-          ? 'Recipiente calibrado de 1000 cm³ en acero inoxidable o acrílico con 12 carátulas intercambiables (SG 1.2 a 7.8).'
-          : 'Calibrated 1000 cm³ stainless steel or acrylic container with 12 interchangeable dials (SG 1.2 to 7.8).';
-        riskEl.textContent = isEs
-          ? 'Evita errores de dosificación de reactivos y desbalance metalúrgico por lecturas inexactas de % de sólidos en pulpa.'
-          : 'Prevents reagent dosing errors and metallurgical imbalance caused by inaccurate % solids readings.';
-        return;
-      }
+      else if (currentCircuit === 'control_procesos' && selectRoleCtrl) activeRoleVal = selectRoleCtrl.value;
 
       var cKey = roleToCriteriaKey[activeRoleVal] || 'revestimientos';
       var cObj = rolesCriteriaData[cKey];
@@ -5315,8 +5387,11 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
       }
     }
 
-    [selectRole, selectRoleFlot, selectRoleFilt].forEach(function(sel) {
-      if (sel) sel.addEventListener('change', updateRoleCriteriaBar);
+    [selectRole, selectRoleFlot, selectRoleFilt, selectRoleCtrl, selectCtrlSpec].forEach(function(sel) {
+      if (sel) sel.addEventListener('change', function() {
+        updateRoleCriteriaBar();
+        updateDossier();
+      });
     });
 
     // Conexión al Bus de Eventos Reactivo (workbenchBus.js: smat:workbench_update & smat:mission) y Hashchange
@@ -5331,6 +5406,8 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
       prensa_completa: 'filtro_prensa',
       repuestos_prensa: 'placas_telas',
       balanza_marcy: 'balanza_marcy',
+      filtro_batch_lab: 'filtro_batch_lab',
+      tamices_laboratorio: 'tamices_laboratorio',
       custom: 'balanza_marcy'
     };
 
@@ -5401,9 +5478,11 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
             setCircuit(urlCircuit);
           } else if (rawUrlRole) {
             var rLower = rawUrlRole.toLowerCase();
-            if (rLower.includes('flot') || rLower.includes('celda') || rLower.includes('rotor') || rLower.includes('mecanismo')) {
+            if (rLower.includes('marcy') || rLower.includes('balanza') || rLower.includes('batch') || rLower.includes('tamiz') || rLower.includes('tamices') || rLower === 'custom') {
+              setCircuit('control_procesos');
+            } else if (rLower.includes('flot') || rLower.includes('celda') || rLower.includes('rotor') || rLower.includes('mecanismo')) {
               setCircuit('flotacion');
-            } else if (rLower.includes('filt') || rLower.includes('prensa') || rLower.includes('placa') || rLower.includes('tela') || rLower.includes('balanza') || rLower === 'custom') {
+            } else if (rLower.includes('filt') || rLower.includes('prensa') || rLower.includes('placa') || rLower.includes('tela')) {
               setCircuit('filtracion');
             } else {
               setCircuit('bombeo');
@@ -5428,6 +5507,13 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
             for (var k = 0; k < selectRoleFilt.options.length; k++) {
               if (selectRoleFilt.options[k].value === urlRole || selectRoleFilt.options[k].text.toLowerCase().includes(urlRole.toLowerCase())) {
                 selectRoleFilt.selectedIndex = k;
+                break;
+              }
+            }
+          } else if (urlRole && currentCircuit === 'control_procesos' && selectRoleCtrl) {
+            for (var mIdx = 0; mIdx < selectRoleCtrl.options.length; mIdx++) {
+              if (selectRoleCtrl.options[mIdx].value === urlRole || selectRoleCtrl.options[mIdx].text.toLowerCase().includes(urlRole.toLowerCase())) {
+                selectRoleCtrl.selectedIndex = mIdx;
                 break;
               }
             }

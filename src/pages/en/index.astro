@@ -1,25 +1,20 @@
 ---
 // src/pages/en/index.astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import FlightDeck from '../../components/FlightDeck.astro';
-import DualHubView from '../../components/DualHubView.astro';
-import CaseCards from '../../components/CaseCards.astro';
 import TrustMatrix from '../../components/TrustMatrix.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
-import atomicParts from '../../../data/atomic_parts.json';
-import faqsData from '../../../data/faqs.json';
 ---
 
 <BaseLayout 
-  title="SMAT Minerals | Slurry Pumps, Flotation Mechanisms, Filter Presses & Pulp Scales"
-  description="Supply of complete slurry pumps, wet-end parts by lot (impellers, throatbushes, volutes in High Chrome, Rubber, and Polyurethane), Bearing Assembly / Housing, flotation mechanisms, filter presses, and Marcy pulp density scales."
+  title="SMAT Minerals | Process Equipment, Slurry Pumps & Spare Parts, Process Control"
+  description="Supply for mineral processing plants from our Durango Central Warehouse: Process Equipment (Flotation & Filter Presses), Slurry Pumps & Spare Parts (5-5-4 Wet-End Lots & Bearing Assemblies), and Process Control (Marcy Scales, Batch Pressure Filters & ASTM E11 Sieves)."
   lang="en"
 >
   <section class="hero-home">
     <div class="container">
       <div class="hero-badge-pill">
         <span class="live-dot" aria-hidden="true"></span>
-        <span>SMAT MINERALS • MINERAL PROCESSING EQUIPMENT & SPARES</span>
+        <span>SMAT MINERALS • DURANGO CENTRAL WAREHOUSE • MINERAL PROCESSING SUPPLY</span>
       </div>
       
       <h1>
@@ -28,214 +23,120 @@ import faqsData from '../../../data/faqs.json';
       </h1>
       
       <p class="hero-lead">
-        Complete horizontal slurry pumps, wet-end wear lots (impellers, throatbushes, and volutes in High Chrome, Rubber, and Polyurethane), complete <strong>Bearing Assembly / Housing</strong> units, flotation mechanisms and conditioners, filter presses, and <strong>Marcy pulp density scales</strong>.
+        Select your plant supply area: <strong>Process Equipment</strong>, <strong>Slurry Pumps & Spare Parts</strong> in balanced wet-end lots (5-5-4), or <strong>Process Control</strong> for metallurgical laboratories.
       </p>
 
       <div class="hero-actions">
-        <a href="#rfq" class="btn btn-primary btn-lg">Request Quotation</a>
+        <a href="/en/quote/#rfq" class="btn btn-primary btn-lg">Request Quotation</a>
         <a href="/en/catalog/" class="btn btn-outline btn-lg">View Catalog & Diagrams</a>
       </div>
     </div>
   </section>
 
-  <!-- EQUIPMENT SHOWCASE WITH TECHNICAL DIAGRAMS -->
-  <section class="equipment-showcase-section" aria-label="Core Plant Equipment">
+  <!-- THREE-DOOR ARCHITECTURE (DON MANUEL) -->
+  <section class="equipment-showcase-section" aria-label="The Three SMAT Supply Doors">
     <div class="container">
       <div class="showcase-header">
-        <span class="section-eyebrow">EQUIPMENT, WEAR PARTS & INSTRUMENTATION</span>
-        <h2>Equipment & Spares by Plant Area</h2>
-        <p>Reference technical diagrams. Select your equipment or wet-end wear lot to request a quotation.</p>
+        <span class="section-eyebrow">SELECT YOUR PLANT SUPPLY AREA</span>
+        <h2>Process Equipment, Spare Parts & Metallurgical Control</h2>
+        <p>Direct department routing for capital projects, slurry pumping maintenance, and metallurgical process control.</p>
       </div>
 
       <div class="showcase-grid">
-        <!-- Card 1: Slurry Pumps & Wet-End -->
+        <!-- DOOR 1: PROCESS EQUIPMENT -->
         <article class="showcase-card">
           <div class="showcase-card-top">
-            <span class="showcase-tag">Circuit 1: Grinding & Pumping</span>
-            <span class="showcase-series">1.5x1" to 14x12"</span>
+            <span class="showcase-tag">Door 1 • Projects & Circuits</span>
+            <span class="showcase-series">50–300 ft³ • 16 bar</span>
           </div>
-          <h3>Slurry Pumps & Wet-End Wear Parts</h3>
-          <TechnicalDiagrams diagram="pump" lang="en" compact={true} />
+          <h3>Process Equipment</h3>
+          <TechnicalDiagrams diagram="flotation" lang="en" compact={true} />
           <p>
-            Complete horizontal slurry pumps, assembled <strong>Bearing Assembly / Housing</strong> units, and wet-end lots (e.g., 5 impellers, 5 throatbushes, and 4 volutes). Centrifugal expeller and stuffing box sealing (no mechanical seals).
+            <strong>Flotation Cell Mechanisms & Conditioners</strong> (Rougher, Cleaner, and Scavenger stages), <strong>Recessed-Chamber Filter Presses</strong> (800 to 1500 mm, up to 16 bar), and complete project slurry pump packages.
           </p>
           <div class="pro-keyspecs-box">
             <div class="keyspec-row">
-              <span class="ks-label">Materials:</span>
+              <span class="ks-label">Flotation:</span>
+              <span class="ks-val">Mechanisms & Cells 50 to 300 ft³</span>
+            </div>
+            <div class="keyspec-row">
+              <span class="ks-label">Filtration:</span>
+              <span class="ks-val">Filter Presses 800 to 1500 mm (16 bar)</span>
+            </div>
+            <div class="keyspec-row">
+              <span class="ks-label">Direct Quote:</span>
+              <span class="ks-val">
+                <a href="/en/quote/?equipo=celda_flotacion#rfq" class="inline-spec-link">Flotation</a> • <a href="/en/quote/?equipo=filtro_prensa#rfq" class="inline-spec-link">Filter Press</a>
+              </span>
+            </div>
+          </div>
+          <div class="showcase-links">
+            <a href="/en/process-equipment/" class="showcase-cta-primary">Enter Process Equipment →</a>
+            <a href="/en/quote/?equipo=celda_flotacion#rfq" class="showcase-cta-secondary">Quote Project</a>
+          </div>
+        </article>
+
+        <!-- DOOR 2: SLURRY PUMPS & SPARE PARTS -->
+        <article class="showcase-card">
+          <div class="showcase-card-top">
+            <span class="showcase-tag">Door 2 • Operations & Maintenance</span>
+            <span class="showcase-series">1.5x1" to 14x12"</span>
+          </div>
+          <h3>Slurry Pumps & Spare Parts</h3>
+          <TechnicalDiagrams diagram="pump" lang="en" compact={true} />
+          <p>
+            Replacement horizontal slurry pumps, complete assembled <strong>Bearing Assembly / Housing</strong> units, and balanced wet-end wear lots (<strong>5 impellers, 5 throatbushes, and 4 volute liners</strong>) with centrifugal expeller and stuffing box sealing.
+          </p>
+          <div class="pro-keyspecs-box">
+            <div class="keyspec-row">
+              <span class="ks-label">Wear Materials:</span>
               <span class="ks-val">High Chrome (≥650 HB), Rubber & Polyurethane</span>
             </div>
             <div class="keyspec-row">
-              <span class="ks-label">Drive End:</span>
+              <span class="ks-label">Wet-End Lot:</span>
+              <span class="ks-val">5 Impellers + 5 Throatbushes + 4 Volutes</span>
+            </div>
+            <div class="keyspec-row">
+              <span class="ks-label">Drive Cartridge:</span>
               <span class="ks-val">Complete Bearing Assembly / Housing</span>
             </div>
-            <div class="atomic-pills-row">
-              <span class="ks-label">Part Sheets:</span>
-              <div class="atomic-pills-wrap">
-                {atomicParts.map((part) => (
-                  <a href={`/en/catalog/${part.code}/`} class="atomic-code-pill" title={part.name_en}>{part.part_number}</a>
-                ))}
-              </div>
-            </div>
           </div>
           <div class="showcase-links">
-            <a href="/en/#rfq?equipo=skid_bomba" class="showcase-cta-primary">Quote Pump or Lot →</a>
-            <a href="/en/pumping/" class="showcase-cta-secondary">View Parts & Diagrams</a>
+            <a href="/en/pumping/" class="showcase-cta-primary">Enter Slurry Pumps & Spare Parts →</a>
+            <a href="/en/quote/?equipo=skid_bomba#rfq" class="showcase-cta-secondary">Quote Wet-End Lot</a>
           </div>
         </article>
 
-        <!-- Card 2: Flotation Mechanisms & Conditioners -->
+        <!-- DOOR 3: PROCESS CONTROL -->
         <article class="showcase-card">
           <div class="showcase-card-top">
-            <span class="showcase-tag">Circuit 2: Concentration</span>
-            <span class="showcase-series">50 to 300 ft³</span>
+            <span class="showcase-tag">Door 3 • Laboratory & Control</span>
+            <span class="showcase-series">SG 2.2–4.4 • ASTM E11</span>
           </div>
-          <h3>Flotation Cell Mechanisms & Conditioners</h3>
-          <TechnicalDiagrams diagram="flotation" lang="en" compact={true} />
-          <p>
-            Drive heads, shafts, standpipes, rotors, stators, and pulp conditioners for Rougher, Cleaner, and Scavenger stages.
-          </p>
-          <div class="pro-keyspecs-box">
-            <div class="keyspec-row">
-              <span class="ks-label">Equipment:</span>
-              <span class="ks-val">Complete Mechanisms & Conditioners</span>
-            </div>
-            <div class="keyspec-row">
-              <span class="ks-label">Wear Parts:</span>
-              <span class="ks-val">Rubber & Polyurethane Rotors / Stators</span>
-            </div>
-          </div>
-          <div class="showcase-links">
-            <a href="/en/#rfq?equipo=celda_flotacion" class="showcase-cta-primary">Quote Mechanism →</a>
-            <a href="/en/flotation/" class="showcase-cta-secondary">Specifications</a>
-          </div>
-        </article>
-
-        <!-- Card 3: Filter Presses & Scales -->
-        <article class="showcase-card">
-          <div class="showcase-card-top">
-            <span class="showcase-tag">Circuit 3: Dry Tailings</span>
-            <span class="showcase-series">800 to 1500 mm</span>
-          </div>
-          <h3>Filter Presses, Filter Plates & Pulp Scales</h3>
-          <TechnicalDiagrams diagram="filter" lang="en" compact={true} />
-          <p>
-            Recessed-chamber filter presses (up to 16 bar), virgin copolymer polypropylene plates, needle-felt filter cloths, and <strong>Marcy pulp density scales</strong>.
-          </p>
-          <div class="pro-keyspecs-box">
-            <div class="keyspec-row">
-              <span class="ks-label">Plates & Cloths:</span>
-              <span class="ks-val">Recessed chamber 800 mm to 1500 mm</span>
-            </div>
-            <div class="keyspec-row">
-              <span class="ks-label">Pulp Control:</span>
-              <span class="ks-val">Pulp Density & % Solids Scales</span>
-            </div>
-          </div>
-          <div class="showcase-links">
-            <a href="/en/#rfq?equipo=filtro_prensa" class="showcase-cta-primary">Quote Filter or Scale →</a>
-            <a href="/en/filtration/" class="showcase-cta-secondary">View Filter Presses</a>
-          </div>
-        </article>
-      </div>
-
-      <!-- Dedicated Pulp Density Scales (Marcy) Banner -->
-      <div class="marcy-banner-card">
-        <div class="marcy-banner-info">
-          <span class="showcase-tag">PLANT METALLURGICAL CONTROL</span>
-          <h3>Pulp Density & % Solids Scales (Marcy Style)</h3>
-          <p>
-            Direct-reading hanging dial scale with calibrated 1000 cm³ container (stainless steel or acrylic with overflow holes) and interchangeable dial faces for immediate reading of pulp specific gravity and % solids by weight across grinding, classification, and flotation circuits.
-          </p>
-          <div class="showcase-links">
-            <a href="/en/#rfq?equipo=balanza_marcy" class="showcase-cta-primary">Quote Pulp Scale →</a>
-            <a href="/en/catalog/#scales" class="showcase-cta-secondary">View in Catalog</a>
-          </div>
-        </div>
-        <div class="marcy-banner-diagram">
+          <h3>Process Control</h3>
           <TechnicalDiagrams diagram="marcy" lang="en" compact={true} />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CENTRAL QUOTATION WORKBENCH -->
-  <section class="workbench-main-section" aria-label="Quotation Request">
-    <div class="container">
-      <FlightDeck lang="en" />
-    </div>
-  </section>
-
-  <!-- WET-END LOT PROCUREMENT MATRIX -->
-  <section class="tco-matrix-section" aria-label="Wet-End Lot Procurement">
-    <div class="container">
-      <div class="tco-matrix-header">
-        <span class="section-eyebrow">PLANT MAINTENANCE PLANNING</span>
-        <h2>Wet-End Lot Procurement vs. Single-Piece Purchasing</h2>
-        <p>For slurry pumps, concentrator plants order balanced wet-end lots matched to component wear rates (for example: <strong>5 impellers, 5 throatbushes, and 4 volute liners</strong>) alongside a complete spare <strong>Bearing Assembly / Housing</strong>.</p>
-      </div>
-
-      <div class="tco-table-wrapper">
-        <table class="tco-comparison-matrix">
-          <thead>
-            <tr>
-              <th>Operational Metric</th>
-              <th>Overseas OEM Import</th>
-              <th>Reactive Single-Part Buying</th>
-              <th class="col-smat-highlight">SMAT Wet-End Lot Supply</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>International Lead Time</strong></td>
-              <td>16 to 24 weeks (Ocean freight & customs)</td>
-              <td>Fragmented emergency orders</td>
-              <td class="col-smat-val">Scheduled lot supply (Domestic tax invoice)</td>
-            </tr>
-            <tr>
-              <td><strong>Wet-End Lot Configuration</strong></td>
-              <td>Rigid bundles with slow-moving items</td>
-              <td>Single part (mismatched wear clearances)</td>
-              <td class="col-smat-val">Custom lots (e.g. 5 Impellers + 5 Throatbushes + 4 Volutes)</td>
-            </tr>
-            <tr>
-              <td><strong>Wear Materials</strong></td>
-              <td>Single standard alloy</td>
-              <td>Unverified casting (&lt;500 HB)</td>
-              <td class="col-smat-val">High Chrome (≥650 HB), Rubber & Polyurethane</td>
-            </tr>
-            <tr>
-              <td><strong>Mill Downtime Risk (20k–40,000 USD/hour)</strong></td>
-              <td>High working capital tied up in transit</td>
-              <td>Extended downtime waiting for throatbush or impeller</td>
-              <td class="col-smat-val">Matched wet-end lot ready at mine site</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <CaseCards lang="en" />
-
-  <DualHubView lang="en" />
-
-  <!-- ENGINEERING & SUPPLY FAQ SECTION (data/faqs.json) -->
-  <section class="faq-home-section" aria-label="Frequently Asked Questions on Equipment & Spares">
-    <div class="container">
-      <div class="tco-matrix-header">
-        <span class="section-eyebrow">TECHNICAL & OPERATIONAL ANSWERS</span>
-        <h2>Frequently Asked Questions on Supply, Balancing & Warranty</h2>
-        <p>Direct answers regarding Durango warehouse buffer stock, 1:1 dimensional interchangeability, and test bench protocols.</p>
-      </div>
-      <div class="faq-accordion-list">
-        {faqsData.faqs.map((faq) => (
-          <details class="faq-accordion-item">
-            <summary class="faq-accordion-summary">{faq.question_en}</summary>
-            <div class="faq-accordion-body">
-              <p>{faq.answer_en}</p>
+          <p>
+            <strong>Pulp Density & % Solids Scales (Marcy Style)</strong> with 1000 cm³ calibrated cup, <strong>SMAT Laboratory Batch Pressure Filter</strong> (60 to 100 psi), and <strong>Certified ASTM E11 / ISO 3310 Test Sieves</strong> in Brass and Stainless Steel.
+          </p>
+          <div class="pro-keyspecs-box">
+            <div class="keyspec-row">
+              <span class="ks-label">Pulp Density:</span>
+              <span class="ks-val">Marcy Scale (1000 cm³, 12 dial rings)</span>
             </div>
-          </details>
-        ))}
+            <div class="keyspec-row">
+              <span class="ks-label">Lab Dewatering:</span>
+              <span class="ks-val">Batch Pressure Filter (60–100 psi)</span>
+            </div>
+            <div class="keyspec-row">
+              <span class="ks-label">Particle Size:</span>
+              <span class="ks-val">ASTM E11 Sieves (5" to #635 Mesh)</span>
+            </div>
+          </div>
+          <div class="showcase-links">
+            <a href="/en/process-control/" class="showcase-cta-primary">Enter Process Control →</a>
+            <a href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="showcase-cta-secondary">Quote Instrument</a>
+          </div>
+        </article>
       </div>
     </div>
   </section>
@@ -247,7 +148,7 @@ import faqsData from '../../../data/faqs.json';
   .hero-home {
     background-color: var(--smat-bg-canvas);
     color: var(--smat-text-primary);
-    padding: 3.25rem 0 2.25rem;
+    padding: 3rem 0 2.25rem;
     border-bottom: 1px solid var(--smat-border-light);
   }
 
@@ -264,7 +165,7 @@ import faqsData from '../../../data/faqs.json';
     font-weight: 700;
     letter-spacing: 0.05em;
     font-family: var(--smat-font-mono);
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.15rem;
     box-shadow: var(--smat-shadow-xs);
   }
 
@@ -279,9 +180,9 @@ import faqsData from '../../../data/faqs.json';
 
   .hero-home h1 {
     color: var(--smat-text-primary);
-    font-size: clamp(2rem, 3.6vw, 3rem);
-    max-width: 900px;
-    margin-bottom: 1rem;
+    font-size: clamp(2rem, 3.5vw, 2.9rem);
+    max-width: 880px;
+    margin-bottom: 0.85rem;
     letter-spacing: -0.03em;
     line-height: 1.12;
   }
@@ -289,16 +190,16 @@ import faqsData from '../../../data/faqs.json';
   .hero-sub-accent {
     color: var(--smat-copper-accent);
     display: inline-block;
-    font-size: clamp(1.35rem, 2.4vw, 2.1rem);
-    margin-top: 0.25rem;
+    font-size: clamp(1.35rem, 2.3vw, 2rem);
+    margin-top: 0.2rem;
   }
 
   .hero-lead {
     color: var(--smat-text-secondary);
-    font-size: 1.05rem;
-    max-width: 820px;
-    margin-bottom: 1.75rem;
-    line-height: 1.6;
+    font-size: 1.04rem;
+    max-width: 760px;
+    margin-bottom: 1.5rem;
+    line-height: 1.55;
   }
 
   .hero-actions {
@@ -314,7 +215,7 @@ import faqsData from '../../../data/faqs.json';
   }
 
   .equipment-showcase-section {
-    padding: var(--smat-space-xl, 48px) 0 var(--smat-space-lg, 32px);
+    padding: var(--smat-space-2xl, 80px) 0;
     background-color: #ffffff;
     border-bottom: 1px solid var(--smat-border-light);
   }
@@ -381,7 +282,7 @@ import faqsData from '../../../data/faqs.json';
     font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: #0f172a;
+    color: var(--smat-text-primary);
     background: #e2e8f0;
     padding: 0.2rem 0.55rem;
     border-radius: 4px;
@@ -395,7 +296,7 @@ import faqsData from '../../../data/faqs.json';
   }
 
   .showcase-card h3 {
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     color: var(--smat-text-primary);
     margin: 0 0 0.35rem 0;
     line-height: 1.3;
@@ -436,8 +337,16 @@ import faqsData from '../../../data/faqs.json';
   .ks-val {
     font-family: var(--smat-font-mono);
     font-weight: 700;
-    color: #0f172a;
+    color: var(--smat-text-primary);
     text-align: right;
+  }
+
+  .inline-spec-link {
+    color: var(--smat-copper-accent);
+    text-decoration: underline;
+    min-height: auto !important;
+    min-width: auto !important;
+    display: inline !important;
   }
 
   .showcase-links {
@@ -461,179 +370,5 @@ import faqsData from '../../../data/faqs.json';
     font-weight: 600;
     color: var(--smat-text-secondary);
     text-decoration: underline;
-  }
-
-  .marcy-banner-card {
-    margin-top: 1.75rem;
-    background: #f8fafc;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
-    padding: 1.5rem;
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: 1.5rem;
-    align-items: center;
-  }
-
-  @media (max-width: 900px) {
-    .marcy-banner-card {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .marcy-banner-info h3 {
-    margin: 0.5rem 0;
-    font-size: 1.25rem;
-    color: var(--smat-text-primary);
-  }
-
-  .marcy-banner-info p {
-    font-size: 0.92rem;
-    color: var(--smat-text-secondary);
-    line-height: 1.55;
-    margin-bottom: 1rem;
-  }
-
-  .workbench-main-section {
-    padding: 1rem 0 3.5rem;
-    background-color: var(--smat-bg-canvas);
-  }
-
-  .tco-matrix-section {
-    padding: var(--smat-space-2xl, 80px) 0;
-    background-color: #ffffff;
-    border-top: 1px solid var(--smat-border-light);
-    border-bottom: 1px solid var(--smat-border-light);
-  }
-
-  .tco-matrix-header {
-    margin-bottom: 1.75rem;
-    max-width: 780px;
-  }
-
-  .tco-matrix-header h2 {
-    font-size: clamp(1.4rem, 2.3vw, 1.85rem);
-    color: var(--smat-text-primary);
-    margin: 0 0 0.5rem 0;
-  }
-
-  .tco-matrix-header p {
-    color: var(--smat-text-secondary);
-    font-size: 0.95rem;
-    margin: 0;
-    line-height: 1.5;
-  }
-
-  .tco-table-wrapper {
-    overflow-x: auto;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-  }
-
-  .tco-comparison-matrix {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.88rem;
-    text-align: left;
-    background: #ffffff;
-  }
-
-  .tco-comparison-matrix th,
-  .tco-comparison-matrix td {
-    padding: 0.95rem 1.15rem;
-    border-bottom: 1px solid #e2e8f0;
-  }
-
-  .tco-comparison-matrix thead th {
-    background: #f8fafc;
-    color: #334155;
-    font-weight: 700;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-  }
-
-  .col-smat-highlight {
-    background: #fff7ed !important;
-    color: #9a3412 !important;
-    border-left: 2px solid var(--smat-copper-accent);
-  }
-
-  .col-smat-val {
-    background: #fffaf5;
-    font-weight: 700;
-    color: #090d16;
-    border-left: 2px solid var(--smat-copper-accent);
-  }
-
-  .atomic-pills-row {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-    padding-top: 0.35rem;
-    border-top: 1px dashed #e2e8f0;
-  }
-
-  .atomic-pills-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem;
-  }
-
-  .atomic-code-pill {
-    font-family: var(--smat-font-mono);
-    font-size: 0.68rem;
-    font-weight: 700;
-    color: var(--smat-copper-accent);
-    background: #fff7ed;
-    border: 1px solid #fed7aa;
-    padding: 0.12rem 0.4rem;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: all 0.15s ease;
-  }
-
-  .atomic-code-pill:hover {
-    background: var(--smat-copper-accent);
-    color: #ffffff;
-  }
-
-  .faq-home-section {
-    padding: 3.5rem 0;
-    background-color: #ffffff;
-    border-bottom: 1px solid var(--smat-border-light);
-  }
-
-  .faq-accordion-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    max-width: 900px;
-  }
-
-  .faq-accordion-item {
-    background: #f8fafc;
-    border: 1px solid var(--smat-border-strong, #cbd5e1);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .faq-accordion-summary {
-    padding: 1rem 1.25rem;
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: var(--smat-text-primary);
-    cursor: pointer;
-    list-style: none;
-  }
-
-  .faq-accordion-body {
-    padding: 0 1.25rem 1rem 1.25rem;
-    font-size: 0.88rem;
-    color: var(--smat-text-secondary);
-    line-height: 1.55;
-  }
-
-  .faq-accordion-body p {
-    margin: 0;
   }
 </style>

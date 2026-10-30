@@ -3,20 +3,21 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CircuitNavigator from '../../components/CircuitNavigator.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
+import SharePurchasing from '../../components/SharePurchasing.astro';
 import atomicParts from '../../../data/atomic_parts.json';
 ---
 
 <BaseLayout 
-  title="Bombas para Lodos y Piezas en Contacto Húmedo | SMAT Minerals"
-  description="Bombas para lodos, impulsores, revestimientos, volutas y cuellos en Alto Cromo, Hule y Poliuretano, y Bearing Assembly / Housing completo."
+  title="Bombas para Lodos y Spare Parts | SMAT Minerals"
+  description="Bombas para lodos de reemplazo, Spare Parts en contacto húmedo por lote 5-5-4 (impulsores, revestimientos, volutas y cuellos en Alto Cromo, Hule y Poliuretano) y Bearing Assembly / Housing completo."
   lang="es"
 >
   <section class="page-hero">
     <div class="container">
-      <span class="badge badge-copper">BOMBAS PARA LODOS Y REFACCIONES</span>
-      <h1>Bombas para Lodos</h1>
-      <p style="font-size: 1.08rem; max-width: 720px; color: var(--smat-text-secondary);">
-        Bombas centrífugas horizontales para lodos, conjuntos completos <strong>Bearing Assembly / Housing</strong> y piezas en contacto húmedo suministradas por lote en <strong>Alto Cromo, Hule y Poliuretano</strong>.
+      <span class="badge badge-copper">PUERTA 2 • OPERACIÓN, MANTENIMIENTO Y REFACCIONAMIENTO</span>
+      <h1>Bombas para Lodos y Spare Parts</h1>
+      <p style="font-size: 1.08rem; max-width: 760px; color: var(--smat-text-secondary);">
+        Bombas centrífugas horizontales de reemplazo para lodos abrasivos, conjuntos completos <strong>Bearing Assembly / Housing</strong> y <strong>Spare Parts</strong> en contacto húmedo suministrados por lote balanceado (<strong>5 impulsores, 5 cuellos y 4 volutas</strong>) en <strong>Alto Cromo (≥650 HB), Hule y Poliuretano</strong>.
       </p>
     </div>
   </section>
@@ -32,10 +33,10 @@ import atomicParts from '../../../data/atomic_parts.json';
             En planta no se compra pieza por pieza suelta: se programa el lote de piezas en contacto húmedo de acuerdo con su rotación real (por ejemplo, <strong>5 impulsores, 5 cuellos y 4 volutas</strong>) en Alto Cromo, Hule o Poliuretano. No manejamos sello mecánico debido a la alta corrosión y abrasión de los lodos mineros; empleamos expulsor centrífugo y prensaestopa.
           </p>
         </div>
-        <a href="/#rfq?equipo=revestimientos" class="btn btn-primary">Cotizar Lote Húmedo →</a>
+        <a href="/cotizar/?equipo=revestimientos#rfq" class="btn btn-primary">Cotizar Lote Húmedo →</a>
       </div>
 
-      <h2 style="margin-top: 2rem;">Bombas y Piezas de Reemplazo</h2>
+      <h2 style="margin-top: 2rem;">Bombas de Reemplazo y Spare Parts Críticos</h2>
       <div class="grid-2" style="margin-top: 1.5rem;">
         <div class="card">
           <h3>Bombas Completas para Lodos</h3>
@@ -43,7 +44,7 @@ import atomicParts from '../../../data/atomic_parts.json';
           <p style="font-family: var(--smat-font-mono); font-size: 0.85rem;"><strong>Rango:</strong> 1.5x1" a 14x12"</p>
           <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
             <a href="/bombeo/skid/" class="btn btn-outline">Ver Diagrama y Datos</a>
-            <a href="/#rfq?equipo=skid_bomba" class="btn btn-primary">Cotizar →</a>
+            <a href="/cotizar/?equipo=skid_bomba#rfq" class="btn btn-primary">Cotizar →</a>
           </div>
         </div>
 
@@ -53,7 +54,7 @@ import atomicParts from '../../../data/atomic_parts.json';
           <p style="font-family: var(--smat-font-mono); font-size: 0.85rem;"><strong>Suministro:</strong> Conjunto Completo Ensamblado</p>
           <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
             <a href="/bombeo/soporte/" class="btn btn-outline">Ver Bearing Assembly</a>
-            <a href="/#rfq?equipo=soporte" class="btn btn-primary">Cotizar →</a>
+            <a href="/cotizar/?equipo=soporte#rfq" class="btn btn-primary">Cotizar →</a>
           </div>
         </div>
 
@@ -63,7 +64,7 @@ import atomicParts from '../../../data/atomic_parts.json';
           <p style="font-family: var(--smat-font-mono); font-size: 0.85rem;"><strong>Materiales:</strong> Alto Cromo, Hule y Poliuretano</p>
           <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
             <a href="/bombeo/impulsor/" class="btn btn-outline">Características del Impulsor</a>
-            <a href="/#rfq?equipo=impulsor" class="btn btn-primary">Cotizar →</a>
+            <a href="/cotizar/?equipo=impulsor#rfq" class="btn btn-primary">Cotizar →</a>
           </div>
         </div>
 
@@ -73,7 +74,7 @@ import atomicParts from '../../../data/atomic_parts.json';
           <p style="font-family: var(--smat-font-mono); font-size: 0.85rem;"><strong>Materiales:</strong> Alto Cromo, Hule y Poliuretano</p>
           <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
             <a href="/bombeo/revestimientos/" class="btn btn-outline">Ver Piezas y Lotes</a>
-            <a href="/#rfq?equipo=revestimientos" class="btn btn-primary">Cotizar →</a>
+            <a href="/cotizar/?equipo=revestimientos#rfq" class="btn btn-primary">Cotizar →</a>
           </div>
         </div>
 
@@ -83,14 +84,14 @@ import atomicParts from '../../../data/atomic_parts.json';
           <p style="font-family: var(--smat-font-mono); font-size: 0.85rem;"><strong>Sellado:</strong> Expulsor y Prensaestopa PTFE/Grafito</p>
           <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
             <a href="/bombeo/sello/" class="btn btn-outline">Ver Sellado Centrífugo</a>
-            <a href="/#rfq?equipo=sello" class="btn btn-primary">Cotizar →</a>
+            <a href="/cotizar/?equipo=sello#rfq" class="btn btn-primary">Cotizar →</a>
           </div>
         </div>
       </div>
 
       <!-- Fichas Técnicas por Código Universal (atomic_parts.json) -->
       <div class="atomic-silo-block" style="margin-top: 2.5rem;">
-        <h2 style="margin-bottom: 0.4rem;">Fichas Técnicas por Número de Parte Universal (Contacto Húmedo)</h2>
+        <h2 style="margin-bottom: 0.4rem;">Fichas Técnicas de Spare Parts por Número de Parte Universal (Contacto Húmedo)</h2>
         <p style="color: var(--smat-text-secondary); margin-bottom: 1.25rem;">
           Consulte las especificaciones individuales de impulsores cerrados, cuellos de succión y anillos expulsores con verificación dimensional 1:1 en Almacén Central Durango.
         </p>
@@ -105,11 +106,71 @@ import atomicParts from '../../../data/atomic_parts.json';
               <p style="font-size: 0.84rem; color: var(--smat-text-secondary); margin-bottom: 0.85rem;">{part.type_es} • {part.hardness}</p>
               <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: auto;">
                 <a href={`/catalogo/${part.code}/`} class="btn btn-outline" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;">Ver Ficha {part.part_number}</a>
-                <a href={`/#rfq?codigo=${part.part_number}&circuito=bombeo`} class="btn btn-primary" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;">Cotizar →</a>
+                <a href={`/cotizar/?codigo=${part.part_number}&circuito=bombeo#rfq`} class="btn btn-primary" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;">Cotizar →</a>
               </div>
             </div>
           ))}
         </div>
+      </div>
+
+      <SharePurchasing
+        roleTitle="Bombas para Lodos y Lote Húmedo de Spare Parts (5-5-4)"
+        specs="Lote balanceado de 5 Impulsores + 5 Cuellos + 4 Volutas y Bearing Assembly / Housing"
+        metallurgy="Alto Cromo 27% A05 (≥650 HB), Hule Natural Antiabrasivo y Poliuretano"
+        series="1.5x1 a 14x12"
+        roleId="kit_wet_end"
+        circuit="bombeo"
+        lang="es"
+      />
+    </div>
+  </section>
+
+  <!-- MATRIZ COMPARATIVA DE SUMINISTRO POR LOTE -->
+  <section class="tco-matrix-section" aria-label="Suministro por Lote de Contacto Húmedo">
+    <div class="container">
+      <div class="tco-matrix-header">
+        <span class="section-eyebrow">PLANEACIÓN DE MANTENIMIENTO EN PLANTA</span>
+        <h2>Compra por Lote de Contacto Húmedo vs. Compra Pieza por Pieza</h2>
+        <p>En bombas para lodos, las plantas programan lotes balanceados según la tasa real de desgaste de cada componente húmedo (por ejemplo: <strong>5 impulsores, 5 cuellos y 4 volutas</strong>) junto con un <strong>Bearing Assembly / Housing</strong> completo de respaldo.</p>
+      </div>
+
+      <div class="tco-table-wrapper">
+        <table class="tco-comparison-matrix">
+          <thead>
+            <tr>
+              <th>Criterio Operativo</th>
+              <th>Importación Ultramarina Tradicional</th>
+              <th>Compra Unitaria Reactiva</th>
+              <th class="col-smat-highlight">Suministro Programado por Lote SMAT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Tiempo de Tránsito Internacional</strong></td>
+              <td>16 a 24 semanas (Tránsito marítimo y aduana)</td>
+              <td>Compras aisladas de urgencia</td>
+              <td class="col-smat-val">Programación directa por lote (Facturación nacional CFDI)</td>
+            </tr>
+            <tr>
+              <td><strong>Configuración de Contacto Húmedo</strong></td>
+              <td>Lotes rígidos con piezas de baja rotación</td>
+              <td>1 pieza suelta (desajuste con partes gastadas)</td>
+              <td class="col-smat-val">Lotes a medida (ej. 5 Impulsores + 5 Cuellos + 4 Volutas)</td>
+            </tr>
+            <tr>
+              <td><strong>Materiales de Desgaste</strong></td>
+              <td>Una sola aleación estándar</td>
+              <td>Fundición no controlada (&lt;500 HB)</td>
+              <td class="col-smat-val">Alto Cromo (≥650 HB), Hule y Poliuretano</td>
+            </tr>
+            <tr>
+              <td><strong>Impacto ante Paro de Molino (20k–40,000 USD/hora)</strong></td>
+              <td>Alto capital inmovilizado por meses</td>
+              <td>Paro prolongado por falta de cuello o impulsor</td>
+              <td class="col-smat-val">Programación por lote acoplado al desgaste real (5-5-4)</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
@@ -123,11 +184,11 @@ import atomicParts from '../../../data/atomic_parts.json';
   <section class="section">
     <div class="container">
       <div class="card" style="background: #f8fafc; border: 1px solid var(--smat-border-strong); padding: 2.25rem; text-align: center;">
-        <h2 style="margin-bottom: 0.6rem;">Solicitar Cotización de Bombas o Lote de Piezas</h2>
+        <h2 style="margin-bottom: 0.6rem;">Solicitar Cotización de Bombas o Lote de Spare Parts</h2>
         <p style="max-width: 620px; margin: 0 auto 1.25rem; color: var(--smat-text-secondary);">
           Indique el tamaño de su bomba o las cantidades de su lote en contacto húmedo (impulsores, cuellos, volutas o Bearing Assembly / Housing).
         </p>
-        <a href="/#rfq?equipo=skid_bomba" class="btn btn-primary">Solicitar Cotización →</a>
+        <a href="/cotizar/?equipo=skid_bomba#rfq" class="btn btn-primary">Solicitar Cotización →</a>
       </div>
     </div>
   </section>
@@ -175,5 +236,71 @@ import atomicParts from '../../../data/atomic_parts.json';
   .atomic-silo-card {
     display: flex;
     flex-direction: column;
+  }
+  .section-eyebrow {
+    display: inline-block;
+    font-family: var(--smat-font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--smat-copper-accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .tco-matrix-section {
+    padding: var(--smat-space-2xl, 80px) 0;
+    background-color: #ffffff;
+    border-top: 1px solid var(--smat-border-light);
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+  .tco-matrix-header {
+    margin-bottom: 1.75rem;
+    max-width: 780px;
+  }
+  .tco-matrix-header h2 {
+    font-size: clamp(1.4rem, 2.3vw, 1.85rem);
+    color: var(--smat-text-primary);
+    margin: 0 0 0.5rem 0;
+  }
+  .tco-matrix-header p {
+    color: var(--smat-text-secondary);
+    font-size: 0.95rem;
+    margin: 0;
+    line-height: 1.5;
+  }
+  .tco-table-wrapper {
+    overflow-x: auto;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+  }
+  .tco-comparison-matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    text-align: left;
+    background: #ffffff;
+  }
+  .tco-comparison-matrix th,
+  .tco-comparison-matrix td {
+    padding: 0.95rem 1.15rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .tco-comparison-matrix thead th {
+    background: #f8fafc;
+    color: #334155;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+  }
+  .col-smat-highlight {
+    background: #fff7ed !important;
+    color: #9a3412 !important;
+    border-left: 2px solid var(--smat-copper-accent);
+  }
+  .col-smat-val {
+    background: #fffaf5;
+    font-weight: 700;
+    color: var(--smat-text-primary);
+    border-left: 2px solid var(--smat-copper-accent);
   }
 </style>

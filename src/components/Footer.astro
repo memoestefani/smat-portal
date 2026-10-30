@@ -61,10 +61,12 @@ const isEs = lang === 'es';
         </ul>
       </div>
 
-      <!-- Columna 3: Flotación, Filtros Prensa y Diagnóstico (7 Rutas) -->
+      <!-- Columna 3: Equipos de Proceso, Flotación, Filtros Prensa y Control (10 Rutas) -->
       <div class="footer-col">
-        <h4 class="col-heading">{isEs ? 'Flotación, Filtros Prensa y Balanzas' : 'Flotation, Filter Presses & Scales'}</h4>
+        <h4 class="col-heading">{isEs ? 'Equipos de Proceso y Control' : 'Process Equipment & Control'}</h4>
         <ul class="footer-links">
+          <li><a href={isEs ? '/equipos/' : '/en/process-equipment/'}><strong>{isEs ? 'Puerta 1: Equipos de Proceso' : 'Door 1: Process Equipment'}</strong></a></li>
+          <li><a href={isEs ? '/control-de-procesos/' : '/en/process-control/'}><strong>{isEs ? 'Puerta 3: Control de Procesos (Marcy, Filtro Batch y Tamices)' : 'Door 3: Process Control (Marcy, Batch Filter & Sieves)'}</strong></a></li>
           <li><a href={isEs ? '/flotacion/' : '/en/flotation/'}><strong>{isEs ? 'Mecanismos de Flotación y Acondicionadores' : 'Flotation Mechanisms & Conditioners'}</strong></a></li>
           <li><a href={isEs ? '/flotacion/celdas/' : '/en/flotation/cells/'}>{isEs ? 'Mecanismos para Celdas (50 a 300 ft³)' : 'Flotation Mechanisms (50 to 300 ft³)'}</a></li>
           <li><a href={isEs ? '/flotacion/mecanismos/' : '/en/flotation/mechanisms/'}>{isEs ? 'Rotores y Estatores de Flotación' : 'Rotors & Stator Diffusers'}</a></li>
@@ -72,6 +74,7 @@ const isEs = lang === 'es';
           <li><a href={isEs ? '/filtracion/prensa/' : '/en/filtration/press/'}>{isEs ? 'Filtros Prensa (800 a 1500 mm)' : 'Filter Presses (800 to 1500 mm)'}</a></li>
           <li><a href={isEs ? '/filtracion/repuestos/' : '/en/filtration/parts/'}>{isEs ? 'Placas Filtrantes y Telas' : 'Filter Plates & Cloths'}</a></li>
           <li><a href={isEs ? '/diagnostico/' : '/en/diagnostics/'}>{isEs ? 'Diagnóstico de Fallas en Planta' : 'Plant Equipment Failure Diagnostics'}</a></li>
+          <li><a href={isEs ? '/cotizar/' : '/en/quote/'}>{isEs ? 'Simulador Hidráulico y Cotizador' : 'Hydraulic Simulator & Quote Workbench'}</a></li>
         </ul>
       </div>
 

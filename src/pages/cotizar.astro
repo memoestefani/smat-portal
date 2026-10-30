@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FlightDeck from '../components/FlightDeck.astro';
+---
+
+<BaseLayout
+  title="Solicitar Cotización de Equipos, Spare Parts y Control de Procesos"
+  description="Consola de requisición técnica formal y simulación hidráulica Durand-Condolios de SMAT Minerals en Durango, México. Equipos de proceso, bombas para lodos, spare parts y control metalúrgico."
+  lang="es"
+  canonicalPath="/cotizar/"
+  alternateEsPath="/cotizar/"
+  alternateEnPath="/en/quote/"
+>
+  <section class="quote-route-banner no-print">
+    <div class="container">
+      <nav class="doors-breadcrumb" aria-label="Retorno rápido a las 3 líneas de suministro">
+        <a href="/" class="crumb-home">← Inicio</a>
+        <span class="crumb-sep">/</span>
+        <a href="/equipos/" class="crumb-door">1. Equipos de Proceso</a>
+        <span class="crumb-sep">•</span>
+        <a href="/bombeo/" class="crumb-door">2. Bombas para Lodos y Spare Parts</a>
+        <span class="crumb-sep">•</span>
+        <a href="/control-de-procesos/" class="crumb-door">3. Control de Procesos</a>
+      </nav>
+      <div class="quote-route-heading">
+        <span class="route-pill">
+          <span class="live-dot"></span>
+          MESA DE REQUISICIÓN E INGENIERÍA • ALMACÉN CENTRAL DURANGO
+        </span>
+        <h1>Cotizador Técnico y Simulador de Proceso SMAT</h1>
+        <p>
+          Configure su partida de <strong>Equipos de Proceso</strong>, <strong>Bombas para Lodos y Spare Parts</strong> o <strong>Control de Procesos</strong>. Genere su folio oficial imprimible en A4, tabla TSV para SAP o envíe su solicitud directa a ingeniería en Durango.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <FlightDeck lang="es" />
+</BaseLayout>
+
+<style>
+  .quote-route-banner {
+    background: var(--smat-navy-deep, #051B2E);
+    color: #f8fafc;
+    padding: 2rem 0 1.75rem;
+    border-bottom: 2px solid var(--smat-copper-accent, #c25e00);
+  }
+  .doors-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 1rem;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.76rem;
+  }
+  .doors-breadcrumb a {
+    color: #cbd5e1;
+    text-decoration: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    background: rgba(15, 23, 42, 0.45);
+    transition: all 0.15s ease;
+  }
+  .doors-breadcrumb a:hover {
+    color: #ffffff;
+    border-color: #38bdf8;
+    background: rgba(13, 120, 198, 0.25);
+  }
+  .crumb-sep {
+    color: #64748b;
+  }
+  .route-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #fdba74;
+    background: rgba(194, 94, 0, 0.18);
+    border: 1px solid rgba(251, 146, 60, 0.35);
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.65rem;
+  }
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #10b981;
+  }
+  .quote-route-heading h1 {
+    font-family: var(--smat-font-editorial);
+    font-size: clamp(1.6rem, 2.8vw, 2.25rem);
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.02em;
+  }
+  .quote-route-heading p {
+    font-size: 0.98rem;
+    color: #cbd5e1;
+    max-width: 780px;
+    line-height: 1.55;
+    margin: 0;
+  }
+  .quote-route-heading strong {
+    color: #ffffff;
+  }
+</style>
+

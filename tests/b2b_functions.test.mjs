@@ -1539,7 +1539,7 @@ test('77. Verificación de Cero Dead Affordances en Componentes Clave (Decisión
 
   // Header no debe usar #rfq plano relativo que falla en subpáginas
   assert.ok(!header.includes('href="#rfq"'), 'Header no debe usar href="#rfq" relativo');
-  assert.ok(header.includes('href={isEs ? "/#rfq" : "/en/#rfq"}'), 'Header debe usar href absoluto con soporte de idioma');
+  assert.ok(header.includes('href={isEs ? "/#rfq" : "/en/#rfq"}') || header.includes('href={isEs ? "/cotizar/#rfq" : "/en/quote/#rfq"}'), 'Header debe usar href absoluto con soporte de idioma');
 
   // CaseCards no debe usar ancla inexistente #circuitos
   assert.ok(!caseCards.includes('href="#circuitos"'), 'CaseCards no debe contener href="#circuitos"');
@@ -1592,12 +1592,12 @@ test('80. Invariante de Erradicación de CapEx/OpEx en Vitrina de Portada y Cat�
   assert.ok(!catalogEn.includes('CapEx • Complete Cell'), 'en/catalog.astro no debe usar CapEx en celdas');
 
   // Presencia de etiquetas de circuito Apple Pro Key-Specs para Don Manuel
-  assert.ok(indexEs.includes('Circuito 1: Molienda y Bombeo'), 'index.astro debe contener etiqueta de circuito 1');
-  assert.ok(indexEs.includes('Circuito 2: Concentración'), 'index.astro debe contener etiqueta de circuito 2');
-  assert.ok(indexEs.includes('Circuito 3: Jales Secos'), 'index.astro debe contener etiqueta de circuito 3');
-  assert.ok(indexEn.includes('Circuit 1: Grinding & Pumping'), 'en/index.astro debe contener etiqueta de circuito 1 en EN');
-  assert.ok(indexEn.includes('Circuit 2: Concentration'), 'en/index.astro debe contener etiqueta de circuito 2 en EN');
-  assert.ok(indexEn.includes('Circuit 3: Dry Tailings'), 'en/index.astro debe contener etiqueta de circuito 3 en EN');
+  assert.ok(indexEs.includes('Equipos de Proceso'), 'index.astro debe contener Puerta 1: Equipos de Proceso');
+  assert.ok(indexEs.includes('Bombas para Lodos y Spare Parts'), 'index.astro debe contener Puerta 2: Bombas para Lodos y Spare Parts');
+  assert.ok(indexEs.includes('Control de Procesos'), 'index.astro debe contener Puerta 3: Control de Procesos');
+  assert.ok(indexEn.includes('Process Equipment'), 'en/index.astro debe contener Door 1: Process Equipment');
+  assert.ok(indexEn.includes('Slurry Pumps & Spare Parts'), 'en/index.astro debe contener Door 2: Slurry Pumps & Spare Parts');
+  assert.ok(indexEn.includes('Process Control'), 'en/index.astro debe contener Door 3: Process Control');
 });
 
 test('81. Invariante de Armonización Cromática 90/10 en CaseCards (Decisión 6-C)', () => {
@@ -1640,18 +1640,18 @@ test('84. Matriz Fiduciaria TCO Multi-Equipo en Portada ES y EN (Decisión 5-C &
   const indexEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/index.astro'), 'utf-8');
 
   // Portada ES
-  assert.ok(indexEs.includes('tco-matrix-section'), 'index.astro debe contener .tco-matrix-section');
-  assert.ok(indexEs.includes('tco-comparison-matrix'), 'index.astro debe contener tabla .tco-comparison-matrix');
-  assert.ok(indexEs.includes('16 a 24 semanas'), 'index.astro debe contrastar tiempo de importación ultramarina');
+  assert.ok(indexEs.includes('tco-matrix-section') || fs.readFileSync(path.join(siteRoot, 'src/pages/bombeo/index.astro'), 'utf-8').includes('tco-matrix-section'), 'bombeo/index.astro debe contener .tco-matrix-section');
+  assert.ok(fs.readFileSync(path.join(siteRoot, 'src/pages/bombeo/index.astro'), 'utf-8').includes('tco-comparison-matrix'), 'bombeo/index.astro debe contener tabla .tco-comparison-matrix');
+  assert.ok(fs.readFileSync(path.join(siteRoot, 'src/pages/bombeo/index.astro'), 'utf-8').includes('16 a 24 semanas'), 'bombeo/index.astro debe contrastar tiempo de importación ultramarina');
   assert.ok(indexEs.includes('5 Impulsores + 5 Cuellos + 4 Volutas'), 'index.astro debe exhibir suministro por lote húmedo');
-  assert.ok(indexEs.includes('40,000 USD/hora'), 'index.astro debe documentar costo de paro de molino');
+  assert.ok(fs.readFileSync(path.join(siteRoot, 'src/pages/bombeo/index.astro'), 'utf-8').includes('40,000 USD/hora'), 'bombeo/index.astro debe documentar costo de paro de molino');
 
   // Portada EN
-  assert.ok(indexEn.includes('tco-matrix-section'), 'en/index.astro debe contener .tco-matrix-section');
-  assert.ok(indexEn.includes('tco-comparison-matrix'), 'en/index.astro debe contener tabla .tco-comparison-matrix');
-  assert.ok(indexEn.includes('16 to 24 weeks'), 'en/index.astro debe contrastar tiempo en EN');
+  assert.ok(fs.readFileSync(path.join(siteRoot, 'src/pages/en/pumping/index.astro'), 'utf-8').includes('tco-matrix-section'), 'en/pumping/index.astro debe contener .tco-matrix-section');
+  assert.ok(fs.readFileSync(path.join(siteRoot, 'src/pages/en/pumping/index.astro'), 'utf-8').includes('tco-comparison-matrix'), 'en/pumping/index.astro debe contener tabla .tco-comparison-matrix');
+  assert.ok(fs.readFileSync(path.join(siteRoot, 'src/pages/en/pumping/index.astro'), 'utf-8').includes('16 to 24 weeks'), 'en/pumping/index.astro debe contrastar tiempo en EN');
   assert.ok(indexEn.includes('5 Impellers + 5 Throatbushes + 4 Volutes'), 'en/index.astro debe exhibir suministro por lote en EN');
-  assert.ok(indexEn.includes('40,000 USD/hour'), 'en/index.astro debe documentar costo de paro en EN');
+  assert.ok(fs.readFileSync(path.join(siteRoot, 'src/pages/en/pumping/index.astro'), 'utf-8').includes('40,000 USD/hour'), 'en/pumping/index.astro debe documentar costo de paro en EN');
 });
 
 test('85. Metáfora de Hoja Física A4 en Live Dossier (Decisión 1-C / GOLD-169)', () => {
@@ -2789,4 +2789,101 @@ test('146. Sincronización Bidireccional de Misión y Filtro de Circuito en Dual
 
   assert.ok(perspective.includes('subscribeWorkbenchUpdate'), 'PerspectiveSelector debe suscribirse a subscribeWorkbenchUpdate para sincronización bidireccional');
 });
+
+test('147. Arquitectura de 3 Puertas en Portada Minimalista sin Sobrecarga Cognitiva (Decisión Don Manuel)', () => {
+  const indexEs = fs.readFileSync(path.join(siteRoot, 'src/pages/index.astro'), 'utf-8');
+  const indexEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/index.astro'), 'utf-8');
+
+  // Enlaces directos a las 3 Puertas en ES y EN
+  assert.ok(indexEs.includes('href="/equipos/"'), 'Portada ES debe enlazar a Puerta 1 /equipos/');
+  assert.ok(indexEs.includes('href="/bombeo/"'), 'Portada ES debe enlazar a Puerta 2 /bombeo/');
+  assert.ok(indexEs.includes('href="/control-de-procesos/"'), 'Portada ES debe enlazar a Puerta 3 /control-de-procesos/');
+  assert.ok(indexEs.includes('href="/cotizar/#rfq"'), 'Portada ES debe enlazar al cotizador dedicado /cotizar/#rfq');
+
+  assert.ok(indexEn.includes('href="/en/process-equipment/"'), 'Portada EN debe enlazar a Door 1 /en/process-equipment/');
+  assert.ok(indexEn.includes('href="/en/pumping/"'), 'Portada EN debe enlazar a Door 2 /en/pumping/');
+  assert.ok(indexEn.includes('href="/en/process-control/"'), 'Portada EN debe enlazar a Door 3 /en/process-control/');
+  assert.ok(indexEn.includes('href="/en/quote/#rfq"'), 'Portada EN debe enlazar al cotizador dedicado /en/quote/#rfq');
+
+  // Ausencia de bloques pesados reubicados fuera de la portada
+  for (const relocated of ['<FlightDeck', '<DualHubView', '<CaseCards', 'tco-matrix-section', 'faq-home-section']) {
+    assert.ok(!indexEs.includes(relocated), `Portada ES no debe saturarse con ${relocated}`);
+    assert.ok(!indexEn.includes(relocated), `Portada EN no debe saturarse con ${relocated}`);
+  }
+});
+
+test('148. Puerta 1 (/equipos/ y /en/process-equipment/) con Flotación, Filtración y Bombas de Proyecto', () => {
+  const eqEs = fs.readFileSync(path.join(siteRoot, 'src/pages/equipos/index.astro'), 'utf-8');
+  const eqEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/process-equipment/index.astro'), 'utf-8');
+
+  assert.ok(eqEs.includes('<h1>Equipos de Proceso</h1>'), 'equipos/index.astro debe tener H1 Equipos de Proceso');
+  assert.ok(eqEn.includes('<h1>Process Equipment</h1>'), 'en/process-equipment/index.astro debe tener H1 Process Equipment');
+
+  // Reubicación limpia de DualHubView, CaseCards y CircuitNavigator
+  for (const comp of ['<CircuitNavigator', '<DualHubView', '<CaseCards', '<SharePurchasing']) {
+    assert.ok(eqEs.includes(comp), `equipos/index.astro debe integrar ${comp}`);
+    assert.ok(eqEn.includes(comp), `en/process-equipment/index.astro debe integrar ${comp}`);
+  }
+});
+
+test('149. Puerta 2 (/bombeo/ y /en/pumping/) como "Bombas para Lodos y Spare Parts" con Lote 5-5-4 y Cero Frases Arcaicas', () => {
+  const bEs = fs.readFileSync(path.join(siteRoot, 'src/pages/bombeo/index.astro'), 'utf-8');
+  const bEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/pumping/index.astro'), 'utf-8');
+
+  assert.ok(bEs.includes('<h1>Bombas para Lodos y Spare Parts</h1>'), 'bombeo/index.astro debe titular Bombas para Lodos y Spare Parts');
+  assert.ok(bEn.includes('<h1>Slurry Pumps & Spare Parts</h1>'), 'en/pumping/index.astro debe titular Slurry Pumps & Spare Parts');
+
+  // Erradicación de la frase arcaica "Respaldo completo en bodega de mina"
+  assert.ok(!bEs.includes('Respaldo completo en bodega de mina'), 'No debe prometer respaldo completo en bodega de mina');
+  assert.ok(bEs.includes('Programación por lote acoplado al desgaste real (5-5-4)'), 'Debe consignar programación por lote acoplado al desgaste real (5-5-4)');
+  assert.ok(bEn.includes('Batch scheduling matched to actual wet-end wear (5-5-4)'), 'Debe consignar Batch scheduling matched to actual wet-end wear (5-5-4)');
+});
+
+test('150. Puerta 3 (/control-de-procesos/ y /en/process-control/) con Balanza Marcy, Filtro Batch y Tamices ASTM E11', () => {
+  const cEs = fs.readFileSync(path.join(siteRoot, 'src/pages/control-de-procesos/index.astro'), 'utf-8');
+  const cEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/process-control/index.astro'), 'utf-8');
+
+  assert.ok(cEs.includes('<h1>Control de Procesos</h1>'), 'control-de-procesos/index.astro debe tener H1 Control de Procesos');
+  assert.ok(cEn.includes('<h1>Process Control</h1>'), 'en/process-control/index.astro debe tener H1 Process Control');
+
+  // Los 3 instrumentos y sus diagramas vectoriales CAD (#8 marcy, #9 batch_filter, #10 sieves)
+  for (const diag of ['diagram="marcy"', 'diagram="batch_filter"', 'diagram="sieves"']) {
+    assert.ok(cEs.includes(diag), `control-de-procesos/index.astro debe renderizar ${diag}`);
+    assert.ok(cEn.includes(diag), `en/process-control/index.astro debe renderizar ${diag}`);
+  }
+
+  // Calculadora interactiva de metrología metalúrgica
+  assert.ok(cEs.includes('id="metrology-calculator"') && cEs.includes('calculateMarcyScaleReading'), 'Debe integrar calculadora interactiva Marcy + Gy + ASTM E11 en ES');
+  assert.ok(cEn.includes('id="metrology-calculator"') && cEn.includes('calculateMarcyScaleReading'), 'Debe integrar calculadora interactiva Marcy + Gy + ASTM E11 en EN');
+});
+
+test('151. Ruta Dedicada de Cotizador (/cotizar/ y /en/quote/) y 4to Circuito en QuoteWizard.astro', () => {
+  const cotEs = fs.readFileSync(path.join(siteRoot, 'src/pages/cotizar.astro'), 'utf-8');
+  const cotEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/quote.astro'), 'utf-8');
+  const wizard = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
+
+  assert.ok(cotEs.includes('<FlightDeck lang="es" />'), 'cotizar.astro debe montar <FlightDeck lang="es" />');
+  assert.ok(cotEn.includes('<FlightDeck lang="en" />'), 'en/quote.astro debe montar <FlightDeck lang="en" />');
+
+  assert.ok(wizard.includes('data-circuit="control_procesos"'), 'QuoteWizard debe incluir píldora de 4to circuito control_procesos');
+  assert.ok(wizard.includes('id="circuit-panel-control"'), 'QuoteWizard debe incluir #circuit-panel-control');
+  assert.ok(wizard.includes('id="wb-role-ctrl"') && wizard.includes('id="wb-ctrl-spec"'), 'QuoteWizard debe incluir selectores de instrumento y especificación de control');
+});
+
+test('152. Enrutamiento Presupuestal Interno Silencioso y Códigos Institucionales SMAT-CTRL-*', async () => {
+  const { generateSmatPartCode, parseSmatPartCode, resolveInternalBudgetCategory } = await import('../src/scripts/workbenchBus.js');
+
+  assert.equal(generateSmatPartCode({ circuit: 'control_procesos', role: 'balanza_marcy' }), 'SMAT-CTRL-MARCY-1000');
+  assert.equal(generateSmatPartCode({ circuit: 'control_procesos', role: 'filtro_batch_lab' }), 'SMAT-CTRL-BATCH-LAB');
+  assert.equal(generateSmatPartCode({ circuit: 'control_procesos', role: 'tamices_laboratorio' }), 'SMAT-CTRL-SIEVE-ASTM');
+
+  const parsedSieve = parseSmatPartCode('SMAT-CTRL-SIEVE-ASTM');
+  assert.equal(parsedSieve.circuit, 'control_procesos');
+  assert.equal(parsedSieve.role, 'tamices_laboratorio');
+
+  assert.equal(resolveInternalBudgetCategory({ circuit: 'control_procesos', role: 'balanza_marcy' }), 'CONTROL_PROCESOS');
+  assert.equal(resolveInternalBudgetCategory({ circuit: 'flotacion', role: 'celda_flotacion' }), 'PROYECTO_EQUIPOS');
+  assert.equal(resolveInternalBudgetCategory({ circuit: 'bombeo', role: 'kit_wet_end' }), 'OPERACION_SPARE_PARTS');
+});
+
 

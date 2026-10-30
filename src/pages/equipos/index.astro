@@ -1,0 +1,171 @@
+---
+// src/pages/equipos/index.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
+import CircuitNavigator from '../../components/CircuitNavigator.astro';
+import DualHubView from '../../components/DualHubView.astro';
+import CaseCards from '../../components/CaseCards.astro';
+import SharePurchasing from '../../components/SharePurchasing.astro';
+---
+
+<BaseLayout
+  title="Equipos de Proceso para Plantas de Beneficio | SMAT Minerals"
+  description="Suministro de Equipos de Proceso para proyectos, ampliaciones y modernización de circuitos: Mecanismos para Celdas de Flotación y Acondicionadores (50 a 300 ft³), Filtros Prensa (800 a 1500 mm, 16 bar) y Bombas Completas para Lodos."
+  lang="es"
+  canonicalPath="/equipos/"
+  alternateEsPath="/equipos/"
+  alternateEnPath="/en/process-equipment/"
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="badge badge-copper">PUERTA 1 • PROYECTOS, AMPLIACIONES Y CIRCUITOS</span>
+      <h1>Equipos de Proceso</h1>
+      <p style="font-size: 1.06rem; max-width: 780px; color: var(--smat-text-secondary);">
+        Ingeniería y suministro de equipos principales para circuitos de molienda, concentración por flotación y desaguado de jales: <strong>Mecanismos para Celdas de Flotación y Acondicionadores (50 a 300 ft³)</strong>, <strong>Filtros Prensa de Cámara Empotrada (800 a 1500 mm, hasta 16 bar)</strong> y <strong>Bombas Horizontales y Verticales para Lodos en Paquete de Proyecto</strong>.
+      </p>
+      <div style="display: flex; gap: 0.85rem; flex-wrap: wrap; margin-top: 1.25rem;">
+        <a href="/cotizar/?equipo=celda_flotacion#rfq" class="btn btn-primary">Cotizar Equipo de Proceso →</a>
+        <a href="/bombeo/" class="btn btn-outline">Ir a Bombas para Lodos y Spare Parts →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="process-equipment-grid">
+        <!-- Equipo 1: Mecanismos para Celdas de Flotación y Acondicionadores -->
+        <article class="card equipment-block">
+          <div class="equipment-block-header">
+            <span class="badge badge-copper">CIRCUITO DE CONCENTRACIÓN • 50 A 300 FT³</span>
+            <h2>Mecanismos para Celdas de Flotación y Acondicionadores</h2>
+            <p style="color: var(--smat-text-secondary);">
+              Cabezales motrices, flechas concéntricas de acero aleado, tubos de aire (standpipes), difusores estatores, impulsores rotores y acondicionadores de pulpa de alta intensidad para bancos <strong>Rougher, Cleaner y Scavenger</strong>.
+            </p>
+          </div>
+          <TechnicalDiagrams diagram="flotation" lang="es" />
+          <div class="specs-strip">
+            <div><strong>Capacidades de Celda:</strong> 50 ft³, 100 ft³, 160 ft³ y 300 ft³</div>
+            <div><strong>Aireación:</strong> Auto-aspirada o aire forzado de baja presión</div>
+            <div><strong>Elastómeros y Recubrimientos:</strong> Hule natural antiabrasivo y Poliuretano moldeado</div>
+          </div>
+          <div class="equipment-actions">
+            <a href="/flotacion/" class="btn btn-outline">Ver Línea de Flotación</a>
+            <a href="/flotacion/celdas/" class="btn btn-outline">Mecanismos 50-300 ft³</a>
+            <a href="/flotacion/mecanismos/" class="btn btn-outline">Rotores y Estatores</a>
+            <a href="/cotizar/?equipo=celda_flotacion#rfq" class="btn btn-primary">Cotizar Mecanismo o Celda →</a>
+          </div>
+        </article>
+
+        <!-- Equipo 2: Filtros Prensa de Cámara Empotrada -->
+        <article class="card equipment-block">
+          <div class="equipment-block-header">
+            <span class="badge badge-copper">FILTRACIÓN DE CONCENTRADOS Y JALES SECOS • 800 A 1500 MM</span>
+            <h2>Filtros Prensa de Cámara Empotrada (Hasta 16 bar)</h2>
+            <p style="color: var(--smat-text-secondary);">
+              Filtros prensa completos con bastidor de acero estructural de alta rigidez, cierre electrohidráulico automático, paquetes de placas de polipropileno virgen copolímero y telas filtrantes para recuperación de agua de proceso y apilamiento en seco (Dry Stacking).
+            </p>
+          </div>
+          <TechnicalDiagrams diagram="filter" lang="es" />
+          <div class="specs-strip">
+            <div><strong>Formatos de Placa:</strong> 800×800 mm, 1000×1000 mm, 1200×1200 mm y 1500×1500 mm</div>
+            <div><strong>Presión de Operación:</strong> Hasta 16 bar con soplado de torta por colector</div>
+            <div><strong>Humedad Residual:</strong> 10% a 14% según granulometría del concentrado o jal</div>
+          </div>
+          <div class="equipment-actions">
+            <a href="/filtracion/" class="btn btn-outline">Ver Línea de Filtración</a>
+            <a href="/filtracion/prensa/" class="btn btn-outline">Filtros Prensa 800-1500 mm</a>
+            <a href="/filtracion/repuestos/" class="btn btn-outline">Placas y Telas Filtrantes</a>
+            <a href="/cotizar/?equipo=filtro_prensa#rfq" class="btn btn-primary">Cotizar Filtro Prensa →</a>
+          </div>
+        </article>
+
+        <!-- Equipo 3: Bombas Completas para Lodos en Paquete de Proyecto -->
+        <article class="card equipment-block">
+          <div class="equipment-block-header">
+            <span class="badge badge-copper">BOMBEO DE PULPA EN PROYECTO • 1.5X1" A 14X12"</span>
+            <h2>Bombas Horizontales y Verticales para Lodos (Paquete Completo)</h2>
+            <p style="color: var(--smat-text-secondary);">
+              Bombas centrífugas completas sobre base estructural con conjunto motriz <strong>Bearing Assembly / Housing</strong>, transmisión por poleas y bandas, guarda de seguridad y extremo húmedo configurado en Alto Cromo (≥650 HB), Hule o Poliuretano.
+            </p>
+          </div>
+          <TechnicalDiagrams diagram="pump" lang="es" />
+          <div class="specs-strip">
+            <div><strong>Tamaños de Descarga:</strong> Desde 1.5x1" hasta 14x12"</div>
+            <div><strong>Sellado de Flecha:</strong> Expulsor centrífugo en seco y prensaestopa (sin sello mecánico)</div>
+            <div><strong>Refaccionamiento Operativo:</strong> Disponible en <a href="/bombeo/">Bombas para Lodos y Spare Parts</a></div>
+          </div>
+          <div class="equipment-actions">
+            <a href="/bombeo/skid/" class="btn btn-outline">Especificaciones de Bomba Completa</a>
+            <a href="/bombeo/" class="btn btn-outline">Ver Spare Parts y Lotes 5-5-4</a>
+            <a href="/cotizar/?equipo=skid_bomba#rfq" class="btn btn-primary">Cotizar Bomba de Proyecto →</a>
+          </div>
+        </article>
+      </div>
+
+      <SharePurchasing
+        roleTitle="Equipos de Proceso para Planta Concentradora (Flotación / Filtración / Bombeo)"
+        specs="Mecanismos de Flotación 50-300 ft³, Filtros Prensa 800-1500 mm (16 bar) y Bombas de Proyecto 1.5x1 a 14x12"
+        metallurgy="Acero Estructural / Alto Cromo A05 (≥650 HB) / Polipropileno Copolímero / Elastómeros"
+        series="Línea de Proyectos CAPEX SMAT"
+        roleId="celda_flotacion"
+        circuit="flotacion"
+        lang="es"
+      />
+    </div>
+  </section>
+
+  <section class="section" style="background-color: #ffffff; border-top: 1px solid var(--smat-border-light); border-bottom: 1px solid var(--smat-border-light);">
+    <div class="container">
+      <CircuitNavigator lang="es" />
+    </div>
+  </section>
+
+  <DualHubView lang="es" />
+
+  <CaseCards lang="es" />
+</BaseLayout>
+
+<style>
+  .page-hero {
+    background-color: #ffffff;
+    color: var(--smat-text-primary);
+    padding: 3rem 0;
+    border-bottom: 2px solid var(--smat-copper-accent);
+  }
+  .page-hero h1 {
+    color: var(--smat-text-primary);
+    margin-top: 0.65rem;
+  }
+  .process-equipment-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+  }
+  .equipment-block {
+    padding: 2rem;
+    border: 1px solid var(--smat-border-strong);
+    background: #ffffff;
+  }
+  .equipment-block-header h2 {
+    margin: 0.5rem 0 0.65rem;
+    color: var(--smat-text-primary);
+  }
+  .specs-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.85rem;
+    background: var(--smat-bg-canvas);
+    border: 1px solid var(--smat-border-light);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    font-size: 0.88rem;
+    color: var(--smat-text-secondary);
+  }
+  .equipment-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+</style>

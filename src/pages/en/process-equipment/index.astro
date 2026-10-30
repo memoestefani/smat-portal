@@ -1,0 +1,171 @@
+---
+// src/pages/en/process-equipment/index.astro
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
+import CircuitNavigator from '../../../components/CircuitNavigator.astro';
+import DualHubView from '../../../components/DualHubView.astro';
+import CaseCards from '../../../components/CaseCards.astro';
+import SharePurchasing from '../../../components/SharePurchasing.astro';
+---
+
+<BaseLayout
+  title="Process Equipment for Mineral Concentrator Plants | SMAT Minerals"
+  description="Supply of Process Equipment for capital projects, plant expansions, and circuit upgrades: Flotation Cell Mechanisms & Conditioners (50 to 300 ft³), Filter Presses (800 to 1500 mm, 16 bar), and Complete Slurry Pump Packages."
+  lang="en"
+  canonicalPath="/en/process-equipment/"
+  alternateEsPath="/equipos/"
+  alternateEnPath="/en/process-equipment/"
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="badge badge-copper">DOOR 1 • CAPITAL PROJECTS, EXPANSIONS & CIRCUITS</span>
+      <h1>Process Equipment</h1>
+      <p style="font-size: 1.06rem; max-width: 780px; color: var(--smat-text-secondary);">
+        Engineering and supply of core process equipment for grinding, flotation concentration, and tailings dewatering circuits: <strong>Flotation Cell Mechanisms & Conditioners (50 to 300 ft³)</strong>, <strong>Recessed-Chamber Filter Presses (800 to 1500 mm, up to 16 bar)</strong>, and <strong>Complete Horizontal & Vertical Slurry Pump Packages</strong>.
+      </p>
+      <div style="display: flex; gap: 0.85rem; flex-wrap: wrap; margin-top: 1.25rem;">
+        <a href="/en/quote/?equipo=celda_flotacion#rfq" class="btn btn-primary">Quote Process Equipment →</a>
+        <a href="/en/pumping/" class="btn btn-outline">Go to Slurry Pumps & Spare Parts →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="process-equipment-grid">
+        <!-- Equipment 1: Flotation Cell Mechanisms & Conditioners -->
+        <article class="card equipment-block">
+          <div class="equipment-block-header">
+            <span class="badge badge-copper">CONCENTRATION CIRCUIT • 50 TO 300 FT³</span>
+            <h2>Flotation Cell Mechanisms & Pulp Conditioners</h2>
+            <p style="color: var(--smat-text-secondary);">
+              Complete drive heads, concentric alloy steel shafts, standpipes, stator diffusers, rotor impellers, and high-intensity pulp conditioners for <strong>Rougher, Cleaner, and Scavenger</strong> flotation banks.
+            </p>
+          </div>
+          <TechnicalDiagrams diagram="flotation" lang="en" />
+          <div class="specs-strip">
+            <div><strong>Cell Capacities:</strong> 50 ft³, 100 ft³, 160 ft³, and 300 ft³</div>
+            <div><strong>Aeration:</strong> Self-aspirated or low-pressure forced air</div>
+            <div><strong>Wear Elastomers:</strong> Abrasion-resistant natural rubber and molded Polyurethane</div>
+          </div>
+          <div class="equipment-actions">
+            <a href="/en/flotation/" class="btn btn-outline">View Flotation Line</a>
+            <a href="/en/flotation/cells/" class="btn btn-outline">50-300 ft³ Mechanisms</a>
+            <a href="/en/flotation/mechanisms/" class="btn btn-outline">Rotors & Stators</a>
+            <a href="/en/quote/?equipo=celda_flotacion#rfq" class="btn btn-primary">Quote Flotation Mechanism →</a>
+          </div>
+        </article>
+
+        <!-- Equipment 2: Recessed-Chamber Filter Presses -->
+        <article class="card equipment-block">
+          <div class="equipment-block-header">
+            <span class="badge badge-copper">CONCENTRATE & DRY TAILINGS FILTRATION • 800 TO 1500 MM</span>
+            <h2>Recessed-Chamber Filter Presses (Up to 16 bar)</h2>
+            <p style="color: var(--smat-text-secondary);">
+              Complete heavy-duty structural steel filter presses with automatic electro-hydraulic closure, virgin copolymer polypropylene plate packs, and needle-felt filter cloths for process water recovery and dry-stack tailings.
+            </p>
+          </div>
+          <TechnicalDiagrams diagram="filter" lang="en" />
+          <div class="specs-strip">
+            <div><strong>Plate Formats:</strong> 800×800 mm, 1000×1000 mm, 1200×1200 mm, and 1500×1500 mm</div>
+            <div><strong>Operating Pressure:</strong> Up to 16 bar with manifold cake air-blow</div>
+            <div><strong>Residual Cake Moisture:</strong> 10% to 14% depending on concentrate or tailings PSD</div>
+          </div>
+          <div class="equipment-actions">
+            <a href="/en/filtration/" class="btn btn-outline">View Filtration Line</a>
+            <a href="/en/filtration/press/" class="btn btn-outline">800-1500 mm Filter Presses</a>
+            <a href="/en/filtration/parts/" class="btn btn-outline">Filter Plates & Cloths</a>
+            <a href="/en/quote/?equipo=filtro_prensa#rfq" class="btn btn-primary">Quote Filter Press →</a>
+          </div>
+        </article>
+
+        <!-- Equipment 3: Complete Project Slurry Pump Packages -->
+        <article class="card equipment-block">
+          <div class="equipment-block-header">
+            <span class="badge badge-copper">PROJECT SLURRY PUMPING • 1.5X1" TO 14X12"</span>
+            <h2>Complete Horizontal & Vertical Slurry Pump Packages</h2>
+            <p style="color: var(--smat-text-secondary);">
+              Complete centrifugal slurry pumps mounted on structural steel skids with assembled <strong>Bearing Assembly / Housing</strong> cartridge, V-belt drive guard, and wet-end configured in High Chrome (≥650 HB), Natural Rubber, or Polyurethane.
+            </p>
+          </div>
+          <TechnicalDiagrams diagram="pump" lang="en" />
+          <div class="specs-strip">
+            <div><strong>Discharge Sizes:</strong> From 1.5x1" up to 14x12"</div>
+            <div><strong>Shaft Sealing:</strong> Dry centrifugal expeller and stuffing box (no mechanical seals)</div>
+            <div><strong>Operational Spares:</strong> Available under <a href="/en/pumping/">Slurry Pumps & Spare Parts</a></div>
+          </div>
+          <div class="equipment-actions">
+            <a href="/en/pumping/skid/" class="btn btn-outline">Complete Pump Package Specs</a>
+            <a href="/en/pumping/" class="btn btn-outline">View Spare Parts & 5-5-4 Lots</a>
+            <a href="/en/quote/?equipo=skid_bomba#rfq" class="btn btn-primary">Quote Project Pump →</a>
+          </div>
+        </article>
+      </div>
+
+      <SharePurchasing
+        roleTitle="Process Equipment for Concentrator Plant (Flotation / Filtration / Pumping)"
+        specs="Flotation Mechanisms 50-300 ft³, Filter Presses 800-1500 mm (16 bar), and Project Slurry Pumps 1.5x1 to 14x12"
+        metallurgy="Structural Steel / High Chrome A05 (≥650 HB) / Copolymer Polypropylene / Elastomers"
+        series="SMAT Capital Projects Line"
+        roleId="celda_flotacion"
+        circuit="flotacion"
+        lang="en"
+      />
+    </div>
+  </section>
+
+  <section class="section" style="background-color: #ffffff; border-top: 1px solid var(--smat-border-light); border-bottom: 1px solid var(--smat-border-light);">
+    <div class="container">
+      <CircuitNavigator lang="en" />
+    </div>
+  </section>
+
+  <DualHubView lang="en" />
+
+  <CaseCards lang="en" />
+</BaseLayout>
+
+<style>
+  .page-hero {
+    background-color: #ffffff;
+    color: var(--smat-text-primary);
+    padding: 3rem 0;
+    border-bottom: 2px solid var(--smat-copper-accent);
+  }
+  .page-hero h1 {
+    color: var(--smat-text-primary);
+    margin-top: 0.65rem;
+  }
+  .process-equipment-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+  }
+  .equipment-block {
+    padding: 2rem;
+    border: 1px solid var(--smat-border-strong);
+    background: #ffffff;
+  }
+  .equipment-block-header h2 {
+    margin: 0.5rem 0 0.65rem;
+    color: var(--smat-text-primary);
+  }
+  .specs-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.85rem;
+    background: var(--smat-bg-canvas);
+    border: 1px solid var(--smat-border-light);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    font-size: 0.88rem;
+    color: var(--smat-text-secondary);
+  }
+  .equipment-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+</style>

@@ -3,7 +3,7 @@
 // Diagramas técnicos esquemáticos en línea (CAD/corte técnico) para bombas para lodos, piezas de contacto húmedo,
 // Bearing Assembly / Housing, mecanismos de flotación/acondicionadores, filtros prensa y balanzas Marcy.
 
-type DiagramKind = 'pump' | 'impeller' | 'liners' | 'bearing' | 'expeller' | 'flotation' | 'filter' | 'marcy';
+type DiagramKind = 'pump' | 'impeller' | 'liners' | 'bearing' | 'expeller' | 'flotation' | 'filter' | 'marcy' | 'batch_filter' | 'sieves';
 
 interface Props {
   diagram?: DiagramKind;
@@ -28,6 +28,8 @@ const isEs = lang === 'es';
       {diagram === 'flotation' && (isEs ? 'ESQUEMA MECÁNICO • MECANISMO DE FLOTACIÓN Y ACONDICIONADOR' : 'MECHANICAL DIAGRAM • FLOTATION & CONDITIONER MECHANISM')}
       {diagram === 'filter' && (isEs ? 'ESQUEMA TÉCNICO • FILTRO PRENSA Y PLACAS (800–1500 MM)' : 'TECHNICAL DIAGRAM • FILTER PRESS & PLATES (800–1500 MM)')}
       {diagram === 'marcy' && (isEs ? 'INSTRUMENTACIÓN DE PLANTA • BALANZA DE DENSIDAD DE PULPA (MARCY)' : 'PLANT INSTRUMENTATION • PULP DENSITY SCALE (MARCY)')}
+      {diagram === 'batch_filter' && (isEs ? 'CONTROL METALÚRGICO • FILTRO DE PRESIÓN BATCH DE LABORATORIO' : 'METALLURGICAL CONTROL • LABORATORY BATCH PRESSURE FILTER')}
+      {diagram === 'sieves' && (isEs ? 'GRANULOMETRÍA • TAMICES CERTIFICADOS ASTM E11 / ISO 3310' : 'PARTICLE SIZING • ASTM E11 / ISO 3310 CERTIFIED TEST SIEVES')}
     </span>
     <span class="tech-diagram-scale">CAD 1:1 REF</span>
   </div>
@@ -335,6 +337,82 @@ const isEs = lang === 'es';
           <text x="340" y="105" fill="#c25e00">{isEs ? '• % DE SÓLIDOS EN PESO (Cw%)' : '• % SOLIDS BY WEIGHT (Cw%)'}</text>
           <text x="325" y="185">{isEs ? '2. VASO CALIBRADO (1000 cm³)' : '2. CALIBRATED CUP (1000 cm³)'}</text>
           <text x="340" y="205" fill="#475569">{isEs ? '• ACERO INOXIDABLE / ACRÍLICO CON REBOSE' : '• STAINLESS STEEL / ACRYLIC WITH OVERFLOW'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'batch_filter' && (
+      <svg viewBox="0 0 680 260" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid-batch" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
+          </pattern>
+        </defs>
+        <rect width="680" height="260" fill="url(#grid-batch)" />
+        <!-- Columnas guía laterales y bastidor de piso/banco -->
+        <rect x="135" y="220" width="190" height="16" rx="2" fill="#cbd5e1" stroke="#0f172a" stroke-width="2.2" />
+        <line x1="162" y1="38" x2="162" y2="220" stroke="#0f172a" stroke-width="4" />
+        <line x1="298" y1="38" x2="298" y2="220" stroke="#0f172a" stroke-width="4" />
+        <!-- Travesaño superior y Husillo en T (T-Bar Screw Clamp) -->
+        <rect x="150" y="34" width="160" height="14" rx="2" fill="#94a3b8" stroke="#0f172a" stroke-width="2" />
+        <line x1="230" y1="16" x2="230" y2="70" stroke="#c25e00" stroke-width="4" />
+        <line x1="196" y1="16" x2="264" y2="16" stroke="#c25e00" stroke-width="5" stroke-linecap="round" />
+        <!-- Tapa superior bridada con entrada de aire comprimido y manómetro -->
+        <rect x="172" y="68" width="116" height="16" rx="2" fill="#dbeafe" stroke="#0d78c6" stroke-width="2" />
+        <line x1="272" y1="68" x2="272" y2="52" stroke="#0d78c6" stroke-width="2.2" />
+        <circle cx="272" cy="44" r="8" fill="#ffffff" stroke="#0d78c6" stroke-width="2" />
+        <!-- Cilindro de acero vertical para pulpa (Cámara de presión 60-100 psi) -->
+        <rect x="180" y="84" width="100" height="98" fill="#f1f5f9" stroke="#0f172a" stroke-width="2.4" />
+        <!-- Torta mineral y tela/papel filtrante en la base del cilindro -->
+        <rect x="182" y="164" width="96" height="14" fill="#fde68a" stroke="#b45309" stroke-width="1.5" />
+        <line x1="180" y1="180" x2="280" y2="180" stroke="#0d78c6" stroke-width="2.2" stroke-dasharray="4 2" />
+        <!-- Plato base colector y descarga a probeta -->
+        <rect x="172" y="182" width="116" height="14" rx="2" fill="#cbd5e1" stroke="#0f172a" stroke-width="2" />
+        <path d="M 230 196 L 230 214" stroke="#0d78c6" stroke-width="3" />
+        <!-- Labels -->
+        <g font-family="SF Mono, monospace" font-size="10.5" font-weight="700" fill="#0f172a">
+          <text x="338" y="34" fill="#c25e00">{isEs ? '1. HUSILLO DE CIERRE RÁPIDO EN T' : '1. TOP T-BAR SCREW CLAMP'}</text>
+          <text x="338" y="65" fill="#0d78c6">{isEs ? '2. ENTRADA NEUMÁTICA (60–100 PSI) Y MANÓMETRO' : '2. COMPRESSED AIR INLET (60–100 PSI) & GAUGE'}</text>
+          <text x="338" y="122">{isEs ? '3. CÁMARA CILÍNDRICA DE ACERO PESADO' : '3. HEAVY-DUTY STEEL PRESSURE BARREL'}</text>
+          <text x="338" y="172" fill="#b45309">{isEs ? '4. PLATO POROSO + PAPEL / TELA FILTRANTE' : '4. DRAINAGE PLATE + FILTER PAPER / CLOTH'}</text>
+          <text x="338" y="212" fill="#475569">{isEs ? '5. BASTIDOR CON BARRAS GUÍA Y DRENAJE INFERIOR' : '5. TWIN GUIDE ROD FRAME & FILTRATE PORT'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'sieves' && (
+      <svg viewBox="0 0 680 260" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid-sieves" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
+          </pattern>
+        </defs>
+        <rect width="680" height="260" fill="url(#grid-sieves)" />
+        <!-- Columna apilada de Tamices ASTM E11 / ISO 3310 (8" / 12") -->
+        <!-- Tapa superior -->
+        <rect x="135" y="24" width="170" height="16" rx="3" fill="#cbd5e1" stroke="#0f172a" stroke-width="2" />
+        <!-- Tamiz 1 (Malla Gruesa) -->
+        <rect x="140" y="42" width="160" height="34" fill="#fff7ed" stroke="#c25e00" stroke-width="2.2" />
+        <line x1="142" y1="70" x2="298" y2="70" stroke="#c25e00" stroke-width="2" stroke-dasharray="8 6" />
+        <!-- Tamiz 2 (Malla Intermedia #100 / 150 µm) -->
+        <rect x="140" y="78" width="160" height="34" fill="#f8fafc" stroke="#0f172a" stroke-width="2.2" />
+        <line x1="142" y1="106" x2="298" y2="106" stroke="#0d78c6" stroke-width="2" stroke-dasharray="5 4" />
+        <!-- Tamiz 3 (Malla Control P80 #200 / 75 µm) -->
+        <rect x="140" y="114" width="160" height="34" fill="#dbeafe" stroke="#0d78c6" stroke-width="2.4" />
+        <line x1="142" y1="142" x2="298" y2="142" stroke="#0d78c6" stroke-width="2" stroke-dasharray="3 2" />
+        <!-- Tamiz 4 (Malla Ultra-Fina #400 a #635 / 20 µm) -->
+        <rect x="140" y="150" width="160" height="34" fill="#f8fafc" stroke="#0f172a" stroke-width="2.2" />
+        <line x1="142" y1="178" x2="298" y2="178" stroke="#475569" stroke-width="1.8" stroke-dasharray="1.5 1.5" />
+        <!-- Cazuela colectora inferior (Fondo / Receiver Pan) -->
+        <rect x="140" y="186" width="160" height="36" rx="2" fill="#e2e8f0" stroke="#0f172a" stroke-width="2.4" />
+        <!-- Labels -->
+        <g font-family="SF Mono, monospace" font-size="10.5" font-weight="700" fill="#0f172a">
+          <text x="330" y="38">{isEs ? '1. TAPA Y MARCO EMBUTIDO SIN COSTURAS (8" Y 12")' : '1. COVER & SEAMLESS DRAWN FRAME (8" & 12")'}</text>
+          <text x="330" y="65" fill="#c25e00">{isEs ? '2. BASTIDOR EN BRONCE O ACERO INOXIDABLE' : '2. BRASS OR STAINLESS STEEL FRAME OPTIONS'}</text>
+          <text x="330" y="102">{isEs ? '3. SERIE GEOMÉTRICA ⁴√2 (DESDE 5" HASTA #100)' : '3. ⁴√2 GEOMETRIC SERIES (FROM 5" TO #100 MESH)'}</text>
+          <text x="330" y="136" fill="#0d78c6">{isEs ? '4. CORTE P80 DE CONTROL (#200 / 75 MICRONES)' : '4. PRIMARY P80 CONTROL MESH (#200 / 75 MICRONS)'}</text>
+          <text x="330" y="170">{isEs ? '5. MALLAS ULTRA-FINAS HASTA #635 (20 MICRONES)' : '5. ULTRA-FINE MESHES DOWN TO #635 (20 MICRONS)'}</text>
+          <text x="330" y="206" fill="#475569">{isEs ? '6. CAZUELA COLECTORA + TAMIZADOR MECÁNICO' : '6. RECEIVER PAN + MECHANICAL SIEVE SHAKER'}</text>
         </g>
       </svg>
     )}

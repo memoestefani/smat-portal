@@ -12,11 +12,15 @@ const { lang = 'es', currentPath = '/', alternatePath = '/en/' } = Astro.props;
 const isEs = lang === 'es';
 
 const productCategories = isEs ? [
-  { href: '/bombeo/', label: 'Bombas para Lodos y Refacciones', sub: 'Impulsores, cuellos, volutas y Bearing Assembly / Housing' },
+  { href: '/equipos/', label: 'Puerta 1: Equipos de Proceso', sub: 'Mecanismos de flotación 50-300 ft³, filtros prensa y paquetes de bombeo' },
+  { href: '/bombeo/', label: 'Puerta 2: Bombas para Lodos y Spare Parts', sub: 'Impulsores, cuellos, volutas (lote 5-5-4) y Bearing Assembly / Housing' },
+  { href: '/control-de-procesos/', label: 'Puerta 3: Control de Procesos', sub: 'Balanzas Marcy (SG 2.2-4.4), Filtro Batch 100 psi y Tamices ASTM E11' },
   { href: '/flotacion/', label: 'Mecanismos para Celdas de Flotación y Acondicionadores', sub: 'Mecanismos 50-300 ft³, rotores y estatores' },
-  { href: '/filtracion/', label: 'Filtros Prensa y Balanzas', sub: 'Filtros prensa, placas 800-1500 mm y balanzas de pulpa' },
+  { href: '/filtracion/', label: 'Filtros Prensa y Desaguado', sub: 'Filtros prensa y placas 800-1500 mm (16 bar)' },
 ] : [
-  { href: '/en/pumping/', label: 'Slurry Pumps & Spares', sub: 'A05 impellers, liners, seals & skids' },
+  { href: '/en/process-equipment/', label: 'Door 1: Process Equipment', sub: 'Flotation mechanisms 50-300 ft³, filter presses & pump skids' },
+  { href: '/en/pumping/', label: 'Door 2: Slurry Pumps & Spare Parts', sub: 'Impellers, throatbushes, volutes (5-5-4 lot) & Bearing Assembly' },
+  { href: '/en/process-control/', label: 'Door 3: Process Control', sub: 'Marcy scales (SG 2.2-4.4), 100 psi Batch Filter & ASTM E11 Sieves' },
   { href: '/en/flotation/', label: 'Flotation Cells & Mechanisms', sub: '50-300 ft³ cells, rotors & stators' },
   { href: '/en/filtration/', label: 'Filtration & Tailings', sub: '16-bar filter presses & filter plates' },
 ];
@@ -114,7 +118,7 @@ const productCategories = isEs ? [
       </div>
 
       <!-- Botón Rey Renombrado (Decisión 2-C / Sustituye 'Abrir Consola') -->
-      <a href={isEs ? "/#rfq" : "/en/#rfq"} class="btn btn-primary btn-sm header-rfq-btn">
+      <a href={isEs ? "/cotizar/#rfq" : "/en/quote/#rfq"} class="btn btn-primary btn-sm header-rfq-btn">
         {isEs ? 'Cotizar Refacción' : 'Quote Spares'}
       </a>
     </div>

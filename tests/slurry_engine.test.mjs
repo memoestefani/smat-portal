@@ -119,5 +119,64 @@ test('7. Corrección por Altitud Minera y Derating de Motor (Decisión 5-A)', as
   assert.ok(resAltitude.results.altitudeCorrection.deltaNpshLossM > 2.5, 'Pérdida de NPSH calculada');
 });
 
+test('8. Ecuación Bidireccional de Balanza Marcy y Selección de 12 Anillos Ss (2.2 a 4.4)', async () => {
+  const { calculateMarcyScaleReading, MARCY_STANDARD_RINGS } = await import('../src/scripts/slurryEngine.js');
 
+  assert.equal(MARCY_STANDARD_RINGS.length, 12, 'Deben existir los 12 anillos estándar de 2.2 a 4.4');
 
+  // Mineral polimetálico Ss = 3.2 con densidad de pulpa 1.50 kg/L
+  const reading = calculateMarcyScaleReading({
+    solidsSpecificGravity: 3.2,
+    pulpDensityKgL: 1.50
+  });
+
+  assert.equal(reading.recommendedRingSg, 3.2, 'Debe seleccionar el anillo exacto Ss = 3.2');
+  assert.equal(reading.cupNetMassGrams, 1500, 'Vaso de 1000 cm³ a 1.50 kg/L debe pesar 1500 g netos');
+  assert.ok(reading.solidsWeightPercent > 48 && reading.solidsWeightPercent < 49, 'Cw debe ser ~48.5% según ecuación de Marcy');
+  assert.ok(reading.wrongRingBiasPoints > 4.0, 'Usar anillo incorrecto 2.6 en mineral 3.2 genera sesgo > 4 puntos porcentuales');
+
+  // Modo inverso: de % Sólidos Cw a densidad de pulpa ρp
+  const inverse = calculateMarcyScaleReading({
+    solidsSpecificGravity: 2.8,
+    solidsWeightPercent: 50
+  });
+  assert.equal(inverse.pulpDensityKgL, 1.474, 'A Ss=2.8 y Cw=50%, ρp debe ser exacto 280/190 = 1.474 kg/L');
+  assert.equal(inverse.recommendedRingSg, 2.8, 'Debe recomendar el anillo 2.8');
+});
+
+test('9. Masa Mínima Representativa de Pierre Gy y Dimensionamiento de Filtro Batch de Laboratorio', async () => {
+  const { calculateGyMinimumSampleMass } = await import('../src/scripts/slurryEngine.js');
+
+  // Muestra gruesa de descarga de molino (d95 = 6 mm)
+  const coarse = calculateGyMinimumSampleMass({
+    topSizeD95Mm: 6.0,
+    samplingConstantC: 1.6,
+    targetRelativeStdError: 0.05,
+    solidsWeightPercent: 50
+  });
+
+  assert.ok(coarse.minDrySampleGrams >= 250, 'Debe respetar piso físico de laboratorio');
+  assert.ok(coarse.requiredPulpLiters > 0.2, 'Debe calcular litros equivalentes de pulpa');
+  assert.ok(coarse.recommendedAirPressurePsi.includes('100 psi'), 'Debe especificar rango neumático de 80-100 psi');
+});
+
+test('10. Selección de Serie de Tamices ASTM E11 / ISO 3310 y Transformación de Rosin-Rammler', async () => {
+  const { recommendAstmSieveSeries, ASTM_E11_SIEVE_TABLE } = await import('../src/scripts/slurryEngine.js');
+
+  // Verificar que la tabla incluye hasta malla #635 (20 micrones) según folleto SMAT
+  const finest = ASTM_E11_SIEVE_TABLE[ASTM_E11_SIEVE_TABLE.length - 1];
+  assert.equal(finest.mesh, '#635', 'El tamiz más fino debe ser malla #635');
+  assert.equal(finest.apertureMicrons, 20, 'Malla #635 corresponde a 20 micrones');
+
+  // Serie centrada en P80 = 75 µm (Malla #200) en húmedo
+  const series = recommendAstmSieveSeries({
+    targetP80Microns: 75,
+    screeningMode: 'wet',
+    retainedPercentAtP80: 20
+  });
+
+  assert.equal(series.primaryControlMesh, '#200', 'P80 de 75 µm debe centrarse en Malla #200');
+  assert.equal(series.sieveStack.length, 6, 'Debe recomendar una columna de 6 tamices ASTM E11');
+  assert.ok(series.recommendedFrameMaterialEs.includes('Acero Inoxidable'), 'Tamizado húmedo fino exige Acero Inoxidable');
+  assert.ok(series.rosinRammlerYPrime < -0.15 && series.rosinRammlerYPrime > -0.16, 'Rosin-Rammler y\' para R=20% debe ser ~ -0.1555');
+});

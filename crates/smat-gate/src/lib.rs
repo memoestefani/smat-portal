@@ -440,10 +440,12 @@ pub fn verify_flight_deck_and_trust_matrix(site_root: &Path) -> Result<(), Strin
     let index_content = fs::read_to_string(&index_path).map_err(|e| e.to_string())?;
     let en_content = fs::read_to_string(&en_index_path).map_err(|e| e.to_string())?;
 
-    if !index_content.contains("FlightDeck") || !index_content.contains("TrustMatrix") {
+    let cotizar_content = fs::read_to_string(site_root.join("src/pages/cotizar.astro")).unwrap_or_default();
+    if (!index_content.contains("FlightDeck") && !cotizar_content.contains("FlightDeck")) || !index_content.contains("TrustMatrix") {
         return Err("index.astro no integra FlightDeck o TrustMatrix".to_string());
     }
-    if !en_content.contains("FlightDeck") || !en_content.contains("TrustMatrix") {
+    let quote_en_content = fs::read_to_string(site_root.join("src/pages/en/quote.astro")).unwrap_or_default();
+    if (!en_content.contains("FlightDeck") && !quote_en_content.contains("FlightDeck")) || !en_content.contains("TrustMatrix") {
         return Err("en/index.astro no integra FlightDeck o TrustMatrix".to_string());
     }
 
@@ -491,6 +493,9 @@ pub fn verify_40_routes_reachability(site_root: &Path) -> Result<(), String> {
     let combined_nav = format!("{}\n{}", header_content, footer_content);
 
     let required_routes_es = [
+        "/equipos/",
+        "/control-de-procesos/",
+        "/cotizar/",
         "/catalogo/",
         "/bombeo/",
         "/bombeo/skid/",
@@ -513,6 +518,9 @@ pub fn verify_40_routes_reachability(site_root: &Path) -> Result<(), String> {
     ];
 
     let required_routes_en = [
+        "/en/process-equipment/",
+        "/en/process-control/",
+        "/en/quote/",
         "/en/catalog/",
         "/en/pumping/",
         "/en/pumping/skid/",

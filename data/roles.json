@@ -206,6 +206,76 @@
           }
         }
       ]
+    },
+    {
+      "id": "control_procesos",
+      "name_es": "Control de Procesos",
+      "name_en": "Process Control",
+      "slug_es": "/control-de-procesos/",
+      "slug_en": "/en/process-control/",
+      "capex": [
+        {
+          "role_id": "balanza_marcy",
+          "slug_es": "/control-de-procesos/#balanza-marcy",
+          "slug_en": "/en/process-control/#marcy-scale",
+          "title_es": "Balanza de Densidad de Pulpa y % de Sólidos (Tipo Marcy)",
+          "title_en": "Pulp Density & Percent Solids Scale (Marcy Type)",
+          "series": "Vaso de 1000 cm³ + 12 carátulas intercambiables (SG 2.2 a 4.4)",
+          "power_range": "Operación gravimétrica directa sin energía eléctrica",
+          "flow_range": "Muestreo instantáneo en descarga de molino, ciclones y flotación",
+          "spec_summary_es": "Balanza colgante de lectura directa de gravedad específica de pulpa y porcentaje de sólidos en peso, con recipiente calibrado de 1000 cm³ en acero inoxidable o acrílico y 12 anillos intercambiables.",
+          "spec_summary_en": "Direct-reading hanging pulp density and percent solids scale with calibrated 1000 cm³ stainless steel or acrylic container and 12 interchangeable dial rings (SG 2.2 to 4.4).",
+          "decision_criteria": {
+            "required_slurry_vars_es": "Gravedad especifica del mineral seco (Ss entre 2.2 y 4.4), rango de solidos en peso esperado (Cw 15% a 75%) y punto de muestreo en circuito.",
+            "required_slurry_vars_en": "Dry ore specific gravity (Ss from 2.2 to 4.4), expected percent solids range by weight (Cw 15% to 75%), and circuit sampling point.",
+            "metallurgy_rule_es": "Vaso de 1000 cm3 en acero inoxidable 304 con orificio de derrame lateral y tapon inferior para pulpas abrasivas de molienda; vaso acrilico transparente para pulpas finas.",
+            "metallurgy_rule_en": "1000 cm3 304 stainless steel container with overflow slots and bottom plug for abrasive grinding slurries; clear acrylic container for fine flotation pulps.",
+            "risk_avoided_es": "Evita errores de sobredosificacion de reactivos, embancamiento de hidrociclones y lecturas sesgadas al cambiar la gravedad especifica del mineral.",
+            "risk_avoided_en": "Prevents reagent overdosing, hydrocyclone roping/sanding, and biased percent solids readings when ore specific gravity shifts."
+          }
+        },
+        {
+          "role_id": "filtro_batch_lab",
+          "slug_es": "/control-de-procesos/#filtro-batch",
+          "slug_en": "/en/process-control/#batch-filter",
+          "title_es": "Filtro de Presión Batch de Laboratorio SMAT",
+          "title_en": "SMAT Laboratory Batch Pressure Filter",
+          "series": "Cámara cilíndrica vertical de banco o piso con cierre rápido en T",
+          "power_range": "Aire comprimido de planta (60 a 100 psi / 4 a 7 bar)",
+          "flow_range": "Desaguado rápido de muestras metalúrgicas de 1 a 15 litros",
+          "spec_summary_es": "Filtro de presión por lotes para laboratorio metalúrgico y control de planta, construido en acero de pared gruesa con husillo superior en T, barras guía paralelas y plato base de drenaje.",
+          "spec_summary_en": "Heavy-duty batch pressure filter for metallurgical laboratories and plant control, featuring thick-walled steel barrel, top T-bar screw clamp, twin guide rods, and bottom filtrate port.",
+          "decision_criteria": {
+            "required_slurry_vars_es": "Volumen de muestra de pulpa (litros), presion de linea de aire comprimido disponible (60 a 100 psi) y finura del concentrado o cola a filtrar.",
+            "required_slurry_vars_en": "Slurry sample volume (liters), available plant compressed air pressure (60 to 100 psi), and fineness of concentrate or tailings sample.",
+            "metallurgy_rule_es": "Cilindro bridado en acero estructural o acero inoxidable con empaques de neopreno/viton y medio filtrante en papel filtro o tela de polipropileno.",
+            "metallurgy_rule_en": "Flanged heavy steel or stainless barrel with neoprene/viton O-ring seals and filter paper or polypropylene cloth media.",
+            "risk_avoided_es": "Elimina cuellos de botella por filtrado al vacio lento y evita perdida de finos que distorsionan la ley de ensaye y el balance metalurgico.",
+            "risk_avoided_en": "Eliminates slow vacuum filtration bottlenecks and prevents ultrafine solids loss that skews assay grades and metallurgical balances."
+          }
+        }
+      ],
+      "opex": [
+        {
+          "role_id": "tamices_laboratorio",
+          "slug_es": "/control-de-procesos/#tamices-astm",
+          "slug_en": "/en/process-control/#astm-sieves",
+          "title_es": "Tamices de Laboratorio Certificados ASTM E11 / ISO 3310 y Tamizadores",
+          "title_en": "Certified ASTM E11 / ISO 3310 Test Sieves & Sieve Shakers",
+          "metallurgy": "Bronce y Acero Inoxidable (8'' y 12'')",
+          "series": "Aberturas desde 5'' hasta Malla #635 (20 micrones), tapas y cazuelas",
+          "spec_summary_es": "Tamices certificados de altura completa y media altura con bastidor metálico embutido sin costuras, mallas tensadas de alta precisión, tamizadores mecánicos de columna y cuarteadores.",
+          "spec_summary_en": "Certified full-height and half-height test sieves with seamless drawn brass or stainless frames, precision tensioned wire cloth, mechanical sieve shakers, and sample splitters.",
+          "decision_criteria": {
+            "required_slurry_vars_es": "Tamano de corte P80 objetivo (micrones), modalidad de tamizado (en humedo o en seco) y diametro de columna del tamizador (8 o 12 pulgadas).",
+            "required_slurry_vars_en": "Target P80 grind size (microns), sieving method (wet or dry screening), and sieve shaker column diameter (8 or 12 inches).",
+            "metallurgy_rule_es": "Marco y malla en Acero Inoxidable mandatorio para tamizado en humedo y mallas finas (#200 a #635 / 20 micrones) para evitar deformacion y corrosion; Bronce disponible para tamizado seco.",
+            "metallurgy_rule_en": "Full Stainless Steel frame and mesh mandatory for wet screening and fine meshes (#200 to #635 / 20 microns) to prevent corrosion and sag; Brass available for dry screening.",
+            "risk_avoided_es": "Previene lecturas falsas de P80 por mallas destensadas o rasgadas que provocan sobremolienda costosa o perdidas de liberacion en flotacion.",
+            "risk_avoided_en": "Prevents false P80 readings from sagged or torn meshes that cause costly overgrinding or mineral liberation losses in flotation."
+          }
+        }
+      ]
     }
   ]
 }

@@ -403,8 +403,15 @@ export function generateSmatPartCode(data = {}) {
   const pipe = String(data.pipe_size || data.pipe || '').toLowerCase();
   const sizeVal = String(data.size_val || data.flot_capacity || data.filt_capacity || '').toLowerCase();
 
-  const isFlot = circuit === 'flotacion' || roleLower.includes('celda') || roleLower.includes('flotacion') || roleLower.includes('rotor') || roleLower.includes('estator') || roleLower.includes('mecanismo') || details.includes('FLOT') || details.includes('CELDA');
-  const isFilt = circuit === 'filtracion' || roleLower.includes('filtro') || roleLower.includes('prensa') || roleLower.includes('placa') || roleLower.includes('tela') || details.includes('FILT') || details.includes('PRENSA');
+  const isCtrl = circuit === 'control_procesos' || circuit === 'control' || roleLower.includes('marcy') || roleLower.includes('balanza') || roleLower.includes('batch') || roleLower.includes('tamiz') || roleLower.includes('tamices') || roleLower.includes('sieve') || details.includes('MARCY') || details.includes('TAMIZ') || details.includes('ASTM E11');
+  const isFlot = !isCtrl && (circuit === 'flotacion' || roleLower.includes('celda') || roleLower.includes('flotacion') || roleLower.includes('rotor') || roleLower.includes('estator') || roleLower.includes('mecanismo') || details.includes('FLOT') || details.includes('CELDA'));
+  const isFilt = !isCtrl && (circuit === 'filtracion' || roleLower.includes('filtro') || roleLower.includes('prensa') || roleLower.includes('placa') || roleLower.includes('tela') || details.includes('FILT') || details.includes('PRENSA'));
+
+  if (isCtrl) {
+    if (roleLower.includes('batch') || details.includes('BATCH')) return 'SMAT-CTRL-BATCH-LAB';
+    if (roleLower.includes('tamiz') || roleLower.includes('tamices') || roleLower.includes('sieve') || details.includes('TAMIZ') || details.includes('ASTM')) return 'SMAT-CTRL-SIEVE-ASTM';
+    return 'SMAT-CTRL-MARCY-1000';
+  }
 
   if (isFlot) {
     let cap = '100FT';
@@ -550,6 +557,24 @@ export function parseSmatPartCode(code = '') {
     } else {
       role_id = 'rotor_estator';
     }
+  } else if (line === 'CTRL') {
+    circuit = 'control_procesos';
+    if (clean.includes('BATCH')) {
+      role_id = 'filtro_batch_lab';
+      isOpex = false;
+      mission = 'equipos';
+      alloy = 'Acero Estructural Bridado (60-100 psi)';
+    } else if (clean.includes('SIEVE') || clean.includes('ASTM')) {
+      role_id = 'tamices_laboratorio';
+      isOpex = true;
+      mission = 'refacciones';
+      alloy = 'Acero Inoxidable / Bronce Certificado ASTM E11';
+    } else {
+      role_id = 'balanza_marcy';
+      isOpex = false;
+      mission = 'equipos';
+      alloy = 'Vaso 1000 cm³ Acero Inox 304 + 12 Anillos (Ss 2.2-4.4)';
+    }
   } else if (line === 'FILT') {
     circuit = 'filtracion';
     if (clean.includes('PRESS') || clean.includes('16BAR')) {
@@ -631,6 +656,48 @@ export function buildAcuseUrlParams(d = {}) {
 }
 
 /**
+ * Clasifica internamente el tipo de partida para ruteo administrativo en Google Sheets (Decisión 8-A)
+ * sin exponer jamás jerga contable CAPEX/OPEX en la interfaz pública ni en el Acuse PDF.
+ * @param {Object} d
+ * @returns {'CONTROL_PROCESOS' | 'PROYECTO_EQUIPOS' | 'OPERACION_SPARE_PARTS'}
+ */
+export function resolveInternalBudgetCategory(d = {}) {
+  const circuit = String(d.circuit || d.process_circuit || '').toLowerCase();
+  const role = String(d.role_id || d.role || '').toLowerCase();
+  const code = String(d.smat_code || '').toUpperCase();
+
+  if (
+    circuit === 'control_procesos' ||
+    code.startsWith('SMAT-CTRL-') ||
+    role.includes('marcy') ||
+    role.includes('balanza') ||
+    role.includes('batch') ||
+    role.includes('tamiz') ||
+    role.includes('tamices')
+  ) {
+    return 'CONTROL_PROCESOS';
+  }
+
+  if (
+    d.isOpex === false ||
+    d.mission === 'equipos' ||
+    code.startsWith('SMAT-SKID-') ||
+    code.endsWith('-CELL') ||
+    code.endsWith('-BANK') ||
+    code.endsWith('-PRESS') ||
+    role.includes('skid') ||
+    role.includes('celda') ||
+    role.includes('bateria') ||
+    role.includes('filtro_prensa') ||
+    role.includes('prensa_completa')
+  ) {
+    return 'PROYECTO_EQUIPOS';
+  }
+
+  return 'OPERACION_SPARE_PARTS';
+}
+
+/**
  * Despacha el lead de forma asíncrona hacia el Google Apps Script Webhook (tools/google_apps_script/Code.gs)
  * y persiste una copia completa en sessionStorage para la hoja de Acuse PDF.
  * @param {Object} d - Datos completos recolectados en el Workbench
@@ -662,6 +729,7 @@ export function dispatchLeadWebhook(d = {}, channelOrigin = 'web_quote_wizard', 
   const payload = {
     folio: d.folio || 'SMAT-2026-RFQ',
     urgencia: d.isOpex === false ? 'proyecto' : 'paro',
+    puerta_interna: resolveInternalBudgetCategory(d),
     nombre: d.name || d.contact_name || '',
     empresa: d.company || d.company_name || '',
     telefono: d.phone || d.phone_number || '',

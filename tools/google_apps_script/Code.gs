@@ -77,6 +77,7 @@ function doPost(e) {
     var createdAt = Utilities.formatDate(now, "America/Monterrey", "yyyy-MM-dd HH:mm:ss");
     var folio = params.folio || ("SMAT-" + now.getFullYear() + "-" + Math.floor(1000 + Math.random() * 9000));
     var urgencia = params.urgencia || "general";
+    var puertaInterna = params.puerta_interna || "OPERACION_SPARE_PARTS";
     var nombre = params.nombre || params.contact_name || "";
     var empresa = params.empresa || params.company_name || "";
     var telefono = params.telefono || params.phone_number || "";
@@ -126,6 +127,7 @@ function doPost(e) {
       "NUEVA SOLICITUD RECIBIDA EN SMATMINERALS.COM\n" +
       "--------------------------------------------------\n" +
       "Folio Formal: " + folio + "\n" +
+      "Puerta Comercial: " + puertaInterna + "\n" +
       "Código SMAT: " + codigoSmat + (codigoAtomico ? " (Refacción: " + codigoAtomico + ")" : "") + "\n" +
       "Prioridad: " + (urgencia === "paro" ? "🚨 PARO DE PLANTA / PRIORIDAD" : "🏭 PROYECTO DE EQUIPAMIENTO") + "\n" +
       "Canal de Salida: " + canal + "\n" +

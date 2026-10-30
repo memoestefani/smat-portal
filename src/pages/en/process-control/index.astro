@@ -1,0 +1,348 @@
+---
+// src/pages/en/process-control/index.astro
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
+import CircuitNavigator from '../../../components/CircuitNavigator.astro';
+import SharePurchasing from '../../../components/SharePurchasing.astro';
+---
+
+<BaseLayout
+  title="Process Control & Metallurgical Instrumentation | SMAT Minerals"
+  description="Plant and metallurgical laboratory instrumentation: Pulp Density & % Solids Scales (Marcy style, 1000 cm³ cup, 12 dial rings SG 2.2–4.4), Laboratory Batch Pressure Filters (60–100 psi), and Certified ASTM E11 / ISO 3310 Test Sieves."
+  lang="en"
+  canonicalPath="/en/process-control/"
+  alternateEsPath="/control-de-procesos/"
+  alternateEnPath="/en/process-control/"
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="badge badge-copper">DOOR 3 • METALLURGICAL CONTROL & LABORATORY</span>
+      <h1>Process Control</h1>
+      <p style="font-size: 1.06rem; max-width: 780px; color: var(--smat-text-secondary);">
+        Direct-reading metallurgical instrumentation for grinding, classification, flotation, and dewatering control: <strong>Pulp Density & % Solids Scales (Marcy Style)</strong>, <strong>SMAT Laboratory Batch Pressure Filters (60–100 psi)</strong>, and <strong>Certified ASTM E11 / ISO 3310 Test Sieves (5" to #635 Mesh)</strong>.
+      </p>
+      <div style="display: flex; gap: 0.85rem; flex-wrap: wrap; margin-top: 1.25rem;">
+        <a href="/en/quote/?circuito=control_procesos#rfq" class="btn btn-primary">Quote Process Control Equipment →</a>
+        <a href="#metrology-calculator" class="btn btn-outline">Marcy, Gy & ASTM √2 Calculator ↓</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="control-equipment-grid">
+        <!-- Instrument 1: Marcy Scale -->
+        <article id="marcy-scale" class="card control-block">
+          <div class="control-block-header">
+            <span class="badge badge-copper">PULP DENSITY & % SOLIDS • 1000 CM³ CUP</span>
+            <h2>Pulp Density & % Solids Scale (Marcy Style)</h2>
+            <p style="color: var(--smat-text-secondary);">
+              Direct-reading hanging dial scale for immediate plant-floor determination of net pulp weight, pulp specific gravity (kg/L), and percent solids by weight (%Cw) without manual lookup tables.
+            </p>
+          </div>
+          <TechnicalDiagrams diagram="marcy" lang="en" />
+          <div class="specs-strip">
+            <div><strong>Calibrated Cup:</strong> 1000 cm³ in 304 Stainless Steel or clear Acrylic with overflow slots</div>
+            <div><strong>12 Interchangeable Rings:</strong> Dry ore specific gravity from SG 2.2 up to SG 4.4</div>
+            <div><strong>Control Points:</strong> Mill discharge, hydrocyclone overflow, flotation feed, and thickener underflow</div>
+          </div>
+          <div class="control-actions">
+            <a href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="btn btn-primary">Quote Marcy Scale →</a>
+            <a href="#metrology-calculator" class="btn btn-outline">Simulate Marcy Dial Reading</a>
+          </div>
+        </article>
+
+        <!-- Instrument 2: Laboratory Batch Pressure Filter -->
+        <article id="batch-filter" class="card control-block">
+          <div class="control-block-header">
+            <span class="badge badge-copper">METALLURGICAL DEWATERING TESTS • 60 TO 100 PSI</span>
+            <h2>SMAT Laboratory Batch Pressure Filter</h2>
+            <p style="color: var(--smat-text-secondary);">
+              Benchtop and floor-mounted vertical pressure filtration unit for rapid concentrate sample dewatering, filter cake residual moisture determination, and filtration rate curves prior to full-scale filter press sizing.
+            </p>
+          </div>
+          <TechnicalDiagrams diagram="batch_filter" lang="en" />
+          <div class="specs-strip">
+            <div><strong>Chamber & Frame:</strong> Heavy-duty carbon steel or stainless steel vertical cylinder with guide rods</div>
+            <div><strong>Top Closure & Seal:</strong> Trapezoidal lead-screw T-handle clamp and O-ring sealing lid</div>
+            <div><strong>Pneumatic Operation:</strong> Top compressed-air inlet with pressure gauge, relief valve, and regulator for 60 to 100 psi</div>
+          </div>
+          <div class="control-actions">
+            <a href="/en/quote/?circuito=control_procesos&equipo=filtro_batch_lab#rfq" class="btn btn-primary">Quote Lab Batch Pressure Filter →</a>
+          </div>
+        </article>
+
+        <!-- Instrument 3: Certified ASTM E11 / ISO 3310 Test Sieves -->
+        <article id="astm-sieves" class="card control-block">
+          <div class="control-block-header">
+            <span class="badge badge-copper">D80 / P80 PARTICLE SIZE CONTROL • ASTM E11 / ISO 3310</span>
+            <h2>Certified ASTM E11 / ISO 3310 Test Sieves & Sieve Shakers</h2>
+            <p style="color: var(--smat-text-secondary);">
+              Precision woven-wire test sieves with seamless spun frames in <strong>Brass</strong> and <strong>Stainless Steel</strong> (8" and 12" diameters, full-height or half-height) for hydrocyclone $P_{80}$ cut verification and size-by-size metallurgical balances.
+            </p>
+          </div>
+          <TechnicalDiagrams diagram="sieves" lang="en" />
+          <div class="specs-strip">
+            <div><strong>Aperture Range:</strong> From 5" (125 mm) down to #635 mesh (20 µm) in Tyler / ASTM √2 progression</div>
+            <div><strong>Frame Options:</strong> 8" (203 mm) and 12" (305 mm) in 304/316 Stainless Steel or Brass, with cover and receiver pan</div>
+            <div><strong>Accessory Equipment:</strong> Mechanical / electromagnetic sieve shakers and Riffle sample splitters</div>
+          </div>
+          <div class="control-actions">
+            <a href="/en/quote/?circuito=control_procesos&equipo=tamices_laboratorio#rfq" class="btn btn-primary">Quote ASTM Sieve Stack →</a>
+            <a href="#metrology-calculator" class="btn btn-outline">Calculate √2 Series & Gy Sample Mass</a>
+          </div>
+        </article>
+      </div>
+
+      <!-- INTERACTIVE METALLURGICAL METROLOGY CALCULATOR (Marcy + Pierre Gy + ASTM E11 √2 Stack) -->
+      <div id="metrology-calculator" class="card metrology-calc-card" style="margin-top: 2.5rem;">
+        <div class="metrology-calc-header">
+          <span class="badge badge-copper">PLANT METALLURGICAL CONTROL TOOL</span>
+          <h2>Marcy Dial Simulator, ASTM E11 √2 Sieve Stack & Pierre Gy Sample Mass</h2>
+          <p style="color: var(--smat-text-secondary); margin: 0;">
+            Enter your dry ore specific gravity ($S_s$), percent solids by weight ($C_w$), and target grinding cut size ($P_{80}$) to determine the active Marcy dial ring, minimum sample mass ($M_s$), and 7-sieve ASTM E11 stack.
+          </p>
+        </div>
+
+        <div class="metrology-inputs-grid">
+          <label class="metrology-field">
+            <span>Dry Ore Specific Gravity ($S_s$):</span>
+            <input type="number" id="met-sg-input" min="2.2" max="4.4" step="0.1" value="2.8" />
+          </label>
+          <label class="metrology-field">
+            <span>Solids by Weight ($C_w$ %):</span>
+            <input type="number" id="met-cw-input" min="5" max="80" step="1" value="50" />
+          </label>
+          <label class="metrology-field">
+            <span>Target Grinding Cut $P_{80}$ (µm):</span>
+            <input type="number" id="met-p80-input" min="25" max="2000" step="5" value="75" />
+          </label>
+          <label class="metrology-field">
+            <span>Preferred Sieve Frame Material:</span>
+            <select id="met-frame-select">
+              <option value="8&quot; Stainless Steel (Full Height)">8" Stainless Steel (Full Height)</option>
+              <option value="8&quot; Stainless Steel (Half Height)">8" Stainless Steel (Half Height)</option>
+              <option value="8&quot; Brass Frame / SS Mesh">8" Brass Frame / SS Mesh</option>
+              <option value="12&quot; Stainless Steel">12" Stainless Steel</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="metrology-results-grid">
+          <div class="metrology-result-box">
+            <span class="met-res-label">Marcy Cup Reading (1000 cm³)</span>
+            <strong id="met-res-marcy-main" class="met-res-value">1474 g net • ρp = 1.474 kg/L</strong>
+            <small id="met-res-marcy-sub">Active dial ring: SG 2.8 (Range 2.2 to 4.4)</small>
+          </div>
+          <div class="metrology-result-box">
+            <span class="met-res-label">Minimum Sample Mass (Pierre Gy, σ²F = 1%)</span>
+            <strong id="met-res-gy-main" class="met-res-value">250 g dry (Wet + Dry Sieving)</strong>
+            <small id="met-res-gy-sub">Shape factor f = 0.50, granulometric factor g = 0.25</small>
+          </div>
+          <div class="metrology-result-box">
+            <span class="met-res-label">Recommended ASTM E11 Stack (√2 Series)</span>
+            <strong id="met-res-sieves-main" class="met-res-value">#70, #100, #140, #200, #270, #325, #400</strong>
+            <small id="met-res-sieves-sub">Includes Cover and Receiver Pan</small>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light);">
+          <span id="met-summary-code" style="font-family: var(--smat-font-mono); font-size: 0.85rem; color: var(--smat-text-secondary);">
+            Ready for quotation workbench: <strong>SMAT-CTRL-MARCY-1000 / SMAT-CTRL-SIEVE-ASTM</strong>
+          </span>
+          <a id="met-quote-cta" href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="btn btn-primary">
+            Send Specification to Quote Workbench →
+          </a>
+        </div>
+      </div>
+
+      <SharePurchasing
+        roleTitle="Process Control Instrumentation Package (Marcy Scale + Batch Filter + ASTM E11 Sieves)"
+        specs="Marcy Scale 1000 cm³ cup (12 rings SG 2.2-4.4), 100 psi Lab Batch Pressure Filter, and ASTM E11 Sieve Stack"
+        metallurgy="304 / 316 Stainless Steel & Seamless Spun Brass"
+        series="SMAT Metallurgical Control Line"
+        roleId="balanza_marcy"
+        circuit="control_procesos"
+        lang="en"
+      />
+    </div>
+  </section>
+
+  <section class="section" style="background-color: #ffffff; border-top: 1px solid var(--smat-border-light); border-bottom: 1px solid var(--smat-border-light);">
+    <div class="container">
+      <CircuitNavigator lang="en" />
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import {
+    calculateMarcyScaleReading,
+    calculateGyMinimumSampleMass,
+    recommendAstmSieveSeries
+  } from '../../../scripts/slurryEngine.js';
+
+  function updateMetrologyCalculator() {
+    const sgEl = document.getElementById('met-sg-input') as HTMLInputElement | null;
+    const cwEl = document.getElementById('met-cw-input') as HTMLInputElement | null;
+    const p80El = document.getElementById('met-p80-input') as HTMLInputElement | null;
+    const frameEl = document.getElementById('met-frame-select') as HTMLSelectElement | null;
+
+    if (!sgEl || !cwEl || !p80El || !frameEl) return;
+
+    const sg = parseFloat(sgEl.value) || 2.8;
+    const cw = parseFloat(cwEl.value) || 50;
+    const p80 = parseFloat(p80El.value) || 75;
+    const frame = frameEl.value;
+
+    const marcy = calculateMarcyScaleReading({ solidsSpecificGravity: sg, solidsWeightPercent: cw });
+    const gy = calculateGyMinimumSampleMass({ topSizeD95Mm: (p80 * 1.4) / 1000, solidsWeightPercent: cw });
+    const sieveStack = recommendAstmSieveSeries({ targetP80Microns: p80 });
+
+    const marcyMain = document.getElementById('met-res-marcy-main');
+    const marcySub = document.getElementById('met-res-marcy-sub');
+    const gyMain = document.getElementById('met-res-gy-main');
+    const gySub = document.getElementById('met-res-gy-sub');
+    const sievesMain = document.getElementById('met-res-sieves-main');
+    const sievesSub = document.getElementById('met-res-sieves-sub');
+    const quoteCta = document.getElementById('met-quote-cta') as HTMLAnchorElement | null;
+
+    if (marcyMain) {
+      marcyMain.textContent = `${marcy.cupNetMassGrams} g net • ρp = ${marcy.pulpDensityKgL.toFixed(3)} kg/L`;
+    }
+    if (marcySub) {
+      marcySub.textContent = `Active Marcy ring: SG ${marcy.recommendedRingSg.toFixed(1)} (Volumetric concentration Cv = ${marcy.solidsVolumePercent}%)`;
+    }
+    if (gyMain) {
+      gyMain.textContent = `${gy.minDrySampleGrams} g dry (${p80 <= 150 ? 'Wet + Dry Sieving' : 'Dry Sieving'})`;
+    }
+    if (gySub) {
+      gySub.textContent = `Theoretical Pierre Gy mass: ${gy.theoreticalGyGrams} g • Batch Filter: ${gy.batchFilterCycles} cycle(s) at ${gy.recommendedAirPressurePsi}`;
+    }
+    const meshLabels = sieveStack.sieveStackSummary;
+    if (sievesMain) {
+      sievesMain.textContent = meshLabels;
+    }
+    if (sievesSub) {
+      sievesSub.textContent = `Center cut: ${sieveStack.primaryControlMesh} (${sieveStack.primaryApertureMicrons} µm) • ${frame}`;
+    }
+    if (quoteCta) {
+      const detalle = `Marcy Scale Ring SG ${marcy.recommendedRingSg.toFixed(1)} + ASTM Sieves (${meshLabels}) in ${frame}`;
+      quoteCta.href = `/en/quote/?circuito=control_procesos&equipo=tamices_laboratorio&detalle=${encodeURIComponent(detalle)}#rfq`;
+    }
+  }
+
+  ['met-sg-input', 'met-cw-input', 'met-p80-input', 'met-frame-select'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', updateMetrologyCalculator);
+      el.addEventListener('change', updateMetrologyCalculator);
+    }
+  });
+  updateMetrologyCalculator();
+</script>
+
+<style>
+  .page-hero {
+    background-color: #ffffff;
+    color: var(--smat-text-primary);
+    padding: 3rem 0;
+    border-bottom: 2px solid var(--smat-copper-accent);
+  }
+  .page-hero h1 {
+    color: var(--smat-text-primary);
+    margin-top: 0.65rem;
+  }
+  .control-equipment-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+  }
+  .control-block {
+    padding: 2rem;
+    border: 1px solid var(--smat-border-strong);
+    background: #ffffff;
+  }
+  .control-block-header h2 {
+    margin: 0.5rem 0 0.65rem;
+    color: var(--smat-text-primary);
+  }
+  .specs-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.85rem;
+    background: var(--smat-bg-canvas);
+    border: 1px solid var(--smat-border-light);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    font-size: 0.88rem;
+    color: var(--smat-text-secondary);
+  }
+  .control-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  .metrology-calc-card {
+    padding: 2rem;
+    background: #ffffff;
+    border: 2px solid var(--smat-copper-accent);
+  }
+  .metrology-calc-header h2 {
+    margin: 0.5rem 0;
+    color: var(--smat-text-primary);
+  }
+  .metrology-inputs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .metrology-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--smat-text-primary);
+  }
+  .metrology-field input,
+  .metrology-field select {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--smat-border-strong);
+    border-radius: 6px;
+    font-family: var(--smat-font-mono);
+    font-size: 0.9rem;
+    background: var(--smat-bg-canvas);
+    color: var(--smat-text-primary);
+  }
+  .metrology-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+  .metrology-result-box {
+    background: var(--smat-bg-canvas);
+    border: 1px solid var(--smat-border-strong);
+    border-left: 4px solid var(--smat-copper-accent);
+    border-radius: 8px;
+    padding: 1rem 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .met-res-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--smat-text-secondary);
+    font-family: var(--smat-font-mono);
+  }
+  .met-res-value {
+    font-size: 1rem;
+    color: var(--smat-text-primary);
+    font-family: var(--smat-font-mono);
+  }
+</style>
