@@ -4,6 +4,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CircuitNavigator from '../../components/CircuitNavigator.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
 import SharePurchasing from '../../components/SharePurchasing.astro';
+import QuickPartSelectorStrip from '../../components/QuickPartSelectorStrip.astro';
+import PumpAssemblyReport from '../../components/PumpAssemblyReport.astro';
 import atomicParts from '../../../data/atomic_parts.json';
 ---
 
@@ -16,25 +18,78 @@ import atomicParts from '../../../data/atomic_parts.json';
     <div class="container">
       <span class="badge badge-copper">PUERTA 2 • OPERACIÓN, MANTENIMIENTO Y REFACCIONAMIENTO</span>
       <h1>Bombas para Lodos y Spare Parts</h1>
-      <p style="font-size: 1.08rem; max-width: 760px; color: var(--smat-text-secondary);">
-        Bombas centrífugas horizontales de reemplazo para lodos abrasivos, conjuntos completos <strong>Bearing Assembly / Housing</strong> y <strong>Spare Parts</strong> en contacto húmedo suministrados por lote balanceado (<strong>5 impulsores, 5 cuellos y 4 volutas</strong>) en <strong>Alto Cromo (≥650 HB), Hule y Poliuretano</strong>.
+      <p style="font-size: 1.04rem; max-width: 760px; color: var(--smat-text-secondary);">
+        Selección directa de piezas en contacto húmedo por lote <strong>5-5-4</strong> (<strong>Alto Cromo ≥650 HB, Hule Natural y Poliuretano</strong>), conjuntos completos <strong>Bearing Assembly</strong> y reporte técnico de armado en 5 estaciones.
       </p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
+      <QuickPartSelectorStrip lang="es" showAssemblyLink={true} />
+
       <TechnicalDiagrams diagram="pump" lang="es" />
 
       <div class="wet-lot-callout">
         <div>
           <strong>Pedido por Lote de Contacto Húmedo (5 – 5 – 4)</strong>
           <p>
-            En planta no se compra pieza por pieza suelta: se programa el lote de piezas en contacto húmedo de acuerdo con su rotación real (por ejemplo, <strong>5 impulsores, 5 cuellos y 4 volutas</strong>) en Alto Cromo, Hule o Poliuretano. No manejamos sello mecánico debido a la alta corrosión y abrasión de los lodos mineros; empleamos expulsor centrífugo y prensaestopa.
+            Programación de piezas en contacto húmedo acoplada a su rotación real (<strong>5 impulsores, 5 throatbushes y 4 volutas/liners</strong>) en Alto Cromo, Hule o Poliuretano. Sellado por expulsor centrífugo en seco o prensaestopa.
           </p>
         </div>
-        <a href="/cotizar/?equipo=revestimientos#rfq" class="btn btn-primary">Cotizar Lote Húmedo →</a>
+        <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=lote_554#rfq" class="btn btn-primary">Cotizar Lote Húmedo →</a>
       </div>
+
+      <!-- MOSAICO DE PIEZAS DE RECAMBIO POR MATERIAL (DECISIÓN 4-C+) -->
+      <div class="material-kits-showcase" id="lotes-por-material" style="margin-top: 2.25rem;">
+        <span class="section-eyebrow">IDENTIFICACIÓN VISUAL POR METALURGIA Y ELASTÓMERO</span>
+        <h2 style="margin-bottom: 0.35rem;">Lotes de Spare Parts por Material: Alto Cromo (≥650 HB), Hule Natural y Poliuretano</h2>
+        <p style="color: var(--smat-text-secondary); margin-bottom: 1rem;">
+          Compare la geometría física de cada lote húmedo: voluta monolítica en Alto Cromo Cr27% frente a liners bipartidos (FPL + CPL) en Hule Natural vulcanizado o Poliuretano.
+        </p>
+        <TechnicalDiagrams diagram="material_kit_grid" lang="es" />
+
+        <div class="grid-3-atomic" style="margin-top: 1rem;">
+          <article class="card atomic-silo-card">
+            <span class="badge badge-copper" style="align-self: flex-start; margin-bottom: 0.5rem;">ALTO CROMO Cr27% • ≥650 HB</span>
+            <h3>Lote Metálico (Molienda Primaria y SAG)</h3>
+            <p style="font-size: 0.86rem; color: var(--smat-text-secondary);">
+              <strong>Piezas del kit:</strong> Voluta Monolítica + Impulsor 5 Álabes + Throatbush + FPL Insert.<br/>
+              <strong>Límite operativo:</strong> Impacto severo d₅₀ &gt; 6 mm, v_tip ≤ 32 m/s, pH 4.0–12.0.
+            </p>
+            <div style="margin-top: auto; padding-top: 0.75rem;">
+              <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=lote_554&material=alto_cromo_cr27#rfq" class="btn btn-primary" style="width: 100%; text-align: center;">Cotizar Lote Alto Cromo →</a>
+            </div>
+          </article>
+
+          <article class="card atomic-silo-card">
+            <span class="badge badge-copper" style="align-self: flex-start; margin-bottom: 0.5rem;">HULE NATURAL • 55–65 SHORE A</span>
+            <h3>Lote Elastómero (Colas Finas y Flotación)</h3>
+            <p style="font-size: 0.86rem; color: var(--smat-text-secondary);">
+              <strong>Piezas del kit:</strong> Liner Frontal (CPL) + Liner Posterior (FPL) con alma de acero + Impulsor + Throatbush.<br/>
+              <strong>Límite operativo:</strong> Abrasión fina d₅₀ ≤ 5 mm, v_tip ≤ 27.5 m/s, pH 1.5–11.0.
+            </p>
+            <div style="margin-top: auto; padding-top: 0.75rem;">
+              <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=lote_554&material=hule_natural#rfq" class="btn btn-primary" style="width: 100%; text-align: center;">Cotizar Lote Hule Natural →</a>
+            </div>
+          </article>
+
+          <article class="card atomic-silo-card">
+            <span class="badge badge-copper" style="align-self: flex-start; margin-bottom: 0.5rem;">POLIURETANO • 85–95 SHORE A</span>
+            <h3>Lote Poliuretano (Ciclones y Reactivos)</h3>
+            <p style="font-size: 0.86rem; color: var(--smat-text-secondary);">
+              <strong>Piezas del kit:</strong> Liners CPL + FPL en Poliuretano Amarillo/Rojo + Impulsor PU + Throatbush PU.<br/>
+              <strong>Límite operativo:</strong> Partícula cortante d₅₀ ≤ 8 mm, resistencia a hidrocarburos y espumas.
+            </p>
+            <div style="margin-top: auto; padding-top: 0.75rem;">
+              <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=lote_554&material=poliuretano#rfq" class="btn btn-primary" style="width: 100%; text-align: center;">Cotizar Lote Poliuretano →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- REPORTE DE CÓMO SE ARMA UNA BOMBA (DECISIÓN 3-C+) -->
+      <PumpAssemblyReport lang="es" />
 
       <h2 style="margin-top: 2rem;">Bombas de Reemplazo y Spare Parts Críticos</h2>
       <div class="grid-2" style="margin-top: 1.5rem;">

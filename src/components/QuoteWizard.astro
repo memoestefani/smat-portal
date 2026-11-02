@@ -184,6 +184,27 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
             </select>
           </div>
 
+          <!-- Selector Directo de Material de Contacto Húmedo y Arreglo de Transmisión (Decisiones 4-C+ y 5-C+) -->
+          <div class="form-group" style="margin-top: 0.75rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.65rem;">
+            <div>
+              <label for="wb-pump-material"><strong>{isEs ? 'Material en Contacto Húmedo:' : 'Wet-End Wear Material:'}</strong></label>
+              <select id="wb-pump-material" name="pump_material" class="wb-select">
+                <option value="alto_cromo_cr27" selected>{isEs ? 'Alto Cromo Cr27% (ASTM A532 ≥650 HB)' : 'High Chrome Cr27% (ASTM A532 ≥650 HB)'}</option>
+                <option value="hule_natural">{isEs ? 'Hule Natural Antiabrasivo (55–65 Shore A)' : 'Natural Rubber (55–65 Shore A)'}</option>
+                <option value="poliuretano">{isEs ? 'Poliuretano Grado Minero (85–95 Shore A)' : 'Mining Polyurethane (85–95 Shore A)'}</option>
+              </select>
+            </div>
+            <div>
+              <label for="wb-drive-arrangement"><strong>{isEs ? 'Arreglo de Transmisión (Skid):' : 'Skid Drive Arrangement:'}</strong></label>
+              <select id="wb-drive-arrangement" name="drive_arrangement" class="wb-select">
+                <option value="CV" selected>{isEs ? 'Arreglo CV (Motor Superior sobre Bastidor)' : 'CV Arrangement (Overhead Motor)'}</option>
+                <option value="ZVZ">{isEs ? 'Arreglo ZVZ (Motor Trasero Elevado)' : 'ZVZ Arrangement (Elevated Rear Motor)'}</option>
+                <option value="CRZ">{isEs ? 'Arreglo CRZ (Motor Lateral Paralelo en Skid)' : 'CRZ Arrangement (Side-by-Side on Skid)'}</option>
+                <option value="DC">{isEs ? 'Arreglo DC (Acoplamiento Directo Inline)' : 'DC Arrangement (Direct Inline Coupling)'}</option>
+              </select>
+            </div>
+          </div>
+
           <!-- Micro-Alerta Fiduciaria de Recirculación (Decisión 1-C) -->
           <div id="recirculation-alert-box" class="recirculation-alert-box hidden">
             <span class="recirc-icon font-mono-tech">[AVISO]</span>
@@ -5395,30 +5416,50 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
     });
 
     // Conexión al Bus de Eventos Reactivo (workbenchBus.js: smat:workbench_update & smat:mission) y Hashchange
+    var selectPumpMaterial = document.getElementById('wb-pump-material');
+    var selectDriveArrangement = document.getElementById('wb-drive-arrangement');
+    if (selectPumpMaterial) selectPumpMaterial.addEventListener('change', updateDossier);
+    if (selectDriveArrangement) selectDriveArrangement.addEventListener('change', updateDossier);
+
     var roleAliasMap = {
       impulsor: 'solo_impulsor',
+      impulsor_bomba: 'solo_impulsor',
       revestimientos: 'kit_wet_end',
+      bombeo_hule_cromo: 'kit_wet_end',
       sello: 'kit_sellado',
+      sello_expulsor: 'kit_sellado',
       soporte: 'kit_rodamientos',
+      soporte_rodamiento: 'kit_rodamientos',
       skid_bomba: 'skid_bomba',
       celda_completa: 'celda_flotacion',
       mecanismos_flotacion: 'rotor_estator',
       prensa_completa: 'filtro_prensa',
       repuestos_prensa: 'placas_telas',
+      placas_filtrantes: 'placas_telas',
       balanza_marcy: 'balanza_marcy',
       filtro_batch_lab: 'filtro_batch_lab',
       tamices_laboratorio: 'tamices_laboratorio',
+      tamices_astm_e11: 'tamices_laboratorio',
       custom: 'balanza_marcy'
     };
 
-    // Deep Linking Determinista (#rfq?codigo=E4083&circuito=...&equipo=...&serie=...&falla=...) (Decisión 4-A & 7-A)
+    // Deep Linking Determinista (/cotizar/?equipo=...&pieza=...&material=...&transmision=...#rfq) (Decisiones 4-A, 7-A y 1-C+ a 8-C+)
     function checkUrlContext() {
-      var rawHashOrSearch = window.location.hash || window.location.search || '';
-      if (!rawHashOrSearch) return;
+      var rawSearch = window.location.search || '';
+      var rawHash = window.location.hash || '';
+      if (!rawSearch && !rawHash) return;
 
-      var qIdx = rawHashOrSearch.indexOf('?');
-      var qStr = qIdx !== -1 ? rawHashOrSearch.substring(qIdx + 1) : rawHashOrSearch.replace(/^[#?]/, '');
-      if (!qStr) return;
+      var searchPart = rawSearch.replace(/^\?/, '');
+      var hashQIdx = rawHash.indexOf('?');
+      var hashPart = hashQIdx !== -1 ? rawHash.substring(hashQIdx + 1) : '';
+      var qStr = [searchPart, hashPart].filter(Boolean).join('&');
+      if (!qStr) {
+        if (rawHash.includes('rfq')) {
+          var rfqOnlyEl = document.getElementById('rfq');
+          if (rfqOnlyEl) rfqOnlyEl.scrollIntoView({ behavior: 'smooth' });
+        }
+        return;
+      }
 
       try {
         var params = new URLSearchParams(qStr);
@@ -5434,6 +5475,10 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
         var urlFlow = params.get('flow');
         var urlSolids = params.get('solids');
         var urlD80 = params.get('d80');
+        var urlPieza = params.get('pieza') || params.get('part') || '';
+        var urlMaterial = params.get('material') || '';
+        var urlTransmision = (params.get('transmision') || params.get('drive') || '').toUpperCase();
+        var urlEstacion = (params.get('estacion') || '').toUpperCase();
 
         if (urlFlow && sliderFlow) sliderFlow.value = urlFlow;
         if (urlSolids && sliderSolids) sliderSolids.value = urlSolids;
@@ -5548,6 +5593,27 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
         if ((urlSintoma || urlFalla) && inputDetails && !urlSerie && !urlCodigo) {
           var desc = urlSintoma || urlFalla.replace(/_/g, ' ');
           inputDetails.value = 'Reemplazo prioritario por ' + desc + ' detectado en diagnóstico de planta';
+        }
+
+        if (urlMaterial && selectPumpMaterial) {
+          selectPumpMaterial.value = urlMaterial;
+        }
+        if (urlTransmision && selectDriveArrangement) {
+          selectDriveArrangement.value = urlTransmision;
+        }
+        if (urlPieza || urlMaterial || urlTransmision || urlEstacion) {
+          var partNotes = [];
+          if (urlPieza) partNotes.push((isEs ? 'Pieza: ' : 'Part: ') + urlPieza);
+          if (urlMaterial) partNotes.push((isEs ? 'Material: ' : 'Material: ') + urlMaterial);
+          if (urlTransmision) partNotes.push((isEs ? 'Transmisión: Arreglo ' : 'Drive: Arrangement ') + urlTransmision);
+          if (urlEstacion) partNotes.push((isEs ? 'Estación de Armado: ' : 'Assembly Station: ') + urlEstacion);
+          if (inputDetails && !urlCodigo) {
+            inputDetails.value = partNotes.join(' | ') + (isEs ? ' — Calibración axial δ = 0.5–1.0 mm' : ' — Axial clearance δ = 0.5–1.0 mm');
+          }
+          document.querySelectorAll('[data-quick-part-card]').forEach(function(cardEl) {
+            var cPieza = cardEl.getAttribute('data-pieza');
+            cardEl.classList.toggle('is-selected', Boolean(urlPieza && cPieza === urlPieza));
+          });
         }
 
         if (urlMina && inputCompany) {

@@ -180,3 +180,85 @@ test('10. Selección de Serie de Tamices ASTM E11 / ISO 3310 y Transformación d
   assert.ok(series.recommendedFrameMaterialEs.includes('Acero Inoxidable'), 'Tamizado húmedo fino exige Acero Inoxidable');
   assert.ok(series.rosinRammlerYPrime < -0.15 && series.rosinRammlerYPrime > -0.16, 'Rosin-Rammler y\' para R=20% debe ser ~ -0.1555');
 });
+
+test('11. Matrices de Interferencia en Despiece Bifurcado (Metal vs Hule/PU) y Calibración Axial Post-Armado (Arbitraje #6)', async () => {
+  const { evaluatePumpAssemblySequence, PUMP_ASSEMBLY_STATIONS, WET_END_MATERIAL_MATRIX } = await import('../src/scripts/slurryEngine.js');
+
+  assert.equal(PUMP_ASSEMBLY_STATIONS.length, 5, 'El reporte de armado debe constar de 5 estaciones canónicas');
+  assert.ok(WET_END_MATERIAL_MATRIX.alto_cromo && WET_END_MATERIAL_MATRIX.hule && WET_END_MATERIAL_MATRIX.poliuretano, 'Debe definir la tríada de materiales Alto Cromo, Hule y Poliuretano');
+
+  // 1) Rama Metálica con claro axial calibrado (0.75 mm dentro de [0.5, 1.0] mm)
+  const metalOk = evaluatePumpAssemblySequence({
+    wetEndBranch: 'metal',
+    sealBranch: 'expeller_dry',
+    frontClearanceMm: 0.75,
+    impellerExitWidthMm: 48
+  });
+  assert.equal(metalOk.isValidAssembly, true, 'Secuencia canónica metálica debe tener Ng=0 y Ns=0');
+  assert.equal(metalOk.geometricInterferencesNg, 0, 'Cero colisiones geométricas');
+  assert.equal(metalOk.clearanceStatus, 'OPTIMAL_CALIBRATION', '0.75 mm debe estar en la banda óptima [0.5, 1.0] mm');
+  assert.ok(metalOk.canonicalSequence.includes('monolithic_volute') && metalOk.canonicalSequence.includes('fpl_insert'), 'Rama metálica usa Voluta Monolítica + FPL Insert');
+
+  // 2) Rama Elastómero (Hule) usa 2 mitades simétricas (Frame Plate Liner + Cover Plate Liner)
+  const rubberOk = evaluatePumpAssemblySequence({
+    wetEndBranch: 'rubber',
+    sealBranch: 'expeller_dry',
+    frontClearanceMm: 0.8
+  });
+  assert.equal(rubberOk.isValidAssembly, true, 'Secuencia canónica de hule debe ser válida');
+  assert.ok(rubberOk.canonicalSequence.includes('frame_plate_liner') && rubberOk.canonicalSequence.includes('cover_plate_liner'), 'Rama hule usa FPL + CPL simétricos');
+
+  // 3) Secuencia inválida: intentar montar el impulsor ANTES del plato posterior (FPL Insert) genera colisión Ng > 0
+  const invalidOrder = evaluatePumpAssemblySequence({
+    wetEndBranch: 'metal',
+    customOrder: ['frame', 'bearing_assembly', 'frame_plate', 'impeller', 'fpl_insert', 'monolithic_volute', 'throatbush', 'cover_plate']
+  });
+  assert.equal(invalidOrder.isValidAssembly, false, 'Montar impulsor antes del FPL Insert debe ser inválido');
+  assert.ok(invalidOrder.geometricInterferencesNg >= 1, 'Debe detectar interferencia geométrica axial Ng >= 1');
+
+  // 4) Claro axial descalibrado (3.2 mm > 1.0 mm) dispara alerta de recirculación severa
+  const wornClearance = evaluatePumpAssemblySequence({
+    wetEndBranch: 'metal',
+    frontClearanceMm: 3.2,
+    impellerExitWidthMm: 48
+  });
+  assert.equal(wornClearance.clearanceStatus, 'EXCESS_RECIRCULATION_WEAR', 'Claro > 1.0 mm debe alertar recirculación excesiva');
+  assert.ok(wornClearance.excessRecirculationRatio > 8.0, 'A 3.2 mm vs 0.75 mm la pérdida por recirculación (δ/b2)^1.5 se multiplica > 8x');
+});
+
+test('12. Cinemática de Transmisión por Poleas (CV / ZVZ / CRZ / DC), Velocidad Periférica u2 y Vida ISO 281 del Bearing Assembly (Arbitraje #7)', async () => {
+  const { calculateDriveAndBearingKinematics, DRIVE_ARRANGEMENT_CATALOG } = await import('../src/scripts/slurryEngine.js');
+
+  assert.ok(DRIVE_ARRANGEMENT_CATALOG.CV && DRIVE_ARRANGEMENT_CATALOG.ZVZ && DRIVE_ARRANGEMENT_CATALOG.CRZ && DRIVE_ARRANGEMENT_CATALOG.DC, 'Debe incluir los 4 arreglos CV, ZVZ, CRZ y DC');
+  assert.equal(DRIVE_ARRANGEMENT_CATALOG.CV.sumpFloodImmunity, true, 'CV protege al motor sobre nivel de inundación de sumidero');
+  assert.equal(DRIVE_ARRANGEMENT_CATALOG.ZVZ.sumpFloodImmunity, true, 'ZVZ protege al motor sobre nivel de inundación de sumidero');
+
+  // Caso 1: Bomba 6x4 en arreglo CV con motor 1780 RPM, poleas 180/320 mm e impulsor 380 mm
+  const cvDrive = calculateDriveAndBearingKinematics({
+    arrangement: 'CV',
+    motorRpm: 1780,
+    driverPulleyMm: 180,
+    drivenPulleyMm: 320,
+    impellerDiameterMm: 380,
+    shaftPowerKw: 45,
+    dynamicCapacityCkN: 195
+  });
+  assert.equal(cvDrive.pumpRpm, 1001, '1780 * (180/320) = 1001 RPM');
+  assert.ok(cvDrive.tipSpeedMs > 19.5 && cvDrive.tipSpeedMs < 20.5, 'u2 = π * 0.38 * 1001 / 60 ≈ 19.92 m/s');
+  assert.equal(cvDrive.rubberSafeTipSpeed, true, 'A 19.92 m/s <= 24.5 m/s es apto para Hule, Poliuretano y Alto Cromo');
+  assert.ok(cvDrive.bearingL10Hours > 25000, 'Vida nominal ISO 281 L10h debe superar 25,000 horas');
+
+  // Caso 2: Alta velocidad periférica (u2 > 24.5 m/s) exige exclusivamente Alto Cromo
+  const highSpeed = calculateDriveAndBearingKinematics({
+    arrangement: 'ZVZ',
+    motorRpm: 1780,
+    driverPulleyMm: 280,
+    drivenPulleyMm: 320,
+    impellerDiameterMm: 380,
+    shaftPowerKw: 90
+  });
+  assert.ok(highSpeed.tipSpeedMs > 24.5, 'u2 debe superar 24.5 m/s');
+  assert.equal(highSpeed.rubberSafeTipSpeed, false, 'Superado 24.5 m/s debe vetar hule por desgarre centrífugo/térmico');
+  assert.ok(highSpeed.recommendedWetMaterialByTipSpeed.includes('Alto Cromo'), 'Debe exigir Alto Cromo >= 650 HB');
+});
+

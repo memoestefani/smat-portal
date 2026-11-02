@@ -1,0 +1,291 @@
+---
+// src/components/QuickPartSelectorStrip.astro
+// Cinta de Selección Directa de Pieza en 1 Clic ("Pieza Primero, Cero Rollo")
+// Para compradores e ingenieros de planta que ya saben exactamente qué refacción o conjunto necesitan.
+
+interface Props {
+  lang?: 'es' | 'en';
+  activePart?: string;
+  showAssemblyLink?: boolean;
+}
+
+const { lang = 'es', activePart = '', showAssemblyLink = true } = Astro.props;
+const isEs = lang === 'es';
+const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
+const assemblyAnchor = isEs ? '/bombeo/#como-se-arma-una-bomba' : '/en/pumping/#how-a-slurry-pump-is-assembled';
+
+const quickParts = [
+  {
+    id: 'lote_554',
+    equipo: 'bombeo_hule_cromo',
+    material: 'alto_cromo_cr27',
+    code: 'KIT 5-5-4',
+    title: isEs ? 'Lote Húmedo 5-5-4' : '5-5-4 Wet-End Kit',
+    sub: isEs ? '5 Liners + 5 Impulsores + 4 Sellos' : '5 Liners + 5 Impellers + 4 Seals',
+    icon: 'kit'
+  },
+  {
+    id: 'impulsor_5_alabes',
+    equipo: 'impulsor_bomba',
+    material: 'alto_cromo_cr27',
+    code: 'EST-03 • IMP',
+    title: isEs ? 'Impulsor 5 Álabes' : '5-Vane Impeller',
+    sub: isEs ? 'Alto Cromo ≥650 HB / Hule / PU' : 'High Chrome ≥650 HB / Rubber / PU',
+    icon: 'impeller'
+  },
+  {
+    id: 'voluta_liners',
+    equipo: 'bombeo_hule_cromo',
+    material: 'hule_natural',
+    code: 'EST-03 • CPL/FPL',
+    title: isEs ? 'Voluta / Liners FPL-CPL' : 'Volute / FPL-CPL Liners',
+    sub: isEs ? 'Voluta Cr27% o Mitades Hule/PU' : 'Cr27% Volute or Split Rubber/PU',
+    icon: 'volute'
+  },
+  {
+    id: 'throatbush',
+    equipo: 'bombeo_hule_cromo',
+    material: 'alto_cromo_cr27',
+    code: 'EST-04 • TB',
+    title: isEs ? 'Throatbush (Succión)' : 'Throatbush (Suction)',
+    sub: isEs ? 'Ajuste claro axial δ = 0.5–1.0 mm' : 'Front clearance δ = 0.5–1.0 mm',
+    icon: 'throatbush'
+  },
+  {
+    id: 'fpl_insert',
+    equipo: 'bombeo_hule_cromo',
+    material: 'alto_cromo_cr27',
+    code: 'EST-03A • FPLI',
+    title: isEs ? 'FPL Insert (Posterior)' : 'FPL Insert (Rear Plate)',
+    sub: isEs ? 'Placa de desgaste lado soporte' : 'Frame plate liner insert',
+    icon: 'fpl'
+  },
+  {
+    id: 'expeller_sello',
+    equipo: 'sello_expulsor',
+    material: 'alto_cromo_cr27',
+    code: 'EST-02 • EXP',
+    title: isEs ? 'Expeller y Camisa' : 'Expeller & Sleeve',
+    sub: isEs ? 'Sello centrífugo seco / Prensaestopa' : 'Dry centrifugal / Stuffing box',
+    icon: 'seal'
+  },
+  {
+    id: 'bearing_assembly',
+    equipo: 'soporte_rodamiento',
+    material: 'acero_4140_iso281',
+    code: 'EST-01 • BRG',
+    title: isEs ? 'Bearing Assembly' : 'Bearing Assembly',
+    sub: isEs ? 'Cartucho completo con laberintos' : 'Drop-in cartridge w/ labyrinths',
+    icon: 'bearing'
+  }
+];
+---
+
+<section
+  class="quick-part-strip"
+  data-quick-part-strip
+  aria-label={isEs ? 'Selección directa de pieza en 1 clic' : '1-click direct spare part selector'}
+>
+  <div class="quick-part-strip__header">
+    <div class="quick-part-strip__titles">
+      <span class="quick-part-strip__eyebrow">
+        {isEs ? 'PIEZA PRIMERO • ACCESO DIRECTO A COTIZACIÓN' : 'PART FIRST • DIRECT QUOTE ACCESS'}
+      </span>
+      <h2 class="quick-part-strip__title">
+        {isEs
+          ? '¿Ya sabe qué pieza busca? Selección directa en 1 clic:'
+          : 'Already know the part you need? 1-click direct selection:'}
+      </h2>
+    </div>
+    {showAssemblyLink && (
+      <a href={assemblyAnchor} class="quick-part-strip__assembly-btn">
+        {isEs ? 'Ver Reporte de Armado y Despiece (14 Piezas) ↓' : 'View Pump Assembly & Exploded BOM (14 Parts) ↓'}
+      </a>
+    )}
+  </div>
+
+  <div class="quick-part-strip__grid" role="list">
+    {quickParts.map((item) => {
+      const targetHref = `${quoteBase}?equipo=${item.equipo}&pieza=${item.id}&material=${item.material}#rfq`;
+      const isSelected = activePart === item.id;
+      return (
+        <a
+          href={targetHref}
+          role="listitem"
+          class={`quick-part-card ${isSelected ? 'is-selected' : ''}`}
+          data-quick-part-card
+          data-equipo={item.equipo}
+          data-pieza={item.id}
+          data-material={item.material}
+        >
+          <div class="quick-part-card__top">
+            <span class="quick-part-card__code">{item.code}</span>
+            <span class="quick-part-card__svg-wrap" aria-hidden="true">
+              {item.icon === 'kit' && (
+                <svg viewBox="0 0 36 36" width="28" height="28">
+                  <circle cx="13" cy="18" r="9" fill="#dbeafe" stroke="#0d78c6" stroke-width="2" />
+                  <circle cx="23" cy="18" r="8" fill="#fef3c7" stroke="#c25e00" stroke-width="2" />
+                  <circle cx="18" cy="18" r="3.5" fill="#0f172a" />
+                </svg>
+              )}
+              {item.icon === 'impeller' && (
+                <svg viewBox="0 0 36 36" width="28" height="28">
+                  <circle cx="18" cy="18" r="12" fill="#dbeafe" stroke="#1e3a8a" stroke-width="2" />
+                  <path d="M18 6 Q24 13 22 18 M30 18 Q23 24 18 22 M18 30 Q12 23 14 18 M6 18 Q13 12 18 14" fill="none" stroke="#c25e00" stroke-width="2" />
+                  <circle cx="18" cy="18" r="4" fill="#0f172a" />
+                </svg>
+              )}
+              {item.icon === 'volute' && (
+                <svg viewBox="0 0 36 36" width="28" height="28">
+                  <circle cx="17" cy="20" r="11" fill="#1e293b" stroke="#0f172a" stroke-width="2" />
+                  <rect x="13" y="5" width="8" height="6" fill="#0d78c6" />
+                  <circle cx="17" cy="20" r="4.5" fill="#f8fafc" />
+                </svg>
+              )}
+              {item.icon === 'throatbush' && (
+                <svg viewBox="0 0 36 36" width="28" height="28">
+                  <circle cx="18" cy="18" r="12" fill="#cbd5e1" stroke="#0f172a" stroke-width="2" />
+                  <circle cx="18" cy="18" r="7" fill="#fef3c7" stroke="#c25e00" stroke-width="1.8" stroke-dasharray="2 2" />
+                  <circle cx="18" cy="18" r="3" fill="#ffffff" />
+                </svg>
+              )}
+              {item.icon === 'fpl' && (
+                <svg viewBox="0 0 36 36" width="28" height="28">
+                  <rect x="7" y="7" width="22" height="22" rx="11" fill="#e2e8f0" stroke="#1e3a8a" stroke-width="2" />
+                  <circle cx="18" cy="18" r="5" fill="#ffffff" stroke="#0d78c6" stroke-width="2" />
+                </svg>
+              )}
+              {item.icon === 'seal' && (
+                <svg viewBox="0 0 36 36" width="28" height="28">
+                  <rect x="6" y="14" width="24" height="8" rx="2" fill="#94a3b8" stroke="#0f172a" stroke-width="1.8" />
+                  <rect x="13" y="8" width="10" height="20" rx="2" fill="#fef3c7" stroke="#c25e00" stroke-width="2" />
+                </svg>
+              )}
+              {item.icon === 'bearing' && (
+                <svg viewBox="0 0 36 36" width="28" height="28">
+                  <rect x="5" y="11" width="26" height="14" rx="3" fill="#dbeafe" stroke="#0d78c6" stroke-width="2" />
+                  <line x1="2" y1="18" x2="34" y2="18" stroke="#0f172a" stroke-width="3" />
+                </svg>
+              )}
+            </span>
+          </div>
+          <strong class="quick-part-card__title">{item.title}</strong>
+          <span class="quick-part-card__sub">{item.sub}</span>
+          <span class="quick-part-card__cta">
+            {isEs ? 'Cotizar pieza →' : 'Quote part →'}
+          </span>
+        </a>
+      );
+    })}
+  </div>
+</section>
+
+<style>
+  .quick-part-strip {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-left: 5px solid #0d78c6;
+    border-radius: 10px;
+    padding: 1rem 1.15rem;
+    margin: 1.25rem 0 1.75rem 0;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+  }
+  .quick-part-strip__header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+  }
+  .quick-part-strip__eyebrow {
+    display: block;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #0d78c6;
+    text-transform: uppercase;
+  }
+  .quick-part-strip__title {
+    margin: 0.15rem 0 0 0;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+  .quick-part-strip__assembly-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.42rem 0.8rem;
+    border-radius: 6px;
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    color: #0369a1;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .quick-part-strip__assembly-btn:hover {
+    background: #e0f2fe;
+    border-color: #0284c7;
+  }
+  .quick-part-strip__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(152px, 1fr));
+    gap: 0.6rem;
+  }
+  .quick-part-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.65rem 0.75rem;
+    border-radius: 8px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    text-decoration: none;
+    color: #0f172a;
+    transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+  }
+  .quick-part-card:hover,
+  .quick-part-card.is-selected {
+    background: #f0f9ff;
+    border-color: #0d78c6;
+    transform: translateY(-1px);
+  }
+  .quick-part-card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+  }
+  .quick-part-card__code {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.66rem;
+    font-weight: 800;
+    color: #475569;
+    background: #e2e8f0;
+    padding: 0.12rem 0.38rem;
+    border-radius: 4px;
+  }
+  .quick-part-card__title {
+    font-size: 0.86rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+    margin-bottom: 0.2rem;
+  }
+  .quick-part-card__sub {
+    font-size: 0.72rem;
+    color: #475569;
+    line-height: 1.25;
+    margin-bottom: 0.4rem;
+  }
+  .quick-part-card__cta {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #0d78c6;
+  }
+</style>

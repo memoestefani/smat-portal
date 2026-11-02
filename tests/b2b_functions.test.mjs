@@ -1888,8 +1888,8 @@ test('106. Erradicación del Botón Neón Flotante de WhatsApp y Deep-Links RFC 
   const catEs = fs.readFileSync(path.join(siteRoot, 'src/pages/catalogo.astro'), 'utf-8');
   const catEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/catalog.astro'), 'utf-8');
 
-  assert.ok(catEs.includes('/#rfq?equipo=skid_bomba&serie=4x3'), 'catalogo.astro debe contener deep link con formato estándar RFC');
-  assert.ok(catEn.includes('/en/#rfq?equipo=skid_bomba&serie=4x3'), 'catalog.astro en inglés debe contener deep link con formato estándar RFC');
+  assert.ok(catEs.includes('/cotizar/?equipo=skid_bomba&serie=4x3#rfq'), 'catalogo.astro debe contener deep link con formato estándar RFC hacia /cotizar/');
+  assert.ok(catEn.includes('/en/quote/?equipo=skid_bomba&serie=4x3#rfq'), 'catalog.astro en inglés debe contener deep link con formato estándar RFC hacia /en/quote/');
 });
 
 test('107. Conmutador Multi-Circuito y Paneles Condicionales (Ola 21 - Decisión 8-C)', () => {
@@ -2887,3 +2887,145 @@ test('152. Enrutamiento Presupuestal Interno Silencioso y Códigos Institucional
 });
 
 
+
+test('153. Portada "Pieza Primero, Cero Rollo": Hero sin Párrafo Redundante y Chips de Piezas Clicables (Decisión 1-C+)', () => {
+  const indexEs = fs.readFileSync(path.join(siteRoot, 'src/pages/index.astro'), 'utf-8');
+  const indexEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/index.astro'), 'utf-8');
+
+  // Erradicación de <p class="hero-lead"> redundante
+  assert.ok(!indexEs.includes('class="hero-lead"'), 'index.astro no debe contener <p class="hero-lead"> redundante');
+  assert.ok(!indexEn.includes('class="hero-lead"'), 'en/index.astro no debe contener <p class="hero-lead"> redundante');
+  assert.ok(!indexEs.includes('Seleccione su área de suministro en planta:'), 'index.astro no debe repetir el párrafo introductorio en el hero');
+  assert.ok(!indexEn.includes('Select your plant supply area:'), 'en/index.astro no debe repetir el párrafo introductorio en el hero');
+
+  // Chips de piezas clicables (.part-chip) dentro de las 3 puertas
+  assert.ok(indexEs.includes('class="part-chip"'), 'index.astro debe incluir chips clicables .part-chip');
+  assert.ok(indexEn.includes('class="part-chip"'), 'en/index.astro debe incluir chips clicables .part-chip');
+  assert.ok(indexEs.includes('href="/bombeo/#como-se-arma-una-bomba"'), 'Puerta 2 ES debe enlazar directo al Reporte de Armado');
+  assert.ok(indexEn.includes('href="/en/pumping/#how-a-slurry-pump-is-assembled"'), 'Door 2 EN debe enlazar directo al Assembly Report');
+});
+
+test('154. Franja Superior de Selección Rápida de Pieza (<QuickPartSelectorStrip />) en Bombeo y Cotizador (Decisión 8-C+)', () => {
+  const stripPath = path.join(siteRoot, 'src/components/QuickPartSelectorStrip.astro');
+  assert.ok(fs.existsSync(stripPath), 'QuickPartSelectorStrip.astro debe existir');
+  const stripContent = fs.readFileSync(stripPath, 'utf-8');
+
+  assert.ok(stripContent.includes('¿Ya sabe qué pieza busca?'), 'QuickPartSelectorStrip debe preguntar ¿Ya sabe qué pieza busca?');
+  assert.ok(stripContent.includes('Already know the part you need?'), 'QuickPartSelectorStrip debe incluir versión en inglés');
+  assert.ok(stripContent.includes('data-quick-part-card') && stripContent.includes('data-pieza='), 'QuickPartSelectorStrip debe incluir atributos data-quick-part-card y data-pieza');
+
+  // Montada en /bombeo/, /en/pumping/, /cotizar/ y /en/quote/
+  for (const pageRel of [
+    'src/pages/bombeo/index.astro',
+    'src/pages/en/pumping/index.astro',
+    'src/pages/cotizar.astro',
+    'src/pages/en/quote.astro'
+  ]) {
+    const pageContent = fs.readFileSync(path.join(siteRoot, pageRel), 'utf-8');
+    assert.ok(pageContent.includes('<QuickPartSelectorStrip'), `${pageRel} debe montar <QuickPartSelectorStrip`);
+  }
+});
+
+test('155. Reporte Interactivo de Armado de Bomba (<PumpAssemblyReport />) con 5 Estaciones, Bifurcación Wet-End y Calibración Axial (Decisión 3-C+)', () => {
+  const reportPath = path.join(siteRoot, 'src/components/PumpAssemblyReport.astro');
+  assert.ok(fs.existsSync(reportPath), 'PumpAssemblyReport.astro debe existir');
+  const report = fs.readFileSync(reportPath, 'utf-8');
+
+  // Conmutador de rama constructiva (Ambos / Alto Cromo ≥650 HB / Hule o Poliuretano)
+  assert.ok(report.includes('data-assembly-branch-btn="all"'), 'Debe incluir botón para ver ambas ramas');
+  assert.ok(report.includes('data-assembly-branch-btn="alto_cromo_cr27"'), 'Debe incluir botón de rama Alto Cromo ≥650 HB');
+  assert.ok(report.includes('data-assembly-branch-btn="hule_natural"'), 'Debe incluir botón de rama Hule / Poliuretano');
+
+  // Diferencias reales de armado por material y calibración de claro frontal
+  assert.ok(report.includes('FPL Insert'), 'Debe detallar el inserto metálico FPL Insert en la rama Alto Cromo');
+  assert.ok(report.includes('FPL') && report.includes('CPL'), 'Debe detallar las camisas bipartidas FPL + CPL en la rama Hule/Poliuretano');
+  assert.ok(report.includes('0.5') && report.includes('1.0 mm'), 'Debe especificar la calibración pos-ensamble del claro axial frontal δ = 0.5–1.0 mm');
+  assert.ok(report.includes("pos: '01'") && report.includes("pos: '14'"), 'Debe incluir la tabla BOM interactiva de 14 componentes');
+
+  // Montado en /bombeo/ y /en/pumping/
+  const bEs = fs.readFileSync(path.join(siteRoot, 'src/pages/bombeo/index.astro'), 'utf-8');
+  const bEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/pumping/index.astro'), 'utf-8');
+  assert.ok(bEs.includes('<PumpAssemblyReport lang="es" />'), 'bombeo/index.astro debe montar <PumpAssemblyReport lang="es" />');
+  assert.ok(bEn.includes('<PumpAssemblyReport lang="en" />'), 'en/pumping/index.astro debe montar <PumpAssemblyReport lang="en" />');
+});
+
+test('156. Muestrario Visual de Kits de Desgaste por Material: Alto Cromo (≥650 HB), Hule Natural y Poliuretano (Decisión 4-C+)', () => {
+  const diag = fs.readFileSync(path.join(siteRoot, 'src/components/TechnicalDiagrams.astro'), 'utf-8');
+  assert.ok(diag.includes("diagram === 'material_kit_grid'"), 'TechnicalDiagrams.astro debe implementar la lámina material_kit_grid');
+
+  const bEs = fs.readFileSync(path.join(siteRoot, 'src/pages/bombeo/index.astro'), 'utf-8');
+  const bEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/pumping/index.astro'), 'utf-8');
+  assert.ok(bEs.includes('diagram="material_kit_grid"'), 'bombeo/index.astro debe mostrar lámina material_kit_grid');
+  assert.ok(bEn.includes('diagram="material_kit_grid"'), 'en/pumping/index.astro debe mostrar lámina material_kit_grid');
+  assert.ok(bEs.includes('material=alto_cromo_cr27') && bEs.includes('material=hule_natural') && bEs.includes('material=poliuretano'), 'bombeo/index.astro debe enlazar los 3 materiales al cotizador');
+  assert.ok(bEn.includes('material=alto_cromo_cr27') && bEn.includes('material=hule_natural') && bEn.includes('material=poliuretano'), 'en/pumping/index.astro debe enlazar los 3 materiales al cotizador');
+});
+
+test('157. Configuraciones de Transmisión V-Belt (CV, ZVZ, CRZ, DC) y Lámina de Cuello de Succión en Skid y Equipos (Decisiones 2-C+ y 5-C+)', () => {
+  const diag = fs.readFileSync(path.join(siteRoot, 'src/components/TechnicalDiagrams.astro'), 'utf-8');
+  assert.ok(diag.includes("diagram === 'drive_arrangements'"), 'TechnicalDiagrams.astro debe implementar la lámina drive_arrangements');
+  assert.ok(diag.includes("diagram === 'suction_throatbush'"), 'TechnicalDiagrams.astro debe implementar la lámina suction_throatbush');
+
+  const skidEs = fs.readFileSync(path.join(siteRoot, 'src/pages/bombeo/skid.astro'), 'utf-8');
+  const skidEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/pumping/skid.astro'), 'utf-8');
+  assert.ok(skidEs.includes('diagram="drive_arrangements"'), 'bombeo/skid.astro debe mostrar lámina drive_arrangements');
+  assert.ok(skidEn.includes('diagram="drive_arrangements"'), 'en/pumping/skid.astro debe mostrar lámina drive_arrangements');
+
+  for (const code of ['transmision=CV', 'transmision=ZVZ', 'transmision=CRZ', 'transmision=DC']) {
+    assert.ok(skidEs.includes(code), `bombeo/skid.astro debe incluir enlace para arreglo ${code}`);
+    assert.ok(skidEn.includes(code), `en/pumping/skid.astro debe incluir enlace para arreglo ${code}`);
+  }
+
+  const revEs = fs.readFileSync(path.join(siteRoot, 'src/pages/bombeo/revestimientos.astro'), 'utf-8');
+  const revEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/pumping/liners.astro'), 'utf-8');
+  assert.ok(revEs.includes('diagram="suction_throatbush"'), 'bombeo/revestimientos.astro debe mostrar lámina suction_throatbush');
+  assert.ok(revEn.includes('diagram="suction_throatbush"'), 'en/pumping/liners.astro debe mostrar lámina suction_throatbush');
+});
+
+test('158. Invariante de Erradicación Total (0 Ocurrencias) de Enlaces Huérfanos /#rfq y /en/#rfq en Todo src/ (Decisión 6-C+)', () => {
+  const dirsToScan = ['src/pages', 'src/components', 'src/layouts'];
+  for (const dirRel of dirsToScan) {
+    const fullDir = path.join(siteRoot, dirRel);
+    const entries = fs.readdirSync(fullDir, { recursive: true });
+    for (const entry of entries) {
+      if (typeof entry === 'string' && entry.endsWith('.astro')) {
+        const content = fs.readFileSync(path.join(fullDir, entry), 'utf-8');
+        assert.ok(
+          !content.includes('href="/#rfq') && !content.includes("href='/#rfq"),
+          `Archivo ${dirRel}/${entry} no debe contener enlaces huérfanos hacia /#rfq`
+        );
+        assert.ok(
+          !content.includes('href="/en/#rfq') && !content.includes("href='/en/#rfq"),
+          `Archivo ${dirRel}/${entry} no debe contener enlaces huérfanos hacia /en/#rfq`
+        );
+      }
+    }
+  }
+});
+
+test('159. Hidratación Completa de pieza, material, transmision y estacion en QuoteWizard.astro y workbenchBus.js (Decisiones 4-C+, 5-C+, 8-C+)', async () => {
+  const { parseUrlContextParams } = await import('../src/scripts/workbenchBus.js');
+  const parsed = parseUrlContextParams('?circuito=bombeo&equipo=solo_impulsor&pieza=impulsor_5_alabes&material=alto_cromo_cr27&transmision=ZVZ&estacion=3&serie=6x4#rfq');
+
+  assert.equal(parsed.pieza, 'impulsor_5_alabes');
+  assert.equal(parsed.material, 'alto_cromo_cr27');
+  assert.equal(parsed.transmision, 'ZVZ');
+  assert.equal(parsed.estacion, '3');
+
+  const wizard = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
+  assert.ok(wizard.includes('id="wb-pump-material"'), 'QuoteWizard debe incluir selector #wb-pump-material');
+  assert.ok(wizard.includes('id="wb-drive-arrangement"'), 'QuoteWizard debe incluir selector #wb-drive-arrangement');
+  assert.ok(wizard.includes('[data-quick-part-card]'), 'QuoteWizard debe sincronizar la selección visual de [data-quick-part-card]');
+});
+
+test('160. Redirección Defensiva en BaseLayout.astro para Bookmarks Legados /#rfq y /en/#rfq (Decisión 6-C+)', () => {
+  const baseLayout = fs.readFileSync(path.join(siteRoot, 'src/layouts/BaseLayout.astro'), 'utf-8');
+  assert.ok(
+    baseLayout.includes("hash.indexOf('#rfq') === 0"),
+    'BaseLayout.astro debe interceptar hashes #rfq en la portada y redirigir defensivamente hacia /cotizar/ o /en/quote/'
+  );
+  assert.ok(
+    baseLayout.includes("window.location.replace(destBase + hashQuery + '#rfq')"),
+    'BaseLayout.astro debe preservar query params al redirigir hacia /cotizar/ o /en/quote/'
+  );
+});

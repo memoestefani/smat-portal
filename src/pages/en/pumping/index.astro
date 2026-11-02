@@ -4,6 +4,8 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CircuitNavigator from '../../../components/CircuitNavigator.astro';
 import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
 import SharePurchasing from '../../../components/SharePurchasing.astro';
+import QuickPartSelectorStrip from '../../../components/QuickPartSelectorStrip.astro';
+import PumpAssemblyReport from '../../../components/PumpAssemblyReport.astro';
 import atomicParts from '../../../../data/atomic_parts.json';
 ---
 
@@ -16,25 +18,78 @@ import atomicParts from '../../../../data/atomic_parts.json';
     <div class="container">
       <span class="badge badge-copper">DOOR 2 • PLANT OPERATIONS, MAINTENANCE & SPARES</span>
       <h1>Slurry Pumps & Spare Parts</h1>
-      <p style="font-size: 1.08rem; max-width: 760px; color: var(--smat-text-secondary);">
-        Horizontal centrifugal replacement slurry pumps, complete assembled <strong>Bearing Assembly / Housing</strong> units, and wet-end <strong>Spare Parts</strong> supplied in balanced wear lots (<strong>5 impellers, 5 throatbushes, and 4 volute liners</strong>) in <strong>High Chrome (≥650 HB), Rubber, and Polyurethane</strong>.
+      <p style="font-size: 1.04rem; max-width: 760px; color: var(--smat-text-secondary);">
+        Direct 1-click selection of wet-end wear parts in balanced <strong>5-5-4</strong> lots (<strong>High Chrome ≥650 HB, Natural Rubber, and Polyurethane</strong>), complete <strong>Bearing Assembly</strong> cartridges, and our 5-station pump assembly report.
       </p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
+      <QuickPartSelectorStrip lang="en" showAssemblyLink={true} />
+
       <TechnicalDiagrams diagram="pump" lang="en" />
 
       <div class="wet-lot-callout">
         <div>
           <strong>Wet-End Lot Ordering (5 – 5 – 4)</strong>
           <p>
-            Plants order wet-end contact parts in balanced lots matched to component wear rates (for example: <strong>5 impellers, 5 throatbushes, and 4 volute liners</strong>) in High Chrome, Rubber, or Polyurethane. We do not sell mechanical seals due to the highly corrosive and abrasive nature of mineral slurries; we supply centrifugal expellers and stuffing boxes.
+            Wet-end contact parts are scheduled in balanced lots matched to actual wear rates (<strong>5 impellers, 5 throatbushes, and 4 volute liners</strong>) in High Chrome, Rubber, or Polyurethane, with dry centrifugal expeller or stuffing box sealing.
           </p>
         </div>
-        <a href="/en/quote/?equipo=revestimientos#rfq" class="btn btn-primary">Quote Wet-End Lot →</a>
+        <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=lote_554#rfq" class="btn btn-primary">Quote Wet-End Lot →</a>
       </div>
+
+      <!-- SPARE PARTS BY MATERIAL SHOWCASE (DECISION 4-C+) -->
+      <div class="material-kits-showcase" id="kits-by-material" style="margin-top: 2.25rem;">
+        <span class="section-eyebrow">VISUAL IDENTIFICATION BY METALLURGY & ELASTOMER</span>
+        <h2 style="margin-bottom: 0.35rem;">Spare Parts Kits by Material: High Chrome (≥650 HB), Natural Rubber & Polyurethane</h2>
+        <p style="color: var(--smat-text-secondary); margin-bottom: 1rem;">
+          Compare the physical geometry of each wet-end kit: 1-piece monolithic High Chrome Cr27% volute vs. split two-half liners (FPL + CPL) in vulcanized Natural Rubber or cast Polyurethane.
+        </p>
+        <TechnicalDiagrams diagram="material_kit_grid" lang="en" />
+
+        <div class="grid-3-atomic" style="margin-top: 1rem;">
+          <article class="card atomic-silo-card">
+            <span class="badge badge-copper" style="align-self: flex-start; margin-bottom: 0.5rem;">HIGH CHROME Cr27% • ≥650 HB</span>
+            <h3>Metallic Kit (Primary Mill & Cyclone Feed)</h3>
+            <p style="font-size: 0.86rem; color: var(--smat-text-secondary);">
+              <strong>Kit parts:</strong> Monolithic Volute + 5-Vane Impeller + Throatbush + FPL Insert.<br/>
+              <strong>Operating envelope:</strong> Coarse impact d₅₀ &gt; 6 mm, v_tip ≤ 32 m/s, pH 4.0–12.0.
+            </p>
+            <div style="margin-top: auto; padding-top: 0.75rem;">
+              <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=lote_554&material=alto_cromo_cr27#rfq" class="btn btn-primary" style="width: 100%; text-align: center;">Quote High Chrome Kit →</a>
+            </div>
+          </article>
+
+          <article class="card atomic-silo-card">
+            <span class="badge badge-copper" style="align-self: flex-start; margin-bottom: 0.5rem;">NATURAL RUBBER • 55–65 SHORE A</span>
+            <h3>Elastomer Kit (Fine Tailings & Flotation)</h3>
+            <p style="font-size: 0.86rem; color: var(--smat-text-secondary);">
+              <strong>Kit parts:</strong> Cover Plate Liner (CPL) + Frame Plate Liner (FPL) with steel backing + Impeller + Throatbush.<br/>
+              <strong>Operating envelope:</strong> Fine slurry d₅₀ ≤ 5 mm, v_tip ≤ 27.5 m/s, pH 1.5–11.0.
+            </p>
+            <div style="margin-top: auto; padding-top: 0.75rem;">
+              <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=lote_554&material=hule_natural#rfq" class="btn btn-primary" style="width: 100%; text-align: center;">Quote Natural Rubber Kit →</a>
+            </div>
+          </article>
+
+          <article class="card atomic-silo-card">
+            <span class="badge badge-copper" style="align-self: flex-start; margin-bottom: 0.5rem;">POLYURETHANE • 85–95 SHORE A</span>
+            <h3>Polyurethane Kit (Cyclones & Reagents)</h3>
+            <p style="font-size: 0.86rem; color: var(--smat-text-secondary);">
+              <strong>Kit parts:</strong> Yellow/Red Polyurethane CPL + FPL Liners + PU Impeller + PU Throatbush.<br/>
+              <strong>Operating envelope:</strong> Sharp particles d₅₀ ≤ 8 mm, reagent, oil, and froth resistance.
+            </p>
+            <div style="margin-top: auto; padding-top: 0.75rem;">
+              <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=lote_554&material=poliuretano#rfq" class="btn btn-primary" style="width: 100%; text-align: center;">Quote Polyurethane Kit →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- HOW A SLURRY PUMP IS ASSEMBLED REPORT (DECISION 3-C+) -->
+      <PumpAssemblyReport lang="en" />
 
       <h2 style="margin-top: 2rem;">Replacement Slurry Pumps & Critical Spare Parts</h2>
       <div class="grid-2" style="margin-top: 1.5rem;">

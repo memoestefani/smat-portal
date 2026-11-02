@@ -71,11 +71,50 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
               <li><strong>Flotación y Remolienda:</strong> Revestimientos en Hule o Poliuretano para pulpas finas y reactivos corrosivos.</li>
               <li><strong>Envío de Jales y Espesadores:</strong> Operación continua en serie o etapa simple con alta carga estática.</li>
             </ul>
-            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light);">
-              <a href="/#rfq?equipo=skid_bomba" class="btn btn-primary" style="width: 100%;">Cotizar Bomba para Lodos →</a>
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light); display: flex; flex-direction: column; gap: 0.6rem;">
+              <a href="/cotizar/?equipo=skid_bomba#rfq" class="btn btn-primary" style="width: 100%; text-align: center;">Cotizar Bomba para Lodos →</a>
+              <a href="/bombeo/#como-se-arma-una-bomba" class="btn btn-outline" style="width: 100%; text-align: center;">Ver Reporte de Armado (14 Piezas) →</a>
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- ARREGLOS DE TRANSMISIÓN EN SKID (DECISIÓN 5-C+ • REF 3 Y 5 DON MANUEL) -->
+      <div id="arreglos-transmision" style="margin-top: 2.5rem;">
+        <h2>Arreglos de Transmisión y Montaje en Skid (CV / ZVZ / CRZ / DC)</h2>
+        <p style="color: var(--smat-text-secondary); max-width: 760px;">
+          Seleccione el arreglo motriz según el espacio disponible en planta y la vida nominal L₁₀h (ISO 281) del <strong>Bearing Assembly</strong>:
+        </p>
+        <TechnicalDiagrams diagram="drive_arrangements" lang="es" />
+
+        <div class="grid-2" style="margin-top: 1rem;">
+          <div class="card">
+            <h3>Arreglo CV (Motor Superior sobre Bastidor)</h3>
+            <p>Motor montado en mesa superior sobre el Bearing Assembly con transmisión por bandas en V y guarda perimetral. Minimiza huella en piso.</p>
+            <a href="/cotizar/?equipo=skid_bomba&transmision=CV#rfq" class="btn btn-primary">Cotizar Skid Arreglo CV →</a>
+          </div>
+          <div class="card">
+            <h3>Arreglo ZVZ (Motor Trasero Elevado)</h3>
+            <p>Motor montado en pedestal trasero elevado sobre base común. Aleja el motor eléctrico de salpicaduras en cajones de bombeo.</p>
+            <a href="/cotizar/?equipo=skid_bomba&transmision=ZVZ#rfq" class="btn btn-primary">Cotizar Skid Arreglo ZVZ →</a>
+          </div>
+          <div class="card">
+            <h3>Arreglo CRZ (Motor Lateral Paralelo)</h3>
+            <p>Motor y bomba lado a lado sobre skid estructural pesado con poleas y bandas en V. Facilita maniobras con grúa viajera.</p>
+            <a href="/cotizar/?equipo=skid_bomba&transmision=CRZ#rfq" class="btn btn-primary">Cotizar Skid Arreglo CRZ →</a>
+          </div>
+          <div class="card">
+            <h3>Arreglo DC (Acoplamiento Directo en Línea)</h3>
+            <p>Acoplamiento colineal flexible (E_belt = 0 N de carga radial sobre eje), maximizando la vida L₁₀h de los rodamientos.</p>
+            <a href="/cotizar/?equipo=skid_bomba&transmision=DC#rfq" class="btn btn-primary">Cotizar Skid Arreglo DC →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOCA DE SUCCIÓN Y CALIBRACIÓN DE CLARO AXIAL (REF 4 DON MANUEL) -->
+      <div style="margin-top: 2.5rem;">
+        <h2>Geometría de Succión, Throatbush y Calibración de Claro Axial (δ = 0.5–1.0 mm)</h2>
+        <TechnicalDiagrams diagram="suction_throatbush" lang="es" />
       </div>
 
       <SharePurchasing

@@ -1,0 +1,817 @@
+---
+// src/components/PumpAssemblyReport.astro
+// "Reporte de cómo se arma una bomba" (Secuencia de 5 Estaciones + Despiece Bifurcado Metal vs. Elastómero + BOM de 14 Piezas)
+// Basado en primeros principios (Gulich Q_rec ∝ δ^1.5, ISO 281 L10h, ASTM A532 Cr27% ≥650 HB).
+
+interface Props {
+  lang?: 'es' | 'en';
+}
+
+const { lang = 'es' } = Astro.props;
+const isEs = lang === 'es';
+const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
+const primaryId = isEs ? 'como-se-arma-una-bomba' : 'how-a-slurry-pump-is-assembled';
+const secondaryId = isEs ? 'how-a-slurry-pump-is-assembled' : 'como-se-arma-una-bomba';
+
+const stations = [
+  {
+    code: 'EST-01',
+    num: '01',
+    branch: 'common',
+    title: isEs ? 'Extremo Motriz (Bearing Assembly)' : 'Drive End (Bearing Assembly)',
+    sub: isEs
+      ? 'Cartucho de rodamientos cónicos espalda con espalda (ISO 281), eje de acero aleado y sellos de laberinto en soporte base.'
+      : 'Back-to-back tapered roller bearing cartridge (ISO 281), alloy steel shaft, and labyrinth seals mounted on pedestal.',
+    tolerance: isEs ? 'Juego axial de banco: 0.05–0.10 mm' : 'Bench axial end-play: 0.05–0.10 mm'
+  },
+  {
+    code: 'EST-02',
+    num: '02',
+    branch: 'common',
+    title: isEs ? 'Sellado Dinámico (Expeller Seco / Prensaestopa)' : 'Dynamic Shaft Seal (Dry Expeller / Stuffing Box)',
+    sub: isEs
+      ? 'Montaje de camisa protectora de eje, anillo expulsor (Expeller Ring) y turbina centrífuga seca (cero agua de sello) o prensaestopa.'
+      : 'Shaft sleeve installation, expeller ring / stuffing box housing, and dry centrifugal expeller vane wheel (zero gland water).',
+    tolerance: isEs ? 'Excentricidad radial de camisa ≤ 0.05 mm' : 'Shaft sleeve radial runout ≤ 0.05 mm'
+  },
+  {
+    code: 'EST-03',
+    num: '03',
+    branch: 'bifurcated',
+    title: isEs ? 'Bifurcación de Contacto Húmedo (Lote 5-5-4)' : 'Wet-End Bifurcation (5-5-4 Wear Kit)',
+    sub: isEs
+      ? 'Rama A (Alto Cromo ≥650 HB): FPL Insert + Impulsor 5 Álabes + Voluta Monolítica. Rama B (Hule / PU): Liner Posterior FPL + Impulsor + Liner Frontal CPL.'
+      : 'Branch A (High Chrome ≥650 HB): FPL Insert + 5-Vane Impeller + Monolithic Volute. Branch B (Rubber / PU): Rear Liner FPL + Impeller + Front Liner CPL.',
+    tolerance: isEs ? 'Roscado de impulsor con anillo de liberación rápida' : 'Impeller boss thread with quick-release collar'
+  },
+  {
+    code: 'EST-04',
+    num: '04',
+    branch: 'common',
+    title: isEs ? 'Cierre de Succión (Throatbush y Cover Plate)' : 'Suction Closure (Throatbush & Cover Plate)',
+    sub: isEs
+      ? 'Asiento del anillo de desgaste frontal (Throatbush) en la tapa de succión (Cover Plate) y apriete cruzado de pernos pasantes.'
+      : 'Seating the front wear ring (Throatbush) into the suction Cover Plate and cross-pattern torquing of through-bolts.',
+    tolerance: isEs ? 'Apriete simétrico en cruz de carcasa bipartida' : 'Cross-pattern clamp bolt torque sequence'
+  },
+  {
+    code: 'EST-05',
+    num: '05',
+    branch: 'common',
+    title: isEs ? 'Calibración Post-Armado de Claro Axial (δ = 0.5–1.0 mm)' : 'Post-Assembly Front Axial Clearance Calibration (δ = 0.5–1.0 mm)',
+    sub: isEs
+      ? 'Con la bomba cerrada, se desplaza el Bearing Assembly hacia succión con el tornillo tensor hasta tocar el Throatbush y se retrocede 0.5 a 1.0 mm.'
+      : 'With casing bolted shut, advance the Bearing Cartridge via the adjusting screw until impeller touches Throatbush, then retract 0.5 to 1.0 mm.',
+    tolerance: isEs ? 'δ_frontal = 0.5–1.0 mm (evita recirculación Q_rec ∝ δ^1.5)' : 'δ_frontal = 0.5–1.0 mm (prevents Q_rec ∝ δ^1.5 recirculation)'
+  }
+];
+
+const bomItems = [
+  {
+    pos: '01',
+    station: 'EST-01',
+    branch: 'common',
+    branchLabel: isEs ? 'Común' : 'Common',
+    name: isEs ? 'Soporte Base (Frame / Pedestal)' : 'Pump Frame / Pedestal Base',
+    spec: isEs ? 'Cuna maquinada con tornillo de ajuste axial externo' : 'Machined cradle with external axial adjusting screw',
+    equipo: 'soporte_rodamiento',
+    pieza: 'frame_pedestal',
+    material: 'acero_4140_iso281'
+  },
+  {
+    pos: '02',
+    station: 'EST-01',
+    branch: 'common',
+    branchLabel: isEs ? 'Común' : 'Common',
+    name: isEs ? 'Cartucho Bearing Assembly (Eje + Rodamientos ISO 281)' : 'Bearing Assembly Cartridge (Shaft + ISO 281 Bearings)',
+    spec: isEs ? 'Rodamientos cónicos espalda con espalda + retenes laberinto' : 'Back-to-back tapered roller bearings + labyrinth seals',
+    equipo: 'soporte_rodamiento',
+    pieza: 'bearing_assembly',
+    material: 'acero_4140_iso281'
+  },
+  {
+    pos: '03',
+    station: 'EST-02',
+    branch: 'common',
+    branchLabel: isEs ? 'Común' : 'Common',
+    name: isEs ? 'Camisa Protectora de Eje (Shaft Sleeve) + O-Rings' : 'Hardened Shaft Sleeve + Seal O-Rings',
+    spec: isEs ? 'Acero endurecido / recubrimiento cerámico en zona de sello' : 'Hardened alloy / ceramic-coated sleeve in seal zone',
+    equipo: 'sello_expulsor',
+    pieza: 'shaft_sleeve',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '04',
+    station: 'EST-02',
+    branch: 'common',
+    branchLabel: isEs ? 'Común' : 'Common',
+    name: isEs ? 'Caja de Sello / Anillo Expulsor (Expeller Ring / Stuffing Box)' : 'Expeller Ring / Stuffing Box Housing',
+    spec: isEs ? 'Cámara secundaria con grasera o anillo linterna' : 'Secondary seal chamber with grease port or lantern ring',
+    equipo: 'sello_expulsor',
+    pieza: 'expeller_ring',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '05',
+    station: 'EST-02',
+    branch: 'common',
+    branchLabel: isEs ? 'Común' : 'Common',
+    name: isEs ? 'Expulsor Centrífugo Seco (Expeller)' : 'Centrifugal Dry Expeller',
+    spec: isEs ? 'Turbina auxiliar que abate presión en estopera sin agua externa' : 'Auxiliary rotor that relieves stuffing box pressure without water',
+    equipo: 'sello_expulsor',
+    pieza: 'expeller_sello',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '06',
+    station: 'EST-03',
+    branch: 'common',
+    branchLabel: isEs ? 'Común' : 'Common',
+    name: isEs ? 'Carcasa Lado Soporte (Frame Plate)' : 'Frame Plate (Drive-Side Outer Casing)',
+    spec: isEs ? 'Mitad estructural posterior en hierro nodular con espárragos' : 'Rear ductile iron structural half-casing with mounting studs',
+    equipo: 'skid_bomba',
+    pieza: 'frame_plate',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '07',
+    station: 'EST-03',
+    branch: 'alto_cromo_cr27',
+    branchLabel: isEs ? 'Rama A • Alto Cromo' : 'Branch A • High Chrome',
+    name: isEs ? 'Plato de Desgaste Posterior (Frame Plate Liner Insert — FPL Insert)' : 'Frame Plate Liner Insert (FPL Insert — Rear Wear Plate)',
+    spec: isEs ? 'Aleación Cr27% ASTM A532 (≥650 HB) con pernos posteriores' : 'ASTM A532 Cr27% (≥650 HB) rear wear plate with studs',
+    equipo: 'bombeo_hule_cromo',
+    pieza: 'fpl_insert',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '08',
+    station: 'EST-03',
+    branch: 'hule_natural',
+    branchLabel: isEs ? 'Rama B • Hule / PU' : 'Branch B • Rubber / PU',
+    name: isEs ? 'Forro Posterior Vulcanizado (Frame Plate Liner — FPL)' : 'Molded Frame Plate Liner (FPL — Rubber or Polyurethane)',
+    spec: isEs ? 'Hule Natural (55–65 Shore A) o Poliuretano con alma de acero' : 'Natural Rubber (55–65 Shore A) or Polyurethane with steel backing',
+    equipo: 'bombeo_hule_cromo',
+    pieza: 'liner_fpl',
+    material: 'hule_natural'
+  },
+  {
+    pos: '09',
+    station: 'EST-03',
+    branch: 'common',
+    branchLabel: isEs ? 'Ambas Ramas (5-5-4)' : 'Both Branches (5-5-4)',
+    name: isEs ? 'Impulsor Cerrado de 5 Álabes (Closed Impeller)' : '5-Vane Closed Slurry Impeller',
+    spec: isEs ? 'Con álabes expulsores posteriores; Alto Cromo ≥650 HB, Hule o PU' : 'With back pump-out vanes; High Chrome ≥650 HB, Rubber, or PU',
+    equipo: 'impulsor_bomba',
+    pieza: 'impulsor_5_alabes',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '10',
+    station: 'EST-03',
+    branch: 'alto_cromo_cr27',
+    branchLabel: isEs ? 'Rama A • Alto Cromo' : 'Branch A • High Chrome',
+    name: isEs ? 'Voluta Monolítica (Metal Volute Liner)' : 'Monolithic High-Chrome Volute Liner',
+    spec: isEs ? 'Caracol envolvente de 1 pieza en Alto Cromo Cr27% para molienda SAG' : '1-piece Cr27% high-chrome scroll liner for coarse primary duty',
+    equipo: 'bombeo_hule_cromo',
+    pieza: 'voluta_liners',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '11',
+    station: 'EST-03',
+    branch: 'hule_natural',
+    branchLabel: isEs ? 'Rama B • Hule / PU' : 'Branch B • Rubber / PU',
+    name: isEs ? 'Forro Frontal Lado Succión (Cover Plate Liner — CPL)' : 'Cover Plate Liner (CPL — Suction-Side Split Liner)',
+    spec: isEs ? 'Mitad frontal en Hule Natural o Poliuretano que cierra la voluta con el FPL' : 'Front elastomer half-liner that mates with FPL to form the volute',
+    equipo: 'bombeo_hule_cromo',
+    pieza: 'liner_cpl',
+    material: 'hule_natural'
+  },
+  {
+    pos: '12',
+    station: 'EST-04',
+    branch: 'common',
+    branchLabel: isEs ? 'Ambas Ramas (5-5-4)' : 'Both Branches (5-5-4)',
+    name: isEs ? 'Bocina / Anillo de Desgaste de Succión (Throatbush)' : 'Suction Wear Ring (Throatbush)',
+    spec: isEs ? 'Cara cónica frontal de sacrificio; controla recirculación con el impulsor' : 'Conical front wear face; controls suction eye recirculation',
+    equipo: 'bombeo_hule_cromo',
+    pieza: 'throatbush',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '13',
+    station: 'EST-04',
+    branch: 'common',
+    branchLabel: isEs ? 'Común' : 'Common',
+    name: isEs ? 'Tapa Carcasa Lado Succión + Pernos (Cover Plate & Clamp Bolts)' : 'Suction Cover Plate & Casing Clamp Bolts',
+    spec: isEs ? 'Mitad frontal bridada con orejas de izaje y espárragos pasantes' : 'Flanged suction outer casing half with lifting lugs and clamp bolts',
+    equipo: 'skid_bomba',
+    pieza: 'cover_plate',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '14',
+    station: 'EST-05',
+    branch: 'common',
+    branchLabel: isEs ? 'Lote Completo' : 'Complete Kit',
+    name: isEs ? 'Lote Húmedo Sincronizado 5-5-4 (5 Juegos Liners + 5 Impulsores + 4 Sellos)' : 'Synchronized 5-5-4 Wet-End Kit (5 Liner Sets + 5 Impellers + 4 Seals)',
+    spec: isEs ? 'Suministro programado por campaña con calibración δ = 0.5–1.0 mm' : 'Campaign-synchronized wet-end lot with δ = 0.5–1.0 mm calibration',
+    equipo: 'bombeo_hule_cromo',
+    pieza: 'lote_554',
+    material: 'alto_cromo_cr27'
+  }
+];
+---
+
+<section
+  id={primaryId}
+  class="assembly-report"
+  data-pump-assembly-report
+  aria-labelledby="assembly-report-heading"
+>
+  <span id={secondaryId} class="assembly-report__anchor-alias" aria-hidden="true"></span>
+
+  <header class="assembly-report__header">
+    <div class="assembly-report__title-group">
+      <span class="assembly-report__eyebrow">
+        {isEs
+          ? 'INGENIERÍA DE CAMPO • REPORTE TÉCNICO DE ARMADO Y DESPIECE (14 COMPONENTES)'
+          : 'FIELD ENGINEERING • SLURRY PUMP ASSEMBLY & EXPLODED BOM REPORT (14 PARTS)'}
+      </span>
+      <h2 id="assembly-report-heading" class="assembly-report__title">
+        {isEs
+          ? 'Reporte de cómo se arma una bomba para lodos (Secuencia de 5 Estaciones)'
+          : 'How a Heavy-Duty Slurry Pump is Assembled (5-Station Sequence)'}
+      </h2>
+      <p class="assembly-report__subtitle">
+        {isEs
+          ? 'Del cartucho motriz (Bearing Assembly) al cierre de succión y calibración axial frontal (δ = 0.5–1.0 mm). Seleccione la configuración de contacto húmedo para filtrar las piezas y cotizar en 1 clic:'
+          : 'From the Drive-End Bearing Cartridge to suction closure and front axial clearance calibration (δ = 0.5–1.0 mm). Select your wet-end configuration to filter parts and quote in 1 click:'}
+      </p>
+    </div>
+
+    <div class="assembly-report__controls">
+      <div class="assembly-report__branch-tabs" role="tablist" aria-label={isEs ? 'Rama de material de contacto húmedo' : 'Wet-end material branch'}>
+        <button
+          type="button"
+          role="tab"
+          aria-selected="true"
+          class="branch-tab is-active"
+          data-assembly-branch-btn="all"
+        >
+          {isEs ? 'Vista Dual (Cromo + Hule/PU)' : 'Dual View (Chrome + Rubber/PU)'}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected="false"
+          class="branch-tab"
+          data-assembly-branch-btn="alto_cromo_cr27"
+        >
+          {isEs ? 'Rama A: Alto Cromo (≥650 HB)' : 'Branch A: High Chrome (≥650 HB)'}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected="false"
+          class="branch-tab"
+          data-assembly-branch-btn="hule_natural"
+        >
+          {isEs ? 'Rama B: Hule Natural / Poliuretano' : 'Branch B: Natural Rubber / PU'}
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="assembly-report__print-btn"
+        onclick="window.print()"
+      >
+        {isEs ? 'Imprimir Reporte de Armado (PDF)' : 'Print Assembly Report (PDF)'}
+      </button>
+    </div>
+  </header>
+
+  <!-- Lámina Isométrica de Despiece Bifurcado (Estaciones 1 a 5) -->
+  <figure class="assembly-report__blueprint" role="img" aria-label={isEs ? 'Diagrama de despiece y secuencia de armado de bomba para lodos en 5 estaciones' : '5-station slurry pump exploded assembly blueprint'}>
+    <div class="assembly-report__blueprint-bar">
+      <span>
+        {isEs
+          ? 'SECUENCIA DE ENSAMBLE AXIAL: SUCCIÓN (IZQUIERDA) ◄─── EJE CENTRAL ───► EXTREMO MOTRIZ (DERECHA)'
+          : 'AXIAL ASSEMBLY SEQUENCE: SUCTION END (LEFT) ◄─── SHAFT AXIS ───► DRIVE END (RIGHT)'}
+      </span>
+      <span class="assembly-report__law-badge">
+        {isEs ? 'LEY DE CLARO AXIAL: Q_rec ∝ δ^1.5 (δ_óptimo = 0.5–1.0 mm)' : 'CLEARANCE LAW: Q_rec ∝ δ^1.5 (Optimal δ = 0.5–1.0 mm)'}
+      </span>
+    </div>
+
+    <svg viewBox="0 0 880 390" class="assembly-svg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="grid-assembly-v34" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
+        </pattern>
+      </defs>
+      <rect width="880" height="390" fill="url(#grid-assembly-v34)" />
+
+      <!-- Línea de eje central (Centerline) -->
+      <line x1="24" y1="196" x2="856" y2="196" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="10 5" />
+
+      <!-- ESTACIÓN 4 (Izquierda): Cierre de Succión (Cover Plate #13 + Throatbush #12) -->
+      <g transform="translate(22, 48)">
+        <rect x="0" y="0" width="162" height="288" rx="7" fill="#f8fafc" stroke="#0d78c6" stroke-width="1.8" />
+        <rect x="0" y="0" width="162" height="24" rx="7" fill="#0d78c6" />
+        <text x="81" y="16" text-anchor="middle" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#ffffff">{isEs ? 'EST-04 • SUCCIÓN' : 'EST-04 • SUCTION'}</text>
+        <!-- Cover Plate #13 -->
+        <rect x="14" y="48" width="54" height="192" rx="4" fill="#cbd5e1" stroke="#0f172a" stroke-width="2.2" />
+        <rect x="4" y="114" width="14" height="60" fill="#94a3b8" stroke="#0f172a" stroke-width="1.8" />
+        <text x="41" y="42" text-anchor="middle" font-family="SF Mono, monospace" font-size="8.5" font-weight="800" fill="#0f172a">#13 COVER</text>
+        <!-- Throatbush #12 -->
+        <path d="M 84 68 L 136 68 L 146 112 L 146 176 L 136 220 L 84 220 Z" fill="#dbeafe" stroke="#1e3a8a" stroke-width="2.2" />
+        <circle cx="115" cy="144" r="20" fill="#ffffff" stroke="#0d78c6" stroke-width="2" />
+        <text x="115" y="56" text-anchor="middle" font-family="SF Mono, monospace" font-size="8.5" font-weight="800" fill="#1e3a8a">#12 THROATBUSH</text>
+        <text x="81" y="256" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="700" fill="#0f172a">{isEs ? 'Anillo frontal de desgaste' : 'Suction front wear ring'}</text>
+        <text x="81" y="272" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="700" fill="#c25e00">{isEs ? 'Cara de ajuste δ_frontal' : 'Mating face for δ_frontal'}</text>
+      </g>
+
+      <!-- ESTACIÓN 5 (Franja de Calibración Axial entre Throatbush #12 e Impulsor #09) -->
+      <g transform="translate(190, 56)">
+        <rect x="0" y="0" width="56" height="272" rx="5" fill="#fffbeb" stroke="#d97706" stroke-width="2" stroke-dasharray="4 3" />
+        <text x="28" y="22" text-anchor="middle" font-family="SF Mono, monospace" font-size="9" font-weight="800" fill="#b45309">EST-05</text>
+        <line x1="28" y1="36" x2="28" y2="220" stroke="#d97706" stroke-width="2.5" stroke-dasharray="3 3" />
+        <rect x="4" y="112" width="48" height="46" rx="4" fill="#fef3c7" stroke="#b45309" stroke-width="1.5" />
+        <text x="28" y="131" text-anchor="middle" font-family="SF Mono, monospace" font-size="9" font-weight="800" fill="#92400e">δ_frontal</text>
+        <text x="28" y="147" text-anchor="middle" font-family="SF Mono, monospace" font-size="8.5" font-weight="800" fill="#b45309">0.5–1.0mm</text>
+        <text x="28" y="246" text-anchor="middle" font-family="SF Mono, monospace" font-size="7.5" font-weight="700" fill="#92400e">{isEs ? 'Calibración' : 'Clearance'}</text>
+        <text x="28" y="258" text-anchor="middle" font-family="SF Mono, monospace" font-size="7.5" font-weight="700" fill="#92400e">{isEs ? 'Post-Armado' : 'Calibration'}</text>
+      </g>
+
+      <!-- ESTACIÓN 3 (Centro): Bifurcación del Lote Húmedo 5-5-4 (Rama A Alto Cromo vs. Rama B Hule/PU) -->
+      <g transform="translate(252, 16)">
+        <!-- Caja Superior: Rama A Alto Cromo Cr27% (≥650 HB) -->
+        <g data-svg-branch="alto_cromo_cr27">
+          <rect x="0" y="0" width="286" height="172" rx="7" fill="#eff6ff" stroke="#1e3a8a" stroke-width="2" />
+          <rect x="0" y="0" width="286" height="24" rx="7" fill="#1e3a8a" />
+          <text x="143" y="16" text-anchor="middle" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#ffffff">
+            {isEs ? 'EST-03 RAMA A • ALTO CROMO Cr27% (≥650 HB)' : 'EST-03 BRANCH A • HIGH CHROME Cr27% (≥650 HB)'}
+          </text>
+          <!-- #10 Voluta Monolítica -->
+          <circle cx="58" cy="88" r="38" fill="#cbd5e1" stroke="#1e3a8a" stroke-width="2.4" />
+          <circle cx="58" cy="88" r="15" fill="#eff6ff" stroke="#1e3a8a" stroke-width="1.8" />
+          <rect x="46" y="38" width="24" height="14" fill="#94a3b8" stroke="#1e3a8a" stroke-width="2" />
+          <text x="58" y="142" text-anchor="middle" font-family="SF Mono, monospace" font-size="8.5" font-weight="800" fill="#1e3a8a">#10 VOLUTA METAL</text>
+          <text x="58" y="156" text-anchor="middle" font-family="SF Mono, monospace" font-size="7.5" font-weight="700" fill="#475569">{isEs ? 'Caracol 1 pieza' : '1-piece scroll'}</text>
+          <!-- #09 Impulsor 5 Álabes -->
+          <circle cx="152" cy="88" r="32" fill="#93c5fd" stroke="#1e3a8a" stroke-width="2.4" />
+          <circle cx="152" cy="88" r="10" fill="#1e3a8a" />
+          <text x="152" y="142" text-anchor="middle" font-family="SF Mono, monospace" font-size="8.5" font-weight="800" fill="#1e3a8a">#09 IMPULSOR 5V</text>
+          <text x="152" y="156" text-anchor="middle" font-family="SF Mono, monospace" font-size="7.5" font-weight="700" fill="#475569">{isEs ? 'Álabes expulsores' : 'Pump-out vanes'}</text>
+          <!-- #07 FPL Insert -->
+          <rect x="218" y="52" width="44" height="72" rx="6" fill="#dbeafe" stroke="#0d78c6" stroke-width="2.2" />
+          <text x="240" y="142" text-anchor="middle" font-family="SF Mono, monospace" font-size="8.5" font-weight="800" fill="#0d78c6">#07 FPL INSERT</text>
+          <text x="240" y="156" text-anchor="middle" font-family="SF Mono, monospace" font-size="7.5" font-weight="700" fill="#475569">{isEs ? 'Plato posterior' : 'Rear wear plate'}</text>
+        </g>
+
+        <!-- Caja Inferior: Rama B Hule Natural / Poliuretano (Liners Bipartidos CPL + FPL) -->
+        <g transform="translate(0, 186)" data-svg-branch="hule_natural">
+          <rect x="0" y="0" width="286" height="172" rx="7" fill="#f8fafc" stroke="#0f172a" stroke-width="2" />
+          <rect x="0" y="0" width="286" height="24" rx="7" fill="#0f172a" />
+          <text x="143" y="16" text-anchor="middle" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#ffffff">
+            {isEs ? 'EST-03 RAMA B • HULE NATURAL / POLIURETANO' : 'EST-03 BRANCH B • NATURAL RUBBER / POLYURETHANE'}
+          </text>
+          <!-- #11 Cover Plate Liner (CPL) -->
+          <path d="M 30 48 L 82 48 L 82 124 L 30 124 Z" fill="#1e293b" stroke="#475569" stroke-width="2.2" />
+          <circle cx="56" cy="86" r="14" fill="#f8fafc" />
+          <text x="56" y="142" text-anchor="middle" font-family="SF Mono, monospace" font-size="8.5" font-weight="800" fill="#0f172a">#11 LINER CPL</text>
+          <text x="56" y="156" text-anchor="middle" font-family="SF Mono, monospace" font-size="7.5" font-weight="700" fill="#475569">{isEs ? 'Mitad succión' : 'Suction half-liner'}</text>
+          <!-- #09 Impulsor Hule / PU -->
+          <circle cx="146" cy="86" r="30" fill="#facc15" stroke="#b45309" stroke-width="2.2" />
+          <circle cx="146" cy="86" r="9" fill="#0f172a" />
+          <text x="146" y="142" text-anchor="middle" font-family="SF Mono, monospace" font-size="8.5" font-weight="800" fill="#b45309">#09 IMPULSOR</text>
+          <text x="146" y="156" text-anchor="middle" font-family="SF Mono, monospace" font-size="7.5" font-weight="700" fill="#475569">{isEs ? 'Hule / PU / Cromo' : 'Rubber / PU / Cr27'}</text>
+          <!-- #08 Frame Plate Liner (FPL) -->
+          <path d="M 206 48 L 258 48 L 258 124 L 206 124 Z" fill="#334155" stroke="#0f172a" stroke-width="2.2" />
+          <circle cx="232" cy="86" r="12" fill="#cbd5e1" />
+          <text x="232" y="142" text-anchor="middle" font-family="SF Mono, monospace" font-size="8.5" font-weight="800" fill="#0f172a">#08 LINER FPL</text>
+          <text x="232" y="156" text-anchor="middle" font-family="SF Mono, monospace" font-size="7.5" font-weight="700" fill="#475569">{isEs ? 'Mitad soporte' : 'Drive-side liner'}</text>
+        </g>
+      </g>
+
+      <!-- ESTACIÓN 2 (Centro-Derecha): Sellado Centrífugo Expeller / Prensaestopa (#06, #05, #04, #03) -->
+      <g transform="translate(546, 48)">
+        <rect x="0" y="0" width="146" height="288" rx="7" fill="#f8fafc" stroke="#c25e00" stroke-width="1.8" />
+        <rect x="0" y="0" width="146" height="24" rx="7" fill="#c25e00" />
+        <text x="73" y="16" text-anchor="middle" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#ffffff">{isEs ? 'EST-02 • SELLADO' : 'EST-02 • SEALING'}</text>
+        <!-- #06 Frame Plate -->
+        <rect x="10" y="48" width="26" height="192" rx="3" fill="#cbd5e1" stroke="#0f172a" stroke-width="2" />
+        <text x="23" y="42" text-anchor="middle" font-family="SF Mono, monospace" font-size="7.5" font-weight="800" fill="#0f172a">#06 FP</text>
+        <!-- #05 Expeller -->
+        <rect x="44" y="82" width="32" height="124" rx="4" fill="#fef3c7" stroke="#c25e00" stroke-width="2.2" />
+        <text x="60" y="72" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="800" fill="#c25e00">#05 EXP</text>
+        <!-- #04 Expeller Ring / Stuffing Box + #03 Shaft Sleeve -->
+        <rect x="84" y="68" width="48" height="152" rx="4" fill="#e2e8f0" stroke="#334155" stroke-width="2" />
+        <rect x="80" y="134" width="56" height="20" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.8" />
+        <text x="108" y="58" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="800" fill="#0f172a">#04/#03</text>
+        <text x="73" y="256" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="700" fill="#c25e00">{isEs ? 'Expulsor seco o' : 'Dry expeller or'}</text>
+        <text x="73" y="272" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="700" fill="#475569">{isEs ? 'Prensaestopa + Camisa' : 'Stuffing Box + Sleeve'}</text>
+      </g>
+
+      <!-- ESTACIÓN 1 (Derecha): Extremo Motriz Bearing Assembly (#02 + #01) -->
+      <g transform="translate(700, 48)">
+        <rect x="0" y="0" width="158" height="288" rx="7" fill="#f8fafc" stroke="#0f172a" stroke-width="2" />
+        <rect x="0" y="0" width="158" height="24" rx="7" fill="#0f172a" />
+        <text x="79" y="16" text-anchor="middle" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#ffffff">{isEs ? 'EST-01 • MOTRIZ' : 'EST-01 • DRIVE END'}</text>
+        <!-- Eje Pasante -->
+        <rect x="6" y="138" width="146" height="16" fill="#334155" />
+        <!-- Cartucho Bearing Assembly #02 -->
+        <rect x="20" y="96" width="118" height="98" rx="6" fill="#dbeafe" stroke="#0d78c6" stroke-width="2.4" />
+        <rect x="28" y="104" width="22" height="82" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.8" />
+        <rect x="108" y="104" width="22" height="82" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.8" />
+        <text x="79" y="86" text-anchor="middle" font-family="SF Mono, monospace" font-size="8.5" font-weight="800" fill="#1e3a8a">#02 BEARING ASSY</text>
+        <!-- Pedestal #01 y Tornillo de Ajuste Axial -->
+        <rect x="30" y="196" width="98" height="36" rx="3" fill="#cbd5e1" stroke="#0f172a" stroke-width="2" />
+        <circle cx="79" cy="214" r="8" fill="#15803d" />
+        <text x="79" y="254" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="800" fill="#15803d">{isEs ? '#01 Tornillo Ajuste δ' : '#01 Adjusting Screw δ'}</text>
+        <text x="79" y="270" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="700" fill="#475569">{isEs ? 'Rodamientos ISO 281' : 'ISO 281 Roller Bearings'}</text>
+      </g>
+    </svg>
+  </figure>
+
+  <!-- Tarjetas de las 5 Estaciones de Armado -->
+  <div class="assembly-report__stations">
+    {stations.map((st) => (
+      <article class="station-card">
+        <div class="station-card__top">
+          <span class="station-card__code">{st.code}</span>
+          <span class="station-card__num">{isEs ? `PASO ${st.num}` : `STEP ${st.num}`}</span>
+        </div>
+        <h3 class="station-card__title">{st.title}</h3>
+        <p class="station-card__desc">{st.sub}</p>
+        <div class="station-card__tol">
+          <strong>{isEs ? 'Control:' : 'Check:'}</strong> {st.tolerance}
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <!-- Tabla Interactiva de Despiece (14 Componentes) con Cotización en 1 Clic -->
+  <div class="assembly-report__bom-wrap">
+    <div class="assembly-report__bom-header">
+      <h3 class="assembly-report__bom-title">
+        {isEs
+          ? 'Cédula de Despiece (14 Componentes) y Selección Directa para Cotización'
+          : '14-Component Exploded Bill of Materials (BOM) & Direct Quote Selection'}
+      </h3>
+      <a
+        href={`${quoteBase}?equipo=bombeo_hule_cromo&pieza=lote_554&material=alto_cromo_cr27#rfq`}
+        class="assembly-report__lot-cta"
+      >
+        {isEs ? 'Cotizar Lote Húmedo 5-5-4 Completo →' : 'Quote Complete 5-5-4 Wet-End Kit →'}
+      </a>
+    </div>
+
+    <div class="assembly-report__table-scroll">
+      <table class="assembly-bom-table">
+        <thead>
+          <tr>
+            <th>{isEs ? '# Pos' : 'Pos #'}</th>
+            <th>{isEs ? 'Estación' : 'Station'}</th>
+            <th>{isEs ? 'Rama / Configuración' : 'Branch / Config'}</th>
+            <th>{isEs ? 'Componente / Pieza de Recambio' : 'Component / Spare Part'}</th>
+            <th>{isEs ? 'Especificación y Función en el Armado' : 'Specification & Assembly Function'}</th>
+            <th>{isEs ? 'Acción Directa' : 'Direct Action'}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {bomItems.map((row) => {
+            const href = `${quoteBase}?equipo=${row.equipo}&pieza=${row.pieza}&material=${row.material}&estacion=${row.station}#rfq`;
+            return (
+              <tr data-bom-row data-bom-branch={row.branch}>
+                <td class="bom-col-pos">#{row.pos}</td>
+                <td class="bom-col-station"><code>{row.station}</code></td>
+                <td class="bom-col-branch">
+                  <span class={`bom-branch-pill branch-${row.branch}`}>{row.branchLabel}</span>
+                </td>
+                <td class="bom-col-name"><strong>{row.name}</strong></td>
+                <td class="bom-col-spec">{row.spec}</td>
+                <td class="bom-col-action">
+                  <a href={href} class="bom-quote-link">
+                    {isEs ? 'Cotizar pieza →' : 'Quote part →'}
+                  </a>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<script>
+  function initPumpAssemblyReport() {
+    const reports = document.querySelectorAll('[data-pump-assembly-report]');
+    reports.forEach((section) => {
+      const buttons = section.querySelectorAll('[data-assembly-branch-btn]');
+      const rows = section.querySelectorAll('[data-bom-row]');
+      const svgBranches = section.querySelectorAll('[data-svg-branch]');
+
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const selectedBranch = btn.getAttribute('data-assembly-branch-btn') || 'all';
+          buttons.forEach((b) => {
+            const active = b === btn;
+            b.classList.toggle('is-active', active);
+            b.setAttribute('aria-selected', active ? 'true' : 'false');
+          });
+
+          rows.forEach((row) => {
+            const rowBranch = row.getAttribute('data-bom-branch') || 'common';
+            const visible = selectedBranch === 'all' || rowBranch === 'common' || rowBranch === selectedBranch;
+            (row as HTMLElement).style.display = visible ? '' : 'none';
+          });
+
+          svgBranches.forEach((g) => {
+            const gBranch = g.getAttribute('data-svg-branch');
+            const active = selectedBranch === 'all' || gBranch === selectedBranch;
+            (g as HTMLElement).style.opacity = active ? '1' : '0.28';
+          });
+        });
+      });
+    });
+  }
+
+  initPumpAssemblyReport();
+  document.addEventListener('astro:page-load', initPumpAssemblyReport);
+</script>
+
+<style>
+  .assembly-report {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+  }
+  .assembly-report__anchor-alias {
+    display: block;
+    height: 0;
+    visibility: hidden;
+  }
+  .assembly-report__header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .assembly-report__eyebrow {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #0d78c6;
+    text-transform: uppercase;
+  }
+  .assembly-report__title {
+    margin: 0.25rem 0;
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+  .assembly-report__subtitle {
+    margin: 0;
+    font-size: 0.94rem;
+    color: #334155;
+    max-width: 78ch;
+    line-height: 1.45;
+  }
+  .assembly-report__controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .assembly-report__branch-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+  .branch-tab {
+    padding: 0.45rem 0.85rem;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #334155;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.76rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .branch-tab.is-active {
+    background: #0d78c6;
+    border-color: #0d78c6;
+    color: #ffffff;
+  }
+  .assembly-report__print-btn {
+    padding: 0.45rem 0.85rem;
+    border-radius: 6px;
+    border: 1px solid #0f172a;
+    background: #ffffff;
+    color: #0f172a;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.75rem;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .assembly-report__blueprint {
+    margin: 0 0 1.35rem 0;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #ffffff;
+  }
+  .assembly-report__blueprint-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.9rem;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #334155;
+  }
+  .assembly-report__law-badge {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+    padding: 0.12rem 0.5rem;
+    border-radius: 4px;
+  }
+  .assembly-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .assembly-report__stations {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .station-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-top: 3px solid #0d78c6;
+    border-radius: 8px;
+    padding: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .station-card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+  }
+  .station-card__code {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #0d78c6;
+  }
+  .station-card__num {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #64748b;
+  }
+  .station-card__title {
+    margin: 0 0 0.35rem 0;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+  .station-card__desc {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.78rem;
+    color: #334155;
+    line-height: 1.35;
+  }
+  .station-card__tol {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.7rem;
+    color: #0f172a;
+    background: #e2e8f0;
+    padding: 0.28rem 0.45rem;
+    border-radius: 4px;
+  }
+  .assembly-report__bom-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .assembly-report__bom-title {
+    margin: 0;
+    font-size: 1.08rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+  .assembly-report__lot-cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.48rem 0.9rem;
+    border-radius: 6px;
+    background: #0d78c6;
+    color: #ffffff;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .assembly-report__table-scroll {
+    overflow-x: auto;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+  }
+  .assembly-bom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    text-align: left;
+  }
+  .assembly-bom-table th {
+    background: #f1f5f9;
+    color: #0f172a;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid #cbd5e1;
+  }
+  .assembly-bom-table td {
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+    color: #1e293b;
+    vertical-align: middle;
+  }
+  .bom-col-pos {
+    font-family: var(--smat-font-mono, monospace);
+    font-weight: 800;
+    color: #0d78c6;
+  }
+  .bom-branch-pill {
+    display: inline-block;
+    padding: 0.14rem 0.45rem;
+    border-radius: 4px;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.68rem;
+    font-weight: 800;
+  }
+  .branch-alto_cromo_cr27 {
+    background: #dbeafe;
+    color: #1e3a8a;
+  }
+  .branch-hule_natural {
+    background: #e2e8f0;
+    color: #0f172a;
+  }
+  .branch-common {
+    background: #f0fdf4;
+    color: #166534;
+  }
+  .bom-quote-link {
+    display: inline-block;
+    white-space: nowrap;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #0d78c6;
+    text-decoration: none;
+  }
+  .bom-quote-link:hover {
+    text-decoration: underline;
+  }
+  @media print {
+    .assembly-report__controls,
+    .bom-col-action {
+      display: none !important;
+    }
+    .assembly-report {
+      border: 1px solid #000;
+      box-shadow: none;
+      margin: 0;
+      padding: 0.5rem;
+    }
+  }
+</style>

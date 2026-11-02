@@ -89,15 +89,18 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
             </p>
           </div>
           <TechnicalDiagrams diagram="pump" lang="es" />
+          <TechnicalDiagrams diagram="drive_arrangements" lang="es" compact={true} />
           <div class="specs-strip">
             <div><strong>Tamaños de Descarga:</strong> Desde 1.5x1" hasta 14x12"</div>
+            <div><strong>Arreglos de Transmisión:</strong> CV (Superior), ZVZ (Trasero), CRZ (Lateral) y DC (Directo Inline)</div>
             <div><strong>Sellado de Flecha:</strong> Expulsor centrífugo en seco y prensaestopa (sin sello mecánico)</div>
             <div><strong>Refaccionamiento Operativo:</strong> Disponible en <a href="/bombeo/">Bombas para Lodos y Spare Parts</a></div>
           </div>
           <div class="equipment-actions">
-            <a href="/bombeo/skid/" class="btn btn-outline">Especificaciones de Bomba Completa</a>
-            <a href="/bombeo/" class="btn btn-outline">Ver Spare Parts y Lotes 5-5-4</a>
-            <a href="/cotizar/?equipo=skid_bomba#rfq" class="btn btn-primary">Cotizar Bomba de Proyecto →</a>
+            <a href="/bombeo/skid/#arreglos-transmision" class="btn btn-outline">Ver Arreglos CV / ZVZ / CRZ / DC</a>
+            <a href="/bombeo/#como-se-arma-una-bomba" class="btn btn-outline">Ver Reporte de Armado y Despiece</a>
+            <a href="/cotizar/?equipo=skid_bomba&transmision=CV#rfq" class="btn btn-primary">Cotizar Skid Arreglo CV →</a>
+            <a href="/cotizar/?equipo=skid_bomba&transmision=DC#rfq" class="btn btn-primary">Cotizar Skid Directo DC →</a>
           </div>
         </article>
       </div>

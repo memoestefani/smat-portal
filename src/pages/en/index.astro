@@ -21,25 +21,21 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
         Slurry Pumps & Wear Spares<br/>
         <span class="hero-sub-accent">Flotation Mechanisms, Filter Presses & Pulp Density Scales.</span>
       </h1>
-      
-      <p class="hero-lead">
-        Select your plant supply area: <strong>Process Equipment</strong>, <strong>Slurry Pumps & Spare Parts</strong> in balanced wet-end lots (5-5-4), or <strong>Process Control</strong> for metallurgical laboratories.
-      </p>
 
       <div class="hero-actions">
         <a href="/en/quote/#rfq" class="btn btn-primary btn-lg">Request Quotation</a>
-        <a href="/en/catalog/" class="btn btn-outline btn-lg">View Catalog & Diagrams</a>
+        <a href="/en/pumping/#how-a-slurry-pump-is-assembled" class="btn btn-outline btn-lg">View Exploded BOM & Pump Assembly</a>
+        <a href="/en/catalog/" class="btn btn-outline btn-lg">Master Catalog</a>
       </div>
     </div>
   </section>
 
-  <!-- THREE-DOOR ARCHITECTURE (DON MANUEL) -->
+  <!-- THREE-DOOR ARCHITECTURE (DON MANUEL - PART FIRST, ZERO FLUFF) -->
   <section class="equipment-showcase-section" aria-label="The Three SMAT Supply Doors">
     <div class="container">
       <div class="showcase-header">
-        <span class="section-eyebrow">SELECT YOUR PLANT SUPPLY AREA</span>
-        <h2>Process Equipment, Spare Parts & Metallurgical Control</h2>
-        <p>Direct department routing for capital projects, slurry pumping maintenance, and metallurgical process control.</p>
+        <span class="section-eyebrow">DIRECT PART & EQUIPMENT SELECTION</span>
+        <h2>Select Your Spare Part or Plant Supply Area</h2>
       </div>
 
       <div class="showcase-grid">
@@ -51,28 +47,34 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
           </div>
           <h3>Process Equipment</h3>
           <TechnicalDiagrams diagram="flotation" lang="en" compact={true} />
-          <p>
-            <strong>Flotation Cell Mechanisms & Conditioners</strong> (Rougher, Cleaner, and Scavenger stages), <strong>Recessed-Chamber Filter Presses</strong> (800 to 1500 mm, up to 16 bar), and complete project slurry pump packages.
+          <p class="door-concise-summary">
+            Flotation Mechanisms, Filter Presses (800–1500 mm) & Pump Skids (CV / ZVZ / CRZ / DC).
           </p>
+          <div class="part-chip-strip" aria-label="Quick selection of Process Equipment">
+            <a href="/en/quote/?equipo=celda_flotacion#rfq" class="part-chip">Flotation Mechanism</a>
+            <a href="/en/quote/?equipo=filtro_prensa#rfq" class="part-chip">16-bar Filter Press</a>
+            <a href="/en/quote/?equipo=placas_filtrantes#rfq" class="part-chip">PP Plates & Cloths</a>
+            <a href="/en/quote/?equipo=skid_bomba&transmision=CV#rfq" class="part-chip">Pump Skid (CV/ZVZ/CRZ/DC)</a>
+          </div>
           <div class="pro-keyspecs-box">
             <div class="keyspec-row">
               <span class="ks-label">Flotation:</span>
-              <span class="ks-val">Mechanisms & Cells 50 to 300 ft³</span>
+              <span class="ks-val">50 to 300 ft³ (Rougher, Cleaner, and Scavenger)</span>
             </div>
             <div class="keyspec-row">
               <span class="ks-label">Filtration:</span>
               <span class="ks-val">Filter Presses 800 to 1500 mm (16 bar)</span>
             </div>
             <div class="keyspec-row">
-              <span class="ks-label">Direct Quote:</span>
+              <span class="ks-label">Skid Drives:</span>
               <span class="ks-val">
-                <a href="/en/quote/?equipo=celda_flotacion#rfq" class="inline-spec-link">Flotation</a> • <a href="/en/quote/?equipo=filtro_prensa#rfq" class="inline-spec-link">Filter Press</a>
+                <a href="/en/pumping/skid/#drive-arrangements" class="inline-spec-link">CV • ZVZ • CRZ • DC Arrangements</a>
               </span>
             </div>
           </div>
           <div class="showcase-links">
-            <a href="/en/process-equipment/" class="showcase-cta-primary">Enter Process Equipment →</a>
-            <a href="/en/quote/?equipo=celda_flotacion#rfq" class="showcase-cta-secondary">Quote Project</a>
+            <a href="/en/process-equipment/" class="showcase-cta-primary">View Equipment & Diagrams →</a>
+            <a href="/en/quote/?equipo=celda_flotacion#rfq" class="showcase-cta-secondary">Quote Equipment</a>
           </div>
         </article>
 
@@ -84,12 +86,22 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
           </div>
           <h3>Slurry Pumps & Spare Parts</h3>
           <TechnicalDiagrams diagram="pump" lang="en" compact={true} />
-          <p>
-            Replacement horizontal slurry pumps, complete assembled <strong>Bearing Assembly / Housing</strong> units, and balanced wet-end wear lots (<strong>5 impellers, 5 throatbushes, and 4 volute liners</strong>) with centrifugal expeller and stuffing box sealing.
+          <p class="door-concise-summary">
+            5-5-4 Wet-End Lots in High Chrome (≥650 HB), Rubber & PU + Bearing Assembly.
           </p>
+          <div class="part-chip-strip" aria-label="Direct slurry pump spare part selection">
+            <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=lote_554&material=alto_cromo_cr27#rfq" class="part-chip part-chip--highlight">5-5-4 Kit</a>
+            <a href="/en/quote/?equipo=impulsor_bomba&pieza=impulsor_5_alabes&material=alto_cromo_cr27#rfq" class="part-chip">5-Vane Impeller</a>
+            <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=voluta_liners&material=alto_cromo_cr27#rfq" class="part-chip">Cr27% Volute</a>
+            <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=voluta_liners&material=hule_natural#rfq" class="part-chip">Rubber / PU Liners</a>
+            <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=throatbush&material=alto_cromo_cr27#rfq" class="part-chip">Throatbush</a>
+            <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=fpl_insert&material=alto_cromo_cr27#rfq" class="part-chip">FPL Insert</a>
+            <a href="/en/quote/?equipo=sello_expulsor&pieza=expeller_sello#rfq" class="part-chip">Dry Expeller</a>
+            <a href="/en/quote/?equipo=soporte_rodamiento&pieza=bearing_assembly#rfq" class="part-chip">Bearing Assembly</a>
+          </div>
           <div class="pro-keyspecs-box">
             <div class="keyspec-row">
-              <span class="ks-label">Wear Materials:</span>
+              <span class="ks-label">Materials:</span>
               <span class="ks-val">High Chrome (≥650 HB), Rubber & Polyurethane</span>
             </div>
             <div class="keyspec-row">
@@ -97,13 +109,15 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
               <span class="ks-val">5 Impellers + 5 Throatbushes + 4 Volutes</span>
             </div>
             <div class="keyspec-row">
-              <span class="ks-label">Drive Cartridge:</span>
-              <span class="ks-val">Complete Bearing Assembly / Housing</span>
+              <span class="ks-label">Assembly Report:</span>
+              <span class="ks-val">
+                <a href="/en/pumping/#how-a-slurry-pump-is-assembled" class="inline-spec-link">How a pump is assembled (14 parts) →</a>
+              </span>
             </div>
           </div>
           <div class="showcase-links">
-            <a href="/en/pumping/" class="showcase-cta-primary">Enter Slurry Pumps & Spare Parts →</a>
-            <a href="/en/quote/?equipo=skid_bomba#rfq" class="showcase-cta-secondary">Quote Wet-End Lot</a>
+            <a href="/en/pumping/" class="showcase-cta-primary">View Parts & Exploded BOM →</a>
+            <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=lote_554#rfq" class="showcase-cta-secondary">Quote 5-5-4 Lot</a>
           </div>
         </article>
 
@@ -115,9 +129,14 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
           </div>
           <h3>Process Control</h3>
           <TechnicalDiagrams diagram="marcy" lang="en" compact={true} />
-          <p>
-            <strong>Pulp Density & % Solids Scales (Marcy Style)</strong> with 1000 cm³ calibrated cup, <strong>SMAT Laboratory Batch Pressure Filter</strong> (60 to 100 psi), and <strong>Certified ASTM E11 / ISO 3310 Test Sieves</strong> in Brass and Stainless Steel.
+          <p class="door-concise-summary">
+            Marcy Scale (1000 cm³), Lab Batch Filter (60–100 psi) & ASTM E11 Sieves.
           </p>
+          <div class="part-chip-strip" aria-label="Quick selection of metallurgical control instruments">
+            <a href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="part-chip">Marcy Scale + 1000 cm³ Cup</a>
+            <a href="/en/quote/?circuito=control_procesos&equipo=filtro_batch_lab#rfq" class="part-chip">Batch Pressure Filter</a>
+            <a href="/en/quote/?circuito=control_procesos&equipo=tamices_astm_e11#rfq" class="part-chip">ASTM E11 Sieves (#200 / 75 µm)</a>
+          </div>
           <div class="pro-keyspecs-box">
             <div class="keyspec-row">
               <span class="ks-label">Pulp Density:</span>
@@ -133,7 +152,7 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
             </div>
           </div>
           <div class="showcase-links">
-            <a href="/en/process-control/" class="showcase-cta-primary">Enter Process Control →</a>
+            <a href="/en/process-control/" class="showcase-cta-primary">View Instruments & Diagrams →</a>
             <a href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="showcase-cta-secondary">Quote Instrument</a>
           </div>
         </article>
@@ -194,12 +213,46 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
     margin-top: 0.2rem;
   }
 
-  .hero-lead {
-    color: var(--smat-text-secondary);
-    font-size: 1.04rem;
-    max-width: 760px;
-    margin-bottom: 1.5rem;
-    line-height: 1.55;
+  .door-concise-summary {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--smat-text-primary);
+    margin: 0.4rem 0 0.65rem 0;
+    line-height: 1.35;
+  }
+
+  .part-chip-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.38rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .part-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.26rem 0.58rem;
+    border-radius: 5px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+    font-family: var(--smat-font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: border-color 0.12s ease, background 0.12s ease;
+  }
+
+  .part-chip:hover {
+    border-color: #0d78c6;
+    background: #f0f9ff;
+    color: #0d78c6;
+  }
+
+  .part-chip--highlight {
+    background: #eff6ff;
+    border-color: #0d78c6;
+    color: #0d78c6;
   }
 
   .hero-actions {

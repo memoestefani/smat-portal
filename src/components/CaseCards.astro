@@ -66,7 +66,7 @@ const caseRouteMap: Record<string, { circuitPathEs: string; circuitPathEn: strin
           <div class="case-footer">
             {(() => {
               const routeInfo = caseRouteMap[item.id] || caseRouteMap.caso_bombeo_durango;
-              const simHref = isEn ? `/en/#rfq?${routeInfo.rfqQuery}` : `/#rfq?${routeInfo.rfqQuery}`;
+              const simHref = isEn ? `/en/quote/?${routeInfo.rfqQuery}#rfq` : `/cotizar/?${routeInfo.rfqQuery}#rfq`;
               return (
                 <div class="case-footer-actions">
                   {item.id === 'caso_flotacion_zacatecas' ? (

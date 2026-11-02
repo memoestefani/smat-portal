@@ -148,6 +148,10 @@ export function parseUrlContextParams(urlOrSearch = '') {
     flow: null,
     solids: null,
     d80: null,
+    pieza: null,
+    material: null,
+    transmision: null,
+    estacion: null,
     atomic_part: null
   };
   
@@ -173,6 +177,17 @@ export function parseUrlContextParams(urlOrSearch = '') {
     if (params.has('equipo')) result.equipo = params.get('equipo');
     else if (params.has('role_id')) result.equipo = params.get('role_id');
 
+    if (params.has('pieza')) result.pieza = params.get('pieza');
+    else if (params.has('part')) result.pieza = params.get('part');
+
+    if (params.has('material')) result.material = params.get('material');
+    else if (params.has('aleacion')) result.material = params.get('aleacion');
+
+    if (params.has('transmision')) result.transmision = params.get('transmision').toUpperCase();
+    else if (params.has('drive')) result.transmision = params.get('drive').toUpperCase();
+
+    if (params.has('estacion')) result.estacion = params.get('estacion');
+
     if (params.has('rol')) result.rol = params.get('rol');
     else if (params.has('perspectiva')) result.rol = params.get('perspectiva');
 
@@ -192,6 +207,15 @@ export function parseUrlContextParams(urlOrSearch = '') {
     if (params.has('flow')) result.flow = params.get('flow');
     if (params.has('solids')) result.solids = params.get('solids');
     if (params.has('d80')) result.d80 = params.get('d80');
+
+    // Si el usuario seleccionó una pieza específica en 1 clic sin pasar equipo, mapear al rol correspondiente
+    if (!result.equipo && result.pieza) {
+      const pLower = result.pieza.toLowerCase();
+      if (pLower.includes('impulsor') || pLower.includes('impeller')) result.equipo = 'impulsor';
+      else if (pLower.includes('throatbush') || pLower.includes('cuello') || pLower.includes('voluta') || pLower.includes('liner') || pLower.includes('fpl') || pLower.includes('554') || pLower.includes('5-5-4')) result.equipo = 'revestimientos';
+      else if (pLower.includes('expeller') || pLower.includes('sello') || pLower.includes('camisa') || pLower.includes('sleeve')) result.equipo = 'sello';
+      else if (pLower.includes('bearing') || pLower.includes('soporte') || pLower.includes('rodamiento')) result.equipo = 'soporte';
+    }
 
     const rawCode = params.get('codigo') || params.get('code');
     if (rawCode) {
@@ -298,6 +322,12 @@ export function formatSapPlaintext(data = {}) {
   }
   if (dimDia || dimBore) {
     lines.push(`   - Medidas Campo (Flexómetro): DE ~${dimDia || 'N/A'} mm | Barreno/Flecha ~${dimBore || 'N/A'} mm`);
+  }
+  if (data.transmision || data.drive_arrangement) {
+    lines.push(`   - Arreglo Transmisión:        ${String(data.transmision || data.drive_arrangement).toUpperCase()} (Cinemática de Poleas / Acoplamiento)`);
+  }
+  if (data.material || data.wet_material) {
+    lines.push(`   - Material Contacto Húmedo:   ${data.material || data.wet_material}`);
   }
   if (data.details) {
     lines.push(`   - Notas de Operación:         ${data.details}`);

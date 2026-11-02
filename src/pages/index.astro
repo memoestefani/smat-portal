@@ -21,25 +21,21 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
         Bombas para Lodos y Refacciones<br/>
         <span class="hero-sub-accent">Mecanismos de Flotación, Filtros Prensa y Balanzas.</span>
       </h1>
-      
-      <p class="hero-lead">
-        Seleccione su área de suministro en planta: <strong>Equipos de Proceso</strong>, <strong>Bombas para Lodos y Spare Parts</strong> por lote en contacto húmedo (5-5-4), o <strong>Control de Procesos</strong> para laboratorio metalúrgico.
-      </p>
 
       <div class="hero-actions">
         <a href="/cotizar/#rfq" class="btn btn-primary btn-lg">Solicitar Cotización</a>
-        <a href="/catalogo/" class="btn btn-outline btn-lg">Ver Catálogo y Diagramas</a>
+        <a href="/bombeo/#como-se-arma-una-bomba" class="btn btn-outline btn-lg">Ver Despiece y Cómo se Arma una Bomba</a>
+        <a href="/catalogo/" class="btn btn-outline btn-lg">Catálogo General</a>
       </div>
     </div>
   </section>
 
-  <!-- ARQUITECTURA DE LAS 3 PUERTAS (DON MANUEL) -->
+  <!-- ARQUITECTURA DE LAS 3 PUERTAS (DON MANUEL - PIEZA PRIMERO, CERO ROLLO) -->
   <section class="equipment-showcase-section" aria-label="Las Tres Puertas de Suministro SMAT">
     <div class="container">
       <div class="showcase-header">
-        <span class="section-eyebrow">SELECCIONE SU ÁREA DE SUMINISTRO EN PLANTA</span>
-        <h2>Equipos de Proceso, Spare Parts y Control Metalúrgico</h2>
-        <p>Acceso directo por departamento para proyectos de ingeniería, mantenimiento de bombeo y control de procesos.</p>
+        <span class="section-eyebrow">SELECCIÓN DIRECTA DE PIEZA Y EQUIPO</span>
+        <h2>Seleccione su Pieza o Área de Suministro en Planta</h2>
       </div>
 
       <div class="showcase-grid">
@@ -51,28 +47,34 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
           </div>
           <h3>Equipos de Proceso</h3>
           <TechnicalDiagrams diagram="flotation" lang="es" compact={true} />
-          <p>
-            <strong>Mecanismos para Celdas de Flotación y Acondicionadores</strong> (etapas Rougher, Cleaner y Scavenger), <strong>Filtros Prensa de Cámara Empotrada</strong> (800 a 1500 mm, hasta 16 bar) y paquetes completos de bombeo para proyectos.
+          <p class="door-concise-summary">
+            Celdas de Flotación, Filtros Prensa (800–1500 mm) y Skids de Bombeo (CV / ZVZ / CRZ / DC).
           </p>
+          <div class="part-chip-strip" aria-label="Selección rápida de Equipos de Proceso">
+            <a href="/cotizar/?equipo=celda_flotacion#rfq" class="part-chip">Mecanismo Flotación</a>
+            <a href="/cotizar/?equipo=filtro_prensa#rfq" class="part-chip">Filtro Prensa 16 bar</a>
+            <a href="/cotizar/?equipo=placas_filtrantes#rfq" class="part-chip">Placas PP y Lonas</a>
+            <a href="/cotizar/?equipo=skid_bomba&transmision=CV#rfq" class="part-chip">Skid Bomba (CV/ZVZ/CRZ/DC)</a>
+          </div>
           <div class="pro-keyspecs-box">
             <div class="keyspec-row">
               <span class="ks-label">Flotación:</span>
-              <span class="ks-val">Mecanismos y Celdas 50 a 300 ft³</span>
+              <span class="ks-val">50 a 300 ft³ (Rougher, Cleaner y Scavenger)</span>
             </div>
             <div class="keyspec-row">
               <span class="ks-label">Filtración:</span>
               <span class="ks-val">Filtros Prensa 800 a 1500 mm (16 bar)</span>
             </div>
             <div class="keyspec-row">
-              <span class="ks-label">Cotización Rápida:</span>
+              <span class="ks-label">Transmisión Skid:</span>
               <span class="ks-val">
-                <a href="/cotizar/?equipo=celda_flotacion#rfq" class="inline-spec-link">Flotación</a> • <a href="/cotizar/?equipo=filtro_prensa#rfq" class="inline-spec-link">Filtro Prensa</a>
+                <a href="/bombeo/skid/#arreglos-transmision" class="inline-spec-link">Arreglos CV • ZVZ • CRZ • DC</a>
               </span>
             </div>
           </div>
           <div class="showcase-links">
-            <a href="/equipos/" class="showcase-cta-primary">Entrar a Equipos de Proceso →</a>
-            <a href="/cotizar/?equipo=celda_flotacion#rfq" class="showcase-cta-secondary">Cotizar Proyecto</a>
+            <a href="/equipos/" class="showcase-cta-primary">Ver Equipos y Diagramas →</a>
+            <a href="/cotizar/?equipo=celda_flotacion#rfq" class="showcase-cta-secondary">Cotizar Equipo</a>
           </div>
         </article>
 
@@ -84,12 +86,22 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
           </div>
           <h3>Bombas para Lodos y Spare Parts</h3>
           <TechnicalDiagrams diagram="pump" lang="es" compact={true} />
-          <p>
-            Bombas horizontales de reemplazo, conjuntos completos <strong>Bearing Assembly / Housing</strong> y lotes programados de contacto húmedo (<strong>5 impulsores, 5 cuellos y 4 volutas</strong>) con sellado por expulsor centrífugo y prensaestopa.
+          <p class="door-concise-summary">
+            Lotes 5-5-4 en Alto Cromo (≥650 HB), Hule y Poliuretano + Bearing Assembly.
           </p>
+          <div class="part-chip-strip" aria-label="Selección directa de refacción de bomba">
+            <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=lote_554&material=alto_cromo_cr27#rfq" class="part-chip part-chip--highlight">Lote 5-5-4</a>
+            <a href="/cotizar/?equipo=impulsor_bomba&pieza=impulsor_5_alabes&material=alto_cromo_cr27#rfq" class="part-chip">Impulsor 5 Álabes</a>
+            <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=voluta_liners&material=alto_cromo_cr27#rfq" class="part-chip">Voluta Cr27%</a>
+            <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=voluta_liners&material=hule_natural#rfq" class="part-chip">Liners Hule / PU</a>
+            <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=throatbush&material=alto_cromo_cr27#rfq" class="part-chip">Throatbush</a>
+            <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=fpl_insert&material=alto_cromo_cr27#rfq" class="part-chip">FPL Insert</a>
+            <a href="/cotizar/?equipo=sello_expulsor&pieza=expeller_sello#rfq" class="part-chip">Expeller Seco</a>
+            <a href="/cotizar/?equipo=soporte_rodamiento&pieza=bearing_assembly#rfq" class="part-chip">Bearing Assembly</a>
+          </div>
           <div class="pro-keyspecs-box">
             <div class="keyspec-row">
-              <span class="ks-label">Aleaciones y Elastómeros:</span>
+              <span class="ks-label">Materiales:</span>
               <span class="ks-val">Alto Cromo (≥650 HB), Hule y Poliuretano</span>
             </div>
             <div class="keyspec-row">
@@ -97,13 +109,15 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
               <span class="ks-val">5 Impulsores + 5 Cuellos + 4 Volutas</span>
             </div>
             <div class="keyspec-row">
-              <span class="ks-label">Conjunto Motriz:</span>
-              <span class="ks-val">Bearing Assembly / Housing Completo</span>
+              <span class="ks-label">Reporte Despiece:</span>
+              <span class="ks-val">
+                <a href="/bombeo/#como-se-arma-una-bomba" class="inline-spec-link">Cómo se arma una bomba (14 piezas) →</a>
+              </span>
             </div>
           </div>
           <div class="showcase-links">
-            <a href="/bombeo/" class="showcase-cta-primary">Entrar a Bombas y Spare Parts →</a>
-            <a href="/cotizar/?equipo=skid_bomba#rfq" class="showcase-cta-secondary">Cotizar Lote Húmedo</a>
+            <a href="/bombeo/" class="showcase-cta-primary">Ver Piezas y Despiece →</a>
+            <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=lote_554#rfq" class="showcase-cta-secondary">Cotizar Lote 5-5-4</a>
           </div>
         </article>
 
@@ -115,9 +129,14 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
           </div>
           <h3>Control de Procesos</h3>
           <TechnicalDiagrams diagram="marcy" lang="es" compact={true} />
-          <p>
-            <strong>Balanzas para Densidad de Pulpa y % de Sólidos (Tipo Marcy)</strong> con vaso de 1000 cm³, <strong>Filtro de Presión Batch de Laboratorio SMAT</strong> (60 a 100 psi) y <strong>Tamices Certificados ASTM E11 / ISO 3310</strong> en Bronce y Acero Inoxidable.
+          <p class="door-concise-summary">
+            Balanza Marcy (1000 cm³), Filtro Batch (60–100 psi) y Tamices ASTM E11.
           </p>
+          <div class="part-chip-strip" aria-label="Selección rápida de instrumentación metalúrgica">
+            <a href="/cotizar/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="part-chip">Balanza Marcy + Vaso 1000 cm³</a>
+            <a href="/cotizar/?circuito=control_procesos&equipo=filtro_batch_lab#rfq" class="part-chip">Filtro Presión Batch</a>
+            <a href="/cotizar/?circuito=control_procesos&equipo=tamices_astm_e11#rfq" class="part-chip">Tamices ASTM E11 (#200 / 75 µm)</a>
+          </div>
           <div class="pro-keyspecs-box">
             <div class="keyspec-row">
               <span class="ks-label">Densidad de Pulpa:</span>
@@ -133,7 +152,7 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
             </div>
           </div>
           <div class="showcase-links">
-            <a href="/control-de-procesos/" class="showcase-cta-primary">Entrar a Control de Procesos →</a>
+            <a href="/control-de-procesos/" class="showcase-cta-primary">Ver Instrumentos y Diagramas →</a>
             <a href="/cotizar/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="showcase-cta-secondary">Cotizar Instrumento</a>
           </div>
         </article>
@@ -194,12 +213,46 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
     margin-top: 0.2rem;
   }
 
-  .hero-lead {
-    color: var(--smat-text-secondary);
-    font-size: 1.04rem;
-    max-width: 760px;
-    margin-bottom: 1.5rem;
-    line-height: 1.55;
+  .door-concise-summary {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--smat-text-primary);
+    margin: 0.4rem 0 0.65rem 0;
+    line-height: 1.35;
+  }
+
+  .part-chip-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.38rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .part-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.26rem 0.58rem;
+    border-radius: 5px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+    font-family: var(--smat-font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: border-color 0.12s ease, background 0.12s ease;
+  }
+
+  .part-chip:hover {
+    border-color: #0d78c6;
+    background: #f0f9ff;
+    color: #0d78c6;
+  }
+
+  .part-chip--highlight {
+    background: #eff6ff;
+    border-color: #0d78c6;
+    color: #0d78c6;
   }
 
   .hero-actions {

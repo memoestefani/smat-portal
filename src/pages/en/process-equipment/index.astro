@@ -89,15 +89,18 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
             </p>
           </div>
           <TechnicalDiagrams diagram="pump" lang="en" />
+          <TechnicalDiagrams diagram="drive_arrangements" lang="en" compact={true} />
           <div class="specs-strip">
             <div><strong>Discharge Sizes:</strong> From 1.5x1" up to 14x12"</div>
+            <div><strong>Drive Arrangements:</strong> CV (Overhead), ZVZ (Rear), CRZ (Side-by-Side) & DC (Direct Inline)</div>
             <div><strong>Shaft Sealing:</strong> Dry centrifugal expeller and stuffing box (no mechanical seals)</div>
             <div><strong>Operational Spares:</strong> Available under <a href="/en/pumping/">Slurry Pumps & Spare Parts</a></div>
           </div>
           <div class="equipment-actions">
-            <a href="/en/pumping/skid/" class="btn btn-outline">Complete Pump Package Specs</a>
-            <a href="/en/pumping/" class="btn btn-outline">View Spare Parts & 5-5-4 Lots</a>
-            <a href="/en/quote/?equipo=skid_bomba#rfq" class="btn btn-primary">Quote Project Pump →</a>
+            <a href="/en/pumping/skid/#drive-arrangements" class="btn btn-outline">View CV / ZVZ / CRZ / DC Drives</a>
+            <a href="/en/pumping/#how-a-slurry-pump-is-assembled" class="btn btn-outline">View Pump Assembly & Exploded BOM</a>
+            <a href="/en/quote/?equipo=skid_bomba&transmision=CV#rfq" class="btn btn-primary">Quote CV Arrangement Skid →</a>
+            <a href="/en/quote/?equipo=skid_bomba&transmision=DC#rfq" class="btn btn-primary">Quote Direct DC Skid →</a>
           </div>
         </article>
       </div>

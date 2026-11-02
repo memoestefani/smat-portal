@@ -114,7 +114,7 @@ const verticals = rolesData.verticals;
                 {isEs ? 'Ficha y Diagrama' : 'Spec & Diagram'}
               </a>
               <a 
-                href={`${isEs ? '/#rfq' : '/en/#rfq'}?circuito=${vert.id}&equipo=${item.role_id}&tipo=opex`} 
+                href={`${isEs ? '/cotizar/' : '/en/quote/'}?circuito=${vert.id}&equipo=${item.role_id}&tipo=opex#rfq`} 
                 class="btn btn-primary btn-sm dual-hub-quote-btn"
                 data-role={item.role_id}
                 data-circuit={vert.id}
@@ -175,7 +175,7 @@ const verticals = rolesData.verticals;
                 {isEs ? 'Ficha y Diagrama' : 'Spec & Diagram'}
               </a>
               <a 
-                href={`${isEs ? '/#rfq' : '/en/#rfq'}?circuito=${vert.id}&equipo=${item.role_id}&tipo=capex`} 
+                href={`${isEs ? '/cotizar/' : '/en/quote/'}?circuito=${vert.id}&equipo=${item.role_id}&tipo=capex#rfq`} 
                 class="btn btn-primary btn-sm dual-hub-quote-btn"
                 data-role={item.role_id}
                 data-circuit={vert.id}

@@ -65,11 +65,22 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
             <p>
               The <strong>throatbush</strong> and <strong>impeller</strong> operate with a tight front clearance and require more frequent replacement than the volute. Ordering in matched lots (e.g., 5 impellers + 5 throatbushes + 4 volutes) prevents pairing a new impeller with a worn throatbush.
             </p>
-            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light);">
-              <a href="/en/#rfq?equipo=revestimientos" class="btn btn-primary" style="width: 100%;">Quote Wet-End Lot →</a>
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light); display: flex; flex-direction: column; gap: 0.6rem;">
+              <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=voluta_liners#rfq" class="btn btn-primary" style="width: 100%; text-align: center;">Quote Wet-End Lot →</a>
+              <a href="/en/pumping/#how-a-slurry-pump-is-assembled" class="btn btn-outline" style="width: 100%; text-align: center;">View Pump Assembly & Exploded BOM →</a>
             </div>
           </div>
         </div>
+      </div>
+
+      <div style="margin-top: 2.25rem;">
+        <h2>Wet-End Kit Comparison by Material: High Chrome (≥650 HB), Natural Rubber & Polyurethane</h2>
+        <TechnicalDiagrams diagram="material_kit_grid" lang="en" />
+      </div>
+
+      <div style="margin-top: 2.25rem;">
+        <h2>Throatbush & Front Axial Clearance Calibration (δ = 0.5–1.0 mm)</h2>
+        <TechnicalDiagrams diagram="suction_throatbush" lang="en" />
       </div>
 
       <SharePurchasing

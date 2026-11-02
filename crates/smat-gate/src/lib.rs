@@ -753,7 +753,37 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             passed: verify_no_emergency_claims(site_root).is_ok(),
             details: verify_no_emergency_claims(site_root).err().unwrap_or_else(|| "OK: Horario de planta verificado sin promesas falsas 24/7.".to_string()),
         },
+        GateReport {
+            name: "21. Reporte de Armado de Bomba y Cero Enlaces Huerfanos /#rfq (Gate D24)".to_string(),
+            passed: verify_pump_assembly_and_zero_orphan_rfq_links(site_root).is_ok(),
+            details: verify_pump_assembly_and_zero_orphan_rfq_links(site_root).err().unwrap_or_else(|| "OK: Reporte de despiece 5 estaciones y cero enlaces /#rfq verificados.".to_string()),
+        },
     ]
+}
+
+pub fn verify_pump_assembly_and_zero_orphan_rfq_links(site_root: &Path) -> Result<(), String> {
+    let report_path = site_root.join("src").join("components").join("PumpAssemblyReport.astro");
+    let strip_path = site_root.join("src").join("components").join("QuickPartSelectorStrip.astro");
+    if !report_path.exists() {
+        return Err("No existe src/components/PumpAssemblyReport.astro".to_string());
+    }
+    if !strip_path.exists() {
+        return Err("No existe src/components/QuickPartSelectorStrip.astro".to_string());
+    }
+
+    let src_dir = site_root.join("src");
+    for entry in WalkDir::new(&src_dir).into_iter().filter_map(|e| e.ok()) {
+        if entry.file_type().is_file() {
+            let ext = entry.path().extension().and_then(|s| s.to_str()).unwrap_or("");
+            if ext == "astro" {
+                let content = fs::read_to_string(entry.path()).unwrap_or_default();
+                if content.contains("href=\"/#rfq") || content.contains("href='/#rfq") || content.contains("href=\"/en/#rfq") || content.contains("href='/en/#rfq") {
+                    return Err(format!("Enlace huerfano /#rfq o /en/#rfq detectado en {}", entry.path().display()));
+                }
+            }
+        }
+    }
+    Ok(())
 }
 
 #[cfg(test)]
@@ -878,5 +908,6 @@ mod tests {
     fn test_gate_no_emergency_claims() {
         let root = find_site_root();
         assert!(verify_no_emergency_claims(&root).is_ok(), "Fallo en erradicación de claims de emergencia");
+        assert!(verify_pump_assembly_and_zero_orphan_rfq_links(&root).is_ok(), "Fallo en verificacion de reporte de armado y enlaces /#rfq");
     }
 }

@@ -476,3 +476,354 @@ export function recommendAstmSieveSeries(params = {}) {
   };
 }
 
+/**
+ * Matriz de Materiales en Contacto Húmedo (Arbitraje Epistémico #5, INV-SMAT-SCI-01 y INV-SMAT-SCI-09)
+ * Discriminación pre-atentiva (<150 ms) por reflectancia óptica y límites tribológicos.
+ */
+export const WET_END_MATERIAL_MATRIX = {
+  alto_cromo: {
+    id: 'alto_cromo',
+    code: 'A05',
+    nameEs: 'Alto Cromo 27% (≥ 650 HB)',
+    nameEn: '27% High Chrome White Iron (≥ 650 HB)',
+    visualCueEs: 'Acabado Metálico Maquinado / Esmalte Azul',
+    visualCueEn: 'Machined Specular Metallic / Blue Enamel',
+    swatchHex: '#1E3A8A',
+    accentHex: '#64748B',
+    hardness: '≥ 650 HB (60–62 HRC)',
+    maxTipSpeedMs: 28.5,
+    d80RangeMicrons: [150, 6000],
+    phRange: [4.0, 12.5],
+    wetEndArchitecture: 'monolithic_volute_plus_fpl_insert',
+    partsIncludedEs: ['Impulsor Cerrado 5 Álabes', 'Voluta Monolítica (1 pieza)', 'Cuello de Succión (Throatbush)', 'Plato Posterior (FPL Insert)'],
+    partsIncludedEn: ['Closed 5-Vane Impeller', 'Monolithic Volute (1-piece)', 'Suction Throatbush', 'Frame Plate Liner Insert (FPL Insert)'],
+    dutyApplicationEs: 'Descarga de molino SAG/bolas, alimentación primaria a hidrociclones y partículas gruesas con bordes cortantes.',
+    dutyApplicationEn: 'SAG/ball mill discharge, primary hydrocyclone feed, and coarse sharp-edged ore particles.'
+  },
+  hule: {
+    id: 'hule',
+    code: 'R55',
+    nameEs: 'Hule Natural Antiabrasivo (Shore A 55–65)',
+    nameEn: 'Wear-Resistant Natural Rubber (Shore A 55–65)',
+    visualCueEs: 'Elastómero Negro Mate Moldeado por Compresión',
+    visualCueEn: 'Compression-Molded Matte Black Elastomer',
+    swatchHex: '#18181B',
+    accentHex: '#3F3F46',
+    hardness: 'Shore A 55–65',
+    maxTipSpeedMs: 24.5,
+    d80RangeMicrons: [10, 150],
+    phRange: [3.5, 11.0],
+    wetEndArchitecture: 'split_molded_liners_fpl_cpl',
+    partsIncludedEs: ['Forro Lado Soporte (Frame Plate Liner)', 'Forro Lado Succión (Cover Plate Liner)', 'Cuello de Succión (Throatbush)', 'Impulsor Revestido en Hule'],
+    partsIncludedEn: ['Frame Plate Liner (FPL)', 'Cover Plate Liner (CPL)', 'Suction Throatbush', 'Rubber-Lined Impeller'],
+    dutyApplicationEs: 'Circuitos de flotación, espesadores y colas/jales finos (d80 < 150 µm) sin partículas cortantes gruesas.',
+    dutyApplicationEn: 'Flotation circuits, thickeners, and fine tailings (d80 < 150 µm) free of coarse tramp metal or sharp rock.'
+  },
+  poliuretano: {
+    id: 'poliuretano',
+    code: 'U01',
+    nameEs: 'Poliuretano Elastómero (Shore A 85–95)',
+    nameEn: 'Cast Polyurethane Elastomer (Shore A 85–95)',
+    visualCueEs: 'Alta Cromaticidad Amarillo / Rojo Industrial',
+    visualCueEn: 'High-Chroma Industrial Yellow / Red',
+    swatchHex: '#EAB308',
+    accentHex: '#DC2626',
+    hardness: 'Shore A 85–95',
+    maxTipSpeedMs: 26.0,
+    d80RangeMicrons: [20, 350],
+    phRange: [2.0, 11.5],
+    wetEndArchitecture: 'split_molded_liners_fpl_cpl',
+    partsIncludedEs: ['Forro Lado Soporte (Frame Plate Liner)', 'Forro Lado Succión (Cover Plate Liner)', 'Cuello de Succión (Throatbush)', 'Impulsor / Expulsor en Poliuretano'],
+    partsIncludedEn: ['Frame Plate Liner (FPL)', 'Cover Plate Liner (CPL)', 'Suction Throatbush', 'Polyurethane Impeller / Expeller'],
+    dutyApplicationEs: 'Baterías de hidrociclones, remolienda y pulpas finas a medias con alta velocidad superficial o pH ácido.',
+    dutyApplicationEn: 'Hydrocyclone clusters, regrind duties, and fine-to-medium slurries with high velocity or acidic pH.'
+  }
+};
+
+/**
+ * Estaciones de Ensamble de una Bomba Centrífuga Horizontal para Lodos (Arbitraje #6, INV-SMAT-SCI-10)
+ * Basado en Matrices de Interferencia Axial A_{I,-X} y Matriz de Soporte S (DOI: 10.1109/tase.2012.2235144).
+ */
+export const PUMP_ASSEMBLY_STATIONS = [
+  {
+    stationNumber: 1,
+    id: 'drive_end',
+    titleEs: 'Estación 1: Extremo Motriz y Base Estructural',
+    titleEn: 'Station 1: Drive End & Structural Frame',
+    partsEs: ['01. Bastidor / Cuna con Tornillo de Ajuste Axial (Frame)', '02. Conjunto Rodamiento Cilíndrico (Bearing Assembly / Housing)', '03. Plato Soporte Metálico (Frame Plate)'],
+    partsEn: ['01. Base Frame with Axial Adjusting Screw', '02. Cylindrical Bearing Assembly / Housing', '03. Cast Iron Frame Plate'],
+    roleId: 'soporte',
+    lotRatioNoteEs: 'Módulo sellado intercambiable (ISO 281 rodillos cónicos p = 10/3)',
+    lotRatioNoteEn: 'Drop-in sealed cartridge module (ISO 281 tapered rollers p = 10/3)'
+  },
+  {
+    stationNumber: 2,
+    id: 'sealing_fork',
+    titleEs: 'Estación 2: Bifurcación de Sellado Centrífugo (Sin Sello Mecánico)',
+    titleEn: 'Station 2: Centrifugal Shaft Sealing Fork (Zero Mechanical Seal)',
+    partsEs: ['04. Camisa de Flecha (Shaft Sleeve)', '05. Anillo Expulsor + Cámara Centrífuga (Expeller Ring)', '06. Expulsor Dinámico Seco (Expeller)', '07. Prensaestopa, Anillo Linterna y Empaquetadura PTFE/Grafito'],
+    partsEn: ['04. Hardened Shaft Sleeve', '05. Expeller Ring & Chamber', '06. Dynamic Dry Expeller', '07. Gland Follower, Lantern Ring & Braided PTFE/Graphite Packing'],
+    roleId: 'sello',
+    lotRatioNoteEs: 'Sellado centrífugo en seco para evitar dilución de pulpa y fallas por abrasión',
+    lotRatioNoteEn: 'Dry centrifugal expeller seal prevents pulp dilution and abrasive seal failure'
+  },
+  {
+    stationNumber: 3,
+    id: 'wet_end_fork',
+    titleEs: 'Estación 3: Bifurcación de Contacto Húmedo (Lote 5 – 5 – 4)',
+    titleEn: 'Station 3: Bifurcated Wet-End Assembly (5 – 5 – 4 Wear Lot)',
+    partsEs: [
+      '08A [Rama Metal]. Plato Posterior Metálico (FPL Insert)',
+      '08B [Rama Hule/PU]. Forro Lado Soporte (Frame Plate Liner - FPL)',
+      '09. Impulsor Cerrado de 5 Álabes (roscado en flecha tras montar 08A/08B)',
+      '10A [Rama Metal]. Voluta Monolítica de Alto Cromo (1 sola pieza rígida)',
+      '10B [Rama Hule/PU]. Forro Lado Succión (Cover Plate Liner - CPL)',
+      '11. Cuello de Succión Cónico (Throatbush)'
+    ],
+    partsEn: [
+      '08A [Metal Branch]. Frame Plate Liner Insert (FPL Insert)',
+      '08B [Rubber/PU Branch]. Frame Plate Liner (FPL Rear Half)',
+      '09. Closed 5-Vane Impeller (threaded onto shaft after mounting 08A/08B)',
+      '10A [Metal Branch]. Monolithic High Chrome Volute (1-piece shell)',
+      '10B [Rubber/PU Branch]. Cover Plate Liner (CPL Front Half)',
+      '11. Tapered Suction Throatbush'
+    ],
+    roleId: 'revestimientos',
+    lotRatioNoteEs: 'Rotación acoplada 5 Impulsores : 5 Throatbush : 4 Volutas/Liners',
+    lotRatioNoteEn: 'Coupled wear rotation: 5 Impellers : 5 Throatbushes : 4 Volutes/Liners'
+  },
+  {
+    stationNumber: 4,
+    id: 'suction_closure',
+    titleEs: 'Estación 4: Cierre de Carcasa Bipartida y Succión',
+    titleEn: 'Station 4: Split-Casing Closure & Suction Cover Plate',
+    partsEs: ['12. Plato Cubierta Lado Succión (Cover Plate)', '13. Pernos Pasantes de Carcasa y Abrazadera de Descarga'],
+    partsEn: ['12. Suction Side Cover Plate', '13. Casing Through-Bolts & Discharge Clamp'],
+    roleId: 'skid_bomba',
+    lotRatioNoteEs: 'Torque cruzado simétrico de carcasa exterior',
+    lotRatioNoteEn: 'Symmetrical cross-pattern torque on outer split casing'
+  },
+  {
+    stationNumber: 5,
+    id: 'axial_calibration',
+    titleEs: 'Estación 5: Calibración Post-Armado de Claro Axial Frontal (δ = 0.5 – 1.0 mm)',
+    titleEn: 'Station 5: Post-Assembly Front Axial Clearance Calibration (δ = 0.5 – 1.0 mm)',
+    partsEs: ['14. Tornillo Micrométrico del Bearing Assembly: avanzar conjunto hacia succión hasta contacto leve con Throatbush, retroceder 1/2 vuelta (0.5–1.0 mm) y fijar pernos de cuna'],
+    partsEn: ['14. Bearing Assembly Adjusting Screw: advance cartridge toward suction until light rub against Throatbush, back off 1/2 turn (0.5–1.0 mm), and lock cradle bolts'],
+    roleId: 'revestimientos',
+    lotRatioNoteEs: 'Anula el vórtice de recirculación frontal Δην ∝ (δ/b2)^1.5',
+    lotRatioNoteEn: 'Suppresses front-shroud recirculation vortex Δην ∝ (δ/b2)^1.5'
+  }
+];
+
+/**
+ * Evalúa la validez cinemática de una secuencia de armado de bomba de lodos y cuantifica
+ * el impacto del claro axial frontal δ_frontal sobre la eficiencia volumétrica y vida del lote 5-5-4.
+ * Referencias: HyperbolicCurve/Assembly-sequence-planning-algorithm (SHA-256: 8dc91ac2...fb90867c35)
+ * y Gandhi et al. (2001, DOI: 10.1115/1.1366322).
+ *
+ * @param {Object} params
+ * @param {'metal'|'rubber'|'polyurethane'} [params.wetEndBranch='metal']
+ * @param {'expeller_dry'|'gland_water'} [params.sealBranch='expeller_dry']
+ * @param {number} [params.frontClearanceMm=0.75] - Claro axial frontal δ_frontal entre impulsor y throatbush (mm)
+ * @param {number} [params.impellerExitWidthMm=48] - Ancho de salida del impulsor b2 (mm)
+ * @param {string[]} [params.customOrder] - Secuencia opcional para verificar colisiones geométricas Ng
+ */
+export function evaluatePumpAssemblySequence(params = {}) {
+  const branchRaw = String(params.wetEndBranch || 'metal').toLowerCase();
+  const isElastomer = branchRaw === 'rubber' || branchRaw === 'hule' || branchRaw === 'polyurethane' || branchRaw === 'poliuretano';
+  const wetEndBranch = isElastomer ? (branchRaw.includes('poly') || branchRaw.includes('poli') ? 'polyurethane' : 'rubber') : 'metal';
+  const sealBranch = params.sealBranch === 'gland_water' ? 'gland_water' : 'expeller_dry';
+
+  const clearanceMm = clamp(params.frontClearanceMm, 0.1, 8.0, 0.75);
+  const b2Mm = clamp(params.impellerExitWidthMm, 15.0, 180.0, 48.0);
+
+  // Secuencia canónica libre de interferencias (Ng = 0, Ns = 0)
+  const canonicalSequence = wetEndBranch === 'metal'
+    ? ['frame', 'bearing_assembly', 'frame_plate', 'shaft_sleeve', sealBranch, 'fpl_insert', 'impeller', 'monolithic_volute', 'throatbush', 'cover_plate', 'axial_clearance_adjustment']
+    : ['frame', 'bearing_assembly', 'frame_plate', 'shaft_sleeve', sealBranch, 'frame_plate_liner', 'impeller', 'cover_plate_liner', 'throatbush', 'cover_plate', 'axial_clearance_adjustment'];
+
+  const sequenceToTest = Array.isArray(params.customOrder) && params.customOrder.length > 0
+    ? params.customOrder
+    : canonicalSequence;
+
+  // Verificación de Matriz de Interferencia Axial A_{I,-X} y Soporte S:
+  // 1) El plato posterior (fpl_insert o frame_plate_liner) y el sello deben montarse ANTES de roscar el impulsor (D2 > D_hub).
+  // 2) El impulsor debe roscarse ANTES de cerrar la voluta/cover_plate_liner y el throatbush.
+  let geometricInterferencesNg = 0;
+  let unstableSubassembliesNs = 0;
+
+  const idxImpeller = sequenceToTest.indexOf('impeller');
+  const idxRearLiner = sequenceToTest.indexOf(wetEndBranch === 'metal' ? 'fpl_insert' : 'frame_plate_liner');
+  const idxThroatbush = sequenceToTest.indexOf('throatbush');
+  const idxFramePlate = sequenceToTest.indexOf('frame_plate');
+  const idxCoverPlate = sequenceToTest.indexOf('cover_plate');
+
+  if (idxImpeller !== -1 && idxRearLiner !== -1 && idxImpeller < idxRearLiner) {
+    geometricInterferencesNg += 1; // Colisión axial: el plato posterior no puede atravesar el diámetro exterior del impulsor D2
+  }
+  if (idxImpeller !== -1 && idxThroatbush !== -1 && idxThroatbush < idxImpeller) {
+    geometricInterferencesNg += 1; // Colisión axial: el cuello cierra el acceso frontal al impulsor
+  }
+  if (idxRearLiner !== -1 && idxFramePlate !== -1 && idxRearLiner < idxFramePlate) {
+    unstableSubassembliesNs += 1; // Operación inestable: liner sin plato soporte rígido previo
+  }
+  if (idxCoverPlate !== -1 && idxThroatbush !== -1 && idxCoverPlate < idxThroatbush) {
+    geometricInterferencesNg += 1; // Colisión: Cover Plate bloquea inserción del Throatbush
+  }
+
+  // Ley de pérdida volumétrica por recirculación en el claro frontal: Δην = kr * (δ / b2)^1.5 (Gandhi et al., 2001)
+  const kr = 2.85;
+  const volumetricLossFraction = kr * Math.pow(clearanceMm / b2Mm, 1.5);
+  const volumetricEfficiencyDropPct = Number(Math.min(45.0, volumetricLossFraction * 100).toFixed(2));
+  const baselineDropPct = Number((kr * Math.pow(0.75 / b2Mm, 1.5) * 100).toFixed(2));
+  const excessRecirculationRatio = Number((volumetricEfficiencyDropPct / Math.max(0.1, baselineDropPct)).toFixed(2));
+
+  const clearanceStatus = clearanceMm >= 0.5 && clearanceMm <= 1.0
+    ? 'OPTIMAL_CALIBRATION'
+    : (clearanceMm < 0.5 ? 'RUBBING_RISK' : 'EXCESS_RECIRCULATION_WEAR');
+
+  return {
+    wetEndBranch,
+    sealBranch,
+    canonicalSequence,
+    geometricInterferencesNg,
+    unstableSubassembliesNs,
+    isValidAssembly: geometricInterferencesNg === 0 && unstableSubassembliesNs === 0,
+    frontClearanceMm: clearanceMm,
+    optimalClearanceBandMm: [0.5, 1.0],
+    volumetricEfficiencyDropPct,
+    excessRecirculationRatio,
+    clearanceStatus,
+    structuralReasonEs: wetEndBranch === 'metal'
+      ? 'El alto cromo (≥650 HB) posee módulo elástico E ≈ 210 GPa y soporta esfuerzos de membrana en succión como Voluta Monolítica de 1 pieza + FPL Insert posterior + Throatbush frontal.'
+      : 'El hule/poliuretano (E ≈ 0.01–0.05 GPa) requiere respaldo metálico continuo contra colapso por vacío en el ojo de succión, dividiendo la carcasa húmeda en 2 mitades simétricas (Frame Plate Liner + Cover Plate Liner) + Throatbush.',
+    structuralReasonEn: wetEndBranch === 'metal'
+      ? 'High chrome white iron (≥650 HB, E ≈ 210 GPa) resists suction vacuum hoop stresses as a 1-piece Monolithic Volute + rear FPL Insert + front Throatbush.'
+      : 'Elastomers (rubber/polyurethane, E ≈ 0.01–0.05 GPa) require continuous split-casing metal backing against suction vacuum buckling, using 2 symmetrical halves (Frame Plate Liner + Cover Plate Liner) + Throatbush.'
+  };
+}
+
+/**
+ * Catálogo de los 4 Arreglos Cinemáticos de Transmisión para Bombas de Lodos (Arbitraje #7, INV-SMAT-SCI-11)
+ * Referencias visuales Don Manuel: ref2_cv_transmission.jpg (CV) y ref3_how_it_works.jpg (ZVZ/CRZ).
+ */
+export const DRIVE_ARRANGEMENT_CATALOG = {
+  CV: {
+    code: 'CV',
+    nameEs: 'Arreglo CV (Motor Superior / Overhead sobre Bearing Assembly)',
+    nameEn: 'CV Arrangement (Overhead Motor Mounted Above Bearing Assembly)',
+    footprintFactor: 0.55,
+    sumpFloodImmunity: true,
+    beltDriven: true,
+    maxRecommendedMotorKw: 75,
+    applicationEs: 'Montaje compacto con motor elevado sobre cuna superior del Bearing Assembly y guarda amarilla/naranja. Ahorra 45% de huella en piso y protege al motor eléctrico de derrames e inundaciones de pulpa en trincheras.',
+    applicationEn: 'Compact overhead motor cradle mounted above the Bearing Assembly. Saves 45% floor space and protects the electric motor from sump slurry spills and flooding.'
+  },
+  ZVZ: {
+    code: 'ZVZ',
+    nameEs: 'Arreglo ZVZ (Motor Trasero Elevado sobre Bastidor Común)',
+    nameEn: 'ZVZ Arrangement (Elevated Rear Motor on Shared Base Frame)',
+    footprintFactor: 0.85,
+    sumpFloodImmunity: true,
+    beltDriven: true,
+    maxRecommendedMotorKw: 315,
+    applicationEs: 'Motor montado sobre pedestal posterior elevado detrás del Bearing Assembly con transmisión por bandas en V. Ideal para potencias medias y altas manteniendo el motor por encima del nivel de inundación del foso.',
+    applicationEn: 'Motor mounted on an elevated rear pedestal behind the Bearing Assembly with V-belt drive. Ideal for medium-to-high horsepower while keeping the motor above sump flood level.'
+  },
+  CRZ: {
+    code: 'CRZ',
+    nameEs: 'Arreglo CRZ / बेल्ट Lateral (Motor Lateral en Bastidor Compartido)',
+    nameEn: 'CRZ / CR Arrangement (Side-by-Side Belt Drive on Shared Skid)',
+    footprintFactor: 1.0,
+    sumpFloodImmunity: false,
+    beltDriven: true,
+    maxRecommendedMotorKw: 560,
+    applicationEs: 'Motor colocado paralelamente al costado de la bomba sobre base estructural de acero con rieles tensores. Facilita el cambio rápido de poleas (H ∝ N²) para compensar desgaste del impulsor.',
+    applicationEn: 'Motor mounted side-by-side next to the pump on a heavy structural skid with slide rails. Enables rapid sheave ratio changes (H ∝ N²) to compensate for impeller wear.'
+  },
+  DC: {
+    code: 'DC',
+    nameEs: 'Arreglo DC (Acoplamiento Directo Flexible Colineal)',
+    nameEn: 'DC Arrangement (In-Line Direct Flexible Coupling)',
+    footprintFactor: 1.15,
+    sumpFloodImmunity: false,
+    beltDriven: false,
+    maxRecommendedMotorKw: 1000,
+    applicationEs: 'Acoplamiento colineal directo entre motor (con variador de frecuencia VFD) y la flecha del Bearing Assembly. Cero carga radial de bandas sobre los rodamientos (Fr = 0).',
+    applicationEn: 'Collinear direct coupling between motor (with VFD speed control) and Bearing Assembly shaft. Zero V-belt radial overhung load on bearings (Fr = 0).'
+  }
+};
+
+/**
+ * Calcula la cinemática de transmisión por poleas (CV / ZVZ / CRZ / DC), la velocidad periférica
+ * del impulsor u2 (m/s) y la vida nominal ISO 281 L10h del Bearing Assembly con rodamientos de rodillos (p = 10/3).
+ * Referencias Kernel: bijankle/Slurry-Pump-Calc (engine.js), cozy51/BearingLifeCalculator (bearingLife.ts)
+ * y RishiNxp/Belt-Pulley-Calculator (drive.ts).
+ *
+ * @param {Object} params
+ * @param {'CV'|'ZVZ'|'CRZ'|'DC'} [params.arrangement='CV']
+ * @param {number} [params.motorRpm=1780] - Velocidad nominal del motor eléctrico (4 polos 60 Hz = 1780 RPM)
+ * @param {number} [params.driverPulleyMm=180] - Diámetro de paso de polea motriz (motor, mm)
+ * @param {number} [params.drivenPulleyMm=320] - Diámetro de paso de polea conducida (bomba, mm)
+ * @param {number} [params.impellerDiameterMm=380] - Diámetro exterior del impulsor D2 (mm)
+ * @param {number} [params.shaftPowerKw=45] - Potencia en la flecha P (kW)
+ * @param {number} [params.dynamicCapacityCkN=195] - Capacidad de carga dinámica C del Bearing Assembly (kN)
+ */
+export function calculateDriveAndBearingKinematics(params = {}) {
+  const arrKey = String(params.arrangement || 'CV').toUpperCase();
+  const arrangementInfo = DRIVE_ARRANGEMENT_CATALOG[arrKey] || DRIVE_ARRANGEMENT_CATALOG.CV;
+
+  const motorRpm = clamp(params.motorRpm, 600, 3600, 1780);
+  const driverMm = clamp(params.driverPulleyMm, 80, 900, 180);
+  const drivenMm = clamp(params.drivenPulleyMm, 80, 1400, 320);
+  const impellerMm = clamp(params.impellerDiameterMm, 120, 1100, 380);
+  const powerKw = clamp(params.shaftPowerKw, 2.2, 750, 45);
+  const capacityCkN = clamp(params.dynamicCapacityCkN, 45, 950, 195);
+
+  const speedMultiplier = arrangementInfo.beltDriven ? Number((driverMm / drivenMm).toFixed(4)) : 1.0;
+  const reductionRatio = arrangementInfo.beltDriven ? Number((drivenMm / driverMm).toFixed(4)) : 1.0;
+  const pumpRpm = Math.round(motorRpm * speedMultiplier);
+
+  // Velocidad periférica del impulsor: u2 = (π * D_imp * N) / 60 (bijankle/Slurry-Pump-Calc)
+  const tipSpeedMs = Number(((Math.PI * (impellerMm * 1e-3) * pumpRpm) / 60.0).toFixed(2));
+
+  // Tensión y carga radial de bandas en V sobre el voladizo del Bearing Assembly: Fr = kb * (9550 * P_kW) / (N * R_pulley_m)
+  const kbBeltFactor = arrangementInfo.beltDriven ? 2.5 : 0.0;
+  const drivenRadiusM = (drivenMm * 1e-3) / 2.0;
+  const beltRadialLoadKn = arrangementInfo.beltDriven
+    ? Number(((kbBeltFactor * 9550.0 * powerKw) / (Math.max(100, pumpRpm) * drivenRadiusM * 1000.0)).toFixed(2))
+    : 0.0;
+
+  // Carga dinámica equivalente P (kN) sobre rodamientos de rodillos cónicos (empuje hidráulico + carga radial de polea)
+  const hydraulicThrustKn = Number((0.18 * powerKw).toFixed(2));
+  const equivalentLoadPkN = Number(Math.max(4.5, beltRadialLoadKn + 1.5 * hydraulicThrustKn).toFixed(2));
+
+  // Vida nominal ISO 281 para rodamientos de rodillos (exponente p = 10/3, cozy51/BearingLifeCalculator)
+  const rollerExponent = 10.0 / 3.0;
+  const l10MillionRevs = Math.pow(capacityCkN / equivalentLoadPkN, rollerExponent);
+  const bearingL10Hours = Math.round((1_000_000.0 / (60.0 * Math.max(100, pumpRpm))) * l10MillionRevs);
+
+  const rubberSafeTipSpeed = tipSpeedMs <= WET_END_MATERIAL_MATRIX.hule.maxTipSpeedMs;
+
+  return {
+    arrangement: arrangementInfo.code,
+    arrangementNameEs: arrangementInfo.nameEs,
+    arrangementNameEn: arrangementInfo.nameEn,
+    sumpFloodImmunity: arrangementInfo.sumpFloodImmunity,
+    footprintFactor: arrangementInfo.footprintFactor,
+    motorRpm,
+    pumpRpm,
+    speedMultiplier,
+    reductionRatio,
+    impellerDiameterMm: impellerMm,
+    tipSpeedMs,
+    rubberSafeTipSpeed,
+    recommendedWetMaterialByTipSpeed: rubberSafeTipSpeed ? 'Hule Natural / Poliuretano / Alto Cromo' : 'Exclusivo Alto Cromo ≥ 650 HB (u2 > 24.5 m/s)',
+    beltRadialLoadKn,
+    equivalentLoadPkN,
+    bearingL10Hours
+  };
+}
+
+

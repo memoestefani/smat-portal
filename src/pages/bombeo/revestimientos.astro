@@ -65,11 +65,22 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
             <p>
               El <strong>cuello</strong> y el <strong>impulsor</strong> trabajan con una holgura frontal reducida y presentan mayor frecuencia de recambio que la voluta. Configurar su pedido por lote (ej. 5 impulsores + 5 cuellos + 4 volutas) evita instalar un impulsor nuevo contra un cuello desgastado.
             </p>
-            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light);">
-              <a href="/#rfq?equipo=revestimientos" class="btn btn-primary" style="width: 100%;">Cotizar Lote de Contacto Húmedo →</a>
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light); display: flex; flex-direction: column; gap: 0.6rem;">
+              <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=voluta_liners#rfq" class="btn btn-primary" style="width: 100%; text-align: center;">Cotizar Lote de Contacto Húmedo →</a>
+              <a href="/bombeo/#como-se-arma-una-bomba" class="btn btn-outline" style="width: 100%; text-align: center;">Ver Reporte de Armado y Despiece →</a>
             </div>
           </div>
         </div>
+      </div>
+
+      <div style="margin-top: 2.25rem;">
+        <h2>Comparativa de Kits por Material: Alto Cromo (≥650 HB), Hule Natural y Poliuretano</h2>
+        <TechnicalDiagrams diagram="material_kit_grid" lang="es" />
+      </div>
+
+      <div style="margin-top: 2.25rem;">
+        <h2>Calibración de Throatbush y Claro Axial Frontal (δ = 0.5–1.0 mm)</h2>
+        <TechnicalDiagrams diagram="suction_throatbush" lang="es" />
       </div>
 
       <SharePurchasing

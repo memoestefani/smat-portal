@@ -3,7 +3,20 @@
 // Diagramas técnicos esquemáticos en línea (CAD/corte técnico) para bombas para lodos, piezas de contacto húmedo,
 // Bearing Assembly / Housing, mecanismos de flotación/acondicionadores, filtros prensa y balanzas Marcy.
 
-type DiagramKind = 'pump' | 'impeller' | 'liners' | 'bearing' | 'expeller' | 'flotation' | 'filter' | 'marcy' | 'batch_filter' | 'sieves';
+type DiagramKind =
+  | 'pump'
+  | 'impeller'
+  | 'liners'
+  | 'bearing'
+  | 'expeller'
+  | 'flotation'
+  | 'filter'
+  | 'marcy'
+  | 'batch_filter'
+  | 'sieves'
+  | 'drive_arrangements'
+  | 'material_kit_grid'
+  | 'suction_throatbush';
 
 interface Props {
   diagram?: DiagramKind;
@@ -30,6 +43,9 @@ const isEs = lang === 'es';
       {diagram === 'marcy' && (isEs ? 'INSTRUMENTACIÓN DE PLANTA • BALANZA DE DENSIDAD DE PULPA (MARCY)' : 'PLANT INSTRUMENTATION • PULP DENSITY SCALE (MARCY)')}
       {diagram === 'batch_filter' && (isEs ? 'CONTROL METALÚRGICO • FILTRO DE PRESIÓN BATCH DE LABORATORIO' : 'METALLURGICAL CONTROL • LABORATORY BATCH PRESSURE FILTER')}
       {diagram === 'sieves' && (isEs ? 'GRANULOMETRÍA • TAMICES CERTIFICADOS ASTM E11 / ISO 3310' : 'PARTICLE SIZING • ASTM E11 / ISO 3310 CERTIFIED TEST SIEVES')}
+      {diagram === 'drive_arrangements' && (isEs ? 'CONFIGURACIÓN DE TRANSMISIÓN EN SKID • ARREGLOS CV / ZVZ / CRZ / DC' : 'SKID DRIVE CONFIGURATIONS • CV / ZVZ / CRZ / DC ARRANGEMENTS')}
+      {diagram === 'material_kit_grid' && (isEs ? 'COMPARATIVA DE LOTES 5-5-4 • ALTO CROMO (≥650 HB) VS. HULE NATURAL VS. POLIURETANO' : '5-5-4 WET-END KIT COMPARISON • HIGH CHROME (≥650 HB) VS. NATURAL RUBBER VS. POLYURETHANE')}
+      {diagram === 'suction_throatbush' && (isEs ? 'GEOMETRÍA DE SUCCIÓN Y CALIBRACIÓN AXIAL • THROATBUSH + IMPULSOR (δ = 0.5–1.0 MM)' : 'SUCTION GEOMETRY & AXIAL CALIBRATION • THROATBUSH + IMPELLER (δ = 0.5–1.0 MM)')}
     </span>
     <span class="tech-diagram-scale">CAD 1:1 REF</span>
   </div>
@@ -413,6 +429,258 @@ const isEs = lang === 'es';
           <text x="330" y="136" fill="#0d78c6">{isEs ? '4. CORTE P80 DE CONTROL (#200 / 75 MICRONES)' : '4. PRIMARY P80 CONTROL MESH (#200 / 75 MICRONS)'}</text>
           <text x="330" y="170">{isEs ? '5. MALLAS ULTRA-FINAS HASTA #635 (20 MICRONES)' : '5. ULTRA-FINE MESHES DOWN TO #635 (20 MICRONS)'}</text>
           <text x="330" y="206" fill="#475569">{isEs ? '6. CAZUELA COLECTORA + TAMIZADOR MECÁNICO' : '6. RECEIVER PAN + MECHANICAL SIEVE SHAKER'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'drive_arrangements' && (
+      <svg viewBox="0 0 680 280" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid-drives" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
+          </pattern>
+        </defs>
+        <rect width="680" height="280" fill="url(#grid-drives)" />
+
+        <!-- Cuadrante 1: Arreglo CV (Motor Superior sobre Bastidor - Piggyback) -->
+        <g transform="translate(14, 12)">
+          <rect x="0" y="0" width="154" height="248" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
+          <rect x="8" y="8" width="44" height="20" rx="3" fill="#0d78c6" />
+          <text x="30" y="22" text-anchor="middle" font-family="SF Mono, monospace" font-size="10.5" font-weight="800" fill="#ffffff">CV</text>
+          <text x="58" y="21" font-family="SF Mono, monospace" font-size="9" font-weight="700" fill="#0f172a">{isEs ? 'MOTOR SUPERIOR' : 'OVERHEAD MOTOR'}</text>
+          <!-- Skid Base -->
+          <rect x="16" y="182" width="122" height="12" rx="2" fill="#334155" />
+          <!-- Casing Wet-End (Izquierda) -->
+          <circle cx="42" cy="148" r="24" fill="#dbeafe" stroke="#0d78c6" stroke-width="2.2" />
+          <circle cx="42" cy="148" r="9" fill="#0f172a" />
+          <rect x="34" y="112" width="16" height="14" fill="#dbeafe" stroke="#0d78c6" stroke-width="2" />
+          <!-- Bearing Housing + Pedestal -->
+          <rect x="66" y="140" width="54" height="20" rx="3" fill="#94a3b8" stroke="#0f172a" stroke-width="2" />
+          <rect x="74" y="160" width="38" height="22" fill="#cbd5e1" stroke="#0f172a" stroke-width="1.8" />
+          <!-- Soporte Piggyback + Motor Arriba -->
+          <line x1="78" y1="98" x2="78" y2="140" stroke="#475569" stroke-width="3" />
+          <line x1="112" y1="98" x2="112" y2="140" stroke="#475569" stroke-width="3" />
+          <rect x="68" y="64" width="52" height="32" rx="4" fill="#fef3c7" stroke="#c25e00" stroke-width="2.2" />
+          <!-- Guarda y Poleas V-Belt Vertical -->
+          <rect x="122" y="72" width="14" height="84" rx="5" fill="#fde68a" stroke="#b45309" stroke-width="1.8" stroke-dasharray="3 2" />
+          <text x="12" y="212" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#0f172a">{isEs ? '• Huella mínima en planta' : '• Minimal floor footprint'}</text>
+          <text x="12" y="226" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#c25e00">{isEs ? '• Bandas V + Guarda OSHA' : '• V-Belt + OSHA Guard'}</text>
+          <text x="12" y="240" font-family="SF Mono, monospace" font-size="8" font-weight="600" fill="#475569">{isEs ? '• F_radial por tensión banda' : '• Belt radial overhung load'}</text>
+        </g>
+
+        <!-- Cuadrante 2: Arreglo ZVZ (Motor Trasero Elevado) -->
+        <g transform="translate(180, 12)">
+          <rect x="0" y="0" width="154" height="248" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
+          <rect x="8" y="8" width="44" height="20" rx="3" fill="#0d78c6" />
+          <text x="30" y="22" text-anchor="middle" font-family="SF Mono, monospace" font-size="10.5" font-weight="800" fill="#ffffff">ZVZ</text>
+          <text x="58" y="21" font-family="SF Mono, monospace" font-size="9" font-weight="700" fill="#0f172a">{isEs ? 'TRASERO ELEVADO' : 'REAR ELEVATED'}</text>
+          <!-- Skid Base Largo -->
+          <rect x="10" y="182" width="134" height="12" rx="2" fill="#334155" />
+          <!-- Casing Wet-End -->
+          <circle cx="34" cy="148" r="22" fill="#dbeafe" stroke="#0d78c6" stroke-width="2.2" />
+          <circle cx="34" cy="148" r="8" fill="#0f172a" />
+          <!-- Bearing Housing -->
+          <rect x="56" y="140" width="42" height="18" rx="3" fill="#94a3b8" stroke="#0f172a" stroke-width="2" />
+          <rect x="62" y="158" width="30" height="24" fill="#cbd5e1" stroke="#0f172a" stroke-width="1.8" />
+          <!-- Pedestal Trasero Elevado + Motor -->
+          <rect x="104" y="138" width="34" height="44" fill="#cbd5e1" stroke="#0f172a" stroke-width="1.8" />
+          <rect x="100" y="106" width="40" height="30" rx="4" fill="#fef3c7" stroke="#c25e00" stroke-width="2.2" />
+          <!-- Banda V Diagonal -->
+          <line x1="96" y1="148" x2="108" y2="120" stroke="#b45309" stroke-width="4" stroke-linecap="round" />
+          <text x="12" y="212" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#0f172a">{isEs ? '• Motor alejado de salpicadura' : '• Motor clear of splash zone'}</text>
+          <text x="12" y="226" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#c25e00">{isEs ? '• Potencias medias y altas' : '• Medium & high horsepower'}</text>
+          <text x="12" y="240" font-family="SF Mono, monospace" font-size="8" font-weight="600" fill="#475569">{isEs ? '• Ajuste de centros por riel' : '• Slide-rail center adjustment'}</text>
+        </g>
+
+        <!-- Cuadrante 3: Arreglo CRZ (Motor Lateral Paralelo / Side-by-Side) -->
+        <g transform="translate(346, 12)">
+          <rect x="0" y="0" width="154" height="248" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
+          <rect x="8" y="8" width="44" height="20" rx="3" fill="#0d78c6" />
+          <text x="30" y="22" text-anchor="middle" font-family="SF Mono, monospace" font-size="10.5" font-weight="800" fill="#ffffff">CRZ</text>
+          <text x="58" y="21" font-family="SF Mono, monospace" font-size="9" font-weight="700" fill="#0f172a">{isEs ? 'LATERAL EN SKID' : 'SIDE-BY-SIDE'}</text>
+          <!-- Vista en planta/isométrica de Skid Ancho -->
+          <rect x="14" y="68" width="126" height="122" rx="4" fill="#e2e8f0" stroke="#334155" stroke-width="2" />
+          <!-- Tren Bomba (Arriba en plano) -->
+          <rect x="24" y="82" width="32" height="36" rx="4" fill="#dbeafe" stroke="#0d78c6" stroke-width="2" />
+          <rect x="58" y="88" width="48" height="24" rx="3" fill="#94a3b8" stroke="#0f172a" stroke-width="2" />
+          <!-- Tren Motor (Abajo en plano, paralelo) -->
+          <rect x="52" y="138" width="54" height="34" rx="4" fill="#fef3c7" stroke="#c25e00" stroke-width="2.2" />
+          <!-- Guarda de Bandas Lateral Derecha -->
+          <rect x="110" y="86" width="18" height="86" rx="4" fill="#fde68a" stroke="#b45309" stroke-width="2" />
+          <text x="12" y="212" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#0f172a">{isEs ? '• Centro de gravedad bajo' : '• Low center of gravity'}</text>
+          <text x="12" y="226" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#c25e00">{isEs ? '• Fácil acceso a grúa viajera' : '• Unobstructed overhead crane'}</text>
+          <text x="12" y="240" font-family="SF Mono, monospace" font-size="8" font-weight="600" fill="#475569">{isEs ? '• Guarda perimetral completa' : '• Full perimeter belt guard'}</text>
+        </g>
+
+        <!-- Cuadrante 4: Arreglo DC (Acoplamiento Directo en Línea - E_belt = 0 N) -->
+        <g transform="translate(512, 12)">
+          <rect x="0" y="0" width="154" height="248" rx="6" fill="#f0fdf4" stroke="#86efac" stroke-width="1.8" />
+          <rect x="8" y="8" width="44" height="20" rx="3" fill="#15803d" />
+          <text x="30" y="22" text-anchor="middle" font-family="SF Mono, monospace" font-size="10.5" font-weight="800" fill="#ffffff">DC</text>
+          <text x="58" y="21" font-family="SF Mono, monospace" font-size="9" font-weight="700" fill="#14532d">{isEs ? 'DIRECTO INLINE' : 'DIRECT INLINE'}</text>
+          <!-- Skid Base Lineal -->
+          <rect x="10" y="182" width="134" height="12" rx="2" fill="#334155" />
+          <!-- Casing Wet-End -->
+          <circle cx="30" cy="148" r="20" fill="#dbeafe" stroke="#0d78c6" stroke-width="2.2" />
+          <circle cx="30" cy="148" r="7" fill="#0f172a" />
+          <!-- Bearing Housing -->
+          <rect x="50" y="140" width="36" height="18" rx="3" fill="#94a3b8" stroke="#0f172a" stroke-width="2" />
+          <rect x="54" y="158" width="28" height="24" fill="#cbd5e1" stroke="#0f172a" stroke-width="1.8" />
+          <!-- Coples Flexibles Alineados -->
+          <rect x="88" y="141" width="14" height="16" rx="2" fill="#22c55e" stroke="#14532d" stroke-width="1.8" />
+          <!-- Motor en línea con VFD -->
+          <rect x="104" y="132" width="38" height="32" rx="4" fill="#dcfce7" stroke="#15803d" stroke-width="2.2" />
+          <rect x="110" y="164" width="26" height="18" fill="#cbd5e1" stroke="#0f172a" stroke-width="1.8" />
+          <text x="12" y="212" font-family="SF Mono, monospace" font-size="8.5" font-weight="800" fill="#15803d">{isEs ? '• Tensión radial E_belt = 0 N' : '• Zero belt radial load (0 N)'}</text>
+          <text x="12" y="226" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#0f172a">{isEs ? '• Máxima vida L₁₀h (ISO 281)' : '• Max bearing life L₁₀h (ISO 281)'}</text>
+          <text x="12" y="240" font-family="SF Mono, monospace" font-size="8" font-weight="600" fill="#475569">{isEs ? '• Ideal con variador VFD' : '• Optimal with VFD speed control'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'material_kit_grid' && (
+      <svg viewBox="0 0 680 275" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid-matkit" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
+          </pattern>
+        </defs>
+        <rect width="680" height="275" fill="url(#grid-matkit)" />
+
+        <!-- Columna 1: Alto Cromo Cr27% (≥650 HB) - Azul / Gris Metálico -->
+        <g transform="translate(14, 12)">
+          <rect x="0" y="0" width="208" height="250" rx="6" fill="#f8fafc" stroke="#0d78c6" stroke-width="2" />
+          <rect x="0" y="0" width="208" height="28" rx="6" fill="#0d78c6" />
+          <text x="104" y="18" text-anchor="middle" font-family="SF Mono, monospace" font-size="10" font-weight="800" fill="#ffffff">{isEs ? '1. ALTO CROMO Cr27% (≥650 HB)' : '1. HIGH CHROME Cr27% (≥650 HB)'}</text>
+          <!-- Voluta Monolítica Metálica -->
+          <circle cx="56" cy="86" r="34" fill="#cbd5e1" stroke="#1e3a8a" stroke-width="2.5" />
+          <circle cx="56" cy="86" r="14" fill="#f8fafc" stroke="#1e3a8a" stroke-width="2" />
+          <rect x="44" y="42" width="24" height="14" fill="#94a3b8" stroke="#1e3a8a" stroke-width="2" />
+          <text x="56" y="134" text-anchor="middle" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#1e3a8a">{isEs ? 'VOLUTA MONOLÍTICA' : 'MONOLITHIC VOLUTE'}</text>
+          <!-- Impulsor 5 Álabes + Throatbush + FPL Insert -->
+          <circle cx="152" cy="76" r="26" fill="#93c5fd" stroke="#1e3a8a" stroke-width="2.2" />
+          <circle cx="152" cy="76" r="8" fill="#1e3a8a" />
+          <path d="M 152 50 Q 168 64 166 76 M 178 76 Q 164 92 152 90 M 152 102 Q 136 88 138 76 M 126 76 Q 140 60 152 62" fill="none" stroke="#1e3a8a" stroke-width="2" />
+          <circle cx="132" cy="118" r="13" fill="#dbeafe" stroke="#0d78c6" stroke-width="2" />
+          <circle cx="172" cy="118" r="13" fill="#e2e8f0" stroke="#334155" stroke-width="2" />
+          <text x="152" y="144" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="700" fill="#0f172a">{isEs ? 'IMPULSOR + TB + FPL INSERT' : 'IMPELLER + TB + FPL INSERT'}</text>
+          <!-- Especificaciones Empíricas -->
+          <line x1="12" y1="154" x2="196" y2="154" stroke="#cbd5e1" stroke-width="1" />
+          <text x="12" y="172" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#0f172a">{isEs ? '• Norma: ASTM A532 Clase III Tipo A' : '• Spec: ASTM A532 Class III Type A'}</text>
+          <text x="12" y="188" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#0d78c6">{isEs ? '• Servicio: Molienda Primaria / SAG' : '• Duty: Primary Mill / Cyclone Feed'}</text>
+          <text x="12" y="204" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#0f172a">{isEs ? '• Límite: Impacto severo d₅₀ > 6 mm' : '• Limit: Coarse impact d₅₀ > 6 mm'}</text>
+          <text x="12" y="220" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#475569">{isEs ? '• Rango pH: 4.0 a 12.0 | T ≤ 110 °C' : '• pH Range: 4.0 to 12.0 | T ≤ 110 °C'}</text>
+          <text x="12" y="238" font-family="SF Mono, monospace" font-size="8" font-weight="800" fill="#1e3a8a">{isEs ? 'DESPIECE: 4 PIEZAS DE RECAMBIO' : 'KIT: 4 WET-END WEAR PARTS'}</text>
+        </g>
+
+        <!-- Columna 2: Hule Natural Vulcanizado (55–65 Shore A) - Negro Mate -->
+        <g transform="translate(236, 12)">
+          <rect x="0" y="0" width="208" height="250" rx="6" fill="#f8fafc" stroke="#1e293b" stroke-width="2" />
+          <rect x="0" y="0" width="208" height="28" rx="6" fill="#0f172a" />
+          <text x="104" y="18" text-anchor="middle" font-family="SF Mono, monospace" font-size="10" font-weight="800" fill="#ffffff">{isEs ? '2. HULE NATURAL (55–65 SHORE A)' : '2. NATURAL RUBBER (55–65 SHORE A)'}</text>
+          <!-- Liners Bipartidos CPL + FPL con Pernos -->
+          <circle cx="48" cy="82" r="28" fill="#1e293b" stroke="#475569" stroke-width="2.2" />
+          <circle cx="48" cy="82" r="11" fill="#f8fafc" />
+          <circle cx="92" cy="82" r="28" fill="#334155" stroke="#0f172a" stroke-width="2.2" />
+          <circle cx="92" cy="82" r="10" fill="#94a3b8" />
+          <text x="70" y="128" text-anchor="middle" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#0f172a">{isEs ? 'LINERS CPL + FPL (2 MITADES)' : 'SPLIT LINERS CPL + FPL'}</text>
+          <!-- Impulsor Hule + Throatbush Hule -->
+          <circle cx="162" cy="76" r="24" fill="#0f172a" stroke="#475569" stroke-width="2" />
+          <circle cx="162" cy="76" r="7" fill="#cbd5e1" />
+          <circle cx="162" cy="118" r="13" fill="#1e293b" stroke="#64748b" stroke-width="2" />
+          <text x="162" y="144" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="700" fill="#0f172a">{isEs ? 'IMPULSOR + THROATBUSH' : 'IMPELLER + THROATBUSH'}</text>
+          <!-- Especificaciones Empíricas -->
+          <line x1="12" y1="154" x2="196" y2="154" stroke="#cbd5e1" stroke-width="1" />
+          <text x="12" y="172" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#0f172a">{isEs ? '• Alma: Acero con pernos vulcanizados' : '• Core: Molded steel backing & studs'}</text>
+          <text x="12" y="188" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#0d78c6">{isEs ? '• Servicio: Colas / Relaves y Flotación' : '• Duty: Fine Tailings & Flotation'}</text>
+          <text x="12" y="204" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#b45309">{isEs ? '• Límite: d₅₀ ≤ 5 mm | v_tip ≤ 27.5 m/s' : '• Limit: d₅₀ ≤ 5 mm | v_tip ≤ 27.5 m/s'}</text>
+          <text x="12" y="220" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#475569">{isEs ? '• Rango pH: 1.5 a 11.0 | T ≤ 75 °C' : '• pH Range: 1.5 to 11.0 | T ≤ 75 °C'}</text>
+          <text x="12" y="238" font-family="SF Mono, monospace" font-size="8" font-weight="800" fill="#0f172a">{isEs ? 'DESPIECE: CPL + FPL + IMP + TB' : 'KIT: CPL + FPL + IMPELLER + TB'}</text>
+        </g>
+
+        <!-- Columna 3: Poliuretano Elastómero (85–95 Shore A) - Amarillo / Rojo -->
+        <g transform="translate(458, 12)">
+          <rect x="0" y="0" width="208" height="250" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="2" />
+          <rect x="0" y="0" width="208" height="28" rx="6" fill="#d97706" />
+          <text x="104" y="18" text-anchor="middle" font-family="SF Mono, monospace" font-size="10" font-weight="800" fill="#ffffff">{isEs ? '3. POLIURETANO (85–95 SHORE A)' : '3. POLYURETHANE (85–95 SHORE A)'}</text>
+          <!-- Liners Poliuretano Amarillo y Rojo -->
+          <circle cx="48" cy="82" r="28" fill="#facc15" stroke="#b45309" stroke-width="2.2" />
+          <circle cx="48" cy="82" r="11" fill="#fffbeb" />
+          <circle cx="92" cy="82" r="28" fill="#ef4444" stroke="#991b1b" stroke-width="2.2" />
+          <circle cx="92" cy="82" r="10" fill="#fef2f2" />
+          <text x="70" y="128" text-anchor="middle" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#92400e">{isEs ? 'LINERS PU (AMARILLO / ROJO)' : 'PU LINERS (YELLOW / RED)'}</text>
+          <!-- Impulsor PU + Throatbush PU -->
+          <circle cx="162" cy="76" r="24" fill="#f59e0b" stroke="#92400e" stroke-width="2" />
+          <circle cx="162" cy="76" r="7" fill="#fffbeb" />
+          <circle cx="162" cy="118" r="13" fill="#dc2626" stroke="#7f1d1d" stroke-width="2" />
+          <text x="162" y="144" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="700" fill="#92400e">{isEs ? 'IMPULSOR + THROATBUSH PU' : 'PU IMPELLER + THROATBUSH'}</text>
+          <!-- Especificaciones Empíricas -->
+          <line x1="12" y1="154" x2="196" y2="154" stroke="#fde68a" stroke-width="1.2" />
+          <text x="12" y="172" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#0f172a">{isEs ? '• Resistencia: Corte e hidrocarburos' : '• Resistance: Cut, tear & reagents'}</text>
+          <text x="12" y="188" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#b45309">{isEs ? '• Servicio: Ciclones y Espumas' : '• Duty: Hydrocyclones & Froth'}</text>
+          <text x="12" y="204" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#0f172a">{isEs ? '• Límite: d₅₀ ≤ 8 mm | v_tip ≤ 30 m/s' : '• Limit: d₅₀ ≤ 8 mm | v_tip ≤ 30 m/s'}</text>
+          <text x="12" y="220" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#475569">{isEs ? '• Rango pH: 1.0 a 12.0 | T ≤ 70 °C' : '• pH Range: 1.0 to 12.0 | T ≤ 70 °C'}</text>
+          <text x="12" y="238" font-family="SF Mono, monospace" font-size="8" font-weight="800" fill="#b45309">{isEs ? 'DESPIECE: INTERCAMBIABLE CON HULE' : 'KIT: DROP-IN SWAP WITH RUBBER'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'suction_throatbush' && (
+      <svg viewBox="0 0 680 265" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid-suction" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
+          </pattern>
+        </defs>
+        <rect width="680" height="265" fill="url(#grid-suction)" />
+
+        <!-- Vista Frontal de Boca de Succión (Izquierda) -->
+        <g transform="translate(22, 16)">
+          <circle cx="110" cy="115" r="96" fill="#1e3a8a" stroke="#0f172a" stroke-width="2.5" />
+          <circle cx="110" cy="115" r="78" fill="#0d78c6" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="6 4" />
+          <!-- Anillo Throatbush (Superficie Cónica Frontal) -->
+          <circle cx="110" cy="115" r="62" fill="#cbd5e1" stroke="#0f172a" stroke-width="2.5" />
+          <!-- Ojo del Impulsor y 5 Álabes visibles al fondo -->
+          <circle cx="110" cy="115" r="44" fill="#eff6ff" stroke="#1e3a8a" stroke-width="2.2" />
+          <path d="M 110 71 Q 135 90 128 115 M 154 115 Q 130 140 110 132 M 110 159 Q 85 138 92 115 M 66 115 Q 88 88 110 96 M 138 82 Q 132 108 110 115" fill="none" stroke="#c25e00" stroke-width="3" stroke-linecap="round" />
+          <circle cx="110" cy="115" r="14" fill="#0f172a" />
+          <!-- Barrenos de Brida de Succión -->
+          <circle cx="110" cy="28" r="5" fill="#ffffff" />
+          <circle cx="110" cy="202" r="5" fill="#ffffff" />
+          <circle cx="23" cy="115" r="5" fill="#ffffff" />
+          <circle cx="197" cy="115" r="5" fill="#ffffff" />
+          <circle cx="48" cy="53" r="5" fill="#ffffff" />
+          <circle cx="172" cy="53" r="5" fill="#ffffff" />
+          <circle cx="48" cy="177" r="5" fill="#ffffff" />
+          <circle cx="172" cy="177" r="5" fill="#ffffff" />
+        </g>
+
+        <!-- Corte Axial de Calibración de Claro Frontal δ = 0.5 a 1.0 mm (Centro-Derecha) -->
+        <g transform="translate(262, 22)">
+          <rect x="0" y="0" width="396" height="220" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
+          <!-- Throatbush (Izquierda del corte) -->
+          <path d="M 28 38 L 68 38 L 82 78 L 82 152 L 68 182 L 28 182 Z" fill="#cbd5e1" stroke="#0f172a" stroke-width="2.2" />
+          <text x="52" y="114" text-anchor="middle" font-family="SF Mono, monospace" font-size="9" font-weight="800" fill="#0f172a">TB</text>
+          <!-- Gap / Claro Axial Frontal δ (Franja Naranja Crítica) -->
+          <rect x="83" y="42" width="10" height="136" fill="#fef3c7" stroke="#c25e00" stroke-width="1.8" stroke-dasharray="3 2" />
+          <!-- Impulsor (Derecha del corte) -->
+          <path d="M 94 38 L 154 38 L 154 182 L 94 182 L 94 142 L 128 132 L 128 88 L 94 78 Z" fill="#dbeafe" stroke="#0d78c6" stroke-width="2.2" />
+          <text x="126" y="64" text-anchor="middle" font-family="SF Mono, monospace" font-size="9" font-weight="800" fill="#1e3a8a">IMP</text>
+          <!-- Flecha de Ajuste Axial desde el Bearing Assembly -->
+          <line x1="192" y1="110" x2="158" y2="110" stroke="#15803d" stroke-width="3.5" />
+          <polygon points="156,110 166,104 166,116" fill="#15803d" />
+          <!-- Etiquetas Técnicas de Calibración -->
+          <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+            <text x="172" y="34" fill="#c25e00">{isEs ? '1. CLARO AXIAL FRONTAL (δ = 0.5–1.0 MM)' : '1. FRONT AXIAL CLEARANCE (δ = 0.5–1.0 MM)'}</text>
+            <text x="172" y="52" font-size="9" fill="#475569">{isEs ? '• Ley Q_rec ∝ δ^1.5 (Gulich / Stepanoff)' : '• Leakage law Q_rec ∝ δ^1.5 (Gulich)'}</text>
+            <text x="172" y="76" fill="#0d78c6">{isEs ? '2. ANILLO THROATBUSH (BOCA DE SUCCIÓN)' : '2. THROATBUSH WEAR RING (SUCTION EYE)'}</text>
+            <text x="172" y="94" font-size="9" fill="#475569">{isEs ? '• Sella contra cara frontal del impulsor' : '• Mates against impeller front shroud'}</text>
+            <text x="200" y="114" fill="#15803d">{isEs ? '3. CALIBRACIÓN EXTERNA SIN DESARMAR' : '3. EXTERNAL ADJUSTMENT (NO DISASSEMBLY)'}</text>
+            <text x="172" y="134" font-size="9" fill="#475569">{isEs ? '• Tornillo tensor bajo el Bearing Assembly' : '• Adjusting screw under Bearing Cartridge'}</text>
+            <text x="172" y="160" fill="#b91c1c">{isEs ? '4. UMBRAL DE REEMPLAZO (δ > 3.5 MM)' : '4. REPLACEMENT THRESHOLD (δ > 3.5 MM)'}</text>
+            <text x="172" y="178" font-size="9" fill="#475569">{isEs ? '• Evita pérdida de 12–18% de eficiencia' : '• Prevents 12–18% hydraulic efficiency drop'}</text>
+            <text x="172" y="202" font-size="9" fill="#0f172a">{isEs ? '• Opciones: Alto Cromo Cr27%, Hule o PU' : '• Options: High Chrome Cr27%, Rubber or PU'}</text>
+          </g>
         </g>
       </svg>
     )}

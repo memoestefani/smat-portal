@@ -159,6 +159,13 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
       (function() {
         try {
           var path = window.location.pathname;
+          var hash = window.location.hash || '';
+          if ((path === '/' || path === '/en' || path === '/en/') && hash.indexOf('#rfq') === 0) {
+            var hashQuery = hash.indexOf('?') !== -1 ? hash.substring(hash.indexOf('?')) : (window.location.search || '');
+            var destBase = path.indexOf('/en') === 0 ? '/en/quote/' : '/cotizar/';
+            window.location.replace(destBase + hashQuery + '#rfq');
+            return;
+          }
           var stored = localStorage.getItem('smat_locale_pref');
           var userLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
           

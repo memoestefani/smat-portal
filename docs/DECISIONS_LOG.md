@@ -337,3 +337,19 @@
 
 
 
+
+---
+
+## 🛠️ Matriz de Decisiones Estratégicas B2B — Vigésimo Quinta Ola (v3.4): Pieza Primero, Cero Rollo y Reporte Interactivo de Armado de Bomba (2 de Noviembre de 2026)
+
+| # | Decisión | Alternativa Seleccionada | Justificación Técnica y Operativa |
+|---|---|---|---|
+| **1-C+** | Portada "Pieza Primero, Cero Rollo" | **Hero de 1 Línea sin `<p class="hero-lead">` + Chips de Piezas Clicables** | Se elimina el párrafo redundante en el Hero de `/` y `/en/` y se integran `.part-chip` clicables dentro de las 3 puertas para que el comprador que ya sabe qué pieza busca salte directo a cotizar. |
+| **2-C+** | Sistema Visual Soberano | **13 Láminas Vectoriales CAD en `TechnicalDiagrams.astro`** | Incorporación de `drive_arrangements` (`CV`, `ZVZ`, `CRZ`, `DC`), `material_kit_grid` y `suction_throatbush` con 0 riesgo de derechos de autor ni reclamos de marca. |
+| **3-C+** | Reporte de Cómo se Arma una Bomba | **`<PumpAssemblyReport />` con Bifurcación Wet-End y Calibración Axial** | Secuencia interactiva de 5 estaciones de armado que distingue el armado metálico (`Voluta Monolítica + FPL Insert`) del elastomérico (`FPL + CPL`), detalla el sello centrífugo seco (*Expeller*) y la calibración pos-ensamble del claro axial frontal ($\delta = 0.5\text{–}1.0\text{ mm}$), con tabla BOM de 14 componentes. |
+| **4-C+** | Muestrario de Spare Parts por Material | **Mosaico Visual Comparativo (Alto Cromo $\ge 650\text{ HB}$, Hule Natural, Poliuretano)** | Contraste visual y operativo por tamaño de partícula $d_{50}$, velocidad periférica $v_{\text{tip}}$ y pH en `/bombeo/` y `/en/pumping/`. |
+| **5-C+** | Arreglos de Transmisión V-Belt | **Selector Visual `CV` • `ZVZ` • `CRZ` • `DC` y Cinemática ISO 281** | Diagrama comparativo y tarjetas en `/bombeo/skid/` y `/en/pumping/skid/`, respaldados por `calculateDriveKinematics` en `slurryEngine.js`. |
+| **6-C+** | Fontanería Determinista de Enlaces | **Erradicación del 100% de Enlaces `/#rfq` Huérfanos hacia `/cotizar/` y `/en/quote/`** | Migración de los 66 enlaces legados en componentes y páginas hacia la ruta dedicada del cotizador + redirección defensiva en `BaseLayout.astro`. |
+| **7-C+** | Poda de Prosa en Subpáginas | **Fichas de Ingeniería Escaneables en 5 Segundos** | Subpáginas de `/bombeo/*` y `/en/pumping/*` enfocadas en lámina técnica, tabla de parámetros y enlace directo a la estación correspondiente del Reporte de Armado. |
+| **8-C+** | Selección Directa en 1 Clic | **`<QuickPartSelectorStrip />` en Bombeo y Cotizador** | Cinta superior de acceso rápido para compradores expertos + hidratación de `pieza`, `material`, `transmision` y `estacion` en `QuoteWizard.astro` y `workbenchBus.js`. |
+| **Calidad** | Verificación Integral con `ortho` y Suite Completa | **172 Tests Node Green (160 B2B + 12 Slurry), 21 Gates Rust, 0 Errores Astro Check** | Verificación determinista con `ortho` CLI/MCP, `cargo test` y `npm run preflight` sin uso de navegador. |

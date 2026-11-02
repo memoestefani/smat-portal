@@ -68,3 +68,11 @@ El sitio web de **SMAT Minerals (`smatminerals.com`)** está concebido como una 
 
 
 
+
+## 4. Actualización Arquitectónica v3.4 ("Pieza Primero, Cero Rollo y Reporte de Armado de Bomba")
+- **Cero Enlaces Huérfanos `/#rfq`:** 100% de los enlaces de cotización apuntan a `/cotizar/?...#rfq` y `/en/quote/?...#rfq`, respaldados por redirección defensiva en `BaseLayout.astro`.
+- **Componentes de Ingeniería de Campo:**
+  - `src/components/QuickPartSelectorStrip.astro`: Selección directa en 1 clic de las 7 piezas/conjuntos críticos.
+  - `src/components/PumpAssemblyReport.astro`: Reporte interactivo de 5 estaciones de armado con bifurcación constructiva (`Alto Cromo Cr27%` vs. `Hule/Poliuretano`), calibración de claro axial frontal ($\delta = 0.5\text{–}1.0\text{ mm}$) y BOM de 14 posiciones.
+  - `src/components/TechnicalDiagrams.astro`: 13 láminas vectoriales CAD incluyendo `drive_arrangements` (`CV`, `ZVZ`, `CRZ`, `DC`), `material_kit_grid` y `suction_throatbush`.
+  - `src/scripts/slurryEngine.js`: Incluye `evaluateWetEndAssemblyInterference` y `calculateDriveKinematics`.

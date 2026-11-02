@@ -71,11 +71,50 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
               <li><strong>Flotation & Regrind:</strong> Rubber or Polyurethane liners for fine particles and corrosive reagents.</li>
               <li><strong>Tailings & Thickener Underflow:</strong> Continuous single-stage or series pumping.</li>
             </ul>
-            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light);">
-              <a href="/en/#rfq?equipo=skid_bomba" class="btn btn-primary" style="width: 100%;">Quote Slurry Pump →</a>
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light); display: flex; flex-direction: column; gap: 0.6rem;">
+              <a href="/en/quote/?equipo=skid_bomba#rfq" class="btn btn-primary" style="width: 100%; text-align: center;">Quote Slurry Pump →</a>
+              <a href="/en/pumping/#how-a-slurry-pump-is-assembled" class="btn btn-outline" style="width: 100%; text-align: center;">View Pump Assembly Report (14 Parts) →</a>
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- SKID DRIVE ARRANGEMENTS (DECISION 5-C+ • DON MANUEL REF 3 & 5) -->
+      <div id="drive-arrangements" style="margin-top: 2.5rem;">
+        <h2>Skid Drive & Mounting Arrangements (CV / ZVZ / CRZ / DC)</h2>
+        <p style="color: var(--smat-text-secondary); max-width: 760px;">
+          Select the drive arrangement matched to your plant floor footprint and target ISO 281 L₁₀h <strong>Bearing Assembly</strong> life:
+        </p>
+        <TechnicalDiagrams diagram="drive_arrangements" lang="en" />
+
+        <div class="grid-2" style="margin-top: 1rem;">
+          <div class="card">
+            <h3>CV Arrangement (Overhead Piggyback Motor)</h3>
+            <p>Motor mounted on an overhead frame above the Bearing Assembly with V-belt sheaves and OSHA belt guard. Minimizes floor footprint.</p>
+            <a href="/en/quote/?equipo=skid_bomba&transmision=CV#rfq" class="btn btn-primary">Quote CV Arrangement Skid →</a>
+          </div>
+          <div class="card">
+            <h3>ZVZ Arrangement (Elevated Rear Motor)</h3>
+            <p>Motor mounted on an elevated rear pedestal on a common skid baseplate, keeping the motor clear of sump splash zones.</p>
+            <a href="/en/quote/?equipo=skid_bomba&transmision=ZVZ#rfq" class="btn btn-primary">Quote ZVZ Arrangement Skid →</a>
+          </div>
+          <div class="card">
+            <h3>CRZ Arrangement (Side-by-Side Motor)</h3>
+            <p>Motor and pump mounted parallel on a fabricated steel skid with V-belt drive. Provides unobstructed overhead crane access.</p>
+            <a href="/en/quote/?equipo=skid_bomba&transmision=CRZ#rfq" class="btn btn-primary">Quote CRZ Arrangement Skid →</a>
+          </div>
+          <div class="card">
+            <h3>DC Arrangement (Direct Inline Coupling)</h3>
+            <p>Collinear flexible coupling (E_belt = 0 N radial belt load), maximizing ISO 281 L₁₀h tapered roller bearing life.</p>
+            <a href="/en/quote/?equipo=skid_bomba&transmision=DC#rfq" class="btn btn-primary">Quote DC Arrangement Skid →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUCTION THROATBUSH & AXIAL CLEARANCE CALIBRATION (DON MANUEL REF 4) -->
+      <div style="margin-top: 2.5rem;">
+        <h2>Suction Geometry, Throatbush & Front Axial Clearance Calibration (δ = 0.5–1.0 mm)</h2>
+        <TechnicalDiagrams diagram="suction_throatbush" lang="en" />
       </div>
 
       <SharePurchasing
