@@ -7,9 +7,10 @@ interface Props {
   lang?: 'es' | 'en';
   activePart?: string;
   showAssemblyLink?: boolean;
+  collapsible?: boolean;
 }
 
-const { lang = 'es', activePart = '', showAssemblyLink = true } = Astro.props;
+const { lang = 'es', activePart = '', showAssemblyLink = true, collapsible = false } = Astro.props;
 const isEs = lang === 'es';
 const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
 const assemblyAnchor = isEs ? '/bombeo/#como-se-arma-una-bomba' : '/en/pumping/#how-a-slurry-pump-is-assembled';
@@ -104,6 +105,11 @@ const quickParts = [
     )}
   </div>
 
+  <details class="quick-part-strip__drawer" open={!collapsible}>
+    <summary class="quick-part-strip__drawer-summary">
+      <span>{isEs ? 'Mostrar / ocultar las 7 tarjetas de refacción rápida (Estaciones 01 a 06)' : 'Show / hide the 7 quick-select spare part cards (Stations 01 to 06)'}</span>
+      <span class="quick-part-strip__drawer-badge">{isEs ? '7 PIEZAS CLAVE ▾' : '7 CORE PARTS ▾'}</span>
+    </summary>
   <div class="quick-part-strip__grid" role="list">
     {quickParts.map((item) => {
       const targetHref = `${quoteBase}?equipo=${item.equipo}&pieza=${item.id}&material=${item.material}#rfq`;
@@ -178,6 +184,7 @@ const quickParts = [
       );
     })}
   </div>
+  </details>
 </section>
 
 <style>
@@ -219,8 +226,8 @@ const quickParts = [
     padding: 0.42rem 0.8rem;
     border-radius: 6px;
     background: #f0f9ff;
-    border: 1px solid #bae6fd;
-    color: #0369a1;
+    border: 1px solid #0284c7;
+    color: #082f49;
     font-family: var(--smat-font-mono, monospace);
     font-size: 0.75rem;
     font-weight: 700;
@@ -229,7 +236,35 @@ const quickParts = [
   }
   .quick-part-strip__assembly-btn:hover {
     background: #e0f2fe;
-    border-color: #0284c7;
+    border-color: #0369a1;
+  }
+  .quick-part-strip__drawer-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.45rem 0.65rem;
+    margin-bottom: 0.65rem;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #0f172a;
+    cursor: pointer;
+    list-style: none;
+  }
+  .quick-part-strip__drawer-summary::-webkit-details-marker {
+    display: none;
+  }
+  .quick-part-strip__drawer-badge {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #082f49;
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
   }
   .quick-part-strip__grid {
     display: grid;

@@ -15,8 +15,14 @@ const isEs = lang === 'es';
 ---
 
 <div class="flight-deck-wrapper" id="flight-deck">
-  <!-- Selector de Misión Operativa por Rol en Planta (PerspectiveSelector + workbenchBus) -->
-  <PerspectiveSelector lang={lang} />
+  <!-- Selector de Misión Operativa por Rol en Planta encapsulado en Progressive Disclosure (Apple HIG) -->
+  <details class="flight-deck-mission-drawer">
+    <summary class="flight-deck-mission-summary">
+      <span>{isEs ? 'Guía de Misiones Operativas en Planta (Paro Urgente / Desgaste / Licitación CAPEX)' : 'Plant Operational Mission Guide (Urgent Shutdown / Slurry Wear / CAPEX Bid)'}</span>
+      <span class="flight-deck-mission-badge">{isEs ? 'EXPANDIR GUÍA ▾' : 'EXPAND GUIDE ▾'}</span>
+    </summary>
+    <PerspectiveSelector lang={lang} />
+  </details>
 
   <!-- Consola de Requisición y Ficha Técnica -->
   <div class="flight-deck-main">
@@ -67,6 +73,37 @@ const isEs = lang === 'es';
 
   .flight-deck-main {
     background: #ffffff;
+  }
+
+  .flight-deck-mission-drawer {
+    background: #f8fafc;
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+
+  .flight-deck-mission-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 1.5rem;
+    cursor: pointer;
+    font-size: 0.86rem;
+    font-weight: 800;
+    color: var(--smat-text-primary);
+    list-style: none;
+  }
+
+  .flight-deck-mission-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .flight-deck-mission-badge {
+    font-family: var(--smat-font-mono);
+    font-size: 0.72rem;
+    color: #082f49;
+    background: #e0f2fe;
+    border: 1px solid #bae6fd;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
   }
 
   /* Extension Cards */

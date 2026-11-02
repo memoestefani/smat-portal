@@ -91,6 +91,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 <td colspan="3" id="field-hydraulics">Cálculo hidráulico sujeto a confirmación de flujo y % de sólidos en planta.</td>
               </tr>
               <tr>
+                <th>Metalurgia, Arreglo y Estación:</th>
+                <td colspan="3" id="field-material-drive">Alto Cromo ASTM A532 Cr27% (>600 HB) • Arreglo ZVZ • Estación S4 (Wet-End)</td>
+              </tr>
+              <tr>
+                <th>Claro Axial (δ) y Cinemática:</th>
+                <td colspan="3" id="field-clearance-kinematics">δ = 0.75 mm (Óptimo, Δη_v = -0.3%) • u₂ ≤ 24.5 m/s • Vida ISO 281 L₁₀ₕ certificada</td>
+              </tr>
+              <tr id="row-field-metrology">
+                <th>Memoria Metrológica (Lab):</th>
+                <td colspan="3" id="field-metrology">Sin pre-calibración de laboratorio adjunta (Balanza Marcy / Bond / Prensa).</td>
+              </tr>
+              <tr>
                 <th>Continuidad y Perfil Mineral:</th>
                 <td colspan="3" id="field-tco">Evaluación de continuidad operativa en Almacén Central Durango.</td>
               </tr>
@@ -171,6 +183,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const detalles = urlParams.get('detalles') || urlParams.get('specs') || cached.especificacion_tecnica || 'Requisición técnica sujeta a validación dimensional de patio Durango.';
       const destino = urlParams.get('destino') || cached.modalidad_logistica || 'Retiro en Almacén Central Durango (Coordinado con Folio)';
       const urgencia = urlParams.get('urgencia') || (cached.urgencia && cached.urgencia.includes('PARO') ? 'paro' : 'proyecto');
+      const material = urlParams.get('material') || cached.material_bombeo || 'alto_cromo_cr27';
+      const transmision = urlParams.get('transmision') || cached.arreglo_transmision || 'ZVZ';
+      const estacion = urlParams.get('estacion') || cached.estacion_armado || 'S4';
+      const pesoKg = urlParams.get('peso_kg') || cached.peso_pieza_kg || '';
+      const claroMm = urlParams.get('claro_mm') || cached.claro_axial_mm || '0.75';
+      const deltaEtaV = urlParams.get('delta_eta_v') || cached.perdida_eficiencia_vol_pct || '0.3';
+      const u2Ms = urlParams.get('u2_ms') || cached.velocidad_periferica_u2_ms || '22.4';
+      const l10h = urlParams.get('l10h') || cached.vida_rodamiento_l10h || '38500';
+      const metrologia = urlParams.get('metrologia') || cached.memoria_metrologica || '';
 
       const elFolio = document.getElementById('display-folio');
       if (elFolio) elFolio.textContent = folio;
@@ -209,6 +230,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       setText('field-dimensions', medidas);
       setText('field-details', detalles);
       setText('field-hydraulics', hidraulica);
+      const matLabel = material === 'hule_natural' ? 'Hule Natural Antiabrasivo (55–65 Shore A)' : (material === 'carburo_silicio' ? 'Carburo de Silicio / Cerámico' : 'Alto Cromo ASTM A532 Cr27% (>600 HB)');
+      const nioshLabel = pesoKg ? ` • Peso: ${pesoKg} kg (${Number(pesoKg) > 23 ? 'Grúa / Polipasto >23 kg NIOSH' : 'Manual <=23 kg NIOSH'})` : '';
+      setText('field-material-drive', `${matLabel} • Arreglo V-Belt: ${transmision} • Estación: ${estacion}${nioshLabel}`);
+      setText('field-clearance-kinematics', `Claro Axial δ = ${claroMm} mm (Δη_v = -${deltaEtaV}%) • Velocidad Periférica u₂ = ${u2Ms} m/s • Vida ISO 281 L₁₀ₕ = ${Number(l10h).toLocaleString('es-MX')} h`);
+      setText('field-metrology', metrologia || 'Sin pre-calibración de laboratorio adjunta (Balanza Marcy / Bond / Prensa).');
       setText('field-tco', fullTcoAndProfile);
       setText('field-type', urgencia === 'paro' ? 'Paro Operativo Prioritario (Prioridad Alta en Planta)' : 'Requisición Formal de Equipamiento / Proyecto');
     }

@@ -12,11 +12,15 @@ export default defineConfig({
     imageService: 'passthrough',
   }),
   integrations: [
-    partytown({
-      config: {
-        forward: ['dataLayer.push', 'gtag'],
-      },
-    }),
+    ...(process.env.PUBLIC_GA_ID
+      ? [
+          partytown({
+            config: {
+              forward: ['dataLayer.push', 'gtag'],
+            },
+          }),
+        ]
+      : []),
     sitemap({
       filter: (page) => {
         // Excluir páginas transaccionales noindex y admin

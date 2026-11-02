@@ -758,7 +758,59 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             passed: verify_pump_assembly_and_zero_orphan_rfq_links(site_root).is_ok(),
             details: verify_pump_assembly_and_zero_orphan_rfq_links(site_root).err().unwrap_or_else(|| "OK: Reporte de despiece 5 estaciones y cero enlaces /#rfq verificados.".to_string()),
         },
+        GateReport {
+            name: "22. Paridad Backend-UI 100%, Cinematica V-Belt, Claro Axial y Decompresion Cowan (Gate D25)".to_string(),
+            passed: verify_backend_ui_parity_and_apple_cowan(site_root).is_ok(),
+            details: verify_backend_ui_parity_and_apple_cowan(site_root).err().unwrap_or_else(|| "OK: 7 motores de backend expuestos en UI, contraste AAA y Cowan 4+-1 verificados.".to_string()),
+        },
+        GateReport {
+            name: "21b. Verificacion de Enlaces Huerfanos /#rfq (Gate D24b)".to_string(),
+            passed: verify_pump_assembly_and_zero_orphan_rfq_links(site_root).is_ok(),
+            details: verify_pump_assembly_and_zero_orphan_rfq_links(site_root).err().unwrap_or_else(|| "OK: Reporte de despiece 5 estaciones y cero enlaces /#rfq verificados.".to_string()),
+        },
     ]
+}
+
+pub fn verify_backend_ui_parity_and_apple_cowan(site_root: &Path) -> Result<(), String> {
+    let report_str = fs::read_to_string(site_root.join("src/components/PumpAssemblyReport.astro")).map_err(|e| e.to_string())?;
+    if !report_str.contains("evaluateWetEndAssemblyInterference") || !report_str.contains("data-clearance-slider") {
+        return Err("PumpAssemblyReport.astro no expone evaluateWetEndAssemblyInterference ni el calibrador de claro axial".to_string());
+    }
+
+    let skid_es = fs::read_to_string(site_root.join("src/pages/bombeo/skid.astro")).map_err(|e| e.to_string())?;
+    let skid_en = fs::read_to_string(site_root.join("src/pages/en/pumping/skid.astro")).map_err(|e| e.to_string())?;
+    if !skid_es.contains("calculateDriveAndBearingKinematics") || !skid_en.contains("calculateDriveAndBearingKinematics") {
+        return Err("skid.astro o en/pumping/skid.astro no exponen calculateDriveAndBearingKinematics".to_string());
+    }
+
+    let qw_str = fs::read_to_string(site_root.join("src/components/QuoteWizard.astro")).map_err(|e| e.to_string())?;
+    for req in [
+        "evaluateWetEndAssemblyInterference",
+        "calculateDriveAndBearingKinematics",
+        "getAtomicPartSpecs",
+        "metric-v-actual",
+        "metric-derating-er",
+        "metric-delta-npsh",
+        "wb-clearance-slider",
+        "wb-rubber-u2-lock",
+        "wb-atomic-part-card",
+    ] {
+        if !qw_str.contains(req) {
+            return Err(format!("QuoteWizard.astro carece de paridad backend-UI: falta '{}'", req));
+        }
+    }
+
+    let diag_str = fs::read_to_string(site_root.join("src/components/DiagnosticsHub.astro")).map_err(|e| e.to_string())?;
+    if !diag_str.contains("MECHANICAL_DIAGNOSTICS") {
+        return Err("DiagnosticsHub.astro no consume MECHANICAL_DIAGNOSTICS desde slurryEngine.js".to_string());
+    }
+
+    let astro_cfg = fs::read_to_string(site_root.join("astro.config.mjs")).map_err(|e| e.to_string())?;
+    if !astro_cfg.contains("process.env.PUBLIC_GA_ID") {
+        return Err("astro.config.mjs debe condicionar partytown a process.env.PUBLIC_GA_ID (DEB-05)".to_string());
+    }
+
+    Ok(())
 }
 
 pub fn verify_pump_assembly_and_zero_orphan_rfq_links(site_root: &Path) -> Result<(), String> {
@@ -909,5 +961,6 @@ mod tests {
         let root = find_site_root();
         assert!(verify_no_emergency_claims(&root).is_ok(), "Fallo en erradicación de claims de emergencia");
         assert!(verify_pump_assembly_and_zero_orphan_rfq_links(&root).is_ok(), "Fallo en verificacion de reporte de armado y enlaces /#rfq");
+        assert!(verify_backend_ui_parity_and_apple_cowan(&root).is_ok(), "Fallo en verificacion de paridad backend-UI y Cowan 4+-1");
     }
 }

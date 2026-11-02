@@ -63,6 +63,14 @@ function doPost(e) {
         "perfil_pulpa_mina",
         "memoria_hidraulica_durand",
         "proyeccion_tco",
+        "material_wet_end",
+        "arreglo_transmision",
+        "estacion_despiece",
+        "peso_pieza_kg",
+        "claro_axial_mm",
+        "velocidad_punta_u2_ms",
+        "vida_rodamiento_l10h",
+        "cedula_metrologia",
         "detalles_pulpa",
         "destino_entrega",
         "canal_origen",
@@ -90,6 +98,14 @@ function doPost(e) {
     var perfilPulpa = params.perfil_pulpa || params.pulp_profile || "";
     var memoriaHidraulica = params.memoria_hidraulica || params.hidraulica || "";
     var tcoResumen = params.tco_resumen || params.tco || "";
+    var materialWetEnd = params.material_wet_end || params.material || "";
+    var arregloTransmision = params.arreglo_transmision || params.transmision || "";
+    var estacionDespiece = params.estacion_despiece || params.estacion || "";
+    var pesoPiezaKg = params.peso_pieza_kg || params.peso_kg || "";
+    var claroAxialMm = params.claro_axial_mm || params.claro_mm || "";
+    var velocidadPuntaU2 = params.velocidad_punta_u2_ms || params.u2_ms || "";
+    var vidaRodamientoL10h = params.vida_rodamiento_l10h || params.l10h || "";
+    var cedulaMetrologia = params.cedula_metrologia || params.metrologia || "";
     var detalles = params.detalles || params.spec_details || "";
     var destino = params.destino || params.destination || "Durango";
     var canal = params.canal || "web_quote_wizard";
@@ -112,6 +128,14 @@ function doPost(e) {
       perfilPulpa,
       memoriaHidraulica,
       tcoResumen,
+      materialWetEnd,
+      arregloTransmision,
+      estacionDespiece,
+      pesoPiezaKg,
+      claroAxialMm,
+      velocidadPuntaU2,
+      vidaRodamientoL10h,
+      cedulaMetrologia,
       detalles,
       destino,
       canal,

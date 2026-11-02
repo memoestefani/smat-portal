@@ -13,6 +13,7 @@ export const SMAT_WORKBENCH_EVENT = 'smat:workbench_update';
 export const ATOMIC_PARTS_CATALOG = {
   D3147: {
     code: 'd3147',
+    slug: 'impulsor_3x2_d3147',
     part_number: 'D3147',
     frame: '4/3 C',
     circuit: 'bombeo',
@@ -21,10 +22,26 @@ export const ATOMIC_PARTS_CATALOG = {
     smat_code: 'SMAT-PUMP-3X2-IMP',
     name_es: 'Impulsor Cerrado A05 para Bomba 4/3 C',
     name_en: 'Closed High Chrome A05 Impeller for 4/3 C Pump',
-    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)'
+    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)',
+    weight_kg: 32.5,
+    impeller_diameter_mm: 270,
+    vanes: 5,
+    max_particle_mm: 28,
+    max_sphere_mm: 28,
+    wall_thickness_mm: 24,
+    station_number: 3,
+    station: 'S3',
+    station_name_es: 'Extremo Húmedo (Lote 5-5-4)',
+    station_name_en: 'Wet-End Assembly (5-5-4 Lot)',
+    assembly_order: '09. Impulsor Cerrado 5 Álabes (Estación 03)',
+    assembly_order_note: '09. Impulsor Cerrado 5 Álabes (Estación 03 • Lote 5:5:4)',
+    wet_end_kit_ratio: '5:5:4',
+    niosh_handling_mode: 'HOIST_REQUIRED',
+    handling_mode: 'HOIST_REQUIRED'
   },
   E4147: {
     code: 'e4147',
+    slug: 'impulsor_5_alabes',
     part_number: 'E4147',
     frame: '6/4 D',
     circuit: 'bombeo',
@@ -33,10 +50,26 @@ export const ATOMIC_PARTS_CATALOG = {
     smat_code: 'SMAT-PUMP-6X4-IMP',
     name_es: 'Impulsor Cerrado A05 para Bomba 6/4 D',
     name_en: 'Closed High Chrome A05 Impeller for 6/4 D Pump',
-    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)'
+    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)',
+    weight_kg: 68.0,
+    impeller_diameter_mm: 380,
+    vanes: 5,
+    max_particle_mm: 45,
+    max_sphere_mm: 45,
+    wall_thickness_mm: 32,
+    station_number: 3,
+    station: 'S3',
+    station_name_es: 'Extremo Húmedo (Lote 5-5-4)',
+    station_name_en: 'Wet-End Assembly (5-5-4 Lot)',
+    assembly_order: '09. Impulsor Cerrado 5 Álabes (Estación 03)',
+    assembly_order_note: '09. Impulsor Cerrado 5 Álabes (Estación 03 • Lote 5:5:4)',
+    wet_end_kit_ratio: '5:5:4',
+    niosh_handling_mode: 'HOIST_REQUIRED',
+    handling_mode: 'HOIST_REQUIRED'
   },
   F6147: {
     code: 'f6147',
+    slug: 'impulsor_8x6_f6147',
     part_number: 'F6147',
     frame: '8/6 E',
     circuit: 'bombeo',
@@ -45,10 +78,26 @@ export const ATOMIC_PARTS_CATALOG = {
     smat_code: 'SMAT-PUMP-8X6-IMP',
     name_es: 'Impulsor Cerrado A05 para Bomba 8/6 E',
     name_en: 'Closed High Chrome A05 Impeller for 8/6 E Pump',
-    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)'
+    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)',
+    weight_kg: 142.0,
+    impeller_diameter_mm: 510,
+    vanes: 5,
+    max_particle_mm: 64,
+    max_sphere_mm: 64,
+    wall_thickness_mm: 42,
+    station_number: 3,
+    station: 'S3',
+    station_name_es: 'Extremo Húmedo (Lote 5-5-4)',
+    station_name_en: 'Wet-End Assembly (5-5-4 Lot)',
+    assembly_order: '09. Impulsor Cerrado 5 Álabes (Estación 03)',
+    assembly_order_note: '09. Impulsor Cerrado 5 Álabes (Estación 03 • Lote 5:5:4)',
+    wet_end_kit_ratio: '5:5:4',
+    niosh_handling_mode: 'HOIST_REQUIRED',
+    handling_mode: 'HOIST_REQUIRED'
   },
   DAM028: {
     code: 'dam028',
+    slug: 'camisa_flecha',
     part_number: 'DAM028',
     frame: '4/3 C',
     circuit: 'bombeo',
@@ -57,10 +106,26 @@ export const ATOMIC_PARTS_CATALOG = {
     smat_code: 'SMAT-SEAL-3X2-EXP',
     name_es: 'Anillo Expulsor de Sello Dinámico para Marco 4/3 C',
     name_en: 'Dynamic Expeller Ring for 4/3 C Frame',
-    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)'
+    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)',
+    weight_kg: 18.5,
+    impeller_diameter_mm: 270,
+    vanes: 0,
+    max_particle_mm: 28,
+    max_sphere_mm: 28,
+    wall_thickness_mm: 18,
+    station_number: 2,
+    station: 'S2',
+    station_name_es: 'Sellado Centrífugo Seco',
+    station_name_en: 'Dry Centrifugal Sealing',
+    assembly_order: '05. Anillo Expulsor Centrífugo (Estación 02)',
+    assembly_order_note: '05. Anillo Expulsor Centrífugo (Estación 02 • Sin agua de sello)',
+    wet_end_kit_ratio: '5:5:4',
+    niosh_handling_mode: 'MANUAL_SAFE',
+    handling_mode: 'MANUAL_SAFE'
   },
   EAM028: {
     code: 'eam028',
+    slug: 'expeller',
     part_number: 'EAM028',
     frame: '6/4 D',
     circuit: 'bombeo',
@@ -69,10 +134,26 @@ export const ATOMIC_PARTS_CATALOG = {
     smat_code: 'SMAT-SEAL-6X4-EXP',
     name_es: 'Anillo Expulsor de Sello Dinámico para Marco 6/4 D',
     name_en: 'Dynamic Expeller Ring for 6/4 D Frame',
-    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)'
+    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)',
+    weight_kg: 29.0,
+    impeller_diameter_mm: 380,
+    vanes: 0,
+    max_particle_mm: 45,
+    max_sphere_mm: 45,
+    wall_thickness_mm: 22,
+    station_number: 2,
+    station: 'S2',
+    station_name_es: 'Sellado Centrífugo Seco',
+    station_name_en: 'Dry Centrifugal Sealing',
+    assembly_order: '05. Anillo Expulsor Centrífugo (Estación 02)',
+    assembly_order_note: '05. Anillo Expulsor Centrífugo (Estación 02 • Sin agua de sello)',
+    wet_end_kit_ratio: '5:5:4',
+    niosh_handling_mode: 'HOIST_REQUIRED',
+    handling_mode: 'HOIST_REQUIRED'
   },
   E4083: {
     code: 'e4083',
+    slug: 'throatbush',
     part_number: 'E4083',
     frame: '6/4 D',
     circuit: 'bombeo',
@@ -81,19 +162,65 @@ export const ATOMIC_PARTS_CATALOG = {
     smat_code: 'SMAT-PUMP-6X4-VOL',
     name_es: 'Cuello de Succión (Throatbush) A05 para Bomba 6/4 D',
     name_en: 'High Chrome A05 Throatbush for 6/4 D Pump',
-    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)'
+    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)',
+    weight_kg: 44.0,
+    impeller_diameter_mm: 380,
+    vanes: 0,
+    max_particle_mm: 45,
+    max_sphere_mm: 45,
+    wall_thickness_mm: 35,
+    station_number: 3,
+    station: 'S3',
+    station_name_es: 'Extremo Húmedo / Calibración Axial',
+    station_name_en: 'Wet-End / Axial Clearance Calibration',
+    assembly_order: '11. Cuello de Succión Cónico Throatbush (Estación 03 / Calibración 05)',
+    assembly_order_note: '11. Cuello de Succión Cónico Throatbush (Estación 03 • Claro δ=0.5–1.0 mm)',
+    wet_end_kit_ratio: '5:5:4',
+    niosh_handling_mode: 'HOIST_REQUIRED',
+    handling_mode: 'HOIST_REQUIRED'
   }
 };
 
 /**
  * Resuelve un código atómico universal (D3147..E4083) de forma insensible a mayúsculas
- * @param {string} rawCode
- * @returns {Object|null}
+ * @param {string} [rawCode='']
  */
 export function resolveAtomicPartCode(rawCode = '') {
   if (!rawCode || typeof rawCode !== 'string') return null;
   const key = rawCode.trim().toUpperCase();
   return ATOMIC_PARTS_CATALOG[key] || null;
+}
+
+/**
+ * Obtiene la ficha física e ingenieril de una pieza atómica por código (D3147..E4083),
+ * slug de selección rápida (impulsor_5_alabes, throatbush, etc.) o serie de tubería (3x2, 6x4, 8x6).
+ * Incluye masa unitaria (weight_kg), modo de izaje NIOSH (<23 kg manual vs >=23 kg polipasto),
+ * diámetro real de impulsor D2 (mm), álabes, paso de partícula y estación de ensamble BOM.
+ * @param {string} [codeOrSlug='']
+ * @param {string} [pipeSeries='6x4']
+ */
+export function getAtomicPartSpecs(codeOrSlug = '', pipeSeries = '6x4') {
+  const direct = resolveAtomicPartCode(codeOrSlug);
+  if (direct) return direct;
+
+  const slug = String(codeOrSlug || '').trim().toLowerCase();
+  const series = String(pipeSeries || '6x4').trim().toLowerCase();
+
+  if (slug.includes('d3147')) return ATOMIC_PARTS_CATALOG.D3147;
+  if (slug.includes('f6147')) return ATOMIC_PARTS_CATALOG.F6147;
+  if (slug.includes('dam028') || slug.includes('camisa') || slug.includes('sleeve')) return ATOMIC_PARTS_CATALOG.DAM028;
+  if (slug.includes('eam028') || slug.includes('expeller') || slug.includes('sello')) return ATOMIC_PARTS_CATALOG.EAM028;
+  if (slug.includes('e4083') || slug.includes('throatbush') || slug.includes('cuello') || slug.includes('voluta') || slug.includes('liner') || slug.includes('fpl')) {
+    return ATOMIC_PARTS_CATALOG.E4083;
+  }
+
+  if (series.includes('3x2') || series.includes('4x3') || series.includes('1.5x1')) {
+    return ATOMIC_PARTS_CATALOG.D3147;
+  }
+  if (series.includes('8x6') || series.includes('10x8')) {
+    return ATOMIC_PARTS_CATALOG.F6147;
+  }
+  return ATOMIC_PARTS_CATALOG.E4147;
 }
 
 /**
@@ -152,6 +279,15 @@ export function parseUrlContextParams(urlOrSearch = '') {
     material: null,
     transmision: null,
     estacion: null,
+    claro_mm: null,
+    u2_ms: null,
+    l10h: null,
+    peso_kg: null,
+    metrologia: null,
+    sg: null,
+    cw: null,
+    gy_kg: null,
+    p80: null,
     atomic_part: null
   };
   
@@ -187,6 +323,19 @@ export function parseUrlContextParams(urlOrSearch = '') {
     else if (params.has('drive')) result.transmision = params.get('drive').toUpperCase();
 
     if (params.has('estacion')) result.estacion = params.get('estacion');
+    if (params.has('claro_mm')) result.claro_mm = params.get('claro_mm');
+    else if (params.has('clearance')) result.claro_mm = params.get('clearance');
+
+    if (params.has('u2_ms')) result.u2_ms = params.get('u2_ms');
+    else if (params.has('tip_speed')) result.u2_ms = params.get('tip_speed');
+
+    if (params.has('l10h')) result.l10h = params.get('l10h');
+    if (params.has('peso_kg')) result.peso_kg = params.get('peso_kg');
+    if (params.has('metrologia')) result.metrologia = params.get('metrologia');
+    if (params.has('sg')) result.sg = params.get('sg');
+    if (params.has('cw')) result.cw = params.get('cw');
+    if (params.has('gy_kg')) result.gy_kg = params.get('gy_kg');
+    if (params.has('p80')) result.p80 = params.get('p80');
 
     if (params.has('rol')) result.rol = params.get('rol');
     else if (params.has('perspectiva')) result.rol = params.get('perspectiva');
@@ -317,17 +466,56 @@ export function formatSapPlaintext(data = {}) {
     `   - Almacén/Despacho:  Durango, Dgo. (Retiro en patio coordinado con folio)`
   );
 
+  const ps = data.part_specs || {};
+  const ce = data.clearance_eval || {};
+  const kin = data.kinematics || {};
+  const met = data.metrology || {};
+  const resolvedDrive = data.transmision || data.drive_arrangement || kin.arrangement || kin.arrangementCode || '';
+  const resolvedMat = data.material || data.wet_material || data.pump_material || '';
+  const resolvedStation = data.estacion || data.station_number || data.assembly_station || ps.station_number || ps.station || '';
+  const resolvedWeight = data.peso_kg || data.part_weight_kg || ps.weight_kg || '';
+  const resolvedClaro = data.claro_mm || data.front_clearance_mm || ce.frontClearanceMm || '';
+  const resolvedDeltaEta = data.delta_eta_v !== undefined ? data.delta_eta_v : (ce.volumetricEfficiencyDropPct ?? ce.volumetricEfficiencyLossPct);
+  const resolvedU2 = data.u2_ms || data.tip_speed_ms || kin.tipSpeedMs || '';
+  const resolvedL10h = data.l10h || data.bearing_l10h || kin.bearingL10Hours || kin.estimatedL10hHours || '';
+  const resolvedMetrology = data.metrologia || data.metrology_summary || met.summary || met.raw || (
+    (met.cw !== undefined || met.solidsPctCw !== undefined)
+      ? `Cw=${met.cw ?? met.solidsPctCw}% | Sm=${met.sm ?? met.pulpDensityKgL ?? 1.40} kg/L | P80=${met.p80 ?? met.targetP80Microns ?? 150} µm | Gy=${met.dryMassKg ?? met.gySampleMassKg ?? 0.25} kg`
+      : ''
+  );
+
   if (clientRef) {
     lines.push(`   - Referencia Interna Cliente: ${clientRef}`);
   }
   if (dimDia || dimBore) {
     lines.push(`   - Medidas Campo (Flexómetro): DE ~${dimDia || 'N/A'} mm | Barreno/Flecha ~${dimBore || 'N/A'} mm`);
   }
-  if (data.transmision || data.drive_arrangement) {
-    lines.push(`   - Arreglo Transmisión:        ${String(data.transmision || data.drive_arrangement).toUpperCase()} (Cinemática de Poleas / Acoplamiento)`);
+  if (resolvedDrive) {
+    lines.push(`   - Arreglo Transmisión:        ${String(resolvedDrive).toUpperCase()} (Cinemática de Poleas / Acoplamiento)`);
   }
-  if (data.material || data.wet_material) {
-    lines.push(`   - Material Contacto Húmedo:   ${data.material || data.wet_material}`);
+  if (resolvedMat) {
+    lines.push(`   - Material Contacto Húmedo:   ${resolvedMat}`);
+  }
+  if (resolvedStation) {
+    const stStr = String(resolvedStation).replace(/^S/i, '');
+    lines.push(`   - Estación de Armado BOM:     Estación 0${stStr}`);
+  }
+  if (resolvedWeight) {
+    const wKg = Number(resolvedWeight);
+    const nioshLabel = wKg >= 23 ? 'Requiere Polipasto / Grúa (≥ 23 kg NIOSH)' : 'Manejo Manual Seguro (< 23 kg NIOSH)';
+    lines.push(`   - Masa Unitaria / Izaje:      ${wKg.toFixed(1)} kg (${nioshLabel})`);
+  }
+  if (resolvedClaro) {
+    const lossStr = resolvedDeltaEta !== undefined ? ` | Pérdida Recirculación Δη_v: ${resolvedDeltaEta}%` : '';
+    lines.push(`   - Calibración Claro Axial δ:  ${resolvedClaro} mm${lossStr}`);
+  }
+  if (resolvedU2 || resolvedL10h) {
+    const u2Val = resolvedU2 || '19.9';
+    const l10Val = resolvedL10h || '28500';
+    lines.push(`   - Cinemática V-Belt & ISO281: u2 = ${u2Val} m/s | Vida Rodamientos L10h = ${l10Val} h`);
+  }
+  if (resolvedMetrology) {
+    lines.push(`   - Cédula Metrológica Lab:     ${resolvedMetrology}`);
   }
   if (data.details) {
     lines.push(`   - Notas de Operación:         ${data.details}`);
@@ -675,7 +863,36 @@ export function buildAcuseUrlParams(d = {}) {
     urgencia: d.isOpex === false ? 'proyecto' : 'paro'
   };
 
+  const ps = d.part_specs || {};
+  const ce = d.clearance_eval || {};
+  const kin = d.kinematics || {};
+  const met = d.metrology || {};
+  const resolvedMat = d.material || d.wet_material || d.pump_material || '';
+  const resolvedDrive = d.transmision || d.drive_arrangement || kin.arrangement || kin.arrangementCode || '';
+  const resolvedStation = d.estacion || d.station_number || d.assembly_station || ps.station_number || ps.station || '';
+  const resolvedWeight = d.peso_kg || d.part_weight_kg || ps.weight_kg || '';
+  const resolvedClaro = d.claro_mm || d.front_clearance_mm || ce.frontClearanceMm || '';
+  const resolvedDeltaEta = d.delta_eta_v !== undefined ? d.delta_eta_v : (ce.volumetricEfficiencyDropPct ?? ce.volumetricEfficiencyLossPct);
+  const resolvedU2 = d.u2_ms || d.tip_speed_ms || kin.tipSpeedMs || '';
+  const resolvedL10h = d.l10h || d.bearing_l10h || kin.bearingL10Hours || kin.estimatedL10hHours || '';
+  const resolvedMetrology = d.metrologia || d.metrology_summary || met.summary || met.raw || (
+    (met.cw !== undefined || met.solidsPctCw !== undefined)
+      ? `Cw=${met.cw ?? met.solidsPctCw}% | Sm=${met.sm ?? met.pulpDensityKgL ?? 1.40} kg/L | P80=${met.p80 ?? met.targetP80Microns ?? 150} µm | Gy=${met.dryMassKg ?? met.gySampleMassKg ?? 0.25} kg`
+      : ''
+  );
+
   if (d.atomic_code) paramsObj.pieza = d.atomic_code;
+  else if (d.pieza) paramsObj.pieza = d.pieza;
+  else if (d.part_slug) paramsObj.pieza = d.part_slug;
+  if (resolvedMat) paramsObj.material = String(resolvedMat);
+  if (resolvedDrive) paramsObj.transmision = String(resolvedDrive);
+  if (resolvedStation) paramsObj.estacion = String(resolvedStation);
+  if (resolvedWeight) paramsObj.peso_kg = String(resolvedWeight);
+  if (resolvedClaro) paramsObj.claro_mm = String(resolvedClaro);
+  if (resolvedDeltaEta !== undefined) paramsObj.delta_eta_v = String(resolvedDeltaEta);
+  if (resolvedU2) paramsObj.u2_ms = String(resolvedU2);
+  if (resolvedL10h) paramsObj.l10h = String(resolvedL10h);
+  if (resolvedMetrology) paramsObj.metrologia = String(resolvedMetrology);
   if (d.client_reference) paramsObj.ref_cliente = d.client_reference;
   if (measures) paramsObj.medidas = measures;
   if (d.pulp_profile) paramsObj.perfil_pulpa = d.pulp_profile;
@@ -756,6 +973,23 @@ export function dispatchLeadWebhook(d = {}, channelOrigin = 'web_quote_wizard', 
     ? `~${tcoTons || 0} ton en riesgo (${tcoHrs || 4}h) | ${tcoSummary}`
     : '';
 
+  const ps = d.part_specs || {};
+  const ce = d.clearance_eval || {};
+  const kin = d.kinematics || {};
+  const met = d.metrology || {};
+  const resolvedMat = d.material || d.wet_material || d.pump_material || '';
+  const resolvedDrive = d.transmision || d.drive_arrangement || kin.arrangement || kin.arrangementCode || '';
+  const resolvedStation = d.estacion || d.station_number || d.assembly_station || ps.station_number || ps.station || '';
+  const resolvedWeight = d.peso_kg || d.part_weight_kg || ps.weight_kg || '';
+  const resolvedClaro = d.claro_mm || d.front_clearance_mm || ce.frontClearanceMm || '';
+  const resolvedU2 = d.u2_ms || d.tip_speed_ms || kin.tipSpeedMs || '';
+  const resolvedL10h = d.l10h || d.bearing_l10h || kin.bearingL10Hours || kin.estimatedL10hHours || '';
+  const resolvedMetrology = d.metrologia || d.metrology_summary || met.summary || met.raw || (
+    (met.cw !== undefined || met.solidsPctCw !== undefined)
+      ? `Cw=${met.cw ?? met.solidsPctCw}% | Sm=${met.sm ?? met.pulpDensityKgL ?? 1.40} kg/L | P80=${met.p80 ?? met.targetP80Microns ?? 150} µm | Gy=${met.dryMassKg ?? met.gySampleMassKg ?? 0.25} kg`
+      : ''
+  );
+
   const payload = {
     folio: d.folio || 'SMAT-2026-RFQ',
     urgencia: d.isOpex === false ? 'proyecto' : 'paro',
@@ -777,6 +1011,14 @@ export function dispatchLeadWebhook(d = {}, channelOrigin = 'web_quote_wizard', 
     memoria_hidraulica_durand: hydraulicsStr,
     tco_resumen: tcoStr,
     proyeccion_tco: tcoStr,
+    material_wet_end: resolvedMat,
+    arreglo_transmision: resolvedDrive,
+    estacion_despiece: resolvedStation,
+    peso_pieza_kg: resolvedWeight,
+    claro_axial_mm: resolvedClaro,
+    velocidad_punta_u2_ms: resolvedU2,
+    vida_rodamiento_l10h: resolvedL10h,
+    cedula_metrologia: resolvedMetrology,
     detalles: d.details || '',
     especificacion_tecnica: d.details || '',
     destino: d.destination || 'Durango',
@@ -810,13 +1052,16 @@ export function dispatchLeadWebhook(d = {}, channelOrigin = 'web_quote_wizard', 
 const SMAT_SESSION_KEY = 'smat_workbench_session';
 
 /**
- * Guarda el estado del Workbench en sessionStorage (Decisión 4-A)
+ * Guarda el estado del Workbench en sessionStorage fusionando claves por estación/circuito (Decisión 4-A)
  * @param {Object} state 
  */
 export function saveWorkbenchSession(state = {}) {
   if (typeof window === 'undefined' || !window.sessionStorage) return;
   try {
-    window.sessionStorage.setItem(SMAT_SESSION_KEY, JSON.stringify(state));
+    const existingRaw = window.sessionStorage.getItem(SMAT_SESSION_KEY);
+    const existing = existingRaw ? JSON.parse(existingRaw) : {};
+    const merged = { ...existing, ...state };
+    window.sessionStorage.setItem(SMAT_SESSION_KEY, JSON.stringify(merged));
   } catch (_e) {}
 }
 
@@ -834,6 +1079,10 @@ export function loadWorkbenchSession() {
   }
 }
 
-export { dispatchLeadWebhook as sendLeadToServer };
+export {
+  dispatchLeadWebhook as sendLeadToServer,
+  saveWorkbenchSession as saveWorkbenchState,
+  loadWorkbenchSession as loadWorkbenchState
+};
 
 

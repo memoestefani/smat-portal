@@ -334,13 +334,13 @@ const bomItems = [
       </g>
 
       <!-- ESTACIÓN 5 (Franja de Calibración Axial entre Throatbush #12 e Impulsor #09) -->
-      <g transform="translate(190, 56)">
-        <rect x="0" y="0" width="56" height="272" rx="5" fill="#fffbeb" stroke="#d97706" stroke-width="2" stroke-dasharray="4 3" />
+      <g id="est-05" transform="translate(190, 56)">
+        <rect data-est-05-box x="0" y="0" width="56" height="272" rx="5" fill="#fffbeb" stroke="#d97706" stroke-width="2" stroke-dasharray="4 3" />
         <text x="28" y="22" text-anchor="middle" font-family="SF Mono, monospace" font-size="9" font-weight="800" fill="#b45309">EST-05</text>
         <line x1="28" y1="36" x2="28" y2="220" stroke="#d97706" stroke-width="2.5" stroke-dasharray="3 3" />
         <rect x="4" y="112" width="48" height="46" rx="4" fill="#fef3c7" stroke="#b45309" stroke-width="1.5" />
         <text x="28" y="131" text-anchor="middle" font-family="SF Mono, monospace" font-size="9" font-weight="800" fill="#92400e">δ_frontal</text>
-        <text x="28" y="147" text-anchor="middle" font-family="SF Mono, monospace" font-size="8.5" font-weight="800" fill="#b45309">0.5–1.0mm</text>
+        <text data-est-05-val x="28" y="147" text-anchor="middle" font-family="SF Mono, monospace" font-size="8.5" font-weight="800" fill="#b45309">0.75 mm</text>
         <text x="28" y="246" text-anchor="middle" font-family="SF Mono, monospace" font-size="7.5" font-weight="700" fill="#92400e">{isEs ? 'Calibración' : 'Clearance'}</text>
         <text x="28" y="258" text-anchor="middle" font-family="SF Mono, monospace" font-size="7.5" font-weight="700" fill="#92400e">{isEs ? 'Post-Armado' : 'Calibration'}</text>
       </g>
@@ -453,6 +453,88 @@ const bomItems = [
     ))}
   </div>
 
+  <!-- Calibrador Interactivo de Claro Axial Frontal δ_frontal (Estación 05 — Decisión 1-C+, Arbitraje #9) -->
+  <details class="assembly-clearance-calibrator" id="station-05-calibrator" data-clearance-calibrator>
+    <summary class="assembly-clearance-calibrator__summary">
+      <span class="assembly-clearance-calibrator__badge">EST-05 • {isEs ? 'CALIBRADOR EN VIVO' : 'LIVE CALIBRATOR'}</span>
+      <span class="assembly-clearance-calibrator__title">
+        {isEs
+          ? 'Simular Claro Axial Frontal (δ_frontal), Pérdida Volumétrica (Δη_v) y Desgaste de Lote 5-5-4'
+          : 'Simulate Front Axial Clearance (δ_frontal), Volumetric Loss (Δη_v) & 5-5-4 Wear Lot Impact'}
+      </span>
+      <span class="assembly-clearance-calibrator__hint">
+        {isEs ? 'Abrir simulador δ = 0.1–5.0 mm ▾' : 'Open simulator δ = 0.1–5.0 mm ▾'}
+      </span>
+    </summary>
+
+    <div class="assembly-clearance-calibrator__body">
+      <div class="assembly-clearance-calibrator__controls">
+        <label class="clearance-field">
+          <span class="clearance-field__label">
+            {isEs ? 'Claro Axial Frontal Impulsor–Throatbush (δ_frontal):' : 'Impeller–Throatbush Front Clearance (δ_frontal):'}
+            <strong data-clearance-readout>0.75 mm</strong>
+          </span>
+          <input
+            type="range"
+            min="0.10"
+            max="5.00"
+            step="0.05"
+            value="0.75"
+            data-clearance-slider
+            aria-label={isEs ? 'Claro axial frontal en milímetros' : 'Front axial clearance in millimeters'}
+          />
+          <span class="clearance-field__scale">
+            <span>0.1 mm ({isEs ? 'Roce' : 'Rub'})</span>
+            <span>0.5–1.0 mm ({isEs ? 'Óptimo' : 'Optimal'})</span>
+            <span>5.0 mm ({isEs ? 'Vórtice severo' : 'Severe vortex'})</span>
+          </span>
+        </label>
+
+        <label class="clearance-field">
+          <span class="clearance-field__label">
+            {isEs ? 'Ancho de Salida del Impulsor (b₂):' : 'Impeller Exit Width (b₂):'}
+          </span>
+          <select data-clearance-b2 aria-label={isEs ? 'Ancho de salida de impulsor b2' : 'Impeller exit width b2'}>
+            <option value="38">{isEs ? '38 mm — Serie 3x2 / 4x3 (D3147)' : '38 mm — 3x2 / 4x3 Series (D3147)'}</option>
+            <option value="48" selected>{isEs ? '48 mm — Serie 6x4 (E4147 Estándar)' : '48 mm — 6x4 Series (E4147 Standard)'}</option>
+            <option value="64">{isEs ? '64 mm — Serie 8x6 / 10x8 (F6147)' : '64 mm — 8x6 / 10x8 Series (F6147)'}</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="assembly-clearance-calibrator__metrics">
+        <div class="clearance-metric-card">
+          <span class="clearance-metric-card__kicker">{isEs ? 'CAÍDA VOLUMÉTRICA (Δη_v)' : 'VOLUMETRIC DROP (Δη_v)'}</span>
+          <strong class="clearance-metric-card__val" data-clearance-loss>1.68%</strong>
+          <span class="clearance-metric-card__sub" data-clearance-ratio>1.00× {isEs ? 'recirculación base' : 'baseline recirculation'}</span>
+        </div>
+        <div class="clearance-metric-card">
+          <span class="clearance-metric-card__kicker">{isEs ? 'ESTADO DE CALIBRACIÓN' : 'CALIBRATION STATUS'}</span>
+          <strong class="clearance-metric-card__val status-optimal" data-clearance-status>
+            {isEs ? 'CALIBRACIÓN ÓPTIMA (0.5–1.0 mm)' : 'OPTIMAL CALIBRATION (0.5–1.0 mm)'}
+          </strong>
+          <span class="clearance-metric-card__sub" data-clearance-vc-loss>
+            {isEs ? 'Margen Vc tubería: -1.43%' : 'Pipe Vc margin impact: -1.43%'}
+          </span>
+        </div>
+        <div class="clearance-metric-card">
+          <span class="clearance-metric-card__kicker">{isEs ? 'IMPACTO EN LOTE 5-5-4' : '5-5-4 WEAR LOT IMPACT'}</span>
+          <strong class="clearance-metric-card__val" data-clearance-lot554>
+            {isEs ? '5:5:4 (Rotación acoplada nominal)' : '5:5:4 (Coupled nominal wear lot)'}
+          </strong>
+          <a
+            href={`${quoteBase}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=throatbush&estacion=5&claro_mm=0.75#rfq`}
+            class="clearance-metric-card__cta"
+            data-clearance-quote-cta
+            data-quote-base={quoteBase}
+          >
+            {isEs ? 'Cotizar Throatbush / Lote con este δ →' : 'Quote Throatbush / Kit with this δ →'}
+          </a>
+        </div>
+      </div>
+    </div>
+  </details>
+
   <!-- Tabla Interactiva de Despiece (14 Componentes) con Cotización en 1 Clic -->
   <div class="assembly-report__bom-wrap">
     <div class="assembly-report__bom-header">
@@ -508,16 +590,21 @@ const bomItems = [
 </section>
 
 <script>
+  import { evaluateWetEndAssemblyInterference } from '../scripts/slurryEngine.js';
+  import { saveWorkbenchState, loadWorkbenchState } from '../scripts/workbenchBus.js';
+
   function initPumpAssemblyReport() {
     const reports = document.querySelectorAll('[data-pump-assembly-report]');
     reports.forEach((section) => {
       const buttons = section.querySelectorAll('[data-assembly-branch-btn]');
       const rows = section.querySelectorAll('[data-bom-row]');
       const svgBranches = section.querySelectorAll('[data-svg-branch]');
+      let activeBranch = 'metal';
 
       buttons.forEach((btn) => {
         btn.addEventListener('click', () => {
           const selectedBranch = btn.getAttribute('data-assembly-branch-btn') || 'all';
+          activeBranch = selectedBranch === 'hule_natural' ? 'rubber' : 'metal';
           buttons.forEach((b) => {
             const active = b === btn;
             b.classList.toggle('is-active', active);
@@ -537,6 +624,79 @@ const bomItems = [
           });
         });
       });
+
+      // Calibrador en vivo de Claro Axial Frontal δ_frontal (Estación 05)
+      const slider = section.querySelector('[data-clearance-slider]') as HTMLInputElement | null;
+      const b2Select = section.querySelector('[data-clearance-b2]') as HTMLSelectElement | null;
+      const readoutEl = section.querySelector('[data-clearance-readout]');
+      const lossEl = section.querySelector('[data-clearance-loss]');
+      const ratioEl = section.querySelector('[data-clearance-ratio]');
+      const statusEl = section.querySelector('[data-clearance-status]');
+      const vcLossEl = section.querySelector('[data-clearance-vc-loss]');
+      const lot554El = section.querySelector('[data-clearance-lot554]');
+      const quoteCta = section.querySelector('[data-clearance-quote-cta]') as HTMLAnchorElement | null;
+      const svgValEl = section.querySelector('[data-est-05-val]');
+      const svgBoxEl = section.querySelector('[data-est-05-box]');
+      const isEnDoc = document.documentElement.lang === 'en';
+
+      const updateClearanceSimulation = () => {
+        if (!slider) return;
+        const frontClearanceMm = Number(slider.value) || 0.75;
+        const impellerExitWidthMm = b2Select ? Number(b2Select.value) || 48 : 48;
+        const res = evaluateWetEndAssemblyInterference({
+          wetEndBranch: activeBranch as 'metal' | 'rubber',
+          frontClearanceMm,
+          impellerExitWidthMm
+        });
+
+        if (readoutEl) readoutEl.textContent = `${res.frontClearanceMm.toFixed(2)} mm`;
+        if (lossEl) lossEl.textContent = `${res.volumetricEfficiencyDropPct.toFixed(2)}%`;
+        if (ratioEl) {
+          ratioEl.textContent = isEnDoc
+            ? `${res.excessRecirculationRatio.toFixed(2)}× baseline recirculation`
+            : `${res.excessRecirculationRatio.toFixed(2)}× recirculación base`;
+        }
+        if (statusEl) {
+          let label = isEnDoc ? 'OPTIMAL CALIBRATION (0.5–1.0 mm)' : 'CALIBRACIÓN ÓPTIMA (0.5–1.0 mm)';
+          if (res.clearanceStatus === 'RUBBING_RISK') {
+            label = isEnDoc ? 'CRITICAL: AXIAL RUBBING RISK (< 0.5 mm)' : 'CRÍTICO: RIESGO DE ROCE AXIAL (< 0.5 mm)';
+          } else if (res.clearanceStatus === 'EXCESS_RECIRCULATION_WEAR') {
+            label = isEnDoc ? 'WARNING: EXCESS VORTEX WEAR (> 1.0 mm)' : 'ALERTA: VÓRTICE DE RECIRCULACIÓN (> 1.0 mm)';
+          }
+          statusEl.textContent = label;
+        }
+        if (vcLossEl) {
+          vcLossEl.textContent = isEnDoc
+            ? `Pipe Vc margin impact: -${res.pipeVelocityMarginLossPct.toFixed(2)}%`
+            : `Margen Vc tubería: -${res.pipeVelocityMarginLossPct.toFixed(2)}%`;
+        }
+        if (lot554El) {
+          lot554El.textContent = isEnDoc ? res.wearRatioImpact554En : res.wearRatioImpact554;
+        }
+        if (svgValEl) svgValEl.textContent = `${res.frontClearanceMm.toFixed(2)} mm`;
+        if (svgBoxEl) {
+          const strokeColor = res.clearanceStatus === 'OPTIMAL_CALIBRATION'
+            ? '#15803d'
+            : (res.clearanceStatus === 'RUBBING_RISK' ? '#dc2626' : '#d97706');
+          svgBoxEl.setAttribute('stroke', strokeColor);
+        }
+        if (quoteCta) {
+          const base = quoteCta.getAttribute('data-quote-base') || '/cotizar/';
+          quoteCta.href = `${base}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=throatbush&estacion=5&claro_mm=${res.frontClearanceMm.toFixed(2)}#rfq`;
+        }
+
+        const prev = loadWorkbenchState() || {};
+        saveWorkbenchState({
+          ...prev,
+          frontClearanceMm: res.frontClearanceMm,
+          volumetricLossPct: res.volumetricEfficiencyDropPct,
+          clearanceStatus: res.clearanceStatus
+        });
+      };
+
+      if (slider) slider.addEventListener('input', updateClearanceSimulation);
+      if (b2Select) b2Select.addEventListener('change', updateClearanceSimulation);
+      updateClearanceSimulation();
     });
   }
 
@@ -798,6 +958,111 @@ const bomItems = [
     font-weight: 800;
     color: #0d78c6;
     text-decoration: none;
+  }
+  .assembly-clearance-calibrator {
+    margin: 0 0 1.5rem 0;
+    border: 1.5px solid #f59e0b;
+    border-radius: 10px;
+    background: #fffbeb;
+    overflow: hidden;
+  }
+  .assembly-clearance-calibrator__summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    list-style: none;
+  }
+  .assembly-clearance-calibrator__badge {
+    background: #92400e;
+    color: #ffffff;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 0.18rem 0.5rem;
+    border-radius: 4px;
+  }
+  .assembly-clearance-calibrator__title {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #1c1917;
+    flex: 1;
+  }
+  .assembly-clearance-calibrator__hint {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #78350f;
+  }
+  .assembly-clearance-calibrator__body {
+    padding: 1rem;
+    background: #ffffff;
+    border-top: 1px solid #fde68a;
+  }
+  .assembly-clearance-calibrator__controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .clearance-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: #1c1917;
+  }
+  .clearance-field__label {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+  }
+  .clearance-field__scale {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.68rem;
+    color: #475569;
+  }
+  .assembly-clearance-calibrator__metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.75rem;
+  }
+  .clearance-metric-card {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .clearance-metric-card__kicker {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.66rem;
+    font-weight: 800;
+    color: #475569;
+  }
+  .clearance-metric-card__val {
+    font-size: 0.96rem;
+    font-weight: 800;
+    color: #1c1917;
+  }
+  .clearance-metric-card__sub {
+    font-size: 0.75rem;
+    color: #334155;
+  }
+  .clearance-metric-card__cta {
+    margin-top: 0.25rem;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #082f49;
+    text-decoration: underline;
   }
   .bom-quote-link:hover {
     text-decoration: underline;

@@ -109,6 +109,94 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
             <a href="/cotizar/?equipo=skid_bomba&transmision=DC#rfq" class="btn btn-primary">Cotizar Skid Arreglo DC →</a>
           </div>
         </div>
+
+        <!-- Calibrador Cinemático V-Belt, Velocidad Periférica u2 <= 24.5 m/s y Vida ISO 281 L10h (Decisión 2-C+, Arbitraje #8) -->
+        <details class="skid-kinematics-calibrator" id="skid-kinematics-panel" data-skid-kinematics>
+          <summary class="skid-kinematics-calibrator__summary">
+            <span class="skid-kinematics-calibrator__badge">SIMULADOR CINEMÁTICO ISO 281</span>
+            <span class="skid-kinematics-calibrator__title">
+              Calcular Relación de Poleas V-Belt, Velocidad Periférica (u₂ ≤ 24.5 m/s) y Vida de Rodamientos (L₁₀h)
+            </span>
+            <span class="skid-kinematics-calibrator__hint">Abrir calculadora cinemática ▾</span>
+          </summary>
+
+          <div class="skid-kinematics-calibrator__body">
+            <div class="skid-kinematics-calibrator__controls">
+              <label class="kin-field">
+                <span>Arreglo de Transmisión:</span>
+                <select data-kin-arrangement>
+                  <option value="CV" selected>CV — Motor Superior (Overhead)</option>
+                  <option value="ZVZ">ZVZ — Motor Trasero Elevado</option>
+                  <option value="CRZ">CRZ — Motor Lateral en Skid</option>
+                  <option value="DC">DC — Acoplamiento Directo (Fr = 0 kN)</option>
+                </select>
+              </label>
+              <label class="kin-field">
+                <span>Polea Motriz Motor (mm): <strong data-kin-driver-val>180 mm</strong></span>
+                <input type="range" min="120" max="380" step="10" value="180" data-kin-driver />
+              </label>
+              <label class="kin-field">
+                <span>Polea Conducida Bomba (mm): <strong data-kin-driven-val>320 mm</strong></span>
+                <input type="range" min="160" max="560" step="10" value="320" data-kin-driven />
+              </label>
+              <label class="kin-field">
+                <span>Diámetro Impulsor ØD₂ (atomic_parts):</span>
+                <select data-kin-impeller>
+                  <option value="270">270 mm — Serie 3x2 / 4x3 (D3147)</option>
+                  <option value="380" selected>380 mm — Serie 6x4 (E4147)</option>
+                  <option value="510">510 mm — Serie 8x6 (F6147)</option>
+                </select>
+              </label>
+              <label class="kin-field">
+                <span>Material en Contacto Húmedo:</span>
+                <select data-kin-material>
+                  <option value="alto_cromo_cr27" selected>Alto Cromo 27% A05 (u₂ máx 32.0 m/s)</option>
+                  <option value="hule_natural">Hule Natural R55 (u₂ máx 24.5 m/s)</option>
+                  <option value="poliuretano">Poliuretano U01 (u₂ máx 26.0 m/s)</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="skid-kinematics-calibrator__metrics">
+              <div class="kin-metric-card">
+                <span class="kin-metric-card__kicker">VELOCIDAD EN EJE BOMBA</span>
+                <strong class="kin-metric-card__val" data-kin-rpm>1001 RPM</strong>
+                <span class="kin-metric-card__sub" data-kin-ratio>Motor 1780 RPM • Relación 0.56×</span>
+              </div>
+              <div class="kin-metric-card">
+                <span class="kin-metric-card__kicker">VELOCIDAD PERIFÉRICA (u₂)</span>
+                <strong class="kin-metric-card__val" data-kin-u2>19.92 m/s</strong>
+                <span class="kin-metric-card__sub" data-kin-u2-status>Dentro de límite elástico de Hule y A05</span>
+              </div>
+              <div class="kin-metric-card">
+                <span class="kin-metric-card__kicker">CARGA RADIAL BANDAS (Fᵣ)</span>
+                <strong class="kin-metric-card__val" data-kin-fr>6.71 kN</strong>
+                <span class="kin-metric-card__sub">Sobre voladizo de Bearing Assembly</span>
+              </div>
+              <div class="kin-metric-card">
+                <span class="kin-metric-card__kicker">VIDA NOMINAL ISO 281 (L₁₀h)</span>
+                <strong class="kin-metric-card__val" data-kin-l10h>42,800 h</strong>
+                <a
+                  href="/cotizar/?equipo=skid_bomba&transmision=CV&material=alto_cromo_cr27&u2_ms=19.92&l10h=42800#rfq"
+                  class="kin-metric-card__cta"
+                  data-kin-cta
+                  data-quote-base="/cotizar/"
+                >
+                  Cotizar Skid con esta Cinemática →
+                </a>
+              </div>
+            </div>
+
+            <div class="skid-kinematics-calibrator__alert" data-kin-rubber-alert style="display:none">
+              <div>
+                <strong>ALERTA TRIBOLÓGICA (INV-SMAT-SCI-13):</strong> La velocidad periférica supera <strong>24.5 m/s</strong> en Hule Natural (R55), provocando delaminación térmica por histéresis viscoelástica.
+              </div>
+              <button type="button" class="btn btn-primary" data-kin-switch-a05>
+                Cambiar a Alto Cromo A05 (≥650 HB)
+              </button>
+            </div>
+          </div>
+        </details>
       </div>
 
       <!-- BOCA DE SUCCIÓN Y CALIBRACIÓN DE CLARO AXIAL (REF 4 DON MANUEL) -->
@@ -130,9 +218,123 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
   </section>
 </BaseLayout>
 
+<script>
+  import { calculateDriveAndBearingKinematics } from '../../scripts/slurryEngine.js';
+  import { saveWorkbenchState, loadWorkbenchState } from '../../scripts/workbenchBus.js';
+
+  function initSkidKinematics() {
+    const panel = document.querySelector('[data-skid-kinematics]');
+    if (!panel) return;
+
+    const arrSel = panel.querySelector('[data-kin-arrangement]') as HTMLSelectElement | null;
+    const driverInput = panel.querySelector('[data-kin-driver]') as HTMLInputElement | null;
+    const drivenInput = panel.querySelector('[data-kin-driven]') as HTMLInputElement | null;
+    const impSel = panel.querySelector('[data-kin-impeller]') as HTMLSelectElement | null;
+    const matSel = panel.querySelector('[data-kin-material]') as HTMLSelectElement | null;
+
+    const driverVal = panel.querySelector('[data-kin-driver-val]');
+    const drivenVal = panel.querySelector('[data-kin-driven-val]');
+    const rpmEl = panel.querySelector('[data-kin-rpm]');
+    const ratioEl = panel.querySelector('[data-kin-ratio]');
+    const u2El = panel.querySelector('[data-kin-u2]');
+    const u2StatusEl = panel.querySelector('[data-kin-u2-status]');
+    const frEl = panel.querySelector('[data-kin-fr]');
+    const l10hEl = panel.querySelector('[data-kin-l10h]');
+    const alertBox = panel.querySelector('[data-kin-rubber-alert]') as HTMLElement | null;
+    const switchBtn = panel.querySelector('[data-kin-switch-a05]');
+    const ctaEl = panel.querySelector('[data-kin-cta]') as HTMLAnchorElement | null;
+
+    const updateKinematics = () => {
+      const arrangement = (arrSel?.value || 'CV') as 'CV' | 'ZVZ' | 'CRZ' | 'DC';
+      const driverPulleyMm = Number(driverInput?.value) || 180;
+      const drivenPulleyMm = Number(drivenInput?.value) || 320;
+      const impellerDiameterMm = Number(impSel?.value) || 380;
+      const wetEndMaterial = matSel?.value || 'alto_cromo_cr27';
+
+      if (driverVal) driverVal.textContent = `${driverPulleyMm} mm`;
+      if (drivenVal) drivenVal.textContent = `${drivenPulleyMm} mm`;
+
+      const res = calculateDriveAndBearingKinematics({
+        arrangement,
+        motorRpm: 1780,
+        driverPulleyMm,
+        drivenPulleyMm,
+        impellerDiameterMm,
+        shaftPowerKw: 45,
+        wetEndMaterial
+      });
+
+      if (rpmEl) rpmEl.textContent = `${res.pumpRpm} RPM`;
+      if (ratioEl) ratioEl.textContent = `Motor ${res.motorRpm} RPM • Relación ${res.speedMultiplier.toFixed(2)}×`;
+      if (u2El) u2El.textContent = `${res.tipSpeedMs.toFixed(2)} m/s`;
+      if (u2StatusEl) {
+        u2StatusEl.textContent = res.rubberSafeTipSpeed
+          ? 'Apto para Hule Natural R55, PU y Alto Cromo A05'
+          : 'Excede 24.5 m/s: Exclusivo Alto Cromo A05 (≥650 HB)';
+      }
+      if (frEl) frEl.textContent = `${res.beltRadialLoadKn.toFixed(2)} kN`;
+      if (l10hEl) l10hEl.textContent = `${res.bearingL10Hours.toLocaleString('es-MX')} h`;
+      if (alertBox) {
+        alertBox.style.display = res.rubberThermalLimitExceeded ? 'flex' : 'none';
+      }
+      if (ctaEl) {
+        const base = ctaEl.getAttribute('data-quote-base') || '/cotizar/';
+        ctaEl.href = `${base}?equipo=skid_bomba&transmision=${res.arrangement}&material=${wetEndMaterial}&u2_ms=${res.tipSpeedMs.toFixed(2)}&l10h=${res.bearingL10Hours}#rfq`;
+      }
+
+      const prev = loadWorkbenchState() || {};
+      saveWorkbenchState({
+        ...prev,
+        kinematics: {
+          arrangement: res.arrangement,
+          pumpRpm: res.pumpRpm,
+          tipSpeedMs: res.tipSpeedMs,
+          beltRadialLoadKn: res.beltRadialLoadKn,
+          bearingL10Hours: res.bearingL10Hours,
+          rubberThermalLimitExceeded: res.rubberThermalLimitExceeded
+        }
+      });
+    };
+
+    [arrSel, driverInput, drivenInput, impSel, matSel].forEach((el) => {
+      if (el) {
+        el.addEventListener('input', updateKinematics);
+        el.addEventListener('change', updateKinematics);
+      }
+    });
+
+    if (switchBtn && matSel) {
+      switchBtn.addEventListener('click', () => {
+        matSel.value = 'alto_cromo_cr27';
+        updateKinematics();
+      });
+    }
+
+    updateKinematics();
+  }
+
+  initSkidKinematics();
+  document.addEventListener('astro:page-load', initSkidKinematics);
+</script>
+
 <style>
   .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 2.75rem 0; border-bottom: 2px solid var(--smat-copper-accent); }
   .page-hero h1 { color: var(--smat-text-primary); margin-top: 0.5rem; }
   .back-link { color: var(--smat-copper-accent); font-size: 0.9rem; font-weight: 700; text-decoration: none; }
   .back-link:hover { text-decoration: underline; }
+  .skid-kinematics-calibrator { margin-top: 1.5rem; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #f8fafc; overflow: hidden; }
+  .skid-kinematics-calibrator__summary { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.65rem; padding: 0.85rem 1.1rem; cursor: pointer; list-style: none; }
+  .skid-kinematics-calibrator__badge { background: #0d78c6; color: #ffffff; font-family: var(--smat-font-mono, monospace); font-size: 0.68rem; font-weight: 800; padding: 0.18rem 0.5rem; border-radius: 4px; }
+  .skid-kinematics-calibrator__title { font-size: 0.92rem; font-weight: 800; color: #1c1917; flex: 1; }
+  .skid-kinematics-calibrator__hint { font-family: var(--smat-font-mono, monospace); font-size: 0.72rem; font-weight: 800; color: #082f49; }
+  .skid-kinematics-calibrator__body { padding: 1.1rem; background: #ffffff; border-top: 1px solid #e2e8f0; }
+  .skid-kinematics-calibrator__controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.85rem; margin-bottom: 1rem; }
+  .kin-field { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.8rem; font-weight: 700; color: #1c1917; }
+  .skid-kinematics-calibrator__metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; }
+  .kin-metric-card { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.25rem; }
+  .kin-metric-card__kicker { font-family: var(--smat-font-mono, monospace); font-size: 0.66rem; font-weight: 800; color: #475569; }
+  .kin-metric-card__val { font-size: 1rem; font-weight: 800; color: #1c1917; }
+  .kin-metric-card__sub { font-size: 0.74rem; color: #334155; }
+  .kin-metric-card__cta { margin-top: 0.25rem; font-family: var(--smat-font-mono, monospace); font-size: 0.72rem; font-weight: 800; color: #082f49; text-decoration: underline; }
+  .skid-kinematics-calibrator__alert { margin-top: 0.9rem; padding: 0.85rem 1rem; border-radius: 8px; background: #fef2f2; border: 1.5px solid #dc2626; color: #7f1d1d; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; font-size: 0.82rem; }
 </style>

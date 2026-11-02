@@ -262,3 +262,46 @@ test('12. Cinemática de Transmisión por Poleas (CV / ZVZ / CRZ / DC), Velocida
   assert.ok(highSpeed.recommendedWetMaterialByTipSpeed.includes('Alto Cromo'), 'Debe exigir Alto Cromo >= 650 HB');
 });
 
+test('13. Consolidación Canónica Sin Debris (MS-01 / Decisión 8-C) e Invariantes Físicos INV-SMAT-SCI-12..14', async () => {
+  const {
+    WET_END_MATERIAL_MATRIX,
+    WET_END_MATERIAL_KITS,
+    DRIVE_ARRANGEMENT_CATALOG,
+    DRIVE_ARRANGEMENTS,
+    evaluatePumpAssemblySequence,
+    evaluateWetEndAssemblyInterference,
+    calculateDriveAndBearingKinematics,
+    calculateDriveKinematics,
+    recommendAstmSieveSeries,
+    MECHANICAL_DIAGNOSTICS
+  } = await import('../src/scripts/slurryEngine.js');
+
+  assert.equal(WET_END_MATERIAL_KITS, WET_END_MATERIAL_MATRIX, 'Alias canónico sin duplicación de matriz de materiales');
+  assert.equal(DRIVE_ARRANGEMENTS, DRIVE_ARRANGEMENT_CATALOG, 'Alias canónico sin duplicación de arreglos de transmisión');
+  assert.equal(evaluateWetEndAssemblyInterference, evaluatePumpAssemblySequence, 'Alias canónico sin duplicación de evaluador de claro axial');
+  assert.equal(calculateDriveKinematics, calculateDriveAndBearingKinematics, 'Alias canónico sin duplicación de motor cinemático');
+
+  const worn = evaluateWetEndAssemblyInterference({ frontClearanceMm: 2.8, impellerExitWidthMm: 48 });
+  assert.ok(worn.wearRatioImpact554.includes('5:9:4'), 'Claro axial > 2.0 mm debe degradar el lote 5:5:4 a 5:9:4');
+  assert.ok(worn.pipeVelocityMarginLossPct > 2.0, 'Recirculación frontal debe cuantificar pérdida de margen de velocidad en tubería');
+
+  const rubberOverheat = calculateDriveKinematics({
+    arrangement: 'ZVZ',
+    motorRpm: 1780,
+    driverPulleyMm: 290,
+    drivenPulleyMm: 310,
+    impellerDiameterMm: 380,
+    wetEndMaterial: 'hule_natural'
+  });
+  assert.equal(rubberOverheat.rubberThermalLimitExceeded, true, 'Hule natural con u2 > 24.5 m/s debe disparar rubberThermalLimitExceeded');
+
+  const sieveRes = recommendAstmSieveSeries({ targetP80Microns: 106, rosinRammlerSlopeN: 1.18 });
+  assert.equal(sieveRes.rosinRammlerSlopeN, 1.18, 'Debe conservar pendiente de uniformidad Rosin-Rammler n');
+
+  for (const key of ['cavitation', 'liner_grooving', 'bearing_vibration', 'packing_leak']) {
+    assert.ok(MECHANICAL_DIAGNOSTICS[key].threshold, `MECHANICAL_DIAGNOSTICS.${key} debe incluir threshold físico`);
+    assert.ok(MECHANICAL_DIAGNOSTICS[key].stationNumber >= 1, `MECHANICAL_DIAGNOSTICS.${key} debe enlazar estación de despiece`);
+  }
+});
+
+

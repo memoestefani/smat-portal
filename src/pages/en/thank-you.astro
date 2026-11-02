@@ -91,6 +91,18 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
                 <td colspan="3" id="field-hydraulics">Hydraulic calculation subject to plant flow rate and % solids confirmation.</td>
               </tr>
               <tr>
+                <th>Metallurgy, Drive & Station:</th>
+                <td colspan="3" id="field-material-drive">High Chrome ASTM A532 Cr27% (>600 HB) • ZVZ Drive • Station S4 (Wet-End)</td>
+              </tr>
+              <tr>
+                <th>Axial Clearance (δ) & Kinematics:</th>
+                <td colspan="3" id="field-clearance-kinematics">δ = 0.75 mm (Optimal, Δη_v = -0.3%) • u₂ ≤ 24.5 m/s • Certified ISO 281 L₁₀ₕ life</td>
+              </tr>
+              <tr id="row-field-metrology">
+                <th>Metrological Memory (Lab):</th>
+                <td colspan="3" id="field-metrology">No laboratory pre-calibration attached (Marcy Scale / Bond / Filter Press).</td>
+              </tr>
+              <tr>
                 <th>Continuity & Slurry Profile:</th>
                 <td colspan="3" id="field-tco">Operational continuity assessment at Durango Central Warehouse.</td>
               </tr>
@@ -169,6 +181,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       const detalles = urlParams.get('detalles') || urlParams.get('specs') || cached.especificacion_tecnica || 'Technical requisition subject to Durango yard dimensional inspection.';
       const destino = urlParams.get('destino') || cached.modalidad_logistica || 'Durango Central Warehouse Pickup (Folio Scheduled)';
       const urgencia = urlParams.get('urgencia') || (cached.urgencia && cached.urgencia.includes('PARO') ? 'paro' : 'proyecto');
+      const material = urlParams.get('material') || cached.material_bombeo || 'alto_cromo_cr27';
+      const transmision = urlParams.get('transmision') || cached.arreglo_transmision || 'ZVZ';
+      const estacion = urlParams.get('estacion') || cached.estacion_armado || 'S4';
+      const pesoKg = urlParams.get('peso_kg') || cached.peso_pieza_kg || '';
+      const claroMm = urlParams.get('claro_mm') || cached.claro_axial_mm || '0.75';
+      const deltaEtaV = urlParams.get('delta_eta_v') || cached.perdida_eficiencia_vol_pct || '0.3';
+      const u2Ms = urlParams.get('u2_ms') || cached.velocidad_periferica_u2_ms || '22.4';
+      const l10h = urlParams.get('l10h') || cached.vida_rodamiento_l10h || '38500';
+      const metrologia = urlParams.get('metrologia') || cached.memoria_metrologica || '';
 
       const elFolio = document.getElementById('display-folio');
       if (elFolio) elFolio.textContent = folio;
@@ -207,6 +228,11 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       setText('field-dimensions', medidas);
       setText('field-details', detalles);
       setText('field-hydraulics', hidraulica);
+      const matLabel = material === 'hule_natural' ? 'Anti-Abrasion Natural Rubber (55–65 Shore A)' : (material === 'carburo_silicio' ? 'Silicon Carbide / Ceramic' : 'High Chrome ASTM A532 Cr27% (>600 HB)');
+      const nioshLabel = pesoKg ? ` • Weight: ${pesoKg} kg (${Number(pesoKg) > 23 ? 'Hoist >23 kg NIOSH' : 'Manual <=23 kg NIOSH'})` : '';
+      setText('field-material-drive', `${matLabel} • V-Belt Drive: ${transmision} • Station: ${estacion}${nioshLabel}`);
+      setText('field-clearance-kinematics', `Axial Clearance δ = ${claroMm} mm (Δη_v = -${deltaEtaV}%) • Tip Speed u₂ = ${u2Ms} m/s • ISO 281 Life L₁₀ₕ = ${Number(l10h).toLocaleString('en-US')} h`);
+      setText('field-metrology', metrologia || 'No laboratory pre-calibration attached (Marcy Scale / Bond / Filter Press).');
       setText('field-tco', fullTcoAndProfile);
       setText('field-type', urgencia === 'paro' ? 'Emergency Plant Shutdown (High Operational Priority)' : 'Formal Equipment Requisition / Project');
     }

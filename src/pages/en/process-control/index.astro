@@ -22,17 +22,30 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
         Direct-reading metallurgical instrumentation for grinding, classification, flotation, and dewatering control: <strong>Pulp Density & % Solids Scales (Marcy Style)</strong>, <strong>SMAT Laboratory Batch Pressure Filters (60–100 psi)</strong>, and <strong>Certified ASTM E11 / ISO 3310 Test Sieves (5" to #635 Mesh)</strong>.
       </p>
       <div style="display: flex; gap: 0.85rem; flex-wrap: wrap; margin-top: 1.25rem;">
-        <a href="/en/quote/?circuito=control_procesos#rfq" class="btn btn-primary">Quote Process Control Equipment →</a>
+        <a href="/en/quote/?circuito=control_procesos#rfq" class="btn btn-primary" data-ctrl-quote-link>Quote Process Control Equipment →</a>
         <a href="#metrology-calculator" class="btn btn-outline">Marcy, Gy & ASTM √2 Calculator ↓</a>
       </div>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" id="stage-diagnostic">
     <div class="container">
+      <!-- Apple HIG Segmented Control: 1 Active Instrument at a Time -->
+      <div class="metrology-segmented-bar" role="tablist" aria-label="Metrology Bench Stations (1 Active Instrument at a Time)">
+        <button type="button" role="tab" aria-selected="true" class="metrology-seg-btn is-active" data-met-station-tab="1">
+          1. Marcy Scale
+        </button>
+        <button type="button" role="tab" aria-selected="false" class="metrology-seg-btn" data-met-station-tab="2">
+          2. Lab Filter Press + Pierre Gy
+        </button>
+        <button type="button" role="tab" aria-selected="false" class="metrology-seg-btn" data-met-station-tab="3">
+          3. ASTM E11 Sieves
+        </button>
+      </div>
+
       <div class="control-equipment-grid">
         <!-- Instrument 1: Marcy Scale -->
-        <article id="marcy-scale" class="card control-block">
+        <article id="marcy-scale" class="card control-block" data-instrument-card="1">
           <div class="control-block-header">
             <span class="badge badge-copper">PULP DENSITY & % SOLIDS • 1000 CM³ CUP</span>
             <h2>Pulp Density & % Solids Scale (Marcy Style)</h2>
@@ -48,12 +61,12 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
           </div>
           <div class="control-actions">
             <a href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="btn btn-primary">Quote Marcy Scale →</a>
-            <a href="#metrology-calculator" class="btn btn-outline">Simulate Marcy Dial Reading</a>
+            <a href="#metrology-calculator" class="btn btn-outline" data-open-station="1">Simulate Marcy Dial Reading</a>
           </div>
         </article>
 
         <!-- Instrument 2: Laboratory Batch Pressure Filter -->
-        <article id="batch-filter" class="card control-block">
+        <article id="batch-filter" class="card control-block" data-instrument-card="2" style="display:none">
           <div class="control-block-header">
             <span class="badge badge-copper">METALLURGICAL DEWATERING TESTS • 60 TO 100 PSI</span>
             <h2>SMAT Laboratory Batch Pressure Filter</h2>
@@ -69,11 +82,12 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
           </div>
           <div class="control-actions">
             <a href="/en/quote/?circuito=control_procesos&equipo=filtro_batch_lab#rfq" class="btn btn-primary">Quote Lab Batch Pressure Filter →</a>
+            <a href="#metrology-calculator" class="btn btn-outline" data-open-station="2">Simulate Batch Cycles & Pierre Gy Mass</a>
           </div>
         </article>
 
         <!-- Instrument 3: Certified ASTM E11 / ISO 3310 Test Sieves -->
-        <article id="astm-sieves" class="card control-block">
+        <article id="astm-sieves" class="card control-block" data-instrument-card="3" style="display:none">
           <div class="control-block-header">
             <span class="badge badge-copper">D80 / P80 PARTICLE SIZE CONTROL • ASTM E11 / ISO 3310</span>
             <h2>Certified ASTM E11 / ISO 3310 Test Sieves & Sieve Shakers</h2>
@@ -89,73 +103,112 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
           </div>
           <div class="control-actions">
             <a href="/en/quote/?circuito=control_procesos&equipo=tamices_laboratorio#rfq" class="btn btn-primary">Quote ASTM Sieve Stack →</a>
-            <a href="#metrology-calculator" class="btn btn-outline">Calculate √2 Series & Gy Sample Mass</a>
+            <a href="#metrology-calculator" class="btn btn-outline" data-open-station="3">Calculate √2 Series & Rosin-Rammler</a>
           </div>
         </article>
       </div>
 
-      <!-- INTERACTIVE METALLURGICAL METROLOGY CALCULATOR (Marcy + Pierre Gy + ASTM E11 √2 Stack) -->
+      <!-- INTERACTIVE METALLURGICAL METROLOGY CALCULATOR (1 Active Station at a Time) -->
       <div id="metrology-calculator" class="card metrology-calc-card" style="margin-top: 2.5rem;">
         <div class="metrology-calc-header">
           <span class="badge badge-copper">PLANT METALLURGICAL CONTROL TOOL</span>
-          <h2>Marcy Dial Simulator, ASTM E11 √2 Sieve Stack & Pierre Gy Sample Mass</h2>
+          <h2>Marcy Dial Simulator, Lab Filter Press (Pierre Gy) & ASTM E11 √2 Sieve Stack</h2>
           <p style="color: var(--smat-text-secondary); margin: 0;">
-            Enter your dry ore specific gravity ($S_s$), percent solids by weight ($C_w$), and target grinding cut size ($P_{80}$) to determine the active Marcy dial ring, minimum sample mass ($M_s$), and 7-sieve ASTM E11 stack.
+            Select the active metrology station to calibrate pulp density ($S_s$, $C_w$), minimum sample mass and filtration cycles (Pierre Gy), or the 7-sieve ASTM E11 stack ($P_{80}$, Rosin-Rammler $y'$).
           </p>
         </div>
 
-        <div class="metrology-inputs-grid">
-          <label class="metrology-field">
-            <span>Dry Ore Specific Gravity ($S_s$):</span>
-            <input type="number" id="met-sg-input" min="2.2" max="4.4" step="0.1" value="2.8" />
-          </label>
-          <label class="metrology-field">
-            <span>Solids by Weight ($C_w$ %):</span>
-            <input type="number" id="met-cw-input" min="5" max="80" step="1" value="50" />
-          </label>
-          <label class="metrology-field">
-            <span>Target Grinding Cut $P_{80}$ (µm):</span>
-            <input type="number" id="met-p80-input" min="25" max="2000" step="5" value="75" />
-          </label>
-          <label class="metrology-field">
-            <span>Preferred Sieve Frame Material:</span>
-            <select id="met-frame-select">
-              <option value="8&quot; Stainless Steel (Full Height)">8" Stainless Steel (Full Height)</option>
-              <option value="8&quot; Stainless Steel (Half Height)">8" Stainless Steel (Half Height)</option>
-              <option value="8&quot; Brass Frame / SS Mesh">8" Brass Frame / SS Mesh</option>
-              <option value="12&quot; Stainless Steel">12" Stainless Steel</option>
-            </select>
-          </label>
-        </div>
+        <div class="metrology-stations-stack">
+          <details class="metrology-station-accordion" data-station-accordion="1" open>
+            <summary class="metrology-station-summary">
+              <span><strong>1. Marcy Scale:</strong> Dry Ore Specific Gravity ($S_s$) & % Solids ($C_w$)</span>
+              <span class="metrology-station-tag">STATION 01 • ACTIVE</span>
+            </summary>
+            <div class="metrology-inputs-grid">
+              <label class="metrology-field">
+                <span>Dry Ore Specific Gravity ($S_s$):</span>
+                <input type="number" id="met-sg-input" min="2.2" max="4.4" step="0.1" value="2.8" />
+              </label>
+              <label class="metrology-field">
+                <span>Solids by Weight ($C_w$ %):</span>
+                <input type="number" id="met-cw-input" min="5" max="80" step="1" value="50" />
+              </label>
+            </div>
+            <div class="metrology-result-box">
+              <span class="met-res-label">Marcy Cup Reading (1000 cm³)</span>
+              <strong id="met-res-marcy-main" class="met-res-value">1474 g net • ρp = 1.474 kg/L</strong>
+              <small id="met-res-marcy-sub">Active dial ring: SG 2.8 (Range 2.2 to 4.4)</small>
+            </div>
+          </details>
 
-        <div class="metrology-results-grid">
-          <div class="metrology-result-box">
-            <span class="met-res-label">Marcy Cup Reading (1000 cm³)</span>
-            <strong id="met-res-marcy-main" class="met-res-value">1474 g net • ρp = 1.474 kg/L</strong>
-            <small id="met-res-marcy-sub">Active dial ring: SG 2.8 (Range 2.2 to 4.4)</small>
-          </div>
-          <div class="metrology-result-box">
-            <span class="met-res-label">Minimum Sample Mass (Pierre Gy, σ²F = 1%)</span>
-            <strong id="met-res-gy-main" class="met-res-value">250 g dry (Wet + Dry Sieving)</strong>
-            <small id="met-res-gy-sub">Shape factor f = 0.50, granulometric factor g = 0.25</small>
-          </div>
-          <div class="metrology-result-box">
-            <span class="met-res-label">Recommended ASTM E11 Stack (√2 Series)</span>
-            <strong id="met-res-sieves-main" class="met-res-value">#70, #100, #140, #200, #270, #325, #400</strong>
-            <small id="met-res-sieves-sub">Includes Cover and Receiver Pan</small>
-          </div>
+          <details class="metrology-station-accordion" data-station-accordion="2">
+            <summary class="metrology-station-summary">
+              <span><strong>2. Lab Filter Press + Pierre Gy:</strong> Minimum Sample Mass ($M_s$) & Batch Cycles (60–100 psi)</span>
+              <span class="metrology-station-tag">STATION 02 ▾</span>
+            </summary>
+            <div class="metrology-inputs-grid">
+              <label class="metrology-field">
+                <span>Batch Pneumatic Filtration Pressure (psi):</span>
+                <select id="met-gy-pressure-select">
+                  <option value="60–80 psi">60–80 psi (Standard Concentrates)</option>
+                  <option value="80–100 psi" selected>80–100 psi (Fines / Clay Slimes)</option>
+                </select>
+              </label>
+            </div>
+            <div class="metrology-result-box">
+              <span class="met-res-label">Minimum Sample Mass (Pierre Gy, σ²F = 1%) & Lab Filter Cycles</span>
+              <strong id="met-res-gy-main" class="met-res-value">250 g dry (Wet + Dry Sieving)</strong>
+              <small id="met-res-gy-sub">Shape factor f = 0.50, granulometric factor g = 0.25</small>
+            </div>
+          </details>
+
+          <details class="metrology-station-accordion" data-station-accordion="3">
+            <summary class="metrology-station-summary">
+              <span><strong>3. ASTM E11 Sieves:</strong> Target $P_{80}$ Cut, √2 Series & Rosin-Rammler Linearization ($y'$)</span>
+              <span class="metrology-station-tag">STATION 03 ▾</span>
+            </summary>
+            <div class="metrology-inputs-grid">
+              <label class="metrology-field">
+                <span>Target Grinding Cut $P_{80}$ (µm):</span>
+                <input type="number" id="met-p80-input" min="25" max="2000" step="5" value="75" />
+              </label>
+              <label class="metrology-field">
+                <span>Preferred Sieve Frame Material:</span>
+                <select id="met-frame-select">
+                  <option value="8&quot; Stainless Steel (Full Height)">8" Stainless Steel (Full Height)</option>
+                  <option value="8&quot; Stainless Steel (Half Height)">8" Stainless Steel (Half Height)</option>
+                  <option value="8&quot; Brass Frame / SS Mesh">8" Brass Frame / SS Mesh</option>
+                  <option value="12&quot; Stainless Steel">12" Stainless Steel</option>
+                </select>
+              </label>
+            </div>
+            <div class="metrology-result-box">
+              <span class="met-res-label">Recommended ASTM E11 Stack (√2 Series + Rosin-Rammler)</span>
+              <strong id="met-res-sieves-main" class="met-res-value">#70, #100, #140, #200, #270, #325, #400</strong>
+              <small id="met-res-sieves-sub">Includes Cover & Receiver Pan • y' = -0.1555 (n = 1.25)</small>
+            </div>
+          </details>
         </div>
 
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light);">
           <span id="met-summary-code" style="font-family: var(--smat-font-mono); font-size: 0.85rem; color: var(--smat-text-secondary);">
             Ready for quotation workbench: <strong>SMAT-CTRL-MARCY-1000 / SMAT-CTRL-SIEVE-ASTM</strong>
           </span>
-          <a id="met-quote-cta" href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="btn btn-primary">
-            Send Specification to Quote Workbench →
-          </a>
+          <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
+            <a id="met-pump-precal-cta" href="/en/quote/?circuito=bombeo&flow=220&solids=50&d80=75&sg=2.8#rfq" class="btn btn-outline">
+              Pre-calibrate Pump with this Pulp →
+            </a>
+            <a id="met-quote-cta" href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="btn btn-primary">
+              Send Metrology Schedule to Workbench →
+            </a>
+          </div>
         </div>
       </div>
+    </div>
+  </section>
 
+  <section class="section" id="stage-2" style="padding-top: 0;">
+    <div class="container">
       <SharePurchasing
         roleTitle="Process Control Instrumentation Package (Marcy Scale + Batch Filter + ASTM E11 Sieves)"
         specs="Marcy Scale 1000 cm³ cup (12 rings SG 2.2-4.4), 100 psi Lab Batch Pressure Filter, and ASTM E11 Sieve Stack"
@@ -181,6 +234,7 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
     calculateGyMinimumSampleMass,
     recommendAstmSieveSeries
   } from '../../../scripts/slurryEngine.js';
+  import { saveWorkbenchState, loadWorkbenchState } from '../../../scripts/workbenchBus.js';
 
   function updateMetrologyCalculator() {
     const sgEl = document.getElementById('met-sg-input') as HTMLInputElement | null;
@@ -206,6 +260,7 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
     const sievesMain = document.getElementById('met-res-sieves-main');
     const sievesSub = document.getElementById('met-res-sieves-sub');
     const quoteCta = document.getElementById('met-quote-cta') as HTMLAnchorElement | null;
+    const pumpPrecalCta = document.getElementById('met-pump-precal-cta') as HTMLAnchorElement | null;
 
     if (marcyMain) {
       marcyMain.textContent = `${marcy.cupNetMassGrams} g net • ρp = ${marcy.pulpDensityKgL.toFixed(3)} kg/L`;
@@ -224,15 +279,87 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
       sievesMain.textContent = meshLabels;
     }
     if (sievesSub) {
-      sievesSub.textContent = `Center cut: ${sieveStack.primaryControlMesh} (${sieveStack.primaryApertureMicrons} µm) • ${frame}`;
+      sievesSub.textContent = `Center cut: ${sieveStack.primaryControlMesh} (${sieveStack.primaryApertureMicrons} µm) • y'=${sieveStack.rosinRammlerYPrime} (n=${sieveStack.rosinRammlerSlopeN}) • ${frame}`;
     }
+
+    const metrologiaStr = `Marcy SG=${marcy.recommendedRingSg.toFixed(1)} (${cw}% Cw, ρp=${marcy.pulpDensityKgL.toFixed(3)} kg/L) | Gy=${gy.minDrySampleKg} kg (${gy.batchFilterCycles} Batch cycle) | ASTM P80=${p80} µm (${sieveStack.primaryControlMesh}, y'=${sieveStack.rosinRammlerYPrime}, n=${sieveStack.rosinRammlerSlopeN})`;
+
     if (quoteCta) {
-      const detalle = `Marcy Scale Ring SG ${marcy.recommendedRingSg.toFixed(1)} + ASTM Sieves (${meshLabels}) in ${frame}`;
-      quoteCta.href = `/en/quote/?circuito=control_procesos&equipo=tamices_laboratorio&detalle=${encodeURIComponent(detalle)}#rfq`;
+      quoteCta.href = `/en/quote/?circuito=control_procesos&equipo=balanza_marcy&sg=${sg}&cw=${cw}&p80=${p80}&gy_kg=${gy.minDrySampleKg}&metrologia=${encodeURIComponent(metrologiaStr)}#rfq`;
     }
+    if (pumpPrecalCta) {
+      pumpPrecalCta.href = `/en/quote/?circuito=bombeo&flow=220&solids=${cw}&d80=${p80}&sg=${sg}&metrologia=${encodeURIComponent(metrologiaStr)}#rfq`;
+    }
+
+    const prev = loadWorkbenchState() || {};
+    saveWorkbenchState({
+      ...prev,
+      metrologia: metrologiaStr,
+      metrology: {
+        specificGravity: sg,
+        solidsPctCw: cw,
+        pulpDensityKgL: marcy.pulpDensityKgL,
+        recommendedRingSg: marcy.recommendedRingSg,
+        gySampleMassKg: gy.minDrySampleKg,
+        batchFilterCycles: gy.batchFilterCycles,
+        targetP80Microns: p80,
+        primaryControlMesh: sieveStack.primaryControlMesh,
+        rosinRammlerYPrime: sieveStack.rosinRammlerYPrime,
+        rosinRammlerSlopeN: sieveStack.rosinRammlerSlopeN,
+        sieveFrame: frame,
+        summary: metrologiaStr
+      }
+    });
   }
 
-  ['met-sg-input', 'met-cw-input', 'met-p80-input', 'met-frame-select'].forEach((id) => {
+  const stationTabs = Array.from(document.querySelectorAll('[data-met-station-tab]'));
+  const instrumentCards = Array.from(document.querySelectorAll('[data-instrument-card]'));
+  const accordions = Array.from(document.querySelectorAll('[data-station-accordion]'));
+
+  function activateMetrologyStation(stationId: string) {
+    stationTabs.forEach((tab) => {
+      const isMatch = tab.getAttribute('data-met-station-tab') === stationId;
+      tab.classList.toggle('is-active', isMatch);
+      tab.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+    });
+    instrumentCards.forEach((card) => {
+      const isMatch = card.getAttribute('data-instrument-card') === stationId;
+      (card as HTMLElement).style.display = isMatch ? 'block' : 'none';
+    });
+    accordions.forEach((acc) => {
+      const isMatch = acc.getAttribute('data-station-accordion') === stationId;
+      (acc as HTMLDetailsElement).open = isMatch;
+      const tag = acc.querySelector('.metrology-station-tag');
+      if (tag) {
+        tag.textContent = isMatch ? `STATION 0${stationId} • ACTIVE` : `STATION 0${stationId} ▾`;
+      }
+    });
+  }
+
+  stationTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const st = tab.getAttribute('data-met-station-tab') || '1';
+      activateMetrologyStation(st);
+    });
+  });
+
+  document.querySelectorAll('[data-open-station]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const st = btn.getAttribute('data-open-station') || '1';
+      activateMetrologyStation(st);
+    });
+  });
+
+  accordions.forEach((acc) => {
+    acc.addEventListener('toggle', () => {
+      if ((acc as HTMLDetailsElement).open) {
+        const st = acc.getAttribute('data-station-accordion') || '1';
+        activateMetrologyStation(st);
+      }
+    });
+  });
+
+  ['met-sg-input', 'met-cw-input', 'met-gy-pressure-select', 'met-p80-input', 'met-frame-select'].forEach((id) => {
     const el = document.getElementById(id);
     if (el) {
       el.addEventListener('input', updateMetrologyCalculator);
@@ -252,6 +379,32 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
   .page-hero h1 {
     color: var(--smat-text-primary);
     margin-top: 0.65rem;
+  }
+  .metrology-segmented-bar {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    background: #e2e8f0;
+    padding: 0.35rem;
+    border-radius: 10px;
+    border: 1px solid var(--smat-border-strong);
+    margin-bottom: 1.5rem;
+  }
+  .metrology-seg-btn {
+    border: none;
+    background: transparent;
+    color: #0f172a;
+    font-weight: 800;
+    font-size: 0.88rem;
+    padding: 0.6rem 1.15rem;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .metrology-seg-btn.is-active {
+    background: #0f172a;
+    color: #ffffff;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
   }
   .control-equipment-grid {
     display: flex;
@@ -293,6 +446,36 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
   .metrology-calc-header h2 {
     margin: 0.5rem 0;
     color: var(--smat-text-primary);
+  }
+  .metrology-stations-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin: 1.25rem 0;
+  }
+  .metrology-station-accordion {
+    border: 1px solid var(--smat-border-strong);
+    border-radius: 8px;
+    background: var(--smat-bg-canvas);
+    padding: 0.75rem 1rem;
+  }
+  .metrology-station-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--smat-text-primary);
+    list-style: none;
+  }
+  .metrology-station-tag {
+    font-family: var(--smat-font-mono);
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #082f49;
+    background: #e0f2fe;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
   }
   .metrology-inputs-grid {
     display: grid;

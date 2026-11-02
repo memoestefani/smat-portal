@@ -69,6 +69,10 @@ export const MECHANICAL_DIAGNOSTICS = {
     causeEn: 'Hydraulic cavitation due to low NPSHa or choked suction intake.',
     actionEs: 'Verificar sumergencia de cajón de succión. Instalar sello dinámico expulsor para eliminar vacío en estopa.',
     actionEn: 'Check sump submergence. Fit dynamic expeller seal to relieve suction vacuum.',
+    threshold: 'NPSHa < NPSHr + 1.5 m (ΔNPSH altitud > 2.0 m)',
+    stationNumber: 2,
+    recommendedMaterial: 'alto_cromo_cr27',
+    recommendedClearanceMm: 0.75,
     recommendedRole: 'sello'
   },
   liner_grooving: {
@@ -79,6 +83,10 @@ export const MECHANICAL_DIAGNOSTICS = {
     causeEn: 'Abrasive recirculation of coarse grinding particles (>300 µm).',
     actionEs: 'Reajuste milimétrico de claros de acople o actualización a aleación High Chrome 27% (A05) >650 HB.',
     actionEn: 'Precision clearance adjustment or upgrade to High Chrome 27% (A05) >650 HB alloy.',
+    threshold: 'δ_frontal > 1.5 mm (Δη_v > 15%) o d80 > 300 µm',
+    stationNumber: 5,
+    recommendedMaterial: 'alto_cromo_cr27',
+    recommendedClearanceMm: 0.65,
     recommendedRole: 'revestimientos'
   },
   bearing_vibration: {
@@ -89,6 +97,10 @@ export const MECHANICAL_DIAGNOSTICS = {
     causeEn: 'Dynamic unbalance from uneven impeller erosion or bearing fatigue.',
     actionEs: 'Despacho de ensamble de rodamientos Timken y balanceo dinámico en banco de pruebas de Almacén Durango.',
     actionEn: 'Dispatch Timken bearing cartridge assembly with shop dynamic balancing inspection in Durango Warehouse.',
+    threshold: 'L10h < 15,000 h o Fr > 18 kN (Tensión V-Belt)',
+    stationNumber: 1,
+    recommendedMaterial: 'alto_cromo_cr27',
+    recommendedClearanceMm: 0.75,
     recommendedRole: 'soporte'
   },
   packing_leak: {
@@ -99,6 +111,10 @@ export const MECHANICAL_DIAGNOSTICS = {
     causeEn: 'Burnt gland packing or low seal water pressure.',
     actionEs: 'Instalación de casquillo cerámico o conversión a sello dinámico libre de agua de sellado.',
     actionEn: 'Install ceramic-coated sleeve or convert to waterless expeller dynamic seal.',
+    threshold: 'u2 > 24.5 m/s en elastómero o P_agua < P_descarga + 0.7 bar',
+    stationNumber: 2,
+    recommendedMaterial: 'alto_cromo_cr27',
+    recommendedClearanceMm: 0.75,
     recommendedRole: 'sello'
   }
 };
@@ -308,7 +324,7 @@ export const ASTM_E11_SIEVE_TABLE = [
  * @param {number} [params.solidsWeightPercent=45] - Concentración de sólidos en peso Cw (%) si no se provee pulpDensityKgL.
  */
 export function calculateMarcyScaleReading(params = {}) {
-  const ss = clamp(params.solidsSpecificGravity, 1.8, 5.2, 2.8);
+  const ss = clamp(params.solidsSpecificGravity ?? params.solidsSg, 1.8, 5.2, 2.8);
 
   let rhoP;
   let cwPercent;
@@ -321,7 +337,7 @@ export function calculateMarcyScaleReading(params = {}) {
     cwPercent = clamp(rawCw, 1, 90, 45);
   } else {
     // Modo inverso: Cw -> ρp = 100 * Ss / (Cw + Ss * (100 - Cw))
-    cwPercent = clamp(params.solidsWeightPercent, 1, 88, 45);
+    cwPercent = clamp(params.solidsWeightPercent ?? params.weightPercentSolids, 1, 88, 45);
     rhoP = (100 * ss) / (cwPercent + ss * (100 - cwPercent));
   }
 
@@ -354,10 +370,12 @@ export function calculateMarcyScaleReading(params = {}) {
     cwPercent
   );
   const wrongRingBiasPoints = Number(Math.abs(cwPercent - genericRing26Cw).toFixed(1));
+  const roundedRhoP = Number(rhoP.toFixed(3));
 
   return {
     solidsSpecificGravity: Number(ss.toFixed(2)),
-    pulpDensityKgL: Number(rhoP.toFixed(3)),
+    pulpDensityKgL: roundedRhoP,
+    slurryDensityKgL: roundedRhoP,
     solidsWeightPercent: Number(cwPercent.toFixed(1)),
     solidsVolumePercent: Number(cvPercent.toFixed(1)),
     cupNetMassGrams,
@@ -387,9 +405,10 @@ export function calculateMarcyScaleReading(params = {}) {
  * @param {number} [params.solidsWeightPercent=40] - % de sólidos en peso para estimar volumen de pulpa en litro
  */
 export function calculateGyMinimumSampleMass(params = {}) {
-  const dMm = clamp(params.topSizeD95Mm, 0.02, 25.0, 2.0);
+  const rawMm = params.topSizeD95Mm ?? (params.d95Cm !== undefined ? Number(params.d95Cm) * 10.0 : 2.0);
+  const dMm = clamp(rawMm, 0.02, 25.0, 2.0);
   const cConst = clamp(params.samplingConstantC, 0.2, 15.0, 1.6);
-  const sFse = clamp(params.targetRelativeStdError, 0.01, 0.20, 0.05);
+  const sFse = clamp(params.targetRelativeStdError ?? params.relativeVarianceError, 0.01, 0.20, 0.05);
   const cw = clamp(params.solidsWeightPercent, 10, 80, 40);
 
   // En la ecuación dimensional de Gy con c en g/cm³ y d en cm: Ms (gramos) = c * (d_cm^3) / (s_FSE^2)
@@ -412,6 +431,7 @@ export function calculateGyMinimumSampleMass(params = {}) {
     theoreticalGyGrams: Number(theoreticalGrams.toFixed(1)),
     minDrySampleGrams,
     minDrySampleKg,
+    minimumSampleMassKg: minDrySampleKg,
     requiredPulpLiters,
     batchFilterCycles,
     recommendedAirPressurePsi: '80 - 100 psi (5.5 - 6.9 bar)',
@@ -457,6 +477,7 @@ export function recommendAstmSieveSeries(params = {}) {
 
   // Transformación linealizada de Rosin-Rammler (tomjrob/pyRR): y' = log10(log10(100 / R))
   const rosinRammlerYPrime = Number(Math.log10(Math.log10(100.0 / retainedR)).toFixed(4));
+  const rosinRammlerSlopeN = Number(clamp(params.rosinRammlerSlopeN, 0.4, 2.5, targetP80 <= 106 ? 1.25 : 1.08).toFixed(2));
 
   const requiresStainless = mode === 'wet' || targetP80 <= 106;
 
@@ -465,8 +486,10 @@ export function recommendAstmSieveSeries(params = {}) {
     primaryControlMesh: primaryControlSieve.mesh,
     primaryApertureMicrons: primaryControlSieve.apertureMicrons,
     sieveStack: selectedSieves,
+    recommendedSeries: selectedSieves,
     sieveStackSummary: selectedSieves.map((s) => `${s.mesh} (${s.apertureMicrons} µm)`).join(' ➔ '),
     rosinRammlerYPrime,
+    rosinRammlerSlopeN,
     recommendedFrameMaterialEs: requiresStainless
       ? 'Marco y Malla en Acero Inoxidable Certificado ASTM E11 (8" o 12") + Tapa y Cazuela'
       : 'Marco en Bronce o Acero Inoxidable Certificado ASTM E11 (8" o 12") + Tapa y Cazuela',
@@ -477,12 +500,13 @@ export function recommendAstmSieveSeries(params = {}) {
 }
 
 /**
- * Matriz de Materiales en Contacto Húmedo (Arbitraje Epistémico #5, INV-SMAT-SCI-01 y INV-SMAT-SCI-09)
+ * Matriz Canónica Unificada de Materiales en Contacto Húmedo (Arbitrajes #5 y #8, INV-SMAT-SCI-01, INV-SMAT-SCI-09, INV-SMAT-SCI-13)
  * Discriminación pre-atentiva (<150 ms) por reflectancia óptica y límites tribológicos.
  */
 export const WET_END_MATERIAL_MATRIX = {
   alto_cromo: {
     id: 'alto_cromo',
+    key: 'alto_cromo_cr27',
     code: 'A05',
     nameEs: 'Alto Cromo 27% (≥ 650 HB)',
     nameEn: '27% High Chrome White Iron (≥ 650 HB)',
@@ -491,9 +515,11 @@ export const WET_END_MATERIAL_MATRIX = {
     swatchHex: '#1E3A8A',
     accentHex: '#64748B',
     hardness: '≥ 650 HB (60–62 HRC)',
-    maxTipSpeedMs: 28.5,
+    maxTipSpeedMs: 32.0,
     d80RangeMicrons: [150, 6000],
     phRange: [4.0, 12.5],
+    wearRatio554: '5:5:4',
+    recommendedClearanceMm: 0.75,
     wetEndArchitecture: 'monolithic_volute_plus_fpl_insert',
     partsIncludedEs: ['Impulsor Cerrado 5 Álabes', 'Voluta Monolítica (1 pieza)', 'Cuello de Succión (Throatbush)', 'Plato Posterior (FPL Insert)'],
     partsIncludedEn: ['Closed 5-Vane Impeller', 'Monolithic Volute (1-piece)', 'Suction Throatbush', 'Frame Plate Liner Insert (FPL Insert)'],
@@ -502,6 +528,7 @@ export const WET_END_MATERIAL_MATRIX = {
   },
   hule: {
     id: 'hule',
+    key: 'hule_natural',
     code: 'R55',
     nameEs: 'Hule Natural Antiabrasivo (Shore A 55–65)',
     nameEn: 'Wear-Resistant Natural Rubber (Shore A 55–65)',
@@ -513,6 +540,8 @@ export const WET_END_MATERIAL_MATRIX = {
     maxTipSpeedMs: 24.5,
     d80RangeMicrons: [10, 150],
     phRange: [3.5, 11.0],
+    wearRatio554: '5:5:4',
+    recommendedClearanceMm: 0.85,
     wetEndArchitecture: 'split_molded_liners_fpl_cpl',
     partsIncludedEs: ['Forro Lado Soporte (Frame Plate Liner)', 'Forro Lado Succión (Cover Plate Liner)', 'Cuello de Succión (Throatbush)', 'Impulsor Revestido en Hule'],
     partsIncludedEn: ['Frame Plate Liner (FPL)', 'Cover Plate Liner (CPL)', 'Suction Throatbush', 'Rubber-Lined Impeller'],
@@ -521,6 +550,7 @@ export const WET_END_MATERIAL_MATRIX = {
   },
   poliuretano: {
     id: 'poliuretano',
+    key: 'poliuretano',
     code: 'U01',
     nameEs: 'Poliuretano Elastómero (Shore A 85–95)',
     nameEn: 'Cast Polyurethane Elastomer (Shore A 85–95)',
@@ -532,6 +562,8 @@ export const WET_END_MATERIAL_MATRIX = {
     maxTipSpeedMs: 26.0,
     d80RangeMicrons: [20, 350],
     phRange: [2.0, 11.5],
+    wearRatio554: '5:5:4',
+    recommendedClearanceMm: 0.80,
     wetEndArchitecture: 'split_molded_liners_fpl_cpl',
     partsIncludedEs: ['Forro Lado Soporte (Frame Plate Liner)', 'Forro Lado Succión (Cover Plate Liner)', 'Cuello de Succión (Throatbush)', 'Impulsor / Expulsor en Poliuretano'],
     partsIncludedEn: ['Frame Plate Liner (FPL)', 'Cover Plate Liner (CPL)', 'Suction Throatbush', 'Polyurethane Impeller / Expeller'],
@@ -539,6 +571,8 @@ export const WET_END_MATERIAL_MATRIX = {
     dutyApplicationEn: 'Hydrocyclone clusters, regrind duties, and fine-to-medium slurries with high velocity or acidic pH.'
   }
 };
+
+export const WET_END_MATERIAL_KITS = WET_END_MATERIAL_MATRIX;
 
 /**
  * Estaciones de Ensamble de una Bomba Centrífuga Horizontal para Lodos (Arbitraje #6, INV-SMAT-SCI-10)
@@ -630,21 +664,22 @@ export const PUMP_ASSEMBLY_STATIONS = [
  * @param {string[]} [params.customOrder] - Secuencia opcional para verificar colisiones geométricas Ng
  */
 export function evaluatePumpAssemblySequence(params = {}) {
-  const branchRaw = String(params.wetEndBranch || 'metal').toLowerCase();
+  const opts = typeof params === 'number' ? { frontClearanceMm: params } : (params || {});
+  const branchRaw = String(opts.wetEndBranch || 'metal').toLowerCase();
   const isElastomer = branchRaw === 'rubber' || branchRaw === 'hule' || branchRaw === 'polyurethane' || branchRaw === 'poliuretano';
   const wetEndBranch = isElastomer ? (branchRaw.includes('poly') || branchRaw.includes('poli') ? 'polyurethane' : 'rubber') : 'metal';
-  const sealBranch = params.sealBranch === 'gland_water' ? 'gland_water' : 'expeller_dry';
+  const sealBranch = opts.sealBranch === 'gland_water' ? 'gland_water' : 'expeller_dry';
 
-  const clearanceMm = clamp(params.frontClearanceMm, 0.1, 8.0, 0.75);
-  const b2Mm = clamp(params.impellerExitWidthMm, 15.0, 180.0, 48.0);
+  const clearanceMm = clamp(opts.frontClearanceMm, 0.1, 8.0, 0.75);
+  const b2Mm = clamp(opts.impellerExitWidthMm, 15.0, 180.0, 48.0);
 
   // Secuencia canónica libre de interferencias (Ng = 0, Ns = 0)
   const canonicalSequence = wetEndBranch === 'metal'
     ? ['frame', 'bearing_assembly', 'frame_plate', 'shaft_sleeve', sealBranch, 'fpl_insert', 'impeller', 'monolithic_volute', 'throatbush', 'cover_plate', 'axial_clearance_adjustment']
     : ['frame', 'bearing_assembly', 'frame_plate', 'shaft_sleeve', sealBranch, 'frame_plate_liner', 'impeller', 'cover_plate_liner', 'throatbush', 'cover_plate', 'axial_clearance_adjustment'];
 
-  const sequenceToTest = Array.isArray(params.customOrder) && params.customOrder.length > 0
-    ? params.customOrder
+  const sequenceToTest = Array.isArray(opts.customOrder) && opts.customOrder.length > 0
+    ? opts.customOrder
     : canonicalSequence;
 
   // Verificación de Matriz de Interferencia Axial A_{I,-X} y Soporte S:
@@ -672,7 +707,7 @@ export function evaluatePumpAssemblySequence(params = {}) {
     geometricInterferencesNg += 1; // Colisión: Cover Plate bloquea inserción del Throatbush
   }
 
-  // Ley de pérdida volumétrica por recirculación en el claro frontal: Δην = kr * (δ / b2)^1.5 (Gandhi et al., 2001)
+  // Ley de pérdida volumétrica por recirculación en el claro frontal: Δην = kr * (δ / b2)^1.5 (Gandhi et al., 2001; Arbitraje #9 DOI: 10.1063/5.0331598)
   const kr = 2.85;
   const volumetricLossFraction = kr * Math.pow(clearanceMm / b2Mm, 1.5);
   const volumetricEfficiencyDropPct = Number(Math.min(45.0, volumetricLossFraction * 100).toFixed(2));
@@ -683,6 +718,22 @@ export function evaluatePumpAssemblySequence(params = {}) {
     ? 'OPTIMAL_CALIBRATION'
     : (clearanceMm < 0.5 ? 'RUBBING_RISK' : 'EXCESS_RECIRCULATION_WEAR');
 
+  // Impacto acoplado en la rotación del Lote 5-5-4 y en el margen de velocidad crítica en tubería (INV-SMAT-SCI-12)
+  let wearRatioImpact554 = '5:5:4 (Rotación acoplada nominal)';
+  let wearRatioImpact554En = '5:5:4 (Coupled nominal wear lot)';
+  if (clearanceMm < 0.5) {
+    wearRatioImpact554 = 'Riesgo de fricción axial Impulsor-Throatbush (< 0.5 mm)';
+    wearRatioImpact554En = 'Axial rubbing risk Impeller-Throatbush (< 0.5 mm)';
+  } else if (clearanceMm > 2.0) {
+    wearRatioImpact554 = '5:9:4 (Vórtice severo: consume ~9 Throatbushes por lote)';
+    wearRatioImpact554En = '5:9:4 (Severe vortex: consumes ~9 Throatbushes per lot)';
+  } else if (clearanceMm > 1.0) {
+    wearRatioImpact554 = '5:7:4 (Aceleración de desgaste en Throatbush +40%)';
+    wearRatioImpact554En = '5:7:4 (Accelerated Throatbush wear +40%)';
+  }
+
+  const pipeVelocityMarginLossPct = Number((volumetricEfficiencyDropPct * 0.85).toFixed(2));
+
   return {
     wetEndBranch,
     sealBranch,
@@ -691,10 +742,17 @@ export function evaluatePumpAssemblySequence(params = {}) {
     unstableSubassembliesNs,
     isValidAssembly: geometricInterferencesNg === 0 && unstableSubassembliesNs === 0,
     frontClearanceMm: clearanceMm,
+    impellerExitWidthMm: b2Mm,
     optimalClearanceBandMm: [0.5, 1.0],
     volumetricEfficiencyDropPct,
+    volumetricLossPct: volumetricEfficiencyDropPct,
+    volumetricEfficiencyLossPct: volumetricEfficiencyDropPct,
+    volumetricEffLossPct: volumetricEfficiencyDropPct,
     excessRecirculationRatio,
     clearanceStatus,
+    wearRatioImpact554,
+    wearRatioImpact554En,
+    pipeVelocityMarginLossPct,
     structuralReasonEs: wetEndBranch === 'metal'
       ? 'El alto cromo (≥650 HB) posee módulo elástico E ≈ 210 GPa y soporta esfuerzos de membrana en succión como Voluta Monolítica de 1 pieza + FPL Insert posterior + Throatbush frontal.'
       : 'El hule/poliuretano (E ≈ 0.01–0.05 GPa) requiere respaldo metálico continuo contra colapso por vacío en el ojo de succión, dividiendo la carcasa húmeda en 2 mitades simétricas (Frame Plate Liner + Cover Plate Liner) + Throatbush.',
@@ -703,6 +761,8 @@ export function evaluatePumpAssemblySequence(params = {}) {
       : 'Elastomers (rubber/polyurethane, E ≈ 0.01–0.05 GPa) require continuous split-casing metal backing against suction vacuum buckling, using 2 symmetrical halves (Frame Plate Liner + Cover Plate Liner) + Throatbush.'
   };
 }
+
+export const evaluateWetEndAssemblyInterference = evaluatePumpAssemblySequence;
 
 /**
  * Catálogo de los 4 Arreglos Cinemáticos de Transmisión para Bombas de Lodos (Arbitraje #7, INV-SMAT-SCI-11)
@@ -761,24 +821,27 @@ export const DRIVE_ARRANGEMENT_CATALOG = {
  * Referencias Kernel: bijankle/Slurry-Pump-Calc (engine.js), cozy51/BearingLifeCalculator (bearingLife.ts)
  * y RishiNxp/Belt-Pulley-Calculator (drive.ts).
  *
- * @param {Object} params
- * @param {'CV'|'ZVZ'|'CRZ'|'DC'} [params.arrangement='CV']
+ * @param {Object} [params]
+ * @param {'CV'|'ZVZ'|'CRZ'|'DC'|string} [params.arrangement='CV']
+ * @param {'CV'|'ZVZ'|'CRZ'|'DC'|string} [params.arrangementCode]
  * @param {number} [params.motorRpm=1780] - Velocidad nominal del motor eléctrico (4 polos 60 Hz = 1780 RPM)
  * @param {number} [params.driverPulleyMm=180] - Diámetro de paso de polea motriz (motor, mm)
  * @param {number} [params.drivenPulleyMm=320] - Diámetro de paso de polea conducida (bomba, mm)
  * @param {number} [params.impellerDiameterMm=380] - Diámetro exterior del impulsor D2 (mm)
  * @param {number} [params.shaftPowerKw=45] - Potencia en la flecha P (kW)
+ * @param {number} [params.motorPowerKw] - Alias de potencia nominal de motor (kW)
  * @param {number} [params.dynamicCapacityCkN=195] - Capacidad de carga dinámica C del Bearing Assembly (kN)
+ * @param {string} [params.wetEndMaterial] - Material húmedo para verificar límite térmico viscoelástico
  */
 export function calculateDriveAndBearingKinematics(params = {}) {
-  const arrKey = String(params.arrangement || 'CV').toUpperCase();
+  const arrKey = String(params.arrangement || params.arrangementCode || 'CV').toUpperCase();
   const arrangementInfo = DRIVE_ARRANGEMENT_CATALOG[arrKey] || DRIVE_ARRANGEMENT_CATALOG.CV;
 
   const motorRpm = clamp(params.motorRpm, 600, 3600, 1780);
   const driverMm = clamp(params.driverPulleyMm, 80, 900, 180);
   const drivenMm = clamp(params.drivenPulleyMm, 80, 1400, 320);
   const impellerMm = clamp(params.impellerDiameterMm, 120, 1100, 380);
-  const powerKw = clamp(params.shaftPowerKw, 2.2, 750, 45);
+  const powerKw = clamp(params.shaftPowerKw ?? params.motorPowerKw, 2.2, 750, 45);
   const capacityCkN = clamp(params.dynamicCapacityCkN, 45, 950, 195);
 
   const speedMultiplier = arrangementInfo.beltDriven ? Number((driverMm / drivenMm).toFixed(4)) : 1.0;
@@ -805,9 +868,13 @@ export function calculateDriveAndBearingKinematics(params = {}) {
   const bearingL10Hours = Math.round((1_000_000.0 / (60.0 * Math.max(100, pumpRpm))) * l10MillionRevs);
 
   const rubberSafeTipSpeed = tipSpeedMs <= WET_END_MATERIAL_MATRIX.hule.maxTipSpeedMs;
+  const matRaw = String(params.wetEndMaterial || params.materialKey || '').toLowerCase();
+  const isRubberSelected = matRaw.includes('hule') || matRaw.includes('rubber') || matRaw === 'r55';
+  const rubberThermalLimitExceeded = isRubberSelected && !rubberSafeTipSpeed;
 
   return {
     arrangement: arrangementInfo.code,
+    arrangementCode: arrangementInfo.code,
     arrangementNameEs: arrangementInfo.nameEs,
     arrangementNameEn: arrangementInfo.nameEn,
     sumpFloodImmunity: arrangementInfo.sumpFloodImmunity,
@@ -819,11 +886,18 @@ export function calculateDriveAndBearingKinematics(params = {}) {
     impellerDiameterMm: impellerMm,
     tipSpeedMs,
     rubberSafeTipSpeed,
+    rubberThermalLimitExceeded,
     recommendedWetMaterialByTipSpeed: rubberSafeTipSpeed ? 'Hule Natural / Poliuretano / Alto Cromo' : 'Exclusivo Alto Cromo ≥ 650 HB (u2 > 24.5 m/s)',
     beltRadialLoadKn,
+    radialBeltLoadKn: beltRadialLoadKn,
     equivalentLoadPkN,
-    bearingL10Hours
+    bearingL10Hours,
+    estimatedBearingL10h: bearingL10Hours,
+    estimatedL10hHours: bearingL10Hours
   };
 }
+
+export const DRIVE_ARRANGEMENTS = DRIVE_ARRANGEMENT_CATALOG;
+export const calculateDriveKinematics = calculateDriveAndBearingKinematics;
 
 

@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { formatSapPlaintext, formatMailtoUrl, formatWhatsappUrl, parseUrlContextParams, generateSmatPartCode, formatSapTsv, SMAT_WORKBENCH_EVENT } from '../src/scripts/workbenchBus.js';
+import { formatSapPlaintext, formatMailtoUrl, formatWhatsappUrl, parseUrlContextParams, generateSmatPartCode, formatSapTsv, getAtomicPartSpecs, buildAcuseUrlParams, dispatchLeadWebhook, SMAT_WORKBENCH_EVENT } from '../src/scripts/workbenchBus.js';
+import { evaluateWetEndAssemblyInterference, calculateDriveAndBearingKinematics, calculateMarcyScaleReading, calculateGyMinimumSampleMass, recommendAstmSieveSeries } from '../src/scripts/slurryEngine.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -3028,4 +3029,237 @@ test('160. Redirección Defensiva en BaseLayout.astro para Bookmarks Legados /#r
     baseLayout.includes("window.location.replace(destBase + hashQuery + '#rfq')"),
     'BaseLayout.astro debe preservar query params al redirigir hacia /cotizar/ o /en/quote/'
   );
+});
+
+test('161. MS-02: Ficha Física de atomic_parts (weight_kg NIOSH, D2) y Trazabilidad Lossless en SAP/Acuse/Webhook/Code.gs (Decisiones 5-C+ y 6-C)', async () => {
+  const {
+    getAtomicPartSpecs,
+    formatSapPlaintext,
+    buildAcuseUrlParams,
+    dispatchLeadWebhook
+  } = await import('../src/scripts/workbenchBus.js');
+
+  const e4147 = getAtomicPartSpecs('E4147');
+  assert.equal(e4147.weight_kg, 68.0, 'E4147 debe tener masa unitaria de 68.0 kg');
+  assert.equal(e4147.impeller_diameter_mm, 380, 'E4147 debe tener diámetro exterior D2 de 380 mm');
+  assert.equal(e4147.niosh_handling_mode, 'HOIST_REQUIRED', '68 kg >= 23 kg NIOSH exige polipasto');
+
+  const dam028 = getAtomicPartSpecs('DAM028');
+  assert.equal(dam028.weight_kg, 18.5, 'DAM028 debe tener masa unitaria de 18.5 kg');
+  assert.equal(dam028.niosh_handling_mode, 'MANUAL_SAFE', '18.5 kg < 23 kg NIOSH permite manejo manual seguro');
+
+  const payload = {
+    folio: 'SMAT-2026-MS02',
+    part_name: 'Impulsor Cerrado A05 6/4 D',
+    atomic_code: 'E4147',
+    material: 'alto_cromo_cr27',
+    transmision: 'ZVZ',
+    estacion: '5',
+    peso_kg: 68.0,
+    claro_mm: 0.75,
+    delta_eta_v: 1.68,
+    u2_ms: 21.4,
+    l10h: 34200,
+    metrologia: 'Ss=2.85 | Cw=48.2% | Gy=1.20 kg | P80=106 µm (n=1.18)'
+  };
+
+  const sap = formatSapPlaintext(payload);
+  assert.ok(sap.includes('68.0 kg') && sap.includes('Polipasto'), 'SAP debe estampar masa unitaria e izaje NIOSH');
+  assert.ok(sap.includes('0.75 mm') && sap.includes('1.68%'), 'SAP debe estampar claro axial y pérdida volumétrica');
+  assert.ok(sap.includes('u2 = 21.4 m/s') && sap.includes('34200 h'), 'SAP debe estampar cinemática V-Belt y vida ISO 281');
+  assert.ok(sap.includes('P80=106 µm'), 'SAP debe estampar cédula metrológica');
+
+  const params = buildAcuseUrlParams(payload);
+  assert.equal(params.get('material'), 'alto_cromo_cr27');
+  assert.equal(params.get('transmision'), 'ZVZ');
+  assert.equal(params.get('estacion'), '5');
+  assert.equal(params.get('peso_kg'), '68');
+  assert.equal(params.get('claro_mm'), '0.75');
+  assert.equal(params.get('u2_ms'), '21.4');
+  assert.equal(params.get('l10h'), '34200');
+  assert.ok(params.get('metrologia').includes('P80=106 µm'));
+
+  const webhook = dispatchLeadWebhook(payload, 'pdf_acuse', '');
+  assert.equal(webhook.payload.material_wet_end, 'alto_cromo_cr27');
+  assert.equal(webhook.payload.arreglo_transmision, 'ZVZ');
+  assert.equal(webhook.payload.claro_axial_mm, 0.75);
+  assert.equal(webhook.payload.velocidad_punta_u2_ms, 21.4);
+  assert.equal(webhook.payload.vida_rodamiento_l10h, 34200);
+  assert.ok(webhook.payload.cedula_metrologia.includes('P80=106 µm'));
+
+  const codeGs = fs.readFileSync(path.join(siteRoot, 'tools/google_apps_script/Code.gs'), 'utf-8');
+  for (const col of ['material_wet_end', 'arreglo_transmision', 'estacion_despiece', 'peso_pieza_kg', 'claro_axial_mm', 'velocidad_punta_u2_ms', 'vida_rodamiento_l10h', 'cedula_metrologia']) {
+    assert.ok(codeGs.includes(col), `Code.gs debe registrar columna ${col}`);
+  }
+});
+
+test('162. MS-03: Calibrador en Vivo de Claro Axial δ_frontal en PumpAssemblyReport.astro y Contraste AAA en QuickPartSelectorStrip.astro (Decisiones 1-C+ y 10-C)', () => {
+  const report = fs.readFileSync(path.join(siteRoot, 'src/components/PumpAssemblyReport.astro'), 'utf-8');
+  assert.ok(report.includes('evaluateWetEndAssemblyInterference'), 'PumpAssemblyReport debe importar y ejecutar evaluateWetEndAssemblyInterference');
+  assert.ok(report.includes('id="station-05-calibrator"'), 'PumpAssemblyReport debe incluir <details id="station-05-calibrator">');
+  assert.ok(report.includes('data-clearance-slider') && report.includes('data-clearance-loss') && report.includes('data-clearance-lot554'), 'Debe exponer controles y métricas de Δη_v y lote 5-5-4');
+  assert.ok(report.includes('id="est-05"') && report.includes('data-est-05-val'), 'Debe sincronizar visualmente el nodo SVG #est-05');
+
+  const strip = fs.readFileSync(path.join(siteRoot, 'src/components/QuickPartSelectorStrip.astro'), 'utf-8');
+  assert.ok(strip.includes('color: #082f49;'), 'QuickPartSelectorStrip debe usar contraste AAA >= 12.8:1 (#082f49 sobre #f0f9ff) en .quick-part-strip__assembly-btn');
+});
+
+test('163. MS-04: Motor Cinemático V-Belt (CV/ZVZ/CRZ/DC), Candado u2 <= 24.5 m/s y Vida ISO 281 L10h en Skid ES/EN (Decisión 2-C+)', () => {
+  const skidEs = fs.readFileSync(path.join(siteRoot, 'src/pages/bombeo/skid.astro'), 'utf-8');
+  const skidEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/pumping/skid.astro'), 'utf-8');
+
+  for (const content of [skidEs, skidEn]) {
+    assert.ok(content.includes('calculateDriveAndBearingKinematics'), 'Skid debe importar y ejecutar calculateDriveAndBearingKinematics');
+    assert.ok(content.includes('id="skid-kinematics-panel"'), 'Skid debe incluir <details id="skid-kinematics-panel">');
+    assert.ok(content.includes('data-kin-u2') && content.includes('data-kin-l10h') && content.includes('data-kin-rubber-alert'), 'Skid debe mostrar u2, L10h y alerta de límite térmico de hule (24.5 m/s)');
+  }
+});
+
+test('164. MS-05: Banco Metrológico <details> Mutuamente Excluyente, Rosin-Rammler y Puente Sin Amnesia Laboratorio ➔ Cotizador / Bomba (Decisiones 4-C+ y 9-C+)', () => {
+  const ctrlEs = fs.readFileSync(path.join(siteRoot, 'src/pages/control-de-procesos/index.astro'), 'utf-8');
+  const ctrlEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/process-control/index.astro'), 'utf-8');
+
+  for (const content of [ctrlEs, ctrlEn]) {
+    assert.ok(content.includes('id="stage-diagnostic"') && content.includes('id="stage-2"'), 'Control de Procesos debe delimitar etapas para ergos cowan-score <= 4.50');
+    assert.ok(content.includes('data-station-accordion="1"') && content.includes('data-station-accordion="2"'), 'Debe encapsular estaciones metrológicas en <details data-station-accordion>');
+    assert.ok(content.includes('rosinRammlerYPrime') && content.includes('rosinRammlerSlopeN'), 'Debe exponer coordenada linealizada Rosin-Rammler y\' y pendiente n');
+    assert.ok(content.includes('saveWorkbenchState') && content.includes('id="met-pump-precal-cta"'), 'Debe persistir metrology en workbenchBus y ofrecer pre-calibración directa del simulador de bombeo');
+  }
+});
+
+test('165. MS-06: Unificación de MECHANICAL_DIAGNOSTICS con Umbrales Cuantitativos y Contraste AAA en CaseCards (Decisión 7-C+ y DEB-04)', () => {
+  const diagHub = fs.readFileSync(path.join(siteRoot, 'src/components/DiagnosticsHub.astro'), 'utf-8');
+  const caseCards = fs.readFileSync(path.join(siteRoot, 'src/components/CaseCards.astro'), 'utf-8');
+
+  assert.ok(diagHub.includes('MECHANICAL_DIAGNOSTICS'), 'DiagnosticsHub.astro debe importar MECHANICAL_DIAGNOSTICS desde slurryEngine.js');
+  assert.ok(diagHub.includes('diag-threshold-strip') && diagHub.includes('diag-station-chip'), 'DiagnosticsHub.astro debe mostrar estación y umbral físico cuantitativo');
+  assert.ok(diagHub.includes('material=') && diagHub.includes('estacion=') && diagHub.includes('claro_mm='), 'DiagnosticsHub.astro debe propagar material, estacion y claro_mm en enlaces de cotización');
+  assert.ok(caseCards.includes('background-color: #f0f9ff;') && caseCards.includes('color: #082f49;'), 'CaseCards.astro debe garantizar contraste AAA >= 7.0:1 en .case-circuit-link');
+  assert.ok(caseCards.includes('background-color: #1c1917;') && caseCards.includes('color: #ffffff;'), 'CaseCards.astro debe garantizar contraste AAA >= 7.0:1 en .case-sim-link');
+});
+
+test('166. MS-07: Decompresión Cognitiva Apple HIG en /equipos/ y /en/process-equipment/ (Decisión 9-C+)', () => {
+  const eqEs = fs.readFileSync(path.join(siteRoot, 'src/pages/equipos/index.astro'), 'utf-8');
+  const eqEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/process-equipment/index.astro'), 'utf-8');
+
+  for (const content of [eqEs, eqEn]) {
+    assert.ok(content.includes('id="stage-diagnostic"') && content.includes('id="stage-2"'), 'Equipos debe delimitar etapas para ergos cowan-score <= 4.50');
+    assert.ok(content.includes('id="equipos-circuit-appendix"'), 'Equipos debe encapsular el anexo de circuito P&ID en <details id="equipos-circuit-appendix">');
+  }
+});
+
+test('167. MS-08 y MS-09: Paridad Total en QuoteWizard (Pieza Atómica NIOSH, V_actual, Er, ΔNPSH_r, Claro δ, Cinemática u2/L10h, Candado Hule 24.5 m/s y Puente Metrológico)', () => {
+  const cotEs = fs.readFileSync(path.join(siteRoot, 'src/pages/cotizar.astro'), 'utf-8');
+  const cotEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/quote.astro'), 'utf-8');
+  assert.ok(cotEs.includes('collapsible={true}') && cotEn.includes('collapsible={true}'), 'cotizar.astro y quote.astro deben activar modo colapsable en QuickPartSelectorStrip para respetar Cowan 4±1');
+
+  const qw = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
+  assert.ok(qw.includes('evaluateWetEndAssemblyInterference') && qw.includes('calculateDriveAndBearingKinematics') && qw.includes('getAtomicPartSpecs'), 'QuoteWizard debe importar y ejecutar evaluateWetEndAssemblyInterference, calculateDriveAndBearingKinematics y getAtomicPartSpecs');
+  assert.ok(qw.includes('id="wb-atomic-part-card"') && qw.includes('id="wb-part-niosh-badge"'), 'QuoteWizard debe renderizar la tarjeta técnica de pieza atómica con badge NIOSH 23 kg');
+  assert.ok(qw.includes('id="metric-v-actual"') && qw.includes('id="metric-derating-er"') && qw.includes('id="metric-delta-npsh"'), 'QuoteWizard debe exponer V_actual, Er y ΔNPSH_r en el acordeón hidráulico');
+  assert.ok(qw.includes('id="wb-clearance-slider"') && qw.includes('id="metric-clearance-loss"'), 'QuoteWizard debe exponer control de claro axial frontal δ y pérdida Δη_v');
+  assert.ok(qw.includes('id="metric-drive-u2"') && qw.includes('id="metric-drive-l10h"') && qw.includes('id="wb-rubber-u2-lock"'), 'QuoteWizard debe exponer u2, L10h y el candado de límite térmico de hule (24.5 m/s)');
+  assert.ok(qw.includes('id="wb-metrology-bridge-card"') && qw.includes('id="live-table-kinematics"') && qw.includes('id="live-table-part-specs"'), 'QuoteWizard debe sincronizar el puente metrológico y reflejar cinemática y pieza atómica en el Dossier A4 en vivo');
+});
+
+test('168. MS-10: Paridad Sin Pérdida en Acuse Imprimible ES/EN (/acuse/ y /en/thank-you/) para SAP Ariba / Coupa (Decisión 6-C)', () => {
+  const acuseEs = fs.readFileSync(path.join(siteRoot, 'src/pages/acuse.astro'), 'utf-8');
+  const acuseEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/thank-you.astro'), 'utf-8');
+
+  for (const content of [acuseEs, acuseEn]) {
+    assert.ok(content.includes('id="field-material-drive"') && content.includes('id="field-clearance-kinematics"') && content.includes('id="field-metrology"'), 'Acuse debe renderizar filas dedicadas para material/transmisión/estación, claro axial/cinemática y memoria metrológica');
+    assert.ok(content.includes("urlParams.get('material')") && content.includes("urlParams.get('claro_mm')") && content.includes("urlParams.get('u2_ms')") && content.includes("urlParams.get('l10h')"), 'Acuse debe hidratar material, claro_mm, u2_ms, l10h y metrologia desde URL y sessionStorage');
+  }
+});
+
+test('169. Root Cause #1: Store Físico Unificado por Circuito (slurryEngine.js + workbenchBus.js + QuoteWizard.astro) sin Pérdida en Dossier A4, Acuse y Webhook', () => {
+  // 1. Verificar contratos de retorno sin campos undefined en motores físicos y pieza atómica
+  const partSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
+  assert.equal(partSpecs.station, 'S3');
+  assert.equal(partSpecs.station_number, 3);
+  assert.ok(partSpecs.station_name_es.length > 0);
+  assert.equal(partSpecs.handling_mode, 'HOIST_REQUIRED');
+  assert.equal(partSpecs.max_sphere_mm, 45);
+  assert.ok(partSpecs.wall_thickness_mm > 0);
+  assert.ok(partSpecs.assembly_order_note.length > 0);
+
+  const clEval = evaluateWetEndAssemblyInterference({ frontClearanceMm: 2.5, impellerExitWidthMm: 48 });
+  assert.equal(typeof clEval.volumetricEfficiencyDropPct, 'number');
+  assert.equal(clEval.volumetricEfficiencyLossPct, clEval.volumetricEfficiencyDropPct);
+  assert.equal(clEval.volumetricEffLossPct, clEval.volumetricEfficiencyDropPct);
+
+  const kinEval = calculateDriveAndBearingKinematics({
+    arrangementCode: 'ZVZ',
+    motorRpm: 1775,
+    driverPulleyMm: 280,
+    drivenPulleyMm: 300,
+    motorPowerKw: 55,
+    impellerDiameterMm: 420,
+    wetEndMaterial: 'hule_natural'
+  });
+  assert.equal(kinEval.arrangement, 'ZVZ');
+  assert.equal(kinEval.arrangementCode, 'ZVZ');
+  assert.equal(typeof kinEval.bearingL10Hours, 'number');
+  assert.equal(kinEval.estimatedL10hHours, kinEval.bearingL10Hours);
+  assert.equal(kinEval.rubberThermalLimitExceeded, true, 'Debe disparar candado viscoelástico cuando u2 > 24.5 m/s en hule_natural');
+
+  const marcyEval = calculateMarcyScaleReading({ solidsSg: 2.8, weightPercentSolids: 45 });
+  assert.equal(marcyEval.slurryDensityKgL, marcyEval.pulpDensityKgL);
+  const gyEval = calculateGyMinimumSampleMass({ d95Cm: 0.2, relativeVarianceError: 0.05 });
+  assert.equal(gyEval.minimumSampleMassKg, gyEval.minDrySampleKg);
+  const sieveEval = recommendAstmSieveSeries({ targetP80Microns: 150 });
+  assert.equal(sieveEval.recommendedSeries.length, 6);
+
+  // 2. Verificar que un objeto anidado estilo collectData() hidrata 100% de salidas en SAP Plaintext, Acuse URL y Webhook
+  const nestedWizardData = {
+    folio: 'SMAT-2026-UNIFIED',
+    name: 'Ing. Roberto M.',
+    company: 'Minera Fresnillo',
+    phone: '6188104408',
+    email: 'rm@fresnillo.com',
+    circuit: 'bombeo',
+    role: 'Kit Extremo Húmedo',
+    role_id: 'kit_wet_end',
+    pump_material: 'alto_cromo_cr27',
+    drive_arrangement: 'ZVZ',
+    assembly_station: partSpecs.station,
+    part_specs: partSpecs,
+    clearance_eval: clEval,
+    kinematics: kinEval,
+    metrology: {
+      cw: 45,
+      sm: marcyEval.pulpDensityKgL,
+      p80: 150,
+      dryMassKg: gyEval.minDrySampleKg,
+      summary: 'Ss=2.8 | Cw=45% | Sm=1.404 kg/L | M_min=0.25 kg | P80=150 µm (#100)'
+    }
+  };
+
+  const sapText = formatSapPlaintext(nestedWizardData);
+  assert.ok(sapText.includes('ZVZ'), 'SAP Plaintext debe hidratar Arreglo Transmisión desde objeto anidado');
+  assert.ok(sapText.includes('alto_cromo_cr27'), 'SAP Plaintext debe hidratar Material Contacto Húmedo');
+  assert.ok(sapText.includes('68.0 kg'), 'SAP Plaintext debe hidratar masa unitaria NIOSH desde part_specs');
+  assert.ok(sapText.includes('2.5 mm'), 'SAP Plaintext debe hidratar claro axial δ desde clearance_eval');
+  assert.ok(sapText.includes('P80=150 µm'), 'SAP Plaintext debe hidratar cédula metrológica desde metrology');
+
+  const acuseParams = buildAcuseUrlParams(nestedWizardData);
+  assert.equal(acuseParams.get('material'), 'alto_cromo_cr27');
+  assert.equal(acuseParams.get('transmision'), 'ZVZ');
+  assert.equal(acuseParams.get('peso_kg'), '68');
+  assert.equal(acuseParams.get('claro_mm'), '2.5');
+  assert.ok(Number(acuseParams.get('u2_ms')) > 24.5);
+  assert.ok(Number(acuseParams.get('l10h')) > 1000);
+  assert.ok(acuseParams.get('metrologia').includes('P80=150 µm'));
+
+  const webhookOut = dispatchLeadWebhook(nestedWizardData, 'test_unified');
+  assert.equal(webhookOut.payload.material_wet_end, 'alto_cromo_cr27');
+  assert.equal(webhookOut.payload.arreglo_transmision, 'ZVZ');
+  assert.equal(webhookOut.payload.peso_pieza_kg, 68.0);
+  assert.equal(webhookOut.payload.claro_axial_mm, 2.5);
+  assert.ok(webhookOut.payload.cedula_metrologia.includes('P80=150 µm'));
+
+  // 3. Verificar sanitización condicional de sesión y declaración de variables en QuoteWizard.astro
+  const qw = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
+  assert.ok(qw.includes("if (rawWbSess && (rawWbSess.includes('6X4D')"), 'QuoteWizard solo debe limpiar smat_workbench_session si contiene residuos legados 6X4D');
+  assert.ok(qw.includes('var currentPartSpecs = {};') && qw.includes('var currentClearanceEval = {};') && qw.includes('var currentKinematics = {};') && qw.includes('var currentMetrology = null;'), 'QuoteWizard debe declarar explícitamente las 4 variables de estado físico en modo estricto ES module');
 });

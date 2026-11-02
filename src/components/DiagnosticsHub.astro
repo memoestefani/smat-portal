@@ -7,7 +7,72 @@ const { lang = 'es' } = Astro.props;
 const isEs = lang === 'es';
 
 import diagData from '../../data/diagnostics.json';
-const diagnostics = diagData.diagnostics;
+import { MECHANICAL_DIAGNOSTICS } from '../scripts/slurryEngine.js';
+
+const mechanicalDiagByRole: Record<string, any> = {
+  cavitacion_abrasion: MECHANICAL_DIAGNOSTICS.cavitation,
+  fuga_sello_rodamientos: MECHANICAL_DIAGNOSTICS.bearing_vibration,
+  rotor_flotacion: {
+    id: 'rotor_flotacion_desbalance',
+    symptomEs: 'Turbulencia superficial y pérdida de inducción de aire',
+    symptomEn: 'Surface boiling turbulence and air induction drop',
+    causeEs: 'Desgaste asimétrico de dedos de rotor o claro radial > 12 mm',
+    causeEn: 'Asymmetric rotor finger wear or radial clearance > 12 mm',
+    actionEs: 'Sustitución de mecanismo suspendido con rotor/estator en Poliuretano / Hule Natural',
+    actionEn: 'Replace suspended mechanism with Polyurethane / Natural Rubber rotor-stator',
+    recommendedMaterial: 'poliuretano_minero',
+    recommendedRole: 'rotor_estator',
+    threshold: 'Claro radial > 12 mm / J_g < 1.1 cm/s',
+    stationNumber: 'Celda (Rotor/Estator)'
+  },
+  desgaste_placas_telas: {
+    id: 'filtracion_presion_ciclo',
+    symptomEs: 'Filtrado turbio y humedad de queque > 18%',
+    symptomEn: 'Turbid filtrate and cake moisture > 18%',
+    causeEs: 'Cegamiento de tela o caída de presión hidráulica de cierre',
+    causeEn: 'Cloth blinding or hydraulic closing pressure drop',
+    actionEs: 'Suministro de kit de placas y telas con sellado perimetral láser (16 bar)',
+    actionEn: 'Supply laser-sealed plate and cloth kit (16 bar)',
+    recommendedMaterial: 'poliuretano_minero',
+    recommendedRole: 'placas_telas',
+    threshold: 'Humedad > 18% / ΔP < 14 bar',
+    stationNumber: 'Paquete Filtrante (16 bar)'
+  }
+};
+
+const diagnostics = [
+  ...diagData.diagnostics.map((item) => {
+    const mech = mechanicalDiagByRole[item.id] || MECHANICAL_DIAGNOSTICS.liner_grooving;
+    const stStr = String(mech.stationNumber || '05');
+    const stationCode = stStr.includes('5') ? '05' : stStr.includes('2') ? '02' : stStr.includes('1') ? '01' : '05';
+    const claroMm = String(mech.recommendedClearanceMm || '0.75');
+    return {
+      ...item,
+      threshold: mech.threshold,
+      stationNumber: typeof mech.stationNumber === 'number' ? `Estación 0${mech.stationNumber}` : stStr,
+      recommendedMaterial: mech.recommendedMaterial,
+      stationCode,
+      claroMm
+    };
+  }),
+  ...[MECHANICAL_DIAGNOSTICS.liner_grooving, MECHANICAL_DIAGNOSTICS.packing_leak].map((m) => ({
+    id: m.id,
+    title_es: m.symptomEs,
+    title_en: m.symptomEn,
+    symptom_es: m.symptomEs,
+    symptom_en: m.symptomEn,
+    root_cause_es: m.causeEs,
+    root_cause_en: m.causeEn,
+    recommended_action_es: m.actionEs,
+    recommended_action_en: m.actionEn,
+    target_role: m.recommendedRole,
+    threshold: m.threshold,
+    stationNumber: `Estación 0${m.stationNumber}`,
+    recommendedMaterial: m.recommendedMaterial,
+    stationCode: `0${m.stationNumber}`,
+    claroMm: String(m.recommendedClearanceMm || '0.75')
+  }))
+];
 ---
 
 <section class="diagnostics-section" id="diagnostico">
@@ -53,10 +118,14 @@ const diagnostics = diagData.diagnostics;
 
     <div class="diagnostics-grid">
       {diagnostics.map((item) => (
-        <div class="card diag-card" data-tags={`${item.id} ${item.title_es} ${item.title_en} ${item.target_role}`.toLowerCase()}>
+        <div class="card diag-card" data-tags={`${item.id} ${item.title_es} ${item.title_en} ${item.target_role} ${item.threshold} ${item.stationNumber}`.toLowerCase()}>
           <div class="diag-header">
             <span class="pulsing-dot pulsing-dot-amber"></span>
             <h3 class="diag-title">{isEs ? item.title_es : item.title_en}</h3>
+          </div>
+          <div class="diag-threshold-strip" data-diag-threshold={item.threshold}>
+            <span class="diag-station-chip">{item.stationNumber}</span>
+            <span class="diag-threshold-chip">{isEs ? 'Umbral Físico:' : 'Physical Threshold:'} {item.threshold}</span>
           </div>
           
           <div class="diag-body">
@@ -92,9 +161,11 @@ const diagnostics = diagData.diagnostics;
               {isEs ? 'WhatsApp Técnico' : 'Technical WhatsApp'}
             </a>
             <a 
-              href={isEs ? `/cotizar/?equipo=${item.target_role}&origen=diagnostico&falla=${item.id}&sintoma=${encodeURIComponent(item.title_es)}&urgencia=paro#rfq` : `/en/quote/?equipo=${item.target_role}&origen=diagnostico&falla=${item.id}&sintoma=${encodeURIComponent(item.title_en)}&urgencia=paro#rfq`}
+              href={isEs ? `/cotizar/?equipo=${item.target_role}&origen=diagnostico&falla=${item.id}&sintoma=${encodeURIComponent(item.title_es)}&material=${item.recommendedMaterial}&estacion=${item.stationCode}&claro_mm=${item.claroMm}&urgencia=paro#rfq` : `/en/quote/?equipo=${item.target_role}&origen=diagnostico&falla=${item.id}&sintoma=${encodeURIComponent(item.title_en)}&material=${item.recommendedMaterial}&estacion=${item.stationCode}&claro_mm=${item.claroMm}&urgencia=paro#rfq`}
               class="btn btn-secondary btn-sm diag-action-btn diag-quote-btn"
               data-symptom={item.title_es}
+              data-material={item.recommendedMaterial}
+              data-station={item.stationCode}
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
               {isEs ? 'Cotizar Refacción →' : 'Quote Spares →'}
@@ -289,6 +360,35 @@ const diagnostics = diagData.diagnostics;
     color: var(--smat-text-primary);
     margin: 0;
     line-height: 1.3;
+  }
+
+  .diag-threshold-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: 1rem;
+  }
+
+  .diag-station-chip {
+    background-color: #f0f9ff;
+    color: #082f49;
+    border: 1px solid #bae6fd;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+  }
+
+  .diag-threshold-chip {
+    background-color: #fef3c7;
+    color: #78350f;
+    border: 1px solid #fde68a;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
   }
 
   .pulsing-dot {

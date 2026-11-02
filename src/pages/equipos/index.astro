@@ -30,7 +30,7 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" id="stage-diagnostic">
     <div class="container">
       <div class="process-equipment-grid">
         <!-- Equipo 1: Mecanismos para Celdas de Flotación y Acondicionadores -->
@@ -117,15 +117,65 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
     </div>
   </section>
 
-  <section class="section" style="background-color: #ffffff; border-top: 1px solid var(--smat-border-light); border-bottom: 1px solid var(--smat-border-light);">
-    <div class="container">
-      <CircuitNavigator lang="es" />
-    </div>
+  <section id="stage-2">
+    <details class="equipos-circuit-appendix" id="equipos-circuit-appendix">
+      <summary class="equipos-circuit-appendix__summary container">
+        <span>Diagrama P&ID de Circuito, Matriz CAPEX/OPEX y Casos de Ingeniería en Planta</span>
+        <span class="equipos-circuit-appendix__badge">EXPANDIR ANEXO P&ID ▾</span>
+      </summary>
+      <div class="container" style="padding-top: 1.25rem; padding-bottom: 0.5rem;">
+        <div class="equipos-segmented-control" role="tablist" aria-label="Selector de Vista de Circuito (1 Activa a la Vez)">
+          <button type="button" role="tab" aria-selected="true" class="equipos-seg-btn is-active" data-equipos-view-btn="pid">
+            1. Mapa Interactivo P&amp;ID de Circuito
+          </button>
+          <button type="button" role="tab" aria-selected="false" class="equipos-seg-btn" data-equipos-view-btn="hub">
+            2. Matriz Dual por Rol / Circuito
+          </button>
+          <button type="button" role="tab" aria-selected="false" class="equipos-seg-btn" data-equipos-view-btn="cases">
+            3. Casos Reales en Planta
+          </button>
+        </div>
+      </div>
+
+      <div data-equipos-view-panel="pid">
+        <section class="section" style="background-color: #ffffff; border-top: 1px solid var(--smat-border-light); border-bottom: 1px solid var(--smat-border-light);">
+          <div class="container">
+            <CircuitNavigator lang="es" />
+          </div>
+        </section>
+      </div>
+
+      <div data-equipos-view-panel="hub" style="display:none">
+        <DualHubView lang="es" />
+      </div>
+
+      <div data-equipos-view-panel="cases" style="display:none">
+        <CaseCards lang="es" />
+      </div>
+    </details>
   </section>
 
-  <DualHubView lang="es" />
-
-  <CaseCards lang="es" />
+  <script>
+    const viewBtns = Array.from(document.querySelectorAll('[data-equipos-view-btn]'));
+    const viewPanels = Array.from(document.querySelectorAll('[data-equipos-view-panel]'));
+    function activateEquiposView(targetView: string) {
+      viewBtns.forEach((btn) => {
+        const isMatch = btn.getAttribute('data-equipos-view-btn') === targetView;
+        btn.classList.toggle('is-active', isMatch);
+        btn.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+      });
+      viewPanels.forEach((panel) => {
+        const isMatch = panel.getAttribute('data-equipos-view-panel') === targetView;
+        (panel as HTMLElement).style.display = isMatch ? 'block' : 'none';
+      });
+    }
+    viewBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-equipos-view-btn') || 'pid';
+        activateEquiposView(target);
+      });
+    });
+  </script>
 </BaseLayout>
 
 <style>
@@ -170,5 +220,56 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
     gap: 0.75rem;
     flex-wrap: wrap;
     margin-top: 1rem;
+  }
+  .equipos-circuit-appendix {
+    border-top: 1px solid var(--smat-border-strong);
+    background-color: #f8fafc;
+  }
+  .equipos-circuit-appendix__summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1rem;
+    cursor: pointer;
+    font-weight: 800;
+    color: var(--smat-text-primary);
+    list-style: none;
+  }
+  .equipos-circuit-appendix__summary::-webkit-details-marker {
+    display: none;
+  }
+  .equipos-circuit-appendix__badge {
+    background-color: #f0f9ff;
+    color: #082f49;
+    border: 1px solid #bae6fd;
+    font-family: var(--smat-font-mono);
+    font-size: 0.76rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+  }
+  .equipos-segmented-control {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    background: #e2e8f0;
+    padding: 0.3rem;
+    border-radius: 10px;
+    border: 1px solid var(--smat-border-light);
+  }
+  .equipos-seg-btn {
+    border: none;
+    background: transparent;
+    color: #1e293b;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.55rem 1rem;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .equipos-seg-btn.is-active {
+    background: #0f172a;
+    color: #ffffff;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
   }
 </style>
