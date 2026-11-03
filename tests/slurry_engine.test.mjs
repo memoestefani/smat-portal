@@ -304,4 +304,72 @@ test('13. Consolidación Canónica Sin Debris (MS-01 / Decisión 8-C) e Invarian
   }
 });
 
+test('14. Paridad Científica 10 Decisiones (1-C+ a 10-C+): 9 Series de Tubería, pH Corrosivo, Inversión Bidireccional Marcy, S5a/S5b y Capacidad Dinámica C', async () => {
+  const {
+    PIPE_DIAMETERS_MM,
+    calculateSlurryMetrics,
+    selectOptimalMaterial,
+    calculateMarcyScale,
+    evaluateWetEndAssemblyInterference,
+    calculateDriveAndBearingKinematics
+  } = await import('../src/scripts/slurryEngine.js');
+
+  // 1) Las 9 series de tubería desde 1.5x1 hasta 14x12 deben calcular métricas Durand válidas
+  const expectedSeries = ['1.5x1', '2x1.5', '3x2', '4x3', '6x4', '8x6', '10x8', '12x10', '14x12'];
+  assert.deepEqual(Object.keys(PIPE_DIAMETERS_MM), expectedSeries, 'PIPE_DIAMETERS_MM debe exponer las 9 series de tubería');
+  for (const serie of expectedSeries) {
+    const res = calculateSlurryMetrics({
+      flowM3H: 180,
+      solidsWeightPercent: 45,
+      oreDensitySg: 2.8,
+      particleSizeD80Microns: 180,
+      pipeSize: serie,
+      pulpPh: 7.5
+    });
+    assert.ok(res.criticalVelocityMs > 0, `Serie ${serie} debe producir velocidad crítica > 0`);
+    assert.ok(res.durandFactorFL > 0, `Serie ${serie} debe exponer durandFactorFL`);
+    assert.ok(res.solidsVolumetricPercent > 0, `Serie ${serie} debe exponer solidsVolumetricPercent`);
+    assert.ok(res.recommendedPipeVelocityMs > res.criticalVelocityMs, `Serie ${serie} debe exponer recommendedPipeVelocityMs`);
+  }
+
+  // 2) Impacto del pH ácido (< 4.0) en selectOptimalMaterial
+  const acidicMat = selectOptimalMaterial(150, 40, 2.5);
+  assert.equal(acidicMat.id, 'rubber', 'A pH 2.5 con finos debe recomendar elastómero resistente a acidez');
+  assert.equal(acidicMat.isCorrosiveAcidic, true, 'A pH < 4.0 debe marcar isCorrosiveAcidic = true');
+
+  // 3) Inversión algebraica bidireccional de Balanza Marcy (Cw <-> rho_p)
+  const forward = calculateMarcyScale({ oreDensitySg: 3.2, solidsWeightPercent: 50 });
+  const inverted = calculateMarcyScale({
+    pulpDensitySg: forward.pulpDensitySg,
+    solidsWeightPercent: 50,
+    solveFor: 'ore_density_rhop'
+  });
+  assert.ok(Math.abs(inverted.oreDensitySg - 3.2) <= 0.02, `Inversión Marcy debe recuperar rho_p ≈ 3.2 (obtenido: ${inverted.oreDensitySg})`);
+  assert.ok(forward.drySolidsMassGramsInCup > 0, 'Debe exponer masa de sólidos secos en vaso de 1000 cm3');
+  assert.ok(typeof forward.wrongRingBiasPoints === 'number', 'Debe cuantificar sesgo de carátula incorrecta');
+
+  // 4) Impacto de ancho de salida b2 y rama de sellado S5a/S5b en evaluateWetEndAssemblyInterference
+  const sealDry = evaluateWetEndAssemblyInterference({
+    wetEndBranch: 'metal',
+    sealBranch: 'expeller_dry',
+    frontClearanceMm: 1.5,
+    impellerExitWidthMm: 36
+  });
+  const sealWater = evaluateWetEndAssemblyInterference({
+    wetEndBranch: 'metal',
+    sealBranch: 'gland_water',
+    frontClearanceMm: 1.5,
+    impellerExitWidthMm: 64
+  });
+  assert.ok(sealDry.canonicalSequence.includes('expeller_dry'), 'Rama S5a incluye expeller_dry en secuencia canónica');
+  assert.ok(sealWater.canonicalSequence.includes('gland_water'), 'Rama S5b incluye gland_water en secuencia canónica');
+  assert.ok(sealDry.volumetricEfficiencyLossPct > sealWater.volumetricEfficiencyLossPct, 'Menor ancho b2 (36 mm vs 64 mm) a igual claro δ produce mayor pérdida porcentual (δ/b2)^1.5');
+
+  // 5) Impacto de Capacidad Dinámica C (kN) en vida ISO 281 L10h
+  const lowC = calculateDriveAndBearingKinematics({ dynamicCapacityCkN: 140, shaftPowerKw: 55 });
+  const highC = calculateDriveAndBearingKinematics({ dynamicCapacityCkN: 240, shaftPowerKw: 55 });
+  assert.ok(highC.bearingL10Hours > lowC.bearingL10Hours * 3, 'Incrementar C de 140 a 240 kN multiplica L10h cúbicamente ((C/P)^10/3)');
+});
+
+
 

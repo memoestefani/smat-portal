@@ -3,6 +3,12 @@
 // "Reporte de cómo se arma una bomba" (Secuencia de 5 Estaciones + Despiece Bifurcado Metal vs. Elastómero + BOM de 14 Piezas)
 // Basado en primeros principios (Gulich Q_rec ∝ δ^1.5, ISO 281 L10h, ASTM A532 Cr27% ≥650 HB).
 
+import {
+  PUMP_554_BOM_14_PARTS,
+  PUMP_ASSEMBLY_STATIONS,
+  WET_END_MATERIAL_MATRIX
+} from '../scripts/slurryEngine.js';
+
 interface Props {
   lang?: 'es' | 'en';
 }
@@ -13,215 +19,31 @@ const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
 const primaryId = isEs ? 'como-se-arma-una-bomba' : 'how-a-slurry-pump-is-assembled';
 const secondaryId = isEs ? 'how-a-slurry-pump-is-assembled' : 'como-se-arma-una-bomba';
 
-const stations = [
-  {
-    code: 'EST-01',
-    num: '01',
-    branch: 'common',
-    title: isEs ? 'Extremo Motriz (Bearing Assembly)' : 'Drive End (Bearing Assembly)',
-    sub: isEs
-      ? 'Cartucho de rodamientos cónicos espalda con espalda (ISO 281), eje de acero aleado y sellos de laberinto en soporte base.'
-      : 'Back-to-back tapered roller bearing cartridge (ISO 281), alloy steel shaft, and labyrinth seals mounted on pedestal.',
-    tolerance: isEs ? 'Juego axial de banco: 0.05–0.10 mm' : 'Bench axial end-play: 0.05–0.10 mm'
-  },
-  {
-    code: 'EST-02',
-    num: '02',
-    branch: 'common',
-    title: isEs ? 'Sellado Dinámico (Expeller Seco / Prensaestopa)' : 'Dynamic Shaft Seal (Dry Expeller / Stuffing Box)',
-    sub: isEs
-      ? 'Montaje de camisa protectora de eje, anillo expulsor (Expeller Ring) y turbina centrífuga seca (cero agua de sello) o prensaestopa.'
-      : 'Shaft sleeve installation, expeller ring / stuffing box housing, and dry centrifugal expeller vane wheel (zero gland water).',
-    tolerance: isEs ? 'Excentricidad radial de camisa ≤ 0.05 mm' : 'Shaft sleeve radial runout ≤ 0.05 mm'
-  },
-  {
-    code: 'EST-03',
-    num: '03',
-    branch: 'bifurcated',
-    title: isEs ? 'Bifurcación de Contacto Húmedo (Lote 5-5-4)' : 'Wet-End Bifurcation (5-5-4 Wear Kit)',
-    sub: isEs
-      ? 'Rama A (Alto Cromo ≥650 HB): FPL Insert + Impulsor 5 Álabes + Voluta Monolítica. Rama B (Hule / PU): Liner Posterior FPL + Impulsor + Liner Frontal CPL.'
-      : 'Branch A (High Chrome ≥650 HB): FPL Insert + 5-Vane Impeller + Monolithic Volute. Branch B (Rubber / PU): Rear Liner FPL + Impeller + Front Liner CPL.',
-    tolerance: isEs ? 'Roscado de impulsor con anillo de liberación rápida' : 'Impeller boss thread with quick-release collar'
-  },
-  {
-    code: 'EST-04',
-    num: '04',
-    branch: 'common',
-    title: isEs ? 'Cierre de Succión (Throatbush y Cover Plate)' : 'Suction Closure (Throatbush & Cover Plate)',
-    sub: isEs
-      ? 'Asiento del anillo de desgaste frontal (Throatbush) en la tapa de succión (Cover Plate) y apriete cruzado de pernos pasantes.'
-      : 'Seating the front wear ring (Throatbush) into the suction Cover Plate and cross-pattern torquing of through-bolts.',
-    tolerance: isEs ? 'Apriete simétrico en cruz de carcasa bipartida' : 'Cross-pattern clamp bolt torque sequence'
-  },
-  {
-    code: 'EST-05',
-    num: '05',
-    branch: 'common',
-    title: isEs ? 'Calibración Post-Armado de Claro Axial (δ = 0.5–1.0 mm)' : 'Post-Assembly Front Axial Clearance Calibration (δ = 0.5–1.0 mm)',
-    sub: isEs
-      ? 'Con la bomba cerrada, se desplaza el Bearing Assembly hacia succión con el tornillo tensor hasta tocar el Throatbush y se retrocede 0.5 a 1.0 mm.'
-      : 'With casing bolted shut, advance the Bearing Cartridge via the adjusting screw until impeller touches Throatbush, then retract 0.5 to 1.0 mm.',
-    tolerance: isEs ? 'δ_frontal = 0.5–1.0 mm (evita recirculación Q_rec ∝ δ^1.5)' : 'δ_frontal = 0.5–1.0 mm (prevents Q_rec ∝ δ^1.5 recirculation)'
-  }
-];
+const stations = PUMP_ASSEMBLY_STATIONS.map((st) => ({
+  code: st.id,
+  num: String(st.station).padStart(2, '0'),
+  branch: st.station === 3 ? 'bifurcated' : 'common',
+  title: isEs ? st.nameEs : st.nameEn,
+  sub: isEs ? st.descriptionEs : st.descriptionEn,
+  tolerance: isEs ? st.calibrationLawEs : st.calibrationLawEn
+}));
 
-const bomItems = [
-  {
-    pos: '01',
-    station: 'EST-01',
-    branch: 'common',
-    branchLabel: isEs ? 'Común' : 'Common',
-    name: isEs ? 'Soporte Base (Frame / Pedestal)' : 'Pump Frame / Pedestal Base',
-    spec: isEs ? 'Cuna maquinada con tornillo de ajuste axial externo' : 'Machined cradle with external axial adjusting screw',
-    equipo: 'soporte_rodamiento',
-    pieza: 'frame_pedestal',
-    material: 'acero_4140_iso281'
-  },
-  {
-    pos: '02',
-    station: 'EST-01',
-    branch: 'common',
-    branchLabel: isEs ? 'Común' : 'Common',
-    name: isEs ? 'Cartucho Bearing Assembly (Eje + Rodamientos ISO 281)' : 'Bearing Assembly Cartridge (Shaft + ISO 281 Bearings)',
-    spec: isEs ? 'Rodamientos cónicos espalda con espalda + retenes laberinto' : 'Back-to-back tapered roller bearings + labyrinth seals',
-    equipo: 'soporte_rodamiento',
-    pieza: 'bearing_assembly',
-    material: 'acero_4140_iso281'
-  },
-  {
-    pos: '03',
-    station: 'EST-02',
-    branch: 'common',
-    branchLabel: isEs ? 'Común' : 'Common',
-    name: isEs ? 'Camisa Protectora de Eje (Shaft Sleeve) + O-Rings' : 'Hardened Shaft Sleeve + Seal O-Rings',
-    spec: isEs ? 'Acero endurecido / recubrimiento cerámico en zona de sello' : 'Hardened alloy / ceramic-coated sleeve in seal zone',
-    equipo: 'sello_expulsor',
-    pieza: 'shaft_sleeve',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '04',
-    station: 'EST-02',
-    branch: 'common',
-    branchLabel: isEs ? 'Común' : 'Common',
-    name: isEs ? 'Caja de Sello / Anillo Expulsor (Expeller Ring / Stuffing Box)' : 'Expeller Ring / Stuffing Box Housing',
-    spec: isEs ? 'Cámara secundaria con grasera o anillo linterna' : 'Secondary seal chamber with grease port or lantern ring',
-    equipo: 'sello_expulsor',
-    pieza: 'expeller_ring',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '05',
-    station: 'EST-02',
-    branch: 'common',
-    branchLabel: isEs ? 'Común' : 'Common',
-    name: isEs ? 'Expulsor Centrífugo Seco (Expeller)' : 'Centrifugal Dry Expeller',
-    spec: isEs ? 'Turbina auxiliar que abate presión en estopera sin agua externa' : 'Auxiliary rotor that relieves stuffing box pressure without water',
-    equipo: 'sello_expulsor',
-    pieza: 'expeller_sello',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '06',
-    station: 'EST-03',
-    branch: 'common',
-    branchLabel: isEs ? 'Común' : 'Common',
-    name: isEs ? 'Carcasa Lado Soporte (Frame Plate)' : 'Frame Plate (Drive-Side Outer Casing)',
-    spec: isEs ? 'Mitad estructural posterior en hierro nodular con espárragos' : 'Rear ductile iron structural half-casing with mounting studs',
-    equipo: 'skid_bomba',
-    pieza: 'frame_plate',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '07',
-    station: 'EST-03',
-    branch: 'alto_cromo_cr27',
-    branchLabel: isEs ? 'Rama A • Alto Cromo' : 'Branch A • High Chrome',
-    name: isEs ? 'Plato de Desgaste Posterior (Frame Plate Liner Insert — FPL Insert)' : 'Frame Plate Liner Insert (FPL Insert — Rear Wear Plate)',
-    spec: isEs ? 'Aleación Cr27% ASTM A532 (≥650 HB) con pernos posteriores' : 'ASTM A532 Cr27% (≥650 HB) rear wear plate with studs',
-    equipo: 'bombeo_hule_cromo',
-    pieza: 'fpl_insert',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '08',
-    station: 'EST-03',
-    branch: 'hule_natural',
-    branchLabel: isEs ? 'Rama B • Hule / PU' : 'Branch B • Rubber / PU',
-    name: isEs ? 'Forro Posterior Vulcanizado (Frame Plate Liner — FPL)' : 'Molded Frame Plate Liner (FPL — Rubber or Polyurethane)',
-    spec: isEs ? 'Hule Natural (55–65 Shore A) o Poliuretano con alma de acero' : 'Natural Rubber (55–65 Shore A) or Polyurethane with steel backing',
-    equipo: 'bombeo_hule_cromo',
-    pieza: 'liner_fpl',
-    material: 'hule_natural'
-  },
-  {
-    pos: '09',
-    station: 'EST-03',
-    branch: 'common',
-    branchLabel: isEs ? 'Ambas Ramas (5-5-4)' : 'Both Branches (5-5-4)',
-    name: isEs ? 'Impulsor Cerrado de 5 Álabes (Closed Impeller)' : '5-Vane Closed Slurry Impeller',
-    spec: isEs ? 'Con álabes expulsores posteriores; Alto Cromo ≥650 HB, Hule o PU' : 'With back pump-out vanes; High Chrome ≥650 HB, Rubber, or PU',
-    equipo: 'impulsor_bomba',
-    pieza: 'impulsor_5_alabes',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '10',
-    station: 'EST-03',
-    branch: 'alto_cromo_cr27',
-    branchLabel: isEs ? 'Rama A • Alto Cromo' : 'Branch A • High Chrome',
-    name: isEs ? 'Voluta Monolítica (Metal Volute Liner)' : 'Monolithic High-Chrome Volute Liner',
-    spec: isEs ? 'Caracol envolvente de 1 pieza en Alto Cromo Cr27% para molienda SAG' : '1-piece Cr27% high-chrome scroll liner for coarse primary duty',
-    equipo: 'bombeo_hule_cromo',
-    pieza: 'voluta_liners',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '11',
-    station: 'EST-03',
-    branch: 'hule_natural',
-    branchLabel: isEs ? 'Rama B • Hule / PU' : 'Branch B • Rubber / PU',
-    name: isEs ? 'Forro Frontal Lado Succión (Cover Plate Liner — CPL)' : 'Cover Plate Liner (CPL — Suction-Side Split Liner)',
-    spec: isEs ? 'Mitad frontal en Hule Natural o Poliuretano que cierra la voluta con el FPL' : 'Front elastomer half-liner that mates with FPL to form the volute',
-    equipo: 'bombeo_hule_cromo',
-    pieza: 'liner_cpl',
-    material: 'hule_natural'
-  },
-  {
-    pos: '12',
-    station: 'EST-04',
-    branch: 'common',
-    branchLabel: isEs ? 'Ambas Ramas (5-5-4)' : 'Both Branches (5-5-4)',
-    name: isEs ? 'Bocina / Anillo de Desgaste de Succión (Throatbush)' : 'Suction Wear Ring (Throatbush)',
-    spec: isEs ? 'Cara cónica frontal de sacrificio; controla recirculación con el impulsor' : 'Conical front wear face; controls suction eye recirculation',
-    equipo: 'bombeo_hule_cromo',
-    pieza: 'throatbush',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '13',
-    station: 'EST-04',
-    branch: 'common',
-    branchLabel: isEs ? 'Común' : 'Common',
-    name: isEs ? 'Tapa Carcasa Lado Succión + Pernos (Cover Plate & Clamp Bolts)' : 'Suction Cover Plate & Casing Clamp Bolts',
-    spec: isEs ? 'Mitad frontal bridada con orejas de izaje y espárragos pasantes' : 'Flanged suction outer casing half with lifting lugs and clamp bolts',
-    equipo: 'skid_bomba',
-    pieza: 'cover_plate',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '14',
-    station: 'EST-05',
-    branch: 'common',
-    branchLabel: isEs ? 'Lote Completo' : 'Complete Kit',
-    name: isEs ? 'Lote Húmedo Sincronizado 5-5-4 (5 Juegos Liners + 5 Impulsores + 4 Sellos)' : 'Synchronized 5-5-4 Wet-End Kit (5 Liner Sets + 5 Impellers + 4 Seals)',
-    spec: isEs ? 'Suministro programado por campaña con calibración δ = 0.5–1.0 mm' : 'Campaign-synchronized wet-end lot with δ = 0.5–1.0 mm calibration',
-    equipo: 'bombeo_hule_cromo',
-    pieza: 'lote_554',
-    material: 'alto_cromo_cr27'
-  }
-];
+const wetEndMatrixRef = WET_END_MATERIAL_MATRIX;
+
+// Fuente única de verdad desde slurryEngine.js (rango canónico pos: '01' a pos: '14')
+const bomItems = PUMP_554_BOM_14_PARTS.map((item) => ({
+  pos: item.pos,
+  station: item.station,
+  branch: item.branch,
+  branchLabel: isEs ? item.branchLabelEs : item.branchLabelEn,
+  name: isEs ? item.nameEs : item.nameEn,
+  spec: isEs ? item.specEs : item.specEn,
+  weightKg: item.weightKg,
+  nioshHoistRequired: item.nioshHoistRequired,
+  equipo: item.equipo,
+  pieza: item.pieza,
+  material: item.material
+}));
 ---
 
 <section
@@ -268,8 +90,9 @@ const bomItems = [
           aria-selected="false"
           class="branch-tab"
           data-assembly-branch-btn="alto_cromo_cr27"
+          title={isEs ? wetEndMatrixRef.alto_cromo_cr27.idealForEs : wetEndMatrixRef.alto_cromo_cr27.idealForEn}
         >
-          {isEs ? 'Rama A: Alto Cromo (≥650 HB)' : 'Branch A: High Chrome (≥650 HB)'}
+          {isEs ? `Rama A: ${wetEndMatrixRef.alto_cromo_cr27.nameEs}` : `Branch A: ${wetEndMatrixRef.alto_cromo_cr27.nameEn}`}
         </button>
         <button
           type="button"
@@ -277,8 +100,9 @@ const bomItems = [
           aria-selected="false"
           class="branch-tab"
           data-assembly-branch-btn="hule_natural"
+          title={isEs ? wetEndMatrixRef.hule_natural.idealForEs : wetEndMatrixRef.hule_natural.idealForEn}
         >
-          {isEs ? 'Rama B: Hule Natural / Poliuretano' : 'Branch B: Natural Rubber / PU'}
+          {isEs ? `Rama B: ${wetEndMatrixRef.hule_natural.nameEs} / ${wetEndMatrixRef.poliuretano.code}` : `Branch B: ${wetEndMatrixRef.hule_natural.nameEn} / ${wetEndMatrixRef.poliuretano.code}`}
         </button>
       </div>
 
@@ -492,12 +316,33 @@ const bomItems = [
 
         <label class="clearance-field">
           <span class="clearance-field__label">
-            {isEs ? 'Ancho de Salida del Impulsor (b₂):' : 'Impeller Exit Width (b₂):'}
+            {isEs ? 'Ancho de Salida del Impulsor (b₂) / Serie:' : 'Impeller Exit Width (b₂) / Series:'}
           </span>
           <select data-clearance-b2 aria-label={isEs ? 'Ancho de salida de impulsor b2' : 'Impeller exit width b2'}>
-            <option value="38">{isEs ? '38 mm — Serie 3x2 / 4x3 (D3147)' : '38 mm — 3x2 / 4x3 Series (D3147)'}</option>
-            <option value="48" selected>{isEs ? '48 mm — Serie 6x4 (E4147 Estándar)' : '48 mm — 6x4 Series (E4147 Standard)'}</option>
-            <option value="64">{isEs ? '64 mm — Serie 8x6 / 10x8 (F6147)' : '64 mm — 8x6 / 10x8 Series (F6147)'}</option>
+            <option value="38" data-series="3x2">{isEs ? '38 mm — Serie 3x2 / 4x3 (D3147)' : '38 mm — 3x2 / 4x3 Series (D3147)'}</option>
+            <option value="48" data-series="6x4" selected>{isEs ? '48 mm — Serie 6x4 (E4147 Estándar)' : '48 mm — 6x4 Series (E4147 Standard)'}</option>
+            <option value="64" data-series="8x6">{isEs ? '64 mm — Serie 8x6 / 10x8 (F6147)' : '64 mm — 8x6 / 10x8 Series (F6147)'}</option>
+          </select>
+        </label>
+
+        <label class="clearance-field">
+          <span class="clearance-field__label">
+            {isEs ? 'Rama de Sellado de Eje (Estación 02):' : 'Shaft Sealing Branch (Station 02):'}
+          </span>
+          <select data-seal-branch-select aria-label={isEs ? 'Rama de sellado de eje Estación 02' : 'Station 02 shaft sealing branch'}>
+            <option value="expeller_dry" selected>{isEs ? 'Est. 02A — Expulsor Centrífugo Seco (Sin agua de sello)' : 'St. 02A — Dry Centrifugal Expeller (Zero gland water)'}</option>
+            <option value="gland_water">{isEs ? 'Est. 02B — Prensaestopa Húmedo (Anillo Linterna)' : 'St. 02B — Wet Gland Packing (Lantern Ring)'}</option>
+          </select>
+        </label>
+
+        <label class="clearance-field">
+          <span class="clearance-field__label">
+            {isEs ? 'Auditoria de Secuencia de Montaje (Estaciones 01–05):' : 'Assembly Sequence Audit (Stations 01–05):'}
+          </span>
+          <select data-clearance-seq-select aria-label={isEs ? 'Secuencia de montaje de 5 estaciones' : '5-station assembly sequence'}>
+            <option value="canonical" selected>{isEs ? 'Canónica: EST-01 ➔ EST-02 ➔ EST-03 ➔ EST-04 ➔ EST-05' : 'Canonical: EST-01 ➔ EST-02 ➔ EST-03 ➔ EST-04 ➔ EST-05'}</option>
+            <option value="impeller_before_rear_liner">{isEs ? 'Error típico A: Roscar Impulsor (EST-03) antes de Sello/FPL (EST-02)' : 'Typical Error A: Thread Impeller (EST-03) before Seal/FPL (EST-02)'}</option>
+            <option value="cover_before_throatbush">{isEs ? 'Error típico B: Cerrar Tapa Succión (EST-05) sin Throatbush (EST-04)' : 'Typical Error B: Close Cover Plate (EST-05) without Throatbush (EST-04)'}</option>
           </select>
         </label>
       </div>
@@ -531,6 +376,15 @@ const bomItems = [
             {isEs ? 'Cotizar Throatbush / Lote con este δ →' : 'Quote Throatbush / Kit with this δ →'}
           </a>
         </div>
+        <div class="clearance-metric-card">
+          <span class="clearance-metric-card__kicker">{isEs ? 'MASA DE RAMA E INTERFERENCIA' : 'BRANCH MASS & INTERFERENCE'}</span>
+          <strong class="clearance-metric-card__val" data-clearance-mass-total>
+            {isEs ? '736.2 kg • 6 izajes NIOSH (≥23 kg)' : '736.2 kg • 6 NIOSH hoists (≥23 kg)'}
+          </strong>
+          <span class="clearance-metric-card__sub" data-clearance-seq-status>
+            {isEs ? 'Secuencia 01–05 válida sin colisión axial' : 'Sequence 01–05 valid with zero axial collision'}
+          </span>
+        </div>
       </div>
     </div>
   </details>
@@ -559,6 +413,7 @@ const bomItems = [
             <th>{isEs ? 'Estación' : 'Station'}</th>
             <th>{isEs ? 'Rama / Configuración' : 'Branch / Config'}</th>
             <th>{isEs ? 'Componente / Pieza de Recambio' : 'Component / Spare Part'}</th>
+            <th>{isEs ? 'Masa / Izaje NIOSH' : 'Mass / NIOSH Hoist'}</th>
             <th>{isEs ? 'Especificación y Función en el Armado' : 'Specification & Assembly Function'}</th>
             <th>{isEs ? 'Acción Directa' : 'Direct Action'}</th>
           </tr>
@@ -567,13 +422,21 @@ const bomItems = [
           {bomItems.map((row) => {
             const href = `${quoteBase}?equipo=${row.equipo}&pieza=${row.pieza}&material=${row.material}&estacion=${row.station}#rfq`;
             return (
-              <tr data-bom-row data-bom-branch={row.branch}>
+              <tr data-bom-row data-bom-branch={row.branch} data-bom-pos={row.pos}>
                 <td class="bom-col-pos">#{row.pos}</td>
                 <td class="bom-col-station"><code>{row.station}</code></td>
                 <td class="bom-col-branch">
                   <span class={`bom-branch-pill branch-${row.branch}`}>{row.branchLabel}</span>
                 </td>
                 <td class="bom-col-name"><strong>{row.name}</strong></td>
+                <td class="bom-col-mass">
+                  <strong>{row.weightKg} kg</strong>
+                  <span class="bom-niosh-tag" style="display:block;font-size:0.72rem;opacity:0.82;">
+                    {row.nioshHoistRequired
+                      ? (isEs ? 'Polipasto ≥23 kg' : 'Hoist ≥23 kg')
+                      : (isEs ? 'Manual <23 kg' : 'Manual <23 kg')}
+                  </span>
+                </td>
                 <td class="bom-col-spec">{row.spec}</td>
                 <td class="bom-col-action">
                   <a href={href} class="bom-quote-link">
@@ -601,39 +464,19 @@ const bomItems = [
       const svgBranches = section.querySelectorAll('[data-svg-branch]');
       let activeBranch = 'metal';
 
-      buttons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const selectedBranch = btn.getAttribute('data-assembly-branch-btn') || 'all';
-          activeBranch = selectedBranch === 'hule_natural' ? 'rubber' : 'metal';
-          buttons.forEach((b) => {
-            const active = b === btn;
-            b.classList.toggle('is-active', active);
-            b.setAttribute('aria-selected', active ? 'true' : 'false');
-          });
-
-          rows.forEach((row) => {
-            const rowBranch = row.getAttribute('data-bom-branch') || 'common';
-            const visible = selectedBranch === 'all' || rowBranch === 'common' || rowBranch === selectedBranch;
-            (row as HTMLElement).style.display = visible ? '' : 'none';
-          });
-
-          svgBranches.forEach((g) => {
-            const gBranch = g.getAttribute('data-svg-branch');
-            const active = selectedBranch === 'all' || gBranch === selectedBranch;
-            (g as HTMLElement).style.opacity = active ? '1' : '0.28';
-          });
-        });
-      });
-
-      // Calibrador en vivo de Claro Axial Frontal δ_frontal (Estación 05)
+      // Calibrador en vivo de Claro Axial Frontal δ_frontal y Secuencia 01–05 (Estación 05)
       const slider = section.querySelector('[data-clearance-slider]') as HTMLInputElement | null;
       const b2Select = section.querySelector('[data-clearance-b2]') as HTMLSelectElement | null;
+      const sealSelect = section.querySelector('[data-seal-branch-select]') as HTMLSelectElement | null;
+      const seqSelect = section.querySelector('[data-clearance-seq-select]') as HTMLSelectElement | null;
       const readoutEl = section.querySelector('[data-clearance-readout]');
       const lossEl = section.querySelector('[data-clearance-loss]');
       const ratioEl = section.querySelector('[data-clearance-ratio]');
       const statusEl = section.querySelector('[data-clearance-status]');
       const vcLossEl = section.querySelector('[data-clearance-vc-loss]');
       const lot554El = section.querySelector('[data-clearance-lot554]');
+      const massTotalEl = section.querySelector('[data-clearance-mass-total]');
+      const seqStatusEl = section.querySelector('[data-clearance-seq-status]');
       const quoteCta = section.querySelector('[data-clearance-quote-cta]') as HTMLAnchorElement | null;
       const svgValEl = section.querySelector('[data-est-05-val]');
       const svgBoxEl = section.querySelector('[data-est-05-box]');
@@ -643,10 +486,16 @@ const bomItems = [
         if (!slider) return;
         const frontClearanceMm = Number(slider.value) || 0.75;
         const impellerExitWidthMm = b2Select ? Number(b2Select.value) || 48 : 48;
+        const sealBranch = sealSelect ? sealSelect.value : 'expeller_dry';
+        const pipeSeries = impellerExitWidthMm <= 38 ? '3x2' : (impellerExitWidthMm >= 64 ? '8x6' : '6x4');
+        const sequencePreset = seqSelect ? seqSelect.value : 'canonical';
         const res = evaluateWetEndAssemblyInterference({
           wetEndBranch: activeBranch as 'metal' | 'rubber',
+          sealBranch,
           frontClearanceMm,
-          impellerExitWidthMm
+          impellerExitWidthMm,
+          pipeSeries,
+          sequencePreset
         });
 
         if (readoutEl) readoutEl.textContent = `${res.frontClearanceMm.toFixed(2)} mm`;
@@ -673,29 +522,75 @@ const bomItems = [
         if (lot554El) {
           lot554El.textContent = isEnDoc ? res.wearRatioImpact554En : res.wearRatioImpact554;
         }
+        if (massTotalEl) {
+          massTotalEl.textContent = isEnDoc
+            ? `${res.totalAssemblyMassKg.toFixed(1)} kg • ${res.nioshHoistPartsCount} NIOSH hoists (≥23 kg)`
+            : `${res.totalAssemblyMassKg.toFixed(1)} kg • ${res.nioshHoistPartsCount} izajes NIOSH (≥23 kg)`;
+        }
+        if (seqStatusEl) {
+          seqStatusEl.textContent = res.sequenceValid
+            ? (isEnDoc ? 'Sequence 01–05 valid with zero axial collision' : 'Secuencia 01–05 válida sin colisión axial')
+            : (isEnDoc ? `BLOCKED (${res.outOfOrderStationId}): ${res.collisionDetailsEn}` : `BLOQUEO (${res.outOfOrderStationId}): ${res.collisionDetailsEs}`);
+        }
         if (svgValEl) svgValEl.textContent = `${res.frontClearanceMm.toFixed(2)} mm`;
         if (svgBoxEl) {
-          const strokeColor = res.clearanceStatus === 'OPTIMAL_CALIBRATION'
-            ? '#15803d'
-            : (res.clearanceStatus === 'RUBBING_RISK' ? '#dc2626' : '#d97706');
+          const strokeColor = !res.sequenceValid || res.clearanceStatus === 'RUBBING_RISK'
+            ? '#dc2626'
+            : (res.clearanceStatus === 'OPTIMAL_CALIBRATION' ? '#15803d' : '#d97706');
           svgBoxEl.setAttribute('stroke', strokeColor);
         }
         if (quoteCta) {
           const base = quoteCta.getAttribute('data-quote-base') || '/cotizar/';
-          quoteCta.href = `${base}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=throatbush&estacion=5&claro_mm=${res.frontClearanceMm.toFixed(2)}#rfq`;
+          quoteCta.href = `${base}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=throatbush&estacion=5&claro_mm=${res.frontClearanceMm.toFixed(2)}&seal_branch=${res.sealBranch}&b2_mm=${res.impellerExitWidthMm}#rfq`;
         }
 
         const prev = loadWorkbenchState() || {};
         saveWorkbenchState({
           ...prev,
           frontClearanceMm: res.frontClearanceMm,
+          claro_mm: res.frontClearanceMm,
+          seal_branch: res.sealBranch,
+          sealBranch: res.sealBranch,
+          b2_mm: res.impellerExitWidthMm,
+          impellerExitWidthMm: res.impellerExitWidthMm,
           volumetricLossPct: res.volumetricEfficiencyDropPct,
-          clearanceStatus: res.clearanceStatus
+          clearanceStatus: res.clearanceStatus,
+          assemblySequencePreset: sequencePreset,
+          assemblySequenceValid: res.sequenceValid,
+          totalAssemblyMassKg: res.totalAssemblyMassKg,
+          nioshHoistPartsCount: res.nioshHoistPartsCount
         });
       };
 
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const selectedBranch = btn.getAttribute('data-assembly-branch-btn') || 'all';
+          activeBranch = selectedBranch === 'hule_natural' ? 'rubber' : 'metal';
+          buttons.forEach((b) => {
+            const active = b === btn;
+            b.classList.toggle('is-active', active);
+            b.setAttribute('aria-selected', active ? 'true' : 'false');
+          });
+
+          rows.forEach((row) => {
+            const rowBranch = row.getAttribute('data-bom-branch') || 'common';
+            const visible = selectedBranch === 'all' || rowBranch === 'common' || rowBranch === selectedBranch;
+            (row as HTMLElement).style.display = visible ? '' : 'none';
+          });
+
+          svgBranches.forEach((g) => {
+            const gBranch = g.getAttribute('data-svg-branch');
+            const active = selectedBranch === 'all' || gBranch === selectedBranch;
+            (g as HTMLElement).style.opacity = active ? '1' : '0.28';
+          });
+          updateClearanceSimulation();
+        });
+      });
+
       if (slider) slider.addEventListener('input', updateClearanceSimulation);
       if (b2Select) b2Select.addEventListener('change', updateClearanceSimulation);
+      if (sealSelect) sealSelect.addEventListener('change', updateClearanceSimulation);
+      if (seqSelect) seqSelect.addEventListener('change', updateClearanceSimulation);
       updateClearanceSimulation();
     });
   }

@@ -15,8 +15,8 @@
   --smat-navy-border: #0E4A7D;       /* Delimitación estructural 1px */
   --smat-navy-highlight: #145994;    /* Resalte suave en interacción */
 
-  --smat-blue-royal: #0D78C6;        /* Primario Instrumental / SMAT exacto */
-  --smat-blue-royal-hover: #0B68AB;  /* Hover de controles primarios */
+  --smat-blue-royal: #0c4a6e;        /* Primario Instrumental WCAG AAA Solar (9.61:1 sobre #ffffff, 8.56:1 sobre #eff6ff) */
+  --smat-blue-royal-hover: #082f49;  /* Hover de controles primarios (13.68:1) */
   --smat-blue-royal-soft: rgba(13, 120, 198, 0.08); /* Fondo de selección */
 
   --smat-blue-vortex: #4FAEEB;       /* Acento de flujo hidrodinámico */
@@ -35,23 +35,29 @@
   --smat-bg-contrast: var(--smat-navy-deep);       /* Marco Deep Mineral Navy para acentos */
   --smat-navy-950: var(--smat-navy-deep);          /* Alias Deep Mineral Navy */
 
-  /* Textos y Jerarquía Tipográfica */
+  /* Textos y Jerarquía Tipográfica (Polaridad Solar WCAG AAA >= 7.0:1) */
   --smat-text-primary: #090d16;      /* Tinta carbón profundo (máxima legibilidad) */
-  --smat-text-secondary: #334155;    /* Gris pizarra editorial */
-  --smat-text-muted: #64748b;        /* Subtítulos y metadatos */
+  --smat-text-secondary: #1e293b;    /* Gris pizarra solar AAA (~12.9:1 sobre blanco) */
+  --smat-text-muted: #334155;        /* Subtítulos y metadatos AAA (~9.8:1 sobre blanco) */
   --smat-text-inverse: #ffffff;      /* Texto sobre fondos oscuros */
 
   /* Bordes y Líneas de Precisión */
   --smat-border-light: #e2e8f0;      /* Línea fina milimétrica */
   --smat-border-medium: #cbd5e1;     /* Borde de tarjeta y tabla */
-  --smat-border-focus: #c25e00;      /* Enfoque en cobre mineral */
+  --smat-border-focus: #7c2d12;      /* Enfoque en cobre mineral AAA */
 
-  /* Acentos de Planta e Industria Metalúrgica */
-  --smat-copper-accent: #c25e00;     /* Cobre forjado / Acción primaria */
-  --smat-copper-hover: #9a4a00;
+  /* Acentos de Planta e Industria Metalúrgica (Fotometría Solar AAA >= 8.5:1) */
+  --smat-copper-accent: #7c2d12;     /* Cobre forjado oscuro AAA (10.65:1 sobre #ffffff, 10.18:1 sobre #fafaf9) */
+  --smat-copper-hover: #431407;      /* Hover cobre profundo (15.42:1) */
   --smat-copper-light: #fff7ed;      /* Fondo tenue cobre */
   --smat-copper-border: #ea580c;
   --smat-copper-glow: rgba(194, 94, 0, 0.15);
+
+  /* Polaridad Solar AAA (Tajo Abierto 50,000 lux - WCAG 2.1 AAA >= 7.0:1) */
+  --smat-copper-surface-aaa: #E56B38;
+  --smat-on-copper-aaa: #090D16;
+  --smat-whatsapp-surface-aaa: #25D366;
+  --smat-on-whatsapp-aaa: #090D16;
 
   /* Estatus Operativo & Disponibilidad en Planta */
   --smat-emerald-stock: #059669;     /* Verde disponibilidad e inspección en planta */

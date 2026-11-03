@@ -37,3 +37,11 @@ SMAT operates from its Central Warehouse and Yard in Durango, Mexico, providing 
 - **AISC Optimization:** Reduces All-In Sustaining Costs by replacing 16-24 week transoceanic shipping with prompt domestic OPEX orders and official Mexican CFDI invoices.
 - **Downtime Protection:** Mitigates unscheduled mill shutdown losses ($20,000 to $150,000 USD per 8-hour shift) through strategic stocking in Durango.
 - **1:1 Dimensional Fit Guarantee:** Every part is physically matched against industry-standard patterns and verified for hardness (>=650 HB) before dispatch.
+
+
+## 4. Deterministic Engineering Workbench & Metrology Architecture (Etapa 3)
+- **Single-Store Bidirectional Lens (`smat_workbench_state_v2`):** Preserves 100% of hydraulic, mechanical, and metallurgical metrology parameters across `/control-de-procesos/`, `/bombeo/skid/`, `/cotizar/`, and `/acuse/` without state loss.
+- **Tri-Compound Wet-End Matrix (`WET_END_MATERIAL_MATRIX`):** Interactive calibration across High Chrome `A05` (27% Cr, >=650 HB, $u_2 \le 32.0\text{ m/s}$), Pressure-Vulcanized Natural Rubber `R55` (55-60 Shore A, $u_2 \le 24.5\text{ m/s}$), and Elastomeric Polyurethane `U01` (90-95 Shore A, $u_2 \le 28.0\text{ m/s}$), including 5-5-4 wear batch ratios and $d_{80}$ / pH windows.
+- **11-Parameter Metallurgical Metrology Bench:** Marcy density scale with algebraic inversion ($\rho_p \leftrightarrow C_w$), Pierre Gy minimum sample mass ($M_{\min} = C \cdot d_{95}^3 / s^2$), Pneumatic Batch Filter (60–100 PSI), and 6-column ASTM E11 Sieve Tower with Rosin-Rammler linearization ($y', n$) and primary $P_{80}$ cut highlighting (`isPrimaryP80Control`).
+- **V-Belt & ISO 281 Kinematics:** Real-time calculation of driven pump speed ($n_2$), peripheral tip speed ($u_2$), belt radial load ($F_r$), equivalent bearing load ($P$), and sump flood immunity across `CV`, `ZVZ`, `CRZ`, and `DC` arrangements.
+- **Solar Polarity WCAG AAA Ergonomics:** Outdoor mining legibility with `--smat-blue-royal: #0c4a6e` (9.61:1 contrast) and `--smat-copper-accent: #7c2d12` (10.65:1 contrast).

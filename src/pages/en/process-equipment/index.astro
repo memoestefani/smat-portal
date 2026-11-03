@@ -118,9 +118,11 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
   </section>
 
   <section id="stage-2">
+    <CaseCards lang="en" />
+
     <details class="equipos-circuit-appendix" id="equipos-circuit-appendix">
       <summary class="equipos-circuit-appendix__summary container">
-        <span>P&ID Circuit Diagram, CAPEX/OPEX Matrix & Field Engineering Cases</span>
+        <span>P&ID Circuit Diagram & Dual Equipment/Spares Role Matrix</span>
         <span class="equipos-circuit-appendix__badge">EXPAND P&ID APPENDIX ▾</span>
       </summary>
       <div class="container" style="padding-top: 1.25rem; padding-bottom: 0.5rem;">
@@ -130,9 +132,6 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
           </button>
           <button type="button" role="tab" aria-selected="false" class="equipos-seg-btn" data-equipos-view-btn="hub">
             2. Dual Role / Circuit Matrix
-          </button>
-          <button type="button" role="tab" aria-selected="false" class="equipos-seg-btn" data-equipos-view-btn="cases">
-            3. Plant Engineering Cases
           </button>
         </div>
       </div>
@@ -147,10 +146,6 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
 
       <div data-equipos-view-panel="hub" style="display:none">
         <DualHubView lang="en" />
-      </div>
-
-      <div data-equipos-view-panel="cases" style="display:none">
-        <CaseCards lang="en" />
       </div>
     </details>
   </section>

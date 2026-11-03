@@ -3,6 +3,7 @@
 // Decisión 2-B: Commercial Trust & Engineering Warranty Charter in Durango
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TrustMatrix from '../../components/TrustMatrix.astro';
+import FaqAccordion from '../../components/FaqAccordion.astro';
 ---
 
 <BaseLayout 
@@ -58,6 +59,9 @@ import TrustMatrix from '../../components/TrustMatrix.astro';
           </a>
         </div>
       </div>
+
+      <!-- Frequently Asked Questions on Supply, Balancing & Metallurgy (data/faqs.json) -->
+      <FaqAccordion lang="en" />
     </div>
   </main>
 </BaseLayout>

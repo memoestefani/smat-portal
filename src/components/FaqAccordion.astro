@@ -1,0 +1,205 @@
+---
+// src/components/FaqAccordion.astro
+// Preguntas Frecuentes Técnicas y Comerciales de Almacén Durango (100% paridad UI con data/faqs.json)
+import faqsData from '../../data/faqs.json';
+
+interface Props {
+  lang?: 'es' | 'en';
+  compact?: boolean;
+}
+
+const { lang = 'es', compact = false } = Astro.props;
+const isEn = lang === 'en';
+const faqs = faqsData.faqs || [];
+---
+
+<section
+  class:list={['faq-accordion-section', 'no-print', { 'faq-accordion-section--compact': compact }]}
+  id="smat-faq-section"
+  aria-labelledby="smat-faq-heading"
+>
+  <div class="faq-accordion-header">
+    <span class="faq-accordion-badge">
+      {isEn ? 'TECHNICAL & WAREHOUSE CERTAINTY' : 'CERTEZA TÉCNICA Y SUMINISTRO EN DURANGO'}
+    </span>
+    <h2 id="smat-faq-heading" class="faq-accordion-title">
+      {isEn
+        ? 'Frequently Asked Questions on Metallurgy, 1:1 Interchangeability & Dispatch'
+        : 'Preguntas Frecuentes sobre Metalurgia A05, Intercambiabilidad 1:1 y Suministro'}
+    </h2>
+    <p class="faq-accordion-lead">
+      {isEn
+        ? 'Direct answers regarding Durango warehouse buffer inventory, shop dynamic balancing, dimensional verification, and High Chrome >650 HB melt certification.'
+        : 'Respuestas directas sobre inventario amortiguador en Almacén Central Durango, balanceo dinámico en banco, verificación dimensional y certificados de colada Alto Cromo >650 HB.'}
+    </p>
+  </div>
+
+  <div class="faq-accordion-list">
+    {faqs.map((faq, idx) => (
+      <details
+        class="faq-accordion-item"
+        id={faq.id}
+        data-faq-id={faq.id}
+        name="smat-faq-group"
+        open={idx === 0}
+      >
+        <summary class="faq-accordion-summary">
+          <span class="faq-accordion-index">0{idx + 1}</span>
+          <span class="faq-accordion-question">
+            {isEn ? faq.question_en : faq.question_es}
+          </span>
+          <span class="faq-accordion-chevron" aria-hidden="true">▾</span>
+        </summary>
+        <div class="faq-accordion-body">
+          <p class="faq-accordion-answer">
+            {isEn ? faq.answer_en : faq.answer_es}
+          </p>
+        </div>
+      </details>
+    ))}
+  </div>
+</section>
+
+<style>
+  .faq-accordion-section {
+    margin-top: 2.5rem;
+    padding: 2rem;
+    background-color: #ffffff;
+    border: 1px solid var(--smat-border-medium, #cbd5e1);
+    border-radius: var(--smat-radius-md, 10px);
+    box-shadow: var(--smat-shadow-sm);
+  }
+
+  .faq-accordion-section--compact {
+    margin-top: 1.75rem;
+    margin-bottom: 2.5rem;
+    padding: 1.5rem 1.75rem;
+  }
+
+  .faq-accordion-header {
+    max-width: 780px;
+    margin-bottom: 1.5rem;
+  }
+
+  .faq-accordion-badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    background-color: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 999px;
+    color: var(--smat-copper-accent, #c25e00);
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+
+  .faq-accordion-title {
+    font-family: var(--smat-font-editorial);
+    font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+    font-weight: 800;
+    color: var(--smat-text-primary, #1c1917);
+    line-height: 1.25;
+    margin: 0 0 0.45rem 0;
+  }
+
+  .faq-accordion-lead {
+    font-size: 0.92rem;
+    color: var(--smat-text-secondary, #475569);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .faq-accordion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .faq-accordion-item {
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .faq-accordion-item[open] {
+    background-color: #ffffff;
+    border-color: var(--smat-copper-accent, #c25e00);
+  }
+
+  .faq-accordion-summary {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.95rem 1.15rem;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .faq-accordion-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-accordion-index {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #ffffff;
+    background-color: #1e293b;
+    padding: 0.18rem 0.45rem;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .faq-accordion-item[open] .faq-accordion-index {
+    background-color: var(--smat-copper-accent, #c25e00);
+  }
+
+  .faq-accordion-question {
+    flex: 1;
+    font-family: var(--smat-font-ui);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--smat-text-primary, #1c1917);
+    line-height: 1.35;
+  }
+
+  .faq-accordion-chevron {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #475569;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .faq-accordion-item[open] .faq-accordion-chevron {
+    transform: rotate(180deg);
+    color: var(--smat-copper-accent, #c25e00);
+  }
+
+  .faq-accordion-body {
+    padding: 0 1.15rem 1.05rem 3.1rem;
+    border-top: 1px dashed #e2e8f0;
+  }
+
+  .faq-accordion-answer {
+    margin: 0.75rem 0 0 0;
+    font-size: 0.88rem;
+    color: var(--smat-text-secondary, #334155);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 640px) {
+    .faq-accordion-section {
+      padding: 1.25rem;
+    }
+    .faq-accordion-body {
+      padding-left: 1.15rem;
+    }
+  }
+</style>
+

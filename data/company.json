@@ -7,6 +7,7 @@
   "address": {
     "street": "Mariano Salas #114",
     "colonia": "Col. Primer Presidente",
+    "neighborhood": "Col. Primer Presidente",
     "city": "Durango",
     "state": "Durango",
     "postal_code": "34166",

@@ -1,0 +1,2446 @@
+/* SMAT Minerals - Workbench & Live Engineering Dossier Styles (Parnas Slice MS-04) */
+/* Polaridad Solar AAA (Tajo Abierto 50,000 lux - WCAG 2.1 AAA >= 7.0:1) */
+
+.workbench-container {
+  padding: 2.5rem 1.5rem;
+  font-family: var(--smat-font-ui);
+  background: #f1f5f9;
+  border-radius: var(--smat-radius-lg, 12px);
+}
+
+.workbench-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.badge-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.live-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background: #c25e00;
+  border-radius: 50%;
+  margin-right: 4px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.workbench-title {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  color: var(--smat-text-primary);
+  font-family: var(--smat-font-editorial);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.workbench-subtitle {
+  font-size: 0.95rem;
+  color: var(--smat-text-secondary);
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* Split Layout */
+.workbench-split {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1200px) {
+  .workbench-split {
+    gap: 1.1rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .workbench-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Panel Izquierdo: Muelle Unificado de Instrumentación (Decisión 1-C / GOLD-174) */
+.workbench-controls-panel,
+.console-bay {
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--smat-radius-lg, 12px);
+  padding: 1.5rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+/* Señalética Formal Estricta SIN Íconos (Decisión 3-C / GOLD-175) */
+.console-bay-banner {
+  font-size: 0.68rem;
+  font-weight: 700;
+  font-family: var(--smat-font-mono, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #334155;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #cbd5e1;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .workbench-container {
+    padding: 0.85rem 0.75rem;
+  }
+  .workbench-header {
+    margin-bottom: 0.75rem;
+  }
+  .badge-row {
+    margin-bottom: 0.35rem;
+    gap: 0.35rem;
+  }
+  .workbench-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
+  }
+  .workbench-subtitle {
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+  .workbench-controls-panel,
+  .console-bay {
+    padding: 0.85rem;
+  }
+  .console-bay-banner {
+    padding-bottom: 0.45rem;
+    margin-bottom: 0.65rem;
+  }
+}
+
+.dossier-role-banner {
+  font-size: 0.65rem;
+  font-weight: 700;
+  font-family: var(--smat-font-mono, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9a4a00;
+  margin-bottom: 0.65rem;
+  padding-left: 0.25rem;
+}
+
+/* Secciones Interiores del Muelle */
+.control-card {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0 0 1.5rem 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: none;
+}
+
+.control-card:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.control-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: var(--smat-copper-surface-aaa, #E56B38);
+  color: var(--smat-on-copper-aaa, #090D16);
+  border-radius: var(--smat-radius-sm);
+  font-size: 0.75rem;
+  font-weight: 800;
+  font-family: var(--smat-font-mono);
+}
+
+.control-card-header h3 {
+  font-size: 1.05rem;
+  color: var(--smat-text-primary);
+  font-family: var(--smat-font-editorial);
+  font-weight: 700;
+  margin: 0;
+}
+
+.contact-card-priority {
+  border-left: none;
+}
+
+/* Gavetas de Divulgación Progresiva Genuina HTML5 <details> (Decisión 2-C+) */
+.wb-progressive-drawer {
+  margin-top: 0.75rem;
+  border: 1px solid var(--smat-border-medium, #cbd5e1);
+  border-radius: var(--smat-radius-sm, 6px);
+  background: #ffffff;
+  padding: 0.6rem 0.85rem;
+  transition: border-color 0.15s ease;
+}
+
+.wb-progressive-drawer[open] {
+  border-color: var(--smat-copper-accent, #c25e00);
+  box-shadow: var(--smat-shadow-sm);
+}
+
+.wb-progressive-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--smat-text-primary, #090d16);
+  list-style: none;
+  user-select: none;
+  min-height: 36px;
+}
+
+.wb-progressive-summary::-webkit-details-marker {
+  display: none;
+}
+
+.wb-progressive-body {
+  padding-top: 0.75rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--smat-border-light, #e2e8f0);
+}
+
+/* Durand Accordion Styles (Decisión 3-C) */
+.durand-accordion {
+  border-radius: var(--smat-radius-sm);
+}
+
+.durand-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  padding: 0.25rem 0;
+}
+
+.durand-summary::-webkit-details-marker {
+  display: none;
+}
+
+.durand-summary-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.accordion-arrow {
+  font-size: 0.8rem;
+  color: var(--smat-copper-accent);
+  transition: transform 0.2s ease;
+}
+
+details[open] .accordion-arrow {
+  transform: rotate(180deg);
+}
+
+.durand-accordion-body {
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--smat-border-light);
+  animation: deckFadeIn 0.2s ease-out;
+}
+
+/* Presets Section */
+.presets-section {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--smat-border-light);
+}
+
+.presets-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--smat-text-secondary);
+  letter-spacing: 0.06em;
+  margin-bottom: 0.6rem;
+}
+
+.preset-chips-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+@media (max-width: 600px) {
+  .preset-chips-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.preset-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  background: #f8fafc;
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--smat-radius-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.preset-chip:hover {
+  background: #ffffff;
+  border-color: var(--smat-copper-accent);
+}
+
+.preset-chip.active {
+  background: #ffffff;
+  border-color: var(--smat-copper-accent);
+  box-shadow: 0 0 0 1px var(--smat-copper-accent);
+}
+
+.p-icon { font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
+.p-text strong { display: block; font-size: 0.82rem; color: var(--smat-text-primary); }
+.p-text small { display: block; font-size: 0.7rem; color: var(--smat-text-secondary); }
+
+/* Custom Equipment Details (Decisión 2-C) */
+.custom-equip-details {
+  margin-top: 0.85rem;
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--smat-radius-sm);
+  background: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.custom-equip-details[open] {
+  border-color: var(--smat-copper-accent);
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.custom-equip-summary {
+  padding: 0.6rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--smat-text-secondary);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.custom-equip-summary::-webkit-details-marker {
+  display: none;
+}
+
+.custom-equip-summary:hover {
+  color: var(--smat-copper-accent);
+}
+
+.custom-arrow {
+  font-size: 0.85rem;
+  color: var(--smat-copper-accent);
+  transition: transform 0.2s ease;
+}
+
+.custom-equip-details[open] .custom-arrow {
+  transform: rotate(180deg);
+}
+
+.custom-equip-body {
+  padding: 0.85rem;
+  border-top: 1px solid var(--smat-border-light);
+}
+
+.custom-textarea {
+  min-height: 54px;
+  resize: vertical;
+}
+
+/* Urgencia Selector */
+.intent-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .intent-selector { grid-template-columns: 1fr; }
+}
+
+.intent-btn {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: var(--smat-space-md, 24px);
+  background: #ffffff;
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--smat-radius-md);
+  cursor: pointer;
+  box-shadow: var(--smat-shadow-sm);
+  transition: all 0.2s var(--apple-spring-snappy, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.intent-btn input { display: none; }
+.intent-btn:hover {
+  border-color: var(--smat-copper-accent);
+  transform: translateY(-2px);
+  box-shadow: var(--smat-shadow-md);
+}
+.intent-btn.selected {
+  border-color: var(--smat-copper-accent);
+  background: #ffffff;
+  box-shadow: 0 0 0 2px var(--smat-copper-accent), var(--smat-shadow-md);
+}
+
+.intent-icon { font-size: 1.3rem; display: flex; align-items: center; }
+.intent-info strong { display: block; color: var(--smat-text-primary); font-size: 0.85rem; margin-bottom: 0.15rem; }
+.intent-info small { display: block; color: var(--smat-text-secondary); font-size: 0.72rem; line-height: 1.3; }
+
+/* Segmented Control (Decisión 5-C) */
+.segmented-control {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: #f1f5f9;
+  padding: 3px;
+  border-radius: var(--smat-radius-sm);
+  border: 1px solid var(--smat-border-light);
+  gap: 2px;
+}
+
+.segment-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0.4rem 0.5rem;
+  background: transparent;
+  border-radius: calc(var(--smat-radius-sm) - 2px);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--smat-text-secondary);
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.segment-btn input {
+  display: none;
+}
+
+.segment-btn:hover {
+  color: var(--smat-text-primary);
+}
+
+.segment-btn.active {
+  background: #ffffff;
+  color: var(--smat-text-primary);
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.segment-icon {
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+}
+
+.package-bundle-panel {
+  background: #f8fafc;
+  border: 1px solid var(--smat-border-medium);
+  border-radius: var(--smat-radius-sm);
+  padding: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+.package-bundle-header {
+  margin-bottom: 0.5rem;
+}
+
+.package-bundle-header strong {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--smat-text-primary);
+}
+
+.package-bundle-header small {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--smat-text-secondary);
+}
+
+.package-bundle-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+@media (max-width: 600px) {
+  .package-bundle-grid { grid-template-columns: 1fr; }
+}
+
+.package-check-label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.6rem;
+  background: #ffffff;
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--smat-radius-sm);
+  font-size: 0.78rem;
+  color: var(--smat-text-primary);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.package-check-label:hover {
+  border-color: var(--smat-copper-accent);
+}
+
+.package-check-label input[type="checkbox"] {
+  accent-color: var(--smat-copper-accent);
+}
+
+/* Form Elements */
+.form-group { margin-bottom: 0.85rem; }
+.form-group label { display: block; font-size: 0.8rem; color: var(--smat-text-secondary); margin-bottom: 0.3rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+@media (max-width: 600px) {
+  .form-row { grid-template-columns: 1fr; }
+}
+
+/* Pozos de Entrada en Blanco Puro con Bisel Interior (Decisión 2-C / GOLD-178) */
+.wb-select, .wb-input, .custom-textarea {
+  width: 100%;
+  min-height: 42px;
+  padding: 0.5rem 0.75rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  border-radius: var(--smat-radius-sm, 6px);
+  color: var(--smat-text-primary);
+  font-size: 0.85rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.wb-select:focus, .wb-input:focus, .custom-textarea:focus {
+  outline: none;
+  border-color: var(--smat-copper-accent, #c25e00);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05), 0 0 0 2px rgba(194, 94, 0, 0.20);
+}
+
+.slider-group {
+  margin-bottom: 0.75rem;
+}
+
+.slider-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--smat-text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.slider-value {
+  color: var(--smat-text-primary);
+  font-family: var(--smat-font-mono);
+}
+
+.wb-slider {
+  width: 100%;
+  accent-color: var(--smat-copper-accent);
+}
+
+.sim-pill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: #e2e8f0;
+  color: #334155;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--smat-radius-pill);
+  margin-left: 0.5rem;
+}
+
+.sim-output-box {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  background: #ffffff;
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--smat-radius-sm);
+  padding: 0.75rem;
+  margin-top: 0.85rem;
+}
+
+@media (max-width: 600px) {
+  .sim-output-box { grid-template-columns: 1fr; }
+}
+
+.sim-metric-label {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--smat-text-secondary);
+}
+
+.sim-metric-val {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--smat-text-primary);
+  font-family: var(--smat-font-mono);
+}
+
+.sim-metric-val.highlight {
+  color: #065f46;
+  font-weight: 700;
+}
+
+/* Privacy Box */
+.privacy-pledge-box {
+  display: flex;
+  gap: 0.6rem;
+  background: #ffffff;
+  border-left: 3px solid var(--smat-copper-accent);
+  border-top: 1px solid var(--smat-border-light);
+  border-right: 1px solid var(--smat-border-light);
+  border-bottom: 1px solid var(--smat-border-light);
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--smat-radius-sm);
+  margin-bottom: 0.85rem;
+  font-size: 0.75rem;
+}
+
+.pledge-text strong { display: block; color: var(--smat-text-primary); margin-bottom: 0.15rem; }
+.pledge-text p { margin: 0; color: var(--smat-text-secondary); line-height: 1.35; }
+
+/* Pre-Engineering Hint Box (Decisión 1-C) */
+.pre-engineering-hint-box {
+  display: flex;
+  gap: 0.6rem;
+  background: transparent;
+  border: none;
+  border-left: 2px solid var(--smat-border-medium);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0;
+  margin-bottom: 0.85rem;
+  font-size: 0.75rem;
+}
+.pre-engineering-hint-box .hint-icon { font-size: 1.1rem; }
+.pre-engineering-hint-box .hint-text strong { display: block; color: var(--smat-text-primary); margin-bottom: 0.15rem; }
+.pre-engineering-hint-box .hint-text p { margin: 0; color: var(--smat-text-secondary); line-height: 1.35; }
+
+/* Photo upload */
+.photo-upload-row { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; }
+.photo-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.65rem;
+  background: #ffffff;
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--smat-radius-sm);
+  color: var(--smat-text-secondary);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+.file-input-hidden { display: none; }
+.photo-status-text { font-size: 0.75rem; color: #065f46; }
+
+/* User chip */
+.returning-user-chip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #10b981;
+  border-radius: var(--smat-radius-sm);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.78rem;
+  color: #065f46;
+}
+.user-chip-reset {
+  background: none;
+  border: none;
+  color: #065f46;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+/* Panel Derecho: Live Dossier */
+.workbench-preview-panel {
+  position: sticky;
+  top: 5rem;
+}
+
+/* Única Hoja A4 Blanca con Oclusión Ambiental Multicapa (Decisión 4-C / GOLD-176) */
+.dossier-card {
+  background: #ffffff;
+  border: 1px solid rgba(203, 213, 225, 0.6);
+  border-top: 3px solid var(--smat-navy-deep, #051B2E);
+  border-radius: var(--smat-radius-md, 8px);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 12px 32px -4px rgba(5, 27, 46, 0.08),
+    0 24px 48px -6px rgba(5, 27, 46, 0.12);
+  padding: var(--smat-space-md, 24px);
+  transition: box-shadow 0.2s ease;
+  position: relative;
+}
+
+.dossier-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--smat-specular-vortex, linear-gradient(90deg, transparent, rgba(79, 174, 235, 0.45), transparent));
+  pointer-events: none;
+  border-radius: var(--smat-radius-md, 8px) var(--smat-radius-md, 8px) 0 0;
+}
+
+/* Selector de Pestañas Dual (Decisión 8-A / 5-C) */
+.dossier-tab-switcher {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #cbd5e1;
+  padding-bottom: 0.5rem;
+}
+
+.dossier-tab-btn {
+  flex: 1;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+  border-radius: var(--smat-radius-sm);
+  background: #f1f5f9;
+  color: var(--smat-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.dossier-tab-btn:hover {
+  color: #0f172a;
+  background: #e2e8f0;
+}
+
+.dossier-tab-btn.active {
+  background: #ffffff;
+  color: var(--smat-blue-royal, #0D78C6);
+  border-color: #cbd5e1;
+  border-bottom-color: #ffffff;
+}
+
+/* Conmutación Estricta de Pestañas en Pantalla (Decisión 3-C / D3) */
+.dossier-pane {
+  display: none;
+}
+.dossier-pane.active-pane {
+  display: block;
+}
+.dossier-pane.hidden-pane {
+  display: none !important;
+}
+
+.dossier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.brand-title {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #090d16;
+}
+
+.brand-sub {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #334155;
+  letter-spacing: 0.05em;
+}
+
+.brand-address {
+  display: block;
+  font-size: 0.65rem;
+  color: #334155;
+  margin-top: 0.2rem;
+}
+
+.dossier-folio-wrap { text-align: right; }
+.folio-label { display: block; font-size: 0.65rem; font-weight: 800; color: #334155; }
+.folio-code { display: block; font-size: 1.1rem; font-family: var(--smat-font-mono); color: #9a4a00; }
+.dossier-date { display: block; font-size: 0.7rem; color: #475569; font-family: var(--smat-font-mono); }
+
+.dossier-divider { height: 1px; background: var(--smat-border-light); margin: 1rem 0 0.85rem; }
+
+.dossier-sla-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border-left: 2px solid var(--smat-emergency-red);
+  border-top: 1px solid var(--smat-border-light);
+  border-right: 1px solid var(--smat-border-light);
+  border-bottom: 1px solid var(--smat-border-light);
+  padding: 0.4rem 0.6rem;
+  font-size: 0.72rem;
+  margin-bottom: 1rem;
+}
+
+.sla-badge { font-weight: 800; color: #991b1b; }
+.sla-clock { color: #334155; font-weight: 600; }
+
+.dossier-section { margin-bottom: 0.9rem; }
+.dossier-section-title {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #334155;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.2rem;
+  margin-bottom: 0.4rem;
+}
+
+/* Rejilla Micro-Tipográfica Semántica (Decisión 4-C / GOLD-171) */
+.spec-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem 1rem;
+  margin: 0;
+  padding: 0;
+}
+.spec-pair {
+  margin: 0;
+  padding: 0;
+}
+.spec-label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #334155;
+  margin-bottom: 0.15rem;
+}
+.spec-value {
+  display: block;
+  font-size: 0.82rem;
+  color: #0f172a;
+  margin: 0;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+.dossier-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.78rem; }
+.d-label { display: block; color: #334155; font-size: 0.68rem; }
+.d-val { display: block; color: #0f172a; font-size: 0.8rem; }
+
+.dossier-part-box {
+  background: transparent;
+  border: none;
+  border-left: 2px solid var(--smat-copper-accent);
+  padding: 0.5rem 0 0.5rem 0.75rem;
+  border-radius: 0;
+}
+
+.part-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem; flex-wrap: wrap; gap: 0.35rem; }
+.part-name { font-size: 0.85rem; color: #0f172a; }
+.part-fit-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: transparent;
+  color: #065f46;
+  border: 1px solid #10b981;
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--smat-radius-sm);
+}
+
+.part-details-text { font-size: 0.75rem; color: #334155; margin: 0; line-height: 1.35; }
+
+.live-custom-box {
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--smat-border-light);
+}
+
+.custom-badge-tag {
+  font-size: 0.62rem;
+  font-weight: 800;
+  background: transparent;
+  color: #92400e;
+  border: 1px solid rgba(194, 94, 0, 0.3);
+  padding: 0.1rem 0.3rem;
+  border-radius: var(--smat-radius-sm);
+}
+
+.custom-spec-text {
+  font-size: 0.72rem;
+  color: #334155;
+  margin: 0.2rem 0 0;
+}
+
+.dossier-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+.dossier-table td { padding: 0.35rem 0.5rem; border-bottom: 1px solid #e2e8f0; color: #334155; }
+.highlight-cell { color: #065f46; font-weight: 700; }
+
+.dossier-clause-box {
+  background: transparent;
+  border: none;
+  border-left: 2px solid var(--smat-border-medium);
+  padding: 0.5rem 0 0.5rem 0.75rem;
+  font-size: 0.72rem;
+  color: var(--smat-text-secondary);
+  line-height: 1.45;
+}
+
+/* Sello Metrológico Almacén Durango (Decisión 7-C / GOLD-173) */
+.durango-seal-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 3px solid var(--smat-copper-accent, #c25e00);
+  border-radius: var(--smat-radius-sm, 6px);
+  padding: 0.65rem 0.85rem;
+}
+.seal-badge-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+}
+.seal-icon {
+  font-weight: 800;
+  color: #065f46;
+  font-size: 0.85rem;
+}
+.seal-title {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #0f172a;
+}
+.seal-specs-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+}
+.seal-spec-item {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #075985;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+.seal-address-note {
+  font-size: 0.7rem;
+  color: #334155;
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* Justificación ERP Comprimida & Drawer (Decisión 5-C / GOLD-170) */
+.sap-justification-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.justification-executive-summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  background: #f8fafc;
+  border-left: 3px solid var(--smat-copper-accent, #c25e00);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--smat-radius-sm, 4px);
+}
+.justification-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--smat-copper-accent, #c25e00);
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+.justification-executive-summary p {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.4;
+}
+.erp-justification-drawer {
+  border: 1px solid #e2e8f0;
+  border-radius: var(--smat-radius-sm, 4px);
+  background: #ffffff;
+}
+.erp-justification-summary-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.erp-justification-summary-btn::-webkit-details-marker { display: none; }
+.btn-copy-justification {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #0f172a;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-copy-justification:hover {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+.erp-justification-drawer .sap-justification-box {
+  padding: 0.5rem 0.65rem;
+  border-top: 1px solid #e2e8f0;
+  font-size: 0.72rem;
+  color: #334155;
+  line-height: 1.4;
+}
+
+/* Micro-Interacción Tinta Viva Causa-Efecto (Decisión 9-C / GOLD-172) */
+@keyframes live-ink-glow {
+  0% {
+    background-color: rgba(194, 94, 0, 0.22);
+    color: #9a4a00;
+    border-radius: 2px;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+.live-ink-flash {
+  animation: live-ink-glow 350ms ease-out;
+}
+
+/* Export Grid */
+.dossier-export-section {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--smat-border-light);
+}
+
+.export-heading {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #334155;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.6rem;
+}
+
+/* Export Section — Polaridad Solar AAA (Decisión 4-C / 7-C+) */
+.export-btn-king {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.1rem;
+  background: var(--smat-copper-surface-aaa, #E56B38);
+  color: var(--smat-on-copper-aaa, #090D16);
+  border: 1px solid #b45309;
+  border-radius: var(--smat-radius-md);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(194, 94, 0, 0.2);
+  margin-bottom: 0.65rem;
+}
+
+.export-btn-king:hover {
+  background: #f97316;
+  border-color: #9a4a00;
+  box-shadow: 0 4px 12px rgba(194, 94, 0, 0.3);
+}
+
+.king-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  color: var(--smat-on-copper-aaa, #090D16);
+}
+
+.king-text strong {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--smat-on-copper-aaa, #090D16);
+  font-weight: 800;
+}
+
+.king-text small {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--smat-on-copper-aaa, #090D16);
+  font-weight: 600;
+  margin-top: 0.1rem;
+}
+
+/* Botón Rey Dominante WhatsApp Técnico — Polaridad Solar AAA >= 7.0:1 (Decisión 8-B / 7-C+) */
+.export-btn-whatsapp {
+  background: var(--smat-whatsapp-surface-aaa, #25D366) !important;
+  border: 1px solid #15803d !important;
+  color: var(--smat-on-whatsapp-aaa, #090D16) !important;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.28) !important;
+}
+
+.export-btn-whatsapp .king-icon,
+.export-btn-whatsapp .king-text strong,
+.export-btn-whatsapp .king-text small {
+  color: var(--smat-on-whatsapp-aaa, #090D16) !important;
+}
+
+.export-btn-whatsapp:hover {
+  background: #4ade80 !important;
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.38) !important;
+  transform: translateY(-1px);
+}
+
+.secondary-export-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+}
+
+@media (max-width: 640px) {
+  .secondary-export-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.btn-pill-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 44px;
+  padding: 0.5rem 0.6rem;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--smat-radius-sm);
+  color: var(--smat-text-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s var(--apple-spring-snappy, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.btn-pill-action:hover {
+  background: #ffffff;
+  border-color: var(--smat-copper-accent);
+  color: #9a4a00;
+}
+
+/* Ingesta Confidencial (Decisión 6-A) */
+.confidential-hint {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.72rem;
+  color: var(--smat-text-secondary);
+  line-height: 1.35;
+}
+
+/* Semáforo de Transporte Hidráulico Durand (Decisión 5-A) */
+.flow-regime-bar-wrap {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--smat-border-light);
+}
+
+.regime-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--smat-text-secondary);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+}
+
+.regime-status-bar {
+  background: #f8fafc;
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--smat-radius-sm);
+  padding: 0.55rem 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.regime-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--smat-radius-sm);
+}
+
+.regime-pill.safe {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #10b981;
+}
+
+.regime-pill.warning {
+  background: #fffbeb;
+  color: #92400e;
+  border: 1px solid #f59e0b;
+}
+
+.regime-pill.danger {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #ef4444;
+}
+
+.regime-detail {
+  font-size: 0.72rem;
+  color: var(--smat-text-secondary);
+}
+
+/* Módulo Continuo TCO Costo de Paro (Decisión 3-C) */
+.tco-integrated-card {
+  margin-top: 1rem;
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--smat-radius-sm);
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.tco-integrated-header {
+  padding: 0.75rem 0.85rem;
+  border-bottom: 1px solid var(--smat-border-light);
+  background: #fafaf9;
+  border-radius: var(--smat-radius-sm) var(--smat-radius-sm) 0 0;
+}
+
+.tco-integrated-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #9a4a00;
+  margin-bottom: 0.25rem;
+}
+
+.tco-integrated-title {
+  font-family: var(--smat-font-ui);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--smat-text-primary);
+  margin: 0;
+}
+
+/* Pastilla Discreta de Reorden / Decodificador (Decisión 4-C) */
+.smat-decoder-details {
+  margin-top: 0.75rem;
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--smat-radius-sm);
+  background: #fbfbfc;
+  transition: all 0.2s ease;
+}
+
+.smat-decoder-details[open] {
+  border-color: var(--smat-copper-accent);
+  background: #ffffff;
+}
+
+.smat-decoder-summary {
+  padding: 0.55rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--smat-text-secondary);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.smat-decoder-summary::-webkit-details-marker { display: none; }
+
+.smat-decoder-summary:hover {
+  color: var(--smat-text-primary);
+}
+
+.smat-decoder-details[open] .decoder-arrow {
+  transform: rotate(180deg);
+}
+
+.dossier-subdivider {
+  display: none;
+  position: relative;
+  border-top: 1px solid var(--smat-border-light);
+  margin: 1.25rem 0 0.5rem 0;
+  text-align: center;
+}
+
+.subdivider-tag {
+  position: relative;
+  top: -0.65rem;
+  background: #ffffff;
+  padding: 0 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--smat-text-secondary);
+  letter-spacing: 0.05em;
+}
+
+.dossier-focus-highlight {
+  outline: 2px solid rgba(194, 94, 0, 0.35);
+  outline-offset: 4px;
+  border-radius: var(--smat-radius-sm);
+  transition: outline 0.3s ease;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm 15mm;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .dossier-tab-switcher, .dossier-export-section, .workbench-form-panel {
+    display: none !important;
+  }
+  .workbench-preview-panel, .dossier-card {
+    width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+  .dossier-pane {
+    display: block !important;
+  }
+  .dossier-subdivider {
+    display: block !important;
+  }
+  .erp-justification-drawer {
+    border: none !important;
+  }
+  .erp-justification-drawer .sap-justification-box {
+    display: block !important;
+    padding: 0 !important;
+  }
+}
+
+.tco-body {
+  padding: 0.75rem 0.85rem;
+  border-top: 1px solid var(--smat-border-light);
+  background: #ffffff;
+  border-radius: 0 0 var(--smat-radius-sm) var(--smat-radius-sm);
+}
+
+.tco-output-box {
+  background: transparent;
+  border: none;
+  border-left: 2px solid var(--smat-copper-accent);
+  padding: 0.5rem 0.75rem;
+}
+
+.tco-metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--smat-text-primary);
+}
+
+.tco-metric-val {
+  font-family: var(--smat-font-mono);
+  color: #9a4a00;
+  font-size: 1rem;
+}
+
+.tco-note {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.7rem;
+  color: var(--smat-text-secondary);
+  line-height: 1.35;
+}
+
+.smat-part-code-tag {
+  display: block;
+  font-family: var(--smat-font-mono);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #075985;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--smat-radius-sm);
+  margin-top: 0.2rem;
+}
+
+.live-client-ref-box {
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--smat-border-light);
+  font-size: 0.72rem;
+  color: #075985;
+}
+
+.ref-label {
+  font-weight: 700;
+  margin-right: 0.35rem;
+}
+
+/* SAP Table & Vendor Box (Decisión 8-A) */
+.sap-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--smat-radius-sm);
+}
+
+.sap-item-table th {
+  background: #f1f5f9;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.4rem 0.5rem;
+  color: var(--smat-text-primary);
+}
+
+.sap-code-badge {
+  display: block;
+  font-family: var(--smat-font-mono);
+  font-size: 0.68rem;
+  color: #075985;
+  font-weight: 700;
+  margin-top: 0.15rem;
+}
+
+.sap-vendor-box {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0.25rem 0;
+  font-size: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sap-vendor-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.sap-vendor-row span:first-child {
+  color: var(--smat-text-secondary);
+}
+
+.btn-pill-tsv:hover {
+  border-color: #0284c7;
+  color: #075985;
+}
+
+.pill-icon {
+  font-size: 0.88rem;
+}
+
+.wb-toast {
+  margin-top: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  background: #065f46;
+  color: #ffffff;
+  border-radius: var(--smat-radius-sm);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.privacy-pledge-footer {
+  margin-top: 0.65rem;
+  text-align: center;
+  color: var(--smat-text-secondary);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+/* SMAT Decoder Bar (Decisión 6-A) */
+.smat-decoder-bar {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: var(--smat-radius-sm);
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.decoder-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #075985;
+  margin-bottom: 0.35rem;
+}
+.decoder-input-group {
+  display: flex;
+  gap: 0.4rem;
+}
+.decoder-input {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  font-family: var(--smat-font-mono);
+  font-size: 0.78rem;
+  border: 1px solid #7dd3fc;
+  border-radius: var(--smat-radius-sm);
+  background: #ffffff;
+  color: #0f172a;
+}
+.decoder-input:focus {
+  outline: none;
+  border-color: #0284c7;
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
+}
+.btn-decoder-load {
+  padding: 0.4rem 0.75rem;
+  background: #075985;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--smat-radius-sm);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.btn-decoder-load:hover {
+  background: #0c4a6e;
+}
+.decoder-status {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-top: 0.3rem;
+}
+.decoder-status.success { color: #065f46; }
+.decoder-status.error { color: #991b1b; }
+
+/* Altitude Selector (Decisión 5-A) */
+.altitude-chips-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+.alt-chip,
+.altitude-chip {
+  background: #f8fafc;
+  border: 1px solid var(--smat-border-medium);
+  border-radius: var(--smat-radius-sm);
+  padding: 0.45rem 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  transition: all 0.15s;
+  text-align: left;
+  color: var(--smat-text-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.alt-chip:hover,
+.altitude-chip:hover {
+  border-color: var(--smat-copper-accent);
+  background: #fff7ed;
+}
+.alt-chip.active,
+.altitude-chip.active {
+  background: #fff7ed;
+  border-color: var(--smat-copper-accent);
+  box-shadow: 0 0 0 1px var(--smat-copper-accent);
+}
+
+/* Micro-Alerta Fiduciaria de Recirculación (Decisión 1-C) */
+.recirculation-alert-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 3px solid #d97706;
+  border-radius: var(--smat-radius-sm);
+  padding: 0.5rem 0.65rem;
+  margin-top: 0.4rem;
+}
+.recirc-icon { font-size: 0.95rem; line-height: 1.2; }
+.recirc-text {
+  font-size: 0.72rem;
+  color: #92400e;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Píldoras Táctiles de Síntoma Clínico de Destrucción — Contraste Solar AAA (Decisión 3-C / 7-C+) */
+.stress-chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+.stress-chip, .flot-chip, .filt-chip {
+  background: #ffffff;
+  border: 1px solid #94a3b8;
+  border-radius: var(--smat-radius-sm, 4px);
+  padding: 0.45rem 0.65rem;
+  min-height: 40px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--smat-text-secondary, #334155);
+  font-family: var(--smat-font-mono, monospace);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  user-select: none;
+}
+.stress-chip:hover, .flot-chip:hover, .filt-chip:hover {
+  background: #f1f5f9;
+  border-color: #475569;
+  color: #0f172a;
+}
+.stress-chip.active, .flot-chip.active, .filt-chip.active {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.2);
+}
+
+/* Ghost State con Contraste Solar AAA >= 7.0:1 (Sin opacidad 0.45 degradada) */
+.chip-ghost,
+.stress-chip[data-confirmed="false"],
+.flot-chip[data-confirmed="false"],
+.filt-chip[data-confirmed="false"] {
+  border: 1px dashed #64748b !important;
+  background: #ffffff !important;
+  color: var(--smat-text-secondary, #334155) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stress-chip[data-confirmed="true"],
+.flot-chip[data-confirmed="true"],
+.filt-chip[data-confirmed="true"] {
+  border: 1px solid #0f172a !important;
+  background: #0f172a !important;
+  color: #ffffff !important;
+}
+
+/* Selector de Circuito de Planta (Decisión 8-C: Arquitectura Multi-Equipo) */
+.circuit-selector-group {
+  margin-top: 1rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--smat-border-light, #e2e8f0);
+}
+.circuit-selector-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #1e293b;
+  display: block;
+  margin-bottom: 0.45rem;
+}
+.circuit-pills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.4rem;
+}
+@media (max-width: 640px) {
+  .circuit-pills-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.circuit-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 42px;
+  padding: 0.55rem 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  border-radius: var(--smat-radius-sm, 4px);
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  font-family: var(--smat-font-mono, monospace);
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  text-transform: uppercase;
+  user-select: none;
+}
+.circuit-pill:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+.circuit-pill.active {
+  background: var(--smat-navy-deep, #051B2E);
+  color: #ffffff;
+  border-color: var(--smat-blue-royal, #0D78C6);
+  box-shadow: 0 1px 4px rgba(5, 27, 46, 0.25), inset 0 0 0 1px var(--smat-blue-royal, #0D78C6);
+}
+.circuit-context-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.65rem;
+  background: var(--smat-blue-vortex-bg, #F0F9FF);
+  border-left: 3px solid var(--smat-blue-royal, #0D78C6);
+  border-radius: 2px;
+  font-size: 0.72rem;
+  color: var(--smat-navy-deep, #051B2E);
+  margin-bottom: 0.85rem;
+}
+.circuit-context-banner .context-tag {
+  font-weight: 800;
+  color: #075985;
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+.flot-chips-grid, .filt-chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+
+/* Contenedor Guiado para Pieza Desgastada (Decisión 6-C / GOLD-188) */
+.worn-piece-details {
+  background: #f8fafc;
+  border: 1px solid var(--smat-border-light, #cbd5e1);
+  border-radius: var(--smat-radius-sm);
+  padding: 0.5rem 0.75rem;
+  transition: border-color 0.15s;
+}
+.worn-piece-details[open] {
+  border-style: solid;
+  border-color: #94a3b8;
+  background: #ffffff;
+}
+.worn-piece-summary {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #334155;
+  user-select: none;
+}
+.worn-piece-summary:hover {
+  color: var(--smat-copper-accent, #c25e00);
+}
+.worn-arrow {
+  font-size: 0.7rem;
+  color: #334155;
+  transition: transform 0.2s;
+}
+.worn-piece-details[open] .worn-arrow {
+  transform: rotate(180deg);
+}
+.worn-piece-body {
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid #f1f5f9;
+}
+.worn-hint-text {
+  font-size: 0.7rem;
+  color: #334155;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+
+/* Micro-Anclaje Fiduciario TCO vs Paro de Planta (Decisión 5-C / GOLD-187) */
+.tco-downtime-anchor-card {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-left: 3px solid #ea580c;
+  border-radius: var(--smat-radius-sm, 4px);
+  padding: 0.6rem 0.8rem;
+  margin-top: 0.75rem;
+}
+.tco-anchor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+.anchor-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #9a3412;
+  letter-spacing: 0.05em;
+}
+.anchor-stat {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #9a3412;
+}
+.anchor-desc {
+  font-size: 0.7rem;
+  color: #7c2d12;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.live-pipe-meta-box {
+  margin-top: 0.4rem;
+  padding: 0.4rem 0.55rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--smat-radius-sm);
+}
+.live-recirc-warning-dossier {
+  margin-top: 0.35rem;
+  padding: 0.35rem 0.5rem;
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  border-radius: var(--smat-radius-sm);
+}
+.recirc-warn-tag {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #92400e;
+  font-family: var(--smat-font-mono);
+}
+.recirc-warn-text {
+  font-size: 0.68rem;
+  color: #92400e;
+  margin: 0.15rem 0 0;
+}
+
+/* TCO Alloy Wear Comparison (Decisión 3-A) */
+.tco-alloy-row {
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--smat-border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.tco-alloy-toggle-wrap {
+  display: flex;
+  gap: 0.4rem;
+}
+.tco-alloy-btn {
+  flex: 1;
+  padding: 0.35rem 0.5rem;
+  background: #f8fafc;
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--smat-radius-sm);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tco-alloy-btn:hover {
+  border-color: var(--smat-copper-accent);
+}
+.tco-alloy-btn.active {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+.tco-savings-note {
+  font-size: 0.72rem;
+  color: #065f46;
+  background: #ecfdf5;
+  border: 1px solid #10b981;
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--smat-radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Sticky Mini-Dossier Bar (Decisión 2-C) */
+.mini-dossier-bar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #090d16;
+  color: #ffffff;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid #334155;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
+  z-index: 990;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (max-width: 1024px) {
+  .mini-dossier-bar {
+    display: flex;
+  }
+}
+
+.assist-pills-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.5rem 0 0.75rem;
+  padding: 0.45rem 0.6rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+
+.assist-pills-label {
+  font-size: 0.66rem;
+  font-weight: 800;
+  color: #334155;
+  margin-right: 0.25rem;
+}
+
+.assist-pill-btn {
+  padding: 0.35rem 0.65rem;
+  min-height: 40px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: var(--smat-font-mono, monospace);
+  color: #1e293b;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.assist-pill-btn:hover {
+  border-color: var(--smat-copper-accent, #c25e00);
+  color: #9a4a00;
+}
+
+.assist-pill-btn.active {
+  background: var(--smat-navy-deep, #051B2E);
+  color: #ffffff;
+  border-color: var(--smat-blue-royal, #0D78C6);
+}
+
+.sim-quick-summary-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.55rem;
+  padding: 0.45rem 0.65rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+
+.quick-metric-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  padding: 0.15rem 0.45rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  color: #0f172a;
+}
+
+.quick-metric-chip small {
+  color: #334155;
+  font-weight: 700;
+}
+
+.quick-metric-highlight {
+  background: #fff7ed;
+  border-color: #fed7aa;
+  color: #9a3412;
+}
+
+.sim-rationale-banner {
+  margin-top: 0.6rem;
+  padding: 0.55rem 0.75rem;
+  background: #f8fafc;
+  border-left: 3px solid var(--smat-copper-accent, #c25e00);
+  border-radius: 4px;
+  font-size: 0.76rem;
+  color: #1e293b;
+  line-height: 1.4;
+}
+
+.mini-folio {
+  font-family: var(--smat-font-mono);
+  font-weight: 700;
+  color: #fb923c;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+
+.mini-alloy-badge {
+  font-size: 0.7rem;
+  background: #065f46;
+  color: #ecfdf5;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--smat-radius-sm);
+}
+
+.btn-open-drawer {
+  padding: 0.5rem 0.85rem;
+  background: var(--smat-copper-surface-aaa, #E56B38);
+  color: var(--smat-on-copper-aaa, #090D16);
+  border: none;
+  border-radius: var(--smat-radius-sm);
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* Bottom Sheet Modal (Decisión 2-C) */
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.drawer-sheet {
+  background: #ffffff;
+  width: 100%;
+  max-width: 680px;
+  max-height: 85vh;
+  border-radius: 16px 16px 0 0;
+  overflow-y: auto;
+  padding: 1.25rem;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.drawer-handle-bar {
+  display: flex;
+  justify-content: center;
+  padding: 0.25rem 0 0.75rem;
+}
+
+.drawer-handle-pill {
+  width: 48px;
+  height: 4px;
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+
+/* Offline Network Pill (Decisión 7-C) */
+.offline-network-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #090d16;
+  color: #fbbf24;
+  border: 1px solid #d97706;
+  border-radius: var(--smat-radius-sm, 4px);
+  padding: 0.4rem 0.75rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  font-family: var(--smat-font-mono, monospace);
+}
+
+.offline-dot {
+  width: 7px;
+  height: 7px;
+  background: #f59e0b;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+/* Botón Cotejo Dimensional (Decisión 6-C) */
+.btn-pill-cotejo {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.btn-pill-cotejo:hover {
+  background: #f1f5f9;
+  border-color: var(--smat-copper-accent, #c25e00);
+  color: #9a4a00;
+}
+
+/* Modal Ficha Cotejo Dimensional ANSI 1:1 */
+.cotejo-modal-card {
+  background: #ffffff;
+  border-radius: var(--smat-radius-md, 8px);
+  max-width: 640px;
+  width: 90%;
+  padding: 1.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.cotejo-modal-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--smat-text-primary);
+  margin: 0.35rem 0 0.2rem;
+}
+
+.iso-title-block {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--smat-radius-sm);
+  padding: 0.6rem 0.8rem;
+  margin: 1rem 0;
+  font-size: 0.75rem;
+  font-family: var(--smat-font-mono, monospace);
+}
+
+.iso-cell {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.cotejo-drawing-wrap {
+  border: 1px solid #cbd5e1;
+  border-radius: var(--smat-radius-sm);
+  background: #ffffff;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.cotejo-specs-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  margin-bottom: 1.25rem;
+}
+
+.cotejo-spec-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.cotejo-spec-row span {
+  color: #334155;
+}
+
+.cotejo-spec-row strong {
+  color: #0f172a;
+  text-align: right;
+}
+
+.cotejo-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1rem;
+}
+
+.mech-diagnostics-inline-box {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: var(--smat-bg-subtle, #f8fafc);
+  border: 1px solid var(--smat-border-medium, #cbd5e1);
+  border-radius: 6px;
+}
+
+.mech-diag-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+.mech-diag-mini-item {
+  background: var(--smat-bg-surface, #ffffff);
+  border: 1px solid var(--smat-border-light, #e2e8f0);
+  border-radius: 5px;
+  padding: 7px 9px;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.unit-pulp-profile-badge {
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: rgba(217, 119, 6, 0.08);
+  border-left: 3px solid #d97706;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  color: var(--smat-text-primary, #1e293b);
+  font-weight: 600;
+}
+
+.role-criteria-inline-bar {
+  margin: 0.75rem 0 1rem;
+  padding: 0.65rem 0.85rem;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 3px solid #d97706;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: #1e293b;
+}
+
+.criteria-inline-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: baseline;
+}
+
+.criteria-inline-tag {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #9a3412;
+}
+
+.criteria-tag-risk {
+  color: #065f46;
+}
+
+.atomic-part-spec-card {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-left: 3px solid #082f49;
+  border-radius: 6px;
+  font-size: 0.78rem;
+}
+
+.atomic-part-spec-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.atomic-part-spec-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #082f49;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  padding: 0.12rem 0.45rem;
+  border-radius: 4px;
+}
+
+.atomic-part-niosh-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #78350f;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  padding: 0.12rem 0.45rem;
+  border-radius: 4px;
+}
+
+.atomic-part-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.4rem;
+  color: #1e293b;
+}
+
+.metrology-bridge-card {
+  margin: 0.75rem 0;
+  padding: 0.75rem 0.9rem;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-left: 3px solid #082f49;
+  border-radius: 6px;
+}
+
+.metrology-bridge-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.metrology-bridge-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #082f49;
+}
+
+.metrology-apply-btn {
+  background: #082f49;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.metrology-bridge-text {
+  margin: 0;
+  font-family: var(--smat-font-mono, monospace);
+  font-size: 0.76rem;
+  color: #082f49;
+  font-weight: 700;
+}
+
+.clearance-kinematics-inline-card {
+  margin-top: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+
+.clearance-kinematics-meta {
+  margin-top: 0.35rem;
+  font-size: 0.76rem;
+  color: #334155;
+  font-weight: 600;
+}
+
+.rubber-u2-lock-banner {
+  margin-top: 0.6rem;
+  padding: 0.65rem 0.8rem;
+  background: #fef2f2;
+  border: 1.5px solid #dc2626;
+  border-radius: 6px;
+  color: #7f1d1d;
+  font-size: 0.76rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.switch-cr27-btn {
+  align-self: flex-start;
+  background: #7f1d1d;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.wb-step1-more-drawer {
+  margin-top: 0.85rem;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 0.65rem 0.85rem;
+}
+
+.wb-step1-more-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #0f172a;
+  list-style: none;
+}
+
+.wb-step1-more-summary::-webkit-details-marker {
+  display: none;
+}
+
+.wb-step1-more-arrow {
+  font-family: var(--smat-font-mono);
+  color: #9a4a00;
+  font-weight: 800;
+}
+
+.hidden { display: none !important; }

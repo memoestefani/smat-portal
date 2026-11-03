@@ -47,8 +47,8 @@ export const SLURRY_PRESETS = {
   },
   emergency_6x4: {
     id: 'emergency_6x4',
-    nameEs: 'Refacción Urgente Bomba 6x4',
-    nameEn: '6x4 Emergency Spares',
+    nameEs: 'Pieza Crítica por Paro Bomba 6x4',
+    nameEn: '6x4 Critical Outage Spares',
     flowM3H: 350,
     solidsWeightPercent: 32,
     particleSizeD80Microns: 300,
@@ -77,7 +77,7 @@ export const MECHANICAL_DIAGNOSTICS = {
   },
   liner_grooving: {
     id: 'liner_grooving',
-    symptomEs: 'Desgaste abrasivo acelerado y surcos en garganta o voluta',
+    symptomEs: 'Desgaste abrasivo acelerado y surcos en cuello de succión o voluta',
     symptomEn: 'Accelerated abrasive wear and localized grooving on throatbush / volute',
     causeEs: 'Recirculación abrasiva de sólidos gruesos de molienda (>300 µm).',
     causeEn: 'Abrasive recirculation of coarse grinding particles (>300 µm).',
@@ -158,21 +158,68 @@ export function calculateAltitudeCorrection(altitudeM = 0) {
 /**
  * Calcula métricas completas de pulpa usando Durand-Condolios y matriz metalúrgica
  */
+export const PIPE_SERIES_DIAMETER_MM = {
+  '1.5x1': 50,
+  '2x1.5': 50,
+  '3x2': 100,
+  '4x3': 100,
+  '6x4': 150,
+  '8x6': 200,
+  '10x8': 250,
+  '12x10': 300,
+  '14x12': 350
+};
+export const PIPE_DIAMETERS_MM = PIPE_SERIES_DIAMETER_MM;
+
+/**
+ * Resuelve el diámetro interno nominal de tubería (mm) a partir de la clave de serie de bomba
+ * ('1.5x1', '3x2', '4x3', '6x4', '8x6', '10x8') o un valor numérico directo en milímetros.
+ * @param {string|number} [pipeSeriesOrMm='6x4']
+ * @returns {number} Diámetro interno en milímetros (50 a 600 mm)
+ */
+export function resolvePipeDiameterMm(pipeSeriesOrMm = '6x4') {
+  if (typeof pipeSeriesOrMm === 'number' && !Number.isNaN(pipeSeriesOrMm)) {
+    return Math.max(50, Math.min(600, pipeSeriesOrMm));
+  }
+  const raw = String(pipeSeriesOrMm || '6x4').trim().toLowerCase();
+  if (PIPE_SERIES_DIAMETER_MM[raw] !== undefined) {
+    return PIPE_SERIES_DIAMETER_MM[raw];
+  }
+  if (raw.includes('10x8')) return 250;
+  if (raw.includes('8x6')) return 200;
+  if (raw.includes('6x4')) return 150;
+  if (raw.includes('4x3') || raw.includes('3x2')) return 100;
+  if (raw.includes('1.5x1') || raw.includes('2x1.5')) return 50;
+  const parsed = Number(raw);
+  if (!Number.isNaN(parsed) && parsed > 0) {
+    return Math.max(50, Math.min(600, parsed));
+  }
+  return 150;
+}
+
 export function calculateSlurryMetrics({
   flowM3H = 150,
   solidsWeightPercent = 45,
   particleSizeD80Microns = 180,
   solidsSpecificGravity = 2.7,
-  pipeDiameterMm = 150,
-  altitudeM = 0
+  pipeDiameterMm,
+  pipeSeries = '6x4',
+  altitudeM = 0,
+  pH = 7.5,
+  stressSymptom = ''
 } = {}) {
   // 1. Sanitización y límites físicos mineros
   const Q = Math.max(10, Math.min(3000, Number(flowM3H) || 150));
   const Cw = Math.max(5, Math.min(75, Number(solidsWeightPercent) || 45));
   const d80 = Math.max(20, Math.min(2000, Number(particleSizeD80Microns) || 180));
   const Ss = Math.max(1.5, Math.min(5.5, Number(solidsSpecificGravity) || 2.7));
-  const D_mm = Math.max(50, Math.min(600, Number(pipeDiameterMm) || 150));
+  const resolvedD = pipeDiameterMm !== undefined && pipeDiameterMm !== null && pipeDiameterMm !== ''
+    ? resolvePipeDiameterMm(pipeDiameterMm)
+    : resolvePipeDiameterMm(pipeSeries);
+  const D_mm = Math.max(50, Math.min(600, Number(resolvedD) || 150));
   const D_m = D_mm / 1000;
+  const phVal = Math.max(1.0, Math.min(14.0, Number(pH) || 7.5));
+  const symptomKey = String(stressSymptom || '').trim().toLowerCase();
   const g = 9.81;
 
   // Corrección por altitud
@@ -212,38 +259,65 @@ export function calculateSlurryMetrics({
     flowConditionText = 'Exceso de velocidad en línea: desgaste acelerado por abrasión en codos y voluta.';
   }
 
-  // 8. Matriz Metalúrgica: High Chrome A05 (>650 HB) vs. Caucho Natural
+  // 8. Matriz Tri-Compuesto: High Chrome A05 (>650 HB) vs. Caucho Natural R55 vs. Poliuretano U01 (Shore A 85-95)
   let recommendedMaterial = 'A05';
+  let recommendedMaterialKey = 'alto_cromo_cr27';
+  let recommendedMaterialCode = 'A05';
   let materialNameEs = 'High Chrome 27% (A05) con Dureza >650 HB';
   let materialNameEn = 'High Chrome 27% (A05) Hardness >650 HB';
   let wearLifeRatio = 1.0;
   let rationaleEs = '';
   let rationaleEn = '';
 
-  if (d80 > 150) {
+  const isCoarseImpact = d80 >= 450 || (d80 >= 250 && Cw >= 50) || symptomKey === 'roca_dura';
+  const isFineLightRubber = ((d80 < 75 && Cw < 40) || (d80 <= 150 && Cw < 40 && actualPipeVelocity <= 2.6)) && symptomKey !== 'arena_fina' && symptomKey !== 'acido_quimica' && phVal >= 4.0;
+  const isPolyurethaneRegime = !isCoarseImpact && !isFineLightRubber && (
+    symptomKey === 'arena_fina' ||
+    symptomKey === 'acido_quimica' ||
+    phVal < 4.5 ||
+    (d80 >= 75 && d80 <= 450 && (actualPipeVelocity > 2.4 || Cw <= 48))
+  );
+
+  if (isCoarseImpact) {
     // Partículas gruesas / cortantes de molienda: A05 domina
     recommendedMaterial = 'A05';
+    recommendedMaterialKey = 'alto_cromo_cr27';
+    recommendedMaterialCode = 'A05';
     wearLifeRatio = (d80 > 300) ? 3.8 : 2.6;
     rationaleEs = `Para partículas gruesas de molienda (${Math.round(d80)} µm) con alta energía de impacto, la aleación High Chrome 27% (A05) con dureza >650 HB ofrece ${wearLifeRatio.toFixed(1)}× mayor vida útil contra desgaste severo.`;
     rationaleEn = `For coarse grinding particles (${Math.round(d80)} µm) with high impact energy, High Chrome 27% (A05) (>650 HB) delivers ${wearLifeRatio.toFixed(1)}× longer wear life by preventing matrix erosion.`;
-  } else if (d80 < 75 && Cw < 40) {
+  } else if (isFineLightRubber) {
     // Finos de flotación / jales ligeros: Caucho es ideal
     recommendedMaterial = 'RUBBER';
+    recommendedMaterialKey = 'hule_natural';
+    recommendedMaterialCode = 'R55';
     materialNameEs = 'Caucho Natural Vulcanizado de Alta Resiliencia';
     materialNameEn = 'High-Resilience Natural Vulcanized Rubber';
     wearLifeRatio = 2.4;
     rationaleEs = `Para finos de flotación (${Math.round(d80)} µm), el Caucho Natural Vulcanizado absorbe el micro-impacto por rebote elástico, superando a las aleaciones duras en pulpas con reactivos.`;
     rationaleEn = `For fine flotation tails (${Math.round(d80)} µm), natural vulcanized rubber absorbs micro-impacts via elastic rebound, outlasting hard alloys in reagent slurries.`;
+  } else if (isPolyurethaneRegime) {
+    // Régimen de corte fino/intermedio a velocidad o ataque químico/ácido: Poliuretano U01 domina
+    recommendedMaterial = 'PU';
+    recommendedMaterialKey = 'poliuretano';
+    recommendedMaterialCode = 'U01';
+    materialNameEs = 'Poliuretano Elastómero Grado Minero (U01, Shore A 85–95)';
+    materialNameEn = 'Mining-Grade Cast Polyurethane Elastomer (U01, Shore A 85–95)';
+    wearLifeRatio = 2.1;
+    rationaleEs = `Para pulpa de corte intermedio (${Math.round(d80)} µm, V = ${actualPipeVelocity.toFixed(2)} m/s, pH ${phVal.toFixed(1)}), el Poliuretano U01 (Shore A 85–95) ofrece ${wearLifeRatio.toFixed(1)}× mayor resistencia al corte direccional, hidrociclones y ataque químico que el hule convencional.`;
+    rationaleEn = `For intermediate cutting slurry (${Math.round(d80)} µm, V = ${actualPipeVelocity.toFixed(2)} m/s, pH ${phVal.toFixed(1)}), Cast Polyurethane U01 (Shore A 85–95) delivers ${wearLifeRatio.toFixed(1)}× higher resistance to directional cutting, hydrocyclone feed, and chemical attack.`;
   } else {
-    // Rango intermedio (75 a 150 µm)
+    // Rango intermedio denso de alta presión (75 a 150 µm, Cw >= 42%): High Chrome A05
     recommendedMaterial = 'A05';
+    recommendedMaterialKey = 'alto_cromo_cr27';
+    recommendedMaterialCode = 'A05';
     wearLifeRatio = 1.5;
-    rationaleEs = `En rango intermedio (${Math.round(d80)} µm), High Chrome A05 (>650 HB) provee máxima estabilidad dimensional y resistencia contra recirculación bajo presiones severas.`;
-    rationaleEn = `In the intermediate range (${Math.round(d80)} µm), High Chrome A05 (>650 HB) provides superior dimensional stability and slip resistance under high discharge heads.`;
+    rationaleEs = `En rango intermedio denso (${Math.round(d80)} µm, ${Cw}% Cw), High Chrome A05 (>650 HB) provee máxima estabilidad dimensional y resistencia contra recirculación bajo presiones severas.`;
+    rationaleEn = `In the dense intermediate range (${Math.round(d80)} µm, ${Cw}% Cw), High Chrome A05 (>650 HB) provides superior dimensional stability and slip resistance under high discharge heads.`;
   }
 
   // 9. Estimación de Horas Operativas de Vida de Impulsor (Baseline Durango 1,200 t/d)
-  const baseHours = recommendedMaterial === 'A05' ? 2400 : 2800;
+  const baseHours = recommendedMaterial === 'A05' ? 2400 : (recommendedMaterial === 'PU' ? 2600 : 2800);
   const severityFactor = (Cw / 45) * Math.pow(d80 / 180, 0.35) * (actualPipeVelocity / 3.0);
   const estimatedImpellerLifeHours = Math.round(baseHours / Math.max(0.5, Math.min(2.5, severityFactor)));
 
@@ -252,20 +326,51 @@ export function calculateSlurryMetrics({
   const headDeratingFactorHr = Math.max(0.65, Math.min(0.99, 1.0 - headLossK));
   const effDeratingFactorEr = Math.max(0.60, Math.min(0.98, headDeratingFactorHr - 0.02 * (Cv / 20)));
 
+  const roundedSm = Number(Sm.toFixed(3));
+  const roundedVc = Number(Vc.toFixed(2));
+  const roundedVact = Number(actualPipeVelocity.toFixed(2));
+
   return {
-    inputs: { flowM3H: Q, solidsWeightPercent: Cw, particleSizeD80Microns: d80, solidsSpecificGravity: Ss, pipeDiameterMm: D_mm, altitudeM: altitudeData.altitudeM },
+    solidsSpecificGravity: Ss,
+    pipeDiameterMm: D_mm,
+    slurrySpecificGravity: roundedSm,
+    criticalVelocityMS: roundedVc,
+    criticalVelocityMs: roundedVc,
+    actualVelocityMS: roundedVact,
+    actualPipeVelocityMs: roundedVact,
+    durandFactorFL: Number(FL.toFixed(2)),
+    solidsVolumetricPercent: Number(Cv.toFixed(1)),
+    recommendedPipeVelocityMs: Number(recommendedPipeVelocity.toFixed(2)),
+    recommendedMaterial,
+    recommendedMaterialKey,
+    recommendedMaterialCode,
+    materialReasonEs: rationaleEs,
+    materialReasonEn: rationaleEn,
+    inputs: {
+      flowM3H: Q,
+      solidsWeightPercent: Cw,
+      particleSizeD80Microns: d80,
+      solidsSpecificGravity: Ss,
+      pipeDiameterMm: D_mm,
+      pipeSeries: String(pipeSeries || '6x4'),
+      altitudeM: altitudeData.altitudeM,
+      pH: phVal,
+      stressSymptom: symptomKey
+    },
     results: {
-      slurrySpecificGravity: Number(Sm.toFixed(3)),
+      slurrySpecificGravity: roundedSm,
       solidsVolumetricPercent: Number(Cv.toFixed(1)),
       durandFactorFL: Number(FL.toFixed(2)),
-      criticalSettlingVelocityMs: Number(Vc.toFixed(2)),
+      criticalSettlingVelocityMs: roundedVc,
       recommendedPipeVelocityMs: Number(recommendedPipeVelocity.toFixed(2)),
-      actualPipeVelocityMs: Number(actualPipeVelocity.toFixed(2)),
+      actualPipeVelocityMs: roundedVact,
       headDeratingFactorHr: Number(headDeratingFactorHr.toFixed(3)),
       effDeratingFactorEr: Number(effDeratingFactorEr.toFixed(3)),
       flowCondition,
       flowConditionText,
       recommendedMaterial,
+      recommendedMaterialKey,
+      recommendedMaterialCode,
       materialNameEs,
       materialNameEn,
       wearLifeRatio: Number(wearLifeRatio.toFixed(1)),
@@ -292,25 +397,25 @@ export const MARCY_STANDARD_RINGS = [2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8
  * Serie Maestra de Tamices Certificados ASTM E11 / ISO 3310-1 (Progresión 4√2 desde Malla #4 hasta #635 / 20 µm)
  */
 export const ASTM_E11_SIEVE_TABLE = [
-  { mesh: '#4', apertureMicrons: 4750, apertureMm: 4.75 },
-  { mesh: '#6', apertureMicrons: 3350, apertureMm: 3.35 },
-  { mesh: '#8', apertureMicrons: 2360, apertureMm: 2.36 },
-  { mesh: '#10', apertureMicrons: 2000, apertureMm: 2.00 },
-  { mesh: '#12', apertureMicrons: 1700, apertureMm: 1.70 },
-  { mesh: '#16', apertureMicrons: 1180, apertureMm: 1.18 },
-  { mesh: '#20', apertureMicrons: 850, apertureMm: 0.85 },
-  { mesh: '#30', apertureMicrons: 600, apertureMm: 0.60 },
-  { mesh: '#40', apertureMicrons: 425, apertureMm: 0.425 },
-  { mesh: '#50', apertureMicrons: 300, apertureMm: 0.30 },
-  { mesh: '#70', apertureMicrons: 212, apertureMm: 0.212 },
-  { mesh: '#100', apertureMicrons: 150, apertureMm: 0.150 },
-  { mesh: '#140', apertureMicrons: 106, apertureMm: 0.106 },
-  { mesh: '#200', apertureMicrons: 75, apertureMm: 0.075 },
-  { mesh: '#270', apertureMicrons: 53, apertureMm: 0.053 },
-  { mesh: '#325', apertureMicrons: 45, apertureMm: 0.045 },
-  { mesh: '#400', apertureMicrons: 38, apertureMm: 0.038 },
-  { mesh: '#500', apertureMicrons: 25, apertureMm: 0.025 },
-  { mesh: '#635', apertureMicrons: 20, apertureMm: 0.020 }
+  { mesh: '#4', tylerEquivalent: '4 Mesh', apertureMicrons: 4750, apertureMm: 4.75, wireDiameterMm: 1.60 },
+  { mesh: '#6', tylerEquivalent: '6 Mesh', apertureMicrons: 3350, apertureMm: 3.35, wireDiameterMm: 1.25 },
+  { mesh: '#8', tylerEquivalent: '8 Mesh', apertureMicrons: 2360, apertureMm: 2.36, wireDiameterMm: 1.00 },
+  { mesh: '#10', tylerEquivalent: '9 Mesh', apertureMicrons: 2000, apertureMm: 2.00, wireDiameterMm: 0.90 },
+  { mesh: '#12', tylerEquivalent: '10 Mesh', apertureMicrons: 1700, apertureMm: 1.70, wireDiameterMm: 0.80 },
+  { mesh: '#16', tylerEquivalent: '14 Mesh', apertureMicrons: 1180, apertureMm: 1.18, wireDiameterMm: 0.63 },
+  { mesh: '#20', tylerEquivalent: '20 Mesh', apertureMicrons: 850, apertureMm: 0.85, wireDiameterMm: 0.50 },
+  { mesh: '#30', tylerEquivalent: '28 Mesh', apertureMicrons: 600, apertureMm: 0.60, wireDiameterMm: 0.40 },
+  { mesh: '#40', tylerEquivalent: '35 Mesh', apertureMicrons: 425, apertureMm: 0.425, wireDiameterMm: 0.28 },
+  { mesh: '#50', tylerEquivalent: '48 Mesh', apertureMicrons: 300, apertureMm: 0.30, wireDiameterMm: 0.20 },
+  { mesh: '#70', tylerEquivalent: '65 Mesh', apertureMicrons: 212, apertureMm: 0.212, wireDiameterMm: 0.14 },
+  { mesh: '#100', tylerEquivalent: '100 Mesh', apertureMicrons: 150, apertureMm: 0.150, wireDiameterMm: 0.10 },
+  { mesh: '#140', tylerEquivalent: '150 Mesh', apertureMicrons: 106, apertureMm: 0.106, wireDiameterMm: 0.071 },
+  { mesh: '#200', tylerEquivalent: '200 Mesh', apertureMicrons: 75, apertureMm: 0.075, wireDiameterMm: 0.050 },
+  { mesh: '#270', tylerEquivalent: '270 Mesh', apertureMicrons: 53, apertureMm: 0.053, wireDiameterMm: 0.036 },
+  { mesh: '#325', tylerEquivalent: '325 Mesh', apertureMicrons: 45, apertureMm: 0.045, wireDiameterMm: 0.032 },
+  { mesh: '#400', tylerEquivalent: '400 Mesh', apertureMicrons: 38, apertureMm: 0.038, wireDiameterMm: 0.025 },
+  { mesh: '#500', tylerEquivalent: '500 Mesh', apertureMicrons: 25, apertureMm: 0.025, wireDiameterMm: 0.020 },
+  { mesh: '#635', tylerEquivalent: '635 Mesh', apertureMicrons: 20, apertureMm: 0.020, wireDiameterMm: 0.016 }
 ];
 
 /**
@@ -323,16 +428,60 @@ export const ASTM_E11_SIEVE_TABLE = [
  * @param {number} [params.pulpDensityKgL] - Densidad de pulpa medida ρp (kg/L o g/cm³). Si se omite, se calcula desde solidsWeightPercent.
  * @param {number} [params.solidsWeightPercent=45] - Concentración de sólidos en peso Cw (%) si no se provee pulpDensityKgL.
  */
+export function selectOptimalMaterial(d80Microns = 180, cwPercent = 45, pulpPh = 7.5) {
+  const d80 = clamp(d80Microns, 10, 5000, 180);
+  const cw = clamp(cwPercent, 1, 85, 45);
+  const phVal = clamp(pulpPh, 1.0, 14.0, 7.5);
+  const isCorrosiveAcidic = phVal < 4.0;
+  if (isCorrosiveAcidic && d80 <= 300) {
+    return {
+      id: 'rubber',
+      code: 'R55',
+      materialKey: 'hule_natural',
+      isCorrosiveAcidic: true,
+      nameEs: 'Caucho Natural Vulcanizado Resistente a Acidez (R55)',
+      nameEn: 'Acid-Resistant Vulcanized Natural Rubber (R55)'
+    };
+  }
+  if (d80 >= 300 || cw >= 50) {
+    return {
+      id: 'high_chrome',
+      code: 'A05',
+      materialKey: 'alto_cromo_cr27',
+      isCorrosiveAcidic,
+      nameEs: 'Alto Cromo ASTM A532 Cr27% (>650 HB)',
+      nameEn: 'High Chrome ASTM A532 Cr27% (>650 HB)'
+    };
+  }
+  return {
+    id: 'polyurethane',
+    code: 'U01',
+    materialKey: 'poliuretano',
+    isCorrosiveAcidic,
+    nameEs: 'Poliuretano Grado Minero U01 (Shore A 85–95)',
+    nameEn: 'Mining-Grade Polyurethane U01 (Shore A 85–95)'
+  };
+}
+
 export function calculateMarcyScaleReading(params = {}) {
-  const ss = clamp(params.solidsSpecificGravity ?? params.solidsSg, 1.8, 5.2, 2.8);
+  let ss = clamp(params.solidsSpecificGravity ?? params.solidsSg ?? params.oreDensitySg, 1.8, 5.2, 2.8);
 
   let rhoP;
   let cwPercent;
+  const rawRhoInput = params.pulpDensityKgL ?? params.pulpDensitySg;
 
-  if (typeof params.pulpDensityKgL === 'number' && !Number.isNaN(params.pulpDensityKgL)) {
+  if (params.solveFor === 'ore_density_rhop' && typeof rawRhoInput === 'number' && !Number.isNaN(rawRhoInput)) {
+    // Inversión para despejar gravedad específica del mineral seco Ss (oreDensitySg) dados ρp y Cw
+    rhoP = clamp(rawRhoInput, 1.01, 4.5, 1.40);
+    cwPercent = clamp(params.solidsWeightPercent ?? params.weightPercentSolids, 1, 90, 45);
+    const denom = 100 - rhoP * (100 - cwPercent);
+    if (denom > 0.01) {
+      ss = clamp((rhoP * cwPercent) / denom, 1.8, 5.2, 2.8);
+    }
+  } else if (typeof rawRhoInput === 'number' && !Number.isNaN(rawRhoInput)) {
     // Modo directo: ρp -> Cw = 100 * Ss * (ρp - 1) / (ρp * (Ss - 1))
     const maxRho = ss * 0.85 + 0.15;
-    rhoP = clamp(params.pulpDensityKgL, 1.01, maxRho, 1.40);
+    rhoP = clamp(rawRhoInput, 1.01, maxRho, 1.40);
     const rawCw = (100 * ss * (rhoP - 1.0)) / (rhoP * (ss - 1.0));
     cwPercent = clamp(rawCw, 1, 90, 45);
   } else {
@@ -374,7 +523,9 @@ export function calculateMarcyScaleReading(params = {}) {
 
   return {
     solidsSpecificGravity: Number(ss.toFixed(2)),
+    oreDensitySg: Number(ss.toFixed(2)),
     pulpDensityKgL: roundedRhoP,
+    pulpDensitySg: roundedRhoP,
     slurryDensityKgL: roundedRhoP,
     solidsWeightPercent: Number(cwPercent.toFixed(1)),
     solidsVolumePercent: Number(cvPercent.toFixed(1)),
@@ -403,13 +554,33 @@ export function calculateMarcyScaleReading(params = {}) {
  * @param {number} [params.samplingConstantC=1.6] - Constante intrínseca de heterogeneidad del mineral c (g/cm³)
  * @param {number} [params.targetRelativeStdError=0.05] - Error estándar relativo admisible s_FSE (ej. 0.05 = 5%)
  * @param {number} [params.solidsWeightPercent=40] - % de sólidos en peso para estimar volumen de pulpa en litro
+ * @param {number} [params.solidsSpecificGravity=2.8] - Gravedad específica del mineral seco Ss (g/cm³)
+ * @param {string|number} [params.airPressurePsi='80–100 psi'] - Rango o valor de presión neumática en el filtro de laboratorio
+ * @param {number} [params.liberationSizeMicrons=100] - Tamaño de liberación del mineral valioso dl (µm)
+ * @param {number} [params.oreGradeDecimal=0.02] - Ley crítica decimal del mineral valioso (0.001 a 0.50)
  */
 export function calculateGyMinimumSampleMass(params = {}) {
   const rawMm = params.topSizeD95Mm ?? (params.d95Cm !== undefined ? Number(params.d95Cm) * 10.0 : 2.0);
   const dMm = clamp(rawMm, 0.02, 25.0, 2.0);
+  const ss = clamp(params.solidsSpecificGravity ?? params.solidsSg, 1.8, 5.2, 2.8);
+  const libMicrons = clamp(params.liberationSizeMicrons, 5, 2000, 100);
+  const oreGrade = clamp(params.oreGradeDecimal, 0.0001, 0.80, 0.02);
+
+  // Si se provee samplingConstantC explícito se usa; si no, se estima o toma default 1.6 g/cm³
   const cConst = clamp(params.samplingConstantC, 0.2, 15.0, 1.6);
-  const sFse = clamp(params.targetRelativeStdError ?? params.relativeVarianceError, 0.01, 0.20, 0.05);
+  const sFse = clamp(params.targetRelativeStdError ?? params.relativeVarianceError ?? params.samplingRelativeVariance, 0.01, 0.20, 0.05);
   const cw = clamp(params.solidsWeightPercent, 10, 80, 40);
+
+  // Régimen de presión neumática seleccionada en Estación 02 (60–80 psi vs 80–100 psi)
+  const rawPressure = String(params.airPressurePsi ?? '80 - 100 psi').trim();
+  const numPressure = Number(params.airPressurePsi);
+  const isHighPressure = (!Number.isNaN(numPressure) && numPressure >= 80) || rawPressure.includes('100') || rawPressure.includes('90');
+  const numericAirPressurePsi = !Number.isNaN(numPressure) && numPressure > 0 ? numPressure : (isHighPressure ? 90 : 70);
+  const recommendedAirPressurePsi = isHighPressure
+    ? '80 - 100 psi (5.5 - 6.9 bar)'
+    : '60 - 80 psi (4.1 - 5.5 bar)';
+  const estimatedCycleMinutes = isHighPressure ? 6 : 9;
+  const residualCakeMoisturePct = isHighPressure ? 9.5 : 12.5;
 
   // En la ecuación dimensional de Gy con c en g/cm³ y d en cm: Ms (gramos) = c * (d_cm^3) / (s_FSE^2)
   // Para pulpas finas de planta aseguramos piso físico de 250 g secos para análisis granulométrico + químico
@@ -418,45 +589,63 @@ export function calculateGyMinimumSampleMass(params = {}) {
   const minDrySampleGrams = Math.max(250, Math.round(theoreticalGrams));
   const minDrySampleKg = Number((minDrySampleGrams / 1000).toFixed(2));
 
-  // Volumen equivalente de pulpa a filtrar en el Filtro de Presión Batch SMAT (asumiendo Ss ~ 2.8)
-  const slurryRho = (100 * 2.8) / (cw + 2.8 * (100 - cw));
+  // Volumen equivalente de pulpa a filtrar en el Filtro de Presión Batch SMAT usando Ss dinámico
+  const slurryRho = (100 * ss) / (cw + ss * (100 - cw));
   const wetSlurryMassGrams = minDrySampleGrams / (cw / 100);
   const requiredPulpLiters = Number((wetSlurryMassGrams / (slurryRho * 1000)).toFixed(2));
   const batchFilterCycles = Math.max(1, Math.ceil(requiredPulpLiters / 8.0));
 
   return {
     topSizeD95Mm: Number(dMm.toFixed(2)),
+    solidsSpecificGravity: Number(ss.toFixed(2)),
     samplingConstantC: Number(cConst.toFixed(2)),
+    liberationSizeMicrons: Math.round(libMicrons),
+    oreGradeDecimal: Number(oreGrade.toFixed(4)),
+    targetRelativeStdError: Number(sFse.toFixed(4)),
     targetRelativeStdErrorPercent: Number((sFse * 100).toFixed(1)),
     theoreticalGyGrams: Number(theoreticalGrams.toFixed(1)),
     minDrySampleGrams,
     minDrySampleKg,
     minimumSampleMassKg: minDrySampleKg,
     requiredPulpLiters,
+    slurrySampleLiters: requiredPulpLiters,
+    wetPulpVolumeLiters: requiredPulpLiters,
     batchFilterCycles,
-    recommendedAirPressurePsi: '80 - 100 psi (5.5 - 6.9 bar)',
+    airPressurePsi: numericAirPressurePsi,
+    recommendedAirPressurePsi,
+    estimatedCycleMinutes,
+    recommendedCycleMinutes: estimatedCycleMinutes,
+    residualCakeMoisturePct,
+    estimatedCakeMoisturePct: residualCakeMoisturePct,
+    filterPressStatus: batchFilterCycles === 1 ? '1 carga directa' : `${batchFilterCycles} cargas (Fraccionar)`,
     recommendationEs: batchFilterCycles === 1
-      ? `Carga directa en 1 ciclo del Filtro de Presión Batch SMAT (${requiredPulpLiters} L de pulpa a 80-100 psi)`
-      : `Fraccionar con cuarteador de rifle o procesar en ${batchFilterCycles} cargas del Filtro Batch SMAT`,
+      ? `Carga directa en 1 ciclo del Filtro de Presión Batch SMAT (${requiredPulpLiters} L de pulpa a ${recommendedAirPressurePsi}, ~${estimatedCycleMinutes} min)`
+      : `Fraccionar con cuarteador de rifle o procesar en ${batchFilterCycles} cargas del Filtro Batch SMAT (${recommendedAirPressurePsi}, ~${estimatedCycleMinutes * batchFilterCycles} min totales)`,
     recommendationEn: batchFilterCycles === 1
-      ? `Direct single-charge dewatering in SMAT Batch Pressure Filter (${requiredPulpLiters} L pulp at 80-100 psi)`
-      : `Split via riffle splitter or process across ${batchFilterCycles} SMAT Batch Filter charges`
+      ? `Direct single-charge dewatering in SMAT Batch Pressure Filter (${requiredPulpLiters} L pulp at ${recommendedAirPressurePsi}, ~${estimatedCycleMinutes} min)`
+      : `Split via riffle splitter or process across ${batchFilterCycles} SMAT Batch Filter charges (${recommendedAirPressurePsi}, ~${estimatedCycleMinutes * batchFilterCycles} min total)`
   };
 }
 
 /**
- * Selecciona la columna óptima de 6 Tamices Certificados ASTM E11 / ISO 3310-1 centrada en el P80 objetivo
- * y calcula la coordenada doble-logarítmica de Rosin-Rammler y' = log10(log10(100 / R)).
+ * Selecciona la columna óptima de Tamices Certificados ASTM E11 / ISO 3310-1 centrada en el P80 objetivo
+ * y calcula la distribución granulométrica completa y coordenada doble-logarítmica de Rosin-Rammler y' = log10(log10(100 / R)).
  * Referencia Kernel: tomjrob/pyRR (RRYScale.py)
  *
  * @param {Object} params
  * @param {number} [params.targetP80Microns=150] - Tamaño P80 objetivo de molienda o clasificación (µm)
- * @param {string} [params.screeningMode='wet'] - 'wet' (tamizado húmedo -> Acero Inox) o 'dry' (Bronce / Acero Inox)
+ * @param {number} [params.topSizeD95Mm=12.7] - Tamaño superior d95 (mm)
+ * @param {string} [params.screeningMode='auto'] - 'auto', 'wet' (tamizado húmedo -> Acero Inox) o 'dry' (Bronce / Acero Inox)
+ * @param {number} [params.frameDiameterInches=8] - Diámetro de marco certificado (8 o 12 pulgadas)
  * @param {number} [params.retainedPercentAtP80=20] - % retenido acumulado R (por definición 20% en el corte P80)
+ * @param {number} [params.rosinRammlerSlopeN] - Pendiente de uniformidad n de Rosin-Rammler
  */
 export function recommendAstmSieveSeries(params = {}) {
   const targetP80 = clamp(params.targetP80Microns, 20, 3350, 150);
-  const mode = params.screeningMode === 'dry' ? 'dry' : 'wet';
+  const rawMode = String(params.screeningMode || 'auto').toLowerCase();
+  const wetScreeningRequired = rawMode === 'dry' ? false : (rawMode === 'wet' ? true : targetP80 <= 150);
+  const mode = wetScreeningRequired ? 'wet' : 'dry';
+  const frameDiameterInches = Number(params.frameDiameterInches) === 12 ? 12 : 8;
   const retainedR = clamp(params.retainedPercentAtP80, 1, 99, 20);
 
   // Encontrar el tamiz ASTM E11 más próximo al P80 objetivo
@@ -470,32 +659,62 @@ export function recommendAstmSieveSeries(params = {}) {
     }
   }
 
-  // Construir pila de 6 tamices (2 por encima del P80, el tamiz P80 y 3 por debajo hasta finos)
-  const startIdx = Math.max(0, Math.min(closestIdx - 2, ASTM_E11_SIEVE_TABLE.length - 6));
-  const selectedSieves = ASTM_E11_SIEVE_TABLE.slice(startIdx, startIdx + 6);
+  // Construir pila de tamices (6 tamices en modo clásico o 7 tamices con topSizeD95Mm explícito)
+  const stackLen = params.retainedPercentAtP80 !== undefined && params.topSizeD95Mm === undefined ? 6 : 7;
+  const startIdx = Math.max(0, Math.min(closestIdx - 2, ASTM_E11_SIEVE_TABLE.length - stackLen));
+  const rawSieves = ASTM_E11_SIEVE_TABLE.slice(startIdx, startIdx + stackLen);
   const primaryControlSieve = ASTM_E11_SIEVE_TABLE[closestIdx];
 
   // Transformación linealizada de Rosin-Rammler (tomjrob/pyRR): y' = log10(log10(100 / R))
   const rosinRammlerYPrime = Number(Math.log10(Math.log10(100.0 / retainedR)).toFixed(4));
   const rosinRammlerSlopeN = Number(clamp(params.rosinRammlerSlopeN, 0.4, 2.5, targetP80 <= 106 ? 1.25 : 1.08).toFixed(2));
+  const requiresStainless = wetScreeningRequired;
+  const frameMaterialLabel = requiresStainless ? 'Acero Inoxidable 304/316' : 'Bronce / Acero Inox';
 
-  const requiresStainless = mode === 'wet' || targetP80 <= 106;
+  // Calcular distribución granulométrica Rosin-Rammler por malla: R(d) = 100 * exp( -ln(100/retainedR) * (d / P80)^n )
+  const kScale = Math.log(100.0 / retainedR);
+  let prevCumRetained = 0.0;
+  const selectedSieves = rawSieves.map((s) => {
+    const ratio = s.apertureMicrons / targetP80;
+    const rawR = 100.0 * Math.exp(-kScale * Math.pow(ratio, rosinRammlerSlopeN));
+    const cumulativeRetainedPct = Number(clamp(rawR, 0.1, 99.9, 20.0).toFixed(1));
+    const retainedIndividualPct = Number(Math.max(0.1, cumulativeRetainedPct - prevCumRetained).toFixed(1));
+    prevCumRetained = cumulativeRetainedPct;
+    const cumulativePassingPct = Number((100.0 - cumulativeRetainedPct).toFixed(1));
+    const rosinRammlerY = Number(Math.log10(Math.log10(100.0 / cumulativeRetainedPct)).toFixed(4));
+    return {
+      ...s,
+      sieveNumber: s.mesh,
+      frameMaterial: frameMaterialLabel,
+      frameDiameterInches,
+      cumulativeRetainedPct,
+      retainedIndividualPct,
+      cumulativePassingPct,
+      rosinRammlerY,
+      isPrimaryP80Control: s.mesh === primaryControlSieve.mesh
+    };
+  });
 
   return {
     targetP80Microns: targetP80,
+    screeningMode: mode,
+    wetScreeningRequired,
+    frameDiameterInches,
     primaryControlMesh: primaryControlSieve.mesh,
     primaryApertureMicrons: primaryControlSieve.apertureMicrons,
     sieveStack: selectedSieves,
-    recommendedSeries: selectedSieves,
+    recommendedSeries: selectedSieves.slice(0, 6),
     sieveStackSummary: selectedSieves.map((s) => `${s.mesh} (${s.apertureMicrons} µm)`).join(' ➔ '),
     rosinRammlerYPrime,
     rosinRammlerSlopeN,
+    retainedPercentAtP80: retainedR,
+    characteristicSizeD63Microns: Math.round(targetP80 * Math.pow(1.0 / kScale, 1.0 / rosinRammlerSlopeN)),
     recommendedFrameMaterialEs: requiresStainless
-      ? 'Marco y Malla en Acero Inoxidable Certificado ASTM E11 (8" o 12") + Tapa y Cazuela'
-      : 'Marco en Bronce o Acero Inoxidable Certificado ASTM E11 (8" o 12") + Tapa y Cazuela',
+      ? `Marco y Malla en Acero Inoxidable Certificado ASTM E11 (${frameDiameterInches}") + Tapa y Cazuela`
+      : `Marco en Bronce o Acero Inoxidable Certificado ASTM E11 (${frameDiameterInches}") + Tapa y Cazuela`,
     recommendedFrameMaterialEn: requiresStainless
-      ? 'ASTM E11 Certified Full Stainless Steel Frame & Cloth (8" or 12") + Cover & Pan'
-      : 'ASTM E11 Certified Brass or Stainless Steel Frame (8" or 12") + Cover & Pan'
+      ? `ASTM E11 Certified Full Stainless Steel Frame & Cloth (${frameDiameterInches}") + Cover & Pan`
+      : `ASTM E11 Certified Brass or Stainless Steel Frame (${frameDiameterInches}") + Cover & Pan`
   };
 }
 
@@ -524,7 +743,33 @@ export const WET_END_MATERIAL_MATRIX = {
     partsIncludedEs: ['Impulsor Cerrado 5 Álabes', 'Voluta Monolítica (1 pieza)', 'Cuello de Succión (Throatbush)', 'Plato Posterior (FPL Insert)'],
     partsIncludedEn: ['Closed 5-Vane Impeller', 'Monolithic Volute (1-piece)', 'Suction Throatbush', 'Frame Plate Liner Insert (FPL Insert)'],
     dutyApplicationEs: 'Descarga de molino SAG/bolas, alimentación primaria a hidrociclones y partículas gruesas con bordes cortantes.',
-    dutyApplicationEn: 'SAG/ball mill discharge, primary hydrocyclone feed, and coarse sharp-edged ore particles.'
+    dutyApplicationEn: 'SAG/ball mill discharge, primary hydrocyclone feed, and coarse sharp-edged ore particles.',
+    idealForEs: 'Descarga de molino SAG/bolas, alimentación primaria a hidrociclones y partículas gruesas con bordes cortantes.',
+    idealForEn: 'SAG/ball mill discharge, primary hydrocyclone feed, and coarse sharp-edged ore particles.'
+  },
+  alto_cromo_cr27: {
+    id: 'alto_cromo',
+    key: 'alto_cromo_cr27',
+    code: 'A05',
+    nameEs: 'Alto Cromo 27% (≥ 650 HB)',
+    nameEn: '27% High Chrome White Iron (≥ 650 HB)',
+    visualCueEs: 'Acabado Metálico Maquinado / Esmalte Azul',
+    visualCueEn: 'Machined Specular Metallic / Blue Enamel',
+    swatchHex: '#1E3A8A',
+    accentHex: '#64748B',
+    hardness: '≥ 650 HB (60–62 HRC)',
+    maxTipSpeedMs: 32.0,
+    d80RangeMicrons: [150, 6000],
+    phRange: [4.0, 12.5],
+    wearRatio554: '5:5:4',
+    recommendedClearanceMm: 0.75,
+    wetEndArchitecture: 'monolithic_volute_plus_fpl_insert',
+    partsIncludedEs: ['Impulsor Cerrado 5 Álabes', 'Voluta Monolítica (1 pieza)', 'Cuello de Succión (Throatbush)', 'Plato Posterior (FPL Insert)'],
+    partsIncludedEn: ['Closed 5-Vane Impeller', 'Monolithic Volute (1-piece)', 'Suction Throatbush', 'Frame Plate Liner Insert (FPL Insert)'],
+    dutyApplicationEs: 'Descarga de molino SAG/bolas, alimentación primaria a hidrociclones y partículas gruesas con bordes cortantes.',
+    dutyApplicationEn: 'SAG/ball mill discharge, primary hydrocyclone feed, and coarse sharp-edged ore particles.',
+    idealForEs: 'Descarga de molino SAG/bolas, alimentación primaria a hidrociclones y partículas gruesas con bordes cortantes.',
+    idealForEn: 'SAG/ball mill discharge, primary hydrocyclone feed, and coarse sharp-edged ore particles.'
   },
   hule: {
     id: 'hule',
@@ -546,7 +791,33 @@ export const WET_END_MATERIAL_MATRIX = {
     partsIncludedEs: ['Forro Lado Soporte (Frame Plate Liner)', 'Forro Lado Succión (Cover Plate Liner)', 'Cuello de Succión (Throatbush)', 'Impulsor Revestido en Hule'],
     partsIncludedEn: ['Frame Plate Liner (FPL)', 'Cover Plate Liner (CPL)', 'Suction Throatbush', 'Rubber-Lined Impeller'],
     dutyApplicationEs: 'Circuitos de flotación, espesadores y colas/jales finos (d80 < 150 µm) sin partículas cortantes gruesas.',
-    dutyApplicationEn: 'Flotation circuits, thickeners, and fine tailings (d80 < 150 µm) free of coarse tramp metal or sharp rock.'
+    dutyApplicationEn: 'Flotation circuits, thickeners, and fine tailings (d80 < 150 µm) free of coarse tramp metal or sharp rock.',
+    idealForEs: 'Circuitos de flotación, espesadores y colas/jales finos (d80 < 150 µm) sin partículas cortantes gruesas.',
+    idealForEn: 'Flotation circuits, thickeners, and fine tailings (d80 < 150 µm) free of coarse tramp metal or sharp rock.'
+  },
+  hule_natural: {
+    id: 'hule',
+    key: 'hule_natural',
+    code: 'R55',
+    nameEs: 'Hule Natural Antiabrasivo (Shore A 55–65)',
+    nameEn: 'Wear-Resistant Natural Rubber (Shore A 55–65)',
+    visualCueEs: 'Elastómero Negro Mate Moldeado por Compresión',
+    visualCueEn: 'Compression-Molded Matte Black Elastomer',
+    swatchHex: '#18181B',
+    accentHex: '#3F3F46',
+    hardness: 'Shore A 55–65',
+    maxTipSpeedMs: 24.5,
+    d80RangeMicrons: [10, 150],
+    phRange: [3.5, 11.0],
+    wearRatio554: '5:5:4',
+    recommendedClearanceMm: 0.85,
+    wetEndArchitecture: 'split_molded_liners_fpl_cpl',
+    partsIncludedEs: ['Forro Lado Soporte (Frame Plate Liner)', 'Forro Lado Succión (Cover Plate Liner)', 'Cuello de Succión (Throatbush)', 'Impulsor Revestido en Hule'],
+    partsIncludedEn: ['Frame Plate Liner (FPL)', 'Cover Plate Liner (CPL)', 'Suction Throatbush', 'Rubber-Lined Impeller'],
+    dutyApplicationEs: 'Circuitos de flotación, espesadores y colas/jales finos (d80 < 150 µm) sin partículas cortantes gruesas.',
+    dutyApplicationEn: 'Flotation circuits, thickeners, and fine tailings (d80 < 150 µm) free of coarse tramp metal or sharp rock.',
+    idealForEs: 'Circuitos de flotación, espesadores y colas/jales finos (d80 < 150 µm) sin partículas cortantes gruesas.',
+    idealForEn: 'Flotation circuits, thickeners, and fine tailings (d80 < 150 µm) free of coarse tramp metal or sharp rock.'
   },
   poliuretano: {
     id: 'poliuretano',
@@ -568,7 +839,33 @@ export const WET_END_MATERIAL_MATRIX = {
     partsIncludedEs: ['Forro Lado Soporte (Frame Plate Liner)', 'Forro Lado Succión (Cover Plate Liner)', 'Cuello de Succión (Throatbush)', 'Impulsor / Expulsor en Poliuretano'],
     partsIncludedEn: ['Frame Plate Liner (FPL)', 'Cover Plate Liner (CPL)', 'Suction Throatbush', 'Polyurethane Impeller / Expeller'],
     dutyApplicationEs: 'Baterías de hidrociclones, remolienda y pulpas finas a medias con alta velocidad superficial o pH ácido.',
-    dutyApplicationEn: 'Hydrocyclone clusters, regrind duties, and fine-to-medium slurries with high velocity or acidic pH.'
+    dutyApplicationEn: 'Hydrocyclone clusters, regrind duties, and fine-to-medium slurries with high velocity or acidic pH.',
+    idealForEs: 'Baterías de hidrociclones, remolienda y pulpas finas a medias con alta velocidad superficial o pH ácido.',
+    idealForEn: 'Hydrocyclone clusters, regrind duties, and fine-to-medium slurries with high velocity or acidic pH.'
+  },
+  ceramica_sic: {
+    id: 'ceramica_sic',
+    key: 'ceramica_sic',
+    code: 'SiC',
+    nameEs: 'Compuesto Cerámico Carburo de Silicio (SiC)',
+    nameEn: 'Silicon Carbide (SiC) Ceramic Composite',
+    visualCueEs: 'Matriz Gris Grafito Sinterizada',
+    visualCueEn: 'Sintered Graphite-Gray Ceramic Matrix',
+    swatchHex: '#334155',
+    accentHex: '#0F172A',
+    hardness: '≥ 2200 HV (Mohs 9.2)',
+    maxTipSpeedMs: 30.0,
+    d80RangeMicrons: [30, 800],
+    phRange: [1.0, 13.5],
+    wearRatio554: '5:5:4',
+    recommendedClearanceMm: 0.65,
+    wetEndArchitecture: 'monolithic_volute_plus_fpl_insert',
+    partsIncludedEs: ['Cuello de Succión SiC (Throatbush)', 'Voluta Compuesta SiC', 'Impulsor Alto Cromo / SiC'],
+    partsIncludedEn: ['SiC Suction Throatbush', 'SiC Composite Volute', 'High Chrome / SiC Impeller'],
+    dutyApplicationEs: 'Alimentación de alta presión a hidrociclones y pulpas de sílice extrema con pH agresivo.',
+    dutyApplicationEn: 'High-pressure hydrocyclone feed and extreme silica slurries with aggressive pH.',
+    idealForEs: 'Alimentación de alta presión a hidrociclones y pulpas de sílice extrema con pH agresivo.',
+    idealForEn: 'High-pressure hydrocyclone feed and extreme silica slurries with aggressive pH.'
   }
 };
 
@@ -580,10 +877,17 @@ export const WET_END_MATERIAL_KITS = WET_END_MATERIAL_MATRIX;
  */
 export const PUMP_ASSEMBLY_STATIONS = [
   {
+    station: 1,
     stationNumber: 1,
     id: 'drive_end',
+    nameEs: 'Estación 1: Extremo Motriz y Base Estructural',
+    nameEn: 'Station 1: Drive End & Structural Frame',
     titleEs: 'Estación 1: Extremo Motriz y Base Estructural',
     titleEn: 'Station 1: Drive End & Structural Frame',
+    descriptionEs: 'Bastidor con tornillo micrométrico y cartucho Bearing Assembly ISO 281.',
+    descriptionEn: 'Base frame with micrometer screw and ISO 281 Bearing Assembly cartridge.',
+    calibrationLawEs: 'Módulo sellado intercambiable (ISO 281 rodillos cónicos p = 10/3)',
+    calibrationLawEn: 'Drop-in sealed cartridge module (ISO 281 tapered rollers p = 10/3)',
     partsEs: ['01. Bastidor / Cuna con Tornillo de Ajuste Axial (Frame)', '02. Conjunto Rodamiento Cilíndrico (Bearing Assembly / Housing)', '03. Plato Soporte Metálico (Frame Plate)'],
     partsEn: ['01. Base Frame with Axial Adjusting Screw', '02. Cylindrical Bearing Assembly / Housing', '03. Cast Iron Frame Plate'],
     roleId: 'soporte',
@@ -591,10 +895,17 @@ export const PUMP_ASSEMBLY_STATIONS = [
     lotRatioNoteEn: 'Drop-in sealed cartridge module (ISO 281 tapered rollers p = 10/3)'
   },
   {
+    station: 2,
     stationNumber: 2,
     id: 'sealing_fork',
+    nameEs: 'Estación 2: Bifurcación de Sellado Centrífugo (Sin Sello Mecánico)',
+    nameEn: 'Station 2: Centrifugal Shaft Sealing Fork (Zero Mechanical Seal)',
     titleEs: 'Estación 2: Bifurcación de Sellado Centrífugo (Sin Sello Mecánico)',
     titleEn: 'Station 2: Centrifugal Shaft Sealing Fork (Zero Mechanical Seal)',
+    descriptionEs: 'Camisa endurecida, anillo expulsor y turbina centrífuga seca o prensaestopa.',
+    descriptionEn: 'Hardened shaft sleeve, expeller ring, and dry dynamic expeller or gland packing.',
+    calibrationLawEs: 'Sellado centrífugo en seco para evitar dilución de pulpa y fallas por abrasión',
+    calibrationLawEn: 'Dry centrifugal expeller seal prevents pulp dilution and abrasive seal failure',
     partsEs: ['04. Camisa de Flecha (Shaft Sleeve)', '05. Anillo Expulsor + Cámara Centrífuga (Expeller Ring)', '06. Expulsor Dinámico Seco (Expeller)', '07. Prensaestopa, Anillo Linterna y Empaquetadura PTFE/Grafito'],
     partsEn: ['04. Hardened Shaft Sleeve', '05. Expeller Ring & Chamber', '06. Dynamic Dry Expeller', '07. Gland Follower, Lantern Ring & Braided PTFE/Graphite Packing'],
     roleId: 'sello',
@@ -602,10 +913,17 @@ export const PUMP_ASSEMBLY_STATIONS = [
     lotRatioNoteEn: 'Dry centrifugal expeller seal prevents pulp dilution and abrasive seal failure'
   },
   {
+    station: 3,
     stationNumber: 3,
     id: 'wet_end_fork',
+    nameEs: 'Estación 3: Bifurcación de Contacto Húmedo (Lote 5 – 5 – 4)',
+    nameEn: 'Station 3: Bifurcated Wet-End Assembly (5 – 5 – 4 Wear Lot)',
     titleEs: 'Estación 3: Bifurcación de Contacto Húmedo (Lote 5 – 5 – 4)',
     titleEn: 'Station 3: Bifurcated Wet-End Assembly (5 – 5 – 4 Wear Lot)',
+    descriptionEs: 'Rama A Metálica (Voluta Monolítica + FPL Insert) vs Rama B Elastómero (FPL + CPL).',
+    descriptionEn: 'Branch A Metal (Monolithic Volute + FPL Insert) vs Branch B Elastomer (FPL + CPL).',
+    calibrationLawEs: 'Rotación acoplada 5 Impulsores : 5 Throatbush : 4 Volutas/Liners',
+    calibrationLawEn: 'Coupled wear rotation: 5 Impellers : 5 Throatbushes : 4 Volutes/Liners',
     partsEs: [
       '08A [Rama Metal]. Plato Posterior Metálico (FPL Insert)',
       '08B [Rama Hule/PU]. Forro Lado Soporte (Frame Plate Liner - FPL)',
@@ -627,10 +945,17 @@ export const PUMP_ASSEMBLY_STATIONS = [
     lotRatioNoteEn: 'Coupled wear rotation: 5 Impellers : 5 Throatbushes : 4 Volutes/Liners'
   },
   {
+    station: 4,
     stationNumber: 4,
     id: 'suction_closure',
+    nameEs: 'Estación 4: Cierre de Carcasa Bipartida y Succión',
+    nameEn: 'Station 4: Split-Casing Closure & Suction Cover Plate',
     titleEs: 'Estación 4: Cierre de Carcasa Bipartida y Succión',
     titleEn: 'Station 4: Split-Casing Closure & Suction Cover Plate',
+    descriptionEs: 'Asiento cónico del Throatbush y cierre con plato cubierta lado succión.',
+    descriptionEn: 'Conical Throatbush seating and closure with suction-side Cover Plate.',
+    calibrationLawEs: 'Torque cruzado simétrico de carcasa exterior',
+    calibrationLawEn: 'Symmetrical cross-pattern torque on outer split casing',
     partsEs: ['12. Plato Cubierta Lado Succión (Cover Plate)', '13. Pernos Pasantes de Carcasa y Abrazadera de Descarga'],
     partsEn: ['12. Suction Side Cover Plate', '13. Casing Through-Bolts & Discharge Clamp'],
     roleId: 'skid_bomba',
@@ -638,15 +963,297 @@ export const PUMP_ASSEMBLY_STATIONS = [
     lotRatioNoteEn: 'Symmetrical cross-pattern torque on outer split casing'
   },
   {
+    station: 5,
     stationNumber: 5,
     id: 'axial_calibration',
+    nameEs: 'Estación 5: Calibración Post-Armado de Claro Axial Frontal (δ = 0.5 – 1.0 mm)',
+    nameEn: 'Station 5: Post-Assembly Front Axial Clearance Calibration (δ = 0.5 – 1.0 mm)',
     titleEs: 'Estación 5: Calibración Post-Armado de Claro Axial Frontal (δ = 0.5 – 1.0 mm)',
     titleEn: 'Station 5: Post-Assembly Front Axial Clearance Calibration (δ = 0.5 – 1.0 mm)',
+    descriptionEs: 'Ajuste axial del Bearing Assembly para suprimir recirculación frontal.',
+    descriptionEn: 'Axial Bearing Assembly adjustment to suppress front-shroud recirculation.',
+    calibrationLawEs: 'Anula el vórtice de recirculación frontal Δην ∝ (δ/b2)^1.5',
+    calibrationLawEn: 'Suppresses front-shroud recirculation vortex Δην ∝ (δ/b2)^1.5',
     partsEs: ['14. Tornillo Micrométrico del Bearing Assembly: avanzar conjunto hacia succión hasta contacto leve con Throatbush, retroceder 1/2 vuelta (0.5–1.0 mm) y fijar pernos de cuna'],
     partsEn: ['14. Bearing Assembly Adjusting Screw: advance cartridge toward suction until light rub against Throatbush, back off 1/2 turn (0.5–1.0 mm), and lock cradle bolts'],
     roleId: 'revestimientos',
     lotRatioNoteEs: 'Anula el vórtice de recirculación frontal Δην ∝ (δ/b2)^1.5',
     lotRatioNoteEn: 'Suppresses front-shroud recirculation vortex Δην ∝ (δ/b2)^1.5'
+  }
+];
+
+export const PUMP_554_ASSEMBLY_STATIONS = PUMP_ASSEMBLY_STATIONS;
+
+/**
+ * Cédula Canónica Unificada de 14 Componentes del Despiece de Bomba Horizontal para Lodos (Estaciones 1 a 5)
+ * Fuente única de verdad para PumpAssemblyReport.astro, QuoteWizard.astro y evaluación NIOSH (>= 23 kg).
+ */
+export const PUMP_554_BOM_14_PARTS = [
+  {
+    pos: '01',
+    station: 'EST-01',
+    stationNumber: 1,
+    partKey: 'frame',
+    branch: 'common',
+    branchLabelEs: 'Común',
+    branchLabelEn: 'Common',
+    nameEs: 'Soporte Base (Frame / Pedestal)',
+    nameEn: 'Pump Frame / Pedestal Base',
+    specEs: 'Cuna maquinada con tornillo de ajuste axial externo',
+    specEn: 'Machined cradle with external axial adjusting screw',
+    weightKgBySeries: { '3x2': 85.0, '6x4': 165.0, '8x6': 310.0 },
+    weightKg: 165.0,
+    nioshHoistRequired: true,
+    equipo: 'soporte_rodamiento',
+    pieza: 'frame_pedestal',
+    material: 'acero_4140_iso281'
+  },
+  {
+    pos: '02',
+    station: 'EST-01',
+    stationNumber: 1,
+    partKey: 'bearing_assembly',
+    branch: 'common',
+    branchLabelEs: 'Común',
+    branchLabelEn: 'Common',
+    nameEs: 'Cartucho Bearing Assembly (Eje + Rodamientos ISO 281)',
+    nameEn: 'Bearing Assembly Cartridge (Shaft + ISO 281 Bearings)',
+    specEs: 'Rodamientos cónicos espalda con espalda + retenes laberinto',
+    specEn: 'Back-to-back tapered roller bearings + labyrinth seals',
+    weightKgBySeries: { '3x2': 48.0, '6x4': 94.0, '8x6': 185.0 },
+    weightKg: 94.0,
+    nioshHoistRequired: true,
+    equipo: 'soporte_rodamiento',
+    pieza: 'bearing_assembly',
+    material: 'acero_4140_iso281'
+  },
+  {
+    pos: '03',
+    station: 'EST-02',
+    stationNumber: 2,
+    partKey: 'shaft_sleeve',
+    branch: 'common',
+    branchLabelEs: 'Común',
+    branchLabelEn: 'Common',
+    nameEs: 'Camisa Protectora de Eje (Shaft Sleeve) + O-Rings',
+    nameEn: 'Hardened Shaft Sleeve + Seal O-Rings',
+    specEs: 'Acero endurecido / recubrimiento cerámico en zona de sello',
+    specEn: 'Hardened alloy / ceramic-coated sleeve in seal zone',
+    weightKgBySeries: { '3x2': 4.2, '6x4': 7.8, '8x6': 14.5 },
+    weightKg: 7.8,
+    nioshHoistRequired: false,
+    equipo: 'sello_expulsor',
+    pieza: 'shaft_sleeve',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '04',
+    station: 'EST-02',
+    stationNumber: 2,
+    partKey: 'expeller_ring',
+    branch: 'common',
+    branchLabelEs: 'Común',
+    branchLabelEn: 'Common',
+    nameEs: 'Caja de Sello / Anillo Expulsor (Expeller Ring / Stuffing Box)',
+    nameEn: 'Expeller Ring / Stuffing Box Housing',
+    specEs: 'Cámara secundaria con grasera o anillo linterna',
+    specEn: 'Secondary seal chamber with grease port or lantern ring',
+    weightKgBySeries: { '3x2': 18.5, '6x4': 29.0, '8x6': 54.0 },
+    weightKg: 29.0,
+    nioshHoistRequired: true,
+    equipo: 'sello_expulsor',
+    pieza: 'expeller_ring',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '05',
+    station: 'EST-02',
+    stationNumber: 2,
+    partKey: 'expeller_dry',
+    branch: 'common',
+    branchLabelEs: 'Común',
+    branchLabelEn: 'Common',
+    nameEs: 'Expulsor Centrífugo Seco (Expeller)',
+    nameEn: 'Centrifugal Dry Expeller',
+    specEs: 'Turbina auxiliar que abate presión en estopera sin agua externa',
+    specEn: 'Auxiliary rotor that relieves stuffing box pressure without water',
+    weightKgBySeries: { '3x2': 9.5, '6x4': 16.5, '8x6': 31.0 },
+    weightKg: 16.5,
+    nioshHoistRequired: false,
+    equipo: 'sello_expulsor',
+    pieza: 'expeller_sello',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '06',
+    station: 'EST-03',
+    stationNumber: 3,
+    partKey: 'frame_plate',
+    branch: 'common',
+    branchLabelEs: 'Común',
+    branchLabelEn: 'Common',
+    nameEs: 'Carcasa Lado Soporte (Frame Plate)',
+    nameEn: 'Frame Plate (Drive-Side Outer Casing)',
+    specEs: 'Mitad estructural posterior en hierro nodular con espárragos',
+    specEn: 'Rear ductile iron structural half-casing with mounting studs',
+    weightKgBySeries: { '3x2': 62.0, '6x4': 128.0, '8x6': 245.0 },
+    weightKg: 128.0,
+    nioshHoistRequired: true,
+    equipo: 'skid_bomba',
+    pieza: 'frame_plate',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '07',
+    station: 'EST-03',
+    stationNumber: 3,
+    partKey: 'fpl_insert',
+    branch: 'alto_cromo_cr27',
+    branchLabelEs: 'Rama A • Alto Cromo',
+    branchLabelEn: 'Branch A • High Chrome',
+    nameEs: 'Plato de Desgaste Posterior (Frame Plate Liner Insert — FPL Insert)',
+    nameEn: 'Frame Plate Liner Insert (FPL Insert — Rear Wear Plate)',
+    specEs: 'Aleación Cr27% ASTM A532 (≥650 HB) con pernos posteriores',
+    specEn: 'ASTM A532 Cr27% (≥650 HB) rear wear plate with studs',
+    weightKgBySeries: { '3x2': 24.0, '6x4': 48.0, '8x6': 96.0 },
+    weightKg: 48.0,
+    nioshHoistRequired: true,
+    equipo: 'bombeo_hule_cromo',
+    pieza: 'fpl_insert',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '08',
+    station: 'EST-03',
+    stationNumber: 3,
+    partKey: 'frame_plate_liner',
+    branch: 'hule_natural',
+    branchLabelEs: 'Rama B • Hule / PU',
+    branchLabelEn: 'Branch B • Rubber / PU',
+    nameEs: 'Forro Posterior Vulcanizado (Frame Plate Liner — FPL)',
+    nameEn: 'Molded Frame Plate Liner (FPL — Rubber or Polyurethane)',
+    specEs: 'Hule Natural (55–65 Shore A) o Poliuretano con alma de acero',
+    specEn: 'Natural Rubber (55–65 Shore A) or Polyurethane with steel backing',
+    weightKgBySeries: { '3x2': 14.0, '6x4': 26.5, '8x6': 52.0 },
+    weightKg: 26.5,
+    nioshHoistRequired: true,
+    equipo: 'bombeo_hule_cromo',
+    pieza: 'liner_fpl',
+    material: 'hule_natural'
+  },
+  {
+    pos: '09',
+    station: 'EST-03',
+    stationNumber: 3,
+    partKey: 'impeller',
+    branch: 'common',
+    branchLabelEs: 'Ambas Ramas (5-5-4)',
+    branchLabelEn: 'Both Branches (5-5-4)',
+    nameEs: 'Impulsor Cerrado de 5 Álabes (Closed Impeller)',
+    nameEn: '5-Vane Closed Slurry Impeller',
+    specEs: 'Con álabes expulsores posteriores; Alto Cromo ≥650 HB, Hule o PU',
+    specEn: 'With back pump-out vanes; High Chrome ≥650 HB, Rubber, or PU',
+    weightKgBySeries: { '3x2': 32.5, '6x4': 68.0, '8x6': 142.0 },
+    weightKg: 68.0,
+    nioshHoistRequired: true,
+    equipo: 'impulsor_bomba',
+    pieza: 'impulsor_5_alabes',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '10',
+    station: 'EST-03',
+    stationNumber: 3,
+    partKey: 'monolithic_volute',
+    branch: 'alto_cromo_cr27',
+    branchLabelEs: 'Rama A • Alto Cromo',
+    branchLabelEn: 'Branch A • High Chrome',
+    nameEs: 'Voluta Monolítica (Metal Volute Liner)',
+    nameEn: 'Monolithic High-Chrome Volute Liner',
+    specEs: 'Caracol envolvente de 1 pieza en Alto Cromo Cr27% para molienda SAG',
+    specEn: '1-piece Cr27% high-chrome scroll liner for coarse primary duty',
+    weightKgBySeries: { '3x2': 78.0, '6x4': 162.0, '8x6': 320.0 },
+    weightKg: 162.0,
+    nioshHoistRequired: true,
+    equipo: 'bombeo_hule_cromo',
+    pieza: 'voluta_liners',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '11',
+    station: 'EST-03',
+    stationNumber: 3,
+    partKey: 'cover_plate_liner',
+    branch: 'hule_natural',
+    branchLabelEs: 'Rama B • Hule / PU',
+    branchLabelEn: 'Branch B • Rubber / PU',
+    nameEs: 'Forro Frontal Lado Succión (Cover Plate Liner — CPL)',
+    nameEn: 'Cover Plate Liner (CPL — Suction-Side Split Liner)',
+    specEs: 'Mitad frontal en Hule Natural o Poliuretano que cierra la voluta con el FPL',
+    specEn: 'Front elastomer half-liner that mates with FPL to form the volute',
+    weightKgBySeries: { '3x2': 15.5, '6x4': 28.0, '8x6': 56.0 },
+    weightKg: 28.0,
+    nioshHoistRequired: true,
+    equipo: 'bombeo_hule_cromo',
+    pieza: 'liner_cpl',
+    material: 'hule_natural'
+  },
+  {
+    pos: '12',
+    station: 'EST-04',
+    stationNumber: 4,
+    partKey: 'throatbush',
+    branch: 'common',
+    branchLabelEs: 'Ambas Ramas (5-5-4)',
+    branchLabelEn: 'Both Branches (5-5-4)',
+    nameEs: 'Cuello / Anillo de Desgaste de Succión (Throatbush)',
+    nameEn: 'Suction Wear Ring (Throatbush)',
+    specEs: 'Cara cónica frontal de sacrificio; controla recirculación con el impulsor',
+    specEn: 'Conical front wear face; controls suction eye recirculation',
+    weightKgBySeries: { '3x2': 21.0, '6x4': 44.0, '8x6': 88.0 },
+    weightKg: 44.0,
+    nioshHoistRequired: true,
+    equipo: 'bombeo_hule_cromo',
+    pieza: 'throatbush',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '13',
+    station: 'EST-04',
+    stationNumber: 4,
+    partKey: 'cover_plate',
+    branch: 'common',
+    branchLabelEs: 'Común',
+    branchLabelEn: 'Common',
+    nameEs: 'Tapa Carcasa Lado Succión + Pernos (Cover Plate & Clamp Bolts)',
+    nameEn: 'Suction Cover Plate & Casing Clamp Bolts',
+    specEs: 'Mitad frontal bridada con orejas de izaje y espárragos pasantes',
+    specEn: 'Flanged suction outer casing half with lifting lugs and clamp bolts',
+    weightKgBySeries: { '3x2': 58.0, '6x4': 118.0, '8x6': 230.0 },
+    weightKg: 118.0,
+    nioshHoistRequired: true,
+    equipo: 'skid_bomba',
+    pieza: 'cover_plate',
+    material: 'alto_cromo_cr27'
+  },
+  {
+    pos: '14',
+    station: 'EST-05',
+    stationNumber: 5,
+    partKey: 'axial_clearance_adjustment',
+    branch: 'common',
+    branchLabelEs: 'Lote Completo',
+    branchLabelEn: 'Complete Kit',
+    nameEs: 'Lote Húmedo Sincronizado 5-5-4 (5 Juegos Liners + 5 Impulsores + 4 Sellos)',
+    nameEn: 'Synchronized 5-5-4 Wet-End Kit (5 Liner Sets + 5 Impellers + 4 Seals)',
+    specEs: 'Suministro programado por campaña con calibración δ = 0.5–1.0 mm',
+    specEn: 'Campaign-synchronized wet-end lot with δ = 0.5–1.0 mm calibration',
+    weightKgBySeries: { '3x2': 680.0, '6x4': 1410.0, '8x6': 2850.0 },
+    weightKg: 1410.0,
+    nioshHoistRequired: true,
+    equipo: 'bombeo_hule_cromo',
+    pieza: 'lote_554',
+    material: 'alto_cromo_cr27'
   }
 ];
 
@@ -657,11 +1264,16 @@ export const PUMP_ASSEMBLY_STATIONS = [
  * y Gandhi et al. (2001, DOI: 10.1115/1.1366322).
  *
  * @param {Object} params
- * @param {'metal'|'rubber'|'polyurethane'} [params.wetEndBranch='metal']
- * @param {'expeller_dry'|'gland_water'} [params.sealBranch='expeller_dry']
+ * @param {string} [params.wetEndBranch='metal']
+ * @param {string} [params.sealBranch='expeller_dry']
  * @param {number} [params.frontClearanceMm=0.75] - Claro axial frontal δ_frontal entre impulsor y throatbush (mm)
+ * @param {number} [params.rearClearanceMm=2.5] - Claro axial posterior δ_posterior (mm)
+ * @param {number} [params.impellerDiameterMm=380] - Diámetro exterior del impulsor D2 (mm)
  * @param {number} [params.impellerExitWidthMm=48] - Ancho de salida del impulsor b2 (mm)
- * @param {string[]} [params.customOrder] - Secuencia opcional para verificar colisiones geométricas Ng
+ * @param {string[]} [params.customOrder] - Secuencia opcional de piezas para verificar colisiones geométricas Ng
+ * @param {Array<number|string>} [params.attemptedStationOrder] - Orden opcional de estaciones [1, 2, 3, 4, 5]
+ * @param {string} [params.sequencePreset='canonical'] - Preset de secuencia ('canonical' | 'impeller_before_rear_liner' | 'cover_before_throatbush')
+ * @param {string} [params.pipeSeries='6x4'] - Serie de bomba ('3x2', '6x4', '8x6') para cálculo de masa NIOSH
  */
 export function evaluatePumpAssemblySequence(params = {}) {
   const opts = typeof params === 'number' ? { frontClearanceMm: params } : (params || {});
@@ -672,20 +1284,56 @@ export function evaluatePumpAssemblySequence(params = {}) {
 
   const clearanceMm = clamp(opts.frontClearanceMm, 0.1, 8.0, 0.75);
   const b2Mm = clamp(opts.impellerExitWidthMm, 15.0, 180.0, 48.0);
+  const seriesRaw = String(opts.pipeSeries || '6x4').toLowerCase();
+  const seriesKey = (seriesRaw.includes('3x2') || seriesRaw.includes('4x3') || seriesRaw.includes('1.5x1'))
+    ? '3x2'
+    : ((seriesRaw.includes('8x6') || seriesRaw.includes('10x8')) ? '8x6' : '6x4');
 
   // Secuencia canónica libre de interferencias (Ng = 0, Ns = 0)
   const canonicalSequence = wetEndBranch === 'metal'
     ? ['frame', 'bearing_assembly', 'frame_plate', 'shaft_sleeve', sealBranch, 'fpl_insert', 'impeller', 'monolithic_volute', 'throatbush', 'cover_plate', 'axial_clearance_adjustment']
     : ['frame', 'bearing_assembly', 'frame_plate', 'shaft_sleeve', sealBranch, 'frame_plate_liner', 'impeller', 'cover_plate_liner', 'throatbush', 'cover_plate', 'axial_clearance_adjustment'];
 
-  const sequenceToTest = Array.isArray(opts.customOrder) && opts.customOrder.length > 0
+  let sequenceToTest = Array.isArray(opts.customOrder) && opts.customOrder.length > 0
     ? opts.customOrder
     : canonicalSequence;
+
+  // Evaluar orden de estaciones si se provee attemptedStationOrder (ej. [1, 2, 3, 4, 5] o preset de prueba)
+  let outOfOrderStationId = null;
+  const collisionDetailsEs = [];
+  const collisionDetailsEn = [];
+
+  if (Array.isArray(opts.attemptedStationOrder) && opts.attemptedStationOrder.length > 0) {
+    const normalizedStations = opts.attemptedStationOrder.map((s) => {
+      const numMatch = String(s).match(/\d+/);
+      return numMatch ? Number(numMatch[0]) : Number(s);
+    });
+    for (let i = 0; i < normalizedStations.length; i++) {
+      if (normalizedStations[i] !== i + 1) {
+        outOfOrderStationId = `EST-0${normalizedStations[i]}`;
+        break;
+      }
+    }
+    if (outOfOrderStationId) {
+      collisionDetailsEs.push(`Estación fuera de secuencia axial (${outOfOrderStationId}): debe respetarse la precedencia EST-01 ➔ EST-02 ➔ EST-03 ➔ EST-04 ➔ EST-05.`);
+      collisionDetailsEn.push(`Out-of-order axial station (${outOfOrderStationId}): must follow EST-01 ➔ EST-02 ➔ EST-03 ➔ EST-04 ➔ EST-05 precedence.`);
+    }
+  } else if (typeof opts.sequencePreset === 'string' && opts.sequencePreset !== 'canonical') {
+    if (opts.sequencePreset === 'impeller_before_rear_liner') {
+      outOfOrderStationId = 'EST-02';
+      const rearPart = wetEndBranch === 'metal' ? 'fpl_insert' : 'frame_plate_liner';
+      sequenceToTest = ['frame', 'bearing_assembly', 'frame_plate', 'shaft_sleeve', sealBranch, 'impeller', rearPart, 'throatbush', 'cover_plate', 'axial_clearance_adjustment'];
+    } else if (opts.sequencePreset === 'cover_before_throatbush') {
+      outOfOrderStationId = 'EST-04';
+      const rearPart = wetEndBranch === 'metal' ? 'fpl_insert' : 'frame_plate_liner';
+      sequenceToTest = ['frame', 'bearing_assembly', 'frame_plate', 'shaft_sleeve', sealBranch, rearPart, 'impeller', 'cover_plate', 'throatbush', 'axial_clearance_adjustment'];
+    }
+  }
 
   // Verificación de Matriz de Interferencia Axial A_{I,-X} y Soporte S:
   // 1) El plato posterior (fpl_insert o frame_plate_liner) y el sello deben montarse ANTES de roscar el impulsor (D2 > D_hub).
   // 2) El impulsor debe roscarse ANTES de cerrar la voluta/cover_plate_liner y el throatbush.
-  let geometricInterferencesNg = 0;
+  let geometricInterferencesNg = outOfOrderStationId ? 1 : 0;
   let unstableSubassembliesNs = 0;
 
   const idxImpeller = sequenceToTest.indexOf('impeller');
@@ -696,16 +1344,48 @@ export function evaluatePumpAssemblySequence(params = {}) {
 
   if (idxImpeller !== -1 && idxRearLiner !== -1 && idxImpeller < idxRearLiner) {
     geometricInterferencesNg += 1; // Colisión axial: el plato posterior no puede atravesar el diámetro exterior del impulsor D2
+    if (!outOfOrderStationId) outOfOrderStationId = 'EST-03';
+    collisionDetailsEs.push('Colisión axial A_{I,-X} en EST-03: El plato posterior (FPL Insert / Liner FPL) no puede atravesar el diámetro exterior ØD₂ del impulsor ya roscado.');
+    collisionDetailsEn.push('Axial collision A_{I,-X} in EST-03: Rear wear plate (FPL Insert / FPL Liner) cannot pass over the outer diameter ØD₂ of an already-threaded impeller.');
   }
   if (idxImpeller !== -1 && idxThroatbush !== -1 && idxThroatbush < idxImpeller) {
     geometricInterferencesNg += 1; // Colisión axial: el cuello cierra el acceso frontal al impulsor
+    if (!outOfOrderStationId) outOfOrderStationId = 'EST-04';
+    collisionDetailsEs.push('Colisión axial A_{I,-X} en EST-03/04: El cuello de succión (Throatbush) bloquea el ingreso frontal del impulsor.');
+    collisionDetailsEn.push('Axial collision A_{I,-X} in EST-03/04: Suction Throatbush blocks frontal insertion of the impeller.');
   }
   if (idxRearLiner !== -1 && idxFramePlate !== -1 && idxRearLiner < idxFramePlate) {
     unstableSubassembliesNs += 1; // Operación inestable: liner sin plato soporte rígido previo
+    if (!outOfOrderStationId) outOfOrderStationId = 'EST-03';
+    collisionDetailsEs.push('Subensamble inestable S en EST-03: No se puede fijar el plato/forro posterior sin montar antes la carcasa lado soporte (Frame Plate #06).');
+    collisionDetailsEn.push('Unstable subassembly S in EST-03: Rear wear plate/liner cannot be anchored before mounting the drive-side Frame Plate (#06).');
   }
   if (idxCoverPlate !== -1 && idxThroatbush !== -1 && idxCoverPlate < idxThroatbush) {
     geometricInterferencesNg += 1; // Colisión: Cover Plate bloquea inserción del Throatbush
+    if (!outOfOrderStationId) outOfOrderStationId = 'EST-04';
+    collisionDetailsEs.push('Colisión axial A_{I,-X} en EST-04: La tapa de succión (Cover Plate #13) impide asentar el Throatbush (#12) desde el interior.');
+    collisionDetailsEn.push('Axial collision A_{I,-X} in EST-04: Closing the Suction Cover Plate (#13) first blocks internal seating of the Throatbush (#12).');
   }
+
+  // Filtrar las piezas activas del BOM de 14 componentes (excluyendo la posición #14 de lote de campaña para la masa de 1 bomba armada)
+  const targetBranchFilter = wetEndBranch === 'metal' ? 'alto_cromo_cr27' : 'hule_natural';
+  const selectedPartSpec = PUMP_554_BOM_14_PARTS
+    .filter((item) => item.branch === 'common' || item.branch === targetBranchFilter)
+    .map((item) => {
+      const seriesMass = item.weightKgBySeries?.[seriesKey] ?? item.weightKg;
+      const hoistReq = seriesMass >= 23.0;
+      return {
+        ...item,
+        activeSeries: seriesKey,
+        activeWeightKg: seriesMass,
+        activeNioshHoistRequired: hoistReq
+      };
+    });
+
+  const singlePumpParts = selectedPartSpec.filter((item) => item.pos !== '14');
+  const totalAssemblyMassKg = Number(singlePumpParts.reduce((acc, item) => acc + item.activeWeightKg, 0).toFixed(1));
+  const nioshHoistPartsCount = singlePumpParts.filter((item) => item.activeNioshHoistRequired).length;
+  const sequenceValid = geometricInterferencesNg === 0 && unstableSubassembliesNs === 0 && outOfOrderStationId === null;
 
   // Ley de pérdida volumétrica por recirculación en el claro frontal: Δην = kr * (δ / b2)^1.5 (Gandhi et al., 2001; Arbitraje #9 DOI: 10.1063/5.0331598)
   const kr = 2.85;
@@ -737,10 +1417,26 @@ export function evaluatePumpAssemblySequence(params = {}) {
   return {
     wetEndBranch,
     sealBranch,
+    pipeSeries: seriesKey,
+    stations: PUMP_ASSEMBLY_STATIONS,
+    bomParts: PUMP_554_BOM_14_PARTS,
+    selectedPartSpec,
+    totalAssemblyMassKg,
+    nioshHoistPartsCount,
     canonicalSequence,
     geometricInterferencesNg,
     unstableSubassembliesNs,
-    isValidAssembly: geometricInterferencesNg === 0 && unstableSubassembliesNs === 0,
+    isValidAssembly: sequenceValid,
+    sequenceValid,
+    outOfOrderStationId,
+    collisionDetailsEs,
+    collisionDetailsEn,
+    collisionRiskEs: sequenceValid
+      ? 'Secuencia axial libre de colisiones geométricas (Ng = 0, Ns = 0)'
+      : `SECUENCIA INVÁLIDA (${outOfOrderStationId}): ${collisionDetailsEs.join(' ')}`,
+    collisionRiskEn: sequenceValid
+      ? 'Axial sequence free of geometric collisions (Ng = 0, Ns = 0)'
+      : `INVALID SEQUENCE (${outOfOrderStationId}): ${collisionDetailsEn.join(' ')}`,
     frontClearanceMm: clearanceMm,
     impellerExitWidthMm: b2Mm,
     optimalClearanceBandMm: [0.5, 1.0],
@@ -777,6 +1473,8 @@ export const DRIVE_ARRANGEMENT_CATALOG = {
     sumpFloodImmunity: true,
     beltDriven: true,
     maxRecommendedMotorKw: 75,
+    descriptionEs: 'Montaje compacto con motor elevado sobre cuna superior del Bearing Assembly y guarda amarilla/naranja. Ahorra 45% de huella en piso y protege al motor eléctrico de derrames e inundaciones de pulpa en trincheras.',
+    descriptionEn: 'Compact overhead motor cradle mounted above the Bearing Assembly. Saves 45% floor space and protects the electric motor from sump slurry spills and flooding.',
     applicationEs: 'Montaje compacto con motor elevado sobre cuna superior del Bearing Assembly y guarda amarilla/naranja. Ahorra 45% de huella en piso y protege al motor eléctrico de derrames e inundaciones de pulpa en trincheras.',
     applicationEn: 'Compact overhead motor cradle mounted above the Bearing Assembly. Saves 45% floor space and protects the electric motor from sump slurry spills and flooding.'
   },
@@ -788,17 +1486,21 @@ export const DRIVE_ARRANGEMENT_CATALOG = {
     sumpFloodImmunity: true,
     beltDriven: true,
     maxRecommendedMotorKw: 315,
+    descriptionEs: 'Motor montado sobre pedestal posterior elevado detrás del Bearing Assembly con transmisión por bandas en V. Ideal para potencias medias y altas manteniendo el motor por encima del nivel de inundación del foso.',
+    descriptionEn: 'Motor mounted on an elevated rear pedestal behind the Bearing Assembly with V-belt drive. Ideal for medium-to-high horsepower while keeping the motor above sump flood level.',
     applicationEs: 'Motor montado sobre pedestal posterior elevado detrás del Bearing Assembly con transmisión por bandas en V. Ideal para potencias medias y altas manteniendo el motor por encima del nivel de inundación del foso.',
     applicationEn: 'Motor mounted on an elevated rear pedestal behind the Bearing Assembly with V-belt drive. Ideal for medium-to-high horsepower while keeping the motor above sump flood level.'
   },
   CRZ: {
     code: 'CRZ',
-    nameEs: 'Arreglo CRZ / बेल्ट Lateral (Motor Lateral en Bastidor Compartido)',
+    nameEs: 'Arreglo CRZ / Banda Lateral (Motor Lateral en Bastidor Compartido)',
     nameEn: 'CRZ / CR Arrangement (Side-by-Side Belt Drive on Shared Skid)',
     footprintFactor: 1.0,
     sumpFloodImmunity: false,
     beltDriven: true,
     maxRecommendedMotorKw: 560,
+    descriptionEs: 'Motor colocado paralelamente al costado de la bomba sobre base estructural de acero con rieles tensores. Facilita el cambio rápido de poleas (H ∝ N²) para compensar desgaste del impulsor.',
+    descriptionEn: 'Motor mounted side-by-side next to the pump on a heavy structural skid with slide rails. Enables rapid sheave ratio changes (H ∝ N²) to compensate for impeller wear.',
     applicationEs: 'Motor colocado paralelamente al costado de la bomba sobre base estructural de acero con rieles tensores. Facilita el cambio rápido de poleas (H ∝ N²) para compensar desgaste del impulsor.',
     applicationEn: 'Motor mounted side-by-side next to the pump on a heavy structural skid with slide rails. Enables rapid sheave ratio changes (H ∝ N²) to compensate for impeller wear.'
   },
@@ -810,6 +1512,8 @@ export const DRIVE_ARRANGEMENT_CATALOG = {
     sumpFloodImmunity: false,
     beltDriven: false,
     maxRecommendedMotorKw: 1000,
+    descriptionEs: 'Acoplamiento colineal directo entre motor (con variador de frecuencia VFD) y la flecha del Bearing Assembly. Cero carga radial de bandas sobre los rodamientos (Fr = 0).',
+    descriptionEn: 'Collinear direct coupling between motor (with VFD speed control) and Bearing Assembly shaft. Zero V-belt radial overhung load on bearings (Fr = 0).',
     applicationEs: 'Acoplamiento colineal directo entre motor (con variador de frecuencia VFD) y la flecha del Bearing Assembly. Cero carga radial de bandas sobre los rodamientos (Fr = 0).',
     applicationEn: 'Collinear direct coupling between motor (with VFD speed control) and Bearing Assembly shaft. Zero V-belt radial overhung load on bearings (Fr = 0).'
   }
@@ -878,13 +1582,20 @@ export function calculateDriveAndBearingKinematics(params = {}) {
     arrangementNameEs: arrangementInfo.nameEs,
     arrangementNameEn: arrangementInfo.nameEn,
     sumpFloodImmunity: arrangementInfo.sumpFloodImmunity,
+    sumpFloodImmunityEn: arrangementInfo.sumpFloodImmunity ? 'Elevated Motor (Splash Immune)' : 'Baseplate Level',
     footprintFactor: arrangementInfo.footprintFactor,
     motorRpm,
+    driverPulleyMm: driverMm,
+    drivenPulleyMm: drivenMm,
+    shaftPowerKw: powerKw,
+    dynamicCapacityCkN: capacityCkN,
+    wetEndMaterial: matRaw || 'alto_cromo_cr27',
     pumpRpm,
     speedMultiplier,
     reductionRatio,
     impellerDiameterMm: impellerMm,
     tipSpeedMs,
+    impellerTipSpeedMs: tipSpeedMs,
     rubberSafeTipSpeed,
     rubberThermalLimitExceeded,
     recommendedWetMaterialByTipSpeed: rubberSafeTipSpeed ? 'Hule Natural / Poliuretano / Alto Cromo' : 'Exclusivo Alto Cromo ≥ 650 HB (u2 > 24.5 m/s)',
@@ -899,5 +1610,7 @@ export function calculateDriveAndBearingKinematics(params = {}) {
 
 export const DRIVE_ARRANGEMENTS = DRIVE_ARRANGEMENT_CATALOG;
 export const calculateDriveKinematics = calculateDriveAndBearingKinematics;
+export const calculateMarcyScale = calculateMarcyScaleReading;
+
 
 

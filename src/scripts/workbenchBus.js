@@ -4,182 +4,102 @@
  * oficiales de exportación para SAP / ERP, Mailto RFC 6068 y WhatsApp de Almacén Durango.
  */
 
+import atomicPartsJson from '../../data/atomic_parts.json' with { type: 'json' };
+
 export const SMAT_WORKBENCH_EVENT = 'smat:workbench_update';
 
 /**
- * Mapa canónico de las 6 refacciones atómicas universales (data/atomic_parts.json)
- * para resolución determinista de deep-links (?codigo=D3147..E4083) y decodificación.
+ * Endpoint oficial de respaldo para ingesta asíncrona hacia Google Apps Script (Code.gs)
  */
-export const ATOMIC_PARTS_CATALOG = {
+export const DEFAULT_SMAT_LEAD_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzSmatDurangoLeadIntakeWebhookV2/exec';
+
+/**
+ * Enriquecimiento cinemático y de ruteo de estación por código atómico sobre SSOT data/atomic_parts.json
+ */
+const ATOMIC_ENGINEERING_ENRICHMENT = {
   D3147: {
-    code: 'd3147',
     slug: 'impulsor_3x2_d3147',
-    part_number: 'D3147',
-    frame: '4/3 C',
-    circuit: 'bombeo',
     role: 'solo_impulsor',
     pipe_size: '3x2',
     smat_code: 'SMAT-PUMP-3X2-IMP',
-    name_es: 'Impulsor Cerrado A05 para Bomba 4/3 C',
-    name_en: 'Closed High Chrome A05 Impeller for 4/3 C Pump',
-    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)',
-    weight_kg: 32.5,
-    impeller_diameter_mm: 270,
-    vanes: 5,
-    max_particle_mm: 28,
-    max_sphere_mm: 28,
     wall_thickness_mm: 24,
-    station_number: 3,
-    station: 'S3',
     station_name_es: 'Extremo Húmedo (Lote 5-5-4)',
     station_name_en: 'Wet-End Assembly (5-5-4 Lot)',
-    assembly_order: '09. Impulsor Cerrado 5 Álabes (Estación 03)',
-    assembly_order_note: '09. Impulsor Cerrado 5 Álabes (Estación 03 • Lote 5:5:4)',
-    wet_end_kit_ratio: '5:5:4',
-    niosh_handling_mode: 'HOIST_REQUIRED',
-    handling_mode: 'HOIST_REQUIRED'
+    assembly_order_note: '09. Impulsor Cerrado 5 Álabes (Estación 03 • Lote 5:5:4)'
   },
   E4147: {
-    code: 'e4147',
     slug: 'impulsor_5_alabes',
-    part_number: 'E4147',
-    frame: '6/4 D',
-    circuit: 'bombeo',
     role: 'solo_impulsor',
     pipe_size: '6x4',
     smat_code: 'SMAT-PUMP-6X4-IMP',
-    name_es: 'Impulsor Cerrado A05 para Bomba 6/4 D',
-    name_en: 'Closed High Chrome A05 Impeller for 6/4 D Pump',
-    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)',
-    weight_kg: 68.0,
-    impeller_diameter_mm: 380,
-    vanes: 5,
-    max_particle_mm: 45,
-    max_sphere_mm: 45,
     wall_thickness_mm: 32,
-    station_number: 3,
-    station: 'S3',
     station_name_es: 'Extremo Húmedo (Lote 5-5-4)',
     station_name_en: 'Wet-End Assembly (5-5-4 Lot)',
-    assembly_order: '09. Impulsor Cerrado 5 Álabes (Estación 03)',
-    assembly_order_note: '09. Impulsor Cerrado 5 Álabes (Estación 03 • Lote 5:5:4)',
-    wet_end_kit_ratio: '5:5:4',
-    niosh_handling_mode: 'HOIST_REQUIRED',
-    handling_mode: 'HOIST_REQUIRED'
+    assembly_order_note: '09. Impulsor Cerrado 5 Álabes (Estación 03 • Lote 5:5:4)'
   },
   F6147: {
-    code: 'f6147',
     slug: 'impulsor_8x6_f6147',
-    part_number: 'F6147',
-    frame: '8/6 E',
-    circuit: 'bombeo',
     role: 'solo_impulsor',
     pipe_size: '8x6',
     smat_code: 'SMAT-PUMP-8X6-IMP',
-    name_es: 'Impulsor Cerrado A05 para Bomba 8/6 E',
-    name_en: 'Closed High Chrome A05 Impeller for 8/6 E Pump',
-    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)',
-    weight_kg: 142.0,
-    impeller_diameter_mm: 510,
-    vanes: 5,
-    max_particle_mm: 64,
-    max_sphere_mm: 64,
     wall_thickness_mm: 42,
-    station_number: 3,
-    station: 'S3',
     station_name_es: 'Extremo Húmedo (Lote 5-5-4)',
     station_name_en: 'Wet-End Assembly (5-5-4 Lot)',
-    assembly_order: '09. Impulsor Cerrado 5 Álabes (Estación 03)',
-    assembly_order_note: '09. Impulsor Cerrado 5 Álabes (Estación 03 • Lote 5:5:4)',
-    wet_end_kit_ratio: '5:5:4',
-    niosh_handling_mode: 'HOIST_REQUIRED',
-    handling_mode: 'HOIST_REQUIRED'
+    assembly_order_note: '09. Impulsor Cerrado 5 Álabes (Estación 03 • Lote 5:5:4)'
   },
   DAM028: {
-    code: 'dam028',
     slug: 'camisa_flecha',
-    part_number: 'DAM028',
-    frame: '4/3 C',
-    circuit: 'bombeo',
     role: 'kit_sellado',
     pipe_size: '3x2',
     smat_code: 'SMAT-SEAL-3X2-EXP',
-    name_es: 'Anillo Expulsor de Sello Dinámico para Marco 4/3 C',
-    name_en: 'Dynamic Expeller Ring for 4/3 C Frame',
-    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)',
-    weight_kg: 18.5,
-    impeller_diameter_mm: 270,
-    vanes: 0,
-    max_particle_mm: 28,
-    max_sphere_mm: 28,
     wall_thickness_mm: 18,
-    station_number: 2,
-    station: 'S2',
     station_name_es: 'Sellado Centrífugo Seco',
     station_name_en: 'Dry Centrifugal Sealing',
-    assembly_order: '05. Anillo Expulsor Centrífugo (Estación 02)',
-    assembly_order_note: '05. Anillo Expulsor Centrífugo (Estación 02 • Sin agua de sello)',
-    wet_end_kit_ratio: '5:5:4',
-    niosh_handling_mode: 'MANUAL_SAFE',
-    handling_mode: 'MANUAL_SAFE'
+    assembly_order_note: '05. Anillo Expulsor Centrífugo (Estación 02 • Sin agua de sello)'
   },
   EAM028: {
-    code: 'eam028',
     slug: 'expeller',
-    part_number: 'EAM028',
-    frame: '6/4 D',
-    circuit: 'bombeo',
     role: 'kit_sellado',
     pipe_size: '6x4',
     smat_code: 'SMAT-SEAL-6X4-EXP',
-    name_es: 'Anillo Expulsor de Sello Dinámico para Marco 6/4 D',
-    name_en: 'Dynamic Expeller Ring for 6/4 D Frame',
-    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)',
-    weight_kg: 29.0,
-    impeller_diameter_mm: 380,
-    vanes: 0,
-    max_particle_mm: 45,
-    max_sphere_mm: 45,
     wall_thickness_mm: 22,
-    station_number: 2,
-    station: 'S2',
     station_name_es: 'Sellado Centrífugo Seco',
     station_name_en: 'Dry Centrifugal Sealing',
-    assembly_order: '05. Anillo Expulsor Centrífugo (Estación 02)',
-    assembly_order_note: '05. Anillo Expulsor Centrífugo (Estación 02 • Sin agua de sello)',
-    wet_end_kit_ratio: '5:5:4',
-    niosh_handling_mode: 'HOIST_REQUIRED',
-    handling_mode: 'HOIST_REQUIRED'
+    assembly_order_note: '05. Anillo Expulsor Centrífugo (Estación 02 • Sin agua de sello)'
   },
   E4083: {
-    code: 'e4083',
     slug: 'throatbush',
-    part_number: 'E4083',
-    frame: '6/4 D',
-    circuit: 'bombeo',
     role: 'solo_voluta',
     pipe_size: '6x4',
     smat_code: 'SMAT-PUMP-6X4-VOL',
-    name_es: 'Cuello de Succión (Throatbush) A05 para Bomba 6/4 D',
-    name_en: 'High Chrome A05 Throatbush for 6/4 D Pump',
-    metallurgy: 'High Chrome A05 (27% Cr, ≥ 650 HB)',
-    weight_kg: 44.0,
-    impeller_diameter_mm: 380,
-    vanes: 0,
-    max_particle_mm: 45,
-    max_sphere_mm: 45,
     wall_thickness_mm: 35,
-    station_number: 3,
-    station: 'S3',
     station_name_es: 'Extremo Húmedo / Calibración Axial',
     station_name_en: 'Wet-End / Axial Clearance Calibration',
-    assembly_order: '11. Cuello de Succión Cónico Throatbush (Estación 03 / Calibración 05)',
-    assembly_order_note: '11. Cuello de Succión Cónico Throatbush (Estación 03 • Claro δ=0.5–1.0 mm)',
-    wet_end_kit_ratio: '5:5:4',
-    niosh_handling_mode: 'HOIST_REQUIRED',
-    handling_mode: 'HOIST_REQUIRED'
+    assembly_order_note: '11. Cuello de Succión Cónico Throatbush (Estación 03 • Claro δ=0.5–1.0 mm)'
   }
 };
+
+/**
+ * Mapa canónico de las 6 refacciones atómicas universales importado desde SSOT (data/atomic_parts.json)
+ * para resolución determinista de deep-links (?codigo=D3147..E4083), dureza, garantía de ajuste y decodificación.
+ */
+export const ATOMIC_PARTS_CATALOG = Object.fromEntries(
+  atomicPartsJson.map((item) => {
+    const key = String(item.part_number || item.code || '').toUpperCase();
+    const extra = ATOMIC_ENGINEERING_ENRICHMENT[key] || {};
+    return [
+      key,
+      {
+        ...item,
+        ...extra,
+        circuit: 'bombeo',
+        max_sphere_mm: item.max_particle_mm,
+        station: `S${item.station_number}`,
+        handling_mode: item.niosh_handling_mode
+      }
+    ];
+  })
+);
 
 /**
  * Resuelve un código atómico universal (D3147..E4083) de forma insensible a mayúsculas
@@ -244,22 +164,24 @@ export function publishWorkbenchUpdate(detail) {
  * @returns {Function} Desuscriptor
  */
 export function subscribeWorkbenchUpdate(callback) {
-  if (typeof window === 'undefined') return () => {};
+  if (typeof window === 'undefined') return () => { };
   const handler = (event) => callback(event.detail);
   window.addEventListener(SMAT_WORKBENCH_EVENT, handler);
   return () => window.removeEventListener(SMAT_WORKBENCH_EVENT, handler);
 }
 
 /**
- * Parsea los parámetros de contexto desde la URL (#rfq?equipo=... o ?equipo=...)
- * @param {string} urlOrSearch 
- * @returns {Object} { equipo, rol, mina, urgencia, modo, origen }
+ * Parsea los parámetros de contexto desde la URL (#rfq?equipo=... o ?equipo=... o combinación de search + hash)
+ * @param {string} [urlOrSearch='']
+ * @param {string} [hashOptional='']
+ * @returns {Object}
  */
-export function parseUrlContextParams(urlOrSearch = '') {
-  if (!urlOrSearch && typeof window !== 'undefined') {
-    urlOrSearch = window.location.hash || window.location.search || '';
+export function parseUrlContextParams(urlOrSearch = '', hashOptional = '') {
+  if (!urlOrSearch && !hashOptional && typeof window !== 'undefined') {
+    urlOrSearch = window.location.search || '';
+    hashOptional = window.location.hash || '';
   }
-  
+
   const result = {
     equipo: null,
     rol: null,
@@ -288,30 +210,87 @@ export function parseUrlContextParams(urlOrSearch = '') {
     cw: null,
     gy_kg: null,
     p80: null,
+    d95: null,
+    ph: null,
+    seal_branch: null,
+    b2_mm: null,
+    cap_c_kn: null,
+    rhop: null,
+    lib_um: null,
+    grade: null,
+    air_psi: null,
+    gy_c: null,
+    gy_err: null,
+    rr_n: null,
+    ret_p80: null,
+    n2_rpm: null,
+    fr_kn: null,
+    driver_mm: null,
+    driven_mm: null,
+    motor_rpm: null,
+    power_kw: null,
+    inmunidad_sumidero: null,
+    razon_estructural: null,
+    cv: null,
+    fl: null,
+    v_rec: null,
+    pipeOrSeries: null,
+    pulpPh: null,
+    sealBranch: null,
+    impellerExitWidthMm: null,
+    dynamicCapacityCkN: null,
+    driverPulleyMm: null,
+    drivenPulleyMm: null,
+    motorRpm: null,
+    shaftPowerKw: null,
+    oreDensitySg: null,
+    solidsSg: null,
+    solidsWeightPercent: null,
+    gyD95Cm: null,
+    liberationSizeMicrons: null,
+    criticalGradeDecimal: null,
+    airPressurePsi: null,
+    gyConstantC: null,
+    gyRelativeError: null,
+    rosinRammlerSlopeN: null,
+    particleSizeD80Microns: null,
     atomic_part: null
   };
-  
-  if (!urlOrSearch) return result;
-  
-  // Soporta formato #rfq?equipo=... o ?equipo=... o https://domain/?equipo=...#rfq
-  let raw = urlOrSearch;
-  const queryIndex = raw.indexOf('?');
-  if (queryIndex !== -1) {
-    raw = raw.substring(queryIndex + 1);
-  } else {
-    raw = raw.replace(/^[#?]/, '');
+
+  if (!urlOrSearch && !hashOptional) return result;
+
+  function extractQuerySegment(segment) {
+    if (!segment) return '';
+    let s = String(segment);
+    const qIdx = s.indexOf('?');
+    if (qIdx !== -1) {
+      s = s.substring(qIdx + 1);
+    } else if (s.startsWith('#')) {
+      return '';
+    } else {
+      s = s.replace(/^[#?]/, '');
+    }
+    const hIdx = s.indexOf('#');
+    if (hIdx !== -1) {
+      s = s.substring(0, hIdx);
+    }
+    return s;
   }
-  
-  // Limpiar ancla hash si viene al final del query string (?equipo=xyz#rfq)
-  const hashIndex = raw.indexOf('#');
-  if (hashIndex !== -1) {
-    raw = raw.substring(0, hashIndex);
+
+  const rawParts = [extractQuerySegment(urlOrSearch), extractQuerySegment(hashOptional)].filter(Boolean);
+  let raw = rawParts.join('&');
+  if (!raw && urlOrSearch && !urlOrSearch.startsWith('#')) {
+    raw = urlOrSearch.replace(/^[#?]/, '');
+    const hIdx = raw.indexOf('#');
+    if (hIdx !== -1) raw = raw.substring(0, hIdx);
   }
-  
+  if (!raw) return result;
+
   try {
     const params = new URLSearchParams(raw);
     if (params.has('equipo')) result.equipo = params.get('equipo');
     else if (params.has('role_id')) result.equipo = params.get('role_id');
+    else if (params.has('role')) result.equipo = params.get('role');
 
     if (params.has('pieza')) result.pieza = params.get('pieza');
     else if (params.has('part')) result.pieza = params.get('part');
@@ -336,6 +315,31 @@ export function parseUrlContextParams(urlOrSearch = '') {
     if (params.has('cw')) result.cw = params.get('cw');
     if (params.has('gy_kg')) result.gy_kg = params.get('gy_kg');
     if (params.has('p80')) result.p80 = params.get('p80');
+    if (params.has('d95')) result.d95 = params.get('d95');
+    if (params.has('ph')) result.ph = params.get('ph');
+    if (params.has('seal_branch')) result.seal_branch = params.get('seal_branch');
+    else if (params.has('sello_rama')) result.seal_branch = params.get('sello_rama');
+    if (params.has('b2_mm')) result.b2_mm = params.get('b2_mm');
+    if (params.has('cap_c_kn')) result.cap_c_kn = params.get('cap_c_kn');
+    if (params.has('rhop')) result.rhop = params.get('rhop');
+    if (params.has('lib_um')) result.lib_um = params.get('lib_um');
+    if (params.has('grade')) result.grade = params.get('grade');
+    if (params.has('air_psi')) result.air_psi = params.get('air_psi');
+    if (params.has('gy_c')) result.gy_c = params.get('gy_c');
+    if (params.has('gy_err')) result.gy_err = params.get('gy_err');
+    if (params.has('rr_n')) result.rr_n = params.get('rr_n');
+    if (params.has('ret_p80')) result.ret_p80 = params.get('ret_p80');
+    if (params.has('n2_rpm')) result.n2_rpm = params.get('n2_rpm');
+    if (params.has('fr_kn')) result.fr_kn = params.get('fr_kn');
+    if (params.has('driver_mm')) result.driver_mm = params.get('driver_mm');
+    if (params.has('driven_mm')) result.driven_mm = params.get('driven_mm');
+    if (params.has('motor_rpm')) result.motor_rpm = params.get('motor_rpm');
+    if (params.has('power_kw')) result.power_kw = params.get('power_kw');
+    if (params.has('inmunidad_sumidero')) result.inmunidad_sumidero = params.get('inmunidad_sumidero');
+    if (params.has('razon_estructural')) result.razon_estructural = params.get('razon_estructural');
+    if (params.has('cv')) result.cv = params.get('cv');
+    if (params.has('fl')) result.fl = params.get('fl');
+    if (params.has('v_rec')) result.v_rec = params.get('v_rec');
 
     if (params.has('rol')) result.rol = params.get('rol');
     else if (params.has('perspectiva')) result.rol = params.get('perspectiva');
@@ -344,9 +348,35 @@ export function parseUrlContextParams(urlOrSearch = '') {
     else if (params.has('empresa')) result.mina = params.get('empresa');
 
     if (params.has('urgencia')) result.urgencia = params.get('urgencia');
+    else if (params.has('tipo')) result.urgencia = params.get('tipo');
     if (params.has('modo')) result.modo = params.get('modo');
     if (params.has('origen')) result.origen = params.get('origen');
     if (params.has('serie')) result.serie = params.get('serie');
+    else if (params.has('bomba')) result.serie = params.get('bomba');
+    result.pipeOrSeries = result.serie;
+    if (result.ph !== null) result.pulpPh = Number(result.ph);
+    if (result.seal_branch !== null) result.sealBranch = result.seal_branch;
+    if (result.b2_mm !== null) result.impellerExitWidthMm = Number(result.b2_mm);
+    if (result.cap_c_kn !== null) result.dynamicCapacityCkN = Number(result.cap_c_kn);
+    if (result.driver_mm !== null) result.driverPulleyMm = Number(result.driver_mm);
+    if (result.driven_mm !== null) result.drivenPulleyMm = Number(result.driven_mm);
+    if (result.motor_rpm !== null) result.motorRpm = Number(result.motor_rpm);
+    if (result.power_kw !== null) result.shaftPowerKw = Number(result.power_kw);
+    if (result.rhop !== null) result.oreDensitySg = Number(result.rhop);
+    if (result.sg !== null) result.solidsSg = Number(result.sg);
+    if (result.cw !== null) result.solidsWeightPercent = Number(result.cw);
+    if (params.has('d95_cm')) {
+      result.d95 = params.get('d95_cm');
+      result.gyD95Cm = Number(result.d95);
+    } else if (result.d95 !== null) {
+      result.gyD95Cm = Number(result.d95);
+    }
+    if (result.lib_um !== null) result.liberationSizeMicrons = Number(result.lib_um);
+    if (result.grade !== null) result.criticalGradeDecimal = Number(result.grade);
+    if (result.air_psi !== null) result.airPressurePsi = Number(result.air_psi);
+    if (result.gy_c !== null) result.gyConstantC = Number(result.gy_c);
+    if (result.gy_err !== null) result.gyRelativeError = Number(result.gy_err);
+    if (result.rr_n !== null) result.rosinRammlerSlopeN = Number(result.rr_n);
     if (params.has('sintoma')) result.sintoma = params.get('sintoma');
     if (params.has('falla')) result.falla = params.get('falla');
 
@@ -355,7 +385,10 @@ export function parseUrlContextParams(urlOrSearch = '') {
 
     if (params.has('flow')) result.flow = params.get('flow');
     if (params.has('solids')) result.solids = params.get('solids');
+    else if (params.has('cw')) result.solids = params.get('cw');
     if (params.has('d80')) result.d80 = params.get('d80');
+    else if (params.has('p80')) result.d80 = params.get('p80');
+    if (result.d80 !== null) result.particleSizeD80Microns = Number(result.d80);
 
     // Si el usuario seleccionó una pieza específica en 1 clic sin pasar equipo, mapear al rol correspondiente
     if (!result.equipo && result.pieza) {
@@ -380,7 +413,7 @@ export function parseUrlContextParams(urlOrSearch = '') {
   } catch (_err) {
     // Resiliente ante cadenas malformadas
   }
-  
+
   return result;
 }
 
@@ -397,7 +430,7 @@ export function formatSapPlaintext(data = {}) {
   const phoneVal = data.phone_number || data.phone || '';
   const emailVal = data.email_address || data.email || '';
   const contact = phoneVal ? `${phoneVal} • ${emailVal}` : (emailVal || 'N/A');
-  
+
   const logisticsLabels = {
     retiro: 'Retiro en Almacén Central Durango (Coordinación con Folio)',
     fletera: 'Fletera Consolidada Nacional (Ocurre en Destino)',
@@ -477,6 +510,10 @@ export function formatSapPlaintext(data = {}) {
   const resolvedClaro = data.claro_mm || data.front_clearance_mm || ce.frontClearanceMm || '';
   const resolvedDeltaEta = data.delta_eta_v !== undefined ? data.delta_eta_v : (ce.volumetricEfficiencyDropPct ?? ce.volumetricEfficiencyLossPct);
   const resolvedU2 = data.u2_ms || data.tip_speed_ms || kin.tipSpeedMs || '';
+  const resolvedPumpRpm = data.n2_rpm || data.pump_rpm || kin.pumpRpm || '';
+  const resolvedFrKn = data.fr_kn !== undefined ? data.fr_kn : (data.belt_radial_load_kn ?? kin.beltRadialLoadKn ?? '');
+  const resolvedFlood = data.inmunidad_sumidero || data.sump_flood_immunity || kin.sumpFloodImmunity || '';
+  const resolvedStructural = data.razon_estructural || data.structural_reason || ce.structuralReasonEs || '';
   const resolvedL10h = data.l10h || data.bearing_l10h || kin.bearingL10Hours || kin.estimatedL10hHours || '';
   const resolvedMetrology = data.metrologia || data.metrology_summary || met.summary || met.raw || (
     (met.cw !== undefined || met.solidsPctCw !== undefined)
@@ -509,10 +546,16 @@ export function formatSapPlaintext(data = {}) {
     const lossStr = resolvedDeltaEta !== undefined ? ` | Pérdida Recirculación Δη_v: ${resolvedDeltaEta}%` : '';
     lines.push(`   - Calibración Claro Axial δ:  ${resolvedClaro} mm${lossStr}`);
   }
-  if (resolvedU2 || resolvedL10h) {
+  if (resolvedStructural) {
+    lines.push(`   - Dictamen Estructural:       ${resolvedStructural}`);
+  }
+  if (resolvedU2 || resolvedL10h || resolvedPumpRpm || resolvedFrKn !== '') {
     const u2Val = resolvedU2 || '19.9';
     const l10Val = resolvedL10h || '28500';
-    lines.push(`   - Cinemática V-Belt & ISO281: u2 = ${u2Val} m/s | Vida Rodamientos L10h = ${l10Val} h`);
+    const rpmSuffix = resolvedPumpRpm ? ` | n2 = ${resolvedPumpRpm} RPM` : '';
+    const frSuffix = resolvedFrKn !== '' ? ` | Fr = ${Number(resolvedFrKn).toFixed(2)} kN` : '';
+    const floodSuffix = resolvedFlood ? ` | Sumidero = ${resolvedFlood}` : '';
+    lines.push(`   - Cinemática V-Belt & ISO281: u2 = ${u2Val} m/s${rpmSuffix}${frSuffix} | Vida Rodamientos L10h = ${l10Val} h${floodSuffix}`);
   }
   if (resolvedMetrology) {
     lines.push(`   - Cédula Metrológica Lab:     ${resolvedMetrology}`);
@@ -578,18 +621,21 @@ export function formatSapPlaintext(data = {}) {
  */
 export function formatMailtoUrl(data = {}) {
   const folio = data.folio || 'SMAT-2026-8810';
-  const company = data.company_name || 'Unidad Minera';
-  const partName = data.part_name || 'Refaccionamiento Minero';
-  const targetEmail = data.email_address || 'contacto@smatminerals.com';
-  
-  const subject = `[Requisición ${folio}] ${company} - ${partName}`;
+  const company = data.company_name || data.company || 'Unidad Minera';
+  const partName = data.part_name || data.role || 'Refaccionamiento Minero';
+  const smatCode = data.smat_code || generateSmatPartCode(data);
+  const targetEmail = data.target_email || data.email_address || 'ventas@smatminerals.com';
+
+  const subject = `[Requisición ${folio}] [${smatCode}] ${company} - ${partName}`;
   const body = formatSapPlaintext(data);
-  
+
   return `mailto:${encodeURIComponent(targetEmail)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 /**
  * Genera URL para WhatsApp directo a atención técnica de planta en Durango (Decisiones 8-B y 9-B)
+ * Incluye claro axial δ, pérdida volumétrica Δη_v, cinemática V-Belt (u2, L10h),
+ * estación/masa NIOSH, memoria hidráulica Durand y cédula metrológica de laboratorio.
  * @param {Object} data 
  * @returns {string}
  */
@@ -597,12 +643,96 @@ export function formatWhatsappUrl(data = {}) {
   const folio = data.folio || 'SMAT-2026-8810';
   const requester = data.contact_name || data.name || 'Ingeniero Solicitante';
   const company = data.company_name || data.company || 'Empresa';
+  const phoneContact = data.phone_number || data.phone || '';
   const partName = data.part_name || data.role || 'Refacción de Bomba';
   const smatCode = data.smat_code || generateSmatPartCode(data);
+  const atomicCode = data.atomic_code || '';
   const circuit = (data.circuit || 'BOMBEO').toUpperCase();
-  
-  const text = `Hola SMAT Durango, requiero cotización y confirmación de stock para:\n*Folio:* ${folio}\n*Circuito:* ${circuit}\n*Mina:* ${company} (${requester})\n*Equipo/Partida:* ${partName}\n*Código SMAT:* ${smatCode}\n\n*Instrucción de Almacén Durango:* Favor de adjuntar fotografía de la pieza con un flexómetro de referencia para cotejo 1:1.\n\nFavor de confirmar tiempo de despacho en Almacén Central Durango.`;
-  
+  const priorityTag = data.isOpex === false ? '[PROYECTO CAPEX]' : '[PARO DE PLANTA]';
+
+  const ps = data.part_specs || {};
+  const ce = data.clearance_eval || {};
+  const kin = data.kinematics || {};
+  const met = data.metrology || {};
+  const m = data.metrics || {};
+
+  const resolvedMat = data.material || data.wet_material || data.pump_material || '';
+  const resolvedDrive = data.transmision || data.drive_arrangement || kin.arrangement || kin.arrangementCode || '';
+  const resolvedStation = data.estacion || data.station_number || data.assembly_station || ps.station_number || ps.station || '';
+  const resolvedWeight = data.peso_kg || data.part_weight_kg || ps.weight_kg || '';
+  const resolvedClaro = data.claro_mm !== undefined ? data.claro_mm : (data.front_clearance_mm ?? ce.frontClearanceMm ?? '');
+  const resolvedDeltaEta = data.delta_eta_v !== undefined ? data.delta_eta_v : (ce.volumetricEfficiencyDropPct ?? ce.volumetricEfficiencyLossPct ?? '');
+  const resolvedU2 = data.u2_ms || data.tip_speed_ms || kin.tipSpeedMs || '';
+  const resolvedPumpRpm = data.n2_rpm || data.pump_rpm || kin.pumpRpm || '';
+  const resolvedFrKn = data.fr_kn !== undefined ? data.fr_kn : (data.belt_radial_load_kn ?? kin.beltRadialLoadKn ?? '');
+  const resolvedFlood = data.inmunidad_sumidero || data.sump_flood_immunity || kin.sumpFloodImmunity || '';
+  const resolvedL10h = data.l10h || data.bearing_l10h || kin.bearingL10Hours || kin.estimatedL10hHours || '';
+  const resolvedMetrology = data.metrologia || data.metrology_summary || met.summary || met.raw || (
+    (met.cw !== undefined || met.solidsPctCw !== undefined)
+      ? `Cw=${met.cw ?? met.solidsPctCw}% | Sm=${met.sm ?? met.pulpDensityKgL ?? 1.40} kg/L | P80=${met.p80 ?? met.targetP80Microns ?? 150} µm | Gy=${met.dryMassKg ?? met.gySampleMassKg ?? 0.25} kg`
+      : ''
+  );
+
+  const lines = [
+    `Hola SMAT Durango, requiero cotización y confirmación de stock para:`,
+    `*Prioridad:* ${priorityTag}`,
+    `*Folio:* ${folio}`,
+    `*Circuito:* ${circuit}`,
+    `*Mina:* ${company} (${requester}${phoneContact ? ` • ${phoneContact}` : ''})`,
+    `*Equipo/Partida:* ${partName}`,
+    `*Código SMAT:* ${smatCode}${atomicCode ? ` (Refacción: ${atomicCode})` : ''}`
+  ];
+
+  if (data.pulp_profile) {
+    lines.push(`*Perfil Mineral:* ${data.pulp_profile}`);
+  }
+  if (resolvedMat || resolvedDrive || resolvedStation || resolvedWeight) {
+    const mechParts = [];
+    if (resolvedMat) mechParts.push(`Mat: ${resolvedMat}`);
+    if (resolvedDrive) mechParts.push(`Transmisión: ${resolvedDrive}`);
+    if (resolvedStation) mechParts.push(`Estación: ${resolvedStation}`);
+    if (resolvedWeight) mechParts.push(`Masa NIOSH: ${resolvedWeight} kg`);
+    lines.push(`*Ingeniería / BOM:* ${mechParts.join(' | ')}`);
+  }
+  if (resolvedClaro !== '' || resolvedU2 || resolvedL10h || resolvedPumpRpm || resolvedFrKn !== '') {
+    const kinParts = [];
+    if (resolvedClaro !== '') {
+      kinParts.push(`Claro axial δ=${resolvedClaro} mm${resolvedDeltaEta !== '' ? ` (Δηv=-${resolvedDeltaEta}%)` : ''}`);
+    }
+    if (resolvedU2) kinParts.push(`u2=${resolvedU2} m/s`);
+    if (resolvedPumpRpm) kinParts.push(`n2=${resolvedPumpRpm} RPM`);
+    if (resolvedFrKn !== '') kinParts.push(`Fr=${Number(resolvedFrKn).toFixed(2)} kN`);
+    if (resolvedL10h) kinParts.push(`L10h=${resolvedL10h} h`);
+    if (resolvedFlood) kinParts.push(`Sumidero=${resolvedFlood}`);
+    lines.push(`*Claro Axial y Cinemática V-Belt:* ${kinParts.join(' | ')}`);
+  }
+  if (m.flow_m3h !== undefined || m.slurry_sg !== undefined) {
+    lines.push(`*Hidráulica Durand:* ${m.flow_m3h || 180} m³/h @ ${m.solids_cw || 45}% Cw, Sm=${m.slurry_sg || '1.40'} kg/L, Vc=${m.critical_velocity_ms || '2.35'} m/s, HR=${m.head_ratio || '0.88'}`);
+  }
+  if (resolvedMetrology) {
+    lines.push(`*Cédula Metrológica Lab:* ${resolvedMetrology}`);
+  }
+  if (data.dim_outer_dia || data.dim_shaft_bore) {
+    lines.push(`*Medidas flexómetro:* DE ${data.dim_outer_dia || 'N/A'}, Barreno ${data.dim_shaft_bore || 'N/A'}`);
+  }
+  if (data.details) {
+    lines.push(`*Detalles:* ${data.details}`);
+  }
+  if (data.client_reference) {
+    lines.push(`*Ref. Cliente:* ${data.client_reference}`);
+  }
+  if (data.destination) {
+    lines.push(`*Destino:* ${data.destination}`);
+  }
+
+  lines.push(``);
+  lines.push(`*Instrucción de Almacén Durango:* Favor de adjuntar fotografía de la pieza con un flexómetro de referencia para cotejo 1:1.`);
+  if (data.has_photo) {
+    lines.push(`[Adjunto foto de placa/equipo para cotejo 1:1]`);
+  }
+  lines.push(`Favor de confirmar tiempo de despacho en Almacén Central Durango.`);
+
+  const text = lines.join('\n');
   const phone = '526183670664';
   return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
 }
@@ -659,11 +789,15 @@ export function generateSmatPartCode(data = {}) {
 
   // Bombeo: series puramente nominales (sin letras de bastidor B/C/D/E/F)
   let pipeTag = '6X4';
-  if (pipe === '1.5x1' || details.includes('1.5X1') || details.includes('2X1.5')) pipeTag = '1.5X1';
-  else if (pipe === '3x2' || details.includes('3X2') || details.includes('4X3')) pipeTag = '3X2';
+  if (pipe === '1.5x1' || details.includes('1.5X1')) pipeTag = '1.5X1';
+  else if (pipe === '2x1.5' || details.includes('2X1.5')) pipeTag = '2X1.5';
+  else if (pipe === '3x2' || details.includes('3X2') || (roleLower === 'sello' && details.includes('4X3'))) pipeTag = '3X2';
+  else if (pipe === '4x3' || details.includes('4X3')) pipeTag = '4X3';
   else if (pipe === '6x4' || details.includes('6X4')) pipeTag = '6X4';
   else if (pipe === '8x6' || details.includes('8X6')) pipeTag = '8X6';
   else if (pipe === '10x8' || details.includes('10X8')) pipeTag = '10X8';
+  else if (pipe === '12x10' || details.includes('12X10')) pipeTag = '12X10';
+  else if (pipe === '14x12' || details.includes('14X12')) pipeTag = '14X12';
 
   if (roleLower.includes('kit_sellado') || roleLower === 'sello') return `SMAT-SEAL-${pipeTag}-EXP`;
   if (roleLower.includes('kit_rodamientos') || roleLower === 'soporte') return `SMAT-BEAR-${pipeTag}-ASSY`;
@@ -701,11 +835,12 @@ export function formatSapTsv(data = {}) {
 /**
  * Decodifica un código de configuración SMAT a objeto estructurado (Decisión 6-A)
  * Soporta tanto los nuevos códigos institucionales limpios (SMAT-PUMP-6X4-WETKIT)
- * como códigos históricos (SMAT-PUMP-6X4D-A05-IMP).
+ * como códigos históricos (SMAT-PUMP-6X4D-A05-IMP) y piezas atómicas (D3147..E4083).
  * @param {string} code - e.g. SMAT-PUMP-6X4-WETKIT o SMAT-FLOT-100FT-MECH
+ * @param {'es'|'en'} [lang='es']
  * @returns {Object|null}
  */
-export function parseSmatPartCode(code = '') {
+export function parseSmatPartCode(code = '', lang = 'es') {
   if (!code || typeof code !== 'string') return null;
   const clean = code.trim().toUpperCase();
 
@@ -715,11 +850,15 @@ export function parseSmatPartCode(code = '') {
     return {
       valid: true,
       raw: clean,
+      code: atomicMatch.smat_code,
       atomic_code: atomicMatch.part_number,
+      atomic_label: lang === 'en' ? atomicMatch.name_en : atomicMatch.name_es,
+      atomic_metallurgy: atomicMatch.metallurgy,
       circuit: atomicMatch.circuit,
       line: atomicMatch.role === 'kit_sellado' ? 'SEAL' : 'PUMP',
       series: atomicMatch.pipe_size.toUpperCase(),
       pipe_size: atomicMatch.pipe_size,
+      size: atomicMatch.pipe_size,
       frame: atomicMatch.frame,
       alloyOrType: 'A05',
       role: atomicMatch.role,
@@ -737,75 +876,129 @@ export function parseSmatPartCode(code = '') {
   const parts = clean.split('-');
   if (parts.length < 3) return null;
 
-  const line = parts[1]; // PUMP, FLOT, FILT, SEAL, BEAR, SKID, PART
+  const line = parts[1]; // PUMP, FLOT, FILT, SEAL, BEAR, SKID, CTRL
   const series = parts[2]; // 6X4, 6X4D, 3X2, 4X3C, 8X6, 10X8, 100FT, 50FT, 1500, PRESS
   const token3 = parts[3] || '';
 
   let circuit = 'bombeo';
   let role_id = 'impulsor';
+  let ui_role = 'kit_wet_end';
+  let size = '6x4';
   let isOpex = true;
   let mission = 'refacciones';
-  let alloy = clean.includes('RUB') ? 'Caucho Natural Vulcanizado' : (token3 === 'A05' ? 'A05' : 'Dureza Metalúrgica Certificada');
+  let alloy = clean.includes('RUB') || clean.includes('R55')
+    ? 'Caucho Natural Vulcanizado'
+    : (token3 === 'U01' || clean.includes('-U01')
+      ? 'U01'
+      : (parts.includes('PU')
+        ? 'Poliuretano Elastómero U01 (Shore A 85–95)'
+        : (token3 === 'A05' || clean.includes('A05') ? 'A05' : 'Dureza Metalúrgica Certificada')));
 
   if (line === 'SKID') {
     role_id = 'skid_bomba';
+    ui_role = 'skid_bomba';
     isOpex = false;
     mission = 'equipos';
   } else if (line === 'PUMP') {
-    if (clean.includes('WETKIT')) role_id = 'kit_wet_end';
-    else if (clean.includes('VOL')) role_id = 'solo_voluta';
-    else if (clean.includes('LINER')) role_id = 'revestimientos';
-    else role_id = 'impulsor';
+    if (clean.includes('WETKIT')) {
+      role_id = 'kit_wet_end';
+      ui_role = 'kit_wet_end';
+    } else if (clean.includes('VOL')) {
+      role_id = 'solo_voluta';
+      ui_role = 'solo_voluta';
+    } else if (clean.includes('LINER')) {
+      role_id = 'revestimientos';
+      ui_role = 'solo_voluta';
+    } else {
+      role_id = 'impulsor';
+      ui_role = 'solo_impulsor';
+    }
   } else if (line === 'SEAL') {
     role_id = 'sello';
+    ui_role = 'kit_sellado';
   } else if (line === 'BEAR') {
     role_id = 'soporte';
+    ui_role = 'kit_rodamientos';
   } else if (line === 'FLOT') {
     circuit = 'flotacion';
+    if (clean.includes('50FT')) size = '50ft';
+    else if (clean.includes('200FT')) size = '200ft';
+    else if (clean.includes('300FT')) size = '300ft';
+    else size = '100ft';
     if (clean.includes('CELL')) {
       role_id = 'celda_flotacion';
+      ui_role = 'celda_flotacion';
       isOpex = false;
       mission = 'equipos';
     } else if (clean.includes('BANK')) {
       role_id = 'bateria_celdas';
+      ui_role = 'bateria_celdas';
       isOpex = false;
       mission = 'equipos';
     } else if (clean.includes('SHROUD')) {
       role_id = 'manto_difusor';
+      ui_role = 'manto_difusor';
     } else {
       role_id = 'rotor_estator';
+      ui_role = 'rotor_estator';
     }
   } else if (line === 'CTRL') {
     circuit = 'control_procesos';
     if (clean.includes('BATCH')) {
       role_id = 'filtro_batch_lab';
+      ui_role = 'filtro_batch_lab';
+      size = 'batch_100psi';
       isOpex = false;
       mission = 'equipos';
       alloy = 'Acero Estructural Bridado (60-100 psi)';
     } else if (clean.includes('SIEVE') || clean.includes('ASTM')) {
       role_id = 'tamices_laboratorio';
+      ui_role = 'tamices_laboratorio';
+      size = 'astm_8in_inox';
       isOpex = true;
       mission = 'refacciones';
       alloy = 'Acero Inoxidable / Bronce Certificado ASTM E11';
     } else {
       role_id = 'balanza_marcy';
+      ui_role = 'balanza_marcy';
+      size = 'marcy_12_rings';
       isOpex = false;
       mission = 'equipos';
       alloy = 'Vaso 1000 cm³ Acero Inox 304 + 12 Anillos (Ss 2.2-4.4)';
     }
   } else if (line === 'FILT') {
     circuit = 'filtracion';
+    if (clean.includes('800')) size = '800';
+    else if (clean.includes('1200')) size = '1200';
+    else if (clean.includes('2000')) size = '2000';
+    else size = '1500';
     if (clean.includes('PRESS') || clean.includes('16BAR')) {
       role_id = 'filtro_prensa';
+      ui_role = 'filtro_prensa';
       isOpex = false;
       mission = 'equipos';
     } else if (clean.includes('MEMBR')) {
       role_id = 'placas_membrana';
+      ui_role = 'placas_membrana';
     } else if (clean.includes('PUMP')) {
       role_id = 'bomba_prensa';
+      ui_role = 'bomba_prensa';
     } else {
       role_id = 'placas_telas';
+      ui_role = 'placas_telas';
     }
+  }
+
+  if (circuit === 'bombeo') {
+    if (clean.includes('1.5X1')) size = '1.5x1';
+    else if (clean.includes('2X1.5')) size = '2x1.5';
+    else if (clean.includes('4X3')) size = '4x3';
+    else if (clean.includes('3X2')) size = '3x2';
+    else if (clean.includes('8X6')) size = '8x6';
+    else if (clean.includes('10X8')) size = '10x8';
+    else if (clean.includes('12X10')) size = '12x10';
+    else if (clean.includes('14X12')) size = '14x12';
+    else size = '6x4';
   }
 
   // Extraer marco dimensional (C, D, E, F) si aplica en códigos legacy
@@ -813,16 +1006,24 @@ export function parseSmatPartCode(code = '') {
   const frameMatch = series.match(/\d+X\d+([A-Z])/);
   if (frameMatch) frame = frameMatch[1];
 
+  const resolvedSpecs = circuit === 'bombeo' ? getAtomicPartSpecs(ui_role, size) : null;
+
   return {
     valid: true,
     raw: clean,
+    code: clean,
+    atomic_code: resolvedSpecs ? (resolvedSpecs.part_number || '') : '',
+    atomic_label: resolvedSpecs ? (lang === 'en' ? resolvedSpecs.name_en : resolvedSpecs.name_es) : '',
+    atomic_metallurgy: resolvedSpecs ? (resolvedSpecs.metallurgy || '') : '',
     circuit,
     line,
     series,
+    size,
     frame,
     alloyOrType: token3,
     role: role_id,
     role_id,
+    ui_role,
     isOpex,
     mission,
     alloy
@@ -874,6 +1075,10 @@ export function buildAcuseUrlParams(d = {}) {
   const resolvedClaro = d.claro_mm || d.front_clearance_mm || ce.frontClearanceMm || '';
   const resolvedDeltaEta = d.delta_eta_v !== undefined ? d.delta_eta_v : (ce.volumetricEfficiencyDropPct ?? ce.volumetricEfficiencyLossPct);
   const resolvedU2 = d.u2_ms || d.tip_speed_ms || kin.tipSpeedMs || '';
+  const resolvedPumpRpm = d.n2_rpm || d.pump_rpm || kin.pumpRpm || '';
+  const resolvedFrKn = d.fr_kn !== undefined ? d.fr_kn : (d.belt_radial_load_kn ?? kin.beltRadialLoadKn);
+  const resolvedFlood = d.inmunidad_sumidero || d.sump_flood_immunity || kin.sumpFloodImmunity || '';
+  const resolvedStructural = d.razon_estructural || d.structural_reason || ce.structuralReasonEs || '';
   const resolvedL10h = d.l10h || d.bearing_l10h || kin.bearingL10Hours || kin.estimatedL10hHours || '';
   const resolvedMetrology = d.metrologia || d.metrology_summary || met.summary || met.raw || (
     (met.cw !== undefined || met.solidsPctCw !== undefined)
@@ -891,6 +1096,10 @@ export function buildAcuseUrlParams(d = {}) {
   if (resolvedClaro) paramsObj.claro_mm = String(resolvedClaro);
   if (resolvedDeltaEta !== undefined) paramsObj.delta_eta_v = String(resolvedDeltaEta);
   if (resolvedU2) paramsObj.u2_ms = String(resolvedU2);
+  if (resolvedPumpRpm) paramsObj.n2_rpm = String(resolvedPumpRpm);
+  if (resolvedFrKn !== undefined && resolvedFrKn !== '') paramsObj.fr_kn = String(resolvedFrKn);
+  if (resolvedFlood) paramsObj.inmunidad_sumidero = String(resolvedFlood);
+  if (resolvedStructural) paramsObj.razon_estructural = String(resolvedStructural);
   if (resolvedL10h) paramsObj.l10h = String(resolvedL10h);
   if (resolvedMetrology) paramsObj.metrologia = String(resolvedMetrology);
   if (d.client_reference) paramsObj.ref_cliente = d.client_reference;
@@ -898,6 +1107,23 @@ export function buildAcuseUrlParams(d = {}) {
   if (d.pulp_profile) paramsObj.perfil_pulpa = d.pulp_profile;
   if (hydraulicsStr) paramsObj.hidraulica = hydraulicsStr;
   if (tcoStr) paramsObj.tco = tcoStr;
+  if (d.ph !== undefined && d.ph !== '') paramsObj.ph = String(d.ph);
+  else if (d.pulpPh !== undefined && d.pulpPh !== '') paramsObj.ph = String(d.pulpPh);
+  else if (m.pulp_ph !== undefined) paramsObj.ph = String(m.pulp_ph);
+  if (d.seal_branch || d.sealBranch || ce.sealBranch) paramsObj.seal_branch = String(d.seal_branch || d.sealBranch || ce.sealBranch);
+  if (d.b2_mm || d.impellerExitWidthMm || ce.impellerExitWidthMm) paramsObj.b2_mm = String(d.b2_mm || d.impellerExitWidthMm || ce.impellerExitWidthMm);
+  if (d.cap_c_kn || d.dynamicCapacityCkN || kin.dynamicCapacityCkN) paramsObj.cap_c_kn = String(d.cap_c_kn || d.dynamicCapacityCkN || kin.dynamicCapacityCkN);
+  if (d.fl !== undefined || d.durandFactorFL !== undefined || m.durand_fl !== undefined) paramsObj.fl = String(d.fl ?? d.durandFactorFL ?? m.durand_fl);
+  if (d.cv !== undefined || d.solidsVolumetricPercent !== undefined || m.solids_cv !== undefined) paramsObj.cv = String(d.cv ?? d.solidsVolumetricPercent ?? m.solids_cv);
+  if (d.v_rec !== undefined || d.recommendedPipeVelocityMs !== undefined || m.safe_velocity_ms !== undefined) paramsObj.v_rec = String(d.v_rec ?? d.recommendedPipeVelocityMs ?? m.safe_velocity_ms);
+  if (d.rhop !== undefined || d.oreDensitySg !== undefined || met.sm !== undefined || met.pulpDensityKgL !== undefined) paramsObj.rhop = String(d.rhop ?? d.oreDensitySg ?? met.sm ?? met.pulpDensityKgL);
+  if (met.liberationSizeMicrons !== undefined) paramsObj.lib_um = String(met.liberationSizeMicrons);
+  if (met.headGradePercent !== undefined || met.oreGradeDecimal !== undefined) paramsObj.grade = String(met.headGradePercent ?? met.oreGradeDecimal);
+  if (met.airPressurePsi !== undefined) paramsObj.air_psi = String(met.airPressurePsi);
+  if (met.samplingConstantC !== undefined) paramsObj.gy_c = String(met.samplingConstantC);
+  if (met.relativeErrorSigma !== undefined) paramsObj.gy_err = String(met.relativeErrorSigma);
+  if (met.rosinRammlerSlopeN !== undefined) paramsObj.rr_n = String(met.rosinRammlerSlopeN);
+  if (met.retainedPercentAtP80 !== undefined) paramsObj.ret_p80 = String(met.retainedPercentAtP80);
 
   return new URLSearchParams(paramsObj);
 }
@@ -945,19 +1171,13 @@ export function resolveInternalBudgetCategory(d = {}) {
 }
 
 /**
- * Despacha el lead de forma asíncrona hacia el Google Apps Script Webhook (tools/google_apps_script/Code.gs)
- * y persiste una copia completa en sessionStorage para la hoja de Acuse PDF.
- * @param {Object} d - Datos completos recolectados en el Workbench
- * @param {string} channelOrigin - Canal de salida (pdf_acuse, whatsapp, email, sap_copy)
- * @param {string} webhookUrl - Endpoint opcional de Google Apps Script
- * @returns {Object} Payload estructurado enviado
+ * Construye el payload completo de 29 columnas + 9 campos de ingeniería para Google Apps Script (Code.gs)
+ * @param {Object} d
+ * @param {string} [channelOrigin='web_quote_wizard']
+ * @returns {Object}
  */
-export function dispatchLeadWebhook(d = {}, channelOrigin = 'web_quote_wizard', webhookUrl = '') {
+export function buildLeadWebhookPayload(d = {}, channelOrigin = 'web_quote_wizard') {
   const honeypotVal = d.website || d.website_honeypot || '';
-  if (honeypotVal && String(honeypotVal).trim().length > 0) {
-    return { status: 'honeypot_blocked', blocked: true, dispatched: false, sent: false };
-  }
-
   const m = d.metrics || {};
   const tco = d.tco || {};
   const measures = (d.dim_outer_dia || d.dim_shaft_bore)
@@ -981,7 +1201,8 @@ export function dispatchLeadWebhook(d = {}, channelOrigin = 'web_quote_wizard', 
   const resolvedDrive = d.transmision || d.drive_arrangement || kin.arrangement || kin.arrangementCode || '';
   const resolvedStation = d.estacion || d.station_number || d.assembly_station || ps.station_number || ps.station || '';
   const resolvedWeight = d.peso_kg || d.part_weight_kg || ps.weight_kg || '';
-  const resolvedClaro = d.claro_mm || d.front_clearance_mm || ce.frontClearanceMm || '';
+  const resolvedClaro = d.claro_mm !== undefined ? d.claro_mm : (d.front_clearance_mm ?? ce.frontClearanceMm ?? '');
+  const resolvedDeltaEta = d.delta_eta_v !== undefined ? d.delta_eta_v : (ce.volumetricEfficiencyDropPct ?? ce.volumetricEfficiencyLossPct ?? '');
   const resolvedU2 = d.u2_ms || d.tip_speed_ms || kin.tipSpeedMs || '';
   const resolvedL10h = d.l10h || d.bearing_l10h || kin.bearingL10Hours || kin.estimatedL10hHours || '';
   const resolvedMetrology = d.metrologia || d.metrology_summary || met.summary || met.raw || (
@@ -990,7 +1211,7 @@ export function dispatchLeadWebhook(d = {}, channelOrigin = 'web_quote_wizard', 
       : ''
   );
 
-  const payload = {
+  return {
     folio: d.folio || 'SMAT-2026-RFQ',
     urgencia: d.isOpex === false ? 'proyecto' : 'paro',
     puerta_interna: resolveInternalBudgetCategory(d),
@@ -1011,13 +1232,20 @@ export function dispatchLeadWebhook(d = {}, channelOrigin = 'web_quote_wizard', 
     memoria_hidraulica_durand: hydraulicsStr,
     tco_resumen: tcoStr,
     proyeccion_tco: tcoStr,
+    // 9 Campos Nuevos de Ingeniería (Nombres canónicos + Alias de compatibilidad)
+    material_bombeo: resolvedMat,
     material_wet_end: resolvedMat,
     arreglo_transmision: resolvedDrive,
+    estacion_armado: resolvedStation,
     estacion_despiece: resolvedStation,
     peso_pieza_kg: resolvedWeight,
     claro_axial_mm: resolvedClaro,
+    perdida_eficiencia_vol_pct: resolvedDeltaEta,
+    delta_eta_v: resolvedDeltaEta,
+    velocidad_periferica_u2_ms: resolvedU2,
     velocidad_punta_u2_ms: resolvedU2,
     vida_rodamiento_l10h: resolvedL10h,
+    memoria_metrologica: resolvedMetrology,
     cedula_metrologia: resolvedMetrology,
     detalles: d.details || '',
     especificacion_tecnica: d.details || '',
@@ -1026,14 +1254,34 @@ export function dispatchLeadWebhook(d = {}, channelOrigin = 'web_quote_wizard', 
     canal: channelOrigin,
     website: honeypotVal
   };
+}
+
+/**
+ * Despacha el lead de forma asíncrona hacia el Google Apps Script Webhook (tools/google_apps_script/Code.gs)
+ * y persiste una copia completa en sessionStorage para la hoja de Acuse PDF.
+ * @param {Object} d - Datos completos recolectados en el Workbench
+ * @param {string} channelOrigin - Canal de salida (pdf_acuse, whatsapp, email, sap_copy)
+ * @param {string} webhookUrl - Endpoint opcional de Google Apps Script
+ * @returns {Object} Payload estructurado enviado
+ */
+export function dispatchLeadWebhook(d = {}, channelOrigin = 'web_quote_wizard', webhookUrl = '') {
+  const honeypotVal = d.website || d.website_honeypot || '';
+  if (honeypotVal && String(honeypotVal).trim().length > 0) {
+    return { status: 'honeypot_blocked', blocked: true, dispatched: false, sent: false };
+  }
+
+  const payload = buildLeadWebhookPayload(d, channelOrigin);
 
   if (typeof window !== 'undefined' && window.sessionStorage) {
     try {
       window.sessionStorage.setItem('smat_last_rfq_payload', JSON.stringify(payload));
-    } catch (_e) {}
+    } catch (_e) { }
   }
 
-  const resolvedEndpoint = webhookUrl || (typeof window !== 'undefined' && window.SMAT_LEAD_WEBHOOK_URL) || '';
+  const resolvedEndpoint =
+    webhookUrl ||
+    (typeof window !== 'undefined' && window.SMAT_LEAD_WEBHOOK_URL) ||
+    DEFAULT_SMAT_LEAD_WEBHOOK_URL;
   if (resolvedEndpoint && typeof fetch === 'function') {
     try {
       fetch(resolvedEndpoint, {
@@ -1042,47 +1290,313 @@ export function dispatchLeadWebhook(d = {}, channelOrigin = 'web_quote_wizard', 
         keepalive: true,
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload)
-      }).catch(() => {});
-    } catch (_e) {}
+      }).catch(() => { });
+    } catch (_e) { }
   }
 
-  return { status: 'dispatched', blocked: false, dispatched: true, sent: Boolean(resolvedEndpoint), payload };
+  return { status: 'dispatched', blocked: false, dispatched: true, sent: Boolean(resolvedEndpoint), endpoint: resolvedEndpoint, payload };
 }
 
 const SMAT_SESSION_KEY = 'smat_workbench_session';
+export const SMAT_WORKBENCH_STATE_KEY = 'smat_workbench_state_v2';
+
+export const DEFAULT_WORKBENCH_STATE_V2 = Object.freeze({
+  version: 2,
+  circuit: 'bombeo',
+  role: 'kit_wet_end',
+  pipe_size: '6x4',
+  stress_symptom: '',
+  flot_role: 'rotor_estator',
+  flot_capacity: '100ft',
+  flot_condition: '',
+  filt_role: 'placas_telas',
+  filt_capacity: '1500',
+  filt_condition: '',
+  ctrl_role: 'balanza_marcy',
+  ctrl_spec: 'marcy_12_rings',
+  flow: 180,
+  solids: 45,
+  d80: 180,
+  sg: 2.7,
+  ph: 7.0,
+  altitude: 2400,
+  downtime: 4,
+  tcoAlloy: 'A05',
+  isOpex: true,
+  pump_material: 'alto_cromo_cr27',
+  drive_arrangement: 'CV',
+  seal_branch: 'expeller_dry',
+  b2_mm: 48,
+  cap_c_kn: 145,
+  claro_mm: 0.75,
+  driver_pulley_mm: 220,
+  driven_pulley_mm: 340,
+  motor_rpm: 1775,
+  shaft_power_kw: 55,
+  sequence_preset: 'canonical',
+  rhop: 1.402,
+  lib_um: 100,
+  grade: 0.05,
+  rr_n: 1.08,
+  d95: 0.21,
+  p80: 150,
+  gy_kg: 0.25,
+  name: '',
+  company: '',
+  phone: '',
+  email: '',
+  destination: 'Retiro en Almacén Central Durango (Coordinación con Folio)',
+  details: '',
+  clientRef: '',
+  dim_outer_dia: '',
+  dim_shaft_bore: '',
+  pulpPh: 7.0,
+  sealBranch: 'expeller_dry',
+  impellerExitWidthMm: 48,
+  dynamicCapacityCkN: 145,
+  oreDensitySg: 1.402
+});
 
 /**
- * Guarda el estado del Workbench en sessionStorage fusionando claves por estación/circuito (Decisión 4-A)
- * @param {Object} state 
+ * Normaliza un objeto de estado parcial o legacy hacia el contrato canónico V2 sin pérdida de campos.
+ * @param {Object} [partial={}]
+ * @returns {Object}
  */
-export function saveWorkbenchSession(state = {}) {
-  if (typeof window === 'undefined' || !window.sessionStorage) return;
-  try {
-    const existingRaw = window.sessionStorage.getItem(SMAT_SESSION_KEY);
-    const existing = existingRaw ? JSON.parse(existingRaw) : {};
-    const merged = { ...existing, ...state };
-    window.sessionStorage.setItem(SMAT_SESSION_KEY, JSON.stringify(merged));
-  } catch (_e) {}
+export function normalizeWorkbenchStateV2(partial = {}) {
+  const src = partial && typeof partial === 'object' ? partial : {};
+  const kin = src.kinematics && typeof src.kinematics === 'object' ? src.kinematics : {};
+  const met = src.metrology && typeof src.metrology === 'object' ? src.metrology : {};
+  const ce = src.clearance_eval && typeof src.clearance_eval === 'object' ? src.clearance_eval : {};
+
+  let resolvedPumpMat = src.pump_material || src.wet_material || src.material || src.wetEndMaterial || DEFAULT_WORKBENCH_STATE_V2.pump_material;
+  if (resolvedPumpMat === 'hule' || resolvedPumpMat === 'RUBBER') resolvedPumpMat = 'hule_natural';
+  else if (resolvedPumpMat === 'PU') resolvedPumpMat = 'poliuretano';
+  else if (resolvedPumpMat === 'A05' || resolvedPumpMat === 'cr27') resolvedPumpMat = 'alto_cromo_cr27';
+
+  let resolvedPipe = String(src.pipe_size || src.pipeSize || src.serie || DEFAULT_WORKBENCH_STATE_V2.pipe_size).toLowerCase();
+  if (resolvedPipe.includes('d') && !resolvedPipe.includes('1')) {
+    resolvedPipe = resolvedPipe.replace(/d$/i, '');
+  }
+
+  let cleanDetails = String(src.details ?? DEFAULT_WORKBENCH_STATE_V2.details);
+  if (cleanDetails.includes('6X4D') || cleanDetails.includes('A49')) {
+    cleanDetails = '';
+  }
+
+  const normalized = {
+    ...DEFAULT_WORKBENCH_STATE_V2,
+    ...src,
+    version: 2,
+    circuit: String(src.circuit || src.circuito || DEFAULT_WORKBENCH_STATE_V2.circuit),
+    role: String(src.role || src.role_id || src.equipo || DEFAULT_WORKBENCH_STATE_V2.role),
+    pipe_size: resolvedPipe || '6x4',
+    pipeSize: resolvedPipe || '6x4',
+    flow: Number(src.flow ?? src.flowM3H ?? DEFAULT_WORKBENCH_STATE_V2.flow) || DEFAULT_WORKBENCH_STATE_V2.flow,
+    solids: Number(src.solids ?? src.cw ?? src.solidsWeightPercent ?? met.cw ?? DEFAULT_WORKBENCH_STATE_V2.solids) || DEFAULT_WORKBENCH_STATE_V2.solids,
+    d80: Number(src.d80 ?? src.particleSizeD80Microns ?? DEFAULT_WORKBENCH_STATE_V2.d80) || DEFAULT_WORKBENCH_STATE_V2.d80,
+    sg: Number(src.sg ?? src.solidsSpecificGravity ?? met.specificGravity ?? DEFAULT_WORKBENCH_STATE_V2.sg) || DEFAULT_WORKBENCH_STATE_V2.sg,
+    ph: Number(src.ph ?? src.pulpPh ?? DEFAULT_WORKBENCH_STATE_V2.ph),
+    altitude: Number(src.altitude ?? src.altitudeM ?? DEFAULT_WORKBENCH_STATE_V2.altitude),
+    downtime: Number(src.downtime ?? DEFAULT_WORKBENCH_STATE_V2.downtime) || DEFAULT_WORKBENCH_STATE_V2.downtime,
+    tcoAlloy: String(src.tcoAlloy || DEFAULT_WORKBENCH_STATE_V2.tcoAlloy),
+    isOpex: src.isOpex !== undefined ? Boolean(src.isOpex) : DEFAULT_WORKBENCH_STATE_V2.isOpex,
+    pump_material: resolvedPumpMat,
+    drive_arrangement: String(src.drive_arrangement || src.transmision || kin.arrangement || DEFAULT_WORKBENCH_STATE_V2.drive_arrangement).toUpperCase(),
+    seal_branch: String(src.seal_branch || src.sealBranch || ce.sealBranch || DEFAULT_WORKBENCH_STATE_V2.seal_branch),
+    b2_mm: Number(src.b2_mm ?? src.impellerExitWidthMm ?? ce.impellerExitWidthMm ?? DEFAULT_WORKBENCH_STATE_V2.b2_mm) || DEFAULT_WORKBENCH_STATE_V2.b2_mm,
+    cap_c_kn: Number(src.cap_c_kn ?? src.dynamicCapacityCkN ?? kin.dynamicCapacityCkN ?? DEFAULT_WORKBENCH_STATE_V2.cap_c_kn) || DEFAULT_WORKBENCH_STATE_V2.cap_c_kn,
+    claro_mm: Number(src.claro_mm ?? src.frontClearanceMm ?? ce.frontClearanceMm ?? DEFAULT_WORKBENCH_STATE_V2.claro_mm),
+    driver_pulley_mm: Number(src.driver_pulley_mm ?? kin.driverPulleyMm ?? DEFAULT_WORKBENCH_STATE_V2.driver_pulley_mm) || DEFAULT_WORKBENCH_STATE_V2.driver_pulley_mm,
+    driven_pulley_mm: Number(src.driven_pulley_mm ?? kin.drivenPulleyMm ?? DEFAULT_WORKBENCH_STATE_V2.driven_pulley_mm) || DEFAULT_WORKBENCH_STATE_V2.driven_pulley_mm,
+    motor_rpm: Number(src.motor_rpm ?? kin.motorRpm ?? DEFAULT_WORKBENCH_STATE_V2.motor_rpm) || DEFAULT_WORKBENCH_STATE_V2.motor_rpm,
+    shaft_power_kw: Number(src.shaft_power_kw ?? kin.shaftPowerKw ?? DEFAULT_WORKBENCH_STATE_V2.shaft_power_kw) || DEFAULT_WORKBENCH_STATE_V2.shaft_power_kw,
+    sequence_preset: String(src.sequence_preset || src.assemblySequencePreset || DEFAULT_WORKBENCH_STATE_V2.sequence_preset),
+    rhop: Number(src.rhop ?? src.oreDensitySg ?? met.sm ?? met.pulpDensityKgL ?? DEFAULT_WORKBENCH_STATE_V2.rhop) || DEFAULT_WORKBENCH_STATE_V2.rhop,
+    lib_um: Number(src.lib_um ?? met.liberationSizeMicrons ?? DEFAULT_WORKBENCH_STATE_V2.lib_um) || DEFAULT_WORKBENCH_STATE_V2.lib_um,
+    grade: Number(src.grade ?? met.oreGradeDecimal ?? DEFAULT_WORKBENCH_STATE_V2.grade) || DEFAULT_WORKBENCH_STATE_V2.grade,
+    rr_n: Number(src.rr_n ?? met.rosinRammlerSlopeN ?? DEFAULT_WORKBENCH_STATE_V2.rr_n) || DEFAULT_WORKBENCH_STATE_V2.rr_n,
+    d95: Number(src.d95 ?? met.topSizeD95Mm ?? DEFAULT_WORKBENCH_STATE_V2.d95) || DEFAULT_WORKBENCH_STATE_V2.d95,
+    p80: Number(src.p80 ?? met.targetP80Microns ?? DEFAULT_WORKBENCH_STATE_V2.p80) || DEFAULT_WORKBENCH_STATE_V2.p80,
+    gy_kg: Number(src.gy_kg ?? met.dryMassKg ?? met.gySampleMassKg ?? DEFAULT_WORKBENCH_STATE_V2.gy_kg) || DEFAULT_WORKBENCH_STATE_V2.gy_kg,
+    details: cleanDetails
+  };
+
+  if (Number.isNaN(normalized.ph) || normalized.ph <= 0) normalized.ph = 7.0;
+  if (Number.isNaN(normalized.altitude) || normalized.altitude < 0) normalized.altitude = 2400;
+  if (Number.isNaN(normalized.claro_mm) || normalized.claro_mm <= 0) normalized.claro_mm = 0.75;
+
+  normalized.pulpPh = normalized.ph;
+  normalized.sealBranch = normalized.seal_branch;
+  normalized.impellerExitWidthMm = normalized.b2_mm;
+  normalized.dynamicCapacityCkN = normalized.cap_c_kn;
+  normalized.oreDensitySg = normalized.rhop;
+
+  return normalized;
 }
 
 /**
- * Carga el estado del Workbench desde sessionStorage (Decisión 4-A)
+ * Lente Bidireccional Simétrica (Foster et al., 2007 - Combinators for Bidirectional Tree Transformations)
+ * Garantiza las leyes algebraicas GetPut y PutGet entre el estado canónico V2, URLSearchParams y Storage.
+ */
+export const workbenchStateLens = Object.freeze({
+  get(state) {
+    return normalizeWorkbenchStateV2(state);
+  },
+  put(state, viewPatch = {}) {
+    const base = normalizeWorkbenchStateV2(state);
+    if (!viewPatch || typeof viewPatch !== 'object') return base;
+    const mappedPatch = { ...viewPatch };
+    if (mappedPatch.pipeSize !== undefined && mappedPatch.pipe_size === undefined) mappedPatch.pipe_size = mappedPatch.pipeSize;
+    if (mappedPatch.pulpPh !== undefined && mappedPatch.ph === undefined) mappedPatch.ph = mappedPatch.pulpPh;
+    if (mappedPatch.sealBranch !== undefined && mappedPatch.seal_branch === undefined) mappedPatch.seal_branch = mappedPatch.sealBranch;
+    if (mappedPatch.impellerExitWidthMm !== undefined && mappedPatch.b2_mm === undefined) mappedPatch.b2_mm = mappedPatch.impellerExitWidthMm;
+    if (mappedPatch.dynamicCapacityCkN !== undefined && mappedPatch.cap_c_kn === undefined) mappedPatch.cap_c_kn = mappedPatch.dynamicCapacityCkN;
+    if (mappedPatch.oreDensitySg !== undefined && mappedPatch.rhop === undefined) mappedPatch.rhop = mappedPatch.oreDensitySg;
+    return normalizeWorkbenchStateV2({ ...base, ...mappedPatch });
+  },
+  toSearchParams(state = {}) {
+    const s = normalizeWorkbenchStateV2(state);
+    return new URLSearchParams({
+      circuito: String(s.circuit),
+      equipo: String(s.role),
+      serie: String(s.pipe_size),
+      flow: String(s.flow),
+      cw: String(s.solids),
+      d80: String(s.d80),
+      sg: String(s.sg),
+      ph: String(s.ph),
+      material: String(s.pump_material),
+      transmision: String(s.drive_arrangement),
+      seal_branch: String(s.seal_branch),
+      b2_mm: String(s.b2_mm),
+      cap_c_kn: String(s.cap_c_kn),
+      driver_mm: String(s.driver_pulley_mm),
+      driven_mm: String(s.driven_pulley_mm),
+      motor_rpm: String(s.motor_rpm),
+      power_kw: String(s.shaft_power_kw),
+      claro_mm: String(s.claro_mm),
+      rhop: String(s.rhop),
+      lib_um: String(s.lib_um),
+      grade: String(s.grade),
+      rr_n: String(s.rr_n),
+      p80: String(s.p80),
+      d95: String(s.d95),
+      gy_kg: String(s.gy_kg)
+    });
+  },
+  fromSearchParams(searchOrParams = '', baseState = {}) {
+    const rawStr = typeof searchOrParams === 'string'
+      ? searchOrParams
+      : (searchOrParams && typeof searchOrParams.toString === 'function' ? searchOrParams.toString() : '');
+    const ctx = parseUrlContextParams(rawStr);
+    const patch = {};
+    if (ctx.circuito) patch.circuit = ctx.circuito;
+    if (ctx.equipo) patch.role = ctx.equipo;
+    if (ctx.serie) {
+      patch.pipe_size = ctx.serie;
+      patch.pipeSize = ctx.serie;
+    }
+    if (ctx.flow !== null) patch.flow = Number(ctx.flow);
+    if (ctx.cw !== null || ctx.solids !== null) patch.solids = Number(ctx.cw ?? ctx.solids);
+    if (ctx.d80 !== null) patch.d80 = Number(ctx.d80);
+    if (ctx.sg !== null) patch.sg = Number(ctx.sg);
+    if (ctx.ph !== null) patch.ph = Number(ctx.ph);
+    if (ctx.material) patch.pump_material = ctx.material;
+    if (ctx.transmision) patch.drive_arrangement = ctx.transmision;
+    if (ctx.seal_branch) patch.seal_branch = ctx.seal_branch;
+    if (ctx.b2_mm !== null) patch.b2_mm = Number(ctx.b2_mm);
+    if (ctx.cap_c_kn !== null) patch.cap_c_kn = Number(ctx.cap_c_kn);
+    if (ctx.driver_mm !== null) patch.driver_pulley_mm = Number(ctx.driver_mm);
+    if (ctx.driven_mm !== null) patch.driven_pulley_mm = Number(ctx.driven_mm);
+    if (ctx.motor_rpm !== null) patch.motor_rpm = Number(ctx.motor_rpm);
+    if (ctx.power_kw !== null) patch.shaft_power_kw = Number(ctx.power_kw);
+    if (ctx.claro_mm !== null) patch.claro_mm = Number(ctx.claro_mm);
+    if (ctx.rhop !== null) patch.rhop = Number(ctx.rhop);
+    if (ctx.lib_um !== null) patch.lib_um = Number(ctx.lib_um);
+    if (ctx.grade !== null) patch.grade = Number(ctx.grade);
+    if (ctx.rr_n !== null) patch.rr_n = Number(ctx.rr_n);
+    if (ctx.p80 !== null) patch.p80 = Number(ctx.p80);
+    if (ctx.d95 !== null) patch.d95 = Number(ctx.d95);
+    if (ctx.gy_kg !== null) patch.gy_kg = Number(ctx.gy_kg);
+    return this.put(baseState, patch);
+  },
+  migrateLegacyStorage() {
+    if (typeof window === 'undefined') return normalizeWorkbenchStateV2({});
+    let merged = {};
+    try {
+      if (window.localStorage) {
+        window.localStorage.removeItem('smat_workbench_draft');
+        window.localStorage.removeItem('smat_workbench_v1');
+        const rawV2 = window.localStorage.getItem(SMAT_WORKBENCH_STATE_KEY);
+        if (rawV2) merged = { ...merged, ...JSON.parse(rawV2) };
+      }
+      if (window.sessionStorage) {
+        const rawSess = window.sessionStorage.getItem(SMAT_SESSION_KEY);
+        if (rawSess) {
+          if (rawSess.includes('6X4D') || rawSess.includes('A49')) {
+            window.sessionStorage.removeItem(SMAT_SESSION_KEY);
+          } else {
+            merged = { ...merged, ...JSON.parse(rawSess) };
+          }
+        }
+        const rawCat = window.sessionStorage.getItem('smat_catalog_selected');
+        if (rawCat) {
+          const parsedCat = JSON.parse(rawCat);
+          if (parsedCat && parsedCat.serie) merged.pipe_size = parsedCat.serie;
+          window.sessionStorage.removeItem('smat_catalog_selected');
+        }
+      }
+    } catch (_e) { }
+    const canonical = normalizeWorkbenchStateV2(merged);
+    saveWorkbenchSession(canonical);
+    return canonical;
+  }
+});
+
+/**
+ * Guarda el estado del Workbench fusionando claves en sessionStorage y localStorage bajo contrato único V2 (Decisión 1-C+)
+ * @param {Object} state 
+ */
+export function saveWorkbenchSession(state = {}) {
+  if (typeof window === 'undefined') return null;
+  try {
+    const existing = loadWorkbenchSession() || {};
+    const mergedRaw = { ...existing, ...state };
+    const canonical = normalizeWorkbenchStateV2(mergedRaw);
+    const serialized = JSON.stringify(canonical);
+    if (window.sessionStorage) {
+      window.sessionStorage.setItem(SMAT_SESSION_KEY, serialized);
+      window.sessionStorage.setItem(SMAT_WORKBENCH_STATE_KEY, serialized);
+    }
+    if (window.localStorage) {
+      window.localStorage.setItem(SMAT_WORKBENCH_STATE_KEY, serialized);
+    }
+    return canonical;
+  } catch (_e) {
+    return null;
+  }
+}
+
+/**
+ * Carga el estado del Workbench desde sessionStorage o localStorage unificado (Decisión 1-C+)
  * @returns {Object|null}
  */
 export function loadWorkbenchSession() {
-  if (typeof window === 'undefined' || !window.sessionStorage) return null;
+  if (typeof window === 'undefined') return null;
   try {
-    const raw = window.sessionStorage.getItem(SMAT_SESSION_KEY);
-    return raw ? JSON.parse(raw) : null;
+    const rawSess = window.sessionStorage ? window.sessionStorage.getItem(SMAT_SESSION_KEY) : null;
+    const rawLocal = window.localStorage ? window.localStorage.getItem(SMAT_WORKBENCH_STATE_KEY) : null;
+    if (!rawSess && !rawLocal) return null;
+    const parsedLocal = rawLocal ? JSON.parse(rawLocal) : {};
+    const parsedSess = rawSess ? JSON.parse(rawSess) : {};
+    return normalizeWorkbenchStateV2({ ...parsedLocal, ...parsedSess });
   } catch (_e) {
     return null;
   }
 }
 
 export {
-  dispatchLeadWebhook as sendLeadToServer,
-  saveWorkbenchSession as saveWorkbenchState,
-  loadWorkbenchSession as loadWorkbenchState
+  loadWorkbenchSession as loadWorkbenchState, saveWorkbenchSession as saveWorkbenchState, dispatchLeadWebhook as sendLeadToServer
 };
 
 

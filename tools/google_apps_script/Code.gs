@@ -1,22 +1,11 @@
 /**
  * SMAT MINERALS - Google Apps Script Lead Intake Webhook
  * Archivo: tools/google_apps_script/Code.gs
- * Versión: 3.0 (Pipeline Transaccional Completo + Memoria Hidráulica Durand + TCO + Piezas Atómicas)
- * 
- * Instrucciones de Despliegue en Google Workspace:
- * 1. Cree una Google Sheet con nombre "SMAT_LEADS_OPERACION" en su Google Drive.
- * 2. Vaya a Extensiones > Apps Script.
- * 3. Pegue este código reemplazando cualquier contenido previo.
- * 4. Haga clic en "Implementar" > "Nueva implementación".
- * 5. Tipo: "Aplicación web".
- * 6. Ejecutar como: "Yo (propietario de la cuenta)".
- * 7. Quién tiene acceso: "Cualquier persona" (permite a Cloudflare Pages hacer fetch POST).
- * 8. Copie la URL del Webhook generada y configúrela en PUBLIC_LEAD_WEBHOOK_URL.
+ * Versión: 3.1 (Pipeline Transaccional Completo + Memoria Hidráulica Durand + TCO + Piezas Atómicas + 9 Campos de Ingeniería)
  */
 
 function doPost(e) {
   var lock = LockService.getScriptLock();
-  // Esperar hasta 10 segundos para concurrencia atómica
   lock.tryLock(10000);
 
   try {
@@ -30,10 +19,10 @@ function doPost(e) {
     } else {
       params = e.parameter || {};
     }
+    var data = params;
 
     // 1. TRAMPA HONEYPOT ANTI-SPAM (Decisión 8-A / GOLD-121)
-    // Si el campo invisible 'website' viene lleno por un bot, descartar silenciosamente sin alertar ni escribir
-    if (params.website && String(params.website).trim().length > 0) {
+    if (data.website && String(data.website).trim().length > 0) {
       return ContentService.createTextOutput(JSON.stringify({
         status: "ok",
         code: 200,
@@ -43,38 +32,39 @@ function doPost(e) {
 
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName("LEADS");
-    
-    // Si no existe la pestaña LEADS, inicializarla con cabeceras formales
+
     if (!sheet) {
       sheet = ss.insertSheet("LEADS");
       var headers = [
-        "created_at",
-        "folio",
-        "urgencia",
-        "nombre",
-        "empresa",
-        "telefono",
-        "correo",
-        "equipo_solicitado",
-        "codigo_smat",
-        "codigo_pieza_atomica",
-        "referencia_cliente",
-        "medidas_flexometro",
-        "perfil_pulpa_mina",
-        "memoria_hidraulica_durand",
-        "proyeccion_tco",
-        "material_wet_end",
-        "arreglo_transmision",
-        "estacion_despiece",
-        "peso_pieza_kg",
-        "claro_axial_mm",
-        "velocidad_punta_u2_ms",
-        "vida_rodamiento_l10h",
-        "cedula_metrologia",
-        "detalles_pulpa",
-        "destino_entrega",
-        "canal_origen",
-        "estatus"
+        'created_at',
+        'folio',
+        'urgencia',
+        'puerta_interna',
+        'nombre',
+        'empresa',
+        'telefono',
+        'correo',
+        'equipo_solicitado',
+        'codigo_smat',
+        'codigo_pieza_atomica',
+        'referencia_cliente',
+        'medidas_flexometro',
+        'perfil_pulpa_mina',
+        'memoria_hidraulica_durand',
+        'proyeccion_tco',
+        'material_bombeo',
+        'arreglo_transmision',
+        'estacion_armado',
+        'peso_pieza_kg',
+        'claro_axial_mm',
+        'perdida_eficiencia_vol_pct',
+        'velocidad_periferica_u2_ms',
+        'vida_rodamiento_l10h',
+        'memoria_metrologica',
+        'detalles_pulpa',
+        'destino_entrega',
+        'canal_origen',
+        'estatus'
       ];
       sheet.appendRow(headers);
       sheet.setFrozenRows(1);
@@ -83,39 +73,40 @@ function doPost(e) {
 
     var now = new Date();
     var createdAt = Utilities.formatDate(now, "America/Monterrey", "yyyy-MM-dd HH:mm:ss");
-    var folio = params.folio || ("SMAT-" + now.getFullYear() + "-" + Math.floor(1000 + Math.random() * 9000));
-    var urgencia = params.urgencia || "general";
-    var puertaInterna = params.puerta_interna || "OPERACION_SPARE_PARTS";
-    var nombre = params.nombre || params.contact_name || "";
-    var empresa = params.empresa || params.company_name || "";
-    var telefono = params.telefono || params.phone_number || "";
-    var correo = params.correo || params.email_address || "";
-    var equipo = params.equipo || params.role_id || "";
-    var codigoSmat = params.codigo || params.smat_code || "";
-    var codigoAtomico = params.atomic_code || params.pieza || "";
-    var refCliente = params.referencia_cliente || params.client_reference || "";
-    var medidasFlex = params.medidas_flexometro || params.medidas || "";
-    var perfilPulpa = params.perfil_pulpa || params.pulp_profile || "";
-    var memoriaHidraulica = params.memoria_hidraulica || params.hidraulica || "";
-    var tcoResumen = params.tco_resumen || params.tco || "";
-    var materialWetEnd = params.material_wet_end || params.material || "";
-    var arregloTransmision = params.arreglo_transmision || params.transmision || "";
-    var estacionDespiece = params.estacion_despiece || params.estacion || "";
-    var pesoPiezaKg = params.peso_pieza_kg || params.peso_kg || "";
-    var claroAxialMm = params.claro_axial_mm || params.claro_mm || "";
-    var velocidadPuntaU2 = params.velocidad_punta_u2_ms || params.u2_ms || "";
-    var vidaRodamientoL10h = params.vida_rodamiento_l10h || params.l10h || "";
-    var cedulaMetrologia = params.cedula_metrologia || params.metrologia || "";
-    var detalles = params.detalles || params.spec_details || "";
-    var destino = params.destino || params.destination || "Durango";
-    var canal = params.canal || "web_quote_wizard";
+    var folio = data.folio || ("SMAT-" + now.getFullYear() + "-" + Math.floor(1000 + Math.random() * 9000));
+    var urgencia = data.urgencia || "general";
+    var puertaInterna = data.puerta_interna || "OPERACION_SPARE_PARTS";
+    var nombre = data.nombre || data.contact_name || "";
+    var empresa = data.empresa || data.company_name || "";
+    var telefono = data.telefono || data.phone_number || "";
+    var correo = data.correo || data.email_address || "";
+    var equipo = data.equipo || data.role_id || "";
+    var codigoSmat = data.codigo || data.smat_code || "";
+    var codigoAtomico = data.atomic_code || data.pieza || "";
+    var refCliente = data.referencia_cliente || data.client_reference || "";
+    var medidasFlex = data.medidas_flexometro || data.medidas || "";
+    var perfilPulpa = data.perfil_pulpa || data.pulp_profile || "";
+    var memoriaHidraulica = data.memoria_hidraulica_durand || data.memoria_hidraulica || data.hidraulica || "";
+    var tcoResumen = data.proyeccion_tco || data.tco_resumen || data.tco || "";
+    var materialWetEnd = data.material_bombeo || data.material_wet_end || data.material || "";
+    var arregloTransmision = data.arreglo_transmision || data.transmision || "";
+    var estacionDespiece = data.estacion_armado || data.estacion_despiece || data.estacion || "";
+    var pesoPiezaKg = data.peso_pieza_kg || data.peso_kg || "";
+    var claroAxialMm = data.claro_axial_mm || data.claro_mm || "";
+    var perdidaEficienciaVolPct = data.perdida_eficiencia_vol_pct || data.delta_eta_v || "";
+    var velocidadPuntaU2 = data.velocidad_periferica_u2_ms || data.velocidad_punta_u2_ms || data.u2_ms || "";
+    var vidaRodamientoL10h = data.vida_rodamiento_l10h || data.l10h || "";
+    var cedulaMetrologia = data.memoria_metrologica || data.cedula_metrologia || data.metrologia || "";
+    var detalles = data.detalles || data.spec_details || "";
+    var destino = data.destino || data.destination || "Durango";
+    var canal = data.canal || "web_quote_wizard";
     var estatus = "NUEVO_SIN_CONTACTAR";
 
-    // Insertar fila atómicamente
     sheet.appendRow([
       createdAt,
       folio,
       urgencia,
+      puertaInterna,
       nombre,
       empresa,
       telefono,
@@ -133,6 +124,7 @@ function doPost(e) {
       estacionDespiece,
       pesoPiezaKg,
       claroAxialMm,
+      perdidaEficienciaVolPct,
       velocidadPuntaU2,
       vidaRodamientoL10h,
       cedulaMetrologia,
@@ -145,9 +137,8 @@ function doPost(e) {
     var lastRow = sheet.getLastRow();
     var sheetUrl = ss.getUrl() + "#gid=" + sheet.getSheetId() + "&range=A" + lastRow;
 
-    // 2. DISPARO DE ALERTA POR GMAIL (Google Workspace sin cuotas SMTP)
     var emailSubject = (urgencia === "paro" ? "🚨 [URGENTE - PARO] " : "🏭 [NUEVO LEAD] ") + "Folio: " + folio + " - " + empresa;
-    var emailBody = 
+    var emailBody =
       "NUEVA SOLICITUD RECIBIDA EN SMATMINERALS.COM\n" +
       "--------------------------------------------------\n" +
       "Folio Formal: " + folio + "\n" +
@@ -163,12 +154,18 @@ function doPost(e) {
       "Teléfono / WhatsApp: " + telefono + "\n" +
       "Correo: " + correo + "\n" +
       "Destino: " + destino + "\n\n" +
-      "ESPECIFICACIÓN E INGENIERÍA:\n" +
+      "ESPECIFICACIÓN E INGENIERÍA (Cédula de Ingeniería Mecánica y Metrológica):\n" +
       "Línea / Equipo: " + equipo + "\n" +
       (refCliente ? "Referencia Interna Cliente: " + refCliente + "\n" : "") +
       (medidasFlex ? "Medidas de Campo (Flexómetro): " + medidasFlex + "\n" : "") +
       (memoriaHidraulica ? "Memoria Hidráulica Durand: " + memoriaHidraulica + "\n" : "") +
       (tcoResumen ? "Proyección TCO / Continuidad: " + tcoResumen + "\n" : "") +
+      (materialWetEnd ? "Material Bombeo / Wet-End: " + materialWetEnd + "\n" : "") +
+      (arregloTransmision ? "Arreglo Transmisión V-Belt: " + arregloTransmision + "\n" : "") +
+      (estacionDespiece ? "Estación de Armado BOM: " + estacionDespiece + " (" + (pesoPiezaKg || "N/A") + " kg)\n" : "") +
+      (claroAxialMm ? "Claro Axial Frontal (δ): " + claroAxialMm + " mm (Pérdida Δηv: " + (perdidaEficienciaVolPct || "0") + "%)\n" : "") +
+      (velocidadPuntaU2 ? "Cinemática (u2 / L10h): u2=" + velocidadPuntaU2 + " m/s | L10h=" + (vidaRodamientoL10h || "N/A") + " h\n" : "") +
+      (cedulaMetrologia ? "Cédula Metrológica Lab: " + cedulaMetrologia + "\n" : "") +
       "Detalles de Operación: " + detalles + "\n\n" +
       "--------------------------------------------------\n" +
       "Ver Fila en Google Sheets:\n" + sheetUrl + "\n";

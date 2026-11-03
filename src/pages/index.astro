@@ -244,15 +244,15 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
   }
 
   .part-chip:hover {
-    border-color: #0d78c6;
+    border-color: #0c4a6e;
     background: #f0f9ff;
-    color: #0d78c6;
+    color: #0c4a6e;
   }
 
   .part-chip--highlight {
     background: #eff6ff;
-    border-color: #0d78c6;
-    color: #0d78c6;
+    border-color: #0284c7;
+    color: #0c4a6e;
   }
 
   .hero-actions {
@@ -397,9 +397,13 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
   .inline-spec-link {
     color: var(--smat-copper-accent);
     text-decoration: underline;
-    min-height: auto !important;
-    min-width: auto !important;
-    display: inline !important;
+    min-height: 48px;
+    min-width: 48px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    font-weight: 700;
   }
 
   .showcase-links {
@@ -423,5 +427,43 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
     font-weight: 600;
     color: var(--smat-text-secondary);
     text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .hero-home {
+      padding: 1.15rem 0 0.85rem;
+    }
+    .hero-badge-pill {
+      margin-bottom: 0.55rem;
+      padding: 0.22rem 0.6rem;
+      font-size: 0.65rem;
+    }
+    .hero-home h1 {
+      font-size: 1.48rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.14;
+    }
+    .hero-sub-accent {
+      font-size: 1.12rem;
+    }
+    .hero-actions {
+      gap: 0.5rem;
+    }
+    .btn-lg {
+      padding: 0.55rem 1rem;
+      font-size: 0.84rem;
+    }
+    .equipment-showcase-section {
+      padding: 1.15rem 0 1.5rem;
+    }
+    .showcase-header {
+      margin-bottom: 0.85rem;
+    }
+    .showcase-header h2 {
+      font-size: 1.25rem;
+    }
+    .showcase-card {
+      padding: 1rem;
+    }
   }
 </style>

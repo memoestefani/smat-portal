@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import FlightDeck from '../components/FlightDeck.astro';
-import QuickPartSelectorStrip from '../components/QuickPartSelectorStrip.astro';
+import QuoteWizard from '../components/QuoteWizard.astro';
+import FaqAccordion from '../components/FaqAccordion.astro';
 ---
 
 <BaseLayout
@@ -36,11 +36,29 @@ import QuickPartSelectorStrip from '../components/QuickPartSelectorStrip.astro';
     </div>
   </section>
 
-  <div class="container no-print">
-    <QuickPartSelectorStrip lang="es" showAssemblyLink={true} collapsible={true} />
+  <div class="quote-workbench-shell">
+    <QuoteWizard lang="es" />
   </div>
 
-  <FlightDeck lang="es" />
+  <div class="container no-print">
+    <div class="quote-extension-links">
+      <a href="/bombeo/" class="extension-card">
+        <span class="ext-badge">P&ID</span>
+        <div>
+          <strong>Mapeo de Circuitos Mineros y Despiece</strong>
+          <small>Consulte las 5 estaciones de armado de bomba, lotes 5-5-4 y arreglos V-Belt.</small>
+        </div>
+      </a>
+      <a href="/diagnostico/" class="extension-card">
+        <span class="ext-badge">DIAGNÓSTICO</span>
+        <div>
+          <strong>Diagnóstico Rápido de Fallas Mecánicas</strong>
+          <small>Identifique cavitación, recirculación o vibración y pre-cargue la pieza exacta.</small>
+        </div>
+      </a>
+    </div>
+    <FaqAccordion lang="es" compact={true} />
+  </div>
 </BaseLayout>
 
 <style>
@@ -114,6 +132,68 @@ import QuickPartSelectorStrip from '../components/QuickPartSelectorStrip.astro';
   }
   .quote-route-heading strong {
     color: #ffffff;
+  }
+  .quote-workbench-shell {
+    background: #ffffff;
+    border-bottom: 1px solid var(--smat-border-light, #e2e8f0);
+  }
+  .quote-extension-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .extension-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: #ffffff;
+    border: 1px solid var(--smat-border-medium, #cbd5e1);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--smat-text-primary, #090d16);
+  }
+  .extension-card strong {
+    display: block;
+    font-size: 0.92rem;
+    margin-bottom: 0.2rem;
+  }
+  .extension-card small {
+    font-size: 0.8rem;
+    color: var(--smat-text-secondary, #1e293b);
+  }
+  .ext-badge {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #ffffff;
+    background: var(--smat-navy-deep, #051B2E);
+    padding: 0.2rem 0.45rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  @media (max-width: 768px) {
+    .quote-route-banner {
+      padding: 0.85rem 0 0.75rem;
+    }
+    .doors-breadcrumb {
+      margin-bottom: 0.45rem;
+      font-size: 0.68rem;
+    }
+    .route-pill {
+      font-size: 0.64rem;
+      padding: 0.15rem 0.5rem;
+      margin-bottom: 0.35rem;
+    }
+    .quote-route-heading h1 {
+      font-size: 1.3rem;
+      margin-bottom: 0.25rem;
+    }
+    .quote-route-heading p {
+      font-size: 0.82rem;
+      line-height: 1.38;
+    }
   }
 </style>
 

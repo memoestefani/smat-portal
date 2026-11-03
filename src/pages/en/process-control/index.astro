@@ -133,11 +133,16 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
                 <span>Solids by Weight ($C_w$ %):</span>
                 <input type="number" id="met-cw-input" min="5" max="80" step="1" value="50" />
               </label>
+              <label class="metrology-field">
+                <span>Measured Pulp Density ($\rho_p$ kg/L — Bidirectional):</span>
+                <input type="number" id="met-rhop-input" min="1.05" max="2.60" step="0.005" value="1.474" />
+              </label>
             </div>
             <div class="metrology-result-box">
-              <span class="met-res-label">Marcy Cup Reading (1000 cm³)</span>
+              <span class="met-res-label">Marcy Cup Reading (1000 cm³) & Dial Ring Bias Audit</span>
               <strong id="met-res-marcy-main" class="met-res-value">1474 g net • ρp = 1.474 kg/L</strong>
               <small id="met-res-marcy-sub">Active dial ring: SG 2.8 (Range 2.2 to 4.4)</small>
+              <small id="met-res-marcy-bias" style="color: #082f49; font-weight: 700;">Dry solids in cup: 737 g • Apparent ring Cw: 50.0% (Bias ΔC_bias = 0.0 pts) • 304 Stainless Steel Cup (1000 cm³)</small>
             </div>
           </details>
 
@@ -150,13 +155,37 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
               <label class="metrology-field">
                 <span>Batch Pneumatic Filtration Pressure (psi):</span>
                 <select id="met-gy-pressure-select">
-                  <option value="60–80 psi">60–80 psi (Standard Concentrates)</option>
-                  <option value="80–100 psi" selected>80–100 psi (Fines / Clay Slimes)</option>
+                  <option value="70">60–80 psi (Standard Concentrates)</option>
+                  <option value="90" selected>80–100 psi (Fines / Clay Slimes)</option>
+                </select>
+              </label>
+              <label class="metrology-field">
+                <span>Top Particle Size $d_{95}$ (mm):</span>
+                <input type="number" id="met-gy-d95-input" min="0.04" max="25.0" step="0.01" value="0.105" />
+              </label>
+              <label class="metrology-field">
+                <span>Mineral Liberation Size dₗ (µm):</span>
+                <input type="number" id="met-gy-lib-input" min="10" max="1000" step="5" value="100" />
+              </label>
+              <label class="metrology-field">
+                <span>Decimal Ore Grade ($a_L$ — 0.005 to 0.60):</span>
+                <input type="number" id="met-gy-grade-input" min="0.001" max="0.80" step="0.005" value="0.05" />
+              </label>
+              <label class="metrology-field">
+                <span>Pierre Gy Mineralogical Constant $c$ (g/cm³):</span>
+                <input type="number" id="met-gy-c-input" min="0.5" max="15.0" step="0.1" value="4.0" />
+              </label>
+              <label class="metrology-field">
+                <span>Target Relative Standard Error (s_FSE):</span>
+                <select id="met-gy-error-select">
+                  <option value="0.01">±1.0% (Reconciled Metallurgical Balance)</option>
+                  <option value="0.025">±2.5% (Grinding Shift Control)</option>
+                  <option value="0.05" selected>±5.0% (Fast Operational Sampling)</option>
                 </select>
               </label>
             </div>
             <div class="metrology-result-box">
-              <span class="met-res-label">Minimum Sample Mass (Pierre Gy, σ²F = 1%) & Lab Filter Cycles</span>
+              <span class="met-res-label">Minimum Sample Mass (Pierre Gy) & Lab Filter Cycles</span>
               <strong id="met-res-gy-main" class="met-res-value">250 g dry (Wet + Dry Sieving)</strong>
               <small id="met-res-gy-sub">Shape factor f = 0.50, granulometric factor g = 0.25</small>
             </div>
@@ -173,6 +202,10 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
                 <input type="number" id="met-p80-input" min="25" max="2000" step="5" value="75" />
               </label>
               <label class="metrology-field">
+                <span>Rosin-Rammler Uniformity Modulus ($n$):</span>
+                <input type="number" id="met-rr-n-input" min="0.60" max="2.20" step="0.05" value="1.25" />
+              </label>
+              <label class="metrology-field">
                 <span>Preferred Sieve Frame Material:</span>
                 <select id="met-frame-select">
                   <option value="8&quot; Stainless Steel (Full Height)">8" Stainless Steel (Full Height)</option>
@@ -181,11 +214,34 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
                   <option value="12&quot; Stainless Steel">12" Stainless Steel</option>
                 </select>
               </label>
+              <label class="metrology-field">
+                <span>Laboratory Screening Regime:</span>
+                <select id="met-screening-mode">
+                  <option value="auto" selected>Auto (Wet ≤150 µm / Dry &gt;150 µm)</option>
+                  <option value="wet">Wet + Dry Sieving (#400 Desliming)</option>
+                  <option value="dry">Dry Sieving (Standard Ro-Tap)</option>
+                </select>
+              </label>
             </div>
             <div class="metrology-result-box">
               <span class="met-res-label">Recommended ASTM E11 Stack (√2 Series + Rosin-Rammler)</span>
               <strong id="met-res-sieves-main" class="met-res-value">#70, #100, #140, #200, #270, #325, #400</strong>
               <small id="met-res-sieves-sub">Includes Cover & Receiver Pan • y' = -0.1555 (n = 1.25)</small>
+              <div style="overflow-x:auto; margin-top:0.75rem;">
+                <table id="met-sieve-stack-table" class="metrology-sieve-table" style="width:100%; border-collapse:collapse; font-size:0.78rem;">
+                  <thead>
+                    <tr style="border-bottom:1.5px solid #cbd5e1; text-align:left;">
+                      <th style="padding:0.35rem 0.5rem;">ASTM Mesh (Tyler)</th>
+                      <th style="padding:0.35rem 0.5rem;">Aperture (µm)</th>
+                      <th style="padding:0.35rem 0.5rem;">% Indiv. Ret.</th>
+                      <th style="padding:0.35rem 0.5rem;">% Cum. Ret.</th>
+                      <th style="padding:0.35rem 0.5rem;">% Cum. Passing</th>
+                      <th style="padding:0.35rem 0.5rem;">Ret. Mass (g) / Role</th>
+                    </tr>
+                  </thead>
+                  <tbody id="met-sieve-stack-tbody"></tbody>
+                </table>
+              </div>
             </div>
           </details>
         </div>
@@ -236,25 +292,75 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
   } from '../../../scripts/slurryEngine.js';
   import { saveWorkbenchState, loadWorkbenchState } from '../../../scripts/workbenchBus.js';
 
-  function updateMetrologyCalculator() {
+  function updateMetrologyCalculator(evt?: Event) {
     const sgEl = document.getElementById('met-sg-input') as HTMLInputElement | null;
     const cwEl = document.getElementById('met-cw-input') as HTMLInputElement | null;
+    const rhopEl = document.getElementById('met-rhop-input') as HTMLInputElement | null;
     const p80El = document.getElementById('met-p80-input') as HTMLInputElement | null;
+    const rrNEl = document.getElementById('met-rr-n-input') as HTMLInputElement | null;
     const frameEl = document.getElementById('met-frame-select') as HTMLSelectElement | null;
+    const pressureEl = document.getElementById('met-gy-pressure-select') as HTMLSelectElement | null;
+    const d95El = document.getElementById('met-gy-d95-input') as HTMLInputElement | null;
+    const libEl = document.getElementById('met-gy-lib-input') as HTMLInputElement | null;
+    const gradeEl = document.getElementById('met-gy-grade-input') as HTMLInputElement | null;
+    const gyCEl = document.getElementById('met-gy-c-input') as HTMLInputElement | null;
+    const gyErrEl = document.getElementById('met-gy-error-select') as HTMLSelectElement | null;
+    const modeEl = document.getElementById('met-screening-mode') as HTMLSelectElement | null;
+    const sieveTbody = document.getElementById('met-sieve-stack-tbody');
 
     if (!sgEl || !cwEl || !p80El || !frameEl) return;
 
     const sg = parseFloat(sgEl.value) || 2.8;
-    const cw = parseFloat(cwEl.value) || 50;
+    const targetId = (evt && (evt.target as HTMLElement)?.id) || '';
+    let marcy = calculateMarcyScaleReading({ solidsSpecificGravity: sg, solidsWeightPercent: parseFloat(cwEl.value) || 50 });
+    if (targetId === 'met-rhop-input' && rhopEl) {
+      const rhopVal = parseFloat(rhopEl.value) || 1.474;
+      marcy = calculateMarcyScaleReading({ solidsSpecificGravity: sg, pulpDensityKgL: rhopVal, solveFor: 'ore_density_rhop' });
+      cwEl.value = String(Math.round(marcy.solidsWeightPercent));
+    } else if (rhopEl && document.activeElement !== rhopEl) {
+      rhopEl.value = marcy.pulpDensityKgL.toFixed(3);
+    }
+    const cw = marcy.solidsWeightPercent;
     const p80 = parseFloat(p80El.value) || 75;
     const frame = frameEl.value;
 
-    const marcy = calculateMarcyScaleReading({ solidsSpecificGravity: sg, solidsWeightPercent: cw });
-    const gy = calculateGyMinimumSampleMass({ topSizeD95Mm: (p80 * 1.4) / 1000, solidsWeightPercent: cw });
-    const sieveStack = recommendAstmSieveSeries({ targetP80Microns: p80 });
+    if (targetId === 'met-p80-input' && d95El) {
+      d95El.value = ((p80 * 1.4) / 1000).toFixed(3);
+    }
+
+    const topSizeD95Mm = d95El ? (parseFloat(d95El.value) || (p80 * 1.4) / 1000) : (p80 * 1.4) / 1000;
+    const liberationSizeMicrons = libEl ? (parseFloat(libEl.value) || 100) : 100;
+    const oreGradeDecimal = gradeEl ? (parseFloat(gradeEl.value) || 0.05) : 0.05;
+    const samplingConstantC = gyCEl && targetId === 'met-gy-c-input' ? (parseFloat(gyCEl.value) || undefined) : undefined;
+    const targetRelativeStdError = gyErrEl ? (parseFloat(gyErrEl.value) || 0.05) : 0.05;
+    const airPressurePsi = pressureEl ? (parseFloat(pressureEl.value) || 90) : 90;
+    const frameDiameterInches = frame.includes('12"') ? 12 : 8;
+    const screeningMode = modeEl ? modeEl.value : 'auto';
+    const rosinRammlerSlopeN = rrNEl && rrNEl.value ? parseFloat(rrNEl.value) : undefined;
+
+    const gy = calculateGyMinimumSampleMass({
+      topSizeD95Mm,
+      liberationSizeMicrons,
+      oreGradeDecimal,
+      samplingConstantC,
+      targetRelativeStdError,
+      solidsWeightPercent: cw,
+      solidsSpecificGravity: sg,
+      airPressurePsi
+    });
+    if (gyCEl && targetId !== 'met-gy-c-input' && document.activeElement !== gyCEl) {
+      gyCEl.value = String(gy.samplingConstantC);
+    }
+    const sieveStack = recommendAstmSieveSeries({
+      targetP80Microns: p80,
+      frameDiameterInches,
+      screeningMode,
+      rosinRammlerSlopeN
+    });
 
     const marcyMain = document.getElementById('met-res-marcy-main');
     const marcySub = document.getElementById('met-res-marcy-sub');
+    const marcyBias = document.getElementById('met-res-marcy-bias');
     const gyMain = document.getElementById('met-res-gy-main');
     const gySub = document.getElementById('met-res-gy-sub');
     const sievesMain = document.getElementById('met-res-sieves-main');
@@ -262,17 +368,22 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
     const quoteCta = document.getElementById('met-quote-cta') as HTMLAnchorElement | null;
     const pumpPrecalCta = document.getElementById('met-pump-precal-cta') as HTMLAnchorElement | null;
 
+    const wetDryLabel = sieveStack.screeningMode === 'wet' ? 'Wet + Dry Sieving' : 'Dry Sieving';
+
     if (marcyMain) {
       marcyMain.textContent = `${marcy.cupNetMassGrams} g net • ρp = ${marcy.pulpDensityKgL.toFixed(3)} kg/L`;
     }
     if (marcySub) {
       marcySub.textContent = `Active Marcy ring: SG ${marcy.recommendedRingSg.toFixed(1)} (Volumetric concentration Cv = ${marcy.solidsVolumePercent}%)`;
     }
+    if (marcyBias) {
+      marcyBias.textContent = `Dry solids in cup: ${marcy.drySolidsMassGramsInCup} g • Apparent ring Cw: ${marcy.ringApparentCw}% (Bias ΔC_bias = ${marcy.wrongRingBiasPoints} pts) • ${marcy.recommendedContainerEn}`;
+    }
     if (gyMain) {
-      gyMain.textContent = `${gy.minDrySampleGrams} g dry (${p80 <= 150 ? 'Wet + Dry Sieving' : 'Dry Sieving'})`;
+      gyMain.textContent = `${gy.minDrySampleGrams} g dry (${wetDryLabel}) • ${gy.slurrySampleLiters} L slurry`;
     }
     if (gySub) {
-      gySub.textContent = `Theoretical Pierre Gy mass: ${gy.theoreticalGyGrams} g • Batch Filter: ${gy.batchFilterCycles} cycle(s) at ${gy.recommendedAirPressurePsi}`;
+      gySub.textContent = `Theoretical Pierre Gy mass: ${gy.theoreticalGyGrams} g (d95=${gy.topSizeD95Mm} mm, c=${gy.samplingConstantC}) • Batch Filter: ${gy.batchFilterCycles} cycle(s) at ${gy.recommendedAirPressurePsi} (${gy.estimatedCycleMinutes} min/cycle, cake moisture ~${gy.residualCakeMoisturePct}%)`;
     }
     const meshLabels = sieveStack.sieveStackSummary;
     if (sievesMain) {
@@ -281,32 +392,73 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
     if (sievesSub) {
       sievesSub.textContent = `Center cut: ${sieveStack.primaryControlMesh} (${sieveStack.primaryApertureMicrons} µm) • y'=${sieveStack.rosinRammlerYPrime} (n=${sieveStack.rosinRammlerSlopeN}) • ${frame}`;
     }
+    if (sieveTbody && Array.isArray(sieveStack.sieveStack)) {
+      sieveTbody.innerHTML = sieveStack.sieveStack.map((s: any) => {
+        const isPrimary = Boolean(s.isPrimaryP80Control || s.isPrimaryCut);
+        const rowStyle = isPrimary
+          ? 'background:#f0f9ff; font-weight:800; border-bottom:1px solid #cbd5e1;'
+          : 'border-bottom:1px solid #e2e8f0;';
+        return `<tr style="${rowStyle}" data-primary-p80="${isPrimary ? 'true' : 'false'}">
+          <td style="padding:0.32rem 0.5rem;">${s.mesh} <span style="opacity:0.75;">(${s.tylerEquivalent})</span>${isPrimary ? ' • P80' : ''}</td>
+          <td style="padding:0.32rem 0.5rem;">${s.apertureMicrons} µm</td>
+          <td style="padding:0.32rem 0.5rem;">${s.retainedIndividualPct.toFixed(1)}%</td>
+          <td style="padding:0.32rem 0.5rem;">${Number(s.cumulativeRetainedPct ?? (100 - s.cumulativePassingPct)).toFixed(1)}%</td>
+          <td style="padding:0.32rem 0.5rem;">${s.cumulativePassingPct.toFixed(1)}%</td>
+          <td style="padding:0.32rem 0.5rem;">${Number(s.estimatedMassRetainedGrams ?? 0).toFixed(1)} g • ${s.roleEn || ''}</td>
+        </tr>`;
+      }).join('');
+    }
 
-    const metrologiaStr = `Marcy SG=${marcy.recommendedRingSg.toFixed(1)} (${cw}% Cw, ρp=${marcy.pulpDensityKgL.toFixed(3)} kg/L) | Gy=${gy.minDrySampleKg} kg (${gy.batchFilterCycles} Batch cycle) | ASTM P80=${p80} µm (${sieveStack.primaryControlMesh}, y'=${sieveStack.rosinRammlerYPrime}, n=${sieveStack.rosinRammlerSlopeN})`;
+    const metrologiaStr = `Marcy SG=${marcy.recommendedRingSg.toFixed(1)} (${cw}% Cw, ρp=${marcy.pulpDensityKgL.toFixed(3)} kg/L, ΔC_bias=${marcy.wrongRingBiasPoints} pts) | Gy=${gy.minDrySampleKg} kg (d95=${gy.topSizeD95Mm} mm, c=${gy.samplingConstantC}, s=${gy.targetRelativeStdError}, ${gy.batchFilterCycles} Batch cycle at ${gy.recommendedAirPressurePsi}) | ASTM P80=${p80} µm (${sieveStack.primaryControlMesh}, y'=${sieveStack.rosinRammlerYPrime}, n=${sieveStack.rosinRammlerSlopeN}, R_P80=${sieveStack.retainedPercentAtP80}%)`;
 
     if (quoteCta) {
-      quoteCta.href = `/en/quote/?circuito=control_procesos&equipo=balanza_marcy&sg=${sg}&cw=${cw}&p80=${p80}&gy_kg=${gy.minDrySampleKg}&metrologia=${encodeURIComponent(metrologiaStr)}#rfq`;
+      quoteCta.href = `/en/quote/?circuito=control_procesos&equipo=balanza_marcy&sg=${sg}&cw=${cw}&rhop=${marcy.pulpDensityKgL}&p80=${p80}&d95=${gy.topSizeD95Mm}&lib_um=${gy.liberationSizeMicrons}&grade=${gy.oreGradeDecimal}&air_psi=${gy.airPressurePsi}&gy_c=${gy.samplingConstantC}&gy_err=${gy.targetRelativeStdError}&rr_n=${sieveStack.rosinRammlerSlopeN}&ret_p80=${sieveStack.retainedPercentAtP80}&gy_kg=${gy.minDrySampleKg}&metrologia=${encodeURIComponent(metrologiaStr)}#rfq`;
     }
     if (pumpPrecalCta) {
-      pumpPrecalCta.href = `/en/quote/?circuito=bombeo&flow=220&solids=${cw}&d80=${p80}&sg=${sg}&metrologia=${encodeURIComponent(metrologiaStr)}#rfq`;
+      pumpPrecalCta.href = `/en/quote/?circuito=bombeo&flow=220&solids=${cw}&d80=${p80}&sg=${sg}&rhop=${marcy.pulpDensityKgL}&d95=${gy.topSizeD95Mm}&lib_um=${gy.liberationSizeMicrons}&grade=${gy.oreGradeDecimal}&air_psi=${gy.airPressurePsi}&gy_c=${gy.samplingConstantC}&gy_err=${gy.targetRelativeStdError}&rr_n=${sieveStack.rosinRammlerSlopeN}&ret_p80=${sieveStack.retainedPercentAtP80}&metrologia=${encodeURIComponent(metrologiaStr)}#rfq`;
     }
 
     const prev = loadWorkbenchState() || {};
     saveWorkbenchState({
       ...prev,
+      rhop: marcy.pulpDensityKgL,
+      lib_um: gy.liberationSizeMicrons,
+      grade: gy.oreGradeDecimal,
+      air_psi: gy.airPressurePsi,
+      gy_c: gy.samplingConstantC,
+      gy_err: gy.targetRelativeStdError,
+      rr_n: sieveStack.rosinRammlerSlopeN,
+      ret_p80: sieveStack.retainedPercentAtP80,
       metrologia: metrologiaStr,
       metrology: {
         specificGravity: sg,
         solidsPctCw: cw,
         pulpDensityKgL: marcy.pulpDensityKgL,
         recommendedRingSg: marcy.recommendedRingSg,
+        ringApparentCw: marcy.ringApparentCw,
+        wrongRingBiasPoints: marcy.wrongRingBiasPoints,
+        cupNetMassGrams: marcy.cupNetMassGrams,
+        drySolidsMassGramsInCup: marcy.drySolidsMassGramsInCup,
+        recommendedContainerEn: marcy.recommendedContainerEn,
+        topSizeD95Mm: gy.topSizeD95Mm,
+        liberationSizeMicrons: gy.liberationSizeMicrons,
+        oreGradeDecimal: gy.oreGradeDecimal,
+        theoreticalGyGrams: gy.theoreticalGyGrams,
+        samplingConstantC: gy.samplingConstantC,
+        targetRelativeStdError: gy.targetRelativeStdError,
+        airPressurePsi: gy.airPressurePsi,
         gySampleMassKg: gy.minDrySampleKg,
         batchFilterCycles: gy.batchFilterCycles,
+        estimatedCycleMinutes: gy.estimatedCycleMinutes,
+        residualCakeMoisturePct: gy.residualCakeMoisturePct,
         targetP80Microns: p80,
         primaryControlMesh: sieveStack.primaryControlMesh,
         rosinRammlerYPrime: sieveStack.rosinRammlerYPrime,
         rosinRammlerSlopeN: sieveStack.rosinRammlerSlopeN,
+        retainedPercentAtP80: sieveStack.retainedPercentAtP80,
+        screeningMode: sieveStack.screeningMode,
         sieveFrame: frame,
+        sieveStack: sieveStack.sieveStack,
         summary: metrologiaStr
       }
     });
@@ -359,7 +511,21 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
     });
   });
 
-  ['met-sg-input', 'met-cw-input', 'met-gy-pressure-select', 'met-p80-input', 'met-frame-select'].forEach((id) => {
+  [
+    'met-sg-input',
+    'met-cw-input',
+    'met-rhop-input',
+    'met-gy-pressure-select',
+    'met-gy-d95-input',
+    'met-gy-lib-input',
+    'met-gy-grade-input',
+    'met-gy-c-input',
+    'met-gy-error-select',
+    'met-p80-input',
+    'met-rr-n-input',
+    'met-frame-select',
+    'met-screening-mode'
+  ].forEach((id) => {
     const el = document.getElementById(id);
     if (el) {
       el.addEventListener('input', updateMetrologyCalculator);

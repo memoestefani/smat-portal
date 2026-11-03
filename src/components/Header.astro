@@ -337,7 +337,7 @@ const productCategories = isEs ? [
   }
 
   .lang-btn {
-    color: #64748b;
+    color: var(--smat-text-secondary, #334155);
     text-decoration: none;
   }
 
@@ -347,13 +347,16 @@ const productCategories = isEs ? [
   }
 
   .lang-sep {
-    color: #cbd5e1;
+    color: #64748b;
   }
 
   .header-rfq-btn {
     padding: 0.45rem 0.95rem;
     font-size: 0.82rem;
-    font-weight: 700;
+    font-weight: 800;
+    background-color: var(--smat-copper-surface-aaa, #E56B38) !important;
+    color: var(--smat-on-copper-aaa, #090D16) !important;
+    border-color: #b45309 !important;
   }
 
   @media (max-width: 960px) {

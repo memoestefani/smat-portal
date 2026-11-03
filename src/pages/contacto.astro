@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import QuoteWizard from '../components/QuoteWizard.astro';
 import companyData from '../../data/company.json';
 ---
 
@@ -79,9 +78,36 @@ import companyData from '../../data/company.json';
           </div>
         </div>
 
-        <!-- Formulario Wizard -->
-        <div>
-          <QuoteWizard lang="es" />
+        <!-- Directorio Directo de Ingeniería, Logística y Acceso a Consola de Cotización (Decisión 7-C+) -->
+        <div class="card nap-detail-card">
+          <h2>Mesa de Ingeniería y Solicitud de Folio</h2>
+          <div class="contact-block">
+            <span class="block-label">Consola de Cotización Técnica y Simulador Durand:</span>
+            <p class="block-val">
+              Para generar su <strong>Folio Institucional en A4</strong>, tabla TSV para SAP o pre-calibrar su línea de bombeo, flotación, filtración o laboratorio metalúrgico, utilice nuestra consola dedicada:
+            </p>
+            <div style="margin-top: 0.85rem; display: flex; flex-wrap: wrap; gap: 0.65rem;">
+              <a href="/cotizar/#rfq" class="btn btn-primary">Ir al Cotizador Técnico y Simulador →</a>
+              <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=lote_554&material=alto_cromo_cr27#rfq" class="btn btn-outline">Cotizar Lote 5-5-4 Directo</a>
+            </div>
+          </div>
+
+          <div class="contact-block">
+            <span class="block-label">Accesos Rápidos por Línea de Suministro:</span>
+            <p class="block-val">
+              • <a href="/cotizar/?circuito=bombeo&equipo=kit_wet_end#rfq">Bombas para Lodos y Lotes Húmedos 5-5-4 (Cr27% / Hule / PU)</a><br />
+              • <a href="/cotizar/?circuito=flotacion&equipo=celda_flotacion#rfq">Mecanismos y Celdas de Flotación (50 a 300 ft³)</a><br />
+              • <a href="/cotizar/?circuito=filtracion&equipo=filtro_prensa#rfq">Filtros Prensa 16 bar, Placas PP y Lonas Filtrantes</a><br />
+              • <a href="/cotizar/?circuito=control_procesos&equipo=balanza_marcy#rfq">Balanza Marcy (1000 cm³), Filtro Batch y Tamices ASTM E11</a>
+            </p>
+          </div>
+
+          <div class="logistics-protocol-box">
+            <h4>Protocolo de Retiro en Almacén Central Durango</h4>
+            <p>
+              Presente su código de parte SMAT o folio de cotización en patio de maniobras ({companyData.address.street}, {companyData.address.neighborhood}, CP {companyData.address.postal_code}) para inspección dimensional 1:1 y carga asistida con polipasto o montacargas.
+            </p>
+          </div>
         </div>
       </div>
     </div>

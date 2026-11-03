@@ -2,24 +2,6 @@
 @import './tokens.css';
 
 :root {
-  --color-bg-primary: var(--smat-bg-page);
-  --color-bg-surface: var(--smat-bg-surface);
-  --color-bg-card: var(--smat-bg-surface);
-  --color-bg-subtle: var(--smat-bg-subtle);
-  
-  --color-text-main: var(--smat-text-primary);
-  --color-text-muted: var(--smat-text-muted);
-  --color-text-dark: var(--smat-text-primary);
-  
-  --color-accent-copper: var(--smat-copper-accent);
-  --color-accent-copper-hover: var(--smat-copper-hover);
-  --color-accent-amber-light: var(--smat-copper-light);
-  --color-emergency-red: var(--smat-emergency-red);
-  --color-emergency-bg: var(--smat-emergency-bg);
-  --color-success-green: var(--smat-emerald-stock);
-  --color-border: var(--smat-border-light);
-  --color-border-focus: var(--smat-border-focus);
-
   --font-family-sans: var(--smat-font-ui);
   --font-family-serif: var(--smat-font-editorial);
   --font-family-mono: var(--smat-font-mono);
@@ -41,8 +23,8 @@
 
 html {
   font-family: var(--font-family-sans);
-  background-color: var(--color-bg-primary);
-  color: var(--color-text-main);
+  background-color: var(--smat-bg-page);
+  color: var(--smat-text-primary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -53,8 +35,8 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--color-bg-primary);
-  color: var(--color-text-main);
+  background-color: var(--smat-bg-page);
+  color: var(--smat-text-primary);
 }
 
 main {
@@ -146,14 +128,14 @@ p {
 }
 
 .btn-primary {
-  background-color: var(--color-accent-copper);
+  background-color: var(--smat-copper-accent);
   color: #ffffff;
-  border-color: var(--color-accent-copper);
+  border-color: var(--smat-copper-accent);
   box-shadow: 0 2px 4px rgba(194, 94, 0, 0.2);
 }
 
 .btn-primary:hover {
-  background-color: var(--color-accent-copper-hover);
+  background-color: var(--smat-copper-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(194, 94, 0, 0.3);
 }
@@ -188,13 +170,13 @@ p {
 }
 
 .btn-outline:hover {
-  border-color: var(--color-accent-copper);
-  color: var(--color-accent-copper);
+  border-color: var(--smat-copper-accent);
+  color: var(--smat-copper-accent);
 }
 
 /* Tarjetas en Blanco Puro con Borde Hairline */
 .card {
-  background-color: var(--color-bg-card);
+  background-color: var(--smat-bg-surface);
   border: 1px solid var(--smat-border-light);
   border-radius: var(--radius-lg);
   padding: 2rem;

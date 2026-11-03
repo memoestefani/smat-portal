@@ -109,7 +109,7 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
         roleTitle="Equipos de Proceso para Planta Concentradora (Flotación / Filtración / Bombeo)"
         specs="Mecanismos de Flotación 50-300 ft³, Filtros Prensa 800-1500 mm (16 bar) y Bombas de Proyecto 1.5x1 a 14x12"
         metallurgy="Acero Estructural / Alto Cromo A05 (≥650 HB) / Polipropileno Copolímero / Elastómeros"
-        series="Línea de Proyectos CAPEX SMAT"
+        series="Línea de Proyectos de Planta SMAT"
         roleId="celda_flotacion"
         circuit="flotacion"
         lang="es"
@@ -118,9 +118,11 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
   </section>
 
   <section id="stage-2">
+    <CaseCards lang="es" />
+
     <details class="equipos-circuit-appendix" id="equipos-circuit-appendix">
       <summary class="equipos-circuit-appendix__summary container">
-        <span>Diagrama P&ID de Circuito, Matriz CAPEX/OPEX y Casos de Ingeniería en Planta</span>
+        <span>Diagrama P&ID de Circuito y Matriz de Equipos y Repuestos por Rol</span>
         <span class="equipos-circuit-appendix__badge">EXPANDIR ANEXO P&ID ▾</span>
       </summary>
       <div class="container" style="padding-top: 1.25rem; padding-bottom: 0.5rem;">
@@ -130,9 +132,6 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
           </button>
           <button type="button" role="tab" aria-selected="false" class="equipos-seg-btn" data-equipos-view-btn="hub">
             2. Matriz Dual por Rol / Circuito
-          </button>
-          <button type="button" role="tab" aria-selected="false" class="equipos-seg-btn" data-equipos-view-btn="cases">
-            3. Casos Reales en Planta
           </button>
         </div>
       </div>
@@ -147,10 +146,6 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
 
       <div data-equipos-view-panel="hub" style="display:none">
         <DualHubView lang="es" />
-      </div>
-
-      <div data-equipos-view-panel="cases" style="display:none">
-        <CaseCards lang="es" />
       </div>
     </details>
   </section>

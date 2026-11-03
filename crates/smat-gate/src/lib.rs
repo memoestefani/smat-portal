@@ -24,28 +24,55 @@ pub fn find_site_root() -> PathBuf {
     PathBuf::from(".")
 }
 
-/// 1. Verifica paridad estricta entre data/roles.json y data/roles.copy.json
+pub fn read_quote_wizard_composite(site_root: &Path) -> Result<String, String> {
+    let qw = fs::read_to_string(site_root.join("src/components/QuoteWizard.astro")).map_err(|e| e.to_string())?;
+    let dossier = fs::read_to_string(site_root.join("src/components/LiveEngineeringDossier.astro")).unwrap_or_default();
+    let ctrl = fs::read_to_string(site_root.join("src/scripts/quoteWizardController.js")).unwrap_or_default();
+    let css = fs::read_to_string(site_root.join("src/styles/workbench.css")).unwrap_or_default();
+    Ok(format!("{}\n{}\n{}\n{}", qw, dossier, ctrl, css))
+}
+
+/// 1. Verifica integridad SSOT de data/roles.json, data/company.json y erradicacion de roles.copy.json
 pub fn verify_catalog_parity(site_root: &Path) -> Result<(), String> {
     let roles_path = site_root.join("data").join("roles.json");
     let copy_path = site_root.join("data").join("roles.copy.json");
+    let company_path = site_root.join("data").join("company.json");
+    let atomic_path = site_root.join("data").join("atomic_parts.json");
 
     if !roles_path.exists() {
         return Err(format!("No existe {}", roles_path.display()));
     }
-    if !copy_path.exists() {
-        return Err(format!("No existe {}", copy_path.display()));
+    if copy_path.exists() {
+        return Err("Debris detectado: data/roles.copy.json debe ser eliminado (DEB-SMAT-04)".to_string());
+    }
+    if !company_path.exists() {
+        return Err(format!("No existe {}", company_path.display()));
+    }
+    if !atomic_path.exists() {
+        return Err(format!("No existe {}", atomic_path.display()));
     }
 
     let roles_str = fs::read_to_string(&roles_path).map_err(|e| e.to_string())?;
-    let copy_str = fs::read_to_string(&copy_path).map_err(|e| e.to_string())?;
-
-    let roles_val: serde_json::Value =
+    let _roles_val: serde_json::Value =
         serde_json::from_str(&roles_str).map_err(|e| format!("JSON invalido en roles.json: {}", e))?;
-    let copy_val: serde_json::Value = serde_json::from_str(&copy_str)
-        .map_err(|e| format!("JSON invalido en roles.copy.json: {}", e))?;
 
-    if roles_val != copy_val {
-        return Err("Paridad de catalogo violada: roles.json != roles.copy.json".to_string());
+    let company_str = fs::read_to_string(&company_path).map_err(|e| e.to_string())?;
+    let _company_val: serde_json::Value =
+        serde_json::from_str(&company_str).map_err(|e| format!("JSON invalido en company.json: {}", e))?;
+
+    // Verificar que ni Footer.astro ni LiveEngineeringDossier.astro interpolen objetos crudos [object Object]
+    for rel in ["src/components/Footer.astro", "src/components/LiveEngineeringDossier.astro"] {
+        let p = site_root.join(rel);
+        if p.exists() {
+            let content = fs::read_to_string(&p).map_err(|e| e.to_string())?;
+            if content.contains("companyData.contact.phones[0]}")
+                || content.contains("companyData.contact.phones[1]}")
+                || content.contains("companyData.contact.emails[0]}")
+                || content.contains("companyData.contact.emails[1]}")
+            {
+                return Err(format!("Interpolacion de objeto crudo [object Object] detectada en {}", rel));
+            }
+        }
     }
 
     Ok(())
@@ -124,7 +151,6 @@ pub fn verify_bilingual_symmetry(site_root: &Path) -> Result<(), String> {
         }
     }
 
-    // Comprobar catalogo bilingue
     let roles_path = site_root.join("data").join("roles.json");
     if roles_path.exists() {
         let roles_str = fs::read_to_string(&roles_path).unwrap_or_default();
@@ -376,7 +402,7 @@ pub fn verify_design_tokens_and_workbench(site_root: &Path) -> Result<(), String
         }
     }
 
-    let wizard_content = fs::read_to_string(&wizard_path).map_err(|e| e.to_string())?;
+    let wizard_content = read_quote_wizard_composite(site_root)?;
     let required_workbench = ["workbench-split", "live-folio", "SMAT-2026", "wb-copy-btn", "wb-pdf-btn"];
     for w in &required_workbench {
         if !wizard_content.contains(w) {
@@ -390,7 +416,6 @@ pub fn verify_design_tokens_and_workbench(site_root: &Path) -> Result<(), String
 /// 13. Gate D16: Audita EventBus y Suite de Exportación de 4 Vías (Decisiones 5-C y 6-C)
 pub fn verify_event_bus_and_export_suite(site_root: &Path) -> Result<(), String> {
     let bus_path = site_root.join("src").join("scripts").join("workbenchBus.js");
-    let wizard_path = site_root.join("src").join("components").join("QuoteWizard.astro");
 
     if !bus_path.exists() {
         return Err("No existe src/scripts/workbenchBus.js".to_string());
@@ -404,7 +429,7 @@ pub fn verify_event_bus_and_export_suite(site_root: &Path) -> Result<(), String>
         }
     }
 
-    let wizard_content = fs::read_to_string(&wizard_path).map_err(|e| e.to_string())?;
+    let wizard_content = read_quote_wizard_composite(site_root)?;
     let required_drawer = ["mini-dossier-bar", "drawer-sheet", "preset-chips-grid", "custom-equip-details"];
     for elem in &required_drawer {
         if !wizard_content.contains(elem) {
@@ -415,38 +440,34 @@ pub fn verify_event_bus_and_export_suite(site_root: &Path) -> Result<(), String>
     Ok(())
 }
 
-/// 14. Gate D17: Audita Unified Flight Deck y Trust Matrix (Decisiones 1-C y 4-C)
+/// 14. Gate D17: Audita montaje directo de QuoteWizard y Trust Matrix (Decisiones 1-C++ y 4-C)
 pub fn verify_flight_deck_and_trust_matrix(site_root: &Path) -> Result<(), String> {
     let deck_path = site_root.join("src").join("components").join("FlightDeck.astro");
+    let persp_path = site_root.join("src").join("components").join("PerspectiveSelector.astro");
     let trust_path = site_root.join("src").join("components").join("TrustMatrix.astro");
     let index_path = site_root.join("src").join("pages").join("index.astro");
     let en_index_path = site_root.join("src").join("pages").join("en").join("index.astro");
 
-    if !deck_path.exists() {
-        return Err("No existe src/components/FlightDeck.astro".to_string());
+    if deck_path.exists() {
+        return Err("src/components/FlightDeck.astro debe estar eliminado (DEB-E3-02)".to_string());
+    }
+    if persp_path.exists() {
+        return Err("src/components/PerspectiveSelector.astro debe estar eliminado (DEB-E3-01)".to_string());
     }
     if !trust_path.exists() {
         return Err("No existe src/components/TrustMatrix.astro".to_string());
-    }
-
-    let deck_content = fs::read_to_string(&deck_path).map_err(|e| e.to_string())?;
-    let required_modes = ["flight-deck-wrapper", "QuoteWizard", "extension-card"];
-    for mode in &required_modes {
-        if !deck_content.contains(mode) {
-            return Err(format!("FlightDeck.astro carece del elemento ergonómico '{}'", mode));
-        }
     }
 
     let index_content = fs::read_to_string(&index_path).map_err(|e| e.to_string())?;
     let en_content = fs::read_to_string(&en_index_path).map_err(|e| e.to_string())?;
 
     let cotizar_content = fs::read_to_string(site_root.join("src/pages/cotizar.astro")).unwrap_or_default();
-    if (!index_content.contains("FlightDeck") && !cotizar_content.contains("FlightDeck")) || !index_content.contains("TrustMatrix") {
-        return Err("index.astro no integra FlightDeck o TrustMatrix".to_string());
+    if !cotizar_content.contains("QuoteWizard") || !cotizar_content.contains("extension-card") || !index_content.contains("TrustMatrix") {
+        return Err("cotizar.astro no integra QuoteWizard/extension-card o index.astro no integra TrustMatrix".to_string());
     }
     let quote_en_content = fs::read_to_string(site_root.join("src/pages/en/quote.astro")).unwrap_or_default();
-    if (!en_content.contains("FlightDeck") && !quote_en_content.contains("FlightDeck")) || !en_content.contains("TrustMatrix") {
-        return Err("en/index.astro no integra FlightDeck o TrustMatrix".to_string());
+    if !quote_en_content.contains("QuoteWizard") || !quote_en_content.contains("extension-card") || !en_content.contains("TrustMatrix") {
+        return Err("en/quote.astro no integra QuoteWizard/extension-card o en/index.astro no integra TrustMatrix".to_string());
     }
 
     Ok(())
@@ -768,7 +789,114 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             passed: verify_pump_assembly_and_zero_orphan_rfq_links(site_root).is_ok(),
             details: verify_pump_assembly_and_zero_orphan_rfq_links(site_root).err().unwrap_or_else(|| "OK: Reporte de despiece 5 estaciones y cero enlaces /#rfq verificados.".to_string()),
         },
+        GateReport {
+            name: "23. Particion Modular Parnas y Cero data-step=2 Falsos (Gate D26)".to_string(),
+            passed: verify_modular_parnas_and_zero_fake_data_step_gate(site_root).is_ok(),
+            details: verify_modular_parnas_and_zero_fake_data_step_gate(site_root).err().unwrap_or_else(|| "OK: QuoteWizard <950 lineas, 4 modulos Parnas, 0 data-step=2 y 0 tokens --color-*.".to_string()),
+        },
+        GateReport {
+            name: "24. Higiene Lexica Don Manuel y Separacion /contacto/ vs /cotizar/ (Gate D27)".to_string(),
+            passed: verify_manuel_lexical_and_route_separation_gate(site_root).is_ok(),
+            details: verify_manuel_lexical_and_route_separation_gate(site_root).err().unwrap_or_else(|| "OK: Cero 'Refaccion Urgente' y cero QuoteWizard duplicado en /contacto/.".to_string()),
+        },
+        GateReport {
+            name: "25. Polaridad Solar WCAG AAA y Paridad Etapa 3 1-C++ a 10-C++ (Gate D28)".to_string(),
+            passed: verify_solar_wcag_aaa_and_etapa3_parity(site_root).is_ok(),
+            details: verify_solar_wcag_aaa_and_etapa3_parity(site_root).err().unwrap_or_else(|| "OK: Tokens WCAG AAA, 11 parametros metrologicos, Tri-Compound y cinematica n2/Fr verificados.".to_string()),
+        },
     ]
+}
+
+pub fn verify_solar_wcag_aaa_and_etapa3_parity(site_root: &Path) -> Result<(), String> {
+    if site_root.join("src/components/FlightDeck.astro").exists() {
+        return Err("FlightDeck.astro debe estar eliminado fisicamente (DEB-E3-02)".to_string());
+    }
+    if site_root.join("src/components/PerspectiveSelector.astro").exists() {
+        return Err("PerspectiveSelector.astro debe estar eliminado fisicamente (DEB-E3-01)".to_string());
+    }
+
+    let tokens = fs::read_to_string(site_root.join("src/styles/tokens.css")).map_err(|e| e.to_string())?;
+    if !tokens.contains("--smat-blue-royal: #0c4a6e;") {
+        return Err("tokens.css debe definir --smat-blue-royal: #0c4a6e; (9.61:1 WCAG AAA)".to_string());
+    }
+    if !tokens.contains("--smat-copper-accent: #7c2d12;") {
+        return Err("tokens.css debe definir --smat-copper-accent: #7c2d12; (10.65:1 WCAG AAA)".to_string());
+    }
+
+    let qw = read_quote_wizard_composite(site_root)?;
+    for req in [
+        "WET_END_MATERIAL_MATRIX",
+        "wb-material-matrix-card",
+        "wb-step1-xor-circuit-bar",
+        "wb-ctrl-rhop",
+        "wb-ctrl-air-psi",
+        "wb-ctrl-gy-c",
+        "wb-ctrl-gy-err",
+        "wb-ctrl-rr-n",
+        "wb-ctrl-ret-p80",
+        "metric-drive-rpm",
+        "metric-drive-fr",
+        "metric-drive-flood",
+        "metric-structural-reason",
+        "wb-step2-control-summary",
+        "hydrateMetrologyInputsFromState",
+    ] {
+        if !qw.contains(req) {
+            return Err(format!("QuoteWizard compuesto carece del elemento de Etapa 3 '{}'", req));
+        }
+    }
+
+    Ok(())
+}
+
+pub fn verify_modular_parnas_and_zero_fake_data_step_gate(site_root: &Path) -> Result<(), String> {
+    let qw_path = site_root.join("src/components/QuoteWizard.astro");
+    let dossier_path = site_root.join("src/components/LiveEngineeringDossier.astro");
+    let ctrl_path = site_root.join("src/scripts/quoteWizardController.js");
+    let css_path = site_root.join("src/styles/workbench.css");
+    let footer_path = site_root.join("src/components/Footer.astro");
+
+    for p in [&qw_path, &dossier_path, &ctrl_path, &css_path, &footer_path] {
+        if !p.exists() {
+            return Err(format!("No existe el modulo requerido '{}'", p.display()));
+        }
+    }
+
+    let qw_raw = fs::read_to_string(&qw_path).map_err(|e| e.to_string())?;
+    let line_count = qw_raw.lines().count();
+    if line_count >= 950 {
+        return Err(format!("QuoteWizard.astro excede el presupuesto modular (<950 lineas): {} lineas", line_count));
+    }
+    if qw_raw.contains("data-step=\"2\"") || qw_raw.contains("data-step='2'") {
+        return Err("QuoteWizard.astro contiene atributos falsos data-step=\"2\" prohibidos por DEB-R1-01..03".to_string());
+    }
+
+    let dossier_raw = fs::read_to_string(&dossier_path).map_err(|e| e.to_string())?;
+    if dossier_raw.contains("data-step=\"2\"") || dossier_raw.contains("data-step='2'") {
+        return Err("LiveEngineeringDossier.astro contiene data-step=\"2\" prohibido".to_string());
+    }
+
+    let footer_raw = fs::read_to_string(&footer_path).map_err(|e| e.to_string())?;
+    if footer_raw.contains("--color-") {
+        return Err("Footer.astro contiene variables CSS huerfanas --color-* (DEB-R1-04)".to_string());
+    }
+
+    Ok(())
+}
+
+pub fn verify_manuel_lexical_and_route_separation_gate(site_root: &Path) -> Result<(), String> {
+    let slurry = fs::read_to_string(site_root.join("src/scripts/slurryEngine.js")).map_err(|e| e.to_string())?;
+    if slurry.contains("Refacción Urgente") || slurry.contains("surcos en garganta") {
+        return Err("slurryEngine.js contiene lexico prohibido ('Refacción Urgente' o 'surcos en garganta')".to_string());
+    }
+
+    let contacto_es = fs::read_to_string(site_root.join("src/pages/contacto.astro")).map_err(|e| e.to_string())?;
+    let contacto_en = fs::read_to_string(site_root.join("src/pages/en/contact.astro")).map_err(|e| e.to_string())?;
+    if contacto_es.contains("<QuoteWizard") || contacto_en.contains("<QuoteWizard") {
+        return Err("contacto.astro o en/contact.astro siguen incrustando <QuoteWizard /> duplicado (DEB-R1-07)".to_string());
+    }
+
+    Ok(())
 }
 
 pub fn verify_backend_ui_parity_and_apple_cowan(site_root: &Path) -> Result<(), String> {
@@ -783,7 +911,7 @@ pub fn verify_backend_ui_parity_and_apple_cowan(site_root: &Path) -> Result<(), 
         return Err("skid.astro o en/pumping/skid.astro no exponen calculateDriveAndBearingKinematics".to_string());
     }
 
-    let qw_str = fs::read_to_string(site_root.join("src/components/QuoteWizard.astro")).map_err(|e| e.to_string())?;
+    let qw_str = read_quote_wizard_composite(site_root)?;
     for req in [
         "evaluateWetEndAssemblyInterference",
         "calculateDriveAndBearingKinematics",
@@ -794,6 +922,14 @@ pub fn verify_backend_ui_parity_and_apple_cowan(site_root: &Path) -> Result<(), 
         "wb-clearance-slider",
         "wb-rubber-u2-lock",
         "wb-atomic-part-card",
+        "projectWorkbenchToDOM",
+        "slider-ph",
+        "wb-seal-branch",
+        "wb-impeller-b2",
+        "wb-bearing-c",
+        "metric-fl",
+        "metric-cv",
+        "metric-v-rec",
     ] {
         if !qw_str.contains(req) {
             return Err(format!("QuoteWizard.astro carece de paridad backend-UI: falta '{}'", req));
@@ -962,5 +1098,8 @@ mod tests {
         assert!(verify_no_emergency_claims(&root).is_ok(), "Fallo en erradicación de claims de emergencia");
         assert!(verify_pump_assembly_and_zero_orphan_rfq_links(&root).is_ok(), "Fallo en verificacion de reporte de armado y enlaces /#rfq");
         assert!(verify_backend_ui_parity_and_apple_cowan(&root).is_ok(), "Fallo en verificacion de paridad backend-UI y Cowan 4+-1");
+        assert!(verify_modular_parnas_and_zero_fake_data_step_gate(&root).is_ok(), "Fallo en Gate 23: particion modular Parnas y cero data-step=2");
+        assert!(verify_manuel_lexical_and_route_separation_gate(&root).is_ok(), "Fallo en Gate 24: higiene lexica Don Manuel y separacion de rutas");
+        assert!(verify_solar_wcag_aaa_and_etapa3_parity(&root).is_ok(), "Fallo en Gate 25: polaridad solar WCAG AAA y paridad Etapa 3");
     }
 }

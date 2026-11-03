@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import QuoteWizard from '../../components/QuoteWizard.astro';
 import companyData from '../../../data/company.json';
 ---
 
@@ -78,8 +77,35 @@ import companyData from '../../../data/company.json';
           </div>
         </div>
 
-        <div>
-          <QuoteWizard lang="en" />
+        <div class="card nap-detail-card">
+          <h2>Engineering Desk & Official Folio Requisition</h2>
+          <div class="contact-block">
+            <span class="block-label">Technical Quote Console & Durand Simulator:</span>
+            <p class="block-val">
+              To generate your <strong>Official A4 Engineering Folio</strong>, SAP TSV requisition line, or calibrate your slurry pumping, flotation, filtration, or metallurgical lab inquiry, open our dedicated console:
+            </p>
+            <div style="margin-top: 0.85rem; display: flex; flex-wrap: wrap; gap: 0.65rem;">
+              <a href="/en/quote/#rfq" class="btn btn-primary">Open Technical Quote Console →</a>
+              <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=lote_554&material=alto_cromo_cr27#rfq" class="btn btn-outline">Quote 5-5-4 Wet-End Kit</a>
+            </div>
+          </div>
+
+          <div class="contact-block">
+            <span class="block-label">Direct Supply Line Deep-Links:</span>
+            <p class="block-val">
+              • <a href="/en/quote/?circuito=bombeo&equipo=kit_wet_end#rfq">Slurry Pumps & 5-5-4 Wet-End Lots (Cr27% / Rubber / PU)</a><br />
+              • <a href="/en/quote/?circuito=flotacion&equipo=celda_flotacion#rfq">Flotation Cells & Rotor-Stator Mechanisms (50 to 300 ft³)</a><br />
+              • <a href="/en/quote/?circuito=filtracion&equipo=filtro_prensa#rfq">16 bar Filter Presses, PP Plates & Filter Cloths</a><br />
+              • <a href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy#rfq">Marcy Pulp Scale (1000 cm³), Batch Filter & ASTM E11 Sieves</a>
+            </p>
+          </div>
+
+          <div class="logistics-protocol-box">
+            <h4>Durango Central Warehouse Pickup Protocol</h4>
+            <p>
+              Present your SMAT part code or official quotation folio at our loading yard ({companyData.address.street}, {companyData.address.neighborhood}, ZIP {companyData.address.postal_code}) for 1:1 dimensional verification and crane/forklift loading.
+            </p>
+          </div>
         </div>
       </div>
     </div>

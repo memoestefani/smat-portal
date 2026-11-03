@@ -3,6 +3,7 @@
 // Decisión 2-B: Pacto de Certeza Técnica y Garantía Comercial en Patio Durango
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TrustMatrix from '../components/TrustMatrix.astro';
+import FaqAccordion from '../components/FaqAccordion.astro';
 ---
 
 <BaseLayout 
@@ -58,6 +59,9 @@ import TrustMatrix from '../components/TrustMatrix.astro';
           </a>
         </div>
       </div>
+
+      <!-- Preguntas Frecuentes de Suministro, Balanceo y Metalurgia (data/faqs.json) -->
+      <FaqAccordion lang="es" />
     </div>
   </main>
 </BaseLayout>

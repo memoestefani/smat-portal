@@ -143,6 +143,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         <button type="button" class="btn btn-primary btn-print" id="print-btn" onclick="window.print()">
           Print / Save as PDF (SAP / Coupa)
         </button>
+        <button type="button" class="btn btn-secondary" id="copy-sap-acuse-btn">
+          Copy SAP / Ariba Text
+        </button>
+        <button type="button" class="btn btn-secondary" id="download-tsv-acuse-btn">
+          Download TSV / Excel
+        </button>
         <a href="/en/" class="btn btn-secondary">
           Return Home
         </a>
@@ -160,36 +166,75 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     function populateSheet() {
       const urlParams = new URLSearchParams(window.location.search);
       let cached = {};
+      let wbV2 = {};
       try {
         const raw = sessionStorage.getItem('smat_last_rfq_payload');
         if (raw) cached = JSON.parse(raw) || {};
       } catch (_e) {}
+      try {
+        const rawV2 = localStorage.getItem('smat_workbench_state_v2') || localStorage.getItem('smat_workbench_session');
+        if (rawV2) wbV2 = JSON.parse(rawV2) || {};
+      } catch (_e) {}
 
-      const folio = urlParams.get('folio') || cached.folio || 'SMAT-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
-      const nombre = urlParams.get('nombre') || urlParams.get('name') || cached.nombre || 'Plant Engineer / Requisitioner';
-      const empresa = urlParams.get('empresa') || urlParams.get('company') || cached.empresa || 'Registered Mining Operation';
-      const telefono = urlParams.get('telefono') || urlParams.get('phone') || cached.telefono || '+52 (618) 810-4408';
-      const correo = urlParams.get('correo') || urlParams.get('email') || cached.correo || 'ventas@smatminerals.com';
-      const equipo = urlParams.get('equipo') || urlParams.get('role') || cached.equipo || 'Critical Slurry Pumping Wear Replacement';
-      const codigo = urlParams.get('codigo') || cached.codigo_smat || '';
-      const pieza = urlParams.get('pieza') || cached.codigo_pieza_atomica || '';
-      const refCliente = urlParams.get('ref_cliente') || cached.referencia_cliente || 'No internal reference declared';
+      const folio = urlParams.get('folio') || cached.folio || wbV2.folio || 'SMAT-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+      const nombre = urlParams.get('nombre') || urlParams.get('name') || cached.nombre || wbV2.name || 'Plant Engineer / Requisitioner';
+      const empresa = urlParams.get('empresa') || urlParams.get('company') || cached.empresa || wbV2.company || 'Registered Mining Operation';
+      const telefono = urlParams.get('telefono') || urlParams.get('phone') || cached.telefono || wbV2.phone || '+52 (618) 810-4408';
+      const correo = urlParams.get('correo') || urlParams.get('email') || cached.correo || wbV2.email || 'ventas@smatminerals.com';
+      const equipo = urlParams.get('equipo') || urlParams.get('role') || cached.equipo || wbV2.equipTitle || 'Critical Slurry Pumping Wear Replacement';
+      const codigo = urlParams.get('codigo') || cached.codigo_smat || wbV2.equipCode || '';
+      const pieza = urlParams.get('pieza') || cached.codigo_pieza_atomica || wbV2.atomicPartCode || '';
+      const refCliente = urlParams.get('ref_cliente') || cached.referencia_cliente || wbV2.clientRef || 'No internal reference declared';
       const medidas = urlParams.get('medidas') || cached.medidas_flexometro || '1:1 dimensional verification at Durango Warehouse';
       const perfilPulpa = urlParams.get('perfil_pulpa') || cached.perfil_pulpa_mina || '';
-      const hidraulica = urlParams.get('hidraulica') || cached.memoria_hidraulica_durand || 'Hydraulic calculation subject to plant flow rate and % solids confirmation.';
+      const phVal = urlParams.get('ph') || cached.pulp_ph || wbV2.pulpPh || '7.5';
+      const flVal = urlParams.get('fl') || cached.durand_fl || wbV2.durandFactorFL || '';
+      const cvVal = urlParams.get('cv') || cached.solids_cv_pct || wbV2.solidsVolumetricPercent || '';
+      const vRecVal = urlParams.get('v_rec') || cached.recommended_velocity_ms || wbV2.recommendedPipeVelocityMs || '';
+      const hidraulicaBase = urlParams.get('hidraulica') || cached.memoria_hidraulica_durand || 'Hydraulic calculation subject to plant flow rate and % solids confirmation.';
+      const hidraulicaExtras = [
+        `pH = ${phVal}`,
+        flVal ? `F_L = ${flVal}` : '',
+        cvVal ? `C_v = ${cvVal}%` : '',
+        vRecVal ? `v_rec = ${vRecVal} m/s` : ''
+      ].filter(Boolean).join(' | ');
+      const hidraulica = hidraulicaBase.includes('pH') ? hidraulicaBase : `${hidraulicaBase} (${hidraulicaExtras})`;
       const tco = urlParams.get('tco') || cached.proyeccion_tco || '';
-      const detalles = urlParams.get('detalles') || urlParams.get('specs') || cached.especificacion_tecnica || 'Technical requisition subject to Durango yard dimensional inspection.';
+      const detalles = urlParams.get('detalles') || urlParams.get('specs') || cached.especificacion_tecnica || wbV2.notes || 'Technical requisition subject to Durango yard dimensional inspection.';
       const destino = urlParams.get('destino') || cached.modalidad_logistica || 'Durango Central Warehouse Pickup (Folio Scheduled)';
-      const urgencia = urlParams.get('urgencia') || (cached.urgencia && cached.urgencia.includes('PARO') ? 'paro' : 'proyecto');
-      const material = urlParams.get('material') || cached.material_bombeo || 'alto_cromo_cr27';
-      const transmision = urlParams.get('transmision') || cached.arreglo_transmision || 'ZVZ';
-      const estacion = urlParams.get('estacion') || cached.estacion_armado || 'S4';
-      const pesoKg = urlParams.get('peso_kg') || cached.peso_pieza_kg || '';
-      const claroMm = urlParams.get('claro_mm') || cached.claro_axial_mm || '0.75';
-      const deltaEtaV = urlParams.get('delta_eta_v') || cached.perdida_eficiencia_vol_pct || '0.3';
-      const u2Ms = urlParams.get('u2_ms') || cached.velocidad_periferica_u2_ms || '22.4';
-      const l10h = urlParams.get('l10h') || cached.vida_rodamiento_l10h || '38500';
-      const metrologia = urlParams.get('metrologia') || cached.memoria_metrologica || '';
+      const urgencia = urlParams.get('urgencia') || (cached.urgencia && cached.urgencia.includes('PARO') ? 'paro' : (wbV2.urgency || 'proyecto'));
+      const material = urlParams.get('material') || cached.material_bombeo || wbV2.selectedMaterial || 'alto_cromo_cr27';
+      const transmision = urlParams.get('transmision') || cached.arreglo_transmision || wbV2.driveArrangement || 'ZVZ';
+      const estacion = urlParams.get('estacion') || cached.estacion_armado || wbV2.stationCode || 'S4';
+      const sealBranch = urlParams.get('seal_branch') || cached.rama_sellado || wbV2.sealBranch || 'expeller_dry';
+      const pesoKg = urlParams.get('peso_kg') || cached.peso_pieza_kg || wbV2.partMassKg || '';
+      const claroMm = urlParams.get('claro_mm') || cached.claro_axial_mm || wbV2.clearanceMm || '0.75';
+      const b2Mm = urlParams.get('b2_mm') || cached.ancho_impulsor_b2_mm || wbV2.impellerExitWidthMm || '48';
+      const capCKn = urlParams.get('cap_c_kn') || cached.capacidad_rodamiento_c_kn || wbV2.dynamicCapacityCkN || '185';
+      const deltaEtaV = urlParams.get('delta_eta_v') || cached.perdida_eficiencia_vol_pct || wbV2.volumetricEfficiencyDropPct || '0.3';
+      const u2Ms = urlParams.get('u2_ms') || cached.velocidad_periferica_u2_ms || wbV2.tipSpeedU2Ms || '22.4';
+      const n2Rpm = urlParams.get('n2_rpm') || cached.n2_rpm || (wbV2.kinematics && wbV2.kinematics.pumpRpm) || '1149';
+      const frKn = urlParams.get('fr_kn') || cached.fr_kn || (wbV2.kinematics && wbV2.kinematics.beltRadialLoadKn) || '5.20';
+      const floodImm = urlParams.get('inmunidad_sumidero') || cached.inmunidad_sumidero || (wbV2.kinematics && wbV2.kinematics.sumpFloodImmunity) || 'HIGH';
+      const structReason = urlParams.get('razon_estructural') || cached.razon_estructural || (wbV2.clearance_eval && (wbV2.clearance_eval.structuralReasonEn || wbV2.clearance_eval.structuralReasonEs)) || '';
+      const l10h = urlParams.get('l10h') || cached.vida_rodamiento_l10h || wbV2.l10hHours || '38500';
+      const rhopVal = urlParams.get('rhop') || cached.densidad_mineral_rhop || wbV2.oreDensitySg || '';
+      const libUmVal = urlParams.get('lib_um') || wbV2.lib_um || '';
+      const gradeVal = urlParams.get('grade') || wbV2.grade || '';
+      const airPsiVal = urlParams.get('air_psi') || wbV2.air_psi || '';
+      const rrNVal = urlParams.get('rr_n') || wbV2.rr_n || '';
+      const retP80Val = urlParams.get('ret_p80') || wbV2.ret_p80 || '';
+      const metrologiaBase = urlParams.get('metrologia') || cached.memoria_metrologica || '';
+      const metroExtras = [
+        libUmVal ? `d_l=${libUmVal} µm` : '',
+        gradeVal ? `a_L=${gradeVal}%` : '',
+        airPsiVal ? `P_air=${airPsiVal} PSI` : '',
+        rrNVal ? `n=${rrNVal}` : '',
+        retP80Val ? `R(P80)=${retP80Val}%` : ''
+      ].filter(Boolean).join(' | ');
+      const metrologia = metrologiaBase
+        ? (metroExtras && !metrologiaBase.includes('d_l=') ? `${metrologiaBase} (${metroExtras})` : metrologiaBase)
+        : (rhopVal ? `Ore density ρ_p = ${rhopVal} t/m³ calibrated at metrology station${metroExtras ? ' (' + metroExtras + ')' : ''}.` : 'No laboratory pre-calibration attached (Marcy Scale / Bond / Filter Press).');
 
       const elFolio = document.getElementById('display-folio');
       if (elFolio) elFolio.textContent = folio;
@@ -228,13 +273,55 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       setText('field-dimensions', medidas);
       setText('field-details', detalles);
       setText('field-hydraulics', hidraulica);
-      const matLabel = material === 'hule_natural' ? 'Anti-Abrasion Natural Rubber (55–65 Shore A)' : (material === 'carburo_silicio' ? 'Silicon Carbide / Ceramic' : 'High Chrome ASTM A532 Cr27% (>600 HB)');
+      const matLabel = material === 'hule_natural'
+        ? 'Anti-Abrasion Natural Rubber R55 (55–65 Shore A)'
+        : (material === 'poliuretano'
+          ? 'Mining Polyurethane U01 (85–95 Shore A)'
+          : (material === 'carburo_silicio' ? 'Silicon Carbide / Ceramic' : 'High Chrome ASTM A532 Cr27% (>600 HB)'));
+      const sealLabel = sealBranch === 'gland_water' ? 'S5b Flushed Gland Packing' : 'S5a Dry Centrifugal Expeller';
       const nioshLabel = pesoKg ? ` • Weight: ${pesoKg} kg (${Number(pesoKg) > 23 ? 'Hoist >23 kg NIOSH' : 'Manual <=23 kg NIOSH'})` : '';
-      setText('field-material-drive', `${matLabel} • V-Belt Drive: ${transmision} • Station: ${estacion}${nioshLabel}`);
-      setText('field-clearance-kinematics', `Axial Clearance δ = ${claroMm} mm (Δη_v = -${deltaEtaV}%) • Tip Speed u₂ = ${u2Ms} m/s • ISO 281 Life L₁₀ₕ = ${Number(l10h).toLocaleString('en-US')} h`);
-      setText('field-metrology', metrologia || 'No laboratory pre-calibration attached (Marcy Scale / Bond / Filter Press).');
+      setText('field-material-drive', `${matLabel} • V-Belt Drive: ${transmision} (Sump: ${floodImm}) • Station: ${estacion} (${sealLabel})${nioshLabel}`);
+      setText('field-clearance-kinematics', `Axial Clearance δ = ${claroMm} mm (b₂ = ${b2Mm} mm, Δη_v = -${deltaEtaV}%) • n₂ = ${n2Rpm} RPM • u₂ = ${u2Ms} m/s • F_r = ${frKn} kN • C = ${capCKn} kN (ISO 281 Life L₁₀ₕ = ${Number(l10h).toLocaleString('en-US')} h)${structReason ? ' • ' + structReason : ''}`);
+      setText('field-metrology', metrologia);
       setText('field-tco', fullTcoAndProfile);
       setText('field-type', urgencia === 'paro' ? 'Emergency Plant Shutdown (High Operational Priority)' : 'Formal Equipment Requisition / Project');
+
+      const copySapBtn = document.getElementById('copy-sap-acuse-btn');
+      if (copySapBtn) {
+        copySapBtn.onclick = async () => {
+          const sapBlock = [
+            `FOLIO: ${folio}`,
+            `COMPANY: ${empresa} | REQUESTER: ${nombre}`,
+            `EQUIPMENT: ${equipo} (${fullCode})`,
+            `METALLURGY & DRIVE: ${matLabel} | ${transmision} (Sump: ${floodImm}) | ${estacion} (${sealLabel})`,
+            `HYDRAULICS: ${hidraulica}`,
+            `KINEMATICS: delta=${claroMm}mm (b2=${b2Mm}mm, dEtaV=-${deltaEtaV}%), n2=${n2Rpm}RPM, u2=${u2Ms}m/s, Fr=${frKn}kN, C=${capCKn}kN, L10h=${l10h}h${structReason ? ' | ' + structReason : ''}`,
+            `METROLOGY: ${metrologia}`
+          ].join('\n');
+          try {
+            await navigator.clipboard.writeText(sapBlock);
+            copySapBtn.textContent = 'SAP Text Copied';
+          } catch (_e) {}
+        };
+      }
+
+      const dlTsvBtn = document.getElementById('download-tsv-acuse-btn');
+      if (dlTsvBtn) {
+        dlTsvBtn.onclick = () => {
+          const headers = ['Folio', 'Company', 'Requester', 'Equipment', 'Code', 'Material', 'Drive', 'Sump_Immunity', 'Station', 'Seal', 'Clearance_mm', 'b2_mm', 'n2_RPM', 'u2_ms', 'Fr_kN', 'Capacity_C_kN', 'L10h_h', 'Structural_Reason', 'Hydraulics', 'Metrology'];
+          const row = [folio, empresa, nombre, equipo, fullCode, matLabel, transmision, floodImm, estacion, sealLabel, claroMm, b2Mm, n2Rpm, u2Ms, frKn, capCKn, l10h, structReason, hidraulica, metrologia];
+          const tsv = headers.join('\t') + '\n' + row.map(v => String(v || '').replace(/[\t\r\n]+/g, ' ')).join('\t') + '\n';
+          const blob = new Blob(['\uFEFF' + tsv], { type: 'text/tab-separated-values;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${folio}_SAP_ERP.tsv`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        };
+      }
     }
 
     populateSheet();
@@ -245,7 +332,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 <style>
   .ack-main {
     padding: 3rem 1.5rem 5rem;
-    background-color: var(--color-bg-base);
+    background-color: var(--smat-bg-page);
   }
 
   .ack-container {
@@ -452,14 +539,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   }
 
   .btn-print {
-    background: #0284c7;
+    background: #0c4a6e;
     color: #ffffff;
     font-size: 0.95rem;
     padding: 0.75rem 1.5rem;
   }
 
   .btn-print:hover {
-    background: #0369a1;
+    background: #082f49;
   }
 
   /* MEDIA PRINT STYLES FOR ERP (SAP/COUPA) */

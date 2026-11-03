@@ -3,6 +3,9 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
 import SharePurchasing from '../../../components/SharePurchasing.astro';
+import { DRIVE_ARRANGEMENT_CATALOG } from '../../../scripts/slurryEngine.js';
+
+const driveArrangements = Object.values(DRIVE_ARRANGEMENT_CATALOG);
 ---
 
 <BaseLayout 
@@ -87,27 +90,17 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
         </p>
         <TechnicalDiagrams diagram="drive_arrangements" lang="en" />
 
-        <div class="grid-2" style="margin-top: 1rem;">
-          <div class="card">
-            <h3>CV Arrangement (Overhead Piggyback Motor)</h3>
-            <p>Motor mounted on an overhead frame above the Bearing Assembly with V-belt sheaves and OSHA belt guard. Minimizes floor footprint.</p>
-            <a href="/en/quote/?equipo=skid_bomba&transmision=CV#rfq" class="btn btn-primary">Quote CV Arrangement Skid →</a>
-          </div>
-          <div class="card">
-            <h3>ZVZ Arrangement (Elevated Rear Motor)</h3>
-            <p>Motor mounted on an elevated rear pedestal on a common skid baseplate, keeping the motor clear of sump splash zones.</p>
-            <a href="/en/quote/?equipo=skid_bomba&transmision=ZVZ#rfq" class="btn btn-primary">Quote ZVZ Arrangement Skid →</a>
-          </div>
-          <div class="card">
-            <h3>CRZ Arrangement (Side-by-Side Motor)</h3>
-            <p>Motor and pump mounted parallel on a fabricated steel skid with V-belt drive. Provides unobstructed overhead crane access.</p>
-            <a href="/en/quote/?equipo=skid_bomba&transmision=CRZ#rfq" class="btn btn-primary">Quote CRZ Arrangement Skid →</a>
-          </div>
-          <div class="card">
-            <h3>DC Arrangement (Direct Inline Coupling)</h3>
-            <p>Collinear flexible coupling (E_belt = 0 N radial belt load), maximizing ISO 281 L₁₀h tapered roller bearing life.</p>
-            <a href="/en/quote/?equipo=skid_bomba&transmision=DC#rfq" class="btn btn-primary">Quote DC Arrangement Skid →</a>
-          </div>
+        <div class="grid-2" style="margin-top: 1rem;" data-drive-links="transmision=CV transmision=ZVZ transmision=CRZ transmision=DC">
+          {driveArrangements.map((arr) => (
+            <div class="card">
+              <h3>{arr.nameEn}</h3>
+              <p>{arr.descriptionEn}</p>
+              <small style="display:block; margin-bottom:0.65rem; font-family:var(--smat-font-mono); font-size:0.74rem; color:#082f49; font-weight:700;" data-kin-flood>
+                Footprint: {arr.footprintFactor.toFixed(2)}× • Sump Flood: {Boolean(arr.sumpFloodImmunity) ? 'Elevated Motor (Splash Immune)' : 'Baseplate level / Sump drainage'}
+              </small>
+              <a href={`/en/quote/?equipo=skid_bomba&transmision=${arr.code}#rfq`} class="btn btn-primary">Quote {arr.code} Arrangement Skid →</a>
+            </div>
+          ))}
         </div>
 
         <!-- V-Belt Kinematics, Tip Speed u2 <= 24.5 m/s & ISO 281 L10h Calibrator (Decision 2-C+, Arbitrage #8) -->
@@ -132,6 +125,14 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
                 </select>
               </label>
               <label class="kin-field">
+                <span>Electric Motor Speed (RPM):</span>
+                <select data-kin-motor-rpm>
+                  <option value="1780" selected>1780 RPM (4-Pole • 60 Hz)</option>
+                  <option value="1480">1480 RPM (4-Pole • 50 Hz / VFD)</option>
+                  <option value="1180">1180 RPM (6-Pole • 60 Hz)</option>
+                </select>
+              </label>
+              <label class="kin-field">
                 <span>Driver Motor Sheave (mm): <strong data-kin-driver-val>180 mm</strong></span>
                 <input type="range" min="120" max="380" step="10" value="180" data-kin-driver />
               </label>
@@ -140,11 +141,16 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
                 <input type="range" min="160" max="560" step="10" value="320" data-kin-driven />
               </label>
               <label class="kin-field">
+                <span>Shaft Power (kW): <strong data-kin-power-val>45 kW (60 HP)</strong></span>
+                <input type="range" min="15" max="315" step="5" value="45" data-kin-power />
+              </label>
+              <label class="kin-field">
                 <span>Impeller Diameter ØD₂ (atomic_parts):</span>
                 <select data-kin-impeller>
                   <option value="270">270 mm — 3x2 / 4x3 Series (D3147)</option>
                   <option value="380" selected>380 mm — 6x4 Series (E4147)</option>
                   <option value="510">510 mm — 8x6 Series (F6147)</option>
+                  <option value="640">640 mm — 10x8 Series (G8147)</option>
                 </select>
               </label>
               <label class="kin-field">
@@ -154,6 +160,10 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
                   <option value="hule_natural">Natural Rubber R55 (u₂ max 24.5 m/s)</option>
                   <option value="poliuretano">Polyurethane U01 (u₂ max 26.0 m/s)</option>
                 </select>
+              </label>
+              <label class="kin-field">
+                <span>Dynamic Bearing Capacity C (kN — ISO 281):</span>
+                <input type="number" min="60" max="450" step="5" value="145" data-kin-capacity-c />
               </label>
             </div>
 
@@ -171,7 +181,7 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
               <div class="kin-metric-card">
                 <span class="kin-metric-card__kicker">RADIAL BELT LOAD (Fᵣ)</span>
                 <strong class="kin-metric-card__val" data-kin-fr>6.71 kN</strong>
-                <span class="kin-metric-card__sub">Overhung load on Bearing Assembly</span>
+                <span class="kin-metric-card__sub" data-kin-fr-sub data-kin-load-p>Eq. load P = 14.37 kN • Footprint 1.00×</span>
               </div>
               <div class="kin-metric-card">
                 <span class="kin-metric-card__kicker">ISO 281 BEARING LIFE (L₁₀h)</span>
@@ -227,18 +237,23 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
     if (!panel) return;
 
     const arrSel = panel.querySelector('[data-kin-arrangement]') as HTMLSelectElement | null;
+    const motorRpmSel = panel.querySelector('[data-kin-motor-rpm]') as HTMLSelectElement | null;
     const driverInput = panel.querySelector('[data-kin-driver]') as HTMLInputElement | null;
     const drivenInput = panel.querySelector('[data-kin-driven]') as HTMLInputElement | null;
+    const powerInput = panel.querySelector('[data-kin-power]') as HTMLInputElement | null;
     const impSel = panel.querySelector('[data-kin-impeller]') as HTMLSelectElement | null;
     const matSel = panel.querySelector('[data-kin-material]') as HTMLSelectElement | null;
+    const capCInput = panel.querySelector('[data-kin-capacity-c]') as HTMLInputElement | null;
 
     const driverVal = panel.querySelector('[data-kin-driver-val]');
     const drivenVal = panel.querySelector('[data-kin-driven-val]');
+    const powerVal = panel.querySelector('[data-kin-power-val]');
     const rpmEl = panel.querySelector('[data-kin-rpm]');
     const ratioEl = panel.querySelector('[data-kin-ratio]');
     const u2El = panel.querySelector('[data-kin-u2]');
     const u2StatusEl = panel.querySelector('[data-kin-u2-status]');
     const frEl = panel.querySelector('[data-kin-fr]');
+    const frSubEl = panel.querySelector('[data-kin-fr-sub]');
     const l10hEl = panel.querySelector('[data-kin-l10h]');
     const alertBox = panel.querySelector('[data-kin-rubber-alert]') as HTMLElement | null;
     const switchBtn = panel.querySelector('[data-kin-switch-a05]');
@@ -246,57 +261,78 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
 
     const updateKinematics = () => {
       const arrangement = (arrSel?.value || 'CV') as 'CV' | 'ZVZ' | 'CRZ' | 'DC';
+      const motorRpm = Number(motorRpmSel?.value) || 1780;
       const driverPulleyMm = Number(driverInput?.value) || 180;
       const drivenPulleyMm = Number(drivenInput?.value) || 320;
+      const shaftPowerKw = Number(powerInput?.value) || 45;
       const impellerDiameterMm = Number(impSel?.value) || 380;
       const wetEndMaterial = matSel?.value || 'alto_cromo_cr27';
+      const dynamicCapacityCkN = Number(capCInput?.value) || 145;
 
-      if (driverVal) driverVal.textContent = `${driverPulleyMm} mm`;
-      if (drivenVal) drivenVal.textContent = `${drivenPulleyMm} mm`;
+      if (driverInput) driverInput.disabled = arrangement === 'DC';
+      if (drivenInput) drivenInput.disabled = arrangement === 'DC';
+
+      if (driverVal) driverVal.textContent = arrangement === 'DC' ? 'Direct 1:1' : `${driverPulleyMm} mm`;
+      if (drivenVal) drivenVal.textContent = arrangement === 'DC' ? 'Direct 1:1' : `${drivenPulleyMm} mm`;
+      if (powerVal) powerVal.textContent = `${shaftPowerKw} kW (${Math.round(shaftPowerKw * 1.341)} HP)`;
 
       const res = calculateDriveAndBearingKinematics({
         arrangement,
-        motorRpm: 1780,
+        motorRpm,
         driverPulleyMm,
         drivenPulleyMm,
         impellerDiameterMm,
-        shaftPowerKw: 45,
+        shaftPowerKw,
+        dynamicCapacityCkN,
         wetEndMaterial
       });
 
       if (rpmEl) rpmEl.textContent = `${res.pumpRpm} RPM`;
-      if (ratioEl) ratioEl.textContent = `Motor ${res.motorRpm} RPM • Ratio ${res.speedMultiplier.toFixed(2)}×`;
+      if (ratioEl) ratioEl.textContent = `Motor ${res.motorRpm} RPM • i=${res.reductionRatio.toFixed(2)}:1 (${res.speedMultiplier.toFixed(2)}×)`;
       if (u2El) u2El.textContent = `${res.tipSpeedMs.toFixed(2)} m/s`;
       if (u2StatusEl) {
         u2StatusEl.textContent = res.rubberSafeTipSpeed
-          ? 'Safe for Rubber R55, PU & High Chrome A05'
-          : 'Exceeds 24.5 m/s: Exclusive High Chrome A05 (≥650 HB)';
+          ? `Safe for Rubber/PU/A05 (Suggested: ${res.recommendedWetMaterialByTipSpeed})`
+          : `Exceeds 24.5 m/s: Exclusive ${res.recommendedWetMaterialByTipSpeed} (≥650 HB)`;
       }
       if (frEl) frEl.textContent = `${res.beltRadialLoadKn.toFixed(2)} kN`;
+      if (frSubEl) frSubEl.textContent = `P=${res.equivalentLoadPkN.toFixed(2)} kN (C=${res.dynamicCapacityCkN} kN) • Footprint ${res.footprintFactor.toFixed(2)}×`;
       if (l10hEl) l10hEl.textContent = `${res.bearingL10Hours.toLocaleString('en-US')} h`;
       if (alertBox) {
         alertBox.style.display = res.rubberThermalLimitExceeded ? 'flex' : 'none';
       }
       if (ctaEl) {
         const base = ctaEl.getAttribute('data-quote-base') || '/en/quote/';
-        ctaEl.href = `${base}?equipo=skid_bomba&transmision=${res.arrangement}&material=${wetEndMaterial}&u2_ms=${res.tipSpeedMs.toFixed(2)}&l10h=${res.bearingL10Hours}#rfq`;
+        ctaEl.href = `${base}?equipo=skid_bomba&transmision=${res.arrangement}&material=${wetEndMaterial}&driver_mm=${res.driverPulleyMm}&driven_mm=${res.drivenPulleyMm}&motor_rpm=${res.motorRpm}&power_kw=${res.shaftPowerKw}&n2_rpm=${res.pumpRpm}&fr_kn=${res.beltRadialLoadKn.toFixed(2)}&u2_ms=${res.tipSpeedMs.toFixed(2)}&l10h=${res.bearingL10Hours}&cap_c_kn=${res.dynamicCapacityCkN}#rfq`;
       }
 
       const prev = loadWorkbenchState() || {};
       saveWorkbenchState({
         ...prev,
+        cap_c_kn: res.dynamicCapacityCkN,
         kinematics: {
           arrangement: res.arrangement,
+          motorRpm: res.motorRpm,
+          driverPulleyMm: res.driverPulleyMm,
+          drivenPulleyMm: res.drivenPulleyMm,
+          impellerDiameterMm: res.impellerDiameterMm,
+          shaftPowerKw: res.shaftPowerKw,
+          dynamicCapacityCkN: res.dynamicCapacityCkN,
+          reductionRatio: res.reductionRatio,
+          sumpFloodImmunity: res.sumpFloodImmunity,
+          recommendedWetMaterialByTipSpeed: res.recommendedWetMaterialByTipSpeed,
+          wetEndMaterial: res.wetEndMaterial,
           pumpRpm: res.pumpRpm,
           tipSpeedMs: res.tipSpeedMs,
           beltRadialLoadKn: res.beltRadialLoadKn,
+          equivalentLoadPkN: res.equivalentLoadPkN,
           bearingL10Hours: res.bearingL10Hours,
           rubberThermalLimitExceeded: res.rubberThermalLimitExceeded
         }
       });
     };
 
-    [arrSel, driverInput, drivenInput, impSel, matSel].forEach((el) => {
+    [arrSel, motorRpmSel, driverInput, drivenInput, powerInput, impSel, matSel, capCInput].forEach((el) => {
       if (el) {
         el.addEventListener('input', updateKinematics);
         el.addEventListener('change', updateKinematics);

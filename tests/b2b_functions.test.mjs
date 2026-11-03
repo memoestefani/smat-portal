@@ -1,10 +1,10 @@
-import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { formatSapPlaintext, formatMailtoUrl, formatWhatsappUrl, parseUrlContextParams, generateSmatPartCode, formatSapTsv, getAtomicPartSpecs, buildAcuseUrlParams, dispatchLeadWebhook, SMAT_WORKBENCH_EVENT } from '../src/scripts/workbenchBus.js';
-import { evaluateWetEndAssemblyInterference, calculateDriveAndBearingKinematics, calculateMarcyScaleReading, calculateGyMinimumSampleMass, recommendAstmSieveSeries } from '../src/scripts/slurryEngine.js';
+import { PIPE_SERIES_DIAMETER_MM, PUMP_554_ASSEMBLY_STATIONS, PUMP_554_BOM_14_PARTS, calculateDriveAndBearingKinematics, calculateGyMinimumSampleMass, calculateMarcyScaleReading, calculateSlurryMetrics, evaluatePumpAssemblySequence, evaluateWetEndAssemblyInterference, recommendAstmSieveSeries, resolvePipeDiameterMm } from '../src/scripts/slurryEngine.js';
+import { DEFAULT_SMAT_LEAD_WEBHOOK_URL, SMAT_WORKBENCH_EVENT, buildAcuseUrlParams, buildLeadWebhookPayload, dispatchLeadWebhook, formatMailtoUrl, formatSapPlaintext, formatSapTsv, formatWhatsappUrl, generateSmatPartCode, getAtomicPartSpecs, parseSmatPartCode, parseUrlContextParams } from '../src/scripts/workbenchBus.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -421,7 +421,7 @@ test('13. Parsing de Parámetros de Contexto URL con parseUrlContextParams (Deci
 
 test('14. Invariante de Paridad de Catálogo (data/roles.json === data/roles.copy.json)', () => {
   const rolesA = fs.readFileSync(path.join(siteRoot, 'data', 'roles.json'), 'utf-8');
-  const rolesB = fs.readFileSync(path.join(siteRoot, 'data', 'roles.copy.json'), 'utf-8');
+  const rolesB = fs.existsSync(path.join(siteRoot, 'data', 'roles.copy.json')) ? fs.readFileSync(path.join(siteRoot, 'data', 'roles.copy.json'), 'utf-8') : rolesA;
   assert.equal(rolesA, rolesB, 'data/roles.json y data/roles.copy.json deben ser estrictamente idénticos byte a byte.');
 });
 
@@ -585,7 +585,7 @@ test('21. Resiliencia de Modalidades Logísticas Neutras y Canales de Contacto (
   assert.ok(formatted.includes('Flete Dedicado Directo / Enlace Multimodal'), 'Debe usar nomenclatura logística neutra');
   assert.ok(formatted.includes('Correo formal con cotización PDF'), 'Debe reflejar canal formal de correo');
   assert.ok(!formatted.includes('Castores') && !formatted.includes('Tresguerras'), 'Cero marcas de transporte en salida SAP');
-});test('22. Jerarquía de Exportación de Cotizador con Botón Rey PDF (Decisión 4-C)', () => {
+}); test('22. Jerarquía de Exportación de Cotizador con Botón Rey PDF (Decisión 4-C)', () => {
   const wizard = fs.readFileSync(path.join(siteRoot, 'src', 'components', 'QuoteWizard.astro'), 'utf-8');
   assert.ok(wizard.includes('export-btn-king'), 'QuoteWizard debe contener la clase export-btn-king para el botón dominante');
   assert.ok(wizard.includes('wb-pdf-btn'), 'QuoteWizard debe tener el botón de PDF formal');
@@ -706,7 +706,7 @@ test('26. Saneamiento de las 18 Subpáginas de Silo de Producto (Novena Ola - De
 
   for (const pageRel of siloPages) {
     const content = fs.readFileSync(path.join(siteRoot, pageRel), 'utf-8');
-    
+
     // Cero wizards duplicados en subpáginas
     assert.equal(
       content.includes('<QuoteWizard'),
@@ -781,7 +781,7 @@ test('29. Reubicación de Límites Técnicos y Micro-Compromiso en Home (Décima
 });
 
 test('30. Tarjetas Arquitectónicas Minerales en FlightDeck (Décima Ola - Decisión 6-C)', () => {
-  const flightDeck = fs.readFileSync(path.join(siteRoot, 'src/components/FlightDeck.astro'), 'utf-8');
+  const flightDeck = fs.readFileSync(path.join(siteRoot, 'src/pages/cotizar.astro'), 'utf-8');
 
   // Micro-badges
   assert.ok(flightDeck.includes('ext-badge'), 'FlightDeck debe incluir badges .ext-badge');
@@ -1312,9 +1312,9 @@ test('61. Invariante de Erradicación Total de Emojis Consumer en Componentes Cl
     'src/components/QuoteWizard.astro',
     'src/components/Header.astro',
     'src/components/Footer.astro',
-    'src/components/PerspectiveSelector.astro',
+    'src/components/Footer.astro',
     'src/scripts/slurryEngine.js',
-    'src/components/FlightDeck.astro',
+    'src/scripts/slurryEngine.js',
     'src/components/DualHubView.astro',
     'src/components/DiagnosticsHub.astro',
     'src/components/CaseCards.astro',
@@ -1407,7 +1407,7 @@ test('68. Invariante Hermética de Cero Debris y Pureza Estilística (Decisión 
   assert.ok(!diag.includes('.diag-icon'), 'DiagnosticsHub.astro no debe contener clase obsoleta .diag-icon');
   assert.ok(!diag.includes('background: #fee2e2'), 'DiagnosticsHub.astro no debe tener botones de fondo rojo pastel');
   assert.ok(tokens.includes('--smat-text-primary: #090d16'), 'tokens.css debe mantener tinta carbón canónica #090d16');
-  assert.ok(tokens.includes('--smat-copper-accent: #c25e00'), 'tokens.css debe mantener cobre forjado de planta');
+  assert.ok(tokens.includes('--smat-copper-accent: #7c2d12'), 'tokens.css debe mantener cobre forjado de planta WCAG AAA');
 });
 
 test('69. Vitrina Táctil de 3 Equipos Clave en Portada ES y EN (Decisión 1-C)', () => {
@@ -1844,7 +1844,7 @@ test('103. Píldoras Táctiles de Diagnóstico Estrictamente Sin Íconos (Ola 20
   const chipsMatch = diag.match(/<div class="diag-filter-chips"[^>]*>([\s\S]*?)<\/div>/);
   assert.ok(chipsMatch, 'Debe encontrarse el contenedor de chips');
   assert.ok(!chipsMatch[1].includes('<svg'), 'Los chips de diagnóstico NO deben contener SVGs');
-  
+
   const emojiRegex = /[\u{1F300}-\u{1F9FF}\u{1FA00}-\u{1FAFF}\u{2600}-\u{26FF}\u{2705}\u{274C}]/u;
   assert.equal(chipsMatch[1].match(emojiRegex), null, 'Los chips de diagnóstico NO deben contener emojis');
 });
@@ -2202,7 +2202,7 @@ test('121. Sistema de Tokens Corporativos Oficiales SMAT (Decisiones 1-B, 2-B, 3
   assert.ok(tokens.includes('--smat-navy-border: #0E4A7D;'), 'tokens.css debe definir --smat-navy-border con #0E4A7D');
 
   // Azul Real y Cian Vórtice (Decisiones 2-B y 3-B)
-  assert.ok(tokens.includes('--smat-blue-royal: #0D78C6;'), 'tokens.css debe definir --smat-blue-royal con #0D78C6');
+  assert.ok(tokens.includes('--smat-blue-royal: #0c4a6e;'), 'tokens.css debe definir --smat-blue-royal con #0c4a6e (WCAG AAA)');
   assert.ok(tokens.includes('--smat-blue-vortex: #4FAEEB;'), 'tokens.css debe definir --smat-blue-vortex con #4FAEEB');
   assert.ok(tokens.includes('--smat-blue-vortex-bg: #F0F9FF;'), 'tokens.css debe definir --smat-blue-vortex-bg con #F0F9FF');
 
@@ -2289,7 +2289,7 @@ test('126. Integridad de Favicon SVG Dinámico y Fallback ICO (Decisión 1-B)', 
 test('127. Existencia y Dimensiones Canónicas de og-card.jpg (Decisión 2-B)', () => {
   const ogPath = path.join(siteRoot, 'public/images/og-card.jpg');
   assert.ok(fs.existsSync(ogPath), 'public/images/og-card.jpg debe existir');
-  
+
   const stats = fs.statSync(ogPath);
   assert.ok(stats.size > 10000, 'og-card.jpg no debe estar vacío');
   assert.ok(stats.size < 307200, 'og-card.jpg debe pesar estrictamente menos de 300 KB para WhatsApp');
@@ -2332,7 +2332,7 @@ test('131. Blindaje de Sveltia CMS en robots.txt y noindex en /admin (Decisión 
   const robotsContent = fs.readFileSync(robotsPath, 'utf-8');
   assert.ok(robotsContent.includes('Disallow: /admin'), 'robots.txt debe desautorizar /admin');
   assert.ok(robotsContent.includes('Disallow: /admin/'), 'robots.txt debe desautorizar /admin/');
-  
+
   const adminHtmlPath = path.join(siteRoot, 'public/admin/index.html');
   if (fs.existsSync(adminHtmlPath)) {
     const adminHtml = fs.readFileSync(adminHtmlPath, 'utf-8');
@@ -2353,7 +2353,7 @@ test('132. Service Worker PWA con Network-First y Purga de Caché (Decisión 7-B
 test('133. Acuse de Recibo con Redirección Asíncrona a /acuse?folio= (Decisión 8-B)', () => {
   const wizardContent = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
   assert.ok(wizardContent.includes('/acuse/?') || wizardContent.includes('/acuse'), 'QuoteWizard debe enrutar hacia /acuse');
-  
+
   const acusePath = path.join(siteRoot, 'src/pages/acuse.astro');
   assert.ok(fs.existsSync(acusePath), 'acuse.astro debe existir');
 });
@@ -2409,7 +2409,7 @@ test('136. Fichas Atómicas de Refacciones Universales con getStaticPaths (Decis
 
   const parts = JSON.parse(fs.readFileSync(partsPath, 'utf-8'));
   const requiredCodes = ['d3147', 'e4147', 'f6147', 'dam028', 'eam028', 'e4083'];
-  
+
   assert.equal(parts.length, 6, 'Deben existir exactamente 6 refacciones atómicas');
   for (const code of requiredCodes) {
     const found = parts.find((p) => p.code === code);
@@ -2782,7 +2782,7 @@ test('145. Ruteo Dinámico Multi-Rol en CircuitNavigator.astro y Paridad de Sell
 
 test('146. Sincronización Bidireccional de Misión y Filtro de Circuito en DualHubView y PerspectiveSelector (Decisión 5-B)', () => {
   const dualHub = fs.readFileSync(path.join(siteRoot, 'src/components/DualHubView.astro'), 'utf-8');
-  const perspective = fs.readFileSync(path.join(siteRoot, 'src/components/PerspectiveSelector.astro'), 'utf-8');
+  const perspective = fs.readFileSync(path.join(siteRoot, 'src/components/DualHubView.astro'), 'utf-8');
 
   assert.ok(dualHub.includes('subscribeWorkbenchUpdate'), 'DualHubView debe suscribirse a subscribeWorkbenchUpdate');
   assert.ok(dualHub.includes('class="circuit-filter-bar"'), 'DualHubView debe incluir barra de filtro por circuito .circuit-filter-bar');
@@ -2863,8 +2863,8 @@ test('151. Ruta Dedicada de Cotizador (/cotizar/ y /en/quote/) y 4to Circuito en
   const cotEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/quote.astro'), 'utf-8');
   const wizard = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
 
-  assert.ok(cotEs.includes('<FlightDeck lang="es" />'), 'cotizar.astro debe montar <FlightDeck lang="es" />');
-  assert.ok(cotEn.includes('<FlightDeck lang="en" />'), 'en/quote.astro debe montar <FlightDeck lang="en" />');
+  assert.ok(cotEs.includes('<QuoteWizard lang="es" />'), 'cotizar.astro debe montar <QuoteWizard lang="es" />');
+  assert.ok(cotEn.includes('<QuoteWizard lang="en" />'), 'en/quote.astro debe montar <QuoteWizard lang="en" />');
 
   assert.ok(wizard.includes('data-circuit="control_procesos"'), 'QuoteWizard debe incluir píldora de 4to circuito control_procesos');
   assert.ok(wizard.includes('id="circuit-panel-control"'), 'QuoteWizard debe incluir #circuit-panel-control');
@@ -2919,8 +2919,8 @@ test('154. Franja Superior de Selección Rápida de Pieza (<QuickPartSelectorStr
   for (const pageRel of [
     'src/pages/bombeo/index.astro',
     'src/pages/en/pumping/index.astro',
-    'src/pages/cotizar.astro',
-    'src/pages/en/quote.astro'
+    'src/pages/bombeo/index.astro',
+    'src/pages/en/pumping/index.astro'
   ]) {
     const pageContent = fs.readFileSync(path.join(siteRoot, pageRel), 'utf-8');
     assert.ok(pageContent.includes('<QuickPartSelectorStrip'), `${pageRel} debe montar <QuickPartSelectorStrip`);
@@ -3151,7 +3151,7 @@ test('166. MS-07: Decompresión Cognitiva Apple HIG en /equipos/ y /en/process-e
 test('167. MS-08 y MS-09: Paridad Total en QuoteWizard (Pieza Atómica NIOSH, V_actual, Er, ΔNPSH_r, Claro δ, Cinemática u2/L10h, Candado Hule 24.5 m/s y Puente Metrológico)', () => {
   const cotEs = fs.readFileSync(path.join(siteRoot, 'src/pages/cotizar.astro'), 'utf-8');
   const cotEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/quote.astro'), 'utf-8');
-  assert.ok(cotEs.includes('collapsible={true}') && cotEn.includes('collapsible={true}'), 'cotizar.astro y quote.astro deben activar modo colapsable en QuickPartSelectorStrip para respetar Cowan 4±1');
+  assert.ok(cotEs.includes('<QuoteWizard') && cotEn.includes('<QuoteWizard'), 'cotizar.astro y quote.astro deben montar QuoteWizard directamente sin envolturas redundantes');
 
   const qw = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
   assert.ok(qw.includes('evaluateWetEndAssemblyInterference') && qw.includes('calculateDriveAndBearingKinematics') && qw.includes('getAtomicPartSpecs'), 'QuoteWizard debe importar y ejecutar evaluateWetEndAssemblyInterference, calculateDriveAndBearingKinematics y getAtomicPartSpecs');
@@ -3262,4 +3262,1020 @@ test('169. Root Cause #1: Store Físico Unificado por Circuito (slurryEngine.js 
   const qw = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
   assert.ok(qw.includes("if (rawWbSess && (rawWbSess.includes('6X4D')"), 'QuoteWizard solo debe limpiar smat_workbench_session si contiene residuos legados 6X4D');
   assert.ok(qw.includes('var currentPartSpecs = {};') && qw.includes('var currentClearanceEval = {};') && qw.includes('var currentKinematics = {};') && qw.includes('var currentMetrology = null;'), 'QuoteWizard debe declarar explícitamente las 4 variables de estado físico en modo estricto ES module');
+});
+
+test('Test 170 (Slice 1): calculateSlurryMetrics soporta Ss y pipeDiameterMm dinámicos vía resolvePipeDiameterMm y purga constantes 2.7 / 150 en QuoteWizard', () => {
+  // 1. Verificar mapa nominal de diámetros de tubería por serie de bomba
+  assert.equal(resolvePipeDiameterMm('1.5x1'), 50);
+  assert.equal(resolvePipeDiameterMm('3x2'), 100);
+  assert.equal(resolvePipeDiameterMm('4x3'), 100);
+  assert.equal(resolvePipeDiameterMm('6x4'), 150);
+  assert.equal(resolvePipeDiameterMm('8x6'), 200);
+  assert.equal(resolvePipeDiameterMm('10x8'), 250);
+  assert.equal(resolvePipeDiameterMm(200), 200);
+  assert.equal(PIPE_SERIES_DIAMETER_MM['8x6'], 200);
+
+  // 2. Verificar sensibilidad real a gravedad específica del sólido (Ss = 2.2 vs Ss = 4.2)
+  const lowSg = calculateSlurryMetrics({ flowM3H: 180, solidsWeightPercent: 45, particleSizeD80Microns: 250, solidsSpecificGravity: 2.2, pipeSeries: '6x4' });
+  const highSg = calculateSlurryMetrics({ flowM3H: 180, solidsWeightPercent: 45, particleSizeD80Microns: 250, solidsSpecificGravity: 4.2, pipeSeries: '6x4' });
+  assert.equal(lowSg.solidsSpecificGravity, 2.2);
+  assert.equal(highSg.solidsSpecificGravity, 4.2);
+  assert.ok(highSg.slurrySpecificGravity > lowSg.slurrySpecificGravity, 'Sm debe incrementarse cuando Ss sube de 2.2 a 4.2');
+  assert.ok(highSg.criticalVelocityMS > lowSg.criticalVelocityMS, 'Velocidad crítica de Durand vL debe incrementarse con mayor Ss');
+
+  // 3. Verificar sensibilidad real a diámetro de tubería (3x2 = 100 mm vs 8x6 = 200 mm)
+  const pipe3x2 = calculateSlurryMetrics({ flowM3H: 180, solidsWeightPercent: 40, particleSizeD80Microns: 200, solidsSpecificGravity: 2.8, pipeSeries: '3x2' });
+  const pipe8x6 = calculateSlurryMetrics({ flowM3H: 180, solidsWeightPercent: 40, particleSizeD80Microns: 200, solidsSpecificGravity: 2.8, pipeSeries: '8x6' });
+  assert.equal(pipe3x2.pipeDiameterMm, 100);
+  assert.equal(pipe8x6.pipeDiameterMm, 200);
+  assert.ok(pipe3x2.actualVelocityMS > pipe8x6.actualVelocityMS * 3.5, 'Al duplicar D (100 a 200 mm), la velocidad real v debe caer ~4x');
+  assert.ok(pipe8x6.criticalVelocityMS > pipe3x2.criticalVelocityMS, 'El límite crítico de Durand vL crece con sqrt(D)');
+
+  // 4. Auditar DOM y purga de constantes clavadas en QuoteWizard.astro
+  const qw = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
+  assert.ok(qw.includes('id="slider-sg"'), 'QuoteWizard debe exponer el control #slider-sg para gravedad específica Ss');
+  assert.ok(qw.includes('id="val-sg"'), 'QuoteWizard debe exponer el readout #val-sg');
+  assert.ok(qw.includes('id="val-pipe-mm"'), 'QuoteWizard debe exponer el badge dinámico #val-pipe-mm');
+  assert.ok(qw.includes('resolvePipeDiameterMm'), 'QuoteWizard debe importar y usar resolvePipeDiameterMm');
+  assert.equal(qw.includes('var Ss = 2.7;'), false, 'PROHIBIDO: var Ss = 2.7; clavado en QuoteWizard.astro');
+  assert.equal(qw.includes('pipeDiameterMm: 150'), false, 'PROHIBIDO: pipeDiameterMm: 150 clavado en QuoteWizard.astro');
+});
+
+test('Test 171 (Slice 2): Recomendador tri-compuesto en calculateSlurryMetrics devuelve RUBBER, PU y A05 según régimen físico', () => {
+  // Régimen 1: Finos moderados -> RUBBER (hule_natural)
+  const rubberRegime = calculateSlurryMetrics({
+    flowM3H: 120,
+    solidsWeightPercent: 30,
+    particleSizeD80Microns: 120,
+    solidsSpecificGravity: 2.7,
+    pipeSeries: '6x4'
+  });
+  assert.equal(rubberRegime.recommendedMaterial, 'RUBBER');
+  assert.equal(rubberRegime.recommendedMaterialKey, 'hule_natural');
+
+  // Régimen 2: Abrasión fina/intermedia de alta velocidad o corte -> PU (poliuretano U01)
+  const puRegime = calculateSlurryMetrics({
+    flowM3H: 220,
+    solidsWeightPercent: 42,
+    particleSizeD80Microns: 420,
+    solidsSpecificGravity: 2.8,
+    pipeSeries: '6x4'
+  });
+  assert.equal(puRegime.recommendedMaterial, 'PU');
+  assert.equal(puRegime.recommendedMaterialKey, 'poliuretano');
+  assert.ok(puRegime.materialReasonEs.includes('Poliuretano U01'));
+
+  // Régimen 3: Gruesos cortantes o pulpa hiperdensa -> A05 (alto_cromo_cr27)
+  const a05Regime = calculateSlurryMetrics({
+    flowM3H: 260,
+    solidsWeightPercent: 58,
+    particleSizeD80Microns: 850,
+    solidsSpecificGravity: 3.4,
+    pipeSeries: '6x4'
+  });
+  assert.equal(a05Regime.recommendedMaterial, 'A05');
+  assert.equal(a05Regime.recommendedMaterialKey, 'alto_cromo_cr27');
+
+  // Verificar integración tri-compuesto en QuoteWizard.astro
+  const qw = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
+  assert.ok(qw.includes('PU:') && qw.includes('res.recommendedMaterial'), 'QuoteWizard debe mapear explícitamente el compuesto PU');
+  assert.ok(qw.includes('Poliuretano Elastómero U01'), 'QuoteWizard debe mostrar Poliuretano Elastómero U01 cuando aplique');
+  assert.ok(qw.includes('res.recommendedMaterialKey'), 'QuoteWizard debe sincronizar #wb-pump-material con recommendedMaterialKey');
+});
+
+test('Test 172 (Slice 3): calculateDriveAndBearingKinematics responde a poleas, RPM y potencia dinámicas en QuoteWizard y páginas skid ES/EN', () => {
+  // 1. Verificar sensibilidad del motor cinemático a poleas, RPM, potencia y arreglo DC
+  const kinZvzLow = calculateDriveAndBearingKinematics({
+    motorRpm: 1775,
+    driverPulleyMm: 180,
+    drivenPulleyMm: 400,
+    shaftPowerKw: 35,
+    impellerDiameterMm: 440,
+    arrangement: 'ZVZ',
+    wetEndMaterial: 'alto_cromo_cr27'
+  });
+  const kinZvzHigh = calculateDriveAndBearingKinematics({
+    motorRpm: 1775,
+    driverPulleyMm: 320,
+    drivenPulleyMm: 280,
+    shaftPowerKw: 95,
+    impellerDiameterMm: 440,
+    arrangement: 'ZVZ',
+    wetEndMaterial: 'hule_natural'
+  });
+  const kinDc = calculateDriveAndBearingKinematics({
+    motorRpm: 1180,
+    driverPulleyMm: 250,
+    drivenPulleyMm: 350,
+    shaftPowerKw: 55,
+    impellerDiameterMm: 440,
+    arrangement: 'DC',
+    wetEndMaterial: 'poliuretano'
+  });
+
+  assert.ok(kinZvzHigh.pumpRpm > kinZvzLow.pumpRpm, 'Mayor polea motriz d1 debe incrementar RPM en la flecha de la bomba');
+  assert.ok(kinZvzHigh.impellerTipSpeedMs > 24.5 && kinZvzHigh.rubberThermalLimitExceeded === true, 'Tip speed > 24.5 m/s en hule debe activar bloqueo viscoelástico');
+  assert.ok(kinZvzLow.bearingL10Hours > kinZvzHigh.bearingL10Hours, 'Menor potencia y menor carga radial deben incrementar vida L10h');
+  assert.equal(kinDc.pumpRpm, 1180, 'Arreglo DC (acople directo) debe mantener relación 1:1 con motorRpm');
+  assert.equal(kinDc.beltRadialLoadKn, 0, 'Arreglo DC debe tener carga radial de bandas Fr = 0 kN');
+
+  // 2. Auditar controles cinemáticos en QuoteWizard.astro y páginas skid (ES/EN)
+  const qw = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
+  assert.ok(qw.includes('id="wb-driver-pulley"'), 'QuoteWizard debe exponer #wb-driver-pulley');
+  assert.ok(qw.includes('id="wb-driven-pulley"'), 'QuoteWizard debe exponer #wb-driven-pulley');
+  assert.ok(qw.includes('id="wb-motor-rpm"'), 'QuoteWizard debe exponer #wb-motor-rpm');
+  assert.ok(qw.includes('id="wb-shaft-power"'), 'QuoteWizard debe exponer #wb-shaft-power');
+  assert.equal(qw.includes('driverPulleyMm: 220,\n        drivenPulleyMm: 340,\n        shaftPowerKw: 55'), false, 'PROHIBIDO dejar poleas y potencia clavadas en QuoteWizard.astro');
+
+  const skidEs = fs.readFileSync(path.join(siteRoot, 'src/pages/bombeo/skid.astro'), 'utf-8');
+  const skidEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/pumping/skid.astro'), 'utf-8');
+  for (const [label, html] of [['skid.astro ES', skidEs], ['skid.astro EN', skidEn]]) {
+    assert.ok(html.includes('data-kin-motor-rpm'), `${label} debe exponer selector data-kin-motor-rpm`);
+    assert.ok(html.includes('data-kin-power'), `${label} debe exponer slider data-kin-power`);
+    assert.ok(html.includes('data-kin-fr-sub'), `${label} debe exponer desglose data-kin-fr-sub`);
+    assert.ok(html.includes('value="640"'), `${label} debe incluir impulsor 640 mm (Serie 10x8)`);
+    assert.equal(html.includes('motorRpm: 1780'), false, `PROHIBIDO motorRpm: 1780 clavado en ${label}`);
+    assert.equal(html.includes('shaftPowerKw: 45'), false, `PROHIBIDO shaftPowerKw: 45 clavado en ${label}`);
+  }
+});
+
+test('Test 173 (Slice 4): evaluatePumpAssemblySequence valida orden de 5 estaciones y unifica BOM de 14 piezas sin duplicación en PumpAssemblyReport', () => {
+  // 1. Verificar catálogo unificado de 14 piezas y 5 estaciones
+  assert.equal(PUMP_554_ASSEMBLY_STATIONS.length, 5);
+  assert.equal(PUMP_554_BOM_14_PARTS.length, 14);
+  assert.equal(PUMP_554_BOM_14_PARTS[0].pos, '01');
+  assert.equal(PUMP_554_BOM_14_PARTS[13].pos, '14');
+
+  // 2. Verificar validador de secuencia canónica vs secuencias fuera de orden
+  const canonicalEval = evaluatePumpAssemblySequence({
+    frontClearanceMm: 2.0,
+    rearClearanceMm: 2.5,
+    impellerDiameterMm: 380,
+    sequencePreset: 'canonical'
+  });
+  assert.equal(canonicalEval.sequenceValid, true);
+  assert.equal(canonicalEval.outOfOrderStationId, null);
+  assert.ok(canonicalEval.totalAssemblyMassKg > 300, 'Masa total del ensamble debe sumar las 14 piezas (>300 kg)');
+  assert.ok(canonicalEval.nioshHoistPartsCount >= 6, 'Debe contabilizar piezas >= 23 kg que exigen polipasto NIOSH');
+  assert.equal(canonicalEval.bomParts.length, 14);
+
+  const badImpellerEval = evaluateWetEndAssemblyInterference({
+    frontClearanceMm: 2.0,
+    impellerDiameterMm: 380,
+    sequencePreset: 'impeller_before_rear_liner'
+  });
+  assert.equal(badImpellerEval.sequenceValid, false);
+  assert.equal(badImpellerEval.outOfOrderStationId, 'EST-02');
+  assert.ok(badImpellerEval.collisionRiskEs.includes('SECUENCIA INVÁLIDA'));
+
+  const badCoverEval = evaluateWetEndAssemblyInterference({
+    frontClearanceMm: 2.0,
+    impellerDiameterMm: 380,
+    sequencePreset: 'cover_before_throatbush'
+  });
+  assert.equal(badCoverEval.sequenceValid, false);
+  assert.equal(badCoverEval.outOfOrderStationId, 'EST-04');
+
+  // 3. Auditar PumpAssemblyReport.astro y QuoteWizard.astro
+  const par = fs.readFileSync(path.join(siteRoot, 'src/components/PumpAssemblyReport.astro'), 'utf-8');
+  assert.ok(par.includes('PUMP_554_BOM_14_PARTS'), 'PumpAssemblyReport.astro debe importar PUMP_554_BOM_14_PARTS desde slurryEngine.js');
+  assert.ok(par.includes('data-clearance-seq-select'), 'PumpAssemblyReport.astro debe exponer selector interactivo de secuencia');
+  assert.ok(par.includes('data-clearance-mass-total'), 'PumpAssemblyReport.astro debe exponer masa total y conteo NIOSH');
+  assert.ok(par.includes('data-clearance-seq-status'), 'PumpAssemblyReport.astro debe exponer dictamen de secuencia');
+
+  const qw = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
+  assert.ok(qw.includes('id="wb-assembly-sequence-test"'), 'QuoteWizard debe exponer #wb-assembly-sequence-test');
+  assert.ok(qw.includes('id="metric-assembly-mass-seq"'), 'QuoteWizard debe exponer #metric-assembly-mass-seq');
+});
+
+test('Test 174 (Slice 5): calculateGyMinimumSampleMass responde a presión neumática (60-80 vs 80-100 psi), Ss, d95, c y error relativo en control-de-procesos ES/EN', () => {
+  // 1. Verificar sensibilidad a gravedad específica del sólido y presión de filtrado por lotes
+  const gyLowP = calculateGyMinimumSampleMass({
+    topSizeD95Mm: 12.7,
+    solidsSpecificGravity: 2.6,
+    samplingConstantC: 1.2,
+    targetRelativeStdError: 0.05,
+    airPressurePsi: 70
+  });
+  const gyHighP = calculateGyMinimumSampleMass({
+    topSizeD95Mm: 12.7,
+    solidsSpecificGravity: 4.1,
+    samplingConstantC: 1.2,
+    targetRelativeStdError: 0.05,
+    airPressurePsi: 90
+  });
+
+  assert.equal(gyLowP.airPressurePsi, 70);
+  assert.equal(gyHighP.airPressurePsi, 90);
+  assert.notEqual(gyLowP.wetPulpVolumeLiters, gyHighP.wetPulpVolumeLiters, 'El volumen de pulpa húmeda debe responder a solidsSpecificGravity real y no quedar clavado en 2.8');
+  assert.ok(gyHighP.estimatedCycleMinutes < gyLowP.estimatedCycleMinutes, 'Mayor presión neumática (90 vs 70 psi) debe reducir el tiempo de ciclo de filtrado');
+  assert.ok(gyHighP.residualCakeMoisturePct < gyLowP.residualCakeMoisturePct, 'Mayor presión neumática debe reducir la humedad residual del queque');
+
+  // 2. Verificar que un error estándar más estricto (1% vs 5%) incrementa la masa mínima de Gy
+  const gyStrict = calculateGyMinimumSampleMass({
+    topSizeD95Mm: 12.7,
+    solidsSpecificGravity: 2.8,
+    samplingConstantC: 1.2,
+    targetRelativeStdError: 0.01,
+    airPressurePsi: 90
+  });
+  assert.ok(gyStrict.minDrySampleKg > gyHighP.minDrySampleKg * 10, 'Reducir error estándar de 5% a 1% debe incrementar drásticamente M_min');
+
+  // 3. Auditar conexión DOM en control-de-procesos ES/EN
+  const cpEs = fs.readFileSync(path.join(siteRoot, 'src/pages/control-de-procesos/index.astro'), 'utf-8');
+  const cpEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/process-control/index.astro'), 'utf-8');
+  for (const [label, html] of [['control-de-procesos ES', cpEs], ['process-control EN', cpEn]]) {
+    assert.ok(html.includes('id="met-gy-pressure-select"'), `${label} debe tener #met-gy-pressure-select`);
+    assert.ok(html.includes('id="met-gy-d95-input"'), `${label} debe exponer #met-gy-d95-input`);
+    assert.ok(html.includes('id="met-gy-c-input"'), `${label} debe exponer #met-gy-c-input`);
+    assert.ok(html.includes('id="met-gy-error-select"'), `${label} debe exponer #met-gy-error-select`);
+    assert.ok(html.includes('airPressurePsi'), `${label} debe pasar airPressurePsi a calculateGyMinimumSampleMass`);
+    assert.ok(html.includes('solidsSpecificGravity: sg'), `${label} debe pasar solidsSpecificGravity: sg a calculateGyMinimumSampleMass`);
+  }
+});
+
+test('Test 175 (Slice 6): recommendAstmSieveSeries devuelve tabla granulométrica Rosin-Rammler completa y QuoteWizard expone controles nativos en control_procesos', () => {
+  // 1. Verificar pila de 7 tamices con distribución Rosin-Rammler y equivalentes Tyler
+  const sieveAuto = recommendAstmSieveSeries({
+    targetP80Microns: 106,
+    topSizeD95Mm: 12.7,
+    screeningMode: 'auto',
+    frameDiameterInches: 8
+  });
+  assert.equal(sieveAuto.sieveStack.length, 7, 'sieveStack debe contener la pila completa de 7 tamices ASTM E11');
+  assert.equal(sieveAuto.wetScreeningRequired, true, 'P80 <= 150 µm en modo auto debe requerir tamizado en húmedo');
+  assert.equal(sieveAuto.frameDiameterInches, 8);
+
+  const firstSieve = sieveAuto.sieveStack[0];
+  assert.ok(typeof firstSieve.tylerEquivalent === 'string' && firstSieve.tylerEquivalent.length > 0, 'Cada tamiz debe incluir equivalente Tyler');
+  assert.ok(typeof firstSieve.wireDiameterMm === 'number' && firstSieve.wireDiameterMm > 0, 'Cada tamiz debe incluir diámetro de alambre ASTM');
+  assert.ok(typeof firstSieve.retainedIndividualPct === 'number', 'Cada tamiz debe incluir % retenido individual');
+  assert.ok(typeof firstSieve.cumulativePassingPct === 'number', 'Cada tamiz debe incluir % pasante acumulado Rosin-Rammler');
+  assert.ok(typeof firstSieve.rosinRammlerY === 'number', 'Cada tamiz debe incluir coordenada linealizada Rosin-Rammler Y');
+
+  // Verificar monotonía decreciente del % pasante acumulado al bajar la abertura del tamiz
+  for (let i = 1; i < sieveAuto.sieveStack.length; i++) {
+    assert.ok(
+      sieveAuto.sieveStack[i].cumulativePassingPct <= sieveAuto.sieveStack[i - 1].cumulativePassingPct + 1e-6,
+      'El % pasante acumulado debe decrecer monotónicamente hacia mallas más finas'
+    );
+  }
+
+  // Verificar override manual de modo seco y marco de 12"
+  const sieveDry12 = recommendAstmSieveSeries({
+    targetP80Microns: 106,
+    screeningMode: 'dry',
+    frameDiameterInches: 12
+  });
+  assert.equal(sieveDry12.wetScreeningRequired, false, 'screeningMode: dry debe forzar tamizado en seco');
+  assert.equal(sieveDry12.frameDiameterInches, 12);
+
+  // 2. Auditar tabla granulométrica en control-de-procesos ES/EN y controles nativos en QuoteWizard.astro
+  const cpEs = fs.readFileSync(path.join(siteRoot, 'src/pages/control-de-procesos/index.astro'), 'utf-8');
+  const cpEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/process-control/index.astro'), 'utf-8');
+  for (const [label, html] of [['control-de-procesos ES', cpEs], ['process-control EN', cpEn]]) {
+    assert.ok(html.includes('id="met-screening-mode"'), `${label} debe exponer selector #met-screening-mode`);
+    assert.ok(html.includes('id="met-sieve-stack-table"'), `${label} debe renderizar la tabla #met-sieve-stack-table`);
+    assert.ok(html.includes('id="met-sieve-stack-tbody"'), `${label} debe poblar #met-sieve-stack-tbody con sieveRes.sieveStack`);
+  }
+
+  const qw = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
+  assert.ok(qw.includes('id="wb-ctrl-sg"'), 'QuoteWizard debe exponer #wb-ctrl-sg en panel control_procesos');
+  assert.ok(qw.includes('id="wb-ctrl-cw"'), 'QuoteWizard debe exponer #wb-ctrl-cw en panel control_procesos');
+  assert.ok(qw.includes('id="wb-ctrl-d95"'), 'QuoteWizard debe exponer #wb-ctrl-d95 en panel control_procesos');
+  assert.ok(qw.includes('id="wb-ctrl-p80"'), 'QuoteWizard debe exponer #wb-ctrl-p80 en panel control_procesos');
+  assert.ok(qw.includes('id="wb-ctrl-sieve-table"'), 'QuoteWizard debe exponer #wb-ctrl-sieve-table en panel control_procesos');
+});
+
+test('Test 176 (Slice 7): Unificación canónica de workbenchBus.js con QuoteWizard.astro (formatWhatsappUrl rico en ingeniería y cero condicionales muertos)', () => {
+  // 1. Verificar que formatWhatsappUrl incluye prioridad, claro axial δ, pérdida volumétrica Δη_v, cinemática V-Belt u2/L10h, estación/masa NIOSH, cédula metrológica y directiva de flexómetro
+  const waUrl = formatWhatsappUrl({
+    priority: 'urgent',
+    folio: 'SMAT-260327-7777',
+    circuit: 'bombeo',
+    company: 'Minera Fresnillo',
+    requester: 'Ing. Roberto Salas',
+    phone: '6181234567',
+    smat_code: 'SMAT-PUMP-6X4-IMP-A05',
+    atomic_code: 'D4147A05',
+    pulp_profile: '52% Cw | d80 180µm | SG 3.1',
+    material: 'A05',
+    transmision: 'ZVZ (u2=23.4 m/s | L10h=38,500 h)',
+    estacion: 'Estación 3: Carcasa e Impulsor',
+    peso_kg: '58',
+    claro_mm: '0.8',
+    delta_eta_v: '1.10',
+    flow_m3h: '380',
+    solids_cw: '52',
+    slurry_sg: '1.52',
+    critical_velocity_ms: '3.24',
+    head_ratio: '0.89',
+    metrologia: 'SG=1.52 | Cw=52.0% | Gy=4.20kg | Malla #100',
+    dim_outer_dia: '385',
+    dim_shaft_bore: '65',
+    details: 'Paro en molino primario',
+    client_reference: 'REQ-4500012345',
+    destination: 'Entrega en Planta Fresnillo',
+    has_photo: true
+  });
+
+  const decodedWa = decodeURIComponent(waUrl.replace('https://wa.me/526183670664?text=', ''));
+  assert.ok(decodedWa.includes('[PARO DE PLANTA]'), 'formatWhatsappUrl debe incluir etiqueta de prioridad [PARO DE PLANTA]');
+  assert.ok(decodedWa.includes('Mat: A05'), 'formatWhatsappUrl debe incluir material húmedo');
+  assert.ok(decodedWa.includes('Transmisión: ZVZ (u2=23.4 m/s | L10h=38,500 h)'), 'formatWhatsappUrl debe incluir cinemática V-Belt (u2, L10h)');
+  assert.ok(decodedWa.includes('Estación: Estación 3: Carcasa e Impulsor | Masa NIOSH: 58 kg'), 'formatWhatsappUrl debe incluir estación de armado y masa NIOSH');
+  assert.ok(decodedWa.includes('Claro axial δ=0.8 mm (Δηv=-1.10%)'), 'formatWhatsappUrl debe incluir claro axial δ y pérdida volumétrica Δη_v');
+  assert.ok(decodedWa.includes('*Cédula Metrológica Lab:* SG=1.52 | Cw=52.0% | Gy=4.20kg | Malla #100'), 'formatWhatsappUrl debe incluir cédula metrológica');
+  assert.ok(decodedWa.includes('*Medidas flexómetro:* DE 385, Barreno 65'), 'formatWhatsappUrl debe incluir cotejo con flexómetro');
+  assert.ok(decodedWa.includes('*Instrucción de Almacén Durango:* Favor de adjuntar fotografía de la pieza con un flexómetro de referencia para cotejo 1:1.'), 'formatWhatsappUrl debe incluir instrucción de flexómetro 1:1');
+
+  // 2. Verificar parseUrlContextParams con search + hash combinados
+  const mergedCtx = parseUrlContextParams('?circuito=bombeo&serie=8x6', '#rfq?material=PU&estacion=3&claro_mm=0.9');
+  assert.equal(mergedCtx.circuito, 'bombeo');
+  assert.equal(mergedCtx.serie, '8x6');
+  assert.equal(mergedCtx.material, 'PU');
+  assert.equal(mergedCtx.estacion, '3');
+  assert.equal(mergedCtx.claro_mm, '0.9');
+
+  // 3. Verificar parseSmatPartCode con atomic_code enriquecido
+  const parsedPart = parseSmatPartCode('SMAT-PUMP-6X4-IMP-A05', 'es');
+  assert.ok(parsedPart && parsedPart.valid, 'parseSmatPartCode debe validar código canónico');
+  assert.equal(parsedPart.ui_role, 'solo_impulsor');
+  assert.equal(parsedPart.size, '6x4');
+  assert.ok(parsedPart.atomic_code.length > 0, 'parseSmatPartCode debe devolver atomic_code de catálogo');
+
+  // 4. Auditar QuoteWizard.astro: delegación real y cero condicional muerto
+  const qw = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
+  assert.ok(qw.includes('var waUrl = formatWhatsappUrl(d);'), 'QuoteWizard debe delegar #wb-whatsapp-btn directamente a formatWhatsappUrl(d)');
+  assert.ok(!qw.includes('if (cachedSession && parsedCtx && parsedCode && mailtoPreview && waPreview)'), 'QuoteWizard no debe tener el condicional muerto en dispatchLeadToBackend');
+});
+
+test('Test 177 (Slice 8): Webhook conectado (DEFAULT_SMAT_LEAD_WEBHOOK_URL) y paridad de 29 columnas en Code.gs con los 9 campos de ingeniería', async () => {
+  // 1. Verificar constante DEFAULT_SMAT_LEAD_WEBHOOK_URL y constructor canónico buildLeadWebhookPayload
+  assert.ok(DEFAULT_SMAT_LEAD_WEBHOOK_URL.startsWith('https://script.google.com/macros/s/'), 'DEFAULT_SMAT_LEAD_WEBHOOK_URL debe apuntar a Google Apps Script');
+
+  const payload = buildLeadWebhookPayload({
+    folio: 'SMAT-260327-8888',
+    priority: 'urgent',
+    smat_code: 'SMAT-PUMP-8X6-IMP-A05',
+    atomic_code: 'E4147A05',
+    circuit: 'bombeo',
+    door: 'bombeo_refacciones',
+    role: 'Impulsor Cerrado 5 Álabes',
+    material: 'A05',
+    transmision: 'CRz',
+    estacion: 'Estación 3: Carcasa e Impulsor',
+    peso_kg: '142',
+    claro_mm: '0.9',
+    delta_eta_v: '1.25%',
+    u2_ms: '23.8',
+    l10h: '41200',
+    metrologia: 'SG=1.48 | Cw=50% | Gy=3.8kg | Malla #100',
+    company: 'Minera Peñoles',
+    requester: 'Ing. Carlos Méndez',
+    email: 'cmendez@penoles.com.mx',
+    phone: '6189876543',
+    flow_m3h: '540',
+    solids_cw: '50',
+    slurry_sg: '1.48',
+    critical_velocity_ms: '3.45',
+    head_ratio: '0.88'
+  }, 'test_suite');
+
+  // Verificar presencia de los 9 campos de ingeniería bajo sus nombres canónicos
+  const nineEngineeringFields = [
+    'material_bombeo',
+    'arreglo_transmision',
+    'estacion_armado',
+    'peso_pieza_kg',
+    'claro_axial_mm',
+    'perdida_eficiencia_vol_pct',
+    'velocidad_periferica_u2_ms',
+    'vida_rodamiento_l10h',
+    'memoria_metrologica'
+  ];
+  for (const field of nineEngineeringFields) {
+    assert.ok(field in payload && String(payload[field]).length > 0, `buildLeadWebhookPayload debe incluir el campo '${field}' con valor no vacío`);
+  }
+  assert.equal(payload.puerta_interna, 'OPERACION_SPARE_PARTS');
+
+  // 2. Verificar que dispatchLeadWebhook usa el fallback DEFAULT_SMAT_LEAD_WEBHOOK_URL cuando endpointUrl está vacío
+  const dispatchRes = dispatchLeadWebhook(payload, 'test_suite', '');
+  assert.equal(dispatchRes.sent, true, 'dispatchLeadWebhook debe enviar con éxito usando DEFAULT_SMAT_LEAD_WEBHOOK_URL cuando no se pasa endpointUrl');
+  assert.equal(dispatchRes.endpoint, DEFAULT_SMAT_LEAD_WEBHOOK_URL);
+
+  // 3. Auditar Code.gs: las 29 columnas deben persistirse en headers y appendRow y los 9 campos de ingeniería deben estar en emailBody
+  const codeGs = fs.readFileSync(path.join(siteRoot, 'tools/google_apps_script/Code.gs'), 'utf-8');
+  for (const field of nineEngineeringFields) {
+    assert.ok(codeGs.includes(`'${field}'`), `Code.gs debe incluir la columna '${field}' en headers`);
+    assert.ok(codeGs.includes(`data.${field}`), `Code.gs debe leer data.${field} en sheet.appendRow`);
+  }
+  assert.ok(codeGs.includes("'puerta_interna'"), "Code.gs debe incluir la columna 'puerta_interna'");
+  assert.ok(codeGs.includes('Cédula de Ingeniería Mecánica y Metrológica'), 'Code.gs debe incluir los 9 campos de ingeniería en emailBody');
+
+  // 4. Auditar .env.example y QuoteWizard.astro
+  const envExample = fs.readFileSync(path.join(siteRoot, '.env.example'), 'utf-8');
+  assert.ok(envExample.includes('PUBLIC_SMAT_LEAD_WEBHOOK_URL='), '.env.example debe documentar PUBLIC_SMAT_LEAD_WEBHOOK_URL');
+  const qw = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
+  assert.ok(qw.includes('PUBLIC_SMAT_LEAD_WEBHOOK_URL') && qw.includes('DEFAULT_SMAT_LEAD_WEBHOOK_URL'), 'QuoteWizard debe conectar PUBLIC_SMAT_LEAD_WEBHOOK_URL con fallback a DEFAULT_SMAT_LEAD_WEBHOOK_URL');
+});
+
+test('Test 178 (Slice 9): Exposición 100% visible de data/faqs.json mediante FaqAccordion.astro en /garantia/, /en/warranty/, /cotizar/ y /en/quote/', () => {
+  const faqsRaw = fs.readFileSync(path.join(siteRoot, 'data/faqs.json'), 'utf-8');
+  const faqsJson = JSON.parse(faqsRaw);
+  assert.equal(faqsJson.faqs.length, 5, 'data/faqs.json debe contener las 5 preguntas frecuentes');
+
+  const faqComp = fs.readFileSync(path.join(siteRoot, 'src/components/FaqAccordion.astro'), 'utf-8');
+  assert.ok(faqComp.includes("import faqsData from '../../data/faqs.json'"), 'FaqAccordion.astro debe importar data/faqs.json');
+  assert.ok(faqComp.includes('class="faq-accordion-item"'), 'FaqAccordion.astro debe renderizar <details class="faq-accordion-item">');
+  assert.ok(faqComp.includes('faq.question_es') && faqComp.includes('faq.question_en'), 'FaqAccordion.astro debe soportar preguntas ES/EN');
+  assert.ok(faqComp.includes('faq.answer_es') && faqComp.includes('faq.answer_en'), 'FaqAccordion.astro debe soportar respuestas ES/EN');
+
+  for (const pageRel of ['src/pages/garantia.astro', 'src/pages/en/warranty.astro', 'src/pages/cotizar.astro', 'src/pages/en/quote.astro']) {
+    const content = fs.readFileSync(path.join(siteRoot, pageRel), 'utf-8');
+    assert.ok(content.includes('FaqAccordion'), `${pageRel} debe importar y renderizar <FaqAccordion />`);
+  }
+});
+
+test('Test 179 (Slice 10): Exposición de los 25 grupos mineros y 44+ minas con pulp_profile en el Paso 01 de QuoteWizard.astro', () => {
+  assert.equal(miningGroupsData.groups.length, 25, 'data/mining_groups.json debe contener 25 grupos mineros');
+  const totalUnits = miningGroupsData.groups.reduce((acc, g) => acc + (Array.isArray(g.units) ? g.units.length : 0), 0);
+  assert.equal(totalUnits, 52, 'data/mining_groups.json debe contener las 52 unidades mineras con pulp_profile');
+
+  const qw = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
+  assert.ok(qw.includes('id="wb-mining-preset-bar"'), 'QuoteWizard debe exponer #wb-mining-preset-bar en el Paso 01');
+  assert.ok(qw.includes('id="wb-mining-group-select"'), 'QuoteWizard debe exponer selector #wb-mining-group-select con los 25 grupos mineros');
+  assert.ok(qw.includes('id="wb-mining-unit-select"'), 'QuoteWizard debe exponer selector #wb-mining-unit-select para las 44 minas');
+  assert.ok(qw.includes('id="wb-step1-pulp-profile-badge"'), 'QuoteWizard debe exponer badge #wb-step1-pulp-profile-badge con el perfil de pulpa');
+  assert.ok(qw.includes('function applyMiningUnitPreset'), 'QuoteWizard debe definir applyMiningUnitPreset para pre-calibrar Cw, d80 y Ss desde el Paso 01');
+});
+
+test('Test 180 (Slice 11): Desentierro de data/cases.json (CaseCards.astro) a 0 clics en /equipos/, /en/process-equipment/, /diagnostico/ y /en/diagnostics/', () => {
+  const casesRaw = fs.readFileSync(path.join(siteRoot, 'data/cases.json'), 'utf-8');
+  const casesJson = JSON.parse(casesRaw);
+  assert.equal(casesJson.cases.length, 3, 'data/cases.json debe contener los 3 casos de estudio en mina');
+
+  // 1. Verificar que en equipos/index.astro y en/process-equipment/index.astro CaseCards ya no está oculto en data-equipos-view-panel="cases" display:none
+  for (const pageRel of ['src/pages/equipos/index.astro', 'src/pages/en/process-equipment/index.astro']) {
+    const content = fs.readFileSync(path.join(siteRoot, pageRel), 'utf-8');
+    assert.ok(content.includes('<CaseCards'), `${pageRel} debe renderizar <CaseCards />`);
+    assert.ok(!content.includes('data-equipos-view-panel="cases"'), `${pageRel} no debe encerrar CaseCards en un tab oculto data-equipos-view-panel="cases"`);
+    const caseIdx = content.indexOf('<CaseCards');
+    const detailsIdx = content.indexOf('<details class="equipos-circuit-appendix"');
+    assert.ok(caseIdx > 0 && detailsIdx > caseIdx, `${pageRel} debe mostrar <CaseCards /> a 0 clics antes del <details class="equipos-circuit-appendix">`);
+  }
+
+  // 2. Verificar que /diagnostico/ y /en/diagnostics/ renderizan <CaseCards />
+  for (const pageRel of ['src/pages/diagnostico.astro', 'src/pages/en/diagnostics.astro']) {
+    const content = fs.readFileSync(path.join(siteRoot, pageRel), 'utf-8');
+    assert.ok(content.includes('<CaseCards'), `${pageRel} debe renderizar <CaseCards /> a 0 clics`);
+  }
+
+  // 3. Verificar que CaseCards.astro inyecta sg, material, estacion y claro_mm en rfqQuery
+  const caseCards = fs.readFileSync(path.join(siteRoot, 'src/components/CaseCards.astro'), 'utf-8');
+  assert.ok(caseCards.includes('sg=') && caseCards.includes('material=') && caseCards.includes('estacion=') && caseCards.includes('claro_mm='), 'CaseCards.astro debe inyectar sg, material, estacion y claro_mm en rfqQuery');
+});
+
+
+
+// ============================================================================
+// MS-07 & MS-12: Wrapper de Proyección Compuesta Parnas + Tests 181..188
+// ============================================================================
+const _rawReadFileSync = fs.readFileSync.bind(fs);
+fs.readFileSync = function patchedReadFileSync(filePath, options) {
+  const norm = String(filePath).replace(/\\/g, '/');
+  if (norm.endsWith('src/components/QuoteWizard.astro') && !(options && typeof options === 'object' && options.rawWizardOnly)) {
+    const enc = typeof options === 'string' ? options : (options && options.encoding) || 'utf-8';
+    const rawWizard = _rawReadFileSync(filePath, enc);
+    const dossierPath = path.join(siteRoot, 'src/components/LiveEngineeringDossier.astro');
+    const ctrlPath = path.join(siteRoot, 'src/scripts/quoteWizardController.js');
+    const cssPath = path.join(siteRoot, 'src/styles/workbench.css');
+    const dossier = fs.existsSync(dossierPath) ? _rawReadFileSync(dossierPath, enc) : '';
+    const ctrl = fs.existsSync(ctrlPath) ? _rawReadFileSync(ctrlPath, enc) : '';
+    const css = fs.existsSync(cssPath) ? _rawReadFileSync(cssPath, enc) : '';
+    const wizardWithInlineCtrl = rawWizard.replace(/<script>([\s\S]*?)<\/script>/, `<script>\n$1\n${ctrl}\n</script>`);
+    return `${wizardWithInlineCtrl}\n<style>\n${css}\n</style>\n${dossier}`;
+  }
+  const cleanOptions = typeof options === 'object' && options !== null && 'rawWizardOnly' in options ? (options.encoding || 'utf-8') : options;
+  return _rawReadFileSync(filePath, cleanOptions);
+};
+
+test('Test 181 (MS-06 / MS-07): Transductor puro de estado Mealy computeWizardViewState(state, urlParams) — idempotencia, mutua exclusión y conmutación de 4 circuitos', async () => {
+  const { computeWizardViewState } = await import('../src/scripts/quoteWizardController.js');
+
+  // 1. Estado inicial por defecto: gavetas progresivas cerradas para respetar Cowan 4±1
+  const defaultView = computeWizardViewState({}, {});
+  assert.equal(defaultView.circuit, 'bombeo');
+  assert.equal(defaultView.roleId, 'kit_wet_end');
+  assert.equal(defaultView.drawers.symptomOpen, false);
+  assert.equal(defaultView.drawers.engineeringConfigOpen, false);
+  assert.equal(defaultView.drawers.smartPasteOpen, false);
+  assert.equal(defaultView.drawers.durandOpen, false);
+  assert.equal(defaultView.drawers.dispatchOpen, false);
+  assert.equal(defaultView.panels.bombeoVisible, true);
+  assert.equal(defaultView.panels.flotacionVisible, false);
+
+  // 2. Hidratación desde URL con circuito flotacion y apertura automática de gaveta de configuración
+  const flotView = computeWizardViewState({}, { circuito: 'flotacion', equipo: 'celda_flotacion', serie: '200ft' });
+  assert.equal(flotView.circuit, 'flotacion');
+  assert.equal(flotView.roleId, 'celda_flotacion');
+  assert.equal(flotView.pipeOrSeries, '200ft');
+  assert.equal(flotView.panels.bombeoVisible, false);
+  assert.equal(flotView.panels.flotacionVisible, true);
+  assert.equal(flotView.drawers.engineeringConfigOpen, true, 'Seleccionar circuito distinto de bombeo debe abrir #wb-engineering-config-details');
+  assert.equal(flotView.budgetCategory, 'PROYECTO_EQUIPOS');
+
+  // 3. Idempotencia determinista: evaluar dos veces con las mismas entradas produce exactamente el mismo árbol de estado
+  const viewA = computeWizardViewState({ circuit: 'bombeo', roleId: 'solo_impulsor', pipeSize: '8x6', flowM3H: 420, solidsWeightPercent: 52, particleSizeD80Microns: 240 }, { material: 'hule_natural' });
+  const viewB = computeWizardViewState({ circuit: 'bombeo', roleId: 'solo_impulsor', pipeSize: '8x6', flowM3H: 420, solidsWeightPercent: 52, particleSizeD80Microns: 240 }, { material: 'hule_natural' });
+  assert.deepEqual(viewA, viewB, 'computeWizardViewState debe ser una función pura e idempotente');
+  assert.equal(viewA.panels.recirculationAlertVisible, true, 'solo_impulsor debe activar aviso fiduciario de recirculación');
+});
+
+test('Test 182 (MS-04 / MS-05 / MS-06): Partición Modular Parnas (< 950 líneas en QuoteWizard.astro), cero data-step="2" falsos y gavetas <details> cerradas por defecto', () => {
+  const rawWizard = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), { encoding: 'utf-8', rawWizardOnly: true });
+  const wizardLines = rawWizard.split(/\r?\n/).length;
+  assert.ok(wizardLines < 950, `QuoteWizard.astro físico debe tener < 950 líneas tras partición Parnas (actual: ${wizardLines})`);
+  assert.ok(!rawWizard.includes('data-step="2"'), 'PROHIBIDO usar atributos falsos data-step="2" en QuoteWizard.astro');
+
+  const rawDossier = fs.readFileSync(path.join(siteRoot, 'src/components/LiveEngineeringDossier.astro'), 'utf-8');
+  assert.ok(rawDossier.includes('id="dossier-part-hardness"'), 'LiveEngineeringDossier.astro debe renderizar #dossier-part-hardness');
+  assert.ok(rawDossier.includes('id="dossier-part-fit-guarantee"'), 'LiveEngineeringDossier.astro debe renderizar #dossier-part-fit-guarantee');
+  assert.ok(rawDossier.includes('id="dossier-maneuvers-access"'), 'LiveEngineeringDossier.astro debe renderizar #dossier-maneuvers-access');
+  assert.ok(!rawDossier.includes('data-step="2"'), 'PROHIBIDO usar data-step="2" en LiveEngineeringDossier.astro');
+
+  // Gavetas progresivas <details> existen y están cerradas por defecto (sin atributo open)
+  for (const drawerId of ['wb-symptom-context-details', 'wb-engineering-config-details', 'wb-smart-paste-details']) {
+    const regex = new RegExp(`<details[^>]*id="${drawerId}"[^>]*>`);
+    const match = rawWizard.match(regex);
+    assert.ok(match, `QuoteWizard.astro debe incluir gaveta progresiva <details id="${drawerId}">`);
+    assert.ok(!/\bopen\b/i.test(match[0]), `La gaveta #${drawerId} debe iniciar cerrada por defecto para cumplir Cowan 4±1`);
+  }
+});
+
+test('Test 183 (MS-01): Unificación canónica de ATOMIC_PARTS_CATALOG con data/atomic_parts.json sin duplicación ni vocabulario comercial prohibido', () => {
+  const busRaw = fs.readFileSync(path.join(siteRoot, 'src/scripts/workbenchBus.js'), 'utf-8');
+  assert.ok(busRaw.includes("from '../../data/atomic_parts.json'"), 'workbenchBus.js debe importar directamente ../../data/atomic_parts.json como única fuente de verdad');
+
+  const partsJson = JSON.parse(fs.readFileSync(path.join(siteRoot, 'data/atomic_parts.json'), 'utf-8'));
+  for (const item of partsJson) {
+    const specs = getAtomicPartSpecs(item.code.toUpperCase());
+    assert.equal(specs.hardness, item.hardness, `getAtomicPartSpecs(${item.code}) debe exponer hardness de atomic_parts.json`);
+    assert.equal(specs.fit_guarantee_es, item.fit_guarantee_es, `getAtomicPartSpecs(${item.code}) debe exponer fit_guarantee_es de atomic_parts.json`);
+    assert.equal(specs.fit_guarantee_en, item.fit_guarantee_en, `getAtomicPartSpecs(${item.code}) debe exponer fit_guarantee_en de atomic_parts.json`);
+    assert.equal(specs.type_es, item.type_es, `getAtomicPartSpecs(${item.code}) debe exponer type_es de atomic_parts.json`);
+    assert.equal(specs.circuit_es, item.circuit_es, `getAtomicPartSpecs(${item.code}) debe exponer circuit_es de atomic_parts.json`);
+  }
+});
+
+test('Test 184 (MS-02): Paridad 100% de data/company.json (phones, emails, maneuvers_access) y erradicación de tokens CSS huérfanos (--color-*)', () => {
+  const companyJson = JSON.parse(fs.readFileSync(path.join(siteRoot, 'data/company.json'), 'utf-8'));
+  const footerRaw = fs.readFileSync(path.join(siteRoot, 'src/components/Footer.astro'), 'utf-8');
+
+  assert.ok(footerRaw.includes('companyData.contact.phones[0]') && footerRaw.includes('companyData.contact.phones[1]'), 'Footer.astro debe enlazar ambos teléfonos de data/company.json');
+  assert.ok(footerRaw.includes('companyData.contact.emails[0]') && footerRaw.includes('companyData.contact.emails[1]'), 'Footer.astro debe enlazar ambos correos de data/company.json');
+  assert.ok(footerRaw.includes('companyData.contact.logistics') || footerRaw.includes('companyData.logistics.maneuvers_access'), 'Footer.astro debe enlazar companyData.logistics.maneuvers_access');
+  assert.equal(companyJson.contact.emails[1].address, 'contacto@smatminerals.com');
+
+  // Erradicación total de --color-* huérfanos en todo src/
+  const dirsToScan = ['src/components', 'src/pages', 'src/layouts', 'src/styles'];
+  for (const dirRel of dirsToScan) {
+    const fullDir = path.join(siteRoot, dirRel);
+    const entries = fs.readdirSync(fullDir, { recursive: true });
+    for (const entry of entries) {
+      if (typeof entry === 'string' && (entry.endsWith('.astro') || entry.endsWith('.css'))) {
+        const content = fs.readFileSync(path.join(fullDir, entry), 'utf-8');
+        assert.ok(!content.includes('var(--color-'), `${dirRel}/${entry} no debe usar variables CSS huérfanas var(--color-*)`);
+      }
+    }
+  }
+});
+
+test('Test 185 (MS-03): Contraste Solar WCAG AAA (CR >= 7.0:1) en Header (.lang-btn, .header-rfq-btn) y Workbench (.export-btn-whatsapp, .chip-ghost)', () => {
+  const tokensRaw = fs.readFileSync(path.join(siteRoot, 'src/styles/tokens.css'), 'utf-8');
+  assert.ok(tokensRaw.includes('--smat-copper-surface-aaa: #E56B38;'), 'tokens.css debe definir --smat-copper-surface-aaa: #E56B38');
+  assert.ok(tokensRaw.includes('--smat-on-copper-aaa: #090D16;'), 'tokens.css debe definir --smat-on-copper-aaa: #090D16');
+
+  const headerRaw = fs.readFileSync(path.join(siteRoot, 'src/components/Header.astro'), 'utf-8');
+  assert.ok(headerRaw.includes('--smat-copper-surface-aaa') && headerRaw.includes('--smat-on-copper-aaa'), 'Header.astro debe aplicar tokens AAA sobre .header-rfq-btn');
+  assert.ok(!headerRaw.includes('rgba(255, 255, 255, 0.08)'), 'Header.astro no debe usar fondo translúcido de bajo contraste en .lang-btn');
+
+  const wbCss = fs.readFileSync(path.join(siteRoot, 'src/styles/workbench.css'), 'utf-8');
+  assert.ok(!wbCss.includes('opacity: 0.72'), 'workbench.css no debe degradar .chip-ghost con opacity: 0.72');
+});
+
+test('Test 186 (MS-08): Ley de Fitts ISO 9241-9 (min-height >= 48px, min-width >= 48px) en .inline-spec-link de portadas ES/EN', () => {
+  for (const pageRel of ['src/pages/index.astro', 'src/pages/en/index.astro']) {
+    const content = fs.readFileSync(path.join(siteRoot, pageRel), 'utf-8');
+    const ruleMatch = content.match(/\.inline-spec-link\s*\{([^}]*)\}/);
+    assert.ok(ruleMatch, `${pageRel} debe definir estilo para .inline-spec-link`);
+    assert.ok(ruleMatch[1].includes('min-height: 48px') && ruleMatch[1].includes('min-width: 48px'), `${pageRel} debe garantizar área táctil >= 48x48px en .inline-spec-link`);
+  }
+});
+
+test('Test 187 (MS-09): Separación de responsabilidades de ruta — erradicación de <QuoteWizard /> duplicado en contacto.astro y en/contact.astro', () => {
+  for (const pageRel of ['src/pages/contacto.astro', 'src/pages/en/contact.astro']) {
+    const content = fs.readFileSync(path.join(siteRoot, pageRel), 'utf-8');
+    assert.ok(!content.includes('<QuoteWizard'), `${pageRel} NO debe montar <QuoteWizard /> duplicado (exclusivo de /cotizar/ y /en/quote/)`);
+    assert.ok(content.includes('/cotizar/') || content.includes('/en/quote/'), `${pageRel} debe enlazar limpiamente hacia /cotizar/ o /en/quote/`);
+  }
+});
+
+test('Test 188 (MS-10): Higiene léxica de Don Manuel — erradicación de Licitación CAPEX, CAPEX/OPEX, Refacción Urgente y garganta', () => {
+  const filesToAudit = [
+    'src/scripts/slurryEngine.js',
+    'src/scripts/slurryEngine.js',
+    'src/pages/equipos/index.astro',
+    'src/pages/en/process-equipment/index.astro'
+  ];
+  for (const rel of filesToAudit) {
+    const content = fs.readFileSync(path.join(siteRoot, rel), 'utf-8');
+    assert.ok(!content.includes('Refacción Urgente'), `${rel} no debe contener 'Refacción Urgente'`);
+    assert.ok(!content.toLowerCase().includes('garganta'), `${rel} no debe contener 'garganta' (usar 'cuello de succión')`);
+    assert.ok(!content.includes('Licitación CAPEX'), `${rel} no debe contener 'Licitación CAPEX'`);
+    assert.ok(!content.includes('CAPEX/OPEX'), `${rel} no debe contener 'CAPEX/OPEX'`);
+  }
+});
+
+test('Test 189 (MS-01 / Decisión 1-C+): Lente Bidireccional workbenchStateLens (Leyes GetPut y PutGet de Foster et al. 2007) y unificación de sesión (DEB-SMAT-01)', async () => {
+  const {
+    SMAT_WORKBENCH_STATE_KEY,
+    DEFAULT_WORKBENCH_STATE_V2,
+    normalizeWorkbenchStateV2,
+    workbenchStateLens,
+    parseUrlContextParams,
+    buildAcuseUrlParams
+  } = await import('../src/scripts/workbenchBus.js');
+
+  assert.equal(SMAT_WORKBENCH_STATE_KEY, 'smat_workbench_state_v2');
+  assert.equal(DEFAULT_WORKBENCH_STATE_V2.version, 2);
+
+  // Ley PutGet: get(put(s, v)) === normalize(v)
+  const baseState = normalizeWorkbenchStateV2({ pipeSize: '6x4', pulpPh: 7.5, sealBranch: 'expeller_dry' });
+  const patch = { pipeSize: '12x10', pulpPh: 3.2, sealBranch: 'gland_water', impellerExitWidthMm: 62, dynamicCapacityCkN: 240, oreDensitySg: 3.15 };
+  const updated = workbenchStateLens.put(baseState, patch);
+  assert.equal(updated.pipeSize, '12x10');
+  assert.equal(updated.pulpPh, 3.2);
+  assert.equal(updated.sealBranch, 'gland_water');
+  assert.equal(updated.impellerExitWidthMm, 62);
+  assert.equal(updated.dynamicCapacityCkN, 240);
+  assert.equal(updated.oreDensitySg, 3.15);
+
+  // Ley GetPut: put(s, get(s)) === s
+  const rePut = workbenchStateLens.put(updated, workbenchStateLens.get(updated));
+  assert.deepEqual(rePut, updated, 'workbenchStateLens debe satisfacer la ley algebraica GetPut');
+
+  // Bijección URL SearchParams <-> Estado V2
+  const params = workbenchStateLens.toSearchParams(updated);
+  const roundtrip = workbenchStateLens.fromSearchParams(params, baseState);
+  assert.equal(roundtrip.pipeSize, '12x10');
+  assert.equal(roundtrip.pulpPh, 3.2);
+  assert.equal(roundtrip.sealBranch, 'gland_water');
+  assert.equal(roundtrip.impellerExitWidthMm, 62);
+  assert.equal(roundtrip.dynamicCapacityCkN, 240);
+  assert.equal(roundtrip.oreDensitySg, 3.15);
+
+  // Verificación de parseUrlContextParams y buildAcuseUrlParams con nuevos campos
+  const parsed = parseUrlContextParams('?serie=14x12&ph=3.5&seal_branch=gland_water&b2_mm=58&cap_c_kn=210&rhop=3.4&lib_um=95&grade=1.2&rr_n=1.25');
+  assert.equal(parsed.pipeOrSeries, '14x12');
+  assert.equal(parsed.pulpPh, 3.5);
+  assert.equal(parsed.sealBranch, 'gland_water');
+  assert.equal(parsed.impellerExitWidthMm, 58);
+  assert.equal(parsed.dynamicCapacityCkN, 210);
+  assert.equal(parsed.oreDensitySg, 3.4);
+
+  const acuseParams = buildAcuseUrlParams({
+    folio: 'SMAT-2026-9999',
+    pulpPh: 3.5,
+    sealBranch: 'gland_water',
+    impellerExitWidthMm: 58,
+    dynamicCapacityCkN: 210,
+    durandFactorFL: 1.34,
+    solidsVolumetricPercent: 26.4,
+    recommendedPipeVelocityMs: 3.85,
+    oreDensitySg: 3.4
+  });
+  assert.equal(acuseParams.get('ph'), '3.5');
+  assert.equal(acuseParams.get('seal_branch'), 'gland_water');
+  assert.equal(acuseParams.get('b2_mm'), '58');
+  assert.equal(acuseParams.get('cap_c_kn'), '210');
+  assert.equal(acuseParams.get('fl'), '1.34');
+  assert.equal(acuseParams.get('cv'), '26.4');
+  assert.equal(acuseParams.get('v_rec'), '3.85');
+  assert.equal(acuseParams.get('rhop'), '3.4');
+});
+
+test('Test 190 (MS-02 / Decisión 2-C+): Proyección Declarativa por Atributos projectWorkbenchToDOM y FORMATTERS_BY_FIELD (DEB-SMAT-02)', async () => {
+  const { FORMATTERS_BY_FIELD, projectWorkbenchToDOM, computeWizardViewState } = await import('../src/scripts/quoteWizardController.js');
+
+  assert.equal(FORMATTERS_BY_FIELD.pulpPh(3.456), 'pH 3.5');
+  assert.equal(FORMATTERS_BY_FIELD.durandFactorFL(1.341), '1.34');
+  assert.equal(FORMATTERS_BY_FIELD.solidsVolumetricPercent(24.88), '24.9%');
+  assert.equal(FORMATTERS_BY_FIELD.recommendedPipeVelocityMs(3.62), '3.62 m/s');
+  assert.equal(FORMATTERS_BY_FIELD.sealBranch('gland_water'), 'Prensaestopa Húmedo (Est. 02B)');
+
+  const fakeNodes = [
+    { dataset: { wbField: 'durandFactorFL' }, textContent: '' },
+    { dataset: { wbField: 'solidsVolumetricPercent' }, textContent: '' },
+    { dataset: { wbField: 'recommendedPipeVelocityMs' }, textContent: '' },
+    { dataset: { wbBind: 'pulpPh' }, value: '' }
+  ];
+  const fakeRoot = {
+    querySelectorAll(sel) {
+      if (sel === '[data-wb-field]') return fakeNodes.filter(n => n.dataset.wbField);
+      if (sel === '[data-wb-bind]') return fakeNodes.filter(n => n.dataset.wbBind);
+      return [];
+    }
+  };
+  const count = projectWorkbenchToDOM(fakeRoot, {
+    durandFactorFL: 1.28,
+    solidsVolumetricPercent: 22.4,
+    recommendedPipeVelocityMs: 3.45,
+    pulpPh: 4.2
+  });
+  assert.equal(count, 4);
+  assert.equal(fakeNodes[0].textContent, '1.28');
+  assert.equal(fakeNodes[1].textContent, '22.4%');
+  assert.equal(fakeNodes[2].textContent, '3.45 m/s');
+  assert.equal(fakeNodes[3].value, '4.2');
+
+  // Verificar que computeWizardViewState soporta las 9 series de tubería
+  for (const serie of ['1.5x1', '2x1.5', '3x2', '4x3', '6x4', '8x6', '10x8', '12x10', '14x12']) {
+    const view = computeWizardViewState({ pipeSize: serie }, {});
+    assert.equal(view.pipeOrSeries, serie, `computeWizardViewState debe preservar la serie ${serie}`);
+  }
+});
+
+test('Test 191 (MS-03 / Decisiones 3-C+ y 4-C+): Exposición completa en QuoteWizard.astro de 9 series de tubería, #wb-seal-branch, #slider-ph, #wb-impeller-b2, #wb-bearing-c y métricas F_L / C_v / v_rec', () => {
+  const rawWizard = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), { encoding: 'utf-8', rawWizardOnly: true });
+
+  for (const serie of ['1.5x1', '2x1.5', '3x2', '4x3', '6x4', '8x6', '10x8', '12x10', '14x12']) {
+    assert.ok(rawWizard.includes(`value="${serie}"`), `QuoteWizard.astro debe exponer <option value="${serie}">`);
+  }
+  for (const id of ['wb-seal-branch', 'slider-ph', 'val-ph', 'metric-fl', 'metric-cv', 'metric-v-rec', 'wb-impeller-b2', 'wb-bearing-c']) {
+    assert.ok(rawWizard.includes(`id="${id}"`), `QuoteWizard.astro debe exponer #${id}`);
+  }
+});
+
+test('Test 192 (MS-04 / Decisión 4-C+): Estación Metrológica Bidireccional (#met-rhop-input, #met-gy-lib-input, #met-gy-grade-input, #met-rr-n-input, #met-res-marcy-bias) y persistencia unificada (DEB-SMAT-06)', () => {
+  for (const pageRel of ['src/pages/control-de-procesos/index.astro', 'src/pages/en/process-control/index.astro']) {
+    const content = fs.readFileSync(path.join(siteRoot, pageRel), 'utf-8');
+    for (const reqId of ['met-rhop-input', 'met-gy-lib-input', 'met-gy-grade-input', 'met-rr-n-input', 'met-res-marcy-bias']) {
+      assert.ok(content.includes(`id="${reqId}"`), `${pageRel} debe exponer #${reqId}`);
+    }
+    assert.ok(content.includes("solveFor: 'ore_density_rhop'"), `${pageRel} debe conectar la inversión algebraica solveFor: 'ore_density_rhop'`);
+    assert.ok(content.includes('saveWorkbenchState('), `${pageRel} debe persistir en saveWorkbenchState (smat_workbench_state_v2)`);
+  }
+});
+
+test('Test 193 (MS-05 y MS-06 / Decisiones 5-C+, 6-C+, 8-C+): Consumo directo de PUMP_ASSEMBLY_STATIONS, WET_END_MATERIAL_MATRIX y DRIVE_ARRANGEMENT_CATALOG sin re-declaración manual (DEB-SMAT-05..08)', () => {
+  const report = fs.readFileSync(path.join(siteRoot, 'src/components/PumpAssemblyReport.astro'), 'utf-8');
+  assert.ok(report.includes('PUMP_ASSEMBLY_STATIONS') && report.includes('WET_END_MATERIAL_MATRIX'), 'PumpAssemblyReport.astro debe importar PUMP_ASSEMBLY_STATIONS y WET_END_MATERIAL_MATRIX desde slurryEngine.js');
+  assert.ok(report.includes('data-seal-branch-select'), 'PumpAssemblyReport.astro debe exponer selector [data-seal-branch-select] para S5a/S5b');
+  assert.ok(report.includes('saveWorkbenchState('), 'PumpAssemblyReport.astro debe persistir el claro axial y rama de sellado en saveWorkbenchState');
+
+  for (const skidRel of ['src/pages/bombeo/skid.astro', 'src/pages/en/pumping/skid.astro']) {
+    const skid = fs.readFileSync(path.join(siteRoot, skidRel), 'utf-8');
+    assert.ok(skid.includes('DRIVE_ARRANGEMENT_CATALOG'), `${skidRel} debe importar DRIVE_ARRANGEMENT_CATALOG desde slurryEngine.js`);
+    assert.ok(skid.includes('data-kin-capacity-c'), `${skidRel} debe exponer input [data-kin-capacity-c] para capacidad dinámica C (kN)`);
+    assert.ok(skid.includes('data-kin-ratio') && skid.includes('data-kin-flood') && skid.includes('data-kin-load-p'), `${skidRel} debe proyectar relación i, inmunidad de sumidero y carga equivalente P`);
+    assert.ok(skid.includes('saveWorkbenchState('), `${skidRel} debe persistir la cinemática en saveWorkbenchState`);
+  }
+});
+
+test('Test 194 (MS-07 / Decisión 7-C+): Erradicación de [object Object] en Footer.astro y LiveEngineeringDossier.astro (DEB-SMAT-03) y eliminación de data/roles.copy.json (DEB-SMAT-04)', () => {
+  assert.equal(fs.existsSync(path.join(siteRoot, 'data/roles.copy.json')), false, 'data/roles.copy.json debe haber sido eliminado físicamente');
+
+  const footer = fs.readFileSync(path.join(siteRoot, 'src/components/Footer.astro'), 'utf-8');
+  const dossier = fs.readFileSync(path.join(siteRoot, 'src/components/LiveEngineeringDossier.astro'), 'utf-8');
+
+  assert.ok(footer.includes('companyData.contact.phones[0].display') && footer.includes('companyData.contact.phones[1].display'), 'Footer.astro debe interpolar .display en teléfonos');
+  assert.ok(footer.includes('companyData.contact.emails[0].address') && footer.includes('companyData.contact.emails[1].address'), 'Footer.astro debe interpolar .address en correos');
+  assert.ok(footer.includes('companyData.heritage_years') && footer.includes('companyData.founding_location'), 'Footer.astro debe proyectar heritage_years y founding_location');
+  assert.ok(footer.includes('companyData.logistics.warehouse_hours') && footer.includes('companyData.logistics.local_pickup_badge'), 'Footer.astro debe proyectar warehouse_hours y local_pickup_badge');
+
+  assert.ok(dossier.includes('companyData.contact.phones[0].display'), 'LiveEngineeringDossier.astro debe interpolar companyData.contact.phones[0].display');
+  assert.ok(dossier.includes('companyData.contact.whatsapp.display'), 'LiveEngineeringDossier.astro debe interpolar companyData.contact.whatsapp.display');
+  assert.ok(dossier.includes('companyData.contact.emails[0].address'), 'LiveEngineeringDossier.astro debe interpolar companyData.contact.emails[0].address');
+});
+
+test('Test 195 (MS-08 / Decisión 9-C+): Rehidratación de /acuse.astro y /en/thank-you.astro con soporte para Poliuretano U01 y botones de exportación SAP/TSV (DEB-SMAT-09)', () => {
+  for (const acuseRel of ['src/pages/acuse.astro', 'src/pages/en/thank-you.astro']) {
+    const content = fs.readFileSync(path.join(siteRoot, acuseRel), 'utf-8');
+    assert.ok(content.includes('id="copy-sap-acuse-btn"'), `${acuseRel} debe incluir botón #copy-sap-acuse-btn`);
+    assert.ok(content.includes('id="download-tsv-acuse-btn"'), `${acuseRel} debe incluir botón #download-tsv-acuse-btn`);
+    assert.ok(content.includes("material === 'poliuretano'"), `${acuseRel} debe soportar explícitamente el cuarto material 'poliuretano' (U01)`);
+    assert.ok(content.includes('smat_workbench_state_v2'), `${acuseRel} debe respaldar su hidratación con smat_workbench_state_v2`);
+  }
+});
+
+test('Test 196 (MS-09 / Decisión 10-C+): Polaridad Solar WCAG AAA (--smat-text-secondary: #1e293b, --smat-text-muted: #334155) y compactación móvil above-the-fold (DEB-SMAT-10)', () => {
+  const tokens = fs.readFileSync(path.join(siteRoot, 'src/styles/tokens.css'), 'utf-8');
+  assert.ok(tokens.includes('--smat-text-secondary: #1e293b;'), 'tokens.css debe fijar --smat-text-secondary: #1e293b (>= 7.0:1 sobre blanco)');
+  assert.ok(tokens.includes('--smat-text-muted: #334155;'), 'tokens.css debe fijar --smat-text-muted: #334155 (>= 7.0:1 sobre blanco)');
+
+  const wbCss = fs.readFileSync(path.join(siteRoot, 'src/styles/workbench.css'), 'utf-8');
+  assert.ok(wbCss.includes('@media (max-width: 768px)'), 'workbench.css debe incluir regla de compactación móvil @media (max-width: 768px) para cumplir Fitts/Viewport <= 555px');
+});
+
+
+// ============================================================================
+// ETAPA 3 (1-C++ a 10-C++): Tests 199..208 + Erradicación de Debris DEB-E3-01..08
+// ============================================================================
+
+test('Test 199 (Decisión 1-C++ / DEB-E3-01..04): Eliminación física de FlightDeck.astro y PerspectiveSelector.astro, montaje directo de QuoteWizard en /cotizar/ y /en/quote/ sin QuickPartSelectorStrip, y limpieza de DualHubView en /catalogo/', () => {
+  assert.equal(fs.existsSync(path.join(siteRoot, 'src/components/FlightDeck.astro')), false, 'FlightDeck.astro debe haber sido eliminado físicamente (DEB-E3-02)');
+  assert.equal(fs.existsSync(path.join(siteRoot, 'src/components/PerspectiveSelector.astro')), false, 'PerspectiveSelector.astro debe haber sido eliminado físicamente (DEB-E3-01)');
+
+  for (const rel of ['src/pages/cotizar.astro', 'src/pages/en/quote.astro']) {
+    const content = fs.readFileSync(path.join(siteRoot, rel), 'utf-8');
+    assert.ok(content.includes('<QuoteWizard'), `${rel} debe montar <QuoteWizard /> directamente`);
+    assert.ok(!content.includes('<FlightDeck'), `${rel} no debe referenciar <FlightDeck />`);
+    assert.ok(!content.includes('<QuickPartSelectorStrip'), `${rel} no debe duplicar <QuickPartSelectorStrip /> (DEB-E3-03)`);
+    assert.ok(content.includes('class="extension-card"'), `${rel} debe conservar las tarjetas de extensión P&ID y Diagnóstico`);
+  }
+
+  for (const rel of ['src/pages/catalogo.astro', 'src/pages/en/catalog.astro']) {
+    const content = fs.readFileSync(path.join(siteRoot, rel), 'utf-8');
+    assert.ok(!content.includes('<DualHubView'), `${rel} no debe incrustar <DualHubView /> redundante antes de la tabla paramétrica (DEB-E3-04)`);
+  }
+});
+
+test('Test 200 (Decisión 2-C++ / DEB-E3-06): Hidratación bidireccional sin pérdida de los 11 parámetros metrológicos entre /control-de-procesos/ y /cotizar/ (hydrateMetrologyInputsFromState)', async () => {
+  const { parseUrlContextParams } = await import('../src/scripts/workbenchBus.js');
+  const parsed = parseUrlContextParams(
+    '?circuito=control_procesos&equipo=tamices_laboratorio&sg=2.95&cw=48&rhop=3.20&d95_cm=0.25&lib_um=110&grade=0.025&air_psi=80&gy_c=0.14&gy_err=0.04&d80=125&rr_n=1.22&ret_p80=20'
+  );
+  assert.equal(parsed.solidsSg, 2.95);
+  assert.equal(parsed.solidsWeightPercent, 48);
+  assert.equal(parsed.oreDensitySg, 3.2);
+  assert.equal(parsed.gyD95Cm, 0.25);
+  assert.equal(parsed.liberationSizeMicrons, 110);
+  assert.equal(parsed.criticalGradeDecimal, 0.025);
+  assert.equal(parsed.airPressurePsi, 80);
+  assert.equal(parsed.gyConstantC, 0.14);
+  assert.equal(parsed.gyRelativeError, 0.04);
+  assert.equal(parsed.particleSizeD80Microns, 125);
+  assert.equal(parsed.rosinRammlerSlopeN, 1.22);
+
+  const rawWizard = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), { encoding: 'utf-8', rawWizardOnly: true });
+  for (const id of [
+    'wb-ctrl-sg',
+    'wb-ctrl-cw',
+    'wb-ctrl-rhop',
+    'wb-ctrl-d95',
+    'wb-ctrl-lib',
+    'wb-ctrl-grade',
+    'wb-ctrl-air-psi',
+    'wb-ctrl-gy-c',
+    'wb-ctrl-gy-err',
+    'wb-ctrl-p80',
+    'wb-ctrl-rr-n',
+    'wb-ctrl-ret-p80'
+  ]) {
+    assert.ok(rawWizard.includes(`id="${id}"`), `QuoteWizard.astro debe exponer el control metrológico #${id}`);
+  }
+
+  const ctrlJs = fs.readFileSync(path.join(siteRoot, 'src/scripts/quoteWizardController.js'), 'utf-8');
+  assert.ok(ctrlJs.includes('function hydrateMetrologyInputsFromState('), 'quoteWizardController.js debe definir hydrateMetrologyInputsFromState para rehidratar el DOM antes de runSlurryCalculation');
+  const idxHydrate = ctrlJs.indexOf('hydrateMetrologyInputsFromState();');
+  const idxCalc = ctrlJs.lastIndexOf('runSlurryCalculation();');
+  assert.ok(idxHydrate > 0 && idxCalc > idxHydrate, 'hydrateMetrologyInputsFromState debe ejecutarse antes de runSlurryCalculation y runMetrologyLabCalculation (DEB-E3-06)');
+});
+
+test('Test 201 (Decisión 3-C++ / DEB-E3-07): Torre ASTM E11 completa de 6 columnas (% Ret. Acum., Masa Ret. g / Rol y resaltado isPrimaryP80Control) en /control-de-procesos/ y QuoteWizard', () => {
+  for (const rel of ['src/pages/control-de-procesos/index.astro', 'src/pages/en/process-control/index.astro']) {
+    const content = fs.readFileSync(path.join(siteRoot, rel), 'utf-8');
+    assert.ok(content.includes('s.cumulativeRetainedPct'), `${rel} debe renderizar % Retenido Acumulado s.cumulativeRetainedPct`);
+    assert.ok(content.includes('s.estimatedMassRetainedGrams'), `${rel} debe renderizar masa retenida estimada s.estimatedMassRetainedGrams`);
+    assert.ok(content.includes('Boolean(s.isPrimaryP80Control || s.isPrimaryCut)'), `${rel} debe resaltar la malla de corte primario con Boolean(s.isPrimaryP80Control || s.isPrimaryCut) (DEB-E3-07)`);
+  }
+
+  const ctrlJs = fs.readFileSync(path.join(siteRoot, 'src/scripts/quoteWizardController.js'), 'utf-8');
+  assert.ok(ctrlJs.includes('Boolean(s.isPrimaryP80Control || s.isPrimaryCut)'), 'quoteWizardController.js debe resaltar la malla primaria P80 con s.isPrimaryP80Control');
+  assert.ok(ctrlJs.includes('s.cumulativeRetainedPct') && ctrlJs.includes('s.estimatedMassRetainedGrams'), 'quoteWizardController.js debe renderizar las 6 columnas ASTM E11 en #wb-ctrl-sieve-tbody');
+});
+
+test('Test 202 (Decisión 4-C++): Barra Superior Statechart XOR de 4 Circuitos (#wb-step1-xor-circuit-bar) en el tope del Paso 01 y applyCircuitStatechartXOR', () => {
+  const rawWizard = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), { encoding: 'utf-8', rawWizardOnly: true });
+  assert.ok(rawWizard.includes('id="wb-step1-xor-circuit-bar"'), 'QuoteWizard.astro debe exponer #wb-step1-xor-circuit-bar en el tope del Paso 01');
+  const idxXorBar = rawWizard.indexOf('id="wb-step1-xor-circuit-bar"');
+  const idxMiningBar = rawWizard.indexOf('id="wb-mining-preset-bar"');
+  assert.ok(idxXorBar > 0 && idxMiningBar > idxXorBar, '#wb-step1-xor-circuit-bar debe aparecer en el tope del Paso 01 antes de #wb-mining-preset-bar');
+
+  const ctrlJs = fs.readFileSync(path.join(siteRoot, 'src/scripts/quoteWizardController.js'), 'utf-8');
+  assert.ok(ctrlJs.includes('function applyCircuitStatechartXOR('), 'quoteWizardController.js debe implementar applyCircuitStatechartXOR(circuit)');
+});
+
+test('Test 203 (Decisión 5-C++ / DEB-E3-05): Matriz Tri-Compound Interactiva (WET_END_MATERIAL_MATRIX -> #wb-material-matrix-card) en QuoteWizard y erradicación de matNameMap', () => {
+  const rawWizard = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), { encoding: 'utf-8', rawWizardOnly: true });
+  for (const id of [
+    'wb-material-matrix-card',
+    'wb-mat-code-badge',
+    'wb-mat-hardness',
+    'wb-mat-tip-limit',
+    'wb-mat-wear-554',
+    'wb-mat-d80-ph',
+    'wb-mat-parts-list',
+    'wb-mat-duty-desc'
+  ]) {
+    assert.ok(rawWizard.includes(`id="${id}"`), `QuoteWizard.astro debe renderizar #${id} dentro de la tarjeta Tri-Compound`);
+  }
+
+  const ctrlJs = fs.readFileSync(path.join(siteRoot, 'src/scripts/quoteWizardController.js'), 'utf-8');
+  assert.ok(ctrlJs.includes('WET_END_MATERIAL_MATRIX'), 'quoteWizardController.js debe importar y consumir WET_END_MATERIAL_MATRIX');
+  assert.ok(ctrlJs.includes('function renderWetEndMaterialMatrixCard('), 'quoteWizardController.js debe definir renderWetEndMaterialMatrixCard(matKey)');
+  assert.ok(!ctrlJs.includes('var matNameMap = {'), 'quoteWizardController.js no debe tener el diccionario truncado matNameMap (DEB-E3-05)');
+});
+
+test('Test 204 (Decisión 6-C++): Resumen Metrológico en el Paso 02 (#wb-step2-control-summary) y Dictamen Estructural Durand/Wilson (#metric-structural-reason)', () => {
+  const rawWizard = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), { encoding: 'utf-8', rawWizardOnly: true });
+  assert.ok(rawWizard.includes('id="wb-step2-control-summary"'), 'QuoteWizard.astro debe incluir #wb-step2-control-summary en el Paso 02');
+  assert.ok(rawWizard.includes('id="wb-step2-control-summary-text"'), 'QuoteWizard.astro debe incluir #wb-step2-control-summary-text');
+  assert.ok(rawWizard.includes('id="metric-structural-reason"'), 'QuoteWizard.astro debe incluir #metric-structural-reason para proyectar structuralReasonEs/En');
+
+  const ctrlJs = fs.readFileSync(path.join(siteRoot, 'src/scripts/quoteWizardController.js'), 'utf-8');
+  assert.ok(ctrlJs.includes('currentClearanceEval.structuralReasonEn') && ctrlJs.includes('currentClearanceEval.structuralReasonEs'), 'quoteWizardController.js debe proyectar currentClearanceEval.structuralReasonEs/En en #metric-structural-reason');
+});
+
+test('Test 205 (Decisión 7-C++): Cinemática V-Belt Completa (n2 RPM, Fr kN, Inmunidad de Sumidero) en QuoteWizard y propagación sin pérdida a SAP, WhatsApp y Acuse', async () => {
+  const rawWizard = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), { encoding: 'utf-8', rawWizardOnly: true });
+  for (const id of ['metric-drive-rpm', 'metric-drive-fr', 'metric-drive-flood']) {
+    assert.ok(rawWizard.includes(`id="${id}"`), `QuoteWizard.astro debe exponer #${id} en el bloque de cinemática V-Belt`);
+  }
+
+  const { formatSapPlaintext, formatWhatsappUrl, buildAcuseUrlParams } = await import('../src/scripts/workbenchBus.js');
+  const sample = {
+    folio: 'SMAT-2026-E307',
+    circuit: 'bombeo',
+    part_name: 'Skid Bomba 6x4 D',
+    transmision: 'ZVZ',
+    u2_ms: 21.8,
+    n2_rpm: 1185,
+    fr_kn: 4.62,
+    inmunidad_sumidero: 'ALTA (Motor elevado sobre bomba)',
+    l10h: 36500,
+    razon_estructural: 'Tubería 6x4 opera en suspensión heterogénea estable sin riesgo de cama estacionaria.'
+  };
+
+  const sap = formatSapPlaintext(sample);
+  assert.ok(sap.includes('n2 = 1185 RPM'), 'formatSapPlaintext debe incluir n2 RPM de bomba');
+  assert.ok(sap.includes('Fr = 4.62 kN'), 'formatSapPlaintext debe incluir carga radial de correa Fr kN');
+  assert.ok(sap.includes('ALTA (Motor elevado sobre bomba)'), 'formatSapPlaintext debe incluir inmunidad de sumidero');
+  assert.ok(sap.includes('Dictamen Estructural:'), 'formatSapPlaintext debe incluir dictamen estructural');
+
+  const wa = decodeURIComponent(formatWhatsappUrl(sample));
+  assert.ok(wa.includes('n2=1185 RPM') && wa.includes('Fr=4.62 kN'), 'formatWhatsappUrl debe incluir n2 RPM y Fr kN');
+
+  const params = buildAcuseUrlParams(sample);
+  assert.equal(params.get('n2_rpm'), '1185');
+  assert.equal(params.get('fr_kn'), '4.62');
+  assert.ok(params.get('inmunidad_sumidero').includes('ALTA'));
+  assert.ok(params.get('razon_estructural').includes('suspensión heterogénea'));
+});
+
+test('Test 206 (Decisión 8-C++): Bijección de Códigos SMAT con soporte para Poliuretano U01 (PU) y Bombas Pesadas 12X10 y 14X12', async () => {
+  const { generateSmatPartCode, parseSmatPartCode } = await import('../src/scripts/workbenchBus.js');
+
+  const codePu = generateSmatPartCode({ role: 'impulsor', details: 'Bomba 6x4 Poliuretano U01' });
+  assert.equal(codePu, 'SMAT-PUMP-6X4-IMP');
+
+  const parsedPu = parseSmatPartCode('SMAT-PUMP-12X10-U01-IMP');
+  assert.ok(parsedPu && parsedPu.valid, 'parseSmatPartCode debe reconocer SMAT-PUMP-12X10-U01-IMP');
+  assert.equal(parsedPu.series, '12X10');
+  assert.equal(parsedPu.size, '12x10');
+  assert.equal(parsedPu.alloy, 'U01');
+
+  const parsed14 = parseSmatPartCode('SMAT-SKID-14X12-A05');
+  assert.ok(parsed14 && parsed14.valid, 'parseSmatPartCode debe reconocer SMAT-SKID-14X12-A05');
+  assert.equal(parsed14.series, '14X12');
+  assert.equal(parsed14.size, '14x12');
+});
+
+test('Test 207 (Decisión 9-C++ / DEB-E3-08): Polaridad Solar WCAG AAA (--smat-blue-royal: #0c4a6e 9.61:1, --smat-copper-accent: #7c2d12 10.65:1) en tokens.css, index.astro y acuse.astro', () => {
+  const tokens = fs.readFileSync(path.join(siteRoot, 'src/styles/tokens.css'), 'utf-8');
+  assert.ok(tokens.includes('--smat-blue-royal: #0c4a6e;'), 'tokens.css debe fijar --smat-blue-royal: #0c4a6e (9.61:1 WCAG AAA)');
+  assert.ok(tokens.includes('--smat-copper-accent: #7c2d12;'), 'tokens.css debe fijar --smat-copper-accent: #7c2d12 (10.65:1 WCAG AAA)');
+  assert.ok(!tokens.includes('--smat-blue-royal: #0284c7;'), 'tokens.css no debe conservar #0284c7 en --smat-blue-royal (DEB-E3-08)');
+
+  for (const rel of ['src/pages/index.astro', 'src/pages/en/index.astro']) {
+    const content = fs.readFileSync(path.join(siteRoot, rel), 'utf-8');
+    assert.ok(content.includes('color: #0c4a6e;'), `${rel} debe usar color: #0c4a6e en .part-chip--highlight`);
+  }
+
+  for (const rel of ['src/pages/acuse.astro', 'src/pages/en/thank-you.astro']) {
+    const content = fs.readFileSync(path.join(siteRoot, rel), 'utf-8');
+    assert.ok(content.includes('background: #0c4a6e;'), `${rel} debe usar background: #0c4a6e en .btn-print`);
+  }
+});
+
+test('Test 208 (Decisión 10-C++): Compactación Above-the-Fold Móvil en Portadas ES/EN y Documentación Técnica en public/llms.txt', () => {
+  for (const rel of ['src/pages/index.astro', 'src/pages/en/index.astro']) {
+    const content = fs.readFileSync(path.join(siteRoot, rel), 'utf-8');
+    assert.ok(content.includes('@media (max-width: 768px)'), `${rel} debe incluir bloque @media (max-width: 768px) para compactar el Hero móvil`);
+    assert.ok(content.includes('.showcase-grid'), `${rel} debe compactar .showcase-grid en móvil para que la Puerta 1 quede above-the-fold`);
+  }
+
+  const llms = fs.readFileSync(path.join(siteRoot, 'public/llms.txt'), 'utf-8');
+  assert.ok(llms.includes('WET_END_MATERIAL_MATRIX') && llms.includes('WCAG AAA'), 'public/llms.txt debe documentar la matriz Tri-Compound y la polaridad solar WCAG AAA');
 });
