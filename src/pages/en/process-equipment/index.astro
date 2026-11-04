@@ -3,7 +3,6 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
 import CircuitNavigator from '../../../components/CircuitNavigator.astro';
-import DualHubView from '../../../components/DualHubView.astro';
 import CaseCards from '../../../components/CaseCards.astro';
 import SharePurchasing from '../../../components/SharePurchasing.astro';
 ---
@@ -24,7 +23,7 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
         Engineering and supply of core process equipment for grinding, flotation concentration, and tailings dewatering circuits: <strong>Flotation Cell Mechanisms & Conditioners (50 to 300 ft³)</strong>, <strong>Recessed-Chamber Filter Presses (800 to 1500 mm, up to 16 bar)</strong>, and <strong>Complete Horizontal & Vertical Slurry Pump Packages</strong>.
       </p>
       <div style="display: flex; gap: 0.85rem; flex-wrap: wrap; margin-top: 1.25rem;">
-        <a href="/en/quote/?equipo=celda_flotacion#rfq" class="btn btn-primary">Quote Process Equipment →</a>
+        <a href="/en/quote/?circuito=flotacion&equipo=celda_flotacion&serie=100ft#rfq" class="btn btn-primary">Quote Process Equipment →</a>
         <a href="/en/pumping/" class="btn btn-outline">Go to Slurry Pumps & Spare Parts →</a>
       </div>
     </div>
@@ -52,7 +51,7 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
             <a href="/en/flotation/" class="btn btn-outline">View Flotation Line</a>
             <a href="/en/flotation/cells/" class="btn btn-outline">50-300 ft³ Mechanisms</a>
             <a href="/en/flotation/mechanisms/" class="btn btn-outline">Rotors & Stators</a>
-            <a href="/en/quote/?equipo=celda_flotacion#rfq" class="btn btn-primary">Quote Flotation Mechanism →</a>
+            <a href="/en/quote/?circuito=flotacion&equipo=celda_flotacion&serie=100ft#rfq" class="btn btn-primary">Quote Flotation Mechanism →</a>
           </div>
         </article>
 
@@ -75,7 +74,7 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
             <a href="/en/filtration/" class="btn btn-outline">View Filtration Line</a>
             <a href="/en/filtration/press/" class="btn btn-outline">800-1500 mm Filter Presses</a>
             <a href="/en/filtration/parts/" class="btn btn-outline">Filter Plates & Cloths</a>
-            <a href="/en/quote/?equipo=filtro_prensa#rfq" class="btn btn-primary">Quote Filter Press →</a>
+            <a href="/en/quote/?circuito=filtracion&equipo=filtro_prensa&serie=1200#rfq" class="btn btn-primary">Quote Filter Press →</a>
           </div>
         </article>
 
@@ -99,8 +98,8 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
           <div class="equipment-actions">
             <a href="/en/pumping/skid/#drive-arrangements" class="btn btn-outline">View CV / ZVZ / CRZ / DC Drives</a>
             <a href="/en/pumping/#how-a-slurry-pump-is-assembled" class="btn btn-outline">View Pump Assembly & Exploded BOM</a>
-            <a href="/en/quote/?equipo=skid_bomba&transmision=CV#rfq" class="btn btn-primary">Quote CV Arrangement Skid →</a>
-            <a href="/en/quote/?equipo=skid_bomba&transmision=DC#rfq" class="btn btn-primary">Quote Direct DC Skid →</a>
+            <a href="/en/quote/?circuito=bombeo&equipo=skid_bomba&serie=6x4&transmision=CV#rfq" class="btn btn-primary">Quote CV Arrangement Skid →</a>
+            <a href="/en/quote/?circuito=bombeo&equipo=skid_bomba&serie=6x4&transmision=DC#rfq" class="btn btn-primary">Quote Direct DC Skid →</a>
           </div>
         </article>
       </div>
@@ -122,55 +121,14 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
 
     <details class="equipos-circuit-appendix" id="equipos-circuit-appendix">
       <summary class="equipos-circuit-appendix__summary container">
-        <span>P&ID Circuit Diagram & Dual Equipment/Spares Role Matrix</span>
+        <span>P&ID Circuit Diagram & Metallurgical Rules by Role</span>
         <span class="equipos-circuit-appendix__badge">EXPAND P&ID APPENDIX ▾</span>
       </summary>
-      <div class="container" style="padding-top: 1.25rem; padding-bottom: 0.5rem;">
-        <div class="equipos-segmented-control" role="tablist" aria-label="Circuit View Selector (1 Active at a Time)">
-          <button type="button" role="tab" aria-selected="true" class="equipos-seg-btn is-active" data-equipos-view-btn="pid">
-            1. Interactive P&amp;ID Circuit Map
-          </button>
-          <button type="button" role="tab" aria-selected="false" class="equipos-seg-btn" data-equipos-view-btn="hub">
-            2. Dual Role / Circuit Matrix
-          </button>
-        </div>
-      </div>
-
-      <div data-equipos-view-panel="pid">
-        <section class="section" style="background-color: #ffffff; border-top: 1px solid var(--smat-border-light); border-bottom: 1px solid var(--smat-border-light);">
-          <div class="container">
-            <CircuitNavigator lang="en" />
-          </div>
-        </section>
-      </div>
-
-      <div data-equipos-view-panel="hub" style="display:none">
-        <DualHubView lang="en" />
+      <div class="equipos-circuit-appendix__body">
+        <CircuitNavigator lang="en" />
       </div>
     </details>
   </section>
-
-  <script>
-    const viewBtns = Array.from(document.querySelectorAll('[data-equipos-view-btn]'));
-    const viewPanels = Array.from(document.querySelectorAll('[data-equipos-view-panel]'));
-    function activateEquiposView(targetView: string) {
-      viewBtns.forEach((btn) => {
-        const isMatch = btn.getAttribute('data-equipos-view-btn') === targetView;
-        btn.classList.toggle('is-active', isMatch);
-        btn.setAttribute('aria-selected', isMatch ? 'true' : 'false');
-      });
-      viewPanels.forEach((panel) => {
-        const isMatch = panel.getAttribute('data-equipos-view-panel') === targetView;
-        (panel as HTMLElement).style.display = isMatch ? 'block' : 'none';
-      });
-    }
-    viewBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const target = btn.getAttribute('data-equipos-view-btn') || 'pid';
-        activateEquiposView(target);
-      });
-    });
-  </script>
 </BaseLayout>
 
 <style>
@@ -242,29 +200,24 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
     padding: 0.35rem 0.75rem;
     border-radius: 9999px;
   }
-  .equipos-segmented-control {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    background: #e2e8f0;
-    padding: 0.3rem;
-    border-radius: 10px;
-    border: 1px solid var(--smat-border-light);
-  }
-  .equipos-seg-btn {
-    border: none;
-    background: transparent;
-    color: #1e293b;
-    font-weight: 700;
-    font-size: 0.85rem;
-    padding: 0.55rem 1rem;
-    border-radius: 7px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-  .equipos-seg-btn.is-active {
-    background: #0f172a;
-    color: #ffffff;
-    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
+  @media (max-width: 768px) {
+    .page-hero {
+      padding: 0.6rem 0;
+    }
+    .page-hero h1 {
+      font-size: 1.3rem;
+      margin: 0.2rem 0;
+    }
+    .page-hero p {
+      font-size: 0.78rem !important;
+      line-height: 1.25;
+      margin: 0.2rem 0;
+    }
+    #stage-diagnostic {
+      padding-top: 0.55rem;
+    }
+    .equipment-block {
+      padding: 0.9rem;
+    }
   }
 </style>

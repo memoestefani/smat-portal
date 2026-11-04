@@ -2,6 +2,11 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SharePurchasing from '../../components/SharePurchasing.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
+import rolesData from '../../../data/roles.json';
+
+const flotVertical = rolesData.verticals.find((v) => v.id === 'flotacion');
+const mecRole = flotVertical?.opex?.find((r) => r.role_id === 'mecanismos_flotacion');
+const criteria = mecRole?.decision_criteria;
 ---
 
 <BaseLayout 
@@ -55,8 +60,44 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
               <td>Compatibilidad</td>
               <td>Intercambiabilidad dimensional para mecanismos de celdas de 50 a 300 ft³ y acondicionadores</td>
             </tr>
+            <tr>
+              <td>Invariante Cinético de Cizalladura (S<sub>b</sub>)</td>
+              <td>Mantiene radio de corte hidrodinámico para S<sub>b</sub> = 6 J<sub>g</sub> / d<sub>32</sub> ≥ 55 s<sup>-1</sup> sin colapso de micro-burbuja</td>
+            </tr>
           </tbody>
         </table>
+
+        {criteria && (
+          <div class="decision-criteria-panel" data-testid="role-decision-criteria" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #9a3412;">
+            <span class="badge badge-copper">CRITERIOS DE DECISIÓN METALÚRGICA • ROLES.JSON</span>
+            <h3 style="margin: 0.45rem 0 0.75rem; font-size: 1.08rem; color: var(--smat-text-primary);">Matriz de Selección de Rotor, Estator y Flecha ({mecRole?.series})</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem; font-size: 0.88rem;">
+              <div style="background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <strong style="display: block; color: var(--smat-text-primary); margin-bottom: 0.25rem;">Variables de Operación Requeridas</strong>
+                <span style="color: #334155;">{criteria.required_slurry_vars_es}</span>
+              </div>
+              <div style="background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <strong style="display: block; color: #7c2d12; margin-bottom: 0.25rem;">Regla de Elastómero y Eje</strong>
+                <span style="color: #334155;">{criteria.metallurgy_rule_es}</span>
+              </div>
+              <div style="background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <strong style="display: block; color: #14532d; margin-bottom: 0.25rem;">Riesgo Metalúrgico Mitigado</strong>
+                <span style="color: #334155;">{criteria.risk_avoided_es}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div class="flotation-selector-box" data-testid="flotation-contextual-selector" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #fffbeb; border: 1px solid #fde68a;">
+          <span class="badge badge-copper">PRE-SELECCIÓN CONTEXTUAL • PUENTE A COTIZADOR</span>
+          <h3 style="margin: 0.45rem 0 0.5rem; font-size: 1.05rem; color: var(--smat-text-primary);">Cotizar Rotor / Estator por Capacidad y Condición</h3>
+          <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.65rem;">
+            <a href="/cotizar/?circuito=flotacion&equipo=rotor_estator&serie=50ft&flot_condition=sulfuros_alta_agitacion#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">Rotor/Estator 50 ft³ • Sulfuros</a>
+            <a href="/cotizar/?circuito=flotacion&equipo=rotor_estator&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">Rotor/Estator 100 ft³ • Sulfuros</a>
+            <a href="/cotizar/?circuito=flotacion&equipo=rotor_estator&serie=200ft&flot_condition=reactivos_espuma#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">Rotor/Estator 200 ft³ • Reactivos</a>
+            <a href="/cotizar/?circuito=flotacion&equipo=rotor_estator&serie=300ft&flot_condition=arena_gruesa_fondo#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">Rotor/Estator 300 ft³ • Arena Gruesa</a>
+          </div>
+        </div>
 
         <SharePurchasing 
           roleTitle="Impulsor y Difusor de Celda de Flotación"
@@ -75,7 +116,7 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
             <p>Solicite su cotización indicando capacidad de celda o modelo de mecanismo.</p>
           </div>
           <div class="cta-rfq-actions">
-            <a href="/?equipo=rotor_estator#rfq" class="btn btn-primary btn-lg">
+            <a href="/cotizar/?circuito=flotacion&equipo=rotor_estator&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq" class="btn btn-primary btn-lg">
               Solicitar Cotización →
             </a>
             <a href="https://wa.me/526183670664?text=Hola%20SMAT%20Minerals,%20requiero%20cotizar%20Impulsor%20y%20Difusor%20de%20Flotaci%C3%B3n" target="_blank" rel="noopener noreferrer" class="btn btn-emergency btn-lg">

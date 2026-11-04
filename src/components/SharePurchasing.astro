@@ -1,30 +1,49 @@
 ---
-import { generateSmatPartCode } from '../scripts/workbenchBus.js';
+import { generateSmatPartCode, getAtomicPartSpecs } from '../scripts/workbenchBus.js';
 
 interface Props {
-  roleTitle: string;
-  specs: string;
+  roleTitle?: string;
+  partName?: string;
+  partCode?: string;
+  specs?: string;
   metallurgy?: string;
   series?: string;
   roleId?: string;
+  role?: string;
   circuit?: 'bombeo' | 'flotacion' | 'filtracion' | 'control_procesos';
   lang?: 'es' | 'en';
 }
 
 const {
   roleTitle,
-  specs,
+  partName,
+  partCode = '',
+  specs = 'Verificación dimensional 1:1 en banco Durango',
   metallurgy = 'High Chrome 27% (A05) / Caucho Natural',
   series = 'Estándar Industrial',
-  roleId = 'kit_wet_end',
+  roleId,
+  role,
   circuit = 'bombeo',
   lang = 'es'
 } = Astro.props;
 const isEs = lang === 'es';
-const smatCode = generateSmatPartCode({ circuit, role_id: roleId, details: `${roleTitle} ${series}` });
+const resolvedRoleId = roleId || role || 'kit_wet_end';
+const resolvedTitle = roleTitle || partName || (isEs ? 'Equipo Industrial SMAT' : 'SMAT Industrial Equipment');
+const atomicSpecs = partCode ? getAtomicPartSpecs(partCode, series) : null;
+const smatCode = atomicSpecs?.smat_code || generateSmatPartCode({ circuit, role_id: resolvedRoleId, details: `${resolvedTitle} ${series}` });
+const detallesText = `${series} • ${metallurgy} • ${specs}`;
+const acuseBaseParams = new URLSearchParams({
+  equipo: resolvedTitle,
+  codigo: smatCode,
+  detalles: detallesText,
+  urgencia: 'proyecto'
+});
+if (partCode) acuseBaseParams.set('pieza', partCode);
+if (atomicSpecs?.weight_kg) acuseBaseParams.set('peso_kg', String(atomicSpecs.weight_kg));
+if (atomicSpecs?.station_number) acuseBaseParams.set('estacion', `S${atomicSpecs.station_number}`);
 const acuseHref = isEs
-  ? `/acuse/?equipo=${encodeURIComponent(roleTitle)}&codigo=${encodeURIComponent(smatCode)}&detalle=${encodeURIComponent(`${series} • ${metallurgy} • ${specs}`)}&urgencia=proyecto`
-  : `/en/thank-you/?equipo=${encodeURIComponent(roleTitle)}&codigo=${encodeURIComponent(smatCode)}&detalle=${encodeURIComponent(`${series} • ${metallurgy} • ${specs}`)}&urgencia=proyecto`;
+  ? `/acuse/?${acuseBaseParams.toString()}`
+  : `/en/thank-you/?${acuseBaseParams.toString()}`;
 ---
 
 <div class="share-purchasing-widget">
@@ -42,19 +61,40 @@ const acuseHref = isEs
         type="button" 
         class="btn btn-outline btn-sm copy-spec-btn" 
         id="copy-spec-btn"
-        data-title={roleTitle}
+        data-title={resolvedTitle}
         data-specs={specs}
         data-metallurgy={metallurgy}
         data-series={series}
         data-code={smatCode}
+        data-atomic-code={partCode}
+        data-role-id={resolvedRoleId}
         data-circuit={circuit}
+        data-lang={lang}
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="display:inline-block; vertical-align:middle; margin-right:6px;" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
         {isEs ? 'Copiar Ficha SAP / ERP' : 'Copy SAP / ERP Spec'}
       </button>
+      <button 
+        type="button" 
+        class="btn btn-outline btn-sm copy-tsv-btn" 
+        data-title={resolvedTitle}
+        data-specs={specs}
+        data-metallurgy={metallurgy}
+        data-series={series}
+        data-code={smatCode}
+        data-atomic-code={partCode}
+        data-role-id={resolvedRoleId}
+        data-circuit={circuit}
+        data-lang={lang}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="display:inline-block; vertical-align:middle; margin-right:6px;" aria-hidden="true"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        {isEs ? 'Copiar Fila TSV (Excel / SAP)' : 'Copy TSV Row (Excel / SAP)'}
+      </button>
       <a 
         href={acuseHref} 
         class="btn btn-primary btn-sm print-view-btn"
+        data-base-href={acuseHref}
+        data-lang={lang}
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="display:inline-block; vertical-align:middle; margin-right:6px;" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
         {isEs ? 'Ver Acuse Imprimible A4' : 'Printable A4 Requisition'}
@@ -67,27 +107,77 @@ const acuseHref = isEs
 </div>
 
 <script>
-  import { formatSapPlaintext } from '../scripts/workbenchBus.js';
+  import {
+    loadWorkbenchState,
+    subscribeWorkbenchUpdate,
+    buildCanonicalEngineeringSnapshot,
+    buildAcuseUrlParams,
+    formatSapPlaintext,
+    formatSapTsv,
+    getAtomicPartSpecs
+  } from '../scripts/workbenchBus.js';
+
+  function buildEnrichedSharePayload(btn: Element) {
+    const title = btn.getAttribute('data-title') || 'Equipo Industrial SMAT';
+    const specs = btn.getAttribute('data-specs') || '';
+    const metallurgy = btn.getAttribute('data-metallurgy') || '';
+    const series = btn.getAttribute('data-series') || '';
+    const code = btn.getAttribute('data-code') || 'SMAT-PUMP-6X4-WETKIT';
+    const atomicCode = btn.getAttribute('data-atomic-code') || '';
+    const roleId = btn.getAttribute('data-role-id') || 'kit_wet_end';
+    const circuit = btn.getAttribute('data-circuit') || 'bombeo';
+    const session: any = loadWorkbenchState() || {};
+    const atomicSpecs = atomicCode ? getAtomicPartSpecs(atomicCode, series) : getAtomicPartSpecs(roleId, session.pipe_size || series);
+
+    const rawDto = {
+      ...session,
+      circuit,
+      role: roleId,
+      role_id: roleId,
+      part_name: `${title} (${series})`,
+      smat_code: code,
+      atomic_code: atomicCode || (atomicSpecs?.part_number || ''),
+      part_specs: atomicSpecs || {},
+      peso_kg: atomicSpecs?.weight_kg ?? session.peso_kg,
+      estacion: atomicSpecs?.station_number ? `S${atomicSpecs.station_number}` : session.estacion,
+      material: session.pump_material || metallurgy,
+      transmision: session.drive_arrangement || 'CV',
+      claro_mm: session.claro_mm ?? 0.75,
+      ph: session.ph ?? 7.0,
+      seal_branch: session.seal_branch || 'expeller_dry',
+      b2_mm: session.b2_mm ?? 48,
+      cap_c_kn: session.cap_c_kn ?? 145,
+      details: `${metallurgy} | ${specs}`
+    };
+
+    const snap = buildCanonicalEngineeringSnapshot(rawDto);
+    return { rawDto, snap };
+  }
+
+  function syncAcuseLinks() {
+    document.querySelectorAll('.share-purchasing-widget').forEach((widget) => {
+      const copyBtn = widget.querySelector('.copy-spec-btn');
+      const printLink = widget.querySelector('.print-view-btn') as HTMLAnchorElement | null;
+      if (!copyBtn || !printLink) return;
+      const lang = printLink.getAttribute('data-lang') || 'es';
+      const { rawDto } = buildEnrichedSharePayload(copyBtn);
+      const params = buildAcuseUrlParams(rawDto);
+      const baseRoute = lang === 'en' ? '/en/thank-you/' : '/acuse/';
+      printLink.href = `${baseRoute}?${params.toString()}`;
+    });
+  }
 
   function initSharePurchasing() {
+    syncAcuseLinks();
+    subscribeWorkbenchUpdate(() => syncAcuseLinks());
+
     document.querySelectorAll('.copy-spec-btn').forEach((btn) => {
       if (btn.getAttribute('data-bound') === 'true') return;
       btn.setAttribute('data-bound', 'true');
 
       btn.addEventListener('click', () => {
-        const title = btn.getAttribute('data-title') || 'Equipo Industrial SMAT';
-        const specs = btn.getAttribute('data-specs') || '';
-        const metallurgy = btn.getAttribute('data-metallurgy') || '';
-        const series = btn.getAttribute('data-series') || '';
-        const code = btn.getAttribute('data-code') || 'SMAT-PUMP-6X4-WETKIT';
-        const circuit = btn.getAttribute('data-circuit') || 'bombeo';
-
-        const textToCopy = formatSapPlaintext({
-          part_name: `${title} (${series})`,
-          smat_code: code,
-          circuit,
-          details: `${metallurgy} | ${specs}`
-        });
+        const { rawDto, snap } = buildEnrichedSharePayload(btn);
+        const textToCopy = formatSapPlaintext({ ...rawDto, ...snap });
 
         navigator.clipboard?.writeText(textToCopy).then(() => {
           const widget = btn.closest('.share-purchasing-widget');
@@ -97,7 +187,26 @@ const acuseHref = isEs
             setTimeout(() => toast.classList.add('hidden'), 3500);
           }
           if (typeof (window as any).smatTrack === 'function') {
-            (window as any).smatTrack('rfq_forward_purchasing', { equipment: title, smat_code: code });
+            (window as any).smatTrack('rfq_forward_purchasing', { equipment: snap.equipo, smat_code: snap.codigo });
+          }
+        });
+      });
+    });
+
+    document.querySelectorAll('.copy-tsv-btn').forEach((btn) => {
+      if (btn.getAttribute('data-bound') === 'true') return;
+      btn.setAttribute('data-bound', 'true');
+
+      btn.addEventListener('click', () => {
+        const { rawDto, snap } = buildEnrichedSharePayload(btn);
+        const tsvToCopy = formatSapTsv({ ...rawDto, ...snap });
+
+        navigator.clipboard?.writeText(tsvToCopy).then(() => {
+          const widget = btn.closest('.share-purchasing-widget');
+          const toast = widget?.querySelector('.copy-toast');
+          if (toast) {
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3500);
           }
         });
       });

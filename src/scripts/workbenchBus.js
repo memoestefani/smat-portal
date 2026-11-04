@@ -159,6 +159,12 @@ export const ATOMIC_PARTS_CATALOG = Object.fromEntries(
   atomicPartsJson.map((item) => {
     const key = String(item.part_number || item.code || '').toUpperCase();
     const extra = ATOMIC_ENGINEERING_ENRICHMENT[key] || {};
+    const weightVal = Number(item.weight_kg) || 0;
+    const nioshRwlShaftKg = 11.1;
+    const nioshLiftingIndexShaft = Number((weightVal / nioshRwlShaftKg).toFixed(2));
+    const nioshErgonomicTier = weightVal <= nioshRwlShaftKg
+      ? 'MANUAL_1P_SAFE'
+      : (weightVal < 23.0 ? 'ASSISTED_SHAFT_MOUNT_2P' : 'HOIST_MANDATORY');
     return [
       key,
       {
@@ -167,7 +173,10 @@ export const ATOMIC_PARTS_CATALOG = Object.fromEntries(
         circuit: 'bombeo',
         max_sphere_mm: item.max_particle_mm,
         station: `S${item.station_number}`,
-        handling_mode: item.niosh_handling_mode
+        handling_mode: item.niosh_handling_mode,
+        niosh_rwl_shaft_kg: nioshRwlShaftKg,
+        niosh_lifting_index_shaft: nioshLiftingIndexShaft,
+        niosh_ergonomic_tier: nioshErgonomicTier
       }
     ];
   })
@@ -326,6 +335,8 @@ export function parseUrlContextParams(urlOrSearch = '', hashOptional = '') {
     gyRelativeError: null,
     rosinRammlerSlopeN: null,
     particleSizeD80Microns: null,
+    flot_condition: null,
+    filt_condition: null,
     atomic_part: null
   };
 
@@ -372,6 +383,11 @@ export function parseUrlContextParams(urlOrSearch = '', hashOptional = '') {
 
     if (params.has('transmision')) result.transmision = params.get('transmision').toUpperCase();
     else if (params.has('drive')) result.transmision = params.get('drive').toUpperCase();
+    else if (params.has('drive_arr')) result.transmision = params.get('drive_arr').toUpperCase();
+    if (result.transmision) result.drive_arr = result.transmision;
+
+    if (params.has('flot_condition')) result.flot_condition = params.get('flot_condition');
+    if (params.has('filt_condition')) result.filt_condition = params.get('filt_condition');
 
     if (params.has('estacion')) result.estacion = params.get('estacion');
     if (params.has('claro_mm')) result.claro_mm = params.get('claro_mm');
@@ -1486,6 +1502,70 @@ export const DEFAULT_WORKBENCH_STATE_V2 = Object.freeze({
 });
 
 /**
+ * Normalizador algebraico de clave de material húmedo (DEB-21-07).
+ * Unifica alias legacy ('A05', 'cr27', 'hule', 'RUBBER', 'R55', 'PU', 'U01', 'SiC', 'sic', 'ceramic')
+ * hacia las 4 llaves canónicas del selector de UI:
+ * 'alto_cromo_cr27' | 'hule_natural' | 'poliuretano' | 'ceramica_sic'
+ * @param {string} [raw='']
+ * @returns {'alto_cromo_cr27'|'hule_natural'|'poliuretano'|'ceramica_sic'}
+ */
+export function normalizeMaterialKey(raw = '') {
+  const s = String(raw || '').trim().toLowerCase();
+  if (!s) return 'alto_cromo_cr27';
+  if (s === 'ceramica_sic' || s === 'sic' || s === 'ceramic' || s.includes('ceramica') || s.includes('carburo')) {
+    return 'ceramica_sic';
+  }
+  if (s === 'hule_natural' || s === 'hule' || s === 'rubber' || s === 'r55' || s.includes('caucho') || s.includes('hule')) {
+    return 'hule_natural';
+  }
+  if (s === 'poliuretano' || s === 'polyurethane' || s === 'pu' || s === 'u01' || s.includes('poliuretano')) {
+    return 'poliuretano';
+  }
+  return 'alto_cromo_cr27';
+}
+
+/**
+ * Normalizador polimórfico del parámetro ?serie= por circuito activo (DEB-21-04).
+ * - bombeo -> pipe_size ('1.5x1'..'14x12')
+ * - flotacion -> flot_capacity ('50ft'|'100ft'|'200ft'|'300ft')
+ * - filtracion -> filt_capacity ('800'|'1200'|'1500'|'2000')
+ * - control_procesos -> ctrl_spec ('marcy_12_rings'|'batch_100psi'|'astm_8in_inox')
+ * @param {string} [circuit='bombeo']
+ * @param {string} [rawSerie='']
+ * @returns {{ targetField: 'pipe_size'|'flot_capacity'|'filt_capacity'|'ctrl_spec', value: string }}
+ */
+export function normalizeCircuitSerie(circuit = 'bombeo', rawSerie = '') {
+  const c = String(circuit || 'bombeo').trim().toLowerCase();
+  const v = String(rawSerie || '').trim().toLowerCase();
+
+  if (c === 'flotacion') {
+    if (v.includes('50')) return { targetField: 'flot_capacity', value: '50ft' };
+    if (v.includes('200')) return { targetField: 'flot_capacity', value: '200ft' };
+    if (v.includes('300')) return { targetField: 'flot_capacity', value: '300ft' };
+    return { targetField: 'flot_capacity', value: '100ft' };
+  }
+  if (c === 'filtracion') {
+    if (v.includes('800')) return { targetField: 'filt_capacity', value: '800' };
+    if (v.includes('1200')) return { targetField: 'filt_capacity', value: '1200' };
+    if (v.includes('2000')) return { targetField: 'filt_capacity', value: '2000' };
+    return { targetField: 'filt_capacity', value: '1500' };
+  }
+  if (c === 'control_procesos' || c === 'control') {
+    if (v.includes('batch') || v.includes('100psi')) return { targetField: 'ctrl_spec', value: 'batch_100psi' };
+    if (v.includes('astm') || v.includes('tamiz') || v.includes('sieve') || v.includes('8in')) return { targetField: 'ctrl_spec', value: 'astm_8in_inox' };
+    return { targetField: 'ctrl_spec', value: 'marcy_12_rings' };
+  }
+
+  let pipe = v || '6x4';
+  if (pipe.includes('d') && !pipe.includes('1')) {
+    pipe = pipe.replace(/d$/i, '');
+  }
+  const validPipes = ['1.5x1', '2x1.5', '3x2', '4x3', '6x4', '8x6', '10x8', '12x10', '14x12'];
+  const matched = validPipes.find((p) => pipe === p || pipe.includes(p)) || '6x4';
+  return { targetField: 'pipe_size', value: matched };
+}
+
+/**
  * Normaliza un objeto de estado parcial o legacy hacia el contrato canónico V2 sin pérdida de campos.
  * @param {Object} [partial={}]
  * @returns {Object}
@@ -1496,10 +1576,9 @@ export function normalizeWorkbenchStateV2(partial = {}) {
   const met = src.metrology && typeof src.metrology === 'object' ? src.metrology : {};
   const ce = src.clearance_eval && typeof src.clearance_eval === 'object' ? src.clearance_eval : {};
 
-  let resolvedPumpMat = src.pump_material || src.wet_material || src.material || src.wetEndMaterial || DEFAULT_WORKBENCH_STATE_V2.pump_material;
-  if (resolvedPumpMat === 'hule' || resolvedPumpMat === 'RUBBER') resolvedPumpMat = 'hule_natural';
-  else if (resolvedPumpMat === 'PU') resolvedPumpMat = 'poliuretano';
-  else if (resolvedPumpMat === 'A05' || resolvedPumpMat === 'cr27') resolvedPumpMat = 'alto_cromo_cr27';
+  const resolvedPumpMat = normalizeMaterialKey(
+    src.pump_material || src.wet_material || src.material || src.wetEndMaterial || DEFAULT_WORKBENCH_STATE_V2.pump_material
+  );
 
   let resolvedPipe = String(src.pipe_size || src.pipeSize || src.serie || DEFAULT_WORKBENCH_STATE_V2.pipe_size).toLowerCase();
   if (resolvedPipe.includes('d') && !resolvedPipe.includes('1')) {

@@ -3,6 +3,20 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
 import SharePurchasing from '../../components/SharePurchasing.astro';
+import { getAtomicPartSpecs } from '../../scripts/workbenchBus.js';
+import { WET_END_MATERIAL_MATRIX } from '../../scripts/slurryEngine.js';
+import rolesData from '../../../data/roles.json';
+
+const allRoles = (rolesData.verticals || []).flatMap((v) => [...(v.capex || []), ...(v.opex || [])]);
+const impulsorRole = allRoles.find((r) => r.role_id === 'impulsor');
+const dc = impulsorRole?.decision_criteria;
+const impellerParts = [getAtomicPartSpecs('D3147'), getAtomicPartSpecs('E4147'), getAtomicPartSpecs('F6147')].filter(Boolean);
+const wetMaterials = [
+  WET_END_MATERIAL_MATRIX.alto_cromo_cr27,
+  WET_END_MATERIAL_MATRIX.hule_natural,
+  WET_END_MATERIAL_MATRIX.poliuretano,
+  WET_END_MATERIAL_MATRIX.ceramica_sic
+];
 ---
 
 <BaseLayout 
@@ -40,7 +54,7 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
               <tbody>
                 <tr>
                   <th>Materiales Disponibles</th>
-                  <td>Alto Cromo (ASTM A532 ≥ 650 HB), Hule y Poliuretano</td>
+                  <td>Alto Cromo (ASTM A532 ≥ 650 HB), Hule Natural (R55), Poliuretano (U01) y Carburo de Silicio Sinterizado (SiC ≥ 2200 HV)</td>
                 </tr>
                 <tr>
                   <th>Geometría de Álabes</th>
@@ -66,10 +80,62 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
               Por su desgaste frente al resto de la carcasa, las plantas mineras suelen programar el impulsor en lotes combinados con cuellos y volutas (por ejemplo: <strong>5 impulsores, 5 cuellos y 4 volutas</strong>) para asegurar el ajuste hidráulico en cada cambio.
             </p>
             <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light); display: flex; flex-direction: column; gap: 0.6rem;">
-              <a href="/cotizar/?equipo=impulsor_bomba&pieza=impulsor_5_alabes#rfq" class="btn btn-primary" style="width: 100%; text-align: center;">Cotizar Impulsores →</a>
+              <a href="/cotizar/?circuito=bombeo&equipo=solo_impulsor&pieza=impulsor_5_alabes&estacion=S3#rfq" class="btn btn-primary" style="width: 100%; text-align: center;">Cotizar Impulsores →</a>
               <a href="/bombeo/#como-se-arma-una-bomba" class="btn btn-outline" style="width: 100%; text-align: center;">Ver Montaje en Reporte de Armado →</a>
             </div>
           </div>
+
+          {dc && (
+            <div class="card" data-testid="role-decision-criteria" style="margin-top: 1rem; background: #f8fafc; border-left: 4px solid #7c2d12; padding: 1rem;">
+              <span class="font-mono-tech" style="font-size: 0.72rem; font-weight: 800; color: #7c2d12; display: block; margin-bottom: 0.35rem;">[CRITERIO DE DECISIÓN E INGENIERÍA — ESTACIÓN 03]</span>
+              <p style="font-size: 0.84rem; margin-bottom: 0.4rem;"><strong>Regla Metalúrgica:</strong> {dc.metallurgy_rule_es}</p>
+              <p style="font-size: 0.84rem; margin-bottom: 0.4rem;"><strong>Variables Críticas:</strong> {dc.required_slurry_vars_es}</p>
+              <p style="font-size: 0.84rem; margin: 0; color: #7f1d1d;"><strong>Riesgo Evitado:</strong> {dc.risk_avoided_es}</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <!-- Fichas Atómicas de Impulsores (D3147, E4147, F6147) con 6 Parámetros Físicos y NIOSH -->
+      <div style="margin-top: 2rem;" data-testid="impeller-atomic-parts">
+        <h2>Impulsores Estándar Verificados en Almacén Durango (D3147 / E4147 / F6147)</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1rem; margin-top:1rem;">
+          {impellerParts.map((ip) => (
+            <div class="card" style="background:#ffffff; border:1px solid #cbd5e1;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
+                <span class="badge badge-copper">{ip.part_number} ({ip.smat_code})</span>
+                <span class="font-mono-tech" style="font-size:0.74rem; font-weight:800; color:var(--smat-text-primary);">{ip.weight_kg} kg • LI={ip.niosh_lifting_index_shaft}</span>
+              </div>
+              <h3 style="margin-top:0.5rem;">{ip.name_es}</h3>
+              <div class="font-mono-tech" style="font-size:0.76rem; color:#0c4a6e; font-weight:700; margin-bottom:0.4rem;">
+                ∅D₂ = {ip.impeller_diameter_mm} mm • Esfera máx. = {ip.max_particle_mm} mm • Espesor = {ip.wall_thickness_mm} mm
+              </div>
+              <p style="font-size:0.84rem; color:#334155; margin-bottom:0.5rem;">
+                <strong>Izaje NIOSH:</strong> {ip.niosh_handling_mode} ({ip.niosh_ergonomic_tier}) • <strong>Estación 0{ip.station_number}:</strong> {ip.assembly_order_note}
+              </p>
+              <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <a href={`/catalogo/${ip.code}/`} class="btn btn-outline">Ver Ficha {ip.part_number} →</a>
+                <a href={`/cotizar/?codigo=${ip.part_number}&circuito=bombeo&equipo=solo_impulsor&serie=${ip.pipe_size}&peso_kg=${ip.weight_kg}&estacion=S${ip.station_number}#rfq`} class="btn btn-primary">Cotizar {ip.part_number} →</a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Matriz de 4 Materiales Húmedos (incluyendo Cerámica SiC y Límite K_Ic / u2) -->
+      <div style="margin-top: 2rem;" data-testid="impeller-material-matrix">
+        <h2>Selección Tribológica de Material Húmedo (A05 / R55 / U01 / SiC)</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:0.85rem; margin-top:0.85rem;">
+          {wetMaterials.map((mat) => (
+            <div class="card" style="background:#f8fafc; border:1px solid #cbd5e1; padding:1rem;">
+              <span class="font-mono-tech" style="font-size:0.72rem; font-weight:800; color:#082f49;">[{mat.code}] {mat.hardness}</span>
+              <h4 style="margin:0.35rem 0; font-size:0.95rem;">{mat.nameEs}</h4>
+              <div class="font-mono-tech" style="font-size:0.74rem; color:#334155; margin-bottom:0.45rem;">
+                u₂ ≤ {mat.maxTipSpeedMs} m/s • K_Ic = {mat.fractureToughnessMpaSqrtM} MPa·√m • d₈₀: {mat.d80RangeMicrons[0]}–{mat.d80RangeMicrons[1]} µm • pH {mat.phRange[0]}–{mat.phRange[1]}
+              </div>
+              <a href={`/cotizar/?circuito=bombeo&equipo=solo_impulsor&material=${mat.key}&estacion=S3#rfq`} class="btn btn-outline" style="width:100%; text-align:center; font-size:0.78rem;">Configurar en {mat.code} →</a>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -91,4 +157,9 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
   .page-hero h1 { color: var(--smat-text-primary); margin-top: 0.5rem; }
   .back-link { color: var(--smat-copper-accent); font-size: 0.9rem; font-weight: 700; text-decoration: none; }
   .back-link:hover { text-decoration: underline; }
+  @media (max-width: 640px) {
+    .page-hero { padding: 0.75rem 0; }
+    .page-hero h1 { font-size: 1.35rem; margin: 0.2rem 0; }
+    .page-hero p { font-size: 0.82rem !important; line-height: 1.3; margin: 0.2rem 0; }
+  }
 </style>

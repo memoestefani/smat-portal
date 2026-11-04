@@ -804,6 +804,16 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             passed: verify_solar_wcag_aaa_and_etapa3_parity(site_root).is_ok(),
             details: verify_solar_wcag_aaa_and_etapa3_parity(site_root).err().unwrap_or_else(|| "OK: Tokens WCAG AAA, 11 parametros metrologicos, Tri-Compound y cinematica n2/Fr verificados.".to_string()),
         },
+        GateReport {
+            name: "26. Paridad 100% Backend-UI y Pinza Termo-Barometrica TEFC (Gate D29)".to_string(),
+            passed: verify_backend_ui_full_parity_and_altitude_pincer(site_root).is_ok(),
+            details: verify_backend_ui_full_parity_and_altitude_pincer(site_root).err().unwrap_or_else(|| "OK: 12 fichas atomicas con 6 campos fisicos, SiC, Presets de Distrito y Derating TEFC verificados.".to_string()),
+        },
+        GateReport {
+            name: "27. Erradicacion de Redundancias Secciones 3.1 y 3.2 y Fold Movil Apple HIG (Gate D30)".to_string(),
+            passed: verify_section_3_1_3_2_zero_duplication_and_mobile_fold(site_root).is_ok(),
+            details: verify_section_3_1_3_2_zero_duplication_and_mobile_fold(site_root).err().unwrap_or_else(|| "OK: DualHubView eliminado, #bombeo-catalog-tabs unificado, Input-First en QuoteWizard y 0 LaTeX crudo.".to_string()),
+        },
     ]
 }
 
@@ -1051,6 +1061,51 @@ pub fn verify_backend_ui_full_parity_and_altitude_pincer(site_root: &Path) -> Re
     Ok(())
 }
 
+pub fn verify_section_3_1_3_2_zero_duplication_and_mobile_fold(site_root: &Path) -> Result<(), String> {
+    if site_root.join("src/components/DualHubView.astro").exists() {
+        return Err("DEB-32-01: src/components/DualHubView.astro debe estar fisicamente eliminado".to_string());
+    }
+
+    let base_layout = fs::read_to_string(site_root.join("src/layouts/BaseLayout.astro")).map_err(|e| e.to_string())?;
+    if base_layout.contains("hash.indexOf('#rfq') === 0") {
+        return Err("DEB-31-01: BaseLayout.astro aun contiene redireccion legada #rfq".to_string());
+    }
+
+    let diag_hub = fs::read_to_string(site_root.join("src/components/DiagnosticsHub.astro")).map_err(|e| e.to_string())?;
+    if diag_hub.contains("document.getElementById('rfq')") {
+        return Err("DEB-31-02: DiagnosticsHub.astro aun contiene handler muerto #rfq".to_string());
+    }
+
+    let bombeo_es = fs::read_to_string(site_root.join("src/pages/bombeo/index.astro")).map_err(|e| e.to_string())?;
+    let bombeo_en = fs::read_to_string(site_root.join("src/pages/en/pumping/index.astro")).map_err(|e| e.to_string())?;
+    if bombeo_es.contains("class=\"card wet-lot-callout\"") || bombeo_en.contains("class=\"card wet-lot-callout\"") {
+        return Err("DEB-32-02: bombeo/index.astro o en/pumping/index.astro aun contienen .wet-lot-callout duplicado".to_string());
+    }
+    if !bombeo_es.contains("id=\"bombeo-catalog-tabs\"") || !bombeo_en.contains("id=\"bombeo-catalog-tabs\"") {
+        return Err("bombeo/index.astro y en/pumping/index.astro deben consolidar tarjetas en #bombeo-catalog-tabs".to_string());
+    }
+
+    let wizard = fs::read_to_string(site_root.join("src/components/QuoteWizard.astro")).map_err(|e| e.to_string())?;
+    if wizard.contains("class=\"circuit-context-banner\"") {
+        return Err("DEB-32-03: QuoteWizard.astro aun contiene .circuit-context-banner redundante".to_string());
+    }
+    let idx_role = wizard.find("id=\"wb-role\"").ok_or("Falta id=\"wb-role\" en QuoteWizard.astro")?;
+    let idx_atomic = wizard.find("id=\"wb-atomic-part-card\"").ok_or("Falta id=\"wb-atomic-part-card\" en QuoteWizard.astro")?;
+    if idx_role > idx_atomic {
+        return Err("QuoteWizard.astro viola Input-First: #wb-role debe preceder a #wb-atomic-part-card".to_string());
+    }
+
+    let ctrl_es = fs::read_to_string(site_root.join("src/pages/control-de-procesos/index.astro")).map_err(|e| e.to_string())?;
+    let ctrl_en = fs::read_to_string(site_root.join("src/pages/en/process-control/index.astro")).map_err(|e| e.to_string())?;
+    for raw_tex in ["$P_{80}$", "$S_s$", "$C_w$", "$\\rho_p$", "$M_s$", "$d_{95}$", "$a_L$"] {
+        if ctrl_es.contains(raw_tex) || ctrl_en.contains(raw_tex) {
+            return Err(format!("DEB-32-04: Token LaTeX crudo {} detectado en Puerta 3", raw_tex));
+        }
+    }
+
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1187,6 +1242,15 @@ mod tests {
         assert!(
             verify_backend_ui_full_parity_and_altitude_pincer(&root).is_ok(),
             "Fallo en Gate 26: paridad 100% Backend-UI y pinza termo-barometrica TEFC"
+        );
+    }
+
+    #[test]
+    fn test_gate_27_section_3_1_3_2_ergos() {
+        let root = find_site_root();
+        assert!(
+            verify_section_3_1_3_2_zero_duplication_and_mobile_fold(&root).is_ok(),
+            "Fallo en Gate 27: erradicacion de redundancias Secciones 3.1 y 3.2 y fold movil Apple HIG"
         );
     }
 }

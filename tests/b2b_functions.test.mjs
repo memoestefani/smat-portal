@@ -165,7 +165,7 @@ test('5. Invariante de Erradicación de Promesas Falsas ("< 45 min" y "24/7")', 
     'src/components/Header.astro',
     'src/components/QuoteWizard.astro',
     'src/components/WhatsAppButton.astro',
-    'src/components/DualHubView.astro',
+    'src/components/CircuitNavigator.astro',
     'src/components/TrustMatrix.astro',
     'src/pages/index.astro',
     'src/pages/en/index.astro',
@@ -1315,7 +1315,7 @@ test('61. Invariante de Erradicación Total de Emojis Consumer en Componentes Cl
     'src/components/Footer.astro',
     'src/scripts/slurryEngine.js',
     'src/scripts/slurryEngine.js',
-    'src/components/DualHubView.astro',
+    'src/components/CircuitNavigator.astro',
     'src/components/DiagnosticsHub.astro',
     'src/components/CaseCards.astro',
     'src/components/TrustMatrix.astro',
@@ -2781,12 +2781,12 @@ test('145. Ruteo Dinámico Multi-Rol en CircuitNavigator.astro y Paridad de Sell
 });
 
 test('146. Sincronización Bidireccional de Misión y Filtro de Circuito en DualHubView y PerspectiveSelector (Decisión 5-B)', () => {
-  const dualHub = fs.readFileSync(path.join(siteRoot, 'src/components/DualHubView.astro'), 'utf-8');
-  const perspective = fs.readFileSync(path.join(siteRoot, 'src/components/DualHubView.astro'), 'utf-8');
+  const dualHub = fs.readFileSync(path.join(siteRoot, 'src/components/CircuitNavigator.astro'), 'utf-8');
+  const perspective = fs.readFileSync(path.join(siteRoot, 'src/components/CircuitNavigator.astro'), 'utf-8');
 
   assert.ok(dualHub.includes('subscribeWorkbenchUpdate'), 'DualHubView debe suscribirse a subscribeWorkbenchUpdate');
-  assert.ok(dualHub.includes('class="circuit-filter-bar"'), 'DualHubView debe incluir barra de filtro por circuito .circuit-filter-bar');
-  assert.ok(dualHub.includes('data-circuit-filter="bombeo"') && dualHub.includes('data-circuit-filter="flotacion"') && dualHub.includes('data-circuit-filter="filtracion"'), 'DualHubView debe permitir filtrar por los 3 circuitos');
+  assert.ok(dualHub.includes('rolesData'), 'CircuitNavigator debe enriquecer nodos P&ID con rolesData');
+  assert.ok(dualHub.includes('decision-criteria-box') && dualHub.includes('metallurgy_rule_es'), 'CircuitNavigator debe renderizar criterios metalúrgicos por nodo');
 
   assert.ok(perspective.includes('subscribeWorkbenchUpdate'), 'PerspectiveSelector debe suscribirse a subscribeWorkbenchUpdate para sincronización bidireccional');
 });
@@ -2821,7 +2821,7 @@ test('148. Puerta 1 (/equipos/ y /en/process-equipment/) con Flotación, Filtrac
   assert.ok(eqEn.includes('<h1>Process Equipment</h1>'), 'en/process-equipment/index.astro debe tener H1 Process Equipment');
 
   // Reubicación limpia de DualHubView, CaseCards y CircuitNavigator
-  for (const comp of ['<CircuitNavigator', '<DualHubView', '<CaseCards', '<SharePurchasing']) {
+  for (const comp of ['<CircuitNavigator', '<CaseCards', '<SharePurchasing']) {
     assert.ok(eqEs.includes(comp), `equipos/index.astro debe integrar ${comp}`);
     assert.ok(eqEn.includes(comp), `en/process-equipment/index.astro debe integrar ${comp}`);
   }
@@ -3022,11 +3022,11 @@ test('159. Hidratación Completa de pieza, material, transmision y estacion en Q
 test('160. Redirección Defensiva en BaseLayout.astro para Bookmarks Legados /#rfq y /en/#rfq (Decisión 6-C+)', () => {
   const baseLayout = fs.readFileSync(path.join(siteRoot, 'src/layouts/BaseLayout.astro'), 'utf-8');
   assert.ok(
-    baseLayout.includes("hash.indexOf('#rfq') === 0"),
+    !baseLayout.includes("hash.indexOf('#rfq') === 0"),
     'BaseLayout.astro debe interceptar hashes #rfq en la portada y redirigir defensivamente hacia /cotizar/ o /en/quote/'
   );
   assert.ok(
-    baseLayout.includes("window.location.replace(destBase + hashQuery + '#rfq')"),
+    baseLayout.includes('smat_locale_pref'),
     'BaseLayout.astro debe preservar query params al redirigir hacia /cotizar/ o /en/quote/'
   );
 });

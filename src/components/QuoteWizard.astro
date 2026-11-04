@@ -113,31 +113,8 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
           <input type="hidden" name="process_circuit" id="wb-process-circuit" value="bombeo" />
         </div>
 
-        <!-- CAPA 1: Selección Inmediata de Pieza / Lote y Tubería Nominal -->
+        <!-- CAPA 1: Selección Inmediata de Pieza / Lote y Tubería Nominal (Input First, Readout Second — Sección 3.2.3) -->
         <div id="circuit-panel-bombeo" class="circuit-panel">
-          <!-- Ficha Física de Pieza Atómica y Ergonomía NIOSH (Promovida Above-the-Fold Decisión 9 / atomic_parts.json) -->
-          <div id="wb-atomic-part-card" data-testid="wb-atomic-part-card" class="atomic-part-spec-card" style="margin-bottom: 0.65rem;">
-            <div class="atomic-part-spec-header">
-              <span class="atomic-part-spec-tag font-mono-tech" id="wb-part-station-tag">{defaultPartSpecs.station_number} • {defaultPartSpecs.code}</span>
-              <span class="atomic-part-niosh-badge" id="wb-part-niosh-badge">
-                {defaultPartSpecs.weight_kg >= 23
-                  ? (isEs ? `Peso: ${defaultPartSpecs.weight_kg} kg • Polipasto / Grúa (NIOSH ≥23 kg)` : `Weight: ${defaultPartSpecs.weight_kg} kg • Hoist / Crane (NIOSH ≥23 kg)`)
-                  : (isEs ? `Peso: ${defaultPartSpecs.weight_kg} kg • Manejo Manual (<23 kg)` : `Weight: ${defaultPartSpecs.weight_kg} kg • Manual Handling (<23 kg)`)}
-              </span>
-            </div>
-            <div class="atomic-part-spec-grid">
-              <div><small>{isEs ? 'Geometría Hidráulica:' : 'Hydraulic Geometry:'}</small> <strong id="wb-part-geom-val">ØD₂ {defaultPartSpecs.impeller_diameter_mm} mm • {defaultPartSpecs.vanes} {isEs ? 'álabes' : 'vanes'} • Paso {defaultPartSpecs.max_particle_mm} mm</strong></div>
-              <div><small>{isEs ? 'Secuencia de Montaje:' : 'Assembly Sequence:'}</small> <strong id="wb-part-order-val">{defaultPartSpecs.assembly_order} ({isEs ? 'Lote' : 'Kit'} {defaultPartSpecs.wet_end_kit_ratio})</strong></div>
-              <div><small>{isEs ? 'Dureza Certificada:' : 'Certified Hardness:'}</small> <strong id="wb-part-hardness-val">{defaultPartSpecs.hardness}</strong></div>
-              <div><small>{isEs ? 'Garantía Dimensional:' : 'Fit Guarantee:'}</small> <strong id="wb-part-fit-val">{isEs ? defaultPartSpecs.fit_guarantee_es : defaultPartSpecs.fit_guarantee_en}</strong></div>
-            </div>
-          </div>
-
-          <div class="circuit-context-banner">
-            <span class="context-tag font-mono-tech">[PARÁMETROS DE BOMBEO]</span>
-            <span>{isEs ? 'Selección exclusiva por línea de tubería y condición de desgaste en planta.' : 'Slurry pipeline diameter and plant wear condition parameters.'}</span>
-          </div>
-
           <div class="form-group">
             <label for="wb-role"><strong>{isEs ? 'Lote de Contacto Húmedo o Equipo Requerido:' : 'Required Wet-End Lot or Equipment:'}</strong></label>
             <select id="wb-role" name="role_id" class="wb-select">
@@ -160,7 +137,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
             </p>
           </div>
 
-          <div class="form-group" style="margin-top: 0.75rem;">
+          <div class="form-group" style="margin-top: 0.65rem; margin-bottom: 0.65rem;">
             <label for="wb-pipe-size"><strong>{isEs ? 'Diámetro de Tubería de la Línea:' : 'Process Line Pipe Diameter:'}</strong></label>
             <select id="wb-pipe-size" name="pipe_size" class="wb-select" data-wb-bind="pipe_size">
               <option value="1.5x1">{isEs ? 'Serie 1.5"x1" (D=40 mm — Muestreo / Rebose Espuma)' : '1.5"x1" Series (D=40 mm — Sampling / Froth Sump)'}</option>
@@ -176,6 +153,24 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
             <small id="val-pipe-mm" class="font-mono-tech" style="display:block; margin-top:0.25rem; font-size:0.74rem; color:#475569;">
               {isEs ? 'Diámetro interno hidráulico (D): 150 mm (Serie 6x4)' : 'Internal hydraulic diameter (D): 150 mm (6x4 Series)'}
             </small>
+          </div>
+
+          <!-- Ficha Física de Pieza Atómica y Ergonomía NIOSH (Readout Reactivo Pos-Selección) -->
+          <div id="wb-atomic-part-card" data-testid="wb-atomic-part-card" class="atomic-part-spec-card" style="margin-bottom: 0.65rem;">
+            <div class="atomic-part-spec-header">
+              <span class="atomic-part-spec-tag font-mono-tech" id="wb-part-station-tag">{defaultPartSpecs.station_number} • {defaultPartSpecs.code}</span>
+              <span class="atomic-part-niosh-badge" id="wb-part-niosh-badge">
+                {defaultPartSpecs.weight_kg >= 23
+                  ? (isEs ? `Peso: ${defaultPartSpecs.weight_kg} kg • Polipasto / Grúa (NIOSH ≥23 kg)` : `Weight: ${defaultPartSpecs.weight_kg} kg • Hoist / Crane (NIOSH ≥23 kg)`)
+                  : (isEs ? `Peso: ${defaultPartSpecs.weight_kg} kg • Manejo Manual (<23 kg)` : `Weight: ${defaultPartSpecs.weight_kg} kg • Manual Handling (<23 kg)`)}
+              </span>
+            </div>
+            <div class="atomic-part-spec-grid">
+              <div><small>{isEs ? 'Geometría Hidráulica:' : 'Hydraulic Geometry:'}</small> <strong id="wb-part-geom-val">ØD₂ {defaultPartSpecs.impeller_diameter_mm} mm • {defaultPartSpecs.vanes} {isEs ? 'álabes' : 'vanes'} • Paso {defaultPartSpecs.max_particle_mm} mm</strong></div>
+              <div><small>{isEs ? 'Secuencia de Montaje:' : 'Assembly Sequence:'}</small> <strong id="wb-part-order-val">{defaultPartSpecs.assembly_order} ({isEs ? 'Lote' : 'Kit'} {defaultPartSpecs.wet_end_kit_ratio})</strong></div>
+              <div><small>{isEs ? 'Dureza Certificada:' : 'Certified Hardness:'}</small> <strong id="wb-part-hardness-val">{defaultPartSpecs.hardness}</strong></div>
+              <div><small>{isEs ? 'Garantía Dimensional:' : 'Fit Guarantee:'}</small> <strong id="wb-part-fit-val">{isEs ? defaultPartSpecs.fit_guarantee_es : defaultPartSpecs.fit_guarantee_en}</strong></div>
+            </div>
           </div>
         </div>
 
@@ -290,6 +285,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
                   <option value="alto_cromo_cr27" selected>{isEs ? 'Alto Cromo Cr27% (ASTM A532 ≥650 HB)' : 'High Chrome Cr27% (ASTM A532 ≥650 HB)'}</option>
                   <option value="hule_natural">{isEs ? 'Hule Natural Antiabrasivo (55–65 Shore A)' : 'Natural Rubber (55–65 Shore A)'}</option>
                   <option value="poliuretano">{isEs ? 'Poliuretano Grado Minero (85–95 Shore A)' : 'Mining Polyurethane (85–95 Shore A)'}</option>
+                  <option value="ceramica_sic">{isEs ? 'Carburo de Silicio Sinterizado SiC (≥2200 HV / Mohs 9.2)' : 'Sintered Silicon Carbide SiC (≥2200 HV / Mohs 9.2)'}</option>
                 </select>
               </div>
               <div>
@@ -325,10 +321,6 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
 
             <!-- PANEL CIRCUITO 2: FLOTACIÓN DE MINERALES -->
             <div id="circuit-panel-flotacion" class="circuit-panel hidden" style="display:none; margin-top: 0.75rem;">
-              <div class="circuit-context-banner">
-                <span class="context-tag font-mono-tech">[PARÁMETROS DE FLOTACIÓN]</span>
-                <span>{isEs ? 'Parámetros cinéticos exclusivos para celdas mecánicas y mecanismos de agitación.' : 'Flotation kinetic parameters for mechanical cells and agitator mechanisms.'}</span>
-              </div>
               <div class="form-group">
                 <label for="wb-role-flot"><strong>{isEs ? 'Equipo o Componente Requerido en Flotación:' : 'Required Flotation Equipment or Part:'}</strong></label>
                 <select id="wb-role-flot" name="role_id_flot" class="wb-select">
@@ -369,10 +361,6 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
 
             <!-- PANEL CIRCUITO 3: FILTRACIÓN Y JALES SECOS -->
             <div id="circuit-panel-filtracion" class="circuit-panel hidden" style="display:none; margin-top: 0.75rem;">
-              <div class="circuit-context-banner">
-                <span class="context-tag font-mono-tech">[PARÁMETROS DE FILTRACIÓN]</span>
-                <span>{isEs ? 'Parámetros de deshidratación de jales secos y paquetes de placas filtrantes.' : 'Dry tailings dewatering parameters and filter plate packs.'}</span>
-              </div>
               <div class="form-group">
                 <label for="wb-role-filt"><strong>{isEs ? 'Equipo o Refacción Requerida en Filtración e Instrumentación:' : 'Required Filtration or Instrumentation Equipment:'}</strong></label>
                 <select id="wb-role-filt" name="role_id_filt" class="wb-select">
@@ -414,10 +402,6 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
 
             <!-- PANEL CIRCUITO 4: CONTROL DE PROCESOS Y LABORATORIO METALÚRGICO (Decisión 5-C++) -->
             <div id="circuit-panel-control" class="circuit-panel hidden" style="display:none; margin-top: 0.75rem;">
-              <div class="circuit-context-banner">
-                <span class="context-tag font-mono-tech">[CONTROL DE PROCESOS]</span>
-                <span>{isEs ? 'Instrumentación gravimétrica Marcy, desaguado neumático Pierre Gy y granulometría ASTM E11 / Rosin-Rammler.' : 'Gravimetric Marcy pulp instrumentation, Pierre Gy pneumatic dewatering, and ASTM E11 / Rosin-Rammler sizing.'}</span>
-              </div>
               <div class="form-group">
                 <label for="wb-role-ctrl"><strong>{isEs ? 'Instrumento o Paquete de Control Requerido:' : 'Required Process Control Instrument or Package:'}</strong></label>
                 <select id="wb-role-ctrl" name="role_id_ctrl" class="wb-select">

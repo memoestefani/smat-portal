@@ -2,6 +2,11 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SharePurchasing from '../../../components/SharePurchasing.astro';
 import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
+import rolesData from '../../../../data/roles.json';
+
+const filtVertical = rolesData.verticals.find((v) => v.id === 'filtracion');
+const repRole = filtVertical?.opex?.find((r) => r.role_id === 'repuestos_prensa');
+const criteria = repRole?.decision_criteria;
 ---
 
 <BaseLayout 
@@ -55,8 +60,44 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
               <td>Hydraulic Spares & Seals</td>
               <td>Cylinders, hydraulic seals, perimeter gaskets, and center/corner feed necks</td>
             </tr>
+            <tr>
+              <td>Filter Medium Resistance (R<sub>m</sub>)</td>
+              <td>Monofilament/multifilament weave calibrated per Darcy-Ruth law to minimize cloth blinding (ΔR<sub>m</sub>) and edge weeping</td>
+            </tr>
           </tbody>
         </table>
+
+        {criteria && (
+          <div class="decision-criteria-panel" data-testid="role-decision-criteria" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #9a3412;">
+            <span class="badge badge-copper">METALLURGICAL DECISION CRITERIA • ROLES.JSON</span>
+            <h3 style="margin: 0.45rem 0 0.75rem; font-size: 1.08rem; color: var(--smat-text-primary);">Plates & Filter Cloths Selection Matrix ({repRole?.series})</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem; font-size: 0.88rem;">
+              <div style="background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <strong style="display: block; color: var(--smat-text-primary); margin-bottom: 0.25rem;">Required Slurry Variables</strong>
+                <span style="color: #334155;">{criteria.required_slurry_vars_en}</span>
+              </div>
+              <div style="background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <strong style="display: block; color: #7c2d12; margin-bottom: 0.25rem;">Weave & Thermal Sealing Rule</strong>
+                <span style="color: #334155;">{criteria.metallurgy_rule_en}</span>
+              </div>
+              <div style="background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <strong style="display: block; color: #14532d; margin-bottom: 0.25rem;">Operational Risk Mitigated</strong>
+                <span style="color: #334155;">{criteria.risk_avoided_en}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div class="filtration-selector-box" data-testid="filtration-contextual-selector" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #fffbeb; border: 1px solid #fde68a;">
+          <span class="badge badge-copper">CONTEXTUAL PRE-SELECTION • WORKBENCH BRIDGE</span>
+          <h3 style="margin: 0.45rem 0 0.5rem; font-size: 1.05rem; color: var(--smat-text-primary);">Quote Plates & Cloths by Dimension & Symptom</h3>
+          <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.65rem;">
+            <a href="/en/quote/?circuito=filtracion&equipo=placas_telas&serie=800&filt_condition=fuga_chorreo#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">800 mm Plates/Cloths • Edge Weeping</a>
+            <a href="/en/quote/?circuito=filtracion&equipo=placas_telas&serie=1200&filt_condition=ciclo_lento#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">1200 mm Plates/Cloths • Slow Cycle</a>
+            <a href="/en/quote/?circuito=filtracion&equipo=placas_telas&serie=1500&filt_condition=jales_secos#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">1500 mm Plates/Cloths • Dry Tailings</a>
+            <a href="/en/quote/?circuito=filtracion&equipo=placas_telas&serie=2000&filt_condition=jales_secos#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">2000 mm Plates/Cloths • Large Format</a>
+          </div>
+        </div>
 
         <SharePurchasing 
           roleTitle="Filter Plates, Cloths & Hydraulic Spares"
@@ -75,7 +116,7 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
             <p>Request a formal quote specifying plate dimensions (800 to 1500 mm) and feed port position.</p>
           </div>
           <div class="cta-rfq-actions">
-            <a href="/en/?equipo=placas_telas#rfq" class="btn btn-primary btn-lg">
+            <a href="/en/quote/?circuito=filtracion&equipo=placas_telas&serie=1500&filt_condition=fuga_chorreo#rfq" class="btn btn-primary btn-lg">
               Request Quotation →
             </a>
             <a href="https://wa.me/526183670664?text=Hello%20SMAT%20Minerals,%20I%20would%20like%20to%20quote%20Filter%20Plates%20and%20Cloths" target="_blank" rel="noopener noreferrer" class="btn btn-emergency btn-lg">

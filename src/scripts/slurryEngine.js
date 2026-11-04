@@ -460,9 +460,25 @@ export function selectOptimalMaterial(d80Microns = 180, cwPercent = 45, pulpPh =
       id: 'rubber',
       code: 'R55',
       materialKey: 'hule_natural',
+      fractureToughnessMpaSqrtM: 12.0,
+      wearMultiplierVsCr27: 0.85,
       isCorrosiveAcidic: true,
+      spallingRiskDetected: false,
       nameEs: 'Caucho Natural Vulcanizado Resistente a Acidez (R55)',
       nameEn: 'Acid-Resistant Vulcanized Natural Rubber (R55)'
+    };
+  }
+  if (phVal < 3.5 && d80 > 300 && d80 <= 800) {
+    return {
+      id: 'ceramica_sic',
+      code: 'SiC',
+      materialKey: 'ceramica_sic',
+      fractureToughnessMpaSqrtM: 4.1,
+      wearMultiplierVsCr27: 2.25,
+      isCorrosiveAcidic: true,
+      spallingRiskDetected: false,
+      nameEs: 'Compuesto Cerámico Carburo de Silicio (SiC ≥ 2200 HV)',
+      nameEn: 'Silicon Carbide (SiC ≥ 2200 HV) Ceramic Composite'
     };
   }
   if (d80 >= 300 || cw >= 50) {
@@ -470,7 +486,10 @@ export function selectOptimalMaterial(d80Microns = 180, cwPercent = 45, pulpPh =
       id: 'high_chrome',
       code: 'A05',
       materialKey: 'alto_cromo_cr27',
+      fractureToughnessMpaSqrtM: 20.0,
+      wearMultiplierVsCr27: 1.0,
       isCorrosiveAcidic,
+      spallingRiskDetected: false,
       nameEs: 'Alto Cromo ASTM A532 Cr27% (>650 HB)',
       nameEn: 'High Chrome ASTM A532 Cr27% (>650 HB)'
     };
@@ -479,7 +498,10 @@ export function selectOptimalMaterial(d80Microns = 180, cwPercent = 45, pulpPh =
     id: 'polyurethane',
     code: 'U01',
     materialKey: 'poliuretano',
+    fractureToughnessMpaSqrtM: 14.0,
+    wearMultiplierVsCr27: 1.15,
     isCorrosiveAcidic,
+    spallingRiskDetected: false,
     nameEs: 'Poliuretano Grado Minero U01 (Shore A 85–95)',
     nameEn: 'Mining-Grade Polyurethane U01 (Shore A 85–95)'
   };
@@ -756,6 +778,8 @@ export const WET_END_MATERIAL_MATRIX = {
     swatchHex: '#1E3A8A',
     accentHex: '#64748B',
     hardness: '≥ 650 HB (60–62 HRC)',
+    fractureToughnessMpaSqrtM: 20.0,
+    wearMultiplierVsCr27: 1.0,
     maxTipSpeedMs: 32.0,
     d80RangeMicrons: [150, 6000],
     phRange: [4.0, 12.5],
@@ -780,6 +804,8 @@ export const WET_END_MATERIAL_MATRIX = {
     swatchHex: '#1E3A8A',
     accentHex: '#64748B',
     hardness: '≥ 650 HB (60–62 HRC)',
+    fractureToughnessMpaSqrtM: 20.0,
+    wearMultiplierVsCr27: 1.0,
     maxTipSpeedMs: 32.0,
     d80RangeMicrons: [150, 6000],
     phRange: [4.0, 12.5],
@@ -804,6 +830,8 @@ export const WET_END_MATERIAL_MATRIX = {
     swatchHex: '#18181B',
     accentHex: '#3F3F46',
     hardness: 'Shore A 55–65',
+    fractureToughnessMpaSqrtM: 12.0,
+    wearMultiplierVsCr27: 0.85,
     maxTipSpeedMs: 24.5,
     d80RangeMicrons: [10, 150],
     phRange: [3.5, 11.0],
@@ -828,6 +856,8 @@ export const WET_END_MATERIAL_MATRIX = {
     swatchHex: '#18181B',
     accentHex: '#3F3F46',
     hardness: 'Shore A 55–65',
+    fractureToughnessMpaSqrtM: 12.0,
+    wearMultiplierVsCr27: 0.85,
     maxTipSpeedMs: 24.5,
     d80RangeMicrons: [10, 150],
     phRange: [3.5, 11.0],
@@ -852,6 +882,8 @@ export const WET_END_MATERIAL_MATRIX = {
     swatchHex: '#EAB308',
     accentHex: '#DC2626',
     hardness: 'Shore A 85–95',
+    fractureToughnessMpaSqrtM: 14.0,
+    wearMultiplierVsCr27: 1.15,
     maxTipSpeedMs: 26.0,
     d80RangeMicrons: [20, 350],
     phRange: [2.0, 11.5],
@@ -876,7 +908,9 @@ export const WET_END_MATERIAL_MATRIX = {
     swatchHex: '#334155',
     accentHex: '#0F172A',
     hardness: '≥ 2200 HV (Mohs 9.2)',
-    maxTipSpeedMs: 30.0,
+    fractureToughnessMpaSqrtM: 4.1,
+    wearMultiplierVsCr27: 2.25,
+    maxTipSpeedMs: 28.0,
     d80RangeMicrons: [30, 800],
     phRange: [1.0, 13.5],
     wearRatio554: '5:5:4',
@@ -1299,20 +1333,26 @@ export const PUMP_554_BOM_14_PARTS = [
  */
 export function evaluatePumpAssemblySequence(params = {}) {
   const opts = typeof params === 'number' ? { frontClearanceMm: params } : (params || {});
-  const branchRaw = String(opts.wetEndBranch || 'metal').toLowerCase();
-  const isElastomer = branchRaw === 'rubber' || branchRaw === 'hule' || branchRaw === 'polyurethane' || branchRaw === 'poliuretano';
-  const wetEndBranch = isElastomer ? (branchRaw.includes('poly') || branchRaw.includes('poli') ? 'polyurethane' : 'rubber') : 'metal';
+  const branchRaw = String(opts.wetEndBranch || opts.material || 'metal').toLowerCase();
+  const isCeramic = branchRaw === 'ceramica_sic' || branchRaw === 'sic' || branchRaw === 'ceramic';
+  const isElastomer = !isCeramic && (branchRaw === 'rubber' || branchRaw === 'hule' || branchRaw === 'hule_natural' || branchRaw === 'polyurethane' || branchRaw === 'poliuretano');
+  const wetEndBranch = isCeramic
+    ? 'ceramica_sic'
+    : (isElastomer ? (branchRaw.includes('poly') || branchRaw.includes('poli') ? 'polyurethane' : 'rubber') : 'metal');
+  const isMonolithicArchitecture = wetEndBranch === 'metal' || wetEndBranch === 'ceramica_sic';
   const sealBranch = opts.sealBranch === 'gland_water' ? 'gland_water' : 'expeller_dry';
 
   const clearanceMm = clamp(opts.frontClearanceMm, 0.1, 8.0, 0.75);
   const b2Mm = clamp(opts.impellerExitWidthMm, 15.0, 180.0, 48.0);
+  const d80Val = clamp(opts.d80Microns ?? opts.particleSizeD80Microns ?? 180, 5, 10000, 180);
+  const tipSpeedVal = clamp(opts.impellerTipSpeedMs ?? opts.tipSpeedMs ?? 20.0, 5, 45, 20.0);
   const seriesRaw = String(opts.pipeSeries || '6x4').toLowerCase();
   const seriesKey = (seriesRaw.includes('3x2') || seriesRaw.includes('4x3') || seriesRaw.includes('1.5x1'))
     ? '3x2'
     : ((seriesRaw.includes('8x6') || seriesRaw.includes('10x8')) ? '8x6' : '6x4');
 
   // Secuencia canónica libre de interferencias (Ng = 0, Ns = 0)
-  const canonicalSequence = wetEndBranch === 'metal'
+  const canonicalSequence = isMonolithicArchitecture
     ? ['frame', 'bearing_assembly', 'frame_plate', 'shaft_sleeve', sealBranch, 'fpl_insert', 'impeller', 'monolithic_volute', 'throatbush', 'cover_plate', 'axial_clearance_adjustment']
     : ['frame', 'bearing_assembly', 'frame_plate', 'shaft_sleeve', sealBranch, 'frame_plate_liner', 'impeller', 'cover_plate_liner', 'throatbush', 'cover_plate', 'axial_clearance_adjustment'];
 
@@ -1343,11 +1383,11 @@ export function evaluatePumpAssemblySequence(params = {}) {
   } else if (typeof opts.sequencePreset === 'string' && opts.sequencePreset !== 'canonical') {
     if (opts.sequencePreset === 'impeller_before_rear_liner') {
       outOfOrderStationId = 'EST-02';
-      const rearPart = wetEndBranch === 'metal' ? 'fpl_insert' : 'frame_plate_liner';
+      const rearPart = isMonolithicArchitecture ? 'fpl_insert' : 'frame_plate_liner';
       sequenceToTest = ['frame', 'bearing_assembly', 'frame_plate', 'shaft_sleeve', sealBranch, 'impeller', rearPart, 'throatbush', 'cover_plate', 'axial_clearance_adjustment'];
     } else if (opts.sequencePreset === 'cover_before_throatbush') {
       outOfOrderStationId = 'EST-04';
-      const rearPart = wetEndBranch === 'metal' ? 'fpl_insert' : 'frame_plate_liner';
+      const rearPart = isMonolithicArchitecture ? 'fpl_insert' : 'frame_plate_liner';
       sequenceToTest = ['frame', 'bearing_assembly', 'frame_plate', 'shaft_sleeve', sealBranch, rearPart, 'impeller', 'cover_plate', 'throatbush', 'axial_clearance_adjustment'];
     }
   }
@@ -1359,7 +1399,7 @@ export function evaluatePumpAssemblySequence(params = {}) {
   let unstableSubassembliesNs = 0;
 
   const idxImpeller = sequenceToTest.indexOf('impeller');
-  const idxRearLiner = sequenceToTest.indexOf(wetEndBranch === 'metal' ? 'fpl_insert' : 'frame_plate_liner');
+  const idxRearLiner = sequenceToTest.indexOf(isMonolithicArchitecture ? 'fpl_insert' : 'frame_plate_liner');
   const idxThroatbush = sequenceToTest.indexOf('throatbush');
   const idxFramePlate = sequenceToTest.indexOf('frame_plate');
   const idxCoverPlate = sequenceToTest.indexOf('cover_plate');
@@ -1390,7 +1430,19 @@ export function evaluatePumpAssemblySequence(params = {}) {
   }
 
   // Filtrar las piezas activas del BOM de 14 componentes (excluyendo la posición #14 de lote de campaña para la masa de 1 bomba armada)
-  const targetBranchFilter = wetEndBranch === 'metal' ? 'alto_cromo_cr27' : 'hule_natural';
+  const targetBranchFilter = isMonolithicArchitecture ? 'alto_cromo_cr27' : 'hule_natural';
+  const fractureToughnessMpaSqrtM = isCeramic
+    ? WET_END_MATERIAL_MATRIX.ceramica_sic.fractureToughnessMpaSqrtM
+    : (wetEndBranch === 'polyurethane'
+      ? WET_END_MATERIAL_MATRIX.poliuretano.fractureToughnessMpaSqrtM
+      : (wetEndBranch === 'rubber' ? WET_END_MATERIAL_MATRIX.hule_natural.fractureToughnessMpaSqrtM : WET_END_MATERIAL_MATRIX.alto_cromo_cr27.fractureToughnessMpaSqrtM));
+  const spallingRiskDetected = Boolean(isCeramic && (d80Val > 800 || tipSpeedVal > 28.0));
+  const spallingWarningEs = spallingRiskDetected
+    ? `Alerta Hutchings-Ashby (K_Ic = 4.1 MPa·√m): Con d80 = ${d80Val} µm (> 800 µm) o u₂ = ${tipSpeedVal.toFixed(1)} m/s (> 28.0 m/s), el impacto balístico supera la tenacidad a la fractura del Carburo de Silicio SiC. Se recomienda Alto Cromo 27% Cr (A05, K_Ic ≥ 18 MPa·√m).`
+    : 'Sin riesgo de desconchamiento frágil (Spalling) en régimen cinemático actual.';
+  const spallingWarningEn = spallingRiskDetected
+    ? `Hutchings-Ashby Alert (K_Ic = 4.1 MPa·√m): At d80 = ${d80Val} µm (> 800 µm) or u₂ = ${tipSpeedVal.toFixed(1)} m/s (> 28.0 m/s), ballistic impact exceeds SiC fracture toughness. 27% High Chrome (A05, K_Ic ≥ 18 MPa·√m) is recommended.`
+    : 'No brittle spalling risk under current kinematic regime.';
   const selectedPartSpec = PUMP_554_BOM_14_PARTS
     .filter((item) => item.branch === 'common' || item.branch === targetBranchFilter)
     .map((item) => {
@@ -1471,12 +1523,20 @@ export function evaluatePumpAssemblySequence(params = {}) {
     wearRatioImpact554,
     wearRatioImpact554En,
     pipeVelocityMarginLossPct,
-    structuralReasonEs: wetEndBranch === 'metal'
-      ? 'El alto cromo (≥650 HB) posee módulo elástico E ≈ 210 GPa y soporta esfuerzos de membrana en succión como Voluta Monolítica de 1 pieza + FPL Insert posterior + Throatbush frontal.'
-      : 'El hule/poliuretano (E ≈ 0.01–0.05 GPa) requiere respaldo metálico continuo contra colapso por vacío en el ojo de succión, dividiendo la carcasa húmeda en 2 mitades simétricas (Frame Plate Liner + Cover Plate Liner) + Throatbush.',
-    structuralReasonEn: wetEndBranch === 'metal'
-      ? 'High chrome white iron (≥650 HB, E ≈ 210 GPa) resists suction vacuum hoop stresses as a 1-piece Monolithic Volute + rear FPL Insert + front Throatbush.'
-      : 'Elastomers (rubber/polyurethane, E ≈ 0.01–0.05 GPa) require continuous split-casing metal backing against suction vacuum buckling, using 2 symmetrical halves (Frame Plate Liner + Cover Plate Liner) + Throatbush.'
+    fractureToughnessMpaSqrtM,
+    spallingRiskDetected,
+    spallingWarningEs,
+    spallingWarningEn,
+    structuralReasonEs: isCeramic
+      ? 'El Carburo de Silicio Sinterizado (SiC, ≥ 2200 HV, Mohs 9.2, K_Ic = 4.1 MPa·√m) emplea arquitectura de Voluta Compuesta Monolítica + Throatbush SiC para resistir abrasión por sílice fina-media y pH extremo (1.0–13.5), limitado a d80 ≤ 800 µm y u₂ ≤ 28.0 m/s.'
+      : (wetEndBranch === 'metal'
+        ? 'El alto cromo (≥650 HB) posee módulo elástico E ≈ 210 GPa y soporta esfuerzos de membrana en succión como Voluta Monolítica de 1 pieza + FPL Insert posterior + Throatbush frontal.'
+        : 'El hule/poliuretano (E ≈ 0.01–0.05 GPa) requiere respaldo metálico continuo contra colapso por vacío en el ojo de succión, dividiendo la carcasa húmeda en 2 mitades simétricas (Frame Plate Liner + Cover Plate Liner) + Throatbush.'),
+    structuralReasonEn: isCeramic
+      ? 'Sintered Silicon Carbide (SiC, ≥ 2200 HV, Mohs 9.2, K_Ic = 4.1 MPa·√m) uses a Monolithic Composite Volute + SiC Throatbush architecture to resist fine-to-medium silica abrasion and extreme pH (1.0–13.5), bounded to d80 ≤ 800 µm and u₂ ≤ 28.0 m/s.'
+      : (wetEndBranch === 'metal'
+        ? 'High chrome white iron (≥650 HB, E ≈ 210 GPa) resists suction vacuum hoop stresses as a 1-piece Monolithic Volute + rear FPL Insert + front Throatbush.'
+        : 'Elastomers (rubber/polyurethane, E ≈ 0.01–0.05 GPa) require continuous split-casing metal backing against suction vacuum buckling, using 2 symmetrical halves (Frame Plate Liner + Cover Plate Liner) + Throatbush.')
   };
 }
 
@@ -1594,9 +1654,18 @@ export function calculateDriveAndBearingKinematics(params = {}) {
   const bearingL10Hours = Math.round((1_000_000.0 / (60.0 * Math.max(100, pumpRpm))) * l10MillionRevs);
 
   const rubberSafeTipSpeed = tipSpeedMs <= WET_END_MATERIAL_MATRIX.hule.maxTipSpeedMs;
+  const ceramicSafeTipSpeed = tipSpeedMs <= WET_END_MATERIAL_MATRIX.ceramica_sic.maxTipSpeedMs;
   const matRaw = String(params.wetEndMaterial || params.materialKey || '').toLowerCase();
   const isRubberSelected = matRaw.includes('hule') || matRaw.includes('rubber') || matRaw === 'r55';
+  const isCeramicSelected = matRaw.includes('ceramica') || matRaw.includes('sic') || matRaw === 'ceramic';
   const rubberThermalLimitExceeded = isRubberSelected && !rubberSafeTipSpeed;
+  const ceramicSpallingSpeedExceeded = isCeramicSelected && !ceramicSafeTipSpeed;
+
+  // ISO 281:2007 Modified Rating Life L_10mh = a_ISO(e_c * C_u / P, kappa) * L_10h (INV-SMAT-SCI-29)
+  const aIsoLabyrinthSmat = 1.25;
+  const aIsoContaminatedFelt = 0.22;
+  const l10mhLabyrinthHours = Math.round(bearingL10Hours * aIsoLabyrinthSmat);
+  const l10mhContaminatedHours = Math.round(bearingL10Hours * aIsoContaminatedFelt);
 
   return {
     arrangement: arrangementInfo.code,
@@ -1619,14 +1688,24 @@ export function calculateDriveAndBearingKinematics(params = {}) {
     tipSpeedMs,
     impellerTipSpeedMs: tipSpeedMs,
     rubberSafeTipSpeed,
+    ceramicSafeTipSpeed,
     rubberThermalLimitExceeded,
-    recommendedWetMaterialByTipSpeed: rubberSafeTipSpeed ? 'Hule Natural / Poliuretano / Alto Cromo' : 'Exclusivo Alto Cromo ≥ 650 HB (u2 > 24.5 m/s)',
+    ceramicSpallingSpeedExceeded,
+    recommendedWetMaterialByTipSpeed: rubberSafeTipSpeed
+      ? 'Hule Natural / Poliuretano / Cerámica SiC / Alto Cromo'
+      : (ceramicSafeTipSpeed
+        ? 'Cerámica SiC (d80 ≤ 800 µm) / Exclusivo Alto Cromo ≥ 650 HB (u2 > 24.5 m/s)'
+        : 'Exclusivo Alto Cromo ≥ 650 HB (u2 > 28.0 m/s)'),
     beltRadialLoadKn,
     radialBeltLoadKn: beltRadialLoadKn,
     equivalentLoadPkN,
     bearingL10Hours,
     estimatedBearingL10h: bearingL10Hours,
-    estimatedL10hHours: bearingL10Hours
+    estimatedL10hHours: bearingL10Hours,
+    aIsoLabyrinthSmat,
+    aIsoContaminatedFelt,
+    l10mhLabyrinthHours,
+    l10mhContaminatedHours
   };
 }
 

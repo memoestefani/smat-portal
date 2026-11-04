@@ -100,41 +100,49 @@
 
 @media (max-width: 768px) {
   .workbench-section {
-    padding-top: 0.35rem !important;
+    padding-top: 0.3rem !important;
   }
   .workbench-container {
-    padding: 0.45rem 0.5rem;
+    padding: 0.35rem 0.5rem;
   }
   .workbench-header,
   .workbench-header-bar {
-    margin-bottom: 0.35rem !important;
-    padding-bottom: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
+    padding-bottom: 0.2rem !important;
   }
-  .workbench-header-bar .workbench-subtitle {
+  .workbench-header .workbench-subtitle,
+  .workbench-header-bar .workbench-subtitle,
+  .workbench-header .badge-row {
     display: none;
   }
-  .badge-row {
-    margin-bottom: 0.2rem;
-    gap: 0.25rem;
-  }
   .workbench-title {
-    font-size: 1.05rem;
-    margin-bottom: 0.15rem;
-  }
-  .workbench-subtitle {
-    font-size: 0.76rem;
-    line-height: 1.25;
+    font-size: 0.98rem;
+    margin-bottom: 0.1rem;
   }
   .workbench-controls-panel,
   .console-bay {
-    padding: 0.55rem;
+    padding: 0.45rem;
   }
   .console-bay-banner {
-    padding-bottom: 0.25rem;
-    margin-bottom: 0.35rem;
+    display: none;
+  }
+  .control-card {
+    padding: 0.35rem !important;
+  }
+  .control-card-header {
+    margin-bottom: 0.35rem !important;
+  }
+  .circuit-pills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem;
+  }
+  .circuit-pill {
+    padding: 0.35rem 0.4rem !important;
+    font-size: 0.66rem !important;
   }
   .circuit-tabs-bar {
-    margin-bottom: 0.35rem !important;
+    margin-bottom: 0.3rem !important;
     gap: 0.25rem !important;
   }
   .circuit-tab-btn {
@@ -142,9 +150,9 @@
     font-size: 0.68rem !important;
   }
   .atomic-part-spec-card {
-    margin-top: 0.25rem;
-    margin-bottom: 0.45rem;
-    padding: 0.45rem 0.65rem;
+    margin-top: 0.2rem;
+    margin-bottom: 0.4rem;
+    padding: 0.4rem 0.6rem;
   }
 }
 
@@ -2063,9 +2071,9 @@ details[open] .accordion-arrow {
 
 .btn-open-drawer {
   padding: 0.5rem 0.85rem;
-  background: var(--smat-copper-surface-aaa, #E56B38);
-  color: var(--smat-on-copper-aaa, #090D16);
-  border: none;
+  background: #7c2d12;
+  color: #ffffff;
+  border: 1px solid #9a3412;
   border-radius: var(--smat-radius-sm);
   font-size: 0.8rem;
   font-weight: 800;

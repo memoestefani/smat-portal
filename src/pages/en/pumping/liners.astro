@@ -3,6 +3,20 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
 import SharePurchasing from '../../../components/SharePurchasing.astro';
+import { getAtomicPartSpecs } from '../../../scripts/workbenchBus.js';
+import { WET_END_MATERIAL_MATRIX } from '../../../scripts/slurryEngine.js';
+import rolesData from '../../../../data/roles.json';
+
+const allRoles = (rolesData.verticals || []).flatMap((v) => [...(v.capex || []), ...(v.opex || [])]);
+const revRole = allRoles.find((r) => r.role_id === 'revestimientos');
+const dc = revRole?.decision_criteria;
+const throatbushPart = getAtomicPartSpecs('E4083');
+const wetMaterials = [
+  WET_END_MATERIAL_MATRIX.alto_cromo_cr27,
+  WET_END_MATERIAL_MATRIX.hule_natural,
+  WET_END_MATERIAL_MATRIX.poliuretano,
+  WET_END_MATERIAL_MATRIX.ceramica_sic
+];
 ---
 
 <BaseLayout 
@@ -40,7 +54,7 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
               <tbody>
                 <tr>
                   <th>Liner Materials</th>
-                  <td><strong>High Chrome, Rubber, and Polyurethane</strong></td>
+                  <td><strong>27% High Chrome (A05), Natural Rubber (R55), Polyurethane (U01), and Sintered Silicon Carbide (SiC ≥ 2200 HV)</strong></td>
                 </tr>
                 <tr>
                   <th>Wet-End Components</th>
@@ -66,11 +80,56 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
               The <strong>throatbush</strong> and <strong>impeller</strong> operate with a tight front clearance and require more frequent replacement than the volute. Ordering in matched lots (e.g., 5 impellers + 5 throatbushes + 4 volutes) prevents pairing a new impeller with a worn throatbush.
             </p>
             <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light); display: flex; flex-direction: column; gap: 0.6rem;">
-              <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=voluta_liners#rfq" class="btn btn-primary" style="width: 100%; text-align: center;">Quote Wet-End Lot →</a>
+              <a href="/en/quote/?circuito=bombeo&equipo=kit_wet_end&pieza=voluta_liners&estacion=S3#rfq" class="btn btn-primary" style="width: 100%; text-align: center;">Quote Wet-End Lot (5-5-4) →</a>
               <a href="/en/pumping/#how-a-slurry-pump-is-assembled" class="btn btn-outline" style="width: 100%; text-align: center;">View Pump Assembly & Exploded BOM →</a>
             </div>
           </div>
+
+          {dc && (
+            <div class="card" data-testid="role-decision-criteria" style="margin-top: 1rem; background: #f8fafc; border-left: 4px solid #7c2d12; padding: 1rem;">
+              <span class="font-mono-tech" style="font-size: 0.72rem; font-weight: 800; color: #7c2d12; display: block; margin-bottom: 0.35rem;">[ENGINEERING DECISION CRITERIA — 5-5-4 LOT]</span>
+              <p style="font-size: 0.84rem; margin-bottom: 0.4rem;"><strong>Metallurgical Rule:</strong> {dc.metallurgy_rule_en}</p>
+              <p style="font-size: 0.84rem; margin-bottom: 0.4rem;"><strong>Critical Variables:</strong> {dc.required_slurry_vars_en}</p>
+              <p style="font-size: 0.84rem; margin: 0; color: #7f1d1d;"><strong>Avoided Risk:</strong> {dc.risk_avoided_en}</p>
+            </div>
+          )}
         </div>
+      </div>
+
+      <!-- 4 Wet-End Material Cards (A05, R55, U01, SiC) + Atomic Throatbush Card E4083 -->
+      <div style="margin-top: 2rem;" data-testid="liners-material-matrix">
+        <h2>4-Material Wet-End Matrix (A05 / R55 / U01 / SiC Ceramic) & Gülich Law Δη_v = k_r·(δ/b₂)^1.5</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:0.85rem; margin-top:0.85rem;">
+          {wetMaterials.map((mat) => (
+            <div class="card" style="background:#ffffff; border:1px solid #cbd5e1; padding:1rem;">
+              <span class="font-mono-tech" style="font-size:0.72rem; font-weight:800; color:#082f49;">[{mat.code}] {mat.hardness}</span>
+              <h3 style="margin:0.35rem 0; font-size:0.98rem;">{mat.nameEn}</h3>
+              <p style="font-size:0.82rem; color:#334155; margin-bottom:0.45rem;">{mat.dutyApplicationEn}</p>
+              <div class="font-mono-tech" style="font-size:0.73rem; color:#475569; margin-bottom:0.55rem;">
+                u₂ ≤ {mat.maxTipSpeedMs} m/s • K_Ic = {mat.fractureToughnessMpaSqrtM} MPa·√m • Clearance δ = {mat.recommendedClearanceMm} mm • Lot {mat.wearRatio554}
+              </div>
+              <a href={`/en/quote/?circuito=bombeo&equipo=kit_wet_end&material=${mat.key}&claro_mm=${mat.recommendedClearanceMm}&estacion=S3#rfq`} class="btn btn-primary" style="width:100%; text-align:center; font-size:0.78rem;">Quote {mat.code} Kit →</a>
+            </div>
+          ))}
+        </div>
+
+        {throatbushPart && (
+          <div class="card" data-testid="throatbush-atomic-card" style="margin-top:1.25rem; background:#f8fafc; border:1.5px solid #cbd5e1;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+              <span class="badge badge-copper">{throatbushPart.part_number} — {throatbushPart.name_en} ({throatbushPart.smat_code})</span>
+              <span class="font-mono-tech" style="font-size:0.75rem; font-weight:800; color:var(--smat-text-primary);">
+                Mass: {throatbushPart.weight_kg} kg • {throatbushPart.niosh_handling_mode} (LI={throatbushPart.niosh_lifting_index_shaft}) • Wall: {throatbushPart.wall_thickness_mm} mm
+              </span>
+            </div>
+            <p style="font-size:0.85rem; color:#334155; margin:0.5rem 0;">
+              {throatbushPart.summary_en} <strong>Station 0{throatbushPart.station_number}:</strong> {throatbushPart.assembly_order_note}. Calibrating front clearance within <strong>δ = 0.5–1.0 mm</strong> prevents volumetric recirculation loss Δη_v = k_r·(δ/b₂)^1.5 from degrading the 5:5:4 wear lot ratio into 5:9:4.
+            </p>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <a href={`/en/catalog/${throatbushPart.code}/`} class="btn btn-outline">View {throatbushPart.part_number} Sheet →</a>
+              <a href={`/en/quote/?codigo=${throatbushPart.part_number}&circuito=bombeo&equipo=kit_wet_end&serie=${throatbushPart.pipe_size}&peso_kg=${throatbushPart.weight_kg}&estacion=S${throatbushPart.station_number}#rfq`} class="btn btn-primary">Quote {throatbushPart.part_number} →</a>
+            </div>
+          </div>
+        )}
       </div>
 
       <div style="margin-top: 2.25rem;">
@@ -101,4 +160,9 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
   .page-hero h1 { color: var(--smat-text-primary); margin-top: 0.5rem; }
   .back-link { color: var(--smat-copper-accent); font-size: 0.9rem; font-weight: 700; text-decoration: none; }
   .back-link:hover { text-decoration: underline; }
+  @media (max-width: 640px) {
+    .page-hero { padding: 0.75rem 0; }
+    .page-hero h1 { font-size: 1.35rem; margin: 0.2rem 0; }
+    .page-hero p { font-size: 0.82rem !important; line-height: 1.3; margin: 0.2rem 0; }
+  }
 </style>

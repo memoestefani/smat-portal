@@ -1,21 +1,46 @@
 ---
 // src/components/CircuitNavigator.astro
-// Decisión 1-A: Navegador de Circuitos Mineros Reales (Zero-Debris, Semantic SVG)
+// Decisión 1-A + Consolidación 3.2.2: Navegador Unificado de Circuitos y Reglas Metalúrgicas por Rol (Zero-Debris)
 import circuitsData from '../../data/circuits.json';
+import rolesData from '../../data/roles.json';
 
 interface Props {
   lang?: 'es' | 'en';
   defaultCircuit?: 'bombeo_ciclones' | 'flotacion_polimetalica' | 'jales_filtracion';
+  currentCircuit?: string;
 }
 
-const { lang = 'es', defaultCircuit = 'bombeo_ciclones' } = Astro.props;
+const { lang = 'es', defaultCircuit, currentCircuit } = Astro.props;
 const isEn = lang === 'en';
 const circuits = circuitsData.circuits;
 
+const resolvedDefaultCircuit = defaultCircuit || (
+  currentCircuit === 'flotacion' || currentCircuit === 'flotacion_polimetalica'
+    ? 'flotacion_polimetalica'
+    : currentCircuit === 'filtracion' || currentCircuit === 'jales_filtracion'
+      ? 'jales_filtracion'
+      : 'bombeo_ciclones'
+);
+
+// Mapa unificado de criterios metalúrgicos y variables de pulpa por role_id (absorbe DualHubView.astro)
+const roleDecisionMap = new Map<string, any>();
+for (const vert of rolesData.verticals || []) {
+  for (const item of [...(vert.capex || []), ...(vert.opex || [])]) {
+    if (item && item.role_id) {
+      roleDecisionMap.set(item.role_id, {
+        ...item,
+        vertical_id: vert.id,
+        vertical_name_es: vert.name_es,
+        vertical_name_en: vert.name_en,
+      });
+    }
+  }
+}
+
 function mapNodeRfqHref(circuitId: string, roleId: string, en: boolean) {
-  const basePath = en ? '/en/' : '/';
+  const basePath = en ? '/en/quote/' : '/cotizar/';
   if (roleId === 'skid_bomba') {
-    return `${basePath}?equipo=skid_bomba#rfq`;
+    return `${basePath}?circuito=bombeo&equipo=skid_bomba#rfq`;
   }
   const roleAliasMap: Record<string, { circuit: string; equipo: string }> = {
     impulsor: { circuit: 'bombeo', equipo: 'solo_impulsor' },
@@ -39,7 +64,7 @@ function mapNodeRfqHref(circuitId: string, roleId: string, en: boolean) {
     <div class="circuit-header">
       <div class="badge-tag">
         <span class="pulse-dot"></span>
-        {isEn ? "CIRCUIT-LEVEL GROUNDING" : "MAPEO DIRECTO DE PROCESO"}
+        {isEn ? "CIRCUIT-LEVEL GROUNDING & METALLURGICAL RULES" : "MAPEO DIRECTO DE PROCESO Y REGLAS METALÚRGICAS"}
       </div>
       <h2 class="circuit-title">
         {isEn ? "Select Your Plant Circuit" : "Identifique su Circuito de Planta"}
@@ -53,7 +78,7 @@ function mapNodeRfqHref(circuitId: string, roleId: string, en: boolean) {
       <!-- Selector de Pestañas de Circuito -->
       <div class="circuit-tabs" role="tablist">
         {circuits.map((circ, idx) => {
-          const isActive = circ.id === defaultCircuit;
+          const isActive = circ.id === resolvedDefaultCircuit;
           return (
             <button 
               type="button"
@@ -74,7 +99,7 @@ function mapNodeRfqHref(circuitId: string, roleId: string, en: boolean) {
     <!-- Paneles de Circuito -->
     <div class="circuit-panels">
       {circuits.map((circ) => {
-        const isActive = circ.id === defaultCircuit;
+        const isActive = circ.id === resolvedDefaultCircuit;
         return (
           <div 
             class={`circuit-panel ${isActive ? 'active' : ''}`}
@@ -93,8 +118,11 @@ function mapNodeRfqHref(circuitId: string, roleId: string, en: boolean) {
             <div class="schematic-flow-line"></div>
             
             <div class="nodes-grid">
-              {circ.nodes.map((node, nIdx) => (
-                <div class="node-card" data-node-id={node.id}>
+              {circ.nodes.map((node, nIdx) => {
+                const roleMeta = roleDecisionMap.get(node.role_id);
+                const criteria = roleMeta?.decision_criteria;
+                return (
+                <div class="node-card" data-node-id={node.id} data-role-id={node.role_id} data-circuit-id={circ.id}>
                   <div class="node-header">
                     <span class="node-badge">{nIdx + 1}</span>
                     <h3 class="node-name">{isEn ? node.name_en : node.name_es}</h3>
@@ -113,6 +141,23 @@ function mapNodeRfqHref(circuitId: string, roleId: string, en: boolean) {
                     <span class="node-label-small">{isEn ? "ENGINEERING SPECIFICATION:" : "ESPECIFICACIÓN DE INGENIERÍA:"}</span>
                     <p class="solution-text">{isEn ? node.solution_en : node.solution_es}</p>
                   </div>
+
+                  {criteria && (
+                    <div class="decision-criteria-box cn-criteria-chip" data-criteria-role={node.role_id}>
+                      <span class="criteria-badge">
+                        {isEn ? "METALLURGICAL RULE & SLURRY VARIABLES:" : "REGLA METALÚRGICA Y VARIABLES DE PULPA:"}
+                      </span>
+                      <p class="criteria-vars">
+                        <strong>{isEn ? "Process Inputs:" : "Datos de Proceso:"}</strong> {isEn ? criteria.required_slurry_vars_en : criteria.required_slurry_vars_es}
+                      </p>
+                      <p class="criteria-rule">
+                        <strong>{isEn ? "Metallurgy Rule:" : "Criterio Metalúrgico:"}</strong> {isEn ? criteria.metallurgy_rule_en : criteria.metallurgy_rule_es}
+                      </p>
+                      <span class="criteria-risk">
+                        <strong>{isEn ? "Risk Prevented:" : "Riesgo Evitado:"}</strong> {isEn ? criteria.risk_avoided_en : criteria.risk_avoided_es}
+                      </span>
+                    </div>
+                  )}
 
                   <div class="node-footer">
                     <span class="stock-badge">
@@ -135,7 +180,8 @@ function mapNodeRfqHref(circuitId: string, roleId: string, en: boolean) {
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
           </div>
@@ -408,53 +454,138 @@ function mapNodeRfqHref(circuitId: string, roleId: string, en: boolean) {
   }
 
   .node-cta-rfq {
-    background: #c25e00;
-    border: 1px solid #c25e00;
+    background: #7c2d12;
+    border: 1px solid #7c2d12;
     color: #ffffff;
   }
 
   .node-cta-rfq:hover {
-    background: #9a4a00;
+    background: #60220d;
+  }
+
+  .decision-criteria-box {
+    background: #fffaf5;
+    border: 1px solid #fed7aa;
+    border-left: 3px solid #c25e00;
+    border-radius: 6px;
+    padding: 0.65rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .criteria-badge {
+    font-family: var(--smat-font-mono);
+    font-size: 0.66rem;
+    font-weight: 800;
+    color: #9a3412;
+    letter-spacing: 0.04em;
+  }
+
+  .criteria-vars,
+  .criteria-rule {
+    font-size: 0.76rem;
+    color: #334155;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .criteria-risk {
+    font-size: 0.74rem;
+    color: #065f46;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    padding: 0.3rem 0.45rem;
+    border-radius: 4px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .node-card.role-card-highlighted {
+    border-color: #c25e00;
+    box-shadow: 0 0 0 2px rgba(194, 94, 0, 0.18);
   }
 </style>
 
 <script>
+  import { publishWorkbenchUpdate, subscribeWorkbenchUpdate, loadWorkbenchState } from '../scripts/workbenchBus.js';
+
+  function mapShortCircuitToNavigatorId(shortCircuit: string): string {
+    if (shortCircuit === 'flotacion' || shortCircuit === 'flotacion_polimetalica') return 'flotacion_polimetalica';
+    if (shortCircuit === 'filtracion' || shortCircuit === 'jales_filtracion') return 'jales_filtracion';
+    return 'bombeo_ciclones';
+  }
+
+  function mapNavigatorIdToShortCircuit(navId: string): string {
+    if (navId.includes('flotacion')) return 'flotacion';
+    if (navId.includes('filtracion')) return 'filtracion';
+    return 'bombeo';
+  }
+
   function setupCircuitTabs() {
     const tabButtons = document.querySelectorAll('.circuit-tab-btn');
     const panels = document.querySelectorAll('.circuit-panel');
+    const allNodes = document.querySelectorAll('.circuit-navigator-section .node-card');
+
+    function activateCircuitTab(targetId: string, emit = false) {
+      if (!targetId) return;
+      tabButtons.forEach(b => {
+        const isMatch = b.getAttribute('data-circuit-id') === targetId;
+        b.classList.toggle('active', isMatch);
+        b.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+      });
+      panels.forEach(p => {
+        p.classList.toggle('active', p.id === `panel-${targetId}`);
+      });
+      if (emit) {
+        publishWorkbenchUpdate({
+          circuit: mapNavigatorIdToShortCircuit(targetId),
+          source: 'CircuitNavigator'
+        });
+      }
+    }
 
     tabButtons.forEach(btn => {
       btn.addEventListener('click', () => {
-        const targetId = btn.getAttribute('data-circuit-id');
-        
-        tabButtons.forEach(b => {
-          b.classList.remove('active');
-          b.setAttribute('aria-selected', 'false');
-        });
-        panels.forEach(p => p.classList.remove('active'));
-
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
-        
-        const targetPanel = document.getElementById(`panel-${targetId}`);
-        if (targetPanel) {
-          targetPanel.classList.add('active');
-        }
+        const targetId = btn.getAttribute('data-circuit-id') || 'bombeo_ciclones';
+        activateCircuitTab(targetId, true);
       });
     });
 
-    // Delegación para botones de cotización rápida
     document.querySelectorAll('.node-cta-rfq').forEach(btn => {
       btn.addEventListener('click', () => {
-        const rfqTarget = document.getElementById('rfq');
-        if (rfqTarget) {
-          rfqTarget.scrollIntoView({ behavior: 'smooth' });
-        }
+        const role = btn.getAttribute('data-role-id') || '';
+        const navCircuit = btn.getAttribute('data-circuit-id') || 'bombeo_ciclones';
+        publishWorkbenchUpdate({
+          circuit: mapNavigatorIdToShortCircuit(navCircuit),
+          role,
+          source: 'CircuitNavigator'
+        });
       });
     });
+
+    subscribeWorkbenchUpdate((detail: any) => {
+      if (!detail || detail.source === 'CircuitNavigator') return;
+      if (detail.circuit) {
+        activateCircuitTab(mapShortCircuitToNavigatorId(detail.circuit), false);
+      }
+      if (detail.role) {
+        allNodes.forEach(card => {
+          const isMatch = card.getAttribute('data-role-id') === detail.role;
+          card.classList.toggle('role-card-highlighted', isMatch);
+        });
+      }
+    });
+
+    const initialCtx: any = loadWorkbenchState();
+    if (initialCtx && initialCtx.role) {
+      allNodes.forEach(card => {
+        const isMatch = card.getAttribute('data-role-id') === initialCtx.role;
+        card.classList.toggle('role-card-highlighted', isMatch);
+      });
+    }
   }
 
-  // Ejecutar en carga inicial y soporte de View Transitions
   setupCircuitTabs();
   document.addEventListener('astro:page-load', setupCircuitTabs);
 </script>

@@ -2,6 +2,11 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SharePurchasing from '../../components/SharePurchasing.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
+import rolesData from '../../../data/roles.json';
+
+const filtVertical = rolesData.verticals.find((v) => v.id === 'filtracion');
+const prensaRole = filtVertical?.capex?.find((r) => r.role_id === 'prensa_completa');
+const criteria = prensaRole?.decision_criteria;
 ---
 
 <BaseLayout 
@@ -59,8 +64,51 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
               <td>Control</td>
               <td>Gabinete de control PLC para ciclos de llenado, prensado y soplado de torta</td>
             </tr>
+            <tr>
+              <td>Potencia Electrohidráulica y Tiempos de Ciclo</td>
+              <td>{prensaRole?.power_range} • {prensaRole?.flow_range}</td>
+            </tr>
+            <tr>
+              <td>Compresibilidad de Torta Darcy-Ruth (Tiller 1975)</td>
+              <td>Resistencia específica α = α<sub>0</sub> (ΔP)<sup>s</sup> (s = 0.65) con exprimido secundario a 16 bar para humedad &lt; 15%</td>
+            </tr>
           </tbody>
         </table>
+
+        {criteria && (
+          <div class="decision-criteria-panel" data-testid="role-decision-criteria" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #9a3412;">
+            <span class="badge badge-copper">CRITERIOS DE DECISIÓN METALÚRGICA • ROLES.JSON</span>
+            <h3 style="margin: 0.45rem 0 0.75rem; font-size: 1.08rem; color: var(--smat-text-primary);">Matriz de Selección de Filtro Prensa ({prensaRole?.series})</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem; font-size: 0.88rem;">
+              <div style="background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <strong style="display: block; color: var(--smat-text-primary); margin-bottom: 0.25rem;">Variables de Pulpa Requeridas</strong>
+                <span style="color: #334155;">{criteria.required_slurry_vars_es}</span>
+              </div>
+              <div style="background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <strong style="display: block; color: #7c2d12; margin-bottom: 0.25rem;">Regla de Cámara y Compresión</strong>
+                <span style="color: #334155;">{criteria.metallurgy_rule_es}</span>
+              </div>
+              <div style="background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <strong style="display: block; color: #14532d; margin-bottom: 0.25rem;">Riesgo Geotécnico y Operativo Mitigado</strong>
+                <span style="color: #334155;">{criteria.risk_avoided_es}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div class="filtration-selector-box" data-testid="filtration-contextual-selector" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #fffbeb; border: 1px solid #fde68a;">
+          <span class="badge badge-copper">PRE-SELECCIÓN CONTEXTUAL • PUENTE A COTIZADOR</span>
+          <h3 style="margin: 0.45rem 0 0.5rem; font-size: 1.05rem; color: var(--smat-text-primary);">Seleccione Medida de Placa y Condición de Desaguado</h3>
+          <p style="font-size: 0.88rem; color: #475569; margin-bottom: 0.85rem;">
+            Pre-cargue directamente la medida de cámara empotrada (800 a 2000 mm) y el objetivo operativo en el cotizador RFQ:
+          </p>
+          <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+            <a href="/cotizar/?circuito=filtracion&equipo=filtro_prensa&serie=800&filt_condition=ciclo_lento#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">Placas 800×800 mm • Concentrados</a>
+            <a href="/cotizar/?circuito=filtracion&equipo=filtro_prensa&serie=1200&filt_condition=jales_secos#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">Placas 1200×1200 mm • Jales Secos</a>
+            <a href="/cotizar/?circuito=filtracion&equipo=filtro_prensa&serie=1500&filt_condition=jales_secos#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">Placas 1500×1500 mm • Dry Stacking</a>
+            <a href="/cotizar/?circuito=filtracion&equipo=filtro_prensa&serie=2000&filt_condition=jales_secos#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">Placas 2000×2000 mm • Gran Tonelaje</a>
+          </div>
+        </div>
 
         <SharePurchasing 
           roleTitle="Filtro Prensa"
@@ -79,7 +127,7 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
             <p>Solicite su cotización indicando tamaño de placa o tonelaje por turno.</p>
           </div>
           <div class="cta-rfq-actions">
-            <a href="/?equipo=filtro_prensa#rfq" class="btn btn-primary btn-lg">
+            <a href="/cotizar/?circuito=filtracion&equipo=filtro_prensa&serie=1500&filt_condition=jales_secos#rfq" class="btn btn-primary btn-lg">
               Solicitar Cotización →
             </a>
             <a href="https://wa.me/526183670664?text=Hola%20SMAT%20Minerals,%20requiero%20cotizar%20Filtro%20Prensa" target="_blank" rel="noopener noreferrer" class="btn btn-emergency btn-lg">

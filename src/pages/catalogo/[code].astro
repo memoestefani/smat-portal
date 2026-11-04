@@ -2,6 +2,8 @@
 // src/pages/catalogo/[code].astro
 // Decisión 4-B: Ficha Atómica de Refacción Universal con Blindaje Anti-Scraping
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import SharePurchasing from '../../components/SharePurchasing.astro';
+import { getAtomicPartSpecs } from '../../scripts/workbenchBus.js';
 import atomicParts from '../../../data/atomic_parts.json';
 
 export function getStaticPaths() {
@@ -12,6 +14,13 @@ export function getStaticPaths() {
 }
 
 const { part } = Astro.props;
+const fullSpec: any = getAtomicPartSpecs(part.part_number, (part as any).pipe_size || '6x4') || part;
+const nioshModeLabelEs = fullSpec.niosh_ergonomic_tier === 'MANUAL_1P_SAFE'
+  ? `Manejo Manual 1 Operador (${fullSpec.niosh_handling_mode} • LI=${fullSpec.niosh_lifting_index_shaft})`
+  : (fullSpec.niosh_ergonomic_tier === 'ASSISTED_SHAFT_MOUNT_2P'
+    ? `Montaje Asistido 2 Operadores en Voladizo (${fullSpec.niosh_handling_mode} • LI=${fullSpec.niosh_lifting_index_shaft} vs RWL=${fullSpec.niosh_rwl_shaft_kg} kg)`
+    : `Polipasto / Grúa Obligatorio (${fullSpec.niosh_handling_mode} • LI=${fullSpec.niosh_lifting_index_shaft} ≥ 23 kg)`);
+const rfqDeepLink = `/cotizar/?codigo=${part.part_number}&circuito=bombeo&equipo=${fullSpec.role || 'impulsor'}&serie=${fullSpec.pipe_size || '6x4'}&peso_kg=${fullSpec.weight_kg}&estacion=S${fullSpec.station_number}#rfq`;
 const siteUrl = 'https://smatminerals.com';
 const canonicalPath = `/catalogo/${part.code}/`;
 const alternateEnPath = `/en/catalog/${part.code}/`;
@@ -81,21 +90,70 @@ const productSchema = {
           <div class="spec-body">
             <p class="part-lead">{part.summary_es}</p>
 
+            <!-- 3 Tarjetas Semánticas de Ingeniería Física (Ley de Miller ≤ 3 métricas por grupo) -->
+            <div class="atomic-engineering-cards" data-testid="atomic-engineering-cards" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:0.85rem; margin-bottom:1.75rem;">
+              <div class="atomic-eng-card" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:0.9rem;">
+                <span class="font-mono-tech" style="font-size:0.7rem; font-weight:800; color:#7c2d12; display:block; margin-bottom:0.35rem;">[1. MASA E IZAJE NIOSH]</span>
+                <div style="font-size:1.15rem; font-weight:800; color:#0f172a;" data-testid="spec-weight-kg">{fullSpec.weight_kg} kg</div>
+                <div style="font-size:0.78rem; color:#334155; margin-top:0.2rem;" data-testid="spec-niosh-mode">{nioshModeLabelEs}</div>
+                <div class="font-mono-tech" style="font-size:0.72rem; color:#475569; margin-top:0.2rem;">Espesor pared: <strong data-testid="spec-wall-thickness">{fullSpec.wall_thickness_mm} mm</strong></div>
+              </div>
+              <div class="atomic-eng-card" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:0.9rem;">
+                <span class="font-mono-tech" style="font-size:0.7rem; font-weight:800; color:#0c4a6e; display:block; margin-bottom:0.35rem;">[2. GEOMETRÍA HIDRÁULICA]</span>
+                <div style="font-size:1.15rem; font-weight:800; color:#0f172a;" data-testid="spec-impeller-dia">
+                  {fullSpec.impeller_diameter_mm ? `∅D₂ = ${fullSpec.impeller_diameter_mm} mm` : `Serie ${String(fullSpec.pipe_size || '6x4').toUpperCase()} (Marco ${part.frame})`}
+                </div>
+                <div style="font-size:0.78rem; color:#334155; margin-top:0.2rem;" data-testid="spec-max-particle">
+                  {fullSpec.max_particle_mm ? `Paso máximo de esfera: ${fullSpec.max_particle_mm} mm` : `Acople directo eje / sello serie ${String(fullSpec.pipe_size || '6x4').toUpperCase()}`}
+                </div>
+                <div class="font-mono-tech" style="font-size:0.72rem; color:#475569; margin-top:0.2rem;">Código SMAT: <strong>{fullSpec.smat_code}</strong></div>
+              </div>
+              <div class="atomic-eng-card" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:0.9rem;">
+                <span class="font-mono-tech" style="font-size:0.7rem; font-weight:800; color:#14532d; display:block; margin-bottom:0.35rem;">[3. ESTACIÓN DE ENSAMBLE BOM]</span>
+                <div style="font-size:1.15rem; font-weight:800; color:#0f172a;" data-testid="spec-station-number">Estación 0{fullSpec.station_number} (S{fullSpec.station_number})</div>
+                <div style="font-size:0.78rem; color:#334155; margin-top:0.2rem;" data-testid="spec-assembly-note">{fullSpec.assembly_order_note}</div>
+              </div>
+            </div>
+
             <h2 class="section-title">Parámetros Metalúrgicos y Compatibilidad Dimensional</h2>
             <div class="table-responsive">
               <table class="spec-table">
                 <tbody>
                   <tr>
                     <th>Código Universal:</th>
-                    <td><strong>{part.part_number}</strong></td>
+                    <td><strong>{part.part_number}</strong> ({fullSpec.smat_code})</td>
                   </tr>
                   <tr>
-                    <th>Marco Compatible:</th>
-                    <td>Bomba centrífuga de lodos marco {part.frame}</td>
+                    <th>Marco y Tubería Compatible:</th>
+                    <td>Bomba centrífuga de lodos marco {part.frame} (Serie {String(fullSpec.pipe_size || '6x4').toUpperCase()})</td>
                   </tr>
                   <tr>
                     <th>Tipo de Componente:</th>
                     <td>{part.type_es}</td>
+                  </tr>
+                  <tr>
+                    <th>Masa Unitaria e Izaje NIOSH:</th>
+                    <td><strong>{fullSpec.weight_kg} kg</strong> — <span class="font-mono-tech">{nioshModeLabelEs}</span></td>
+                  </tr>
+                  <tr>
+                    <th>Espesor de Pared Crítico:</th>
+                    <td><strong>{fullSpec.wall_thickness_mm} mm</strong> ({part.metallurgy})</td>
+                  </tr>
+                  {fullSpec.impeller_diameter_mm && (
+                    <tr>
+                      <th>Diámetro Exterior (∅D₂):</th>
+                      <td><strong>{fullSpec.impeller_diameter_mm} mm</strong></td>
+                    </tr>
+                  )}
+                  {fullSpec.max_particle_mm && (
+                    <tr>
+                      <th>Paso Máximo de Esfera (Sólidos):</th>
+                      <td><strong>{fullSpec.max_particle_mm} mm</strong></td>
+                    </tr>
+                  )}
+                  <tr>
+                    <th>Estación y Precedencia BOM:</th>
+                    <td><strong>Estación 0{fullSpec.station_number}</strong> — {fullSpec.assembly_order_note}</td>
                   </tr>
                   <tr>
                     <th>Metalurgia:</th>
@@ -161,7 +219,7 @@ const productSchema = {
                 <span>Consultar Disponibilidad vía WhatsApp</span>
               </a>
 
-              <a href={`/cotizar/?codigo=${part.part_number}&circuito=bombeo#rfq`} class="btn btn-rfq-wizard">
+              <a href={rfqDeepLink} class="btn btn-rfq-wizard" data-testid="btn-atomic-rfq">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                 <span>Generar Requisición Formal / Acuse A4</span>
               </a>
@@ -184,6 +242,14 @@ const productSchema = {
           </div>
         </aside>
       </div>
+
+      <SharePurchasing
+        lang="es"
+        circuit="bombeo"
+        role={fullSpec.role || 'impulsor'}
+        partName={`${part.part_number} — ${part.name_es}`}
+        partCode={part.part_number}
+      />
 
     </div>
   </main>

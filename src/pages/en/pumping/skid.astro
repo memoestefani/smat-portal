@@ -4,8 +4,12 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
 import SharePurchasing from '../../../components/SharePurchasing.astro';
 import { DRIVE_ARRANGEMENT_CATALOG } from '../../../scripts/slurryEngine.js';
+import rolesData from '../../../../data/roles.json';
 
 const driveArrangements = Object.values(DRIVE_ARRANGEMENT_CATALOG);
+const allRoles = (rolesData.verticals || []).flatMap((v) => [...(v.capex || []), ...(v.opex || [])]);
+const skidRole = allRoles.find((r) => r.role_id === 'skid_bomba');
+const dc = skidRole?.decision_criteria;
 ---
 
 <BaseLayout 
@@ -47,11 +51,11 @@ const driveArrangements = Object.values(DRIVE_ARRANGEMENT_CATALOG);
                 </tr>
                 <tr>
                   <th>Wet-End Materials</th>
-                  <td>High Chrome, Rubber, and Polyurethane</td>
+                  <td>27% High Chrome (A05 ≥650 HB), Natural Rubber (R55), Polyurethane (U01), and Sintered Silicon Carbide (SiC ≥2200 HV)</td>
                 </tr>
                 <tr>
                   <th>Bearing Unit</th>
-                  <td>Complete Bearing Assembly / Housing with external axial adjustment</td>
+                  <td>Complete Bearing Assembly / Housing with external axial adjustment (L₁₀ₘₕ = 1.25× L₁₀h with labyrinth seal vs 0.22× contaminated)</td>
                 </tr>
                 <tr>
                   <th>Shaft Sealing</th>
@@ -79,6 +83,15 @@ const driveArrangements = Object.values(DRIVE_ARRANGEMENT_CATALOG);
               <a href="/en/pumping/#how-a-slurry-pump-is-assembled" class="btn btn-outline" style="width: 100%; text-align: center;">View Pump Assembly Report (14 Parts) →</a>
             </div>
           </div>
+
+          {dc && (
+            <div class="card" data-testid="role-decision-criteria" style="margin-top: 1rem; background: #f8fafc; border-left: 4px solid #7c2d12; padding: 1rem;">
+              <span class="font-mono-tech" style="font-size: 0.72rem; font-weight: 800; color: #7c2d12; display: block; margin-bottom: 0.35rem;">[ENGINEERING DECISION CRITERIA]</span>
+              <p style="font-size: 0.84rem; margin-bottom: 0.4rem;"><strong>Metallurgical Rule:</strong> {dc.metallurgy_rule_en}</p>
+              <p style="font-size: 0.84rem; margin-bottom: 0.4rem;"><strong>Critical Variables:</strong> {dc.required_slurry_vars_en}</p>
+              <p style="font-size: 0.84rem; margin: 0; color: #7f1d1d;"><strong>Avoided Risk:</strong> {dc.risk_avoided_en}</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -156,9 +169,10 @@ const driveArrangements = Object.values(DRIVE_ARRANGEMENT_CATALOG);
               <label class="kin-field">
                 <span>Wet-End Material:</span>
                 <select data-kin-material>
-                  <option value="alto_cromo_cr27" selected>27% High Chrome A05 (u₂ max 32.0 m/s)</option>
-                  <option value="hule_natural">Natural Rubber R55 (u₂ max 24.5 m/s)</option>
-                  <option value="poliuretano">Polyurethane U01 (u₂ max 26.0 m/s)</option>
+                  <option value="alto_cromo_cr27" selected>27% High Chrome A05 (u₂ max 32.0 m/s • K_Ic=20 MPa·√m)</option>
+                  <option value="hule_natural">Natural Rubber R55 (u₂ max 24.5 m/s • K_Ic=12 MPa·√m)</option>
+                  <option value="poliuretano">Polyurethane U01 (u₂ max 26.0 m/s • K_Ic=14 MPa·√m)</option>
+                  <option value="ceramica_sic">Sintered Silicon Carbide SiC (u₂ max 28.0 m/s • ≥2200 HV)</option>
                 </select>
               </label>
               <label class="kin-field">
@@ -184,8 +198,9 @@ const driveArrangements = Object.values(DRIVE_ARRANGEMENT_CATALOG);
                 <span class="kin-metric-card__sub" data-kin-fr-sub data-kin-load-p>Eq. load P = 14.37 kN • Footprint 1.00×</span>
               </div>
               <div class="kin-metric-card">
-                <span class="kin-metric-card__kicker">ISO 281 BEARING LIFE (L₁₀h)</span>
+                <span class="kin-metric-card__kicker">ISO 281 BEARING LIFE (L₁₀h / L₁₀ₘₕ LABYRINTH)</span>
                 <strong class="kin-metric-card__val" data-kin-l10h>42,800 h</strong>
+                <span class="kin-metric-card__sub" data-kin-l10mh>L₁₀ₘₕ Labyrinth: 53,500 h vs Contam. Felt: 9,416 h</span>
                 <a
                   href="/en/quote/?equipo=skid_bomba&transmision=CV&material=alto_cromo_cr27&u2_ms=19.92&l10h=42800#rfq"
                   class="kin-metric-card__cta"
@@ -297,9 +312,11 @@ const driveArrangements = Object.values(DRIVE_ARRANGEMENT_CATALOG);
       }
       if (frEl) frEl.textContent = `${res.beltRadialLoadKn.toFixed(2)} kN`;
       if (frSubEl) frSubEl.textContent = `P=${res.equivalentLoadPkN.toFixed(2)} kN (C=${res.dynamicCapacityCkN} kN) • Footprint ${res.footprintFactor.toFixed(2)}×`;
+      const l10mhEl = panel.querySelector('[data-kin-l10mh]');
       if (l10hEl) l10hEl.textContent = `${res.bearingL10Hours.toLocaleString('en-US')} h`;
+      if (l10mhEl) l10mhEl.textContent = `L₁₀ₘₕ Labyrinth: ${res.l10mhLabyrinthHours.toLocaleString('en-US')} h (1.25×) vs Contaminated: ${res.l10mhContaminatedHours.toLocaleString('en-US')} h (0.22×)`;
       if (alertBox) {
-        alertBox.style.display = res.rubberThermalLimitExceeded ? 'flex' : 'none';
+        alertBox.style.display = (res.rubberThermalLimitExceeded || res.ceramicSpallingSpeedExceeded) ? 'flex' : 'none';
       }
       if (ctaEl) {
         const base = ctaEl.getAttribute('data-quote-base') || '/en/quote/';
@@ -373,4 +390,9 @@ const driveArrangements = Object.values(DRIVE_ARRANGEMENT_CATALOG);
   .kin-metric-card__sub { font-size: 0.74rem; color: #334155; }
   .kin-metric-card__cta { margin-top: 0.25rem; font-family: var(--smat-font-mono, monospace); font-size: 0.72rem; font-weight: 800; color: #082f49; text-decoration: underline; }
   .skid-kinematics-calibrator__alert { margin-top: 0.9rem; padding: 0.85rem 1rem; border-radius: 8px; background: #fef2f2; border: 1.5px solid #dc2626; color: #7f1d1d; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; font-size: 0.82rem; }
+  @media (max-width: 640px) {
+    .page-hero { padding: 0.75rem 0; }
+    .page-hero h1 { font-size: 1.35rem; margin: 0.2rem 0; }
+    .page-hero p { font-size: 0.82rem !important; line-height: 1.3; margin: 0.2rem 0; }
+  }
 </style>

@@ -22,6 +22,8 @@ import {
 import {
   DEFAULT_SMAT_LEAD_WEBHOOK_URL,
   SMAT_WORKBENCH_STATE_KEY,
+  normalizeMaterialKey,
+  normalizeCircuitSerie,
   normalizeWorkbenchStateV2,
   workbenchStateLens,
   ATOMIC_PARTS_CATALOG,
@@ -1019,15 +1021,16 @@ export function initQuoteWizardController() {
       }
     }
 
-    var matEntry = WET_END_MATERIAL_MATRIX[res.recommendedMaterialKey] || WET_END_MATERIAL_MATRIX.alto_cromo_cr27;
+    var normalizedRecMatKey = normalizeMaterialKey(res.recommendedMaterialKey || res.recommendedMaterial);
+    var matEntry = WET_END_MATERIAL_MATRIX[normalizedRecMatKey] || WET_END_MATERIAL_MATRIX.alto_cromo_cr27;
     var matName = res.recommendedMaterial === 'A05'
       ? 'High Chrome A05 (>650 HB)'
       : (isEs ? matEntry.nameEs : matEntry.nameEn);
     var elPumpMatSelect = document.getElementById('wb-pump-material');
-    if (elPumpMatSelect && !elPumpMatSelect.dataset.userTouched && res.recommendedMaterialKey) {
-      elPumpMatSelect.value = res.recommendedMaterialKey;
+    if (elPumpMatSelect && !elPumpMatSelect.dataset.userTouched && normalizedRecMatKey) {
+      elPumpMatSelect.value = normalizedRecMatKey;
     }
-    renderWetEndMaterialMatrixCard(elPumpMatSelect ? elPumpMatSelect.value : res.recommendedMaterialKey);
+    renderWetEndMaterialMatrixCard(elPumpMatSelect ? normalizeMaterialKey(elPumpMatSelect.value) : normalizedRecMatKey);
     var lifeHrs = res.estimatedImpellerLifeHours;
 
     currentHydraulicMetrics = {
@@ -2966,18 +2969,39 @@ export function initQuoteWizardController() {
         } catch (e) { }
       }
 
-      if (urlSerie && selectPipeSize && currentCircuit === 'bombeo') {
-        var sNorm = urlSerie.toLowerCase().trim();
-        if (PIPE_SERIES_DIAMETER_MM[sNorm]) selectPipeSize.value = sNorm;
-        else if (sNorm.includes('14x12')) selectPipeSize.value = '14x12';
-        else if (sNorm.includes('12x10')) selectPipeSize.value = '12x10';
-        else if (sNorm.includes('10x8')) selectPipeSize.value = '10x8';
-        else if (sNorm.includes('8x6')) selectPipeSize.value = '8x6';
-        else if (sNorm.includes('6x4')) selectPipeSize.value = '6x4';
-        else if (sNorm.includes('4x3')) selectPipeSize.value = '4x3';
-        else if (sNorm.includes('3x2')) selectPipeSize.value = '3x2';
-        else if (sNorm.includes('2x1.5')) selectPipeSize.value = '2x1.5';
-        else if (sNorm.includes('1.5x1')) selectPipeSize.value = '1.5x1';
+      if (urlSerie) {
+        var normSerie = normalizeCircuitSerie(currentCircuit, urlSerie);
+        if (normSerie.targetField === 'pipe_size' && selectPipeSize) {
+          selectPipeSize.value = normSerie.value;
+        } else if (normSerie.targetField === 'flot_capacity' && selectFlotCapacity) {
+          selectFlotCapacity.value = normSerie.value;
+        } else if (normSerie.targetField === 'filt_capacity' && selectFiltCapacity) {
+          selectFiltCapacity.value = normSerie.value;
+        } else if (normSerie.targetField === 'ctrl_spec' && selectCtrlSpec) {
+          selectCtrlSpec.value = normSerie.value;
+        }
+      }
+
+      if (ctx.flot_condition && inputFlotCondition) {
+        inputFlotCondition.value = ctx.flot_condition;
+        flotChips.forEach(function (c) {
+          var isMatch = c.getAttribute('data-flot-cond') === ctx.flot_condition;
+          c.classList.toggle('active', isMatch);
+          c.classList.toggle('chip-ghost', !isMatch);
+          c.setAttribute('data-confirmed', isMatch ? 'true' : 'false');
+          c.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
+        });
+      }
+
+      if (ctx.filt_condition && inputFiltCondition) {
+        inputFiltCondition.value = ctx.filt_condition;
+        filtChips.forEach(function (c) {
+          var isMatch = c.getAttribute('data-filt-cond') === ctx.filt_condition;
+          c.classList.toggle('active', isMatch);
+          c.classList.toggle('chip-ghost', !isMatch);
+          c.setAttribute('data-confirmed', isMatch ? 'true' : 'false');
+          c.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
+        });
       }
 
       if (urlSerie && inputDetails && !urlCodigo) {
@@ -2990,10 +3014,12 @@ export function initQuoteWizardController() {
       }
 
       if (urlMaterial && selectPumpMaterial) {
-        selectPumpMaterial.value = urlMaterial;
+        selectPumpMaterial.value = normalizeMaterialKey(urlMaterial);
+        selectPumpMaterial.dataset.userTouched = 'true';
       }
       if (urlTransmision && selectDriveArrangement) {
         selectDriveArrangement.value = urlTransmision;
+        selectDriveArrangement.dataset.userTouched = 'true';
       }
       if (urlPieza || urlMaterial || urlTransmision || urlEstacion) {
         var partNotes = [];

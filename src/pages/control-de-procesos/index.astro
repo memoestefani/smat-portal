@@ -4,6 +4,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
 import CircuitNavigator from '../../components/CircuitNavigator.astro';
 import SharePurchasing from '../../components/SharePurchasing.astro';
+import rolesData from '../../../data/roles.json';
+
+const ctrlVertical = rolesData.verticals.find((v) => v.id === 'control_procesos');
+const marcyRole = ctrlVertical?.capex?.find((r) => r.role_id === 'balanza_marcy');
+const batchRole = ctrlVertical?.capex?.find((r) => r.role_id === 'filtro_batch_lab');
+const tamizRole = ctrlVertical?.opex?.find((r) => r.role_id === 'tamices_laboratorio');
 ---
 
 <BaseLayout
@@ -58,9 +64,12 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
             <div><strong>Recipiente Calibrado:</strong> 1000 cm³ en Acero Inoxidable 304 o Acrílico transparente con orificios de rebose</div>
             <div><strong>12 Anillos Intercambiables:</strong> Gravedad específica de mineral seco desde SG 2.2 hasta SG 4.4</div>
             <div><strong>Puntos de Control:</strong> Descarga de molino, rebose de hidrociclones, alimentación a flotación y espesadores</div>
+            {marcyRole?.decision_criteria && (
+              <div><strong>Criterio Metalúrgico (roles.json):</strong> {marcyRole.decision_criteria.metallurgy_rule_es} • <em>Riesgo mitigado:</em> {marcyRole.decision_criteria.risk_avoided_es}</div>
+            )}
           </div>
           <div class="control-actions">
-            <a href="/cotizar/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="btn btn-primary">Cotizar Balanza Marcy →</a>
+            <a href="/cotizar/?circuito=control_procesos&equipo=balanza_marcy&serie=Acero%20Inoxidable%208%22#rfq" class="btn btn-primary">Cotizar Balanza Marcy →</a>
             <a href="#metrology-calculator" class="btn btn-outline" data-open-station="1">Simular Carátula Marcy</a>
           </div>
         </article>
@@ -78,10 +87,13 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
           <div class="specs-strip">
             <div><strong>Cámara y Bastidor:</strong> Cilindro vertical de acero pesado o acero inoxidable con barras guía verticales</div>
             <div><strong>Cierre y Sellado:</strong> Husillo superior de rosca trapezoidal con maneral en T y empaque anular</div>
-            <div><strong>Operación Neumática:</strong> Entrada superior con manómetro, válvula de alivio y regulador para 60 a 100 psi</div>
+            <div><strong>Operación Neumática:</strong> Entrada superior con manómetro, válvula de alivio y regulador para 60 a 100 psi ({batchRole?.flow_range})</div>
+            {batchRole?.decision_criteria && (
+              <div><strong>Criterio Metalúrgico (roles.json):</strong> {batchRole.decision_criteria.metallurgy_rule_es} • <em>Riesgo mitigado:</em> {batchRole.decision_criteria.risk_avoided_es}</div>
+            )}
           </div>
           <div class="control-actions">
-            <a href="/cotizar/?circuito=control_procesos&equipo=filtro_batch_lab#rfq" class="btn btn-primary">Cotizar Filtro Batch de Laboratorio →</a>
+            <a href="/cotizar/?circuito=control_procesos&equipo=filtro_batch_lab&serie=Acero%20Inoxidable%208%22#rfq" class="btn btn-primary">Cotizar Filtro Batch de Laboratorio →</a>
             <a href="#metrology-calculator" class="btn btn-outline" data-open-station="2">Simular Ciclos Batch y Masa Pierre Gy</a>
           </div>
         </article>
@@ -92,7 +104,7 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
             <span class="badge badge-copper">GRANULOMETRÍA DE CORTE D80 / P80 • ASTM E11 / ISO 3310</span>
             <h2>Tamices de Laboratorio Certificados ASTM E11 / ISO 3310 y Tamizadores</h2>
             <p style="color: var(--smat-text-secondary);">
-              Tamices de prueba con malla tejida de precisión y marco embutido sin costuras en <strong>Bronce</strong> y <strong>Acero Inoxidable</strong> (diámetros de 8" y 12", altura completa o media altura) para control de corte $P_{80}$ en hidrociclones y balance metalúrgico por mallas.
+              Tamices de prueba con malla tejida de precisión y marco embutido sin costuras en <strong>Bronce</strong> y <strong>Acero Inoxidable</strong> (diámetros de 8" y 12", altura completa o media altura) para control de corte P<sub>80</sub> en hidrociclones y balance metalúrgico por mallas.
             </p>
           </div>
           <TechnicalDiagrams diagram="sieves" lang="es" />
@@ -100,9 +112,12 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
             <div><strong>Rango de Aberturas:</strong> Desde 5" (125 mm) hasta malla #635 (20 µm) en serie Tyler / ASTM √2</div>
             <div><strong>Configuración de Marco:</strong> 8" (203 mm) y 12" (305 mm) en Acero Inoxidable 304/316 o Bronce, con tapa y cazuela receptora</div>
             <div><strong>Equipos Complementarios:</strong> Tamizadores mecánicos Ro-Tap / electromagnéticos y cuarteadores Riffle</div>
+            {tamizRole?.decision_criteria && (
+              <div><strong>Criterio Metalúrgico (roles.json):</strong> {tamizRole.decision_criteria.metallurgy_rule_es} • <em>Riesgo mitigado:</em> {tamizRole.decision_criteria.risk_avoided_es}</div>
+            )}
           </div>
           <div class="control-actions">
-            <a href="/cotizar/?circuito=control_procesos&equipo=tamices_laboratorio#rfq" class="btn btn-primary">Cotizar Batería de Tamices ASTM →</a>
+            <a href="/cotizar/?circuito=control_procesos&equipo=tamices_laboratorio&serie=Acero%20Inoxidable%208%22#rfq" class="btn btn-primary">Cotizar Batería de Tamices ASTM →</a>
             <a href="#metrology-calculator" class="btn btn-outline" data-open-station="3">Calcular Serie √2 y Rosin-Rammler</a>
           </div>
         </article>
@@ -114,14 +129,14 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
           <span class="badge badge-copper">HERRAMIENTA DE CONTROL METALÚRGICO EN PLANTA</span>
           <h2>Simulador de Carátula Marcy, Filtro Prensa Lab (Pierre Gy) y Serie √2 ASTM E11</h2>
           <p style="color: var(--smat-text-secondary); margin: 0;">
-            Seleccione la estación activa del banco metrológico para calibrar densidad de pulpa ($S_s$, $C_w$), masa mínima de muestreo y ciclos de filtración (Pierre Gy), o la serie de 7 tamices ASTM E11 ($P_{80}$, Rosin-Rammler $y'$).
+            Seleccione la estación activa del banco metrológico para calibrar densidad de pulpa (S<sub>s</sub>, C<sub>w</sub>), masa mínima de muestreo y ciclos de filtración (Pierre Gy), o la serie de 7 tamices ASTM E11 (P<sub>80</sub>, Rosin-Rammler <em>y'</em>).
           </p>
         </div>
 
         <div class="metrology-stations-stack">
           <details class="metrology-station-accordion" data-station-accordion="1" open>
             <summary class="metrology-station-summary">
-              <span><strong>1. Balanza Marcy:</strong> Gravedad Específica del Mineral Seco ($S_s$) y % Sólidos ($C_w$)</span>
+              <span><strong>1. Balanza Marcy:</strong> Gravedad Específica del Mineral Seco (S<sub>s</sub>) y % Sólidos (C<sub>w</sub>)</span>
               <span class="metrology-station-tag">ESTACIÓN 01 • ACTIVA</span>
             </summary>
             <div class="metrology-inputs-grid">
@@ -134,15 +149,15 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
                 </select>
               </label>
               <label class="metrology-field">
-                <span>Gravedad Específica del Mineral Seco ($S_s$):</span>
+                <span>Gravedad Específica del Mineral Seco (S<sub>s</sub>):</span>
                 <input type="number" id="met-sg-input" min="2.2" max="4.4" step="0.05" value="2.8" />
               </label>
               <label class="metrology-field">
-                <span>Porcentaje de Sólidos en Peso ($C_w$ %):</span>
+                <span>Porcentaje de Sólidos en Peso (C<sub>w</sub> %):</span>
                 <input type="number" id="met-cw-input" min="5" max="80" step="1" value="50" />
               </label>
               <label class="metrology-field">
-                <span>Densidad de Pulpa Medida ($\rho_p$ kg/L — Bidireccional):</span>
+                <span>Densidad de Pulpa Medida (ρ<sub>p</sub> kg/L — Bidireccional):</span>
                 <input type="number" id="met-rhop-input" min="1.05" max="2.60" step="0.005" value="1.474" />
               </label>
             </div>
@@ -161,7 +176,7 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
 
           <details class="metrology-station-accordion" data-station-accordion="2">
             <summary class="metrology-station-summary">
-              <span><strong>2. Filtro Prensa Lab + Pierre Gy:</strong> Masa Mínima de Muestra ($M_s$) y Ciclos Batch (60–100 psi)</span>
+              <span><strong>2. Filtro Prensa Lab + Pierre Gy:</strong> Masa Mínima de Muestra (M<sub>s</sub>) y Ciclos Batch (60–100 psi)</span>
               <span class="metrology-station-tag">ESTACIÓN 02 ▾</span>
             </summary>
             <div class="metrology-inputs-grid">
@@ -173,7 +188,7 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
                 </select>
               </label>
               <label class="metrology-field">
-                <span>Tamaño Máximo $d_{95}$ de Partícula (mm):</span>
+                <span>Tamaño Máximo d<sub>95</sub> de Partícula (mm):</span>
                 <input type="number" id="met-gy-d95-input" min="0.04" max="25.0" step="0.01" value="0.105" />
               </label>
               <label class="metrology-field">
@@ -181,11 +196,11 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
                 <input type="number" id="met-gy-lib-input" min="10" max="1000" step="5" value="100" />
               </label>
               <label class="metrology-field">
-                <span>Ley Mineral Decimal ($a_L$ — 0.005 a 0.60):</span>
+                <span>Ley Mineral Decimal (a<sub>L</sub> — 0.005 a 0.60):</span>
                 <input type="number" id="met-gy-grade-input" min="0.001" max="0.80" step="0.005" value="0.05" />
               </label>
               <label class="metrology-field">
-                <span>Constante Mineralógica de Pierre Gy $c$ (g/cm³):</span>
+                <span>Constante Mineralógica de Pierre Gy <em>c</em> (g/cm³):</span>
                 <input type="number" id="met-gy-c-input" min="0.5" max="15.0" step="0.1" value="4.0" />
               </label>
               <label class="metrology-field">
@@ -206,16 +221,16 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
 
           <details class="metrology-station-accordion" data-station-accordion="3">
             <summary class="metrology-station-summary">
-              <span><strong>3. Tamices ASTM E11:</strong> Corte $P_{80}$ Objetivo, Serie √2 y Linealización Rosin-Rammler ($y'$)</span>
+              <span><strong>3. Tamices ASTM E11:</strong> Corte P<sub>80</sub> Objetivo, Serie √2 y Linealización Rosin-Rammler (<em>y'</em>)</span>
               <span class="metrology-station-tag">ESTACIÓN 03 ▾</span>
             </summary>
             <div class="metrology-inputs-grid">
               <label class="metrology-field">
-                <span>Corte $P_{80}$ Objetivo de Molienda (µm):</span>
+                <span>Corte P<sub>80</sub> Objetivo de Molienda (µm):</span>
                 <input type="number" id="met-p80-input" min="25" max="2000" step="5" value="75" />
               </label>
               <label class="metrology-field">
-                <span>Módulo de Uniformidad Rosin-Rammler ($n$):</span>
+                <span>Módulo de Uniformidad Rosin-Rammler (<em>n</em>):</span>
                 <input type="number" id="met-rr-n-input" min="0.60" max="2.20" step="0.05" value="1.25" />
               </label>
               <label class="metrology-field">
@@ -290,9 +305,17 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
     </div>
   </section>
 
-  <section class="section" style="background-color: #ffffff; border-top: 1px solid var(--smat-border-light); border-bottom: 1px solid var(--smat-border-light);">
+  <section class="section" style="background-color: #ffffff; border-top: 1px solid var(--smat-border-light); border-bottom: 1px solid var(--smat-border-light); padding: 1.5rem 0;">
     <div class="container">
-      <CircuitNavigator lang="es" />
+      <details class="metrology-circuit-drawer" id="metrology-circuit-drawer">
+        <summary class="metrology-circuit-drawer-summary">
+          <span><strong>Explorador de Circuito P&ID Completo (9 Nodos Metalúrgicos)</strong> — Ver dónde se integra el control metrológico en Molienda, Flotación y Desaguado</span>
+          <span class="badge badge-copper">EXPANDIR MAPA P&ID ▾</span>
+        </summary>
+        <div style="margin-top: 1.25rem;">
+          <CircuitNavigator lang="es" />
+        </div>
+      </details>
     </div>
   </section>
 </BaseLayout>
@@ -755,29 +778,61 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
     color: var(--smat-text-primary);
     font-family: var(--smat-font-mono);
   }
-  @media (max-width: 640px) {
+  .metrology-circuit-drawer {
+    border: 1px solid var(--smat-border-strong);
+    border-radius: 10px;
+    background: var(--smat-bg-canvas);
+    padding: 0.9rem 1.25rem;
+  }
+  .metrology-circuit-drawer-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-size: 0.88rem;
+    color: var(--smat-text-primary);
+    list-style: none;
+  }
+  @media (max-width: 768px) {
     .page-hero {
-      padding: 0.75rem 0;
+      padding: 0.65rem 0;
     }
     .page-hero h1 {
       font-size: 1.35rem;
       margin: 0.2rem 0;
     }
     .page-hero p {
-      font-size: 0.82rem !important;
+      font-size: 0.8rem !important;
       line-height: 1.3;
-      margin: 0.25rem 0;
+      margin: 0.2rem 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .page-hero div[style*="margin-top: 1.25rem"] {
+      margin-top: 0.5rem !important;
+      gap: 0.45rem !important;
+    }
+    .page-hero .btn {
+      padding: 0.4rem 0.7rem;
+      font-size: 0.75rem;
     }
     #stage-diagnostic {
-      padding-top: 0.65rem;
+      padding-top: 0.55rem;
     }
     .metrology-segmented-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      width: 100%;
       margin-bottom: 0.6rem;
       padding: 0.2rem;
     }
     .metrology-seg-btn {
-      padding: 0.35rem 0.65rem;
-      font-size: 0.76rem;
+      padding: 0.35rem 0.4rem;
+      font-size: 0.72rem;
+      text-align: center;
     }
     .control-block {
       padding: 1rem;

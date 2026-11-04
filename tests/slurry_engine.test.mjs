@@ -454,6 +454,103 @@ test('MS-P4-02 (Tests 222-226): Pinza Termo-Barométrica K_motor,alt, ηr < HR y
   assert.equal(gateClearanceBound.activeTrustBoundaryId, 'bound-unapproved-mods');
 });
 
+// ============================================================================
+// TESTS 227–231 (Sección 2.1): Carburo de Silicio Sinterizado (ceramica_sic),
+// Tenacidad Evans-Wilshaw K_Ic, Vida Modificada ISO 281:2007 L_10mh y
+// Ecuación Waters-NIOSH 1993 LI_eje en Fichas Atómicas
+// ============================================================================
+test('Sección 2.1 (Tests 227-231): Paridad Total Backend — SiC, ISO 281 L10mh, NIOSH 1993 y Normalizadores', async () => {
+  const {
+    WET_END_MATERIAL_MATRIX,
+    selectOptimalMaterial,
+    evaluatePumpAssemblySequence,
+    calculateDriveAndBearingKinematics
+  } = await import('../src/scripts/slurryEngine.js');
+  const {
+    getAtomicPartSpecs,
+    normalizeMaterialKey,
+    normalizeCircuitSerie,
+    parseUrlContextParams
+  } = await import('../src/scripts/workbenchBus.js');
+
+  // Test 227: Matriz de 4 materiales con K_Ic (fractureToughnessMpaSqrtM) y wearMultiplierVsCr27
+  assert.equal(WET_END_MATERIAL_MATRIX.ceramica_sic.fractureToughnessMpaSqrtM, 4.1);
+  assert.equal(WET_END_MATERIAL_MATRIX.ceramica_sic.wearMultiplierVsCr27, 2.25);
+  assert.equal(WET_END_MATERIAL_MATRIX.alto_cromo_cr27.fractureToughnessMpaSqrtM, 20.0);
+  assert.equal(WET_END_MATERIAL_MATRIX.hule_natural.fractureToughnessMpaSqrtM, 12.0);
+  assert.equal(WET_END_MATERIAL_MATRIX.poliuretano.fractureToughnessMpaSqrtM, 14.0);
+
+  // Test 228: selectOptimalMaterial recomienda ceramica_sic en pulpas ácidas severas (pH < 3.5) con corte intermedio (300 < d80 <= 800 µm)
+  const sicRec = selectOptimalMaterial(450, 48, 2.4);
+  assert.equal(sicRec.id, 'ceramica_sic');
+  assert.equal(sicRec.fractureToughnessMpaSqrtM, 4.1);
+  assert.equal(sicRec.wearMultiplierVsCr27, 2.25);
+
+  // Test 229: evaluatePumpAssemblySequence en rama ceramica_sic detecta riesgo de fractura frágil (spalling) con d80 > 800 µm o u2 > 28 m/s
+  const sicSafe = evaluatePumpAssemblySequence({
+    wetEndBranch: 'ceramica_sic',
+    frontClearanceMm: 0.75,
+    particleSizeD80Microns: 450,
+    tipSpeedMs: 22.0
+  });
+  assert.equal(sicSafe.wetEndBranch, 'ceramica_sic');
+  assert.equal(sicSafe.spallingRiskDetected, false);
+  assert.equal(sicSafe.fractureToughnessMpaSqrtM, 4.1);
+
+  const sicSpalling = evaluatePumpAssemblySequence({
+    wetEndBranch: 'ceramica_sic',
+    frontClearanceMm: 0.75,
+    particleSizeD80Microns: 1100,
+    tipSpeedMs: 29.5
+  });
+  assert.equal(sicSpalling.spallingRiskDetected, true);
+  assert.ok(sicSpalling.spallingWarningEs.includes('K_Ic = 4.1'));
+
+  // Test 230: calculateDriveAndBearingKinematics expone ISO 281:2007 L10mh con a_ISO = 1.25 (Laberinto SMAT) vs a_ISO = 0.22 (Fieltro Contaminado)
+  const kin = calculateDriveAndBearingKinematics({
+    arrangement: 'CV',
+    motorRpm: 1780,
+    driverPulleyMm: 180,
+    drivenPulleyMm: 320,
+    impellerDiameterMm: 380,
+    shaftPowerKw: 45,
+    dynamicCapacityCkN: 195,
+    wetEndMaterial: 'ceramica_sic'
+  });
+  assert.equal(kin.aIsoLabyrinthSmat, 1.25);
+  assert.equal(kin.aIsoContaminatedFelt, 0.22);
+  assert.equal(kin.l10mhLabyrinthHours, Math.round(kin.bearingL10Hours * 1.25));
+  assert.equal(kin.l10mhContaminatedHours, Math.round(kin.bearingL10Hours * 0.22));
+  assert.equal(kin.ceramicSafeTipSpeed, true);
+  assert.equal(kin.ceramicSpallingSpeedExceeded, false);
+
+  // Test 231: Waters-NIOSH 1993 en las 6 fichas atómicas y normalizadores de material y serie por circuito
+  const dam028 = getAtomicPartSpecs('DAM028');
+  const d3147 = getAtomicPartSpecs('D3147');
+  const e4147 = getAtomicPartSpecs('E4147');
+  assert.equal(dam028.niosh_rwl_shaft_kg, 11.1);
+  assert.equal(dam028.niosh_ergonomic_tier, 'ASSISTED_SHAFT_MOUNT_2P');
+  assert.equal(d3147.niosh_ergonomic_tier, 'HOIST_MANDATORY');
+  assert.equal(e4147.niosh_ergonomic_tier, 'HOIST_MANDATORY');
+
+  assert.equal(normalizeMaterialKey('A05'), 'alto_cromo_cr27');
+  assert.equal(normalizeMaterialKey('R55'), 'hule_natural');
+  assert.equal(normalizeMaterialKey('PU'), 'poliuretano');
+  assert.equal(normalizeMaterialKey('SiC'), 'ceramica_sic');
+
+  assert.deepEqual(normalizeCircuitSerie('bombeo', '4x3'), { targetField: 'pipe_size', value: '4x3' });
+  assert.deepEqual(normalizeCircuitSerie('flotacion', '100ft³'), { targetField: 'flot_capacity', value: '100ft' });
+  assert.deepEqual(normalizeCircuitSerie('filtracion', '1200x1200'), { targetField: 'filt_capacity', value: '1200' });
+  assert.deepEqual(normalizeCircuitSerie('control_procesos', 'astm_8in'), { targetField: 'ctrl_spec', value: 'astm_8in_inox' });
+
+  const parsedCtx = parseUrlContextParams('?circuito=flotacion&equipo=celda_flotacion&serie=100ft&flot_condition=Sin+espuma+estable&drive_arr=ZVZ');
+  assert.equal(parsedCtx.circuito, 'flotacion');
+  assert.equal(parsedCtx.serie, '100ft');
+  assert.equal(parsedCtx.flot_condition, 'Sin espuma estable');
+  assert.equal(parsedCtx.drive_arr, 'ZVZ');
+});
+
+
 
 
 

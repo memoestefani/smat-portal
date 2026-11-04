@@ -2,6 +2,11 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SharePurchasing from '../../components/SharePurchasing.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
+import rolesData from '../../../data/roles.json';
+
+const flotVertical = rolesData.verticals.find((v) => v.id === 'flotacion');
+const celdaRole = flotVertical?.capex?.find((r) => r.role_id === 'celda_completa');
+const criteria = celdaRole?.decision_criteria;
 ---
 
 <BaseLayout 
@@ -59,8 +64,51 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
               <td>Materiales en Contacto Húmedo</td>
               <td>Poliuretano moldeado y Hule Natural resistente a colectores y espumantes</td>
             </tr>
+            <tr>
+              <td>Rango de Potencia y Capacidad Nominal</td>
+              <td>{celdaRole?.power_range || '15 HP a 60 HP por mecanismo'} • {celdaRole?.flow_range || 'Circuitos de 200 a 1,500 t/d'}</td>
+            </tr>
+            <tr>
+              <td>Cinética de Flotación JKMRC (Gorain 1997)</td>
+              <td>Flujo Superficial de Burbuja S<sub>b</sub> = 6 J<sub>g</sub> / d<sub>32</sub> (50–65 s<sup>-1</sup>) con constante cinética k = P · S<sub>b</sub> · R<sub>f</sub></td>
+            </tr>
           </tbody>
         </table>
+
+        {criteria && (
+          <div class="decision-criteria-panel" data-testid="role-decision-criteria" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #9a3412;">
+            <span class="badge badge-copper">CRITERIOS DE DECISIÓN METALÚRGICA • ROLES.JSON</span>
+            <h3 style="margin: 0.45rem 0 0.75rem; font-size: 1.08rem; color: var(--smat-text-primary);">Matriz de Selección de Celda y Acondicionador ({celdaRole?.series})</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem; font-size: 0.88rem;">
+              <div style="background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <strong style="display: block; color: var(--smat-text-primary); margin-bottom: 0.25rem;">Variables de Pulpa Requeridas</strong>
+                <span style="color: #334155;">{criteria.required_slurry_vars_es}</span>
+              </div>
+              <div style="background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <strong style="display: block; color: #7c2d12; margin-bottom: 0.25rem;">Regla de Construcción y Revestimiento</strong>
+                <span style="color: #334155;">{criteria.metallurgy_rule_es}</span>
+              </div>
+              <div style="background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <strong style="display: block; color: #14532d; margin-bottom: 0.25rem;">Riesgo Operativo Mitigado</strong>
+                <span style="color: #334155;">{criteria.risk_avoided_es}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div class="flotation-selector-box" data-testid="flotation-contextual-selector" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #fffbeb; border: 1px solid #fde68a;">
+          <span class="badge badge-copper">PRE-SELECCIÓN CONTEXTUAL • PUENTE A COTIZADOR</span>
+          <h3 style="margin: 0.45rem 0 0.5rem; font-size: 1.05rem; color: var(--smat-text-primary);">Seleccione Volumen de Celda y Condición Operativa</h3>
+          <p style="font-size: 0.88rem; color: #475569; margin-bottom: 0.85rem;">
+            Pre-cargue directamente la capacidad de celda (50 a 300 ft³) y el régimen químico/abrasivo en la mesa de trabajo RFQ:
+          </p>
+          <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+            <a href="/cotizar/?circuito=flotacion&equipo=celda_flotacion&serie=50ft&flot_condition=sulfuros_alta_agitacion#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">50 ft³ (1.4 m³) • Sulfuros</a>
+            <a href="/cotizar/?circuito=flotacion&equipo=celda_flotacion&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">100 ft³ (2.8 m³) • Sulfuros</a>
+            <a href="/cotizar/?circuito=flotacion&equipo=celda_flotacion&serie=200ft&flot_condition=reactivos_espuma#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">200 ft³ (5.6 m³) • Reactivos / Espuma</a>
+            <a href="/cotizar/?circuito=flotacion&equipo=celda_flotacion&serie=300ft&flot_condition=arena_gruesa_fondo#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">300 ft³ (8.5 m³) • Arena Gruesa Fondo</a>
+          </div>
+        </div>
 
         <SharePurchasing 
           roleTitle="Mecanismo para Celda de Flotación y Acondicionador"
@@ -79,7 +127,7 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
             <p>Solicite su cotización indicando capacidad de celda (ft³) o dimensiones del tanque acondicionador.</p>
           </div>
           <div class="cta-rfq-actions">
-            <a href="/?equipo=celda_flotacion#rfq" class="btn btn-primary btn-lg">
+            <a href="/cotizar/?circuito=flotacion&equipo=celda_flotacion&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq" class="btn btn-primary btn-lg">
               Solicitar Cotización →
             </a>
             <a href="https://wa.me/526183670664?text=Hola%20SMAT%20Minerals,%20requiero%20cotizar%20Mecanismos%20para%20Celdas%20de%20Flotaci%C3%B3n%20y%20Acondicionadores" target="_blank" rel="noopener noreferrer" class="btn btn-emergency btn-lg">

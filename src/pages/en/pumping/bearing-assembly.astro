@@ -3,6 +3,11 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
 import SharePurchasing from '../../../components/SharePurchasing.astro';
+import rolesData from '../../../../data/roles.json';
+
+const allRoles = (rolesData.verticals || []).flatMap((v) => [...(v.capex || []), ...(v.opex || [])]);
+const soporteRole = allRoles.find((r) => r.role_id === 'soporte');
+const dc = soporteRole?.decision_criteria;
 ---
 
 <BaseLayout 
@@ -71,10 +76,79 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
               Keeping a complete <strong>Bearing Assembly / Housing</strong> in plant inventory allows maintenance crews to swap the entire drive end in minutes during a scheduled shutdown and adjust front impeller-to-throatbush clearance using the bottom adjusting screw.
             </p>
             <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light); display: flex; flex-direction: column; gap: 0.6rem;">
-              <a href="/en/quote/?equipo=soporte_rodamiento&pieza=bearing_assembly#rfq" class="btn btn-primary" style="width: 100%; text-align: center;">Quote Bearing Assembly / Housing →</a>
+              <a href="/en/quote/?circuito=bombeo&equipo=kit_rodamientos&pieza=bearing_assembly&estacion=S1#rfq" class="btn btn-primary" style="width: 100%; text-align: center;">Quote Bearing Assembly / Housing →</a>
               <a href="/en/pumping/#how-a-slurry-pump-is-assembled" class="btn btn-outline" style="width: 100%; text-align: center;">View Station 1 & Axial Adjustment (δ) →</a>
             </div>
           </div>
+
+          {dc && (
+            <div class="card" data-testid="role-decision-criteria" style="margin-top: 1rem; background: #f8fafc; border-left: 4px solid #7c2d12; padding: 1rem;">
+              <span class="font-mono-tech" style="font-size: 0.72rem; font-weight: 800; color: #7c2d12; display: block; margin-bottom: 0.35rem;">[ENGINEERING DECISION CRITERIA — STATION 01]</span>
+              <p style="font-size: 0.84rem; margin-bottom: 0.4rem;"><strong>Metallurgical Rule:</strong> {dc.metallurgy_rule_en}</p>
+              <p style="font-size: 0.84rem; margin-bottom: 0.4rem;"><strong>Critical Variables:</strong> {dc.required_slurry_vars_en}</p>
+              <p style="font-size: 0.84rem; margin: 0; color: #7f1d1d;"><strong>Avoided Risk:</strong> {dc.risk_avoided_en}</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <!-- ISO 281:2007 L10h & Modified Life L10mh Inspector (INV-SMAT-SCI-29) -->
+      <div class="card" data-bearing-inspector style="margin-top: 2rem; background: #f8fafc; border: 1.5px solid #cbd5e1;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.85rem;">
+          <span class="badge badge-copper">ISO 281:2007 RATING (p = 10/3)</span>
+          <span class="font-mono-tech" style="font-size:0.75rem; font-weight:700; color:#0c4a6e;">L₁₀ₘₕ = a_ISO(e_c·C_u/P, κ) · (C/P)^(10/3)</span>
+        </div>
+        <h3>Modified Bearing Life L₁₀ₘₕ Inspector (Labyrinth Seal vs Contaminated Felt) & Radial Belt Load Fᵣ</h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:0.75rem; margin-top:0.85rem;">
+          <label style="display:flex; flex-direction:column; gap:0.3rem; font-size:0.8rem; font-weight:700;">
+            <span>Drive Arrangement:</span>
+            <select data-bear-arr style="padding:0.4rem; border:1px solid #cbd5e1; border-radius:6px;">
+              <option value="CV" selected>CV — Overhead Motor</option>
+              <option value="ZVZ">ZVZ — Elevated Rear Motor</option>
+              <option value="CRZ">CRZ — Side-by-Side Skid Motor</option>
+              <option value="DC">DC — Direct Inline Coupling (Fᵣ = 0 kN)</option>
+            </select>
+          </label>
+          <label style="display:flex; flex-direction:column; gap:0.3rem; font-size:0.8rem; font-weight:700;">
+            <span>Dynamic Capacity C (kN):</span>
+            <select data-bear-c style="padding:0.4rem; border:1px solid #cbd5e1; border-radius:6px;">
+              <option value="95">95 kN — Frame C (3x2 / 4x3)</option>
+              <option value="195" selected>195 kN — Frame D (6x4)</option>
+              <option value="285">285 kN — Frame E (8x6)</option>
+              <option value="390">390 kN — Frame F (10x8 / 12x10)</option>
+            </select>
+          </label>
+          <label style="display:flex; flex-direction:column; gap:0.3rem; font-size:0.8rem; font-weight:700;">
+            <span>Shaft Power P (kW): <strong data-bear-kw-lbl>45 kW</strong></span>
+            <input type="range" min="15" max="250" step="5" value="45" data-bear-kw />
+          </label>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:0.75rem; margin-top:1rem;">
+          <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:0.75rem;">
+            <span class="font-mono-tech" style="font-size:0.68rem; color:#475569; font-weight:800;">RADIAL BELT LOAD (Fᵣ) & P_eq</span>
+            <div style="font-size:1.1rem; font-weight:800; color:var(--smat-text-primary);" data-bear-fr>6.71 kN (P = 14.81 kN)</div>
+            <div style="font-size:0.75rem; color:#334155;" data-bear-rpm>n₂ = 1001 RPM • u₂ = 19.92 m/s</div>
+          </div>
+          <div style="background:#ecfdf5; border:1px solid #6ee7b7; border-radius:8px; padding:0.75rem;">
+            <span class="font-mono-tech" style="font-size:0.68rem; color:#065f46; font-weight:800;">MODIFIED LIFE SMAT LABYRINTH SEAL</span>
+            <div style="font-size:1.1rem; font-weight:800; color:#065f46;" data-bear-l10mh-lab>52,438 h (a_ISO = 1.25×)</div>
+            <div style="font-size:0.75rem; color:#047857;" data-bear-l10h>Base ISO 281 L₁₀h = 41,950 h (e_c ≥ 0.6)</div>
+          </div>
+          <div style="background:#fef2f2; border:1px solid #fca5a5; border-radius:8px; padding:0.75rem;">
+            <span class="font-mono-tech" style="font-size:0.68rem; color:#991b1b; font-weight:800;">CONTAMINATED FELT SEAL RISK</span>
+            <div style="font-size:1.1rem; font-weight:800; color:#991b1b;" data-bear-l10mh-cont>9,229 h (a_ISO = 0.22×)</div>
+            <div style="font-size:0.75rem; color:#7f1d1d;">Silica ingress (e_c ≤ 0.1) cuts life by -82%</div>
+          </div>
+        </div>
+        <div style="margin-top:0.85rem;">
+          <a
+            href="/en/quote/?circuito=bombeo&equipo=kit_rodamientos&pieza=bearing_assembly&estacion=S1&transmision=CV&cap_c_kn=195&l10h=41950#rfq"
+            class="btn btn-primary"
+            data-bear-cta
+          >
+            Quote Calibrated Bearing Assembly →
+          </a>
         </div>
       </div>
 
@@ -91,9 +165,62 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
   </section>
 </BaseLayout>
 
+<script>
+  import { calculateDriveAndBearingKinematics } from '../../../scripts/slurryEngine.js';
+
+  function initBearingInspectorEn() {
+    const box = document.querySelector('[data-bearing-inspector]');
+    if (!box) return;
+    const arrSel = box.querySelector('[data-bear-arr]') as HTMLSelectElement | null;
+    const cSel = box.querySelector('[data-bear-c]') as HTMLSelectElement | null;
+    const kwInput = box.querySelector('[data-bear-kw]') as HTMLInputElement | null;
+    const kwLbl = box.querySelector('[data-bear-kw-lbl]');
+    const frEl = box.querySelector('[data-bear-fr]');
+    const rpmEl = box.querySelector('[data-bear-rpm]');
+    const l10hEl = box.querySelector('[data-bear-l10h]');
+    const labEl = box.querySelector('[data-bear-l10mh-lab]');
+    const contEl = box.querySelector('[data-bear-l10mh-cont]');
+    const ctaEl = box.querySelector('[data-bear-cta]') as HTMLAnchorElement | null;
+
+    const update = () => {
+      const arrangement = arrSel?.value || 'CV';
+      const dynamicCapacityCkN = Number(cSel?.value) || 195;
+      const shaftPowerKw = Number(kwInput?.value) || 45;
+      if (kwLbl) kwLbl.textContent = `${shaftPowerKw} kW`;
+      const res = calculateDriveAndBearingKinematics({
+        arrangement,
+        dynamicCapacityCkN,
+        shaftPowerKw
+      });
+      if (frEl) frEl.textContent = `${res.beltRadialLoadKn.toFixed(2)} kN (P = ${res.equivalentLoadPkN.toFixed(2)} kN)`;
+      if (rpmEl) rpmEl.textContent = `n₂ = ${res.pumpRpm} RPM • u₂ = ${res.tipSpeedMs.toFixed(2)} m/s`;
+      if (l10hEl) l10hEl.textContent = `Base ISO 281 L₁₀h = ${res.bearingL10Hours.toLocaleString('en-US')} h (e_c ≥ 0.6)`;
+      if (labEl) labEl.textContent = `${res.l10mhLabyrinthHours.toLocaleString('en-US')} h (a_ISO = 1.25×)`;
+      if (contEl) contEl.textContent = `${res.l10mhContaminatedHours.toLocaleString('en-US')} h (a_ISO = 0.22×)`;
+      if (ctaEl) {
+        ctaEl.href = `/en/quote/?circuito=bombeo&equipo=kit_rodamientos&pieza=bearing_assembly&estacion=S1&transmision=${res.arrangement}&cap_c_kn=${res.dynamicCapacityCkN}&power_kw=${res.shaftPowerKw}&fr_kn=${res.beltRadialLoadKn.toFixed(2)}&l10h=${res.bearingL10Hours}#rfq`;
+      }
+    };
+
+    [arrSel, cSel, kwInput].forEach((el) => {
+      el?.addEventListener('input', update);
+      el?.addEventListener('change', update);
+    });
+    update();
+  }
+
+  initBearingInspectorEn();
+  document.addEventListener('astro:page-load', initBearingInspectorEn);
+</script>
+
 <style>
   .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 2.75rem 0; border-bottom: 2px solid var(--smat-copper-accent); }
   .page-hero h1 { color: var(--smat-text-primary); margin-top: 0.5rem; }
   .back-link { color: var(--smat-copper-accent); font-size: 0.9rem; font-weight: 700; text-decoration: none; }
   .back-link:hover { text-decoration: underline; }
+  @media (max-width: 640px) {
+    .page-hero { padding: 0.75rem 0; }
+    .page-hero h1 { font-size: 1.35rem; margin: 0.2rem 0; }
+    .page-hero p { font-size: 0.82rem !important; line-height: 1.3; margin: 0.2rem 0; }
+  }
 </style>

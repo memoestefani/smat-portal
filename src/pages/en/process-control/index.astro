@@ -4,6 +4,12 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
 import CircuitNavigator from '../../../components/CircuitNavigator.astro';
 import SharePurchasing from '../../../components/SharePurchasing.astro';
+import rolesData from '../../../../data/roles.json';
+
+const ctrlVertical = rolesData.verticals.find((v) => v.id === 'control_procesos');
+const marcyRole = ctrlVertical?.capex?.find((r) => r.role_id === 'balanza_marcy');
+const batchRole = ctrlVertical?.capex?.find((r) => r.role_id === 'filtro_batch_lab');
+const tamizRole = ctrlVertical?.opex?.find((r) => r.role_id === 'tamices_laboratorio');
 ---
 
 <BaseLayout
@@ -58,9 +64,12 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
             <div><strong>Calibrated Cup:</strong> 1000 cm³ in 304 Stainless Steel or clear Acrylic with overflow slots</div>
             <div><strong>12 Interchangeable Rings:</strong> Dry ore specific gravity from SG 2.2 up to SG 4.4</div>
             <div><strong>Control Points:</strong> Mill discharge, hydrocyclone overflow, flotation feed, and thickener underflow</div>
+            {marcyRole?.decision_criteria && (
+              <div><strong>Metallurgical Rule (roles.json):</strong> {marcyRole.decision_criteria.metallurgy_rule_en} • <em>Risk mitigated:</em> {marcyRole.decision_criteria.risk_avoided_en}</div>
+            )}
           </div>
           <div class="control-actions">
-            <a href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="btn btn-primary">Quote Marcy Scale →</a>
+            <a href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy&serie=Acero%20Inoxidable%208%22#rfq" class="btn btn-primary">Quote Marcy Scale →</a>
             <a href="#metrology-calculator" class="btn btn-outline" data-open-station="1">Simulate Marcy Dial Reading</a>
           </div>
         </article>
@@ -78,10 +87,13 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
           <div class="specs-strip">
             <div><strong>Chamber & Frame:</strong> Heavy-duty carbon steel or stainless steel vertical cylinder with guide rods</div>
             <div><strong>Top Closure & Seal:</strong> Trapezoidal lead-screw T-handle clamp and O-ring sealing lid</div>
-            <div><strong>Pneumatic Operation:</strong> Top compressed-air inlet with pressure gauge, relief valve, and regulator for 60 to 100 psi</div>
+            <div><strong>Pneumatic Operation:</strong> Top compressed-air inlet with pressure gauge, relief valve, and regulator for 60 to 100 psi ({batchRole?.flow_range})</div>
+            {batchRole?.decision_criteria && (
+              <div><strong>Metallurgical Rule (roles.json):</strong> {batchRole.decision_criteria.metallurgy_rule_en} • <em>Risk mitigated:</em> {batchRole.decision_criteria.risk_avoided_en}</div>
+            )}
           </div>
           <div class="control-actions">
-            <a href="/en/quote/?circuito=control_procesos&equipo=filtro_batch_lab#rfq" class="btn btn-primary">Quote Lab Batch Pressure Filter →</a>
+            <a href="/en/quote/?circuito=control_procesos&equipo=filtro_batch_lab&serie=Acero%20Inoxidable%208%22#rfq" class="btn btn-primary">Quote Lab Batch Pressure Filter →</a>
             <a href="#metrology-calculator" class="btn btn-outline" data-open-station="2">Simulate Batch Cycles & Pierre Gy Mass</a>
           </div>
         </article>
@@ -92,7 +104,7 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
             <span class="badge badge-copper">D80 / P80 PARTICLE SIZE CONTROL • ASTM E11 / ISO 3310</span>
             <h2>Certified ASTM E11 / ISO 3310 Test Sieves & Sieve Shakers</h2>
             <p style="color: var(--smat-text-secondary);">
-              Precision woven-wire test sieves with seamless spun frames in <strong>Brass</strong> and <strong>Stainless Steel</strong> (8" and 12" diameters, full-height or half-height) for hydrocyclone $P_{80}$ cut verification and size-by-size metallurgical balances.
+              Precision woven-wire test sieves with seamless spun frames in <strong>Brass</strong> and <strong>Stainless Steel</strong> (8" and 12" diameters, full-height or half-height) for hydrocyclone P<sub>80</sub> cut verification and size-by-size metallurgical balances.
             </p>
           </div>
           <TechnicalDiagrams diagram="sieves" lang="en" />
@@ -100,9 +112,12 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
             <div><strong>Aperture Range:</strong> From 5" (125 mm) down to #635 mesh (20 µm) in Tyler / ASTM √2 progression</div>
             <div><strong>Frame Options:</strong> 8" (203 mm) and 12" (305 mm) in 304/316 Stainless Steel or Brass, with cover and receiver pan</div>
             <div><strong>Accessory Equipment:</strong> Mechanical / electromagnetic sieve shakers and Riffle sample splitters</div>
+            {tamizRole?.decision_criteria && (
+              <div><strong>Metallurgical Rule (roles.json):</strong> {tamizRole.decision_criteria.metallurgy_rule_en} • <em>Risk mitigated:</em> {tamizRole.decision_criteria.risk_avoided_en}</div>
+            )}
           </div>
           <div class="control-actions">
-            <a href="/en/quote/?circuito=control_procesos&equipo=tamices_laboratorio#rfq" class="btn btn-primary">Quote ASTM Sieve Stack →</a>
+            <a href="/en/quote/?circuito=control_procesos&equipo=tamices_laboratorio&serie=Acero%20Inoxidable%208%22#rfq" class="btn btn-primary">Quote ASTM Sieve Stack →</a>
             <a href="#metrology-calculator" class="btn btn-outline" data-open-station="3">Calculate √2 Series & Rosin-Rammler</a>
           </div>
         </article>
@@ -114,14 +129,14 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
           <span class="badge badge-copper">PLANT METALLURGICAL CONTROL TOOL</span>
           <h2>Marcy Dial Simulator, Lab Filter Press (Pierre Gy) & ASTM E11 √2 Sieve Stack</h2>
           <p style="color: var(--smat-text-secondary); margin: 0;">
-            Select the active metrology station to calibrate pulp density ($S_s$, $C_w$), minimum sample mass and filtration cycles (Pierre Gy), or the 7-sieve ASTM E11 stack ($P_{80}$, Rosin-Rammler $y'$).
+            Select the active metrology station to calibrate pulp density (S<sub>s</sub>, C<sub>w</sub>), minimum sample mass and filtration cycles (Pierre Gy), or the 7-sieve ASTM E11 stack (P<sub>80</sub>, Rosin-Rammler <em>y'</em>).
           </p>
         </div>
 
         <div class="metrology-stations-stack">
           <details class="metrology-station-accordion" data-station-accordion="1" open>
             <summary class="metrology-station-summary">
-              <span><strong>1. Marcy Scale:</strong> Dry Ore Specific Gravity ($S_s$) & % Solids ($C_w$)</span>
+              <span><strong>1. Marcy Scale:</strong> Dry Ore Specific Gravity (S<sub>s</sub>) & % Solids (C<sub>w</sub>)</span>
               <span class="metrology-station-tag">STATION 01 • ACTIVE</span>
             </summary>
             <div class="metrology-inputs-grid">
@@ -134,15 +149,15 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
                 </select>
               </label>
               <label class="metrology-field">
-                <span>Dry Ore Specific Gravity ($S_s$):</span>
+                <span>Dry Ore Specific Gravity (S<sub>s</sub>):</span>
                 <input type="number" id="met-sg-input" min="2.2" max="4.4" step="0.05" value="2.8" />
               </label>
               <label class="metrology-field">
-                <span>Solids by Weight ($C_w$ %):</span>
+                <span>Solids by Weight (C<sub>w</sub> %):</span>
                 <input type="number" id="met-cw-input" min="5" max="80" step="1" value="50" />
               </label>
               <label class="metrology-field">
-                <span>Measured Pulp Density ($\rho_p$ kg/L — Bidirectional):</span>
+                <span>Measured Pulp Density (ρ<sub>p</sub> kg/L — Bidirectional):</span>
                 <input type="number" id="met-rhop-input" min="1.05" max="2.60" step="0.005" value="1.474" />
               </label>
             </div>
@@ -161,7 +176,7 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
 
           <details class="metrology-station-accordion" data-station-accordion="2">
             <summary class="metrology-station-summary">
-              <span><strong>2. Lab Filter Press + Pierre Gy:</strong> Minimum Sample Mass ($M_s$) & Batch Cycles (60–100 psi)</span>
+              <span><strong>2. Lab Filter Press + Pierre Gy:</strong> Minimum Sample Mass (M<sub>s</sub>) & Batch Cycles (60–100 psi)</span>
               <span class="metrology-station-tag">STATION 02 ▾</span>
             </summary>
             <div class="metrology-inputs-grid">
@@ -173,7 +188,7 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
                 </select>
               </label>
               <label class="metrology-field">
-                <span>Top Particle Size $d_{95}$ (mm):</span>
+                <span>Top Particle Size d<sub>95</sub> (mm):</span>
                 <input type="number" id="met-gy-d95-input" min="0.04" max="25.0" step="0.01" value="0.105" />
               </label>
               <label class="metrology-field">
@@ -181,11 +196,11 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
                 <input type="number" id="met-gy-lib-input" min="10" max="1000" step="5" value="100" />
               </label>
               <label class="metrology-field">
-                <span>Decimal Ore Grade ($a_L$ — 0.005 to 0.60):</span>
+                <span>Decimal Ore Grade (a<sub>L</sub> — 0.005 to 0.60):</span>
                 <input type="number" id="met-gy-grade-input" min="0.001" max="0.80" step="0.005" value="0.05" />
               </label>
               <label class="metrology-field">
-                <span>Pierre Gy Mineralogical Constant $c$ (g/cm³):</span>
+                <span>Pierre Gy Mineralogical Constant <em>c</em> (g/cm³):</span>
                 <input type="number" id="met-gy-c-input" min="0.5" max="15.0" step="0.1" value="4.0" />
               </label>
               <label class="metrology-field">
@@ -206,16 +221,16 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
 
           <details class="metrology-station-accordion" data-station-accordion="3">
             <summary class="metrology-station-summary">
-              <span><strong>3. ASTM E11 Sieves:</strong> Target $P_{80}$ Cut, √2 Series & Rosin-Rammler Linearization ($y'$)</span>
+              <span><strong>3. ASTM E11 Sieves:</strong> Target P<sub>80</sub> Cut, √2 Series & Rosin-Rammler Linearization (<em>y'</em>)</span>
               <span class="metrology-station-tag">STATION 03 ▾</span>
             </summary>
             <div class="metrology-inputs-grid">
               <label class="metrology-field">
-                <span>Target Grinding Cut $P_{80}$ (µm):</span>
+                <span>Target Grinding Cut P<sub>80</sub> (µm):</span>
                 <input type="number" id="met-p80-input" min="25" max="2000" step="5" value="75" />
               </label>
               <label class="metrology-field">
-                <span>Rosin-Rammler Uniformity Modulus ($n$):</span>
+                <span>Rosin-Rammler Uniformity Modulus (<em>n</em>):</span>
                 <input type="number" id="met-rr-n-input" min="0.60" max="2.20" step="0.05" value="1.25" />
               </label>
               <label class="metrology-field">
@@ -290,9 +305,17 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
     </div>
   </section>
 
-  <section class="section" style="background-color: #ffffff; border-top: 1px solid var(--smat-border-light); border-bottom: 1px solid var(--smat-border-light);">
+  <section class="section" style="background-color: #ffffff; border-top: 1px solid var(--smat-border-light); border-bottom: 1px solid var(--smat-border-light); padding: 1.5rem 0;">
     <div class="container">
-      <CircuitNavigator lang="en" />
+      <details class="metrology-circuit-drawer" id="metrology-circuit-drawer">
+        <summary class="metrology-circuit-drawer-summary">
+          <span><strong>Full P&ID Circuit Explorer (9 Metallurgical Nodes)</strong> — See how metrology integrates across Grinding, Flotation, and Dewatering</span>
+          <span class="badge badge-copper">EXPAND P&ID MAP ▾</span>
+        </summary>
+        <div style="margin-top: 1.25rem;">
+          <CircuitNavigator lang="en" />
+        </div>
+      </details>
     </div>
   </section>
 </BaseLayout>
@@ -753,29 +776,61 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
     color: var(--smat-text-primary);
     font-family: var(--smat-font-mono);
   }
-  @media (max-width: 640px) {
+  .metrology-circuit-drawer {
+    border: 1px solid var(--smat-border-strong);
+    border-radius: 10px;
+    background: var(--smat-bg-canvas);
+    padding: 0.9rem 1.25rem;
+  }
+  .metrology-circuit-drawer-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-size: 0.88rem;
+    color: var(--smat-text-primary);
+    list-style: none;
+  }
+  @media (max-width: 768px) {
     .page-hero {
-      padding: 0.75rem 0;
+      padding: 0.65rem 0;
     }
     .page-hero h1 {
       font-size: 1.35rem;
       margin: 0.2rem 0;
     }
     .page-hero p {
-      font-size: 0.82rem !important;
+      font-size: 0.8rem !important;
       line-height: 1.3;
-      margin: 0.25rem 0;
+      margin: 0.2rem 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .page-hero div[style*="margin-top: 1.25rem"] {
+      margin-top: 0.5rem !important;
+      gap: 0.45rem !important;
+    }
+    .page-hero .btn {
+      padding: 0.4rem 0.7rem;
+      font-size: 0.75rem;
     }
     #stage-diagnostic {
-      padding-top: 0.65rem;
+      padding-top: 0.55rem;
     }
     .metrology-segmented-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      width: 100%;
       margin-bottom: 0.6rem;
       padding: 0.2rem;
     }
     .metrology-seg-btn {
-      padding: 0.35rem 0.65rem;
-      font-size: 0.76rem;
+      padding: 0.35rem 0.4rem;
+      font-size: 0.72rem;
+      text-align: center;
     }
     .control-block {
       padding: 1rem;

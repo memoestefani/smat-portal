@@ -2,6 +2,11 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SharePurchasing from '../../../components/SharePurchasing.astro';
 import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
+import rolesData from '../../../../data/roles.json';
+
+const flotVertical = rolesData.verticals.find((v) => v.id === 'flotacion');
+const celdaRole = flotVertical?.capex?.find((r) => r.role_id === 'celda_completa');
+const criteria = celdaRole?.decision_criteria;
 ---
 
 <BaseLayout 
@@ -59,8 +64,51 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
               <td>Wetted Materials</td>
               <td>Molded Polyurethane and Natural Rubber resistant to collectors and frothers</td>
             </tr>
+            <tr>
+              <td>Power Rating & Throughput Range</td>
+              <td>{celdaRole?.power_range || '15 HP to 60 HP per mechanism'} • {celdaRole?.flow_range || '200 to 1,500 t/d circuits'}</td>
+            </tr>
+            <tr>
+              <td>JKMRC Flotation Kinetics (Gorain 1997)</td>
+              <td>Bubble Surface Area Flux S<sub>b</sub> = 6 J<sub>g</sub> / d<sub>32</sub> (50–65 s<sup>-1</sup>) with first-order rate constant k = P · S<sub>b</sub> · R<sub>f</sub></td>
+            </tr>
           </tbody>
         </table>
+
+        {criteria && (
+          <div class="decision-criteria-panel" data-testid="role-decision-criteria" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #9a3412;">
+            <span class="badge badge-copper">METALLURGICAL DECISION CRITERIA • ROLES.JSON</span>
+            <h3 style="margin: 0.45rem 0 0.75rem; font-size: 1.08rem; color: var(--smat-text-primary);">Cell & Conditioner Selection Matrix ({celdaRole?.series})</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem; font-size: 0.88rem;">
+              <div style="background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <strong style="display: block; color: var(--smat-text-primary); margin-bottom: 0.25rem;">Required Slurry Variables</strong>
+                <span style="color: #334155;">{criteria.required_slurry_vars_en}</span>
+              </div>
+              <div style="background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <strong style="display: block; color: #7c2d12; margin-bottom: 0.25rem;">Tank & Lining Specification Rule</strong>
+                <span style="color: #334155;">{criteria.metallurgy_rule_en}</span>
+              </div>
+              <div style="background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <strong style="display: block; color: #14532d; margin-bottom: 0.25rem;">Operational Risk Mitigated</strong>
+                <span style="color: #334155;">{criteria.risk_avoided_en}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div class="flotation-selector-box" data-testid="flotation-contextual-selector" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #fffbeb; border: 1px solid #fde68a;">
+          <span class="badge badge-copper">CONTEXTUAL PRE-SELECTION • WORKBENCH BRIDGE</span>
+          <h3 style="margin: 0.45rem 0 0.5rem; font-size: 1.05rem; color: var(--smat-text-primary);">Select Cell Volume & Operating Duty</h3>
+          <p style="font-size: 0.88rem; color: #475569; margin-bottom: 0.85rem;">
+            Pre-populate cell capacity (50 to 300 ft³) and chemical/abrasion regime directly in the RFQ quotation workbench:
+          </p>
+          <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+            <a href="/en/quote/?circuito=flotacion&equipo=celda_flotacion&serie=50ft&flot_condition=sulfuros_alta_agitacion#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">50 ft³ (1.4 m³) • Sulfides</a>
+            <a href="/en/quote/?circuito=flotacion&equipo=celda_flotacion&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">100 ft³ (2.8 m³) • Sulfides</a>
+            <a href="/en/quote/?circuito=flotacion&equipo=celda_flotacion&serie=200ft&flot_condition=reactivos_espuma#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">200 ft³ (5.6 m³) • Reagents / Froth</a>
+            <a href="/en/quote/?circuito=flotacion&equipo=celda_flotacion&serie=300ft&flot_condition=arena_gruesa_fondo#rfq" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.45rem 0.8rem;">300 ft³ (8.5 m³) • Coarse Floor Sand</a>
+          </div>
+        </div>
 
         <SharePurchasing 
           roleTitle="Mechanism for Flotation Cell & Conditioner"
@@ -79,7 +127,7 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
             <p>Request a formal quote specifying cell capacity (ft³) or conditioning tank dimensions.</p>
           </div>
           <div class="cta-rfq-actions">
-            <a href="/en/?equipo=celda_flotacion#rfq" class="btn btn-primary btn-lg">
+            <a href="/en/quote/?circuito=flotacion&equipo=celda_flotacion&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq" class="btn btn-primary btn-lg">
               Request Quotation →
             </a>
             <a href="https://wa.me/526183670664?text=Hello%20SMAT%20Minerals,%20I%20would%20like%20to%20quote%20Mechanisms%20for%20Flotation%20Cells%20and%20Conditioners" target="_blank" rel="noopener noreferrer" class="btn btn-emergency btn-lg">
