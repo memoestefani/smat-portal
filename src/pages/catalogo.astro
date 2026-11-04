@@ -2,9 +2,32 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
 import atomicParts from '../../data/atomic_parts.json';
+import rolesData from '../../data/roles.json';
+import { PIPE_SERIES_DIAMETER_MM, WET_END_MATERIAL_MATRIX } from '../scripts/slurryEngine.js';
+import { getAtomicPartSpecs, formatNioshErgonomicStatus, buildWizardUrl } from '../scripts/workbenchBus.js';
 
 const title = "Catálogo Técnico Digital 2026 | Bombas para Lodos, Mecanismos de Flotación, Filtros Prensa y Balanzas | SMAT Minerals";
-const description = "Catálogo técnico digital con diagramas CAD de bombas para lodos, lotes de contacto húmedo (Alto Cromo, Hule y Poliuretano), Bearing Assembly / Housing, mecanismos de flotación, filtros prensa y balanzas Marcy.";
+const description = "Catálogo técnico digital con diagramas CAD de bombas para lodos (9 series 1.5x1 a 14x12), lotes de contacto húmedo (Alto Cromo, Hule, Poliuretano y SiC Cerámico), Bearing Assembly / Housing, mecanismos de flotación, filtros prensa y laboratorio metrológico.";
+
+const wetEndMaterialsList = Object.values(WET_END_MATERIAL_MATRIX);
+const controlVertical = rolesData.verticals.find((v) => v.id === 'balanzas_marcy');
+const controlProcessItems = controlVertical ? [...(controlVertical.capex || []), ...(controlVertical.opex || [])] : [];
+const enrichedAtomicParts = atomicParts.map((part) => {
+  const spec = getAtomicPartSpecs(part.part_number, '6x4');
+  const niosh = formatNioshErgonomicStatus(spec, 'es');
+  const quoteHref = buildWizardUrl({
+    lang: 'es',
+    circuit: 'bombeo',
+    role: spec.role,
+    code: part.part_number,
+    series: spec.pipe_size || '6x4',
+    station: spec.station,
+    material: part.part_number === 'DAM005' ? undefined : 'alto_cromo_cr27',
+    weightKg: spec.weight_kg,
+    arrangement: 'CV'
+  });
+  return { ...part, spec, niosh, quoteHref };
+});
 ---
 
 <BaseLayout title={title} description={description} lang="es">
@@ -109,14 +132,14 @@ const description = "Catálogo técnico digital con diagramas CAD de bombas para
         </div>
       </div>
 
-      <!-- Tabla Paramétrica Rápida de Series y Marcos (Decisión 2-A) -->
+      <!-- Tabla Paramétrica Rápida de Series y Marcos (9 Series Completas desde PIPE_SERIES_DIAMETER_MM — Decisión 3) -->
       <div class="catalog-table-wrap" id="tabla-parametrica">
         <div class="table-header-flex">
           <div>
-            <h4 class="table-title">Matriz Paramétrica Rápida — Series de Bombeo de Pulpa (4x3 a 10x8)</h4>
-            <span class="table-subtitle">Consolidado dimensional de marcos, pasaje de sólidos (Top Size), potencias y caudales (&lt;15s de inspección)</span>
+            <h4 class="table-title">Matriz Paramétrica Completa — 9 Series de Bombeo de Pulpa (1.5x1" a 14x12")</h4>
+            <span class="table-subtitle">Consolidado dimensional SSOT de las 9 series hidráulicas (`PIPE_SERIES_DIAMETER_MM`), pasaje de sólidos (Top Size), potencias y caudales (&lt;15s de inspección)</span>
           </div>
-          <span class="matrix-badge">NORMA DIMENSIONAL 1:1</span>
+          <span class="matrix-badge">9 SERIES • NORMA DIMENSIONAL 1:1</span>
         </div>
 
         <!-- Mini-Diagrama Esquemático SVG de Cotas de Montaje (Decisión 2-A & 4-A) -->
@@ -151,8 +174,8 @@ const description = "Catálogo técnico digital con diagramas CAD de bombas para
               <text x="300" y="73" font-size="10" font-family="var(--apple-font-mono, monospace)" fill="#2563eb" font-weight="bold" class="svg-dim-d pro-tabular-nums">Cota D</text>
             </svg>
             <div class="diagram-legend">
-              <span class="legend-item"><strong>Ø A:</strong> Diámetro nominal de brida de succión (4" a 10")</span>
-              <span class="legend-item"><strong>Ø B:</strong> Diámetro nominal de brida de descarga (3" a 8")</span>
+              <span class="legend-item"><strong>Ø A:</strong> Diámetro nominal de brida de succión (1.5" a 14")</span>
+              <span class="legend-item"><strong>Ø B:</strong> Diámetro nominal de brida de descarga (1" a 12")</span>
               <span class="legend-item"><strong>Cota C:</strong> Distancia entre centros de anclaje a patines</span>
               <span class="legend-item"><strong>Cota D:</strong> Altura de centro de eje a base de concreto</span>
             </div>
@@ -163,7 +186,7 @@ const description = "Catálogo técnico digital con diagramas CAD de bombas para
           <thead>
             <tr>
               <th>Serie / Marco</th>
-              <th>Succión × Descarga</th>
+              <th>Succión × Descarga (D Hidráulico)</th>
               <th>Caudal Operativo</th>
               <th>Carga Dinámica (TDH)</th>
               <th>Top Size (Sólidos máx)</th>
@@ -174,75 +197,160 @@ const description = "Catálogo técnico digital con diagramas CAD de bombas para
             </tr>
           </thead>
           <tbody>
+            <tr class="dim-row" data-dimension="dim-c" data-series="1.5x1B">
+              <td><span class="series-pill">1.5x1 B</span></td>
+              <td>1.5" ({PIPE_SERIES_DIAMETER_MM['1.5x1']} mm) × 1" (25 mm)</td>
+              <td>7 – 28 m³/h</td>
+              <td>8 – 35 m</td>
+              <td><strong>14 mm</strong></td>
+              <td>5 – 15 HP (3.7-11 kW)</td>
+              <td>Alto Cromo (&gt;650 HB) / Hule / Poliuretano / SiC</td>
+              <td>Muestreo metalúrgico, plantas piloto y rebose de espuma.</td>
+              <td class="no-print"><a href="/cotizar/?circuito=bombeo&equipo=skid_bomba&serie=1.5x1#rfq" class="btn-table-cta">Cotizar 1.5x1 →</a></td>
+            </tr>
+            <tr class="dim-row" data-dimension="dim-c" data-series="2x1.5B">
+              <td><span class="series-pill">2x1.5 B</span></td>
+              <td>2" ({PIPE_SERIES_DIAMETER_MM['2x1.5']} mm) × 1.5" (40 mm)</td>
+              <td>15 – 55 m³/h</td>
+              <td>10 – 40 m</td>
+              <td><strong>19 mm</strong></td>
+              <td>10 – 20 HP (7.5-15 kW)</td>
+              <td>Alto Cromo (&gt;650 HB) / Hule / Poliuretano / SiC</td>
+              <td>Dosificación de lechada de cal, reactivos y limpieza cleaner.</td>
+              <td class="no-print"><a href="/cotizar/?circuito=bombeo&equipo=skid_bomba&serie=2x1.5#rfq" class="btn-table-cta">Cotizar 2x1.5 →</a></td>
+            </tr>
+            <tr class="dim-row" data-dimension="dim-c" data-series="3x2C">
+              <td><span class="series-pill">3x2 C</span></td>
+              <td>3" ({PIPE_SERIES_DIAMETER_MM['3x2']} mm) × 2" (50 mm)</td>
+              <td>25 – 105 m³/h</td>
+              <td>12 – 45 m</td>
+              <td><strong>22 mm</strong></td>
+              <td>15 – 30 HP (11-22 kW)</td>
+              <td>Alto Cromo (&gt;650 HB) / Hule / Poliuretano / SiC</td>
+              <td>Transferencia de concentrados finales y sumideros de piso.</td>
+              <td class="no-print"><a href="/cotizar/?circuito=bombeo&equipo=skid_bomba&serie=3x2#rfq" class="btn-table-cta">Cotizar 3x2 →</a></td>
+            </tr>
             <tr class="dim-row" data-dimension="dim-c" data-series="4x3C">
               <td><span class="series-pill">4x3 C</span></td>
-              <td>4" (100 mm) × 3" (75 mm)</td>
+              <td>4" ({PIPE_SERIES_DIAMETER_MM['4x3']} mm) × 3" (75 mm)</td>
               <td>50 – 180 m³/h</td>
               <td>10 – 45 m</td>
               <td><strong>28 mm</strong></td>
               <td>30 – 50 HP (22-37 kW)</td>
-              <td>Alto Cromo (&gt;650 HB) / Hule / Poliuretano</td>
+              <td>Alto Cromo (&gt;650 HB) / Hule / Poliuretano / SiC</td>
               <td>Alimentación a celdas, sumideros y finos.</td>
               <td class="no-print"><a href="/cotizar/?equipo=skid_bomba&serie=4x3#rfq" class="btn-table-cta">Cotizar 4x3 →</a></td>
             </tr>
             <tr class="dim-row" data-dimension="dim-c" data-series="6x4D">
               <td><span class="series-pill highlight">6x4 D</span></td>
-              <td>6" (150 mm) × 4" (100 mm)</td>
+              <td>6" ({PIPE_SERIES_DIAMETER_MM['6x4']} mm) × 4" (100 mm)</td>
               <td>150 – 450 m³/h</td>
               <td>15 – 60 m</td>
               <td><strong>45 mm</strong></td>
               <td>50 – 100 HP (37-75 kW)</td>
-              <td>Alto Cromo (&gt;650 HB) / Hule / Poliuretano</td>
+              <td>Alto Cromo (&gt;650 HB) / Hule / Poliuretano / SiC</td>
               <td>Descarga de molinos SAG a hidrociclones.</td>
               <td class="no-print"><a href="/cotizar/?equipo=skid_bomba&serie=6x4#rfq" class="btn-table-cta">Cotizar 6x4 →</a></td>
             </tr>
             <tr class="dim-row" data-dimension="dim-c" data-series="8x6E">
               <td><span class="series-pill">8x6 E</span></td>
-              <td>8" (200 mm) × 6" (150 mm)</td>
+              <td>8" ({PIPE_SERIES_DIAMETER_MM['8x6']} mm) × 6" (150 mm)</td>
               <td>350 – 900 m³/h</td>
               <td>20 – 70 m</td>
               <td><strong>63 mm</strong></td>
               <td>100 – 200 HP (75-150 kW)</td>
-              <td>Alto Cromo (&gt;650 HB) / Hule</td>
+              <td>Alto Cromo (&gt;650 HB) / Hule / SiC</td>
               <td>Molienda primaria y jales espesados.</td>
               <td class="no-print"><a href="/cotizar/?equipo=skid_bomba&serie=8x6#rfq" class="btn-table-cta">Cotizar 8x6 →</a></td>
             </tr>
             <tr class="dim-row" data-dimension="dim-c" data-series="10x8F">
               <td><span class="series-pill">10x8 F</span></td>
-              <td>10" (250 mm) × 8" (200 mm)</td>
+              <td>10" ({PIPE_SERIES_DIAMETER_MM['10x8']} mm) × 8" (200 mm)</td>
               <td>700 – 1,200 m³/h</td>
               <td>25 – 80 m</td>
               <td><strong>86 mm</strong></td>
               <td>150 – 250 HP (110-185 kW)</td>
-              <td>Alto Cromo (&gt;650 HB) / Hule</td>
+              <td>Alto Cromo (&gt;650 HB) / Hule / SiC</td>
               <td>Gran caudal de relaves y plantas &gt;1,500 t/d.</td>
               <td class="no-print"><a href="/cotizar/?equipo=skid_bomba&serie=10x8#rfq" class="btn-table-cta">Cotizar 10x8 →</a></td>
+            </tr>
+            <tr class="dim-row" data-dimension="dim-c" data-series="12x10G">
+              <td><span class="series-pill">12x10 G</span></td>
+              <td>12" ({PIPE_SERIES_DIAMETER_MM['12x10']} mm) × 10" (250 mm)</td>
+              <td>1,100 – 2,200 m³/h</td>
+              <td>25 – 85 m</td>
+              <td><strong>95 mm</strong></td>
+              <td>250 – 450 HP (185-335 kW)</td>
+              <td>Alto Cromo (&gt;650 HB) / Hule / SiC</td>
+              <td>Alimentación primaria a baterías de hidrociclones y molinos SAG.</td>
+              <td class="no-print"><a href="/cotizar/?circuito=bombeo&equipo=skid_bomba&serie=12x10#rfq" class="btn-table-cta">Cotizar 12x10 →</a></td>
+            </tr>
+            <tr class="dim-row" data-dimension="dim-c" data-series="14x12G">
+              <td><span class="series-pill">14x12 G</span></td>
+              <td>14" ({PIPE_SERIES_DIAMETER_MM['14x12']} mm) × 12" (300 mm)</td>
+              <td>1,600 – 3,400 m³/h</td>
+              <td>25 – 90 m</td>
+              <td><strong>110 mm</strong></td>
+              <td>400 – 650 HP (300-485 kW)</td>
+              <td>Alto Cromo (&gt;650 HB) / Hule / SiC</td>
+              <td>Mega-concentradoras y conducción principal de relaves espesados.</td>
+              <td class="no-print"><a href="/cotizar/?circuito=bombeo&equipo=skid_bomba&serie=14x12#rfq" class="btn-table-cta">Cotizar 14x12 →</a></td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Fichas Técnicas Atómicas de Piezas de Desgaste (atomic_parts.json) -->
+      <!-- Matriz Tribológica de las 4 Aleaciones en Contacto Húmedo (WET_END_MATERIAL_MATRIX — Decisión 3 & 4) -->
+      <div class="atomic-parts-catalog-block" id="matriz-aleaciones-ssot" style="margin-bottom: 1.5rem;">
+        <div class="table-header-flex">
+          <div>
+            <h4 class="table-title">Matriz Metalúrgica y Tribológica de Extremo Húmedo (4 Aleaciones SSOT)</h4>
+            <span class="table-subtitle">Selección determinista por dureza Vickers/Brinell, tenacidad a la fractura (K_Ic), límite de velocidad periférica (u₂) y proporción de lote 5-5-4</span>
+          </div>
+          <span class="matrix-badge">4 MATERIALES SSOT</span>
+        </div>
+        <div class="atomic-parts-grid">
+          {wetEndMaterialsList.map((mat) => (
+            <div class="atomic-part-card" data-material-key={mat.key}>
+              <div class="atomic-part-top">
+                <span class="series-pill highlight">{mat.code}</span>
+                <span class="atomic-frame-badge">Lote {mat.wearRatio554}</span>
+              </div>
+              <strong class="atomic-part-title">{mat.nameEs}</strong>
+              <p class="atomic-part-desc">{mat.hardness} • u₂ ≤ {mat.maxTipSpeedMs} m/s • d₈₀ {mat.d80RangeMicrons} µm • pH {mat.phRange}</p>
+              <p class="atomic-part-desc" style="font-size:0.75rem; color:#334155;">{mat.dutyApplicationEs}</p>
+              <div class="atomic-part-actions no-print">
+                <a href={buildWizardUrl({ lang: 'es', circuit: 'bombeo', role: 'kit_wet_end', series: '6x4', station: 'S4', material: mat.key, arrangement: 'CV' })} class="btn-card-quote">Cotizar Lote {mat.code} →</a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Fichas Técnicas Atómicas de Piezas de Desgaste (atomic_parts.json + getAtomicPartSpecs + Waters-NIOSH) -->
       <div class="atomic-parts-catalog-block" id="fichas-atomicas">
         <div class="table-header-flex">
           <div>
             <h4 class="table-title">Fichas Técnicas por Número de Parte Universal (Impulsores, Cuellos y Anillos Expulsores)</h4>
-            <span class="table-subtitle">Seleccione el código universal para abrir su especificación metalúrgica individual, dureza certificada y acople dimensional 1:1</span>
+            <span class="table-subtitle">Seleccione el código universal para abrir su especificación metalúrgica individual, masa certificada, ergonomía Waters-NIOSH 1993 y acople dimensional 1:1</span>
           </div>
           <span class="matrix-badge">6 FICHAS ATÓMICAS</span>
         </div>
         <div class="atomic-parts-grid">
-          {atomicParts.map((part) => (
-            <div class="atomic-part-card">
+          {enrichedAtomicParts.map((part) => (
+            <div class="atomic-part-card" data-part-code={part.part_number} data-niosh-tier={part.niosh.tier}>
               <div class="atomic-part-top">
                 <span class="series-pill highlight">{part.part_number}</span>
-                <span class="atomic-frame-badge">Marco {part.frame}</span>
+                <span class="atomic-frame-badge">Marco {part.frame} • {part.spec.station_number}</span>
               </div>
               <strong class="atomic-part-title">{part.name_es}</strong>
               <p class="atomic-part-desc">{part.type_es} • {part.hardness}</p>
+              <p class="atomic-part-desc" style="font-size:0.74rem; color:#0f172a; font-weight:600;">
+                Peso: {part.spec.weight_kg} kg • {part.niosh.badgeEs} • ØD₂ {part.spec.impeller_diameter_mm} mm
+              </p>
               <div class="atomic-part-actions no-print">
                 <a href={`/catalogo/${part.code}/`} class="btn-table-cta">Ver Ficha {part.part_number} →</a>
-                <a href={`/cotizar/?codigo=${part.part_number}&circuito=bombeo#rfq`} class="btn-card-quote">Cotizar →</a>
+                <a href={part.quoteHref} class="btn-card-quote">Cotizar →</a>
               </div>
             </div>
           ))}
@@ -344,17 +452,17 @@ const description = "Catálogo técnico digital con diagramas CAD de bombas para
       </div>
     </section>
 
-    <!-- SECCIÓN 4: BALANZAS DE DENSIDAD DE PULPA (TIPO MARCY) -->
+    <!-- SECCIÓN 4: INSTRUMENTACIÓN DE CONTROL DE PROCESOS (MARCY, FILTRO PIERRE GY Y MALLAS ASTM E11) -->
     <section class="catalog-section" id="balanzas">
       <div class="section-title-wrap">
         <span class="section-num">04</span>
         <div>
-          <h2>Balanzas para Densidad de Pulpa y % de Sólidos (Tipo Marcy)</h2>
-          <span class="section-subtitle">Instrumentación metalúrgica de lectura directa para control en molienda, clasificación y flotación</span>
+          <h2>Instrumentación de Control de Procesos: Balanzas Marcy, Filtro Prensa Lab (Pierre Gy) y Tamices ASTM E11</h2>
+          <span class="section-subtitle">Metrología metalúrgica de lectura directa para densidad de pulpa (ρ_p), desaguado neumático de testigos (100 PSI) y corte granulométrico P80</span>
         </div>
       </div>
 
-      <div class="catalog-grid-2" style="align-items: center;">
+      <div class="catalog-grid-2" style="align-items: center; margin-bottom: 1.5rem;">
         <div class="catalog-card">
           <div class="card-tag">Instrumentación de Control en Planta</div>
           <h3>Balanza Colgante de Densidad de Pulpa con Recipiente de 1000 cm³</h3>
@@ -372,6 +480,35 @@ const description = "Catálogo técnico digital con diagramas CAD de bombas para
 
         <div>
           <TechnicalDiagrams diagram="marcy" lang="es" />
+        </div>
+      </div>
+
+      <!-- Cédula Completa de los 3 Instrumentos de Control de Procesos (data/roles.json — Decisión 3) -->
+      <div class="atomic-parts-catalog-block" id="instrumentos-control-procesos">
+        <div class="table-header-flex">
+          <div>
+            <h4 class="table-title">Estación Metrológica Completa de Control de Procesos (3 Instrumentos SSOT)</h4>
+            <span class="table-subtitle">Sincronizados directamente con el Panel 04 de `/cotizar/` (`control_procesos`) y las leyes de Marcy, Pierre Gy (1979) y Rosin-Rammler ASTM E11</span>
+          </div>
+          <span class="matrix-badge">3 INSTRUMENTOS LAB</span>
+        </div>
+        <div class="atomic-parts-grid">
+          {controlProcessItems.map((inst) => (
+            <div class="atomic-part-card" data-role-id={inst.role_id}>
+              <div class="atomic-part-top">
+                <span class="series-pill highlight">{inst.role_id.toUpperCase()}</span>
+                <span class="atomic-frame-badge">{inst.series}</span>
+              </div>
+              <strong class="atomic-part-title">{inst.title_es}</strong>
+              <p class="atomic-part-desc">{inst.spec_summary_es}</p>
+              <p class="atomic-part-desc" style="font-size:0.74rem; color:#0c4a6e;">
+                <strong>Regla Metrológica:</strong> {inst.decision_criteria?.metallurgy_rule_es}
+              </p>
+              <div class="atomic-part-actions no-print">
+                <a href={buildWizardUrl({ lang: 'es', circuit: 'control_procesos', role: inst.role_id, series: inst.series })} class="btn-card-quote">Cotizar {inst.title_es.split('(')[0].trim()} →</a>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -1042,10 +1179,15 @@ const description = "Catálogo técnico digital con diagramas CAD de bombas para
     var dimD = svg.querySelector('.svg-dim-d');
 
     var seriesDims = {
+      '1.5x1 B': { a: 'Ø 40 mm (1.5")', b: 'Ø 25 mm (1")', c: 'Cota C: 260 mm', d: 'Cota D: 185 mm' },
+      '2x1.5 B': { a: 'Ø 50 mm (2")', b: 'Ø 40 mm (1.5")', c: 'Cota C: 310 mm', d: 'Cota D: 210 mm' },
+      '3x2 C': { a: 'Ø 80 mm (3")', b: 'Ø 50 mm (2")', c: 'Cota C: 370 mm', d: 'Cota D: 245 mm' },
       '4x3 C': { a: 'Ø 100mm (4")', b: 'Ø 75mm (3")', c: 'Cota C: 420mm', d: 'Cota D: 280mm' },
       '6x4 D': { a: 'Ø 150mm (6")', b: 'Ø 100mm (4")', c: 'Cota C: 580mm', d: 'Cota D: 355mm' },
       '8x6 E': { a: 'Ø 200mm (8")', b: 'Ø 150mm (6")', c: 'Cota C: 740mm', d: 'Cota D: 450mm' },
-      '10x8 F': { a: 'Ø 250mm (10")', b: 'Ø 200mm (8")', c: 'Cota C: 920mm', d: 'Cota D: 560mm' }
+      '10x8 F': { a: 'Ø 250mm (10")', b: 'Ø 200mm (8")', c: 'Cota C: 920mm', d: 'Cota D: 560mm' },
+      '12x10 G': { a: 'Ø 300mm (12")', b: 'Ø 250mm (10")', c: 'Cota C: 1120mm', d: 'Cota D: 680mm' },
+      '14x12 G': { a: 'Ø 350mm (14")', b: 'Ø 300mm (12")', c: 'Cota C: 1280mm', d: 'Cota D: 790mm' }
     };
 
     rows.forEach(function(row) {

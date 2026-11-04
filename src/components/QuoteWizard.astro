@@ -16,7 +16,8 @@ import {
 } from '../scripts/slurryEngine.js';
 import {
   SMAT_WORKBENCH_EVENT,
-  getAtomicPartSpecs
+  getAtomicPartSpecs,
+  formatNioshErgonomicStatus
 } from '../scripts/workbenchBus.js';
 
 interface Props {
@@ -36,6 +37,7 @@ const defaultAltData = calculateAltitudeCorrection(2400);
 const defaultClearanceEval = evaluateWetEndAssemblyInterference({ frontClearanceMm: 0.75, impellerExitWidthMm: 48 });
 const defaultKinematics = calculateDriveAndBearingKinematics({ arrangementCode: 'CV', motorRpm: 1775, driverPulleyMm: 220, drivenPulleyMm: 340, motorPowerKw: 55, impellerDiameterMm: 381 });
 const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
+const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es' : 'en');
 const defaultMatSpec = WET_END_MATERIAL_MATRIX.alto_cromo_cr27;
 
 const rolesCriteriaMap: Record<string, { rule_es: string; rule_en: string; risk_es: string; risk_en: string; vars_es: string; vars_en: string; series: string; spec_es: string; spec_en: string; }> = {};
@@ -160,9 +162,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
             <div class="atomic-part-spec-header">
               <span class="atomic-part-spec-tag font-mono-tech" id="wb-part-station-tag">{defaultPartSpecs.station_number} • {defaultPartSpecs.code}</span>
               <span class="atomic-part-niosh-badge" id="wb-part-niosh-badge">
-                {defaultPartSpecs.weight_kg >= 23
-                  ? (isEs ? `Peso: ${defaultPartSpecs.weight_kg} kg • Polipasto / Grúa (NIOSH ≥23 kg)` : `Weight: ${defaultPartSpecs.weight_kg} kg • Hoist / Crane (NIOSH ≥23 kg)`)
-                  : (isEs ? `Peso: ${defaultPartSpecs.weight_kg} kg • Manejo Manual (<23 kg)` : `Weight: ${defaultPartSpecs.weight_kg} kg • Manual Handling (<23 kg)`)}
+                {isEs ? `Peso: ${defaultPartSpecs.weight_kg} kg • ${defaultNioshEval.badgeEs}` : `Weight: ${defaultPartSpecs.weight_kg} kg • ${defaultNioshEval.badgeEn}`}
               </span>
             </div>
             <div class="atomic-part-spec-grid">

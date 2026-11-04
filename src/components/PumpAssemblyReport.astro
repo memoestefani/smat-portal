@@ -8,6 +8,7 @@ import {
   PUMP_ASSEMBLY_STATIONS,
   WET_END_MATERIAL_MATRIX
 } from '../scripts/slurryEngine.js';
+import { formatNioshErgonomicStatus } from '../scripts/workbenchBus.js';
 
 interface Props {
   lang?: 'es' | 'en';
@@ -21,6 +22,7 @@ const secondaryId = isEs ? 'how-a-slurry-pump-is-assembled' : 'como-se-arma-una-
 
 const stations = PUMP_ASSEMBLY_STATIONS.map((st) => ({
   code: st.id,
+  stationKey: `S${st.station}`,
   num: String(st.station).padStart(2, '0'),
   branch: st.station === 3 ? 'bifurcated' : 'common',
   title: isEs ? st.nameEs : st.nameEn,
@@ -31,19 +33,24 @@ const stations = PUMP_ASSEMBLY_STATIONS.map((st) => ({
 const wetEndMatrixRef = WET_END_MATERIAL_MATRIX;
 
 // Fuente única de verdad desde slurryEngine.js (rango canónico pos: '01' a pos: '14')
-const bomItems = PUMP_554_BOM_14_PARTS.map((item) => ({
-  pos: item.pos,
-  station: item.station,
-  branch: item.branch,
-  branchLabel: isEs ? item.branchLabelEs : item.branchLabelEn,
-  name: isEs ? item.nameEs : item.nameEn,
-  spec: isEs ? item.specEs : item.specEn,
-  weightKg: item.weightKg,
-  nioshHoistRequired: item.nioshHoistRequired,
-  equipo: item.equipo,
-  pieza: item.pieza,
-  material: item.material
-}));
+const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
+  const niosh = formatNioshErgonomicStatus(item.weightKg, isEs ? 'es' : 'en');
+  return {
+    pos: item.pos,
+    station: item.station,
+    branch: item.branch,
+    branchLabel: isEs ? item.branchLabelEs : item.branchLabelEn,
+    name: isEs ? item.nameEs : item.nameEn,
+    spec: isEs ? item.specEs : item.specEn,
+    weightKg: item.weightKg,
+    nioshHoistRequired: item.nioshHoistRequired,
+    nioshTier: niosh.tier,
+    nioshBadge: isEs ? niosh.badgeEs : niosh.badgeEn,
+    equipo: item.equipo,
+    pieza: item.pieza,
+    material: item.material
+  };
+});
 ---
 
 <section
@@ -100,9 +107,21 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => ({
           aria-selected="false"
           class="branch-tab"
           data-assembly-branch-btn="hule_natural"
+          data-branch-btn="hule_natural"
           title={isEs ? wetEndMatrixRef.hule_natural.idealForEs : wetEndMatrixRef.hule_natural.idealForEn}
         >
           {isEs ? `Rama B: ${wetEndMatrixRef.hule_natural.nameEs} / ${wetEndMatrixRef.poliuretano.code}` : `Branch B: ${wetEndMatrixRef.hule_natural.nameEn} / ${wetEndMatrixRef.poliuretano.code}`}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected="false"
+          class="branch-tab"
+          data-assembly-branch-btn="ceramica_sic"
+          data-branch-btn="ceramica_sic"
+          title={isEs ? wetEndMatrixRef.ceramica_sic.idealForEs : wetEndMatrixRef.ceramica_sic.idealForEn}
+        >
+          {isEs ? `Rama C: ${wetEndMatrixRef.ceramica_sic.nameEs} (δ=0.65 mm)` : `Branch C: ${wetEndMatrixRef.ceramica_sic.nameEn} (δ=0.65 mm)`}
         </button>
       </div>
 
@@ -273,6 +292,14 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => ({
         <div class="station-card__tol">
           <strong>{isEs ? 'Control:' : 'Check:'}</strong> {st.tolerance}
         </div>
+        <a
+          href={`${quoteBase}?circuito=bombeo&equipo=bombeo_hule_cromo&estacion=${st.stationKey}&material=alto_cromo_cr27&claro_mm=0.75&b2_mm=48&seal_branch=expeller_dry#rfq`}
+          class="station-cta-btn no-print"
+          data-station-cta={st.stationKey}
+          data-quote-base={quoteBase}
+        >
+          {isEs ? `Cotizar ${st.code} →` : `Quote ${st.code} →`}
+        </a>
       </article>
     ))}
   </div>
@@ -300,6 +327,7 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => ({
           </span>
           <input
             type="range"
+            id="clearance-slider-s5"
             min="0.10"
             max="5.00"
             step="0.05"
@@ -420,9 +448,9 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => ({
         </thead>
         <tbody>
           {bomItems.map((row) => {
-            const href = `${quoteBase}?equipo=${row.equipo}&pieza=${row.pieza}&material=${row.material}&estacion=${row.station}#rfq`;
+            const href = `${quoteBase}?circuito=bombeo&equipo=${row.equipo}&pieza=${row.pieza}&material=${row.material}&estacion=${row.station}&peso_kg=${row.weightKg}&claro_mm=0.75&b2_mm=48&seal_branch=expeller_dry#rfq`;
             return (
-              <tr data-bom-row data-bom-branch={row.branch} data-bom-pos={row.pos}>
+              <tr data-bom-row data-bom-branch={row.branch} data-bom-pos={row.pos} data-niosh-tier={row.nioshTier}>
                 <td class="bom-col-pos">#{row.pos}</td>
                 <td class="bom-col-station"><code>{row.station}</code></td>
                 <td class="bom-col-branch">
@@ -431,15 +459,23 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => ({
                 <td class="bom-col-name"><strong>{row.name}</strong></td>
                 <td class="bom-col-mass">
                   <strong>{row.weightKg} kg</strong>
-                  <span class="bom-niosh-tag" style="display:block;font-size:0.72rem;opacity:0.82;">
-                    {row.nioshHoistRequired
-                      ? (isEs ? 'Polipasto ≥23 kg' : 'Hoist ≥23 kg')
-                      : (isEs ? 'Manual <23 kg' : 'Manual <23 kg')}
+                  <span class="bom-niosh-tag" style="display:block;font-size:0.72rem;opacity:0.86;">
+                    {row.nioshBadge}
                   </span>
                 </td>
                 <td class="bom-col-spec">{row.spec}</td>
                 <td class="bom-col-action">
-                  <a href={href} class="bom-quote-link">
+                  <a
+                    href={href}
+                    class="bom-quote-link"
+                    data-bom-quote-link
+                    data-quote-base={quoteBase}
+                    data-base-equipo={row.equipo}
+                    data-base-pieza={row.pieza}
+                    data-base-material={row.material}
+                    data-base-station={row.station}
+                    data-base-weight={row.weightKg}
+                  >
                     {isEs ? 'Cotizar pieza →' : 'Quote part →'}
                   </a>
                 </td>
@@ -461,8 +497,12 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => ({
     reports.forEach((section) => {
       const buttons = section.querySelectorAll('[data-assembly-branch-btn]');
       const rows = section.querySelectorAll('[data-bom-row]');
+      const bomLinks = section.querySelectorAll('[data-bom-quote-link]');
+      const stationCtas = section.querySelectorAll('[data-station-cta]');
+      const lotCta = section.querySelector('.assembly-report__lot-cta') as HTMLAnchorElement | null;
       const svgBranches = section.querySelectorAll('[data-svg-branch]');
       let activeBranch = 'metal';
+      let activeMaterialKey = 'alto_cromo_cr27';
 
       // Calibrador en vivo de Claro Axial Frontal δ_frontal y Secuencia 01–05 (Estación 05)
       const slider = section.querySelector('[data-clearance-slider]') as HTMLInputElement | null;
@@ -482,6 +522,33 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => ({
       const svgBoxEl = section.querySelector('[data-est-05-box]');
       const isEnDoc = document.documentElement.lang === 'en';
 
+      const syncAllAssemblyLinks = (frontClearanceMm: number, impellerExitWidthMm: number, sealBranch: string, pipeSeries: string) => {
+        const claroStr = frontClearanceMm.toFixed(2);
+        bomLinks.forEach((el) => {
+          const link = el as HTMLAnchorElement;
+          const base = link.getAttribute('data-quote-base') || '/cotizar/';
+          const eq = link.getAttribute('data-base-equipo') || 'bombeo_hule_cromo';
+          const pz = link.getAttribute('data-base-pieza') || 'lote_554';
+          const baseMat = link.getAttribute('data-base-material') || 'alto_cromo_cr27';
+          const st = link.getAttribute('data-base-station') || 'S4';
+          const wt = link.getAttribute('data-base-weight') || '38.4';
+          const resolvedMat = activeMaterialKey === 'ceramica_sic' && (baseMat === 'alto_cromo_cr27' || baseMat === 'hule_natural')
+            ? 'ceramica_sic'
+            : (activeMaterialKey !== 'alto_cromo_cr27' && st !== 'S1' ? activeMaterialKey : baseMat);
+          link.href = `${base}?circuito=bombeo&equipo=${eq}&pieza=${pz}&material=${resolvedMat}&serie=${pipeSeries}&estacion=${st}&peso_kg=${wt}&claro_mm=${claroStr}&b2_mm=${impellerExitWidthMm}&seal_branch=${sealBranch}#rfq`;
+        });
+        stationCtas.forEach((el) => {
+          const link = el as HTMLAnchorElement;
+          const base = link.getAttribute('data-quote-base') || '/cotizar/';
+          const st = link.getAttribute('data-station-cta') || 'S4';
+          link.href = `${base}?circuito=bombeo&equipo=bombeo_hule_cromo&estacion=${st}&material=${activeMaterialKey}&serie=${pipeSeries}&claro_mm=${claroStr}&b2_mm=${impellerExitWidthMm}&seal_branch=${sealBranch}#rfq`;
+        });
+        if (lotCta) {
+          const base = isEnDoc ? '/en/quote/' : '/cotizar/';
+          lotCta.href = `${base}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=lote_554&material=${activeMaterialKey}&serie=${pipeSeries}&estacion=S4&claro_mm=${claroStr}&b2_mm=${impellerExitWidthMm}&seal_branch=${sealBranch}#rfq`;
+        }
+      };
+
       const updateClearanceSimulation = () => {
         if (!slider) return;
         const frontClearanceMm = Number(slider.value) || 0.75;
@@ -490,7 +557,7 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => ({
         const pipeSeries = impellerExitWidthMm <= 38 ? '3x2' : (impellerExitWidthMm >= 64 ? '8x6' : '6x4');
         const sequencePreset = seqSelect ? seqSelect.value : 'canonical';
         const res = evaluateWetEndAssemblyInterference({
-          wetEndBranch: activeBranch as 'metal' | 'rubber',
+          wetEndBranch: activeBranch as 'metal' | 'rubber' | 'ceramica_sic',
           sealBranch,
           frontClearanceMm,
           impellerExitWidthMm,
@@ -541,14 +608,17 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => ({
         }
         if (quoteCta) {
           const base = quoteCta.getAttribute('data-quote-base') || '/cotizar/';
-          quoteCta.href = `${base}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=throatbush&estacion=5&claro_mm=${res.frontClearanceMm.toFixed(2)}&seal_branch=${res.sealBranch}&b2_mm=${res.impellerExitWidthMm}#rfq`;
+          quoteCta.href = `${base}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=throatbush&material=${activeMaterialKey}&estacion=S5&claro_mm=${res.frontClearanceMm.toFixed(2)}&seal_branch=${res.sealBranch}&b2_mm=${res.impellerExitWidthMm}#rfq`;
         }
+        syncAllAssemblyLinks(res.frontClearanceMm, res.impellerExitWidthMm, res.sealBranch, pipeSeries);
 
         const prev = loadWorkbenchState() || {};
         saveWorkbenchState({
           ...prev,
+          pump_material: activeMaterialKey,
           frontClearanceMm: res.frontClearanceMm,
           claro_mm: res.frontClearanceMm,
+          clearance_mm: res.frontClearanceMm,
           seal_branch: res.sealBranch,
           sealBranch: res.sealBranch,
           b2_mm: res.impellerExitWidthMm,
@@ -565,7 +635,11 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => ({
       buttons.forEach((btn) => {
         btn.addEventListener('click', () => {
           const selectedBranch = btn.getAttribute('data-assembly-branch-btn') || 'all';
-          activeBranch = selectedBranch === 'hule_natural' ? 'rubber' : 'metal';
+          activeBranch = selectedBranch === 'hule_natural' ? 'rubber' : (selectedBranch === 'ceramica_sic' ? 'ceramica_sic' : 'metal');
+          activeMaterialKey = selectedBranch === 'all' ? 'alto_cromo_cr27' : selectedBranch;
+          if (selectedBranch === 'ceramica_sic' && slider) {
+            slider.value = '0.65';
+          }
           buttons.forEach((b) => {
             const active = b === btn;
             b.classList.toggle('is-active', active);
@@ -574,13 +648,16 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => ({
 
           rows.forEach((row) => {
             const rowBranch = row.getAttribute('data-bom-branch') || 'common';
-            const visible = selectedBranch === 'all' || rowBranch === 'common' || rowBranch === selectedBranch;
+            const visible = selectedBranch === 'all'
+              || rowBranch === 'common'
+              || rowBranch === selectedBranch
+              || (selectedBranch === 'ceramica_sic' && rowBranch === 'alto_cromo_cr27');
             (row as HTMLElement).style.display = visible ? '' : 'none';
           });
 
           svgBranches.forEach((g) => {
             const gBranch = g.getAttribute('data-svg-branch');
-            const active = selectedBranch === 'all' || gBranch === selectedBranch;
+            const active = selectedBranch === 'all' || gBranch === selectedBranch || (selectedBranch === 'ceramica_sic' && gBranch === 'alto_cromo_cr27');
             (g as HTMLElement).style.opacity = active ? '1' : '0.28';
           });
           updateClearanceSimulation();
@@ -768,6 +845,25 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => ({
     padding: 0.28rem 0.45rem;
     border-radius: 4px;
   }
+  .station-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    margin-top: 0.5rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    color: #082f49;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .station-cta-btn:hover {
+    background: #e0f2fe;
+  }
   .assembly-report__bom-header {
     display: flex;
     flex-wrap: wrap;
@@ -846,7 +942,9 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => ({
     color: #166534;
   }
   .bom-quote-link {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
     white-space: nowrap;
     font-family: var(--smat-font-mono, monospace);
     font-size: 0.72rem;

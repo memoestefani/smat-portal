@@ -29,6 +29,8 @@ import {
   ATOMIC_PARTS_CATALOG,
   resolveAtomicPartCode,
   getAtomicPartSpecs,
+  formatNioshErgonomicStatus,
+  mergeWorkbenchLensState,
   resolveMiningDistrictPreset,
   buildCanonicalEngineeringSnapshot,
   publishWorkbenchUpdate,
@@ -233,7 +235,7 @@ export function initQuoteWizardController() {
   var container = document.getElementById('rfq');
   if (!container) return;
   var isEs = container.getAttribute('data-lang') === 'es';
-  var STORAGE_KEY_V2 = 'smat_workbench_v2';
+  var STORAGE_KEY_V2 = SMAT_WORKBENCH_STATE_KEY;
 
   // Controles Principales
   var btnOpex = document.getElementById('btn-intent-opex');
@@ -714,6 +716,9 @@ export function initQuoteWizardController() {
       } else if (decoded.circuit === 'filtracion') {
         if (selectRoleFilt) selectRoleFilt.value = decoded.role;
         if (selectFiltCapacity) selectFiltCapacity.value = decoded.size;
+      } else if (decoded.circuit === 'control_procesos') {
+        if (selectRoleCtrl) selectRoleCtrl.value = decoded.role;
+        if (selectCtrlSpec) selectCtrlSpec.value = decoded.size;
       }
       if (inputDetails) {
         if (decoded.atomic_code) {
@@ -1622,10 +1627,11 @@ export function initQuoteWizardController() {
       var elLivePartSpecs = document.getElementById('live-table-part-specs');
 
       var stLabel = (currentPartSpecs.station || ('S' + currentPartSpecs.station_number)) + ' • ' + (isEs ? (currentPartSpecs.station_name_es || currentPartSpecs.code) : (currentPartSpecs.station_name_en || currentPartSpecs.code));
+      var nioshStatus = formatNioshErgonomicStatus(currentPartSpecs, isEs ? 'es' : 'en');
       if (elPartStationTag) elPartStationTag.textContent = stLabel;
       if (elPartNioshBadge) {
-        var isHoist = (currentPartSpecs.handling_mode || currentPartSpecs.niosh_handling_mode) === 'HOIST_REQUIRED' || currentPartSpecs.weight_kg >= 23;
-        elPartNioshBadge.textContent = currentPartSpecs.weight_kg + ' kg (' + (isHoist ? (isEs ? 'Grúa / Polipasto ≥23 kg' : 'Hoist ≥23 kg') : (isEs ? 'Manual <23 kg' : 'Manual <23 kg')) + ')';
+        elPartNioshBadge.textContent = nioshStatus.badgeText;
+        elPartNioshBadge.setAttribute('data-niosh-tier', nioshStatus.mode);
       }
       if (elPartGeomVal) {
         var sphereMm = currentPartSpecs.max_sphere_mm ?? currentPartSpecs.max_particle_mm ?? 45;
@@ -1637,8 +1643,7 @@ export function initQuoteWizardController() {
       }
       if (elLivePartSpecs) {
         var sphereLive = currentPartSpecs.max_sphere_mm ?? currentPartSpecs.max_particle_mm ?? 45;
-        var modeLive = currentPartSpecs.handling_mode || currentPartSpecs.niosh_handling_mode || 'HOIST_REQUIRED';
-        elLivePartSpecs.textContent = stLabel + ' | ' + currentPartSpecs.weight_kg + ' kg (' + modeLive + ') | ØD₂=' + currentPartSpecs.impeller_diameter_mm + ' mm (' + currentPartSpecs.vanes + 'v, Ø' + sphereLive + ' mm)';
+        elLivePartSpecs.textContent = stLabel + ' | ' + nioshStatus.badgeText + ' | ØD₂=' + currentPartSpecs.impeller_diameter_mm + ' mm (' + currentPartSpecs.vanes + 'v, Ø' + sphereLive + ' mm)';
       }
 
       var elClearanceSlider = document.getElementById('wb-clearance-slider');
@@ -1648,13 +1653,13 @@ export function initQuoteWizardController() {
       var claroMmVal = elClearanceSlider ? parseFloat(elClearanceSlider.value || '0.75') : 0.75;
       var matSelectEl = document.getElementById('wb-pump-material');
       var arrSelectEl = document.getElementById('wb-drive-arrangement');
-      if (matSelectEl && !matSelectEl.dataset.userTouched && wbState.wetEndMaterial) {
-        matSelectEl.value = wbState.wetEndMaterial === 'hule' ? 'hule_natural' : (wbState.wetEndMaterial === 'poliuretano' ? 'poliuretano' : 'alto_cromo_cr27');
+      if (matSelectEl && !matSelectEl.dataset.userTouched && (wbState.pump_material || wbState.wetEndMaterial)) {
+        matSelectEl.value = normalizeMaterialKey(wbState.pump_material || wbState.wetEndMaterial);
       }
       if (arrSelectEl && !arrSelectEl.dataset.userTouched && wbState.kinematics && wbState.kinematics.arrangement) {
         arrSelectEl.value = wbState.kinematics.arrangement;
       }
-      var matCodeVal = matSelectEl ? matSelectEl.value : 'alto_cromo_cr27';
+      var matCodeVal = matSelectEl ? normalizeMaterialKey(matSelectEl.value) : 'alto_cromo_cr27';
       renderWetEndMaterialMatrixCard(matCodeVal);
       var arrCodeVal = arrSelectEl ? arrSelectEl.value : 'CV';
       var seqPresetVal = wbAssemblySeqTest ? wbAssemblySeqTest.value : (wbState.assemblySequencePreset || 'canonical');
@@ -1664,7 +1669,9 @@ export function initQuoteWizardController() {
         : (activePipeForSpecs === '3x2' ? 38 : (activePipeForSpecs === '8x6' || activePipeForSpecs === '10x8' ? 64 : 48));
 
       currentClearanceEval = evaluateWetEndAssemblyInterference({
-        wetEndBranch: matCodeVal === 'hule_natural' ? 'rubber' : (matCodeVal === 'poliuretano' ? 'polyurethane' : 'metal'),
+        wetEndBranch: matCodeVal === 'hule_natural'
+          ? 'rubber'
+          : (matCodeVal === 'poliuretano' ? 'polyurethane' : (matCodeVal === 'ceramica_sic' ? 'ceramic_sic' : 'metal')),
         sealBranch: sealBranchVal,
         frontClearanceMm: claroMmVal,
         impellerExitWidthMm: b2ValMm,
@@ -1769,7 +1776,13 @@ export function initQuoteWizardController() {
         elMetricDriveFlood.textContent = currentKinematics.sumpFloodImmunity || 'HIGH';
       }
       if (elLiveKinematics) {
-        var matHuman = matCodeVal === 'hule_natural' ? (isEs ? 'Hule Natural Antiabrasivo (55–65 Shore A)' : 'Natural Rubber (55–65 Shore A)') : (matCodeVal === 'poliuretano' ? (isEs ? 'Poliuretano Grado Minero (85–95 Shore A)' : 'Mining Polyurethane (85–95 Shore A)') : 'Alto Cromo ASTM A532 Cr27% (≥650 HB)');
+        var matHuman = matCodeVal === 'hule_natural'
+          ? (isEs ? 'Hule Natural Antiabrasivo (55–65 Shore A)' : 'Natural Rubber (55–65 Shore A)')
+          : (matCodeVal === 'poliuretano'
+            ? (isEs ? 'Poliuretano Grado Minero (85–95 Shore A)' : 'Mining Polyurethane (85–95 Shore A)')
+            : (matCodeVal === 'ceramica_sic'
+              ? (isEs ? 'Carburo de Silicio Sinterizado SiC (≥2200 HV, K_Ic=4.1 MPa·√m)' : 'Sintered Silicon Carbide SiC (≥2200 HV, K_Ic=4.1 MPa·√m)')
+              : (isEs ? 'Alto Cromo ASTM A532 Cr27% (≥650 HB)' : 'High Chrome ASTM A532 Cr27% (≥650 HB)')));
         var collShort = currentClearanceEval.sequenceValid
           ? (isEs ? 'Secuencia S1→S5 libre de colisión axial' : 'S1→S5 sequence collision-free')
           : (isEs ? ('BLOQUEO ' + currentClearanceEval.outOfOrderStationId + ': ' + currentClearanceEval.collisionDetailsEs) : ('BLOCKED ' + currentClearanceEval.outOfOrderStationId + ': ' + currentClearanceEval.collisionDetailsEn));
@@ -1983,6 +1996,18 @@ export function initQuoteWizardController() {
       if (rawWbSess && (rawWbSess.includes('6X4D') || rawWbSess.includes('D4147'))) {
         localStorage.removeItem('smat_workbench_session');
       }
+      var rawLegacySplit = localStorage.getItem('smat_workbench_v2');
+      var rawCanonical = localStorage.getItem(STORAGE_KEY_V2);
+      if (rawLegacySplit) {
+        var parsedSplit = JSON.parse(rawLegacySplit);
+        var parsedCanon = rawCanonical ? JSON.parse(rawCanonical) : {};
+        var mergedV2 = mergeWorkbenchLensState(parsedSplit, parsedCanon);
+        if (mergedV2 && typeof mergedV2.details === 'string' && (mergedV2.details.includes('6X4D') || mergedV2.details.includes('A05'))) {
+          mergedV2.details = '';
+        }
+        localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(mergedV2));
+        localStorage.removeItem('smat_workbench_v2');
+      }
       var rawV2 = localStorage.getItem(STORAGE_KEY_V2);
       if (rawV2) {
         var s = JSON.parse(rawV2);
@@ -1998,9 +2023,8 @@ export function initQuoteWizardController() {
 
   function loadSessionState() {
     try {
-      var rawSess = localStorage.getItem(STORAGE_KEY_V2);
-      if (rawSess) {
-        var s = JSON.parse(rawSess);
+      var s = loadWorkbenchState() || (localStorage.getItem(STORAGE_KEY_V2) ? JSON.parse(localStorage.getItem(STORAGE_KEY_V2)) : null);
+      if (s) {
         if (s.name && inputName) inputName.value = s.name;
         if (s.company && inputCompany) inputCompany.value = s.company;
         if (s.phone && inputPhone) inputPhone.value = s.phone;
@@ -2908,6 +2932,9 @@ export function initQuoteWizardController() {
           } else if (decoded.circuit === 'filtracion') {
             if (selectRoleFilt) selectRoleFilt.value = decoded.role;
             if (selectFiltCapacity) selectFiltCapacity.value = decoded.size;
+          } else if (decoded.circuit === 'control_procesos') {
+            if (selectRoleCtrl) selectRoleCtrl.value = decoded.role;
+            if (selectCtrlSpec) selectCtrlSpec.value = decoded.size;
           }
           if (inputDetails) {
             if (decoded.atomic_code) {

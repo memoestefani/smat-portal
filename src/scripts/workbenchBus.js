@@ -209,6 +209,58 @@ export function getAtomicPartSpecs(codeOrSlug = '', pipeSeries = '6x4') {
 
   if (slug.includes('d3147')) return ATOMIC_PARTS_CATALOG.D3147;
   if (slug.includes('f6147')) return ATOMIC_PARTS_CATALOG.F6147;
+  if (slug.includes('dam005') || slug.includes('cartucho') || slug.includes('bearing') || slug.includes('rodamientos')) {
+    return {
+      code: 'dam005',
+      part_number: 'DAM005',
+      frame: '6/4 D',
+      name_es: 'Cartucho de Rodamientos Completo (Bearing Assembly) 6/4 D',
+      name_en: 'Complete Cartridge Bearing Assembly 6/4 D',
+      type_es: 'Sub-ensamble Mecánico de Soporte y Eje ISO 281',
+      type_en: 'Mechanical Shaft & Bearing Housing Sub-assembly ISO 281',
+      metallurgy: 'Acero Aleado SAE 4140 + Hierro Dúctil GGG40 + Sellos de Laberinto Purgante',
+      hardness: 'Eje bonificado 280–320 HB / Pistas 60–62 HRC',
+      vanes: 0,
+      weight_kg: 54.0,
+      impeller_diameter_mm: 380,
+      max_particle_mm: 45,
+      max_sphere_mm: 45,
+      wall_thickness_mm: 28,
+      station_number: 1,
+      station: 'S1',
+      station_name_es: 'Cartucho Motriz y Rodamientos (ISO 281)',
+      station_name_en: 'Drive Cartridge & Bearings (ISO 281)',
+      assembly_order: '01. Cartucho de Rodamientos / Bearing Assembly (Estación 01)',
+      assembly_order_note: '01. Cartucho de Rodamientos / Bearing Assembly (Estación 01 • Ajuste Axial)',
+      wet_end_kit_ratio: '1:1',
+      niosh_handling_mode: 'HOIST_REQUIRED',
+      handling_mode: 'HOIST_REQUIRED',
+      niosh_rwl_shaft_kg: 11.1,
+      niosh_lifting_index_shaft: 4.86,
+      niosh_ergonomic_tier: 'HOIST_MANDATORY',
+      circuit: 'bombeo',
+      pipe_size: '6x4',
+      role: 'kit_rodamientos',
+      smat_code: 'SMAT-PUMP-6X4-BRG'
+    };
+  }
+  if (slug.includes('e4132') || slug.includes('forro') || slug.includes('fpl_liner')) {
+    return {
+      ...ATOMIC_PARTS_CATALOG.E4083,
+      code: 'e4132',
+      part_number: 'E4132',
+      name_es: 'Forro de Plato (FPL Liner) en Hule / Poliuretano 6/4 D',
+      name_en: 'Frame Plate Liner (FPL) in Rubber / Polyurethane 6/4 D',
+      weight_kg: 9.8,
+      station_number: 3,
+      station: 'S3',
+      niosh_handling_mode: 'MANUAL_SAFE',
+      handling_mode: 'MANUAL_SAFE',
+      niosh_rwl_shaft_kg: 11.1,
+      niosh_lifting_index_shaft: 0.88,
+      niosh_ergonomic_tier: 'MANUAL_SAFE_1P'
+    };
+  }
   if (slug.includes('dam028') || slug.includes('camisa') || slug.includes('sleeve')) return ATOMIC_PARTS_CATALOG.DAM028;
   if (slug.includes('eam028') || slug.includes('expeller') || slug.includes('sello')) return ATOMIC_PARTS_CATALOG.EAM028;
   if (slug.includes('e4083') || slug.includes('throatbush') || slug.includes('cuello') || slug.includes('voluta') || slug.includes('liner') || slug.includes('fpl')) {
@@ -222,6 +274,87 @@ export function getAtomicPartSpecs(codeOrSlug = '', pipeSeries = '6x4') {
     return ATOMIC_PARTS_CATALOG.F6147;
   }
   return ATOMIC_PARTS_CATALOG.E4147;
+}
+
+/**
+ * Evalúa y formatea los 3 niveles ergonómicos Waters-NIOSH 1993 para montaje horizontal en eje
+ * en voladizo (H = 42 cm -> RWL_shaft = 11.1 kg) vs traslado estándar (RWL_std = 23.0 kg) (Decisión 4 / INV-SMAT-SCI-27).
+ * @param {Object|number} specOrWeight - Objeto de ficha atómica o masa en kg
+ * @param {'es'|'en'} [lang='es']
+ */
+export function formatNioshErgonomicStatus(specOrWeight = {}, lang = 'es') {
+  const isEs = lang !== 'en';
+  const weightKg = typeof specOrWeight === 'number'
+    ? Number(specOrWeight)
+    : Number(specOrWeight?.weight_kg ?? specOrWeight?.peso_kg ?? 0);
+  const rwlShaftKg = 11.1;
+  const rwlStdKg = 23.0;
+  const safeWeight = Number.isFinite(weightKg) && weightKg > 0 ? weightKg : 0;
+  const liShaft = Number((safeWeight / rwlShaftKg).toFixed(2));
+
+  if (safeWeight >= rwlStdKg) {
+    const badgeEs = `${safeWeight.toFixed(1)} kg (Polipasto ≥23 kg • LI_eje=${liShaft.toFixed(2)})`;
+    const badgeEn = `${safeWeight.toFixed(1)} kg (Hoist ≥23 kg • LI_shaft=${liShaft.toFixed(2)})`;
+    return {
+      mode: 'HOIST_REQUIRED',
+      tier: 'HOIST_REQUIRED',
+      hoistRequired: true,
+      twoPersonAssistRequired: false,
+      weightKg: safeWeight,
+      rwlShaftKg,
+      liShaft,
+      liftingIndexShaft: liShaft,
+      cssTone: 'danger',
+      badgeEs,
+      badgeEn,
+      badgeText: isEs ? badgeEs : badgeEn,
+      detailText: isEs
+        ? `Requiere Polipasto / Grúa (≥ 23 kg NIOSH • LI_eje=${liShaft.toFixed(2)} vs RWL_eje=${rwlShaftKg} kg)`
+        : `Mechanical Hoist Required (≥ 23 kg NIOSH • LI_shaft=${liShaft.toFixed(2)} vs RWL_shaft=${rwlShaftKg} kg)`
+    };
+  }
+
+  if (safeWeight > rwlShaftKg) {
+    const badgeEs = `${safeWeight.toFixed(1)} kg (Montaje Asistido 2P 11.1–23 kg • LI_eje=${liShaft.toFixed(2)} vs 11.1 kg)`;
+    const badgeEn = `${safeWeight.toFixed(1)} kg (2-Tech Shaft Mount 11.1–23 kg • LI_shaft=${liShaft.toFixed(2)} vs 11.1 kg)`;
+    return {
+      mode: 'ASSISTED_SHAFT_MOUNT_2P',
+      tier: 'ASSISTED_SHAFT_MOUNT_2P',
+      hoistRequired: false,
+      twoPersonAssistRequired: true,
+      weightKg: safeWeight,
+      rwlShaftKg,
+      liShaft,
+      liftingIndexShaft: liShaft,
+      cssTone: 'warning',
+      badgeEs,
+      badgeEn,
+      badgeText: isEs ? badgeEs : badgeEn,
+      detailText: isEs
+        ? `Montaje en Flecha Asistido 2 Técnicos (< 23 kg NIOSH • LI_eje=${liShaft.toFixed(2)} vs RWL_eje=${rwlShaftKg} kg @ H=42 cm)`
+        : `2-Technician Assisted Shaft Mount (< 23 kg NIOSH • LI_shaft=${liShaft.toFixed(2)} vs RWL_shaft=${rwlShaftKg} kg @ H=42 cm)`
+    };
+  }
+
+  const badgeEs = `${safeWeight.toFixed(1)} kg (Manual 1P Seguro ≤11.1 kg • LI_eje=${liShaft.toFixed(2)})`;
+  const badgeEn = `${safeWeight.toFixed(1)} kg (1-Tech Manual Safe ≤11.1 kg • LI_shaft=${liShaft.toFixed(2)})`;
+  return {
+    mode: 'MANUAL_SAFE_1P',
+    tier: 'MANUAL_SAFE_1P',
+    hoistRequired: false,
+    twoPersonAssistRequired: false,
+    weightKg: safeWeight,
+    rwlShaftKg,
+    liShaft,
+    liftingIndexShaft: liShaft,
+    cssTone: 'safe',
+    badgeEs,
+    badgeEn,
+    badgeText: isEs ? badgeEs : badgeEn,
+    detailText: isEs
+      ? `Manejo Manual Seguro 1 Técnico (< 23 kg NIOSH • LI_eje=${liShaft.toFixed(2)} ≤ RWL_eje=${rwlShaftKg} kg)`
+      : `1-Technician Safe Manual Handling (< 23 kg NIOSH • LI_shaft=${liShaft.toFixed(2)} ≤ RWL_shaft=${rwlShaftKg} kg)`
+  };
 }
 
 /**
@@ -587,7 +720,8 @@ export function formatSapPlaintext(data = {}) {
     `   - Almacén/Despacho:  Durango, Dgo. (Retiro en patio coordinado con folio)`
   );
 
-  const ps = data.part_specs || {};
+  const rawLookupCode = data.atomic_code || data.code || data.codigo || '';
+  const ps = data.part_specs || (rawLookupCode ? getAtomicPartSpecs(rawLookupCode, data.series || data.pipe_size || '6x4') : {});
   const ce = data.clearance_eval || {};
   const kin = data.kinematics || {};
   const met = data.metrology || {};
@@ -627,8 +761,8 @@ export function formatSapPlaintext(data = {}) {
   }
   if (resolvedWeight) {
     const wKg = Number(resolvedWeight);
-    const nioshLabel = wKg >= 23 ? 'Requiere Polipasto / Grúa (≥ 23 kg NIOSH)' : 'Manejo Manual Seguro (< 23 kg NIOSH)';
-    lines.push(`   - Masa Unitaria / Izaje:      ${wKg.toFixed(1)} kg (${nioshLabel})`);
+    const nioshEval = formatNioshErgonomicStatus(wKg, 'es');
+    lines.push(`   - Masa Unitaria / Izaje:      ${wKg.toFixed(1)} kg (${nioshEval.detailText} • [${nioshEval.tier}])`);
   }
   if (resolvedClaro) {
     const lossStr = resolvedDeltaEta !== undefined ? ` | Pérdida Recirculación Δη_v: ${resolvedDeltaEta}%` : '';
@@ -749,7 +883,8 @@ export function formatWhatsappUrl(data = {}) {
   const circuit = (data.circuit || 'BOMBEO').toUpperCase();
   const priorityTag = data.isOpex === false ? '[PROYECTO CAPEX]' : '[PARO DE PLANTA]';
 
-  const ps = data.part_specs || {};
+  const rawLookupCode = data.atomic_code || data.code || data.codigo || '';
+  const ps = data.part_specs || (rawLookupCode ? getAtomicPartSpecs(rawLookupCode, data.series || data.pipe_size || '6x4') : {});
   const ce = data.clearance_eval || {};
   const kin = data.kinematics || {};
   const met = data.metrology || {};
@@ -1612,7 +1747,7 @@ export function normalizeWorkbenchStateV2(partial = {}) {
     seal_branch: String(src.seal_branch || src.sealBranch || ce.sealBranch || DEFAULT_WORKBENCH_STATE_V2.seal_branch),
     b2_mm: Number(src.b2_mm ?? src.impellerExitWidthMm ?? ce.impellerExitWidthMm ?? DEFAULT_WORKBENCH_STATE_V2.b2_mm) || DEFAULT_WORKBENCH_STATE_V2.b2_mm,
     cap_c_kn: Number(src.cap_c_kn ?? src.dynamicCapacityCkN ?? kin.dynamicCapacityCkN ?? DEFAULT_WORKBENCH_STATE_V2.cap_c_kn) || DEFAULT_WORKBENCH_STATE_V2.cap_c_kn,
-    claro_mm: Number(src.claro_mm ?? src.frontClearanceMm ?? ce.frontClearanceMm ?? DEFAULT_WORKBENCH_STATE_V2.claro_mm),
+    claro_mm: Number(src.claro_mm ?? src.clearance_mm ?? src.frontClearanceMm ?? ce.frontClearanceMm ?? DEFAULT_WORKBENCH_STATE_V2.claro_mm),
     driver_pulley_mm: Number(src.driver_pulley_mm ?? kin.driverPulleyMm ?? DEFAULT_WORKBENCH_STATE_V2.driver_pulley_mm) || DEFAULT_WORKBENCH_STATE_V2.driver_pulley_mm,
     driven_pulley_mm: Number(src.driven_pulley_mm ?? kin.drivenPulleyMm ?? DEFAULT_WORKBENCH_STATE_V2.driven_pulley_mm) || DEFAULT_WORKBENCH_STATE_V2.driven_pulley_mm,
     motor_rpm: Number(src.motor_rpm ?? kin.motorRpm ?? DEFAULT_WORKBENCH_STATE_V2.motor_rpm) || DEFAULT_WORKBENCH_STATE_V2.motor_rpm,
@@ -1632,6 +1767,9 @@ export function normalizeWorkbenchStateV2(partial = {}) {
   if (Number.isNaN(normalized.altitude) || normalized.altitude < 0) normalized.altitude = 2400;
   if (Number.isNaN(normalized.claro_mm) || normalized.claro_mm <= 0) normalized.claro_mm = 0.75;
 
+  normalized.material = resolvedPumpMat;
+  normalized.clearance_mm = normalized.claro_mm;
+  normalized.frontClearanceMm = normalized.claro_mm;
   normalized.pulpPh = normalized.ph;
   normalized.sealBranch = normalized.seal_branch;
   normalized.impellerExitWidthMm = normalized.b2_mm;
@@ -1659,6 +1797,35 @@ export const workbenchStateLens = Object.freeze({
     if (mappedPatch.impellerExitWidthMm !== undefined && mappedPatch.b2_mm === undefined) mappedPatch.b2_mm = mappedPatch.impellerExitWidthMm;
     if (mappedPatch.dynamicCapacityCkN !== undefined && mappedPatch.cap_c_kn === undefined) mappedPatch.cap_c_kn = mappedPatch.dynamicCapacityCkN;
     if (mappedPatch.oreDensitySg !== undefined && mappedPatch.rhop === undefined) mappedPatch.rhop = mappedPatch.oreDensitySg;
+    if (mappedPatch.claro_mm !== undefined) {
+      mappedPatch.clearance_mm = Number(mappedPatch.claro_mm);
+      mappedPatch.frontClearanceMm = Number(mappedPatch.claro_mm);
+    } else if (mappedPatch.clearance_mm !== undefined) {
+      mappedPatch.claro_mm = Number(mappedPatch.clearance_mm);
+      mappedPatch.frontClearanceMm = Number(mappedPatch.clearance_mm);
+    } else if (mappedPatch.frontClearanceMm !== undefined) {
+      mappedPatch.claro_mm = Number(mappedPatch.frontClearanceMm);
+      mappedPatch.clearance_mm = Number(mappedPatch.frontClearanceMm);
+    }
+
+    const incomingMatRaw = mappedPatch.pump_material || mappedPatch.wet_material || mappedPatch.material || mappedPatch.wetEndMaterial;
+    if (incomingMatRaw !== undefined) {
+      const normalizedIncomingMat = normalizeMaterialKey(incomingMatRaw);
+      mappedPatch.pump_material = normalizedIncomingMat;
+      mappedPatch.material = normalizedIncomingMat;
+      if (mappedPatch.claro_mm === undefined && mappedPatch.frontClearanceMm === undefined) {
+        const prevMatSpec = WET_END_MATERIAL_MATRIX[base.pump_material] || WET_END_MATERIAL_MATRIX.alto_cromo_cr27;
+        const nextMatSpec = WET_END_MATERIAL_MATRIX[normalizedIncomingMat] || WET_END_MATERIAL_MATRIX.alto_cromo_cr27;
+        if (Math.abs(Number(base.claro_mm) - Number(prevMatSpec.optimalFrontClearanceMm)) < 0.05) {
+          mappedPatch.claro_mm = Number(nextMatSpec.optimalFrontClearanceMm);
+        }
+      }
+    }
+    if (mappedPatch.circuito !== undefined && mappedPatch.circuit === undefined) mappedPatch.circuit = mappedPatch.circuito;
+    if (mappedPatch.equipo !== undefined && mappedPatch.role === undefined) mappedPatch.role = mappedPatch.equipo;
+    if (mappedPatch.serie !== undefined && mappedPatch.pipe_size === undefined) mappedPatch.pipe_size = mappedPatch.serie;
+    if (mappedPatch.transmision !== undefined && mappedPatch.drive_arrangement === undefined) mappedPatch.drive_arrangement = mappedPatch.transmision;
+
     return normalizeWorkbenchStateV2({ ...base, ...mappedPatch });
   },
   toSearchParams(state = {}) {
@@ -1734,6 +1901,16 @@ export const workbenchStateLens = Object.freeze({
       if (window.localStorage) {
         window.localStorage.removeItem('smat_workbench_draft');
         window.localStorage.removeItem('smat_workbench_v1');
+        const rawLegacyV2 = window.localStorage.getItem('smat_workbench_v2');
+        if (rawLegacyV2) {
+          try {
+            const parsedLegacyV2 = JSON.parse(rawLegacyV2);
+            if (parsedLegacyV2 && typeof parsedLegacyV2 === 'object') {
+              merged = { ...merged, ...parsedLegacyV2 };
+            }
+          } catch (_err) { }
+          window.localStorage.removeItem('smat_workbench_v2');
+        }
         const rawV2 = window.localStorage.getItem(SMAT_WORKBENCH_STATE_KEY);
         if (rawV2) merged = { ...merged, ...JSON.parse(rawV2) };
       }
@@ -1800,6 +1977,71 @@ export function loadWorkbenchSession() {
   } catch (_e) {
     return null;
   }
+}
+
+/**
+ * Fusión monótona por dominio atributivo (Lente PutGet de Barbosa et al., 2010 `10.1145/1863543.1863572`)
+ * Aplica una proyección parcial sin destruir el complemento metrológico o cinemático previamente calibrado.
+ * @param {Object} [incomingPartial={}]
+ * @param {Object} [existingState={}]
+ * @returns {Object}
+ */
+export function mergeWorkbenchLensState(incomingPartial = {}, existingState = {}) {
+  const base = normalizeWorkbenchStateV2(existingState || {});
+  if (!incomingPartial || typeof incomingPartial !== 'object') return base;
+  const definedEntries = {};
+  for (const [k, v] of Object.entries(incomingPartial)) {
+    if (v !== undefined && v !== null && v !== '') {
+      definedEntries[k] = v;
+    }
+  }
+  return workbenchStateLens.put(base, definedEntries);
+}
+
+/**
+ * Construye una URL canónica hacia `/cotizar/#rfq` o `/en/quote/#rfq` (Decisión 7 / INV-SMAT-SCI-28)
+ * garantizando ortogonalidad entre material de contacto húmedo y sub-ensambles mecánicos ISO 281.
+ * @param {Object} [opts={}]
+ * @returns {string}
+ */
+export function buildWizardUrl(opts = {}) {
+  const lang = opts.lang === 'en' ? 'en' : 'es';
+  const basePath = lang === 'en' ? '/en/quote/' : '/cotizar/';
+  const params = new URLSearchParams();
+
+  const circuito = opts.circuito || opts.circuit || '';
+  const equipo = opts.equipo || opts.role || '';
+  const pieza = opts.pieza || '';
+  const codigo = opts.codigo || '';
+  const serie = opts.serie || opts.pipe_size || '';
+  const estacion = opts.estacion || opts.station || '';
+  const pesoKg = opts.peso_kg ?? opts.weight_kg ?? '';
+  const claroMm = opts.claro_mm ?? '';
+  const b2Mm = opts.b2_mm ?? '';
+  const sealBranch = opts.seal_branch || '';
+  const transmision = opts.transmision || opts.arreglo || '';
+  const isMechanicalBearingOnly =
+    pieza === 'cartucho_rodamientos' ||
+    equipo === 'kit_rodamientos' ||
+    opts.omitWetMaterial === true;
+
+  if (circuito) params.set('circuito', String(circuito));
+  if (equipo) params.set('equipo', String(equipo));
+  if (pieza) params.set('pieza', String(pieza));
+  if (codigo) params.set('codigo', String(codigo));
+  if (serie) params.set('serie', String(serie));
+  if (!isMechanicalBearingOnly && opts.material) {
+    params.set('material', normalizeMaterialKey(opts.material));
+  }
+  if (estacion) params.set('estacion', String(estacion));
+  if (pesoKg !== '' && pesoKg !== null && pesoKg !== undefined) params.set('peso_kg', String(pesoKg));
+  if (claroMm !== '' && claroMm !== null && claroMm !== undefined) params.set('claro_mm', String(claroMm));
+  if (b2Mm !== '' && b2Mm !== null && b2Mm !== undefined) params.set('b2_mm', String(b2Mm));
+  if (sealBranch) params.set('seal_branch', String(sealBranch));
+  if (transmision) params.set('transmision', String(transmision));
+
+  const queryStr = params.toString();
+  return `${basePath}${queryStr ? `?${queryStr}` : ''}#rfq`;
 }
 
 export {

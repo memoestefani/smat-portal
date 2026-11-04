@@ -8,7 +8,7 @@
     "start": "astro dev",
     "build": "astro build",
     "check": "astro check",
-    "test": "node --test tests/b2b_functions.test.mjs tests/slurry_engine.test.mjs tests/section_2_1_parity.test.mjs tests/section_3_1_3_2_ergos.test.mjs",
+    "test": "node --test tests/b2b_functions.test.mjs tests/slurry_engine.test.mjs tests/section_2_1_parity.test.mjs tests/section_3_1_3_2_ergos.test.mjs tests/ssotRuntimeAndSolarPolarity.test.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "gate": "cargo run --manifest-path crates/smat-gate/Cargo.toml -- --check",

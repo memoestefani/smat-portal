@@ -1,5 +1,6 @@
 ---
 import companyData from '../../data/company.json';
+import { formatNioshErgonomicStatus } from '../scripts/workbenchBus.js';
 
 interface Props {
   lang?: 'es' | 'en';
@@ -13,6 +14,7 @@ const {
   defaultPartSpecs
 } = Astro.props;
 const isEs = lang === 'es';
+const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es' : 'en');
 ---
 
 <!-- PANEL DERECHO: Live Engineering Dossier A4 (Parnas Slice MS-05) -->
@@ -164,7 +166,7 @@ const isEs = lang === 'es';
             </tr>
             <tr>
               <td><strong>{isEs ? 'Ficha Física / NIOSH:' : 'Physical Spec / NIOSH:'}</strong></td>
-              <td id="live-table-part-specs">{defaultPartSpecs.station_number} ({defaultPartSpecs.code}) | {defaultPartSpecs.weight_kg} kg ({defaultPartSpecs.weight_kg >= 23 ? 'Polipasto ≥23 kg' : 'Manual <23 kg'}) | ØD₂ {defaultPartSpecs.impeller_diameter_mm} mm</td>
+              <td id="live-table-part-specs">{defaultPartSpecs.station_number} ({defaultPartSpecs.code}) | {defaultPartSpecs.weight_kg} kg ({isEs ? defaultNioshEval.badgeEs : defaultNioshEval.badgeEn}) | ØD₂ {defaultPartSpecs.impeller_diameter_mm} mm</td>
             </tr>
             <tr id="live-row-metrology" class="hidden">
               <td><strong>{isEs ? 'Cédula Metrológica Lab:' : 'Lab Metrology Spec:'}</strong></td>

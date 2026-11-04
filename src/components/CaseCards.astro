@@ -15,17 +15,17 @@ const caseRouteMap: Record<string, { circuitPathEs: string; circuitPathEn: strin
   caso_bombeo_durango: {
     circuitPathEs: '/bombeo/',
     circuitPathEn: '/en/pumping/',
-    rfqQuery: 'circuito=bombeo&equipo=solo_impulsor&serie=6x4&flow=380&solids=52&d80=180&sg=3.1&material=A05&estacion=3&claro_mm=0.9'
+    rfqQuery: 'circuito=bombeo&equipo=solo_impulsor&serie=6x4&flow=380&solids=52&d80=180&sg=3.1&material=alto_cromo_cr27&estacion=S3&claro_mm=0.9'
   },
   caso_flotacion_zacatecas: {
     circuitPathEs: '/flotacion/',
     circuitPathEn: '/en/flotation/',
-    rfqQuery: 'circuito=flotacion&equipo=mecanismo_completo&serie=100ft&flow=320&solids=38&d80=110&sg=2.85&material=A05&estacion=2&claro_mm=1.2'
+    rfqQuery: 'circuito=flotacion&equipo=mecanismo_completo&serie=100ft&flow=320&solids=38&d80=110&sg=2.85&material=alto_cromo_cr27&estacion=S2&claro_mm=1.2'
   },
   caso_filtracion_chihuahua: {
     circuitPathEs: '/filtracion/',
     circuitPathEn: '/en/filtration/',
-    rfqQuery: 'circuito=filtracion&equipo=kit_placas_telas&serie=1500&flow=180&solids=55&d80=35&sg=2.65&material=PU&estacion=4&claro_mm=1.0'
+    rfqQuery: 'circuito=filtracion&equipo=kit_placas_telas&serie=1500&flow=180&solids=55&d80=35&sg=2.65&material=poliuretano&estacion=S4&claro_mm=1.0'
   }
 };
 ---
@@ -101,8 +101,9 @@ const caseRouteMap: Record<string, { circuitPathEs: string; circuitPathEn: strin
 <style>
   .cases-section {
     padding: 3.5rem 1.5rem;
-    background: #0b1120;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: #f8fafc;
+    border-top: 1px solid #cbd5e1;
+    border-bottom: 1px solid #cbd5e1;
   }
 
   .cases-container {
@@ -119,12 +120,12 @@ const caseRouteMap: Record<string, { circuitPathEs: string; circuitPathEn: strin
   .evidence-badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;
-    background: rgba(194, 94, 0, 0.15);
-    border: 1px solid rgba(194, 94, 0, 0.4);
+    background: #fff7ed;
+    border: 1px solid #fdba74;
     border-radius: 9999px;
-    color: #f59e0b;
+    color: #7c2d12;
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 0.05em;
     margin-bottom: 0.75rem;
   }
@@ -132,14 +133,14 @@ const caseRouteMap: Record<string, { circuitPathEs: string; circuitPathEn: strin
   .cases-title {
     font-size: 2rem;
     font-weight: 800;
-    color: #ffffff;
+    color: #0f172a;
     line-height: 1.25;
     margin-bottom: 0.75rem;
   }
 
   .cases-lead {
     font-size: 1rem;
-    color: #94a3b8;
+    color: #334155;
     line-height: 1.5;
   }
 
@@ -150,19 +151,20 @@ const caseRouteMap: Record<string, { circuitPathEs: string; circuitPathEn: strin
   }
 
   .case-card {
-    background: #151d2e;
-    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
     border-radius: 12px;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 1.15rem;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
     transition: transform 0.2s ease, border-color 0.2s ease;
   }
 
   .case-card:hover {
     transform: translateY(-2px);
-    border-color: rgba(52, 211, 153, 0.4);
+    border-color: #0c4a6e;
   }
 
   .case-top-meta {
@@ -170,21 +172,21 @@ const caseRouteMap: Record<string, { circuitPathEs: string; circuitPathEn: strin
     justify-content: space-between;
     align-items: center;
     padding-bottom: 0.75rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid #e2e8f0;
   }
 
   .discipline-tag {
     font-size: 0.75rem;
     font-weight: 800;
-    color: #f97316;
+    color: #7c2d12;
     letter-spacing: 0.05em;
     text-transform: uppercase;
   }
 
   .location-text {
     font-size: 0.8rem;
-    color: #64748b;
-    font-weight: 600;
+    color: #334155;
+    font-weight: 700;
   }
 
   .case-block {
@@ -195,22 +197,22 @@ const caseRouteMap: Record<string, { circuitPathEs: string; circuitPathEn: strin
 
   .case-label {
     font-size: 0.72rem;
-    font-weight: 700;
-    color: #94a3b8;
+    font-weight: 800;
+    color: #0c4a6e;
     letter-spacing: 0.05em;
   }
 
   .case-text {
     font-size: 0.88rem;
-    color: #cbd5e1;
+    color: #1e293b;
     line-height: 1.45;
     margin: 0;
   }
 
   .case-result-box {
     margin-top: auto;
-    background: rgba(194, 94, 0, 0.08);
-    border: 1px solid rgba(194, 94, 0, 0.25);
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
     border-radius: 8px;
     padding: 0.85rem 1rem;
   }
@@ -219,15 +221,15 @@ const caseRouteMap: Record<string, { circuitPathEs: string; circuitPathEn: strin
     display: block;
     font-size: 0.72rem;
     font-weight: 800;
-    color: #f59e0b;
+    color: #7c2d12;
     letter-spacing: 0.05em;
     margin-bottom: 0.25rem;
   }
 
   .result-text {
     font-size: 0.88rem;
-    font-weight: 600;
-    color: #e2e8f0;
+    font-weight: 700;
+    color: #0f172a;
     line-height: 1.4;
     margin: 0;
   }
@@ -235,7 +237,7 @@ const caseRouteMap: Record<string, { circuitPathEs: string; circuitPathEn: strin
   .case-footer {
     margin-top: 0.75rem;
     padding-top: 0.75rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid #e2e8f0;
   }
 
   .case-footer-actions {

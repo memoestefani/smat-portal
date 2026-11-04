@@ -218,14 +218,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const detalles = urlParams.get('detalles') || urlParams.get('specs') || cached.especificacion_tecnica || wbV2.notes || 'Requisición técnica sujeta a validación dimensional de patio Durango.';
       const destino = urlParams.get('destino') || cached.modalidad_logistica || 'Retiro en Almacén Central Durango (Coordinado con Folio)';
       const urgencia = urlParams.get('urgencia') || (cached.urgencia && cached.urgencia.includes('PARO') ? 'paro' : (wbV2.urgency || 'proyecto'));
-      const material = urlParams.get('material') || cached.material_bombeo || wbV2.selectedMaterial || 'alto_cromo_cr27';
-      const transmision = urlParams.get('transmision') || cached.arreglo_transmision || wbV2.driveArrangement || 'ZVZ';
+      const material = urlParams.get('material') || cached.material_bombeo || wbV2.pump_material || wbV2.selectedMaterial || 'alto_cromo_cr27';
+      const transmision = urlParams.get('transmision') || urlParams.get('arreglo') || cached.arreglo_transmision || wbV2.drive_arrangement || wbV2.driveArrangement || 'ZVZ';
       const estacion = urlParams.get('estacion') || cached.estacion_armado || wbV2.stationCode || 'S4';
-      const sealBranch = urlParams.get('seal_branch') || cached.rama_sellado || wbV2.sealBranch || 'expeller_dry';
-      const pesoKg = urlParams.get('peso_kg') || cached.peso_pieza_kg || wbV2.partMassKg || '';
-      const claroMm = urlParams.get('claro_mm') || cached.claro_axial_mm || wbV2.clearanceMm || '0.75';
-      const b2Mm = urlParams.get('b2_mm') || cached.ancho_impulsor_b2_mm || wbV2.impellerExitWidthMm || '48';
-      const capCKn = urlParams.get('cap_c_kn') || cached.capacidad_rodamiento_c_kn || wbV2.dynamicCapacityCkN || '185';
+      const sealBranch = urlParams.get('seal_branch') || cached.rama_sellado || wbV2.seal_branch || wbV2.sealBranch || 'expeller_dry';
+      const pesoKg = urlParams.get('peso_kg') || cached.peso_pieza_kg || wbV2.partMassKg || wbV2.weight_kg || '';
+      const claroMm = urlParams.get('claro_mm') || cached.claro_axial_mm || wbV2.clearance_mm || wbV2.clearanceMm || '0.75';
+      const b2Mm = urlParams.get('b2_mm') || cached.ancho_impulsor_b2_mm || wbV2.b2_mm || wbV2.impellerExitWidthMm || '48';
+      const capCKn = urlParams.get('cap_c_kn') || cached.capacidad_rodamiento_c_kn || wbV2.cap_c_kn || wbV2.dynamicCapacityCkN || '185';
+      const trustBoundaryId = urlParams.get('trust_boundary_id') || cached.trust_boundary_id || wbV2.trust_boundary_id || 'NONE';
       const deltaEtaV = urlParams.get('delta_eta_v') || cached.perdida_eficiencia_vol_pct || wbV2.volumetricEfficiencyDropPct || '0.3';
       const u2Ms = urlParams.get('u2_ms') || cached.velocidad_periferica_u2_ms || wbV2.tipSpeedU2Ms || '22.4';
       const n2Rpm = urlParams.get('n2_rpm') || cached.n2_rpm || (wbV2.kinematics && wbV2.kinematics.pumpRpm) || '1149';
@@ -292,23 +293,32 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         ? 'Hule Natural Antiabrasivo R55 (55–65 Shore A)'
         : (material === 'poliuretano'
           ? 'Poliuretano Grado Minero U01 (85–95 Shore A)'
-          : (material === 'carburo_silicio' ? 'Carburo de Silicio / Cerámico' : 'Alto Cromo ASTM A532 Cr27% (>600 HB)'));
+          : ((material === 'ceramica_sic' || material === 'carburo_silicio')
+            ? 'Carburo de Silicio Sinterizado SiC (≥2200 HV, Mohs 9.2, K_Ic=4.1 MPa·√m)'
+            : 'Alto Cromo ASTM A532 Cr27% (>600 HB)'));
       const sealLabel = sealBranch === 'gland_water' ? 'S5b Prensaestopa con Agua' : 'S5a Expulsor Centrífugo Seco';
-      const nioshLabel = pesoKg ? ` • Peso: ${pesoKg} kg (${Number(pesoKg) > 23 ? 'Grúa / Polipasto >23 kg NIOSH' : 'Manual <=23 kg NIOSH'})` : '';
+      const wNum = Number(pesoKg) || 0;
+      const liShaft = wNum > 0 ? (wNum / 11.1).toFixed(2) : '0.00';
+      const nioshTier = wNum >= 23
+        ? `HOIST_REQUIRED: Polipasto / Grúa Obligatorio (≥23 kg NIOSH, LI_shaft=${liShaft})`
+        : (wNum > 11.1
+          ? `ASSISTED_SHAFT_MOUNT_2P: Montaje Asistido 2 Técnicos (11.1–23 kg Waters-NIOSH, RWL_shaft=11.1 kg, LI_shaft=${liShaft})`
+          : `MANUAL_SAFE_1P: Manejo Manual Seguro 1 Técnico (≤11.1 kg Waters-NIOSH, LI_shaft=${liShaft})`);
+      const nioshLabel = pesoKg ? ` • Peso: ${pesoKg} kg (${nioshTier})` : '';
       setText('field-material-drive', `${matLabel} • Arreglo V-Belt: ${transmision} (Sumidero: ${floodImm}) • Estación: ${estacion} (${sealLabel})${nioshLabel}`);
       setText('field-clearance-kinematics', `Claro Axial δ = ${claroMm} mm (b₂ = ${b2Mm} mm, Δη_v = -${deltaEtaV}%, Δv_pipe = -${pipeVelLossVal}%) • n₂ = ${n2Rpm} RPM • u₂ = ${u2Ms} m/s • F_r = ${frKn} kN • C = ${capCKn} kN (Vida ISO 281 L₁₀ₕ = ${Number(l10h).toLocaleString('es-MX')} h)${structReason ? ' • ' + structReason : ''}`);
       setText('field-metrology', metrologia);
       setText('field-tco', fullTcoAndProfile);
-      setText('field-type', `${urgencia === 'paro' ? 'Paro Operativo Prioritario' : 'Requisición Formal de Proyecto'} [${gateClassVal}]`);
+      setText('field-type', `${urgencia === 'paro' ? 'Paro Operativo Prioritario' : 'Requisición Formal de Proyecto'} [${gateClassVal}${trustBoundaryId !== 'NONE' ? ' • ' + trustBoundaryId : ''}]`);
 
       const copySapBtn = document.getElementById('copy-sap-acuse-btn');
       if (copySapBtn) {
         copySapBtn.onclick = async () => {
           const sapBlock = [
-            `FOLIO: ${folio} | GATE: ${gateClassVal}`,
+            `FOLIO: ${folio} | GATE: ${gateClassVal} | BOUNDARY: ${trustBoundaryId}`,
             `EMPRESA: ${empresa} | SOLICITANTE: ${nombre}`,
             `EQUIPO: ${equipo} (${fullCode})`,
-            `METALURGIA Y ARREGLO: ${matLabel} | ${transmision} (Sumidero: ${floodImm}) | ${estacion} (${sealLabel})`,
+            `METALURGIA Y ARREGLO: ${matLabel} | ${transmision} (Sumidero: ${floodImm}) | ${estacion} (${sealLabel})${nioshLabel}`,
             `HIDRAULICA Y ALTITUD: ${hidraulica}`,
             `CINEMATICA: delta=${claroMm}mm (b2=${b2Mm}mm, dEtaV=-${deltaEtaV}%, dvPipe=-${pipeVelLossVal}%), n2=${n2Rpm}RPM, u2=${u2Ms}m/s, Fr=${frKn}kN, C=${capCKn}kN, L10h=${l10h}h${structReason ? ' | ' + structReason : ''}`,
             `METROLOGIA: ${metrologia}`
@@ -323,8 +333,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const dlTsvBtn = document.getElementById('download-tsv-acuse-btn');
       if (dlTsvBtn) {
         dlTsvBtn.onclick = () => {
-          const headers = ['Folio', 'Gate', 'Empresa', 'Solicitante', 'Equipo', 'Codigo', 'Material', 'Arreglo', 'Inmunidad_Sumidero', 'Estacion', 'Sello', 'Claro_mm', 'b2_mm', 'n2_RPM', 'u2_ms', 'Fr_kN', 'Capacidad_C_kN', 'L10h_h', 'Er_Cave', 'Vida_Impulsor_h', 'Delta_NPSH_m', 'Derating_IEC', 'K_Motor_Alt', 'Perdida_v_pct', 'Razon_Estructural', 'Hidraulica', 'Metrologia'];
-          const row = [folio, gateClassVal, empresa, nombre, equipo, fullCode, matLabel, transmision, floodImm, estacion, sealLabel, claroMm, b2Mm, n2Rpm, u2Ms, frKn, capCKn, l10h, erVal, impLifeVal, deltaNpshVal, motorDeratingVal, kMotorAltVal, pipeVelLossVal, structReason, hidraulica, metrologia];
+          const headers = ['Folio', 'Gate', 'Boundary', 'Empresa', 'Solicitante', 'Equipo', 'Codigo', 'Material', 'Arreglo', 'Inmunidad_Sumidero', 'Estacion', 'Sello', 'Peso_kg', 'NIOSH_Waters_Tier', 'Claro_mm', 'b2_mm', 'n2_RPM', 'u2_ms', 'Fr_kN', 'Capacidad_C_kN', 'L10h_h', 'Er_Cave', 'Vida_Impulsor_h', 'Delta_NPSH_m', 'Derating_IEC', 'K_Motor_Alt', 'Perdida_v_pct', 'Razon_Estructural', 'Hidraulica', 'Metrologia'];
+          const row = [folio, gateClassVal, trustBoundaryId, empresa, nombre, equipo, fullCode, matLabel, transmision, floodImm, estacion, sealLabel, pesoKg || '0', nioshTier, claroMm, b2Mm, n2Rpm, u2Ms, frKn, capCKn, l10h, erVal, impLifeVal, deltaNpshVal, motorDeratingVal, kMotorAltVal, pipeVelLossVal, structReason, hidraulica, metrologia];
           const tsv = headers.join('\t') + '\n' + row.map(v => String(v || '').replace(/[\t\r\n]+/g, ' ')).join('\t') + '\n';
           const blob = new Blob(['\uFEFF' + tsv], { type: 'text/tab-separated-values;charset=utf-8;' });
           const url = URL.createObjectURL(blob);

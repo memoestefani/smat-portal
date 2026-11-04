@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DiagnosticsHub from '../../components/DiagnosticsHub.astro';
+import QuickPartSelectorStrip from '../../components/QuickPartSelectorStrip.astro';
 import CaseCards from '../../components/CaseCards.astro';
 ---
 
@@ -13,5 +14,8 @@ import CaseCards from '../../components/CaseCards.astro';
   alternateEnPath="/en/diagnostics/"
 >
   <DiagnosticsHub lang="en" />
+  <div class="container">
+    <QuickPartSelectorStrip lang="en" />
+  </div>
   <CaseCards lang="en" />
 </BaseLayout>

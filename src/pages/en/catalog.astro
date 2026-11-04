@@ -2,9 +2,32 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
 import atomicParts from '../../../data/atomic_parts.json';
+import rolesData from '../../../data/roles.json';
+import { PIPE_SERIES_DIAMETER_MM, WET_END_MATERIAL_MATRIX } from '../../scripts/slurryEngine.js';
+import { getAtomicPartSpecs, formatNioshErgonomicStatus, buildWizardUrl } from '../../scripts/workbenchBus.js';
 
 const title = "Official Technical Catalog 2026 | Slurry Pumps, Flotation Mechanisms, Filter Presses & Scales | SMAT Minerals";
-const description = "Technical digital catalog with CAD diagrams of slurry pumps, wet-end wear lots (High Chrome, Rubber & Polyurethane), Bearing Assembly / Housing, flotation mechanisms, filter presses and Marcy pulp density scales.";
+const description = "Technical digital catalog with CAD diagrams of slurry pumps (9 series 1.5x1 to 14x12), wet-end wear lots (High Chrome, Rubber, Polyurethane & Ceramic SiC), Bearing Assembly / Housing, flotation mechanisms, filter presses and process control metrology.";
+
+const wetEndMaterialsList = Object.values(WET_END_MATERIAL_MATRIX);
+const controlVertical = rolesData.verticals.find((v) => v.id === 'balanzas_marcy');
+const controlProcessItems = controlVertical ? [...(controlVertical.capex || []), ...(controlVertical.opex || [])] : [];
+const enrichedAtomicParts = atomicParts.map((part) => {
+  const spec = getAtomicPartSpecs(part.part_number, '6x4');
+  const niosh = formatNioshErgonomicStatus(spec, 'en');
+  const quoteHref = buildWizardUrl({
+    lang: 'en',
+    circuit: 'bombeo',
+    role: spec.role,
+    code: part.part_number,
+    series: spec.pipe_size || '6x4',
+    station: spec.station,
+    material: part.part_number === 'DAM005' ? undefined : 'alto_cromo_cr27',
+    weightKg: spec.weight_kg,
+    arrangement: 'CV'
+  });
+  return { ...part, spec, niosh, quoteHref };
+});
 ---
 
 <BaseLayout title={title} description={description} lang="en">
@@ -109,14 +132,14 @@ const description = "Technical digital catalog with CAD diagrams of slurry pumps
         </div>
       </div>
 
-      <!-- Rapid Parametric Matrix Table (Decision 2-A) -->
+      <!-- Rapid Parametric Matrix Table (9 Series from PIPE_SERIES_DIAMETER_MM — Decision 3) -->
       <div class="catalog-table-wrap" id="parametric-matrix">
         <div class="table-header-flex">
           <div>
-            <h4 class="table-title">Rapid Parametric Matrix — Slurry Pumping Series (4x3 to 10x8)</h4>
-            <span class="table-subtitle">Consolidated dimensional frames, max solids passage (Top Size), power ratings, and flow ranges (&lt;15s inspection)</span>
+            <h4 class="table-title">Complete Parametric Matrix — 9 Slurry Pumping Series (1.5x1" to 14x12")</h4>
+            <span class="table-subtitle">Consolidated SSOT dimensional frames (`PIPE_SERIES_DIAMETER_MM`), max solids passage (Top Size), power ratings, and flow ranges (&lt;15s inspection)</span>
           </div>
-          <span class="matrix-badge">1:1 FIT STANDARD</span>
+          <span class="matrix-badge">9 SERIES • 1:1 FIT STANDARD</span>
         </div>
 
         <!-- Mini-Diagram Eschematic SVG Mounting Dimensions (Decision 2-A & 4-A) -->
@@ -151,8 +174,8 @@ const description = "Technical digital catalog with CAD diagrams of slurry pumps
               <text x="300" y="73" font-size="10" font-family="var(--apple-font-mono, monospace)" fill="#2563eb" font-weight="bold" class="svg-dim-d pro-tabular-nums">Dim D</text>
             </svg>
             <div class="diagram-legend">
-              <span class="legend-item"><strong>Ø A:</strong> Suction flange nominal diameter (4" to 10")</span>
-              <span class="legend-item"><strong>Ø B:</strong> Discharge flange nominal diameter (3" to 8")</span>
+              <span class="legend-item"><strong>Ø A:</strong> Suction flange nominal diameter (1.5" to 14")</span>
+              <span class="legend-item"><strong>Ø B:</strong> Discharge flange nominal diameter (1" to 12")</span>
               <span class="legend-item"><strong>Dim C:</strong> Baseplate anchor bolt center-to-center</span>
               <span class="legend-item"><strong>Dim D:</strong> Shaft centerline height from concrete pad</span>
             </div>
@@ -163,7 +186,7 @@ const description = "Technical digital catalog with CAD diagrams of slurry pumps
           <thead>
             <tr>
               <th>Series / Frame</th>
-              <th>Suction × Discharge</th>
+              <th>Suction × Discharge (Hydraulic D)</th>
               <th>Operating Flow</th>
               <th>Dynamic Head (TDH)</th>
               <th>Top Size (Max Solids)</th>
@@ -174,75 +197,160 @@ const description = "Technical digital catalog with CAD diagrams of slurry pumps
             </tr>
           </thead>
           <tbody>
+            <tr class="dim-row" data-dimension="dim-c" data-series="1.5x1B">
+              <td><span class="series-pill">1.5x1 B</span></td>
+              <td>1.5" ({PIPE_SERIES_DIAMETER_MM['1.5x1']} mm) × 1" (25 mm)</td>
+              <td>7 – 28 m³/h</td>
+              <td>8 – 35 m</td>
+              <td><strong>14 mm</strong></td>
+              <td>5 – 15 HP (3.7-11 kW)</td>
+              <td>High Chrome (&gt;650 HB) / Rubber / Polyurethane / SiC</td>
+              <td>Metallurgical sampling, pilot plants, and froth sump duty.</td>
+              <td class="no-print"><a href="/en/quote/?circuito=bombeo&equipo=skid_bomba&serie=1.5x1#rfq" class="btn-table-cta">Quote 1.5x1 →</a></td>
+            </tr>
+            <tr class="dim-row" data-dimension="dim-c" data-series="2x1.5B">
+              <td><span class="series-pill">2x1.5 B</span></td>
+              <td>2" ({PIPE_SERIES_DIAMETER_MM['2x1.5']} mm) × 1.5" (40 mm)</td>
+              <td>15 – 55 m³/h</td>
+              <td>10 – 40 m</td>
+              <td><strong>19 mm</strong></td>
+              <td>10 – 20 HP (7.5-15 kW)</td>
+              <td>High Chrome (&gt;650 HB) / Rubber / Polyurethane / SiC</td>
+              <td>Lime milk dosing, reagent loops, and cleaner stages.</td>
+              <td class="no-print"><a href="/en/quote/?circuito=bombeo&equipo=skid_bomba&serie=2x1.5#rfq" class="btn-table-cta">Quote 2x1.5 →</a></td>
+            </tr>
+            <tr class="dim-row" data-dimension="dim-c" data-series="3x2C">
+              <td><span class="series-pill">3x2 C</span></td>
+              <td>3" ({PIPE_SERIES_DIAMETER_MM['3x2']} mm) × 2" (50 mm)</td>
+              <td>25 – 105 m³/h</td>
+              <td>12 – 45 m</td>
+              <td><strong>22 mm</strong></td>
+              <td>15 – 30 HP (11-22 kW)</td>
+              <td>High Chrome (&gt;650 HB) / Rubber / Polyurethane / SiC</td>
+              <td>Final concentrate transfer and floor washdown sumps.</td>
+              <td class="no-print"><a href="/en/quote/?circuito=bombeo&equipo=skid_bomba&serie=3x2#rfq" class="btn-table-cta">Quote 3x2 →</a></td>
+            </tr>
             <tr class="dim-row" data-dimension="dim-c" data-series="4x3C">
               <td><span class="series-pill">4x3 C</span></td>
-              <td>4" (100 mm) × 3" (75 mm)</td>
+              <td>4" ({PIPE_SERIES_DIAMETER_MM['4x3']} mm) × 3" (75 mm)</td>
               <td>50 – 180 m³/h</td>
               <td>10 – 45 m</td>
               <td><strong>28 mm</strong></td>
               <td>30 – 50 HP (22-37 kW)</td>
-              <td>High Chrome (&gt;650 HB) / Rubber / Polyurethane</td>
+              <td>High Chrome (&gt;650 HB) / Rubber / Polyurethane / SiC</td>
               <td>Flotation feed, sumps, and fine tailings transfer.</td>
               <td class="no-print"><a href="/en/quote/?equipo=skid_bomba&serie=4x3#rfq" class="btn-table-cta">Quote 4x3 →</a></td>
             </tr>
             <tr class="dim-row" data-dimension="dim-c" data-series="6x4D">
               <td><span class="series-pill highlight">6x4 D</span></td>
-              <td>6" (150 mm) × 4" (100 mm)</td>
+              <td>6" ({PIPE_SERIES_DIAMETER_MM['6x4']} mm) × 4" (100 mm)</td>
               <td>150 – 450 m³/h</td>
               <td>15 – 60 m</td>
               <td><strong>45 mm</strong></td>
               <td>50 – 100 HP (37-75 kW)</td>
-              <td>High Chrome (&gt;650 HB) / Rubber / Polyurethane</td>
+              <td>High Chrome (&gt;650 HB) / Rubber / Polyurethane / SiC</td>
               <td>SAG / Ball mill discharge to cyclone clusters (200-600 t/d).</td>
               <td class="no-print"><a href="/en/quote/?equipo=skid_bomba&serie=6x4#rfq" class="btn-table-cta">Quote 6x4 →</a></td>
             </tr>
             <tr class="dim-row" data-dimension="dim-c" data-series="8x6E">
               <td><span class="series-pill">8x6 E</span></td>
-              <td>8" (200 mm) × 6" (150 mm)</td>
+              <td>8" ({PIPE_SERIES_DIAMETER_MM['8x6']} mm) × 6" (150 mm)</td>
               <td>350 – 900 m³/h</td>
               <td>20 – 70 m</td>
               <td><strong>63 mm</strong></td>
               <td>100 – 200 HP (75-150 kW)</td>
-              <td>High Chrome (&gt;650 HB) / Rubber</td>
+              <td>High Chrome (&gt;650 HB) / Rubber / SiC</td>
               <td>Primary grinding circuit discharge and thickened tailings.</td>
               <td class="no-print"><a href="/en/quote/?equipo=skid_bomba&serie=8x6#rfq" class="btn-table-cta">Quote 8x6 →</a></td>
             </tr>
             <tr class="dim-row" data-dimension="dim-c" data-series="10x8F">
               <td><span class="series-pill">10x8 F</span></td>
-              <td>10" (250 mm) × 8" (200 mm)</td>
+              <td>10" ({PIPE_SERIES_DIAMETER_MM['10x8']} mm) × 8" (200 mm)</td>
               <td>700 – 1,200 m³/h</td>
               <td>25 – 80 m</td>
               <td><strong>86 mm</strong></td>
               <td>150 – 250 HP (110-185 kW)</td>
-              <td>High Chrome (&gt;650 HB) / Rubber</td>
+              <td>High Chrome (&gt;650 HB) / Rubber / SiC</td>
               <td>Large throughput tailings disposal and plants &gt;1,500 t/d.</td>
               <td class="no-print"><a href="/en/quote/?equipo=skid_bomba&serie=10x8#rfq" class="btn-table-cta">Quote 10x8 →</a></td>
+            </tr>
+            <tr class="dim-row" data-dimension="dim-c" data-series="12x10G">
+              <td><span class="series-pill">12x10 G</span></td>
+              <td>12" ({PIPE_SERIES_DIAMETER_MM['12x10']} mm) × 10" (250 mm)</td>
+              <td>1,100 – 2,200 m³/h</td>
+              <td>25 – 85 m</td>
+              <td><strong>95 mm</strong></td>
+              <td>250 – 450 HP (185-335 kW)</td>
+              <td>High Chrome (&gt;650 HB) / Rubber / SiC</td>
+              <td>Primary cyclone cluster feed and high-tonnage SAG discharge.</td>
+              <td class="no-print"><a href="/en/quote/?circuito=bombeo&equipo=skid_bomba&serie=12x10#rfq" class="btn-table-cta">Quote 12x10 →</a></td>
+            </tr>
+            <tr class="dim-row" data-dimension="dim-c" data-series="14x12G">
+              <td><span class="series-pill">14x12 G</span></td>
+              <td>14" ({PIPE_SERIES_DIAMETER_MM['14x12']} mm) × 12" (300 mm)</td>
+              <td>1,600 – 3,400 m³/h</td>
+              <td>25 – 90 m</td>
+              <td><strong>110 mm</strong></td>
+              <td>400 – 650 HP (300-485 kW)</td>
+              <td>High Chrome (&gt;650 HB) / Rubber / SiC</td>
+              <td>Mega-concentrators and main thickened tailings pipelines.</td>
+              <td class="no-print"><a href="/en/quote/?circuito=bombeo&equipo=skid_bomba&serie=14x12#rfq" class="btn-table-cta">Quote 14x12 →</a></td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Atomic Part Technical Sheets (atomic_parts.json) -->
+      <!-- Wet-End Tribological Material Matrix (WET_END_MATERIAL_MATRIX — Decision 3 & 4) -->
+      <div class="atomic-parts-catalog-block" id="ssot-alloy-matrix" style="margin-bottom: 1.5rem;">
+        <div class="table-header-flex">
+          <div>
+            <h4 class="table-title">Wet-End Metallurgical & Tribological Matrix (4 SSOT Alloys)</h4>
+            <span class="table-subtitle">Deterministic selection by Vickers/Brinell hardness, fracture toughness (K_Ic), peripheral tip speed limit (u₂), and 5-5-4 wear ratio</span>
+          </div>
+          <span class="matrix-badge">4 SSOT MATERIALS</span>
+        </div>
+        <div class="atomic-parts-grid">
+          {wetEndMaterialsList.map((mat) => (
+            <div class="atomic-part-card" data-material-key={mat.key}>
+              <div class="atomic-part-top">
+                <span class="series-pill highlight">{mat.code}</span>
+                <span class="atomic-frame-badge">Lot {mat.wearRatio554}</span>
+              </div>
+              <strong class="atomic-part-title">{mat.nameEn}</strong>
+              <p class="atomic-part-desc">{mat.hardness} • u₂ ≤ {mat.maxTipSpeedMs} m/s • d₈₀ {mat.d80RangeMicrons} µm • pH {mat.phRange}</p>
+              <p class="atomic-part-desc" style="font-size:0.75rem; color:#334155;">{mat.dutyApplicationEn}</p>
+              <div class="atomic-part-actions no-print">
+                <a href={buildWizardUrl({ lang: 'en', circuit: 'bombeo', role: 'kit_wet_end', series: '6x4', station: 'S4', material: mat.key, arrangement: 'CV' })} class="btn-card-quote">Quote Lot {mat.code} →</a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Atomic Part Technical Sheets (atomic_parts.json + getAtomicPartSpecs + Waters-NIOSH) -->
       <div class="atomic-parts-catalog-block" id="atomic-part-sheets">
         <div class="table-header-flex">
           <div>
             <h4 class="table-title">Universal Part Number Technical Sheets (Impellers, Throatbushes & Expeller Rings)</h4>
-            <span class="table-subtitle">Select any universal part code to view its individual metallurgical specification, verified hardness, and 1:1 dimensional fit</span>
+            <span class="table-subtitle">Select any universal part code to view its individual metallurgical specification, verified mass, Waters-NIOSH 1993 ergonomics, and 1:1 dimensional fit</span>
           </div>
           <span class="matrix-badge">6 ATOMIC SHEETS</span>
         </div>
         <div class="atomic-parts-grid">
-          {atomicParts.map((part) => (
-            <div class="atomic-part-card">
+          {enrichedAtomicParts.map((part) => (
+            <div class="atomic-part-card" data-part-code={part.part_number} data-niosh-tier={part.niosh.tier}>
               <div class="atomic-part-top">
                 <span class="series-pill highlight">{part.part_number}</span>
-                <span class="atomic-frame-badge">Frame {part.frame}</span>
+                <span class="atomic-frame-badge">Frame {part.frame} • {part.spec.station_number}</span>
               </div>
               <strong class="atomic-part-title">{part.name_en}</strong>
               <p class="atomic-part-desc">{part.type_en} • {part.hardness}</p>
+              <p class="atomic-part-desc" style="font-size:0.74rem; color:#0f172a; font-weight:600;">
+                Weight: {part.spec.weight_kg} kg • {part.niosh.badgeEn} • ØD₂ {part.spec.impeller_diameter_mm} mm
+              </p>
               <div class="atomic-part-actions no-print">
                 <a href={`/en/catalog/${part.code}/`} class="btn-table-cta">View Sheet {part.part_number} →</a>
-                <a href={`/en/quote/?codigo=${part.part_number}&circuito=bombeo#rfq`} class="btn-card-quote">Quote →</a>
+                <a href={part.quoteHref} class="btn-card-quote">Quote →</a>
               </div>
             </div>
           ))}
@@ -344,17 +452,17 @@ const description = "Technical digital catalog with CAD diagrams of slurry pumps
       </div>
     </section>
 
-    <!-- SECTION 4: PULP DENSITY SCALES (MARCY TYPE) -->
+    <!-- SECTION 4: PROCESS CONTROL INSTRUMENTATION (MARCY, PIERRE GY FILTER PRESS & ASTM E11 SIEVES) -->
     <section class="catalog-section" id="scales">
       <div class="section-title-wrap">
         <span class="section-num">04</span>
         <div>
-          <h2>Pulp Density & % Solids Scales (Marcy Type)</h2>
-          <span class="section-subtitle">Direct-reading metallurgical instrumentation for grinding, classification, and flotation control</span>
+          <h2>Process Control Instrumentation: Marcy Scales, Lab Batch Filter (Pierre Gy) & ASTM E11 Sieves</h2>
+          <span class="section-subtitle">Direct-reading metallurgical instrumentation for pulp density (ρ_p), pneumatic sample dewatering (100 PSI), and P80 particle size control</span>
         </div>
       </div>
 
-      <div class="catalog-grid-2" style="align-items: center;">
+      <div class="catalog-grid-2" style="align-items: center; margin-bottom: 1.5rem;">
         <div class="catalog-card">
           <div class="card-tag">Plant Metallurgical Control</div>
           <h3>Direct-Reading Hanging Pulp Density Scale with 1000 cm³ Container</h3>
@@ -372,6 +480,35 @@ const description = "Technical digital catalog with CAD diagrams of slurry pumps
 
         <div>
           <TechnicalDiagrams diagram="marcy" lang="en" />
+        </div>
+      </div>
+
+      <!-- Complete Process Control Metrology Station (3 SSOT Instruments from data/roles.json — Decision 3) -->
+      <div class="atomic-parts-catalog-block" id="process-control-instruments">
+        <div class="table-header-flex">
+          <div>
+            <h4 class="table-title">Complete Process Control Metrology Station (3 SSOT Instruments)</h4>
+            <span class="table-subtitle">Directly synchronized with Panel 04 in `/en/quote/` (`control_procesos`) and Marcy, Pierre Gy (1979), and Rosin-Rammler ASTM E11 laws</span>
+          </div>
+          <span class="matrix-badge">3 LAB INSTRUMENTS</span>
+        </div>
+        <div class="atomic-parts-grid">
+          {controlProcessItems.map((inst) => (
+            <div class="atomic-part-card" data-role-id={inst.role_id}>
+              <div class="atomic-part-top">
+                <span class="series-pill highlight">{inst.role_id.toUpperCase()}</span>
+                <span class="atomic-frame-badge">{inst.series}</span>
+              </div>
+              <strong class="atomic-part-title">{inst.title_en}</strong>
+              <p class="atomic-part-desc">{inst.spec_summary_en}</p>
+              <p class="atomic-part-desc" style="font-size:0.74rem; color:#0c4a6e;">
+                <strong>Metrological Rule:</strong> {inst.decision_criteria?.metallurgy_rule_en}
+              </p>
+              <div class="atomic-part-actions no-print">
+                <a href={buildWizardUrl({ lang: 'en', circuit: 'control_procesos', role: inst.role_id, series: inst.series })} class="btn-card-quote">Quote {inst.title_en.split('(')[0].trim()} →</a>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -1034,10 +1171,15 @@ const description = "Technical digital catalog with CAD diagrams of slurry pumps
     var dimD = svg.querySelector('.svg-dim-d');
 
     var seriesDims = {
+      '1.5x1 B': { a: 'Ø 40 mm (1.5")', b: 'Ø 25 mm (1")', c: 'Dim C: 260 mm', d: 'Dim D: 185 mm' },
+      '2x1.5 B': { a: 'Ø 50 mm (2")', b: 'Ø 40 mm (1.5")', c: 'Dim C: 310 mm', d: 'Dim D: 210 mm' },
+      '3x2 C': { a: 'Ø 80 mm (3")', b: 'Ø 50 mm (2")', c: 'Dim C: 370 mm', d: 'Dim D: 245 mm' },
       '4x3 C': { a: 'Ø 100mm (4")', b: 'Ø 75mm (3")', c: 'Dim C: 420mm', d: 'Dim D: 280mm' },
       '6x4 D': { a: 'Ø 150mm (6")', b: 'Ø 100mm (4")', c: 'Dim C: 580mm', d: 'Dim D: 355mm' },
       '8x6 E': { a: 'Ø 200mm (8")', b: 'Ø 150mm (6")', c: 'Dim C: 740mm', d: 'Dim D: 450mm' },
-      '10x8 F': { a: 'Ø 250mm (10")', b: 'Ø 200mm (8")', c: 'Dim C: 920mm', d: 'Dim D: 560mm' }
+      '10x8 F': { a: 'Ø 250mm (10")', b: 'Ø 200mm (8")', c: 'Dim C: 920mm', d: 'Dim D: 560mm' },
+      '12x10 G': { a: 'Ø 300mm (12")', b: 'Ø 250mm (10")', c: 'Dim C: 1120mm', d: 'Dim D: 680mm' },
+      '14x12 G': { a: 'Ø 350mm (14")', b: 'Ø 300mm (12")', c: 'Dim C: 1280mm', d: 'Dim D: 790mm' }
     };
 
     rows.forEach(function(row) {

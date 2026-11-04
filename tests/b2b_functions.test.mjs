@@ -1609,8 +1609,8 @@ test('81. Invariante de Armonización Cromática 90/10 en CaseCards (Decisión 6
   assert.ok(!caseCards.includes('#34d399'), 'CaseCards no debe usar verde esmeralda neón #34d399');
 
   // Integración mineral armónica
-  assert.ok(caseCards.includes('#0b1120'), 'CaseCards debe usar fondo mineral oscuro continuo #0b1120');
-  assert.ok(caseCards.includes('#f59e0b'), 'CaseCards debe usar acento ámbar/cobre #f59e0b');
+  assert.ok(!caseCards.includes('#0b1120') && caseCards.includes('#f8fafc'), 'CaseCards debe usar superficie Solar #f8fafc sin fondo oscuro #0b1120');
+  assert.ok(caseCards.includes('#7c2d12'), 'CaseCards debe usar acento cobre AAA #7c2d12');
 });
 
 test('82. Inyección y Parseo de Síntoma en Diagnóstico ➔ Requisición (Decisión 9-C)', () => {
@@ -2177,7 +2177,7 @@ test('120. Sanitizador Síncrono de Almacenamiento y Purga de Debris smat_workbe
   const wizard = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), 'utf-8');
 
   // Migración canónica a clave v2
-  assert.ok(wizard.includes("STORAGE_KEY_V2 = 'smat_workbench_v2'"), 'QuoteWizard debe definir STORAGE_KEY_V2 como smat_workbench_v2');
+  assert.ok(wizard.includes('STORAGE_KEY_V2 = SMAT_WORKBENCH_STATE_KEY'), 'QuoteWizard debe unificar STORAGE_KEY_V2 con SMAT_WORKBENCH_STATE_KEY');
 
   // Función sanitizadora presente y ejecutada antes de cargar sesión
   assert.ok(wizard.includes('function sanitizeAndMigrateStorage()'), 'Debe existir la función sanitizeAndMigrateStorage()');
@@ -2923,7 +2923,7 @@ test('154. Franja Superior de Selección Rápida de Pieza (<QuickPartSelectorStr
     'src/pages/en/pumping/index.astro'
   ]) {
     const pageContent = fs.readFileSync(path.join(siteRoot, pageRel), 'utf-8');
-    assert.ok(pageContent.includes('<QuickPartSelectorStrip'), `${pageRel} debe montar <QuickPartSelectorStrip`);
+    assert.ok(pageContent.includes('data-bombeo-tab="kits"') && !pageContent.includes('<QuickPartSelectorStrip'), `${pageRel} debe consolidar la consola 3-tab XOR sin duplicar <QuickPartSelectorStrip`);
   }
 });
 
