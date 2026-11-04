@@ -26,18 +26,16 @@ const driveArrangements = Object.values(DRIVE_ARRANGEMENT_CATALOG);
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" id="skid-main-section">
     <div class="container">
-      <TechnicalDiagrams diagram="pump" lang="es" />
-
-      <div class="grid-2" style="margin-top: 1.75rem;">
-        <div>
+      <div class="grid-2" style="margin-bottom: 1.75rem;">
+        <article>
           <h2>Configuración de la Bomba para Lodos</h2>
           <p>
             Diseñadas para operar con pulpas de alta densidad y sólidos abrasivos o corrosivos. Cada bomba integra carcasa bipartida, piezas en contacto húmedo intercambiables (impulsor, cuello, voluta y plato), sistema de sellado centrífugo por expulsor y prensaestopa (sin sello mecánico) y conjunto motriz <strong>Bearing Assembly / Housing</strong> completo.
           </p>
           
-          <h3 style="margin-top: 1.75rem;">Especificaciones Técnicas</h3>
+          <h3 style="margin-top: 1rem;">Especificaciones Técnicas</h3>
           <div class="table-wrapper">
             <table>
               <tbody>
@@ -64,7 +62,7 @@ const driveArrangements = Object.values(DRIVE_ARRANGEMENT_CATALOG);
               </tbody>
             </table>
           </div>
-        </div>
+        </article>
 
         <div>
           <div class="card" style="background-color: #f8fafc;">
@@ -81,6 +79,8 @@ const driveArrangements = Object.values(DRIVE_ARRANGEMENT_CATALOG);
           </div>
         </div>
       </div>
+
+      <TechnicalDiagrams diagram="pump" lang="es" />
 
       <!-- ARREGLOS DE TRANSMISIÓN EN SKID (DECISIÓN 5-C+ • REF 3 Y 5 DON MANUEL) -->
       <div id="arreglos-transmision" style="margin-top: 2.5rem;">
@@ -373,4 +373,10 @@ const driveArrangements = Object.values(DRIVE_ARRANGEMENT_CATALOG);
   .kin-metric-card__sub { font-size: 0.74rem; color: #334155; }
   .kin-metric-card__cta { margin-top: 0.25rem; font-family: var(--smat-font-mono, monospace); font-size: 0.72rem; font-weight: 800; color: #082f49; text-decoration: underline; }
   .skid-kinematics-calibrator__alert { margin-top: 0.9rem; padding: 0.85rem 1rem; border-radius: 8px; background: #fef2f2; border: 1.5px solid #dc2626; color: #7f1d1d; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; font-size: 0.82rem; }
+  @media (max-width: 640px) {
+    .page-hero { padding: 0.75rem 0; }
+    .page-hero h1 { font-size: 1.35rem; margin: 0.2rem 0; }
+    .page-hero p { font-size: 0.82rem !important; line-height: 1.3; margin: 0.2rem 0; }
+    #skid-main-section { padding-top: 0.65rem; }
+  }
 </style>

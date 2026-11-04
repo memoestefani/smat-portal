@@ -62,12 +62,8 @@ const description = "Catálogo técnico digital con diagramas CAD de bombas para
         </div>
       </div>
 
-      <div style="margin-bottom: 1.5rem;">
-        <TechnicalDiagrams diagram="pump" lang="es" />
-      </div>
-
       <div class="catalog-grid-2">
-        <div class="catalog-card">
+        <article class="catalog-card">
           <div class="card-tag">Bombas Horizontales y Conjunto Motriz</div>
           <h3>Bombas para Lodos (1.5x1" a 14x12") y Bearing Assembly / Housing</h3>
           <p class="card-desc">Bombas centrífugas horizontales de servicio pesado para descarga de molino, alimentación a ciclones, flotación y jales, junto con <strong>Bearing Assembly / Housing</strong> completos listos para montaje rápido en campo.</p>
@@ -81,9 +77,9 @@ const description = "Catálogo técnico digital con diagramas CAD de bombas para
             <a href="/cotizar/?equipo=skid_bomba#rfq" class="btn-card-quote">Cotizar Bomba para Lodos →</a>
             <a href="/cotizar/?equipo=soporte#rfq" class="btn-card-quote">Cotizar Bearing Assembly →</a>
           </div>
-        </div>
+        </article>
 
-        <div class="catalog-card">
+        <article class="catalog-card">
           <div class="card-tag">Suministro por Lote en Contacto Húmedo (5 – 5 – 4)</div>
           <h3>Impulsores, Cuellos y Volutas (Alto Cromo, Hule y Poliuretano)</h3>
           <p class="card-desc">Piezas en contacto húmedo suministradas por lote balanceado según la rotación real de desgaste en planta (por ejemplo: <strong>5 Impulsores + 5 Cuellos + 4 Volutas</strong>) para evitar paros por desajuste de holguras.</p>
@@ -97,7 +93,11 @@ const description = "Catálogo técnico digital con diagramas CAD de bombas para
             <a href="/cotizar/?equipo=revestimientos#rfq" class="btn-card-quote">Cotizar Lote Húmedo (5-5-4) →</a>
             <a href="/cotizar/?equipo=impulsor#rfq" class="btn-card-quote">Cotizar Impulsores →</a>
           </div>
-        </div>
+        </article>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <TechnicalDiagrams diagram="pump" lang="es" />
       </div>
 
       <div class="catalog-grid-2" style="margin-bottom: 1.5rem;">
@@ -969,6 +969,14 @@ const description = "Catálogo técnico digital con diagramas CAD de bombas para
 
   @media (max-width: 640px) {
     .trust-charter-grid { grid-template-columns: 1fr; }
+    .catalog-page-container { padding: 0.5rem 0.65rem 2rem; }
+    .catalog-action-bar { padding: 0.4rem 0.6rem; margin-bottom: 0.5rem; gap: 0.35rem; }
+    .catalog-edition-pill { display: none; }
+    .catalog-official-header { padding: 0.65rem 0.85rem; margin-bottom: 0.5rem; }
+    .brand-title { font-size: 1.25rem; }
+    .brand-location, .header-meta-block { display: none; }
+    .catalog-intro-banner { display: none; }
+    .section-title-wrap { margin-bottom: 0.5rem; }
   }
 
   .trust-box {

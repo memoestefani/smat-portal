@@ -191,14 +191,27 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       const flVal = urlParams.get('fl') || cached.durand_fl || wbV2.durandFactorFL || '';
       const cvVal = urlParams.get('cv') || cached.solids_cv_pct || wbV2.solidsVolumetricPercent || '';
       const vRecVal = urlParams.get('v_rec') || cached.recommended_velocity_ms || wbV2.recommendedPipeVelocityMs || '';
+      const erVal = urlParams.get('eff_ratio_er') || cached.eff_ratio_er || wbV2.eff_ratio_er || '0.88';
+      const impLifeVal = urlParams.get('impeller_life_h') || cached.impeller_life_h || wbV2.impeller_life_h || '2800';
+      const wearRatioVal = urlParams.get('wear_life_ratio') || cached.wear_life_ratio || wbV2.wear_life_ratio || '3.8';
+      const pAtmMcaVal = urlParams.get('p_atm_mca') || cached.p_atm_mca || wbV2.p_atm_mca || '7.98';
+      const deltaNpshVal = urlParams.get('delta_npsh_m') || cached.delta_npsh_m || wbV2.delta_npsh_m || '2.35';
+      const motorDeratingVal = urlParams.get('motor_derating_iec') || cached.motor_derating_iec || wbV2.motor_derating_iec || '0.920';
+      const kMotorAltVal = urlParams.get('k_motor_alt') || cached.k_motor_alt || wbV2.k_motor_alt || '1.24';
+      const pipeVelLossVal = urlParams.get('pipe_vel_loss_pct') || cached.pipe_vel_loss_pct || wbV2.pipe_vel_loss_pct || '0.3';
+      const gateClassVal = urlParams.get('gate_classification') || cached.gate_classification || wbV2.gate_classification || 'STANDARD_PROJECT';
       const hidraulicaBase = urlParams.get('hidraulica') || cached.memoria_hidraulica_durand || 'Hydraulic calculation subject to plant flow rate and % solids confirmation.';
       const hidraulicaExtras = [
         `pH = ${phVal}`,
         flVal ? `F_L = ${flVal}` : '',
         cvVal ? `C_v = ${cvVal}%` : '',
-        vRecVal ? `v_rec = ${vRecVal} m/s` : ''
+        vRecVal ? `v_rec = ${vRecVal} m/s` : '',
+        `η_r = ${erVal}`,
+        `Impeller Life = ${impLifeVal} h (${wearRatioVal}x)`,
+        `P_atm = ${pAtmMcaVal} mca (ΔNPSH = -${deltaNpshVal} m)`,
+        `f_IEC = ${motorDeratingVal} (K_motor,alt = ${kMotorAltVal}x)`
       ].filter(Boolean).join(' | ');
-      const hidraulica = hidraulicaBase.includes('pH') ? hidraulicaBase : `${hidraulicaBase} (${hidraulicaExtras})`;
+      const hidraulica = hidraulicaBase.includes('K_motor,alt') ? hidraulicaBase : `${hidraulicaBase} (${hidraulicaExtras})`;
       const tco = urlParams.get('tco') || cached.proyeccion_tco || '';
       const detalles = urlParams.get('detalles') || urlParams.get('specs') || cached.especificacion_tecnica || wbV2.notes || 'Technical requisition subject to Durango yard dimensional inspection.';
       const destino = urlParams.get('destino') || cached.modalidad_logistica || 'Durango Central Warehouse Pickup (Folio Scheduled)';
@@ -281,21 +294,21 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       const sealLabel = sealBranch === 'gland_water' ? 'S5b Flushed Gland Packing' : 'S5a Dry Centrifugal Expeller';
       const nioshLabel = pesoKg ? ` • Weight: ${pesoKg} kg (${Number(pesoKg) > 23 ? 'Hoist >23 kg NIOSH' : 'Manual <=23 kg NIOSH'})` : '';
       setText('field-material-drive', `${matLabel} • V-Belt Drive: ${transmision} (Sump: ${floodImm}) • Station: ${estacion} (${sealLabel})${nioshLabel}`);
-      setText('field-clearance-kinematics', `Axial Clearance δ = ${claroMm} mm (b₂ = ${b2Mm} mm, Δη_v = -${deltaEtaV}%) • n₂ = ${n2Rpm} RPM • u₂ = ${u2Ms} m/s • F_r = ${frKn} kN • C = ${capCKn} kN (ISO 281 Life L₁₀ₕ = ${Number(l10h).toLocaleString('en-US')} h)${structReason ? ' • ' + structReason : ''}`);
+      setText('field-clearance-kinematics', `Axial Clearance δ = ${claroMm} mm (b₂ = ${b2Mm} mm, Δη_v = -${deltaEtaV}%, Δv_pipe = -${pipeVelLossVal}%) • n₂ = ${n2Rpm} RPM • u₂ = ${u2Ms} m/s • F_r = ${frKn} kN • C = ${capCKn} kN (ISO 281 Life L₁₀ₕ = ${Number(l10h).toLocaleString('en-US')} h)${structReason ? ' • ' + structReason : ''}`);
       setText('field-metrology', metrologia);
       setText('field-tco', fullTcoAndProfile);
-      setText('field-type', urgencia === 'paro' ? 'Emergency Plant Shutdown (High Operational Priority)' : 'Formal Equipment Requisition / Project');
+      setText('field-type', `${urgencia === 'paro' ? 'Emergency Plant Shutdown' : 'Formal Equipment Requisition / Project'} [${gateClassVal}]`);
 
       const copySapBtn = document.getElementById('copy-sap-acuse-btn');
       if (copySapBtn) {
         copySapBtn.onclick = async () => {
           const sapBlock = [
-            `FOLIO: ${folio}`,
+            `FOLIO: ${folio} | GATE: ${gateClassVal}`,
             `COMPANY: ${empresa} | REQUESTER: ${nombre}`,
             `EQUIPMENT: ${equipo} (${fullCode})`,
             `METALLURGY & DRIVE: ${matLabel} | ${transmision} (Sump: ${floodImm}) | ${estacion} (${sealLabel})`,
-            `HYDRAULICS: ${hidraulica}`,
-            `KINEMATICS: delta=${claroMm}mm (b2=${b2Mm}mm, dEtaV=-${deltaEtaV}%), n2=${n2Rpm}RPM, u2=${u2Ms}m/s, Fr=${frKn}kN, C=${capCKn}kN, L10h=${l10h}h${structReason ? ' | ' + structReason : ''}`,
+            `HYDRAULICS & ALTITUDE: ${hidraulica}`,
+            `KINEMATICS: delta=${claroMm}mm (b2=${b2Mm}mm, dEtaV=-${deltaEtaV}%, dvPipe=-${pipeVelLossVal}%), n2=${n2Rpm}RPM, u2=${u2Ms}m/s, Fr=${frKn}kN, C=${capCKn}kN, L10h=${l10h}h${structReason ? ' | ' + structReason : ''}`,
             `METROLOGY: ${metrologia}`
           ].join('\n');
           try {
@@ -308,8 +321,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       const dlTsvBtn = document.getElementById('download-tsv-acuse-btn');
       if (dlTsvBtn) {
         dlTsvBtn.onclick = () => {
-          const headers = ['Folio', 'Company', 'Requester', 'Equipment', 'Code', 'Material', 'Drive', 'Sump_Immunity', 'Station', 'Seal', 'Clearance_mm', 'b2_mm', 'n2_RPM', 'u2_ms', 'Fr_kN', 'Capacity_C_kN', 'L10h_h', 'Structural_Reason', 'Hydraulics', 'Metrology'];
-          const row = [folio, empresa, nombre, equipo, fullCode, matLabel, transmision, floodImm, estacion, sealLabel, claroMm, b2Mm, n2Rpm, u2Ms, frKn, capCKn, l10h, structReason, hidraulica, metrologia];
+          const headers = ['Folio', 'Gate', 'Company', 'Requester', 'Equipment', 'Code', 'Material', 'Drive', 'Sump_Immunity', 'Station', 'Seal', 'Clearance_mm', 'b2_mm', 'n2_RPM', 'u2_ms', 'Fr_kN', 'Capacity_C_kN', 'L10h_h', 'Er_Cave', 'Impeller_Life_h', 'Delta_NPSH_m', 'Derating_IEC', 'K_Motor_Alt', 'Pipe_Vel_Loss_pct', 'Structural_Reason', 'Hydraulics', 'Metrology'];
+          const row = [folio, gateClassVal, empresa, nombre, equipo, fullCode, matLabel, transmision, floodImm, estacion, sealLabel, claroMm, b2Mm, n2Rpm, u2Ms, frKn, capCKn, l10h, erVal, impLifeVal, deltaNpshVal, motorDeratingVal, kMotorAltVal, pipeVelLossVal, structReason, hidraulica, metrologia];
           const tsv = headers.join('\t') + '\n' + row.map(v => String(v || '').replace(/[\t\r\n]+/g, ' ')).join('\t') + '\n';
           const blob = new Blob(['\uFEFF' + tsv], { type: 'text/tab-separated-values;charset=utf-8;' });
           const url = URL.createObjectURL(blob);
@@ -547,6 +560,45 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
   .btn-print:hover {
     background: #082f49;
+  }
+
+  @media (max-width: 640px) {
+    .ack-main {
+      padding: 0.65rem 0.5rem 2rem;
+    }
+    .requisition-sheet {
+      padding: 0.85rem;
+    }
+    .sheet-header {
+      gap: 0.5rem;
+    }
+    .brand-logo-text {
+      font-size: 1.15rem;
+    }
+    .brand-address, .brand-contact {
+      display: none;
+    }
+    .folio-box {
+      text-align: left;
+    }
+    .folio-value {
+      font-size: 1rem;
+    }
+    .sheet-divider {
+      margin: 0.5rem 0;
+    }
+    .sheet-title-bar {
+      margin-bottom: 0.5rem;
+    }
+    .sheet-title-bar h2 {
+      font-size: 0.88rem;
+    }
+    .sheet-section {
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      margin-bottom: 0.35rem;
+    }
   }
 
   /* MEDIA PRINT STYLES FOR ERP (SAP/COUPA) */

@@ -6,6 +6,7 @@
 import {
   calculateSlurryMetrics,
   calculateAltitudeCorrection,
+  validatePlantLeadInput,
   evaluateWetEndAssemblyInterference,
   evaluatePumpAssemblySequence,
   calculateDriveAndBearingKinematics,
@@ -26,6 +27,8 @@ import {
   ATOMIC_PARTS_CATALOG,
   resolveAtomicPartCode,
   getAtomicPartSpecs,
+  resolveMiningDistrictPreset,
+  buildCanonicalEngineeringSnapshot,
   publishWorkbenchUpdate,
   subscribeWorkbenchUpdate,
   parseUrlContextParams,
@@ -1041,16 +1044,41 @@ export function initQuoteWizardController() {
       critical_velocity_ms: Number(Vc.toFixed(2)),
       safe_velocity_ms: Number(Vrec.toFixed(2)),
       line_velocity_ms: Number(V_actual.toFixed(2)),
-      head_ratio: Number(hrFactor.toFixed(2)),
+      head_ratio: Number(hrFactor.toFixed(3)),
+      eff_ratio_er: Number(res.effDeratingFactorEr.toFixed(3)),
+      impeller_life_h: lifeHrs,
       motor_derating_iec: Number(kh.toFixed(3)),
+      k_motor_alt: simOut.combinedMotorAltitudeMultiplier,
+      motor_sizing_penalty_pct: simOut.motorSizingPenaltyPct,
       wear_life_ratio: wearRatio,
       altitude_msnm: selectedAltitude,
+      p_atm_mca: Number(pAtm.toFixed(2)),
       patm_mca: Number(pAtm.toFixed(2)),
+      delta_npsh_m: Number(deltaNpsh.toFixed(2)),
       recommended_alloy: matName,
       recommended_material_key: res.recommendedMaterialKey,
       recommended_material_code: res.recommendedMaterialCode,
       estimated_life_hrs: lifeHrs
     };
+
+    var elAltLiveStrip = document.getElementById('wb-altitude-live-strip');
+    if (elAltLiveStrip) {
+      elAltLiveStrip.textContent = 'Patm = ' + pAtm.toFixed(2) + ' mca | -ΔNPSHa = ' + deltaNpsh.toFixed(2) + ' m | IEC 60034-1 = ' + kh.toFixed(3) + ' | K_motor,alt = ' + simOut.combinedMotorAltitudeMultiplier + 'x (+' + simOut.motorSizingPenaltyPct + '%)';
+    }
+    var elDossierHr = document.getElementById('metric-hr');
+    var elDossierEr = document.getElementById('metric-er');
+    var elDossierWearHours = document.getElementById('metric-wear-hours');
+    var elDossierPatm = document.getElementById('metric-patm-mca');
+    var elDossierMotorIec = document.getElementById('metric-motor-iec');
+    var elDossierKMotorAlt = document.getElementById('metric-k-motor-alt');
+    if (elDossierHr) elDossierHr.textContent = hrFactor.toFixed(3);
+    if (elDossierEr) elDossierEr.textContent = res.effDeratingFactorEr.toFixed(3);
+    if (elDossierWearHours) {
+      elDossierWearHours.textContent = lifeHrs.toLocaleString('en-US') + ' h (' + wearRatio.toFixed(1) + 'x vs ' + (isEs ? 'FG' : 'GI') + ')';
+    }
+    if (elDossierPatm) elDossierPatm.textContent = pAtm.toFixed(2) + ' mca';
+    if (elDossierMotorIec) elDossierMotorIec.textContent = kh.toFixed(3);
+    if (elDossierKMotorAlt) elDossierKMotorAlt.textContent = simOut.combinedMotorAltitudeMultiplier + 'x';
 
     currentTcoMetrics = {
       tco_downtime_hrs: downtimeHours,
@@ -1084,6 +1112,9 @@ export function initQuoteWizardController() {
     if (metricDeltaNpsh) {
       metricDeltaNpsh.textContent = '-' + deltaNpsh.toFixed(2) + ' m (Patm ' + pAtm.toFixed(2) + ' mca)';
     }
+    document.querySelectorAll('#metric-delta-npsh').forEach(function (el) {
+      el.textContent = '-' + deltaNpsh.toFixed(2) + ' m (Patm ' + pAtm.toFixed(2) + ' mca)';
+    });
     if (metricMaterial) metricMaterial.textContent = matName;
     if (metricLife) metricLife.textContent = '~' + lifeHrs + ' h (' + wearRatio.toFixed(1) + '×)';
     if (metricRationale) metricRationale.textContent = isEs ? res.rationaleEs : res.rationaleEn;
@@ -1108,16 +1139,32 @@ export function initQuoteWizardController() {
     var ctrlRetP80Val = ctrlRetP80Input && ctrlRetP80Input.value !== '' ? parseFloat(ctrlRetP80Input.value) : 20.0;
     var ctrlFrameInches = (selectCtrlSpec && selectCtrlSpec.value.includes('12in')) ? 12 : 8;
 
-    var liveMarcy = ctrlSolveMode === 'rhop'
-      ? calculateMarcyScaleReading({ solidsSpecificGravity: ctrlSgVal, pulpDensityKgL: ctrlRhopVal, solveFor: 'cw' })
-      : calculateMarcyScaleReading({ solidsSpecificGravity: ctrlSgVal, solidsWeightPercent: ctrlCwVal, solveFor: 'sm' });
+    var ctrlSolveSelect = document.getElementById('wb-ctrl-solve-mode');
+    if (ctrlSolveSelect && ctrlSolveSelect.value) {
+      ctrlSolveMode = ctrlSolveSelect.value;
+    }
 
-    if (ctrlSolveMode === 'rhop' && ctrlCwInput && document.activeElement !== ctrlCwInput) {
+    var liveMarcy = ctrlSolveMode === 'ore_density_rhop'
+      ? calculateMarcyScaleReading({ pulpDensityKgL: ctrlRhopVal, solidsWeightPercent: ctrlCwVal, solveFor: 'ore_density_rhop' })
+      : (ctrlSolveMode === 'rhop'
+        ? calculateMarcyScaleReading({ solidsSpecificGravity: ctrlSgVal, pulpDensityKgL: ctrlRhopVal, solveFor: 'cw' })
+        : calculateMarcyScaleReading({ solidsSpecificGravity: ctrlSgVal, solidsWeightPercent: ctrlCwVal, solveFor: 'sm' }));
+
+    if (ctrlSolveMode === 'ore_density_rhop' && ctrlSgInput && document.activeElement !== ctrlSgInput) {
+      ctrlSgVal = Number(liveMarcy.oreDensitySg.toFixed(2));
+      ctrlSgInput.value = String(ctrlSgVal);
+    } else if (ctrlSolveMode === 'rhop' && ctrlCwInput && document.activeElement !== ctrlCwInput) {
       ctrlCwVal = Number(liveMarcy.solidsWeightPercent.toFixed(1));
       ctrlCwInput.value = String(ctrlCwVal);
-    } else if (ctrlRhopInput && document.activeElement !== ctrlRhopInput) {
+    } else if (ctrlSolveMode === 'cw' && ctrlRhopInput && document.activeElement !== ctrlRhopInput) {
       ctrlRhopVal = Number(liveMarcy.pulpDensityKgL.toFixed(3));
       ctrlRhopInput.value = ctrlRhopVal.toFixed(3);
+    }
+    var elCtrlLiveMetrics = document.getElementById('wb-ctrl-live-metrics');
+    if (elCtrlLiveMetrics) {
+      elCtrlLiveMetrics.textContent = (isEs ? 'Lectura Marcy: ' : 'Marcy Reading: ') +
+        'Ss=' + liveMarcy.oreDensitySg.toFixed(2) + ' | Cw=' + liveMarcy.solidsWeightPercent.toFixed(1) + '% | ρp=' + liveMarcy.pulpDensityKgL.toFixed(3) + ' kg/L (' + liveMarcy.cupNetMassGrams + ' g netos / ' + liveMarcy.drySolidsMassGramsInCup + ' g secos) • ' +
+        (isEs ? liveMarcy.recommendedContainerEs : liveMarcy.recommendedContainerEn);
     }
 
     var liveGy = calculateGyMinimumSampleMass({
@@ -1623,9 +1670,20 @@ export function initQuoteWizardController() {
       });
 
       var lossPctVal = currentClearanceEval.volumetricEfficiencyDropPct ?? currentClearanceEval.volumetricEfficiencyLossPct ?? 1.6;
+      var pipeVelLossVal = currentClearanceEval.pipeVelocityMarginLossPct ?? Number((lossPctVal * 0.75).toFixed(2));
       var elValClearance = document.getElementById('wb-val-clearance');
       var elMetricClearanceLoss = document.getElementById('metric-clearance-loss');
+      var elClearanceVelLoss = document.getElementById('wb-clearance-vel-loss');
+      var elDossierPipeVelLoss = document.getElementById('wb-pipe-vel-loss');
+      var elLiveCollisionNote = document.getElementById('live-assembly-collision-note');
       if (elValClearance) elValClearance.textContent = currentClearanceEval.frontClearanceMm.toFixed(2) + ' mm (Δη_v = -' + lossPctVal.toFixed(1) + '%)';
+      if (elClearanceVelLoss) elClearanceVelLoss.textContent = '-' + Number(pipeVelLossVal).toFixed(1) + '%';
+      if (elDossierPipeVelLoss) elDossierPipeVelLoss.textContent = Number(pipeVelLossVal).toFixed(1) + '%';
+      if (elLiveCollisionNote) {
+        elLiveCollisionNote.textContent = currentClearanceEval.sequenceValid
+          ? (isEs ? 'Secuencia S1→S5 libre de colisión axial' : 'S1→S5 sequence collision-free')
+          : (isEs ? ('BLOQUEO ' + currentClearanceEval.outOfOrderStationId + ': ' + currentClearanceEval.collisionDetailsEs) : ('BLOCKED ' + currentClearanceEval.outOfOrderStationId + ': ' + currentClearanceEval.collisionDetailsEn));
+      }
       if (elMetricClearanceLoss) {
         var statusLblEs = currentClearanceEval.clearanceStatus === 'OPTIMAL_CALIBRATION'
           ? (isEs ? 'Óptimo' : 'Optimal')
@@ -1709,11 +1767,45 @@ export function initQuoteWizardController() {
       }
       if (elLiveKinematics) {
         var matHuman = matCodeVal === 'hule_natural' ? (isEs ? 'Hule Natural Antiabrasivo (55–65 Shore A)' : 'Natural Rubber (55–65 Shore A)') : (matCodeVal === 'poliuretano' ? (isEs ? 'Poliuretano Grado Minero (85–95 Shore A)' : 'Mining Polyurethane (85–95 Shore A)') : 'Alto Cromo ASTM A532 Cr27% (≥650 HB)');
-        elLiveKinematics.textContent = matHuman + ' | ' + arrDisplay + ' (n₂=' + currentKinematics.pumpRpm + ' RPM, u₂=' + currentKinematics.tipSpeedMs.toFixed(1) + ' m/s, F_r=' + Number(currentKinematics.beltRadialLoadKn || 0).toFixed(2) + ' kN, L₁₀ₕ=' + l10hNum.toLocaleString('en-US') + ' h) | δ=' + currentClearanceEval.frontClearanceMm.toFixed(2) + ' mm (Δη_v=-' + lossPctVal.toFixed(1) + '%)';
+        var collShort = currentClearanceEval.sequenceValid
+          ? (isEs ? 'Secuencia S1→S5 libre de colisión axial' : 'S1→S5 sequence collision-free')
+          : (isEs ? ('BLOQUEO ' + currentClearanceEval.outOfOrderStationId + ': ' + currentClearanceEval.collisionDetailsEs) : ('BLOCKED ' + currentClearanceEval.outOfOrderStationId + ': ' + currentClearanceEval.collisionDetailsEn));
+        elLiveKinematics.innerHTML = matHuman + ' | ' + arrDisplay + ' (n₂=' + currentKinematics.pumpRpm + ' RPM, u₂=' + currentKinematics.tipSpeedMs.toFixed(1) + ' m/s, F_r=' + Number(currentKinematics.beltRadialLoadKn || 0).toFixed(2) + ' kN, L₁₀ₕ=' + l10hNum.toLocaleString('en-US') + ' h) | δ=' + currentClearanceEval.frontClearanceMm.toFixed(2) + ' mm (Δη_v=-' + lossPctVal.toFixed(1) + '%, ΔV_pipe=-<span id="wb-pipe-vel-loss" data-testid="wb-pipe-vel-loss">' + Number(pipeVelLossVal).toFixed(1) + '%</span>) | <span id="live-assembly-collision-note" data-testid="live-assembly-collision-note">' + collShort + '</span>';
       }
       if (elRubberLock) {
         var showRubberLock = (matCodeVal === 'hule_natural' && currentKinematics.rubberThermalLimitExceeded);
         elRubberLock.classList.toggle('hidden', !showRubberLock);
+      }
+
+      // Compuerta Interactiva de Plausibilidad Física y Límites de Rechazo (Decisión 3 / INV-SMAT-GTE-001)
+      var gateOut = validatePlantLeadInput({
+        company: compVal,
+        cwPct: currentHydraulicMetrics.solids_cw,
+        d80Microns: currentHydraulicMetrics.d80_um,
+        flowM3h: currentHydraulicMetrics.flow_m3h,
+        pulpPh: currentHydraulicMetrics.pulp_ph,
+        altitudeM: selectedAltitude,
+        wetMaterial: matCodeVal,
+        frontClearanceMm: currentClearanceEval.frontClearanceMm,
+        tipSpeedMs: currentKinematics.tipSpeedMs,
+        smat_code: smatCode
+      });
+      var elGateBadge = document.getElementById('gate-lead-status');
+      var elTrustAlert = document.getElementById('trust-boundary-alert');
+      var elTrustTitle = document.getElementById('trust-boundary-title');
+      var elTrustReason = document.getElementById('trust-boundary-reason');
+      if (elGateBadge) {
+        elGateBadge.textContent = isEs ? gateOut.badgeLabelEs : gateOut.badgeLabelEn;
+        elGateBadge.style.background = gateOut.plausible ? '#065f46' : '#991b1b';
+      }
+      if (elTrustAlert) {
+        if (gateOut.activeTrustBoundaryId) {
+          elTrustAlert.classList.remove('hidden');
+          if (elTrustTitle) elTrustTitle.textContent = gateOut.activeTrustBoundaryTitleEs;
+          if (elTrustReason) elTrustReason.textContent = gateOut.activeTrustBoundaryReasonEs;
+        } else {
+          elTrustAlert.classList.add('hidden');
+        }
       }
 
       if (wbState.metrology && (wbState.metrology.cw !== undefined || wbState.metrology.solidsPctCw !== undefined || wbState.metrology.summary || wbState.metrology.raw)) {
@@ -2049,9 +2141,13 @@ export function initQuoteWizardController() {
     }
 
     var pLower = profileText.toLowerCase();
-    var presetCw = 45;
-    var presetD80 = 180;
-    var presetSg = 2.8;
+    var districtPreset = resolveMiningDistrictPreset(groupObj.id || unitObj.name) || {};
+    var presetCw = districtPreset.solidsCw || 45;
+    var presetD80 = districtPreset.d80Microns || 180;
+    var presetSg = districtPreset.solidsSg || 2.8;
+    var presetAlt = districtPreset.altitudeM || selectedAltitude;
+    var presetPh = districtPreset.pulpPh || 7.5;
+    var presetFlow = districtPreset.flowM3h || 180;
     if (pLower.includes('hierro') || pLower.includes('ferro') || pLower.includes('manganeso') || pLower.includes('pellet')) {
       presetCw = 60;
       presetD80 = 190;
@@ -2070,9 +2166,15 @@ export function initQuoteWizardController() {
       presetSg = 2.7;
     }
 
+    if (sliderFlow) sliderFlow.value = String(presetFlow);
     if (sliderSolids) sliderSolids.value = String(presetCw);
     if (sliderD80) sliderD80.value = String(presetD80);
     if (sliderSg) sliderSg.value = String(presetSg);
+    if (sliderPh) sliderPh.value = String(presetPh);
+    if (presetAlt) {
+      selectedAltitude = Number(presetAlt);
+      if (valAltitude) valAltitude.textContent = selectedAltitude.toLocaleString() + ' msnm';
+    }
     if (ctrlSgInput) ctrlSgInput.value = String(presetSg);
     if (ctrlCwInput) ctrlCwInput.value = String(presetCw);
     if (ctrlP80Input) ctrlP80Input.value = String(presetD80);
@@ -2498,8 +2600,36 @@ export function initQuoteWizardController() {
         var spTxt = isEs ? cObj.spec_es : cObj.spec_en;
         seriesEl.textContent = [sList, spTxt].filter(Boolean).join(' — ');
       }
+      var elLiveRoleCriteria = document.getElementById('live-role-criteria');
+      if (elLiveRoleCriteria) {
+        var rTxt = isEs ? cObj.rule_es : cObj.rule_en;
+        var kTxt = isEs ? cObj.risk_es : cObj.risk_en;
+        elLiveRoleCriteria.textContent = rTxt + ' • ' + kTxt;
+      }
     }
   }
+
+  document.getElementById('wb-ctrl-solve-mode')?.addEventListener('change', function (e) {
+    ctrlSolveMode = e.target.value || 'cw';
+    runSlurryCalculation();
+    updateDossier();
+  });
+
+  document.getElementById('btn-apply-ss-to-circuit')?.addEventListener('click', function () {
+    if (ctrlSgInput && sliderSg) {
+      sliderSg.value = ctrlSgInput.value;
+      runSlurryCalculation();
+      updateDossier();
+    }
+  });
+
+  document.getElementById('btn-apply-mining-preset')?.addEventListener('click', function () {
+    var gId = step1GroupSelect?.value || 'fresnillo-plc';
+    var grp = miningGroups.find(function (g) { return g.id === gId; }) || miningGroups[0];
+    if (grp && grp.units && grp.units.length > 0) {
+      applyMiningUnitPreset(grp, grp.units[0]);
+    }
+  });
 
   [selectRole, selectRoleFlot, selectRoleFilt, selectRoleCtrl, selectCtrlSpec].forEach(function (sel) {
     if (sel) sel.addEventListener('change', function () {

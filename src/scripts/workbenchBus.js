@@ -5,8 +5,80 @@
  */
 
 import atomicPartsJson from '../../data/atomic_parts.json' with { type: 'json' };
+import miningGroupsJson from '../../data/mining_groups.json' with { type: 'json' };
 
 export const SMAT_WORKBENCH_EVENT = 'smat:workbench_update';
+
+/**
+ * Perfiles físicos y metalúrgicos pre-calibrados por distrito minero (Decisión 7 / data/mining_groups.json)
+ */
+const DISTRICT_CALIBRATION_PROFILES = {
+  'fresnillo-plc': { altitudeM: 2250, solidsSg: 3.1, solidsCw: 52, d80Microns: 210, pulpPh: 7.8, flowM3h: 220, recommendedPipeSize: '6x4' },
+  'penoles': { altitudeM: 2350, solidsSg: 3.2, solidsCw: 54, d80Microns: 240, pulpPh: 7.5, flowM3h: 240, recommendedPipeSize: '6x4' },
+  'first-majestic': { altitudeM: 2100, solidsSg: 2.7, solidsCw: 44, d80Microns: 140, pulpPh: 10.5, flowM3h: 160, recommendedPipeSize: '4x3' },
+  'pan-american-silver': { altitudeM: 2450, solidsSg: 3.0, solidsCw: 50, d80Microns: 195, pulpPh: 8.0, flowM3h: 190, recommendedPipeSize: '6x4' },
+  'grupo-mexico': { altitudeM: 1650, solidsSg: 2.8, solidsCw: 55, d80Microns: 260, pulpPh: 8.2, flowM3h: 450, recommendedPipeSize: '8x6' },
+  'endeavour-silver': { altitudeM: 2400, solidsSg: 2.8, solidsCw: 48, d80Microns: 165, pulpPh: 9.2, flowM3h: 150, recommendedPipeSize: '4x3' },
+  'minera-frisco': { altitudeM: 2150, solidsSg: 3.0, solidsCw: 50, d80Microns: 220, pulpPh: 7.6, flowM3h: 210, recommendedPipeSize: '6x4' }
+};
+
+/**
+ * Resuelve el preset operativo completo de un grupo o unidad minera desde data/mining_groups.json (Decisión 7)
+ * @param {string} [query='']
+ */
+export function resolveMiningDistrictPreset(query = '') {
+  if (!query || typeof query !== 'string') return null;
+  const q = query.trim().toLowerCase();
+  if (!q) return null;
+
+  const qTokens = q
+    .replace(/[()/,-]/g, ' ')
+    .split(/\s+/)
+    .filter((tok) => tok.length >= 4 && !['unidad', 'mina', 'minera', 'planta', 'grupo'].includes(tok));
+
+  const groups = Array.isArray(miningGroupsJson?.groups) ? miningGroupsJson.groups : [];
+  for (const grp of groups) {
+    const grpNameLower = String(grp.name || '').toLowerCase();
+    const grpMatch = String(grp.id || '').toLowerCase() === q || grpNameLower.includes(q);
+    const units = Array.isArray(grp.units) ? grp.units : [];
+    const matchedUnit = units.find((u) => {
+      const uLower = String(u.name || '').toLowerCase();
+      if (uLower.includes(q) || q.includes(uLower)) return true;
+      return qTokens.some((tok) => uLower.includes(tok));
+    });
+    if (grpMatch || matchedUnit) {
+      const unitObj = matchedUnit || units[0] || { name: grp.name, pulp_profile: 'Bombeo de pulpa mineral en planta concentradora' };
+      const baseCal = DISTRICT_CALIBRATION_PROFILES[grp.id] || {
+        altitudeM: 2200,
+        solidsSg: 2.8,
+        solidsCw: 48,
+        d80Microns: 180,
+        pulpPh: 7.5,
+        flowM3h: 180,
+        recommendedPipeSize: '6x4'
+      };
+      const profLower = String(unitObj.pulp_profile || '').toLowerCase();
+      let defaultCircuit = 'bombeo';
+      if (profLower.includes('flotación') || profLower.includes('flotacion')) defaultCircuit = 'flotacion';
+      else if (profLower.includes('filtración') || profLower.includes('filtracion') || profLower.includes('jales')) defaultCircuit = 'filtracion';
+
+      return {
+        matched: true,
+        groupId: grp.id,
+        groupName: grp.name,
+        unitName: unitObj.name,
+        mineName: unitObj.name,
+        pulpProfileEs: unitObj.pulp_profile,
+        pulpProfile: unitObj.pulp_profile,
+        defaultCircuit,
+        altitudeMsnm: baseCal.altitudeM,
+        solidsPct: baseCal.solidsCw,
+        ...baseCal
+      };
+    }
+  }
+  return null;
+}
 
 /**
  * Endpoint oficial de respaldo para ingesta asíncrona hacia Google Apps Script (Code.gs)
@@ -544,7 +616,9 @@ export function formatSapPlaintext(data = {}) {
   }
   if (resolvedClaro) {
     const lossStr = resolvedDeltaEta !== undefined ? ` | Pérdida Recirculación Δη_v: ${resolvedDeltaEta}%` : '';
-    lines.push(`   - Calibración Claro Axial δ:  ${resolvedClaro} mm${lossStr}`);
+    const pipeLossVal = data.pipe_vel_loss_pct !== undefined ? data.pipe_vel_loss_pct : ce.pipeVelocityMarginLossPct;
+    const pipeLossStr = pipeLossVal !== undefined && pipeLossVal !== '' ? ` | Δv_tubería = -${pipeLossVal}%` : '';
+    lines.push(`   - Calibración Claro Axial δ:  ${resolvedClaro} mm${lossStr}${pipeLossStr}`);
   }
   if (resolvedStructural) {
     lines.push(`   - Dictamen Estructural:       ${resolvedStructural}`);
@@ -590,9 +664,18 @@ export function formatSapPlaintext(data = {}) {
     if (metrics.flow_m3h !== undefined) lines.push(`   - Flujo de Operación:        ${metrics.flow_m3h} m³/h`);
     if (metrics.solids_cw !== undefined) lines.push(`   - Concentración de Sólidos:  ${metrics.solids_cw}% Cw (S_s: ${metrics.solid_sg || 2.7}${metrics.d80_um ? `, d80: ${metrics.d80_um} µm` : ''})`);
     if (metrics.slurry_sg !== undefined) lines.push(`   - Densidad de Pulpa (S_m):   ${metrics.slurry_sg} kg/L${metrics.solids_cv !== undefined ? ` (${metrics.solids_cv}% Cv)` : ''}`);
-    if (metrics.head_ratio !== undefined) lines.push(`   - Factor Derating (HR):      ${metrics.head_ratio}`);
+    if (metrics.head_ratio !== undefined) lines.push(`   - Factor Derating (HR / ηr): ${metrics.head_ratio} / Er (Cave): ${metrics.eff_ratio_er || data.eff_ratio_er || '0.84'}`);
+    if (metrics.impeller_life_h !== undefined || data.impeller_life_h !== undefined) {
+      lines.push(`   - Vida Estimada Impulsor:    ${metrics.impeller_life_h || data.impeller_life_h} h (${metrics.wear_life_ratio || data.wear_life_ratio || '3.8'}x vs Fierro Gris)`);
+    }
     if (metrics.critical_velocity_ms !== undefined) lines.push(`   - Velocidad Límite Durand:   ${metrics.critical_velocity_ms} m/s (Evita arenamiento)`);
-    if (metrics.altitude_msnm !== undefined) lines.push(`   - Altitud Operativa:         ${metrics.altitude_msnm} msnm`);
+    if (metrics.altitude_msnm !== undefined) {
+      const patm = metrics.p_atm_mca || data.p_atm_mca || '7.66';
+      const dnpsh = metrics.delta_npsh_m || data.delta_npsh_m || '2.67';
+      const fIec = metrics.motor_derating_iec || data.motor_derating_iec || '0.860';
+      const kAlt = metrics.k_motor_alt || data.k_motor_alt || '1.38';
+      lines.push(`   - Altitud y Pinza Térmica:   ${metrics.altitude_msnm} msnm (Patm=${patm} mca, -ΔNPSHa=${dnpsh} m, IEC=${fIec}, K_motor,alt = ${kAlt}x)`);
+    }
     if (metrics.recommended_alloy) lines.push(`   - Metalurgia Sugerida:       ${metrics.recommended_alloy}`);
     const tcoTons = tco.tco_tons_at_risk !== undefined ? tco.tco_tons_at_risk : metrics.tco_tons_at_risk;
     const tcoHrs = tco.tco_downtime_hrs !== undefined ? tco.tco_downtime_hrs : metrics.tco_downtime_hrs;
@@ -1031,49 +1114,60 @@ export function parseSmatPartCode(code = '', lang = 'es') {
 }
 
 /**
- * Construye los parámetros URL completos y sin pérdida para /acuse/ y /en/thank-you/
+ * Construye el Snapshot Canónico Único de Ingeniería de 38 campos (Decisión 8 / GOLD-145 / GOLD-522)
+ * Garantiza 0 [DTO-DROP] entre buildAcuseUrlParams, buildLeadWebhookPayload, formatSapPlaintext y formatWhatsappUrl.
  * @param {Object} d
- * @returns {URLSearchParams}
  */
-export function buildAcuseUrlParams(d = {}) {
+export function buildCanonicalEngineeringSnapshot(d = {}) {
   const m = d.metrics || {};
   const tco = d.tco || {};
+  const ps = d.part_specs || {};
+  const ce = d.clearance_eval || {};
+  const kin = d.kinematics || {};
+  const met = d.metrology || {};
+  const gate = d.gate_eval || {};
+
   const measures = (d.dim_outer_dia || d.dim_shaft_bore)
     ? `DE ~${d.dim_outer_dia || 'N/A'} mm | Barreno/Flecha ~${d.dim_shaft_bore || 'N/A'} mm`
+    : (d.medidas || '');
+
+  const flowM3h = m.flow_m3h ?? d.flow_m3h ?? 180;
+  const solidsCw = m.solids_cw ?? d.solids_cw ?? 45;
+  const d80Um = m.d80_um ?? d.d80_um ?? 180;
+  const slurrySg = m.slurry_sg ?? d.slurry_sg ?? '1.40';
+  const solidsCv = d.cv ?? d.solidsVolumetricPercent ?? m.solids_cv ?? '23.3';
+  const critVel = m.critical_velocity_ms ?? d.critical_velocity_ms ?? '2.35';
+  const safeVel = d.v_rec ?? d.recommendedPipeVelocityMs ?? m.safe_velocity_ms ?? '2.82';
+  const durandFl = d.fl ?? d.durandFactorFL ?? m.durand_fl ?? '1.08';
+  const headRatio = m.head_ratio ?? d.headDeratingFactorHr ?? '0.88';
+  const effRatio = d.eff_ratio_er ?? m.eff_ratio_er ?? d.effDeratingFactorEr ?? '0.84';
+  const impellerLifeH = d.impeller_life_h ?? m.impeller_life_h ?? d.estimatedImpellerLifeHours ?? 1850;
+  const wearLifeRatio = d.wear_life_ratio ?? m.wear_life_ratio ?? d.wearLifeRatio ?? '3.8';
+  const altitudeMsnm = m.altitude_msnm ?? d.altitude_msnm ?? d.altitudeM ?? 2200;
+  const pAtmMca = d.p_atm_mca ?? m.p_atm_mca ?? d.pAtmHeadMca ?? Number(Math.max(5.0, 10.33 - (Number(altitudeMsnm) / 900)).toFixed(2));
+  const deltaNpshM = d.delta_npsh_m ?? m.delta_npsh_m ?? d.deltaNpshLossM ?? Number((10.33 - Number(pAtmMca)).toFixed(2));
+  const motorDeratingIec = d.motor_derating_iec ?? m.motor_derating_iec ?? d.motorDeratingFactor ?? (Number(altitudeMsnm) > 1000 ? Number(Math.max(0.70, 1.0 - ((Number(altitudeMsnm) - 1000) / 10000)).toFixed(3)) : 1.0);
+  const kMotorAlt = d.k_motor_alt ?? m.k_motor_alt ?? d.combinedMotorAltitudeMultiplier ?? Number((1.0 / Math.max(0.25, Number(effRatio) * Number(motorDeratingIec))).toFixed(3));
+  const recAlloy = m.recommended_alloy || d.recommended_alloy || 'High Chrome A05 (>650 HB)';
+
+  const hydraulicsStr = (m.flow_m3h !== undefined || m.slurry_sg !== undefined || d.hidraulica)
+    ? (d.hidraulica || `Q: ${flowM3h} m³/h | Cw: ${solidsCw}% (d80: ${d80Um} µm) | Sm: ${slurrySg} kg/L (${solidsCv}% Cv) | Vc: ${critVel} m/s | HR: ${headRatio} | ηr: ${effRatio} | Vida: ${impellerLifeH}h (${wearLifeRatio}x) | ${recAlloy}`)
     : '';
-  const hydraulicsStr = (m.flow_m3h !== undefined || m.slurry_sg !== undefined)
-    ? `Q: ${m.flow_m3h || 180} m³/h | Cw: ${m.solids_cw || 45}% (d80: ${m.d80_um || 180} µm) | Sm: ${m.slurry_sg || '1.40'} kg/L (${m.solids_cv || '23.3'}% Cv) | Vc: ${m.critical_velocity_ms || '2.35'} m/s | HR: ${m.head_ratio || '0.88'} | ${m.recommended_alloy || 'High Chrome A05 (>650 HB)'}`
-    : '';
+
   const tcoTons = tco.tco_tons_at_risk !== undefined ? tco.tco_tons_at_risk : m.tco_tons_at_risk;
   const tcoHrs = tco.tco_downtime_hrs !== undefined ? tco.tco_downtime_hrs : m.tco_downtime_hrs;
   const tcoSummary = tco.tco_summary || m.tco_summary || '';
   const tcoStr = (tcoTons !== undefined || tcoSummary)
     ? `~${tcoTons || 0} ton en riesgo (${tcoHrs || 4}h) | ${tcoSummary}`
-    : '';
+    : (d.tco_str || '');
 
-  const paramsObj = {
-    folio: d.folio || 'SMAT-2026-RFQ',
-    nombre: d.name || d.contact_name || '',
-    empresa: d.company || d.company_name || '',
-    telefono: d.phone || d.phone_number || '',
-    correo: d.email || d.email_address || '',
-    equipo: d.part_name || d.role || '',
-    codigo: d.smat_code || generateSmatPartCode(d),
-    detalles: d.details || '',
-    destino: d.destination || '',
-    urgencia: d.isOpex === false ? 'proyecto' : 'paro'
-  };
-
-  const ps = d.part_specs || {};
-  const ce = d.clearance_eval || {};
-  const kin = d.kinematics || {};
-  const met = d.metrology || {};
   const resolvedMat = d.material || d.wet_material || d.pump_material || '';
   const resolvedDrive = d.transmision || d.drive_arrangement || kin.arrangement || kin.arrangementCode || '';
   const resolvedStation = d.estacion || d.station_number || d.assembly_station || ps.station_number || ps.station || '';
   const resolvedWeight = d.peso_kg || d.part_weight_kg || ps.weight_kg || '';
-  const resolvedClaro = d.claro_mm || d.front_clearance_mm || ce.frontClearanceMm || '';
+  const resolvedClaro = d.claro_mm !== undefined ? d.claro_mm : (d.front_clearance_mm ?? ce.frontClearanceMm ?? '');
   const resolvedDeltaEta = d.delta_eta_v !== undefined ? d.delta_eta_v : (ce.volumetricEfficiencyDropPct ?? ce.volumetricEfficiencyLossPct);
+  const resolvedPipeVelLoss = d.pipe_vel_loss_pct !== undefined ? d.pipe_vel_loss_pct : (ce.pipeVelocityMarginLossPct ?? '');
   const resolvedU2 = d.u2_ms || d.tip_speed_ms || kin.tipSpeedMs || '';
   const resolvedPumpRpm = d.n2_rpm || d.pump_rpm || kin.pumpRpm || '';
   const resolvedFrKn = d.fr_kn !== undefined ? d.fr_kn : (d.belt_radial_load_kn ?? kin.beltRadialLoadKn);
@@ -1086,44 +1180,110 @@ export function buildAcuseUrlParams(d = {}) {
       : ''
   );
 
-  if (d.atomic_code) paramsObj.pieza = d.atomic_code;
-  else if (d.pieza) paramsObj.pieza = d.pieza;
-  else if (d.part_slug) paramsObj.pieza = d.part_slug;
-  if (resolvedMat) paramsObj.material = String(resolvedMat);
-  if (resolvedDrive) paramsObj.transmision = String(resolvedDrive);
-  if (resolvedStation) paramsObj.estacion = String(resolvedStation);
-  if (resolvedWeight) paramsObj.peso_kg = String(resolvedWeight);
-  if (resolvedClaro) paramsObj.claro_mm = String(resolvedClaro);
-  if (resolvedDeltaEta !== undefined) paramsObj.delta_eta_v = String(resolvedDeltaEta);
-  if (resolvedU2) paramsObj.u2_ms = String(resolvedU2);
-  if (resolvedPumpRpm) paramsObj.n2_rpm = String(resolvedPumpRpm);
-  if (resolvedFrKn !== undefined && resolvedFrKn !== '') paramsObj.fr_kn = String(resolvedFrKn);
-  if (resolvedFlood) paramsObj.inmunidad_sumidero = String(resolvedFlood);
-  if (resolvedStructural) paramsObj.razon_estructural = String(resolvedStructural);
-  if (resolvedL10h) paramsObj.l10h = String(resolvedL10h);
-  if (resolvedMetrology) paramsObj.metrologia = String(resolvedMetrology);
-  if (d.client_reference) paramsObj.ref_cliente = d.client_reference;
-  if (measures) paramsObj.medidas = measures;
-  if (d.pulp_profile) paramsObj.perfil_pulpa = d.pulp_profile;
-  if (hydraulicsStr) paramsObj.hidraulica = hydraulicsStr;
-  if (tcoStr) paramsObj.tco = tcoStr;
-  if (d.ph !== undefined && d.ph !== '') paramsObj.ph = String(d.ph);
-  else if (d.pulpPh !== undefined && d.pulpPh !== '') paramsObj.ph = String(d.pulpPh);
-  else if (m.pulp_ph !== undefined) paramsObj.ph = String(m.pulp_ph);
-  if (d.seal_branch || d.sealBranch || ce.sealBranch) paramsObj.seal_branch = String(d.seal_branch || d.sealBranch || ce.sealBranch);
-  if (d.b2_mm || d.impellerExitWidthMm || ce.impellerExitWidthMm) paramsObj.b2_mm = String(d.b2_mm || d.impellerExitWidthMm || ce.impellerExitWidthMm);
-  if (d.cap_c_kn || d.dynamicCapacityCkN || kin.dynamicCapacityCkN) paramsObj.cap_c_kn = String(d.cap_c_kn || d.dynamicCapacityCkN || kin.dynamicCapacityCkN);
-  if (d.fl !== undefined || d.durandFactorFL !== undefined || m.durand_fl !== undefined) paramsObj.fl = String(d.fl ?? d.durandFactorFL ?? m.durand_fl);
-  if (d.cv !== undefined || d.solidsVolumetricPercent !== undefined || m.solids_cv !== undefined) paramsObj.cv = String(d.cv ?? d.solidsVolumetricPercent ?? m.solids_cv);
-  if (d.v_rec !== undefined || d.recommendedPipeVelocityMs !== undefined || m.safe_velocity_ms !== undefined) paramsObj.v_rec = String(d.v_rec ?? d.recommendedPipeVelocityMs ?? m.safe_velocity_ms);
-  if (d.rhop !== undefined || d.oreDensitySg !== undefined || met.sm !== undefined || met.pulpDensityKgL !== undefined) paramsObj.rhop = String(d.rhop ?? d.oreDensitySg ?? met.sm ?? met.pulpDensityKgL);
-  if (met.liberationSizeMicrons !== undefined) paramsObj.lib_um = String(met.liberationSizeMicrons);
-  if (met.headGradePercent !== undefined || met.oreGradeDecimal !== undefined) paramsObj.grade = String(met.headGradePercent ?? met.oreGradeDecimal);
-  if (met.airPressurePsi !== undefined) paramsObj.air_psi = String(met.airPressurePsi);
-  if (met.samplingConstantC !== undefined) paramsObj.gy_c = String(met.samplingConstantC);
-  if (met.relativeErrorSigma !== undefined) paramsObj.gy_err = String(met.relativeErrorSigma);
-  if (met.rosinRammlerSlopeN !== undefined) paramsObj.rr_n = String(met.rosinRammlerSlopeN);
-  if (met.retainedPercentAtP80 !== undefined) paramsObj.ret_p80 = String(met.retainedPercentAtP80);
+  const phVal = (d.ph !== undefined && d.ph !== '') ? d.ph : ((d.pulpPh !== undefined && d.pulpPh !== '') ? d.pulpPh : m.pulp_ph);
+  const sealBranch = d.seal_branch || d.sealBranch || ce.sealBranch || '';
+  const b2Mm = d.b2_mm || d.impellerExitWidthMm || ce.impellerExitWidthMm || '';
+  const capCKn = d.cap_c_kn || d.dynamicCapacityCkN || kin.dynamicCapacityCkN || '';
+  const rhopVal = d.rhop ?? d.oreDensitySg ?? met.sm ?? met.pulpDensityKgL;
+  const gateClass = d.gate_classification || gate.classification || 'PRIORITY_MINING_PLANT';
+  const trustBoundaryId = d.trust_boundary_id || gate.activeTrustBoundaryId || '';
+
+  return {
+    folio: d.folio || 'SMAT-2026-RFQ',
+    urgencia: d.isOpex === false ? 'proyecto' : 'paro',
+    puerta_interna: resolveInternalBudgetCategory(d),
+    nombre: d.name || d.contact_name || d.nombre || '',
+    empresa: d.company || d.company_name || d.empresa || '',
+    telefono: d.phone || d.phone_number || d.telefono || '',
+    correo: d.email || d.email_address || d.correo || '',
+    equipo: d.part_name || d.role || d.equipo || '',
+    codigo: d.smat_code || d.codigo || generateSmatPartCode(d),
+    pieza: d.atomic_code || d.pieza || d.part_slug || '',
+    ref_cliente: d.client_reference || d.ref_cliente || '',
+    medidas: measures,
+    perfil_pulpa: d.pulp_profile || d.perfil_pulpa || '',
+    hidraulica: hydraulicsStr,
+    tco: tcoStr,
+    material: resolvedMat ? String(resolvedMat) : '',
+    transmision: resolvedDrive ? String(resolvedDrive) : '',
+    estacion: resolvedStation ? String(resolvedStation) : '',
+    peso_kg: resolvedWeight !== '' && resolvedWeight !== undefined ? Number(resolvedWeight) : '',
+    claro_mm: resolvedClaro !== '' && resolvedClaro !== undefined ? Number(resolvedClaro) : '',
+    delta_eta_v: resolvedDeltaEta !== undefined && resolvedDeltaEta !== '' ? Number(resolvedDeltaEta) : '',
+    pipe_vel_loss_pct: resolvedPipeVelLoss !== undefined && resolvedPipeVelLoss !== '' ? Number(resolvedPipeVelLoss) : '',
+    u2_ms: resolvedU2 !== '' && resolvedU2 !== undefined ? Number(resolvedU2) : '',
+    n2_rpm: resolvedPumpRpm !== '' && resolvedPumpRpm !== undefined ? Number(resolvedPumpRpm) : '',
+    fr_kn: resolvedFrKn !== undefined && resolvedFrKn !== '' ? Number(resolvedFrKn) : '',
+    inmunidad_sumidero: resolvedFlood ? String(resolvedFlood) : '',
+    razon_estructural: resolvedStructural ? String(resolvedStructural) : '',
+    l10h: resolvedL10h !== '' && resolvedL10h !== undefined ? Number(resolvedL10h) : '',
+    metrologia: resolvedMetrology ? String(resolvedMetrology) : '',
+    ph: phVal !== undefined && phVal !== '' ? Number(phVal) : '',
+    seal_branch: sealBranch ? String(sealBranch) : '',
+    b2_mm: b2Mm !== '' && b2Mm !== undefined ? Number(b2Mm) : '',
+    cap_c_kn: capCKn !== '' && capCKn !== undefined ? Number(capCKn) : '',
+    fl: (d.fl !== undefined || d.durandFactorFL !== undefined || m.durand_fl !== undefined) ? Number(durandFl) : '',
+    cv: (d.cv !== undefined || d.solidsVolumetricPercent !== undefined || m.solids_cv !== undefined) ? Number(solidsCv) : '',
+    v_rec: (d.v_rec !== undefined || d.recommendedPipeVelocityMs !== undefined || m.safe_velocity_ms !== undefined) ? Number(safeVel) : '',
+    rhop: rhopVal !== undefined ? Number(rhopVal) : '',
+    lib_um: met.liberationSizeMicrons !== undefined ? Number(met.liberationSizeMicrons) : (d.lib_um !== undefined ? Number(d.lib_um) : ''),
+    grade: (met.headGradePercent !== undefined || met.oreGradeDecimal !== undefined) ? Number(met.headGradePercent ?? met.oreGradeDecimal) : (d.grade !== undefined ? Number(d.grade) : ''),
+    air_psi: met.airPressurePsi !== undefined ? Number(met.airPressurePsi) : (d.air_psi !== undefined ? Number(d.air_psi) : ''),
+    gy_c: met.samplingConstantC !== undefined ? Number(met.samplingConstantC) : (d.gy_c !== undefined ? Number(d.gy_c) : ''),
+    gy_err: met.relativeErrorSigma !== undefined ? Number(met.relativeErrorSigma) : (d.gy_err !== undefined ? Number(d.gy_err) : ''),
+    rr_n: met.rosinRammlerSlopeN !== undefined ? Number(met.rosinRammlerSlopeN) : (d.rr_n !== undefined ? Number(d.rr_n) : ''),
+    ret_p80: met.retainedPercentAtP80 !== undefined ? Number(met.retainedPercentAtP80) : (d.ret_p80 !== undefined ? Number(d.ret_p80) : ''),
+    eff_ratio_er: Number(effRatio),
+    impeller_life_h: Number(impellerLifeH),
+    wear_life_ratio: Number(wearLifeRatio),
+    p_atm_mca: Number(pAtmMca),
+    delta_npsh_m: Number(deltaNpshM),
+    motor_derating_iec: Number(motorDeratingIec),
+    k_motor_alt: Number(kMotorAlt),
+    gate_classification: String(gateClass),
+    trust_boundary_id: String(trustBoundaryId),
+    detalles: d.details || d.detalles || '',
+    destino: d.destination || d.destino || ''
+  };
+}
+
+/**
+ * Construye los parámetros URL completos y sin pérdida para /acuse/ y /en/thank-you/
+ * @param {Object} d
+ * @returns {URLSearchParams}
+ */
+export function buildAcuseUrlParams(d = {}) {
+  const snap = buildCanonicalEngineeringSnapshot(d);
+  const paramsObj = {
+    folio: snap.folio,
+    nombre: snap.nombre,
+    empresa: snap.empresa,
+    telefono: snap.telefono,
+    correo: snap.correo,
+    equipo: snap.equipo,
+    codigo: snap.codigo,
+    detalles: snap.detalles,
+    destino: snap.destino,
+    urgencia: snap.urgencia
+  };
+
+  const optionalKeys = [
+    'pieza', 'material', 'transmision', 'estacion', 'peso_kg',
+    'claro_mm', 'delta_eta_v', 'pipe_vel_loss_pct', 'u2_ms', 'n2_rpm',
+    'fr_kn', 'inmunidad_sumidero', 'razon_estructural', 'l10h', 'metrologia',
+    'ref_cliente', 'medidas', 'perfil_pulpa', 'hidraulica', 'tco',
+    'ph', 'seal_branch', 'b2_mm', 'cap_c_kn', 'fl', 'cv', 'v_rec',
+    'rhop', 'lib_um', 'grade', 'air_psi', 'gy_c', 'gy_err', 'rr_n', 'ret_p80',
+    'eff_ratio_er', 'impeller_life_h', 'wear_life_ratio',
+    'p_atm_mca', 'delta_npsh_m', 'motor_derating_iec', 'k_motor_alt',
+    'gate_classification', 'trust_boundary_id'
+  ];
+
+  for (const key of optionalKeys) {
+    if (snap[key] !== undefined && snap[key] !== '') {
+      paramsObj[key] = String(snap[key]);
+    }
+  }
 
   return new URLSearchParams(paramsObj);
 }
@@ -1171,86 +1331,54 @@ export function resolveInternalBudgetCategory(d = {}) {
 }
 
 /**
- * Construye el payload completo de 29 columnas + 9 campos de ingeniería para Google Apps Script (Code.gs)
+ * Construye el payload completo de 38 campos canónicos + alias para Google Apps Script (Code.gs)
+ * Usa buildCanonicalEngineeringSnapshot(d) garantizando 0 [DTO-DROP] frente a buildAcuseUrlParams.
  * @param {Object} d
  * @param {string} [channelOrigin='web_quote_wizard']
  * @returns {Object}
  */
 export function buildLeadWebhookPayload(d = {}, channelOrigin = 'web_quote_wizard') {
   const honeypotVal = d.website || d.website_honeypot || '';
-  const m = d.metrics || {};
-  const tco = d.tco || {};
-  const measures = (d.dim_outer_dia || d.dim_shaft_bore)
-    ? `DE ~${d.dim_outer_dia || 'N/A'} mm | Barreno/Flecha ~${d.dim_shaft_bore || 'N/A'} mm`
-    : '';
-  const hydraulicsStr = (m.flow_m3h !== undefined || m.slurry_sg !== undefined)
-    ? `Q: ${m.flow_m3h || 180} m³/h | Cw: ${m.solids_cw || 45}% (d80: ${m.d80_um || 180} µm) | Sm: ${m.slurry_sg || '1.40'} kg/L (${m.solids_cv || '23.3'}% Cv) | Vc: ${m.critical_velocity_ms || '2.35'} m/s | HR: ${m.head_ratio || '0.88'} | ${m.recommended_alloy || 'High Chrome A05 (>650 HB)'}`
-    : '';
-  const tcoTons = tco.tco_tons_at_risk !== undefined ? tco.tco_tons_at_risk : m.tco_tons_at_risk;
-  const tcoHrs = tco.tco_downtime_hrs !== undefined ? tco.tco_downtime_hrs : m.tco_downtime_hrs;
-  const tcoSummary = tco.tco_summary || m.tco_summary || '';
-  const tcoStr = (tcoTons !== undefined || tcoSummary)
-    ? `~${tcoTons || 0} ton en riesgo (${tcoHrs || 4}h) | ${tcoSummary}`
-    : '';
-
-  const ps = d.part_specs || {};
-  const ce = d.clearance_eval || {};
-  const kin = d.kinematics || {};
-  const met = d.metrology || {};
-  const resolvedMat = d.material || d.wet_material || d.pump_material || '';
-  const resolvedDrive = d.transmision || d.drive_arrangement || kin.arrangement || kin.arrangementCode || '';
-  const resolvedStation = d.estacion || d.station_number || d.assembly_station || ps.station_number || ps.station || '';
-  const resolvedWeight = d.peso_kg || d.part_weight_kg || ps.weight_kg || '';
-  const resolvedClaro = d.claro_mm !== undefined ? d.claro_mm : (d.front_clearance_mm ?? ce.frontClearanceMm ?? '');
-  const resolvedDeltaEta = d.delta_eta_v !== undefined ? d.delta_eta_v : (ce.volumetricEfficiencyDropPct ?? ce.volumetricEfficiencyLossPct ?? '');
-  const resolvedU2 = d.u2_ms || d.tip_speed_ms || kin.tipSpeedMs || '';
-  const resolvedL10h = d.l10h || d.bearing_l10h || kin.bearingL10Hours || kin.estimatedL10hHours || '';
-  const resolvedMetrology = d.metrologia || d.metrology_summary || met.summary || met.raw || (
-    (met.cw !== undefined || met.solidsPctCw !== undefined)
-      ? `Cw=${met.cw ?? met.solidsPctCw}% | Sm=${met.sm ?? met.pulpDensityKgL ?? 1.40} kg/L | P80=${met.p80 ?? met.targetP80Microns ?? 150} µm | Gy=${met.dryMassKg ?? met.gySampleMassKg ?? 0.25} kg`
-      : ''
-  );
+  const snap = buildCanonicalEngineeringSnapshot(d);
 
   return {
-    folio: d.folio || 'SMAT-2026-RFQ',
-    urgencia: d.isOpex === false ? 'proyecto' : 'paro',
-    puerta_interna: resolveInternalBudgetCategory(d),
-    nombre: d.name || d.contact_name || '',
-    empresa: d.company || d.company_name || '',
-    telefono: d.phone || d.phone_number || '',
-    correo: d.email || d.email_address || '',
-    equipo: d.part_name || d.role || '',
-    codigo: d.smat_code || generateSmatPartCode(d),
-    codigo_smat: d.smat_code || generateSmatPartCode(d),
-    atomic_code: d.atomic_code || '',
-    codigo_pieza_atomica: d.atomic_code || '',
-    referencia_cliente: d.client_reference || '',
-    medidas_flexometro: measures,
-    perfil_pulpa: d.pulp_profile || '',
-    perfil_pulpa_mina: d.pulp_profile || '',
-    memoria_hidraulica: hydraulicsStr,
-    memoria_hidraulica_durand: hydraulicsStr,
-    tco_resumen: tcoStr,
-    proyeccion_tco: tcoStr,
-    // 9 Campos Nuevos de Ingeniería (Nombres canónicos + Alias de compatibilidad)
-    material_bombeo: resolvedMat,
-    material_wet_end: resolvedMat,
-    arreglo_transmision: resolvedDrive,
-    estacion_armado: resolvedStation,
-    estacion_despiece: resolvedStation,
-    peso_pieza_kg: resolvedWeight,
-    claro_axial_mm: resolvedClaro,
-    perdida_eficiencia_vol_pct: resolvedDeltaEta,
-    delta_eta_v: resolvedDeltaEta,
-    velocidad_periferica_u2_ms: resolvedU2,
-    velocidad_punta_u2_ms: resolvedU2,
-    vida_rodamiento_l10h: resolvedL10h,
-    memoria_metrologica: resolvedMetrology,
-    cedula_metrologia: resolvedMetrology,
-    detalles: d.details || '',
-    especificacion_tecnica: d.details || '',
-    destino: d.destination || 'Durango',
-    modalidad_logistica: d.destination || 'Durango',
+    ...snap,
+    codigo_smat: snap.codigo,
+    atomic_code: snap.pieza,
+    codigo_pieza_atomica: snap.pieza,
+    referencia_cliente: snap.ref_cliente,
+    medidas_flexometro: snap.medidas,
+    perfil_pulpa_mina: snap.perfil_pulpa,
+    memoria_hidraulica: snap.hidraulica,
+    memoria_hidraulica_durand: snap.hidraulica,
+    tco_resumen: snap.tco,
+    proyeccion_tco: snap.tco,
+    material_bombeo: snap.material,
+    material_wet_end: snap.material,
+    arreglo_transmision: snap.transmision,
+    estacion_armado: snap.estacion,
+    estacion_despiece: snap.estacion,
+    peso_pieza_kg: snap.peso_kg,
+    claro_axial_mm: snap.claro_mm,
+    perdida_eficiencia_vol_pct: snap.delta_eta_v,
+    velocidad_periferica_u2_ms: snap.u2_ms,
+    velocidad_punta_u2_ms: snap.u2_ms,
+    rpm_bomba_n2: snap.n2_rpm,
+    carga_radial_fr_kn: snap.fr_kn,
+    dictamen_estructural: snap.razon_estructural,
+    vida_rodamiento_l10h: snap.l10h,
+    memoria_metrologica: snap.metrologia,
+    cedula_metrologia: snap.metrologia,
+    derating_eficiencia_er: snap.eff_ratio_er,
+    vida_estimada_impulsor_h: snap.impeller_life_h,
+    perdida_npsh_altitud_m: snap.delta_npsh_m,
+    derating_motor_iec: snap.motor_derating_iec,
+    multiplicador_motor_altitud: snap.k_motor_alt,
+    perdida_margen_vc_pct: snap.pipe_vel_loss_pct,
+    clasificacion_compuerta: snap.gate_classification,
+    especificacion_tecnica: snap.detalles,
+    destino: snap.destino || 'Durango',
+    modalidad_logistica: snap.destino || 'Durango',
     canal: channelOrigin,
     website: honeypotVal
   };

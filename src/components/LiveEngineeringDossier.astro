@@ -56,7 +56,12 @@ const isEs = lang === 'es';
     <!-- Estatus de Prioridad y Horario -->
     <div class="dossier-sla-bar" id="dossier-sla-bar">
       <span class="sla-badge" id="live-priority-tag">[PARO DE PLANTA / PRIORIDAD]</span>
+      <span class="sla-badge" id="gate-lead-status" data-testid="gate-lead-status" style="background:#065f46; color:#ffffff; padding:0.15rem 0.45rem; border-radius:3px; font-size:0.68rem;">{isEs ? 'PLANTA MINERA VERIFICADA • PARÁMETROS PLAUSIBLES' : 'VERIFIED MINING PLANT • PLAUSIBLE PARAMETERS'}</span>
       <span class="sla-clock">Durango: {companyData.contact.phones[0].display} • WhatsApp: {companyData.contact.whatsapp.display} • {companyData.logistics.warehouse_hours}</span>
+    </div>
+    <div id="trust-boundary-alert" data-testid="trust-boundary-alert" class="hidden" style="margin:0.4rem 0; padding:0.5rem 0.7rem; background:#fef2f2; border-left:4px solid #991b1b; border-radius:4px; font-size:0.75rem; color:#7f1d1d;">
+      <strong id="trust-boundary-title">{isEs ? 'Límite Técnico Detectado' : 'Technical Boundary Alert'}</strong>
+      <p id="trust-boundary-reason" style="margin:0.15rem 0 0;"></p>
     </div>
 
     <!-- PANE 1: VISTA MANTENIMIENTO -->
@@ -106,6 +111,8 @@ const isEs = lang === 'es';
             <strong id="live-pipe-text" class="font-mono-tech">{isEs ? 'Tubería 6" a 4" (Línea Principal de Proceso)' : '6" to 4" Piping (Main Process Slurry)'}</strong>
             <span class="spec-label" id="live-stress-header" style="margin-top:0.3rem;">{isEs ? 'Condición de Operación en Planta:' : 'Plant Operating Condition:'}</span>
             <strong id="live-stress-text" class="font-mono-tech">{isEs ? 'Pendiente de dictamen en campo (Asesoría SMAT solicitada)' : 'Pending field assessment (SMAT technical advice requested)'}</strong>
+            <span class="spec-label" id="live-criteria-header" style="margin-top:0.3rem;">{isEs ? 'Criterios de Aceptación Operativa (Rol):' : 'Role Acceptance Criteria:'}</span>
+            <strong id="live-role-criteria" data-testid="live-role-criteria" class="font-mono-tech">{isEs ? 'Intercambiabilidad dimensional 1:1 • Dureza >600 HB • Disponibilidad en Almacén Durango' : '1:1 dimensional fit • Hardness >600 HB • Durango Warehouse availability'}</strong>
           </div>
           <div id="live-recirc-warning-dossier" class="live-recirc-warning-dossier hidden">
             <span class="recirc-warn-tag">AVISO DE RECIRCULACIÓN</span>
@@ -136,12 +143,24 @@ const isEs = lang === 'es';
               <td id="live-table-vc" class="highlight-cell">2.42 m/s (Margen seguro: 3.02 m/s)</td>
             </tr>
             <tr>
+              <td><strong>{isEs ? 'Abatimiento (HR / ηr) y Vida:' : 'Derating (HR / ηr) & Wear Life:'}</strong></td>
+              <td id="live-table-derating-wear">
+                HR = <strong id="metric-hr" data-testid="metric-hr">0.880</strong> | ηr = <strong id="metric-er" data-testid="metric-er">0.857</strong> | {isEs ? 'Vida Est.:' : 'Est. Life:'} <strong id="metric-wear-hours" data-testid="metric-wear-hours">2,400 h (3.8x vs FG)</strong>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>{isEs ? 'Altitud y Pinza Térmica IEC:' : 'Altitude & IEC Thermal Pincer:'}</strong></td>
+              <td id="live-table-altitude">
+                Patm = <strong id="metric-patm-mca" data-testid="metric-patm-mca">7.89 mca</strong> (<span id="metric-delta-npsh">-2.44 m NPSHa</span>) | IEC = <strong id="metric-motor-iec" data-testid="metric-motor-iec">0.880</strong> | K_motor,alt = <strong id="metric-k-motor-alt" data-testid="metric-k-motor-alt">1.326x</strong>
+              </td>
+            </tr>
+            <tr>
               <td><strong>{isEs ? 'Metalurgia Dictaminada:' : 'Dictated Metallurgy:'}</strong></td>
               <td id="live-table-mat" class="highlight-cell">{isEs ? 'Dictamen técnico según severidad de pulpa (Durango)' : 'Technical metallurgy dictated per slurry severity (Durango)'}</td>
             </tr>
             <tr>
               <td><strong>{isEs ? 'Claro Axial y Cinemática:' : 'Axial Clearance & Kinematics:'}</strong></td>
-              <td id="live-table-kinematics">δ = 0.75 mm (Δη_v = -1.6%) | Arreglo CV | u₂ = {defaultKinematics.tipSpeedMs} m/s | L₁₀ₕ = {defaultKinematics.bearingL10Hours.toLocaleString()} h</td>
+              <td id="live-table-kinematics">δ = 0.75 mm (Δη_v = -1.6%, ΔV_pipe = -<span id="wb-pipe-vel-loss" data-testid="wb-pipe-vel-loss">1.2%</span>) | Arreglo CV | u₂ = {defaultKinematics.tipSpeedMs} m/s | L₁₀ₕ = {defaultKinematics.bearingL10Hours.toLocaleString()} h | <span id="live-assembly-collision-note" data-testid="live-assembly-collision-note">{isEs ? 'Secuencia S1→S5 libre de colisión axial' : 'S1→S5 sequence collision-free'}</span></td>
             </tr>
             <tr>
               <td><strong>{isEs ? 'Ficha Física / NIOSH:' : 'Physical Spec / NIOSH:'}</strong></td>
@@ -173,7 +192,7 @@ const isEs = lang === 'es';
               ? `Garantía de ensamble en banco Durango SMAT. Domicilio fiscal y patio de maniobras: Mariano Salas #114, Durango, Dgo. CP 34166.` 
               : `SMAT bench assembly warranty. Fiscal HQ & staging yard: Mariano Salas #114, Durango, Mexico ZIP 34166.`}
           </p>
-          <small id="dossier-maneuvers-access" style="display:block; margin-top:0.25rem; font-size:0.68rem; color:#334155;">
+          <small class="dossier-maneuvers-access-note" style="display:block; margin-top:0.25rem; font-size:0.68rem; color:#334155;">
             {companyData.logistics.maneuvers_access}
           </small>
         </div>
@@ -343,7 +362,6 @@ const isEs = lang === 'es';
           </span>
           <span>{isEs ? 'Enviar Correo' : 'Send Email'}</span>
         </button>
-        <button type="button" class="btn-pill-action hidden" id="btn-quote-mailto" style="display:none;" aria-hidden="true"></button>
       </div>
 
       <div id="wb-toast" class="wb-toast hidden" role="status" aria-live="polite">

@@ -115,6 +115,24 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
 
         <!-- CAPA 1: Selección Inmediata de Pieza / Lote y Tubería Nominal -->
         <div id="circuit-panel-bombeo" class="circuit-panel">
+          <!-- Ficha Física de Pieza Atómica y Ergonomía NIOSH (Promovida Above-the-Fold Decisión 9 / atomic_parts.json) -->
+          <div id="wb-atomic-part-card" data-testid="wb-atomic-part-card" class="atomic-part-spec-card" style="margin-bottom: 0.65rem;">
+            <div class="atomic-part-spec-header">
+              <span class="atomic-part-spec-tag font-mono-tech" id="wb-part-station-tag">{defaultPartSpecs.station_number} • {defaultPartSpecs.code}</span>
+              <span class="atomic-part-niosh-badge" id="wb-part-niosh-badge">
+                {defaultPartSpecs.weight_kg >= 23
+                  ? (isEs ? `Peso: ${defaultPartSpecs.weight_kg} kg • Polipasto / Grúa (NIOSH ≥23 kg)` : `Weight: ${defaultPartSpecs.weight_kg} kg • Hoist / Crane (NIOSH ≥23 kg)`)
+                  : (isEs ? `Peso: ${defaultPartSpecs.weight_kg} kg • Manejo Manual (<23 kg)` : `Weight: ${defaultPartSpecs.weight_kg} kg • Manual Handling (<23 kg)`)}
+              </span>
+            </div>
+            <div class="atomic-part-spec-grid">
+              <div><small>{isEs ? 'Geometría Hidráulica:' : 'Hydraulic Geometry:'}</small> <strong id="wb-part-geom-val">ØD₂ {defaultPartSpecs.impeller_diameter_mm} mm • {defaultPartSpecs.vanes} {isEs ? 'álabes' : 'vanes'} • Paso {defaultPartSpecs.max_particle_mm} mm</strong></div>
+              <div><small>{isEs ? 'Secuencia de Montaje:' : 'Assembly Sequence:'}</small> <strong id="wb-part-order-val">{defaultPartSpecs.assembly_order} ({isEs ? 'Lote' : 'Kit'} {defaultPartSpecs.wet_end_kit_ratio})</strong></div>
+              <div><small>{isEs ? 'Dureza Certificada:' : 'Certified Hardness:'}</small> <strong id="wb-part-hardness-val">{defaultPartSpecs.hardness}</strong></div>
+              <div><small>{isEs ? 'Garantía Dimensional:' : 'Fit Guarantee:'}</small> <strong id="wb-part-fit-val">{isEs ? defaultPartSpecs.fit_guarantee_es : defaultPartSpecs.fit_guarantee_en}</strong></div>
+            </div>
+          </div>
+
           <div class="circuit-context-banner">
             <span class="context-tag font-mono-tech">[PARÁMETROS DE BOMBEO]</span>
             <span>{isEs ? 'Selección exclusiva por línea de tubería y condición de desgaste en planta.' : 'Slurry pipeline diameter and plant wear condition parameters.'}</span>
@@ -158,24 +176,6 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
             <small id="val-pipe-mm" class="font-mono-tech" style="display:block; margin-top:0.25rem; font-size:0.74rem; color:#475569;">
               {isEs ? 'Diámetro interno hidráulico (D): 150 mm (Serie 6x4)' : 'Internal hydraulic diameter (D): 150 mm (6x4 Series)'}
             </small>
-          </div>
-
-          <!-- Ficha Física de Pieza Atómica y Ergonomía NIOSH (Decisión 5-C+ / atomic_parts.json) -->
-          <div id="wb-atomic-part-card" data-testid="wb-atomic-part-card" class="atomic-part-spec-card">
-            <div class="atomic-part-spec-header">
-              <span class="atomic-part-spec-tag font-mono-tech" id="wb-part-station-tag">{defaultPartSpecs.station_number} • {defaultPartSpecs.code}</span>
-              <span class="atomic-part-niosh-badge" id="wb-part-niosh-badge">
-                {defaultPartSpecs.weight_kg >= 23
-                  ? (isEs ? `Peso: ${defaultPartSpecs.weight_kg} kg • Polipasto / Grúa (NIOSH ≥23 kg)` : `Weight: ${defaultPartSpecs.weight_kg} kg • Hoist / Crane (NIOSH ≥23 kg)`)
-                  : (isEs ? `Peso: ${defaultPartSpecs.weight_kg} kg • Manejo Manual (<23 kg)` : `Weight: ${defaultPartSpecs.weight_kg} kg • Manual Handling (<23 kg)`)}
-              </span>
-            </div>
-            <div class="atomic-part-spec-grid">
-              <div><small>{isEs ? 'Geometría Hidráulica:' : 'Hydraulic Geometry:'}</small> <strong id="wb-part-geom-val">ØD₂ {defaultPartSpecs.impeller_diameter_mm} mm • {defaultPartSpecs.vanes} {isEs ? 'álabes' : 'vanes'} • Paso {defaultPartSpecs.max_particle_mm} mm</strong></div>
-              <div><small>{isEs ? 'Secuencia de Montaje:' : 'Assembly Sequence:'}</small> <strong id="wb-part-order-val">{defaultPartSpecs.assembly_order} ({isEs ? 'Lote' : 'Kit'} {defaultPartSpecs.wet_end_kit_ratio})</strong></div>
-              <div><small>{isEs ? 'Dureza Certificada:' : 'Certified Hardness:'}</small> <strong id="wb-part-hardness-val">{defaultPartSpecs.hardness}</strong></div>
-              <div><small>{isEs ? 'Garantía Dimensional:' : 'Fit Guarantee:'}</small> <strong id="wb-part-fit-val">{isEs ? defaultPartSpecs.fit_guarantee_es : defaultPartSpecs.fit_guarantee_en}</strong></div>
-            </div>
           </div>
         </div>
 
@@ -277,7 +277,10 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
                   </select>
                 </div>
               </div>
-              <div id="wb-step1-pulp-profile-badge" class="unit-pulp-profile-badge hidden" style="margin-top: 0.45rem; font-size: 0.74rem; color: #082f49; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 4px; padding: 0.35rem 0.6rem; font-weight: 600;"></div>
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem; margin-top:0.45rem;">
+                <div id="wb-step1-pulp-profile-badge" class="unit-pulp-profile-badge hidden" style="font-size: 0.74rem; color: #082f49; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 4px; padding: 0.35rem 0.6rem; font-weight: 600;"></div>
+                <button type="button" id="btn-apply-mining-preset" data-testid="btn-apply-mining-preset" class="assist-pill-btn" style="padding:0.28rem 0.65rem; font-size:0.72rem; font-weight:700;">{isEs ? 'Pre-calibrar Pulpa y Altitud del Distrito →' : 'Pre-calibrate District Slurry & Altitude →'}</button>
+              </div>
             </div>
 
             <div class="form-group" style="margin-top: 0.75rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.65rem;">
@@ -432,7 +435,16 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
                   <option value="astm_12in_bronce">{isEs ? 'Columna de Tamices 12" en Bronce / Inox + Tamizador Mecánico y Cuarteador' : '12" Brass / Stainless Sieve Stack + Mechanical Sieve Shaker & Splitter'}</option>
                 </select>
               </div>
-              <div class="form-row" style="margin-top: 0.65rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 0.5rem;">
+              <div class="form-row" style="margin-top: 0.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.45rem;">
+                <label for="wb-ctrl-solve-mode" style="font-size:0.73rem; font-weight:700; color:#0f172a;">{isEs ? 'Inversión Algebraica Balanza Marcy (3 Vías):' : '3-Way Marcy Algebraic Inversion:'}</label>
+                <select id="wb-ctrl-solve-mode" data-testid="wb-ctrl-solve-mode" class="wb-select font-mono-tech" style="max-width:340px; min-height:32px; padding:0.2rem 0.5rem; font-size:0.74rem;">
+                  <option value="cw" selected>{isEs ? 'Modo 1: Dado Ss y %Cw ➔ Calcular ρp (kg/L)' : 'Mode 1: Given Ss & %Cw ➔ Solve ρp (kg/L)'}</option>
+                  <option value="rhop">{isEs ? 'Modo 2: Dado Ss y ρp ➔ Calcular %Cw' : 'Mode 2: Given Ss & ρp ➔ Solve %Cw'}</option>
+                  <option value="ore_density_rhop">{isEs ? 'Modo 3: Dado ρp y %Cw (Horno) ➔ Despejar Ss Real' : 'Mode 3: Given ρp & Lab %Cw ➔ Solve True Ore Ss'}</option>
+                </select>
+                <button type="button" id="btn-apply-ss-to-circuit" data-testid="btn-apply-ss-to-circuit" class="assist-pill-btn" style="padding:0.22rem 0.6rem; font-size:0.71rem; font-weight:700;">{isEs ? 'Aplicar Ss al Circuito →' : 'Apply Ss to Circuit →'}</button>
+              </div>
+              <div class="form-row" style="margin-top: 0.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 0.5rem;">
                 <div class="form-group"><label for="wb-ctrl-sg"><strong>{isEs ? 'SG Mineral (Ss):' : 'Ore SG (Ss):'}</strong></label><input type="number" id="wb-ctrl-sg" min="2.2" max="4.4" step="0.1" value="2.8" class="wb-input font-mono-tech" /></div>
                 <div class="form-group"><label for="wb-ctrl-cw"><strong>{isEs ? '% Sólidos (Cw):' : 'Solids (% Cw):'}</strong></label><input type="number" id="wb-ctrl-cw" min="10" max="75" step="1" value="45" class="wb-input font-mono-tech" /></div>
                 <div class="form-group"><label for="wb-ctrl-rhop"><strong>{isEs ? 'Densidad ρp (kg/L):' : 'Pulp ρp (kg/L):'}</strong></label><input type="number" id="wb-ctrl-rhop" min="1.05" max="2.40" step="0.005" value="1.406" class="wb-input font-mono-tech" /></div>
@@ -687,6 +699,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
                   <button type="button" class="alt-chip active" data-alt="2400"><span>2,400 m</span><small>{isEs ? 'Sierra' : 'Sierra'}</small></button>
                 </div>
                 <small class="altitude-npsh-hint" id="altitude-npsh-hint">{isEs ? 'Patm = 7.66 mca. Margen NPSHa ajustado para prevenir cavitación en altura (Sierra Madre).' : 'Patm = 7.66 mca. Adjusted NPSHa margin to prevent altitude cavitation.'}</small>
+                <div id="wb-altitude-live-strip" data-testid="wb-altitude-live-strip" class="font-mono-tech" style="margin-top:0.25rem; font-size:0.71rem; color:#0c4a6e; font-weight:700;">Patm = {defaultAltData.pAtmHeadMca.toFixed(2)} mca | -ΔNPSHa = {defaultAltData.deltaNpshLossM.toFixed(2)} m | IEC 60034-1 = {defaultAltData.motorDeratingFactor.toFixed(3)} | K_motor,alt = {defaultSimMetrics.combinedMotorAltitudeMultiplier}x</div>
               </div>
             </div>
 
@@ -714,7 +727,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
                 <strong class="slider-value pro-tabular-nums" id="wb-val-clearance">{defaultClearanceEval.frontClearanceMm.toFixed(2)} mm (Δη_v = -{defaultClearanceEval.volumetricEffLossPct}%)</strong>
               </div>
               <input type="range" id="wb-clearance-slider" data-testid="wb-clearance-slider" min="0.20" max="4.00" step="0.05" value="0.75" class="wb-slider" />
-              <div class="clearance-kinematics-meta"><span id="metric-clearance-loss">{isEs ? defaultClearanceEval.wearRatioImpact554 : defaultClearanceEval.wearRatioImpact554En}</span></div>
+              <div class="clearance-kinematics-meta"><span id="metric-clearance-loss">{isEs ? defaultClearanceEval.wearRatioImpact554 : defaultClearanceEval.wearRatioImpact554En}</span> • <span>{isEs ? 'Pérdida margen Vc:' : 'Vc margin loss:'} <strong id="wb-clearance-vel-loss" data-testid="wb-clearance-vel-loss">-{defaultClearanceEval.pipeVelocityMarginLossPct ?? 1.2}%</strong></span></div>
               <div class="clearance-kinematics-meta" style="margin-top:0.25rem; font-size:0.72rem; color:#0c4a6e;"><span id="metric-structural-reason">{isEs ? defaultClearanceEval.structuralReasonEs : defaultClearanceEval.structuralReasonEn}</span></div>
 
               <div class="form-row" style="margin-top:0.65rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.55rem;">

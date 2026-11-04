@@ -126,8 +126,16 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
             </summary>
             <div class="metrology-inputs-grid">
               <label class="metrology-field">
+                <span>3-Way Inversion Mode (Marcy):</span>
+                <select id="met-marcy-mode">
+                  <option value="cw" selected>1. Given Ss + %Cw → Solve ρp (kg/L)</option>
+                  <option value="rhop">2. Given Ss + ρp → Solve %Cw</option>
+                  <option value="ore_density_rhop">3. Given ρp + %Cw (Oven) → Infer True Ss</option>
+                </select>
+              </label>
+              <label class="metrology-field">
                 <span>Dry Ore Specific Gravity ($S_s$):</span>
-                <input type="number" id="met-sg-input" min="2.2" max="4.4" step="0.1" value="2.8" />
+                <input type="number" id="met-sg-input" min="2.2" max="4.4" step="0.05" value="2.8" />
               </label>
               <label class="metrology-field">
                 <span>Solids by Weight ($C_w$ %):</span>
@@ -143,6 +151,11 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
               <strong id="met-res-marcy-main" class="met-res-value">1474 g net • ρp = 1.474 kg/L</strong>
               <small id="met-res-marcy-sub">Active dial ring: SG 2.8 (Range 2.2 to 4.4)</small>
               <small id="met-res-marcy-bias" style="color: #082f49; font-weight: 700;">Dry solids in cup: 737 g • Apparent ring Cw: 50.0% (Bias ΔC_bias = 0.0 pts) • 304 Stainless Steel Cup (1000 cm³)</small>
+              <div style="margin-top: 0.5rem;">
+                <button type="button" id="met-apply-ss-btn" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;">
+                  Sync Calibrated Ss & Cw to Hydraulic Circuit →
+                </button>
+              </div>
             </div>
           </details>
 
@@ -296,6 +309,7 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
     const sgEl = document.getElementById('met-sg-input') as HTMLInputElement | null;
     const cwEl = document.getElementById('met-cw-input') as HTMLInputElement | null;
     const rhopEl = document.getElementById('met-rhop-input') as HTMLInputElement | null;
+    const marcyModeEl = document.getElementById('met-marcy-mode') as HTMLSelectElement | null;
     const p80El = document.getElementById('met-p80-input') as HTMLInputElement | null;
     const rrNEl = document.getElementById('met-rr-n-input') as HTMLInputElement | null;
     const frameEl = document.getElementById('met-frame-select') as HTMLSelectElement | null;
@@ -310,16 +324,41 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
 
     if (!sgEl || !cwEl || !p80El || !frameEl) return;
 
-    const sg = parseFloat(sgEl.value) || 2.8;
     const targetId = (evt && (evt.target as HTMLElement)?.id) || '';
-    let marcy = calculateMarcyScaleReading({ solidsSpecificGravity: sg, solidsWeightPercent: parseFloat(cwEl.value) || 50 });
-    if (targetId === 'met-rhop-input' && rhopEl) {
-      const rhopVal = parseFloat(rhopEl.value) || 1.474;
-      marcy = calculateMarcyScaleReading({ solidsSpecificGravity: sg, pulpDensityKgL: rhopVal, solveFor: 'ore_density_rhop' });
-      cwEl.value = String(Math.round(marcy.solidsWeightPercent));
+    const marcySolveMode = marcyModeEl ? marcyModeEl.value : 'cw';
+    const rawSg = parseFloat(sgEl.value) || 2.8;
+    const rawCw = parseFloat(cwEl.value) || 50;
+    const rawRhop = rhopEl ? (parseFloat(rhopEl.value) || 1.474) : 1.474;
+
+    let marcy = calculateMarcyScaleReading({
+      solidsSpecificGravity: rawSg,
+      solidsWeightPercent: rawCw,
+      pulpDensityKgL: rawRhop,
+      solveFor: marcySolveMode
+    });
+    if (marcySolveMode === 'ore_density_rhop') {
+      marcy = calculateMarcyScaleReading({
+        solidsSpecificGravity: rawSg,
+        solidsWeightPercent: rawCw,
+        pulpDensityKgL: rawRhop,
+        solveFor: 'ore_density_rhop'
+      });
+      if (document.activeElement !== sgEl) {
+        sgEl.value = marcy.oreDensitySg.toFixed(2);
+      }
+    } else if (marcySolveMode === 'rhop' || targetId === 'met-rhop-input') {
+      marcy = calculateMarcyScaleReading({
+        solidsSpecificGravity: rawSg,
+        pulpDensityKgL: rawRhop,
+        solveFor: 'rhop'
+      });
+      if (document.activeElement !== cwEl) {
+        cwEl.value = String(Math.round(marcy.solidsWeightPercent));
+      }
     } else if (rhopEl && document.activeElement !== rhopEl) {
       rhopEl.value = marcy.pulpDensityKgL.toFixed(3);
     }
+    const sg = marcy.oreDensitySg;
     const cw = marcy.solidsWeightPercent;
     const p80 = parseFloat(p80El.value) || 75;
     const frame = frameEl.value;
@@ -512,6 +551,7 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
   });
 
   [
+    'met-marcy-mode',
     'met-sg-input',
     'met-cw-input',
     'met-rhop-input',
@@ -532,6 +572,25 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
       el.addEventListener('change', updateMetrologyCalculator);
     }
   });
+  const applySsBtn = document.getElementById('met-apply-ss-btn');
+  if (applySsBtn) {
+    applySsBtn.addEventListener('click', () => {
+      updateMetrologyCalculator();
+      const sgEl = document.getElementById('met-sg-input') as HTMLInputElement | null;
+      const cwEl = document.getElementById('met-cw-input') as HTMLInputElement | null;
+      const sg = sgEl ? (parseFloat(sgEl.value) || 2.8) : 2.8;
+      const cw = cwEl ? (parseFloat(cwEl.value) || 50) : 50;
+      const prev = loadWorkbenchState() || {};
+      saveWorkbenchState({
+        ...prev,
+        sg,
+        cw,
+        solidsSg: sg,
+        solidsPct: cw
+      });
+      applySsBtn.textContent = `✓ Ss = ${sg.toFixed(2)} & Cw = ${cw.toFixed(0)}% synced to Workbench`;
+    });
+  }
   updateMetrologyCalculator();
 </script>
 
@@ -693,5 +752,33 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
     font-size: 1rem;
     color: var(--smat-text-primary);
     font-family: var(--smat-font-mono);
+  }
+  @media (max-width: 640px) {
+    .page-hero {
+      padding: 0.75rem 0;
+    }
+    .page-hero h1 {
+      font-size: 1.35rem;
+      margin: 0.2rem 0;
+    }
+    .page-hero p {
+      font-size: 0.82rem !important;
+      line-height: 1.3;
+      margin: 0.25rem 0;
+    }
+    #stage-diagnostic {
+      padding-top: 0.65rem;
+    }
+    .metrology-segmented-bar {
+      margin-bottom: 0.6rem;
+      padding: 0.2rem;
+    }
+    .metrology-seg-btn {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.76rem;
+    }
+    .control-block {
+      padding: 1rem;
+    }
   }
 </style>

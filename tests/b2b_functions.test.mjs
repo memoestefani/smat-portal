@@ -4279,3 +4279,225 @@ test('Test 208 (Decisión 10-C++): Compactación Above-the-Fold Móvil en Portad
   const llms = fs.readFileSync(path.join(siteRoot, 'public/llms.txt'), 'utf-8');
   assert.ok(llms.includes('WET_END_MATERIAL_MATRIX') && llms.includes('WCAG AAA'), 'public/llms.txt debe documentar la matriz Tri-Compound y la polaridad solar WCAG AAA');
 });
+
+test('Test 221 (Decisión 9a / DEB-P4-01 & DEB-P4-02): Header.astro usa --smat-copper-accent (#7c2d12 / #ffffff = 10.65:1 WCAG AAA) sin #E56B38 y tour.toml usa esquema ergos v2.0 sin #flight-deck', () => {
+  const header = fs.readFileSync(path.join(siteRoot, 'src/components/Header.astro'), 'utf-8');
+  assert.ok(!header.includes('background: #E56B38;'), 'Header.astro no debe contener background: #E56B38 (6.01:1 < 7.0:1)');
+  assert.ok(header.includes('background: var(--smat-copper-accent, #7c2d12);'), 'Header.astro debe usar --smat-copper-accent (#7c2d12, 10.65:1 WCAG AAA)');
+
+  const tourToml = fs.readFileSync(path.join(siteRoot, '../ergos/tour.toml'), 'utf-8');
+  assert.ok(tourToml.includes('project = "smat"'), 'tour.toml debe definir project = "smat"');
+  assert.ok(tourToml.includes('[[acts]]'), 'tour.toml debe usar [[acts]] v2.0');
+  assert.ok(!tourToml.includes('#flight-deck'), 'tour.toml no debe referenciar el selector muerto #flight-deck (DEB-P4-02)');
+});
+
+test('Test 227 (Decisión 7): resolveMiningDistrictPreset hidrata grupo, altitud, mineralogía y circuito en Fresnillo, Peñoles, Grupo México y First Majestic', async () => {
+  const { resolveMiningDistrictPreset } = await import('../src/scripts/workbenchBus.js');
+
+  const saucito = resolveMiningDistrictPreset('Unidad Saucito');
+  assert.ok(saucito && saucito.matched, 'Debe encontrar Unidad Saucito');
+  assert.equal(saucito.altitudeMsnm, 2250);
+  assert.equal(saucito.defaultCircuit, 'bombeo');
+  assert.ok(saucito.solidsSg >= 2.8);
+
+  const tayoltita = resolveMiningDistrictPreset('San Dimas / Tayoltita');
+  assert.ok(tayoltita && tayoltita.matched, 'Debe encontrar San Dimas / Tayoltita');
+  assert.equal(tayoltita.defaultCircuit, 'bombeo');
+
+  const cananea = resolveMiningDistrictPreset('Buenavista del Cobre (Cananea)');
+  assert.ok(cananea && cananea.matched, 'Debe encontrar Buenavista del Cobre (Cananea)');
+  assert.equal(cananea.defaultCircuit, 'flotacion');
+});
+
+test('Test 228 (Decisión 8 / DEB-P4-03): buildCanonicalEngineeringSnapshot y cero pérdida de campos [DTO-DROP] hacia buildAcuseUrlParams, buildLeadWebhookPayload, formatSapPlaintext y Code.gs', async () => {
+  const {
+    buildCanonicalEngineeringSnapshot,
+    buildAcuseUrlParams,
+    buildLeadWebhookPayload,
+    formatSapPlaintext
+  } = await import('../src/scripts/workbenchBus.js');
+
+  const rawDossier = {
+    folio: 'SMAT-2026-9901',
+    circuit: 'bombeo',
+    role: 'impulsor',
+    smat_code: 'SMAT-PUMP-6X4-A05-IMP',
+    atomic_code: 'E4147',
+    contact_name: 'Ing. Mateo Sierra',
+    company_name: 'Minera Saucito',
+    phone_number: '6181112233',
+    email_address: 'msierra@saucito.mx',
+    material: 'alto_cromo_cr27',
+    transmision: 'ZVZ',
+    estacion: 'S4',
+    seal_branch: 'expeller_dry',
+    claro_mm: 2.4,
+    b2_mm: 48,
+    cap_c_kn: 185,
+    delta_eta_v: 3.5,
+    pipe_vel_loss_pct: 5.1,
+    u2_ms: 23.8,
+    n2_rpm: 1185,
+    fr_kn: 4.9,
+    inmunidad_sumidero: 'ALTA',
+    razon_estructural: 'Recirculación interna por claro desgastado',
+    l10h: 36200,
+    gate_classification: 'EMERGENCY_SHUTDOWN_PARO',
+    metrics: {
+      flow_m3h: 350,
+      solids_cw: 55,
+      d80_um: 210,
+      slurry_sg: 1.54,
+      solids_cv: 30.2,
+      critical_velocity_ms: 3.18,
+      recommended_velocity_ms: 3.82,
+      head_ratio: 0.85,
+      eff_ratio_er: 0.84,
+      impeller_life_h: 2450,
+      wear_life_ratio: 3.8,
+      altitude_msnm: 2400,
+      p_atm_mca: 7.72,
+      delta_npsh_m: 2.61,
+      motor_derating_iec: 0.902,
+      k_motor_alt: 1.32,
+      pulp_ph: 7.8,
+      durand_fl: 1.34
+    }
+  };
+
+  const snap = buildCanonicalEngineeringSnapshot(rawDossier);
+  assert.equal(snap.eff_ratio_er, 0.84);
+  assert.equal(snap.impeller_life_h, 2450);
+  assert.equal(snap.p_atm_mca, 7.72);
+  assert.equal(snap.delta_npsh_m, 2.61);
+  assert.equal(snap.motor_derating_iec, 0.902);
+  assert.equal(snap.k_motor_alt, 1.32);
+  assert.equal(snap.pipe_vel_loss_pct, 5.1);
+  assert.equal(snap.gate_classification, 'EMERGENCY_SHUTDOWN_PARO');
+
+  const params = buildAcuseUrlParams(rawDossier);
+  assert.equal(params.get('eff_ratio_er'), '0.84');
+  assert.equal(params.get('impeller_life_h'), '2450');
+  assert.equal(params.get('delta_npsh_m'), '2.61');
+  assert.equal(params.get('k_motor_alt'), '1.32');
+  assert.equal(params.get('pipe_vel_loss_pct'), '5.1');
+  assert.equal(params.get('gate_classification'), 'EMERGENCY_SHUTDOWN_PARO');
+
+  const webhook = buildLeadWebhookPayload(rawDossier, 'pdf_acuse');
+  assert.equal(webhook.derating_eficiencia_er, 0.84);
+  assert.equal(webhook.vida_estimada_impulsor_h, 2450);
+  assert.equal(webhook.perdida_npsh_altitud_m, 2.61);
+  assert.equal(webhook.multiplicador_motor_altitud, 1.32);
+  assert.equal(webhook.perdida_margen_vc_pct, 5.1);
+  assert.equal(webhook.clasificacion_compuerta, 'EMERGENCY_SHUTDOWN_PARO');
+
+  const sap = formatSapPlaintext(rawDossier);
+  assert.ok(sap.includes('Er (Cave): 0.84'), 'SAP texto debe incluir Er Cave');
+  assert.ok(sap.includes('2450 h'), 'SAP texto debe incluir horas de vida estimada del impulsor');
+  assert.ok(sap.includes('K_motor,alt = 1.32x'), 'SAP texto debe incluir pinza termo-barométrica K_motor,alt');
+  assert.ok(sap.includes('Δv_tubería = -5.1%'), 'SAP texto debe incluir pérdida de margen frente a Vc');
+
+  const codeGs = fs.readFileSync(path.join(siteRoot, 'tools/google_apps_script/Code.gs'), 'utf-8');
+  for (const col of [
+    'derating_eficiencia_er',
+    'vida_estimada_impulsor_h',
+    'perdida_npsh_altitud_m',
+    'derating_motor_iec',
+    'multiplicador_motor_altitud',
+    'perdida_margen_vc_pct',
+    'clasificacion_compuerta'
+  ]) {
+    assert.ok(codeGs.includes(col), `Code.gs debe registrar columna ${col}`);
+  }
+});
+
+test('Test 229 (Decisiones 1, 2, 3, 5, 7 / DEB-P4-04 & DEB-P4-07): LiveEngineeringDossier.astro e inventario_smat.md exponen todos los nodos sin #btn-quote-mailto oculto', () => {
+  const dossier = fs.readFileSync(path.join(siteRoot, 'src/components/LiveEngineeringDossier.astro'), 'utf-8');
+  assert.ok(!dossier.includes('<button type="button" id="btn-quote-mailto"'), 'LiveEngineeringDossier.astro no debe contener #btn-quote-mailto muerto (DEB-P4-04)');
+
+  for (const id of [
+    'id="gate-lead-status"',
+    'id="trust-boundary-alert"',
+    'id="live-role-criteria"',
+    'id="metric-hr"',
+    'id="metric-er"',
+    'id="metric-wear-hours"',
+    'id="metric-patm-mca"',
+    'id="metric-delta-npsh"',
+    'id="metric-motor-iec"',
+    'id="metric-k-motor-alt"',
+    'id="wb-pipe-vel-loss"',
+    'id="live-assembly-collision-note"'
+  ]) {
+    assert.ok(dossier.includes(id), `LiveEngineeringDossier.astro debe incluir ${id}`);
+  }
+
+  const inventario = fs.readFileSync(path.join(siteRoot, '../inventario/inventario_smat.md'), 'utf-8');
+  assert.ok(inventario.includes('affordance = "#gate-lead-status, #trust-boundary-alert"'), 'inventario_smat.md debe declarar affordance para INV-SMAT-GTE-001');
+  assert.ok(inventario.includes('affordance = "#metric-hr, #metric-er, #metric-wear-hours"'), 'inventario_smat.md debe declarar affordance para INV-SMAT-PHY-001');
+});
+
+test('Test 230 (Decisiones 1-7 en QuoteWizard.astro + quoteWizardController.js): Presupuesto Parnas < 950 líneas y conexión reactiva completa', () => {
+  const wizard = fs.readFileSync(path.join(siteRoot, 'src/components/QuoteWizard.astro'), { encoding: 'utf-8', rawWizardOnly: true });
+  const lineCount = wizard.split('\n').length;
+  assert.ok(lineCount < 950, `QuoteWizard.astro debe mantenerse bajo 950 líneas (actual: ${lineCount})`);
+
+  for (const id of [
+    'id="btn-apply-mining-preset"',
+    'id="wb-ctrl-solve-mode"',
+    'id="btn-apply-ss-to-circuit"',
+    'id="wb-altitude-live-strip"',
+    'id="wb-clearance-vel-loss"'
+  ]) {
+    assert.ok(wizard.includes(id), `QuoteWizard.astro debe incluir ${id}`);
+  }
+
+  const controller = fs.readFileSync(path.join(siteRoot, 'src/scripts/quoteWizardController.js'), 'utf-8');
+  assert.ok(controller.includes('validatePlantLeadInput'), 'quoteWizardController.js debe invocar validatePlantLeadInput');
+  assert.ok(controller.includes('resolveMiningDistrictPreset'), 'quoteWizardController.js debe invocar resolveMiningDistrictPreset');
+  assert.ok(controller.includes('combinedMotorAltitudeMultiplier'), 'quoteWizardController.js debe renderizar combinedMotorAltitudeMultiplier');
+});
+
+test('Test 231 (Decisión 4): Inversión algebraica Marcy de 3 vías (solveFor: ore_density_rhop) en /control-de-procesos/ y /en/process-control/', () => {
+  for (const rel of ['src/pages/control-de-procesos/index.astro', 'src/pages/en/process-control/index.astro']) {
+    const content = fs.readFileSync(path.join(siteRoot, rel), 'utf-8');
+    assert.ok(content.includes('id="met-marcy-mode"'), `${rel} debe incluir selector #met-marcy-mode`);
+    assert.ok(content.includes('value="ore_density_rhop"'), `${rel} debe incluir modo ore_density_rhop`);
+    assert.ok(content.includes('id="met-apply-ss-btn"'), `${rel} debe incluir botón #met-apply-ss-btn para sincronizar Ss al circuito hidráulico`);
+  }
+});
+
+test('Test 232 (Decisión 6 / DEB-P4-05): DiagnosticsHub.astro usa tarjetas semánticas <article class="card diag-card"> y persiste frontClearanceMm en saveWorkbenchState', () => {
+  const diag = fs.readFileSync(path.join(siteRoot, 'src/components/DiagnosticsHub.astro'), 'utf-8');
+  assert.ok(diag.includes('<article class="card diag-card"'), 'DiagnosticsHub.astro debe usar <article class="card diag-card">');
+  assert.ok(!diag.includes('<div class="card diag-card"'), 'DiagnosticsHub.astro no debe usar <div class="card diag-card"> (DEB-P4-05)');
+  assert.ok(diag.includes('saveWorkbenchState') && diag.includes('frontClearanceMm: claroMm'), 'DiagnosticsHub.astro debe persistir frontClearanceMm en saveWorkbenchState');
+});
+
+test('Test 233 (Decisión 8 en Acuse): acuse.astro y en/thank-you.astro renderizan η_r, vida estimada del impulsor, ΔNPSH, K_motor,alt, Δv_pipe y gate_classification', () => {
+  for (const rel of ['src/pages/acuse.astro', 'src/pages/en/thank-you.astro']) {
+    const content = fs.readFileSync(path.join(siteRoot, rel), 'utf-8');
+    for (const token of ['eff_ratio_er', 'impeller_life_h', 'delta_npsh_m', 'k_motor_alt', 'pipe_vel_loss_pct', 'gate_classification']) {
+      assert.ok(content.includes(token), `${rel} debe procesar y renderizar ${token}`);
+    }
+  }
+});
+
+test('Test 234 (Decisión 9b & 9c): Compactación Above-the-Fold móvil en las 9 rutas auditadas por ergos probe', () => {
+  const mobileCheckedFiles = [
+    'src/pages/index.astro',
+    'src/pages/cotizar.astro',
+    'src/pages/acuse.astro',
+    'src/pages/bombeo/index.astro',
+    'src/pages/bombeo/skid.astro',
+    'src/pages/equipos/index.astro',
+    'src/pages/control-de-procesos/index.astro',
+    'src/components/DiagnosticsHub.astro',
+    'src/pages/catalogo.astro'
+  ];
+  for (const rel of mobileCheckedFiles) {
+    const content = fs.readFileSync(path.join(siteRoot, rel), 'utf-8');
+    assert.ok(content.includes('@media (max-width:'), `${rel} debe tener reglas @media (max-width: ...) para compactar el Hero móvil Above-the-Fold`);
+  }
+});
+

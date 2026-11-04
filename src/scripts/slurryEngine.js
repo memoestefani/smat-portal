@@ -148,7 +148,9 @@ export function calculateAltitudeCorrection(altitudeM = 0) {
   return {
     altitudeM: alt,
     pAtmHeadMca: Number(pAtm.toFixed(2)),
+    barometricPressureKpa: Number((pAtm * 9.80665).toFixed(2)),
     deltaNpshLossM: Number(deltaNpsh.toFixed(2)),
+    npshSafeMarginWarning: deltaNpsh >= 1.5,
     motorDeratingFactor: Number(motorDeratingFactor.toFixed(3)),
     altitudeTier,
     altitudeTierText
@@ -326,6 +328,11 @@ export function calculateSlurryMetrics({
   const headDeratingFactorHr = Math.max(0.65, Math.min(0.99, 1.0 - headLossK));
   const effDeratingFactorEr = Math.max(0.60, Math.min(0.98, headDeratingFactorHr - 0.02 * (Cv / 20)));
 
+  // 11. Pinza Termo-Barométrica de Altitud TEFC IEC 60034-1 (Arbitraje Epistémico #15 / INV-SMAT-SCI-23)
+  const rawCombinedMultiplier = 1.0 / Math.max(0.25, effDeratingFactorEr * altitudeData.motorDeratingFactor);
+  const combinedMotorAltitudeMultiplier = Number(rawCombinedMultiplier.toFixed(3));
+  const motorSizingPenaltyPct = Number(((rawCombinedMultiplier - 1.0) * 100.0).toFixed(1));
+
   const roundedSm = Number(Sm.toFixed(3));
   const roundedVc = Number(Vc.toFixed(2));
   const roundedVact = Number(actualPipeVelocity.toFixed(2));
@@ -341,6 +348,16 @@ export function calculateSlurryMetrics({
     durandFactorFL: Number(FL.toFixed(2)),
     solidsVolumetricPercent: Number(Cv.toFixed(1)),
     recommendedPipeVelocityMs: Number(recommendedPipeVelocity.toFixed(2)),
+    headDeratingFactorHr: Number(headDeratingFactorHr.toFixed(3)),
+    effDeratingFactorEr: Number(effDeratingFactorEr.toFixed(3)),
+    estimatedImpellerLifeHours,
+    wearLifeRatio: Number(wearLifeRatio.toFixed(1)),
+    pAtmHeadMca: altitudeData.pAtmHeadMca,
+    deltaNpshLossM: altitudeData.deltaNpshLossM,
+    motorDeratingFactor: altitudeData.motorDeratingFactor,
+    combinedMotorAltitudeMultiplier,
+    motorSizingPenaltyPct,
+    altitudeTierText: altitudeData.altitudeTierText,
     recommendedMaterial,
     recommendedMaterialKey,
     recommendedMaterialCode,
@@ -366,6 +383,11 @@ export function calculateSlurryMetrics({
       actualPipeVelocityMs: roundedVact,
       headDeratingFactorHr: Number(headDeratingFactorHr.toFixed(3)),
       effDeratingFactorEr: Number(effDeratingFactorEr.toFixed(3)),
+      pAtmHeadMca: altitudeData.pAtmHeadMca,
+      deltaNpshLossM: altitudeData.deltaNpshLossM,
+      motorDeratingFactor: altitudeData.motorDeratingFactor,
+      combinedMotorAltitudeMultiplier,
+      motorSizingPenaltyPct,
       flowCondition,
       flowConditionText,
       recommendedMaterial,
@@ -1611,6 +1633,103 @@ export function calculateDriveAndBearingKinematics(params = {}) {
 export const DRIVE_ARRANGEMENTS = DRIVE_ARRANGEMENT_CATALOG;
 export const calculateDriveKinematics = calculateDriveAndBearingKinematics;
 export const calculateMarcyScale = calculateMarcyScaleReading;
+
+/**
+ * Compuerta Soberana de Plausibilidad Física y Límites de Rechazo Técnico (Decisión 3 / INV-SMAT-GTE-001 + data/trust.json)
+ * Espejo determinista 1:1 en JS de validate_plant_lead_input (crates/smat-gate/src/lib.rs) sin bloquear leads exploratorios.
+ * @param {Object} params
+ */
+export function validatePlantLeadInput(params = {}) {
+  const cw = Number(params.cwPct ?? params.solidsWeightPercent ?? params.solids_cw ?? 45);
+  const d80 = Number(params.d80Microns ?? params.particleSizeD80Microns ?? params.d80_um ?? 180);
+  const flow = Number(params.flowM3h ?? params.flowM3H ?? params.flow_m3h ?? 180);
+  const ph = Number(params.pulpPh ?? params.pH ?? params.ph ?? 7.5);
+  const alt = Number(params.altitudeM ?? params.altitude_msnm ?? 2200);
+  const tempC = Number(params.tempC ?? params.temperatureC ?? 35);
+  const claroMm = Number(params.frontClearanceMm ?? params.claro_mm ?? 0.75);
+  const tipSpeedMs = Number(params.tipSpeedMs ?? params.u2_ms ?? 19.9);
+  const materialRaw = String(params.wetMaterial ?? params.material ?? params.recommendedMaterial ?? 'A05').toLowerCase();
+  const companyRaw = String(params.company ?? params.company_name ?? '').trim();
+  const hasPartCodeOrDims = Boolean(
+    params.smat_code ||
+    params.atomic_code ||
+    params.dim_outer_dia ||
+    params.dim_shaft_bore ||
+    params.pipe_size
+  );
+
+  const warnings = [];
+  if (cw <= 0 || cw > 78) {
+    warnings.push(`Concentración Cw (${cw}%) fuera de envolvente física de bombeo centrífugo (1% - 78%).`);
+  }
+  if (d80 < 5 || d80 > 6000) {
+    warnings.push(`Granulometría d80 (${d80} µm) fuera de dominio metrológico estándar (5 - 6000 µm).`);
+  }
+  if (flow < 1 || flow > 5000) {
+    warnings.push(`Caudal Q (${flow} m³/h) fuera de rango nominal de serie SMAT (1 - 5000 m³/h).`);
+  }
+  if (ph < 0.5 || ph > 14.0) {
+    warnings.push(`pH (${ph}) fuera de escala química acuosa (0.5 - 14.0).`);
+  }
+  if (alt < 0 || alt > 5000) {
+    warnings.push(`Altitud (${alt} msnm) fuera de envolvente orográfica minera (0 - 5000 msnm).`);
+  }
+
+  // Evaluación causal de los 3 Límites de Rechazo Técnico (data/trust.json)
+  let activeTrustBoundaryId = null;
+  let activeTrustBoundaryTitleEs = '';
+  let activeTrustBoundaryReasonEs = '';
+
+  const isRubber = materialRaw.includes('hule') || materialRaw.includes('rubber') || materialRaw === 'r55';
+  if (isRubber && (ph < 1.5 || tempC > 110 || d80 > 600)) {
+    activeTrustBoundaryId = 'bound-ph-temp';
+    activeTrustBoundaryTitleEs = 'Límite Técnico (bound-ph-temp): Químicos o Temperatura Extrema en Hule Natural';
+    activeTrustBoundaryReasonEs = `Con pH ${ph.toFixed(1)}, T=${tempC}°C o d80=${Math.round(d80)} µm, el hule natural sufre degradación o desgarre prematuro. Se recomienda migrar a Aleación Especial / Alto Cromo A05 o Poliuretano U01.`;
+  } else if (claroMm < 0.35 || (isRubber && tipSpeedMs > 24.5) || tipSpeedMs > 29.5) {
+    activeTrustBoundaryId = 'bound-unapproved-mods';
+    activeTrustBoundaryTitleEs = 'Límite Técnico (bound-unapproved-mods): Interferencia Mecánica o Sobrecarga Cinemática';
+    activeTrustBoundaryReasonEs = claroMm < 0.35
+      ? `Claro axial δ=${claroMm.toFixed(2)} mm inferior al umbral de dilatación térmica (0.35 mm): riesgo inminente de amarre frontal contra placa de succión.`
+      : `Velocidad periférica u₂=${tipSpeedMs.toFixed(1)} m/s excede el límite endotérmico seguro del revestimiento seleccionado.`;
+  } else if (!hasPartCodeOrDims && Boolean(params.strictBlindCheck)) {
+    activeTrustBoundaryId = 'bound-blind-quote';
+    activeTrustBoundaryTitleEs = 'Límite Técnico (bound-blind-quote): Cotización a Ciegas Sin Datos Mínimos';
+    activeTrustBoundaryReasonEs = 'Para garantizar intercambiabilidad 1:1 sin retrabajos en paro de planta, indique serie de bomba, código de pieza o medidas básicas con flexómetro.';
+  }
+
+  const plausible = warnings.length === 0 && activeTrustBoundaryId === null;
+  const isIdentifiedPlant = companyRaw.length >= 2 && !companyRaw.toLowerCase().includes('no especificado');
+
+  let classification = 'GENERAL_INQUIRY';
+  let badgeLabelEs = 'PARÁMETROS FÍSICAMENTE PLAUSIBLES • REVISIÓN INGENIERÍA';
+  let badgeLabelEn = 'PHYSICALLY PLAUSIBLE PARAMETERS • ENGINEERING REVIEW';
+  let slaCommitmentEs = 'SLA Mismo Día Hábil • Validación dimensional 1:1 en Almacén Durango';
+
+  if (!plausible) {
+    classification = 'OUT_OF_DOMAIN_WARNING';
+    badgeLabelEs = 'ALERTA DE FRONTERA TÉCNICA • REQUIERE AJUSTE DE INGENIERÍA';
+    badgeLabelEn = 'TECHNICAL BOUNDARY ALERT • REQUIRES ENGINEERING REVIEW';
+    slaCommitmentEs = 'Revisión prioritaria con Ingeniería de Aplicación en Durango antes de despacho';
+  } else if (isIdentifiedPlant) {
+    classification = 'PRIORITY_MINING_PLANT';
+    badgeLabelEs = 'PLANTA MINERA VERIFICADA • PARÁMETROS PLAUSIBLES (SLA PRIORITARIO)';
+    badgeLabelEn = 'VERIFIED MINING PLANT • PLAUSIBLE PARAMETERS (PRIORITY SLA)';
+    slaCommitmentEs = 'Atención Inmediata Paro de Planta • Cotejo 1:1 en Banco de Pruebas Durango';
+  }
+
+  return {
+    plausible,
+    classification,
+    badgeLabelEs,
+    badgeLabelEn,
+    slaCommitmentEs,
+    activeTrustBoundaryId,
+    activeTrustBoundaryTitleEs,
+    activeTrustBoundaryReasonEs,
+    warnings
+  };
+}
+
 
 
 

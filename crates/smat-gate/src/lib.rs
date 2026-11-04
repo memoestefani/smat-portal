@@ -974,6 +974,83 @@ pub fn verify_pump_assembly_and_zero_orphan_rfq_links(site_root: &Path) -> Resul
     Ok(())
 }
 
+pub fn verify_backend_ui_full_parity_and_altitude_pincer(site_root: &Path) -> Result<(), String> {
+    let header_path = site_root.join("src").join("components").join("Header.astro");
+    let header_src = fs::read_to_string(&header_path).map_err(|e| format!("Error leyendo Header.astro: {}", e))?;
+    if header_src.contains("background: #E56B38;") {
+        return Err("DEB-P4-01: Header.astro aun contiene background: #E56B38 (ratio 6.01:1 < 7.0:1 WCAG AAA)".to_string());
+    }
+
+    let dossier_path = site_root.join("src").join("components").join("LiveEngineeringDossier.astro");
+    let dossier_src = fs::read_to_string(&dossier_path).map_err(|e| format!("Error leyendo LiveEngineeringDossier.astro: {}", e))?;
+    if dossier_src.contains("<button type=\"button\" id=\"btn-quote-mailto\"") {
+        return Err("DEB-P4-04: LiveEngineeringDossier.astro aun contiene el boton muerto #btn-quote-mailto".to_string());
+    }
+    for req_id in [
+        "id=\"gate-lead-status\"",
+        "id=\"trust-boundary-alert\"",
+        "id=\"live-role-criteria\"",
+        "id=\"metric-hr\"",
+        "id=\"metric-er\"",
+        "id=\"metric-wear-hours\"",
+        "id=\"metric-patm-mca\"",
+        "id=\"metric-delta-npsh\"",
+        "id=\"metric-motor-iec\"",
+        "id=\"metric-k-motor-alt\"",
+        "id=\"wb-pipe-vel-loss\"",
+        "id=\"live-assembly-collision-note\"",
+    ] {
+        if !dossier_src.contains(req_id) {
+            return Err(format!("LiveEngineeringDossier.astro carece de {}", req_id));
+        }
+    }
+
+    let wizard_path = site_root.join("src").join("components").join("QuoteWizard.astro");
+    let wizard_src = fs::read_to_string(&wizard_path).map_err(|e| format!("Error leyendo QuoteWizard.astro: {}", e))?;
+    let wizard_lines = wizard_src.lines().count();
+    if wizard_lines >= 950 {
+        return Err(format!("QuoteWizard.astro excede presupuesto Parnas (< 950 lineas): {} lineas", wizard_lines));
+    }
+    for req_wiz in [
+        "id=\"btn-apply-mining-preset\"",
+        "id=\"wb-ctrl-solve-mode\"",
+        "id=\"btn-apply-ss-to-circuit\"",
+        "id=\"wb-altitude-live-strip\"",
+        "id=\"wb-clearance-vel-loss\"",
+    ] {
+        if !wizard_src.contains(req_wiz) {
+            return Err(format!("QuoteWizard.astro carece de {}", req_wiz));
+        }
+    }
+
+    let engine_path = site_root.join("src").join("scripts").join("slurryEngine.js");
+    let engine_src = fs::read_to_string(&engine_path).map_err(|e| format!("Error leyendo slurryEngine.js: {}", e))?;
+    for req_eng in [
+        "combinedMotorAltitudeMultiplier",
+        "motorSizingPenaltyPct",
+        "barometricPressureKpa",
+        "npshSafeMarginWarning",
+        "export function validatePlantLeadInput",
+    ] {
+        if !engine_src.contains(req_eng) {
+            return Err(format!("slurryEngine.js carece de {}", req_eng));
+        }
+    }
+
+    let bus_path = site_root.join("src").join("scripts").join("workbenchBus.js");
+    let bus_src = fs::read_to_string(&bus_path).map_err(|e| format!("Error leyendo workbenchBus.js: {}", e))?;
+    for req_bus in [
+        "export function resolveMiningDistrictPreset",
+        "export function buildCanonicalEngineeringSnapshot",
+    ] {
+        if !bus_src.contains(req_bus) {
+            return Err(format!("workbenchBus.js carece de {}", req_bus));
+        }
+    }
+
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1101,5 +1178,15 @@ mod tests {
         assert!(verify_modular_parnas_and_zero_fake_data_step_gate(&root).is_ok(), "Fallo en Gate 23: particion modular Parnas y cero data-step=2");
         assert!(verify_manuel_lexical_and_route_separation_gate(&root).is_ok(), "Fallo en Gate 24: higiene lexica Don Manuel y separacion de rutas");
         assert!(verify_solar_wcag_aaa_and_etapa3_parity(&root).is_ok(), "Fallo en Gate 25: polaridad solar WCAG AAA y paridad Etapa 3");
+        assert!(verify_backend_ui_full_parity_and_altitude_pincer(&root).is_ok(), "Fallo en Gate 26: paridad 100% Backend-UI y pinza termo-barometrica TEFC");
+    }
+
+    #[test]
+    fn test_gate_26_backend_ui_full_parity_and_altitude_pincer() {
+        let root = find_site_root();
+        assert!(
+            verify_backend_ui_full_parity_and_altitude_pincer(&root).is_ok(),
+            "Fallo en Gate 26: paridad 100% Backend-UI y pinza termo-barometrica TEFC"
+        );
     }
 }

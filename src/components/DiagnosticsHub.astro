@@ -45,7 +45,7 @@ const diagnostics = [
     const mech = mechanicalDiagByRole[item.id] || MECHANICAL_DIAGNOSTICS.liner_grooving;
     const stStr = String(mech.stationNumber || '05');
     const stationCode = stStr.includes('5') ? '05' : stStr.includes('2') ? '02' : stStr.includes('1') ? '01' : '05';
-    const claroMm = String(mech.recommendedClearanceMm || '0.75');
+    const claroMm = item.id === 'cavitacion_abrasion' ? '2.5' : String(mech.recommendedClearanceMm || '0.75');
     return {
       ...item,
       threshold: mech.threshold,
@@ -70,7 +70,7 @@ const diagnostics = [
     stationNumber: `Estación 0${m.stationNumber}`,
     recommendedMaterial: m.recommendedMaterial,
     stationCode: `0${m.stationNumber}`,
-    claroMm: String(m.recommendedClearanceMm || '0.75')
+    claroMm: m.id === 'liner_grooving' ? '2.8' : String(m.recommendedClearanceMm || '0.75')
   }))
 ];
 ---
@@ -118,7 +118,7 @@ const diagnostics = [
 
     <div class="diagnostics-grid">
       {diagnostics.map((item) => (
-        <div class="card diag-card" data-tags={`${item.id} ${item.title_es} ${item.title_en} ${item.target_role} ${item.threshold} ${item.stationNumber}`.toLowerCase()}>
+        <article class="card diag-card" data-tags={`${item.id} ${item.title_es} ${item.title_en} ${item.target_role} ${item.threshold} ${item.stationNumber} ${item.recommendedMaterial}`.toLowerCase()}>
           <div class="diag-header">
             <span class="pulsing-dot pulsing-dot-amber"></span>
             <h3 class="diag-title">{isEs ? item.title_es : item.title_en}</h3>
@@ -126,6 +126,7 @@ const diagnostics = [
           <div class="diag-threshold-strip" data-diag-threshold={item.threshold}>
             <span class="diag-station-chip">{item.stationNumber}</span>
             <span class="diag-threshold-chip">{isEs ? 'Umbral Físico:' : 'Physical Threshold:'} {item.threshold}</span>
+            <span class="diag-station-chip" data-diag-material={item.recommendedMaterial}>{isEs ? 'Aleación:' : 'Alloy:'} {item.recommendedMaterial}</span>
           </div>
           
           <div class="diag-body">
@@ -162,20 +163,22 @@ const diagnostics = [
             </a>
             <a 
               href={isEs ? `/cotizar/?equipo=${item.target_role}&origen=diagnostico&falla=${item.id}&sintoma=${encodeURIComponent(item.title_es)}&material=${item.recommendedMaterial}&estacion=${item.stationCode}&claro_mm=${item.claroMm}&urgencia=paro#rfq` : `/en/quote/?equipo=${item.target_role}&origen=diagnostico&falla=${item.id}&sintoma=${encodeURIComponent(item.title_en)}&material=${item.recommendedMaterial}&estacion=${item.stationCode}&claro_mm=${item.claroMm}&urgencia=paro#rfq`}
-              class="btn btn-secondary btn-sm diag-action-btn diag-quote-btn"
+              class="btn btn-secondary btn-sm diag-action-btn diag-quote-btn diag-quote-link"
               data-symptom={item.title_es}
               data-material={item.recommendedMaterial}
               data-station={item.stationCode}
+              data-claro-mm={item.claroMm}
+              data-role={item.target_role}
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
               {isEs ? 'Cotizar Refacción →' : 'Quote Spares →'}
             </a>
           </div>
-        </div>
+        </article>
       ))}
 
       <!-- Tarjeta 5: Falla no listada -->
-      <div class="card diag-card unlisted-card" data-tags="otra_falla pulpa severa especial acida">
+      <article class="card diag-card unlisted-card" data-tags="otra_falla pulpa severa especial acida">
         <div class="diag-header">
           <span class="pulsing-dot pulsing-dot-green"></span>
           <h3 class="diag-title">{isEs ? 'Falla No Listada o Pulpa Severa Especial' : 'Unlisted Failure or Extreme Slurry Condition'}</h3>
@@ -223,7 +226,7 @@ const diagnostics = [
             {isEs ? 'Requisición Formal con Folio →' : 'Formal Requisition with Folio →'}
           </a>
         </div>
-      </div>
+      </article>
     </div>
   </div>
 </section>
@@ -491,9 +494,43 @@ const diagnostics = [
     background: #f8fafc;
     border-color: var(--smat-text-secondary, #64748b);
   }
+
+  @media (max-width: 640px) {
+    .diagnostics-section {
+      padding-top: 0.65rem;
+      padding-bottom: 2rem;
+    }
+    .diagnostics-header {
+      margin: 0 auto 0.65rem;
+    }
+    .diagnostics-title {
+      font-size: 1.3rem;
+      margin: 0.2rem 0;
+    }
+    .diagnostics-lead {
+      font-size: 0.8rem;
+      line-height: 1.25;
+      margin-bottom: 0.45rem;
+    }
+    .diag-filters-wrap {
+      gap: 0.3rem;
+    }
+    .diag-filter-chips {
+      gap: 0.25rem;
+    }
+    .diag-pill {
+      padding: 0.28rem 0.5rem;
+      font-size: 0.68rem;
+    }
+    .diag-search-count {
+      display: none;
+    }
+  }
 </style>
 
 <script>
+  import { saveWorkbenchState, loadWorkbenchState } from '../scripts/workbenchBus.js';
+
   function initDiagFilters() {
     const pills = document.querySelectorAll<HTMLButtonElement>('.diag-pill');
     const cards = document.querySelectorAll<HTMLElement>('.diag-card');
@@ -550,10 +587,27 @@ const diagnostics = [
       });
     });
 
-    // Conexión fluida con el cotizador (Decisión 9-C)
+    // Conexión fluida con el cotizador (Decisión 6 & 9-C)
     const quoteBtns = document.querySelectorAll<HTMLAnchorElement>('.diag-quote-btn');
     quoteBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
+        const claroMm = Number(btn.getAttribute('data-claro-mm')) || 0.75;
+        const symptom = btn.getAttribute('data-symptom') || '';
+        const material = btn.getAttribute('data-material') || '';
+        const station = btn.getAttribute('data-station') || '';
+        const role = btn.getAttribute('data-role') || '';
+        const prev: Record<string, any> = loadWorkbenchState() || {};
+        saveWorkbenchState({
+          ...prev,
+          frontClearanceMm: claroMm,
+          claro_mm: claroMm,
+          stressSymptom: symptom,
+          sintoma: symptom,
+          material: material || prev.material,
+          estacion: station || prev.estacion,
+          equipo: role || prev.equipo
+        });
+
         const href = btn.getAttribute('href');
         if (href && (href.startsWith('/cotizar/') || href.startsWith('#rfq') || href.startsWith('/en/quote/'))) {
           const rfqSection = document.getElementById('rfq');

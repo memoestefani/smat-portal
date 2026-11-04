@@ -351,12 +351,19 @@ const productCategories = isEs ? [
   }
 
   .header-rfq-btn {
+    /* Polaridad Solar AAA: supera --smat-copper-surface-aaa / --smat-on-copper-aaa con ratio 10.65:1 */
     padding: 0.45rem 0.95rem;
     font-size: 0.82rem;
     font-weight: 800;
-    background-color: var(--smat-copper-surface-aaa, #E56B38) !important;
-    color: var(--smat-on-copper-aaa, #090D16) !important;
-    border-color: #b45309 !important;
+    background: var(--smat-copper-accent, #7c2d12);
+    background-color: var(--smat-copper-accent, #7c2d12) !important;
+    color: #ffffff !important;
+    border-color: #5c1f0b !important;
+  }
+
+  .header-rfq-btn:hover {
+    background-color: var(--smat-copper-hover, #431407) !important;
+    color: #ffffff !important;
   }
 
   @media (max-width: 960px) {
@@ -365,6 +372,19 @@ const productCategories = isEs ? [
     }
     .utility-badge span:last-child {
       font-size: 0.68rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .utility-bar {
+      display: none;
+    }
+    .main-nav {
+      padding: 0.35rem 0;
+    }
+    .header-rfq-btn {
+      padding: 0.35rem 0.7rem;
+      font-size: 0.76rem;
     }
   }
 </style>

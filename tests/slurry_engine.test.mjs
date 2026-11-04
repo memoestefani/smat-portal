@@ -371,5 +371,89 @@ test('14. Paridad Científica 10 Decisiones (1-C+ a 10-C+): 9 Series de Tubería
   assert.ok(highC.bearingL10Hours > lowC.bearingL10Hours * 3, 'Incrementar C de 140 a 240 kN multiplica L10h cúbicamente ((C/P)^10/3)');
 });
 
+// ============================================================================
+// TESTS 222–226 (MS-P4-02): Pinza Termo-Barométrica TEFC (Decisión 1),
+// Derating Hidráulico ηr < HR + Vida Útil (Decisión 2) y Compuerta
+// Física validatePlantLeadInput + data/trust.json (Decisión 3)
+// ============================================================================
+test('MS-P4-02 (Tests 222-226): Pinza Termo-Barométrica K_motor,alt, ηr < HR y validatePlantLeadInput', async () => {
+  const {
+    calculateAltitudeCorrection,
+    calculateSlurryMetrics,
+    validatePlantLeadInput
+  } = await import('../src/scripts/slurryEngine.js');
+
+  // Test 222: Corrección barométrica a 0, 1500, 2400 (Durango/Zacatecas) y 3200 msnm
+  const sea = calculateAltitudeCorrection(0);
+  const dgo = calculateAltitudeCorrection(2400);
+  const highSierra = calculateAltitudeCorrection(3200);
+  assert.equal(sea.pAtmHeadMca, 10.33);
+  assert.equal(sea.motorDeratingFactor, 1.0);
+  assert.equal(sea.npshSafeMarginWarning, false);
+  assert.ok(dgo.deltaNpshLossM >= 2.6 && dgo.deltaNpshLossM <= 2.7, `A 2400 msnm se pierden ~2.67 m de NPSHa (obtenido: ${dgo.deltaNpshLossM})`);
+  assert.equal(dgo.motorDeratingFactor, 0.86, 'A 2400 msnm el derating térmico IEC 60034-1 es 0.860');
+  assert.equal(dgo.npshSafeMarginWarning, true, 'A 2400 msnm debe activar npshSafeMarginWarning');
+  assert.ok(highSierra.barometricPressureKpa < 70, 'A 3200 msnm la presión barométrica cae por debajo de 70 kPa');
+
+  // Test 223: Pinza Termo-Barométrica combinada K_motor,alt = 1 / (ηr * f_IEC(z)) en calculateSlurryMetrics
+  const slurryDgo = calculateSlurryMetrics({
+    flowM3H: 220,
+    solidsWeightPercent: 52,
+    oreDensitySg: 2.9,
+    particleSizeD80Microns: 240,
+    pipeSize: '6x4',
+    altitudeM: 2400
+  });
+  assert.ok(slurryDgo.effDeratingFactorEr < slurryDgo.headDeratingFactorHr, 'Por ley física Cave/McElvain ηr < HR en pulpas densas');
+  const expectedK = Number((1 / (slurryDgo.effDeratingFactorEr * slurryDgo.motorDeratingFactor)).toFixed(3));
+  assert.equal(slurryDgo.combinedMotorAltitudeMultiplier, expectedK, 'Debe exponer K_motor,alt exacto en top-level y results');
+  assert.ok(slurryDgo.motorSizingPenaltyPct > 25, `En sierra minera (2400 msnm, 52% Cw) la sobrecarga combinada supera +25% (${slurryDgo.motorSizingPenaltyPct}%)`);
+  assert.ok(slurryDgo.estimatedImpellerLifeHours >= 900 && slurryDgo.estimatedImpellerLifeHours <= 4800, 'Debe exponer estimatedImpellerLifeHours');
+  assert.ok(slurryDgo.wearLifeRatio >= 2.0, 'Debe exponer wearLifeRatio');
+
+  // Test 224: Compuerta validatePlantLeadInput — Lead prioritario de planta minera verificada
+  const gateValid = validatePlantLeadInput({
+    company: 'Minera Fresnillo S.A. de C.V.',
+    cwPct: 48,
+    d80Microns: 180,
+    flowM3h: 200,
+    pulpPh: 7.2,
+    altitudeM: 2200,
+    wetMaterial: 'A05',
+    frontClearanceMm: 0.75,
+    tipSpeedMs: 21.0,
+    smat_code: 'SMAT-PUMP-6X4-WETKIT'
+  });
+  assert.equal(gateValid.plausible, true);
+  assert.equal(gateValid.classification, 'PRIORITY_MINING_PLANT');
+  assert.equal(gateValid.activeTrustBoundaryId, null);
+
+  // Test 225: Compuerta validatePlantLeadInput — Disparo causal de bound-ph-temp en Hule con acidez extrema o gruesos
+  const gateRubberBound = validatePlantLeadInput({
+    company: 'Planta Lixiviación',
+    cwPct: 45,
+    d80Microns: 750,
+    flowM3h: 180,
+    pulpPh: 1.2,
+    wetMaterial: 'hule_natural'
+  });
+  assert.equal(gateRubberBound.plausible, false);
+  assert.equal(gateRubberBound.activeTrustBoundaryId, 'bound-ph-temp');
+  assert.equal(gateRubberBound.classification, 'OUT_OF_DOMAIN_WARNING');
+
+  // Test 226: Compuerta validatePlantLeadInput — Disparo causal de bound-unapproved-mods cuando claro δ < 0.35 mm
+  const gateClearanceBound = validatePlantLeadInput({
+    company: 'Unidad Sabinas',
+    cwPct: 45,
+    d80Microns: 180,
+    flowM3h: 180,
+    frontClearanceMm: 0.20,
+    wetMaterial: 'A05'
+  });
+  assert.equal(gateClearanceBound.plausible, false);
+  assert.equal(gateClearanceBound.activeTrustBoundaryId, 'bound-unapproved-mods');
+});
+
+
 
 

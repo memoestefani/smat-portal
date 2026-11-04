@@ -59,7 +59,18 @@ function doPost(e) {
         'claro_axial_mm',
         'perdida_eficiencia_vol_pct',
         'velocidad_periferica_u2_ms',
+        'rpm_bomba_n2',
+        'carga_radial_fr_kn',
+        'inmunidad_sumidero',
+        'dictamen_estructural',
         'vida_rodamiento_l10h',
+        'derating_eficiencia_er',
+        'vida_estimada_impulsor_h',
+        'perdida_npsh_altitud_m',
+        'derating_motor_iec',
+        'multiplicador_motor_altitud',
+        'perdida_margen_vc_pct',
+        'clasificacion_compuerta',
         'memoria_metrologica',
         'detalles_pulpa',
         'destino_entrega',
@@ -95,7 +106,18 @@ function doPost(e) {
     var claroAxialMm = data.claro_axial_mm || data.claro_mm || "";
     var perdidaEficienciaVolPct = data.perdida_eficiencia_vol_pct || data.delta_eta_v || "";
     var velocidadPuntaU2 = data.velocidad_periferica_u2_ms || data.velocidad_punta_u2_ms || data.u2_ms || "";
+    var rpmBombaN2 = data.rpm_bomba_n2 || data.n2_rpm || "";
+    var cargaRadialFrKn = data.carga_radial_fr_kn || data.fr_kn || "";
+    var inmunidadSumidero = data.inmunidad_sumidero || "";
+    var dictamenEstructural = data.dictamen_estructural || data.razon_estructural || "";
     var vidaRodamientoL10h = data.vida_rodamiento_l10h || data.l10h || "";
+    var deratingEficienciaEr = data.derating_eficiencia_er || data.eff_ratio_er || "";
+    var vidaEstimadaImpulsorH = data.vida_estimada_impulsor_h || data.impeller_life_h || "";
+    var perdidaNpshAltitudM = data.perdida_npsh_altitud_m || data.delta_npsh_m || "";
+    var deratingMotorIec = data.derating_motor_iec || data.motor_derating_iec || "";
+    var multiplicadorMotorAlt = data.multiplicador_motor_altitud || data.k_motor_alt || "";
+    var perdidaMargenVcPct = data.perdida_margen_vc_pct || data.pipe_vel_loss_pct || "";
+    var clasificacionCompuerta = data.clasificacion_compuerta || data.gate_classification || "";
     var cedulaMetrologia = data.memoria_metrologica || data.cedula_metrologia || data.metrologia || "";
     var detalles = data.detalles || data.spec_details || "";
     var destino = data.destino || data.destination || "Durango";
@@ -126,7 +148,18 @@ function doPost(e) {
       claroAxialMm,
       perdidaEficienciaVolPct,
       velocidadPuntaU2,
+      rpmBombaN2,
+      cargaRadialFrKn,
+      inmunidadSumidero,
+      dictamenEstructural,
       vidaRodamientoL10h,
+      deratingEficienciaEr,
+      vidaEstimadaImpulsorH,
+      perdidaNpshAltitudM,
+      deratingMotorIec,
+      multiplicadorMotorAlt,
+      perdidaMargenVcPct,
+      clasificacionCompuerta,
       cedulaMetrologia,
       detalles,
       destino,
