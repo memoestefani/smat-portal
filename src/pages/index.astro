@@ -3,11 +3,12 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TrustMatrix from '../components/TrustMatrix.astro';
 import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
+import quickCatalog from '../../data/quick_checkout_Catalog.json';
 ---
 
 <BaseLayout 
   title="SMAT Minerals | Equipos de Proceso, Bombas para Lodos y Spare Parts, Control de Procesos"
-  description="Suministro para plantas de beneficio minero desde Almacén Central Durango: Equipos de Proceso (Flotación y Filtros Prensa), Bombas para Lodos y Spare Parts (Lotes 5-5-4 y Bearing Assembly), y Control de Procesos (Balanzas Marcy, Filtro Batch y Tamices ASTM E11)."
+  description="Suministro para plantas de beneficio minero desde Almacén Central Durango: Equipos de Proceso (Flotación, Hidrociclones y Filtros Prensa), Bombas para Lodos y Spare Parts (Lotes 5-5-4, Camisa D075C21 y Bearing Assembly), y Control de Procesos (Balanzas Marcy, Filtro Batch y Tamices ASTM E11)."
   lang="es"
 >
   <section class="hero-home">
@@ -19,13 +20,14 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
       
       <h1>
         Bombas para Lodos y Refacciones<br/>
-        <span class="hero-sub-accent">Mecanismos de Flotación, Filtros Prensa y Balanzas.</span>
+        <span class="hero-sub-accent">Mecanismos de Flotación, Filtros Prensa y Balanzas. Hidrociclones.</span>
       </h1>
 
       <div class="hero-actions">
         <a href="/cotizar/#rfq" class="btn btn-primary btn-lg">Solicitar Cotización</a>
         <a href="/bombeo/#como-se-arma-una-bomba" class="btn btn-outline btn-lg">Ver Despiece y Cómo se Arma una Bomba</a>
-        <a href="/catalogo/" class="btn btn-outline btn-lg">Catálogo General</a>
+        <a href="/clasificacion/" class="btn btn-outline btn-lg">Hidrociclones y Balance 3 Vasos Marcy</a>
+        <a href="/catalogo/" class="btn btn-outline btn-lg">Catálogo General (19 SKUs + 13 Códigos)</a>
       </div>
     </div>
   </section>
@@ -34,7 +36,7 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
   <section class="equipment-showcase-section" aria-label="Las Tres Puertas de Suministro SMAT">
     <div class="container">
       <div class="showcase-header">
-        <span class="section-eyebrow">SELECCIÓN DIRECTA DE PIEZA Y EQUIPO</span>
+        <span class="section-eyebrow">SELECCIÓN DIRECTA DE PIEZA Y EQUIPO • DIAGRAMAS CAD RAYOS X</span>
         <h2>Seleccione su Pieza o Área de Suministro en Planta</h2>
       </div>
 
@@ -43,15 +45,16 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
         <article class="showcase-card">
           <div class="showcase-card-top">
             <span class="showcase-tag">Puerta 1 • Proyectos y Circuitos</span>
-            <span class="showcase-series">50–300 ft³ • 16 bar</span>
+            <span class="showcase-series">50–300 ft³ • 16 bar • d50c</span>
           </div>
           <h3>Equipos de Proceso</h3>
           <TechnicalDiagrams diagram="flotation" lang="es" compact={true} />
           <p class="door-concise-summary">
-            Celdas de Flotación, Filtros Prensa (800–1500 mm) y Skids de Bombeo (CV / ZVZ / CRZ / DC).
+            Celdas de Flotación, Hidrociclones (Apex/Vortex), Filtros Prensa (800–1500 mm) y Skids (CV / ZVZ / CRZ / DC).
           </p>
           <div class="part-chip-strip" aria-label="Selección rápida de Equipos de Proceso">
             <a href="/cotizar/?equipo=celda_flotacion#rfq" class="part-chip">Mecanismo Flotación</a>
+            <a href="/clasificacion/" class="part-chip part-chip--highlight">Hidrociclones (Apex y Vortex)</a>
             <a href="/cotizar/?equipo=filtro_prensa#rfq" class="part-chip">Filtro Prensa 16 bar</a>
             <a href="/cotizar/?equipo=placas_filtrantes#rfq" class="part-chip">Placas PP y Lonas</a>
             <a href="/cotizar/?equipo=skid_bomba&transmision=CV#rfq" class="part-chip">Skid Bomba (CV/ZVZ/CRZ/DC)</a>
@@ -62,8 +65,14 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
               <span class="ks-val">50 a 300 ft³ (Rougher, Cleaner y Scavenger)</span>
             </div>
             <div class="keyspec-row">
+              <span class="ks-label">Clasificación:</span>
+              <span class="ks-val">
+                <a href="/clasificacion/" class="inline-spec-link">Hidrociclones, Apex SiC/Cr27 y Vortex Finder →</a>
+              </span>
+            </div>
+            <div class="keyspec-row">
               <span class="ks-label">Filtración:</span>
-              <span class="ks-val">Filtros Prensa 800 a 1500 mm (16 bar)</span>
+              <span class="ks-val">Filtros Prensa 800 a 1500 mm (16 bar • NOM-141)</span>
             </div>
             <div class="keyspec-row">
               <span class="ks-label">Transmisión Skid:</span>
@@ -82,12 +91,12 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
         <article class="showcase-card">
           <div class="showcase-card-top">
             <span class="showcase-tag">Puerta 2 • Operación y Mantenimiento</span>
-            <span class="showcase-series">1.5x1" a 14x12"</span>
+            <span class="showcase-series">1.5x1" a 14x12" • 13 Códigos</span>
           </div>
           <h3>Bombas para Lodos y Spare Parts</h3>
           <TechnicalDiagrams diagram="pump" lang="es" compact={true} />
           <p class="door-concise-summary">
-            Lotes 5-5-4 en Alto Cromo (≥650 HB), Hule y Poliuretano + Bearing Assembly.
+            Lotes 5-5-4 en Alto Cromo (≥650 HB), Hule, Poliuretano y SiC + Camisa D075C21 y Bearing Assembly.
           </p>
           <div class="part-chip-strip" aria-label="Selección directa de refacción de bomba">
             <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=lote_554&material=alto_cromo_cr27#rfq" class="part-chip part-chip--highlight">Lote 5-5-4</a>
@@ -96,13 +105,14 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
             <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=voluta_liners&material=hule_natural#rfq" class="part-chip">Liners Hule / PU</a>
             <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=throatbush&material=alto_cromo_cr27#rfq" class="part-chip">Throatbush</a>
             <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=fpl_insert&material=alto_cromo_cr27#rfq" class="part-chip">FPL Insert</a>
+            <a href="/catalogo/D075C21/" class="part-chip part-chip--highlight">Camisa D075C21</a>
             <a href="/cotizar/?equipo=sello_expulsor&pieza=expeller_sello#rfq" class="part-chip">Expeller Seco</a>
             <a href="/cotizar/?equipo=soporte_rodamiento&pieza=bearing_assembly#rfq" class="part-chip">Bearing Assembly</a>
           </div>
           <div class="pro-keyspecs-box">
             <div class="keyspec-row">
               <span class="ks-label">Materiales:</span>
-              <span class="ks-val">Alto Cromo (≥650 HB), Hule y Poliuretano</span>
+              <span class="ks-val">Alto Cromo (≥650 HB), Hule, Poliuretano y Cerámica SiC</span>
             </div>
             <div class="keyspec-row">
               <span class="ks-label">Lote Húmedo:</span>
@@ -130,10 +140,11 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
           <h3>Control de Procesos</h3>
           <TechnicalDiagrams diagram="marcy" lang="es" compact={true} />
           <p class="door-concise-summary">
-            Balanza Marcy (1000 cm³), Filtro Batch (60–100 psi) y Tamices ASTM E11.
+            Balanza Marcy (1000 cm³), Balance de 3 Vasos en Hidrociclón, Filtro Batch (60–100 psi) y Tamices ASTM E11.
           </p>
           <div class="part-chip-strip" aria-label="Selección rápida de instrumentación metalúrgica">
             <a href="/cotizar/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="part-chip">Balanza Marcy + Vaso 1000 cm³</a>
+            <a href="/clasificacion/#marcy-3cup-workbench" class="part-chip part-chip--highlight">Balance 3 Vasos Ciclón (Plitt d50c)</a>
             <a href="/cotizar/?circuito=control_procesos&equipo=filtro_batch_lab#rfq" class="part-chip">Filtro Presión Batch</a>
             <a href="/cotizar/?circuito=control_procesos&equipo=tamices_astm_e11#rfq" class="part-chip">Tamices ASTM E11 (#200 / 75 µm)</a>
           </div>
@@ -156,6 +167,43 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
             <a href="/cotizar/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="showcase-cta-secondary">Cotizar Instrumento</a>
           </div>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATÁLOGO RÁPIDO DE LOS 19 SKUS EN CAJA RÁPIDA (MVP V3.0 • D1, D2, D3, D4, D6) -->
+  <section class="quick-sku-home-section" id="home-quick-checkout-catalog" aria-label="19 SKUs de Configuración Rápida">
+    <div class="container">
+      <div class="showcase-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span class="section-eyebrow">CONFIGURACIÓN RÁPIDA EN 1 CLIC • ESCALA FÍSICA ISO/IEC 7810 (0.76 MM) • BANDEJA MULTI-ÍTEM (c·μ)</span>
+          <h2>19 SKUs Críticos de Planta y 13 Fichas Atómicas Verificadas</h2>
+        </div>
+        <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
+          <a href="/catalogo/D075C21/" class="part-chip part-chip--highlight">Ver Ficha D075C21 (Camisa de Flecha) →</a>
+          <a href="/clasificacion/" class="part-chip part-chip--highlight">Abrir Simulador de Hidrociclones →</a>
+        </div>
+      </div>
+
+      <div class="quick-sku-grid">
+        {quickCatalog.map((item) => (
+          <article class="quick-sku-card">
+            <div class="quick-sku-top">
+              <span class="quick-sku-id">{item.id}</span>
+              <span class="quick-sku-atomic">{item.atomic_codes.join(' · ')}</span>
+            </div>
+            <h3 class="quick-sku-title">
+              <a href={`/productos/${item.slug_es}/`}>{item.title_es}</a>
+            </h3>
+            <p class="quick-sku-scale">
+              <strong>Escala Física:</strong> {item.everyday_scale_es}
+            </p>
+            <div class="quick-sku-actions">
+              <a href={`/productos/${item.slug_es}/`} class="part-chip part-chip--highlight">Ver Ficha y Rayos X →</a>
+              <a href={`/cotizar/?sku=${item.id}&codigo=${item.atomic_codes[0]}#rfq`} class="part-chip">+ Bandeja RFQ</a>
+            </div>
+          </article>
+        ))}
       </div>
     </div>
   </section>
@@ -427,6 +475,80 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
     font-weight: 600;
     color: var(--smat-text-secondary);
     text-decoration: underline;
+  }
+
+  .quick-sku-home-section {
+    padding: 3rem 0;
+    background-color: var(--smat-bg-canvas, #f8fafc);
+    border-bottom: 1px solid var(--smat-border-light, #e2e8f0);
+  }
+
+  .quick-sku-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 0.9rem;
+  }
+
+  .quick-sku-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0.95rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.45rem;
+  }
+
+  .quick-sku-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--smat-font-mono);
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+
+  .quick-sku-id {
+    color: #7c2d12;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+  }
+
+  .quick-sku-atomic {
+    color: #0c4a6e;
+  }
+
+  .quick-sku-title {
+    font-size: 0.92rem;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .quick-sku-title a {
+    color: #0f172a;
+    text-decoration: none;
+  }
+
+  .quick-sku-title a:hover {
+    color: #0c4a6e;
+    text-decoration: underline;
+  }
+
+  .quick-sku-scale {
+    font-size: 0.76rem;
+    color: #334155;
+    margin: 0;
+    line-height: 1.35;
+  }
+
+  .quick-sku-actions {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
   }
 
   @media (max-width: 768px) {

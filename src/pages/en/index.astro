@@ -3,11 +3,12 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TrustMatrix from '../../components/TrustMatrix.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
+import quickCatalog from '../../../data/quick_checkout_Catalog.json';
 ---
 
 <BaseLayout 
   title="SMAT Minerals | Process Equipment, Slurry Pumps & Spare Parts, Process Control"
-  description="Supply for mineral processing plants from our Durango Central Warehouse: Process Equipment (Flotation & Filter Presses), Slurry Pumps & Spare Parts (5-5-4 Wet-End Lots & Bearing Assemblies), and Process Control (Marcy Scales, Batch Pressure Filters & ASTM E11 Sieves)."
+  description="Supply for mineral processing plants from our Durango Central Warehouse: Process Equipment (Flotation, Hydrocyclones & Filter Presses), Slurry Pumps & Spare Parts (5-5-4 Wet-End Lots, D075C21 Shaft Sleeve & Bearing Assemblies), and Process Control (Marcy Scales, Batch Pressure Filters & ASTM E11 Sieves)."
   lang="en"
 >
   <section class="hero-home">
@@ -19,13 +20,14 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
       
       <h1>
         Slurry Pumps & Wear Spares<br/>
-        <span class="hero-sub-accent">Flotation Mechanisms, Filter Presses & Pulp Density Scales.</span>
+        <span class="hero-sub-accent">Flotation Mechanisms, Filter Presses & Pulp Density Scales. Hydrocyclones.</span>
       </h1>
 
       <div class="hero-actions">
         <a href="/en/quote/#rfq" class="btn btn-primary btn-lg">Request Quotation</a>
         <a href="/en/pumping/#how-a-slurry-pump-is-assembled" class="btn btn-outline btn-lg">View Exploded BOM & Pump Assembly</a>
-        <a href="/en/catalog/" class="btn btn-outline btn-lg">Master Catalog</a>
+        <a href="/en/classification/" class="btn btn-outline btn-lg">Hydrocyclones & 3-Cup Marcy Balance</a>
+        <a href="/en/catalog/" class="btn btn-outline btn-lg">Master Catalog (19 SKUs + 13 Codes)</a>
       </div>
     </div>
   </section>
@@ -34,7 +36,7 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
   <section class="equipment-showcase-section" aria-label="The Three SMAT Supply Doors">
     <div class="container">
       <div class="showcase-header">
-        <span class="section-eyebrow">DIRECT PART & EQUIPMENT SELECTION</span>
+        <span class="section-eyebrow">DIRECT PART & EQUIPMENT SELECTION • X-RAY CAD DIAGRAMS</span>
         <h2>Select Your Spare Part or Plant Supply Area</h2>
       </div>
 
@@ -43,15 +45,16 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
         <article class="showcase-card">
           <div class="showcase-card-top">
             <span class="showcase-tag">Door 1 • Projects & Circuits</span>
-            <span class="showcase-series">50–300 ft³ • 16 bar</span>
+            <span class="showcase-series">50–300 ft³ • 16 bar • d50c</span>
           </div>
           <h3>Process Equipment</h3>
           <TechnicalDiagrams diagram="flotation" lang="en" compact={true} />
           <p class="door-concise-summary">
-            Flotation Mechanisms, Filter Presses (800–1500 mm) & Pump Skids (CV / ZVZ / CRZ / DC).
+            Flotation Mechanisms, Hydrocyclones (Apex/Vortex), Filter Presses (800–1500 mm) & Pump Skids (CV / ZVZ / CRZ / DC).
           </p>
           <div class="part-chip-strip" aria-label="Quick selection of Process Equipment">
             <a href="/en/quote/?equipo=celda_flotacion#rfq" class="part-chip">Flotation Mechanism</a>
+            <a href="/en/classification/" class="part-chip part-chip--highlight">Hydrocyclones (Apex & Vortex)</a>
             <a href="/en/quote/?equipo=filtro_prensa#rfq" class="part-chip">16-bar Filter Press</a>
             <a href="/en/quote/?equipo=placas_filtrantes#rfq" class="part-chip">PP Plates & Cloths</a>
             <a href="/en/quote/?equipo=skid_bomba&transmision=CV#rfq" class="part-chip">Pump Skid (CV/ZVZ/CRZ/DC)</a>
@@ -62,8 +65,14 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
               <span class="ks-val">50 to 300 ft³ (Rougher, Cleaner, and Scavenger)</span>
             </div>
             <div class="keyspec-row">
+              <span class="ks-label">Classification:</span>
+              <span class="ks-val">
+                <a href="/en/classification/" class="inline-spec-link">Hydrocyclones, SiC/Cr27 Apex & Vortex Finder →</a>
+              </span>
+            </div>
+            <div class="keyspec-row">
               <span class="ks-label">Filtration:</span>
-              <span class="ks-val">Filter Presses 800 to 1500 mm (16 bar)</span>
+              <span class="ks-val">Filter Presses 800 to 1500 mm (16 bar • NOM-141)</span>
             </div>
             <div class="keyspec-row">
               <span class="ks-label">Skid Drives:</span>
@@ -82,12 +91,12 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
         <article class="showcase-card">
           <div class="showcase-card-top">
             <span class="showcase-tag">Door 2 • Operations & Maintenance</span>
-            <span class="showcase-series">1.5x1" to 14x12"</span>
+            <span class="showcase-series">1.5x1" to 14x12" • 13 Codes</span>
           </div>
           <h3>Slurry Pumps & Spare Parts</h3>
           <TechnicalDiagrams diagram="pump" lang="en" compact={true} />
           <p class="door-concise-summary">
-            5-5-4 Wet-End Lots in High Chrome (≥650 HB), Rubber & PU + Bearing Assembly.
+            5-5-4 Wet-End Lots in High Chrome (≥650 HB), Rubber, PU & SiC + D075C21 Sleeve & Bearing Assembly.
           </p>
           <div class="part-chip-strip" aria-label="Direct slurry pump spare part selection">
             <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=lote_554&material=alto_cromo_cr27#rfq" class="part-chip part-chip--highlight">5-5-4 Kit</a>
@@ -96,13 +105,14 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
             <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=voluta_liners&material=hule_natural#rfq" class="part-chip">Rubber / PU Liners</a>
             <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=throatbush&material=alto_cromo_cr27#rfq" class="part-chip">Throatbush</a>
             <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=fpl_insert&material=alto_cromo_cr27#rfq" class="part-chip">FPL Insert</a>
+            <a href="/en/catalog/D075C21/" class="part-chip part-chip--highlight">Sleeve D075C21</a>
             <a href="/en/quote/?equipo=sello_expulsor&pieza=expeller_sello#rfq" class="part-chip">Dry Expeller</a>
             <a href="/en/quote/?equipo=soporte_rodamiento&pieza=bearing_assembly#rfq" class="part-chip">Bearing Assembly</a>
           </div>
           <div class="pro-keyspecs-box">
             <div class="keyspec-row">
               <span class="ks-label">Materials:</span>
-              <span class="ks-val">High Chrome (≥650 HB), Rubber & Polyurethane</span>
+              <span class="ks-val">High Chrome (≥650 HB), Rubber, Polyurethane & SiC Ceramic</span>
             </div>
             <div class="keyspec-row">
               <span class="ks-label">Wet-End Lot:</span>
@@ -130,10 +140,11 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
           <h3>Process Control</h3>
           <TechnicalDiagrams diagram="marcy" lang="en" compact={true} />
           <p class="door-concise-summary">
-            Marcy Scale (1000 cm³), Lab Batch Filter (60–100 psi) & ASTM E11 Sieves.
+            Marcy Scale (1000 cm³), 3-Cup Hydrocyclone Mass Balance, Lab Batch Filter (60–100 psi) & ASTM E11 Sieves.
           </p>
           <div class="part-chip-strip" aria-label="Quick selection of metallurgical control instruments">
             <a href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="part-chip">Marcy Scale + 1000 cm³ Cup</a>
+            <a href="/en/classification/#marcy-3cup-workbench" class="part-chip part-chip--highlight">3-Cup Cyclone Balance (Plitt d50c)</a>
             <a href="/en/quote/?circuito=control_procesos&equipo=filtro_batch_lab#rfq" class="part-chip">Batch Pressure Filter</a>
             <a href="/en/quote/?circuito=control_procesos&equipo=tamices_astm_e11#rfq" class="part-chip">ASTM E11 Sieves (#200 / 75 µm)</a>
           </div>
@@ -156,6 +167,43 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
             <a href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="showcase-cta-secondary">Quote Instrument</a>
           </div>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 19 QUICK-CHECKOUT SKUS SHOWCASE (MVP V3.0 • D1, D2, D3, D4, D6) -->
+  <section class="quick-sku-home-section" id="home-quick-checkout-catalog" aria-label="19 Quick-Checkout SKUs">
+    <div class="container">
+      <div class="showcase-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span class="section-eyebrow">1-CLICK QUICK CHECKOUT • ISO/IEC 7810 (0.76 MM) PHYSICAL SCALE • MULTI-ITEM TRAY (c·μ)</span>
+          <h2>19 Critical Plant SKUs & 13 Verified Atomic Part Sheets</h2>
+        </div>
+        <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
+          <a href="/en/catalog/D075C21/" class="part-chip part-chip--highlight">View D075C21 Sheet (Shaft Sleeve) →</a>
+          <a href="/en/classification/" class="part-chip part-chip--highlight">Open Hydrocyclone Simulator →</a>
+        </div>
+      </div>
+
+      <div class="quick-sku-grid">
+        {quickCatalog.map((item) => (
+          <article class="quick-sku-card">
+            <div class="quick-sku-top">
+              <span class="quick-sku-id">{item.id}</span>
+              <span class="quick-sku-atomic">{item.atomic_codes.join(' · ')}</span>
+            </div>
+            <h3 class="quick-sku-title">
+              <a href={`/en/products/${item.slug_en}/`}>{item.title_en}</a>
+            </h3>
+            <p class="quick-sku-scale">
+              <strong>Physical Scale:</strong> {item.everyday_scale_en}
+            </p>
+            <div class="quick-sku-actions">
+              <a href={`/en/products/${item.slug_en}/`} class="part-chip part-chip--highlight">View Sheet & X-Ray →</a>
+              <a href={`/en/quote/?sku=${item.id}&codigo=${item.atomic_codes[0]}#rfq`} class="part-chip">+ RFQ Tray</a>
+            </div>
+          </article>
+        ))}
       </div>
     </div>
   </section>
@@ -427,6 +475,80 @@ import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
     font-weight: 600;
     color: var(--smat-text-secondary);
     text-decoration: underline;
+  }
+
+  .quick-sku-home-section {
+    padding: 3rem 0;
+    background-color: var(--smat-bg-canvas, #f8fafc);
+    border-bottom: 1px solid var(--smat-border-light, #e2e8f0);
+  }
+
+  .quick-sku-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 0.9rem;
+  }
+
+  .quick-sku-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0.95rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.45rem;
+  }
+
+  .quick-sku-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--smat-font-mono);
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+
+  .quick-sku-id {
+    color: #7c2d12;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+  }
+
+  .quick-sku-atomic {
+    color: #0c4a6e;
+  }
+
+  .quick-sku-title {
+    font-size: 0.92rem;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .quick-sku-title a {
+    color: #0f172a;
+    text-decoration: none;
+  }
+
+  .quick-sku-title a:hover {
+    color: #0c4a6e;
+    text-decoration: underline;
+  }
+
+  .quick-sku-scale {
+    font-size: 0.76rem;
+    color: #334155;
+    margin: 0;
+    line-height: 1.35;
+  }
+
+  .quick-sku-actions {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
   }
 
   @media (max-width: 768px) {
