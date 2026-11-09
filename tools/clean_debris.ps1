@@ -33,6 +33,14 @@ foreach ($Pattern in $DebrisPatterns) {
     }
 }
 
+# 1b. Purgar directorios efimeros .ortho_doctor_cache en el sitio y crates/smat-gate/target (DEB-V3-01)
+$OrthoCaches = Get-ChildItem -Path $SiteRoot -Filter ".ortho_doctor_cache" -Directory -Recurse -Force -ErrorAction SilentlyContinue
+foreach ($CacheDir in $OrthoCaches) {
+    Write-Host "   [BORRADO CACHE] $($CacheDir.FullName)" -ForegroundColor Yellow
+    Remove-Item -Path $CacheDir.FullName -Recurse -Force -ErrorAction SilentlyContinue
+    $DeletedCount++
+}
+
 # 2. Verificar que no existan archivos .env con secretos en el arbol publico
 $EnvFiles = Get-ChildItem -Path $SiteRoot -Filter ".env*" -Force -ErrorAction SilentlyContinue
 if ($EnvFiles.Count -gt 0) {

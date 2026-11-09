@@ -104,7 +104,8 @@ test('3. [DECISIÓN 3 / DEB-V42-03] Paridad SSG Total en /catalogo/ y /en/catalo
 
   const nineSeriesKeys = Object.keys(PIPE_SERIES_DIAMETER_MM);
   assert.equal(nineSeriesKeys.length, 9, 'PIPE_SERIES_DIAMETER_MM debe tener 9 series');
-  assert.equal(Object.keys(WET_END_MATERIAL_MATRIX).length, 4, 'WET_END_MATERIAL_MATRIX debe tener 4 aleaciones');
+  const uniqueAlloyCodes = new Set(Object.values(WET_END_MATERIAL_MATRIX).map((m) => m.code));
+  assert.equal(uniqueAlloyCodes.size, 4, 'WET_END_MATERIAL_MATRIX debe tener 4 aleaciones únicas (A05, R55, U01, SiC)');
 
   for (const [label, content] of [['catalogo.astro', catEs], ['en/catalog.astro', catEn]]) {
     assert.ok(content.includes('PIPE_SERIES_DIAMETER_MM'), `${label} debe importar PIPE_SERIES_DIAMETER_MM`);

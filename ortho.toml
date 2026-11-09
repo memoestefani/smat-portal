@@ -1,0 +1,46 @@
+# Configuración Soberana de Verificación Estática y Presupuesto — Bet-Selah Ortho
+# Proyecto: SMAT Minerals Site (smat/site)
+
+[project]
+name = "smat-site"
+languages = ["rust", "javascript", "typescript", "html", "css"]
+
+[budget]
+max_files = 140
+max_loc = 18000
+max_html_tags = 680
+max_css_bytes = 204800
+max_functions_per_file = 35
+max_cognitive_complexity = 25
+
+[surface]
+entry_points = [
+    "src/pages/index.astro",
+    "src/pages/en/index.astro",
+    "src/pages/cotizar.astro",
+    "src/pages/en/quote.astro",
+    "src/pages/acuse.astro",
+    "src/pages/en/thank-you.astro",
+    "src/pages/catalogo.astro",
+    "src/pages/en/catalog.astro",
+    "src/pages/catalogo/[code].astro",
+    "src/pages/en/catalog/[code].astro",
+    "src/pages/productos/[slug].astro",
+    "src/pages/en/products/[slug].astro",
+    "src/pages/clasificacion/index.astro",
+    "src/pages/en/classification/index.astro",
+    "src/pages/bombeo/index.astro",
+    "src/pages/bombeo/skid.astro",
+    "src/pages/flotacion/index.astro",
+    "src/pages/en/flotation/index.astro",
+    "src/pages/flotacion/celdas.astro",
+    "src/pages/filtracion/index.astro",
+    "src/pages/en/filtration/index.astro",
+    "src/pages/filtracion/repuestos.astro",
+    "src/pages/control-de-procesos/index.astro",
+    "src/pages/en/process-control/index.astro",
+    "crates/smat-gate/src/lib.rs",
+    "tools/generate_brand_assets.mjs",
+    "tools/clean_debris.ps1",
+    "tools/compile_redirects.ps1"
+]

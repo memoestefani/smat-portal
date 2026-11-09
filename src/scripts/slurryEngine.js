@@ -1809,6 +1809,217 @@ export function validatePlantLeadInput(params = {}) {
   };
 }
 
+// ============================================================================
+// MVP v3.0 (D4, D7, D8): BALANCE DE MASA DE HIDROCICLÓN POR 3 VASOS MARCY
+// (CERO BÁSCULA / CERO FLUJÓMETRO), DEFLEXIÓN DE PLACAS TIMOSHENKO Y HASH FNV-1A
+// ============================================================================
+
+/**
+ * Calcula el balance metalúrgico de un hidrociclón utilizando únicamente 3 lecturas
+ * de densidad de pulpa con Balanza Marcy (Alimentación, Descarga Apex, Rebalse Vortex)
+ * y el modelo hidrodinámico de Plitt (1976) sin requerir báscula de banda ni flujómetro.
+ *
+ * @param {any} params
+ * @returns {any}
+ */
+export function calculateThreeCupMarcyCycloneBalance({
+  feedSg = 1.35,
+  underflowSg = 1.82,
+  overflowSg = 1.15,
+  solidsSg = 2.7,
+  apexDiameterMm = 50,
+  vortexDiameterMm = 100,
+  feedPressureKpa = 95,
+  cycloneDiameterMm = 380
+} = {}) {
+  const safeSolidsSg = Math.max(1.8, Math.min(5.5, Number(solidsSg) || 2.7));
+  const safeFeedSg = Math.max(1.02, Math.min(safeSolidsSg - 0.05, Number(feedSg) || 1.35));
+  const safeOverflowSg = Math.max(1.01, Math.min(safeFeedSg - 0.01, Number(overflowSg) || 1.15));
+  const safeUnderflowSg = Math.max(safeFeedSg + 0.02, Math.min(safeSolidsSg - 0.02, Number(underflowSg) || 1.82));
+  const safeApexMm = Math.max(12, Math.min(250, Number(apexDiameterMm) || 50));
+  const safeVortexMm = Math.max(25, Math.min(400, Number(vortexDiameterMm) || 100));
+  const safePressureKpa = Math.max(20, Math.min(350, Number(feedPressureKpa) || 95));
+  const safeCycloneDcMm = Math.max(100, Math.min(1000, Number(cycloneDiameterMm) || 380));
+
+  const sgToCwFraction = (rhoP) => {
+    if (rhoP <= 1.0) return 0;
+    return (safeSolidsSg * (rhoP - 1.0)) / (rhoP * (safeSolidsSg - 1.0));
+  };
+
+  const cwToCvFraction = (cw) => {
+    if (cw <= 0) return 0;
+    return cw / (cw + (1.0 - cw) * safeSolidsSg);
+  };
+
+  const cwFeed = sgToCwFraction(safeFeedSg);
+  const cwUnderflow = sgToCwFraction(safeUnderflowSg);
+  const cwOverflow = sgToCwFraction(safeOverflowSg);
+
+  const cvFeed = cwToCvFraction(cwFeed);
+  const cvUnderflow = cwToCvFraction(cwUnderflow);
+  const cvOverflow = cwToCvFraction(cwOverflow);
+
+  // Ecuación de recuperación másica de sólidos a la descarga (underflow) R_s:
+  // R_s = [C_w,u * (C_w,f - C_w,o)] / [C_w,f * (C_w,u - C_w,o)]
+  const denomRs = cwFeed * Math.max(0.001, cwUnderflow - cwOverflow);
+  const numRs = cwUnderflow * Math.max(0, cwFeed - cwOverflow);
+  const solidsRecoveryFraction = Math.max(0.05, Math.min(0.98, numRs / denomRs));
+  const solidsRecoveryPct = Number((solidsRecoveryFraction * 100).toFixed(1));
+  const circulatingLoadPct = Number(((solidsRecoveryFraction / Math.max(0.02, 1.0 - solidsRecoveryFraction)) * 100).toFixed(0));
+
+  const apexToVortexRatio = Number((safeApexMm / safeVortexMm).toFixed(3));
+
+  // Ecuación empírica de Plitt (1976) calibrada para tamaño de corte corregido d50c (µm)
+  const dcCm = safeCycloneDcMm / 10;
+  const doCm = safeVortexMm / 10;
+  const duCm = safeApexMm / 10;
+  const headMetersSlurry = safePressureKpa / (9.80665 * safeFeedSg);
+  const plittVolumetricTerm = Math.exp(6.3 * cvFeed);
+  const geomFactor = (Math.pow(dcCm, 0.46) * Math.pow(doCm, 0.60)) / Math.pow(duCm, 0.71);
+  const d50cRaw = (14.8 * geomFactor * plittVolumetricTerm) / (Math.pow(Math.max(1.5, headMetersSlurry), 0.38) * Math.sqrt(Math.max(0.5, safeSolidsSg - 1.0)));
+  const d50cMicrons = Math.round(Math.max(15, Math.min(450, d50cRaw)));
+
+  // Criterio físico de acordonamiento (roping) por bloqueo volumétrico en el apex
+  const isRopingCritical = cvUnderflow >= 0.56 || (apexToVortexRatio < 0.45 && cvUnderflow >= 0.50);
+  const isUmbrellaDilute = cvUnderflow <= 0.36 || apexToVortexRatio > 0.78;
+
+  let dischargeRegime = 'SEMI_UMBRELLA_OPTIMAL';
+  let regimeLabelEs = 'Descarga Semi-Paraguas Óptima (Aire Central Estable)';
+  let regimeLabelEn = 'Optimal Semi-Umbrella Discharge (Stable Air Core)';
+  let recommendedSkuId = 'SKU-QC-11';
+  let diagnosticActionEs = 'Relación Du/Do y fracción volumétrica C_v,u en ventana metalúrgica óptima. Mantenga monitoreo preventivo de diámetro de Apex con galga cilíndrica.';
+  let diagnosticActionEn = 'Du/Do ratio and underflow volumetric fraction C_v,u within optimal metallurgical window. Maintain preventive Apex gauge checks.';
+
+  if (isRopingCritical) {
+    dischargeRegime = 'ROPING_CORDON';
+    regimeLabelEs = 'ALERTA DE ACORDONAMIENTO (ROPING) • BLOQUEO VOLUMÉTRICO EN APEX';
+    regimeLabelEn = 'ROPING DISCHARGE ALERT • APEX VOLUMETRIC CHOKING';
+    recommendedSkuId = 'SKU-QC-11';
+    diagnosticActionEs = `Fracción volumétrica en descarga C_v,u = ${(cvUnderflow * 100).toFixed(1)}% supera el límite de empaquetamiento libre (56%) con relación Du/Do = ${apexToVortexRatio}. Los gruesos cortocircuitan al rebalse (Vortex). Instale inserto de Apex de mayor orificio interno (Cerámica SiC / Cr27 SKU-QC-11).`;
+    diagnosticActionEn = `Underflow volumetric fraction C_v,u = ${(cvUnderflow * 100).toFixed(1)}% exceeds free-packing limit (56%) at Du/Do = ${apexToVortexRatio}. Coarse particles bypass to overflow (Vortex). Install larger bore Apex insert (SiC Ceramic / Cr27 SKU-QC-11).`;
+  } else if (isUmbrellaDilute) {
+    dischargeRegime = 'UMBRELLA_SPRAY';
+    regimeLabelEs = 'DESCARGA EN ABANICO EXCESIVO (APEX DESGASTADO) • RECIRCULACIÓN DE FINOS';
+    regimeLabelEn = 'EXCESSIVE UMBRELLA SPRAY (WORN APEX) • FINES BYPASS TO UNDERFLOW';
+    recommendedSkuId = 'SKU-QC-12';
+    diagnosticActionEs = `Fracción volumétrica baja en descarga C_v,u = ${(cvUnderflow * 100).toFixed(1)}% por desgaste radial del Apex (Du/Do = ${apexToVortexRatio}). Exceso de agua y finos retornan al molino elevando la carga circulante (${circulatingLoadPct}%). Reemplace Apex desgastado y revise buscador de vórtice (SKU-QC-11 / SKU-QC-12).`;
+    diagnosticActionEn = `Low underflow volumetric fraction C_v,u = ${(cvUnderflow * 100).toFixed(1)}% due to radial Apex wear (Du/Do = ${apexToVortexRatio}). Excess water and fines bypass back to the mill raising circulating load (${circulatingLoadPct}%). Replace worn Apex and inspect Vortex Finder (SKU-QC-11 / SKU-QC-12).`;
+  }
+
+  return {
+    feedSg: Number(safeFeedSg.toFixed(3)),
+    underflowSg: Number(safeUnderflowSg.toFixed(3)),
+    overflowSg: Number(safeOverflowSg.toFixed(3)),
+    solidsSg: Number(safeSolidsSg.toFixed(2)),
+    cwFeedPct: Number((cwFeed * 100).toFixed(1)),
+    cwUnderflowPct: Number((cwUnderflow * 100).toFixed(1)),
+    cwOverflowPct: Number((cwOverflow * 100).toFixed(1)),
+    cvFeedPct: Number((cvFeed * 100).toFixed(1)),
+    cvUnderflowPct: Number((cvUnderflow * 100).toFixed(1)),
+    cvOverflowPct: Number((cvOverflow * 100).toFixed(1)),
+    cvUnderflow: Number(cvUnderflow.toFixed(4)),
+    solidsRecoveryPct,
+    circulatingLoadPct,
+    apexDiameterMm: safeApexMm,
+    vortexDiameterMm: safeVortexMm,
+    apexToVortexRatio,
+    d50cMicrons,
+    isRopingCritical,
+    isUmbrellaDilute,
+    dischargeRegime,
+    regimeLabelEs,
+    regimeLabelEn,
+    recommendedSkuId,
+    diagnosticActionEs,
+    diagnosticActionEn
+  };
+}
+
+/**
+ * Evalúa el esfuerzo de flexión de Timoshenko en placas de polipropileno de filtro prensa
+ * bajo presión diferencial asimétrica por puertos de alimentación tapados y verifica
+ * el cumplimiento de apilamiento en seco (Dry Stacking) conforme a SEMARNAT NOM-141.
+ *
+ * @param {any} params
+ * @returns {any}
+ */
+export function evaluateFilterPressPlateDeflection({
+  feedPressureBar = 12,
+  cloggedPortsCount = 0,
+  plateWidthMm = 1200,
+  plateThicknessMm = 65,
+  cakeMoistureTargetPct = 14
+} = {}) {
+  const safePressureBar = Math.max(4, Math.min(25, Number(feedPressureBar) || 12));
+  const safeCloggedPorts = Math.max(0, Math.min(4, Math.round(Number(cloggedPortsCount) || 0)));
+  const safeWidthMm = Math.max(630, Math.min(2000, Number(plateWidthMm) || 1200));
+  const safeThicknessMm = Math.max(40, Math.min(120, Number(plateThicknessMm) || 65));
+  const safeMoisturePct = Math.max(8, Math.min(28, Number(cakeMoistureTargetPct) || 14));
+
+  // Factor de amplificación de presión diferencial asimétrica cuando se obstruye el cuello de alimentación
+  const portAsymmetryFactor = safeCloggedPorts === 0
+    ? 0.18
+    : Math.min(1.0, 0.38 + safeCloggedPorts * 0.22);
+
+  const deltaPAsymmetricMpa = Number((safePressureBar * 0.1 * portAsymmetryFactor).toFixed(3));
+
+  // Coeficiente de placa simplemente apoyada en sus 4 bordes (Timoshenko beta ≈ 0.287 para placa cuadrada con soporte central parcial)
+  const timoshenkoBeta = 0.048;
+  const slendernessRatio = safeWidthMm / safeThicknessMm;
+  const maxBendingStressMpa = Number((timoshenkoBeta * deltaPAsymmetricMpa * Math.pow(slendernessRatio, 2)).toFixed(2));
+
+  // Límite elástico de diseño en fatiga cíclica para Polipropileno Copolímero Virgen Prensado (PP-H/PP-C a 50 °C)
+  const ppFatigueAllowableMpa = 14.5;
+  const flexuralSafetyFactor = Number((ppFatigueAllowableMpa / Math.max(0.5, maxBendingStressMpa)).toFixed(2));
+  const isPlateCrackingRisk = flexuralSafetyFactor < 1.25 || safeCloggedPorts >= 2;
+
+  // Cumplimiento de disposición de jales deshidratados (Dry Stacking SEMARNAT NOM-141-SEMARNAT-2003):
+  // Humedad residual <= 16% sin sangrado de filtrado turbio (> 85% captura de sólidos con tela multifilamento calandrada)
+  const nom141Compliant = safeMoisturePct <= 16.0 && !isPlateCrackingRisk;
+
+  return {
+    feedPressureBar: safePressureBar,
+    cloggedPortsCount: safeCloggedPorts,
+    plateWidthMm: safeWidthMm,
+    plateThicknessMm: safeThicknessMm,
+    cakeMoistureTargetPct: safeMoisturePct,
+    deltaPAsymmetricMpa,
+    maxBendingStressMpa,
+    ppFatigueAllowableMpa,
+    flexuralSafetyFactor,
+    isPlateCrackingRisk,
+    nom141Compliant,
+    recommendedClothSkuId: 'SKU-QC-17',
+    recommendedPlateSkuId: 'SKU-QC-18',
+    summaryEs: isPlateCrackingRisk
+      ? `Riesgo crítico de fractura en membrana/recámara (σ_max = ${maxBendingStressMpa} MPa, FS = ${flexuralSafetyFactor} < 1.25). Desbloquee puertos de alimentación e instale Placas de Polipropileno Virgen con Anillos de Cuello (SKU-QC-18) y Telas Calandradas (SKU-QC-17).`
+      : `Operación estructural segura (σ_max = ${maxBendingStressMpa} MPa, FS = ${flexuralSafetyFactor}). Cumple criterio de torta seca NOM-141 (${safeMoisturePct}% humedad residual).`
+  };
+}
+
+/**
+ * Calcula un código de orden determinista FNV-1a de 32 bits (formato SMAT-XXXX-YYYY)
+ * a partir de la selección técnica del usuario para garantizar trazabilidad 1:1 en cotizaciones.
+ *
+ * @param {any} payload
+ * @returns {string}
+ */
+export function computeSelectionOrderCodeHash(payload = {}) {
+  const canonicalKeys = Object.keys(payload || {}).sort();
+  const normalizedPairs = canonicalKeys.map((k) => `${k}:${String(payload[k] ?? '').trim().toUpperCase()}`);
+  const canonicalString = normalizedPairs.join('|') || 'SMAT-DEFAULT-V3';
+
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < canonicalString.length; i += 1) {
+    hash ^= canonicalString.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193) >>> 0;
+  }
+
+  const hex = hash.toString(16).toUpperCase().padStart(8, '0');
+  return `SMAT-${hex.slice(0, 4)}-${hex.slice(4, 8)}`;
+}
+
+
 
 
 

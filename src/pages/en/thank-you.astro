@@ -122,8 +122,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <p class="terms-text">
             This document certifies formal intake of your procurement requisition under the unique institutional folio. All rotating assemblies, impellers, and pump casings supplied by SMAT Minerals undergo shop dynamic balancing on test bench, High Chrome 27% (A05) melt metallurgy with guaranteed hardness &gt;650 HB, and 1:1 dimensional fit verification at SMAT Durango facilities (Fiscal HQ: Mariano Salas #114).
           </p>
-          <div class="coyote-seal-notice facility-guarantee-notice">
-            <strong>Central Warehouse Validity Clause:</strong> This technical proposal and operational backing are valid for components inspected and dispatched from Durango Central Warehouse. Complete equipment packages and skids are built-to-order based on customer slurry variables; common wear parts maintain continuous inventory rotation.
+          <div class="coyote-seal-notice facility-guarantee-notice" id="vendor-passport-section">
+            <strong>Central Warehouse Validity &amp; B2B Vendor Passport Clause:</strong> This technical proposal and operational backing are valid for components inspected and dispatched from Durango Central Warehouse (Incoterms EXW / DAP Durango • UNSPSC 40151500 / 20121500 / 40161500 / 41111500 • ASTM A532 Cr27 Melt Cert HRC &ge; 58). Complete equipment packages and skids are built-to-order based on customer slurry variables; common wear parts maintain continuous inventory rotation.
           </div>
           <div class="signatures-row">
             <div class="sig-block">
@@ -149,6 +149,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         <button type="button" class="btn btn-secondary" id="download-tsv-acuse-btn">
           Download TSV / Excel
         </button>
+        <button type="button" class="btn btn-secondary" id="download-vendor-vcard-btn">
+          Vendor Passport (.vcf)
+        </button>
+        <button type="button" class="btn btn-secondary" id="download-vendor-json-btn">
+          ERP Onboarding (.json)
+        </button>
+        <a href="/en/quote/?reorder=1&tray=SKU-QC-01:1:PARO_DE_LINEA#rfq" class="btn btn-secondary" id="reorder-ss-link">
+          1-Click (s, S) Policy Reorder
+        </a>
         <a href="/en/" class="btn btn-secondary">
           Return Home
         </a>
@@ -344,6 +353,70 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
         };
+      }
+
+      const vcardBtn = document.getElementById('download-vendor-vcard-btn');
+      if (vcardBtn) {
+        vcardBtn.onclick = () => {
+          const vcf = [
+            'BEGIN:VCARD',
+            'VERSION:3.0',
+            'FN:SMAT Minerals S.A. de C.V.',
+            'ORG:SMAT Minerals S.A. de C.V.;Application Engineering & Mining Supply',
+            'TEL;TYPE=WORK,VOICE:+52-618-810-4408',
+            'TEL;TYPE=CELL,VOICE:+52-618-367-0664',
+            'EMAIL;TYPE=PREF,INTERNET:ventas@smatminerals.com',
+            'ADR;TYPE=WORK:;;Mariano Salas #114, Col. Nueva Vizcaya;Durango;DGO;34080;Mexico',
+            'NOTE:UNSPSC 40151500 / 20121500 / 40161500 / 41111500 | Incoterms EXW/DAP Durango | ASTM A532 Cr27 HRC >= 58',
+            'END:VCARD'
+          ].join('\r\n');
+          const blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'SMAT_Minerals_Vendor_Passport.vcf';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        };
+      }
+
+      const jsonBtn = document.getElementById('download-vendor-json-btn');
+      if (jsonBtn) {
+        jsonBtn.onclick = () => {
+          const payload = {
+            schema: 'smat.vendor.passport.v3',
+            companyName: 'SMAT Minerals S.A. de C.V.',
+            industrialHub: 'Mariano Salas #114, Durango, DGO, C.P. 34080, Mexico',
+            incoterms: ['EXW Durango', 'DAP Mine Site'],
+            unspscCodes: ['40151500', '20121500', '40161500', '41111500'],
+            metallurgyCert: 'ASTM A532 Class III Type A Cr27 >= 650 HB / HRC >= 58'
+          };
+          const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'SMAT_Minerals_Vendor_Passport.json';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        };
+      }
+
+      const reorderLink = document.getElementById('reorder-ss-link');
+      if (reorderLink) {
+        try {
+          const trayRaw = localStorage.getItem('smat_requisition_tray_v3');
+          if (trayRaw) {
+            const parsedTray = JSON.parse(trayRaw);
+            if (parsedTray && Array.isArray(parsedTray.items) && parsedTray.items.length > 0) {
+              const ser = parsedTray.items.map(i => `${encodeURIComponent(i.id)}:${i.qty}:STOCK_SS`).join(',');
+              reorderLink.setAttribute('href', `/en/quote/?reorder=1&tray=${ser}#rfq`);
+            }
+          }
+        } catch (_e) {}
       }
     }
 

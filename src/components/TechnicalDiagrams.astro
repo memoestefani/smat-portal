@@ -16,25 +16,56 @@ type DiagramKind =
   | 'sieves'
   | 'drive_arrangements'
   | 'material_kit_grid'
-  | 'suction_throatbush';
+  | 'suction_throatbush'
+  | 'impeller-5-vane-d4147a05'
+  | 'throatbush-d4083a05'
+  | 'volute-liner-d4110a05'
+  | 'fpl-insert-d4041a05'
+  | 'cover-plate-liner-d4018r55'
+  | 'back-liner-d4032r55'
+  | 'shaft-sleeve-d075c21'
+  | 'expeller-d4028a05'
+  | 'expeller-ring-d4029a05'
+  | 'bearing-cartridge-d005m'
+  | 'cyclone-apex-vortex'
+  | 'cyclone-liners-kit'
+  | 'flotation-rotor-stator'
+  | 'flotation-cell-assembly'
+  | 'pinch-knife-valve'
+  | 'filter-press-plate-cloth'
+  | 'marcy-scale-kit';
 
 interface Props {
   diagram?: DiagramKind;
   type?: DiagramKind;
   lang?: 'es' | 'en';
   compact?: boolean;
+  showXrayOverlay?: boolean;
 }
 
-const { lang = 'es', compact = false } = Astro.props;
-const diagram: DiagramKind = Astro.props.diagram ?? Astro.props.type ?? 'pump';
+const { lang = 'es', compact = false, showXrayOverlay = true } = Astro.props;
+const rawDiagram: DiagramKind = Astro.props.diagram ?? Astro.props.type ?? 'pump';
+const DIAGRAM_ALIAS_MAP: Record<string, string> = {
+  'impeller-5-vane-d4147a05': 'impeller',
+  'throatbush-d4083a05': 'suction_throatbush',
+  'volute-liner-d4110a05': 'liners',
+  'fpl-insert-d4041a05': 'back-liner-d4032r55',
+  'cover-plate-liner-d4018r55': 'liners',
+  'expeller-d4028a05': 'expeller',
+  'bearing-cartridge-d005m': 'bearing',
+  'cyclone-liners-kit': 'cyclone-apex-vortex',
+  'flotation-cell-assembly': 'flotation',
+  'marcy-scale-kit': 'marcy'
+};
+const diagram = (DIAGRAM_ALIAS_MAP[rawDiagram] || rawDiagram) as DiagramKind;
 const isEs = lang === 'es';
 ---
 
-<figure class={`tech-diagram-frame ${compact ? 'tech-diagram-compact' : ''}`} role="img" aria-label={isEs ? `Diagrama técnico: ${diagram}` : `Technical diagram: ${diagram}`}>
+<figure class={`tech-diagram-frame ${compact ? 'tech-diagram-compact' : ''}`} role="img" data-diagram-id={rawDiagram} data-resolved-diagram={diagram} aria-label={isEs ? `Diagrama técnico: ${rawDiagram}` : `Technical diagram: ${rawDiagram}`}>
   <div class="tech-diagram-header">
     <span class="tech-diagram-code">
       {diagram === 'pump' && (isEs ? 'ESQUEMA DE CORTE • BOMBA PARA LODOS' : 'CROSS-SECTION • SLURRY PUMP')}
-      {diagram === 'impeller' && (isEs ? 'DIAGRAMA AXIAL Y FRONTAL • IMPULSOR' : 'AXIAL & FRONT DIAGRAM • IMPELLER')}
+      {diagram === 'impeller' && (isEs ? 'DIAGRAMA AXIAL Y FRONTAL • IMPULSOR 5 ÁLABES' : 'AXIAL & FRONT DIAGRAM • 5-VANE IMPELLER')}
       {diagram === 'liners' && (isEs ? 'DESPIECE DE CONTACTO HÚMEDO • ALTO CROMO / HULE / POLIURETANO' : 'WET-END EXPLODED VIEW • HIGH CHROME / RUBBER / POLYURETHANE')}
       {diagram === 'bearing' && (isEs ? 'CONJUNTO COMPLETO • BEARING ASSEMBLY / HOUSING' : 'COMPLETE CARTRIDGE • BEARING ASSEMBLY / HOUSING')}
       {diagram === 'expeller' && (isEs ? 'SELLADO CENTRÍFUGO • EXPULSOR Y PRENSAESTOPA' : 'CENTRIFUGAL SEALING • EXPELLER & STUFFING BOX')}
@@ -46,8 +77,17 @@ const isEs = lang === 'es';
       {diagram === 'drive_arrangements' && (isEs ? 'CONFIGURACIÓN DE TRANSMISIÓN EN SKID • ARREGLOS CV / ZVZ / CRZ / DC' : 'SKID DRIVE CONFIGURATIONS • CV / ZVZ / CRZ / DC ARRANGEMENTS')}
       {diagram === 'material_kit_grid' && (isEs ? 'COMPARATIVA DE LOTES 5-5-4 • ALTO CROMO (≥650 HB) VS. HULE NATURAL VS. POLIURETANO' : '5-5-4 WET-END KIT COMPARISON • HIGH CHROME (≥650 HB) VS. NATURAL RUBBER VS. POLYURETHANE')}
       {diagram === 'suction_throatbush' && (isEs ? 'GEOMETRÍA DE SUCCIÓN Y CALIBRACIÓN AXIAL • THROATBUSH + IMPULSOR (δ = 0.5–1.0 MM)' : 'SUCTION GEOMETRY & AXIAL CALIBRATION • THROATBUSH + IMPELLER (δ = 0.5–1.0 MM)')}
+      {diagram === 'shaft-sleeve-d075c21' && (isEs ? 'CORTE TÉCNICO • CAMISA PROTECTORA DE FLECHA (D075C21 • SELLADO SIN ENTALLA)' : 'TECHNICAL SECTION • SHAFT PROTECTION SLEEVE (D075C21 • ZERO-GROOVE SEAL)')}
+      {diagram === 'expeller-ring-d4029a05' && (isEs ? 'CORTE LABERINTO SECO • ANILLO EXPULSOR Y CÁMARA DE GRASA (D4029)' : 'DRY LABYRINTH SECTION • EXPELLER RING & GREASE CHAMBER (D4029)')}
+      {diagram === 'back-liner-d4032r55' && (isEs ? 'CORTE POSTERIOR • FORRO DE PLATO / FPL INSERT (D4041 / E4132)' : 'REAR LINER SECTION • FRAME PLATE LINER / FPL INSERT (D4041 / E4132)')}
+      {diagram === 'cyclone-apex-vortex' && (isEs ? 'HIDROCICLÓN CLASIFICADOR • BOQUILLA APEX (UNDERFLOW) Y VORTEX FINDER' : 'CLASSIFYING HYDROCYCLONE • APEX SPIGOT (UNDERFLOW) & VORTEX FINDER')}
+      {diagram === 'flotation-rotor-stator' && (isEs ? 'HIDRODINÁMICA DE CELDA • ROTOR-ESTATOR DROP-IN (RELACIÓN Dr/Ds)' : 'CELL HYDRODYNAMICS • DROP-IN ROTOR-STATOR (Dr/Ds RATIO)')}
+      {diagram === 'pinch-knife-valve' && (isEs ? 'CONTROL DE FLUJO ABRASIVO • VÁLVULA PINCH CON MANGA Y CUCHILLA (KNIFE GATE)' : 'ABRASIVE FLOW CONTROL • SLEEVE PINCH & KNIFE GATE VALVE')}
+      {diagram === 'filter-press-plate-cloth' && (isEs ? 'DESHIDRATACIÓN NOM-141 • PLACA DE POLIPROPILENO Y TELA MULTIFILAMENTO' : 'NOM-141 DEWATERING • POLYPROPYLENE PLATE & MULTIFILAMENT CLOTH')}
     </span>
-    <span class="tech-diagram-scale">CAD 1:1 REF</span>
+    <span class="tech-diagram-scale" data-iso7810-scale="0.76mm">
+      {isEs ? 'CAD 1:1 • REF. TARJETA ISO 7810 (0.76 MM)' : 'CAD 1:1 • ISO 7810 CARD REF (0.76 MM)'}
+    </span>
   </div>
 
   <div class="tech-diagram-canvas">
@@ -684,7 +724,143 @@ const isEs = lang === 'es';
         </g>
       </svg>
     )}
+
+    {diagram === 'shaft-sleeve-d075c21' && (
+      <svg viewBox="0 0 680 240" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="240" fill="#f8fafc" />
+        <line x1="24" y1="120" x2="656" y2="120" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="8 4" />
+        <!-- Eje Principal SAE 4140 -->
+        <rect x="60" y="96" width="320" height="48" fill="#cbd5e1" stroke="#334155" stroke-width="2" />
+        <!-- Camisa Protectora D075C21 con Recubrimiento HVOF / Cerámica -->
+        <rect x="110" y="74" width="220" height="22" fill="#fee2e2" stroke="#dc2626" stroke-width="2.2" />
+        <rect x="110" y="144" width="220" height="22" fill="#fee2e2" stroke="#dc2626" stroke-width="2.2" />
+        <!-- O-Rings de Sellado Axial -->
+        <circle cx="106" cy="85" r="5" fill="#0f172a" />
+        <circle cx="334" cy="85" r="5" fill="#0f172a" />
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="410" y="54" fill="#dc2626">{isEs ? '1. CAMISA D075C21 (ZONA DE FRICCIÓN DE EMPAQUE)' : '1. D075C21 SLEEVE (PACKING FRICTION ZONE)'}</text>
+          <text x="410" y="74" font-size="9" fill="#475569">{isEs ? '• Dureza superficial >= 62 HRC / HVOF / SiC' : '• Surface hardness >= 62 HRC / HVOF / SiC'}</text>
+          <text x="410" y="104" fill="#0284c7">{isEs ? '2. PROTECCIÓN TOTAL DEL EJE PRINCIPAL (SAE 4140)' : '2. FULL MAIN SHAFT PROTECTION (SAE 4140)'}</text>
+          <text x="410" y="124" font-size="9" fill="#475569">{isEs ? '• Absorbe 100% de la abrasión del prensaestopa' : '• Absorbs 100% of stuffing box packing wear'}</text>
+          <text x="410" y="156" fill="#d97706">{isEs ? '3. CONCENTRICIDAD <= 0.05 MM (~1/15 TARJETA ISO)' : '3. RUNOUT <= 0.05 MM (~1/15 ISO CARD)'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'expeller-ring-d4029a05' && (
+      <svg viewBox="0 0 680 240" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="240" fill="#f8fafc" />
+        <rect x="54" y="36" width="140" height="168" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="2.2" />
+        <rect x="206" y="48" width="120" height="144" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="2.2" />
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="356" y="64" fill="#dc2626">{isEs ? '1. ANILLO EXPULSOR D4029 (CÁMARA CENTRÍFUGA)' : '1. D4029 EXPELLER RING (CENTRIFUGAL CHAMBER)'}</text>
+          <text x="356" y="86" font-size="9" fill="#475569">{isEs ? '• Genera contrapresión dinámica sin agua de sello' : '• Generates dynamic back-pressure with zero gland water'}</text>
+          <text x="356" y="122" fill="#d97706">{isEs ? '2. LABERINTO DE GRASA Y RETÉN SECUNDARIO' : '2. GREASE LABYRINTH & SECONDARY LIP SEAL'}</text>
+          <text x="356" y="144" font-size="9" fill="#475569">{isEs ? '• Evita dilución de pulpa en circuitos de molienda' : '• Prevents slurry dilution in milling circuits'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'back-liner-d4032r55' && (
+      <svg viewBox="0 0 680 240" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="240" fill="#f8fafc" />
+        <path d="M 80 34 L 160 34 L 160 206 L 80 206 Z" fill="#fee2e2" stroke="#dc2626" stroke-width="2.2" />
+        <path d="M 168 44 L 248 44 L 248 196 L 168 196 Z" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" />
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="284" y="64" fill="#dc2626">{isEs ? '1. INSERTO DE PLATO POSTERIOR (FPL INSERT D4041 / E4132)' : '1. FRAME PLATE LINER INSERT (FPL D4041 / E4132)'}</text>
+          <text x="284" y="86" font-size="9" fill="#475569">{isEs ? '• Sella cara posterior del impulsor y protege el bastidor' : '• Seals rear impeller shroud and shields frame plate'}</text>
+          <text x="284" y="122" fill="#0284c7">{isEs ? '2. ESPÁRRAGOS DE ANCLAJE VULCANIZADOS / CONO METÁLICO' : '2. VULCANIZED ANCHOR STUDS / METAL TAPER FIT'}</text>
+          <text x="284" y="144" font-size="9" fill="#475569">{isEs ? '• Paridad dimensional 1:1 en Cr27 ASTM A532 o Hule R55' : '• 1:1 dimensional parity in Cr27 ASTM A532 or R55 Rubber'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'cyclone-apex-vortex' && (
+      <svg viewBox="0 0 680 250" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="250" fill="#f8fafc" />
+        <!-- Vortex Finder Superior -->
+        <rect x="130" y="18" width="60" height="58" fill="#fef3c7" stroke="#d97706" stroke-width="2.2" />
+        <!-- Cuerpo Cilíndrico y Cono -->
+        <polygon points="80,40 240,40 240,100 184,210 136,210 80,100" fill="none" stroke="#0284c7" stroke-width="2.4" />
+        <!-- Boquilla Apex Inferior (Zona Roja de Roping/Abrasión) -->
+        <polygon points="136,180 184,180 174,232 146,232" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="286" y="48" fill="#dc2626">{isEs ? '1. BOQUILLA APEX (Du • CERÁMICA SiC / CR27)' : '1. APEX SPIGOT (Du • SiC CERAMIC / CR27)'}</text>
+          <text x="286" y="68" font-size="9" fill="#475569">{isEs ? '• Controla C_v,u: previene acordonamiento (Roping >= 56%)' : '• Controls C_v,u: prevents roping discharge (>= 56%)'}</text>
+          <text x="286" y="106" fill="#d97706">{isEs ? '2. BUSCADOR DE VÓRTICE (VORTEX FINDER Do)' : '2. VORTEX FINDER OVERFLOW SLEEVE (Do)'}</text>
+          <text x="286" y="126" font-size="9" fill="#475569">{isEs ? '• Define corte Plitt d50c y evita cortocircuito de gruesos' : '• Sets Plitt d50c cut size and stops coarse short-circuit'}</text>
+          <text x="286" y="164" fill="#0284c7">{isEs ? '3. CONO SECCIONAL REVESTIDO (HULE R55 / PU / SiC)' : '3. LINED CONE SECTIONS (R55 RUBBER / PU / SiC)'}</text>
+          <text x="286" y="184" font-size="9" fill="#475569">{isEs ? '• Balance 3 Vasos Marcy sin báscula ni flujómetro' : '• 3-Cup Marcy mass balance with zero scale or flowmeter'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'flotation-rotor-stator' && (
+      <svg viewBox="0 0 680 240" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="240" fill="#f8fafc" />
+        <!-- Estator Exterior -->
+        <circle cx="156" cy="120" r="82" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.4" stroke-dasharray="12 6" />
+        <!-- Rotor Estrella Interior (Zona Roja de Velocidad Periférica) -->
+        <circle cx="156" cy="120" r="52" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
+        <circle cx="156" cy="120" r="16" fill="#0f172a" />
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="276" y="56" fill="#dc2626">{isEs ? '1. IMPULSOR / ROTOR ESTRELLA (v_tip = 6.0–6.8 M/S)' : '1. STAR ROTOR IMPELLER (v_tip = 6.0–6.8 M/S)'}</text>
+          <text x="276" y="76" font-size="9" fill="#475569">{isEs ? '• Micro-dispersión de aire J_g = 1.2–1.8 cm/s' : '• Micro-bubble air dispersion J_g = 1.2–1.8 cm/s'}</text>
+          <text x="276" y="114" fill="#0284c7">{isEs ? '2. DIFUSOR / ESTATOR RADIAL (RELACIÓN Dr/Ds = 0.68–0.74)' : '2. RADIAL STATOR DIFFUSER (Dr/Ds = 0.68–0.74 RATIO)'}</text>
+          <text x="276" y="134" font-size="9" fill="#475569">{isEs ? '• Montaje Drop-In 1:1 en Celdas Auto-Aspirantes y Aire Forzado' : '• 1:1 Drop-In fit on Self-Aspirating & Forced-Air Cells'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'pinch-knife-valve' && (
+      <svg viewBox="0 0 680 240" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="240" fill="#f8fafc" />
+        <rect x="56" y="64" width="190" height="112" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.2" />
+        <path d="M 64 88 Q 151 118 238 88 L 238 152 Q 151 122 64 152 Z" fill="#fee2e2" stroke="#dc2626" stroke-width="2.2" />
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="280" y="66" fill="#dc2626">{isEs ? '1. MANGA ELASTOMÉRICA / COMPUERTA INOX (PASO 100%)' : '1. ELASTOMER SLEEVE / SS316 KNIFE GATE (FULL BORE)'}</text>
+          <text x="280" y="86" font-size="9" fill="#475569">{isEs ? '• Cierre hermético sobre sólidos gruesos sin incrustación' : '• Drop-tight shutoff over coarse solids without scaling'}</text>
+          <text x="280" y="126" fill="#0284c7">{isEs ? '2. BRIDAS ANSI B16.5 CLASE 150 CARA A CARA ESTÁNDAR' : '2. ANSI B16.5 CLASS 150 STANDARD FACE-TO-FACE FLANGES'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'filter-press-plate-cloth' && (
+      <svg viewBox="0 0 680 240" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="240" fill="#f8fafc" />
+        <rect x="64" y="28" width="176" height="184" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.4" />
+        <rect x="84" y="48" width="136" height="144" rx="4" fill="#fef3c7" stroke="#d97706" stroke-width="2" stroke-dasharray="5 3" />
+        <circle cx="152" cy="120" r="24" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="272" y="54" fill="#dc2626">{isEs ? '1. CUELLO CENTRAL REFORZADO (PRESIÓN DIFERENCIAL TIMOSHENKO)' : '1. REINFORCED CENTER FEED PORT (TIMOSHENKO FLEXURE)'}</text>
+          <text x="272" y="74" font-size="9" fill="#475569">{isEs ? '• Previene rotura por puertos obstruidos hasta 16 bar' : '• Prevents plate cracking under clogged ports up to 16 bar'}</text>
+          <text x="272" y="112" fill="#d97706">{isEs ? '2. TELA MULTIFILAMENTO CALANDRADA (5–25 CFM)' : '2. CALENDERED MULTIFILAMENT CLOTH (5–25 CFM)'}</text>
+          <text x="272" y="132" font-size="9" fill="#475569">{isEs ? '• Desprendimiento limpio de torta <= 16% humedad (NOM-141)' : '• Clean cake release <= 16% moisture (SEMARNAT NOM-141)'}</text>
+          <text x="272" y="170" fill="#0284c7">{isEs ? '3. PLACA DE POLIPROPILENO VIRGEN PRENSADO (800–1500 MM)' : '3. PRESSED VIRGIN POLYPROPYLENE PLATE (800–1500 MM)'}</text>
+        </g>
+      </svg>
+    )}
   </div>
+
+  {showXrayOverlay && (
+    <figcaption class="tech-diagram-xray-bar" data-layer="xray-wear">
+      <span class="xray-band xray-band--critical">
+        <i class="xray-dot" style="background:#dc2626;"></i>
+        {isEs ? 'Rojo (#dc2626): Zona de Abrasión Crítica / Claro δ' : 'Red (#dc2626): Critical Wear Zone / δ Gap'}
+      </span>
+      <span class="xray-band xray-band--medium">
+        <i class="xray-dot" style="background:#d97706;"></i>
+        {isEs ? 'Ámbar (#d97706): Desgaste Secundario / Sellado' : 'Amber (#d97706): Secondary Wear / Sealing'}
+      </span>
+      <span class="xray-band xray-band--structural">
+        <i class="xray-dot" style="background:#0284c7;"></i>
+        {isEs ? 'Azul (#0284c7): Soporte Espectral / Ajuste 1:1' : 'Blue (#0284c7): Structural Support / 1:1 Fit'}
+      </span>
+      <span class="xray-band xray-band--iso">
+        {isEs ? 'Escala cotidiana: 1 Tarjeta ISO/IEC 7810 = 0.76 mm (Claro axial óptimo = 1 tarjeta)' : 'Everyday scale: 1 ISO/IEC 7810 Card = 0.76 mm (Optimal axial gap = 1 card)'}
+      </span>
+    </figcaption>
+  )}
 </figure>
 
 <style>
@@ -727,5 +903,37 @@ const isEs = lang === 'es';
     width: 100%;
     height: auto;
     display: block;
+  }
+  .tech-diagram-xray-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem 1.1rem;
+    align-items: center;
+    padding: 0.45rem 0.9rem;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.7rem;
+    color: #334155;
+  }
+  .xray-band {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 600;
+  }
+  .xray-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .xray-band--iso {
+    margin-left: auto;
+    color: #0f172a;
+    background: #fef3c7;
+    padding: 0.1rem 0.45rem;
+    border-radius: 4px;
+    border: 1px solid #fde68a;
   }
 </style>

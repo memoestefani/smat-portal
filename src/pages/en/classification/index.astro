@@ -1,0 +1,404 @@
+---
+// src/pages/en/classification/index.astro
+// MVP v3.0 (D7): Hydrocyclone Classification Vertical — 3-Cup Marcy Mass Balance
+// (Zero Belt Scale / Zero Flowmeter), Plitt d50c Cut Size & Roping Alert (C_v,u >= 0.56)
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
+import SharePurchasing from '../../../components/SharePurchasing.astro';
+
+const title = 'Hydrocyclone Classification & 3-Cup Marcy Mass Balance | SMAT Minerals';
+const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone Liners with our interactive 3-Cup Marcy Hydrocyclone Mass Balance simulator (zero scale or flowmeter required).';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  lang="en"
+  canonicalPath="/en/classification/"
+  alternateEsPath="/clasificacion/"
+  alternateEnPath="/en/classification/"
+>
+  <main class="cyc-main" id="stage-diagnostic">
+    <div class="container">
+      <header class="cyc-hero">
+        <span class="cyc-badge">CLOSED-CIRCUIT MILLING & CLASSIFICATION ENGINEERING • D7</span>
+        <h1>Hydrocyclone Classification & Roping Diagnostics</h1>
+        <p class="cyc-lead">
+          Audit your hydrocyclone cluster performance using only 3 Marcy Pulp Density Scale cup readings (Feed, Apex Underflow, and Vortex Overflow) without needing a belt scale or ultrasonic flowmeter.
+        </p>
+      </header>
+
+      <TechnicalDiagrams diagram="cyclone-apex-vortex" lang="en" showXrayOverlay={true} />
+
+      <section class="cyc-sim-card" id="marcy-3cup-cyclone-calculator" aria-labelledby="cyc-sim-heading">
+        <div class="cyc-sim-header">
+          <h2 id="cyc-sim-heading">3-Cup Marcy Mass Balance & Plitt Cut-Size (d<sub>50c</sub>) Calculator</h2>
+          <span class="cyc-sim-tag">ZERO BELT SCALE • ZERO FLOWMETER</span>
+        </div>
+
+        <div class="cyc-sim-grid" id="stage-2">
+          <div class="cyc-inputs">
+            <label class="cyc-field">
+              <span>1. Cyclone Feed Slurry Density (ρ<sub>f</sub> kg/L):</span>
+              <input type="number" id="cyc-feed-sg" step="0.01" min="1.05" max="2.20" value="1.35" />
+            </label>
+            <label class="cyc-field">
+              <span>2. Apex Underflow Slurry Density (ρ<sub>u</sub> kg/L):</span>
+              <input type="number" id="cyc-underflow-sg" step="0.01" min="1.20" max="2.60" value="1.82" />
+            </label>
+            <label class="cyc-field">
+              <span>3. Vortex Overflow Slurry Density (ρ<sub>o</sub> kg/L):</span>
+              <input type="number" id="cyc-overflow-sg" step="0.01" min="1.01" max="1.80" value="1.15" />
+            </label>
+            <label class="cyc-field">
+              <span>4. Dry Ore Specific Gravity (S<sub>s</sub>):</span>
+              <input type="number" id="cyc-solids-sg" step="0.05" min="1.80" max="5.20" value="2.70" />
+            </label>
+            <label class="cyc-field">
+              <span>5. Apex Spigot Bore Diameter (D<sub>u</sub> mm):</span>
+              <input type="number" id="cyc-apex-mm" step="1" min="15" max="200" value="50" />
+            </label>
+            <label class="cyc-field">
+              <span>6. Vortex Finder Bore Diameter (D<sub>o</sub> mm):</span>
+              <input type="number" id="cyc-vortex-mm" step="1" min="30" max="350" value="100" />
+            </label>
+            <label class="cyc-field">
+              <span>7. Cyclone Cluster Feed Pressure (ΔP kPa):</span>
+              <input type="number" id="cyc-pressure-kpa" step="5" min="25" max="250" value="95" />
+            </label>
+          </div>
+
+          <div class="cyc-results">
+            <div class="cyc-regime-banner" id="cyc-res-regime" data-regime="SEMI_UMBRELLA_OPTIMAL">
+              Optimal Semi-Umbrella Discharge (Stable Air Core)
+            </div>
+
+            <div class="cyc-kpi-grid">
+              <div class="cyc-kpi-box">
+                <span class="cyc-kpi-label">UNDERFLOW MASS RECOVERY (R<sub>s</sub>)</span>
+                <strong class="cyc-kpi-val" id="cyc-res-recovery">84.2%</strong>
+              </div>
+              <div class="cyc-kpi-box">
+                <span class="cyc-kpi-label">ESTIMATED CIRCULATING LOAD</span>
+                <strong class="cyc-kpi-val" id="cyc-res-circload">533%</strong>
+              </div>
+              <div class="cyc-kpi-box">
+                <span class="cyc-kpi-label">APEX VOLUMETRIC SOLIDS (C<sub>v,u</sub>)</span>
+                <strong class="cyc-kpi-val" id="cyc-res-cvu">48.2%</strong>
+              </div>
+              <div class="cyc-kpi-box">
+                <span class="cyc-kpi-label">PLITT CORRECTED CUT SIZE (d<sub>50c</sub>)</span>
+                <strong class="cyc-kpi-val" id="cyc-res-d50c">74 µm</strong>
+              </div>
+            </div>
+
+            <p class="cyc-diagnostic-note" id="cyc-res-action">
+              Du/Do ratio and underflow volumetric fraction C_v,u within optimal metallurgical window. Maintain preventive Apex gauge checks.
+            </p>
+
+            <div class="cyc-cta-row">
+              <a href="/en/products/hydrocyclone-apex-spigot/" class="btn-cyc-sku" id="cyc-recommended-sku-link">
+                Configure Apex Spigot (SKU-QC-11) →
+              </a>
+              <a href="/en/quote/?circuito=clasificacion&equipo=apex-boquilla-hidrociclon&sku=SKU-QC-11#rfq" class="btn-cyc-rfq" id="cyc-rfq-link">
+                Sync to A4 Quote Workbench →
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cyc-sku-catalog" aria-label="Critical hydrocyclone wear parts">
+        <h2>Critical Hydrocyclone Wear Parts with 1:1 Dimensional Check in Durango</h2>
+        <div class="cyc-sku-cards">
+          <article class="cyc-sku-card">
+            <span class="cyc-sku-code">SKU-QC-11 • UNDERFLOW ABRASION CONTROL</span>
+            <h3>Hydrocyclone Apex / Spigot (SiC Ceramic / Si3N4 / Cr27)</h3>
+            <p>Precision ground conical bore to preserve semi-umbrella spray angle and prevent roping volumetric choking.</p>
+            <a href="/en/products/hydrocyclone-apex-spigot/">Open Quick-Checkout Sheet SKU-QC-11 →</a>
+          </article>
+
+          <article class="cyc-sku-card">
+            <span class="cyc-sku-code">SKU-QC-12 • OVERFLOW CUT CONTROL</span>
+            <h3>Hydrocyclone Vortex Finder (Cr27 / SiC Ceramic / PU)</h3>
+            <p>Erosion-resistant overflow sleeve engineered to eliminate coarse particle short-circuiting to flotation.</p>
+            <a href="/en/products/hydrocyclone-vortex-finder/">Open Quick-Checkout Sheet SKU-QC-12 →</a>
+          </article>
+
+          <article class="cyc-sku-card">
+            <span class="cyc-sku-code">SKU-QC-13 • CONE & FEED CHAMBER</span>
+            <h3>Hydrocyclone Cone & Cylinder Liner Kit (R55 Rubber / PU / SiC)</h3>
+            <p>Drop-in sectional liners with step-free internal joints compatible with D10, D15, D20, and D26 cyclone banks.</p>
+            <a href="/en/products/hydrocyclone-cone-cylinder-liners/">Open Quick-Checkout Sheet SKU-QC-13 →</a>
+          </article>
+        </div>
+      </section>
+
+      <SharePurchasing
+        lang="en"
+        circuit="clasificacion"
+        role="hidrociclon_apex_vortex"
+        partName="Hydrocyclone Cluster — Apex Spigot, Vortex Finder & Cone Liners"
+        partCode="SKU-QC-11"
+      />
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  import { calculateThreeCupMarcyCycloneBalance } from '../../../scripts/slurryEngine.js';
+  import { saveWorkbenchSession, loadWorkbenchSession } from '../../../scripts/workbenchBus.js';
+
+  const feedInput = document.getElementById('cyc-feed-sg') as HTMLInputElement | null;
+  const underInput = document.getElementById('cyc-underflow-sg') as HTMLInputElement | null;
+  const overInput = document.getElementById('cyc-overflow-sg') as HTMLInputElement | null;
+  const solidsInput = document.getElementById('cyc-solids-sg') as HTMLInputElement | null;
+  const apexInput = document.getElementById('cyc-apex-mm') as HTMLInputElement | null;
+  const vortexInput = document.getElementById('cyc-vortex-mm') as HTMLInputElement | null;
+  const pressInput = document.getElementById('cyc-pressure-kpa') as HTMLInputElement | null;
+
+  const regimeEl = document.getElementById('cyc-res-regime');
+  const recEl = document.getElementById('cyc-res-recovery');
+  const circEl = document.getElementById('cyc-res-circload');
+  const cvuEl = document.getElementById('cyc-res-cvu');
+  const d50El = document.getElementById('cyc-res-d50c');
+  const actionEl = document.getElementById('cyc-res-action');
+  const skuLink = document.getElementById('cyc-recommended-sku-link') as HTMLAnchorElement | null;
+
+  function updateCycloneBalance() {
+    if (!feedInput || !underInput || !overInput) return;
+    const res = calculateThreeCupMarcyCycloneBalance({
+      feedSg: Number(feedInput.value) || 1.35,
+      underflowSg: Number(underInput.value) || 1.82,
+      overflowSg: Number(overInput.value) || 1.15,
+      solidsSg: solidsInput ? Number(solidsInput.value) || 2.7 : 2.7,
+      apexDiameterMm: apexInput ? Number(apexInput.value) || 50 : 50,
+      vortexDiameterMm: vortexInput ? Number(vortexInput.value) || 100 : 100,
+      feedPressureKpa: pressInput ? Number(pressInput.value) || 95 : 95
+    });
+
+    if (regimeEl) {
+      regimeEl.textContent = res.regimeLabelEn;
+      regimeEl.setAttribute('data-regime', res.dischargeRegime);
+    }
+    if (recEl) recEl.textContent = `${res.solidsRecoveryPct}%`;
+    if (circEl) circEl.textContent = `${res.circulatingLoadPct}%`;
+    if (cvuEl) cvuEl.textContent = `${res.cvUnderflowPct}%`;
+    if (d50El) d50El.textContent = `${res.d50cMicrons} µm`;
+    if (actionEl) actionEl.textContent = res.diagnosticActionEn;
+    if (skuLink) {
+      skuLink.href = res.recommendedSkuId === 'SKU-QC-12'
+        ? '/en/products/hydrocyclone-vortex-finder/'
+        : '/en/products/hydrocyclone-apex-spigot/';
+      skuLink.textContent = `Configure Recommended Spare (${res.recommendedSkuId}) →`;
+    }
+
+    const prev = loadWorkbenchSession();
+    saveWorkbenchSession({
+      ...prev,
+      cycloneCircuit: {
+        feedSg: res.feedSg,
+        underflowSg: res.underflowSg,
+        overflowSg: res.overflowSg,
+        apexMm: res.apexDiameterMm,
+        vortexMm: res.vortexDiameterMm,
+        d50cMicrons: res.d50cMicrons,
+        solidsRecoveryPct: res.solidsRecoveryPct,
+        ropingRisk: res.isRopingCritical
+      }
+    });
+  }
+
+  [feedInput, underInput, overInput, solidsInput, apexInput, vortexInput, pressInput].forEach((el) => {
+    if (el) el.addEventListener('input', updateCycloneBalance);
+  });
+  updateCycloneBalance();
+</script>
+
+<style>
+  .cyc-main {
+    padding: 2.5rem 0 4rem;
+    background: #f8fafc;
+  }
+  .cyc-hero {
+    margin-bottom: 1.5rem;
+  }
+  .cyc-badge {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    background: #f0f9ff;
+    color: #082f49;
+    border: 1px solid #bae6fd;
+    border-radius: 4px;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.74rem;
+    font-weight: 800;
+    margin-bottom: 0.6rem;
+  }
+  .cyc-lead {
+    font-size: 1.05rem;
+    color: #334155;
+    max-width: 78ch;
+  }
+  .cyc-sim-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 1.75rem 0;
+  }
+  .cyc-sim-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 0.85rem;
+  }
+  .cyc-sim-tag {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+  .cyc-sim-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+  @media (min-width: 960px) {
+    .cyc-sim-grid {
+      grid-template-columns: 1fr 1.25fr;
+    }
+  }
+  @media (max-width: 768px) {
+    .cyc-main {
+      padding: 1.25rem 0 2.5rem;
+    }
+  }
+  .cyc-inputs {
+    display: grid;
+    gap: 0.8rem;
+  }
+  .cyc-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: #1e293b;
+  }
+  .cyc-field input {
+    width: 110px;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid #94a3b8;
+    border-radius: 6px;
+    font-family: var(--smat-font-mono, monospace);
+    font-weight: 700;
+  }
+  .cyc-regime-banner {
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 0.92rem;
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    margin-bottom: 1rem;
+  }
+  .cyc-regime-banner[data-regime="ROPING_CORDON"] {
+    background: #fef2f2;
+    color: #991b1b;
+    border-color: #fecaca;
+  }
+  .cyc-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+    margin-bottom: 1rem;
+  }
+  .cyc-kpi-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.85rem;
+  }
+  .cyc-kpi-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #475569;
+    margin-bottom: 0.35rem;
+  }
+  .cyc-kpi-val {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 1.35rem;
+    color: #090d16;
+  }
+  .cyc-diagnostic-note {
+    font-size: 0.9rem;
+    color: #334155;
+    line-height: 1.5;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    padding: 0.85rem;
+    border-radius: 6px;
+  }
+  .cyc-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  .btn-cyc-sku, .btn-cyc-rfq {
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 0.7rem 1.1rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-decoration: none;
+  }
+  .btn-cyc-sku {
+    background: #7c2d12;
+    color: #ffffff;
+  }
+  .btn-cyc-rfq {
+    background: #0f172a;
+    color: #ffffff;
+  }
+  .cyc-sku-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+    margin: 1rem 0 2rem;
+  }
+  .cyc-sku-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 1.35rem;
+  }
+  .cyc-sku-code {
+    display: block;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #7c2d12;
+    margin-bottom: 0.4rem;
+  }
+  .cyc-sku-card a {
+    display: inline-block;
+    margin-top: 0.65rem;
+    font-weight: 700;
+    color: #082f49;
+  }
+</style>

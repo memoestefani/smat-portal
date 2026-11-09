@@ -1,0 +1,462 @@
+---
+// src/pages/productos/[slug].astro
+// MVP v3.0 (D1, D2, D3, D4, D6): 19 Fichas Quick-Checkout Tier-1 con Diagrama CAD Rayos-X,
+// Escala Cotidiana ISO/IEC 7810 (0.76 mm) y Bandeja de Requisición Multi-Ítem B2B
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
+import SharePurchasing from '../../components/SharePurchasing.astro';
+import quickCatalog from '../../../data/quick_checkout_Catalog.json';
+
+export function getStaticPaths() {
+  return quickCatalog.map((sku) => ({
+    params: { slug: sku.slug_es },
+    props: { sku }
+  }));
+}
+
+const { sku: rawSku } = Astro.props as { sku: any };
+const sku = {
+  ...rawSku,
+  sku_id: rawSku.sku_id || rawSku.id || 'SKU-QC-01',
+  name_es: rawSku.name_es || rawSku.title_es || '',
+  name_en: rawSku.name_en || rawSku.title_en || '',
+  circuit: rawSku.circuit || rawSku.vertical || 'bombeo',
+  series_options: Array.isArray(rawSku.series_options) ? rawSku.series_options : [rawSku.oem_cross_ref || '6x4'],
+  metallurgy_options: Array.isArray(rawSku.metallurgy_options)
+    ? rawSku.metallurgy_options
+    : (Array.isArray(rawSku.available_materials) ? rawSku.available_materials : [rawSku.default_material || 'A05']),
+  iso7810_equivalence_es: rawSku.iso7810_equivalence_es || rawSku.everyday_scale_es || '0.76 mm (1 tarjeta ISO/IEC 7810)',
+  iso7810_equivalence_en: rawSku.iso7810_equivalence_en || rawSku.everyday_scale_en || '0.76 mm (1 ISO/IEC 7810 card)',
+  niosh_weight_range_kg: rawSku.niosh_weight_range_kg || String(rawSku.mass_kg ?? 25),
+  station_number: rawSku.station_number ?? rawSku.kit_id ?? 1,
+  telemetry_hook: rawSku.telemetry_hook || (rawSku.telemetry_hooks ? `SG ${rawSku.telemetry_hooks.marcy_sg_range?.join('–') || '1.3–1.8'} · d50 ${rawSku.telemetry_hooks.plitt_d50_um_range?.join('–') || '75–300'} µm` : 'slurryEngine')
+};
+const siteUrl = 'https://smatminerals.com';
+const canonicalPath = `/productos/${sku.slug_es}/`;
+const alternateEnPath = `/en/products/${sku.slug_en}/`;
+const firstAtomic = (sku.atomic_codes && sku.atomic_codes[0]) || 'E4147';
+const firstSeries = (sku.series_options && sku.series_options[0]) || '6x4';
+
+const rfqDeepLink = `/cotizar/?circuito=${sku.circuit}&equipo=${sku.slug_es}&sku=${sku.sku_id}&codigo=${firstAtomic}&serie=${encodeURIComponent(firstSeries)}#rfq`;
+const waText = encodeURIComponent(`Hola SMAT Minerals, solicito cotización prioritaria del SKU ${sku.sku_id} (${sku.name_es}) para nuestra planta.`);
+const waUrl = `https://wa.me/526183670664?text=${waText}`;
+
+const title = `${sku.name_es} (${sku.sku_id}) | SMAT Minerals`;
+const description = `${sku.name_es}: ${sku.summary_es} Metalurgia verificada y cotejo dimensional 1:1 en Almacén Central Durango.`;
+
+const productSchema = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": `${sku.sku_id} — ${sku.name_es}`,
+  "image": `${siteUrl}/images/og-card.jpg`,
+  "description": sku.summary_es,
+  "sku": sku.sku_id,
+  "mpn": firstAtomic,
+  "brand": {
+    "@type": "Brand",
+    "name": "SMAT Minerals"
+  },
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock",
+    "itemCondition": "https://schema.org/NewCondition",
+    "seller": {
+      "@type": "Organization",
+      "name": "SMAT Minerals",
+      "url": siteUrl
+    }
+  }
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  lang="es"
+  canonicalPath={canonicalPath}
+  alternateEsPath={canonicalPath}
+  alternateEnPath={alternateEnPath}
+>
+  <main class="qc-page-main" id="stage-diagnostic">
+    <div class="container">
+      <nav class="breadcrumb-nav" aria-label="Breadcrumbs">
+        <a href="/">Inicio</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="/catalogo/">Catálogo</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">{sku.sku_id}</span>
+      </nav>
+
+      <div class="qc-layout-grid" id="stage-2">
+        <article class="qc-spec-card">
+          <div class="qc-header">
+            <span class="qc-badge">FICHA DE CONFIGURACIÓN RÁPIDA • {sku.sku_id}</span>
+            <h1 class="qc-title">{sku.name_es}</h1>
+            <p class="qc-lead">{sku.summary_es}</p>
+          </div>
+
+          <TechnicalDiagrams diagram={sku.diagram_id as any} lang="es" showXrayOverlay={true} />
+
+          <div class="qc-iso-banner" data-iso7810-banner>
+            <strong>Escala Física Cotidiana (ISO/IEC 7810 = 0.76 mm):</strong>
+            <span>{sku.iso7810_equivalence_es}</span>
+          </div>
+
+          <h2 class="qc-section-title">Opciones de Serie, Metalurgia y Telemetría Física</h2>
+          <div class="qc-options-grid">
+            <div class="qc-option-box">
+              <span class="qc-option-label">SERIES / CAPACIDADES COMPATIBLES</span>
+              <div class="qc-pill-list">
+                {sku.series_options.map((s: string) => (
+                  <span class="qc-spec-pill">{s}</span>
+                ))}
+              </div>
+            </div>
+
+            <div class="qc-option-box">
+              <span class="qc-option-label">METALURGIAS Y COMPUESTOS DISPONIBLES</span>
+              <div class="qc-pill-list">
+                {sku.metallurgy_options.map((m: string) => (
+                  <span class="qc-spec-pill qc-spec-pill--alloy">{m}</span>
+                ))}
+              </div>
+            </div>
+
+            <div class="qc-option-box">
+              <span class="qc-option-label">MASA UNITARIA E IZAJE NIOSH (1993)</span>
+              <p class="qc-option-val">Rango de masa: <strong>{sku.niosh_weight_range_kg} kg</strong> (Estación 0{sku.station_number})</p>
+              <p class="qc-option-sub">Motor físico enlazado: <code>{sku.telemetry_hook}</code></p>
+            </div>
+          </div>
+
+          {sku.atomic_codes && sku.atomic_codes.length > 0 && (
+            <div class="qc-atomic-links">
+              <span class="qc-option-label">CÓDIGOS ATÓMICOS UNIVERSALES ENLAZADOS:</span>
+              <div class="qc-pill-list">
+                {sku.atomic_codes.map((code: string) => (
+                  <a href={`/catalogo/${code.toLowerCase()}/`} class="qc-atomic-chip">
+                    Ver ficha atómica {code} →
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </article>
+
+        <aside class="qc-action-dock">
+          <div class="qc-dock-card">
+            <span class="qc-dock-badge">BANDEJA DE REQUISICIÓN B2B</span>
+            <h2>Agregar {sku.sku_id} a Requisición</h2>
+            <p class="qc-dock-desc">
+              Configure cantidad y criticidad operativa (Paro de Línea vs. Reposición Stock s,S) para consolidar su orden técnica multi-partida.
+            </p>
+
+            <div class="qc-tray-controls">
+              <label class="qc-field-label">
+                <span>Cantidad requerida (piezas / juegos):</span>
+                <input type="number" min="1" max="999" value="1" class="qc-qty-input" data-qc-qty-input />
+              </label>
+
+              <label class="qc-field-label">
+                <span>Modo de Criticidad (Regla c*mu):</span>
+                <select class="qc-mode-select" data-qc-mode-select>
+                  <option value="PARO_DE_LINEA">Paro de Línea Crítico (Prioridad c*mu Máxima)</option>
+                  <option value="STOCK_SS">Reposición de Almacén Minero Político (s, S)</option>
+                </select>
+              </label>
+
+              <button
+                type="button"
+                class="btn-qc-add-tray"
+                data-add-to-tray
+                data-sku-id={sku.sku_id}
+                data-atomic-code={firstAtomic}
+                data-name-es={sku.name_es}
+                data-name-en={sku.name_en}
+                data-circuit={sku.circuit}
+              >
+                + Agregar a Bandeja de Requisición
+              </button>
+              <p class="qc-tray-feedback" data-qc-tray-feedback hidden></p>
+            </div>
+
+            <div class="qc-dock-ctas">
+              <a href={rfqDeepLink} class="btn-qc-rfq" data-testid="btn-qc-rfq">
+                Abrir Bandeja y Emitir Dossier A4 →
+              </a>
+              <a href={waUrl} target="_blank" rel="noopener noreferrer" class="btn-qc-wa">
+                Consultar Existencia en Patio Durango (WhatsApp)
+              </a>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <SharePurchasing
+        lang="es"
+        circuit={sku.circuit}
+        role={sku.slug_es}
+        partName={`${sku.sku_id} — ${sku.name_es}`}
+        partCode={sku.sku_id}
+      />
+    </div>
+  </main>
+
+  <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+</BaseLayout>
+
+<script>
+  import { addTrayItem } from '../../scripts/requisitionTrayBus.js';
+
+  const addBtn = document.querySelector('[data-add-to-tray]') as HTMLButtonElement | null;
+  const qtyInput = document.querySelector('[data-qc-qty-input]') as HTMLInputElement | null;
+  const modeSelect = document.querySelector('[data-qc-mode-select]') as HTMLSelectElement | null;
+  const feedback = document.querySelector('[data-qc-tray-feedback]') as HTMLElement | null;
+
+  if (addBtn) {
+    addBtn.addEventListener('click', () => {
+      const skuId = addBtn.getAttribute('data-sku-id') || 'SKU-QC-01';
+      const atomicCode = addBtn.getAttribute('data-atomic-code') || skuId;
+      const nameEs = addBtn.getAttribute('data-name-es') || skuId;
+      const nameEn = addBtn.getAttribute('data-name-en') || skuId;
+      const circuit = addBtn.getAttribute('data-circuit') || 'bombeo';
+      const qty = qtyInput ? Number(qtyInput.value) || 1 : 1;
+      const criticalityMode = modeSelect ? modeSelect.value : 'PARO_DE_LINEA';
+
+      const updated = addTrayItem({
+        skuId,
+        atomicCode,
+        nameEs,
+        nameEn,
+        circuit,
+        qty,
+        criticalityMode
+      });
+
+      if (feedback) {
+        feedback.hidden = false;
+        feedback.textContent = `✓ ${skuId} agregado (${qty} ud.). Total en bandeja: ${updated.items.length} SKU(s).`;
+      }
+    });
+  }
+</script>
+
+<style>
+  .qc-page-main {
+    padding: 2.25rem 0 4rem;
+    background: #f8fafc;
+    min-height: 85vh;
+  }
+  .breadcrumb-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #475569;
+    margin-bottom: 1.5rem;
+  }
+  .breadcrumb-nav a {
+    color: #334155;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .breadcrumb-current {
+    color: #090d16;
+    font-weight: 800;
+  }
+  .qc-layout-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  @media (min-width: 992px) {
+    .qc-layout-grid {
+      grid-template-columns: 1.65fr 1fr;
+      align-items: start;
+    }
+  }
+  @media (max-width: 768px) {
+    .qc-page-main {
+      padding: 1.25rem 0 2.5rem;
+    }
+  }
+  .qc-spec-card, .qc-dock-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+  }
+  .qc-badge, .qc-dock-badge {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    background: #f0f9ff;
+    color: #082f49;
+    border: 1px solid #bae6fd;
+    border-radius: 4px;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.74rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+  }
+  .qc-title {
+    font-size: 2rem;
+    color: #090d16;
+    margin: 0 0 0.65rem;
+    line-height: 1.15;
+  }
+  .qc-lead {
+    font-size: 1rem;
+    color: #334155;
+    line-height: 1.55;
+    margin-bottom: 1.25rem;
+  }
+  .qc-iso-banner {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-left: 4px solid #b45309;
+    padding: 0.85rem 1rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    color: #78350f;
+    margin: 1rem 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .qc-section-title {
+    font-size: 1.15rem;
+    color: #090d16;
+    margin: 1.25rem 0 0.85rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 0.45rem;
+  }
+  .qc-options-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .qc-option-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+  }
+  .qc-option-label {
+    display: block;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #475569;
+    margin-bottom: 0.5rem;
+  }
+  .qc-pill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+  .qc-spec-pill {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .qc-spec-pill--alloy {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #14532d;
+  }
+  .qc-atomic-links {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+  }
+  .qc-atomic-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0.35rem 0.75rem;
+    background: #0f172a;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+  .qc-tray-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin: 1.25rem 0;
+  }
+  .qc-field-label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1e293b;
+  }
+  .qc-qty-input, .qc-mode-select {
+    padding: 0.65rem 0.75rem;
+    border: 1px solid #94a3b8;
+    border-radius: 6px;
+    font-size: 0.92rem;
+    color: #090d16;
+    background: #ffffff;
+  }
+  .btn-qc-add-tray {
+    min-height: 48px;
+    padding: 0.85rem 1rem;
+    background: #7c2d12;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+  .qc-tray-feedback {
+    margin: 0;
+    padding: 0.6rem 0.75rem;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+    border-radius: 6px;
+    font-size: 0.84rem;
+    font-weight: 700;
+  }
+  .qc-dock-ctas {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 1rem;
+  }
+  .btn-qc-rfq, .btn-qc-wa {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    text-align: center;
+  }
+  .btn-qc-rfq {
+    background: #0f172a;
+    color: #ffffff;
+  }
+  .btn-qc-wa {
+    background: #f8fafc;
+    color: #0f172a;
+    border: 1px solid #94a3b8;
+  }
+</style>

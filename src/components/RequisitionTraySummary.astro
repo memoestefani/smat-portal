@@ -1,0 +1,320 @@
+---
+// src/components/RequisitionTraySummary.astro
+// MVP v3.0 (D3, D5): Bandeja de Requisición Multi-Ítem B2B con Regla de Prioridad Generalizada c*mu
+// (Van Mieghem 1995), Conmutador Paro de Línea vs Stock (s,S) y Código de Orden Determinista FNV-1a
+import quickCatalog from '../../data/quick_checkout_Catalog.json';
+
+interface Props {
+  lang?: 'es' | 'en';
+}
+
+const { lang = 'es' } = Astro.props;
+const isEs = lang === 'es';
+---
+
+<section class="req-tray-card" id="smat-requisition-tray-summary" data-requisition-tray aria-labelledby="req-tray-title">
+  <div class="req-tray-header">
+    <div>
+      <span class="req-tray-badge">
+        {isEs ? 'BANDEJA DE REQUISICIÓN INDUSTRIAL MULTI-PARTIDA • D3 & D5' : 'MULTI-ITEM B2B REQUISITION TRAY • D3 & D5'}
+      </span>
+      <h3 id="req-tray-title" class="req-tray-title">
+        {isEs ? 'Partidas Activas y Enrutamiento Prioritario (Regla c·μ)' : 'Active Line Items & Priority Routing (c·μ Rule)'}
+      </h3>
+    </div>
+    <button type="button" class="req-tray-clear-btn" id="tray-clear-btn">
+      {isEs ? 'Vaciar Bandeja' : 'Clear Tray'}
+    </button>
+  </div>
+
+  <div class="req-tray-cmu-strip">
+    <span class="req-tray-cmu-label">
+      {isEs ? 'CABECERA DE PRIORIDAD EN BANDEJA DURANGO (c·μ):' : 'DURANGO INBOX PRIORITY HEADER (c·μ):'}
+    </span>
+    <code id="tray-cmu-subject-line" class="req-tray-cmu-code">
+      [SMAT-DGO] [PARO DE LÍNEA | C_v=48% Cr27 | 1 SKUs | Ref: SMAT-7A4F-9C12]
+    </code>
+  </div>
+
+  <div class="req-tray-quickadd">
+    <select id="tray-quick-sku-select" class="req-tray-select" aria-label={isEs ? 'Seleccionar SKU de configuración rápida' : 'Select Quick-Checkout SKU'}>
+      {quickCatalog.map((item) => (
+        <option
+          value={item.id}
+          data-atomic={item.atomic_codes[0] || item.id}
+          data-name-es={item.title_es}
+          data-name-en={item.title_en}
+          data-circuit={item.vertical}
+        >
+          {item.id} — {isEs ? item.title_es : item.title_en}
+        </option>
+      ))}
+    </select>
+    <input type="number" id="tray-quick-qty-input" class="req-tray-qty" min="1" max="999" value="1" aria-label={isEs ? 'Cantidad' : 'Quantity'} />
+    <select id="tray-quick-mode-select" class="req-tray-mode" aria-label={isEs ? 'Modo de criticidad' : 'Criticality mode'}>
+      <option value="PARO_DE_LINEA">{isEs ? 'Paro de Línea (Urgente c·μ)' : 'Line-Stop (Urgent c·μ)'}</option>
+      <option value="STOCK_SS">{isEs ? 'Reposición Stock (s, S)' : 'Stock Replenishment (s, S)'}</option>
+    </select>
+    <button type="button" id="tray-quick-add-btn" class="req-tray-add-btn">
+      {isEs ? '+ Añadir SKU' : '+ Add SKU'}
+    </button>
+  </div>
+
+  <div class="req-tray-table-wrap">
+    <table class="req-tray-table">
+      <thead>
+        <tr>
+          <th>{isEs ? 'SKU / Código' : 'SKU / Code'}</th>
+          <th>{isEs ? 'Descripción Técnica' : 'Technical Description'}</th>
+          <th>{isEs ? 'Cant.' : 'Qty'}</th>
+          <th>{isEs ? 'Régimen Operativo' : 'Operating Regime'}</th>
+          <th>{isEs ? 'Acción' : 'Action'}</th>
+        </tr>
+      </thead>
+      <tbody id="tray-items-tbody">
+        <tr>
+          <td colspan="5" class="req-tray-empty">
+            {isEs
+              ? 'Sin partidas adicionales en bandeja. Añada SKUs arriba o desde las fichas /productos/ para consolidar su orden.'
+              : 'No additional items in tray. Add SKUs above or from /en/products/ sheets to consolidate your order.'}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<script>
+  import {
+    SMAT_TRAY_UPDATE_EVENT,
+    getTrayState,
+    addTrayItem,
+    removeTrayItem,
+    buildCmuPrioritySubjectLine,
+    hydrateTrayFromReorderQuery
+  } from '../scripts/requisitionTrayBus.js';
+
+  function initRequisitionTraySummary() {
+    const root = document.getElementById('smat-requisition-tray-summary');
+    if (!root) return;
+    const isEn = document.documentElement.lang === 'en';
+    const tbody = document.getElementById('tray-items-tbody');
+    const cmuCode = document.getElementById('tray-cmu-subject-line');
+    const skuSelect = document.getElementById('tray-quick-sku-select') as HTMLSelectElement | null;
+    const qtyInput = document.getElementById('tray-quick-qty-input') as HTMLInputElement | null;
+    const modeSelect = document.getElementById('tray-quick-mode-select') as HTMLSelectElement | null;
+    const addBtn = document.getElementById('tray-quick-add-btn');
+    const clearBtn = document.getElementById('tray-clear-btn');
+
+    if (typeof window !== 'undefined' && window.location.search.includes('tray=')) {
+      hydrateTrayFromReorderQuery(window.location.search);
+    }
+
+    const renderTray = () => {
+      const state = getTrayState();
+      if (cmuCode) {
+        cmuCode.textContent = buildCmuPrioritySubjectLine(state, { cvPct: 52, material: 'Cr27' });
+      }
+      if (!tbody) return;
+      if (!state.items.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="req-tray-empty">${
+          isEn
+            ? 'No additional items in tray. Add SKUs above or from /en/products/ sheets to consolidate your order.'
+            : 'Sin partidas adicionales en bandeja. Añada SKUs arriba o desde las fichas /productos/ para consolidar su orden.'
+        }</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = state.items
+        .map(
+          (item: any) => `
+          <tr data-tray-row="${item.id}">
+            <td><strong>${item.skuId}</strong></td>
+            <td>${isEn ? item.nameEn : item.nameEs}</td>
+            <td><strong>${item.qty}</strong></td>
+            <td><span class="req-mode-pill">${item.criticalityMode === 'PARO_DE_LINEA' ? (isEn ? 'LINE-STOP' : 'PARO DE LÍNEA') : 'STOCK (s,S)'}</span></td>
+            <td><button type="button" class="req-remove-btn" data-remove-sku="${item.id}">×</button></td>
+          </tr>
+        `
+        )
+        .join('');
+
+      tbody.querySelectorAll('[data-remove-sku]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-remove-sku') || '';
+          removeTrayItem(target);
+          renderTray();
+        });
+      });
+    };
+
+    if (addBtn && skuSelect) {
+      addBtn.addEventListener('click', () => {
+        const opt = skuSelect.options[skuSelect.selectedIndex];
+        if (!opt) return;
+        addTrayItem({
+          skuId: opt.value,
+          atomicCode: opt.getAttribute('data-atomic') || opt.value,
+          nameEs: opt.getAttribute('data-name-es') || opt.value,
+          nameEn: opt.getAttribute('data-name-en') || opt.value,
+          circuit: opt.getAttribute('data-circuit') || 'bombeo',
+          qty: qtyInput ? Number(qtyInput.value) || 1 : 1,
+          criticalityMode: modeSelect ? modeSelect.value : 'PARO_DE_LINEA'
+        });
+        renderTray();
+      });
+    }
+
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        const state = getTrayState();
+        state.items.forEach((i: any) => removeTrayItem(i.id));
+        renderTray();
+      });
+    }
+
+    window.addEventListener(SMAT_TRAY_UPDATE_EVENT, renderTray);
+    renderTray();
+  }
+
+  initRequisitionTraySummary();
+</script>
+
+<style>
+  .req-tray-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .req-tray-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.85rem;
+  }
+  .req-tray-badge {
+    display: inline-block;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #7c2d12;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.35rem;
+  }
+  .req-tray-title {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #090d16;
+  }
+  .req-tray-clear-btn {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    padding: 0.35rem 0.7rem;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .req-tray-cmu-strip {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 3px solid #082f49;
+    padding: 0.6rem 0.85rem;
+    border-radius: 6px;
+    margin-bottom: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .req-tray-cmu-label {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #475569;
+  }
+  .req-tray-cmu-code {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #082f49;
+    word-break: break-all;
+  }
+  .req-tray-quickadd {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.9rem;
+  }
+  .req-tray-select {
+    flex: 1 1 220px;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid #94a3b8;
+    border-radius: 6px;
+    font-size: 0.82rem;
+  }
+  .req-tray-qty {
+    width: 72px;
+    padding: 0.45rem;
+    border: 1px solid #94a3b8;
+    border-radius: 6px;
+    font-size: 0.82rem;
+  }
+  .req-tray-mode {
+    padding: 0.45rem 0.6rem;
+    border: 1px solid #94a3b8;
+    border-radius: 6px;
+    font-size: 0.82rem;
+  }
+  .req-tray-add-btn {
+    background: #0f172a;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .req-tray-table-wrap {
+    overflow-x: auto;
+  }
+  .req-tray-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+  .req-tray-table th, .req-tray-table td {
+    padding: 0.5rem 0.6rem;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+  }
+  .req-tray-empty {
+    color: #64748b;
+    font-style: italic;
+  }
+  .req-mode-pill {
+    display: inline-block;
+    padding: 0.15rem 0.45rem;
+    background: #f0f9ff;
+    color: #082f49;
+    border-radius: 4px;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+  .req-remove-btn {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    font-weight: 800;
+    cursor: pointer;
+  }
+</style>

@@ -49,7 +49,68 @@ import CircuitNavigator from '../../components/CircuitNavigator.astro';
           <p style="font-family: var(--smat-font-mono); font-size: 0.85rem;"><strong>Material:</strong> Polipropileno Virgen Copolímero y Fieltro Agujado</p>
           <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
             <a href="/filtracion/repuestos/" class="btn btn-outline">Ficha Técnica</a>
+            <a href="/productos/telas-filtrantes-filtro-prensa/" class="btn btn-outline">Telas SKU-QC-17 →</a>
+            <a href="/productos/placas-polipropileno-filtro-prensa/" class="btn btn-outline">Placas SKU-QC-18 →</a>
             <a href="/cotizar/?circuito=filtracion&equipo=placas_telas&serie=1500&filt_condition=fuga_chorreo#rfq" class="btn btn-primary">Cotizar</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verificador de Flexión Timoshenko de Placas PP y Apilamiento en Seco NOM-141 (MVP v3.0 · D8) -->
+      <div class="card" id="nom141-plate-flexure-verifier" style="margin-top: 2rem; padding: 1.75rem;">
+        <span class="badge badge-copper" style="margin-bottom: 0.5rem;">CUMPLIMIENTO SEMARNAT NOM-141 &amp; MECÁNICA TIMOSHENKO • D8</span>
+        <h2 style="margin-bottom: 0.5rem;">Verificador de Flexión Asimétrica de Placas de Polipropileno y Torta Seca (Dry Stacking)</h2>
+        <p style="color: var(--smat-text-secondary); margin-bottom: 1.25rem;">
+          Evalúe el esfuerzo flector máximo (σ<sub>max</sub>) por obstrucción del puerto de alimentación y verifique el factor de seguridad estructural junto con la humedad objetivo de apilamiento en seco (&le; 16%).
+        </p>
+
+        <div class="grid-2" style="gap: 1.5rem; align-items: start;">
+          <div style="display: grid; gap: 0.75rem;">
+            <label style="display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; font-weight: 600;">
+              <span>Presión de Alimentación (bar):</span>
+              <input type="number" id="filt-pressure-bar" min="4" max="25" step="1" value="12" style="width: 100px; padding: 0.4rem;" />
+            </label>
+            <label style="display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; font-weight: 600;">
+              <span>Puertos / Cuellos Obstruidos (0 a 4):</span>
+              <input type="number" id="filt-clogged-ports" min="0" max="4" step="1" value="0" style="width: 100px; padding: 0.4rem;" />
+            </label>
+            <label style="display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; font-weight: 600;">
+              <span>Formato de Placa Cuadrada (mm):</span>
+              <select id="filt-plate-width" style="width: 130px; padding: 0.4rem;">
+                <option value="800">800 x 800 mm</option>
+                <option value="1000">1000 x 1000 mm</option>
+                <option value="1200" selected>1200 x 1200 mm</option>
+                <option value="1500">1500 x 1500 mm</option>
+              </select>
+            </label>
+            <label style="display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; font-weight: 600;">
+              <span>Espesor de Alma de Placa (mm):</span>
+              <input type="number" id="filt-plate-thickness" min="45" max="110" step="5" value="65" style="width: 100px; padding: 0.4rem;" />
+            </label>
+            <label style="display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; font-weight: 600;">
+              <span>Humedad Residual de Torta (%):</span>
+              <input type="number" id="filt-cake-moisture" min="8" max="26" step="0.5" value="14" style="width: 100px; padding: 0.4rem;" />
+            </label>
+          </div>
+
+          <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 1.25rem;">
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1rem;">
+              <div>
+                <span style="font-size: 0.72rem; font-weight: 800; color: #475569; display: block;">ESFUERZO TIMOSHENKO (σ<sub>max</sub>)</span>
+                <strong id="filt-res-stress" style="font-family: var(--smat-font-mono); font-size: 1.25rem;">3.54 MPa</strong>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; font-weight: 800; color: #475569; display: block;">FACTOR DE SEGURIDAD (FS)</span>
+                <strong id="filt-res-fs" style="font-family: var(--smat-font-mono); font-size: 1.25rem;">4.10</strong>
+              </div>
+            </div>
+            <p id="filt-res-summary" style="font-size: 0.88rem; line-height: 1.5; margin: 0 0 1rem; padding: 0.75rem; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 6px; color: #065f46; font-weight: 600;">
+              Operación estructural segura. Cumple criterio de torta seca NOM-141.
+            </p>
+            <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
+              <a href="/productos/placas-polipropileno-filtro-prensa/" class="btn btn-primary">Configurar Placas PP (SKU-QC-18) →</a>
+              <a href="/productos/telas-filtrantes-filtro-prensa/" class="btn btn-outline">Configurar Telas (SKU-QC-17) →</a>
+            </div>
           </div>
         </div>
       </div>
@@ -74,6 +135,43 @@ import CircuitNavigator from '../../components/CircuitNavigator.astro';
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  import { evaluateFilterPressPlateDeflection } from '../../scripts/slurryEngine.js';
+
+  const pEl = document.getElementById('filt-pressure-bar') as HTMLInputElement | null;
+  const cEl = document.getElementById('filt-clogged-ports') as HTMLInputElement | null;
+  const wEl = document.getElementById('filt-plate-width') as HTMLSelectElement | null;
+  const tEl = document.getElementById('filt-plate-thickness') as HTMLInputElement | null;
+  const mEl = document.getElementById('filt-cake-moisture') as HTMLInputElement | null;
+  const stressEl = document.getElementById('filt-res-stress');
+  const fsEl = document.getElementById('filt-res-fs');
+  const sumEl = document.getElementById('filt-res-summary');
+
+  function updatePlateFlexure() {
+    if (!pEl || !cEl || !wEl || !tEl || !mEl) return;
+    const res = evaluateFilterPressPlateDeflection({
+      feedPressureBar: Number(pEl.value) || 12,
+      cloggedPortsCount: Number(cEl.value) || 0,
+      plateWidthMm: Number(wEl.value) || 1200,
+      plateThicknessMm: Number(tEl.value) || 65,
+      cakeMoistureTargetPct: Number(mEl.value) || 14
+    });
+    if (stressEl) stressEl.textContent = `${res.maxBendingStressMpa} MPa`;
+    if (fsEl) fsEl.textContent = `${res.flexuralSafetyFactor}`;
+    if (sumEl) {
+      sumEl.textContent = res.summaryEs;
+      sumEl.style.background = res.isPlateCrackingRisk ? '#fef2f2' : '#ecfdf5';
+      sumEl.style.color = res.isPlateCrackingRisk ? '#991b1b' : '#065f46';
+    }
+  }
+
+  [pEl, cEl, wEl, tEl, mEl].forEach((el) => {
+    if (el) el.addEventListener('input', updatePlateFlexure);
+    if (el) el.addEventListener('change', updatePlateFlexure);
+  });
+  updatePlateFlexure();
+</script>
 
 <style>
   .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 3rem 0; border-bottom: 2px solid var(--smat-copper-accent); }

@@ -45,8 +45,62 @@ import CircuitNavigator from '../../components/CircuitNavigator.astro';
           <p style="font-family: var(--smat-font-mono); font-size: 0.85rem;"><strong>Material:</strong> Hule y Poliuretano • $S_b = 6 J_g / d_{32}$</p>
           <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
             <a href="/flotacion/mecanismos/" class="btn btn-outline">Ficha Técnica</a>
+            <a href="/productos/rotor-estator-celda-flotacion/" class="btn btn-outline">Quick-Checkout SKU-QC-14 →</a>
             <a href="/cotizar/?circuito=flotacion&equipo=rotor_estator&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq" class="btn btn-primary">Cotizar →</a>
           </div>
+        </div>
+      </div>
+
+      <!-- Matriz de Compatibilidad Geométrica Drop-In Anti-Morita (MVP v3.0 · D8) -->
+      <div class="card" id="flotation-dropin-matrix" style="margin-top: 2rem; padding: 1.75rem;">
+        <span class="badge badge-copper" style="margin-bottom: 0.5rem;">INTERCAMBIABILIDAD HIDRODINÁMICA 1:1 • D8</span>
+        <h2 style="margin-bottom: 0.5rem;">Matriz de Compatibilidad Geométrica Drop-In (Rotor-Estator y Cabezales)</h2>
+        <p style="color: var(--smat-text-secondary); margin-bottom: 1.25rem;">
+          Sustitución directa en bancos existentes sin modificar bridas de faldón, tubo de aire ni distancia entre centros de pernos. Garantiza velocidad periférica crítica v<sub>tip</sub> y tasa superficial de gas J<sub>g</sub> para evitar zonas muertas o sedimentación de sulfuros gruesos.
+        </p>
+        <div style="overflow-x: auto;">
+          <table class="spec-table" style="width: 100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead>
+              <tr style="border-bottom: 2px solid #cbd5e1; text-align: left; background: #f8fafc;">
+                <th style="padding: 0.65rem;">Arquitectura de Celda (Estándar Universal)</th>
+                <th style="padding: 0.65rem;">Volumen Nominal</th>
+                <th style="padding: 0.65rem;">Relación D<sub>r</sub> / D<sub>s</sub></th>
+                <th style="padding: 0.65rem;">Número Bombeo (N<sub>Q</sub>)</th>
+                <th style="padding: 0.65rem;">Velocidad Punta (v<sub>tip</sub>)</th>
+                <th style="padding: 0.65rem;">Dispersión Aire (J<sub>g</sub>)</th>
+                <th style="padding: 0.65rem;">SKU Directo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 0.65rem;"><strong>Celdas Auto-Aspirantes Tipo 1+1 (Sub-Aireación Mecánica)</strong></td>
+                <td style="padding: 0.65rem;">50 ft³ – 100 ft³</td>
+                <td style="padding: 0.65rem;"><code>0.70 ± 0.02</code></td>
+                <td style="padding: 0.65rem;"><code>0.22</code></td>
+                <td style="padding: 0.65rem;"><code>6.1 – 6.6 m/s</code></td>
+                <td style="padding: 0.65rem;"><code>1.2 – 1.5 cm/s</code></td>
+                <td style="padding: 0.65rem;"><a href="/productos/rotor-estator-celda-flotacion/">SKU-QC-14 →</a></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 0.65rem;"><strong>Celdas de Aire Forzado Tipo TankCell Industrial (Rotor Estrella)</strong></td>
+                <td style="padding: 0.65rem;">100 ft³ – 300 ft³</td>
+                <td style="padding: 0.65rem;"><code>0.72 ± 0.02</code></td>
+                <td style="padding: 0.65rem;"><code>0.26</code></td>
+                <td style="padding: 0.65rem;"><code>6.3 – 6.8 m/s</code></td>
+                <td style="padding: 0.65rem;"><code>1.4 – 1.8 cm/s</code></td>
+                <td style="padding: 0.65rem;"><a href="/productos/rotor-estator-celda-flotacion/">SKU-QC-14 →</a></td>
+              </tr>
+              <tr>
+                <td style="padding: 0.65rem;"><strong>Tanques Acondicionadores de Reactivos de Alta Intensidad</strong></td>
+                <td style="padding: 0.65rem;">5x5 ft – 12x12 ft</td>
+                <td style="padding: 0.65rem;"><code>0.68 ± 0.02</code></td>
+                <td style="padding: 0.65rem;"><code>0.48</code></td>
+                <td style="padding: 0.65rem;"><code>5.8 – 6.4 m/s</code></td>
+                <td style="padding: 0.65rem;"><code>Circulación Axial</code></td>
+                <td style="padding: 0.65rem;"><a href="/productos/celda-flotacion-acondicionador/">SKU-QC-15 →</a></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

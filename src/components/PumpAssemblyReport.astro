@@ -127,6 +127,19 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
 
       <button
         type="button"
+        class="assembly-report__xray-btn is-active"
+        data-toggle-xray
+        aria-pressed="true"
+      >
+        {isEs ? 'Rayos X de Desgaste: ACTIVO' : 'Wear X-Ray Layer: ON'}
+      </button>
+
+      <span class="assembly-report__order-hash" data-selection-order-hash title={isEs ? 'Código determinista FNV-1a de configuración seleccionada' : 'Deterministic FNV-1a selection order code'}>
+        Ref: SMAT-7A4F-9C12
+      </span>
+
+      <button
+        type="button"
         class="assembly-report__print-btn"
         onclick="window.print()"
       >
@@ -250,12 +263,25 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
         <!-- #05 Expeller -->
         <rect x="44" y="82" width="32" height="124" rx="4" fill="#fef3c7" stroke="#c25e00" stroke-width="2.2" />
         <text x="60" y="72" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="800" fill="#c25e00">#05 EXP</text>
-        <!-- #04 Expeller Ring / Stuffing Box + #03 Shaft Sleeve -->
+        <!-- #04 Expeller Ring / Stuffing Box + #03 Shaft Sleeve D075C21 -->
         <rect x="84" y="68" width="48" height="152" rx="4" fill="#e2e8f0" stroke="#334155" stroke-width="2" />
         <rect x="80" y="134" width="56" height="20" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.8" />
-        <text x="108" y="58" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="800" fill="#0f172a">#04/#03</text>
+        <text x="108" y="58" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="800" fill="#0f172a">#04/#03 D075C21</text>
         <text x="73" y="256" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="700" fill="#c25e00">{isEs ? 'Expulsor seco o' : 'Dry expeller or'}</text>
-        <text x="73" y="272" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="700" fill="#475569">{isEs ? 'Prensaestopa + Camisa' : 'Stuffing Box + Sleeve'}</text>
+        <text x="73" y="272" text-anchor="middle" font-family="SF Mono, monospace" font-size="8" font-weight="700" fill="#475569">{isEs ? 'Camisa D075C21' : 'D075C21 Sleeve'}</text>
+      </g>
+
+      <!-- Capa Pre-Atentiva de Rayos X de Desgaste (D2: Rojo #dc2626 / Ámbar #d97706 / Azul #0284c7) -->
+      <g data-layer="xray-wear" class="assembly-xray-layer">
+        <rect x="138" y="102" width="16" height="168" rx="3" fill="rgba(220, 38, 38, 0.22)" stroke="#dc2626" stroke-width="2" stroke-dasharray="4 2" />
+        <circle cx="312" cy="196" r="56" fill="rgba(220, 38, 38, 0.14)" stroke="#dc2626" stroke-width="1.8" stroke-dasharray="5 3" />
+        <rect x="556" y="126" width="66" height="136" rx="4" fill="rgba(217, 119, 6, 0.18)" stroke="#d97706" stroke-width="1.8" stroke-dasharray="4 2" />
+        <rect x="716" y="138" width="126" height="106" rx="6" fill="rgba(2, 132, 199, 0.14)" stroke="#0284c7" stroke-width="1.8" stroke-dasharray="4 2" />
+        <text x="440" y="378" text-anchor="middle" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">
+          {isEs
+            ? 'RAYOS X DE DESGASTE: ROJO (#dc2626 Claro δ = 1 Tarjeta ISO 0.76 mm + Álabes) • ÁMBAR (#d97706 Camisa D075C21) • AZUL (#0284c7 Soporte ISO 281)'
+            : 'WEAR X-RAY: RED (#dc2626 Gap δ = 1 ISO Card 0.76 mm + Vanes) • AMBER (#d97706 D075C21 Sleeve) • BLUE (#0284c7 ISO 281 Support)'}
+        </text>
       </g>
 
       <!-- ESTACIÓN 1 (Derecha): Extremo Motriz Bearing Assembly (#02 + #01) -->
@@ -489,13 +515,16 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
 </section>
 
 <script>
-  import { evaluateWetEndAssemblyInterference } from '../scripts/slurryEngine.js';
+  import { evaluateWetEndAssemblyInterference, computeSelectionOrderCodeHash } from '../scripts/slurryEngine.js';
   import { saveWorkbenchState, loadWorkbenchState } from '../scripts/workbenchBus.js';
 
   function initPumpAssemblyReport() {
     const reports = document.querySelectorAll('[data-pump-assembly-report]');
     reports.forEach((section) => {
       const buttons = section.querySelectorAll('[data-assembly-branch-btn]');
+      const xrayToggleBtn = section.querySelector('[data-toggle-xray]') as HTMLButtonElement | null;
+      const xrayLayer = section.querySelector('[data-layer="xray-wear"]') as SVGGElement | null;
+      const orderHashBadge = section.querySelector('[data-selection-order-hash]');
       const rows = section.querySelectorAll('[data-bom-row]');
       const bomLinks = section.querySelectorAll('[data-bom-quote-link]');
       const stationCtas = section.querySelectorAll('[data-station-cta]');
@@ -566,6 +595,16 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
         });
 
         if (readoutEl) readoutEl.textContent = `${res.frontClearanceMm.toFixed(2)} mm`;
+        if (orderHashBadge) {
+          const codeHash = computeSelectionOrderCodeHash({
+            branch: activeBranch,
+            mat: activeMaterialKey,
+            seal: sealBranch,
+            b2: impellerExitWidthMm,
+            claro: res.frontClearanceMm.toFixed(2)
+          });
+          orderHashBadge.textContent = `Ref: ${codeHash}`;
+        }
         if (lossEl) lossEl.textContent = `${res.volumetricEfficiencyDropPct.toFixed(2)}%`;
         if (ratioEl) {
           ratioEl.textContent = isEnDoc
@@ -668,6 +707,18 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
       if (b2Select) b2Select.addEventListener('change', updateClearanceSimulation);
       if (sealSelect) sealSelect.addEventListener('change', updateClearanceSimulation);
       if (seqSelect) seqSelect.addEventListener('change', updateClearanceSimulation);
+      if (xrayToggleBtn && xrayLayer) {
+        xrayToggleBtn.addEventListener('click', () => {
+          const isPressed = xrayToggleBtn.getAttribute('aria-pressed') === 'true';
+          const nextState = !isPressed;
+          xrayToggleBtn.setAttribute('aria-pressed', String(nextState));
+          xrayToggleBtn.classList.toggle('is-active', nextState);
+          xrayLayer.style.display = nextState ? '' : 'none';
+          xrayToggleBtn.textContent = isEnDoc
+            ? (nextState ? 'Wear X-Ray Layer: ON' : 'Wear X-Ray Layer: OFF')
+            : (nextState ? 'Rayos X de Desgaste: ACTIVO' : 'Rayos X de Desgaste: OCULTO');
+        });
+      }
       updateClearanceSimulation();
     });
   }

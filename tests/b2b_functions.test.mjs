@@ -2410,7 +2410,7 @@ test('136. Fichas Atómicas de Refacciones Universales con getStaticPaths (Decis
   const parts = JSON.parse(fs.readFileSync(partsPath, 'utf-8'));
   const requiredCodes = ['d3147', 'e4147', 'f6147', 'dam028', 'eam028', 'e4083'];
 
-  assert.equal(parts.length, 6, 'Deben existir exactamente 6 refacciones atómicas');
+  assert.ok(parts.length >= 12, 'Deben existir al menos 12 refacciones atómicas (incluyendo D075C21)');
   for (const code of requiredCodes) {
     const found = parts.find((p) => p.code === code);
     assert.ok(found, `Debe existir refacción con código ${code}`);
@@ -4500,4 +4500,49 @@ test('Test 234 (Decisión 9b & 9c): Compactación Above-the-Fold móvil en las 9
     assert.ok(content.includes('@media (max-width:'), `${rel} debe tener reglas @media (max-width: ...) para compactar el Hero móvil Above-the-Fold`);
   }
 });
+
+test('Test 235 (SLICE-17 / D3, D5, D6): requisitionTrayBus.js (Bandeja Multi-Ítem, Regla c*mu, Pasaporte Proveedor, Reorden s,S) y 13 partes atómicas en workbenchBus.js', async () => {
+  const {
+    addTrayItem,
+    removeTrayItem,
+    updateTrayItemQty,
+    clearTray,
+    buildCmuPrioritySubjectLine,
+    buildSmatVendorPassportPayload,
+    encodeReorderUrlQuery,
+    hydrateTrayFromReorderQuery
+  } = await import('../src/scripts/requisitionTrayBus.js');
+  const { getAtomicPartSpecs, normalizeWorkbenchStateV2 } = await import('../src/scripts/workbenchBus.js');
+
+  clearTray();
+  let state = addTrayItem({ skuId: 'SKU-QC-01', nameEs: 'Impulsor 5 Álabes Cr27', qty: 2, criticalityMode: 'PARO_DE_LINEA' });
+  state = addTrayItem({ skuId: 'D075C21', nameEs: 'Camisa de Flecha D075C21', qty: 1, criticalityMode: 'STOCK_SS' }, state);
+  assert.equal(state.items.length, 2);
+
+  state = updateTrayItemQty('SKU-QC-01', 5, 'PARO_DE_LINEA', state);
+  assert.equal(state.items[0].qty, 5);
+
+  const subject = buildCmuPrioritySubjectLine(state, { cvPct: 58, material: 'Cr27' });
+  assert.ok(subject.startsWith('[SMAT-DGO] [PARO DE LÍNEA | C_v=58% Cr27 | 2 SKUs | Ref: SMAT-'));
+
+  const passport = buildSmatVendorPassportPayload();
+  assert.ok(passport.vcardText.includes('BEGIN:VCARD') && passport.vcardText.includes('END:VCARD'));
+  assert.equal(passport.unspscCodes.length, 4);
+
+  const reorderQuery = encodeReorderUrlQuery(state);
+  assert.ok(reorderQuery.includes('reorder=1&tray='));
+  const hydrated = hydrateTrayFromReorderQuery(reorderQuery);
+  assert.equal(hydrated.items.length, 2);
+  assert.equal(hydrated.items[0].qty, 5);
+
+  const afterRemove = removeTrayItem('D075C21', hydrated);
+  assert.equal(afterRemove.items.length, 1);
+
+  const d075 = getAtomicPartSpecs('D075C21');
+  assert.equal(d075.part_number, 'D075C21');
+  const normState = normalizeWorkbenchStateV2({ cycloneCircuit: { feedSg: 1.42, underflowSg: 1.95, ropingRisk: true } });
+  assert.equal(normState.cycloneCircuit.feedSg, 1.42);
+  assert.equal(normState.cycloneCircuit.ropingRisk, true);
+});
+
 

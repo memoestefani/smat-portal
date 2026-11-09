@@ -5,6 +5,7 @@ import rolesData from '../../data/roles.json';
 import atomicPartsData from '../../data/atomic_parts.json';
 import '../styles/workbench.css';
 import LiveEngineeringDossier from './LiveEngineeringDossier.astro';
+import RequisitionTraySummary from './RequisitionTraySummary.astro';
 import {
   SLURRY_PRESETS,
   MECHANICAL_DIAGNOSTICS,
@@ -883,6 +884,8 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
 
           <input type="text" name="website" id="wb-website" tabindex="-1" autocomplete="off" style="position: absolute; left: -9999px; opacity: 0;" aria-hidden="true" />
         </details>
+
+        <RequisitionTraySummary lang={lang} />
       </div>
     </div>
 

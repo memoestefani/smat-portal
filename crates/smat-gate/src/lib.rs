@@ -814,6 +814,16 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             passed: verify_section_3_1_3_2_zero_duplication_and_mobile_fold(site_root).is_ok(),
             details: verify_section_3_1_3_2_zero_duplication_and_mobile_fold(site_root).err().unwrap_or_else(|| "OK: DualHubView eliminado, #bombeo-catalog-tabs unificado, Input-First en QuoteWizard y 0 LaTeX crudo.".to_string()),
         },
+        GateReport {
+            name: "28. Bijeccion 19 SKUs Quick-Checkout, 13 Partes Atomicas y Diagramas CAD Rayos-X (Gate MVP v3 D1/D2/D6)".to_string(),
+            passed: verify_quick_checkout_and_cad_bijection(site_root).is_ok(),
+            details: verify_quick_checkout_and_cad_bijection(site_root).err().unwrap_or_else(|| "OK: 19 SKUs Quick-Checkout, 13 partes atomicas (incl. D075C21) y capa X-Ray CAD verificados.".to_string()),
+        },
+        GateReport {
+            name: "29. Verificabilidad Fisica de SLAs, Bandeja c*mu, Balance 3 Vasos Marcy y Costuras LCOM4 (Gate MVP v3 D3/D5/D7/D8/D9)".to_string(),
+            passed: verify_sla_verifiability_and_lcom4_seam(site_root).is_ok(),
+            details: verify_sla_verifiability_and_lcom4_seam(site_root).err().unwrap_or_else(|| "OK: Bandeja c*mu, Pasaporte Proveedor, Clasificacion 3 Vasos Marcy, NOM-141 y costura LCOM4 verificados.".to_string()),
+        },
     ]
 }
 
@@ -1106,6 +1116,97 @@ pub fn verify_section_3_1_3_2_zero_duplication_and_mobile_fold(site_root: &Path)
     Ok(())
 }
 
+/// 28. Gate MVP v3 (D1, D2, D4, D6): Bijeccion de 19 SKUs Quick-Checkout, 13 partes atomicas (incl. D075C21) y capa Rayos-X CAD
+pub fn verify_quick_checkout_and_cad_bijection(site_root: &Path) -> Result<(), String> {
+    let qc_path = site_root.join("data").join("quick_checkout_Catalog.json");
+    if !qc_path.exists() {
+        return Err("Falta data/quick_checkout_Catalog.json (D1)".to_string());
+    }
+    let qc_raw = fs::read_to_string(&qc_path).map_err(|e| e.to_string())?;
+    let qc_arr: serde_json::Value = serde_json::from_str(&qc_raw).map_err(|e| e.to_string())?;
+    let skus = qc_arr.as_array().ok_or("quick_checkout_Catalog.json debe ser un arreglo JSON")?;
+    if skus.len() != 19 {
+        return Err(format!("quick_checkout_Catalog.json debe contener exactamente 19 SKUs Tier-1 (encontrados: {})", skus.len()));
+    }
+
+    let atomic_path = site_root.join("data").join("atomic_parts.json");
+    let atomic_raw = fs::read_to_string(&atomic_path).map_err(|e| e.to_string())?;
+    let atomic_arr: serde_json::Value = serde_json::from_str(&atomic_raw).map_err(|e| e.to_string())?;
+    let parts = atomic_arr.as_array().ok_or("atomic_parts.json debe ser un arreglo JSON")?;
+    if parts.len() < 13 {
+        return Err(format!("atomic_parts.json debe contener al menos 13 partes atomicas (encontradas: {})", parts.len()));
+    }
+    let has_d075c21 = parts.iter().any(|p| p.get("part_number").and_then(|v| v.as_str()) == Some("D075C21"));
+    if !has_d075c21 {
+        return Err("atomic_parts.json carece de la Camisa Protectora de Flecha D075C21 (D6)".to_string());
+    }
+
+    for rel in [
+        "src/pages/productos/[slug].astro",
+        "src/pages/en/products/[slug].astro",
+        "src/components/TechnicalDiagrams.astro",
+        "src/components/PumpAssemblyReport.astro",
+    ] {
+        if !site_root.join(rel).exists() {
+            return Err(format!("Falta archivo requerido para bijeccion CAD/Quick-Checkout: {}", rel));
+        }
+    }
+
+    let diag_src = fs::read_to_string(site_root.join("src/components/TechnicalDiagrams.astro")).map_err(|e| e.to_string())?;
+    if !diag_src.contains("data-layer=\"xray-wear\"") || !diag_src.contains("0.76") {
+        return Err("TechnicalDiagrams.astro carece de data-layer=\"xray-wear\" o referencia ISO/IEC 7810 (0.76 mm)".to_string());
+    }
+
+    Ok(())
+}
+
+/// 29. Gate MVP v3 (D3, D5, D7, D8, D9): Verificabilidad Fisica de SLAs, Bandeja c*mu, Balance 3 Vasos Marcy y Costuras LCOM4
+pub fn verify_sla_verifiability_and_lcom4_seam(site_root: &Path) -> Result<(), String> {
+    for rel in [
+        "src/scripts/requisitionTrayBus.js",
+        "src/components/RequisitionTraySummary.astro",
+        "src/pages/clasificacion/index.astro",
+        "src/pages/en/classification/index.astro",
+    ] {
+        if !site_root.join(rel).exists() {
+            return Err(format!("Falta componente/ruta del MVP v3.0: {}", rel));
+        }
+    }
+
+    let engine_src = fs::read_to_string(site_root.join("src/scripts/slurryEngine.js")).map_err(|e| e.to_string())?;
+    for fn_sig in [
+        "export function calculateThreeCupMarcyCycloneBalance",
+        "export function evaluateFilterPressPlateDeflection",
+        "export function computeSelectionOrderCodeHash",
+    ] {
+        if !engine_src.contains(fn_sig) {
+            return Err(format!("slurryEngine.js carece de {}", fn_sig));
+        }
+    }
+
+    let tray_src = fs::read_to_string(site_root.join("src/scripts/requisitionTrayBus.js")).map_err(|e| e.to_string())?;
+    for fn_sig in [
+        "export function buildCmuPrioritySubjectLine",
+        "export function buildSmatVendorPassportPayload",
+        "export function encodeReorderUrlQuery",
+    ] {
+        if !tray_src.contains(fn_sig) {
+            return Err(format!("requisitionTrayBus.js carece de {}", fn_sig));
+        }
+    }
+
+    let flot_es = fs::read_to_string(site_root.join("src/pages/flotacion/index.astro")).map_err(|e| e.to_string())?;
+    let filt_es = fs::read_to_string(site_root.join("src/pages/filtracion/index.astro")).map_err(|e| e.to_string())?;
+    if !flot_es.contains("id=\"flotation-dropin-matrix\"") {
+        return Err("flotacion/index.astro carece de #flotation-dropin-matrix (D8)".to_string());
+    }
+    if !filt_es.contains("id=\"nom141-plate-flexure-verifier\"") {
+        return Err("filtracion/index.astro carece de #nom141-plate-flexure-verifier (D8)".to_string());
+    }
+
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1251,6 +1352,24 @@ mod tests {
         assert!(
             verify_section_3_1_3_2_zero_duplication_and_mobile_fold(&root).is_ok(),
             "Fallo en Gate 27: erradicacion de redundancias Secciones 3.1 y 3.2 y fold movil Apple HIG"
+        );
+    }
+
+    #[test]
+    fn test_gate_28_quick_checkout_and_cad_bijection() {
+        let root = find_site_root();
+        assert!(
+            verify_quick_checkout_and_cad_bijection(&root).is_ok(),
+            "Fallo en Gate 28: bijeccion de 19 SKUs Quick-Checkout, 13 partes atomicas y capa X-Ray CAD"
+        );
+    }
+
+    #[test]
+    fn test_gate_29_sla_verifiability_and_lcom4_seam() {
+        let root = find_site_root();
+        assert!(
+            verify_sla_verifiability_and_lcom4_seam(&root).is_ok(),
+            "Fallo en Gate 29: verificabilidad fisica de SLAs, Bandeja c*mu, Balance 3 Vasos Marcy y costuras LCOM4"
         );
     }
 }

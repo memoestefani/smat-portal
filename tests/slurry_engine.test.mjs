@@ -550,6 +550,79 @@ test('Sección 2.1 (Tests 227-231): Paridad Total Backend — SiC, ISO 281 L10mh
   assert.equal(parsedCtx.drive_arr, 'ZVZ');
 });
 
+// ============================================================================
+// TESTS MVP v3.0 (SLICE-16): Balance de Hidrociclón por 3 Vasos Marcy (D7),
+// Deflexión de Placas de Filtro Prensa Timoshenko (D8) y Hash FNV-1a (D4)
+// ============================================================================
+test('SLICE-16: Balance de Masa de Hidrociclón por 3 Vasos Marcy, Plitt d50c, Roping y Deflexión Timoshenko', async () => {
+  const {
+    calculateThreeCupMarcyCycloneBalance,
+    evaluateFilterPressPlateDeflection,
+    computeSelectionOrderCodeHash
+  } = await import('../src/scripts/slurryEngine.js');
+
+  // 1) Operación normal en semi-paraguas
+  const optimalCyc = calculateThreeCupMarcyCycloneBalance({
+    feedSg: 1.35,
+    underflowSg: 1.78,
+    overflowSg: 1.15,
+    solidsSg: 2.7,
+    apexDiameterMm: 55,
+    vortexDiameterMm: 100,
+    feedPressureKpa: 95,
+    cycloneDiameterMm: 380
+  });
+  assert.equal(optimalCyc.dischargeRegime, 'SEMI_UMBRELLA_OPTIMAL');
+  assert.equal(optimalCyc.isRopingCritical, false);
+  assert.ok(optimalCyc.solidsRecoveryPct > 65 && optimalCyc.solidsRecoveryPct < 95);
+  assert.ok(optimalCyc.d50cMicrons >= 35 && optimalCyc.d50cMicrons <= 180);
+
+  // 2) Condición de acordonamiento severo (Roping: C_v,u >= 0.56)
+  const ropingCyc = calculateThreeCupMarcyCycloneBalance({
+    feedSg: 1.48,
+    underflowSg: 2.08,
+    overflowSg: 1.22,
+    solidsSg: 2.7,
+    apexDiameterMm: 38,
+    vortexDiameterMm: 105,
+    feedPressureKpa: 110,
+    cycloneDiameterMm: 380
+  });
+  assert.equal(ropingCyc.isRopingCritical, true);
+  assert.equal(ropingCyc.dischargeRegime, 'ROPING_CORDON');
+  assert.equal(ropingCyc.recommendedSkuId, 'SKU-QC-11');
+
+  // 3) Deflexión de placas de filtro prensa (Timoshenko) y cumplimiento NOM-141
+  const safePlate = evaluateFilterPressPlateDeflection({
+    feedPressureBar: 12,
+    cloggedPortsCount: 0,
+    plateWidthMm: 1200,
+    plateThicknessMm: 68,
+    cakeMoistureTargetPct: 14
+  });
+  assert.equal(safePlate.isPlateCrackingRisk, false);
+  assert.equal(safePlate.nom141Compliant, true);
+  assert.equal(safePlate.recommendedClothSkuId, 'SKU-QC-17');
+  assert.equal(safePlate.recommendedPlateSkuId, 'SKU-QC-18');
+
+  const cloggedPlate = evaluateFilterPressPlateDeflection({
+    feedPressureBar: 16,
+    cloggedPortsCount: 3,
+    plateWidthMm: 1500,
+    plateThicknessMm: 55,
+    cakeMoistureTargetPct: 19
+  });
+  assert.equal(cloggedPlate.isPlateCrackingRisk, true);
+  assert.equal(cloggedPlate.nom141Compliant, false);
+
+  // 4) Hash FNV-1a determinista de selección técnica (SMAT-XXXX-YYYY)
+  const hashA = computeSelectionOrderCodeHash({ branch: 'metal', seal: 'expeller_dry', serie: '6x4', mat: 'A05' });
+  const hashB = computeSelectionOrderCodeHash({ mat: 'A05', serie: '6x4', seal: 'expeller_dry', branch: 'metal' });
+  assert.equal(hashA, hashB, 'El hash debe ser invariante al orden de las llaves del objeto');
+  assert.match(hashA, /^SMAT-[0-9A-F]{4}-[0-9A-F]{4}$/);
+});
+
+
 
 
 

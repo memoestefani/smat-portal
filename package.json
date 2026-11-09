@@ -8,13 +8,14 @@
     "start": "astro dev",
     "build": "astro build",
     "check": "astro check",
-    "test": "node --test tests/b2b_functions.test.mjs tests/slurry_engine.test.mjs tests/section_2_1_parity.test.mjs tests/section_3_1_3_2_ergos.test.mjs tests/ssotRuntimeAndSolarPolarity.test.mjs",
+    "test": "node --test tests/b2b_functions.test.mjs tests/slurry_engine.test.mjs tests/section_2_1_parity.test.mjs tests/section_3_1_3_2_ergos.test.mjs tests/ssotRuntimeAndSolarPolarity.test.mjs tests/mvp_v3_decisions.test.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "gate": "cargo run --manifest-path crates/smat-gate/Cargo.toml -- --check",
     "gate:test": "cargo test --manifest-path crates/smat-gate/Cargo.toml",
     "clean": "powershell -ExecutionPolicy Bypass -File tools/clean_debris.ps1",
-    "preflight": "astro check && npm test && npm run gate && astro build"
+    "debris:clean": "powershell -ExecutionPolicy Bypass -File tools/clean_debris.ps1",
+    "preflight": "astro check && npm test && astro build && npm run gate"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.2.0",

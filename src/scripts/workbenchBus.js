@@ -148,6 +148,76 @@ const ATOMIC_ENGINEERING_ENRICHMENT = {
     station_name_es: 'Extremo Húmedo / Calibración Axial',
     station_name_en: 'Wet-End / Axial Clearance Calibration',
     assembly_order_note: '11. Cuello de Succión Cónico Throatbush (Estación 03 • Claro δ=0.5–1.0 mm)'
+  },
+  D075C21: {
+    slug: 'camisa_flecha_d075c21',
+    role: 'kit_sellado',
+    pipe_size: '6x4',
+    smat_code: 'SMAT-SEAL-6X4-SLV',
+    wall_thickness_mm: 16,
+    station_name_es: 'Sellado Centrífugo / Camisa Protectora de Eje',
+    station_name_en: 'Centrifugal Seal / Shaft Protection Sleeve',
+    assembly_order_note: '04. Camisa Protectora de Flecha D075C21 (Estación 02 • Sin entalla en eje)'
+  },
+  DAM005: {
+    slug: 'cartucho_rodamientos_dam005',
+    role: 'kit_rodamientos',
+    pipe_size: '6x4',
+    smat_code: 'SMAT-PUMP-6X4-BRG',
+    wall_thickness_mm: 28,
+    station_name_es: 'Cartucho Motriz y Rodamientos (ISO 281)',
+    station_name_en: 'Drive Cartridge & Bearings (ISO 281)',
+    assembly_order_note: '01. Cartucho de Rodamientos DAM005 (Estación 01 • Ajuste Axial)'
+  },
+  E4132: {
+    slug: 'forro_fpl_e4132',
+    role: 'kit_wet_end',
+    pipe_size: '6x4',
+    smat_code: 'SMAT-PUMP-6X4-FPL',
+    wall_thickness_mm: 26,
+    station_name_es: 'Extremo Húmedo Bipartido (Elastómero)',
+    station_name_en: 'Split Wet-End Liner (Elastomer)',
+    assembly_order_note: '08. Forro de Plato Posterior E4132 (Estación 03 • Hule R55 / PU)'
+  },
+  D3110: {
+    slug: 'voluta_monolitica_d3110',
+    role: 'solo_voluta',
+    pipe_size: '3x2',
+    smat_code: 'SMAT-PUMP-3X2-VOL',
+    wall_thickness_mm: 34,
+    station_name_es: 'Extremo Húmedo (Lote 5-5-4)',
+    station_name_en: 'Wet-End Assembly (5-5-4 Lot)',
+    assembly_order_note: '10. Voluta Monolítica Alto Cromo D3110 (Estación 03 • Lote 5:5:4)'
+  },
+  D4018: {
+    slug: 'forro_tapa_succion_d4018',
+    role: 'solo_voluta',
+    pipe_size: '6x4',
+    smat_code: 'SMAT-PUMP-6X4-CPL',
+    wall_thickness_mm: 30,
+    station_name_es: 'Extremo Húmedo Bipartido (Elastómero)',
+    station_name_en: 'Split Wet-End Liner (Elastomer)',
+    assembly_order_note: '12. Forro de Tapa de Succión CPL D4018 (Estación 03 • Hule R55)'
+  },
+  D4028: {
+    slug: 'expulsor_centrifugo_d4028',
+    role: 'kit_sellado',
+    pipe_size: '4x3',
+    smat_code: 'SMAT-SEAL-4X3-EXP',
+    wall_thickness_mm: 20,
+    station_name_es: 'Sellado Centrífugo Seco',
+    station_name_en: 'Dry Centrifugal Sealing',
+    assembly_order_note: '05. Impulsor Expulsor Centrífugo D4028 (Estación 02 • Sello Seco)'
+  },
+  D4029: {
+    slug: 'anillo_expulsor_d4029',
+    role: 'kit_sellado',
+    pipe_size: '4x3',
+    smat_code: 'SMAT-SEAL-4X3-EXR',
+    wall_thickness_mm: 22,
+    station_name_es: 'Sellado Centrífugo Seco / Cámara de Grasa',
+    station_name_en: 'Dry Centrifugal Seal / Grease Chamber',
+    assembly_order_note: '06. Anillo Expulsor D4029 (Estación 02 • Laberinto Seco)'
   }
 };
 
@@ -1633,7 +1703,17 @@ export const DEFAULT_WORKBENCH_STATE_V2 = Object.freeze({
   sealBranch: 'expeller_dry',
   impellerExitWidthMm: 48,
   dynamicCapacityCkN: 145,
-  oreDensitySg: 1.402
+  oreDensitySg: 1.402,
+  cycloneCircuit: Object.freeze({
+    feedSg: 1.35,
+    underflowSg: 1.82,
+    overflowSg: 1.15,
+    apexMm: 50,
+    vortexMm: 100,
+    d50cMicrons: 74,
+    solidsRecoveryPct: 84.2,
+    ropingRisk: false
+  })
 });
 
 /**
@@ -1775,6 +1855,20 @@ export function normalizeWorkbenchStateV2(partial = {}) {
   normalized.impellerExitWidthMm = normalized.b2_mm;
   normalized.dynamicCapacityCkN = normalized.cap_c_kn;
   normalized.oreDensitySg = normalized.rhop;
+
+  const rawCyc = (src.cycloneCircuit && typeof src.cycloneCircuit === 'object')
+    ? src.cycloneCircuit
+    : (met.cycloneCircuit && typeof met.cycloneCircuit === 'object' ? met.cycloneCircuit : {});
+  normalized.cycloneCircuit = {
+    feedSg: Number(rawCyc.feedSg ?? DEFAULT_WORKBENCH_STATE_V2.cycloneCircuit.feedSg) || 1.35,
+    underflowSg: Number(rawCyc.underflowSg ?? DEFAULT_WORKBENCH_STATE_V2.cycloneCircuit.underflowSg) || 1.82,
+    overflowSg: Number(rawCyc.overflowSg ?? DEFAULT_WORKBENCH_STATE_V2.cycloneCircuit.overflowSg) || 1.15,
+    apexMm: Number(rawCyc.apexMm ?? DEFAULT_WORKBENCH_STATE_V2.cycloneCircuit.apexMm) || 50,
+    vortexMm: Number(rawCyc.vortexMm ?? DEFAULT_WORKBENCH_STATE_V2.cycloneCircuit.vortexMm) || 100,
+    d50cMicrons: Number(rawCyc.d50cMicrons ?? DEFAULT_WORKBENCH_STATE_V2.cycloneCircuit.d50cMicrons) || 74,
+    solidsRecoveryPct: Number(rawCyc.solidsRecoveryPct ?? DEFAULT_WORKBENCH_STATE_V2.cycloneCircuit.solidsRecoveryPct) || 84.2,
+    ropingRisk: Boolean(rawCyc.ropingRisk ?? DEFAULT_WORKBENCH_STATE_V2.cycloneCircuit.ropingRisk)
+  };
 
   return normalized;
 }
@@ -1939,7 +2033,8 @@ export const workbenchStateLens = Object.freeze({
 
 /**
  * Guarda el estado del Workbench fusionando claves en sessionStorage y localStorage bajo contrato único V2 (Decisión 1-C+)
- * @param {Object} state 
+ * @param {any} state 
+ * @returns {any}
  */
 export function saveWorkbenchSession(state = {}) {
   if (typeof window === 'undefined') return null;
@@ -1963,7 +2058,7 @@ export function saveWorkbenchSession(state = {}) {
 
 /**
  * Carga el estado del Workbench desde sessionStorage o localStorage unificado (Decisión 1-C+)
- * @returns {Object|null}
+ * @returns {any}
  */
 export function loadWorkbenchSession() {
   if (typeof window === 'undefined') return null;

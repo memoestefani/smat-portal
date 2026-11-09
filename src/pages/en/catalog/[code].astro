@@ -177,6 +177,10 @@ const productSchema = {
                     <th>Assembly Guarantee:</th>
                     <td>{part.fit_guarantee_en}</td>
                   </tr>
+                  <tr data-iso7810-ref="0.76mm">
+                    <th>Everyday Physical Scale (ISO/IEC 7810):</th>
+                    <td>Optimal reference axial clearance δ = 0.76 mm (exact thickness of 1 standard ISO 7810 bank card).</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -223,6 +227,19 @@ const productSchema = {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                 <span>Generate Formal RFQ / A4 Slip</span>
               </a>
+
+              <button
+                type="button"
+                class="btn btn-rfq-wizard"
+                data-add-atomic-to-tray
+                data-atomic-code={part.part_number}
+                data-name-es={part.name_es}
+                data-name-en={part.name_en}
+                data-weight-kg={fullSpec.weight_kg}
+              >
+                <span>+ Add {part.part_number} to B2B Tray</span>
+              </button>
+              <p data-atomic-tray-msg hidden style="margin:0; font-size:0.82rem; font-weight:700; color:#065f46;"></p>
             </div>
 
             <div class="dock-facts">
@@ -256,6 +273,31 @@ const productSchema = {
 
   <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
 </BaseLayout>
+
+<script>
+  import { addTrayItem } from '../../../scripts/requisitionTrayBus.js';
+
+  const btn = document.querySelector('[data-add-atomic-to-tray]') as HTMLButtonElement | null;
+  const msg = document.querySelector('[data-atomic-tray-msg]') as HTMLElement | null;
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const code = btn.getAttribute('data-atomic-code') || 'E4147';
+      const updated = addTrayItem({
+        skuId: code,
+        atomicCode: code,
+        nameEs: btn.getAttribute('data-name-es') || code,
+        nameEn: btn.getAttribute('data-name-en') || code,
+        unitWeightKg: Number(btn.getAttribute('data-weight-kg')) || 18.0,
+        qty: 1,
+        criticalityMode: 'PARO_DE_LINEA'
+      });
+      if (msg) {
+        msg.hidden = false;
+        msg.textContent = `✓ ${code} added to B2B Tray (${updated.items.length} active items).`;
+      }
+    });
+  }
+</script>
 
 <style>
   .part-page-main {
