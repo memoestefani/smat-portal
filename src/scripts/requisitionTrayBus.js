@@ -338,3 +338,91 @@ export function hydrateTrayFromReorderQuery(searchString = '') {
     updatedAtIso: new Date().toISOString()
   });
 }
+
+/**
+ * Calcula el descriptor de prioridad c*mu (Van Mieghem 1995) y el carril de checkout
+ * según urgencia de planta, monto estimado (< $25,000 MXN vs > $25,000 MXN) y régimen (hay / se_pide / se_fabrica).
+ *
+ * @param {any} [params={}]
+ * @returns {any}
+ */
+export function computeCmuPriorityDescriptor(params = {}) {
+  const urgency = String(params.urgency || 'normal').toLowerCase();
+  const estimatedTotalMxn = Math.max(0, Number(params.estimatedTotalMxn ?? 18000));
+  const stockRegime = String(params.stockRegime || 'hay').toLowerCase();
+
+  const isPettyCash = estimatedTotalMxn > 0 && estimatedTotalMxn <= 25000;
+  const checkoutLane = isPettyCash ? 'CAJA_CHICA_CFDI40' : 'ORDEN_COMPRA_SAP';
+
+  if (urgency === 'emergency' || urgency === 'paro_de_linea') {
+    return {
+      priorityCode: 'P1-PARO-PLANTA',
+      cmuScore: 98.5,
+      checkoutLane,
+      stockRegime,
+      advancePaymentPct: stockRegime === 'se_fabrica' ? 50 : 0,
+      slaResponseMinutes: 15,
+      labelEs: '🚨 P1 · PARO DE LÍNEA (Atención Ingeniería < 15 min)',
+      labelEn: '🚨 P1 · LINE DOWNTIME (Engineering SLA < 15 min)'
+    };
+  }
+
+  if (stockRegime === 'se_fabrica') {
+    return {
+      priorityCode: 'P3-PROYECTO-50%-ANTICIPO',
+      cmuScore: 62.0,
+      checkoutLane: 'ORDEN_COMPRA_SAP',
+      stockRegime,
+      advancePaymentPct: 50,
+      slaResponseMinutes: 120,
+      labelEs: '🔵 P3 · FABRICACIÓN BAJO PLANO (50% Anticipo + OC)',
+      labelEn: '🔵 P3 · CUSTOM FABRICATION (50% Advance + PO)'
+    };
+  }
+
+  if (isPettyCash && stockRegime === 'hay') {
+    return {
+      priorityCode: 'P1-CAJA-CHICA-HAY',
+      cmuScore: 91.0,
+      checkoutLane: 'CAJA_CHICA_CFDI40',
+      stockRegime,
+      advancePaymentPct: 0,
+      slaResponseMinutes: 30,
+      labelEs: '⚡ P1 · CAJA CHICA (< $25,000 MXN · CFDI 4.0 Hoy)',
+      labelEn: '⚡ P1 · PETTY CASH (< $25,000 MXN · CFDI 4.0 Today)'
+    };
+  }
+
+  return {
+    priorityCode: 'P2-REPOSICION-LOTE',
+    cmuScore: 76.0,
+    checkoutLane,
+    stockRegime,
+    advancePaymentPct: stockRegime === 'se_pide' ? 30 : 0,
+    slaResponseMinutes: 60,
+    labelEs: '🟡 P2 · REPOSICIÓN PROGRAMADA (s, S) / ORDEN DE COMPRA',
+    labelEn: '🟡 P2 · SCHEDULED REPLENISHMENT (s, S) / PURCHASE ORDER'
+  };
+}
+
+/**
+ * Calcula las ventanas deterministas de reorden acoplado (Día 90 / Día 150 / Día 180)
+ * para sincronización de extremo húmedo 5:5:4 bajo política (s, S).
+ *
+ * @param {any} [telemetry={}]
+ * @returns {any}
+ */
+export function calculateCoupledReorderWindowDays(telemetry = {}) {
+  const sg = Math.max(1.0, Math.min(2.4, Number(telemetry.sg ?? 1.50)));
+  const d50Um = Math.max(15, Math.min(1000, Number(telemetry.d50Um ?? 120)));
+  const severityFactor = Number(((sg / 1.50) * Math.pow(d50Um / 120, 0.15)).toFixed(2));
+
+  return {
+    sleeveInspectionDay: 90,
+    impellerThroatbushSwapDay: 150,
+    voluteLinerOverhaulDay: 180,
+    severityFactor,
+    policySummaryEs: 'Día 90: Camisa HVOF D075C21 + Expulsor | Día 150: Impulsor E4147 + Throatbush E4083 | Día 180: Overhaul Voluta D3110 5:5:4',
+    policySummaryEn: 'Day 90: D075C21 HVOF Sleeve + Expeller | Day 150: E4147 Impeller + E4083 Throatbush | Day 180: D3110 Volute 5:5:4 Overhaul'
+  };
+}

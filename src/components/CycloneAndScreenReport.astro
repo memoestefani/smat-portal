@@ -1,0 +1,228 @@
+---
+interface Props {
+  lang?: 'es' | 'en';
+}
+
+const { lang = 'es' } = Astro.props;
+const isEs = lang === 'es';
+
+const wearZones = [
+  {
+    zone: '#01',
+    nameEs: 'Buscador de Vórtice (Vortex Finder)',
+    nameEn: 'Vortex Finder (Overflow Tube)',
+    skuId: 'SKU-QC-12',
+    slugEs: 'vortex-finder-alto-cromo-ceramico-hidrociclon',
+    slugEn: 'high-chrome-ceramic-hydrocyclone-vortex-finder',
+    material: 'SiC Sinterizado / Cr27 A05',
+    physicsEs: 'Controla el corte d50c de Plitt. Borde inferior afilado (tolerancia 0.76 mm, 1 tarjeta ISO/IEC 7810) que corta el cortocircuito de pared.',
+    physicsEn: 'Governs Plitt d50c cut size. Sharp lower lip (0.76 mm tolerance, 1 ISO/IEC 7810 card) shears short-circuit wall flow.'
+  },
+  {
+    zone: '#02',
+    nameEs: 'Cámara de Alimentación Involuta (Feed Chamber)',
+    nameEn: 'Involute Feed Chamber Liner',
+    skuId: 'SKU-QC-13',
+    slugEs: 'forro-conico-inferior-poliuretano-hidrociclon',
+    slugEn: 'lower-cone-polyurethane-liner-hydrocyclone',
+    material: 'Hule R55 / Poliuretano 85 Shore A / Cr27',
+    physicsEs: 'Entrada tangencial involuta que minimiza la turbulencia de impacto inicial y estabiliza la columna central de aire.',
+    physicsEn: 'Tangential involute entry minimizing initial impact turbulence and stabilizing the central air core.'
+  },
+  {
+    zone: '#03',
+    nameEs: 'Sección Cilíndrica (Cylinder Liner)',
+    nameEn: 'Cylindrical Section Liner',
+    skuId: 'SKU-QC-13',
+    slugEs: 'forro-conico-inferior-poliuretano-hidrociclon',
+    slugEn: 'lower-cone-polyurethane-liner-hydrocyclone',
+    material: 'Hule R55 / Poliuretano Colado',
+    physicsEs: 'Define el tiempo de residencia centrífuga primaria. Unión machihembrada sin escalón (δ_r ≤ 3.0 mm, < 0.76 mm nominal).',
+    physicsEn: 'Sets primary centrifugal residence time. Tongue-and-groove step-free joint (δ_r ≤ 3.0 mm, < 0.76 mm nominal).'
+  },
+  {
+    zone: '#04',
+    nameEs: 'Cono Superior e Inferior (Upper & Lower Cone)',
+    nameEn: 'Upper & Lower Cone Liners',
+    skuId: 'SKU-QC-13',
+    slugEs: 'forro-conico-inferior-poliuretano-hidrociclon',
+    slugEn: 'lower-cone-polyurethane-liner-hydrocyclone',
+    material: 'Poliuretano 85 Shore A / Cerámica SiC',
+    physicsEs: 'Zona de máxima aceleración tangencial. Escalones radiales δ_r > 3 mm disparan micro-vórtices de Görtler y desvían gruesos al overflow.',
+    physicsEn: 'Peak tangential acceleration zone. Radial steps δ_r > 3 mm trigger Görtler micro-vortices and misplace coarse grit to overflow.'
+  },
+  {
+    zone: '#05',
+    nameEs: 'Boquilla de Descarga (Ápex / Spigot)',
+    nameEn: 'Underflow Spigot (Apex Insert)',
+    skuId: 'SKU-QC-11',
+    slugEs: 'apex-ceramico-carburo-silicio-hidrociclon',
+    slugEn: 'silicon-carbide-ceramic-hydrocyclone-apex',
+    material: 'Carburo de Silicio Sinterizado SiC (≥ 2200 HV)',
+    physicsEs: 'Regula la relación du/do y la fracción volumétrica Cv,u (< 56%) para mantener descarga tipo semi-paraguas sin acordonamiento (roping).',
+    physicsEn: 'Controls du/do ratio and volumetric solids Cv,u (< 56%) to sustain semi-umbrella spray without roping.'
+  }
+];
+
+const cycloneModels = [
+  { model: 'SMAT D6 (6")', flowM3h: '12 – 32', d50Um: '15 – 45', apexMm: '19 – 45', vortexMm: '38 – 64', marriedPump: '3x2 / 4x3' },
+  { model: 'SMAT D10 (10")', flowM3h: '45 – 115', d50Um: '30 – 75', apexMm: '32 – 70', vortexMm: '65 – 110', marriedPump: '4x3 + Nido D10' },
+  { model: 'SMAT D10B (10" Alto Flujo)', flowM3h: '65 – 145', d50Um: '35 – 85', apexMm: '38 – 82', vortexMm: '75 – 125', marriedPump: '6x4 + Nido D10B' },
+  { model: 'SMAT D15 (15")', flowM3h: '110 – 260', d50Um: '45 – 125', apexMm: '50 – 115', vortexMm: '100 – 175', marriedPump: '6x4 + Nido D15' },
+  { model: 'SMAT D20 (20")', flowM3h: '220 – 520', d50Um: '65 – 180', apexMm: '75 – 160', vortexMm: '150 – 250', marriedPump: '8x6 + Nido D20' }
+];
+---
+
+<section class="cyclone-screen-report my-8 space-y-8" data-cyclone-screen-report>
+  <!-- Bloque 1: Reporte de Despiece de las 5 Zonas de Desgaste de un Hidrociclón (Plano 3 · Avenida 2) -->
+  <div class="rounded-2xl border border-slate-300 bg-white p-6 shadow-sm">
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4 mb-5">
+      <div>
+        <span class="text-xs font-mono font-bold uppercase tracking-wider text-sky-800">
+          {isEs ? 'PLANO 3 · REPORTE DE DESPIECE EN 5 ZONAS (AVENIDA 2 · CANDADO G3)' : 'PLANE 3 · 5-ZONE EXPLODED WEAR REPORT (AVENUE 2 · GATE G3)'}
+        </span>
+        <h2 class="text-xl font-extrabold text-slate-900 mt-1">
+          {isEs
+            ? 'Anatomía de Desgaste Diferencial del Hidrociclón (Cero Escalón δ_r ≤ 3 mm)'
+            : 'Differential Wear Anatomy of the Hydrocyclone (Zero-Step δ_r ≤ 3 mm)'}
+        </h2>
+      </div>
+      <a
+        href={isEs ? '/productos/paquete-casado-bomba-lodos-hidrociclon/' : '/en/products/married-slurry-pump-hydrocyclone-package/'}
+        class="rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-mono font-bold text-amber-300 hover:bg-slate-800 transition"
+      >
+        {isEs ? '🔗 Ver Paquete Casado Bomba + Hidrociclón (Avenida 6A) →' : '🔗 View Married Pump + Cyclone Package (Avenue 6A) →'}
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+      {wearZones.map((z) => (
+        <article class="rounded-xl border border-slate-200 bg-slate-50 p-3.5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between text-xs font-mono font-bold text-amber-800 mb-1">
+              <span>{z.zone}</span>
+              <span>{z.skuId}</span>
+            </div>
+            <h3 class="text-sm font-extrabold text-slate-900 mb-1.5">
+              {isEs ? z.nameEs : z.nameEn}
+            </h3>
+            <div class="text-[11px] font-mono font-semibold text-sky-900 bg-sky-50 border border-sky-200 rounded px-2 py-0.5 mb-2">
+              {z.material}
+            </div>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              {isEs ? z.physicsEs : z.physicsEn}
+            </p>
+          </div>
+          <a
+            href={isEs ? `/productos/${z.slugEs}/` : `/en/products/${z.slugEn}/`}
+            class="mt-3 inline-block text-xs font-mono font-bold text-sky-800 hover:underline"
+          >
+            {isEs ? 'Cotizar zona →' : 'Quote zone →'}
+          </a>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  <!-- Bloque 2: Tabla Paramétrica de Hidrociclones Completos (D6 a D20) y Paquetes Casados -->
+  <div class="rounded-2xl border border-slate-300 bg-white p-6 shadow-sm overflow-x-auto">
+    <h2 class="text-lg font-extrabold text-slate-900 mb-2">
+      {isEs
+        ? 'Tabla Paramétrica de Hidrociclones SMAT (D6, D10, D10B, D15, D20) y Paquetes Casados'
+        : 'SMAT Hydrocyclone Parametric Table (D6, D10, D10B, D15, D20) & Married Packages'}
+    </h2>
+    <p class="text-xs text-slate-600 mb-4">
+      {isEs
+        ? 'Dimensionamiento acoplado Plitt-Marcy para evitar desbalance entre bomba de alimentación y batería de clasificación.'
+        : 'Coupled Plitt-Marcy sizing to prevent hydraulic mismatch between cyclone feed pump and classification cluster.'}
+    </p>
+
+    <table class="w-full text-left border-collapse text-xs">
+      <thead>
+        <tr class="border-b-2 border-slate-300 bg-slate-100 font-mono text-slate-800">
+          <th class="py-2.5 px-3">{isEs ? 'Modelo SMAT' : 'SMAT Model'}</th>
+          <th class="py-2.5 px-3">{isEs ? 'Capacidad (m³/h)' : 'Capacity (m³/h)'}</th>
+          <th class="py-2.5 px-3">{isEs ? 'Corte Plitt d50c (µm)' : 'Plitt Cut d50c (µm)'}</th>
+          <th class="py-2.5 px-3">{isEs ? 'Rango Ápex du (mm)' : 'Apex Range du (mm)'}</th>
+          <th class="py-2.5 px-3">{isEs ? 'Rango Vortex do (mm)' : 'Vortex Range do (mm)'}</th>
+          <th class="py-2.5 px-3">{isEs ? 'Paquete Casado (6A)' : 'Married Package (6A)'}</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-200 font-mono text-slate-800">
+        {cycloneModels.map((row) => (
+          <tr class="hover:bg-slate-50">
+            <td class="py-2.5 px-3 font-bold text-slate-950">{row.model}</td>
+            <td class="py-2.5 px-3">{row.flowM3h}</td>
+            <td class="py-2.5 px-3 text-sky-900 font-bold">{row.d50Um}</td>
+            <td class="py-2.5 px-3">{row.apexMm}</td>
+            <td class="py-2.5 px-3">{row.vortexMm}</td>
+            <td class="py-2.5 px-3 font-bold text-amber-900">{row.marriedPump}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Bloque 3: Avenida 3 — Mallas Finas de Uretano TH48-30 y Módulos 1'x1' (ARB-SMAT-29) -->
+  <div class="rounded-2xl border border-amber-500/40 bg-slate-900 p-6 text-slate-100 shadow-lg">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+      <div>
+        <span class="text-xs font-mono font-bold uppercase tracking-wider text-amber-400">
+          {isEs ? 'AVENIDA 3 · CRIBADO FINO ANTI-CEGAMIENTO (ARB-SMAT-29)' : 'AVENUE 3 · ANTI-BLINDING FINE SCREENING (ARB-SMAT-29)'}
+        </span>
+        <h2 class="text-xl font-extrabold text-white mt-1">
+          {isEs
+            ? 'Mallas Finas de Uretano TH48-30 y Paneles Modulares 1\'x1\' (Weibull α ≥ 4.2)'
+            : 'TH48-30 Fine Urethane Screens & 1\'x1\' Modular Panels (Weibull α ≥ 4.2)'}
+        </h2>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a
+          href={isEs ? '/productos/mallas-finas-uretano-th48-30/' : '/en/products/fine-urethane-screens-th48-30/'}
+          class="rounded-lg bg-amber-500 px-3.5 py-2 text-xs font-mono font-bold text-slate-950 hover:bg-amber-400 transition"
+        >
+          {isEs ? 'Ficha TH48-30 (SKU-QC-13) →' : 'TH48-30 Sheet (SKU-QC-13) →'}
+        </a>
+        <a
+          href={isEs ? '/productos/modulos-poliuretano-1x1-pin-camisa/' : '/en/products/polyurethane-modular-panels-1x1/'}
+          class="rounded-lg border border-slate-600 bg-slate-800 px-3.5 py-2 text-xs font-mono font-bold text-slate-200 hover:border-amber-400 transition"
+        >
+          {isEs ? 'Módulos 1\'x1\' (SKU-QC-09) →' : '1\'x1\' Modules (SKU-QC-09) →'}
+        </a>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+      <div class="rounded-xl bg-slate-950/80 border border-slate-800 p-4">
+        <strong class="block font-mono text-amber-300 mb-1">
+          {isEs ? '1. ÁNGULO DE ALIVIO CÓNICO (3°–5°)' : '1. TAPERED RELIEF ANGLE (3°–5°)'}
+        </strong>
+        <p class="text-slate-300">
+          {isEs
+            ? 'Geometría divergente que libera instantáneamente partículas críticas (near-size 0.8 < d/a < 1.2) apenas superan la garganta superior.'
+            : 'Diverging slot geometry that immediately releases near-size particles (0.8 < d/a < 1.2) once past the top throat.'}
+        </p>
+      </div>
+      <div class="rounded-xl bg-slate-950/80 border border-slate-800 p-4">
+        <strong class="block font-mono text-emerald-300 mb-1">
+          {isEs ? '2. DILATACIÓN ELÁSTICA Δa/a ≈ 2%–4%' : '2. ELASTIC DILATION Δa/a ≈ 2%–4%'}
+        </strong>
+        <p class="text-slate-300">
+          {isEs
+            ? 'Membrana de uretano flexible bajo aceleración de 4–5G que expulsa granos acuñados y sostiene área abierta efectiva A_eff > 32%.'
+            : 'Flexible urethane membrane under 4–5G acceleration that ejects wedged grains and sustains effective open area A_eff > 32%.'}
+        </p>
+      </div>
+      <div class="rounded-xl bg-slate-950/80 border border-slate-800 p-4">
+        <strong class="block font-mono text-sky-300 mb-1">
+          {isEs ? '3. CURVA DE PARTICIÓN WEIBULL α ≥ 4.2' : '3. WEIBULL PARTITION SHARPNESS α ≥ 4.2'}
+        </strong>
+        <p class="text-slate-300">
+          {isEs
+            ? 'Al combinar hidrociclón primario con malla fina TH48-30 en descarga, se elimina el bypass de finos pesados (galena/pirita) por gravedad específica.'
+            : 'Combining primary hydrocyclone classification with TH48-30 fine screens on underflow eliminates heavy-mineral overgrinding bypass.'}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

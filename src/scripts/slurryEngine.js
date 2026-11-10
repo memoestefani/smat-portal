@@ -2019,7 +2019,8 @@ export function computeSelectionOrderCodeHash(payload = {}) {
   return `SMAT-${hex.slice(0, 4)}-${hex.slice(4, 8)}`;
 }
 
-
-
-
+export {
+  calculateUrethaneScreenPartitionWeibull,
+  calculateFlotationGorainKineticRate
+} from './mechanicalAndSeparationEngine.js';
 

@@ -4,11 +4,13 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SchemaOrg from '../components/SchemaOrg.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
+import QuickOrderTray from '../components/QuickOrderTray.astro';
 
 interface Props {
   title: string;
   description: string;
   lang?: 'es' | 'en';
+  canonical?: string;
   canonicalPath?: string;
   alternateEsPath?: string;
   alternateEnPath?: string;
@@ -46,7 +48,7 @@ const ROUTE_EN_TO_ES: Record<string, string> = Object.fromEntries(
 
 const rawPathname = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
 const isEs = (Astro.props.lang ?? 'es') === 'es';
-const defaultCanonical = Astro.props.canonicalPath ?? rawPathname;
+const defaultCanonical = Astro.props.canonicalPath ?? Astro.props.canonical ?? rawPathname;
 const defaultEsPath = Astro.props.alternateEsPath ?? (isEs ? defaultCanonical : (ROUTE_EN_TO_ES[defaultCanonical] ?? '/'));
 const defaultEnPath = Astro.props.alternateEnPath ?? (!isEs ? defaultCanonical : (ROUTE_ES_TO_EN[defaultCanonical] ?? '/en/'));
 
@@ -205,6 +207,7 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
     <slot name="footer">
       <Footer lang={lang} />
     </slot>
+    <QuickOrderTray lang={lang} />
     <WhatsAppButton lang={lang} />
 
     <!-- Script de Registro de Eventos Analíticos de SMAT -->

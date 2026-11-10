@@ -824,6 +824,11 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             passed: verify_sla_verifiability_and_lcom4_seam(site_root).is_ok(),
             details: verify_sla_verifiability_and_lcom4_seam(site_root).err().unwrap_or_else(|| "OK: Bandeja c*mu, Pasaporte Proveedor, Clasificacion 3 Vasos Marcy, NOM-141 y costura LCOM4 verificados.".to_string()),
         },
+        GateReport {
+            name: "30. Cierre Forense PRD v3.0: 19 SKUs + Alias SSG, ProductQuickCard 3-en-1, Drop-In Guard, QuickOrderTray, CycloneAndScreenReport, Plano 3, 38+ Redirects y Costuras LCOM4 (Gate D1..D10)".to_string(),
+            passed: verify_prd_v3_forensic_closure_gate_30(site_root).is_ok(),
+            details: verify_prd_v3_forensic_closure_gate_30(site_root).err().unwrap_or_else(|| "OK: 19 SKUs + alias SSG, 19 WebP <=45KB, ProductQuickCard, QuickOrderTray, CycloneAndScreenReport, 0 Banco Durango, 38+ Redirects y LCOM4 verificados.".to_string()),
+        },
     ]
 }
 
@@ -1207,6 +1212,103 @@ pub fn verify_sla_verifiability_and_lcom4_seam(site_root: &Path) -> Result<(), S
     Ok(())
 }
 
+/// 30. Gate D10 (Cierre Forense PRD v3.0): Audita las 12 brechas forenses (GAP-V3-01..12) y los 8 ítems de debris (DEB-V3-01..08)
+pub fn verify_prd_v3_forensic_closure_gate_30(site_root: &Path) -> Result<(), String> {
+    for rel in [
+        "src/scripts/quickProductsCatalog.js",
+        "src/scripts/dropInEquivalenceGuard.js",
+        "src/scripts/mechanicalAndSeparationEngine.js",
+        "src/scripts/workbenchExportFormatters.js",
+        "src/components/ProductQuickCard.astro",
+        "src/components/QuickOrderTray.astro",
+        "src/components/CycloneAndScreenReport.astro",
+        "tools/build_product_images.mjs",
+        "tests/prd_v3_forensic_closure.test.mjs",
+    ] {
+        if !site_root.join(rel).exists() {
+            return Err(format!("Falta artefacto del Cierre Forense PRD v3.0 (Gate 30): {}", rel));
+        }
+    }
+
+    let qc_raw = fs::read_to_string(site_root.join("data/quick_checkout_Catalog.json")).map_err(|e| e.to_string())?;
+    for banned_frame in ["4/3 C", "6/4 D", "8/6 E", "AHR"] {
+        if qc_raw.contains(banned_frame) {
+            return Err(format!("quick_checkout_Catalog.json contiene nomenclatura de bastidor OEM prohibida: {}", banned_frame));
+        }
+    }
+    let qc_arr: serde_json::Value = serde_json::from_str(&qc_raw).map_err(|e| e.to_string())?;
+    let skus = qc_arr.as_array().ok_or("quick_checkout_Catalog.json debe ser un arreglo")?;
+    if skus.len() != 19 {
+        return Err(format!("Se esperaban 19 SKUs en quick_checkout_Catalog.json, encontrados: {}", skus.len()));
+    }
+
+    for sku in skus {
+        let id = sku.get("sku_id").and_then(|v| v.as_str()).unwrap_or("UNKNOWN");
+        let regime = sku.get("stock_regime").and_then(|v| v.as_str()).unwrap_or("");
+        if !["hay", "se_pide", "se_fabrica"].contains(&regime) {
+            return Err(format!("SKU {} carece de stock_regime valido (hay|se_pide|se_fabrica): {}", id, regime));
+        }
+        let gate_lock = sku.get("gate_lock").and_then(|v| v.as_str()).unwrap_or("");
+        if !["G1", "G2", "G3", "G4", "G5"].contains(&gate_lock) {
+            return Err(format!("SKU {} carece de gate_lock valido (G1..G5): {}", id, gate_lock));
+        }
+        if sku.get("sat_tuple").and_then(|s| s.get("clave_prod_serv")).is_none() {
+            return Err(format!("SKU {} carece de sat_tuple.clave_prod_serv", id));
+        }
+        if sku.get("geometric_triplet_mm").is_none() {
+            return Err(format!("SKU {} carece de geometric_triplet_mm", id));
+        }
+        let photo_rel = sku.get("photo_webp").and_then(|v| v.as_str()).unwrap_or("");
+        let clean_rel = photo_rel.trim_start_matches('/');
+        let photo_path = site_root.join("public").join(clean_rel);
+        if !photo_path.exists() {
+            return Err(format!("SKU {} carece de imagen WebP fisica en public/{}", id, clean_rel));
+        }
+        let meta = fs::metadata(&photo_path).map_err(|e| e.to_string())?;
+        if meta.len() == 0 || meta.len() > 46080 {
+            return Err(format!("Imagen WebP {} excede presupuesto de 45 KB ({} bytes)", clean_rel, meta.len()));
+        }
+    }
+
+    let diag_src = fs::read_to_string(site_root.join("src/components/TechnicalDiagrams.astro")).map_err(|e| e.to_string())?;
+    if !diag_src.contains("urethane_screen_panel_305") {
+        return Err("TechnicalDiagrams.astro carece de urethane_screen_panel_305 (sobreyectividad 16/16)".to_string());
+    }
+
+    for check_rel in [
+        "src/components/SharePurchasing.astro",
+        "src/pages/catalogo.astro",
+        "src/pages/en/catalog.astro",
+        "src/pages/catalogo/[code].astro",
+        "src/pages/productos/[slug].astro",
+        "src/pages/en/products/[slug].astro",
+        "src/pages/flotacion/celdas.astro",
+        "src/pages/en/flotation/cells.astro",
+        "src/pages/filtracion/repuestos.astro",
+    ] {
+        let content = fs::read_to_string(site_root.join(check_rel)).map_err(|e| e.to_string())?;
+        if content.contains("Banco Durango") || content.contains("Balanceo Dinámico en Banco de Pruebas") {
+            return Err(format!("{} aun contiene claim obsoleto 'Banco Durango' / 'Balanceo Dinámico en Banco de Pruebas' (DEB-V3-03/04)", check_rel));
+        }
+    }
+
+    let redirects_raw = fs::read_to_string(site_root.join("public/_redirects")).map_err(|e| e.to_string())?;
+    for req_legacy in [
+        "/products/slurry-pump.html",
+        "/products/hydrocyclone.html",
+        "/products/flotation-cell.html",
+        "/products/filter-press.html",
+        "/products/screen-panel.html",
+        "/products/mining-Shovel-Rope.html",
+    ] {
+        if !redirects_raw.contains(req_legacy) {
+            return Err(format!("public/_redirects carece de regla Wayback 301: {}", req_legacy));
+        }
+    }
+
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1370,6 +1472,15 @@ mod tests {
         assert!(
             verify_sla_verifiability_and_lcom4_seam(&root).is_ok(),
             "Fallo en Gate 29: verificabilidad fisica de SLAs, Bandeja c*mu, Balance 3 Vasos Marcy y costuras LCOM4"
+        );
+    }
+
+    #[test]
+    fn test_gate_30_prd_v3_forensic_closure() {
+        let root = find_site_root();
+        assert!(
+            verify_prd_v3_forensic_closure_gate_30(&root).is_ok(),
+            "Fallo en Gate 30: Cierre Forense PRD v3.0 (19 SKUs + Alias SSG, ProductQuickCard, Drop-In Guard, QuickOrderTray, CycloneAndScreenReport, 0 Banco Durango, 38+ Redirects)"
         );
     }
 }

@@ -1,0 +1,235 @@
+---
+interface Props {
+  lang?: 'es' | 'en';
+}
+
+const { lang = 'es' } = Astro.props;
+const isEs = lang === 'es';
+---
+
+<aside
+  id="smat-quick-order-tray"
+  data-quick-order-tray
+  data-lang={lang}
+  class="fixed bottom-4 left-4 z-50 max-w-md"
+  aria-label={isEs ? 'Bandeja Rápida de Cotización B2B' : 'Fast B2B Requisition Tray'}
+>
+  <!-- Botón flotante colapsado (Fitts >= 48x48px) -->
+  <button
+    type="button"
+    id="smat-qtray-toggle"
+    class="min-h-[48px] inline-flex items-center gap-2.5 rounded-full border border-amber-500/60 bg-slate-950/95 px-4 py-2.5 text-xs font-mono font-bold text-amber-300 shadow-2xl hover:bg-slate-900 transition cursor-pointer"
+    aria-expanded="false"
+    aria-controls="smat-qtray-drawer"
+  >
+    <span>🛒 {isEs ? 'Bandeja B2B (cμ)' : 'B2B Tray (cμ)'}</span>
+    <span
+      id="smat-qtray-count"
+      class="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-amber-500 px-1.5 text-[11px] font-extrabold text-slate-950"
+    >
+      0
+    </span>
+  </button>
+
+  <!-- Panel desplegable de Bandeja Dual (< $25,000 MXN Caja Chica vs > $25,000 MXN OC SAP) -->
+  <div
+    id="smat-qtray-drawer"
+    class="hidden mt-2 w-[340px] sm:w-[400px] rounded-2xl border border-slate-700 bg-slate-950/98 p-4 text-slate-100 shadow-2xl backdrop-blur"
+  >
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-3">
+      <div>
+        <div class="text-xs font-mono font-bold uppercase text-amber-400">
+          {isEs ? 'Bandeja Rápida B2B · Regla cμ' : 'Fast B2B Requisition Tray · cμ Rule'}
+        </div>
+        <div id="smat-qtray-priority-badge" class="text-[11px] font-mono text-emerald-400">
+          {isEs ? '⚡ P1 · CAJA CHICA (< $25,000 MXN) / OC SAP' : '⚡ P1 · PETTY CASH (< $25,000 MXN) / SAP PO'}
+        </div>
+      </div>
+      <button
+        type="button"
+        id="smat-qtray-close"
+        class="min-h-[48px] min-w-[48px] rounded-lg border border-slate-800 text-xs font-mono text-slate-400 hover:text-white"
+        aria-label={isEs ? 'Cerrar bandeja' : 'Close tray'}
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- Selector de Carril de Compra -->
+    <div class="grid grid-cols-2 gap-2 mb-3 text-[11px] font-mono">
+      <button
+        type="button"
+        data-qtray-lane="CAJA_CHICA_CFDI40"
+        class="qtray-lane-btn rounded-lg border border-emerald-500/50 bg-emerald-950/40 px-2.5 py-2 text-emerald-300 font-bold"
+      >
+        {isEs ? '⚡ < $25k Caja Chica' : '⚡ < $25k Petty Cash'}
+      </button>
+      <button
+        type="button"
+        data-qtray-lane="ORDEN_COMPRA_SAP"
+        class="qtray-lane-btn rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-2 text-slate-300"
+      >
+        {isEs ? '🏢 > $25k OC SAP' : '🏢 > $25k SAP PO'}
+      </button>
+    </div>
+
+    <!-- Lista de Partidas -->
+    <ul id="smat-qtray-items" class="max-h-48 overflow-y-auto space-y-2 mb-3 text-xs">
+      <li class="text-slate-400 font-mono py-2 text-center">
+        {isEs
+          ? 'Sin SKUs aún. Haz clic en "+ Agregar a Bandeja" en cualquier ficha.'
+          : 'No SKUs yet. Click "+ Add to Quote Tray" on any product card.'}
+      </li>
+    </ul>
+
+    <!-- Ventana de Reorden Acoplado (s, S) -->
+    <div class="rounded-xl bg-slate-900/90 border border-slate-800 p-2.5 mb-3 text-[11px] font-mono text-slate-300">
+      <div class="text-amber-300 font-bold mb-0.5">
+        {isEs ? '⏱️ Política de Reorden Acoplado 5:5:4 (s, S):' : '⏱️ Coupled 5:5:4 Reorder Policy (s, S):'}
+      </div>
+      <div>
+        {isEs
+          ? 'Día 90: Camisa D075C21 · Día 150: Impulsor E4147 · Día 180: Voluta D3110'
+          : 'Day 90: D075C21 Sleeve · Day 150: E4147 Impeller · Day 180: D3110 Volute'}
+      </div>
+    </div>
+
+    <!-- Acciones de Despacho -->
+    <div class="flex flex-col gap-2">
+      <a
+        id="smat-qtray-wa-link"
+        href="https://wa.me/526181302221?text=Hola%20SMAT%2C%20solicito%20cotizaci%C3%B3n%20prioritaria%20B2B"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="w-full rounded-xl bg-amber-500 hover:bg-amber-400 py-2.5 px-4 text-center text-xs font-bold text-slate-950 transition"
+      >
+        {isEs ? '🚀 Enviar Requisición Prioritaria (WhatsApp / Correo)' : '🚀 Dispatch Priority Requisition (WhatsApp / Email)'}
+      </a>
+    </div>
+  </div>
+</aside>
+
+<script>
+  import {
+    getTrayState,
+    addTrayItem,
+    removeTrayItem,
+    buildCmuPrioritySubjectLine,
+    computeCmuPriorityDescriptor,
+    SMAT_TRAY_UPDATE_EVENT
+  } from '../scripts/requisitionTrayBus.js';
+
+  function initQuickOrderTray() {
+    const root = document.getElementById('smat-quick-order-tray');
+    if (!root) return;
+    const isEs = root.getAttribute('data-lang') !== 'en';
+    const toggleBtn = document.getElementById('smat-qtray-toggle');
+    const closeBtn = document.getElementById('smat-qtray-close');
+    const drawer = document.getElementById('smat-qtray-drawer');
+    const countEl = document.getElementById('smat-qtray-count');
+    const itemsEl = document.getElementById('smat-qtray-items');
+    const badgeEl = document.getElementById('smat-qtray-priority-badge');
+    const waLink = document.getElementById('smat-qtray-wa-link') as HTMLAnchorElement | null;
+
+    let selectedLane = 'CAJA_CHICA_CFDI40';
+
+    function renderTray() {
+      const state = getTrayState();
+      const totalQty = state.items.reduce((acc: number, it: any) => acc + (Number(it.qty) || 1), 0);
+      if (countEl) countEl.textContent = String(totalQty);
+
+      const desc = computeCmuPriorityDescriptor({
+        urgency: state.criticalityMode === 'PARO_DE_LINEA' ? 'emergency' : 'normal',
+        estimatedTotalMxn: selectedLane === 'CAJA_CHICA_CFDI40' ? 18500 : 65000,
+        stockRegime: 'hay'
+      });
+      if (badgeEl) {
+        badgeEl.textContent = isEs ? desc.labelEs : desc.labelEn;
+      }
+
+      if (itemsEl) {
+        if (!state.items.length) {
+          itemsEl.innerHTML = `<li class="text-slate-400 font-mono py-2 text-center">${
+            isEs
+              ? 'Sin SKUs aún. Haz clic en "+ Agregar a Bandeja" en cualquier ficha.'
+              : 'No SKUs yet. Click "+ Add to Quote Tray" on any product card.'
+          }</li>`;
+        } else {
+          itemsEl.innerHTML = state.items
+            .map(
+              (item: any) => `
+              <li class="flex items-center justify-between gap-2 rounded-lg bg-slate-900 border border-slate-800 px-3 py-2">
+                <div>
+                  <div class="font-mono font-bold text-amber-300">${item.id} × ${item.qty}</div>
+                  <div class="text-[11px] text-slate-300 truncate max-w-[210px]">${isEs ? item.nameEs : item.nameEn}</div>
+                </div>
+                <button type="button" data-qtray-remove="${item.id}" class="text-xs font-mono text-rose-400 hover:text-rose-300 px-2 py-1">✕</button>
+              </li>`
+            )
+            .join('');
+
+          itemsEl.querySelectorAll('[data-qtray-remove]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const id = btn.getAttribute('data-qtray-remove') || '';
+              removeTrayItem(id);
+              renderTray();
+            });
+          });
+        }
+      }
+
+      if (waLink) {
+        const subject = buildCmuPrioritySubjectLine(state, { cvPct: 48 });
+        const summary = state.items.map((i: any) => `${i.id}(x${i.qty} ${i.material})`).join(', ');
+        const msg = `${subject} | Carril: ${selectedLane} | Partidas: ${summary || 'Consulta directa'}`;
+        waLink.href = `https://wa.me/526181302221?text=${encodeURIComponent(msg)}`;
+      }
+    }
+
+    toggleBtn?.addEventListener('click', () => {
+      if (!drawer) return;
+      const hidden = drawer.classList.toggle('hidden');
+      toggleBtn.setAttribute('aria-expanded', hidden ? 'false' : 'true');
+    });
+
+    closeBtn?.addEventListener('click', () => {
+      drawer?.classList.add('hidden');
+      toggleBtn?.setAttribute('aria-expanded', 'false');
+    });
+
+    root.querySelectorAll('[data-qtray-lane]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        selectedLane = btn.getAttribute('data-qtray-lane') || 'CAJA_CHICA_CFDI40';
+        renderTray();
+      });
+    });
+
+    document.querySelectorAll('[data-quick-tray-add]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const skuId = btn.getAttribute('data-quick-tray-add') || 'SKU-QC-01';
+        const title = btn.getAttribute('data-sku-title') || skuId;
+        const code = btn.getAttribute('data-sku-code') || skuId;
+        const material = btn.getAttribute('data-sku-material') || 'A05';
+        const mass = Number(btn.getAttribute('data-sku-mass') || 15);
+        addTrayItem({
+          id: skuId,
+          skuId,
+          atomicCode: code,
+          nameEs: title,
+          nameEn: title,
+          material,
+          unitWeightKg: mass,
+          qty: 1
+        });
+        drawer?.classList.remove('hidden');
+        renderTray();
+      });
+    });
+
+    window.addEventListener(SMAT_TRAY_UPDATE_EVENT, renderTray);
+    renderTray();
+  }
+
+  initQuickOrderTray();
+  document.addEventListener('astro:page-load', initQuickOrderTray);
+</script>

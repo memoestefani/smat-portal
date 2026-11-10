@@ -8,6 +8,9 @@ import {
   formatNioshErgonomicStatus,
   buildWizardUrl
 } from '../scripts/workbenchBus.js';
+import { getQuickProductsCatalog } from '../scripts/quickProductsCatalog.js';
+
+const canonicalCatalogCount = getQuickProductsCatalog().length;
 
 interface Props {
   lang?: 'es' | 'en';
@@ -127,7 +130,9 @@ const quickParts = rawQuickParts.map((item) => {
   <div class="quick-part-strip__header">
     <div class="quick-part-strip__titles">
       <span class="quick-part-strip__eyebrow">
-        {isEs ? 'PIEZA PRIMERO • ACCESO DIRECTO A COTIZACIÓN' : 'PART FIRST • DIRECT QUOTE ACCESS'}
+        {isEs
+          ? `PIEZA PRIMERO • ${canonicalCatalogCount} SKUS CANÓNICOS EN 5 AVENIDAS + 6A`
+          : `PART FIRST • ${canonicalCatalogCount} CANONICAL SKUS ACROSS 5 AVENUES + 6A`}
       </span>
       <h2 class="quick-part-strip__title">
         {isEs

@@ -64,8 +64,29 @@ const criteria = repRole?.decision_criteria;
               <td>Resistencia del Medio Filtrante (R<sub>m</sub>)</td>
               <td>Tejido monofilamento/multifilamento calibrado por ley de Darcy-Ruth para minimizar cegado (ΔR<sub>m</sub>) y chorreo perimetral</td>
             </tr>
+            <tr>
+              <td>Mecanismo Corre-Placas (Plate Shifter) y Cadenas</td>
+              <td>Gatillos de arrastre, carros guía y cadenas de tracción resistentes a corrosión ácida/alcalina</td>
+            </tr>
+            <tr>
+              <td>Esfuerzo de Flexión de Placa (Timoshenko) y Candado G5</td>
+              <td>Alerta de flexión asimétrica cuando ΔP entre cámaras adyacentes supera 3.5 bar por obstrucción de puerto central · Fabricación especial bajo régimen 🔵 SE FABRICA (50% anticipo + plano confirmado)</td>
+            </tr>
           </tbody>
         </table>
+
+        <!-- Reporte de Despiece en 5 Familias (Avenida 5 · Candado G5) -->
+        <div class="filtration-5family-box" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; color: var(--smat-text-primary); border: 1px solid #cbd5e1; border-left: 4px solid #7c2d12;">
+          <span class="badge badge-copper">PLANO 3 · DESPIECE EN 5 FAMILIAS DE FILTRO PRENSA (AVENIDA 5 · CANDADO G5)</span>
+          <h3 style="margin: 0.65rem 0 0.5rem; font-size: 1.08rem; color: var(--smat-text-primary);">#01 Placas PP · #02 Lonas Calandradas · #03 Plate Shifter · #04 Cadenas · #05 Hidráulica</h3>
+          <p style="font-size: 0.88rem; color: #334155; margin-bottom: 0.85rem;">
+            Protección estructural contra rotura de alma por diferencial de presión ΔP &gt; 3.5 bar (Timoshenko, σ<sub>max</sub> = β · ΔP · (a/h)² ≤ 18 MPa). Suministro bajo candado G5 (🔵 SE FABRICA con 50% de anticipo y plano confirmado para lotes especiales).
+          </p>
+          <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
+            <a href="/productos/placa-polipropileno-recesada-membrana-filtro-prensa/" class="btn btn-outline" style="font-size:0.8rem;">SKU-QC-17 · Placas PP + Corre-Placas (Plate Shifter) →</a>
+            <a href="/productos/lona-filtrante-monofilamento-filtro-prensa/" class="btn btn-outline" style="font-size:0.8rem;">SKU-QC-18 · Lona Filtrante Calandrada Anti-Cegamiento →</a>
+          </div>
+        </div>
 
         {criteria && (
           <div class="decision-criteria-panel" data-testid="role-decision-criteria" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #9a3412;">

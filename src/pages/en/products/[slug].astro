@@ -1,462 +1,251 @@
 ---
-// src/pages/en/products/[slug].astro
-// MVP v3.0 (D1, D2, D3, D4, D6): 19 Tier-1 Quick-Checkout Product Sheets with X-Ray CAD Diagram,
-// ISO/IEC 7810 (0.76 mm) Everyday Physical Scale & Multi-Item B2B Requisition Tray
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
-import SharePurchasing from '../../../components/SharePurchasing.astro';
-import quickCatalog from '../../../../data/quick_checkout_Catalog.json';
+import ProductQuickCard from '../../../components/ProductQuickCard.astro';
+import { getAllStaticProductRouteEntries } from '../../../scripts/quickProductsCatalog.js';
 
 export function getStaticPaths() {
-  return quickCatalog.map((sku) => ({
-    params: { slug: sku.slug_en },
-    props: { sku }
+  const entries = getAllStaticProductRouteEntries('en');
+  return entries.map((entry) => ({
+    params: { slug: entry.routeSlug },
+    props: {
+      sku: entry.sku,
+      isCanonical: entry.isCanonical,
+      canonicalSlug: entry.canonicalSlug
+    }
   }));
 }
 
-const { sku: rawSku } = Astro.props as { sku: any };
-const sku = {
-  ...rawSku,
-  sku_id: rawSku.sku_id || rawSku.id || 'SKU-QC-01',
-  name_es: rawSku.name_es || rawSku.title_es || '',
-  name_en: rawSku.name_en || rawSku.title_en || '',
-  circuit: rawSku.circuit || rawSku.vertical || 'bombeo',
-  series_options: Array.isArray(rawSku.series_options) ? rawSku.series_options : [rawSku.oem_cross_ref || '6x4'],
-  metallurgy_options: Array.isArray(rawSku.metallurgy_options)
-    ? rawSku.metallurgy_options
-    : (Array.isArray(rawSku.available_materials) ? rawSku.available_materials : [rawSku.default_material || 'A05']),
-  iso7810_equivalence_es: rawSku.iso7810_equivalence_es || rawSku.everyday_scale_es || '0.76 mm (1 tarjeta ISO/IEC 7810)',
-  iso7810_equivalence_en: rawSku.iso7810_equivalence_en || rawSku.everyday_scale_en || '0.76 mm (1 ISO/IEC 7810 card)',
-  niosh_weight_range_kg: rawSku.niosh_weight_range_kg || String(rawSku.mass_kg ?? 25),
-  station_number: rawSku.station_number ?? rawSku.kit_id ?? 1,
-  telemetry_hook: rawSku.telemetry_hook || (rawSku.telemetry_hooks ? `SG ${rawSku.telemetry_hooks.marcy_sg_range?.join('–') || '1.3–1.8'} · d50 ${rawSku.telemetry_hooks.plitt_d50_um_range?.join('–') || '75–300'} µm` : 'slurryEngine')
+const { sku, canonicalSlug } = Astro.props;
+const pageTitle = `${sku.title_en} | Fast Checkout SMAT Minerals`;
+const pageDescription = `${sku.summary_en} Drop-In Cross Reference: ${sku.oem_cross_ref}. Hardness: ${sku.hardness_spec}.`;
+const canonicalPath = `/en/products/${canonicalSlug || sku.slug_en}/`;
+const sat = sku.sat_tuple || {
+  clave_prod_serv: '40142000',
+  clave_unidad: 'H87',
+  fraccion_arancelaria: '8413.91.99.00'
 };
-const siteUrl = 'https://smatminerals.com';
-const canonicalPath = `/en/products/${sku.slug_en}/`;
-const alternateEsPath = `/productos/${sku.slug_es}/`;
-const firstAtomic = (sku.atomic_codes && sku.atomic_codes[0]) || 'E4147';
-const firstSeries = (sku.series_options && sku.series_options[0]) || '6x4';
+const triplet = sku.geometric_triplet_mm || {
+  a_id_mm: 100,
+  b_od_mm: 400,
+  c_thickness_mm: 80,
+  tolerance_std: 'ISO 2768-m',
+  label_en: 'A: Bore ID 100 mm | B: Outer OD 400 mm | C: Thickness 80 mm'
+};
 
-const rfqDeepLink = `/en/quote/?circuito=${sku.circuit}&equipo=${sku.slug_es}&sku=${sku.sku_id}&codigo=${firstAtomic}&serie=${encodeURIComponent(firstSeries)}#rfq`;
-const waText = encodeURIComponent(`Hello SMAT Minerals, I need a priority quote for SKU ${sku.sku_id} (${sku.name_en}) for our plant.`);
-const waUrl = `https://wa.me/526183670664?text=${waText}`;
-
-const title = `${sku.name_en} (${sku.sku_id}) | SMAT Minerals`;
-const description = `${sku.name_en}: ${sku.summary_en} Certified metallurgy and 1:1 dimensional cross-check at our Central Durango Warehouse.`;
-
-const productSchema = {
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "name": `${sku.sku_id} — ${sku.name_en}`,
-  "image": `${siteUrl}/images/og-card.jpg`,
-  "description": sku.summary_en,
-  "sku": sku.sku_id,
-  "mpn": firstAtomic,
-  "brand": {
-    "@type": "Brand",
-    "name": "SMAT Minerals"
+const nioshBadges: Record<string, { label: string; color: string }> = {
+  MANUAL_SAFE: {
+    label: '🟢 Safe Manual Handling (< 11.1 kg NIOSH)',
+    color: 'bg-emerald-950/70 text-emerald-300 border-emerald-500/40'
   },
-  "offers": {
-    "@type": "Offer",
-    "priceCurrency": "USD",
-    "availability": "https://schema.org/InStock",
-    "itemCondition": "https://schema.org/NewCondition",
-    "seller": {
-      "@type": "Organization",
-      "name": "SMAT Minerals",
-      "url": siteUrl
-    }
+  ASSISTED_SHAFT_MOUNT_2P: {
+    label: '🟡 2-Operator Assisted Mount (11.1–23.0 kg NIOSH)',
+    color: 'bg-amber-950/70 text-amber-300 border-amber-500/40'
+  },
+  HOIST_REQUIRED: {
+    label: '🔴 Mechanical Hoist Required (> 23.0 kg NOM-036-1-STPS)',
+    color: 'bg-rose-950/70 text-rose-300 border-rose-500/40'
   }
 };
+const niosh = nioshBadges[sku.niosh_mode] || nioshBadges.HOIST_REQUIRED;
 ---
 
-<BaseLayout
-  title={title}
-  description={description}
-  lang="en"
-  canonicalPath={canonicalPath}
-  alternateEsPath={alternateEsPath}
-  alternateEnPath={canonicalPath}
->
-  <main class="qc-page-main" id="stage-diagnostic">
-    <div class="container">
-      <nav class="breadcrumb-nav" aria-label="Breadcrumbs">
-        <a href="/en/">Home</a>
-        <span class="breadcrumb-sep">/</span>
-        <a href="/en/catalog/">Catalog</a>
-        <span class="breadcrumb-sep">/</span>
-        <span class="breadcrumb-current">{sku.sku_id}</span>
-      </nav>
+<BaseLayout title={pageTitle} description={pageDescription} canonical={canonicalPath} lang="en">
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-slate-100">
+    <!-- Breadcrumb & language switcher -->
+    <nav class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-slate-400 mb-6" aria-label="Breadcrumb">
+      <div class="flex items-center gap-2">
+        <a href="/en/" class="hover:text-amber-400 transition">Home</a>
+        <span>/</span>
+        <a href="/en/catalog/" class="hover:text-amber-400 transition">19-SKU Catalog</a>
+        <span>/</span>
+        <span class="text-amber-400">{sku.id}</span>
+      </div>
+      <a href={`/productos/${sku.slug_es}/`} class="inline-flex items-center gap-1.5 px-3 py-1 rounded border border-slate-700 hover:border-amber-400 text-slate-300">
+        <span>ES</span>
+        <span>Ficha en Español →</span>
+      </a>
+    </nav>
 
-      <div class="qc-layout-grid" id="stage-2">
-        <article class="qc-spec-card">
-          <div class="qc-header">
-            <span class="qc-badge">QUICK-CHECKOUT TECHNICAL SHEET • {sku.sku_id}</span>
-            <h1 class="qc-title">{sku.name_en}</h1>
-            <p class="qc-lead">{sku.summary_en}</p>
-          </div>
-
-          <TechnicalDiagrams diagram={sku.diagram_id as any} lang="en" showXrayOverlay={true} />
-
-          <div class="qc-iso-banner" data-iso7810-banner>
-            <strong>Everyday Physical Scale (ISO/IEC 7810 = 0.76 mm):</strong>
-            <span>{sku.iso7810_equivalence_en}</span>
-          </div>
-
-          <h2 class="qc-section-title">Compatible Series, Metallurgy & Physical Telemetry</h2>
-          <div class="qc-options-grid">
-            <div class="qc-option-box">
-              <span class="qc-option-label">COMPATIBLE SERIES / CAPACITIES</span>
-              <div class="qc-pill-list">
-                {sku.series_options.map((s: string) => (
-                  <span class="qc-spec-pill">{s}</span>
-                ))}
-              </div>
-            </div>
-
-            <div class="qc-option-box">
-              <span class="qc-option-label">AVAILABLE ALLOYS & ELASTOMERS</span>
-              <div class="qc-pill-list">
-                {sku.metallurgy_options.map((m: string) => (
-                  <span class="qc-spec-pill qc-spec-pill--alloy">{m}</span>
-                ))}
-              </div>
-            </div>
-
-            <div class="qc-option-box">
-              <span class="qc-option-label">UNIT MASS & NIOSH HOISTING (1993)</span>
-              <p class="qc-option-val">Mass range: <strong>{sku.niosh_weight_range_kg} kg</strong> (Station 0{sku.station_number})</p>
-              <p class="qc-option-sub">Linked physics engine: <code>{sku.telemetry_hook}</code></p>
-            </div>
-          </div>
-
-          {sku.atomic_codes && sku.atomic_codes.length > 0 && (
-            <div class="qc-atomic-links">
-              <span class="qc-option-label">LINKED UNIVERSAL ATOMIC PART CODES:</span>
-              <div class="qc-pill-list">
-                {sku.atomic_codes.map((code: string) => (
-                  <a href={`/en/catalog/${code.toLowerCase()}/`} class="qc-atomic-chip">
-                    View atomic part {code} →
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-        </article>
-
-        <aside class="qc-action-dock">
-          <div class="qc-dock-card">
-            <span class="qc-dock-badge">B2B REQUISITION TRAY</span>
-            <h2>Add {sku.sku_id} to Requisition</h2>
-            <p class="qc-dock-desc">
-              Select quantity and plant criticality mode (Line-Stop vs. Stock Replenishment s,S) to consolidate your multi-item technical order.
-            </p>
-
-            <div class="qc-tray-controls">
-              <label class="qc-field-label">
-                <span>Required quantity (units / sets):</span>
-                <input type="number" min="1" max="999" value="1" class="qc-qty-input" data-qc-qty-input />
-              </label>
-
-              <label class="qc-field-label">
-                <span>Criticality Mode (c*mu Priority Rule):</span>
-                <select class="qc-mode-select" data-qc-mode-select>
-                  <option value="PARO_DE_LINEA">Critical Line-Stop (Top c*mu Priority)</option>
-                  <option value="STOCK_SS">Planned Warehouse Restock Policy (s, S)</option>
-                </select>
-              </label>
-
-              <button
-                type="button"
-                class="btn-qc-add-tray"
-                data-add-to-tray
-                data-sku-id={sku.sku_id}
-                data-atomic-code={firstAtomic}
-                data-name-es={sku.name_es}
-                data-name-en={sku.name_en}
-                data-circuit={sku.circuit}
-              >
-                + Add to Requisition Tray
-              </button>
-              <p class="qc-tray-feedback" data-qc-tray-feedback hidden></p>
-            </div>
-
-            <div class="qc-dock-ctas">
-              <a href={rfqDeepLink} class="btn-qc-rfq" data-testid="btn-qc-rfq">
-                Open Tray & Issue A4 Dossier →
-              </a>
-              <a href={waUrl} target="_blank" rel="noopener noreferrer" class="btn-qc-wa">
-                Check Durango Warehouse Stock (WhatsApp)
-              </a>
-            </div>
-          </div>
-        </aside>
+    <!-- Plane 1 Header: < 30s identification -->
+    <header class="rounded-2xl border border-slate-800 bg-slate-900/90 p-6 sm:p-8 shadow-xl mb-8">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="px-2.5 py-1 rounded text-xs font-mono uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40">
+          {sku.id} · {sku.vertical.toUpperCase()} · GATE {sku.gate_lock || 'G1'}
+        </span>
+        <span class={`px-2.5 py-1 rounded text-xs font-mono border ${niosh.color}`}>
+          {niosh.label}
+        </span>
+        <span class="px-2.5 py-1 rounded text-xs font-mono bg-slate-800 text-slate-300 border border-slate-700">
+          Dry Mass: {sku.mass_kg} kg
+        </span>
       </div>
 
-      <SharePurchasing
-        lang="en"
-        circuit={sku.circuit}
-        role={sku.slug_es}
-        partName={`${sku.sku_id} — ${sku.name_en}`}
-        partCode={sku.sku_id}
-      />
+      <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white mb-3">
+        {sku.title_en}
+      </h1>
+      <p class="text-base sm:text-lg text-slate-300 max-w-4xl mb-5">
+        {sku.summary_en}
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-800 text-sm">
+        <div class="bg-slate-950/70 rounded-xl p-3.5 border border-slate-800/80">
+          <div class="text-xs font-mono uppercase text-slate-400 mb-1">Zero-OEM Drop-In Cross Reference</div>
+          <div class="font-mono font-semibold text-amber-300">{sku.oem_cross_ref}</div>
+        </div>
+        <div class="bg-slate-950/70 rounded-xl p-3.5 border border-slate-800/80">
+          <div class="text-xs font-mono uppercase text-slate-400 mb-1">Certified Metallurgy / Hardness</div>
+          <div class="font-semibold text-slate-100">{sku.hardness_spec}</div>
+        </div>
+        <div class="bg-slate-950/70 rounded-xl p-3.5 border border-slate-800/80">
+          <div class="text-xs font-mono uppercase text-slate-400 mb-1">Everyday Calibration Scale (ISO/IEC 7810)</div>
+          <div class="font-semibold text-sky-300">{sku.everyday_scale_en}</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2-Column Body: 3-in-1 ProductQuickCard + Dual B2B Checkout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div class="lg:col-span-7 space-y-6">
+        <ProductQuickCard sku={sku} lang="en" />
+
+        <!-- 3-Step Plant Validation Box -->
+        <section class="rounded-2xl border border-emerald-500/30 bg-emerald-950/15 p-5">
+          <h2 class="text-sm font-mono uppercase tracking-wider text-emerald-300 mb-3">
+            📋 How to Validate Your Part in Plant in 3 Steps (Zero Downtime Risk)
+          </h2>
+          <ol class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-300">
+            <li class="rounded-xl bg-slate-950/80 border border-slate-800 p-3">
+              <strong class="block font-mono text-amber-300 mb-1">STEP 1 · CAST CODE</strong>
+              Check the raised number on your current part ({sku.atomic_codes.join(', ')}) or send us a yard photo via WhatsApp.
+            </li>
+            <li class="rounded-xl bg-slate-950/80 border border-slate-800 p-3">
+              <strong class="block font-mono text-amber-300 mb-1">STEP 2 · TRIPLET (A, B, C)</strong>
+              Confirm with caliper or tape: <span class="font-mono text-slate-100">{triplet.label_en}</span> ({triplet.tolerance_std || 'ISO 2768-m'}).
+            </li>
+            <li class="rounded-xl bg-slate-950/80 border border-slate-800 p-3">
+              <strong class="block font-mono text-amber-300 mb-1">STEP 3 · 0.76 MM SCALE</strong>
+              During assembly, set axial clearance using 1 standard ISO/IEC 7810 bank card (0.76 mm).
+            </li>
+          </ol>
+        </section>
+
+        <!-- Coupled Telemetry Hooks -->
+        <section class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+          <h2 class="text-sm font-mono uppercase tracking-wider text-slate-400 mb-3">
+            Recommended Metallurgical Operating Window
+          </h2>
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="rounded-xl bg-slate-950 p-3 border border-slate-800">
+              <div class="text-xs text-slate-400 font-mono">Slurry Density (Marcy SG)</div>
+              <div class="text-lg font-bold text-amber-400 font-mono">
+                {sku.telemetry_hooks.marcy_sg_range[0]} – {sku.telemetry_hooks.marcy_sg_range[1]} t/m³
+              </div>
+            </div>
+            <div class="rounded-xl bg-slate-950 p-3 border border-slate-800">
+              <div class="text-xs text-slate-400 font-mono">Plitt Cut Size d50c</div>
+              <div class="text-lg font-bold text-sky-400 font-mono">
+                {sku.telemetry_hooks.plitt_d50_um_range[0]} – {sku.telemetry_hooks.plitt_d50_um_range[1]} µm
+              </div>
+            </div>
+            <div class="rounded-xl bg-slate-950 p-3 border border-slate-800">
+              <div class="text-xs text-slate-400 font-mono">Typical Wear Life (Weibull)</div>
+              <div class="text-lg font-bold text-emerald-400 font-mono">
+                {sku.telemetry_hooks.wear_life_hours_range[0]} – {sku.telemetry_hooks.wear_life_hours_range[1]} h
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right Column: Dual Checkout Lane (< 25,000 MXN Petty Cash vs > 25,000 MXN SAP PO) -->
+      <aside class="lg:col-span-5 rounded-2xl border border-amber-500/40 bg-slate-900 p-6 shadow-xl space-y-5">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <span class="text-xs font-mono uppercase tracking-wider text-amber-400">
+            Dual B2B Checkout (Zero Login)
+          </span>
+          <span class="text-xs font-mono text-emerald-400">● Durango Hub, MX</span>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-white mb-2">1. Available Alloys in Foundry / Molding</h2>
+          <div class="flex flex-wrap gap-2">
+            {sku.available_materials.map((mat: string) => (
+              <span class={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold border ${mat === sku.default_material ? 'bg-amber-500 text-slate-950 border-amber-400' : 'bg-slate-950 text-slate-300 border-slate-700'}`}>
+                {mat} {mat === sku.default_material ? '(Standard)' : ''}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-xs font-mono uppercase text-slate-400 mb-2">2. Linked Atomic Part Codes (13-Part BOM)</h3>
+          <div class="flex flex-wrap gap-2">
+            {sku.atomic_codes.map((code: string) => (
+              <a
+                href={`/en/catalog/${code.toLowerCase()}/`}
+                class="px-3 py-1 rounded bg-slate-950 border border-slate-700 hover:border-amber-400 text-xs font-mono text-amber-300 transition"
+              >
+                🔗 {code}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-3 pt-1">
+          <div class="rounded-xl border border-emerald-500/40 bg-emerald-950/20 p-3.5">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-mono font-bold text-emerald-300">⚡ LANE A: PETTY CASH (&lt; $25,000 MXN)</span>
+              <span class="text-[11px] font-mono text-emerald-400">P1 · CFDI 4.0 TODAY</span>
+            </div>
+            <p class="text-xs text-slate-300">
+              Express SPEI or corporate card release without SAP vendor onboarding delay. Same-day dispatch for <strong>🟢 IN STOCK</strong> items.
+            </p>
+          </div>
+
+          <div class="rounded-xl border border-amber-500/40 bg-amber-950/20 p-3.5">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-mono font-bold text-amber-300">🏢 LANE B: PURCHASE ORDER (&gt; $25,000 MXN)</span>
+              <span class="text-[11px] font-mono text-amber-400">SAP / ORACLE · B2B PASSPORT</span>
+            </div>
+            <p class="text-xs text-slate-300 mb-1.5">
+              Formal PDF quotation with Tax Compliance Certificate (32-D) and active REPSE registration.
+            </p>
+            <div class="text-[11px] font-mono text-slate-400 bg-slate-950/80 rounded px-2.5 py-1.5 border border-slate-800">
+              SAT ProdServ: <strong class="text-slate-200">{sat.clave_prod_serv}</strong> · Unit: <strong class="text-slate-200">{sat.clave_unidad}</strong> · HS/TIGIE: <strong class="text-slate-200">{sat.fraccion_arancelaria}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl bg-slate-950/90 border border-slate-800 p-4 text-xs text-slate-300 space-y-1.5">
+          <div class="font-mono text-slate-200 font-semibold">📋 Includes SMAT Vendor Passport:</div>
+          <p>• Heat Metallurgical Certificate (PMI / Brinell Hardness ASTM A532)</p>
+          <p>• Geometric Triplet Dimensional Verification (ISO 2768-m) in Durango</p>
+          <p>• NIOSH / NOM-036-1-STPS Rigging & Ergonomic Safety Footprint</p>
+        </div>
+
+        <div class="flex flex-col gap-3 pt-2">
+          <a
+            href={`/en/contact/?sku=${encodeURIComponent(sku.id)}&part=${encodeURIComponent(sku.atomic_codes.join(','))}&mat=${encodeURIComponent(sku.default_material)}&lane=po`}
+            class="w-full py-3.5 px-5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-center text-sm transition shadow-lg"
+          >
+            Request Formal Quote / SAP Passport ({sku.id}) →
+          </a>
+          <a
+            href={`https://wa.me/526181302221?text=${encodeURIComponent(`Hello SMAT, I need an urgent quote for SKU ${sku.id} (${sku.title_en}) in alloy ${sku.default_material} [ Codes: ${sku.atomic_codes.join('/')} | Regime: ${sku.stock_regime || 'hay'} ].`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full py-3 px-5 rounded-xl border border-emerald-500/60 bg-emerald-950/40 hover:bg-emerald-900/50 text-emerald-300 font-mono text-center text-xs transition"
+          >
+            💬 Fast Checkout / Petty Cash via Engineering WhatsApp
+          </a>
+          <a
+            href={`/en/#workbench?sku=${encodeURIComponent(sku.id)}&mat=${encodeURIComponent(sku.default_material)}`}
+            class="w-full py-2.5 px-4 rounded-xl border border-slate-700 hover:border-sky-400 text-slate-300 hover:text-sky-300 font-mono text-center text-xs transition"
+          >
+            ⚙️ Open in Hydraulic & Metallurgical Workbench (Plane 2)
+          </a>
+        </div>
+      </aside>
     </div>
   </main>
-
-  <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
 </BaseLayout>
-
-<script>
-  import { addTrayItem } from '../../../scripts/requisitionTrayBus.js';
-
-  const addBtn = document.querySelector('[data-add-to-tray]') as HTMLButtonElement | null;
-  const qtyInput = document.querySelector('[data-qc-qty-input]') as HTMLInputElement | null;
-  const modeSelect = document.querySelector('[data-qc-mode-select]') as HTMLSelectElement | null;
-  const feedback = document.querySelector('[data-qc-tray-feedback]') as HTMLElement | null;
-
-  if (addBtn) {
-    addBtn.addEventListener('click', () => {
-      const skuId = addBtn.getAttribute('data-sku-id') || 'SKU-QC-01';
-      const atomicCode = addBtn.getAttribute('data-atomic-code') || skuId;
-      const nameEs = addBtn.getAttribute('data-name-es') || skuId;
-      const nameEn = addBtn.getAttribute('data-name-en') || skuId;
-      const circuit = addBtn.getAttribute('data-circuit') || 'bombeo';
-      const qty = qtyInput ? Number(qtyInput.value) || 1 : 1;
-      const criticalityMode = modeSelect ? modeSelect.value : 'PARO_DE_LINEA';
-
-      const updated = addTrayItem({
-        skuId,
-        atomicCode,
-        nameEs,
-        nameEn,
-        circuit,
-        qty,
-        criticalityMode
-      });
-
-      if (feedback) {
-        feedback.hidden = false;
-        feedback.textContent = `✓ ${skuId} added (${qty} pcs). Total in tray: ${updated.items.length} SKU(s).`;
-      }
-    });
-  }
-</script>
-
-<style>
-  .qc-page-main {
-    padding: 2.25rem 0 4rem;
-    background: #f8fafc;
-    min-height: 85vh;
-  }
-  .breadcrumb-nav {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.85rem;
-    color: #475569;
-    margin-bottom: 1.5rem;
-  }
-  .breadcrumb-nav a {
-    color: #334155;
-    text-decoration: none;
-    font-weight: 600;
-  }
-  .breadcrumb-current {
-    color: #090d16;
-    font-weight: 800;
-  }
-  .qc-layout-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  @media (min-width: 992px) {
-    .qc-layout-grid {
-      grid-template-columns: 1.65fr 1fr;
-      align-items: start;
-    }
-  }
-  @media (max-width: 768px) {
-    .qc-page-main {
-      padding: 1.25rem 0 2.5rem;
-    }
-  }
-  .qc-spec-card, .qc-dock-card {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
-  }
-  .qc-badge, .qc-dock-badge {
-    display: inline-block;
-    padding: 0.25rem 0.65rem;
-    background: #f0f9ff;
-    color: #082f49;
-    border: 1px solid #bae6fd;
-    border-radius: 4px;
-    font-family: var(--smat-font-mono, monospace);
-    font-size: 0.74rem;
-    font-weight: 800;
-    margin-bottom: 0.75rem;
-  }
-  .qc-title {
-    font-size: 2rem;
-    color: #090d16;
-    margin: 0 0 0.65rem;
-    line-height: 1.15;
-  }
-  .qc-lead {
-    font-size: 1rem;
-    color: #334155;
-    line-height: 1.55;
-    margin-bottom: 1.25rem;
-  }
-  .qc-iso-banner {
-    background: #fffbeb;
-    border: 1px solid #fde68a;
-    border-left: 4px solid #b45309;
-    padding: 0.85rem 1rem;
-    border-radius: 6px;
-    font-size: 0.88rem;
-    color: #78350f;
-    margin: 1rem 0 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-  .qc-section-title {
-    font-size: 1.15rem;
-    color: #090d16;
-    margin: 1.25rem 0 0.85rem;
-    border-bottom: 1px solid #e2e8f0;
-    padding-bottom: 0.45rem;
-  }
-  .qc-options-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    margin-bottom: 1.25rem;
-  }
-  .qc-option-box {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 0.9rem 1rem;
-  }
-  .qc-option-label {
-    display: block;
-    font-family: var(--smat-font-mono, monospace);
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: #475569;
-    margin-bottom: 0.5rem;
-  }
-  .qc-pill-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-  }
-  .qc-spec-pill {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    color: #0f172a;
-    padding: 0.25rem 0.6rem;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 600;
-  }
-  .qc-spec-pill--alloy {
-    background: #f0fdf4;
-    border-color: #bbf7d0;
-    color: #14532d;
-  }
-  .qc-atomic-links {
-    margin-top: 1.25rem;
-    padding-top: 1rem;
-    border-top: 1px solid #e2e8f0;
-  }
-  .qc-atomic-chip {
-    display: inline-flex;
-    align-items: center;
-    min-height: 40px;
-    padding: 0.35rem 0.75rem;
-    background: #0f172a;
-    color: #ffffff;
-    text-decoration: none;
-    border-radius: 6px;
-    font-size: 0.82rem;
-    font-weight: 700;
-  }
-  .qc-tray-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-    margin: 1.25rem 0;
-  }
-  .qc-field-label {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #1e293b;
-  }
-  .qc-qty-input, .qc-mode-select {
-    padding: 0.65rem 0.75rem;
-    border: 1px solid #94a3b8;
-    border-radius: 6px;
-    font-size: 0.92rem;
-    color: #090d16;
-    background: #ffffff;
-  }
-  .btn-qc-add-tray {
-    min-height: 48px;
-    padding: 0.85rem 1rem;
-    background: #7c2d12;
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    font-weight: 800;
-    font-size: 0.95rem;
-    cursor: pointer;
-  }
-  .qc-tray-feedback {
-    margin: 0;
-    padding: 0.6rem 0.75rem;
-    background: #ecfdf5;
-    border: 1px solid #a7f3d0;
-    color: #065f46;
-    border-radius: 6px;
-    font-size: 0.84rem;
-    font-weight: 700;
-  }
-  .qc-dock-ctas {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    border-top: 1px solid #e2e8f0;
-    padding-top: 1rem;
-  }
-  .btn-qc-rfq, .btn-qc-wa {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 48px;
-    padding: 0.8rem 1rem;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    text-decoration: none;
-    text-align: center;
-  }
-  .btn-qc-rfq {
-    background: #0f172a;
-    color: #ffffff;
-  }
-  .btn-qc-wa {
-    background: #f8fafc;
-    color: #0f172a;
-    border: 1px solid #94a3b8;
-  }
-</style>

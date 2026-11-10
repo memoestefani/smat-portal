@@ -1,0 +1,207 @@
+---
+import TechnicalDiagrams from './TechnicalDiagrams.astro';
+
+interface GeometricTriplet {
+  a_id_mm: number;
+  b_od_mm: number;
+  c_thickness_mm: number;
+  tolerance_std?: string;
+  label_es?: string;
+  label_en?: string;
+}
+
+interface Props {
+  sku: {
+    id: string;
+    slug_es: string;
+    slug_en: string;
+    title_es: string;
+    title_en: string;
+    diagram_id: string;
+    photo_webp?: string;
+    default_material: string;
+    stock_regime?: string;
+    gate_lock?: string;
+    mass_kg: number;
+    atomic_codes: string[];
+    everyday_scale_es: string;
+    everyday_scale_en: string;
+    geometric_triplet_mm?: GeometricTriplet;
+  };
+  lang?: 'es' | 'en';
+}
+
+const { sku, lang = 'es' } = Astro.props;
+const isEs = lang === 'es';
+const photoUrl = sku.photo_webp || `/images/productos/${sku.slug_es}.webp`;
+const triplet = sku.geometric_triplet_mm || {
+  a_id_mm: 100,
+  b_od_mm: 400,
+  c_thickness_mm: 80,
+  tolerance_std: 'ISO 2768-m',
+  label_es: 'A: Ø Int. 100 mm | B: Ø Ext. 400 mm | C: Espesor 80 mm',
+  label_en: 'A: Bore ID 100 mm | B: Outer OD 400 mm | C: Thickness 80 mm'
+};
+
+const regimeConfig: Record<string, { labelEs: string; labelEn: string; cls: string }> = {
+  hay: {
+    labelEs: '🟢 HAY EN STOCK DURANGO (24–72 h)',
+    labelEn: '🟢 IN DURANGO STOCK (24–72 h)',
+    cls: 'border-emerald-500/40 bg-emerald-950/60 text-emerald-300'
+  },
+  se_pide: {
+    labelEs: '🟡 SE PIDE / LOTE PROGRAMADO (2–4 sem)',
+    labelEn: '🟡 SCHEDULED BATCH ORDER (2–4 wks)',
+    cls: 'border-amber-500/40 bg-amber-950/60 text-amber-300'
+  },
+  se_fabrica: {
+    labelEs: '🔵 SE FABRICA BAJO PLANO (50% ANTICIPO)',
+    labelEn: '🔵 CUSTOM MANUFACTURED (50% ADVANCE)',
+    cls: 'border-sky-500/40 bg-sky-950/60 text-sky-300'
+  }
+};
+const regime = regimeConfig[sku.stock_regime || 'hay'] || regimeConfig.hay;
+---
+
+<section
+  class="product-quick-card rounded-2xl border border-slate-800 bg-slate-900/80 overflow-hidden shadow-xl"
+  data-product-quick-card={sku.id}
+  data-stock-regime={sku.stock_regime || 'hay'}
+  data-gate-lock={sku.gate_lock || 'G1'}
+>
+  <!-- Barra superior de Pestañas de Inspección (Fitts h >= 44px) y Régimen -->
+  <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 bg-slate-950/90 px-4 py-2.5">
+    <div class="flex flex-wrap items-center gap-1.5" role="tablist" aria-label={isEs ? 'Vistas de inspección de pieza' : 'Part inspection views'}>
+      <button
+        type="button"
+        role="tab"
+        aria-selected="true"
+        data-qcard-tab="cad"
+        class="qcard-tab-btn min-h-[44px] rounded-lg border border-amber-500/60 bg-amber-500/15 px-3 py-1.5 text-xs font-mono font-bold text-amber-300 transition"
+      >
+        {isEs ? '📐 Plano CAD' : '📐 CAD Blueprint'}
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected="false"
+        data-qcard-tab="photo"
+        class="qcard-tab-btn min-h-[44px] rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-mono font-semibold text-slate-300 hover:border-slate-500 transition"
+      >
+        {isEs ? '📸 Foto Real Cero-OEM' : '📸 Zero-OEM Real Photo'}
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected="false"
+        data-qcard-tab="xray"
+        class="qcard-tab-btn min-h-[44px] rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-mono font-semibold text-slate-300 hover:border-slate-500 transition"
+      >
+        {isEs ? '🔥 Rayos X 5:5:4' : '🔥 5:5:4 X-Ray Wear'}
+      </button>
+    </div>
+
+    <span class={`inline-flex items-center rounded-md border px-2.5 py-1 text-xs font-mono font-semibold ${regime.cls}`}>
+      {isEs ? regime.labelEs : regime.labelEn}
+    </span>
+  </div>
+
+  <!-- Contenedor Visual de Relación de Aspecto Fija 4:3 (CLS = 0) -->
+  <div class="relative w-full bg-slate-950" style="aspect-ratio: 4 / 3;">
+    <!-- Panel 1: Plano CAD -->
+    <div data-qcard-panel="cad" class="h-full w-full flex items-center justify-center p-3 overflow-auto">
+      <div class="w-full">
+        <TechnicalDiagrams diagram={sku.diagram_id} lang={lang} showXrayOverlay={false} />
+      </div>
+    </div>
+
+    <!-- Panel 2: Fotografía Real Cero-OEM WebP -->
+    <div data-qcard-panel="photo" class="hidden h-full w-full items-center justify-center p-3">
+      <img
+        src={photoUrl}
+        alt={isEs ? `${sku.title_es} — Fotografía de inspección Cero-OEM SMAT` : `${sku.title_en} — SMAT Zero-OEM inspection photo`}
+        width="640"
+        height="480"
+        loading="lazy"
+        decoding="async"
+        class="h-full w-full rounded-xl object-contain border border-slate-800 bg-slate-950"
+      />
+    </div>
+
+    <!-- Panel 3: Rayos X de Desgaste Sincronizado 5:5:4 -->
+    <div data-qcard-panel="xray" class="hidden h-full w-full items-center justify-center p-3 overflow-auto">
+      <div class="w-full">
+        <TechnicalDiagrams diagram={sku.diagram_id} lang={lang} showXrayOverlay={true} />
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra Inferior Estática: Tripleta Geométrica (A, B, C) en mm + Escala Humana ISO/IEC 7810 (0.76 mm) -->
+  <div class="border-t border-slate-800 bg-slate-950/95 px-4 py-3.5">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div class="space-y-1">
+        <div class="flex flex-wrap items-center gap-2 text-xs font-mono text-amber-400">
+          <span class="font-bold uppercase tracking-wider">
+            {isEs ? 'Tripleta Geométrica Drop-In:' : 'Drop-In Geometric Triplet:'}
+          </span>
+          <span class="rounded bg-slate-900 px-2 py-0.5 text-slate-200 border border-slate-800">
+            {isEs ? triplet.label_es : triplet.label_en}
+          </span>
+          <span class="rounded bg-emerald-950/60 px-2 py-0.5 text-emerald-300 border border-emerald-500/30">
+            {triplet.tolerance_std || 'ISO 2768-m'}
+          </span>
+        </div>
+        <p class="text-xs text-slate-300">
+          <strong class="text-slate-100">{isEs ? 'Escala cotidiana (0.76 mm):' : 'Everyday scale (0.76 mm):'}</strong>{' '}
+          {isEs ? sku.everyday_scale_es : sku.everyday_scale_en}
+        </p>
+      </div>
+
+      <button
+        type="button"
+        data-quick-tray-add={sku.id}
+        data-sku-title={isEs ? sku.title_es : sku.title_en}
+        data-sku-code={sku.atomic_codes[0] || sku.id}
+        data-sku-material={sku.default_material}
+        data-sku-regime={sku.stock_regime || 'hay'}
+        data-sku-mass={sku.mass_kg}
+        class="min-h-[44px] shrink-0 inline-flex items-center justify-center gap-2 rounded-lg bg-amber-500 hover:bg-amber-400 px-4 py-2 text-xs font-bold text-slate-950 transition cursor-pointer"
+      >
+        <span>+ {isEs ? 'Agregar a Bandeja de Cotización' : 'Add to Quote Tray'}</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  function initProductQuickCards() {
+    const cards = document.querySelectorAll('[data-product-quick-card]');
+    cards.forEach((card) => {
+      const tabs = card.querySelectorAll('[data-qcard-tab]');
+      const panels = card.querySelectorAll('[data-qcard-panel]');
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const target = tab.getAttribute('data-qcard-tab');
+          tabs.forEach((t) => {
+            const active = t.getAttribute('data-qcard-tab') === target;
+            t.setAttribute('aria-selected', active ? 'true' : 'false');
+            t.classList.toggle('border-amber-500/60', active);
+            t.classList.toggle('bg-amber-500/15', active);
+            t.classList.toggle('text-amber-300', active);
+            t.classList.toggle('border-slate-700', !active);
+            t.classList.toggle('bg-slate-900', !active);
+            t.classList.toggle('text-slate-300', !active);
+          });
+          panels.forEach((panel) => {
+            const match = panel.getAttribute('data-qcard-panel') === target;
+            panel.classList.toggle('hidden', !match);
+            panel.classList.toggle('flex', match);
+          });
+        });
+      });
+    });
+  }
+
+  initProductQuickCards();
+  document.addEventListener('astro:page-load', initProductQuickCards);
+</script>

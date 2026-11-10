@@ -180,16 +180,48 @@ import quickCatalog from '../../../data/quick_checkout_Catalog.json';
           <h2>19 Critical Plant SKUs & 13 Verified Atomic Part Sheets</h2>
         </div>
         <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
-          <a href="/en/catalog/D075C21/" class="part-chip part-chip--highlight">View D075C21 Sheet (Shaft Sleeve) →</a>
+          <a href="/en/catalog/d075c21/" class="part-chip part-chip--highlight">View D075C21 Sheet (Shaft Sleeve) →</a>
           <a href="/en/classification/" class="part-chip part-chip--highlight">Open Hydrocyclone Simulator →</a>
         </div>
+      </div>
+
+      <!-- Instant Zero-OEM Drop-In Equivalence Verifier (Anti-Luis • D3) -->
+      <div class="dropin-verifier-box" data-dropin-verifier-en style="margin-bottom: 1.5rem; padding: 1rem 1.25rem; border-radius: 10px; background: #0f172a; color: #f8fafc; border: 1.5px solid #334155;">
+        <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between;">
+          <div>
+            <strong style="font-family: var(--smat-font-mono); font-size: 0.78rem; color: #fbbf24; display: block;">
+              🔎 INSTANT ZERO-OEM DROP-IN GEOMETRIC EQUIVALENCE VERIFIER (ISO 2768-m)
+            </strong>
+            <span style="font-size: 0.82rem; color: #cbd5e1;">
+              Enter the cast code on your current part (e.g. <code>E4147A05</code>, <code>D075C21</code>, <code>E4083</code>, <code>TH48-30</code>):
+            </span>
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+            <input
+              type="text"
+              data-dropin-input-en
+              placeholder="e.g. E4147A05 or D075C21"
+              aria-label="Part code to verify Drop-In equivalence"
+              style="padding: 0.5rem 0.75rem; border-radius: 6px; border: 1px solid #475569; background: #1e293b; color: #fff; font-family: var(--smat-font-mono); font-size: 0.85rem;"
+            />
+            <button
+              type="button"
+              data-dropin-btn-en
+              class="part-chip part-chip--highlight"
+              style="cursor: pointer;"
+            >
+              Verify Triplet (A,B,C) →
+            </button>
+          </div>
+        </div>
+        <div data-dropin-result-en style="margin-top: 0.65rem; font-family: var(--smat-font-mono); font-size: 0.78rem; color: #34d399; display: none;"></div>
       </div>
 
       <div class="quick-sku-grid">
         {quickCatalog.map((item) => (
           <article class="quick-sku-card">
             <div class="quick-sku-top">
-              <span class="quick-sku-id">{item.id}</span>
+              <span class="quick-sku-id">{item.id} · {item.stock_regime === 'se_fabrica' ? '🔵 CUSTOM' : item.stock_regime === 'se_pide' ? '🟡 BATCH' : '🟢 IN STOCK'}</span>
               <span class="quick-sku-atomic">{item.atomic_codes.join(' · ')}</span>
             </div>
             <h3 class="quick-sku-title">
@@ -207,6 +239,33 @@ import quickCatalog from '../../../data/quick_checkout_Catalog.json';
       </div>
     </div>
   </section>
+
+  <script>
+    import { verifyDropInEquivalence } from '../../scripts/dropInEquivalenceGuard.js';
+    function bindDropInVerifierEn() {
+      const box = document.querySelector('[data-dropin-verifier-en]');
+      if (!box) return;
+      const input = box.querySelector('[data-dropin-input-en]') as HTMLInputElement | null;
+      const btn = box.querySelector('[data-dropin-btn-en]');
+      const out = box.querySelector('[data-dropin-result-en]') as HTMLElement | null;
+      const run = () => {
+        if (!input || !out) return;
+        const res = verifyDropInEquivalence(input.value);
+        out.style.display = 'block';
+        if (res.matched && res.geometricTripletMm) {
+          out.innerHTML = `✅ DROP-IN MATCH: <strong>${res.smatSkuId}</strong> (${res.titleEn}) | Alloy: <strong>${res.alloyCode}</strong> | ${res.geometricTripletMm.label_en} (${res.toleranceStd}) · <a href="/en/products/${res.slugEn}/" style="color:#fbbf24;text-decoration:underline;">Open Sheet →</a>`;
+        } else {
+          out.innerHTML = `ℹ️ ${res.reasonEn}`;
+        }
+      };
+      btn?.addEventListener('click', run);
+      input?.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter') run();
+      });
+    }
+    bindDropInVerifierEn();
+    document.addEventListener('astro:page-load', bindDropInVerifierEn);
+  </script>
 
   <TrustMatrix lang="en" hideBoundaries={true} />
 </BaseLayout>

@@ -17,6 +17,15 @@ type DiagramKind =
   | 'drive_arrangements'
   | 'material_kit_grid'
   | 'suction_throatbush'
+  | 'impulsor'
+  | 'revestimientos'
+  | 'throatbush'
+  | 'sello'
+  | 'soporte'
+  | 'bombeo'
+  | 'clasificacion'
+  | 'desaguado'
+  | 'flotacion'
   | 'impeller-5-vane-d4147a05'
   | 'throatbush-d4083a05'
   | 'volute-liner-d4110a05'
@@ -36,16 +45,25 @@ type DiagramKind =
   | 'marcy-scale-kit';
 
 interface Props {
-  diagram?: DiagramKind;
-  type?: DiagramKind;
+  diagram?: DiagramKind | string;
+  type?: DiagramKind | string;
   lang?: 'es' | 'en';
   compact?: boolean;
   showXrayOverlay?: boolean;
 }
 
 const { lang = 'es', compact = false, showXrayOverlay = true } = Astro.props;
-const rawDiagram: DiagramKind = Astro.props.diagram ?? Astro.props.type ?? 'pump';
+const rawDiagram = (Astro.props.diagram ?? Astro.props.type ?? 'pump') as string;
 const DIAGRAM_ALIAS_MAP: Record<string, string> = {
+  'impulsor': 'impeller',
+  'revestimientos': 'liners',
+  'throatbush': 'suction_throatbush',
+  'sello': 'expeller',
+  'soporte': 'marcy',
+  'bombeo': 'pump',
+  'clasificacion': 'cyclone-apex-vortex',
+  'desaguado': 'sieves',
+  'flotacion': 'flotation',
   'impeller-5-vane-d4147a05': 'impeller',
   'throatbush-d4083a05': 'suction_throatbush',
   'volute-liner-d4110a05': 'liners',

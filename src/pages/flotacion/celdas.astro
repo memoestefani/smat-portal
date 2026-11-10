@@ -72,8 +72,26 @@ const criteria = celdaRole?.decision_criteria;
               <td>Cinética de Flotación JKMRC (Gorain 1997)</td>
               <td>Flujo Superficial de Burbuja S<sub>b</sub> = 6 J<sub>g</sub> / d<sub>32</sub> (50–65 s<sup>-1</sup>) con constante cinética k = P · S<sub>b</sub> · R<sub>f</sub></td>
             </tr>
+            <tr>
+              <td>Modelos #18 SP, #24 y #30 (Candado G4)</td>
+              <td>Reemplazo Drop-In en 5 zonas (#01 Cabezal, #02 Eje Hueco, #03 Tubo de Tiro, #04 Rotor Estrella, #05 Difusor/Estator) con línea base Anti-Morita [I<sub>motor</sub>, u<sub>rotor</sub>, S<sub>b</sub> ≥ 50 s<sup>-1</sup>]</td>
+            </tr>
           </tbody>
         </table>
+
+        <!-- Reporte de Despiece en 5 Zonas (#18 SP / #24 / #30) y Válvulas Avenida 4 -->
+        <div class="flotation-5zone-box" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; color: var(--smat-text-primary); border: 1px solid #cbd5e1; border-left: 4px solid #7c2d12;">
+          <span class="badge badge-copper">PLANO 3 · DESPIECE EN 5 ZONAS (#18 SP, #24, #30) Y VÁLVULAS DE LODOS (AVENIDA 4)</span>
+          <h3 style="margin: 0.65rem 0 0.5rem; font-size: 1.08rem; color: var(--smat-text-primary);">Reemplazo Drop-In Sin Modificar Tanque ni Cabezal Existente (Anti-Morita)</h3>
+          <p style="font-size: 0.88rem; color: #334155; margin-bottom: 0.85rem;">
+            Cada kit rotor-estator SMAT preserva el número de bombeo de aire N<sub>Q</sub> y el flujo superficial de burbuja S<sub>b</sub> ≥ 50 s<sup>-1</sup> (Gorain 1997), verificando amperaje I<sub>motor</sub> y velocidad periférica u<sub>rotor</sub> (6.0–7.5 m/s) antes y después del montaje.
+          </p>
+          <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
+            <a href="/productos/kit-rotor-estator-flotacion-drop-in/" class="btn btn-outline" style="font-size:0.8rem;">SKU-QC-14 · Kit Rotor + Estator (#18 SP) →</a>
+            <a href="/productos/manga-elastomero-valvula-pinch-lodos/" class="btn btn-outline" style="font-size:0.8rem;">SKU-QC-15 · Manga Válvula Pinch R55 →</a>
+            <a href="/productos/valvula-guillotina-bidireccional-lodos/" class="btn btn-outline" style="font-size:0.8rem;">SKU-QC-16 · Válvula Guillotina Bidireccional →</a>
+          </div>
+        </div>
 
         {criteria && (
           <div class="decision-criteria-panel" data-testid="role-decision-criteria" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #9a3412;">

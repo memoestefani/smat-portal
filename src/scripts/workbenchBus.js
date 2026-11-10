@@ -2143,4 +2143,9 @@ export {
   loadWorkbenchSession as loadWorkbenchState, saveWorkbenchSession as saveWorkbenchState, dispatchLeadWebhook as sendLeadToServer
 };
 
+export {
+  SAT_TIGIE_BY_VERTICAL,
+  formatSatTigieInvoiceLine,
+  formatDualCheckoutPayload
+} from './workbenchExportFormatters.js';
 
