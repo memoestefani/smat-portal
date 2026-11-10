@@ -2,7 +2,7 @@
  * workbenchExportFormatters.js
  * ---------------------------------------------------------------------------
  * Costura Modular LCOM4 (∂(C) = 0, D8 / SLICE-FC-12) para Formateadores B2B
- * de Doble Carril (< $25,000 MXN Caja Chica CFDI 4.0 vs > $25,000 MXN OC SAP/Oracle)
+ * de Doble Carril (< MXN 25,000 Caja Chica CFDI 4.0 vs > MXN 25,000 OC SAP/Oracle)
  * y Tuplas Fiscales SAT / TIGIE.
  */
 

@@ -28,7 +28,6 @@ import {
   validatePlantLeadInput
 } from '../src/scripts/slurryEngine.js';
 import {
-  resolveMiningDistrictPreset,
   buildCanonicalEngineeringSnapshot
 } from '../src/scripts/workbenchBus.js';
 

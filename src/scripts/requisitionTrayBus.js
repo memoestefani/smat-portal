@@ -341,7 +341,7 @@ export function hydrateTrayFromReorderQuery(searchString = '') {
 
 /**
  * Calcula el descriptor de prioridad c*mu (Van Mieghem 1995) y el carril de checkout
- * según urgencia de planta, monto estimado (< $25,000 MXN vs > $25,000 MXN) y régimen (hay / se_pide / se_fabrica).
+ * según urgencia de planta, monto estimado (< MXN 25,000 vs > MXN 25,000) y régimen (hay / se_pide / se_fabrica).
  *
  * @param {any} [params={}]
  * @returns {any}
@@ -388,8 +388,8 @@ export function computeCmuPriorityDescriptor(params = {}) {
       stockRegime,
       advancePaymentPct: 0,
       slaResponseMinutes: 30,
-      labelEs: '⚡ P1 · CAJA CHICA (< $25,000 MXN · CFDI 4.0 Hoy)',
-      labelEn: '⚡ P1 · PETTY CASH (< $25,000 MXN · CFDI 4.0 Today)'
+      labelEs: '⚡ P1 · CAJA CHICA (< MXN 25,000 · CFDI 4.0 Hoy)',
+      labelEn: '⚡ P1 · PETTY CASH (< MXN 25,000 · CFDI 4.0 Today)'
     };
   }
 

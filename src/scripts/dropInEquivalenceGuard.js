@@ -179,3 +179,4 @@ export function verifyDropInEquivalence(rawInput) {
     satTuple: sku.sat_tuple
   };
 }
+

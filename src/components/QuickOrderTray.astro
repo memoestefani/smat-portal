@@ -31,7 +31,7 @@ const isEs = lang === 'es';
     </span>
   </button>
 
-  <!-- Panel desplegable de Bandeja Dual (< $25,000 MXN Caja Chica vs > $25,000 MXN OC SAP) -->
+  <!-- Panel desplegable de Bandeja Dual (< MXN 25,000 Caja Chica vs > MXN 25,000 OC SAP) -->
   <div
     id="smat-qtray-drawer"
     class="hidden mt-2 w-[340px] sm:w-[400px] rounded-2xl border border-slate-700 bg-slate-950/98 p-4 text-slate-100 shadow-2xl backdrop-blur"
@@ -42,7 +42,7 @@ const isEs = lang === 'es';
           {isEs ? 'Bandeja Rápida B2B · Regla cμ' : 'Fast B2B Requisition Tray · cμ Rule'}
         </div>
         <div id="smat-qtray-priority-badge" class="text-[11px] font-mono text-emerald-400">
-          {isEs ? '⚡ P1 · CAJA CHICA (< $25,000 MXN) / OC SAP' : '⚡ P1 · PETTY CASH (< $25,000 MXN) / SAP PO'}
+          {isEs ? '⚡ P1 · CAJA CHICA (< MXN 25,000) / OC SAP' : '⚡ P1 · PETTY CASH (< MXN 25,000) / SAP PO'}
         </div>
       </div>
       <button
@@ -62,14 +62,14 @@ const isEs = lang === 'es';
         data-qtray-lane="CAJA_CHICA_CFDI40"
         class="qtray-lane-btn rounded-lg border border-emerald-500/50 bg-emerald-950/40 px-2.5 py-2 text-emerald-300 font-bold"
       >
-        {isEs ? '⚡ < $25k Caja Chica' : '⚡ < $25k Petty Cash'}
+        {isEs ? '⚡ < MXN 25k Caja Chica' : '⚡ < MXN 25k Petty Cash'}
       </button>
       <button
         type="button"
         data-qtray-lane="ORDEN_COMPRA_SAP"
         class="qtray-lane-btn rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-2 text-slate-300"
       >
-        {isEs ? '🏢 > $25k OC SAP' : '🏢 > $25k SAP PO'}
+        {isEs ? '🏢 > MXN 25k OC SAP' : '🏢 > MXN 25k SAP PO'}
       </button>
     </div>
 
