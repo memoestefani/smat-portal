@@ -11,44 +11,45 @@ const isEs = lang === 'es';
   id="smat-quick-order-tray"
   data-quick-order-tray
   data-lang={lang}
-  class="fixed bottom-4 left-4 z-50 max-w-md"
+  class="smat-qtray-root"
   aria-label={isEs ? 'Bandeja Rápida de Cotización B2B' : 'Fast B2B Requisition Tray'}
 >
   <!-- Botón flotante colapsado (Fitts >= 48x48px) -->
   <button
     type="button"
     id="smat-qtray-toggle"
-    class="min-h-[48px] inline-flex items-center gap-2.5 rounded-full border border-amber-500/60 bg-slate-950/95 px-4 py-2.5 text-xs font-mono font-bold text-amber-300 shadow-2xl hover:bg-slate-900 transition cursor-pointer"
+    class="smat-qtray-toggle-btn"
     aria-expanded="false"
     aria-controls="smat-qtray-drawer"
   >
     <span>🛒 {isEs ? 'Bandeja B2B (cμ)' : 'B2B Tray (cμ)'}</span>
     <span
       id="smat-qtray-count"
-      class="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-amber-500 px-1.5 text-[11px] font-extrabold text-slate-950"
+      class="smat-qtray-count-pill"
     >
       0
     </span>
   </button>
 
-  <!-- Panel desplegable de Bandeja Dual (< MXN 25,000 Caja Chica vs > MXN 25,000 OC SAP) -->
+  <!-- Panel desplegable de Bandeja Dual (< 25,000 MXN Caja Chica vs > 25,000 MXN OC SAP) -->
   <div
     id="smat-qtray-drawer"
-    class="hidden mt-2 w-[340px] sm:w-[400px] rounded-2xl border border-slate-700 bg-slate-950/98 p-4 text-slate-100 shadow-2xl backdrop-blur"
+    class="smat-qtray-drawer hidden"
+    hidden
   >
-    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-3">
+    <div class="smat-qtray-drawer-head">
       <div>
-        <div class="text-xs font-mono font-bold uppercase text-amber-400">
+        <div class="smat-qtray-title">
           {isEs ? 'Bandeja Rápida B2B · Regla cμ' : 'Fast B2B Requisition Tray · cμ Rule'}
         </div>
-        <div id="smat-qtray-priority-badge" class="text-[11px] font-mono text-emerald-400">
-          {isEs ? '⚡ P1 · CAJA CHICA (< MXN 25,000) / OC SAP' : '⚡ P1 · PETTY CASH (< MXN 25,000) / SAP PO'}
+        <div id="smat-qtray-priority-badge" class="smat-qtray-priority">
+          {isEs ? '⚡ P1 · CAJA CHICA (< 25,000 MXN) / OC SAP' : '⚡ P1 · PETTY CASH (< 25,000 MXN) / SAP PO'}
         </div>
       </div>
       <button
         type="button"
         id="smat-qtray-close"
-        class="min-h-[48px] min-w-[48px] rounded-lg border border-slate-800 text-xs font-mono text-slate-400 hover:text-white"
+        class="smat-qtray-close-btn"
         aria-label={isEs ? 'Cerrar bandeja' : 'Close tray'}
       >
         ✕
@@ -56,26 +57,26 @@ const isEs = lang === 'es';
     </div>
 
     <!-- Selector de Carril de Compra -->
-    <div class="grid grid-cols-2 gap-2 mb-3 text-[11px] font-mono">
+    <div class="smat-qtray-lane-grid">
       <button
         type="button"
         data-qtray-lane="CAJA_CHICA_CFDI40"
-        class="qtray-lane-btn rounded-lg border border-emerald-500/50 bg-emerald-950/40 px-2.5 py-2 text-emerald-300 font-bold"
+        class="qtray-lane-btn is-active"
       >
-        {isEs ? '⚡ < MXN 25k Caja Chica' : '⚡ < MXN 25k Petty Cash'}
+        {isEs ? '⚡ < 25k MXN Caja Chica' : '⚡ < 25k MXN Petty Cash'}
       </button>
       <button
         type="button"
         data-qtray-lane="ORDEN_COMPRA_SAP"
-        class="qtray-lane-btn rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-2 text-slate-300"
+        class="qtray-lane-btn"
       >
-        {isEs ? '🏢 > MXN 25k OC SAP' : '🏢 > MXN 25k SAP PO'}
+        {isEs ? '🏢 > 25k MXN OC SAP' : '🏢 > 25k MXN SAP PO'}
       </button>
     </div>
 
     <!-- Lista de Partidas -->
-    <ul id="smat-qtray-items" class="max-h-48 overflow-y-auto space-y-2 mb-3 text-xs">
-      <li class="text-slate-400 font-mono py-2 text-center">
+    <ul id="smat-qtray-items" class="smat-qtray-items-list">
+      <li class="smat-qtray-empty-item">
         {isEs
           ? 'Sin SKUs aún. Haz clic en "+ Agregar a Bandeja" en cualquier ficha.'
           : 'No SKUs yet. Click "+ Add to Quote Tray" on any product card.'}
@@ -83,8 +84,8 @@ const isEs = lang === 'es';
     </ul>
 
     <!-- Ventana de Reorden Acoplado (s, S) -->
-    <div class="rounded-xl bg-slate-900/90 border border-slate-800 p-2.5 mb-3 text-[11px] font-mono text-slate-300">
-      <div class="text-amber-300 font-bold mb-0.5">
+    <div class="smat-qtray-reorder-box">
+      <div class="smat-qtray-reorder-title">
         {isEs ? '⏱️ Política de Reorden Acoplado 5:5:4 (s, S):' : '⏱️ Coupled 5:5:4 Reorder Policy (s, S):'}
       </div>
       <div>
@@ -94,14 +95,34 @@ const isEs = lang === 'es';
       </div>
     </div>
 
+    <!-- Intercambio de Casco / Core Trade-In (-22% Remanufactura ISO 281 · D4 / INV-SMAT-SCI-06) -->
+    <div class="smat-qtray-tradein-box">
+      <label class="smat-qtray-tradein-label">
+        <input
+          type="checkbox"
+          id="smat-qtray-core-tradein"
+          data-core-tradein-toggle
+          class="smat-qtray-checkbox"
+        />
+        <span>
+          <strong>{isEs ? '♻️ Intercambio de Casco DAM005 (-22% Core Trade-In)' : '♻️ DAM005 Bearing Cartridge Core Trade-In (-22%)'}</strong>
+          <span id="smat-qtray-core-badge" class="smat-qtray-tradein-note">
+            {isEs
+              ? 'Bonificación -22% al entregar tambor GGG40 en tolerancia H7 (INV-SMAT-SCI-06)'
+              : '22% credit when returning crack-free GGG40 barrel in H7 tolerance (INV-SMAT-SCI-06)'}
+          </span>
+        </span>
+      </label>
+    </div>
+
     <!-- Acciones de Despacho -->
-    <div class="flex flex-col gap-2">
+    <div class="smat-qtray-actions">
       <a
         id="smat-qtray-wa-link"
-        href="https://wa.me/526181302221?text=Hola%20SMAT%2C%20solicito%20cotizaci%C3%B3n%20prioritaria%20B2B"
+        href="https://wa.me/526183670664?text=Hola%20SMAT%2C%20solicito%20cotizaci%C3%B3n%20prioritaria%20B2B%20%5BSMAT-DGO%5D"
         target="_blank"
         rel="noopener noreferrer"
-        class="w-full rounded-xl bg-amber-500 hover:bg-amber-400 py-2.5 px-4 text-center text-xs font-bold text-slate-950 transition"
+        class="smat-qtray-wa-btn"
       >
         {isEs ? '🚀 Enviar Requisición Prioritaria (WhatsApp / Correo)' : '🚀 Dispatch Priority Requisition (WhatsApp / Email)'}
       </a>
@@ -112,10 +133,13 @@ const isEs = lang === 'es';
 <script>
   import {
     getTrayState,
+    saveTrayState,
     addTrayItem,
     removeTrayItem,
     buildCmuPrioritySubjectLine,
     computeCmuPriorityDescriptor,
+    evaluateBearingCartridgeCoreTradeIn,
+    syncTrayToWorkbenchStateLens,
     SMAT_TRAY_UPDATE_EVENT
   } from '../scripts/requisitionTrayBus.js';
 
@@ -130,11 +154,27 @@ const isEs = lang === 'es';
     const itemsEl = document.getElementById('smat-qtray-items');
     const badgeEl = document.getElementById('smat-qtray-priority-badge');
     const waLink = document.getElementById('smat-qtray-wa-link') as HTMLAnchorElement | null;
+    const coreToggle = document.getElementById('smat-qtray-core-tradein') as HTMLInputElement | null;
+    const coreBadge = document.getElementById('smat-qtray-core-badge');
 
     let selectedLane = 'CAJA_CHICA_CFDI40';
 
+    function setDrawerHidden(isHidden: boolean) {
+      if (!drawer) return;
+      drawer.classList.toggle('hidden', isHidden);
+      drawer.hidden = isHidden;
+      toggleBtn?.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
+    }
+
     function renderTray() {
       const state = getTrayState();
+      const tradeIn = evaluateBearingCartridgeCoreTradeIn(state, coreToggle ? coreToggle.checked : state.coreReturnEnabled);
+      if (coreToggle) coreToggle.checked = Boolean(tradeIn.coreReturnEnabled);
+      if (coreBadge) {
+        coreBadge.textContent = tradeIn.discountPct > 0
+          ? (isEs ? `ACTIVO: -${tradeIn.discountPct}% Core Trade-In (${tradeIn.housingMaterial})` : `ACTIVE: -${tradeIn.discountPct}% Core Trade-In (${tradeIn.housingMaterial})`)
+          : (isEs ? tradeIn.inspectionGateEs : tradeIn.inspectionGateEn);
+      }
       const totalQty = state.items.reduce((acc: number, it: any) => acc + (Number(it.qty) || 1), 0);
       if (countEl) countEl.textContent = String(totalQty);
 
@@ -149,7 +189,7 @@ const isEs = lang === 'es';
 
       if (itemsEl) {
         if (!state.items.length) {
-          itemsEl.innerHTML = `<li class="text-slate-400 font-mono py-2 text-center">${
+          itemsEl.innerHTML = `<li class="smat-qtray-empty-item">${
             isEs
               ? 'Sin SKUs aún. Haz clic en "+ Agregar a Bandeja" en cualquier ficha.'
               : 'No SKUs yet. Click "+ Add to Quote Tray" on any product card.'
@@ -158,12 +198,12 @@ const isEs = lang === 'es';
           itemsEl.innerHTML = state.items
             .map(
               (item: any) => `
-              <li class="flex items-center justify-between gap-2 rounded-lg bg-slate-900 border border-slate-800 px-3 py-2">
+              <li class="smat-qtray-item-row">
                 <div>
-                  <div class="font-mono font-bold text-amber-300">${item.id} × ${item.qty}</div>
-                  <div class="text-[11px] text-slate-300 truncate max-w-[210px]">${isEs ? item.nameEs : item.nameEn}</div>
+                  <div class="smat-qtray-item-code">${item.id} × ${item.qty}</div>
+                  <div class="smat-qtray-item-name">${isEs ? item.nameEs : item.nameEn}</div>
                 </div>
-                <button type="button" data-qtray-remove="${item.id}" class="text-xs font-mono text-rose-400 hover:text-rose-300 px-2 py-1">✕</button>
+                <button type="button" data-qtray-remove="${item.id}" class="smat-qtray-remove-btn">✕</button>
               </li>`
             )
             .join('');
@@ -181,32 +221,42 @@ const isEs = lang === 'es';
       if (waLink) {
         const subject = buildCmuPrioritySubjectLine(state, { cvPct: 48 });
         const summary = state.items.map((i: any) => `${i.id}(x${i.qty} ${i.material})`).join(', ');
-        const msg = `${subject} | Carril: ${selectedLane} | Partidas: ${summary || 'Consulta directa'}`;
-        waLink.href = `https://wa.me/526181302221?text=${encodeURIComponent(msg)}`;
+        const coreNote = tradeIn.discountPct > 0 ? ` | Core Trade-In: -${tradeIn.discountPct}%` : '';
+        const msg = `[SMAT-DGO] ${subject} | Carril: ${selectedLane}${coreNote} | Partidas: ${summary || 'Consulta directa'}`;
+        waLink.href = `https://wa.me/526183670664?text=${encodeURIComponent(msg)}`;
       }
     }
 
+    coreToggle?.addEventListener('change', () => {
+      const st = getTrayState();
+      const updated = saveTrayState({ ...st, coreReturnEnabled: Boolean(coreToggle.checked) });
+      syncTrayToWorkbenchStateLens(updated);
+      renderTray();
+    });
+
     toggleBtn?.addEventListener('click', () => {
       if (!drawer) return;
-      const hidden = drawer.classList.toggle('hidden');
-      toggleBtn.setAttribute('aria-expanded', hidden ? 'false' : 'true');
+      const nextHidden = !drawer.classList.contains('hidden');
+      setDrawerHidden(nextHidden);
     });
 
     closeBtn?.addEventListener('click', () => {
-      drawer?.classList.add('hidden');
-      toggleBtn?.setAttribute('aria-expanded', 'false');
+      setDrawerHidden(true);
     });
 
     root.querySelectorAll('[data-qtray-lane]').forEach((btn) => {
       btn.addEventListener('click', () => {
         selectedLane = btn.getAttribute('data-qtray-lane') || 'CAJA_CHICA_CFDI40';
+        root.querySelectorAll('[data-qtray-lane]').forEach((b) => {
+          b.classList.toggle('is-active', b === btn);
+        });
         renderTray();
       });
     });
 
     document.querySelectorAll('[data-quick-tray-add]').forEach((btn) => {
       btn.addEventListener('click', () => {
-        const skuId = btn.getAttribute('data-quick-tray-add') || 'SKU-QC-01';
+        const skuId = btn.getAttribute('data-quick-tray-add') || 'SMAT-PUMP-IMP-AH';
         const title = btn.getAttribute('data-sku-title') || skuId;
         const code = btn.getAttribute('data-sku-code') || skuId;
         const material = btn.getAttribute('data-sku-material') || 'A05';
@@ -221,7 +271,7 @@ const isEs = lang === 'es';
           unitWeightKg: mass,
           qty: 1
         });
-        drawer?.classList.remove('hidden');
+        setDrawerHidden(false);
         renderTray();
       });
     });
@@ -233,3 +283,267 @@ const isEs = lang === 'es';
   initQuickOrderTray();
   document.addEventListener('astro:page-load', initQuickOrderTray);
 </script>
+
+<style>
+  .smat-qtray-root {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    z-index: 50;
+    max-width: 28rem;
+  }
+
+  .smat-qtray-toggle-btn {
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 1rem;
+    border-radius: 9999px;
+    border: 2px solid var(--smat-solar-amber-border, #d97706);
+    background: var(--smat-solar-surface, #ffffff);
+    color: var(--smat-solar-ink, #0f172a);
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+
+  .smat-qtray-toggle-btn:hover {
+    background: var(--smat-solar-amber-bg, #fffbeb);
+  }
+
+  .smat-qtray-count-pill {
+    display: inline-flex;
+    height: 20px;
+    min-width: 20px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.375rem;
+    border-radius: 9999px;
+    background: #d97706;
+    color: #ffffff;
+    font-size: 0.6875rem;
+    font-weight: 800;
+  }
+
+  .smat-qtray-drawer {
+    margin-top: 0.5rem;
+    width: 340px;
+    padding: 1rem;
+    border-radius: 16px;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    background: var(--smat-solar-surface, #ffffff);
+    color: var(--smat-solar-ink, #0f172a);
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
+  }
+
+  @media (min-width: 640px) {
+    .smat-qtray-drawer {
+      width: 400px;
+    }
+  }
+
+  .smat-qtray-drawer.hidden,
+  .smat-qtray-drawer[hidden] {
+    display: none !important;
+  }
+
+  .smat-qtray-drawer-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.625rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--smat-solar-border, #cbd5e1);
+  }
+
+  .smat-qtray-title {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-qtray-priority {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--smat-solar-emerald, #047857);
+  }
+
+  .smat-qtray-close-btn {
+    min-height: 48px;
+    min-width: 48px;
+    border-radius: 8px;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    background: var(--smat-solar-bg, #f8fafc);
+    color: var(--smat-solar-muted, #334155);
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+
+  .smat-qtray-close-btn:hover {
+    color: var(--smat-solar-ink, #0f172a);
+    border-color: #94a3b8;
+  }
+
+  .smat-qtray-lane-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.6875rem;
+  }
+
+  .qtray-lane-btn {
+    padding: 0.5rem 0.625rem;
+    border-radius: 8px;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    background: var(--smat-solar-bg, #f8fafc);
+    color: var(--smat-solar-muted, #334155);
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+  }
+
+  .qtray-lane-btn.is-active {
+    border-color: var(--smat-solar-emerald-border, #059669);
+    background: var(--smat-solar-emerald-bg, #ecfdf5);
+    color: var(--smat-solar-emerald, #047857);
+    font-weight: 700;
+  }
+
+  .smat-qtray-items-list {
+    list-style: none;
+    margin: 0 0 0.75rem 0;
+    padding: 0;
+    max-height: 12rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  :global(.smat-qtray-empty-item) {
+    padding: 0.5rem 0;
+    text-align: center;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    color: var(--smat-solar-muted, #334155);
+  }
+
+  :global(.smat-qtray-item-row) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    background: var(--smat-solar-bg, #f8fafc);
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+  }
+
+  :global(.smat-qtray-item-code) {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-weight: 700;
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  :global(.smat-qtray-item-name) {
+    font-size: 0.6875rem;
+    color: var(--smat-solar-ink, #0f172a);
+    max-width: 210px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  :global(.smat-qtray-remove-btn) {
+    padding: 0.25rem 0.5rem;
+    border: none;
+    background: transparent;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    color: #be123c;
+    cursor: pointer;
+  }
+
+  .smat-qtray-reorder-box {
+    padding: 0.625rem;
+    margin-bottom: 0.75rem;
+    border-radius: 12px;
+    background: var(--smat-solar-bg, #f8fafc);
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.6875rem;
+    color: var(--smat-solar-muted, #334155);
+  }
+
+  .smat-qtray-reorder-title {
+    margin-bottom: 0.125rem;
+    font-weight: 700;
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-qtray-tradein-box {
+    padding: 0.625rem;
+    margin-bottom: 0.75rem;
+    border-radius: 12px;
+    background: var(--smat-solar-emerald-bg, #ecfdf5);
+    border: 1px solid var(--smat-solar-emerald-border, #059669);
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.6875rem;
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  .smat-qtray-tradein-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+
+  .smat-qtray-checkbox {
+    margin-top: 0.125rem;
+    width: 1rem;
+    height: 1rem;
+    accent-color: #059669;
+  }
+
+  .smat-qtray-tradein-note {
+    display: block;
+    margin-top: 0.125rem;
+    font-size: 0.625rem;
+    color: var(--smat-solar-emerald, #047857);
+  }
+
+  .smat-qtray-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .smat-qtray-wa-btn {
+    display: block;
+    width: 100%;
+    padding: 0.625rem 1rem;
+    border-radius: 12px;
+    background: #d97706;
+    color: #ffffff;
+    text-align: center;
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 700;
+    transition: background 0.15s ease;
+  }
+
+  .smat-qtray-wa-btn:hover {
+    background: #b45309;
+  }
+</style>

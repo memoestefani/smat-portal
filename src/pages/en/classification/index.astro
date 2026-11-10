@@ -98,10 +98,10 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
             </p>
 
             <div class="cyc-cta-row">
-              <a href="/en/products/hydrocyclone-apex-spigot/" class="btn-cyc-sku" id="cyc-recommended-sku-link">
-                Configure Apex Spigot (SKU-QC-11) →
+              <a href="/en/products/hydrocyclone-assembly-and-spigots-d6-d20/" class="btn-cyc-sku" id="cyc-recommended-sku-link">
+                Configure Apex Spigot (SMAT-CYC-D6-D20) →
               </a>
-              <a href="/en/quote/?circuito=clasificacion&equipo=apex-boquilla-hidrociclon&sku=SKU-QC-11#rfq" class="btn-cyc-rfq" id="cyc-rfq-link">
+              <a href="/en/quote/?circuito=clasificacion&equipo=apex-boquilla-hidrociclon&sku=SMAT-CYC-D6-D20#rfq" class="btn-cyc-rfq" id="cyc-rfq-link">
                 Sync to A4 Quote Workbench →
               </a>
             </div>
@@ -113,24 +113,24 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
         <h2>Critical Hydrocyclone Wear Parts with 1:1 Dimensional Check in Durango</h2>
         <div class="cyc-sku-cards">
           <article class="cyc-sku-card">
-            <span class="cyc-sku-code">SKU-QC-11 • UNDERFLOW ABRASION CONTROL</span>
+            <span class="cyc-sku-code">SMAT-CYC-D6-D20 • UNDERFLOW ABRASION CONTROL</span>
             <h3>Hydrocyclone Apex / Spigot (SiC Ceramic / Si3N4 / Cr27)</h3>
             <p>Precision ground conical bore to preserve semi-umbrella spray angle and prevent roping volumetric choking.</p>
-            <a href="/en/products/hydrocyclone-apex-spigot/">Open Quick-Checkout Sheet SKU-QC-11 →</a>
+            <a href="/en/products/hydrocyclone-assembly-and-spigots-d6-d20/">Open Quick-Checkout Sheet SMAT-CYC-D6-D20 →</a>
           </article>
 
           <article class="cyc-sku-card">
-            <span class="cyc-sku-code">SKU-QC-12 • OVERFLOW CUT CONTROL</span>
+            <span class="cyc-sku-code">SMAT-COUPLED-PUMP-CYC • OVERFLOW CUT CONTROL</span>
             <h3>Hydrocyclone Vortex Finder (Cr27 / SiC Ceramic / PU)</h3>
             <p>Erosion-resistant overflow sleeve engineered to eliminate coarse particle short-circuiting to flotation.</p>
-            <a href="/en/products/hydrocyclone-vortex-finder/">Open Quick-Checkout Sheet SKU-QC-12 →</a>
+            <a href="/en/products/coupled-slurry-pump-cyclone-package/">Open Quick-Checkout Sheet SMAT-COUPLED-PUMP-CYC →</a>
           </article>
 
           <article class="cyc-sku-card">
-            <span class="cyc-sku-code">SKU-QC-13 • CONE & FEED CHAMBER</span>
+            <span class="cyc-sku-code">SMAT-SCR-TH48-30 • CONE & FEED CHAMBER</span>
             <h3>Hydrocyclone Cone & Cylinder Liner Kit (R55 Rubber / PU / SiC)</h3>
             <p>Drop-in sectional liners with step-free internal joints compatible with D10, D15, D20, and D26 cyclone banks.</p>
-            <a href="/en/products/hydrocyclone-cone-cylinder-liners/">Open Quick-Checkout Sheet SKU-QC-13 →</a>
+            <a href="/en/products/hydrocyclone-assembly-and-spigots-d6-d20/">Open Quick-Checkout Sheet SMAT-CYC-D6-D20 →</a>
           </article>
         </div>
       </section>
@@ -142,7 +142,7 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
         circuit="clasificacion"
         role="hidrociclon_apex_vortex"
         partName="Hydrocyclone Cluster — Apex Spigot, Vortex Finder & Cone Liners"
-        partCode="SKU-QC-11"
+        partCode="SMAT-CYC-D6-D20"
       />
     </div>
   </main>
@@ -190,9 +190,9 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
     if (d50El) d50El.textContent = `${res.d50cMicrons} µm`;
     if (actionEl) actionEl.textContent = res.diagnosticActionEn;
     if (skuLink) {
-      skuLink.href = res.recommendedSkuId === 'SKU-QC-12'
-        ? '/en/products/hydrocyclone-vortex-finder/'
-        : '/en/products/hydrocyclone-apex-spigot/';
+      skuLink.href = res.recommendedSkuId === 'SMAT-COUPLED-PUMP-CYC'
+        ? '/en/products/coupled-slurry-pump-cyclone-package/'
+        : '/en/products/hydrocyclone-assembly-and-spigots-d6-d20/';
       skuLink.textContent = `Configure Recommended Spare (${res.recommendedSkuId}) →`;
     }
 

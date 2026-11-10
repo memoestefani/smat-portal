@@ -1,9 +1,10 @@
 /**
  * dropInEquivalenceGuard.js
  * ---------------------------------------------------------------------------
- * Verificador Cero-OEM de Equivalencia Geométrica Drop-In (Anti-Luis, PRD v3.0 §6.5).
+ * Verificador Cero-OEM de Equivalencia Geométrica Drop-In (Anti-Luis, PRD v3.2 §6.5 / D7 = 7-C+ / ARB-SMAT-37).
  * Implementa normalización morfológica en 2 etapas (raíz geométrica + sufijo de aleación)
- * y tabla de dispersión estática FNV-1a de 32 bits sin cadenas de marcas terceras en DOM/bundle.
+ * y tabla de dispersión estática FNV-1a de 32 bits indexada únicamente por digest hexadecimal
+ * de 8 caracteres (0 raíces OEM en texto plano en el bundle JS).
  */
 
 import { getQuickProductsCatalog, getQuickProductBySlugOrAlias } from './quickProductsCatalog.js';
@@ -24,10 +25,61 @@ export function fnv1a32DropInHash(normalizedRoot) {
 }
 
 /**
+ * Índice estático FNV-1a (32-bit hex) -> Descriptor SKU SMAT.
+ * Ninguna raíz alfanumérica de catálogo tercero aparece en texto plano.
+ */
+export const FNV1A_HASH_TO_SKU_INDEX = Object.freeze({
+  '4a405f7c': { canonicalSkuId: 'SMAT-PUMP-IMP-AH', defaultAlloy: 'A05' },
+  '94fbebd4': { canonicalSkuId: 'SMAT-PUMP-IMP-AH', defaultAlloy: 'A05' },
+  'a15f61b7': { canonicalSkuId: 'SMAT-PUMP-IMP-AH', defaultAlloy: 'A05' },
+  '0603597c': { canonicalSkuId: 'SMAT-PUMP-LINERS-AH', defaultAlloy: 'A05' },
+  'db47ff84': { canonicalSkuId: 'SMAT-PUMP-LINERS-AH', defaultAlloy: 'A05' },
+  '70894c37': { canonicalSkuId: 'SMAT-PUMP-LINERS-AH', defaultAlloy: 'A05' },
+  '9c5acb3f': { canonicalSkuId: 'SMAT-PUMP-LINERS-AH', defaultAlloy: 'A05' },
+  '4ff0718c': { canonicalSkuId: 'SMAT-PUMP-LINERS-AH', defaultAlloy: 'A05' },
+  '5f77e853': { canonicalSkuId: 'SMAT-PUMP-LINERS-AH', defaultAlloy: 'A05' },
+  '1b71597b': { canonicalSkuId: 'SMAT-PUMP-LINERS-AH', defaultAlloy: 'A05' },
+  '26782691': { canonicalSkuId: 'SMAT-PUMP-LINERS-AH', defaultAlloy: 'A05' },
+  'd1f7f9f7': { canonicalSkuId: 'SMAT-PUMP-EXPELLER-KIT', defaultAlloy: 'A05' },
+  '5d712968': { canonicalSkuId: 'SMAT-PUMP-EXPELLER-KIT', defaultAlloy: 'A05' },
+  'f938d47f': { canonicalSkuId: 'SMAT-PUMP-EXPELLER-KIT', defaultAlloy: 'A05' },
+  'f7cf7fb5': { canonicalSkuId: 'SMAT-PUMP-EXPELLER-KIT', defaultAlloy: 'C21', preserveCompound: true },
+  'f8729c8a': { canonicalSkuId: 'SMAT-PUMP-EXPELLER-KIT', defaultAlloy: 'C21', preserveCompound: true },
+  '3ac4b4d3': { canonicalSkuId: 'SMAT-PUMP-EXPELLER-KIT', defaultAlloy: 'C21' },
+  'd0f7f864': { canonicalSkuId: 'SMAT-PUMP-EXPELLER-KIT', defaultAlloy: 'A05' },
+  '9a69d2a3': { canonicalSkuId: 'SMAT-PUMP-EXPELLER-KIT', defaultAlloy: 'A05' },
+  '151af932': { canonicalSkuId: 'SMAT-PUMP-EXPELLER-KIT', defaultAlloy: 'A05' },
+  '70337fa6': { canonicalSkuId: 'SMAT-PUMP-BRG-005M', defaultAlloy: 'A05' },
+  '454d2390': { canonicalSkuId: 'SMAT-PUMP-LINERS-AH', defaultAlloy: 'R55' },
+  '597361b3': { canonicalSkuId: 'SMAT-PUMP-LINERS-AH', defaultAlloy: 'R55' },
+  'a56c228b': { canonicalSkuId: 'SMAT-PUMP-LINERS-AH', defaultAlloy: 'R55' },
+  'c1f5a230': { canonicalSkuId: 'SMAT-PUMP-LINERS-AH', defaultAlloy: 'R55' },
+  'e9c72cdb': { canonicalSkuId: 'SMAT-PUMP-WETKIT-554', defaultAlloy: 'A05' },
+  '52c08b7f': { canonicalSkuId: 'SMAT-SCR-MOD-1X1', defaultAlloy: 'R55' },
+  '4cb60e87': { canonicalSkuId: 'SMAT-SCR-MOD-1X1', defaultAlloy: 'PU' },
+  'b8f77e2d': { canonicalSkuId: 'SMAT-PUMP-EXPELLER-KIT', defaultAlloy: 'A05' },
+  '22edcebd': { canonicalSkuId: 'SMAT-CYC-D6-D20', defaultAlloy: 'SiC' },
+  '1dedc6de': { canonicalSkuId: 'SMAT-CYC-D6-D20', defaultAlloy: 'SiC' },
+  '08efe466': { canonicalSkuId: 'SMAT-CYC-D6-D20', defaultAlloy: 'SiC' },
+  'd97f564a': { canonicalSkuId: 'SMAT-CYC-D6-D20', defaultAlloy: 'SiC' },
+  '5c82631a': { canonicalSkuId: 'SMAT-CYC-D6-D20', defaultAlloy: 'SiC' },
+  '89ed8e6e': { canonicalSkuId: 'SMAT-CYC-D6-D20', defaultAlloy: 'SiC' },
+  '89ed2464': { canonicalSkuId: 'SMAT-SCR-TH48-30', defaultAlloy: 'PU' },
+  '3b662972': { canonicalSkuId: 'SMAT-CYC-D6-D20', defaultAlloy: 'PU' },
+  '6dd62e30': { canonicalSkuId: 'SMAT-FLOT-MECH-18SP', defaultAlloy: 'PU' },
+  'c53ed335': { canonicalSkuId: 'SMAT-FLOT-MECH-18SP', defaultAlloy: 'PU' },
+  '229ffa93': { canonicalSkuId: 'SMAT-LAB-PULV-DISC', defaultAlloy: 'R55' },
+  'f367e5a3': { canonicalSkuId: 'SMAT-LAB-FILTRO-BATCH', defaultAlloy: 'R55' },
+  '01613a6c': { canonicalSkuId: 'SMAT-FILT-CLOTH-PLATE', defaultAlloy: 'PU' },
+  '673b2285': { canonicalSkuId: 'SMAT-FILT-CLOTH-PLATE', defaultAlloy: 'R55' },
+  '68cabe03': { canonicalSkuId: 'SMAT-LAB-MARCY-1000', defaultAlloy: 'A49' }
+});
+
+/**
  * Normalización morfológica en 2 etapas para números de parte de campo:
  * Etapa 1: Limpieza alfanumérica en mayúsculas.
  * Etapa 2: Separación de sufijo metalúrgico/elastomérico (A05, R55, C21, SiC, PU, etc.)
- *          preservando códigos compuestos como D075C21 o TH4830.
+ *          preservando raíces compuestas registradas directamente en FNV1A_HASH_TO_SKU_INDEX.
  */
 export function normalizePartTokenTwoStage(rawInput) {
   const cleaned = String(rawInput || '')
@@ -43,13 +95,14 @@ export function normalizePartTokenTwoStage(rawInput) {
     };
   }
 
-  // Excepciones de raíces canónicas que terminan en código de material integrado
-  if (cleaned === 'D075C21' || cleaned === 'E075C21') {
+  const directHash = fnv1a32DropInHash(cleaned);
+  const directEntry = FNV1A_HASH_TO_SKU_INDEX[directHash];
+  if (directEntry && directEntry.preserveCompound) {
     return {
       cleaned,
-      baseRoot: 'D075C21',
-      alloySuffix: 'C21',
-      fnv1aHash: fnv1a32DropInHash('D075C21')
+      baseRoot: cleaned,
+      alloySuffix: directEntry.defaultAlloy,
+      fnv1aHash: directHash
     };
   }
 
@@ -69,53 +122,13 @@ export function normalizePartTokenTwoStage(rawInput) {
     cleaned,
     baseRoot: cleaned,
     alloySuffix: null,
-    fnv1aHash: fnv1a32DropInHash(cleaned)
+    fnv1aHash: directHash
   };
 }
 
 /**
- * Mapa determinista de raíces de campo a SKU canónico SMAT y código atómico.
- */
-const ROOT_TO_SKU_MAP = Object.freeze({
-  E4147: { skuId: 'SKU-QC-01', atomicCode: 'E4147', defaultAlloy: 'A05' },
-  D3147: { skuId: 'SKU-QC-01', atomicCode: 'D3147', defaultAlloy: 'A05' },
-  F6147: { skuId: 'SKU-QC-01', atomicCode: 'F6147', defaultAlloy: 'A05' },
-  D3110: { skuId: 'SKU-QC-02', atomicCode: 'D3110', defaultAlloy: 'A05' },
-  E4110: { skuId: 'SKU-QC-02', atomicCode: 'D3110', defaultAlloy: 'A05' },
-  E4083: { skuId: 'SKU-QC-03', atomicCode: 'E4083', defaultAlloy: 'A05' },
-  D4018: { skuId: 'SKU-QC-03', atomicCode: 'D4018', defaultAlloy: 'A05' },
-  D4028: { skuId: 'SKU-QC-04', atomicCode: 'D4028', defaultAlloy: 'A05' },
-  DAM028: { skuId: 'SKU-QC-04', atomicCode: 'DAM028', defaultAlloy: 'A05' },
-  D075C21: { skuId: 'SKU-QC-05', atomicCode: 'D075C21', defaultAlloy: 'C21' },
-  D075: { skuId: 'SKU-QC-05', atomicCode: 'D075C21', defaultAlloy: 'C21' },
-  D4029: { skuId: 'SKU-QC-06', atomicCode: 'D4029', defaultAlloy: 'A05' },
-  EAM028: { skuId: 'SKU-QC-06', atomicCode: 'EAM028', defaultAlloy: 'A05' },
-  DAM005: { skuId: 'SKU-QC-06', atomicCode: 'DAM005', defaultAlloy: 'A05' },
-  E4132: { skuId: 'SKU-QC-07', atomicCode: 'E4132', defaultAlloy: 'R55' },
-  D4032: { skuId: 'SKU-QC-07', atomicCode: 'E4132', defaultAlloy: 'R55' },
-  KITWECR276X4: { skuId: 'SKU-QC-08', atomicCode: 'E4147', defaultAlloy: 'A05' },
-  KITWER556X4: { skuId: 'SKU-QC-09', atomicCode: 'E4132', defaultAlloy: 'R55' },
-  MOD1X1: { skuId: 'SKU-QC-09', atomicCode: 'E4132', defaultAlloy: 'PU' },
-  KITSEALDRY6X4: { skuId: 'SKU-QC-10', atomicCode: 'D4028', defaultAlloy: 'A05' },
-  APEXSICD10: { skuId: 'SKU-QC-11', atomicCode: 'E4083', defaultAlloy: 'SiC' },
-  APEXSICD15: { skuId: 'SKU-QC-11', atomicCode: 'E4083', defaultAlloy: 'SiC' },
-  APEXSICD20: { skuId: 'SKU-QC-11', atomicCode: 'E4083', defaultAlloy: 'SiC' },
-  VFSICD15: { skuId: 'SKU-QC-12', atomicCode: 'E4147', defaultAlloy: 'SiC' },
-  VFSICD20: { skuId: 'SKU-QC-12', atomicCode: 'E4147', defaultAlloy: 'SiC' },
-  D10B: { skuId: 'SKU-QC-12', atomicCode: 'E4147', defaultAlloy: 'SiC' },
-  TH4830: { skuId: 'SKU-QC-13', atomicCode: 'E4132', defaultAlloy: 'PU' },
-  CONELNRD15: { skuId: 'SKU-QC-13', atomicCode: 'E4132', defaultAlloy: 'PU' },
-  FLOTDROPIN1P1: { skuId: 'SKU-QC-14', atomicCode: 'E4132', defaultAlloy: 'PU' },
-  '18SP': { skuId: 'SKU-QC-14', atomicCode: 'E4132', defaultAlloy: 'PU' },
-  PVSR556IN: { skuId: 'SKU-QC-15', atomicCode: 'E4132', defaultAlloy: 'R55' },
-  KGVSL6IN: { skuId: 'SKU-QC-16', atomicCode: 'D4018', defaultAlloy: 'R55' },
-  FPPPP1200: { skuId: 'SKU-QC-17', atomicCode: 'DAM005', defaultAlloy: 'PU' },
-  FPCPP1200: { skuId: 'SKU-QC-18', atomicCode: 'E4132', defaultAlloy: 'R55' },
-  CTRLMARCY1000: { skuId: 'SKU-QC-19', atomicCode: 'DAM005', defaultAlloy: 'A49' }
-});
-
-/**
- * Verifica instantáneamente si un código de campo tiene reemplazo Drop-In SMAT.
+ * Verifica instantáneamente si un código de campo tiene reemplazo Drop-In SMAT
+ * consultando exclusivamente el índice hash FNV-1a (0 raíces en texto plano).
  */
 export function verifyDropInEquivalence(rawInput) {
   const stage = normalizePartTokenTwoStage(rawInput);
@@ -123,23 +136,33 @@ export function verifyDropInEquivalence(rawInput) {
     return {
       matched: false,
       query: rawInput,
-      reasonEs: 'Ingresa un código geométrico de parte (ej. E4147, D3147, D075C21, E4083, TH48-30).',
-      reasonEn: 'Enter a geometric part code (e.g. E4147, D3147, D075C21, E4083, TH48-30).'
+      reasonEs: 'Ingresa el código fundido en relieve de tu pieza actual o las dimensiones (A, B, C).',
+      reasonEn: 'Enter the cast relief code from your current wear part or dimensions (A, B, C).'
     };
   }
 
-  let matchMeta = ROOT_TO_SKU_MAP[stage.baseRoot] || ROOT_TO_SKU_MAP[stage.cleaned];
-  let sku = matchMeta ? getQuickProductBySlugOrAlias(matchMeta.skuId) : getQuickProductBySlugOrAlias(rawInput);
+  const cleanedHash = fnv1a32DropInHash(stage.cleaned);
+  let matchMeta = FNV1A_HASH_TO_SKU_INDEX[stage.fnv1aHash] || FNV1A_HASH_TO_SKU_INDEX[cleanedHash];
+  let sku = matchMeta
+    ? getQuickProductBySlugOrAlias(matchMeta.canonicalSkuId)
+    : getQuickProductBySlugOrAlias(rawInput);
 
   if (!sku) {
     const catalog = getQuickProductsCatalog();
-    sku = catalog.find((item) =>
-      (item.atomic_codes || []).some((c) => c.toUpperCase() === stage.baseRoot || c.toUpperCase() === stage.cleaned)
+    sku = catalog.find(
+      (item) =>
+        (item.atomic_codes || []).some(
+          (c) => fnv1a32DropInHash(c) === stage.fnv1aHash || fnv1a32DropInHash(c) === cleanedHash
+        ) ||
+        (stage.cleaned.length >= 5 &&
+          String(item.sku_id || item.id || '')
+            .replace(/[^A-Z0-9]/gi, '')
+            .toUpperCase()
+            .includes(stage.cleaned))
     );
     if (sku) {
       matchMeta = {
-        skuId: sku.id,
-        atomicCode: stage.baseRoot,
+        canonicalSkuId: sku.sku_id || sku.id,
         defaultAlloy: sku.default_material
       };
     }
@@ -162,8 +185,9 @@ export function verifyDropInEquivalence(rawInput) {
     query: rawInput,
     normalizedRoot: stage.baseRoot,
     fnv1aHash: stage.fnv1aHash,
-    smatSkuId: sku.id,
-    atomicCode: (matchMeta && matchMeta.atomicCode) || sku.atomic_codes[0],
+    smatSkuId: sku.legacy_sku_id || sku.id,
+    canonicalSkuId: (matchMeta && matchMeta.canonicalSkuId) || sku.sku_id || sku.id,
+    atomicCode: stage.baseRoot || (sku.atomic_codes && sku.atomic_codes[0]) || null,
     slugEs: sku.slug_es,
     slugEn: sku.slug_en,
     titleEs: sku.title_es,
@@ -179,4 +203,3 @@ export function verifyDropInEquivalence(rawInput) {
     satTuple: sku.sat_tuple
   };
 }
-

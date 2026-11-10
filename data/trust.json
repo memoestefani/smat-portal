@@ -15,10 +15,10 @@
     },
     {
       "id": "balanceo_dinamico",
-      "title_es": "2. Balanceo Dinámico y Concentricidad de Eje en Banco de Pruebas",
-      "title_en": "2. Dynamic Balancing & Shaft Concentricity on Testing Rig",
-      "description_es": "Los impulsores y mecanismos rotatorios son balanceados dinámicamente en nuestro banco de pruebas en Durango, verificando concentricidad y reducción de vibraciones antes del despacho.",
-      "description_en": "Impellers and rotating mechanisms undergo dynamic balancing on our test bench in Durango, verifying concentricity and vibration reduction prior to dispatch."
+      "title_es": "2. Concentricidad de Eje y Ajuste Dimensional Drop-In 1:1",
+      "title_en": "2. Shaft Concentricity & 1:1 Drop-In Dimensional Fit",
+      "description_es": "Los impulsores, camisas y cartuchos porta-rodamientos pasan por control metrológico de concentricidad y asiento cónico en nuestro almacén de Durango antes del despacho.",
+      "description_en": "Impellers, shaft sleeves, and bearing cartridges undergo metrological concentricity and tapered seat verification at our Durango warehouse prior to dispatch."
     },
     {
       "id": "certificados_colada",
@@ -39,8 +39,8 @@
     {
       "scope_es": "Compatibilidad dimensional y ajuste mecánico",
       "scope_en": "Dimensional fit & mechanical compatibility",
-      "smat_covers_es": "Garantía total de intercambio 1:1 con marcos C, D, E, F y celdas 50-300 ft³.",
-      "smat_covers_en": "100% replacement guarantee for dimensional interchange with C, D, E, F frames.",
+      "smat_covers_es": "Garantía total de intercambio 1:1 con geometrías 1.5x1\" a 10x8\" y celdas 50-300 ft³.",
+      "smat_covers_en": "100% replacement guarantee for dimensional interchange with 1.5x1\" to 10x8\" geometries.",
       "manufacturer_covers_es": "Planos certificados y matrices de fundición normalizadas.",
       "manufacturer_covers_en": "Certified manufacturing drawings and standardized casting tooling."
     },
@@ -53,12 +53,12 @@
       "manufacturer_covers_en": "Full replacement warranty against internal alloy fissures or structural shrinkage porosity."
     },
     {
-      "scope_es": "Balanceo y vibración en operación",
-      "scope_en": "Dynamic balance & operational vibration",
-      "smat_covers_es": "Verificación y balanceo dinámico en banco de pruebas en Durango previo al embarque.",
-      "smat_covers_en": "Pre-shipment dynamic balancing and verification on our Durango test bench.",
-      "manufacturer_covers_es": "Pre-balanceo estático de desbaste en planta de manufactura.",
-      "manufacturer_covers_en": "Rough static pre-balancing at manufacturing foundry."
+      "scope_es": "Concentricidad de flecha y ajuste de rosca",
+      "scope_en": "Shaft concentricity & thread fit",
+      "smat_covers_es": "Verificación dimensional de rosca, cono y claro axial en almacén de Durango previo al embarque.",
+      "smat_covers_en": "Pre-shipment dimensional thread, taper, and axial clearance verification at our Durango warehouse.",
+      "manufacturer_covers_es": "Maquinado CNC de precisión y control estático en planta de manufactura.",
+      "manufacturer_covers_en": "Precision CNC machining and static mass control at manufacturing foundry."
     }
   ],
   "boundaries": [
@@ -72,13 +72,13 @@
       "title_es": "Cotizaciones a ciegas sin datos mínimos de proceso",
       "title_en": "Blind inquiries without baseline process parameters",
       "reason_es": "No cotizamos bombas completas ni configuraciones de impulsor si el cliente no puede indicar al menos el caudal aproximado, la gravedad específica estimada y si la pulpa contiene sólidos angulares cortantes. Cotizar a ciegas compromete la seguridad de su planta.",
-      "reason_en": "We do not quote complete slurry skids or impeller specs if baseline flow, slurry SG, and particle abrasiveness are missing. Quoting blindly endangers your plant operations."
+      "reason_en": "We do not quote complete slurry pump packages or impeller specs if baseline flow, slurry SG, and particle abrasiveness are missing. Quoting blindly endangers your plant operations."
     },
     {
       "title_es": "Modificaciones de campo no homologadas",
       "title_en": "Unapproved field modifications",
-      "reason_es": "La garantía de patio se invalida si la pieza es sometida a soldadura estructural no homologada o rectificados abrasivos en la mina que alteren la distribución de masa del balanceo dinámico.",
-      "reason_en": "Yard warranty is voided if components undergo uncertified field structural welding or abrasive grinding at the mine site altering dynamic balance mass distribution."
+      "reason_es": "La garantía de patio se invalida si la pieza es sometida a soldadura estructural no homologada o rectificados abrasivos en la mina que alteren las tolerancias de ajuste dimensional.",
+      "reason_en": "Yard warranty is voided if components undergo uncertified field structural welding or abrasive grinding at the mine site altering dimensional fit tolerances."
     }
   ]
 }

@@ -7,13 +7,29 @@ import CaseCards from '../components/CaseCards.astro';
 
 <BaseLayout 
   title="Guía Visual de Diagnóstico y Fallas en Planta | SMAT Minerals"
-  description="Identificación práctica de fallas mecánicas y selección de refacciones para bombas de pulpa, celdas de flotación y filtros prensa desde Durango, México."
+  description="Identificación práctica de fallas mecánicas (6 modos: Cavitación, Forros, Estopero Estación 02, Cartucho ISO 281 Estación 01, Flotación y Filtración) desde Durango, México."
   lang="es"
   canonicalPath="/diagnostico/"
   alternateEsPath="/diagnostico/"
   alternateEnPath="/en/diagnostics/"
 >
   <DiagnosticsHub lang="es" />
+  <section class="container" aria-label="Atajos Directos de Estación 01 y Estación 02" style="margin: 1.5rem auto;">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1rem; background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:1.25rem;">
+      <div>
+        <span style="font-family:var(--smat-font-mono); font-size:0.75rem; font-weight:800; color:#b45309;">MODO 05 • ESTACIÓN 02 (SELLADO DE EJE)</span>
+        <h2 style="font-size:1.05rem; margin:0.25rem 0;">Fuga en Estopero y Camisa de Flecha HVOF D075C21</h2>
+        <p style="font-size:0.88rem; color:#334155; margin-bottom:0.75rem;">Elimine el ranurado prematuro bajo empaquetadura y el consumo de agua de glándula con el expulsor seco D4028 + cámara D4029 + camisa cerámica D075C21 (≥68 HRC).</p>
+        <a href="/?failure=seal_stuffing_box#rfq" data-failure-link="seal_stuffing_box" class="btn btn-secondary btn-sm">Diagnosticar Fuga de Estopero (/?failure=seal_stuffing_box#rfq) →</a>
+      </div>
+      <div>
+        <span style="font-family:var(--smat-font-mono); font-size:0.75rem; font-weight:800; color:#1e3a8a;">MODO 06 • ESTACIÓN 01 (SOPORTE MOTRIZ ISO 281)</span>
+        <h2 style="font-size:1.05rem; margin:0.25rem 0;">Fatiga de Rodamientos y Cartucho Completo DAM005</h2>
+        <p style="font-size:0.88rem; color:#334155; margin-bottom:0.75rem;">Restaure el factor de vida modificada ISO 281 (a_ISO = 1.25) con cartucho sellado por laberinto purgante y bonificación Core Trade-In (-22% a cuenta de casco).</p>
+        <a href="/?failure=bearing_shaft_fatigue#rfq" data-failure-link="bearing_shaft_fatigue" class="btn btn-secondary btn-sm">Diagnosticar Cartucho ISO 281 (/?failure=bearing_shaft_fatigue#rfq) →</a>
+      </div>
+    </div>
+  </section>
   <div class="container">
     <QuickPartSelectorStrip lang="es" />
   </div>

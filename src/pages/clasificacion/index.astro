@@ -98,10 +98,10 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
             </p>
 
             <div class="cyc-cta-row">
-              <a href="/productos/apex-boquilla-hidrociclon/" class="btn-cyc-sku" id="cyc-recommended-sku-link">
-                Configurar Boquilla Apex (SKU-QC-11) →
+              <a href="/productos/hidrociclon-completo-y-boquillas-d6-d20/" class="btn-cyc-sku" id="cyc-recommended-sku-link">
+                Configurar Boquilla Apex (SMAT-CYC-D6-D20) →
               </a>
-              <a href="/cotizar/?circuito=clasificacion&equipo=apex-boquilla-hidrociclon&sku=SKU-QC-11#rfq" class="btn-cyc-rfq" id="cyc-rfq-link">
+              <a href="/cotizar/?circuito=clasificacion&equipo=apex-boquilla-hidrociclon&sku=SMAT-CYC-D6-D20#rfq" class="btn-cyc-rfq" id="cyc-rfq-link">
                 Sincronizar al Cotizador A4 →
               </a>
             </div>
@@ -113,24 +113,24 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
         <h2>Repuestos Críticos de Hidrociclón con Cotejo Dimensional 1:1 en Durango</h2>
         <div class="cyc-sku-cards">
           <article class="cyc-sku-card">
-            <span class="cyc-sku-code">SKU-QC-11 • ALTA ABRASIÓN UNDERFLOW</span>
+            <span class="cyc-sku-code">SMAT-CYC-D6-D20 • ALTA ABRASIÓN UNDERFLOW</span>
             <h3>Boquilla Apex / Spigot (Cerámica SiC / Nitruro / Cr27)</h3>
             <p>Geometría cónica rectificada para conservar el ángulo de descarga semi-paraguas y evitar el acordonamiento (roping).</p>
-            <a href="/productos/apex-boquilla-hidrociclon/">Abrir Ficha Quick-Checkout SKU-QC-11 →</a>
+            <a href="/productos/hidrociclon-completo-y-boquillas-d6-d20/">Abrir Ficha Quick-Checkout SMAT-CYC-D6-D20 →</a>
           </article>
 
           <article class="cyc-sku-card">
-            <span class="cyc-sku-code">SKU-QC-12 • CORTE FINO OVERFLOW</span>
+            <span class="cyc-sku-code">SMAT-COUPLED-PUMP-CYC • CORTE FINO OVERFLOW</span>
             <h3>Buscador de Vórtice (Vortex Finder en Cr27 / SiC / PU)</h3>
             <p>Borde de ataque de alta resistencia a la erosión turbulenta para eliminar el cortocircuito de gruesos hacia flotación.</p>
-            <a href="/productos/buscador-vortice-hidrociclon/">Abrir Ficha Quick-Checkout SKU-QC-12 →</a>
+            <a href="/productos/paquete-casado-bomba-ciclones/">Abrir Ficha Quick-Checkout SMAT-COUPLED-PUMP-CYC →</a>
           </article>
 
           <article class="cyc-sku-card">
-            <span class="cyc-sku-code">SKU-QC-13 • CUERPO Y CONOS</span>
+            <span class="cyc-sku-code">SMAT-SCR-TH48-30 • CUERPO, CONOS Y CRIBADO</span>
             <h3>Juego de Revestimientos de Cono y Cilindro (Hule R55 / PU / SiC)</h3>
             <p>Camisas reemplazables con labio escalonado anti-turbulencia compatibles con baterías D10, D15, D20 y D26.</p>
-            <a href="/productos/revestimientos-cono-cilindro-hidrociclon/">Abrir Ficha Quick-Checkout SKU-QC-13 →</a>
+            <a href="/productos/hidrociclon-completo-y-boquillas-d6-d20/">Abrir Ficha Quick-Checkout SMAT-CYC-D6-D20 →</a>
           </article>
         </div>
       </section>
@@ -142,7 +142,7 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
         circuit="clasificacion"
         role="hidrociclon_apex_vortex"
         partName="Batería de Hidrociclones — Apex, Vortex Finder y Conos"
-        partCode="SKU-QC-11"
+        partCode="SMAT-CYC-D6-D20"
       />
     </div>
   </main>
@@ -190,9 +190,9 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
     if (d50El) d50El.textContent = `${res.d50cMicrons} µm`;
     if (actionEl) actionEl.textContent = res.diagnosticActionEs;
     if (skuLink) {
-      skuLink.href = res.recommendedSkuId === 'SKU-QC-12'
-        ? '/productos/buscador-vortice-hidrociclon/'
-        : '/productos/apex-boquilla-hidrociclon/';
+      skuLink.href = res.recommendedSkuId === 'SMAT-COUPLED-PUMP-CYC'
+        ? '/productos/paquete-casado-bomba-ciclones/'
+        : '/productos/hidrociclon-completo-y-boquillas-d6-d20/';
       skuLink.textContent = `Configurar Repuesto Recomendado (${res.recommendedSkuId}) →`;
     }
 

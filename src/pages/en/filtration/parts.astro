@@ -64,8 +64,29 @@ const criteria = repRole?.decision_criteria;
               <td>Filter Medium Resistance (R<sub>m</sub>)</td>
               <td>Monofilament/multifilament weave calibrated per Darcy-Ruth law to minimize cloth blinding (ΔR<sub>m</sub>) and edge weeping</td>
             </tr>
+            <tr>
+              <td>Plate Shifter Mechanism & Drive Chains</td>
+              <td>Puller pawls, guide carriages, and drive chains resistant to acidic/alkaline slurry splash</td>
+            </tr>
+            <tr>
+              <td>Timoshenko Plate Bending Stress & Gate G5</td>
+              <td>Asymmetric flexure safeguard when adjacent chamber ΔP exceeds 3.5 bar due to central feed-port clogging · Custom batches manufactured under 🔵 MADE TO ORDER (50% advance + approved drawing)</td>
+            </tr>
           </tbody>
         </table>
+
+        <!-- 5-Family Filter Press Exploded Report (Avenue 5 · Gate G5) -->
+        <div class="filtration-5family-box" data-plate-flexure-panel="timoshenko-g5" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; color: var(--smat-text-primary); border: 1px solid #cbd5e1; border-left: 4px solid #7c2d12;">
+          <span class="badge badge-copper">PLANE 3 · 5-FAMILY FILTER PRESS EXPLODED REPORT (AVENUE 5 · GATE G5)</span>
+          <h3 style="margin: 0.65rem 0 0.5rem; font-size: 1.08rem; color: var(--smat-text-primary);">#01 PP Plates · #02 Calendered Cloths · #03 Plate Shifter · #04 Chains · #05 Hydraulics</h3>
+          <p style="font-size: 0.88rem; color: #334155; margin-bottom: 0.85rem;">
+            Structural protection against web cracking under differential pressure ΔP &gt; 3.5 bar (Timoshenko, σ<sub>max</sub> = β · ΔP · (a/h)² ≤ 18 MPa · <code>evaluateFilterPressPlateDeflection</code>). Supplied under Gate G5 (🔵 MADE TO ORDER with 50% advance and confirmed drawing for custom plate batches).
+          </p>
+          <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
+            <a href="/en/products/filter-press-plate-shifter-assembly/" class="btn btn-outline" style="font-size:0.8rem;">SMAT-FILT-SHIFTER-CHAIN · Plate Shifter + Chains Spares →</a>
+            <a href="/en/products/filter-press-cloths-and-pp-plates-16bar/" class="btn btn-outline" style="font-size:0.8rem;">SMAT-FILT-CLOTH-PLATE · 16 bar PP Plates & Filter Cloths →</a>
+          </div>
+        </div>
 
         {criteria && (
           <div class="decision-criteria-panel" data-testid="role-decision-criteria" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #9a3412;">
@@ -143,7 +164,7 @@ const criteria = repRole?.decision_criteria;
   }
 
   .page-hero h1 {
-    color: #090d16;
+    color: #1e293b;
     margin-top: 0.75rem;
     font-size: clamp(2rem, 3.5vw, 2.75rem);
     letter-spacing: -0.02em;
@@ -170,7 +191,7 @@ const criteria = repRole?.decision_criteria;
   }
 
   .detail-card h2 {
-    color: #090d16;
+    color: #1e293b;
     margin-bottom: 1rem;
     border-bottom: 2px solid var(--smat-copper-accent);
     padding-bottom: 0.5rem;
@@ -199,7 +220,7 @@ const criteria = repRole?.decision_criteria;
 
   .tech-table th {
     background-color: #f8fafc;
-    color: #090d16;
+    color: #1e293b;
     font-weight: 700;
   }
 
@@ -218,7 +239,7 @@ const criteria = repRole?.decision_criteria;
 
   .cta-rfq-header h3 {
     font-size: 1.4rem;
-    color: #090d16;
+    color: #1e293b;
     margin: 0.75rem 0 0.5rem;
   }
 

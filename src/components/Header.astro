@@ -12,19 +12,19 @@ const { lang = 'es', currentPath = '/', alternatePath = '/en/' } = Astro.props;
 const isEs = lang === 'es';
 
 const productCategories = isEs ? [
-  { href: '/equipos/', label: 'Puerta 1: Equipos de Proceso', sub: 'Mecanismos de flotación 50-300 ft³, filtros prensa, hidrociclones y skids' },
-  { href: '/bombeo/', label: 'Puerta 2: Bombas para Lodos y Spare Parts', sub: 'Impulsores, cuellos, volutas (lote 5-5-4), camisa D075C21 y Bearing Assembly' },
-  { href: '/control-de-procesos/', label: 'Puerta 3: Control de Procesos', sub: 'Balanzas Marcy (SG 2.2-4.4), Filtro Batch 100 psi y Tamices ASTM E11' },
-  { href: '/clasificacion/', label: 'Hidrociclones y Clasificación (Apex y Vortex)', sub: 'Balance de 3 Vasos Marcy, corte d50c de Plitt y alerta de acordonamiento' },
+  { href: '/bombeo/', label: 'Puerta 1: Bombas para Lodos y Spare Parts', sub: 'Impulsores, cuellos, volutas (lote 5-5-4), camisa D075C21 y Bearing Assembly' },
+  { href: '/clasificacion/', label: 'Puerta 2: Hidrociclones y Mallas de Uretano', sub: 'Hidrociclones D6-D20, Paquete Casado Bomba + Ciclón, Mallas TH48-30 y Balance 3 Vasos Marcy' },
+  { href: '/control-de-procesos/', label: 'Puerta 3: Flotación, Filtros Prensa y Control', sub: 'Mecanismos 50-300 ft³, Filtros Prensa 16 bar, Balanzas Marcy y Tamices ASTM E11' },
+  { href: '/equipos/', label: 'Equipos de Proceso y Circuitos Húmedos', sub: 'Mecanismos de flotación 50-300 ft³, filtros prensa, hidrociclones y paquetes acoplados' },
   { href: '/flotacion/', label: 'Mecanismos para Celdas de Flotación y Acondicionadores', sub: 'Mecanismos 50-300 ft³, rotores y estatores Drop-In' },
-  { href: '/filtracion/', label: 'Filtros Prensa y Desaguado (NOM-141)', sub: 'Filtros prensa, placas PP y verificador estructural Timoshenko (16 bar)' },
+  { href: '/filtracion/', label: 'Filtros Prensa y Desaguado (NOM-141)', sub: 'Filtros prensa, placas PP, corre-placas y verificador estructural Timoshenko (16 bar)' },
 ] : [
-  { href: '/en/process-equipment/', label: 'Door 1: Process Equipment', sub: 'Flotation mechanisms 50-300 ft³, filter presses, hydrocyclones & pump skids' },
-  { href: '/en/pumping/', label: 'Door 2: Slurry Pumps & Spare Parts', sub: 'Impellers, throatbushes, volutes (5-5-4 lot), D075C21 sleeve & Bearing Assembly' },
-  { href: '/en/process-control/', label: 'Door 3: Process Control', sub: 'Marcy scales (SG 2.2-4.4), 100 psi Batch Filter & ASTM E11 Sieves' },
-  { href: '/en/classification/', label: 'Hydrocyclones & Classification (Apex & Vortex)', sub: '3-Cup Marcy balance, Plitt d50c cut size & roping discharge alert' },
+  { href: '/en/pumping/', label: 'Door 1: Slurry Pumps & Spare Parts', sub: 'Impellers, throatbushes, volutes (5-5-4 lot), D075C21 sleeve & Bearing Assembly' },
+  { href: '/en/classification/', label: 'Door 2: Hydrocyclones & Urethane Screens', sub: 'D6-D20 Hydrocyclones, Married Pump + Cyclone Package, TH48-30 Screens & 3-Cup Marcy Balance' },
+  { href: '/en/process-control/', label: 'Door 3: Flotation, Filter Presses & Control', sub: '50-300 ft³ Flotation Mechanisms, 16-bar Filter Presses, Marcy Scales & ASTM E11 Sieves' },
+  { href: '/en/process-equipment/', label: 'Process Equipment & Wet Circuits', sub: 'Flotation mechanisms 50-300 ft³, filter presses, hydrocyclones & coupled packages' },
   { href: '/en/flotation/', label: 'Flotation Cells & Mechanisms', sub: '50-300 ft³ cells, Drop-In rotors & stators' },
-  { href: '/en/filtration/', label: 'Filtration & Tailings (NOM-141)', sub: '16-bar filter presses, PP plates & Timoshenko flexure verifier' },
+  { href: '/en/filtration/', label: 'Filtration & Tailings (NOM-141)', sub: '16-bar filter presses, PP plates, plate shifters & Timoshenko flexure verifier' },
 ];
 ---
 

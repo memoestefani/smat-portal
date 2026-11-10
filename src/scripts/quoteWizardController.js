@@ -722,9 +722,9 @@ export function initQuoteWizardController() {
       }
       if (inputDetails) {
         if (decoded.atomic_code) {
-          inputDetails.value = (isEs ? 'Refacción específica ' : 'Specific spare ') + decoded.atomic_code + ' (' + decoded.atomic_label + ') - ' + decoded.atomic_metallurgy + '. Verificación dimensional 1:1 en banco Durango.';
+          inputDetails.value = (isEs ? 'Refacción específica ' : 'Specific spare ') + decoded.atomic_code + ' (' + decoded.atomic_label + ') - ' + decoded.atomic_metallurgy + '. Verificación dimensional 1:1 en Almacén Central Durango.';
         } else {
-          inputDetails.value = 'Configuración según código institucional ' + decoded.code + '. Verificación dimensional 1:1 en banco Durango.';
+          inputDetails.value = 'Configuración según código institucional ' + decoded.code + '. Verificación dimensional 1:1 en Almacén Central Durango.';
         }
       }
       if (decoderStatus) {
@@ -1554,7 +1554,7 @@ export function initQuoteWizardController() {
       if (recircWarnDossier) recircWarnDossier.classList.add('hidden');
     }
 
-    var detailsText = inputDetails?.value.trim() || (isEs ? 'Verificación dimensional de acople 1:1 en banco de pruebas de almacén central Durango.' : '1:1 dimensional check on test bench at Durango central warehouse.');
+    var detailsText = inputDetails?.value.trim() || (isEs ? 'Verificación dimensional de acople 1:1 en Almacén Central Durango.' : '1:1 dimensional check at Durango Central Warehouse.');
 
     if (liveSmatCode) liveSmatCode.textContent = smatCode;
     if (sapLiveCode) sapLiveCode.textContent = smatCode;
@@ -1570,15 +1570,15 @@ export function initQuoteWizardController() {
 
     if (sapJustificationText) {
       sapJustificationText.textContent = isEs
-        ? `Suministro de ${roleText.split('(')[0].trim()} [Código SMAT: ${smatCode}] de alta criticidad para operación en mina (${compVal}) a ${selectedAltitude} msnm. Componente con verificación dimensional 1:1, balanceo dinámico ISO 1940 G2.5 en banco de pruebas y especificación técnica validada en Almacén Central Durango para prevenir paros de turno.`
-        : `Supply of ${roleText.split('(')[0].trim()} [SMAT Code: ${smatCode}] critical wear part for mining operation (${compVal}) at ${selectedAltitude} MASL. Inspected with 1:1 dimensional fit verification, ISO 1940 G2.5 dynamic balancing, and technical verification at Durango Central Warehouse.`;
+        ? `Suministro de ${roleText.split('(')[0].trim()} [Código SMAT: ${smatCode}] de alta criticidad para operación en mina (${compVal}) a ${selectedAltitude} msnm. Componente con verificación dimensional 1:1, concentricidad metrológica y especificación técnica validada en Almacén Central Durango para prevenir paros de turno.`
+        : `Supply of ${roleText.split('(')[0].trim()} [SMAT Code: ${smatCode}] critical wear part for mining operation (${compVal}) at ${selectedAltitude} MASL. Inspected with 1:1 dimensional fit verification, metrological concentricity check, and technical verification at Durango Central Warehouse.`;
     }
 
     var sapJustSummary = document.getElementById('sap-justification-summary');
     if (sapJustSummary) {
       sapJustSummary.textContent = isEs
-        ? `Suministro de ${roleText.split('(')[0].trim()} [${smatCode}] con verificación dimensional 1:1 en banco Durango para prevenir interrupciones operativas.`
-        : `Supply of ${roleText.split('(')[0].trim()} [${smatCode}] with 1:1 bench verification at Durango to prevent operational downtime.`;
+        ? `Suministro de ${roleText.split('(')[0].trim()} [${smatCode}] con verificación dimensional 1:1 en Almacén Central Durango para prevenir interrupciones operativas.`
+        : `Supply of ${roleText.split('(')[0].trim()} [${smatCode}] with 1:1 dimensional verification at Durango Central Warehouse to prevent operational downtime.`;
     }
 
     flashInk(liveRequester);
@@ -2938,9 +2938,9 @@ export function initQuoteWizardController() {
           }
           if (inputDetails) {
             if (decoded.atomic_code) {
-              inputDetails.value = (isEs ? 'Refacción específica ' : 'Specific spare ') + decoded.atomic_code + ' (' + decoded.atomic_label + ') - ' + decoded.atomic_metallurgy + '. Verificación dimensional 1:1 en banco Durango.';
+              inputDetails.value = (isEs ? 'Refacción específica ' : 'Specific spare ') + decoded.atomic_code + ' (' + decoded.atomic_label + ') - ' + decoded.atomic_metallurgy + '. Verificación dimensional 1:1 en Almacén Central Durango.';
             } else {
-              inputDetails.value = 'Configuración según código institucional ' + decoded.code + '. Verificación dimensional 1:1 en banco Durango.';
+              inputDetails.value = 'Configuración según código institucional ' + decoded.code + '. Verificación dimensional 1:1 en Almacén Central Durango.';
             }
           }
           if (decoderStatus) {
@@ -3032,7 +3032,7 @@ export function initQuoteWizardController() {
       }
 
       if (urlSerie && inputDetails && !urlCodigo) {
-        inputDetails.value = 'Requerimiento ' + urlSerie + ' - Verificación dimensional 1:1 en banco Durango';
+        inputDetails.value = 'Requerimiento ' + urlSerie + ' - Verificación dimensional 1:1 en Almacén Central Durango';
       }
 
       if ((urlSintoma || urlFalla) && inputDetails && !urlSerie && !urlCodigo) {

@@ -375,3 +375,21 @@ p {
   margin-left: 0.35rem;
 }
 
+/* --- SOLAR LIGHT-FIRST WCAG AAA & HIDDEN INVARIANT (PRD v3.2 / ARB-SMAT-31..32) --- */
+:root {
+  --smat-solar-bg: #f8fafc;
+  --smat-solar-surface: #ffffff;
+  --smat-solar-ink: #0f172a;
+  --smat-solar-muted: #334155;
+  --smat-solar-border: #cbd5e1;
+  --smat-solar-amber-bg: #fffbeb;
+  --smat-solar-amber-ink: #92400e;
+  --smat-solar-emerald-bg: #ecfdf5;
+  --smat-solar-emerald-ink: #065f46;
+}
+
+.hidden, [hidden] {
+  display: none !important;
+}
+
+

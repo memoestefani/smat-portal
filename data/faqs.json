@@ -9,17 +9,17 @@
     },
     {
       "id": "faq_balanceo_dinamico",
-      "question_es": "¿Qué pruebas de balanceo dinámico realizan a los impulsores de lodos abrasivos?",
-      "question_en": "What dynamic balancing tests are performed on slurry pump impellers?",
-      "answer_es": "Todos los impulsores y mecanismos rotatorios son sometidos a balanceo dinámico e inspección de concentricidad en banco de pruebas en Durango. Verificamos la reducción de vibraciones antes del despacho para proteger los ensambles de rodamientos de su planta.",
-      "answer_en": "All slurry impellers and rotating components undergo shop dynamic balancing and concentricity inspection on our Durango test rig. Vibration reduction is verified prior to dispatch to protect your plant bearing assemblies."
+      "question_es": "¿Qué verificación dimensional y de concentricidad realizan a los impulsores de lodos abrasivos?",
+      "question_en": "What dimensional and concentricity inspections are performed on slurry pump impellers?",
+      "answer_es": "Todos los impulsores y mecanismos rotatorios pasan por inspección metrológica 1:1 de rosca, cono de flecha, tripleta geométrica (A, B, C) y concentricidad en nuestro Almacén Central Durango antes del despacho para proteger los ensambles de rodamientos de su planta.",
+      "answer_en": "All slurry impellers and rotating components undergo 1:1 metrological inspection of shaft thread, taper, geometric triplet (A, B, C), and concentricity at our Durango Central Warehouse prior to dispatch to protect your plant bearing assemblies."
     },
     {
       "id": "faq_compatibilidad_marcos",
       "question_es": "¿Sus repuestos son intercambiables con bombas existentes en plantas de beneficio?",
       "question_en": "Are your replacement spare parts 100% interchangeable with existing plant pumps?",
-      "answer_es": "Sí. Nuestros componentes cuentan con verificación dimensional milimétrica para intercambio directo 1:1 con marcos dimensionales estándar (series 4x3 C-AH hasta 10x8 F-AH), respetando el patrón de pernos, conos de flecha y claros de succión sin necesidad de adaptaciones de soldadura en planta.",
-      "answer_en": "Yes. Our replacement parts undergo tight metrological verification for 1:1 direct interchangeability with industry-standard frames (4x3 C-AH through 10x8 F-AH series), matching bolt circles, shaft tapers, and suction clearances without field torch modifications."
+      "answer_es": "Sí. Nuestros componentes cuentan con verificación dimensional milimétrica para intercambio directo 1:1 con bombas estándar de la industria (geometrías 1.5x1\" hasta 10x8\" Succión × Descarga), respetando el patrón de pernos, conos de flecha y claros de succión sin necesidad de adaptaciones de soldadura en planta.",
+      "answer_en": "Yes. Our replacement parts undergo tight metrological verification for 1:1 direct interchangeability with industry-standard slurry pumps (1.5x1\" through 10x8\" Suction × Discharge geometries), matching bolt circles, shaft tapers, and suction clearances without field torch modifications."
     },
     {
       "id": "faq_garantia_metalurgia",

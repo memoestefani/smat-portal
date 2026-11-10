@@ -88,7 +88,7 @@ const isEs = lang === 'es';
         <h4 class="col-heading">{isEs ? 'Almacén & Protocolo' : 'Warehouse & Protocol'}</h4>
         <ul class="footer-links" style="margin-bottom: 1rem;">
           <li><a href={isEs ? '/catalogo/' : '/en/catalog/'}><strong>{isEs ? 'Catálogo Digital (PDF / Móvil)' : 'Digital Catalog (PDF / Mobile)'}</strong></a></li>
-          <li><a href={isEs ? '/garantia/' : '/en/warranty/'}>{isEs ? 'Garantía de Ensamble y Banco de Pruebas' : 'Assembly Warranty & Dynamic Bench Balancing'}</a></li>
+          <li><a href={isEs ? '/garantia/' : '/en/warranty/'}>{isEs ? 'Garantía de Ajuste Dimensional 1:1' : '1:1 Dimensional Fit Warranty'}</a></li>
           <li><a href={isEs ? '/nosotros/' : '/en/about/'}>{isEs ? 'Almacén Central y Capacidad de Ensamble' : 'Central Warehouse & Assembly Rig'}</a></li>
           <li><a href={isEs ? '/contacto/' : '/en/contact/'}>{isEs ? 'Atención Técnica y Despacho' : 'Technical Hotline & Dispatch'}</a></li>
           <li><a href={isEs ? '/acuse/' : '/en/thank-you/'}>{isEs ? 'Acuse Formal Imprimible ERP' : 'Printable ERP Requisition Form'}</a></li>
@@ -103,7 +103,7 @@ const isEs = lang === 'es';
           <p class="logistics-text">
             {isEs 
               ? `${companyData.logistics.maneuvers_access}. ${companyData.logistics.client_inspection_protocol}.`
-              : 'Durango yard engineered for rigid trucks, tandem heavy haulers, and flatbeds. Dimensional check and dynamic balancing prior to loading.'}
+              : 'Durango yard engineered for rigid trucks, tandem heavy haulers, and flatbeds. 1:1 dimensional verification and hardness inspection prior to loading.'}
           </p>
         </div>
       </div>

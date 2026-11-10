@@ -126,7 +126,7 @@ const sealParts = [getAtomicPartSpecs('DAM028'), getAtomicPartSpecs('EAM028')].f
               <h3 style="margin-top:0.5rem;">{sp.name_es}</h3>
               <p style="font-size:0.86rem; color:#334155;">{sp.summary_es}</p>
               <div class="font-mono-tech" style="font-size:0.75rem; color:#475569; margin-bottom:0.85rem;">
-                Marco {sp.frame} (Serie {sp.pipe_size.toUpperCase()}) • Espesor {sp.wall_thickness_mm} mm • Estación 0{sp.station_number} ({sp.assembly_order_note})
+                Serie {sp.pipe_size.toUpperCase()} ({sp.frame}) • Espesor {sp.wall_thickness_mm} mm • Estación 0{sp.station_number} ({sp.assembly_order_note})
               </div>
               <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
                 <a href={`/catalogo/${sp.code}/`} class="btn btn-outline">Ver Ficha {sp.part_number} →</a>
@@ -139,7 +139,7 @@ const sealParts = [getAtomicPartSpecs('DAM028'), getAtomicPartSpecs('EAM028')].f
 
       <SharePurchasing
         roleTitle="Expulsor Centrífugo, Anillo Expulsor y Prensaestopa"
-        series="Marcos 1.5x1 a 14x12 (4x3 C, 6x4 D, 8x6 E, 10x8 F)"
+        series="Series 1.5x1 a 14x12 (4x3, 6x4, 8x6, 10x8)"
         metallurgy="Alto Cromo 27% (A05), Acero Inoxidable Endurecido y Empaquetadura PTFE/Grafito"
         specs="Conjunto de sellado centrífugo en seco y prensaestopa sin sello mecánico para evitar dilución de pulpa."
         roleId="kit_sellado"

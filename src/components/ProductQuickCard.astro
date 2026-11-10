@@ -10,6 +10,18 @@ interface GeometricTriplet {
   label_en?: string;
 }
 
+interface SatTuple {
+  clave_prod_serv?: string;
+  clave_unidad?: string;
+  uso_cfdi?: string;
+  fraccion_arancelaria?: string;
+}
+
+interface ConfigOption {
+  value: string;
+  label: string;
+}
+
 interface Props {
   sku: {
     id: string;
@@ -20,6 +32,10 @@ interface Props {
     diagram_id: string;
     photo_webp?: string;
     default_material: string;
+    available_materials?: string[];
+    config_options_es?: ConfigOption[];
+    config_options_en?: ConfigOption[];
+    sat_tuple?: SatTuple;
     stock_regime?: string;
     gate_lock?: string;
     mass_kg: number;
@@ -43,41 +59,66 @@ const triplet = sku.geometric_triplet_mm || {
   label_en: 'A: Bore ID 100 mm | B: Outer OD 400 mm | C: Thickness 80 mm'
 };
 
+const satTuple = sku.sat_tuple || {
+  clave_prod_serv: '40151510',
+  clave_unidad: 'H87',
+  uso_cfdi: 'G03',
+  fraccion_arancelaria: '8413.91.99.00'
+};
+
+const fallbackMaterials = Array.isArray(sku.available_materials) && sku.available_materials.length > 0
+  ? sku.available_materials
+  : [sku.default_material || 'A05'];
+
+const configOptions: ConfigOption[] = (isEs ? sku.config_options_es : sku.config_options_en) ||
+  fallbackMaterials.map((mat) => ({
+    value: mat,
+    label: isEs
+      ? `${mat} — Aleación / Polímero Certificado (${triplet.label_es?.split('|')[0]?.trim() || 'ISO 2768-m'})`
+      : `${mat} — Certified Alloy / Polymer (${triplet.label_en?.split('|')[0]?.trim() || 'ISO 2768-m'})`
+  }));
+
+const skuTitle = isEs ? sku.title_es : sku.title_en;
+const waDefaultText = isEs
+  ? `Hola Ing. Manuel (SMAT Durango), solicito cotización / pedido rápido de: ${skuTitle} [Ref: ${sku.id} | Config: ${sku.default_material} | SAT: ${satTuple.clave_prod_serv} / ${satTuple.clave_unidad}].`
+  : `Hello SMAT Engineering (Durango), I request a quick quote / order for: ${skuTitle} [Ref: ${sku.id} | Config: ${sku.default_material} | SAT: ${satTuple.clave_prod_serv} / ${satTuple.clave_unidad}].`;
+const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waDefaultText)}`;
+
 const regimeConfig: Record<string, { labelEs: string; labelEn: string; cls: string }> = {
   hay: {
     labelEs: '🟢 HAY EN STOCK DURANGO (24–72 h)',
     labelEn: '🟢 IN DURANGO STOCK (24–72 h)',
-    cls: 'border-emerald-500/40 bg-emerald-950/60 text-emerald-300'
+    cls: 'smat-qcard-regime--hay'
   },
   se_pide: {
     labelEs: '🟡 SE PIDE / LOTE PROGRAMADO (2–4 sem)',
     labelEn: '🟡 SCHEDULED BATCH ORDER (2–4 wks)',
-    cls: 'border-amber-500/40 bg-amber-950/60 text-amber-300'
+    cls: 'smat-qcard-regime--se-pide'
   },
   se_fabrica: {
     labelEs: '🔵 SE FABRICA BAJO PLANO (50% ANTICIPO)',
     labelEn: '🔵 CUSTOM MANUFACTURED (50% ADVANCE)',
-    cls: 'border-sky-500/40 bg-sky-950/60 text-sky-300'
+    cls: 'smat-qcard-regime--se-fabrica'
   }
 };
 const regime = regimeConfig[sku.stock_regime || 'hay'] || regimeConfig.hay;
 ---
 
 <section
-  class="product-quick-card rounded-2xl border border-slate-800 bg-slate-900/80 overflow-hidden shadow-xl"
+  class="product-quick-card"
   data-product-quick-card={sku.id}
   data-stock-regime={sku.stock_regime || 'hay'}
   data-gate-lock={sku.gate_lock || 'G1'}
 >
   <!-- Barra superior de Pestañas de Inspección (Fitts h >= 44px) y Régimen -->
-  <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 bg-slate-950/90 px-4 py-2.5">
-    <div class="flex flex-wrap items-center gap-1.5" role="tablist" aria-label={isEs ? 'Vistas de inspección de pieza' : 'Part inspection views'}>
+  <div class="smat-qcard-header">
+    <div class="smat-qcard-tablist" role="tablist" aria-label={isEs ? 'Vistas de inspección de pieza' : 'Part inspection views'}>
       <button
         type="button"
         role="tab"
         aria-selected="true"
         data-qcard-tab="cad"
-        class="qcard-tab-btn min-h-[44px] rounded-lg border border-amber-500/60 bg-amber-500/15 px-3 py-1.5 text-xs font-mono font-bold text-amber-300 transition"
+        class="qcard-tab-btn is-active"
       >
         {isEs ? '📐 Plano CAD' : '📐 CAD Blueprint'}
       </button>
@@ -86,7 +127,7 @@ const regime = regimeConfig[sku.stock_regime || 'hay'] || regimeConfig.hay;
         role="tab"
         aria-selected="false"
         data-qcard-tab="photo"
-        class="qcard-tab-btn min-h-[44px] rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-mono font-semibold text-slate-300 hover:border-slate-500 transition"
+        class="qcard-tab-btn"
       >
         {isEs ? '📸 Foto Real Cero-OEM' : '📸 Zero-OEM Real Photo'}
       </button>
@@ -95,28 +136,28 @@ const regime = regimeConfig[sku.stock_regime || 'hay'] || regimeConfig.hay;
         role="tab"
         aria-selected="false"
         data-qcard-tab="xray"
-        class="qcard-tab-btn min-h-[44px] rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-mono font-semibold text-slate-300 hover:border-slate-500 transition"
+        class="qcard-tab-btn"
       >
         {isEs ? '🔥 Rayos X 5:5:4' : '🔥 5:5:4 X-Ray Wear'}
       </button>
     </div>
 
-    <span class={`inline-flex items-center rounded-md border px-2.5 py-1 text-xs font-mono font-semibold ${regime.cls}`}>
+    <span class={`smat-qcard-regime ${regime.cls}`}>
       {isEs ? regime.labelEs : regime.labelEn}
     </span>
   </div>
 
   <!-- Contenedor Visual de Relación de Aspecto Fija 4:3 (CLS = 0) -->
-  <div class="relative w-full bg-slate-950" style="aspect-ratio: 4 / 3;">
+  <div class="smat-qcard-stage" style="aspect-ratio: 4 / 3;">
     <!-- Panel 1: Plano CAD -->
-    <div data-qcard-panel="cad" class="h-full w-full flex items-center justify-center p-3 overflow-auto">
-      <div class="w-full">
+    <div data-qcard-panel="cad" class="smat-qcard-panel">
+      <div class="smat-qcard-diagram-wrap">
         <TechnicalDiagrams diagram={sku.diagram_id} lang={lang} showXrayOverlay={false} />
       </div>
     </div>
 
     <!-- Panel 2: Fotografía Real Cero-OEM WebP -->
-    <div data-qcard-panel="photo" class="hidden h-full w-full items-center justify-center p-3">
+    <div data-qcard-panel="photo" class="smat-qcard-panel hidden" hidden>
       <img
         src={photoUrl}
         alt={isEs ? `${sku.title_es} — Fotografía de inspección Cero-OEM SMAT` : `${sku.title_en} — SMAT Zero-OEM inspection photo`}
@@ -124,51 +165,97 @@ const regime = regimeConfig[sku.stock_regime || 'hay'] || regimeConfig.hay;
         height="480"
         loading="lazy"
         decoding="async"
-        class="h-full w-full rounded-xl object-contain border border-slate-800 bg-slate-950"
+        class="smat-qcard-photo"
       />
     </div>
 
     <!-- Panel 3: Rayos X de Desgaste Sincronizado 5:5:4 -->
-    <div data-qcard-panel="xray" class="hidden h-full w-full items-center justify-center p-3 overflow-auto">
-      <div class="w-full">
+    <div data-qcard-panel="xray" class="smat-qcard-panel hidden" hidden>
+      <div class="smat-qcard-diagram-wrap">
         <TechnicalDiagrams diagram={sku.diagram_id} lang={lang} showXrayOverlay={true} />
       </div>
     </div>
   </div>
 
-  <!-- Barra Inferior Estática: Tripleta Geométrica (A, B, C) en mm + Escala Humana ISO/IEC 7810 (0.76 mm) -->
-  <div class="border-t border-slate-800 bg-slate-950/95 px-4 py-3.5">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-      <div class="space-y-1">
-        <div class="flex flex-wrap items-center gap-2 text-xs font-mono text-amber-400">
-          <span class="font-bold uppercase tracking-wider">
+  <!-- Barra Inferior Estática: Tripleta Geométrica (A, B, C) en mm + Kit Fiscal SAT CFDI 4.0 + Selector + 2 CTAs (PRD §2.2) -->
+  <div class="smat-qcard-footer">
+    <div class="smat-qcard-footer-row">
+      <div class="smat-qcard-meta">
+        <div class="smat-qcard-triplet-row">
+          <span class="smat-qcard-triplet-title">
             {isEs ? 'Tripleta Geométrica Drop-In:' : 'Drop-In Geometric Triplet:'}
           </span>
-          <span class="rounded bg-slate-900 px-2 py-0.5 text-slate-200 border border-slate-800">
+          <span class="smat-qcard-triplet-badge">
             {isEs ? triplet.label_es : triplet.label_en}
           </span>
-          <span class="rounded bg-emerald-950/60 px-2 py-0.5 text-emerald-300 border border-emerald-500/30">
+          <span class="smat-qcard-tolerance-badge">
             {triplet.tolerance_std || 'ISO 2768-m'}
           </span>
         </div>
-        <p class="text-xs text-slate-300">
-          <strong class="text-slate-100">{isEs ? 'Escala cotidiana (0.76 mm):' : 'Everyday scale (0.76 mm):'}</strong>{' '}
+        <p class="smat-qcard-scale-note">
+          <strong>{isEs ? 'Escala cotidiana (0.76 mm):' : 'Everyday scale (0.76 mm):'}</strong>{' '}
           {isEs ? sku.everyday_scale_es : sku.everyday_scale_en}
         </p>
+        <div class="smat-qcard-fiscal-row" data-qcard-fiscal-badge={sku.id}>
+          <span class="smat-qcard-fiscal-pill">
+            {isEs
+              ? `SAT CFDI 4.0: ClaveProdServ ${satTuple.clave_prod_serv} · Unidad ${satTuple.clave_unidad} (Pieza) · UsoCFDI ${satTuple.uso_cfdi}`
+              : `SAT CFDI 4.0: UNSPSC ${satTuple.clave_prod_serv} · Unit ${satTuple.clave_unidad} (Piece) · CFDI Use ${satTuple.uso_cfdi}`}
+          </span>
+          <span class="smat-qcard-lane-pill">
+            {isEs
+              ? '⚡ Caja Chica < 25,000 MXN (CFDI 4.0 Hoy) · OC SAP > 25,000 MXN'
+              : '⚡ Petty Cash < 25,000 MXN (CFDI 4.0 Today) · SAP PO > 25,000 MXN'}
+          </span>
+        </div>
       </div>
 
-      <button
-        type="button"
-        data-quick-tray-add={sku.id}
-        data-sku-title={isEs ? sku.title_es : sku.title_en}
-        data-sku-code={sku.atomic_codes[0] || sku.id}
-        data-sku-material={sku.default_material}
-        data-sku-regime={sku.stock_regime || 'hay'}
-        data-sku-mass={sku.mass_kg}
-        class="min-h-[44px] shrink-0 inline-flex items-center justify-center gap-2 rounded-lg bg-amber-500 hover:bg-amber-400 px-4 py-2 text-xs font-bold text-slate-950 transition cursor-pointer"
-      >
-        <span>+ {isEs ? 'Agregar a Bandeja de Cotización' : 'Add to Quote Tray'}</span>
-      </button>
+      <div class="smat-qcard-controls">
+        <label class="smat-qcard-config-label">
+          <span>{isEs ? 'Configuración / Material:' : 'Configuration / Material:'}</span>
+          <select
+            class="smat-qcard-config-select"
+            data-qcard-config={sku.id}
+            aria-label={isEs ? `Seleccionar configuración para ${sku.title_es}` : `Select configuration for ${sku.title_en}`}
+          >
+            {configOptions.map((opt) => (
+              <option value={opt.value} selected={opt.value === sku.default_material}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <div class="smat-qcard-actions">
+          <a
+            href={waDefaultHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-qcard-wa-btn={sku.id}
+            data-sku-id={sku.id}
+            data-sku-title={skuTitle}
+            data-sku-sat={`${satTuple.clave_prod_serv} / ${satTuple.clave_unidad}`}
+            data-sku-lang={lang}
+            class="smat-qcard-wa-btn"
+          >
+            <span>{isEs ? '💬 Cotizar / Pedir por WhatsApp (1 Clic)' : '💬 1-Click WhatsApp Quote / Order'}</span>
+          </a>
+
+          <button
+            type="button"
+            data-qcard-add-btn={sku.id}
+            data-quick-tray-add={sku.id}
+            data-sku-title={skuTitle}
+            data-sku-code={sku.atomic_codes[0] || sku.id}
+            data-sku-material={sku.default_material}
+            data-sku-regime={sku.stock_regime || 'hay'}
+            data-sku-mass={sku.mass_kg}
+            class="smat-qcard-cta-btn"
+          >
+            <span>+ {isEs ? 'Sumar a Lista de Cotización' : 'Add to Quote List'}</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -177,6 +264,9 @@ const regime = regimeConfig[sku.stock_regime || 'hay'] || regimeConfig.hay;
   function initProductQuickCards() {
     const cards = document.querySelectorAll('[data-product-quick-card]');
     cards.forEach((card) => {
+      if (card.getAttribute('data-qcard-bound') === '1') return;
+      card.setAttribute('data-qcard-bound', '1');
+
       const tabs = card.querySelectorAll('[data-qcard-tab]');
       const panels = card.querySelectorAll('[data-qcard-panel]');
       tabs.forEach((tab) => {
@@ -185,20 +275,39 @@ const regime = regimeConfig[sku.stock_regime || 'hay'] || regimeConfig.hay;
           tabs.forEach((t) => {
             const active = t.getAttribute('data-qcard-tab') === target;
             t.setAttribute('aria-selected', active ? 'true' : 'false');
-            t.classList.toggle('border-amber-500/60', active);
-            t.classList.toggle('bg-amber-500/15', active);
-            t.classList.toggle('text-amber-300', active);
-            t.classList.toggle('border-slate-700', !active);
-            t.classList.toggle('bg-slate-900', !active);
-            t.classList.toggle('text-slate-300', !active);
+            t.classList.toggle('is-active', active);
           });
           panels.forEach((panel) => {
             const match = panel.getAttribute('data-qcard-panel') === target;
             panel.classList.toggle('hidden', !match);
-            panel.classList.toggle('flex', match);
+            if (panel instanceof HTMLElement) {
+              panel.hidden = !match;
+            }
           });
         });
       });
+
+      const configSelect = card.querySelector('[data-qcard-config]');
+      const waBtn = card.querySelector('[data-qcard-wa-btn]');
+      const addBtn = card.querySelector('[data-qcard-add-btn]');
+      if (configSelect instanceof HTMLSelectElement) {
+        configSelect.addEventListener('change', () => {
+          const selectedMat = configSelect.value;
+          if (addBtn instanceof HTMLElement) {
+            addBtn.setAttribute('data-sku-material', selectedMat);
+          }
+          if (waBtn instanceof HTMLAnchorElement) {
+            const skuId = waBtn.getAttribute('data-sku-id') || '';
+            const title = waBtn.getAttribute('data-sku-title') || '';
+            const sat = waBtn.getAttribute('data-sku-sat') || '40151510 / H87';
+            const isEn = waBtn.getAttribute('data-sku-lang') === 'en';
+            const msg = isEn
+              ? `Hello SMAT Engineering (Durango), I request a quick quote / order for: ${title} [Ref: ${skuId} | Config: ${selectedMat} | SAT: ${sat}].`
+              : `Hola Ing. Manuel (SMAT Durango), solicito cotización / pedido rápido de: ${title} [Ref: ${skuId} | Config: ${selectedMat} | SAT: ${sat}].`;
+            waBtn.href = `https://wa.me/526183670664?text=${encodeURIComponent(msg)}`;
+          }
+        });
+      }
     });
   }
 
@@ -206,3 +315,294 @@ const regime = regimeConfig[sku.stock_regime || 'hay'] || regimeConfig.hay;
   document.addEventListener('astro:page-load', initProductQuickCards);
 </script>
 
+<style>
+  .product-quick-card {
+    background: var(--smat-solar-surface, #ffffff);
+    color: var(--smat-solar-ink, #0f172a);
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+  }
+
+  .smat-qcard-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.65rem 1rem;
+    background: var(--smat-solar-bg, #f8fafc);
+    border-bottom: 1px solid var(--smat-solar-border, #cbd5e1);
+  }
+
+  .smat-qcard-tablist {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .qcard-tab-btn {
+    min-height: 44px;
+    padding: 0.375rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    background: #ffffff;
+    color: var(--smat-solar-muted, #334155);
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .qcard-tab-btn:hover {
+    border-color: #94a3b8;
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  .qcard-tab-btn.is-active {
+    border-color: var(--smat-solar-amber-border, #d97706);
+    background: var(--smat-solar-amber-bg, #fffbeb);
+    color: var(--smat-solar-accent, #b45309);
+    font-weight: 700;
+  }
+
+  .smat-qcard-regime {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.625rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .smat-qcard-regime--hay {
+    background: var(--smat-solar-emerald-bg, #ecfdf5);
+    border-color: var(--smat-solar-emerald-border, #059669);
+    color: var(--smat-solar-emerald, #047857);
+  }
+
+  .smat-qcard-regime--se-pide {
+    background: var(--smat-solar-amber-bg, #fffbeb);
+    border-color: var(--smat-solar-amber-border, #d97706);
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-qcard-regime--se-fabrica {
+    background: #f0f9ff;
+    border-color: #0284c7;
+    color: #0369a1;
+  }
+
+  .smat-qcard-stage {
+    position: relative;
+    width: 100%;
+    background: var(--smat-solar-bg, #f8fafc);
+  }
+
+  .smat-qcard-panel {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    overflow: auto;
+  }
+
+  .smat-qcard-panel.hidden,
+  .smat-qcard-panel[hidden] {
+    display: none !important;
+  }
+
+  .smat-qcard-diagram-wrap {
+    width: 100%;
+  }
+
+  .smat-qcard-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    background: var(--smat-solar-bg, #f8fafc);
+  }
+
+  .smat-qcard-footer {
+    padding: 0.875rem 1rem;
+    background: #ffffff;
+    border-top: 1px solid var(--smat-solar-border, #cbd5e1);
+  }
+
+  .smat-qcard-footer-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 768px) {
+    .smat-qcard-footer-row {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .smat-qcard-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .smat-qcard-triplet-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+  }
+
+  .smat-qcard-triplet-title {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-qcard-triplet-badge {
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    background: var(--smat-solar-bg, #f8fafc);
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    color: var(--smat-solar-ink, #0f172a);
+    font-weight: 600;
+  }
+
+  .smat-qcard-tolerance-badge {
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    background: var(--smat-solar-emerald-bg, #ecfdf5);
+    border: 1px solid var(--smat-solar-emerald-border, #059669);
+    color: var(--smat-solar-emerald, #047857);
+    font-weight: 700;
+  }
+
+  .smat-qcard-scale-note {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--smat-solar-muted, #334155);
+  }
+
+  .smat-qcard-scale-note strong {
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  .smat-qcard-fiscal-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-top: 0.25rem;
+  }
+
+  .smat-qcard-fiscal-pill,
+  .smat-qcard-lane-pill {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    background: var(--smat-solar-bg, #f8fafc);
+    color: var(--smat-solar-muted, #334155);
+    font-weight: 600;
+  }
+
+  .smat-qcard-lane-pill {
+    background: var(--smat-solar-amber-bg, #fffbeb);
+    border-color: var(--smat-solar-amber-border, #d97706);
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-qcard-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 280px;
+  }
+
+  .smat-qcard-config-label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  .smat-qcard-config-select {
+    min-height: 40px;
+    padding: 0.35rem 0.6rem;
+    border-radius: 8px;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    background: #ffffff;
+    color: var(--smat-solar-ink, #0f172a);
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .smat-qcard-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .smat-qcard-wa-btn {
+    min-height: 48px;
+    flex: 1 1 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    border: 1px solid #047857;
+    background: #059669;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .smat-qcard-wa-btn:hover {
+    background: #047857;
+  }
+
+  .smat-qcard-cta-btn {
+    min-height: 48px;
+    flex: 1 1 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #92400e;
+    background: #d97706;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .smat-qcard-cta-btn:hover {
+    background: #b45309;
+  }
+</style>

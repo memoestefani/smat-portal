@@ -13,7 +13,7 @@
           "slug_en": "/en/pumping/skid/",
           "title_es": "Bombas para Lodos",
           "title_en": "Complete Slurry Pumps",
-          "series": "4x3 C-AH hasta 10x8 F-AH",
+          "series": "4x3\" hasta 10x8\" (Succión × Descarga)",
           "power_range": "30 HP a 250 HP",
           "flow_range": "50 a 1,200 m³/h",
           "spec_summary_es": "Bombas centrífugas horizontales de servicio pesado para manejo de lodos abrasivos y corrosivos en molienda, clasificación, flotación y jales.",
@@ -23,8 +23,8 @@
             "required_slurry_vars_en": "Design flow rate (m3/h), total dynamic head TDH (m), slurry specific gravity (SG 1.1 to 1.7), d80 particle sizing (microns), and mine elevation above sea level.",
             "metallurgy_rule_es": "Seleccionar tren motriz con factor de servicio minimo 1.35. A05 (27% Cr) para solidos angulares gruesos; hule vulcanizado para particulas menores a 5 mm con reactivos de flotacion.",
             "metallurgy_rule_en": "Specify drive train with minimum 1.35 service factor. High Chrome A05 for coarse angular slurries; vulcanized rubber for fine solids under 5 mm with flotation reagents.",
-            "risk_avoided_es": "Previene vibracion torsional en skid, deflexion de eje y sobrecalentamiento prematuro de rodamientos bajo picos de carga en arranque.",
-            "risk_avoided_en": "Prevents skid torsional vibration, shaft deflection, and premature bearing overheating under slurry surge startup conditions."
+            "risk_avoided_es": "Previene vibracion torsional en base estructural, deflexion de eje y sobrecalentamiento prematuro de rodamientos bajo picos de carga en arranque.",
+            "risk_avoided_en": "Prevents base frame torsional vibration, shaft deflection, and premature bearing overheating under slurry surge startup conditions."
           }
         }
       ],
@@ -74,7 +74,7 @@
           "title_es": "Expulsor Centrífugo y Prensaestopa (Sin Sello Mecánico)",
           "title_en": "Centrifugal Expeller & Stuffing Box (No Mechanical Seal)",
           "metallurgy": "Alto Cromo, Acero Inoxidable y Empaque Trenzado",
-          "series": "Universal para marcos C, D, E, F",
+          "series": "Universal para geometrías 1.5x1\" a 10x8\" (Succión × Descarga)",
           "spec_summary_es": "Sellado centrífugo en seco por expulsor, anillo expulsor, camisa de flecha y prensaestopa. No vendemos sello mecánico porque las bombas para lodos operan con pulpas muy corrosivas y abrasivas.",
           "spec_summary_en": "Dry centrifugal sealing via expeller, expeller ring, shaft sleeve, and stuffing box. No mechanical seals used due to corrosive and abrasive mineral slurries.",
           "decision_criteria": {
@@ -93,7 +93,7 @@
           "title_es": "Bearing Assembly / Housing",
           "title_en": "Bearing Assembly / Housing",
           "metallurgy": "Fundición Nodular y Rodamientos Timken/SKF",
-          "series": "Marcos C, D, E, F",
+          "series": "Geometrías 1.5x1\" a 10x8\" (Succión × Descarga)",
           "spec_summary_es": "Equipo completo ensamblado (Bearing Assembly / Housing) con carcasa cilíndrica, flecha, rodamientos cónicos y sellos laberinto.",
           "spec_summary_en": "Complete assembled unit (Bearing Assembly / Housing) with cylindrical barrel, shaft, tapered roller bearings, and labyrinth seals.",
           "decision_criteria": {
@@ -123,15 +123,15 @@
           "series": "50, 100, 200 y 300 ft³ (1.4 a 8.5 m³)",
           "power_range": "15 HP a 60 HP por mecanismo",
           "flow_range": "Circuitos de 200 a 1,500 t/d",
-          "spec_summary_es": "Tanques cilíndricos y rectangulares fabricados en placa de acero estructural con recubrimiento de hule interior anti-abrasión química, vertederos ajustables y compuertas de dardo.",
-          "spec_summary_en": "Cylindrical and rectangular cell tanks built from structural steel plate with chemical/abrasion-resistant rubber lining, adjustable frothing weirs, and dart valves.",
+          "spec_summary_es": "Conjuntos motrices suspendidos de reemplazo Drop-In (cabezal porta-rodamientos, eje hueco concéntrico en acero 4140, tubo de tiro e internos de desgaste rotor-estator y válvulas de dardo) sin demoler tanques ni requerir obra civil.",
+          "spec_summary_en": "Suspended Drop-In replacement drive assemblies (bearing pod, 4140 alloy hollow aeration shaft, standpipe, and rotor-stator/dart valve wear internals) without tank demolition or civil works.",
           "decision_criteria": {
             "required_slurry_vars_es": "Tonelaje de tratamiento (t/d), densidad de pulpa (% solidos), tiempo de residencia cinetico requerido (min) y tipo de circuito (Rougher/Scavenger/Cleaner).",
             "required_slurry_vars_en": "Daily processing throughput (t/d), slurry solids density (%), target kinetic residence time (min), and bank role (Rougher/Scavenger/Cleaner).",
-            "metallurgy_rule_es": "Tanque en placa estructural de 6 a 10 mm con revestimiento de hule anti-abrasivo interior vulcanizado en caliente. Compuertas de dardo con actuador neumatico o manual.",
-            "metallurgy_rule_en": "Structural plate tank (6 to 10 mm) with hot-vulcanized internal abrasion rubber lining. Dart valves with pneumatic or manual positioning.",
-            "risk_avoided_es": "Previene embancamiento de solidos pesados en fondo de celda y desgaste prematuro de vertederos por turbulencia.",
-            "risk_avoided_en": "Prevents heavy solids sanding at tank bottoms and premature froth weir erosion due to pulp turbulence."
+            "metallurgy_rule_es": "Árbol motriz en acero 4140 bonificado de montaje Drop-In sobre puente existente (sin obra civil de tanque), con rotor-estator en poliuretano 85-95 Shore A o hule R55 y válvulas de dardo.",
+            "metallurgy_rule_en": "4140 alloy steel drive shaft for direct Drop-In mounting on existing cell bridges (zero structural tank civil works), paired with 85-95 Shore A polyurethane or R55 rubber rotor-stator internals and dart valves.",
+            "risk_avoided_es": "Previene embancamiento de solidos pesados en fondo de celda y elimina paros prolongados por demolición o soldadura de tanques.",
+            "risk_avoided_en": "Prevents heavy solids sanding at cell bottoms and eliminates extended downtime from tank demolition or structural welding."
           }
         }
       ],

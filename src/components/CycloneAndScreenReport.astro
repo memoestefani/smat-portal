@@ -11,9 +11,9 @@ const wearZones = [
     zone: '#01',
     nameEs: 'Buscador de Vórtice (Vortex Finder)',
     nameEn: 'Vortex Finder (Overflow Tube)',
-    skuId: 'SKU-QC-12',
-    slugEs: 'vortex-finder-alto-cromo-ceramico-hidrociclon',
-    slugEn: 'high-chrome-ceramic-hydrocyclone-vortex-finder',
+    skuId: 'SMAT-CYC-D6-D20',
+    slugEs: 'hidrociclon-completo-y-boquillas-d6-d20',
+    slugEn: 'hydrocyclone-assembly-and-spigots-d6-d20',
     material: 'SiC Sinterizado / Cr27 A05',
     physicsEs: 'Controla el corte d50c de Plitt. Borde inferior afilado (tolerancia 0.76 mm, 1 tarjeta ISO/IEC 7810) que corta el cortocircuito de pared.',
     physicsEn: 'Governs Plitt d50c cut size. Sharp lower lip (0.76 mm tolerance, 1 ISO/IEC 7810 card) shears short-circuit wall flow.'
@@ -22,9 +22,9 @@ const wearZones = [
     zone: '#02',
     nameEs: 'Cámara de Alimentación Involuta (Feed Chamber)',
     nameEn: 'Involute Feed Chamber Liner',
-    skuId: 'SKU-QC-13',
-    slugEs: 'forro-conico-inferior-poliuretano-hidrociclon',
-    slugEn: 'lower-cone-polyurethane-liner-hydrocyclone',
+    skuId: 'SMAT-CYC-D6-D20',
+    slugEs: 'hidrociclon-completo-y-boquillas-d6-d20',
+    slugEn: 'hydrocyclone-assembly-and-spigots-d6-d20',
     material: 'Hule R55 / Poliuretano 85 Shore A / Cr27',
     physicsEs: 'Entrada tangencial involuta que minimiza la turbulencia de impacto inicial y estabiliza la columna central de aire.',
     physicsEn: 'Tangential involute entry minimizing initial impact turbulence and stabilizing the central air core.'
@@ -33,9 +33,9 @@ const wearZones = [
     zone: '#03',
     nameEs: 'Sección Cilíndrica (Cylinder Liner)',
     nameEn: 'Cylindrical Section Liner',
-    skuId: 'SKU-QC-13',
-    slugEs: 'forro-conico-inferior-poliuretano-hidrociclon',
-    slugEn: 'lower-cone-polyurethane-liner-hydrocyclone',
+    skuId: 'SMAT-CYC-D6-D20',
+    slugEs: 'hidrociclon-completo-y-boquillas-d6-d20',
+    slugEn: 'hydrocyclone-assembly-and-spigots-d6-d20',
     material: 'Hule R55 / Poliuretano Colado',
     physicsEs: 'Define el tiempo de residencia centrífuga primaria. Unión machihembrada sin escalón (δ_r ≤ 3.0 mm, < 0.76 mm nominal).',
     physicsEn: 'Sets primary centrifugal residence time. Tongue-and-groove step-free joint (δ_r ≤ 3.0 mm, < 0.76 mm nominal).'
@@ -44,9 +44,9 @@ const wearZones = [
     zone: '#04',
     nameEs: 'Cono Superior e Inferior (Upper & Lower Cone)',
     nameEn: 'Upper & Lower Cone Liners',
-    skuId: 'SKU-QC-13',
-    slugEs: 'forro-conico-inferior-poliuretano-hidrociclon',
-    slugEn: 'lower-cone-polyurethane-liner-hydrocyclone',
+    skuId: 'SMAT-CYC-D6-D20',
+    slugEs: 'hidrociclon-completo-y-boquillas-d6-d20',
+    slugEn: 'hydrocyclone-assembly-and-spigots-d6-d20',
     material: 'Poliuretano 85 Shore A / Cerámica SiC',
     physicsEs: 'Zona de máxima aceleración tangencial. Escalones radiales δ_r > 3 mm disparan micro-vórtices de Görtler y desvían gruesos al overflow.',
     physicsEn: 'Peak tangential acceleration zone. Radial steps δ_r > 3 mm trigger Görtler micro-vortices and misplace coarse grit to overflow.'
@@ -55,9 +55,9 @@ const wearZones = [
     zone: '#05',
     nameEs: 'Boquilla de Descarga (Ápex / Spigot)',
     nameEn: 'Underflow Spigot (Apex Insert)',
-    skuId: 'SKU-QC-11',
-    slugEs: 'apex-ceramico-carburo-silicio-hidrociclon',
-    slugEn: 'silicon-carbide-ceramic-hydrocyclone-apex',
+    skuId: 'SMAT-CYC-D6-D20',
+    slugEs: 'hidrociclon-completo-y-boquillas-d6-d20',
+    slugEn: 'hydrocyclone-assembly-and-spigots-d6-d20',
     material: 'Carburo de Silicio Sinterizado SiC (≥ 2200 HV)',
     physicsEs: 'Regula la relación du/do y la fracción volumétrica Cv,u (< 56%) para mantener descarga tipo semi-paraguas sin acordonamiento (roping).',
     physicsEn: 'Controls du/do ratio and volumetric solids Cv,u (< 56%) to sustain semi-umbrella spray without roping.'
@@ -73,15 +73,15 @@ const cycloneModels = [
 ];
 ---
 
-<section class="cyclone-screen-report my-8 space-y-8" data-cyclone-screen-report>
+<section class="cyclone-screen-report" data-cyclone-screen-report>
   <!-- Bloque 1: Reporte de Despiece de las 5 Zonas de Desgaste de un Hidrociclón (Plano 3 · Avenida 2) -->
-  <div class="rounded-2xl border border-slate-300 bg-white p-6 shadow-sm">
-    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4 mb-5">
+  <div class="smat-csr-card">
+    <div class="smat-csr-card-head">
       <div>
-        <span class="text-xs font-mono font-bold uppercase tracking-wider text-sky-800">
+        <span class="smat-csr-kicker">
           {isEs ? 'PLANO 3 · REPORTE DE DESPIECE EN 5 ZONAS (AVENIDA 2 · CANDADO G3)' : 'PLANE 3 · 5-ZONE EXPLODED WEAR REPORT (AVENUE 2 · GATE G3)'}
         </span>
-        <h2 class="text-xl font-extrabold text-slate-900 mt-1">
+        <h2 class="smat-csr-title">
           {isEs
             ? 'Anatomía de Desgaste Diferencial del Hidrociclón (Cero Escalón δ_r ≤ 3 mm)'
             : 'Differential Wear Anatomy of the Hydrocyclone (Zero-Step δ_r ≤ 3 mm)'}
@@ -89,33 +89,33 @@ const cycloneModels = [
       </div>
       <a
         href={isEs ? '/productos/paquete-casado-bomba-lodos-hidrociclon/' : '/en/products/married-slurry-pump-hydrocyclone-package/'}
-        class="rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-mono font-bold text-amber-300 hover:bg-slate-800 transition"
+        class="smat-csr-primary-link"
       >
         {isEs ? '🔗 Ver Paquete Casado Bomba + Hidrociclón (Avenida 6A) →' : '🔗 View Married Pump + Cyclone Package (Avenue 6A) →'}
       </a>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+    <div class="smat-csr-zone-grid">
       {wearZones.map((z) => (
-        <article class="rounded-xl border border-slate-200 bg-slate-50 p-3.5 flex flex-col justify-between">
+        <article class="smat-csr-zone-card">
           <div>
-            <div class="flex items-center justify-between text-xs font-mono font-bold text-amber-800 mb-1">
+            <div class="smat-csr-zone-meta">
               <span>{z.zone}</span>
               <span>{z.skuId}</span>
             </div>
-            <h3 class="text-sm font-extrabold text-slate-900 mb-1.5">
+            <h3 class="smat-csr-zone-name">
               {isEs ? z.nameEs : z.nameEn}
             </h3>
-            <div class="text-[11px] font-mono font-semibold text-sky-900 bg-sky-50 border border-sky-200 rounded px-2 py-0.5 mb-2">
+            <div class="smat-csr-zone-mat">
               {z.material}
             </div>
-            <p class="text-xs text-slate-700 leading-relaxed">
+            <p class="smat-csr-zone-desc">
               {isEs ? z.physicsEs : z.physicsEn}
             </p>
           </div>
           <a
             href={isEs ? `/productos/${z.slugEs}/` : `/en/products/${z.slugEn}/`}
-            class="mt-3 inline-block text-xs font-mono font-bold text-sky-800 hover:underline"
+            class="smat-csr-zone-link"
           >
             {isEs ? 'Cotizar zona →' : 'Quote zone →'}
           </a>
@@ -125,38 +125,38 @@ const cycloneModels = [
   </div>
 
   <!-- Bloque 2: Tabla Paramétrica de Hidrociclones Completos (D6 a D20) y Paquetes Casados -->
-  <div class="rounded-2xl border border-slate-300 bg-white p-6 shadow-sm overflow-x-auto">
-    <h2 class="text-lg font-extrabold text-slate-900 mb-2">
+  <div class="smat-csr-card smat-csr-table-wrap">
+    <h2 class="smat-csr-subtitle">
       {isEs
         ? 'Tabla Paramétrica de Hidrociclones SMAT (D6, D10, D10B, D15, D20) y Paquetes Casados'
         : 'SMAT Hydrocyclone Parametric Table (D6, D10, D10B, D15, D20) & Married Packages'}
     </h2>
-    <p class="text-xs text-slate-600 mb-4">
+    <p class="smat-csr-lead">
       {isEs
         ? 'Dimensionamiento acoplado Plitt-Marcy para evitar desbalance entre bomba de alimentación y batería de clasificación.'
         : 'Coupled Plitt-Marcy sizing to prevent hydraulic mismatch between cyclone feed pump and classification cluster.'}
     </p>
 
-    <table class="w-full text-left border-collapse text-xs">
+    <table class="smat-csr-table">
       <thead>
-        <tr class="border-b-2 border-slate-300 bg-slate-100 font-mono text-slate-800">
-          <th class="py-2.5 px-3">{isEs ? 'Modelo SMAT' : 'SMAT Model'}</th>
-          <th class="py-2.5 px-3">{isEs ? 'Capacidad (m³/h)' : 'Capacity (m³/h)'}</th>
-          <th class="py-2.5 px-3">{isEs ? 'Corte Plitt d50c (µm)' : 'Plitt Cut d50c (µm)'}</th>
-          <th class="py-2.5 px-3">{isEs ? 'Rango Ápex du (mm)' : 'Apex Range du (mm)'}</th>
-          <th class="py-2.5 px-3">{isEs ? 'Rango Vortex do (mm)' : 'Vortex Range do (mm)'}</th>
-          <th class="py-2.5 px-3">{isEs ? 'Paquete Casado (6A)' : 'Married Package (6A)'}</th>
+        <tr>
+          <th>{isEs ? 'Modelo SMAT' : 'SMAT Model'}</th>
+          <th>{isEs ? 'Capacidad (m³/h)' : 'Capacity (m³/h)'}</th>
+          <th>{isEs ? 'Corte Plitt d50c (µm)' : 'Plitt Cut d50c (µm)'}</th>
+          <th>{isEs ? 'Rango Ápex du (mm)' : 'Apex Range du (mm)'}</th>
+          <th>{isEs ? 'Rango Vortex do (mm)' : 'Vortex Range do (mm)'}</th>
+          <th>{isEs ? 'Paquete Casado (6A)' : 'Married Package (6A)'}</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-slate-200 font-mono text-slate-800">
+      <tbody>
         {cycloneModels.map((row) => (
-          <tr class="hover:bg-slate-50">
-            <td class="py-2.5 px-3 font-bold text-slate-950">{row.model}</td>
-            <td class="py-2.5 px-3">{row.flowM3h}</td>
-            <td class="py-2.5 px-3 text-sky-900 font-bold">{row.d50Um}</td>
-            <td class="py-2.5 px-3">{row.apexMm}</td>
-            <td class="py-2.5 px-3">{row.vortexMm}</td>
-            <td class="py-2.5 px-3 font-bold text-amber-900">{row.marriedPump}</td>
+          <tr>
+            <td class="smat-csr-td-model">{row.model}</td>
+            <td>{row.flowM3h}</td>
+            <td class="smat-csr-td-cut">{row.d50Um}</td>
+            <td>{row.apexMm}</td>
+            <td>{row.vortexMm}</td>
+            <td class="smat-csr-td-married">{row.marriedPump}</td>
           </tr>
         ))}
       </tbody>
@@ -164,60 +164,60 @@ const cycloneModels = [
   </div>
 
   <!-- Bloque 3: Avenida 3 — Mallas Finas de Uretano TH48-30 y Módulos 1'x1' (ARB-SMAT-29) -->
-  <div class="rounded-2xl border border-amber-500/40 bg-slate-900 p-6 text-slate-100 shadow-lg">
-    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+  <div class="smat-csr-card smat-csr-card--highlight">
+    <div class="smat-csr-card-head">
       <div>
-        <span class="text-xs font-mono font-bold uppercase tracking-wider text-amber-400">
+        <span class="smat-csr-kicker smat-csr-kicker--amber">
           {isEs ? 'AVENIDA 3 · CRIBADO FINO ANTI-CEGAMIENTO (ARB-SMAT-29)' : 'AVENUE 3 · ANTI-BLINDING FINE SCREENING (ARB-SMAT-29)'}
         </span>
-        <h2 class="text-xl font-extrabold text-white mt-1">
+        <h2 class="smat-csr-title">
           {isEs
             ? 'Mallas Finas de Uretano TH48-30 y Paneles Modulares 1\'x1\' (Weibull α ≥ 4.2)'
             : 'TH48-30 Fine Urethane Screens & 1\'x1\' Modular Panels (Weibull α ≥ 4.2)'}
         </h2>
       </div>
-      <div class="flex flex-wrap gap-2">
+      <div class="smat-csr-btn-group">
         <a
           href={isEs ? '/productos/mallas-finas-uretano-th48-30/' : '/en/products/fine-urethane-screens-th48-30/'}
-          class="rounded-lg bg-amber-500 px-3.5 py-2 text-xs font-mono font-bold text-slate-950 hover:bg-amber-400 transition"
+          class="smat-csr-primary-link"
         >
-          {isEs ? 'Ficha TH48-30 (SKU-QC-13) →' : 'TH48-30 Sheet (SKU-QC-13) →'}
+          {isEs ? 'Ficha TH48-30 (SMAT-SCR-TH48-30) →' : 'TH48-30 Sheet (SMAT-SCR-TH48-30) →'}
         </a>
         <a
           href={isEs ? '/productos/modulos-poliuretano-1x1-pin-camisa/' : '/en/products/polyurethane-modular-panels-1x1/'}
-          class="rounded-lg border border-slate-600 bg-slate-800 px-3.5 py-2 text-xs font-mono font-bold text-slate-200 hover:border-amber-400 transition"
+          class="smat-csr-secondary-link"
         >
-          {isEs ? 'Módulos 1\'x1\' (SKU-QC-09) →' : '1\'x1\' Modules (SKU-QC-09) →'}
+          {isEs ? 'Módulos 1\'x1\' (SMAT-SCR-MOD-1X1) →' : '1\'x1\' Modules (SMAT-SCR-MOD-1X1) →'}
         </a>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-      <div class="rounded-xl bg-slate-950/80 border border-slate-800 p-4">
-        <strong class="block font-mono text-amber-300 mb-1">
+    <div class="smat-csr-pillar-grid">
+      <div class="smat-csr-pillar-box">
+        <strong class="smat-csr-pillar-title smat-csr-pillar-title--amber">
           {isEs ? '1. ÁNGULO DE ALIVIO CÓNICO (3°–5°)' : '1. TAPERED RELIEF ANGLE (3°–5°)'}
         </strong>
-        <p class="text-slate-300">
+        <p class="smat-csr-pillar-text">
           {isEs
-            ? 'Geometría divergente que libera instantáneamente partículas críticas (near-size 0.8 < d/a < 1.2) apenas superan la garganta superior.'
-            : 'Diverging slot geometry that immediately releases near-size particles (0.8 < d/a < 1.2) once past the top throat.'}
+            ? 'Geometría divergente que libera instantáneamente partículas críticas (near-size 0.8 < d/a < 1.2) apenas superan el plano superior de calibración.'
+            : 'Diverging slot geometry that immediately releases near-size particles (0.8 < d/a < 1.2) once past the upper calibration plane.'}
         </p>
       </div>
-      <div class="rounded-xl bg-slate-950/80 border border-slate-800 p-4">
-        <strong class="block font-mono text-emerald-300 mb-1">
+      <div class="smat-csr-pillar-box">
+        <strong class="smat-csr-pillar-title smat-csr-pillar-title--emerald">
           {isEs ? '2. DILATACIÓN ELÁSTICA Δa/a ≈ 2%–4%' : '2. ELASTIC DILATION Δa/a ≈ 2%–4%'}
         </strong>
-        <p class="text-slate-300">
+        <p class="smat-csr-pillar-text">
           {isEs
             ? 'Membrana de uretano flexible bajo aceleración de 4–5G que expulsa granos acuñados y sostiene área abierta efectiva A_eff > 32%.'
             : 'Flexible urethane membrane under 4–5G acceleration that ejects wedged grains and sustains effective open area A_eff > 32%.'}
         </p>
       </div>
-      <div class="rounded-xl bg-slate-950/80 border border-slate-800 p-4">
-        <strong class="block font-mono text-sky-300 mb-1">
+      <div class="smat-csr-pillar-box">
+        <strong class="smat-csr-pillar-title smat-csr-pillar-title--sky">
           {isEs ? '3. CURVA DE PARTICIÓN WEIBULL α ≥ 4.2' : '3. WEIBULL PARTITION SHARPNESS α ≥ 4.2'}
         </strong>
-        <p class="text-slate-300">
+        <p class="smat-csr-pillar-text">
           {isEs
             ? 'Al combinar hidrociclón primario con malla fina TH48-30 en descarga, se elimina el bypass de finos pesados (galena/pirita) por gravedad específica.'
             : 'Combining primary hydrocyclone classification with TH48-30 fine screens on underflow eliminates heavy-mineral overgrinding bypass.'}
@@ -227,3 +227,270 @@ const cycloneModels = [
   </div>
 </section>
 
+<style>
+  .cyclone-screen-report {
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .smat-csr-card {
+    background: var(--smat-solar-surface, #ffffff);
+    color: var(--smat-solar-ink, #0f172a);
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  }
+
+  .smat-csr-card--highlight {
+    background: var(--smat-solar-bg, #f8fafc);
+    border: 2px solid var(--smat-solar-amber-border, #d97706);
+  }
+
+  .smat-csr-table-wrap {
+    overflow-x: auto;
+  }
+
+  .smat-csr-card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--smat-solar-border, #cbd5e1);
+  }
+
+  .smat-csr-kicker {
+    display: block;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #0369a1;
+  }
+
+  .smat-csr-kicker--amber {
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-csr-title {
+    margin: 0.25rem 0 0 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  .smat-csr-subtitle {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  .smat-csr-lead {
+    margin: 0 0 1rem 0;
+    font-size: 0.75rem;
+    color: var(--smat-solar-muted, #334155);
+  }
+
+  .smat-csr-btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .smat-csr-primary-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.875rem;
+    border-radius: 8px;
+    background: #d97706;
+    color: #ffffff;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+
+  .smat-csr-primary-link:hover {
+    background: #b45309;
+  }
+
+  .smat-csr-secondary-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.875rem;
+    border-radius: 8px;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    background: #ffffff;
+    color: var(--smat-solar-ink, #0f172a);
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .smat-csr-secondary-link:hover {
+    border-color: var(--smat-solar-amber-border, #d97706);
+  }
+
+  .smat-csr-zone-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 768px) {
+    .smat-csr-zone-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+
+  .smat-csr-zone-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.875rem;
+    border-radius: 12px;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    background: var(--smat-solar-bg, #f8fafc);
+  }
+
+  .smat-csr-zone-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-csr-zone-name {
+    margin: 0 0 0.375rem 0;
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  .smat-csr-zone-mat {
+    padding: 0.125rem 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #bae6fd;
+    background: #f0f9ff;
+    color: #0c4a6e;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+
+  .smat-csr-zone-desc {
+    margin: 0;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--smat-solar-muted, #334155);
+  }
+
+  .smat-csr-zone-link {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #0369a1;
+    text-decoration: none;
+  }
+
+  .smat-csr-zone-link:hover {
+    text-decoration: underline;
+  }
+
+  .smat-csr-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  .smat-csr-table thead tr {
+    background: var(--smat-solar-bg, #f8fafc);
+    border-bottom: 2px solid var(--smat-solar-border, #cbd5e1);
+  }
+
+  .smat-csr-table th,
+  .smat-csr-table td {
+    padding: 0.625rem 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .smat-csr-td-model {
+    font-weight: 700;
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  .smat-csr-td-cut {
+    font-weight: 700;
+    color: #0c4a6e;
+  }
+
+  .smat-csr-td-married {
+    font-weight: 700;
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-csr-pillar-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    font-size: 0.75rem;
+  }
+
+  @media (min-width: 768px) {
+    .smat-csr-pillar-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .smat-csr-pillar-box {
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    background: #ffffff;
+  }
+
+  .smat-csr-pillar-title {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-weight: 700;
+  }
+
+  .smat-csr-pillar-title--amber {
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-csr-pillar-title--emerald {
+    color: var(--smat-solar-emerald, #047857);
+  }
+
+  .smat-csr-pillar-title--sky {
+    color: #0369a1;
+  }
+
+  .smat-csr-pillar-text {
+    margin: 0;
+    color: var(--smat-solar-muted, #334155);
+    line-height: 1.5;
+  }
+</style>

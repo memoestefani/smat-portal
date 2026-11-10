@@ -126,7 +126,7 @@ const sealParts = [getAtomicPartSpecs('DAM028'), getAtomicPartSpecs('EAM028')].f
               <h3 style="margin-top:0.5rem;">{sp.name_en}</h3>
               <p style="font-size:0.86rem; color:#334155;">{sp.summary_en}</p>
               <div class="font-mono-tech" style="font-size:0.75rem; color:#475569; margin-bottom:0.85rem;">
-                Frame {sp.frame} (Series {sp.pipe_size.toUpperCase()}) • Wall {sp.wall_thickness_mm} mm • Station 0{sp.station_number} ({sp.assembly_order_note})
+                Series {sp.pipe_size.toUpperCase()} ({sp.frame}) • Wall {sp.wall_thickness_mm} mm • Station 0{sp.station_number} ({sp.assembly_order_note})
               </div>
               <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
                 <a href={`/en/catalog/${sp.code}/`} class="btn btn-outline">View {sp.part_number} Sheet →</a>
@@ -139,7 +139,7 @@ const sealParts = [getAtomicPartSpecs('DAM028'), getAtomicPartSpecs('EAM028')].f
 
       <SharePurchasing
         roleTitle="Centrifugal Expeller, Expeller Ring & Stuffing Box"
-        series="1.5x1 to 14x12 Frames (4x3 C, 6x4 D, 8x6 E, 10x8 F)"
+        series="1.5x1 to 14x12 Series (4x3, 6x4, 8x6, 10x8)"
         metallurgy="High Chrome 27% (A05), Hardened Stainless Steel & PTFE/Graphite Packing"
         specs="Dry centrifugal expeller and braided-packing stuffing box assembly (no mechanical seals) for zero slurry dilution."
         roleId="kit_sellado"

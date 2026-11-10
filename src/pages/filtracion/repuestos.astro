@@ -76,15 +76,15 @@ const criteria = repRole?.decision_criteria;
         </table>
 
         <!-- Reporte de Despiece en 5 Familias (Avenida 5 · Candado G5) -->
-        <div class="filtration-5family-box" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; color: var(--smat-text-primary); border: 1px solid #cbd5e1; border-left: 4px solid #7c2d12;">
+        <div class="filtration-5family-box" data-plate-flexure-panel="timoshenko-g5" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; color: var(--smat-text-primary); border: 1px solid #cbd5e1; border-left: 4px solid #7c2d12;">
           <span class="badge badge-copper">PLANO 3 · DESPIECE EN 5 FAMILIAS DE FILTRO PRENSA (AVENIDA 5 · CANDADO G5)</span>
           <h3 style="margin: 0.65rem 0 0.5rem; font-size: 1.08rem; color: var(--smat-text-primary);">#01 Placas PP · #02 Lonas Calandradas · #03 Plate Shifter · #04 Cadenas · #05 Hidráulica</h3>
           <p style="font-size: 0.88rem; color: #334155; margin-bottom: 0.85rem;">
-            Protección estructural contra rotura de alma por diferencial de presión ΔP &gt; 3.5 bar (Timoshenko, σ<sub>max</sub> = β · ΔP · (a/h)² ≤ 18 MPa). Suministro bajo candado G5 (🔵 SE FABRICA con 50% de anticipo y plano confirmado para lotes especiales).
+            Protección estructural contra rotura de alma por diferencial de presión ΔP &gt; 3.5 bar (Timoshenko, σ<sub>max</sub> = β · ΔP · (a/h)² ≤ 18 MPa · <code>evaluateFilterPressPlateDeflection</code>). Suministro bajo candado G5 (🔵 SE FABRICA con 50% de anticipo y plano confirmado para lotes especiales).
           </p>
           <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
-            <a href="/productos/placa-polipropileno-recesada-membrana-filtro-prensa/" class="btn btn-outline" style="font-size:0.8rem;">SKU-QC-17 · Placas PP + Corre-Placas (Plate Shifter) →</a>
-            <a href="/productos/lona-filtrante-monofilamento-filtro-prensa/" class="btn btn-outline" style="font-size:0.8rem;">SKU-QC-18 · Lona Filtrante Calandrada Anti-Cegamiento →</a>
+            <a href="/productos/mecanismo-corre-placas-plate-shifter/" class="btn btn-outline" style="font-size:0.8rem;">SMAT-FILT-SHIFTER-CHAIN · Corre-Placas (Plate Shifter) + Cadenas →</a>
+            <a href="/productos/lonas-y-placas-filtro-prensa-16bar/" class="btn btn-outline" style="font-size:0.8rem;">SMAT-FILT-CLOTH-PLATE · Lonas y Placas Recesadas PP 16 bar →</a>
           </div>
         </div>
 
@@ -165,7 +165,7 @@ const criteria = repRole?.decision_criteria;
   }
 
   .page-hero h1 {
-    color: #090d16;
+    color: #1e293b;
     margin-top: 0.75rem;
     font-size: clamp(2rem, 3.5vw, 2.75rem);
     letter-spacing: -0.02em;
@@ -192,7 +192,7 @@ const criteria = repRole?.decision_criteria;
   }
 
   .detail-card h2 {
-    color: #090d16;
+    color: #1e293b;
     margin-bottom: 1rem;
     border-bottom: 2px solid var(--smat-copper-accent);
     padding-bottom: 0.5rem;
@@ -221,7 +221,7 @@ const criteria = repRole?.decision_criteria;
 
   .tech-table th {
     background-color: #f8fafc;
-    color: #090d16;
+    color: #1e293b;
     font-weight: 700;
   }
 
@@ -240,7 +240,7 @@ const criteria = repRole?.decision_criteria;
 
   .cta-rfq-header h3 {
     font-size: 1.4rem;
-    color: #090d16;
+    color: #1e293b;
     margin: 0.75rem 0 0.5rem;
   }
 

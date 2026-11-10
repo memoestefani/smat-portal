@@ -7,13 +7,29 @@ import CaseCards from '../../components/CaseCards.astro';
 
 <BaseLayout 
   title="Visual Failure & Wear Diagnostics Guide | SMAT Minerals"
-  description="Practical diagnostic guide and wear part selection for slurry pumps, flotation cells, and filter presses from Durango, Mexico."
+  description="Practical 6-mode failure diagnostic guide (Cavitation, Liners, Station 02 Stuffing Box, Station 01 ISO 281 Bearing Cartridge, Flotation & Filtration) from Durango, Mexico."
   lang="en"
   canonicalPath="/en/diagnostics/"
   alternateEsPath="/diagnostico/"
   alternateEnPath="/en/diagnostics/"
 >
   <DiagnosticsHub lang="en" />
+  <section class="container" aria-label="Station 01 and Station 02 Direct Diagnostic Shortcuts" style="margin: 1.5rem auto;">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1rem; background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:1.25rem;">
+      <div>
+        <span style="font-family:var(--smat-font-mono); font-size:0.75rem; font-weight:800; color:#b45309;">MODE 05 • STATION 02 (SHAFT SEALING)</span>
+        <h2 style="font-size:1.05rem; margin:0.25rem 0;">Stuffing Box Leakage & D075C21 HVOF Shaft Sleeve</h2>
+        <p style="font-size:0.88rem; color:#334155; margin-bottom:0.75rem;">Eliminate premature packing sleeve grooving and gland water dilution with the D4028 dry expeller + D4029 chamber + D075C21 HVOF sleeve (≥68 HRC).</p>
+        <a href="/?failure=seal_stuffing_box#rfq" data-failure-link="seal_stuffing_box" class="btn btn-secondary btn-sm">Diagnose Stuffing Box Leak (/?failure=seal_stuffing_box#rfq) →</a>
+      </div>
+      <div>
+        <span style="font-family:var(--smat-font-mono); font-size:0.75rem; font-weight:800; color:#1e3a8a;">MODE 06 • STATION 01 (ISO 281 DRIVE END)</span>
+        <h2 style="font-size:1.05rem; margin:0.25rem 0;">Bearing Fatigue & DAM005 Complete Cartridge</h2>
+        <p style="font-size:0.88rem; color:#334155; margin-bottom:0.75rem;">Restore ISO 281 modified rating life factor (a_ISO = 1.25) with grease-purged labyrinth seals and -22% Core Trade-In remanufacturing credit.</p>
+        <a href="/?failure=bearing_shaft_fatigue#rfq" data-failure-link="bearing_shaft_fatigue" class="btn btn-secondary btn-sm">Diagnose ISO 281 Cartridge (/?failure=bearing_shaft_fatigue#rfq) →</a>
+      </div>
+    </div>
+  </section>
   <div class="container">
     <QuickPartSelectorStrip lang="en" />
   </div>

@@ -6,6 +6,8 @@
  */
 
 import { computeSelectionOrderCodeHash } from './slurryEngine.js';
+import { workbenchStateLens, loadWorkbenchSession, saveWorkbenchSession } from './workbenchBus.js';
+import { resolveCanonicalSkuId } from './quickProductsCatalog.js';
 
 export const SMAT_TRAY_STORAGE_KEY = 'smat_requisition_tray_v3';
 export const SMAT_TRAY_UPDATE_EVENT = 'smat:tray-updated';
@@ -13,17 +15,20 @@ export const SMAT_TRAY_UPDATE_EVENT = 'smat:tray-updated';
 const DEFAULT_TRAY_STATE = Object.freeze({
   version: 3,
   criticalityMode: 'PARO_DE_LINEA',
+  coreReturnEnabled: false,
   items: [],
   updatedAtIso: '2026-11-09T00:00:00.000Z'
 });
 
 /**
- * Normaliza un ítem individual de la bandeja de requisición B2B.
+ * Normaliza un ítem individual de la bandeja de requisición B2B,
+ * migrando transparentemente cualquier ID legado a su ID canónico SMAT-*.
  * @param {any} rawItem
  * @returns {any}
  */
 export function normalizeTrayItem(rawItem = {}) {
-  const id = String(rawItem.skuId || rawItem.code || rawItem.id || 'SKU-QC-01').trim().toUpperCase();
+  const rawId = String(rawItem.skuId || rawItem.code || rawItem.id || 'SMAT-PUMP-IMP-AH').trim().toUpperCase();
+  const id = String(resolveCanonicalSkuId(rawId) || rawId).trim().toUpperCase();
   const qty = Math.max(1, Math.min(999, Math.round(Number(rawItem.qty) || 1)));
   const criticalityMode = String(rawItem.criticalityMode || 'PARO_DE_LINEA').toUpperCase() === 'STOCK_SS'
     ? 'STOCK_SS'
@@ -31,7 +36,7 @@ export function normalizeTrayItem(rawItem = {}) {
 
   return {
     id,
-    skuId: String(rawItem.skuId || id).trim().toUpperCase(),
+    skuId: id,
     atomicCode: String(rawItem.atomicCode || rawItem.code || id).trim().toUpperCase(),
     nameEs: String(rawItem.nameEs || rawItem.name_es || `Componente Industrial ${id}`).trim(),
     nameEn: String(rawItem.nameEn || rawItem.name_en || `Industrial Component ${id}`).trim(),
@@ -75,13 +80,15 @@ export function getTrayState(rawOverride = null) {
   return {
     version: 3,
     criticalityMode,
+    coreReturnEnabled: Boolean(raw.coreReturnEnabled),
     items,
     updatedAtIso: String(raw.updatedAtIso || DEFAULT_TRAY_STATE.updatedAtIso)
   };
 }
 
 /**
- * Persiste el estado de la bandeja en localStorage y emite el evento DOM reactivo.
+ * Persiste el estado de la bandeja en localStorage, sincroniza con smat_workbench_state_v2
+ * mediante Lente Simétrica PutGet y emite el evento DOM reactivo.
  * @param {any} nextState
  * @returns {any}
  */
@@ -92,6 +99,7 @@ export function saveTrayState(nextState = {}) {
       if (window.localStorage) {
         window.localStorage.setItem(SMAT_TRAY_STORAGE_KEY, JSON.stringify(normalized));
       }
+      syncTrayToWorkbenchStateLens(normalized);
       if (typeof window.dispatchEvent === 'function' && typeof CustomEvent === 'function') {
         window.dispatchEvent(new CustomEvent(SMAT_TRAY_UPDATE_EVENT, { detail: normalized }));
       }
@@ -139,8 +147,16 @@ export function addTrayItem(item = {}, currentState = null) {
  */
 export function removeTrayItem(skuOrCode = '', currentState = null) {
   const state = getTrayState(currentState);
-  const target = String(skuOrCode || '').trim().toUpperCase();
-  const nextItems = state.items.filter((i) => i.id !== target && i.skuId !== target && i.atomicCode !== target);
+  const rawTarget = String(skuOrCode || '').trim().toUpperCase();
+  const canonicalTarget = String(resolveCanonicalSkuId(rawTarget) || rawTarget).trim().toUpperCase();
+  const nextItems = state.items.filter(
+    (i) =>
+      i.id !== rawTarget &&
+      i.id !== canonicalTarget &&
+      i.skuId !== rawTarget &&
+      i.skuId !== canonicalTarget &&
+      i.atomicCode !== rawTarget
+  );
   return saveTrayState({
     ...state,
     items: nextItems,
@@ -158,15 +174,22 @@ export function removeTrayItem(skuOrCode = '', currentState = null) {
  */
 export function updateTrayItemQty(skuOrCode = '', qty = 1, criticalityMode = null, currentState = null) {
   const state = getTrayState(currentState);
-  const target = String(skuOrCode || '').trim().toUpperCase();
+  const rawTarget = String(skuOrCode || '').trim().toUpperCase();
+  const canonicalTarget = String(resolveCanonicalSkuId(rawTarget) || rawTarget).trim().toUpperCase();
   const safeQty = Math.max(0, Math.min(999, Math.round(Number(qty) || 0)));
 
   if (safeQty === 0) {
-    return removeTrayItem(target, state);
+    return removeTrayItem(canonicalTarget, state);
   }
 
   const nextItems = state.items.map((item) => {
-    if (item.id === target || item.skuId === target || item.atomicCode === target) {
+    if (
+      item.id === rawTarget ||
+      item.id === canonicalTarget ||
+      item.skuId === rawTarget ||
+      item.skuId === canonicalTarget ||
+      item.atomicCode === rawTarget
+    ) {
       return normalizeTrayItem({
         ...item,
         qty: safeQty,
@@ -263,6 +286,11 @@ export function buildSmatVendorPassportPayload(companyMeta = {}) {
     schema: 'smat.vendor.passport.v3',
     companyName,
     rfcStatus,
+    cfdiVersion: '4.0',
+    satRegimeCode: '601 - General de Ley Personas Morales',
+    defaultCfdiUse: 'G01 (Adquisición de mercancías) / G03 (Gastos en general) / I04 (Equipo de cómputo y accesorios / Maquinaria)',
+    postalCode: '34080',
+    currencySupport: ['MXN', 'USD'],
     industrialHub,
     contact: {
       salesEmail: 'ventas@smatminerals.com',
@@ -297,7 +325,7 @@ export function buildSmatVendorPassportPayload(companyMeta = {}) {
 export function encodeReorderUrlQuery(trayState = {}) {
   const state = getTrayState(trayState);
   if (!state.items.length) {
-    return '?reorder=1&tray=SKU-QC-01:1:PARO_DE_LINEA';
+    return '?reorder=1&tray=SMAT-PUMP-IMP-AH:1:PARO_DE_LINEA';
   }
   const serialized = state.items
     .map((item) => `${encodeURIComponent(item.id)}:${item.qty}:${item.criticalityMode}`)
@@ -324,8 +352,8 @@ export function hydrateTrayFromReorderQuery(searchString = '') {
   const items = entries.map((entry) => {
     const [idRaw, qtyRaw, modeRaw] = entry.split(':');
     return normalizeTrayItem({
-      id: decodeURIComponent(idRaw || 'SKU-QC-01'),
-      skuId: decodeURIComponent(idRaw || 'SKU-QC-01'),
+      id: decodeURIComponent(idRaw || 'SMAT-PUMP-IMP-AH'),
+      skuId: decodeURIComponent(idRaw || 'SMAT-PUMP-IMP-AH'),
       qty: Number(qtyRaw) || 1,
       criticalityMode: modeRaw === 'STOCK_SS' ? 'STOCK_SS' : 'PARO_DE_LINEA'
     });
@@ -341,7 +369,7 @@ export function hydrateTrayFromReorderQuery(searchString = '') {
 
 /**
  * Calcula el descriptor de prioridad c*mu (Van Mieghem 1995) y el carril de checkout
- * según urgencia de planta, monto estimado (< MXN 25,000 vs > MXN 25,000) y régimen (hay / se_pide / se_fabrica).
+ * según urgencia de planta, monto estimado (< 25,000 MXN vs > 25,000 MXN) y régimen (hay / se_pide / se_fabrica).
  *
  * @param {any} [params={}]
  * @returns {any}
@@ -388,8 +416,8 @@ export function computeCmuPriorityDescriptor(params = {}) {
       stockRegime,
       advancePaymentPct: 0,
       slaResponseMinutes: 30,
-      labelEs: '⚡ P1 · CAJA CHICA (< MXN 25,000 · CFDI 4.0 Hoy)',
-      labelEn: '⚡ P1 · PETTY CASH (< MXN 25,000 · CFDI 4.0 Today)'
+      labelEs: '⚡ P1 · CAJA CHICA (< 25,000 MXN · CFDI 4.0 Hoy)',
+      labelEn: '⚡ P1 · PETTY CASH (< 25,000 MXN · CFDI 4.0 Today)'
     };
   }
 
@@ -426,3 +454,80 @@ export function calculateCoupledReorderWindowDays(telemetry = {}) {
     policySummaryEn: 'Day 90: D075C21 HVOF Sleeve + Expeller | Day 150: E4147 Impeller + E4083 Throatbush | Day 180: D3110 Volute 5:5:4 Overhaul'
   };
 }
+
+/**
+ * Evalúa la elegibilidad y bonificación de Economía Circular Industrial (-22% Core Trade-In)
+ * para intercambio de Cartucho de Rodamientos (Bearing Assembly DAM005 / Estación 01)
+ * bajo el modelo de remanufactura de Guide & Van Wassenhove (2001) e ISO 281 (INV-SMAT-SCI-06).
+ *
+ * @param {any} [trayState={}]
+ * @param {boolean|null} [coreReturnOverride=null]
+ * @returns {any}
+ */
+export function evaluateBearingCartridgeCoreTradeIn(trayState = {}, coreReturnOverride = null) {
+  const state = getTrayState(trayState);
+  const coreReturnEnabled = coreReturnOverride !== null ? Boolean(coreReturnOverride) : Boolean(state.coreReturnEnabled);
+  const eligibleItems = state.items.filter((item) => {
+    const token = `${item.id} ${item.skuId} ${item.atomicCode} ${item.nameEs} ${item.nameEn}`.toUpperCase();
+    return (
+      token.includes('DAM005') ||
+      token.includes('SMAT-PUMP-BRG-005M') ||
+      token.includes('SMAT-PUMP-LINERS-AH') ||
+      token.includes('SMAT-FLOT-MECH-18SP') ||
+      token.includes('SMAT-LAB-MARCY-1000') ||
+      token.includes('CARTUCHO') ||
+      token.includes('BEARING') ||
+      token.includes('RODAMIENTO')
+    );
+  });
+
+  const eligible = eligibleItems.length > 0 || state.items.length === 0;
+  const discountPct = eligible && coreReturnEnabled ? 22 : 0;
+  const creditFactor = Number((1.0 - discountPct / 100.0).toFixed(2));
+
+  return {
+    eligible,
+    coreReturnEnabled,
+    discountPct,
+    creditFactor,
+    eligibleItemIds: eligibleItems.map((i) => i.id),
+    housingMaterial: 'Hierro Dúctil GGG40 + Eje SAE 4140 Bonificado (ISO 281)',
+    inspectionGateEs: 'Bonificación -22% aplicable al entregar casco usado (tambor GGG40 sin fisuras y alojamientos dentro de tolerancia H7) en Almacén Durango (INV-SMAT-SCI-06).',
+    inspectionGateEn: '22% Core Trade-In credit applied upon returning crack-free GGG40 housing barrel within H7 bore concentricity at Durango Warehouse (INV-SMAT-SCI-06).'
+  };
+}
+
+/**
+ * Lente Simétrica Bidireccional (Hofmann et al., POPL 2011; Foster et al., 2007)
+ * que sincroniza la bandeja B2B (`smat_requisition_tray_v3`) con el estado canónico
+ * del Workbench (`smat_workbench_state_v2`) garantizando las leyes GetPut y PutGet.
+ *
+ * @param {any} [trayState={}]
+ * @param {any} [baseWorkbenchState=null]
+ * @returns {any}
+ */
+export function syncTrayToWorkbenchStateLens(trayState = {}, baseWorkbenchState = null) {
+  const state = getTrayState(trayState);
+  const currentWb = baseWorkbenchState || loadWorkbenchSession() || {};
+  const leadItem = state.items[0] || null;
+  const tradeIn = evaluateBearingCartridgeCoreTradeIn(state, state.coreReturnEnabled);
+
+  const skuSummary = state.items.map((i) => `${i.id}x${i.qty}`).join(', ');
+  const patch = {
+    trayItemsCount: state.items.reduce((acc, i) => acc + (Number(i.qty) || 1), 0),
+    traySkuSummary: skuSummary,
+    coreTradeInEnabled: tradeIn.coreReturnEnabled,
+    coreTradeInDiscountPct: tradeIn.discountPct
+  };
+
+  if (leadItem) {
+    if (leadItem.circuit) patch.circuit = leadItem.circuit;
+    if (leadItem.material) patch.pump_material = leadItem.material;
+    patch.clientRef = skuSummary;
+  }
+
+  const nextWb = workbenchStateLens.put(currentWb, patch);
+  saveWorkbenchSession(nextWb);
+  return nextWb;
+}
+

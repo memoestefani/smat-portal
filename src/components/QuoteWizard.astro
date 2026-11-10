@@ -239,7 +239,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
               <label class="intent-btn" id="btn-intent-capex">
                 <input type="radio" name="intent" value="capex_proyecto" />
                 <span class="intent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
-                <div class="intent-info"><strong>{isEs ? 'Equipos Completos / Circuito' : 'Complete Equipment / Circuit Package'}</strong><small>{isEs ? 'Bombas en skid con motor, celdas o filtros prensa' : 'Skid pumps with motor, cells or filter presses'}</small></div>
+                <div class="intent-info"><strong>{isEs ? 'Equipos Completos / Circuito' : 'Complete Equipment / Circuit Package'}</strong><small>{isEs ? 'Bombas con motor, mecanismos de flotación o filtros prensa' : 'Pumps with motor, flotation mechanisms or filter presses'}</small></div>
               </label>
             </div>
 
@@ -249,8 +249,8 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
                 <small>{isEs ? 'Puede marcar varias opciones para recibir una cotización consolidada.' : 'Check all items you need quoted as a consolidated package.'}</small>
               </div>
               <div class="package-bundle-grid">
-                <label class="package-check-label"><input type="checkbox" name="pkg_item" value="bomba_skid" checked /><span>{isEs ? 'Bomba para Lodos en Skid con Motor' : 'Slurry Pump Skid with Motor'}</span></label>
-                <label class="package-check-label"><input type="checkbox" name="pkg_item" value="celdas_flotacion" /><span>{isEs ? 'Batería de Celdas de Flotación' : 'Flotation Cell Bank'}</span></label>
+                <label class="package-check-label"><input type="checkbox" name="pkg_item" value="bomba_skid" checked /><span>{isEs ? 'Bomba para Lodos sobre Base Estructural con Motor' : 'Slurry Pump on Base Frame with Motor'}</span></label>
+                <label class="package-check-label"><input type="checkbox" name="pkg_item" value="celdas_flotacion" /><span>{isEs ? 'Batería de Mecanismos de Flotación' : 'Flotation Mechanism Bank'}</span></label>
                 <label class="package-check-label"><input type="checkbox" name="pkg_item" value="filtro_prensa" /><span>{isEs ? 'Filtro Prensa para Jales Secos' : 'Filter Press for Dry Tailings'}</span></label>
                 <label class="package-check-label"><input type="checkbox" name="pkg_item" value="refacciones_inicio" /><span>{isEs ? 'Paquete Inicial de Refacciones A05' : 'Initial A05 Wear Spares Pack'}</span></label>
               </div>
@@ -290,11 +290,11 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
                 </select>
               </div>
               <div>
-                <label for="wb-drive-arrangement"><strong>{isEs ? 'Arreglo de Transmisión (Skid):' : 'Skid Drive Arrangement:'}</strong></label>
+                <label for="wb-drive-arrangement"><strong>{isEs ? 'Arreglo de Transmisión (Base Estructural):' : 'Base Frame Drive Arrangement:'}</strong></label>
                 <select id="wb-drive-arrangement" name="drive_arrangement" class="wb-select" data-wb-bind="drive_arrangement">
                   <option value="CV" selected>{isEs ? 'Arreglo CV (Motor Superior sobre Bastidor)' : 'CV Arrangement (Overhead Motor)'}</option>
                   <option value="ZVZ">{isEs ? 'Arreglo ZVZ (Motor Trasero Elevado)' : 'ZVZ Arrangement (Elevated Rear Motor)'}</option>
-                  <option value="CRZ">{isEs ? 'Arreglo CRZ (Motor Lateral Paralelo en Skid)' : 'CRZ Arrangement (Side-by-Side on Skid)'}</option>
+                  <option value="CRZ">{isEs ? 'Arreglo CRZ (Motor Lateral Paralelo en Base)' : 'CRZ Arrangement (Side-by-Side on Base Frame)'}</option>
                   <option value="DC">{isEs ? 'Arreglo DC (Acoplamiento Directo Inline)' : 'DC Arrangement (Direct Inline Coupling)'}</option>
                 </select>
               </div>

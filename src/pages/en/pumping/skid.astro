@@ -97,7 +97,7 @@ const dc = skidRole?.decision_criteria;
 
       <!-- SKID DRIVE ARRANGEMENTS (DECISION 5-C+ • DON MANUEL REF 3 & 5) -->
       <div id="drive-arrangements" style="margin-top: 2.5rem;">
-        <h2>Skid Drive & Mounting Arrangements (CV / ZVZ / CRZ / DC)</h2>
+        <h2>Base Frame Drive & Mounting Arrangements (CV / ZVZ / CRZ / DC)</h2>
         <p style="color: var(--smat-text-secondary); max-width: 760px;">
           Select the drive arrangement matched to your plant floor footprint and target ISO 281 L₁₀h <strong>Bearing Assembly</strong> life:
         </p>
@@ -111,7 +111,7 @@ const dc = skidRole?.decision_criteria;
               <small style="display:block; margin-bottom:0.65rem; font-family:var(--smat-font-mono); font-size:0.74rem; color:#082f49; font-weight:700;" data-kin-flood>
                 Footprint: {arr.footprintFactor.toFixed(2)}× • Sump Flood: {Boolean(arr.sumpFloodImmunity) ? 'Elevated Motor (Splash Immune)' : 'Baseplate level / Sump drainage'}
               </small>
-              <a href={`/en/quote/?equipo=skid_bomba&transmision=${arr.code}#rfq`} class="btn btn-primary">Quote {arr.code} Arrangement Skid →</a>
+              <a href={`/en/quote/?equipo=skid_bomba&transmision=${arr.code}#rfq`} class="btn btn-primary">Quote {arr.code} Arrangement Pump →</a>
             </div>
           ))}
         </div>
@@ -133,7 +133,7 @@ const dc = skidRole?.decision_criteria;
                 <select data-kin-arrangement>
                   <option value="CV" selected>CV — Overhead Piggyback Motor</option>
                   <option value="ZVZ">ZVZ — Elevated Rear Motor</option>
-                  <option value="CRZ">CRZ — Side-by-Side Skid Motor</option>
+                  <option value="CRZ">CRZ — Side-by-Side Base Motor</option>
                   <option value="DC">DC — Direct Inline Coupling (Fr = 0 kN)</option>
                 </select>
               </label>
@@ -207,7 +207,7 @@ const dc = skidRole?.decision_criteria;
                   data-kin-cta
                   data-quote-base="/en/quote/"
                 >
-                  Quote Skid with this Kinematics →
+                  Quote Pump with this Kinematics →
                 </a>
               </div>
             </div>
@@ -232,7 +232,7 @@ const dc = skidRole?.decision_criteria;
 
       <SharePurchasing
         roleTitle="Horizontal Centrifugal Slurry Pump"
-        series="1.5x1 to 14x12 (4x3 C, 6x4 D, 8x6 E, 10x8 F)"
+        series="1.5x1 to 14x12 (4x3, 6x4, 8x6, 10x8)"
         metallurgy="Wet-End Parts in High Chrome 27% (A05), Rubber & Polyurethane"
         specs="Heavy-duty horizontal slurry pump with complete Bearing Assembly / Housing and dry centrifugal expeller sealing."
         roleId="skid_bomba"

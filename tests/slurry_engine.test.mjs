@@ -83,7 +83,7 @@ test('6. Verificación de Diagnósticos de Fallas Mecánicas (Decisión 1-A)', (
   assert.ok(MECHANICAL_DIAGNOSTICS.bearing_vibration, 'Diagnóstico de vibración presente');
   assert.ok(MECHANICAL_DIAGNOSTICS.packing_leak, 'Diagnóstico de fuga de empaque presente');
   
-  assert.ok(MECHANICAL_DIAGNOSTICS.bearing_vibration.actionEs.includes('balanceo dinámico'), 'Debe incluir directiva de balanceo dinámico');
+  assert.ok(MECHANICAL_DIAGNOSTICS.bearing_vibration.actionEs.includes('Drop-In 1:1'), 'Debe incluir directiva de ajuste dimensional Drop-In 1:1');
 });
 
 test('7. Corrección por Altitud Minera y Derating de Motor (Decisión 5-A)', async () => {
@@ -590,7 +590,7 @@ test('SLICE-16: Balance de Masa de Hidrociclón por 3 Vasos Marcy, Plitt d50c, R
   });
   assert.equal(ropingCyc.isRopingCritical, true);
   assert.equal(ropingCyc.dischargeRegime, 'ROPING_CORDON');
-  assert.equal(ropingCyc.recommendedSkuId, 'SKU-QC-11');
+  assert.equal(ropingCyc.recommendedSkuId, 'SMAT-CYC-D6-D20');
 
   // 3) Deflexión de placas de filtro prensa (Timoshenko) y cumplimiento NOM-141
   const safePlate = evaluateFilterPressPlateDeflection({
@@ -602,8 +602,8 @@ test('SLICE-16: Balance de Masa de Hidrociclón por 3 Vasos Marcy, Plitt d50c, R
   });
   assert.equal(safePlate.isPlateCrackingRisk, false);
   assert.equal(safePlate.nom141Compliant, true);
-  assert.equal(safePlate.recommendedClothSkuId, 'SKU-QC-17');
-  assert.equal(safePlate.recommendedPlateSkuId, 'SKU-QC-18');
+  assert.equal(safePlate.recommendedClothSkuId, 'SMAT-FILT-CLOTH-PLATE');
+  assert.equal(safePlate.recommendedPlateSkuId, 'SMAT-FILT-SHIFTER-CHAIN');
 
   const cloggedPlate = evaluateFilterPressPlateDeflection({
     feedPressureBar: 16,

@@ -7,14 +7,40 @@ import { getAtomicPartSpecs } from '../../../scripts/workbenchBus.js';
 import atomicParts from '../../../../data/atomic_parts.json';
 
 export function getStaticPaths() {
-  return atomicParts.map((part) => ({
+  const basePaths = atomicParts.map((part) => ({
     params: { code: part.code },
-    props: { part }
+    props: { part, routeSlug: part.code, altEsSlug: part.code }
   }));
+
+  const findPart = (num: string) => atomicParts.find((p) => p.part_number === num) || atomicParts[0];
+  const descriptiveAliases = [
+    { slugEs: 'impulsor-5-alabes', slugEn: '5-vane-impeller', part: findPart('E4147') },
+    { slugEs: 'cuello-succion', slugEn: 'suction-throatbush', part: findPart('E4083') },
+    { slugEs: 'voluta-revestimiento', slugEn: 'volute-liner', part: { ...findPart('E4083'), name_es: 'Revestimiento de Voluta Bipartida (6x4" — A05)', name_en: 'Split Volute Casing Liner (6x4" — A05)', type_es: 'Revestimiento de Voluta en Contacto Húmedo (Lote 5:5:4)', type_en: 'Wet-End Volute Liner (5:5:4 Lot)' } },
+    { slugEs: 'expulsor-centrifugo', slugEn: 'centrifugal-expeller', part: findPart('EAM028') },
+    { slugEs: 'cartucho-rodamientos', slugEn: 'bearing-assembly-cartridge', part: { ...findPart('DAM028'), name_es: 'Cartucho de Rodamientos Completo (Bearing Assembly 6x4")', name_en: 'Complete Bearing Assembly Cartridge (6x4")', type_es: 'Conjunto Motriz Ensamblado (Estación 01)', type_en: 'Complete Assembled Drive Cartridge (Station 01)' } }
+  ];
+
+  const aliasPaths = descriptiveAliases.map((a) => ({
+    params: { code: a.slugEn },
+    props: { part: a.part, routeSlug: a.slugEn, altEsSlug: a.slugEs }
+  }));
+
+  return [...basePaths, ...aliasPaths];
 }
 
-const { part } = Astro.props;
+const { part, routeSlug, altEsSlug } = Astro.props;
 const fullSpec: any = getAtomicPartSpecs(part.part_number, (part as any).pipe_size || '6x4') || part;
+const sanitizeOemFrameText = (str: string) =>
+  String(str || '')
+    .replace(/4\/3\s*C/gi, '4x3')
+    .replace(/6\/4\s*D/gi, '6x4')
+    .replace(/8\/6\s*E/gi, '8x6')
+    .replace(/\b[CDE][- ]frame\b/gi, 'standard frame');
+const cleanNameEn = sanitizeOemFrameText(part.name_en);
+const cleanSummaryEn = sanitizeOemFrameText(part.summary_en);
+const cleanCircuitEn = sanitizeOemFrameText(part.circuit_en);
+const pipeSizeUpper = String(fullSpec.pipe_size || '6x4').toUpperCase();
 const nioshModeLabelEn = fullSpec.niosh_ergonomic_tier === 'MANUAL_1P_SAFE'
   ? `1-Operator Manual Safe (${fullSpec.niosh_handling_mode} • LI=${fullSpec.niosh_lifting_index_shaft})`
   : (fullSpec.niosh_ergonomic_tier === 'ASSISTED_SHAFT_MOUNT_2P'
@@ -22,21 +48,21 @@ const nioshModeLabelEn = fullSpec.niosh_ergonomic_tier === 'MANUAL_1P_SAFE'
     : `Hoist / Crane Mandatory (${fullSpec.niosh_handling_mode} • LI=${fullSpec.niosh_lifting_index_shaft} ≥ 23 kg)`);
 const rfqDeepLink = `/en/quote/?codigo=${part.part_number}&circuito=bombeo&equipo=${fullSpec.role || 'impulsor'}&serie=${fullSpec.pipe_size || '6x4'}&peso_kg=${fullSpec.weight_kg}&estacion=S${fullSpec.station_number}#rfq`;
 const siteUrl = 'https://smatminerals.com';
-const canonicalPath = `/en/catalog/${part.code}/`;
-const alternateEsPath = `/catalogo/${part.code}/`;
+const canonicalPath = `/en/catalog/${routeSlug || part.code}/`;
+const alternateEsPath = `/catalogo/${altEsSlug || part.code}/`;
 
-const title = `${part.part_number} — ${part.name_en} | SMAT Minerals`;
-const description = `Spare part ${part.part_number}: ${part.type_en} for ${part.frame} frame in ${part.metallurgy} alloy with ${part.hardness} hardness. Verified direct dispatch from Durango Central Warehouse.`;
+const title = `${part.part_number} — ${cleanNameEn} | SMAT Minerals`;
+const description = `Spare part ${part.part_number}: ${part.type_en} for Standard Frame (${pipeSizeUpper}) in ${part.metallurgy} alloy with ${part.hardness} hardness. Verified direct dispatch from Durango Central Warehouse.`;
 
-const waText = encodeURIComponent(`Hello SMAT Minerals, I require quotation and stock availability at Durango Central Warehouse for part ${part.part_number} (Frame ${part.frame}).`);
+const waText = encodeURIComponent(`Hello SMAT Minerals, I require quotation and stock availability at Durango Central Warehouse for part ${part.part_number} (Standard Frame ${pipeSizeUpper}).`);
 const waUrl = `https://wa.me/526183670664?text=${waText}`;
 
 const productSchema = {
   "@context": "https://schema.org",
   "@type": "Product",
-  "name": `${part.part_number} — ${part.name_en}`,
+  "name": `${part.part_number} — ${cleanNameEn}`,
   "image": `${siteUrl}/images/og-card.jpg`,
-  "description": part.summary_en,
+  "description": cleanSummaryEn,
   "sku": part.part_number,
   "mpn": part.part_number,
   "brand": {
@@ -84,11 +110,11 @@ const productSchema = {
           <div class="spec-header">
             <span class="part-badge">UNIVERSAL STANDARD SPARE</span>
             <h1 class="part-title">{part.part_number}</h1>
-            <p class="part-subtitle">{part.name_en}</p>
+            <p class="part-subtitle">{cleanNameEn}</p>
           </div>
 
           <div class="spec-body">
-            <p class="part-lead">{part.summary_en}</p>
+            <p class="part-lead">{cleanSummaryEn}</p>
 
             <!-- 3 Semantic Physical Engineering Cards (Miller's Law ≤ 3 metrics per card) -->
             <div class="atomic-engineering-cards" data-testid="atomic-engineering-cards" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:0.85rem; margin-bottom:1.75rem;">
@@ -101,10 +127,10 @@ const productSchema = {
               <div class="atomic-eng-card" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:0.9rem;">
                 <span class="font-mono-tech" style="font-size:0.7rem; font-weight:800; color:#0c4a6e; display:block; margin-bottom:0.35rem;">[2. HYDRAULIC GEOMETRY]</span>
                 <div style="font-size:1.15rem; font-weight:800; color:#0f172a;" data-testid="spec-impeller-dia">
-                  {fullSpec.impeller_diameter_mm ? `∅D₂ = ${fullSpec.impeller_diameter_mm} mm` : `Series ${String(fullSpec.pipe_size || '6x4').toUpperCase()} (Frame ${part.frame})`}
+                  {fullSpec.impeller_diameter_mm ? `∅D₂ = ${fullSpec.impeller_diameter_mm} mm` : `Series ${pipeSizeUpper} (Standard Frame ${pipeSizeUpper})`}
                 </div>
                 <div style="font-size:0.78rem; color:#334155; margin-top:0.2rem;" data-testid="spec-max-particle">
-                  {fullSpec.max_particle_mm ? `Max sphere passage: ${fullSpec.max_particle_mm} mm` : `Direct shaft / seal fit series ${String(fullSpec.pipe_size || '6x4').toUpperCase()}`}
+                  {fullSpec.max_particle_mm ? `Max sphere passage: ${fullSpec.max_particle_mm} mm` : `Direct shaft / seal fit series ${pipeSizeUpper}`}
                 </div>
                 <div class="font-mono-tech" style="font-size:0.72rem; color:#475569; margin-top:0.2rem;">SMAT Code: <strong>{fullSpec.smat_code}</strong></div>
               </div>
@@ -125,7 +151,7 @@ const productSchema = {
                   </tr>
                   <tr>
                     <th>Compatible Frame & Pipe Series:</th>
-                    <td>Slurry pump frame {part.frame} (Series {String(fullSpec.pipe_size || '6x4').toUpperCase()})</td>
+                    <td>Slurry pump Standard Frame ({pipeSizeUpper})</td>
                   </tr>
                   <tr>
                     <th>Component Type:</th>
@@ -171,7 +197,7 @@ const productSchema = {
                   )}
                   <tr>
                     <th>Critical Application:</th>
-                    <td>{part.circuit_en}</td>
+                    <td>{cleanCircuitEn}</td>
                   </tr>
                   <tr>
                     <th>Assembly Guarantee:</th>
@@ -191,7 +217,7 @@ const productSchema = {
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 11 12 14 22 4"/></svg>
               </div>
               <div class="assurance-text">
-                <h3>1:1 Dimensional Fit & Dynamic Balance Assurance</h3>
+                <h3>1:1 Dimensional Fit Assurance (ISO 2768-m)</h3>
                 <p>
                   Every {part.part_number} unit is physically matched against standard frame dimensions before dispatch from our Durango Central Warehouse. We ensure 100% drop-in interchangeability with industry-standard frames. Should a standard replacement part fail to fit your pump casing, it is immediately swapped from our floor stock.
                 </p>

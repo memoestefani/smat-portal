@@ -14,6 +14,9 @@ max_functions_per_file = 35
 max_cognitive_complexity = 25
 
 [surface]
+dom = "src/pages/index.astro"
+client = "src/scripts/workbenchBus.js"
+css = "src/styles/global.css"
 entry_points = [
     "src/pages/index.astro",
     "src/pages/en/index.astro",
@@ -21,6 +24,10 @@ entry_points = [
     "src/pages/en/quote.astro",
     "src/pages/acuse.astro",
     "src/pages/en/thank-you.astro",
+    "src/pages/cumplimiento.astro",
+    "src/pages/en/compliance.astro",
+    "src/pages/garantia.astro",
+    "src/pages/en/warranty.astro",
     "src/pages/catalogo.astro",
     "src/pages/en/catalog.astro",
     "src/pages/catalogo/[code].astro",

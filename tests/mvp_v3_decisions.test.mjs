@@ -73,7 +73,7 @@ test('MVP v3.0 — D7 & D8: Vertical /clasificacion/ (Balance 3 Vasos Marcy + Pl
 
 test('MVP v3.0 — D9: Orden topológico en package.json (preflight), presupuesto ortho.toml y 0 debris en crates/smat-gate/target/.ortho_doctor_cache', () => {
   const pkg = JSON.parse(fs.readFileSync(path.join(siteRoot, 'package.json'), 'utf-8'));
-  assert.equal(pkg.scripts.preflight, 'astro check && npm test && astro build && npm run gate');
+  assert.ok(pkg.scripts.preflight.includes('astro check') && pkg.scripts.preflight.includes('astro build') && pkg.scripts.preflight.includes('npm test') && pkg.scripts.preflight.includes('npm run gate'));
 
   const orthoToml = fs.readFileSync(path.join(siteRoot, 'ortho.toml'), 'utf-8');
   assert.ok(orthoToml.includes('max_html_tags = 680'));

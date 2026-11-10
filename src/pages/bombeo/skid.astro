@@ -97,7 +97,7 @@ const dc = skidRole?.decision_criteria;
 
       <!-- ARREGLOS DE TRANSMISIÓN EN SKID (DECISIÓN 5-C+ • REF 3 Y 5 DON MANUEL) -->
       <div id="arreglos-transmision" style="margin-top: 2.5rem;">
-        <h2>Arreglos de Transmisión y Montaje en Skid (CV / ZVZ / CRZ / DC)</h2>
+        <h2>Arreglos de Transmisión y Montaje en Base Estructural (CV / ZVZ / CRZ / DC)</h2>
         <p style="color: var(--smat-text-secondary); max-width: 760px;">
           Seleccione el arreglo motriz según el espacio disponible en planta y la vida nominal L₁₀h (ISO 281) del <strong>Bearing Assembly</strong>:
         </p>
@@ -111,7 +111,7 @@ const dc = skidRole?.decision_criteria;
               <small style="display:block; margin-bottom:0.65rem; font-family:var(--smat-font-mono); font-size:0.74rem; color:#082f49; font-weight:700;" data-kin-flood>
                 Huella: {arr.footprintFactor.toFixed(2)}× • Inundación: {Boolean(arr.sumpFloodImmunity) ? 'Motor Elevado (Inmune a salpicadura)' : 'Nivel de base / Requiere drenaje'}
               </small>
-              <a href={`/cotizar/?equipo=skid_bomba&transmision=${arr.code}#rfq`} class="btn btn-primary">Cotizar Skid Arreglo {arr.code} →</a>
+              <a href={`/cotizar/?equipo=skid_bomba&transmision=${arr.code}#rfq`} class="btn btn-primary">Cotizar Bomba Arreglo {arr.code} →</a>
             </div>
           ))}
         </div>
@@ -133,7 +133,7 @@ const dc = skidRole?.decision_criteria;
                 <select data-kin-arrangement>
                   <option value="CV" selected>CV — Motor Superior (Overhead)</option>
                   <option value="ZVZ">ZVZ — Motor Trasero Elevado</option>
-                  <option value="CRZ">CRZ — Motor Lateral en Skid</option>
+                  <option value="CRZ">CRZ — Motor Lateral en Base</option>
                   <option value="DC">DC — Acoplamiento Directo (Fr = 0 kN)</option>
                 </select>
               </label>
@@ -207,7 +207,7 @@ const dc = skidRole?.decision_criteria;
                   data-kin-cta
                   data-quote-base="/cotizar/"
                 >
-                  Cotizar Skid con esta Cinemática →
+                  Cotizar Bomba con esta Cinemática →
                 </a>
               </div>
             </div>
@@ -232,7 +232,7 @@ const dc = skidRole?.decision_criteria;
 
       <SharePurchasing
         roleTitle="Bomba Centrífuga Horizontal para Lodos"
-        series="1.5x1 a 14x12 (4x3 C, 6x4 D, 8x6 E, 10x8 F)"
+        series="1.5x1 a 14x12 (4x3, 6x4, 8x6, 10x8)"
         metallurgy="Contacto Húmedo en Alto Cromo 27% (A05), Hule y Poliuretano"
         specs="Bomba horizontal de servicio pesado con Bearing Assembly / Housing completo y sellado centrífugo por expulsor y prensaestopa."
         roleId="skid_bomba"

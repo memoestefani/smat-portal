@@ -36,8 +36,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         <div class="sheet-divider"></div>
 
         <div class="sheet-title-bar">
-          <h2>FORMAL ENGINEERING REQUISITION & QUOTATION RECEIPT</h2>
-          <span class="badge-sla">SAME-DAY SLA • ACTIVE REVIEW</span>
+          <h2 id="dossier-title">FORMAL ENGINEERING REQUISITION & QUOTATION RECEIPT</h2>
+          <span class="badge-sla" id="dossier-order-code">PRIORITY cμ TRIAGE • DURANGO WAREHOUSE FIT CHECK</span>
         </div>
 
         <!-- Applicant & Mine Unit Information Table -->
@@ -110,7 +110,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
                 <th>Requisition Type:</th>
                 <td id="field-type">Wear Spare Part / Operational Continuity</td>
                 <th>Warehouse Inspection:</th>
-                <td>Durango Central Warehouse (Shop Test Bench)</td>
+                <td>Durango Central Warehouse (ISO 2768-m Geometric Triplet A, B, C Fit Check)</td>
               </tr>
             </tbody>
           </table>
@@ -120,11 +120,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         <div class="sheet-section terms-section">
           <h3 class="section-title">3. TECHNICAL PROTOCOL & QUALITY CONTROL AT CENTRAL WAREHOUSE</h3>
           <p class="terms-text">
-            This document certifies formal intake of your procurement requisition under the unique institutional folio. All rotating assemblies, impellers, and pump casings supplied by SMAT Minerals undergo shop dynamic balancing on test bench, High Chrome 27% (A05) melt metallurgy with guaranteed hardness &gt;650 HB, and 1:1 dimensional fit verification at SMAT Durango facilities (Fiscal HQ: Mariano Salas #114).
+            This document certifies formal intake of your procurement requisition under the unique institutional folio. All rotating assemblies, impellers, and pump casings supplied by SMAT Minerals include certified High Chrome 27% (A05) melt metallurgy with guaranteed hardness &gt;650 HB (ASTM A532 HRC &ge; 58), ISO 2768-m geometric triplet (A, B, C) dimensional fit verification, and priority cμ triage at SMAT Durango facilities (Fiscal HQ: Mariano Salas #114).
           </p>
           <div class="coyote-seal-notice facility-guarantee-notice" id="vendor-passport-section">
-            <strong>Central Warehouse Validity &amp; B2B Vendor Passport Clause:</strong> This technical proposal and operational backing are valid for components inspected and dispatched from Durango Central Warehouse (Incoterms EXW / DAP Durango • UNSPSC 40151500 / 20121500 / 40161500 / 41111500 • ASTM A532 Cr27 Melt Cert HRC &ge; 58). Complete equipment packages and skids are built-to-order based on customer slurry variables; common wear parts maintain continuous inventory rotation.
+            <strong>Central Warehouse Validity &amp; B2B Vendor Passport Clause:</strong> This technical proposal and operational backing are valid for components inspected and dispatched from Durango Central Warehouse (Incoterms EXW / DAP Durango • UNSPSC 40151500 / 20121500 / 40161500 / 41111500 • ASTM A532 Cr27 Melt Cert HRC &ge; 58). Complete equipment and coupled packages are built-to-order based on customer slurry variables; common wear parts maintain continuous inventory rotation.
           </div>
+          <pre id="sap-plaintext-block" style="margin: 1rem 0 0; padding: 0.85rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace; font-size: 0.76rem; color: #0f172a; overflow-x: auto; white-space: pre-wrap;">FOLIO: SMAT-2026-RFQ | DETERMINISTIC FNV-1a ORDER</pre>
           <div class="signatures-row">
             <div class="sig-block">
               <span class="sig-line"></span>
@@ -176,6 +177,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       const urlParams = new URLSearchParams(window.location.search);
       let cached = {};
       let wbV2 = {};
+      let trayState = { items: [], coreReturnEnabled: false };
       try {
         const raw = sessionStorage.getItem('smat_last_rfq_payload');
         if (raw) cached = JSON.parse(raw) || {};
@@ -184,6 +186,53 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         const rawV2 = localStorage.getItem('smat_workbench_state_v2') || localStorage.getItem('smat_workbench_session');
         if (rawV2) wbV2 = JSON.parse(rawV2) || {};
       } catch (_e) {}
+      try {
+        const rawTray = localStorage.getItem('smat_requisition_tray_v3');
+        if (rawTray) trayState = JSON.parse(rawTray) || { items: [], coreReturnEnabled: false };
+      } catch (_e) {}
+
+      // Bidirectional PutGet Hydration from ?reorder=1&tray=... or ?sku=... (SLICE-V31-09 · D6 & D9)
+      const trayQueryParam = urlParams.get('tray') || '';
+      const skuQueryParam = urlParams.get('sku') || '';
+      if (trayQueryParam) {
+        const parsedItems = trayQueryParam.split(',').map((s) => s.trim()).filter(Boolean).map((entry) => {
+          const [id, qtyStr, crit] = entry.split(':');
+          return {
+            id: String(id || 'SKU-QC-01').toUpperCase(),
+            skuId: String(id || 'SKU-QC-01').toUpperCase(),
+            qty: Math.max(1, Number(qtyStr) || 1),
+            criticalityMode: crit === 'STOCK_SS' ? 'STOCK_SS' : 'PARO_DE_LINEA'
+          };
+        });
+        if (parsedItems.length > 0) {
+          trayState.items = parsedItems;
+          try {
+            localStorage.setItem('smat_requisition_tray_v3', JSON.stringify(trayState));
+          } catch (_e) {}
+        }
+      } else if (skuQueryParam && (!Array.isArray(trayState.items) || trayState.items.length === 0)) {
+        trayState.items = [{ id: skuQueryParam.toUpperCase(), skuId: skuQueryParam.toUpperCase(), qty: 1, criticalityMode: 'PARO_DE_LINEA' }];
+      }
+
+      const traySummary = Array.isArray(trayState.items) && trayState.items.length > 0
+        ? trayState.items.map((i) => `${i.id}x${i.qty || 1}`).join(', ')
+        : '';
+      if (traySummary) {
+        wbV2.traySkuSummary = traySummary;
+        wbV2.clientRef = wbV2.clientRef || traySummary;
+        try {
+          localStorage.setItem('smat_workbench_state_v2', JSON.stringify(wbV2));
+        } catch (_e) {}
+      }
+
+      const computeFnv1aOrderHash = (seedStr) => {
+        let h = 0x811c9dc5;
+        for (let i = 0; i < seedStr.length; i++) {
+          h ^= seedStr.charCodeAt(i);
+          h = Math.imul(h, 0x01000193) >>> 0;
+        }
+        return 'SMAT-ORD-' + h.toString(16).toUpperCase().padStart(8, '0').slice(0, 6);
+      };
 
       const folio = urlParams.get('folio') || cached.folio || wbV2.folio || 'SMAT-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
       const nombre = urlParams.get('nombre') || urlParams.get('name') || cached.nombre || wbV2.name || 'Plant Engineer / Requisitioner';
@@ -279,10 +328,16 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         if (el) el.textContent = val;
       };
 
-      const fullCode = [codigo, pieza ? `[Part: ${pieza}]` : ''].filter(Boolean).join(' ') || 'SMAT-STD (1:1 Fit)';
+      const fullCode = [codigo, pieza ? `[Part: ${pieza}]` : '', traySummary ? `[Tray: ${traySummary}]` : ''].filter(Boolean).join(' ') || 'SMAT-STD (1:1 Fit)';
+      const orderHashCode = computeFnv1aOrderHash(`${fullCode}|${material}|${transmision}|${estacion}`);
+      setText('dossier-order-code', `${orderHashCode} • PRIORITY cμ TRIAGE DURANGO HUB`);
+      if (traySummary) {
+        setText('dossier-title', `FORMAL ENGINEERING REQUISITION & QUOTATION RECEIPT (${traySummary})`);
+      }
       const fullTcoAndProfile = [
         perfilPulpa ? `Mineral Profile: ${perfilPulpa}` : '',
-        tco ? `Operational Impact: ${tco}` : ''
+        tco ? `Operational Impact: ${tco}` : '',
+        trayState.coreReturnEnabled ? 'Circular Economy Core Trade-In: -22% on DAM005 Cartridge (INV-SMAT-SCI-06)' : ''
       ].filter(Boolean).join(' • ') || 'Operational continuity assessment at Durango Central Warehouse.';
 
       setText('field-name', nombre);
@@ -318,20 +373,22 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       setText('field-tco', fullTcoAndProfile);
       setText('field-type', `${urgencia === 'paro' ? 'Emergency Plant Shutdown' : 'Formal Equipment Requisition / Project'} [${gateClassVal}${trustBoundaryId !== 'NONE' ? ' • ' + trustBoundaryId : ''}]`);
 
+      const sapBlockText = [
+        `FOLIO: ${folio} | ORDER_HASH: ${orderHashCode} | GATE: ${gateClassVal} | BOUNDARY: ${trustBoundaryId}`,
+        `COMPANY: ${empresa} | REQUESTER: ${nombre}`,
+        `EQUIPMENT: ${equipo} (${fullCode})`,
+        `METALLURGY & DRIVE: ${matLabel} | ${transmision} (Sump: ${floodImm}) | ${estacion} (${sealLabel})${nioshLabel}`,
+        `HYDRAULICS & ALTITUDE: ${hidraulica}`,
+        `KINEMATICS: delta=${claroMm}mm (b2=${b2Mm}mm, dEtaV=-${deltaEtaV}%, dvPipe=-${pipeVelLossVal}%), n2=${n2Rpm}RPM, u2=${u2Ms}m/s, Fr=${frKn}kN, C=${capCKn}kN, L10h=${l10h}h${structReason ? ' | ' + structReason : ''}`,
+        `METROLOGY: ${metrologia}`
+      ].join('\n');
+      setText('sap-plaintext-block', sapBlockText);
+
       const copySapBtn = document.getElementById('copy-sap-acuse-btn');
       if (copySapBtn) {
         copySapBtn.onclick = async () => {
-          const sapBlock = [
-            `FOLIO: ${folio} | GATE: ${gateClassVal} | BOUNDARY: ${trustBoundaryId}`,
-            `COMPANY: ${empresa} | REQUESTER: ${nombre}`,
-            `EQUIPMENT: ${equipo} (${fullCode})`,
-            `METALLURGY & DRIVE: ${matLabel} | ${transmision} (Sump: ${floodImm}) | ${estacion} (${sealLabel})${nioshLabel}`,
-            `HYDRAULICS & ALTITUDE: ${hidraulica}`,
-            `KINEMATICS: delta=${claroMm}mm (b2=${b2Mm}mm, dEtaV=-${deltaEtaV}%, dvPipe=-${pipeVelLossVal}%), n2=${n2Rpm}RPM, u2=${u2Ms}m/s, Fr=${frKn}kN, C=${capCKn}kN, L10h=${l10h}h${structReason ? ' | ' + structReason : ''}`,
-            `METROLOGY: ${metrologia}`
-          ].join('\n');
           try {
-            await navigator.clipboard.writeText(sapBlock);
+            await navigator.clipboard.writeText(sapBlockText);
             copySapBtn.textContent = 'SAP Text Copied';
           } catch (_e) {}
         };

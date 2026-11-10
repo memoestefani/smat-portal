@@ -42,7 +42,22 @@ type DiagramKind =
   | 'flotation-cell-assembly'
   | 'pinch-knife-valve'
   | 'filter-press-plate-cloth'
-  | 'marcy-scale-kit';
+  | 'marcy-scale-kit'
+  | 'cyclone_d6_d20'
+  | 'coupled_pump_cyclone'
+  | 'urethane_screen_th48'
+  | 'lab_comminution_pan'
+  | 'filter_plate_shifter'
+  | 'marcy_scale'
+  | 'astm_sieves'
+  | 'impeller_5vane'
+  | 'wet_kit_554'
+  | 'expeller_seal'
+  | 'bearing_cartridge'
+  | 'volute_liner'
+  | 'filter_press'
+  | 'flotation_cell'
+  | 'urethane_screen_panel_305';
 
 interface Props {
   diagram?: DiagramKind | string;
@@ -63,7 +78,7 @@ const DIAGRAM_ALIAS_MAP: Record<string, string> = {
   'bombeo': 'pump',
   'clasificacion': 'cyclone-apex-vortex',
   'desaguado': 'sieves',
-  'urethane_screen_panel_305': 'sieves',
+  'urethane_screen_panel_305': 'urethane_screen_th48',
   'flotacion': 'flotation',
   'impeller-5-vane-d4147a05': 'impeller',
   'throatbush-d4083a05': 'suction_throatbush',
@@ -74,10 +89,20 @@ const DIAGRAM_ALIAS_MAP: Record<string, string> = {
   'bearing-cartridge-d005m': 'bearing',
   'cyclone-liners-kit': 'cyclone-apex-vortex',
   'flotation-cell-assembly': 'flotation',
-  'marcy-scale-kit': 'marcy'
+  'marcy-scale-kit': 'marcy',
+  'marcy_scale': 'marcy',
+  'astm_sieves': 'sieves',
+  'impeller_5vane': 'impeller',
+  'wet_kit_554': 'material_kit_grid',
+  'expeller_seal': 'expeller',
+  'bearing_cartridge': 'bearing',
+  'volute_liner': 'liners',
+  'filter_press': 'filter',
+  'flotation_cell': 'flotation'
 };
 const diagram = (DIAGRAM_ALIAS_MAP[rawDiagram] || rawDiagram) as DiagramKind;
 const isEs = lang === 'es';
+const xrayWearStyle = showXrayOverlay ? '' : 'display: none;';
 ---
 
 <figure class={`tech-diagram-frame ${compact ? 'tech-diagram-compact' : ''}`} role="img" data-diagram-id={rawDiagram} data-resolved-diagram={diagram} aria-label={isEs ? `Diagrama técnico: ${rawDiagram}` : `Technical diagram: ${rawDiagram}`}>
@@ -93,7 +118,7 @@ const isEs = lang === 'es';
       {diagram === 'marcy' && (isEs ? 'INSTRUMENTACIÓN DE PLANTA • BALANZA DE DENSIDAD DE PULPA (MARCY)' : 'PLANT INSTRUMENTATION • PULP DENSITY SCALE (MARCY)')}
       {diagram === 'batch_filter' && (isEs ? 'CONTROL METALÚRGICO • FILTRO DE PRESIÓN BATCH DE LABORATORIO' : 'METALLURGICAL CONTROL • LABORATORY BATCH PRESSURE FILTER')}
       {diagram === 'sieves' && (isEs ? 'GRANULOMETRÍA • TAMICES CERTIFICADOS ASTM E11 / ISO 3310' : 'PARTICLE SIZING • ASTM E11 / ISO 3310 CERTIFIED TEST SIEVES')}
-      {diagram === 'drive_arrangements' && (isEs ? 'CONFIGURACIÓN DE TRANSMISIÓN EN SKID • ARREGLOS CV / ZVZ / CRZ / DC' : 'SKID DRIVE CONFIGURATIONS • CV / ZVZ / CRZ / DC ARRANGEMENTS')}
+      {diagram === 'drive_arrangements' && (isEs ? 'CONFIGURACIÓN DE TRANSMISIÓN EN BASE ESTRUCTURAL • ARREGLOS CV / ZVZ / CRZ / DC' : 'BASE-MOUNTED DRIVE CONFIGURATIONS • CV / ZVZ / CRZ / DC ARRANGEMENTS')}
       {diagram === 'material_kit_grid' && (isEs ? 'COMPARATIVA DE LOTES 5-5-4 • ALTO CROMO (≥650 HB) VS. HULE NATURAL VS. POLIURETANO' : '5-5-4 WET-END KIT COMPARISON • HIGH CHROME (≥650 HB) VS. NATURAL RUBBER VS. POLYURETHANE')}
       {diagram === 'suction_throatbush' && (isEs ? 'GEOMETRÍA DE SUCCIÓN Y CALIBRACIÓN AXIAL • THROATBUSH + IMPULSOR (δ = 0.5–1.0 MM)' : 'SUCTION GEOMETRY & AXIAL CALIBRATION • THROATBUSH + IMPELLER (δ = 0.5–1.0 MM)')}
       {diagram === 'shaft-sleeve-d075c21' && (isEs ? 'CORTE TÉCNICO • CAMISA PROTECTORA DE FLECHA (D075C21 • SELLADO SIN ENTALLA)' : 'TECHNICAL SECTION • SHAFT PROTECTION SLEEVE (D075C21 • ZERO-GROOVE SEAL)')}
@@ -103,6 +128,11 @@ const isEs = lang === 'es';
       {diagram === 'flotation-rotor-stator' && (isEs ? 'HIDRODINÁMICA DE CELDA • ROTOR-ESTATOR DROP-IN (RELACIÓN Dr/Ds)' : 'CELL HYDRODYNAMICS • DROP-IN ROTOR-STATOR (Dr/Ds RATIO)')}
       {diagram === 'pinch-knife-valve' && (isEs ? 'CONTROL DE FLUJO ABRASIVO • VÁLVULA PINCH CON MANGA Y CUCHILLA (KNIFE GATE)' : 'ABRASIVE FLOW CONTROL • SLEEVE PINCH & KNIFE GATE VALVE')}
       {diagram === 'filter-press-plate-cloth' && (isEs ? 'DESHIDRATACIÓN NOM-141 • PLACA DE POLIPROPILENO Y TELA MULTIFILAMENTO' : 'NOM-141 DEWATERING • POLYPROPYLENE PLATE & MULTIFILAMENT CLOTH')}
+      {diagram === 'cyclone_d6_d20' && (isEs ? 'HIDROCICLÓN 5 ZONAS (D6–D20) • CORTE PLITT d50c Y BOQUILLA ÁPEX SiC' : '5-ZONE HYDROCYCLONE (D6–D20) • PLITT d50c CUT & SiC APEX SPIGOT')}
+      {diagram === 'coupled_pump_cyclone' && (isEs ? 'PAQUETE CASADO BOMBA + HIDROCICLÓN • SINCRONIZACIÓN HIDRÁULICA 5:5:4' : 'COUPLED PUMP + HYDROCYCLONE PACKAGE • 5:5:4 HYDRAULIC SYNCHRONIZATION')}
+      {diagram === 'urethane_screen_th48' && (isEs ? 'MALLA FINA URETANO TH48-30 Y MÓDULO 1\'X1\' • ALIVIO CÓNICO 3°–5° (WEIBULL α ≥ 4.2)' : 'TH48-30 FINE URETHANE SCREEN & 1\'X1\' MODULE • 3°–5° RELIEF ANGLE (WEIBULL α ≥ 4.2)')}
+      {diagram === 'lab_comminution_pan' && (isEs ? 'CONMINUCIÓN Y TENTADURA DE LABORATORIO • DISCOS CR27 Y BATEA CON RIFLAS' : 'LABORATORY COMMINUTION & PANNING • CR27 GRINDING DISCS & RIFFLE PAN')}
+      {diagram === 'filter_plate_shifter' && (isEs ? 'CINEMÁTICA CORRE-PLACAS (PLATE SHIFTER) • GATILLO INDEXADOR, PIÑÓN Y CADENA' : 'PLATE SHIFTER KINEMATICS • INDEXING PAWL, SPROCKET & DRIVE CHAIN')}
     </span>
     <span class="tech-diagram-scale" data-iso7810-scale="0.76mm">
       {isEs ? 'CAD 1:1 • REF. TARJETA ISO 7810 (0.76 MM)' : 'CAD 1:1 • ISO 7810 CARD REF (0.76 MM)'}
@@ -190,6 +220,11 @@ const isEs = lang === 'es';
           <text x="545" y="134" fill="#0d78c6">{isEs ? 'ROSCA DE FLECHA' : 'SHAFT THREAD'}</text>
           <text x="315" y="134">{isEs ? 'OJO DE SUCCIÓN' : 'SUCTION EYE'}</text>
         </g>
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <circle cx="185" cy="130" r="90" fill="none" stroke="#dc2626" stroke-width="3" stroke-dasharray="6 4" />
+          <rect x="406" y="42" width="6" height="176" fill="#dc2626" opacity="0.75" />
+          <text x="370" y="28" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">{isEs ? 'RAYOS X 5:5:4 • BORDE DE ATAQUE Y CLARO δ = 0.76 MM' : '5:5:4 X-RAY • LEADING EDGE & δ = 0.76 MM GAP'}</text>
+        </g>
       </svg>
     )}
 
@@ -236,6 +271,11 @@ const isEs = lang === 'es';
         <text x="70" y="28" font-family="SF Mono, monospace" font-size="10.5" font-weight="700" fill="#0f172a">
           {isEs ? 'MATERIALES DISPONIBLES: ALTO CROMO • HULE • POLIURETANO' : 'MATERIALS: HIGH CHROME • RUBBER • POLYURETHANE'}
         </text>
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <rect x="132" y="65" width="6" height="140" fill="#dc2626" opacity="0.8" />
+          <rect x="396" y="42" width="12" height="44" fill="#dc2626" opacity="0.75" />
+          <text x="380" y="28" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">{isEs ? 'RAYOS X 5:5:4 • SELLO AXIAL 0.76 MM Y LENGUA DE VOLUTA' : '5:5:4 X-RAY • 0.76 MM AXIAL SEAL & VOLUTE CUTWATER'}</text>
+        </g>
       </svg>
     )}
 
@@ -284,6 +324,11 @@ const isEs = lang === 'es';
           <text x="380" y="248">{isEs ? 'SOPORTE DE AJUSTE AXIAL' : 'AXIAL ADJUSTMENT LUG'}</text>
           <text x="530" y="102">{isEs ? 'FLECHA LADO MOTOR' : 'DRIVE END SHAFT'}</text>
         </g>
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <rect x="148" y="76" width="8" height="118" fill="#dc2626" opacity="0.8" />
+          <rect x="514" y="76" width="8" height="118" fill="#dc2626" opacity="0.8" />
+          <text x="365" y="28" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">{isEs ? 'RAYOS X • JUEGO AXIAL 0.76 MM Y BARRERA LABERINTO ISO 281' : 'X-RAY • 0.76 MM ENDPLAY & ISO 281 LABYRINTH BARRIER'}</text>
+        </g>
       </svg>
     )}
 
@@ -313,6 +358,11 @@ const isEs = lang === 'es';
           <text x="275" y="45">{isEs ? '2. PRENSAESTOPA Y EMPAQUETADURA' : '2. STUFFING BOX & PACKING'}</text>
           <text x="240" y="215" fill="#c25e00">{isEs ? '3. CAMISA DE FLECHA (SIN SELLO MECÁNICO)' : '3. SHAFT SLEEVE (NO MECHANICAL SEAL)'}</text>
         </g>
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <rect x="240" y="90" width="190" height="5" fill="#dc2626" opacity="0.85" />
+          <rect x="240" y="145" width="190" height="5" fill="#dc2626" opacity="0.85" />
+          <text x="415" y="28" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">{isEs ? 'RAYOS X • FRICCIÓN HVOF D075C21 (≥68 HRC)' : 'X-RAY • D075C21 HVOF WEAR ZONE (≥68 HRC)'}</text>
+        </g>
       </svg>
     )}
 
@@ -341,6 +391,11 @@ const isEs = lang === 'es';
           <text x="378" y="165" fill="#0d78c6">{isEs ? '3. COLUMNA / TUBO DE AIRE' : '3. STANDPIPE / AIR COLUMN'}</text>
           <text x="448" y="225" fill="#c25e00">{isEs ? '4. ROTOR - ESTATOR / IMPULSOR' : '4. ROTOR - STATOR / IMPELLER'}</text>
           <text x="55" y="225">{isEs ? 'CELDAS Y ACONDICIONADORES' : 'CELLS & CONDITIONERS'}</text>
+        </g>
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <rect x="278" y="200" width="8" height="40" fill="#dc2626" opacity="0.85" />
+          <rect x="394" y="200" width="8" height="40" fill="#dc2626" opacity="0.85" />
+          <text x="35" y="45" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">{isEs ? 'RAYOS X • CLARO RADIAL Dr/Ds (Sb ≥ 55 s⁻¹)' : 'X-RAY • Dr/Ds RADIAL GAP (Sb ≥ 55 s⁻¹)'}</text>
         </g>
       </svg>
     )}
@@ -379,6 +434,10 @@ const isEs = lang === 'es';
           <text x="455" y="42" fill="#c25e00">{isEs ? 'CIERRE HIDRÁULICO' : 'HYDRAULIC CLOSURE'}</text>
           <text x="135" y="226">{isEs ? 'POLIPROPILENO VIRGEN COPOLÍMERO + FIELTRO AGUJADO' : 'VIRGIN COPOLYMER POLYPROPYLENE + NEEDLE FELT'}</text>
         </g>
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <line x1="125" y1="130" x2="395" y2="130" stroke="#dc2626" stroke-width="3" stroke-dasharray="5 3" />
+          <text x="405" y="226" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">{isEs ? 'RAYOS X • CUELLO CENTRAL ΔP ≤ 3.5 BAR (TIMOSHENKO)' : 'X-RAY • CENTER PORT ΔP ≤ 3.5 BAR (TIMOSHENKO)'}</text>
+        </g>
       </svg>
     )}
 
@@ -412,6 +471,10 @@ const isEs = lang === 'es';
           <text x="340" y="105" fill="#c25e00">{isEs ? '• % DE SÓLIDOS EN PESO (Cw%)' : '• % SOLIDS BY WEIGHT (Cw%)'}</text>
           <text x="325" y="185">{isEs ? '2. VASO CALIBRADO (1000 cm³)' : '2. CALIBRATED CUP (1000 cm³)'}</text>
           <text x="340" y="205" fill="#475569">{isEs ? '• ACERO INOXIDABLE / ACRÍLICO CON REBOSE' : '• STAINLESS STEEL / ACRYLIC WITH OVERFLOW'}</text>
+        </g>
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <line x1="200" y1="184" x2="280" y2="184" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="4 2" />
+          <text x="325" y="140" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">{isEs ? 'RAYOS X • ENRASE 1000.0 ± 0.5 CM³ Y RESORTE CALIBRADO' : 'X-RAY • 1000.0 ± 0.5 CM³ OVERFLOW WEIR & CALIBRATED SPRING'}</text>
         </g>
       </svg>
     )}
@@ -452,6 +515,11 @@ const isEs = lang === 'es';
           <text x="338" y="172" fill="#b45309">{isEs ? '4. PLATO POROSO + PAPEL / TELA FILTRANTE' : '4. DRAINAGE PLATE + FILTER PAPER / CLOTH'}</text>
           <text x="338" y="212" fill="#475569">{isEs ? '5. BASTIDOR CON BARRAS GUÍA Y DRENAJE INFERIOR' : '5. TWIN GUIDE ROD FRAME & FILTRATE PORT'}</text>
         </g>
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <rect x="174" y="82" width="112" height="4" fill="#dc2626" opacity="0.85" />
+          <rect x="174" y="180" width="112" height="4" fill="#dc2626" opacity="0.85" />
+          <text x="338" y="148" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">{isEs ? 'RAYOS X • SELLO ANULAR O-RING 1.52 MM (100 PSI)' : 'X-RAY • 1.52 MM O-RING SEAL GASKET (100 PSI)'}</text>
+        </g>
       </svg>
     )}
 
@@ -488,6 +556,10 @@ const isEs = lang === 'es';
           <text x="330" y="136" fill="#0d78c6">{isEs ? '4. CORTE P80 DE CONTROL (#200 / 75 MICRONES)' : '4. PRIMARY P80 CONTROL MESH (#200 / 75 MICRONS)'}</text>
           <text x="330" y="170">{isEs ? '5. MALLAS ULTRA-FINAS HASTA #635 (20 MICRONES)' : '5. ULTRA-FINE MESHES DOWN TO #635 (20 MICRONS)'}</text>
           <text x="330" y="206" fill="#475569">{isEs ? '6. CAZUELA COLECTORA + TAMIZADOR MECÁNICO' : '6. RECEIVER PAN + MECHANICAL SIEVE SHAKER'}</text>
+        </g>
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <rect x="138" y="114" width="164" height="34" fill="none" stroke="#dc2626" stroke-width="3" />
+          <text x="330" y="236" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">{isEs ? 'RAYOS X • TENSIÓN ÓPTICA ASTM E11 (#200 = 75 µM)' : 'X-RAY • ASTM E11 OPTICAL TENSION (#200 = 75 µM)'}</text>
         </g>
       </svg>
     )}
@@ -556,7 +628,7 @@ const isEs = lang === 'es';
           <rect x="0" y="0" width="154" height="248" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
           <rect x="8" y="8" width="44" height="20" rx="3" fill="#0d78c6" />
           <text x="30" y="22" text-anchor="middle" font-family="SF Mono, monospace" font-size="10.5" font-weight="800" fill="#ffffff">CRZ</text>
-          <text x="58" y="21" font-family="SF Mono, monospace" font-size="9" font-weight="700" fill="#0f172a">{isEs ? 'LATERAL EN SKID' : 'SIDE-BY-SIDE'}</text>
+          <text x="58" y="21" font-family="SF Mono, monospace" font-size="9" font-weight="700" fill="#0f172a">{isEs ? 'LATERAL PARALELO' : 'SIDE-BY-SIDE'}</text>
           <!-- Vista en planta/isométrica de Skid Ancho -->
           <rect x="14" y="68" width="126" height="122" rx="4" fill="#e2e8f0" stroke="#334155" stroke-width="2" />
           <!-- Tren Bomba (Arriba en plano) -->
@@ -680,6 +752,9 @@ const isEs = lang === 'es';
           <text x="12" y="204" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#0f172a">{isEs ? '• Límite: d₅₀ ≤ 8 mm | v_tip ≤ 30 m/s' : '• Limit: d₅₀ ≤ 8 mm | v_tip ≤ 30 m/s'}</text>
           <text x="12" y="220" font-family="SF Mono, monospace" font-size="8.5" font-weight="700" fill="#475569">{isEs ? '• Rango pH: 1.0 a 12.0 | T ≤ 70 °C' : '• pH Range: 1.0 to 12.0 | T ≤ 70 °C'}</text>
           <text x="12" y="238" font-family="SF Mono, monospace" font-size="8" font-weight="800" fill="#b45309">{isEs ? 'DESPIECE: INTERCAMBIABLE CON HULE' : 'KIT: DROP-IN SWAP WITH RUBBER'}</text>
+        </g>
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <rect x="14" y="264" width="652" height="8" rx="4" fill="#dc2626" opacity="0.85" />
         </g>
       </svg>
     )}
@@ -856,6 +931,121 @@ const isEs = lang === 'es';
           <text x="272" y="112" fill="#d97706">{isEs ? '2. TELA MULTIFILAMENTO CALANDRADA (5–25 CFM)' : '2. CALENDERED MULTIFILAMENT CLOTH (5–25 CFM)'}</text>
           <text x="272" y="132" font-size="9" fill="#475569">{isEs ? '• Desprendimiento limpio de torta <= 16% humedad (NOM-141)' : '• Clean cake release <= 16% moisture (SEMARNAT NOM-141)'}</text>
           <text x="272" y="170" fill="#0284c7">{isEs ? '3. PLACA DE POLIPROPILENO VIRGEN PRENSADO (800–1500 MM)' : '3. PRESSED VIRGIN POLYPROPYLENE PLATE (800–1500 MM)'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'cyclone_d6_d20' && (
+      <svg viewBox="0 0 680 250" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="250" fill="#f8fafc" />
+        <!-- 5 Zonas Hidrociclón D6-D20 -->
+        <rect x="78" y="28" width="164" height="36" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.2" />
+        <rect x="130" y="14" width="60" height="62" fill="#fef3c7" stroke="#d97706" stroke-width="2.2" />
+        <rect x="86" y="64" width="148" height="44" fill="#f1f5f9" stroke="#0284c7" stroke-width="2" />
+        <polygon points="86,108 234,108 206,158 114,158" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" />
+        <polygon points="114,158 206,158 182,198 138,198" fill="#fef3c7" stroke="#d97706" stroke-width="2.2" />
+        <polygon points="138,198 182,198 172,236 148,236" fill="#f1f5f9" stroke="#0f172a" stroke-width="2.2" />
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <polygon points="138,198 182,198 172,236 148,236" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
+        </g>
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="272" y="46" fill="#dc2626">{isEs ? '1. ZONA 5 • BOQUILLA ÁPEX SiC (C_v,u <= 0.52 • ANTI-ROPING)' : '1. ZONE 5 • SiC APEX SPIGOT (C_v,u <= 0.52 • ANTI-ROPING)'}</text>
+          <text x="272" y="66" font-size="9" fill="#475569">{isEs ? '• Carburo de Silicio Sinterizado (2200 HV): mantiene relación du/do' : '• Sintered Silicon Carbide (2200 HV): locks du/do ratio'}</text>
+          <text x="272" y="104" fill="#d97706">{isEs ? '2. ZONAS 1 Y 4 • VORTEX FINDER Do Y CONO INFERIOR PU' : '2. ZONES 1 & 4 • VORTEX FINDER Do & LOWER PU CONE'}</text>
+          <text x="272" y="124" font-size="9" fill="#475569">{isEs ? '• Escalón inter-cono delta_r <= 0.76 mm (1 tarjeta ISO/IEC 7810)' : '• Inter-cone step delta_r <= 0.76 mm (1 ISO/IEC 7810 card)'}</text>
+          <text x="272" y="162" fill="#0284c7">{isEs ? '3. ZONAS 2 Y 3 • CABEZAL INVOLUTA Y CILINDRO (D6 / D10 / D15 / D20)' : '3. ZONES 2 & 3 • INVOLUTE FEED HEAD & CYLINDER (D6–D20)'}</text>
+          <text x="272" y="182" font-size="9" fill="#475569">{isEs ? '• Corte Plitt d50c calibrado con Báscula de 3 Vasos Marcy' : '• Plitt d50c cut calibrated via 3-Cup Marcy mass balance'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'coupled_pump_cyclone' && (
+      <svg viewBox="0 0 680 250" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="250" fill="#f8fafc" />
+        <!-- Bomba de Lodos (Izquierda) -->
+        <rect x="38" y="118" width="96" height="86" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
+        <circle cx="86" cy="161" r="24" fill="#fef3c7" stroke="#d97706" stroke-width="2.2" />
+        <!-- Tubería de alimentación acoplada Delta P -->
+        <path d="M 114 118 L 114 48 L 212 48" fill="none" stroke="#0284c7" stroke-width="5" />
+        <!-- Hidrociclón (Centro) -->
+        <polygon points="186,36 254,36 254,88 232,192 208,192 186,88" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.2" />
+        <polygon points="208,192 232,192 226,228 214,228" fill="#f1f5f9" stroke="#0f172a" stroke-width="2.2" />
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <polygon points="208,192 232,192 226,228 214,228" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
+        </g>
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="284" y="48" fill="#dc2626">{isEs ? '1. PAR ACOPLADO BOMBA + CICLÓN (4x3+D10 | 6x4+D15 | 8x6+D20)' : '1. MARRIED PUMP + CYCLONE PAIR (4x3+D10 | 6x4+D15 | 8x6+D20)'}</text>
+          <text x="284" y="68" font-size="9" fill="#475569">{isEs ? '• Restablece Delta P (8–15 psi) y corte d50c en 1 sola parada' : '• Restores Delta P (8–15 psi) and d50c cut in a single shutdown'}</text>
+          <text x="284" y="106" fill="#d97706">{isEs ? '2. LOTE HÚMEDO 5:5:4 + CLARO AXIAL 0.76 MM (1 TARJETA ISO)' : '2. 5:5:4 WET-END LOT + 0.76 MM AXIAL GAP (1 ISO CARD)'}</text>
+          <text x="284" y="126" font-size="9" fill="#475569">{isEs ? '• Impulsor E4147 + Voluta D3110 + Cuello E4083 + Ápex SiC' : '• E4147 Impeller + D3110 Volute + E4083 Throatbush + SiC Apex'}</text>
+          <text x="284" y="164" fill="#0284c7">{isEs ? '3. CERO CORTOCIRCUITO HIDRÁULICO EN MOLIENDA-CLASIFICACIÓN' : '3. ZERO HYDRAULIC SHORT-CIRCUIT IN GRINDING-CLASSIFICATION'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'urethane_screen_th48' && (
+      <svg viewBox="0 0 680 240" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="240" fill="#f8fafc" />
+        <!-- Panel modular y corte de ranura cónica -->
+        <rect x="44" y="34" width="196" height="172" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.2" />
+        <!-- Ranuras cónicas de alivio 3-5 grados -->
+        <polygon points="72,62 96,62 106,174 62,174" fill="#f1f5f9" stroke="#0f172a" stroke-width="2" />
+        <polygon points="130,62 154,62 164,174 120,174" fill="#f1f5f9" stroke="#0f172a" stroke-width="2" />
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <polygon points="72,62 96,62 106,174 62,174" fill="#fee2e2" stroke="#dc2626" stroke-width="2.2" />
+          <polygon points="130,62 154,62 164,174 120,174" fill="#fee2e2" stroke="#dc2626" stroke-width="2.2" />
+        </g>
+        <rect x="184" y="62" width="38" height="112" rx="4" fill="#fef3c7" stroke="#d97706" stroke-width="2" />
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="268" y="54" fill="#dc2626">{isEs ? '1. RANURA CON ALIVIO CÓNICO 3°–5° (ANTI-CEGAMIENTO NEAR-SIZE)' : '1. 3°–5° TAPERED RELIEF SLOT (ANTI-BLINDING NEAR-SIZE)'}</text>
+          <text x="268" y="74" font-size="9" fill="#475569">{isEs ? '• Nitidez de partición Weibull alpha >= 4.2 en poliuretano 85 Shore A' : '• Weibull partition sharpness alpha >= 4.2 in 85 Shore A urethane'}</text>
+          <text x="268" y="114" fill="#d97706">{isEs ? '2. FIJACIÓN PIN Y CAMISA (1\'X1\' • 305X305 MM) Y TENSADO TH48-30' : '2. PIN & SLEEVE FASTENING (1\'X1\' • 305X305 MM) & TH48-30 DECK'}</text>
+          <text x="268" y="134" font-size="9" fill="#475569">{isEs ? '• Abertura calibrada desde 0.15 mm hasta 0.76 mm (1 tarjeta ISO 7810)' : '• Calibrated slot from 0.15 mm to 0.76 mm (1 ISO 7810 card)'}</text>
+          <text x="268" y="172" fill="#0284c7">{isEs ? '3. ALMA DE ARAMIDA / ACERO ENCAPSULADO CERO ELONGACIÓN' : '3. ZERO-STRETCH ARAMID CORD / ENCAPSULATED STEEL CORE'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'lab_comminution_pan' && (
+      <svg viewBox="0 0 680 240" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="240" fill="#f8fafc" />
+        <!-- Disco de pulverizador Cr27 -->
+        <circle cx="108" cy="120" r="64" fill="#f1f5f9" stroke="#0f172a" stroke-width="2.2" />
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <circle cx="108" cy="120" r="64" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
+        </g>
+        <circle cx="108" cy="120" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="2" />
+        <!-- Batea de tentadura con 3 riflas -->
+        <polygon points="184,74 264,74 244,168 204,168" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.2" />
+        <line x1="194" y1="98" x2="254" y2="98" stroke="#d97706" stroke-width="2.4" />
+        <line x1="198" y1="122" x2="250" y2="122" stroke="#d97706" stroke-width="2.4" />
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="286" y="56" fill="#dc2626">{isEs ? '1. DISCOS DE MOLIENDA Ø 8" EN ALTO CROMO A05 (>= 620 HB)' : '1. Ø 8" HIGH-CHROME A05 GRINDING DISCS (>= 620 HB)'}</text>
+          <text x="286" y="76" font-size="9" fill="#475569">{isEs ? '• Claro entre discos: 0.76 mm (1 tarjeta ISO/IEC 7810) para malla #200' : '• Disc gap: 0.76 mm (1 ISO/IEC 7810 card) for #200 mesh assay'}</text>
+          <text x="286" y="116" fill="#d97706">{isEs ? '2. PLATO DE TENTADURA Ø 14" CON 3 RIFLAS CONCENTRADORAS' : '2. Ø 14" METALLURGICAL PAN WITH 3 CONCENTRATING RIFFLES'}</text>
+          <text x="286" y="136" font-size="9" fill="#475569">{isEs ? '• Control visual inmediato de sulfuros y oro libre en banco de celdas' : '• Instant visual check of sulfides and free gold at flotation bank'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'filter_plate_shifter' && (
+      <svg viewBox="0 0 680 240" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="240" fill="#f8fafc" />
+        <!-- Riel guía y cadena -->
+        <rect x="44" y="148" width="212" height="22" rx="4" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" />
+        <line x1="48" y1="132" x2="252" y2="132" stroke="#0f172a" stroke-width="3" stroke-dasharray="8 4" />
+        <!-- Carro corre-placas y gatillo indexador -->
+        <rect x="96" y="78" width="104" height="64" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="2.2" />
+        <polygon points="126,78 164,44 172,78" fill="#f1f5f9" stroke="#0f172a" stroke-width="2.2" />
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <polygon points="126,78 164,44 172,78" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
+        </g>
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="280" y="54" fill="#dc2626">{isEs ? '1. GATILLO DE ARRASTRE Y TRINQUETE INDEXADOR (52–56 HRC)' : '1. CATCHER PAWL & INDEXING RATCHET (52–56 HRC)'}</text>
+          <text x="280" y="74" font-size="9" fill="#475569">{isEs ? '• Enganche secuencial placa por placa sin impacto excéntrico' : '• Sequential plate-by-plate engagement with zero eccentric shock'}</text>
+          <text x="280" y="114" fill="#d97706">{isEs ? '2. CARRO CORRE-PLACAS Y CADENA DE TRANSMISIÓN PASO ANSI' : '2. PLATE SHIFTER CARRIAGE & ANSI PITCH DRIVE CHAIN'}</text>
+          <text x="280" y="134" font-size="9" fill="#475569">{isEs ? '• Holgura lateral de riel guía: 1.52 mm (2 tarjetas ISO/IEC 7810)' : '• Guide rail lateral clearance: 1.52 mm (2 ISO/IEC 7810 cards)'}</text>
+          <text x="280" y="172" fill="#0284c7">{isEs ? '3. SINCRONIZACIÓN CON PLACAS PP 16 BAR (NOM-141 SEMARNAT)' : '3. SYNCHRONIZED WITH 16 BAR PP PLATES (NOM-141 SEMARNAT)'}</text>
         </g>
       </svg>
     )}

@@ -3,7 +3,20 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TrustMatrix from '../../components/TrustMatrix.astro';
 import TechnicalDiagrams from '../../components/TechnicalDiagrams.astro';
-import quickCatalog from '../../../data/quick_checkout_Catalog.json';
+import ProductQuickCard from '../../components/ProductQuickCard.astro';
+import { getQuickProductsCatalog } from '../../scripts/quickProductsCatalog.js';
+
+const quickCatalog = getQuickProductsCatalog();
+const familyFilterChipsEn = [
+  { id: 'all', label: 'All Families (19)' },
+  { id: 'control', label: '⚖️ Marcy Scale & Lab (6)' },
+  { id: 'tamices', label: '📐 ASTM E11 Sieves & Ro-Tap' },
+  { id: 'bombeo', label: '⚙️ Slurry Pumps & 5:5:4 Lot' },
+  { id: 'sello_potencia', label: '💧 Dry Expeller Seal & 005M Cartridge' },
+  { id: 'clasificacion', label: '🌪️ D6-D20 Hydrocyclones & TH48 Screens' },
+  { id: 'filtracion', label: '🧱 Filter Presses, Cloths & Plate Shifter' },
+  { id: 'flotacion', label: '🫧 #18 SP Flotation' }
+];
 ---
 
 <BaseLayout 
@@ -29,6 +42,21 @@ import quickCatalog from '../../../data/quick_checkout_Catalog.json';
         <a href="/en/classification/" class="btn btn-outline btn-lg">Hydrocyclones & 3-Cup Marcy Balance</a>
         <a href="/en/catalog/" class="btn btn-outline btn-lg">Master Catalog (19 SKUs + 13 Codes)</a>
       </div>
+
+      <!-- 8-Chip Quick Product Family Filter Bar in the Hero (PRD §2.1) -->
+      <div class="hero-family-chip-bar" role="toolbar" aria-label="Quick product family filter" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem;">
+        {familyFilterChipsEn.map((chip, idx) => (
+          <button
+            type="button"
+            data-family-chip={chip.id}
+            aria-pressed={idx === 0 ? 'true' : 'false'}
+            class={`part-chip ${idx === 0 ? 'part-chip--highlight' : ''}`}
+            style="cursor: pointer;"
+          >
+            {chip.label}
+          </button>
+        ))}
+      </div>
     </div>
   </section>
 
@@ -41,56 +69,10 @@ import quickCatalog from '../../../data/quick_checkout_Catalog.json';
       </div>
 
       <div class="showcase-grid">
-        <!-- DOOR 1: PROCESS EQUIPMENT -->
+        <!-- DOOR 1: SLURRY PUMPS & SPARE PARTS (AVENUE 1 · TAM 17.5M–22.0M USD) -->
         <article class="showcase-card">
           <div class="showcase-card-top">
-            <span class="showcase-tag">Door 1 • Projects & Circuits</span>
-            <span class="showcase-series">50–300 ft³ • 16 bar • d50c</span>
-          </div>
-          <h3>Process Equipment</h3>
-          <TechnicalDiagrams diagram="flotation" lang="en" compact={true} />
-          <p class="door-concise-summary">
-            Flotation Mechanisms, Hydrocyclones (Apex/Vortex), Filter Presses (800–1500 mm) & Pump Skids (CV / ZVZ / CRZ / DC).
-          </p>
-          <div class="part-chip-strip" aria-label="Quick selection of Process Equipment">
-            <a href="/en/quote/?equipo=celda_flotacion#rfq" class="part-chip">Flotation Mechanism</a>
-            <a href="/en/classification/" class="part-chip part-chip--highlight">Hydrocyclones (Apex & Vortex)</a>
-            <a href="/en/quote/?equipo=filtro_prensa#rfq" class="part-chip">16-bar Filter Press</a>
-            <a href="/en/quote/?equipo=placas_filtrantes#rfq" class="part-chip">PP Plates & Cloths</a>
-            <a href="/en/quote/?equipo=skid_bomba&transmision=CV#rfq" class="part-chip">Pump Skid (CV/ZVZ/CRZ/DC)</a>
-          </div>
-          <div class="pro-keyspecs-box">
-            <div class="keyspec-row">
-              <span class="ks-label">Flotation:</span>
-              <span class="ks-val">50 to 300 ft³ (Rougher, Cleaner, and Scavenger)</span>
-            </div>
-            <div class="keyspec-row">
-              <span class="ks-label">Classification:</span>
-              <span class="ks-val">
-                <a href="/en/classification/" class="inline-spec-link">Hydrocyclones, SiC/Cr27 Apex & Vortex Finder →</a>
-              </span>
-            </div>
-            <div class="keyspec-row">
-              <span class="ks-label">Filtration:</span>
-              <span class="ks-val">Filter Presses 800 to 1500 mm (16 bar • NOM-141)</span>
-            </div>
-            <div class="keyspec-row">
-              <span class="ks-label">Skid Drives:</span>
-              <span class="ks-val">
-                <a href="/en/pumping/skid/#drive-arrangements" class="inline-spec-link">CV • ZVZ • CRZ • DC Arrangements</a>
-              </span>
-            </div>
-          </div>
-          <div class="showcase-links">
-            <a href="/en/process-equipment/" class="showcase-cta-primary">View Equipment & Diagrams →</a>
-            <a href="/en/quote/?equipo=celda_flotacion#rfq" class="showcase-cta-secondary">Quote Equipment</a>
-          </div>
-        </article>
-
-        <!-- DOOR 2: SLURRY PUMPS & SPARE PARTS -->
-        <article class="showcase-card">
-          <div class="showcase-card-top">
-            <span class="showcase-tag">Door 2 • Operations & Maintenance</span>
+            <span class="showcase-tag">Door 1 • Slurry Pumping & Wear Spares</span>
             <span class="showcase-series">1.5x1" to 14x12" • 13 Codes</span>
           </div>
           <h3>Slurry Pumps & Spare Parts</h3>
@@ -108,6 +90,7 @@ import quickCatalog from '../../../data/quick_checkout_Catalog.json';
             <a href="/en/catalog/D075C21/" class="part-chip part-chip--highlight">Sleeve D075C21</a>
             <a href="/en/quote/?equipo=sello_expulsor&pieza=expeller_sello#rfq" class="part-chip">Dry Expeller</a>
             <a href="/en/quote/?equipo=soporte_rodamiento&pieza=bearing_assembly#rfq" class="part-chip">Bearing Assembly</a>
+            <a href="/en/quote/?equipo=skid_bomba#rfq" class="part-chip">CV/ZVZ Drive Train</a>
           </div>
           <div class="pro-keyspecs-box">
             <div class="keyspec-row">
@@ -131,40 +114,82 @@ import quickCatalog from '../../../data/quick_checkout_Catalog.json';
           </div>
         </article>
 
-        <!-- DOOR 3: PROCESS CONTROL -->
+        <!-- DOOR 2: HYDROCYCLONES, MARRIED PACKAGES & URETHANE SCREENS (AVENUES 2 & 3) -->
         <article class="showcase-card">
           <div class="showcase-card-top">
-            <span class="showcase-tag">Door 3 • Laboratory & Control</span>
-            <span class="showcase-series">SG 2.2–4.4 • ASTM E11</span>
+            <span class="showcase-tag">Door 2 • Classification & Fine Screening</span>
+            <span class="showcase-series">D6–D20 • TH48-30 • 1'x1'</span>
           </div>
-          <h3>Process Control</h3>
-          <TechnicalDiagrams diagram="marcy" lang="en" compact={true} />
+          <h3>Hydrocyclones & Urethane Screens</h3>
+          <TechnicalDiagrams diagram="cyclone_d6_d20" lang="en" compact={true} />
           <p class="door-concise-summary">
-            Marcy Scale (1000 cm³), 3-Cup Hydrocyclone Mass Balance, Lab Batch Filter (60–100 psi) & ASTM E11 Sieves.
+            D6–D20 Hydrocyclones (SiC Apex & Vortex Finder), Married Pump + Cyclone Package & TH48-30 / 1'x1' Urethane Screens.
           </p>
-          <div class="part-chip-strip" aria-label="Quick selection of metallurgical control instruments">
-            <a href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="part-chip">Marcy Scale + 1000 cm³ Cup</a>
-            <a href="/en/classification/#marcy-3cup-workbench" class="part-chip part-chip--highlight">3-Cup Cyclone Balance (Plitt d50c)</a>
-            <a href="/en/quote/?circuito=control_procesos&equipo=filtro_batch_lab#rfq" class="part-chip">Batch Pressure Filter</a>
-            <a href="/en/quote/?circuito=control_procesos&equipo=tamices_astm_e11#rfq" class="part-chip">ASTM E11 Sieves (#200 / 75 µm)</a>
+          <div class="part-chip-strip" aria-label="Quick selection of Classification & Screening">
+            <a href="/en/classification/" class="part-chip part-chip--highlight">D6–D20 Hydrocyclones (Apex & Vortex)</a>
+            <a href="/en/products/coupled-pump-hydrocyclone-package/" class="part-chip part-chip--highlight">Married Pump + Cyclone Package</a>
+            <a href="/en/products/high-frequency-urethane-screens-th48-30/" class="part-chip">TH48-30 Fine Screens</a>
+            <a href="/en/products/modular-polyurethane-screen-panels-1x1/" class="part-chip">1'x1' Polyurethane Modules</a>
+            <a href="/en/classification/#marcy-3cup-workbench" class="part-chip">3-Cup Marcy Balance (Plitt d50c)</a>
           </div>
           <div class="pro-keyspecs-box">
             <div class="keyspec-row">
-              <span class="ks-label">Pulp Density:</span>
-              <span class="ks-val">Marcy Scale (1000 cm³, 12 dial rings)</span>
+              <span class="ks-label">Hydrocyclones:</span>
+              <span class="ks-val">
+                <a href="/en/classification/" class="inline-spec-link">D6, D10, D10B, D15 & D20 Series (5 Zones) →</a>
+              </span>
             </div>
             <div class="keyspec-row">
-              <span class="ks-label">Lab Dewatering:</span>
-              <span class="ks-val">Batch Pressure Filter (60–100 psi)</span>
+              <span class="ks-label">Urethane Screens:</span>
+              <span class="ks-val">TH48-30 Series & 1'x1' Panels (Weibull α ≥ 4.2)</span>
             </div>
             <div class="keyspec-row">
-              <span class="ks-label">Particle Size:</span>
-              <span class="ks-val">ASTM E11 Sieves (5" to #635 Mesh)</span>
+              <span class="ks-label">Hydraulic Pairing:</span>
+              <span class="ks-val">4x3 + D10 • 6x4 + D15 • 8x6 + D20 (10–12 psi)</span>
             </div>
           </div>
           <div class="showcase-links">
-            <a href="/en/process-control/" class="showcase-cta-primary">View Instruments & Diagrams →</a>
-            <a href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="showcase-cta-secondary">Quote Instrument</a>
+            <a href="/en/classification/" class="showcase-cta-primary">View Hydrocyclones & Screens →</a>
+            <a href="/en/products/coupled-pump-hydrocyclone-package/" class="showcase-cta-secondary">Quote Married Package</a>
+          </div>
+        </article>
+
+        <!-- DOOR 3: FLOTATION MECHANISMS, FILTER PRESSES & PROCESS CONTROL (AVENUES 4, 5 & 6A) -->
+        <article class="showcase-card">
+          <div class="showcase-card-top">
+            <span class="showcase-tag">Door 3 • Flotation, Filtration & Lab</span>
+            <span class="showcase-series">50–300 ft³ • 16 bar • SG 2.2–4.4</span>
+          </div>
+          <h3>Flotation Mechanisms, Filter Presses & Control</h3>
+          <TechnicalDiagrams diagram="flotation" lang="en" compact={true} />
+          <p class="door-concise-summary">
+            Suspended Flotation Mechanisms (18 SP, 24, 30), Filter Presses (800–1500 mm, Cloths & Plate Shifter), Marcy Scale & ASTM E11 Sieves.
+          </p>
+          <div class="part-chip-strip" aria-label="Quick selection of Flotation, Filtration & Lab">
+            <a href="/en/quote/?circuito=flotacion&equipo=celda_flotacion#rfq" class="part-chip part-chip--highlight">18 SP / 24 / 30 Flotation Mechanism</a>
+            <a href="/en/quote/?circuito=filtracion&equipo=filtro_prensa#rfq" class="part-chip">PP Plates, Cloths & Plate Shifter (16 bar)</a>
+            <a href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="part-chip part-chip--highlight">Marcy Scale + 1000 cm³ Cup</a>
+            <a href="/en/quote/?circuito=control_procesos&equipo=filtro_batch_lab#rfq" class="part-chip">Batch Pressure Filter (100 psi)</a>
+            <a href="/en/quote/?circuito=control_procesos&equipo=tamices_astm_e11#rfq" class="part-chip">ASTM E11 Sieves & Ro-Tap</a>
+            <a href="/en/process-equipment/" class="part-chip">Process Equipment</a>
+          </div>
+          <div class="pro-keyspecs-box">
+            <div class="keyspec-row">
+              <span class="ks-label">Drop-In Flotation:</span>
+              <span class="ks-val">50 to 300 ft³ • Rougher, Cleaner, and Scavenger (Drop-In Rotor/Diffuser)</span>
+            </div>
+            <div class="keyspec-row">
+              <span class="ks-label">Filter Presses:</span>
+              <span class="ks-val">800 to 1500 mm (16 bar • NOM-141 • Plate Shifter)</span>
+            </div>
+            <div class="keyspec-row">
+              <span class="ks-label">Laboratory:</span>
+              <span class="ks-val">Marcy Scale (1000 cm³), ASTM E11 Sieves & Gold Pan</span>
+            </div>
+          </div>
+          <div class="showcase-links">
+            <a href="/en/process-control/" class="showcase-cta-primary">View Equipment & Lab →</a>
+            <a href="/en/quote/?circuito=control_procesos&equipo=balanza_marcy#rfq" class="showcase-cta-secondary">Quote Equipment</a>
           </div>
         </article>
       </div>
@@ -185,64 +210,98 @@ import quickCatalog from '../../../data/quick_checkout_Catalog.json';
         </div>
       </div>
 
-      <!-- Instant Zero-OEM Drop-In Equivalence Verifier (Anti-Luis • D3) -->
-      <div class="dropin-verifier-box" data-dropin-verifier-en style="margin-bottom: 1.5rem; padding: 1rem 1.25rem; border-radius: 10px; background: #0f172a; color: #f8fafc; border: 1.5px solid #334155;">
-        <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between;">
-          <div>
-            <strong style="font-family: var(--smat-font-mono); font-size: 0.78rem; color: #fbbf24; display: block;">
-              🔎 INSTANT ZERO-OEM DROP-IN GEOMETRIC EQUIVALENCE VERIFIER (ISO 2768-m)
-            </strong>
-            <span style="font-size: 0.82rem; color: #cbd5e1;">
-              Enter the cast code on your current part (e.g. <code>E4147A05</code>, <code>D075C21</code>, <code>E4083</code>, <code>TH48-30</code>):
-            </span>
-          </div>
-          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
-            <input
-              type="text"
-              data-dropin-input-en
-              placeholder="e.g. E4147A05 or D075C21"
-              aria-label="Part code to verify Drop-In equivalence"
-              style="padding: 0.5rem 0.75rem; border-radius: 6px; border: 1px solid #475569; background: #1e293b; color: #fff; font-family: var(--smat-font-mono); font-size: 0.85rem;"
-            />
-            <button
-              type="button"
-              data-dropin-btn-en
-              class="part-chip part-chip--highlight"
-              style="cursor: pointer;"
-            >
-              Verify Triplet (A,B,C) →
-            </button>
-          </div>
+      <!-- Instant Zero-OEM Drop-In Geometric Equivalence Verifier (Anti-Luis • D3 · Solar Light-First) -->
+      <div id="workbench" class="dropin-verifier-box" data-dropin-verifier-en style="margin-bottom: 1.5rem; padding: 1rem 1.25rem; border-radius: 10px; background: #f8fafc; color: #0f172a; border: 1.5px solid #cbd5e1; border-left: 4px solid #7c2d12; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between;">
+        <p style="margin: 0; font-size: 0.82rem; color: #334155;">
+          <strong style="font-family: var(--smat-font-mono); font-size: 0.78rem; color: #7c2d12; display: block;">
+            🔎 INSTANT ZERO-OEM DROP-IN GEOMETRIC EQUIVALENCE VERIFIER (ISO 2768-m)
+          </strong>
+          Enter the cast code on your current part (e.g. <code>E4147A05</code>, <code>D075C21</code>, <code>E4083</code>, <code>TH48-30</code>):
+        </p>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+          <input
+            type="text"
+            data-dropin-input-en
+            placeholder="e.g. E4147A05 or D075C21"
+            aria-label="Part code to verify Drop-In equivalence"
+            style="padding: 0.5rem 0.75rem; border-radius: 6px; border: 1px solid #94a3b8; background: #ffffff; color: #0f172a; font-family: var(--smat-font-mono); font-size: 0.85rem;"
+          />
+          <button
+            type="button"
+            data-dropin-btn-en
+            class="part-chip part-chip--highlight"
+            style="cursor: pointer;"
+          >
+            Verify Triplet (A,B,C) →
+          </button>
         </div>
-        <div data-dropin-result-en style="margin-top: 0.65rem; font-family: var(--smat-font-mono); font-size: 0.78rem; color: #34d399; display: none;"></div>
+        <p data-dropin-result-en style="width: 100%; margin: 0.35rem 0 0; font-family: var(--smat-font-mono); font-size: 0.78rem; color: #065f46; display: none;"></p>
       </div>
 
       <div class="quick-sku-grid">
-        {quickCatalog.map((item) => (
-          <article class="quick-sku-card">
-            <div class="quick-sku-top">
-              <span class="quick-sku-id">{item.id} · {item.stock_regime === 'se_fabrica' ? '🔵 CUSTOM' : item.stock_regime === 'se_pide' ? '🟡 BATCH' : '🟢 IN STOCK'}</span>
-              <span class="quick-sku-atomic">{item.atomic_codes.join(' · ')}</span>
-            </div>
-            <h3 class="quick-sku-title">
-              <a href={`/en/products/${item.slug_en}/`}>{item.title_en}</a>
-            </h3>
-            <p class="quick-sku-scale">
-              <strong>Physical Scale:</strong> {item.everyday_scale_en}
-            </p>
-            <div class="quick-sku-actions">
-              <a href={`/en/products/${item.slug_en}/`} class="part-chip part-chip--highlight">View Sheet & X-Ray →</a>
-              <a href={`/en/quote/?sku=${item.id}&codigo=${item.atomic_codes[0]}#rfq`} class="part-chip">+ RFQ Tray</a>
-            </div>
-          </article>
-        ))}
+        {quickCatalog.map((item) => {
+          const cleanRfqHrefEn = item.atomic_codes.length > 0
+            ? `/en/quote/?sku=${encodeURIComponent(item.id)}&codigo=${encodeURIComponent(item.atomic_codes[0])}#rfq`
+            : `/en/quote/?sku=${encodeURIComponent(item.id)}#rfq`;
+          return (
+            <article
+              class="quick-sku-card"
+              data-sku-family={item.vertical}
+              data-sku-id={item.id}
+            >
+              <div class="quick-sku-top">
+                <span class="quick-sku-id">{item.id} · {item.stock_regime === 'se_fabrica' ? '🔵 CUSTOM' : item.stock_regime === 'se_pide' ? '🟡 BATCH' : '🟢 IN STOCK'}</span>
+                {item.atomic_codes.length > 0 && (
+                  <span class="quick-sku-atomic">{item.atomic_codes.join(' · ')}</span>
+                )}
+              </div>
+              <h3 class="quick-sku-title">
+                <a href={`/en/products/${item.slug_en}/`}>{item.title_en}</a>
+              </h3>
+              <ProductQuickCard sku={item} lang="en" />
+              <div class="quick-sku-actions" style="margin-top: 0.75rem;">
+                <a href={`/en/products/${item.slug_en}/`} class="part-chip part-chip--highlight">View Full Sheet & X-Ray →</a>
+                <a href={cleanRfqHrefEn} class="part-chip">+ RFQ Dossier</a>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </div>
   </section>
 
   <script>
     import { verifyDropInEquivalence } from '../../scripts/dropInEquivalenceGuard.js';
+    function matchesFamilyFilterEn(skuId: string, vertical: string, filterId: string): boolean {
+      if (!filterId || filterId === 'all') return true;
+      if (filterId === 'tamices') return skuId === 'SMAT-LAB-TAMIZ-E11' || skuId === 'SMAT-LAB-ROTAP-MECH';
+      if (filterId === 'sello_potencia') return skuId === 'SMAT-PUMP-EXPELLER-KIT' || skuId === 'SMAT-PUMP-BRG-005M';
+      return vertical === filterId;
+    }
     function bindDropInVerifierEn() {
+      const chips = document.querySelectorAll('[data-family-chip]');
+      const skuCards = document.querySelectorAll('[data-sku-family]');
+      chips.forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const filterId = chip.getAttribute('data-family-chip') || 'all';
+          chips.forEach((c) => {
+            const active = c.getAttribute('data-family-chip') === filterId;
+            c.setAttribute('aria-pressed', active ? 'true' : 'false');
+            c.classList.toggle('part-chip--highlight', active);
+          });
+          skuCards.forEach((card) => {
+            const skuId = card.getAttribute('data-sku-id') || '';
+            const vertical = card.getAttribute('data-sku-family') || '';
+            const visible = matchesFamilyFilterEn(skuId, vertical, filterId);
+            if (card instanceof HTMLElement) {
+              card.style.display = visible ? '' : 'none';
+            }
+          });
+          const catalogSection = document.getElementById('home-quick-checkout-catalog');
+          catalogSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
       const box = document.querySelector('[data-dropin-verifier-en]');
       if (!box) return;
       const input = box.querySelector('[data-dropin-input-en]') as HTMLInputElement | null;
@@ -253,7 +312,7 @@ import quickCatalog from '../../../data/quick_checkout_Catalog.json';
         const res = verifyDropInEquivalence(input.value);
         out.style.display = 'block';
         if (res.matched && res.geometricTripletMm) {
-          out.innerHTML = `✅ DROP-IN MATCH: <strong>${res.smatSkuId}</strong> (${res.titleEn}) | Alloy: <strong>${res.alloyCode}</strong> | ${res.geometricTripletMm.label_en} (${res.toleranceStd}) · <a href="/en/products/${res.slugEn}/" style="color:#fbbf24;text-decoration:underline;">Open Sheet →</a>`;
+          out.innerHTML = `✅ DROP-IN MATCH: <strong>${res.canonicalSkuId}</strong> (${res.titleEn}) | Alloy: <strong>${res.alloyCode}</strong> | ${res.geometricTripletMm.label_en} (${res.toleranceStd}) · <a href="/en/products/${res.slugEn}/" style="color:#b45309;text-decoration:underline;">Open Sheet →</a>`;
         } else {
           out.innerHTML = `ℹ️ ${res.reasonEn}`;
         }
@@ -262,6 +321,12 @@ import quickCatalog from '../../../data/quick_checkout_Catalog.json';
       input?.addEventListener('keydown', (ev) => {
         if (ev.key === 'Enter') run();
       });
+      const params = new URLSearchParams(window.location.search);
+      const urlSku = params.get('sku');
+      if (urlSku && input) {
+        input.value = urlSku;
+        run();
+      }
     }
     bindDropInVerifierEn();
     document.addEventListener('astro:page-load', bindDropInVerifierEn);

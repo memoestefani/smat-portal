@@ -6,7 +6,8 @@
 import {
   PUMP_554_BOM_14_PARTS,
   PUMP_ASSEMBLY_STATIONS,
-  WET_END_MATERIAL_MATRIX
+  WET_END_MATERIAL_MATRIX,
+  evaluateHybridWetEndConfiguration
 } from '../scripts/slurryEngine.js';
 import { formatNioshErgonomicStatus } from '../scripts/workbenchBus.js';
 
@@ -122,6 +123,17 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
           title={isEs ? wetEndMatrixRef.ceramica_sic.idealForEs : wetEndMatrixRef.ceramica_sic.idealForEn}
         >
           {isEs ? `Rama C: ${wetEndMatrixRef.ceramica_sic.nameEs} (δ=0.65 mm)` : `Branch C: ${wetEndMatrixRef.ceramica_sic.nameEn} (δ=0.65 mm)`}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected="false"
+          class="branch-tab"
+          data-assembly-branch-btn="hybrid_a05_r55"
+          data-wet-branch="hybrid_a05_r55"
+          title={isEs ? 'Partición Angular Finnie-Hutchings (INV-SMAT-SCI-05): Impulsor Cr27 A05 (α=75°–90°) + Forros Bipartidos R55 (α≤25°, u2≤24.5 m/s)' : 'Finnie-Hutchings Angular Partition (INV-SMAT-SCI-05): Cr27 A05 Impeller (α=75°–90°) + R55 Split Liners (α≤25°, u2≤24.5 m/s)'}
+        >
+          {isEs ? 'Rama D Híbrida: Impulsor A05 + Forros R55' : 'Branch D Hybrid: A05 Impeller + R55 Liners'}
         </button>
       </div>
 
@@ -674,7 +686,7 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
       buttons.forEach((btn) => {
         btn.addEventListener('click', () => {
           const selectedBranch = btn.getAttribute('data-assembly-branch-btn') || 'all';
-          activeBranch = selectedBranch === 'hule_natural' ? 'rubber' : (selectedBranch === 'ceramica_sic' ? 'ceramica_sic' : 'metal');
+          activeBranch = (selectedBranch === 'hule_natural' || selectedBranch === 'hybrid_a05_r55') ? 'rubber' : (selectedBranch === 'ceramica_sic' ? 'ceramica_sic' : 'metal');
           activeMaterialKey = selectedBranch === 'all' ? 'alto_cromo_cr27' : selectedBranch;
           if (selectedBranch === 'ceramica_sic' && slider) {
             slider.value = '0.65';
@@ -690,7 +702,8 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
             const visible = selectedBranch === 'all'
               || rowBranch === 'common'
               || rowBranch === selectedBranch
-              || (selectedBranch === 'ceramica_sic' && rowBranch === 'alto_cromo_cr27');
+              || (selectedBranch === 'ceramica_sic' && rowBranch === 'alto_cromo_cr27')
+              || (selectedBranch === 'hybrid_a05_r55' && rowBranch === 'hule_natural');
             (row as HTMLElement).style.display = visible ? '' : 'none';
           });
 

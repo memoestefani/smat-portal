@@ -1,0 +1,314 @@
+---
+// src/pages/en/compliance.astro
+// Decision 7-C++: B2B Vendor Onboarding Passport (SAT CFDI 4.0, UNSPSC, EXW/DAP Durango Incoterms, ASTM A532 Certification)
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { buildSmatVendorPassportPayload } from '../../scripts/requisitionTrayBus.js';
+
+const passport = buildSmatVendorPassportPayload();
+---
+
+<BaseLayout
+  title="B2B Vendor Onboarding & Compliance Passport (SAT CFDI 4.0) | SMAT Minerals"
+  description="Fast-Track Mining Vendor Onboarding Dossier (SAP Ariba, Coupa, Oracle): SAT CFDI 4.0 fiscal metadata, UNSPSC codes, EXW/DAP Durango Incoterms, and ASTM A532 certification."
+  lang="en"
+  canonicalPath="/en/compliance/"
+  alternateEsPath="/cumplimiento/"
+  alternateEnPath="/en/compliance/"
+>
+  <main class="compliance-page-main">
+    <div class="container">
+      <div class="compliance-header">
+        <span class="badge badge-copper">FAST-TRACK MINING PROCUREMENT VENDOR DOSSIER · D7 (7-C++)</span>
+        <h1 class="compliance-title">B2B Vendor Onboarding &amp; Compliance Passport (SAT CFDI 4.0)</h1>
+        <p class="compliance-lead">
+          Streamline vendor registration across SAP Ariba, Coupa, and Oracle ERP. Download our corporate vCard (<code>.vcf</code>) or copy the structured JSON payload containing UNSPSC commodity codes, SAT CFDI 4.0 fiscal status, EXW/DAP Durango Warehouse Incoterms, and ASTM A532 foundry heat traceability.
+        </p>
+      </div>
+
+      <section id="compliance-vendor-passport-card" data-vendor-passport="smat-cfdi40" class="compliance-card">
+        <div class="compliance-card-top">
+          <div>
+            <span class="compliance-tag">SCHEMA: {passport.jsonMetadata.schema} · CFDI {passport.jsonMetadata.cfdiVersion}</span>
+            <h2>{passport.companyName}</h2>
+            <p class="compliance-hub">{passport.industrialHub}</p>
+          </div>
+          <div class="compliance-actions">
+            <button type="button" id="btn-download-vendor-vcf" class="btn btn-primary">
+              Download Corporate Contact (.vcf)
+            </button>
+            <button type="button" id="btn-copy-vendor-json" class="btn btn-outline">
+              Copy ERP JSON (SAP / Coupa)
+            </button>
+            <a href="/en/warranty/" class="btn btn-outline">View Warranty Charter →</a>
+          </div>
+        </div>
+
+        <div class="compliance-grid">
+          <div class="compliance-panel">
+            <h3>1. SAT CFDI 4.0 Fiscal Metadata &amp; Compliance</h3>
+            <ul class="compliance-list">
+              <li><strong>Legal Entity:</strong> {passport.companyName}</li>
+              <li><strong>SAT Tax Regime:</strong> {passport.jsonMetadata.satRegimeCode}</li>
+              <li><strong>Tax Compliance Status:</strong> {passport.rfcStatus}</li>
+              <li><strong>Supported CFDI 4.0 Uses:</strong> {passport.jsonMetadata.defaultCfdiUse}</li>
+              <li><strong>Fiscal &amp; Logistics Postal Code:</strong> {passport.jsonMetadata.postalCode} (Durango, DGO, Mexico)</li>
+              <li><strong>Invoicing Currencies:</strong> MXN (Mexican Peso) &amp; USD (US Dollar)</li>
+            </ul>
+          </div>
+
+          <div class="compliance-panel">
+            <h3>2. Incoterms Logistics &amp; Metallurgical Traceability</h3>
+            <ul class="compliance-list">
+              {passport.incoterms.map((inc: string) => (
+                <li><strong>Enabled Incoterm:</strong> {inc}</li>
+              ))}
+              <li><strong>Alloy Certification:</strong> {passport.metallurgyCert}</li>
+              <li><strong>Petty Cash Fast-Lane:</strong> Orders &le; 25,000 MXN eligible for same-day CFDI 4.0 invoice issuance during plant emergencies.</li>
+              <li><strong>Circular Economy Program (-22%):</strong> Core Trade-In credit on Station 01 Bearing Cartridges (DAM005) upon returning GGG40 housing barrel to Durango Warehouse.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="compliance-table-wrap">
+          <h3>3. International UNSPSC Classification for Mining ERP Portals</h3>
+          <table class="compliance-table">
+            <thead>
+              <tr>
+                <th>UNSPSC Code</th>
+                <th>Supply Family (English)</th>
+                <th>Familia de Suministro (Español)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {passport.unspscCodes.map((row: any) => (
+                <tr>
+                  <td><code>{row.code}</code></td>
+                  <td>{row.descriptionEn}</td>
+                  <td>{row.descriptionEs}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="compliance-json-box">
+          <div class="compliance-json-header">
+            <strong>Structured ERP JSON Payload (`buildSmatVendorPassportPayload`)</strong>
+            <span id="vendor-passport-status" class="compliance-status">Ready for ERP import</span>
+          </div>
+          <pre id="vendor-passport-json-pre">{JSON.stringify(passport.jsonMetadata, null, 2)}</pre>
+        </div>
+      </section>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  import { buildSmatVendorPassportPayload } from '../../scripts/requisitionTrayBus.js';
+
+  const vcfBtn = document.getElementById('btn-download-vendor-vcf');
+  const jsonBtn = document.getElementById('btn-copy-vendor-json');
+  const statusEl = document.getElementById('vendor-passport-status');
+
+  if (vcfBtn) {
+    vcfBtn.addEventListener('click', () => {
+      const payload = buildSmatVendorPassportPayload();
+      const blob = new Blob([payload.vcardText], { type: 'text/vcard;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'SMAT_Minerals_Vendor_Durango.vcf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      if (statusEl) statusEl.textContent = '.vcf contact file downloaded';
+    });
+  }
+
+  if (jsonBtn) {
+    jsonBtn.addEventListener('click', async () => {
+      const payload = buildSmatVendorPassportPayload();
+      const text = JSON.stringify(payload.jsonMetadata, null, 2);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+      }
+      if (statusEl) statusEl.textContent = 'Vendor Onboarding JSON copied to clipboard';
+    });
+  }
+</script>
+
+<style>
+  .compliance-page-main {
+    padding: 3.5rem 0 4.5rem;
+    background-color: #fafaf9;
+    color: #0f172a;
+  }
+
+  .compliance-header {
+    max-width: 860px;
+    margin: 0 auto 2.5rem;
+    text-align: center;
+  }
+
+  .compliance-title {
+    font-family: var(--smat-font-editorial);
+    font-size: clamp(1.9rem, 3.3vw, 2.6rem);
+    color: #0f172a;
+    margin: 0.75rem 0;
+  }
+
+  .compliance-lead {
+    font-size: 1.02rem;
+    color: #334155;
+    line-height: 1.6;
+  }
+
+  .compliance-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-top: 4px solid #9a3412;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+  }
+
+  .compliance-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .compliance-tag {
+    display: inline-block;
+    font-family: var(--smat-font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #9a3412;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    margin-bottom: 0.45rem;
+  }
+
+  .compliance-card-top h2 {
+    margin: 0 0 0.35rem;
+    font-size: 1.45rem;
+    color: #0f172a;
+  }
+
+  .compliance-hub {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #475569;
+  }
+
+  .compliance-actions {
+    display: flex;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+  }
+
+  .compliance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .compliance-panel {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  .compliance-panel h3 {
+    margin: 0 0 0.75rem;
+    font-size: 1rem;
+    color: #0f172a;
+  }
+
+  .compliance-list {
+    margin: 0;
+    padding-left: 1.15rem;
+    font-size: 0.88rem;
+    color: #334155;
+    line-height: 1.6;
+  }
+
+  .compliance-list li {
+    margin-bottom: 0.4rem;
+  }
+
+  .compliance-table-wrap {
+    margin-top: 1.5rem;
+    overflow-x: auto;
+  }
+
+  .compliance-table-wrap h3 {
+    font-size: 1rem;
+    color: #0f172a;
+    margin: 0 0 0.75rem;
+  }
+
+  .compliance-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  .compliance-table th,
+  .compliance-table td {
+    padding: 0.7rem 0.85rem;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+  }
+
+  .compliance-table th {
+    background: #f8fafc;
+    color: #0f172a;
+    font-weight: 700;
+  }
+
+  .compliance-json-box {
+    margin-top: 1.5rem;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  .compliance-json-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.6rem;
+    font-size: 0.82rem;
+  }
+
+  .compliance-status {
+    font-family: var(--smat-font-mono);
+    font-size: 0.75rem;
+    color: #14532d;
+    background: #dcfce7;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .compliance-json-box pre {
+    margin: 0;
+    font-family: var(--smat-font-mono);
+    font-size: 0.78rem;
+    color: #0f172a;
+    overflow-x: auto;
+  }
+</style>
+

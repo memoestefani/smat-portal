@@ -99,10 +99,10 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
             <span class="part-fit-badge" id="dossier-part-hardness" data-testid="dossier-part-hardness">{defaultPartSpecs.hardness || '≥ 650 HB (60–62 HRC)'}</span>
           </div>
           <p class="part-details-text" id="live-part-details">
-            {isEs ? 'Verificación dimensional de acople 1:1 en banco de pruebas de almacén central Durango.' : '1:1 dimensional check on test bench at Durango central warehouse.'}
+            {isEs ? 'Verificación dimensional de acople 1:1 en Almacén Central Durango.' : '1:1 dimensional check at Durango Central Warehouse.'}
           </p>
           <p class="part-details-text" id="dossier-part-fit-guarantee" data-testid="dossier-part-fit-guarantee" style="margin-top:0.25rem; font-weight:600; color:#065f46;">
-            {isEs ? (defaultPartSpecs.fit_guarantee_es || 'Cotejo dimensional 1:1 en banco Durango.') : (defaultPartSpecs.fit_guarantee_en || '1:1 dimensional verification at Durango bench.')}
+            {isEs ? (defaultPartSpecs.fit_guarantee_es || 'Cotejo dimensional 1:1 en Almacén Central Durango.') : (defaultPartSpecs.fit_guarantee_en || '1:1 dimensional verification at Durango Central Warehouse.')}
           </p>
           <div id="live-client-ref-box" class="live-client-ref-box hidden">
             <span class="ref-label">{isEs ? 'Referencia Confidencial Cliente:' : 'Client Confidential Ref:'}</span>
@@ -182,7 +182,7 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
         <div class="durango-seal-box" id="durango-seal-box">
           <div class="seal-badge-header">
             <span class="seal-icon">✓</span>
-            <span class="seal-title">{isEs ? 'VERIFICACIÓN METROLÓGICA EN BANCO DURANGO' : 'DURANGO BENCH METROLOGICAL VERIFICATION'}</span>
+            <span class="seal-title">{isEs ? 'VERIFICACIÓN METROLÓGICA EN ALMACÉN CENTRAL DURANGO' : 'DURANGO CENTRAL WAREHOUSE METROLOGICAL VERIFICATION'}</span>
           </div>
           <div class="seal-specs-grid">
             <span class="seal-spec-item font-mono-tech">ISO 1940 Grado G2.5</span>
@@ -191,8 +191,8 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
           </div>
           <p class="seal-address-note" id="live-clause-text">
             {isEs 
-              ? `Garantía de ensamble en banco Durango SMAT. Domicilio fiscal y patio de maniobras: Mariano Salas #114, Durango, Dgo. CP 34166.` 
-              : `SMAT bench assembly warranty. Fiscal HQ & staging yard: Mariano Salas #114, Durango, Mexico ZIP 34166.`}
+              ? `Garantía de acople dimensional 1:1 en Almacén Central Durango SMAT. Domicilio fiscal y patio de maniobras: Mariano Salas #114, Durango, Dgo. CP 34166.` 
+              : `SMAT 1:1 dimensional fit warranty. Fiscal HQ & staging yard: Mariano Salas #114, Durango, Mexico ZIP 34166.`}
           </p>
           <small class="dossier-maneuvers-access-note" style="display:block; margin-top:0.25rem; font-size:0.68rem; color:#334155;">
             {companyData.logistics.maneuvers_access}
@@ -277,8 +277,8 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
             <span class="justification-dot"></span>
             <p id="sap-justification-summary">
               {isEs 
-                ? 'Suministro de refaccionamiento crítico con verificación dimensional 1:1 en banco Durango para evitar interrupciones operativas.' 
-                : 'Critical wear supply with 1:1 dimensional verification at Durango test bench to prevent operational downtime.'}
+                ? 'Suministro de refaccionamiento crítico con verificación dimensional 1:1 en Almacén Central Durango para evitar interrupciones operativas.' 
+                : 'Critical wear supply with 1:1 dimensional verification at Durango Central Warehouse to prevent operational downtime.'}
             </p>
           </div>
           <details class="erp-justification-drawer" id="erp-justification-drawer">
@@ -291,8 +291,8 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
             <div class="sap-justification-box">
               <p id="sap-justification-text">
                 {isEs 
-                  ? 'Suministro de refaccionamiento de desgaste de alta criticidad para circuito de planta. Componente con verificación dimensional de acople 1:1, balanceo dinámico en banco de pruebas y especificación validada en Almacén Central Durango para evitar detenciones no programadas.'
-                  : 'Critical wear replacement part supply for plant mineral processing circuit. Inspected with 1:1 dimensional fit verification, dynamic test bench balancing, and validated specification at Durango Central Warehouse to prevent unscheduled shutdowns.'}
+                  ? 'Suministro de refaccionamiento de desgaste de alta criticidad para circuito de planta. Componente con verificación dimensional de acople 1:1, concentricidad metrológica y especificación validada en Almacén Central Durango para evitar detenciones no programadas.'
+                  : 'Critical wear replacement part supply for plant mineral processing circuit. Inspected with 1:1 dimensional fit verification, metrological concentricity check, and validated specification at Durango Central Warehouse to prevent unscheduled shutdowns.'}
               </p>
             </div>
           </details>
@@ -418,7 +418,7 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
       <div>
         <span class="badge badge-copper">BANCO CENTRAL DURANGO • PROTOCOLO METROLÓGICO</span>
         <h3 class="cotejo-modal-title">{isEs ? 'Ficha de Cotejo Dimensional ANSI 1:1' : '1:1 ANSI Dimensional Verification Sheet'}</h3>
-        <small>{isEs ? 'Verificación milimétrica previa al embarque para eliminar riesgo de desajuste en mina.' : 'Shop test bench verification prior to mine dispatch.'}</small>
+        <small>{isEs ? 'Verificación milimétrica previa al embarque para eliminar riesgo de desajuste en mina.' : 'Warehouse dimensional verification prior to mine dispatch.'}</small>
       </div>
       <button type="button" class="btn-close-drawer" id="btn-close-cotejo">✕</button>
     </div>
@@ -427,7 +427,7 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
       <div class="iso-title-block">
         <div class="iso-cell"><span>{isEs ? 'NORMA:' : 'STANDARD:'}</span> <strong>ANSI B16.5 / ISO 1940</strong></div>
         <div class="iso-cell"><span>{isEs ? 'TOLERANCIA:' : 'TOLERANCE:'}</span> <strong>&lt;0.05 mm (Concentricidad)</strong></div>
-        <div class="iso-cell"><span>{isEs ? 'BANCO:' : 'RIG:'}</span> <strong>Mariano Salas #114, Durango</strong></div>
+        <div class="iso-cell"><span>{isEs ? 'ALMACÉN:' : 'HUB:'}</span> <strong>Mariano Salas #114, Durango</strong></div>
         <div class="iso-cell"><span>{isEs ? 'ESTATUS:' : 'STATUS:'}</span> <strong style="color: #047857;">SUPERADO / CONFORME</strong></div>
       </div>
 
@@ -455,12 +455,12 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
           <strong>Cotejo 1:1 en plantilla de acero antes de embarcar</strong>
         </div>
         <div class="cotejo-spec-row">
-          <span>{isEs ? 'Balanceo Dinámico en Flecha:' : 'Dynamic Balancing on Shaft:'}</span>
+          <span>{isEs ? 'Concentricidad y Tolerancia en Flecha:' : 'Shaft Concentricity & Tolerance:'}</span>
           <strong>ISO 1940 Grado G2.5 (&lt;0.05 mm excentricidad radial)</strong>
         </div>
         <div class="cotejo-spec-row">
           <span>{isEs ? 'Dureza Metalúrgica en Pieza:' : 'Hardness Certification:'}</span>
-          <strong>{isEs ? 'Dureza certificada según severidad de pulpa en banco Durango' : 'Certified hardness per slurry severity at Durango rig'}</strong>
+          <strong>{isEs ? 'Dureza certificada según severidad de pulpa en Almacén Central Durango' : 'Certified hardness per slurry severity at Durango Central Warehouse'}</strong>
         </div>
       </div>
 

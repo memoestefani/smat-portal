@@ -35,7 +35,7 @@ export function calculateUrethaneScreenPartitionWeibull(params = {}) {
     partitionToOversizePct,
     elasticDilationPct,
     antiBlindingCompliant: reliefAngleDeg >= 3.0 && reliefAngleDeg <= 5.5 && sharpnessAlpha >= 4.2,
-    recommendedSkuId: apertureMm <= 1.5 ? 'SKU-QC-13' : 'SKU-QC-09'
+    recommendedSkuId: apertureMm <= 1.5 ? 'SMAT-SCR-TH48-30' : 'SMAT-SCR-MOD-1X1'
   };
 }
 
@@ -65,7 +65,7 @@ export function calculateFlotationGorainKineticRate(params = {}) {
     rateConstantMin,
     gorainCompliant: sbInverseSeconds >= 50.0,
     tipSpeedWindowOptimal: tipSpeedMS >= 6.0 && tipSpeedMS <= 7.8,
-    recommendedSkuId: 'SKU-QC-14'
+    recommendedSkuId: 'SMAT-FLOT-MECH-18SP'
   };
 }
 

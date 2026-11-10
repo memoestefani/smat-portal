@@ -7,14 +7,40 @@ import { getAtomicPartSpecs } from '../../scripts/workbenchBus.js';
 import atomicParts from '../../../data/atomic_parts.json';
 
 export function getStaticPaths() {
-  return atomicParts.map((part) => ({
+  const basePaths = atomicParts.map((part) => ({
     params: { code: part.code },
-    props: { part }
+    props: { part, routeSlug: part.code, altEnSlug: part.code }
   }));
+
+  const findPart = (num: string) => atomicParts.find((p) => p.part_number === num) || atomicParts[0];
+  const descriptiveAliases = [
+    { slugEs: 'impulsor-5-alabes', slugEn: '5-vane-impeller', part: findPart('E4147') },
+    { slugEs: 'cuello-succion', slugEn: 'suction-throatbush', part: findPart('E4083') },
+    { slugEs: 'voluta-revestimiento', slugEn: 'volute-liner', part: { ...findPart('E4083'), name_es: 'Revestimiento de Voluta Bipartida (6x4" — A05)', name_en: 'Split Volute Casing Liner (6x4" — A05)', type_es: 'Revestimiento de Voluta en Contacto Húmedo (Lote 5:5:4)', type_en: 'Wet-End Volute Liner (5:5:4 Lot)' } },
+    { slugEs: 'expulsor-centrifugo', slugEn: 'centrifugal-expeller', part: findPart('EAM028') },
+    { slugEs: 'cartucho-rodamientos', slugEn: 'bearing-assembly-cartridge', part: { ...findPart('DAM028'), name_es: 'Cartucho de Rodamientos Completo (Bearing Assembly 6x4")', name_en: 'Complete Bearing Assembly Cartridge (6x4")', type_es: 'Conjunto Motriz Ensamblado (Estación 01)', type_en: 'Complete Assembled Drive Cartridge (Station 01)' } }
+  ];
+
+  const aliasPaths = descriptiveAliases.map((a) => ({
+    params: { code: a.slugEs },
+    props: { part: a.part, routeSlug: a.slugEs, altEnSlug: a.slugEn }
+  }));
+
+  return [...basePaths, ...aliasPaths];
 }
 
-const { part } = Astro.props;
+const { part, routeSlug, altEnSlug } = Astro.props;
 const fullSpec: any = getAtomicPartSpecs(part.part_number, (part as any).pipe_size || '6x4') || part;
+const sanitizeOemFrameText = (str: string) =>
+  String(str || '')
+    .replace(/4\/3\s*C/gi, '4x3')
+    .replace(/6\/4\s*D/gi, '6x4')
+    .replace(/8\/6\s*E/gi, '8x6')
+    .replace(/\bmarco\s+[CDE]\b/gi, 'bastidor estándar');
+const cleanNameEs = sanitizeOemFrameText(part.name_es);
+const cleanSummaryEs = sanitizeOemFrameText(part.summary_es);
+const cleanCircuitEs = sanitizeOemFrameText(part.circuit_es);
+const pipeSizeUpper = String(fullSpec.pipe_size || '6x4').toUpperCase();
 const nioshModeLabelEs = fullSpec.niosh_ergonomic_tier === 'MANUAL_1P_SAFE'
   ? `Manejo Manual 1 Operador (${fullSpec.niosh_handling_mode} • LI=${fullSpec.niosh_lifting_index_shaft})`
   : (fullSpec.niosh_ergonomic_tier === 'ASSISTED_SHAFT_MOUNT_2P'
@@ -22,21 +48,21 @@ const nioshModeLabelEs = fullSpec.niosh_ergonomic_tier === 'MANUAL_1P_SAFE'
     : `Polipasto / Grúa Obligatorio (${fullSpec.niosh_handling_mode} • LI=${fullSpec.niosh_lifting_index_shaft} ≥ 23 kg)`);
 const rfqDeepLink = `/cotizar/?codigo=${part.part_number}&circuito=bombeo&equipo=${fullSpec.role || 'impulsor'}&serie=${fullSpec.pipe_size || '6x4'}&peso_kg=${fullSpec.weight_kg}&estacion=S${fullSpec.station_number}#rfq`;
 const siteUrl = 'https://smatminerals.com';
-const canonicalPath = `/catalogo/${part.code}/`;
-const alternateEnPath = `/en/catalog/${part.code}/`;
+const canonicalPath = `/catalogo/${routeSlug || part.code}/`;
+const alternateEnPath = `/en/catalog/${altEnSlug || part.code}/`;
 
-const title = `${part.part_number} — ${part.name_es} | SMAT Minerals`;
-const description = `Refacción ${part.part_number}: ${part.type_es} para marco ${part.frame} en aleación ${part.metallurgy} con dureza ${part.hardness}. Despacho verificado desde Almacén Central Durango.`;
+const title = `${part.part_number} — ${cleanNameEs} | SMAT Minerals`;
+const description = `Refacción ${part.part_number}: ${part.type_es} para Bastidor Estándar (${pipeSizeUpper}) en aleación ${part.metallurgy} con dureza ${part.hardness}. Despacho verificado desde Almacén Central Durango.`;
 
-const waText = encodeURIComponent(`Hola SMAT Minerals, requiero cotización y disponibilidad en Almacén Durango de la refacción ${part.part_number} para marco ${part.frame}.`);
+const waText = encodeURIComponent(`Hola SMAT Minerals, requiero cotización y disponibilidad en Almacén Durango de la refacción ${part.part_number} para Bastidor Estándar (${pipeSizeUpper}).`);
 const waUrl = `https://wa.me/526183670664?text=${waText}`;
 
 const productSchema = {
   "@context": "https://schema.org",
   "@type": "Product",
-  "name": `${part.part_number} — ${part.name_es}`,
+  "name": `${part.part_number} — ${cleanNameEs}`,
   "image": `${siteUrl}/images/og-card.jpg`,
-  "description": part.summary_es,
+  "description": cleanSummaryEs,
   "sku": part.part_number,
   "mpn": part.part_number,
   "brand": {
@@ -84,11 +110,11 @@ const productSchema = {
           <div class="spec-header">
             <span class="part-badge">REFACCIÓN ESTÁNDAR UNIVERSAL</span>
             <h1 class="part-title">{part.part_number}</h1>
-            <p class="part-subtitle">{part.name_es}</p>
+            <p class="part-subtitle">{cleanNameEs}</p>
           </div>
 
           <div class="spec-body">
-            <p class="part-lead">{part.summary_es}</p>
+            <p class="part-lead">{cleanSummaryEs}</p>
 
             <!-- 3 Tarjetas Semánticas de Ingeniería Física (Ley de Miller ≤ 3 métricas por grupo) -->
             <div class="atomic-engineering-cards" data-testid="atomic-engineering-cards" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:0.85rem; margin-bottom:1.75rem;">
@@ -101,10 +127,10 @@ const productSchema = {
               <div class="atomic-eng-card" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:0.9rem;">
                 <span class="font-mono-tech" style="font-size:0.7rem; font-weight:800; color:#0c4a6e; display:block; margin-bottom:0.35rem;">[2. GEOMETRÍA HIDRÁULICA]</span>
                 <div style="font-size:1.15rem; font-weight:800; color:#0f172a;" data-testid="spec-impeller-dia">
-                  {fullSpec.impeller_diameter_mm ? `∅D₂ = ${fullSpec.impeller_diameter_mm} mm` : `Serie ${String(fullSpec.pipe_size || '6x4').toUpperCase()} (Marco ${part.frame})`}
+                  {fullSpec.impeller_diameter_mm ? `∅D₂ = ${fullSpec.impeller_diameter_mm} mm` : `Serie ${pipeSizeUpper} (Bastidor Estándar ${pipeSizeUpper})`}
                 </div>
                 <div style="font-size:0.78rem; color:#334155; margin-top:0.2rem;" data-testid="spec-max-particle">
-                  {fullSpec.max_particle_mm ? `Paso máximo de esfera: ${fullSpec.max_particle_mm} mm` : `Acople directo eje / sello serie ${String(fullSpec.pipe_size || '6x4').toUpperCase()}`}
+                  {fullSpec.max_particle_mm ? `Paso máximo de esfera: ${fullSpec.max_particle_mm} mm` : `Acople directo eje / sello serie ${pipeSizeUpper}`}
                 </div>
                 <div class="font-mono-tech" style="font-size:0.72rem; color:#475569; margin-top:0.2rem;">Código SMAT: <strong>{fullSpec.smat_code}</strong></div>
               </div>
@@ -124,8 +150,8 @@ const productSchema = {
                     <td><strong>{part.part_number}</strong> ({fullSpec.smat_code})</td>
                   </tr>
                   <tr>
-                    <th>Marco y Tubería Compatible:</th>
-                    <td>Bomba centrífuga de lodos marco {part.frame} (Serie {String(fullSpec.pipe_size || '6x4').toUpperCase()})</td>
+                    <th>Bastidor y Tubería Compatible:</th>
+                    <td>Bomba centrífuga de lodos Bastidor Estándar ({pipeSizeUpper})</td>
                   </tr>
                   <tr>
                     <th>Tipo de Componente:</th>
@@ -171,7 +197,7 @@ const productSchema = {
                   )}
                   <tr>
                     <th>Aplicación Crítica:</th>
-                    <td>{part.circuit_es}</td>
+                    <td>{cleanCircuitEs}</td>
                   </tr>
                   <tr>
                     <th>Garantía de Ensamble:</th>

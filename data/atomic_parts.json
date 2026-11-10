@@ -22,7 +22,12 @@
     "fit_guarantee_es": "Compatibilidad dimensional 1:1 verificada con patrón físico antes de embarque. Despacho directo desde Almacén Central Durango.",
     "fit_guarantee_en": "1:1 dimensional fit verified against physical pattern before dispatch. Direct shipping from Durango Central Warehouse.",
     "summary_es": "Impulsor cerrado de alta resistencia para bombeo de pulpas abrasivas en bombas 4x3 marco C. Diseñado con álabes traseros de bombeo para aliviar la presión sobre la caja de estopas y prevenir la recirculación de sólidos.",
-    "summary_en": "High-wear closed impeller for severe slurry duty in 4x3 C-frame pumps. Engineered with back pump-out vanes to reduce stuffing box pressure and mitigate solids recirculation."
+    "summary_en": "High-wear closed impeller for severe slurry duty in 4x3 C-frame pumps. Engineered with back pump-out vanes to reduce stuffing box pressure and mitigate solids recirculation.",
+    "physical_stock_durango_units": 18,
+    "unit_replacement_value_mxn": 24500,
+    "physical_audit_date": "2026-11-10",
+    "warehouse_total_mxn": 1646850,
+    "warehouse_total_units": 383
   },
   {
     "code": "e4147",
@@ -35,7 +40,7 @@
     "metallurgy": "High Chrome A05 (27% Cr, ASTM A532 Class III Type A)",
     "hardness": "≥ 650 HB (Brinell) / 58-62 HRC",
     "vanes": 5,
-    "weight_kg": 68.0,
+    "weight_kg": 68,
     "impeller_diameter_mm": 380,
     "max_particle_mm": 45,
     "station_number": 3,
@@ -47,7 +52,12 @@
     "fit_guarantee_es": "Compatibilidad dimensional 1:1 verificada con patrón físico antes de embarque. Despacho directo desde Almacén Central Durango.",
     "fit_guarantee_en": "1:1 dimensional fit verified against physical pattern before dispatch. Direct shipping from Durango Central Warehouse.",
     "summary_es": "Impulsor cerrado para servicio severo en bombas 6x4 marco D. Brinda máximo rendimiento hidráulico en pulpas con alta densidad (45-60% sólidos) y partículas abrasivas de cuarzo.",
-    "summary_en": "Severe-duty closed impeller for 6x4 D-frame pumps. Delivers optimum hydraulic efficiency in dense slurries (45-60% solids) containing highly abrasive silica particles."
+    "summary_en": "Severe-duty closed impeller for 6x4 D-frame pumps. Delivers optimum hydraulic efficiency in dense slurries (45-60% solids) containing highly abrasive silica particles.",
+    "physical_stock_durango_units": 22,
+    "unit_replacement_value_mxn": 38900,
+    "physical_audit_date": "2026-11-10",
+    "warehouse_total_mxn": 1646850,
+    "warehouse_total_units": 383
   },
   {
     "code": "f6147",
@@ -60,7 +70,7 @@
     "metallurgy": "High Chrome A05 (27% Cr, ASTM A532 Class III Type A)",
     "hardness": "≥ 650 HB (Brinell) / 58-62 HRC",
     "vanes": 5,
-    "weight_kg": 142.0,
+    "weight_kg": 142,
     "impeller_diameter_mm": 510,
     "max_particle_mm": 64,
     "station_number": 3,
@@ -72,7 +82,12 @@
     "fit_guarantee_es": "Compatibilidad dimensional 1:1 verificada con patrón físico antes de embarque. Despacho directo desde Almacén Central Durango.",
     "fit_guarantee_en": "1:1 dimensional fit verified against physical pattern before dispatch. Direct shipping from Durango Central Warehouse.",
     "summary_es": "Impulsor de gran porte para bombas 8x6 marco E en concentradoras de alta capacidad. Espesores reforzados en la periferia de álabes para mitigar el desgaste erosivo por impacto directo.",
-    "summary_en": "Heavyweight impeller for 8x6 E-frame pumps in high-throughput concentrators. Reinforced blade profile engineered to withstand severe gouging abrasion and impact wear."
+    "summary_en": "Heavyweight impeller for 8x6 E-frame pumps in high-throughput concentrators. Reinforced blade profile engineered to withstand severe gouging abrasion and impact wear.",
+    "physical_stock_durango_units": 8,
+    "unit_replacement_value_mxn": 64200,
+    "physical_audit_date": "2026-11-10",
+    "warehouse_total_mxn": 1646850,
+    "warehouse_total_units": 383
   },
   {
     "code": "dam028",
@@ -97,7 +112,12 @@
     "fit_guarantee_es": "Compatibilidad dimensional 1:1 y ajuste concéntrico exacto contra plato adaptador. Despacho verificado desde Almacén Central Durango.",
     "fit_guarantee_en": "1:1 dimensional compatibility and concentric fit against adapter plate verified before shipping. Direct dispatch from Durango Central Warehouse.",
     "summary_es": "Anillo expulsor estático para ensambles de sello dinámico centrífugo en marco 4/3 C. Permite operar bombas de pulpa sin inyección de agua externa, evitando la dilución del proceso y fugas hacia el eje.",
-    "summary_en": "Static expeller ring for dynamic centrifugal shaft seal assemblies in 4/3 C frames. Enables flush-free slurry pump operation without external seal water, eliminating process dilution."
+    "summary_en": "Static expeller ring for dynamic centrifugal shaft seal assemblies in 4/3 C frames. Enables flush-free slurry pump operation without external seal water, eliminating process dilution.",
+    "physical_stock_durango_units": 24,
+    "unit_replacement_value_mxn": 9800,
+    "physical_audit_date": "2026-11-10",
+    "warehouse_total_mxn": 1646850,
+    "warehouse_total_units": 383
   },
   {
     "code": "eam028",
@@ -110,7 +130,7 @@
     "metallurgy": "High Chrome A05 (27% Cr, ASTM A532 Class III Type A)",
     "hardness": "≥ 650 HB (Brinell) / 58-62 HRC",
     "vanes": 0,
-    "weight_kg": 29.0,
+    "weight_kg": 29,
     "impeller_diameter_mm": 380,
     "max_particle_mm": 45,
     "station_number": 2,
@@ -122,7 +142,12 @@
     "fit_guarantee_es": "Compatibilidad dimensional 1:1 y ajuste concéntrico exacto contra plato adaptador. Despacho verificado desde Almacén Central Durango.",
     "fit_guarantee_en": "1:1 dimensional compatibility and concentric fit against adapter plate verified before shipping. Direct dispatch from Durango Central Warehouse.",
     "summary_es": "Anillo expulsor de sello centrífugo para bombas 6x4 marco D. Aleación de alto cromo A05 resistente al flujo turbulento de recirculación secundaria en la cámara posterior de la bomba.",
-    "summary_en": "Centrifugal expeller ring for 6x4 D-frame slurry pumps. High chrome A05 metallurgy engineered to withstand secondary turbulence in the rear sealing chamber."
+    "summary_en": "Centrifugal expeller ring for 6x4 D-frame slurry pumps. High chrome A05 metallurgy engineered to withstand secondary turbulence in the rear sealing chamber.",
+    "physical_stock_durango_units": 20,
+    "unit_replacement_value_mxn": 14200,
+    "physical_audit_date": "2026-11-10",
+    "warehouse_total_mxn": 1646850,
+    "warehouse_total_units": 383
   },
   {
     "code": "e4083",
@@ -135,7 +160,7 @@
     "metallurgy": "High Chrome A05 (27% Cr, ASTM A532 Class III Type A)",
     "hardness": "≥ 650 HB (Brinell) / 58-62 HRC",
     "vanes": 0,
-    "weight_kg": 44.0,
+    "weight_kg": 44,
     "impeller_diameter_mm": 380,
     "max_particle_mm": 45,
     "station_number": 3,
@@ -147,7 +172,12 @@
     "fit_guarantee_es": "Cotejo de barrenado y brida de succión 1:1. Despacho verificado desde Almacén Central Durango.",
     "fit_guarantee_en": "1:1 suction flange and bolt circle match. Direct dispatch from Durango Central Warehouse.",
     "summary_es": "Cuello frontal de succión para bombas de pulpa 6x4 marco D. Perfil de entrada hidrodinámica de baja turbulencia para maximizar el NPSH disponible y reducir el desgaste localizado por cavitación.",
-    "summary_en": "Front suction throatbush for 6x4 D-frame slurry pumps. Streamlined hydraulic entry profile designed to optimize available NPSH and mitigate localized cavitation wear."
+    "summary_en": "Front suction throatbush for 6x4 D-frame slurry pumps. Streamlined hydraulic entry profile designed to optimize available NPSH and mitigate localized cavitation wear.",
+    "physical_stock_durango_units": 16,
+    "unit_replacement_value_mxn": 28400,
+    "physical_audit_date": "2026-11-10",
+    "warehouse_total_mxn": 1646850,
+    "warehouse_total_units": 383
   },
   {
     "code": "d075c21",
@@ -168,7 +198,10 @@
     "assembly_order": "04. Camisa de Flecha Recubierta HVOF (Estación 02)",
     "wet_end_kit_ratio": "5:5:4",
     "niosh_handling_mode": "MANUAL_SAFE",
-    "kit_ids": [2, 3],
+    "kit_ids": [
+      2,
+      3
+    ],
     "diagram_id": "shaft-sleeve-d075c21",
     "everyday_equivalence_es": "Espesor de pared equivalente a 16 tarjetas bancarias ISO/IEC 7810 (12.5 mm) con blindaje superficial de carburo de tungsteno",
     "everyday_equivalence_en": "Wall thickness equivalent to 16 stacked ISO/IEC 7810 bank cards (12.5 mm) with tungsten carbide HVOF surface armor",
@@ -177,7 +210,12 @@
     "fit_guarantee_es": "Concentricidad y tolerancia interior H7 verificadas con micrómetro antes de embarque. Despacho directo desde Almacén Central Durango.",
     "fit_guarantee_en": "Concentricity and H7 bore tolerance verified by micrometer prior to dispatch. Direct shipping from Durango Central Warehouse.",
     "summary_es": "Camisa protectora de flecha D075C21 con recubrimiento térmico de alta velocidad (HVOF) y acabado espejo para eliminar el ranurado prematuro bajo empaquetadura en pulpas con sílice fina.",
-    "summary_en": "D075C21 shaft protection sleeve featuring high-velocity oxygen-fuel (HVOF) coating and mirror finish to eliminate premature grooving under packing in fine-silica slurries."
+    "summary_en": "D075C21 shaft protection sleeve featuring high-velocity oxygen-fuel (HVOF) coating and mirror finish to eliminate premature grooving under packing in fine-silica slurries.",
+    "physical_stock_durango_units": 42,
+    "unit_replacement_value_mxn": 7650,
+    "physical_audit_date": "2026-11-10",
+    "warehouse_total_mxn": 1646850,
+    "warehouse_total_units": 383
   },
   {
     "code": "dam005",
@@ -190,7 +228,7 @@
     "metallurgy": "Acero Aleado SAE 4140 + Hierro Dúctil GGG40 + Sellos de Laberinto Purgante",
     "hardness": "Eje bonificado 280-320 HB / Pistas 60-62 HRC",
     "vanes": 0,
-    "weight_kg": 54.0,
+    "weight_kg": 54,
     "impeller_diameter_mm": 380,
     "max_particle_mm": 45,
     "wall_thickness_mm": 28,
@@ -198,14 +236,21 @@
     "assembly_order": "02. Conjunto Rodamiento Cilíndrico ISO 281 (Estación 01)",
     "wet_end_kit_ratio": "1:1",
     "niosh_handling_mode": "HOIST_REQUIRED",
-    "kit_ids": [4],
+    "kit_ids": [
+      4
+    ],
     "diagram_id": "soporte",
     "circuit_es": "Extremo motriz de bombas 6/4 D con ajuste axial micrométrico",
     "circuit_en": "Drive end of 6/4 D slurry pumps with micrometer axial clearance adjustment",
     "fit_guarantee_es": "Intercambiabilidad drop-in en cuna estándar verificada antes de embarque desde Durango.",
     "fit_guarantee_en": "Drop-in interchangeability in standard base frame verified prior to shipping from Durango.",
     "summary_es": "Cartucho de rodamientos de rodillos cónicos en arreglo espalda con espalda (ISO 281) sellado con laberinto purgante para resistir cargas radiales severas en transmisión por bandas V.",
-    "summary_en": "Tapered roller bearing cartridge in back-to-back arrangement (ISO 281) sealed with grease-purged labyrinths to withstand severe V-belt radial loads."
+    "summary_en": "Tapered roller bearing cartridge in back-to-back arrangement (ISO 281) sealed with grease-purged labyrinths to withstand severe V-belt radial loads.",
+    "physical_stock_durango_units": 12,
+    "unit_replacement_value_mxn": 48500,
+    "physical_audit_date": "2026-11-10",
+    "warehouse_total_mxn": 1646850,
+    "warehouse_total_units": 383
   },
   {
     "code": "e4132",
@@ -226,14 +271,21 @@
     "assembly_order": "08. Forro de Plato Trasero FPL Insert (Estación 03)",
     "wet_end_kit_ratio": "5:5:4",
     "niosh_handling_mode": "MANUAL_SAFE",
-    "kit_ids": [2],
+    "kit_ids": [
+      2
+    ],
     "diagram_id": "back-liner-d4032r55",
     "circuit_es": "Clasificación secundaria, flotación e impulsión de pulpas finas (d80 < 250 micras)",
     "circuit_en": "Secondary classification, flotation, and fine slurry pumping (d80 < 250 microns)",
     "fit_guarantee_es": "Pernos vulcanizados y labio de sellado perimetral verificados en Almacén Central Durango.",
     "fit_guarantee_en": "Vulcanized studs and perimeter sealing lip verified at Durango Central Warehouse.",
     "summary_es": "Forro de plato trasero en caucho natural anti-abrasivo R55 con respaldo metálico vulcanizado para absorber el impacto elástico de partículas finas sin requerir empaques planos.",
-    "summary_en": "Rear frame plate liner insert in R55 natural anti-abrasive rubber with vulcanized steel backing to absorb fine-particle elastic impact without flat gaskets."
+    "summary_en": "Rear frame plate liner insert in R55 natural anti-abrasive rubber with vulcanized steel backing to absorb fine-particle elastic impact without flat gaskets.",
+    "physical_stock_durango_units": 36,
+    "unit_replacement_value_mxn": 11200,
+    "physical_audit_date": "2026-11-10",
+    "warehouse_total_mxn": 1646850,
+    "warehouse_total_units": 383
   },
   {
     "code": "d3110",
@@ -246,7 +298,7 @@
     "metallurgy": "High Chrome A05 (27% Cr, ASTM A532 Class III Type A)",
     "hardness": "≥ 650 HB (Brinell) / 58-62 HRC",
     "vanes": 0,
-    "weight_kg": 52.0,
+    "weight_kg": 52,
     "impeller_diameter_mm": 270,
     "max_particle_mm": 28,
     "wall_thickness_mm": 34,
@@ -254,14 +306,21 @@
     "assembly_order": "10. Voluta de Aleación Cr27 A05 (Estación 03)",
     "wet_end_kit_ratio": "5:5:4",
     "niosh_handling_mode": "HOIST_REQUIRED",
-    "kit_ids": [1],
+    "kit_ids": [
+      1
+    ],
     "diagram_id": "revestimientos",
     "circuit_es": "Descarga de molienda y bombeo de concentrados densos en marco 4/3 C",
     "circuit_en": "Mill discharge and dense concentrate pumping in 4/3 C frames",
-    "fit_guarantee_es": "Asiento cónico y garganta de descarga verificados dimensionalmente en Durango.",
+    "fit_guarantee_es": "Asiento cónico y lengua de descarga (cutwater) verificados dimensionalmente en Durango.",
     "fit_guarantee_en": "Conical seat and discharge cutwater dimensionally verified in Durango.",
     "summary_es": "Voluta monolítica en aleación de alto cromo al 27% con sobreespesor de sacrificio en el lengua de descarga (cutwater) para resistir turbulencia severa.",
-    "summary_en": "Monolithic 27% high-chrome volute liner featuring sacrificial extra thickness at the discharge cutwater to withstand severe slurry turbulence."
+    "summary_en": "Monolithic 27% high-chrome volute liner featuring sacrificial extra thickness at the discharge cutwater to withstand severe slurry turbulence.",
+    "physical_stock_durango_units": 14,
+    "unit_replacement_value_mxn": 34800,
+    "physical_audit_date": "2026-11-10",
+    "warehouse_total_mxn": 1646850,
+    "warehouse_total_units": 383
   },
   {
     "code": "d4018",
@@ -274,7 +333,7 @@
     "metallurgy": "High Chrome A05 (27% Cr, ASTM A532 Class III Type A)",
     "hardness": "≥ 650 HB (Brinell) / 58-62 HRC",
     "vanes": 0,
-    "weight_kg": 38.0,
+    "weight_kg": 38,
     "impeller_diameter_mm": 380,
     "max_particle_mm": 45,
     "wall_thickness_mm": 30,
@@ -282,14 +341,21 @@
     "assembly_order": "11. Plato de Succión / Throatbush (Estación 03)",
     "wet_end_kit_ratio": "5:5:4",
     "niosh_handling_mode": "HOIST_REQUIRED",
-    "kit_ids": [1],
+    "kit_ids": [
+      1
+    ],
     "diagram_id": "throatbush",
     "circuit_es": "Cámara frontal de succión en bombas 6/4 D sujetas a recirculación abrasiva",
     "circuit_en": "Front suction chamber in 6/4 D pumps subject to abrasive recirculation",
     "fit_guarantee_es": "Cara frontal rectificada para ajuste de claro axial de 0.76 a 1.5 mm en Durango.",
     "fit_guarantee_en": "Precision-ground front face for 0.76 to 1.5 mm axial clearance calibration in Durango.",
     "summary_es": "Plato frontal de desgaste en aleación Cr27 A05 rectificado para mantener el claro axial óptimo contra la cara delantera del impulsor y sostener la eficiencia volumétrica.",
-    "summary_en": "Precision-ground Cr27 A05 front wear plate designed to maintain optimal axial clearance against the impeller front shroud and preserve volumetric efficiency."
+    "summary_en": "Precision-ground Cr27 A05 front wear plate designed to maintain optimal axial clearance against the impeller front shroud and preserve volumetric efficiency.",
+    "physical_stock_durango_units": 15,
+    "unit_replacement_value_mxn": 26100,
+    "physical_audit_date": "2026-11-10",
+    "warehouse_total_mxn": 1646850,
+    "warehouse_total_units": 383
   },
   {
     "code": "d4028",
@@ -310,14 +376,21 @@
     "assembly_order": "06. Expulsor Dinámico Seco (Estación 02)",
     "wet_end_kit_ratio": "5:5:4",
     "niosh_handling_mode": "MANUAL_SAFE",
-    "kit_ids": [3],
+    "kit_ids": [
+      3
+    ],
     "diagram_id": "expeller-ring-d4029a05",
     "circuit_es": "Sellado dinámico sin agua de glándula en bombas 6/4 D con cabezal de succión controlado",
     "circuit_en": "Flush-free dynamic shaft sealing in 6/4 D pumps under controlled suction head",
     "fit_guarantee_es": "Balanceo estático y rosca/cuñero verificados en Almacén Central Durango.",
     "fit_guarantee_en": "Static balance and keyway fit verified at Durango Central Warehouse.",
     "summary_es": "Turbina expulsora secundaria que genera un anillo de presión centrífuga opuesto a la cámara de bombeo, bloqueando la fuga de pulpa hacia el estopero sin requerir agua de sello.",
-    "summary_en": "Secondary expeller vane wheel generating a counter-centrifugal pressure ring against the pump chamber, preventing slurry leakage into the stuffing box without gland water."
+    "summary_en": "Secondary expeller vane wheel generating a counter-centrifugal pressure ring against the pump chamber, preventing slurry leakage into the stuffing box without gland water.",
+    "physical_stock_durango_units": 28,
+    "unit_replacement_value_mxn": 11900,
+    "physical_audit_date": "2026-11-10",
+    "warehouse_total_mxn": 1646850,
+    "warehouse_total_units": 383
   },
   {
     "code": "d4029",
@@ -338,13 +411,20 @@
     "assembly_order": "05. Anillo Expulsor + Cámara Centrífuga (Estación 02)",
     "wet_end_kit_ratio": "5:5:4",
     "niosh_handling_mode": "HOIST_REQUIRED",
-    "kit_ids": [3],
+    "kit_ids": [
+      3
+    ],
     "diagram_id": "expeller-ring-d4029a05",
     "circuit_es": "Alojamiento estático del expulsor D4028 y prensaestopa en bombas 6/4 D",
     "circuit_en": "Static housing for D4028 expeller and stuffing box in 6/4 D pumps",
     "fit_guarantee_es": "Planicidad de brida y concéntrico de caja de estopas verificados en Durango.",
     "fit_guarantee_en": "Flange flatness and stuffing box concentricity verified in Durango.",
     "summary_es": "Anillo expulsor estático fundido en Cr27 A05 con nervaduras internas disipadoras de vórtice y puerto de engrase para operar en conjunto con el expulsor D4028 y la camisa D075C21.",
-    "summary_en": "Cast Cr27 A05 static expeller ring with internal vortex-breaking ribs and grease port, engineered to operate alongside the D4028 expeller and D075C21 shaft sleeve."
+    "summary_en": "Cast Cr27 A05 static expeller ring with internal vortex-breaking ribs and grease port, engineered to operate alongside the D4028 expeller and D075C21 shaft sleeve.",
+    "physical_stock_durango_units": 19,
+    "unit_replacement_value_mxn": 15400,
+    "physical_audit_date": "2026-11-10",
+    "warehouse_total_mxn": 1646850,
+    "warehouse_total_units": 383
   }
 ]

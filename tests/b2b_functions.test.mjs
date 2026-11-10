@@ -984,7 +984,7 @@ test('39. Tabla Paramétrica Rápida de Series y Marcos en Catálogo ES/EN (Deci
   assert.ok(catalogoEn.includes('id="parametric-pumps-table"'), 'en/catalog.astro debe contener #parametric-pumps-table');
 
   // Cobertura de series y marcos
-  const seriesToCheck = ['4x3 C', '6x4 D', '8x6 E', '10x8 F'];
+  const seriesToCheck = ['4x3', '6x4', '8x6', '10x8'];
   for (const s of seriesToCheck) {
     assert.ok(catalogoEs.includes(s), `catalogo.astro debe incluir serie ${s}`);
     assert.ok(catalogoEn.includes(s), `en/catalog.astro debe incluir serie ${s}`);

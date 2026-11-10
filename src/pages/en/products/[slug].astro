@@ -32,124 +32,126 @@ const triplet = sku.geometric_triplet_mm || {
   label_en: 'A: Bore ID 100 mm | B: Outer OD 400 mm | C: Thickness 80 mm'
 };
 
-const nioshBadges: Record<string, { label: string; color: string }> = {
+const nioshBadges: Record<string, { label: string; cls: string }> = {
   MANUAL_SAFE: {
     label: '🟢 Safe Manual Handling (< 11.1 kg NIOSH)',
-    color: 'bg-emerald-950/70 text-emerald-300 border-emerald-500/40'
+    cls: 'smat-slug-badge--emerald'
   },
   ASSISTED_SHAFT_MOUNT_2P: {
     label: '🟡 2-Operator Assisted Mount (11.1–23.0 kg NIOSH)',
-    color: 'bg-amber-950/70 text-amber-300 border-amber-500/40'
+    cls: 'smat-slug-badge--amber'
   },
   HOIST_REQUIRED: {
     label: '🔴 Mechanical Hoist Required (> 23.0 kg NOM-036-1-STPS)',
-    color: 'bg-rose-950/70 text-rose-300 border-rose-500/40'
+    cls: 'smat-slug-badge--rose'
   }
 };
 const niosh = nioshBadges[sku.niosh_mode] || nioshBadges.HOIST_REQUIRED;
+const hasAtomicPumpCodes = Array.isArray(sku.atomic_codes) && sku.atomic_codes.length > 0;
+const castCodeLabel = hasAtomicPumpCodes ? sku.atomic_codes.join(', ') : sku.id;
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonicalPath} lang="en">
-  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-slate-100">
+  <main class="smat-slug-main">
     <!-- Breadcrumb & language switcher -->
-    <nav class="flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-slate-400 mb-6" aria-label="Breadcrumb">
-      <div class="flex items-center gap-2">
-        <a href="/en/" class="hover:text-amber-400 transition">Home</a>
+    <nav class="smat-slug-breadcrumb" aria-label="Breadcrumb">
+      <div class="smat-slug-breadcrumb-links">
+        <a href="/en/" class="smat-slug-nav-link">Home</a>
         <span>/</span>
-        <a href="/en/catalog/" class="hover:text-amber-400 transition">19-SKU Catalog</a>
+        <a href="/en/catalog/" class="smat-slug-nav-link">19-SKU Catalog</a>
         <span>/</span>
-        <span class="text-amber-400">{sku.id}</span>
+        <span class="smat-slug-breadcrumb-current">{sku.id}</span>
       </div>
-      <a href={`/productos/${sku.slug_es}/`} class="inline-flex items-center gap-1.5 px-3 py-1 rounded border border-slate-700 hover:border-amber-400 text-slate-300">
+      <a href={`/productos/${sku.slug_es}/`} class="smat-slug-lang-switch">
         <span>ES</span>
         <span>Ficha en Español →</span>
       </a>
     </nav>
 
     <!-- Plane 1 Header: < 30s identification -->
-    <header class="rounded-2xl border border-slate-800 bg-slate-900/90 p-6 sm:p-8 shadow-xl mb-8">
-      <div class="flex flex-wrap items-center gap-2 mb-3">
-        <span class="px-2.5 py-1 rounded text-xs font-mono uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40">
+    <header class="smat-slug-header">
+      <div class="smat-slug-badge-row">
+        <span class="smat-slug-badge smat-slug-badge--amber">
           {sku.id} · {sku.vertical.toUpperCase()} · GATE {sku.gate_lock || 'G1'}
         </span>
-        <span class={`px-2.5 py-1 rounded text-xs font-mono border ${niosh.color}`}>
+        <span class={`smat-slug-badge ${niosh.cls}`}>
           {niosh.label}
         </span>
-        <span class="px-2.5 py-1 rounded text-xs font-mono bg-slate-800 text-slate-300 border border-slate-700">
+        <span class="smat-slug-badge smat-slug-badge--neutral">
           Dry Mass: {sku.mass_kg} kg
         </span>
       </div>
 
-      <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white mb-3">
+      <h1 class="smat-slug-h1">
         {sku.title_en}
       </h1>
-      <p class="text-base sm:text-lg text-slate-300 max-w-4xl mb-5">
+      <p class="smat-slug-lead">
         {sku.summary_en}
       </p>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-800 text-sm">
-        <div class="bg-slate-950/70 rounded-xl p-3.5 border border-slate-800/80">
-          <div class="text-xs font-mono uppercase text-slate-400 mb-1">Zero-OEM Drop-In Cross Reference</div>
-          <div class="font-mono font-semibold text-amber-300">{sku.oem_cross_ref}</div>
+      <div class="smat-slug-kpi-grid">
+        <div class="smat-slug-kpi-box">
+          <div class="smat-slug-kpi-label">Zero-OEM Drop-In Cross Reference</div>
+          <div class="smat-slug-kpi-value smat-slug-kpi-value--amber">{sku.oem_cross_ref}</div>
         </div>
-        <div class="bg-slate-950/70 rounded-xl p-3.5 border border-slate-800/80">
-          <div class="text-xs font-mono uppercase text-slate-400 mb-1">Certified Metallurgy / Hardness</div>
-          <div class="font-semibold text-slate-100">{sku.hardness_spec}</div>
+        <div class="smat-slug-kpi-box">
+          <div class="smat-slug-kpi-label">Certified Metallurgy / Hardness</div>
+          <div class="smat-slug-kpi-value">{sku.hardness_spec}</div>
         </div>
-        <div class="bg-slate-950/70 rounded-xl p-3.5 border border-slate-800/80">
-          <div class="text-xs font-mono uppercase text-slate-400 mb-1">Everyday Calibration Scale (ISO/IEC 7810)</div>
-          <div class="font-semibold text-sky-300">{sku.everyday_scale_en}</div>
+        <div class="smat-slug-kpi-box">
+          <div class="smat-slug-kpi-label">Everyday Calibration Scale (ISO/IEC 7810)</div>
+          <div class="smat-slug-kpi-value smat-slug-kpi-value--sky">{sku.everyday_scale_en}</div>
         </div>
       </div>
     </header>
 
     <!-- 2-Column Body: 3-in-1 ProductQuickCard + Dual B2B Checkout -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <div class="lg:col-span-7 space-y-6">
+    <div class="smat-slug-layout-grid">
+      <div class="smat-slug-col-left">
         <ProductQuickCard sku={sku} lang="en" />
 
         <!-- 3-Step Plant Validation Box -->
-        <section class="rounded-2xl border border-emerald-500/30 bg-emerald-950/15 p-5">
-          <h2 class="text-sm font-mono uppercase tracking-wider text-emerald-300 mb-3">
+        <section class="smat-slug-validation-card">
+          <h2 class="smat-slug-section-kicker smat-slug-section-kicker--emerald">
             📋 How to Validate Your Part in Plant in 3 Steps (Zero Downtime Risk)
           </h2>
-          <ol class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-300">
-            <li class="rounded-xl bg-slate-950/80 border border-slate-800 p-3">
-              <strong class="block font-mono text-amber-300 mb-1">STEP 1 · CAST CODE</strong>
-              Check the raised number on your current part ({sku.atomic_codes.join(', ')}) or send us a yard photo via WhatsApp.
+          <ol class="smat-slug-steps-grid">
+            <li class="smat-slug-step-item">
+              <strong class="smat-slug-step-title">STEP 1 · CAST / TAG CODE</strong>
+              Check the identifier on your equipment ({castCodeLabel}) or send us a yard photo via WhatsApp.
             </li>
-            <li class="rounded-xl bg-slate-950/80 border border-slate-800 p-3">
-              <strong class="block font-mono text-amber-300 mb-1">STEP 2 · TRIPLET (A, B, C)</strong>
-              Confirm with caliper or tape: <span class="font-mono text-slate-100">{triplet.label_en}</span> ({triplet.tolerance_std || 'ISO 2768-m'}).
+            <li class="smat-slug-step-item">
+              <strong class="smat-slug-step-title">STEP 2 · TRIPLET (A, B, C)</strong>
+              Confirm with caliper or tape: <span class="smat-slug-mono-inline">{triplet.label_en}</span> ({triplet.tolerance_std || 'ISO 2768-m'}).
             </li>
-            <li class="rounded-xl bg-slate-950/80 border border-slate-800 p-3">
-              <strong class="block font-mono text-amber-300 mb-1">STEP 3 · 0.76 MM SCALE</strong>
-              During assembly, set axial clearance using 1 standard ISO/IEC 7810 bank card (0.76 mm).
+            <li class="smat-slug-step-item">
+              <strong class="smat-slug-step-title">STEP 3 · 0.76 MM SCALE</strong>
+              During assembly, set clearance or seating using 1 standard ISO/IEC 7810 bank card (0.76 mm).
             </li>
           </ol>
         </section>
 
         <!-- Coupled Telemetry Hooks -->
-        <section class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-          <h2 class="text-sm font-mono uppercase tracking-wider text-slate-400 mb-3">
+        <section class="smat-slug-telemetry-card">
+          <h2 class="smat-slug-section-kicker">
             Recommended Metallurgical Operating Window
           </h2>
-          <div class="grid grid-cols-3 gap-3 text-center">
-            <div class="rounded-xl bg-slate-950 p-3 border border-slate-800">
-              <div class="text-xs text-slate-400 font-mono">Slurry Density (Marcy SG)</div>
-              <div class="text-lg font-bold text-amber-400 font-mono">
+          <div class="smat-slug-telemetry-grid">
+            <div class="smat-slug-telemetry-box">
+              <div class="smat-slug-telemetry-label">Slurry Density (Marcy SG)</div>
+              <div class="smat-slug-telemetry-val smat-slug-telemetry-val--amber">
                 {sku.telemetry_hooks.marcy_sg_range[0]} – {sku.telemetry_hooks.marcy_sg_range[1]} t/m³
               </div>
             </div>
-            <div class="rounded-xl bg-slate-950 p-3 border border-slate-800">
-              <div class="text-xs text-slate-400 font-mono">Plitt Cut Size d50c</div>
-              <div class="text-lg font-bold text-sky-400 font-mono">
+            <div class="smat-slug-telemetry-box">
+              <div class="smat-slug-telemetry-label">Plitt Cut Size d50c</div>
+              <div class="smat-slug-telemetry-val smat-slug-telemetry-val--sky">
                 {sku.telemetry_hooks.plitt_d50_um_range[0]} – {sku.telemetry_hooks.plitt_d50_um_range[1]} µm
               </div>
             </div>
-            <div class="rounded-xl bg-slate-950 p-3 border border-slate-800">
-              <div class="text-xs text-slate-400 font-mono">Typical Wear Life (Weibull)</div>
-              <div class="text-lg font-bold text-emerald-400 font-mono">
+            <div class="smat-slug-telemetry-box">
+              <div class="smat-slug-telemetry-label">Typical Wear Life (Weibull)</div>
+              <div class="smat-slug-telemetry-val smat-slug-telemetry-val--emerald">
                 {sku.telemetry_hooks.wear_life_hours_range[0]} – {sku.telemetry_hooks.wear_life_hours_range[1]} h
               </div>
             </div>
@@ -158,19 +160,19 @@ const niosh = nioshBadges[sku.niosh_mode] || nioshBadges.HOIST_REQUIRED;
       </div>
 
       <!-- Right Column: Dual Checkout Lane (< 25,000 MXN Petty Cash vs > 25,000 MXN SAP PO) -->
-      <aside class="lg:col-span-5 rounded-2xl border border-amber-500/40 bg-slate-900 p-6 shadow-xl space-y-5">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <span class="text-xs font-mono uppercase tracking-wider text-amber-400">
+      <aside class="smat-slug-checkout-aside">
+        <div class="smat-slug-aside-head">
+          <span class="smat-slug-aside-kicker">
             Dual B2B Checkout (Zero Login)
           </span>
-          <span class="text-xs font-mono text-emerald-400">● Durango Hub, MX</span>
+          <span class="smat-slug-aside-hub">● Durango Hub, MX</span>
         </div>
 
         <div>
-          <h2 class="text-lg font-bold text-white mb-2">1. Available Alloys in Foundry / Molding</h2>
-          <div class="flex flex-wrap gap-2">
+          <h2 class="smat-slug-aside-h2">1. Available Alloys / Materials</h2>
+          <div class="smat-slug-chip-row">
             {sku.available_materials.map((mat: string) => (
-              <span class={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold border ${mat === sku.default_material ? 'bg-amber-500 text-slate-950 border-amber-400' : 'bg-slate-950 text-slate-300 border-slate-700'}`}>
+              <span class={`smat-slug-mat-chip ${mat === sku.default_material ? 'is-default' : ''}`}>
                 {mat} {mat === sku.default_material ? '(Standard)' : ''}
               </span>
             ))}
@@ -178,69 +180,92 @@ const niosh = nioshBadges[sku.niosh_mode] || nioshBadges.HOIST_REQUIRED;
         </div>
 
         <div>
-          <h3 class="text-xs font-mono uppercase text-slate-400 mb-2">2. Linked Atomic Part Codes (13-Part BOM)</h3>
-          <div class="flex flex-wrap gap-2">
-            {sku.atomic_codes.map((code: string) => (
-              <a
-                href={`/en/catalog/${code.toLowerCase()}/`}
-                class="px-3 py-1 rounded bg-slate-950 border border-slate-700 hover:border-amber-400 text-xs font-mono text-amber-300 transition"
-              >
-                🔗 {code}
-              </a>
-            ))}
-          </div>
+          {hasAtomicPumpCodes ? (
+            <>
+              <h3 class="smat-slug-aside-h3">2. Linked Atomic Part Codes (13-Part Pump BOM)</h3>
+              <div class="smat-slug-chip-row">
+                {sku.atomic_codes.map((code: string) => (
+                  <a
+                    href={`/en/catalog/${code.toLowerCase()}/`}
+                    class="smat-slug-atomic-link"
+                  >
+                    🔗 {code}
+                  </a>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <h3 class="smat-slug-aside-h3">2. Circuit Coupling & Preventive Reorder Window (s, S)</h3>
+              <div class="smat-slug-coupled-box">
+                <div>
+                  <strong>Recommended Coupled SKU:</strong> <span>{sku.coupled_pair_sku}</span>
+                </div>
+                <div>
+                  <strong>Preventive Window (s, S):</strong> <span>Every {sku.reorder_window_days} operating days</span>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
-        <div class="grid grid-cols-1 gap-3 pt-1">
-          <div class="rounded-xl border border-emerald-500/40 bg-emerald-950/20 p-3.5">
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-mono font-bold text-emerald-300">⚡ LANE A: PETTY CASH (&lt; MXN 25,000)</span>
-              <span class="text-[11px] font-mono text-emerald-400">P1 · CFDI 4.0 TODAY</span>
+        <div class="smat-slug-lanes-stack">
+          <div class="smat-slug-lane-card smat-slug-lane-card--emerald">
+            <div class="smat-slug-lane-head">
+              <span class="smat-slug-lane-title smat-slug-lane-title--emerald">⚡ LANE A: PETTY CASH (&lt; 25,000 MXN)</span>
+              <span class="smat-slug-lane-tag smat-slug-lane-tag--emerald">P1 · CFDI 4.0 TODAY</span>
             </div>
-            <p class="text-xs text-slate-300">
+            <p class="smat-slug-lane-desc">
               Express SPEI or corporate card release without SAP vendor onboarding delay. Same-day dispatch for <strong>🟢 IN STOCK</strong> items.
             </p>
           </div>
 
-          <div class="rounded-xl border border-amber-500/40 bg-amber-950/20 p-3.5">
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-mono font-bold text-amber-300">🏢 LANE B: PURCHASE ORDER (&gt; MXN 25,000)</span>
-              <span class="text-[11px] font-mono text-amber-400">SAP / ORACLE · B2B PASSPORT</span>
+          <div class="smat-slug-lane-card smat-slug-lane-card--amber">
+            <div class="smat-slug-lane-head">
+              <span class="smat-slug-lane-title smat-slug-lane-title--amber">🏢 LANE B: PURCHASE ORDER (&gt; 25,000 MXN)</span>
+              <span class="smat-slug-lane-tag smat-slug-lane-tag--amber">SAP / ORACLE · B2B PASSPORT</span>
             </div>
-            <p class="text-xs text-slate-300 mb-1.5">
+            <p class="smat-slug-lane-desc">
               Formal PDF quotation with Tax Compliance Certificate (32-D) and active REPSE registration.
             </p>
-            <div class="text-[11px] font-mono text-slate-400 bg-slate-950/80 rounded px-2.5 py-1.5 border border-slate-800">
-              SAT ProdServ: <strong class="text-slate-200">{sat.clave_prod_serv}</strong> · Unit: <strong class="text-slate-200">{sat.clave_unidad}</strong> · HS/TIGIE: <strong class="text-slate-200">{sat.fraccion_arancelaria}</strong>
+            <div class="smat-slug-sat-pill">
+              SAT ProdServ: <strong>{sat.clave_prod_serv}</strong> · Unit: <strong>{sat.clave_unidad}</strong> · HS/TIGIE: <strong>{sat.fraccion_arancelaria}</strong>
             </div>
           </div>
         </div>
 
-        <div class="rounded-xl bg-slate-950/90 border border-slate-800 p-4 text-xs text-slate-300 space-y-1.5">
-          <div class="font-mono text-slate-200 font-semibold">📋 Includes SMAT Vendor Passport:</div>
+        <div class="smat-slug-passport-box">
+          <div class="smat-slug-passport-title">📋 Includes SMAT Vendor Passport:</div>
           <p>• Heat Metallurgical Certificate (PMI / Brinell Hardness ASTM A532)</p>
           <p>• Geometric Triplet Dimensional Verification (ISO 2768-m) in Durango</p>
           <p>• NIOSH / NOM-036-1-STPS Rigging & Ergonomic Safety Footprint</p>
         </div>
 
-        <div class="flex flex-col gap-3 pt-2">
-          <a
-            href={`/en/contact/?sku=${encodeURIComponent(sku.id)}&part=${encodeURIComponent(sku.atomic_codes.join(','))}&mat=${encodeURIComponent(sku.default_material)}&lane=po`}
-            class="w-full py-3.5 px-5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-center text-sm transition shadow-lg"
+        <div class="smat-slug-cta-stack">
+          <button
+            type="button"
+            data-quick-tray-add={sku.id}
+            data-slug-add-to-tray={sku.id}
+            data-sku-title={sku.title_en}
+            data-sku-code={sku.atomic_codes[0] || sku.id}
+            data-sku-material={sku.default_material}
+            data-sku-regime={sku.stock_regime || 'hay'}
+            data-sku-mass={sku.mass_kg}
+            class="smat-slug-btn-primary"
           >
-            Request Formal Quote / SAP Passport ({sku.id}) →
-          </a>
+            🛒 Add to B2B Quote Tray / Request SAP Passport ({sku.id}) →
+          </button>
           <a
-            href={`https://wa.me/526181302221?text=${encodeURIComponent(`Hello SMAT, I need an urgent quote for SKU ${sku.id} (${sku.title_en}) in alloy ${sku.default_material} [ Codes: ${sku.atomic_codes.join('/')} | Regime: ${sku.stock_regime || 'hay'} ].`)}`}
+            href={`https://wa.me/526183670664?text=${encodeURIComponent(`[SMAT-DGO] Hello SMAT, I need an urgent quote for SKU ${sku.id} (${sku.title_en}) in alloy ${sku.default_material} [ Regime: ${sku.stock_regime || 'hay'} | Mass: ${sku.mass_kg} kg ].`)}`}
             target="_blank"
             rel="noopener noreferrer"
-            class="w-full py-3 px-5 rounded-xl border border-emerald-500/60 bg-emerald-950/40 hover:bg-emerald-900/50 text-emerald-300 font-mono text-center text-xs transition"
+            class="smat-slug-btn-wa"
           >
-            💬 Fast Checkout / Petty Cash via Engineering WhatsApp
+            💬 Fast Checkout / Petty Cash via Engineering WhatsApp (526183670664)
           </a>
           <a
-            href={`/en/#workbench?sku=${encodeURIComponent(sku.id)}&mat=${encodeURIComponent(sku.default_material)}`}
-            class="w-full py-2.5 px-4 rounded-xl border border-slate-700 hover:border-sky-400 text-slate-300 hover:text-sky-300 font-mono text-center text-xs transition"
+            href={`/en/?sku=${encodeURIComponent(sku.id)}&mat=${encodeURIComponent(sku.default_material)}#workbench`}
+            class="smat-slug-btn-workbench"
           >
             ⚙️ Open in Hydraulic & Metallurgical Workbench (Plane 2)
           </a>
@@ -249,3 +274,567 @@ const niosh = nioshBadges[sku.niosh_mode] || nioshBadges.HOIST_REQUIRED;
     </div>
   </main>
 </BaseLayout>
+
+<style>
+  .smat-slug-main {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 2.5rem 1rem;
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  @media (min-width: 640px) {
+    .smat-slug-main {
+      padding: 2.5rem 1.5rem;
+    }
+  }
+
+  .smat-slug-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    color: var(--smat-solar-muted, #334155);
+  }
+
+  .smat-slug-breadcrumb-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .smat-slug-nav-link {
+    color: var(--smat-solar-muted, #334155);
+    text-decoration: none;
+  }
+
+  .smat-slug-nav-link:hover {
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-slug-breadcrumb-current {
+    font-weight: 700;
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-slug-lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    background: #ffffff;
+    color: var(--smat-solar-ink, #0f172a);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .smat-slug-lang-switch:hover {
+    border-color: var(--smat-solar-amber-border, #d97706);
+  }
+
+  .smat-slug-header {
+    background: var(--smat-solar-surface, #ffffff);
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  }
+
+  @media (min-width: 640px) {
+    .smat-slug-header {
+      padding: 2rem;
+    }
+  }
+
+  .smat-slug-badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .smat-slug-badge {
+    padding: 0.25rem 0.625rem;
+    border-radius: 6px;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid transparent;
+  }
+
+  .smat-slug-badge--amber {
+    background: var(--smat-solar-amber-bg, #fffbeb);
+    border-color: var(--smat-solar-amber-border, #d97706);
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-slug-badge--emerald {
+    background: var(--smat-solar-emerald-bg, #ecfdf5);
+    border-color: var(--smat-solar-emerald-border, #059669);
+    color: var(--smat-solar-emerald, #047857);
+  }
+
+  .smat-slug-badge--rose {
+    background: #fff1f2;
+    border-color: #e11d48;
+    color: #be123c;
+  }
+
+  .smat-slug-badge--neutral {
+    background: var(--smat-solar-bg, #f8fafc);
+    border-color: var(--smat-solar-border, #cbd5e1);
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  .smat-slug-h1 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  @media (min-width: 640px) {
+    .smat-slug-h1 {
+      font-size: 2.25rem;
+    }
+  }
+
+  .smat-slug-lead {
+    margin: 0 0 1.25rem 0;
+    max-width: 56rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--smat-solar-muted, #334155);
+  }
+
+  .smat-slug-kpi-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--smat-solar-border, #cbd5e1);
+    font-size: 0.875rem;
+  }
+
+  @media (min-width: 768px) {
+    .smat-slug-kpi-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .smat-slug-kpi-box {
+    padding: 0.875rem;
+    border-radius: 12px;
+    background: var(--smat-solar-bg, #f8fafc);
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+  }
+
+  .smat-slug-kpi-label {
+    margin-bottom: 0.25rem;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--smat-solar-muted, #334155);
+  }
+
+  .smat-slug-kpi-value {
+    font-weight: 700;
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  .smat-slug-kpi-value--amber {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-slug-kpi-value--sky {
+    color: #0369a1;
+  }
+
+  .smat-slug-layout-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (min-width: 1024px) {
+    .smat-slug-layout-grid {
+      grid-template-columns: 7fr 5fr;
+    }
+  }
+
+  .smat-slug-col-left {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .smat-slug-validation-card {
+    padding: 1.25rem;
+    border-radius: 16px;
+    border: 1px solid var(--smat-solar-emerald-border, #059669);
+    background: var(--smat-solar-emerald-bg, #ecfdf5);
+  }
+
+  .smat-slug-section-kicker {
+    margin: 0 0 0.75rem 0;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--smat-solar-muted, #334155);
+  }
+
+  .smat-slug-section-kicker--emerald {
+    color: var(--smat-solar-emerald, #047857);
+  }
+
+  .smat-slug-steps-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  @media (min-width: 640px) {
+    .smat-slug-steps-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .smat-slug-step-item {
+    padding: 0.75rem;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    line-height: 1.45;
+  }
+
+  .smat-slug-step-title {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-slug-mono-inline {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-weight: 700;
+  }
+
+  .smat-slug-telemetry-card {
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    background: #ffffff;
+  }
+
+  .smat-slug-telemetry-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    text-align: center;
+  }
+
+  .smat-slug-telemetry-box {
+    padding: 0.75rem;
+    border-radius: 12px;
+    background: var(--smat-solar-bg, #f8fafc);
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+  }
+
+  .smat-slug-telemetry-label {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    color: var(--smat-solar-muted, #334155);
+  }
+
+  .smat-slug-telemetry-val {
+    margin-top: 0.25rem;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 1.0625rem;
+    font-weight: 800;
+  }
+
+  .smat-slug-telemetry-val--amber {
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-slug-telemetry-val--sky {
+    color: #0369a1;
+  }
+
+  .smat-slug-telemetry-val--emerald {
+    color: var(--smat-solar-emerald, #047857);
+  }
+
+  .smat-slug-checkout-aside {
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 2px solid var(--smat-solar-amber-border, #d97706);
+    background: #ffffff;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .smat-slug-aside-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--smat-solar-border, #cbd5e1);
+  }
+
+  .smat-slug-aside-kicker {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-slug-aside-hub {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--smat-solar-emerald, #047857);
+  }
+
+  .smat-slug-aside-h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  .smat-slug-aside-h3 {
+    margin: 0 0 0.5rem 0;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--smat-solar-muted, #334155);
+  }
+
+  .smat-slug-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .smat-slug-mat-chip {
+    padding: 0.375rem 0.75rem;
+    border-radius: 8px;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    background: var(--smat-solar-bg, #f8fafc);
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  .smat-slug-mat-chip.is-default {
+    background: var(--smat-solar-amber-bg, #fffbeb);
+    border-color: var(--smat-solar-amber-border, #d97706);
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-slug-atomic-link {
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    background: var(--smat-solar-bg, #f8fafc);
+    color: var(--smat-solar-accent, #b45309);
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .smat-slug-atomic-link:hover {
+    border-color: var(--smat-solar-amber-border, #d97706);
+  }
+
+  .smat-slug-coupled-box {
+    padding: 0.75rem;
+    border-radius: 10px;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    background: var(--smat-solar-bg, #f8fafc);
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    color: var(--smat-solar-ink, #0f172a);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .smat-slug-lanes-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .smat-slug-lane-card {
+    padding: 0.875rem;
+    border-radius: 12px;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+  }
+
+  .smat-slug-lane-card--emerald {
+    background: var(--smat-solar-emerald-bg, #ecfdf5);
+    border-color: var(--smat-solar-emerald-border, #059669);
+  }
+
+  .smat-slug-lane-card--amber {
+    background: var(--smat-solar-amber-bg, #fffbeb);
+    border-color: var(--smat-solar-amber-border, #d97706);
+  }
+
+  .smat-slug-lane-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+  }
+
+  .smat-slug-lane-title {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .smat-slug-lane-title--emerald,
+  .smat-slug-lane-tag--emerald {
+    color: var(--smat-solar-emerald, #047857);
+  }
+
+  .smat-slug-lane-title--amber,
+  .smat-slug-lane-tag--amber {
+    color: var(--smat-solar-accent, #b45309);
+  }
+
+  .smat-slug-lane-tag {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.6875rem;
+    font-weight: 700;
+  }
+
+  .smat-slug-lane-desc {
+    margin: 0;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  .smat-slug-sat-pill {
+    margin-top: 0.5rem;
+    padding: 0.375rem 0.625rem;
+    border-radius: 6px;
+    background: #ffffff;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.6875rem;
+    color: var(--smat-solar-muted, #334155);
+  }
+
+  .smat-slug-passport-box {
+    padding: 1rem;
+    border-radius: 12px;
+    background: var(--smat-solar-bg, #f8fafc);
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    font-size: 0.75rem;
+    color: var(--smat-solar-muted, #334155);
+  }
+
+  .smat-slug-passport-box p {
+    margin: 0.25rem 0 0 0;
+  }
+
+  .smat-slug-passport-title {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-weight: 700;
+    color: var(--smat-solar-ink, #0f172a);
+  }
+
+  .smat-slug-cta-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .smat-slug-btn-primary {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.875rem 1.25rem;
+    border-radius: 12px;
+    border: 1px solid #92400e;
+    background: #d97706;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .smat-slug-btn-primary:hover {
+    background: #b45309;
+  }
+
+  .smat-slug-btn-wa {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    border: 1px solid var(--smat-solar-emerald-border, #059669);
+    background: var(--smat-solar-emerald-bg, #ecfdf5);
+    color: var(--smat-solar-emerald, #047857);
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .smat-slug-btn-wa:hover {
+    background: #d1fae5;
+  }
+
+  .smat-slug-btn-workbench {
+    display: block;
+    width: 100%;
+    padding: 0.625rem 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--smat-solar-border, #cbd5e1);
+    background: var(--smat-solar-bg, #f8fafc);
+    color: var(--smat-solar-ink, #0f172a);
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .smat-slug-btn-workbench:hover {
+    border-color: #0284c7;
+    color: #0369a1;
+  }
+</style>
