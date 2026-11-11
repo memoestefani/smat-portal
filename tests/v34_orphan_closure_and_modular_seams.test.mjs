@@ -220,3 +220,36 @@ test('SLICE-V34-11 & SLICE-V34-12: Costuras limpias LCOM4 <= 900 LOC y paridad 1
   assert.equal(typeof calculateDriveAndBearingKinematics, 'function');
   assert.equal(typeof evaluateHybridWetEndConfiguration, 'function');
 });
+
+test('SLICE-V34-17: Cierre 100% de los 4 micro-residuos finales (0 SKU-QC-01, 0 balanceo dinamico propio, 0 marcos OEM 4/3 C | 6/4 D | 8/6 E y 0 catalog_master.json)', () => {
+  const acuseEs = fs.readFileSync(path.join(SITE_ROOT, 'src', 'pages', 'acuse.astro'), 'utf8');
+  const exportFmt = fs.readFileSync(path.join(SITE_ROOT, 'src', 'scripts', 'workbenchExportFormatters.js'), 'utf8');
+  assert.ok(!acuseEs.includes('SKU-QC-01'), 'acuse.astro no debe contener SKU-QC-01');
+  assert.ok(acuseEs.includes('SMAT-PUMP-IMP-AH'), 'acuse.astro debe usar SMAT-PUMP-IMP-AH');
+  assert.ok(!exportFmt.includes('SKU-QC-01'), 'workbenchExportFormatters.js no debe contener SKU-QC-01');
+  assert.ok(exportFmt.includes('SMAT-PUMP-IMP-AH'), 'workbenchExportFormatters.js debe usar SMAT-PUMP-IMP-AH');
+
+  const trustMatrix = fs.readFileSync(path.join(SITE_ROOT, 'src', 'components', 'TrustMatrix.astro'), 'utf8');
+  const companyJson = fs.readFileSync(path.join(SITE_ROOT, 'data', 'company.json'), 'utf8');
+  for (const banned of ['Balanceo Dinámico', 'Dynamic Balancing', 'en banco propio', 'balanceo dinámico']) {
+    assert.ok(!trustMatrix.includes(banned), `TrustMatrix.astro no debe contener '${banned}'`);
+    assert.ok(!companyJson.includes(banned), `company.json no debe contener '${banned}'`);
+  }
+
+  const atomicJson = fs.readFileSync(path.join(SITE_ROOT, 'data', 'atomic_parts.json'), 'utf8');
+  for (const bannedFrame of ['4/3 C', '6/4 D', '8/6 E', 'marco C', 'marco D', 'marco E', 'C-frame', 'D-frame', 'E-frame']) {
+    assert.ok(!atomicJson.includes(bannedFrame), `atomic_parts.json no debe contener '${bannedFrame}'`);
+  }
+
+  for (const catRel of ['src/pages/catalogo.astro', 'src/pages/en/catalog.astro']) {
+    const catSrc = fs.readFileSync(path.join(SITE_ROOT, catRel), 'utf8');
+    for (const bannedSeries of ['1.5x1B', '2x1.5B', '3x2C', '4x3C', '6x4D', '8x6E', '10x8F', '12x10G', '14x12G']) {
+      assert.ok(!catSrc.includes(`data-series="${bannedSeries}"`), `${catRel} no debe contener data-series="${bannedSeries}"`);
+    }
+  }
+
+  const prdV3 = fs.readFileSync(path.join(SITE_ROOT, 'prd_smatminerals_web_v3.md'), 'utf8');
+  assert.ok(!prdV3.includes('catalog_master.json'), 'prd_smatminerals_web_v3.md no debe citar el archivo inexistente catalog_master.json');
+  assert.ok(prdV3.includes('quick_checkout_Catalog.json'), 'prd_smatminerals_web_v3.md debe citar quick_checkout_Catalog.json');
+});
+

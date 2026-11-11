@@ -51,7 +51,7 @@ export const SAT_TIGIE_BY_VERTICAL = Object.freeze({
 export function formatSatTigieInvoiceLine(item = {}) {
   const vertical = String(item.vertical || item.circuit || 'bombeo').toLowerCase();
   const tuple = SAT_TIGIE_BY_VERTICAL[vertical] || SAT_TIGIE_BY_VERTICAL.bombeo;
-  const skuId = String(item.skuId || item.id || 'SKU-QC-01').toUpperCase();
+  const skuId = String(item.skuId || item.id || 'SMAT-PUMP-IMP-AH').toUpperCase();
   return `${skuId} | SAT ProdServ: ${tuple.claveProdServ} | Unidad: ${tuple.claveUnidad} | TIGIE: ${tuple.fraccionArancelaria} | UNSPSC: ${tuple.unspsc}`;
 }
 

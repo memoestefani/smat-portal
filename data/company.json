@@ -51,6 +51,6 @@
     "warehouse_hours": "Lunes a Viernes 08:00 a 18:00 (Hora Centro / Durango)",
     "local_pickup_badge": "Retiro directo en Almacén Central Durango (Coordinado con folio formal)",
     "maneuvers_access": "Acceso apto para transporte de carga pesada: camión unitario (rabón), torton y tractocamión con plataforma articulada",
-    "client_inspection_protocol": "Disponibilidad de presenciar balanceo dinámico de impulsores y verificación dimensional en presencia del cliente previo a la sujeción de carga"
+    "client_inspection_protocol": "Disponibilidad de presenciar cotejo dimensional 1:1 con plantilla maestra y certificación de dureza en presencia del cliente previo a la sujeción de carga"
   }
 }
