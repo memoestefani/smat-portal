@@ -156,7 +156,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         <button type="button" class="btn btn-secondary" id="download-vendor-json-btn">
           ERP Onboarding (.json)
         </button>
-        <a href="/en/quote/?reorder=1&tray=SKU-QC-01:1:PARO_DE_LINEA#rfq" class="btn btn-secondary" id="reorder-ss-link">
+        <a href="/en/quote/?reorder=1&tray=SMAT-PUMP-IMP-AH:1:PARO_DE_LINEA#rfq" class="btn btn-secondary" id="reorder-ss-link">
           1-Click (s, S) Policy Reorder
         </a>
         <a href="/en/" class="btn btn-secondary">
@@ -198,8 +198,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         const parsedItems = trayQueryParam.split(',').map((s) => s.trim()).filter(Boolean).map((entry) => {
           const [id, qtyStr, crit] = entry.split(':');
           return {
-            id: String(id || 'SKU-QC-01').toUpperCase(),
-            skuId: String(id || 'SKU-QC-01').toUpperCase(),
+            id: String(id || 'SMAT-PUMP-IMP-AH').toUpperCase(),
+            skuId: String(id || 'SMAT-PUMP-IMP-AH').toUpperCase(),
             qty: Math.max(1, Number(qtyStr) || 1),
             criticalityMode: crit === 'STOCK_SS' ? 'STOCK_SS' : 'PARO_DE_LINEA'
           };

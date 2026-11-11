@@ -13,20 +13,52 @@ export function getStaticPaths() {
   }));
 
   const findPart = (num: string) => atomicParts.find((p) => p.part_number === num) || atomicParts[0];
+  const alloySuffixedCodes = [
+    { code: 'd4147a05', part: findPart('E4147') },
+    { code: 'd4083a05', part: findPart('E4083') },
+    { code: 'd4110a05', part: findPart('D3110') },
+    { code: 'd4041a05', part: findPart('E4132') },
+    { code: 'd4018r55', part: findPart('D4018') },
+    { code: 'd4032r55', part: findPart('E4132') },
+    { code: 'd4028a05', part: findPart('D4028') },
+    { code: 'd4029a05', part: findPart('D4029') },
+    { code: 'd005m', part: findPart('DAM005') },
+    { code: 'd3147-a05', part: findPart('E4147') },
+    { code: 'd3147-r55', part: findPart('E4147') },
+    { code: 'e4147-a05', part: findPart('E4147') },
+    { code: 'e4147-r55', part: findPart('E4147') },
+    { code: 'f6147-a05', part: findPart('E4147') },
+    { code: 'dam028-a05', part: findPart('D4028') },
+    { code: 'eam028-a05', part: findPart('D4028') },
+    { code: 'e4083-a05', part: findPart('E4083') },
+    { code: 'e4083-r55', part: findPart('E4083') }
+  ];
   const descriptiveAliases = [
     { slugEs: 'impulsor-5-alabes', slugEn: '5-vane-impeller', part: findPart('E4147') },
     { slugEs: 'cuello-succion', slugEn: 'suction-throatbush', part: findPart('E4083') },
-    { slugEs: 'voluta-revestimiento', slugEn: 'volute-liner', part: { ...findPart('E4083'), name_es: 'Revestimiento de Voluta Bipartida (6x4" — A05)', name_en: 'Split Volute Casing Liner (6x4" — A05)', type_es: 'Revestimiento de Voluta en Contacto Húmedo (Lote 5:5:4)', type_en: 'Wet-End Volute Liner (5:5:4 Lot)' } },
-    { slugEs: 'expulsor-centrifugo', slugEn: 'centrifugal-expeller', part: findPart('EAM028') },
-    { slugEs: 'cartucho-rodamientos', slugEn: 'bearing-assembly-cartridge', part: { ...findPart('DAM028'), name_es: 'Cartucho de Rodamientos Completo (Bearing Assembly 6x4")', name_en: 'Complete Bearing Assembly Cartridge (6x4")', type_es: 'Conjunto Motriz Ensamblado (Estación 01)', type_en: 'Complete Assembled Drive Cartridge (Station 01)' } }
+    { slugEs: 'voluta-revestimiento', slugEn: 'volute-liner', part: { ...findPart('D3110'), name_es: 'Revestimiento de Voluta Bipartida (6x4" — A05)', name_en: 'Split Volute Casing Liner (6x4" — A05)', type_es: 'Revestimiento de Voluta en Contacto Húmedo (Lote 5:5:4)', type_en: 'Wet-End Volute Liner (5:5:4 Lot)' } },
+    { slugEs: 'expulsor-centrifugo', slugEn: 'centrifugal-expeller', part: findPart('D4028') },
+    { slugEs: 'cartucho-rodamientos', slugEn: 'bearing-assembly-cartridge', part: { ...findPart('DAM005'), name_es: 'Cartucho de Rodamientos Completo (Bearing Assembly 6x4")', name_en: 'Complete Bearing Assembly Cartridge (6x4")', type_es: 'Conjunto Motriz Ensamblado (Estación 01)', type_en: 'Complete Assembled Drive Cartridge (Station 01)' } },
+    { slugEs: 'anillo-expulsor', slugEn: 'expeller-ring', part: findPart('D4029') },
+    { slugEs: 'camisa-flecha', slugEn: 'shaft-sleeve', part: findPart('D075C21') },
+    { slugEs: 'empaque-prensaestopa', slugEn: 'gland-packing', part: { ...findPart('D075C21'), name_es: 'Empaquetadura Trenzada PTFE/Grafito y Prensaestopa (6x4")', name_en: 'Braided PTFE/Graphite Gland Packing & Follower (6x4")', type_es: 'Sellado de Caja de Estopas (Estación 02)', type_en: 'Stuffing Box Gland Seal (Station 02)' } },
+    { slugEs: 'flecha-principal', slugEn: 'main-shaft', part: { ...findPart('DAM005'), name_es: 'Flecha Principal en Acero SAE 4140 Rectificado (6x4")', name_en: 'Precision-Ground SAE 4140 Alloy Main Shaft (6x4")', type_es: 'Eje Motriz de Transmisión (Estación 01)', type_en: 'Main Drive Shaft (Station 01)' } },
+    { slugEs: 'sellos-laberinto', slugEn: 'labyrinth-seals', part: { ...findPart('DAM005'), name_es: 'Sellos de Laberinto Purgantes y Deflectores en Inox (6x4")', name_en: 'Grease-Purged Stainless Labyrinth Seals & Flingers (6x4")', type_es: 'Protección Hermética de Cartucho ISO 281 (Estación 01)', type_en: 'ISO 281 Cartridge Hermetic Protection (Station 01)' } },
+    { slugEs: 'plato-cubierta', slugEn: 'cover-plate-liner', part: findPart('D4018') },
+    { slugEs: 'plato-marco', slugEn: 'frame-plate-liner', part: findPart('E4132') }
   ];
+
+  const alloyPaths = alloySuffixedCodes.map((entry) => ({
+    params: { code: entry.code },
+    props: { part: entry.part, routeSlug: entry.code, altEnSlug: entry.code }
+  }));
 
   const aliasPaths = descriptiveAliases.map((a) => ({
     params: { code: a.slugEs },
     props: { part: a.part, routeSlug: a.slugEs, altEnSlug: a.slugEn }
   }));
 
-  return [...basePaths, ...aliasPaths];
+  return [...basePaths, ...alloyPaths, ...aliasPaths];
 }
 
 const { part, routeSlug, altEnSlug } = Astro.props;

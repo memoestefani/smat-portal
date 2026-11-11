@@ -31,7 +31,7 @@ export const SKU_TO_CURATED_PHOTO_SPEC = Object.freeze({
     cropBox: { leftRatio: 0.04, topRatio: 0.02, widthRatio: 0.92, heightRatio: 0.94 }
   },
   'SMAT-LAB-VASO-1000': {
-    relPath: '04_fototeca_de_productos/03_tamices_e_instrumental/brass cover.jpg',
+    relPath: '04_fototeca_de_productos/03_tamices_e_instrumental/IMG_0395.JPG',
     cropGravity: 'center',
     cropBox: { leftRatio: 0.08, topRatio: 0.05, widthRatio: 0.84, heightRatio: 0.90 }
   },
@@ -51,7 +51,7 @@ export const SKU_TO_CURATED_PHOTO_SPEC = Object.freeze({
     cropBox: { leftRatio: 0.06, topRatio: 0.06, widthRatio: 0.88, heightRatio: 0.88 }
   },
   'SMAT-LAB-PULV-DISC': {
-    relPath: '04_fototeca_de_productos/03_tamices_e_instrumental/30tyler.JPG',
+    relPath: '04_fototeca_de_productos/03_tamices_e_instrumental/IMG_0648.JPG',
     cropGravity: 'center',
     cropBox: { leftRatio: 0.10, topRatio: 0.08, widthRatio: 0.80, heightRatio: 0.84 }
   },
@@ -86,7 +86,7 @@ export const SKU_TO_CURATED_PHOTO_SPEC = Object.freeze({
     cropBox: { leftRatio: 0.05, topRatio: 0.05, widthRatio: 0.90, heightRatio: 0.90 }
   },
   'SMAT-CYC-D6-D20': {
-    relPath: '04_fototeca_de_productos/02_bombas_y_equipos_de_planta/bomba vertical.jpg',
+    relPath: '04_fototeca_de_productos/04_piezas_y_stock_almacen/IMG_0516.JPG',
     cropGravity: 'center',
     cropBox: { leftRatio: 0.08, topRatio: 0.04, widthRatio: 0.84, heightRatio: 0.92 }
   },
@@ -106,12 +106,12 @@ export const SKU_TO_CURATED_PHOTO_SPEC = Object.freeze({
     cropBox: { leftRatio: 0.05, topRatio: 0.05, widthRatio: 0.90, heightRatio: 0.90 }
   },
   'SMAT-FILT-CLOTH-PLATE': {
-    relPath: '04_fototeca_de_productos/04_piezas_y_stock_almacen/laina 2.jpg',
+    relPath: '04_fototeca_de_productos/04_piezas_y_stock_almacen/IMG_1138.JPG',
     cropGravity: 'center',
     cropBox: { leftRatio: 0.06, topRatio: 0.06, widthRatio: 0.88, heightRatio: 0.88 }
   },
   'SMAT-FILT-SHIFTER-CHAIN': {
-    relPath: '04_fototeca_de_productos/04_piezas_y_stock_almacen/Pin sleeves.jpg',
+    relPath: '04_fototeca_de_productos/04_piezas_y_stock_almacen/IMG_4895.JPG',
     cropGravity: 'center',
     cropBox: { leftRatio: 0.08, topRatio: 0.08, widthRatio: 0.84, heightRatio: 0.84 }
   },
@@ -147,7 +147,7 @@ export async function computeImageDHash64(inputBuffer) {
 
 export function buildCadBlueprintSvg(skuOrKey, diagramIdOverride) {
   if (typeof skuOrKey === 'string') {
-    return buildFamilyGeometrySvg({ sku_id: skuOrKey, diagram_id: diagramIdOverride || 'impeller' }, 0);
+    return buildFamilyGeometrySvg({ sku_id: skuOrKey, diagram_id: diagramIdOverride || 'impeller_5vane' }, 0);
   }
   return buildFamilyGeometrySvg(skuOrKey, 0);
 }
@@ -155,7 +155,7 @@ export function buildCadBlueprintSvg(skuOrKey, diagramIdOverride) {
 export function buildFamilyGeometrySvg(sku, idx) {
   const triplet = sku.geometric_triplet_mm || { a_id_mm: 100, b_od_mm: 400, c_thickness_mm: 80 };
   const skuKey = sku.sku_id || sku.id;
-  const diagramId = sku.diagram_id || 'impeller';
+  const diagramId = sku.diagram_id || 'impeller_5vane';
   const cx = 485;
   const cy = 165;
   let cadSvg = '';
@@ -171,7 +171,7 @@ export function buildFamilyGeometrySvg(sku, idx) {
       <path d="M ${cx - 8} ${cy + 54} L ${cx - 8} ${cy + 78} L ${cx + 8} ${cy + 78} L ${cx + 8} ${cy + 54}" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
       <circle cx="${cx}" cy="${cy - 82}" r="10" fill="none" stroke="#0F172A" stroke-width="2.5"/>
     `;
-  } else if (diagramId === 'marcy') {
+  } else if (diagramId === 'marcy_scale' || diagramId === 'marcy') {
     cadSvg = `
       <!-- Carátula Concéntrica de Doble Anillo Graduado (Balanza Marcy) -->
       <circle cx="${cx}" cy="${cy}" r="76" fill="#F1F5F9" stroke="#0F172A" stroke-width="2.5"/>
@@ -189,7 +189,7 @@ export function buildFamilyGeometrySvg(sku, idx) {
       <rect x="${cx - 28}" y="${cy - 28}" width="56" height="58" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
       <path d="M ${cx} ${cy - 76} L ${cx + 26} ${cy - 48} L ${cx} ${cy - 34}" fill="none" stroke="#0F172A" stroke-width="3" stroke-linecap="round"/>
     `;
-  } else if (diagramId === 'sieves') {
+  } else if (diagramId === 'astm_sieves' || diagramId === 'sieves') {
     cadSvg = `
       <!-- Pila de Tamices Cilíndricos con Retícula ASTM E11 -->
       <ellipse cx="${cx}" cy="${cy - 36}" rx="64" ry="20" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
@@ -223,17 +223,50 @@ export function buildFamilyGeometrySvg(sku, idx) {
       <circle cx="${cx + 28}" cy="${cy - 66}" r="14" fill="#FFFFFF" stroke="#D97706" stroke-width="2.5"/>
       <line x1="${cx + 28}" y1="${cy - 66}" x2="${cx + 35}" y2="${cy - 72}" stroke="#DC2626" stroke-width="2"/>
     `;
-  } else if (diagramId === 'cyclone_d6_d20' || diagramId === 'coupled_pump_cyclone') {
+  } else if (diagramId === 'cyclone_d6_d20' || diagramId === 'cyclone_apex' || diagramId === 'cyclone_apex_vortex') {
     cadSvg = `
-      <!-- Hidrociclón con Cabezal Involuta, Vortex Finder y Apex -->
+      <!-- Hidrociclón D6-D20 con Cabezal Involuta, Vortex Finder y Apex SiC -->
       <rect x="${cx - 34}" y="${cy - 68}" width="68" height="36" fill="#F1F5F9" stroke="#0F172A" stroke-width="2.5"/>
       <polygon points="${cx - 34},${cy - 32} ${cx + 34},${cy - 32} ${cx + 12},${cy + 58} ${cx - 12},${cy + 58}" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
-      <rect x="${cx - 12}" y="${cy - 82}" width="24" height="32" fill="#F8FAFC" stroke="#D97706" stroke-width="2"/>
-      <rect x="${cx - 10}" y="${cy + 58}" width="20" height="18" fill="#D97706" stroke="#0F172A" stroke-width="2"/>
+      <rect x="${cx - 12}" y="${cy - 82}" width="24" height="32" fill="#F8FAFC" stroke="#7C3AED" stroke-width="2.2"/>
+      <rect x="${cx - 10}" y="${cy + 58}" width="20" height="18" fill="#7C3AED" stroke="#0F172A" stroke-width="2"/>
+    `;
+  } else if (diagramId === 'pinch_knife_valve' || skuKey === 'SMAT-VALV-PINCH-KNIFE') {
+    cadSvg = `
+      <!-- Válvula Pinch de Manga R55 y Cuchilla Pasante Bridada ANSI 150 -->
+      <rect x="${cx - 56}" y="${cy - 34}" width="112" height="68" rx="6" fill="#F1F5F9" stroke="#0F172A" stroke-width="2.5"/>
+      <line x1="${cx - 56}" y1="${cy - 48}" x2="${cx - 56}" y2="${cy + 48}" stroke="#0F172A" stroke-width="4"/>
+      <line x1="${cx + 56}" y1="${cy - 48}" x2="${cx + 56}" y2="${cy + 48}" stroke="#0F172A" stroke-width="4"/>
+      <path d="M ${cx - 48} ${cy - 18} Q ${cx} ${cy + 6} ${cx + 48} ${cy - 18}" fill="none" stroke="#EA580C" stroke-width="3"/>
+      <path d="M ${cx - 48} ${cy + 18} Q ${cx} ${cy - 6} ${cx + 48} ${cy + 18}" fill="none" stroke="#EA580C" stroke-width="3"/>
+      <line x1="${cx}" y1="${cy - 72}" x2="${cx}" y2="${cy - 10}" stroke="#475569" stroke-width="3.5"/>
+      <line x1="${cx - 24}" y1="${cy - 72}" x2="${cx + 24}" y2="${cy - 72}" stroke="#D97706" stroke-width="4" stroke-linecap="round"/>
+    `;
+  } else if (diagramId === 'coupled_pump_cyclone') {
+    cadSvg = `
+      <!-- Paquete Casado Lazo Cerrado Bomba AH + Hidrociclón D10-D20 -->
+      <circle cx="${cx - 36}" cy="${cy + 18}" r="36" fill="#F1F5F9" stroke="#0F172A" stroke-width="2.5"/>
+      <circle cx="${cx - 36}" cy="${cy + 18}" r="14" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
+      <path d="M ${cx - 6} ${cy - 4} L ${cx + 26} ${cy - 48}" stroke="#0284C7" stroke-width="4" stroke-linecap="round"/>
+      <rect x="${cx + 18}" y="${cy - 64}" width="44" height="24" fill="#F1F5F9" stroke="#0F172A" stroke-width="2.2"/>
+      <polygon points="${cx + 18},${cy - 40} ${cx + 62},${cy - 40} ${cx + 48},${cy + 36} ${cx + 32},${cy + 36}" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.2"/>
+    `;
+  } else if (diagramId === 'urethane_screen_panel_305' || skuKey === 'SMAT-SCR-MOD-1X1') {
+    cadSvg = `
+      <!-- Módulo de Poliuretano 305x305 mm (1x1 ft) con Fijación Pin-and-Sleeve -->
+      <rect x="${cx - 62}" y="${cy - 62}" width="124" height="124" rx="6" fill="#FFF7ED" stroke="#EA580C" stroke-width="2.8"/>
+      <circle cx="${cx - 48}" cy="${cy - 48}" r="7" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
+      <circle cx="${cx + 48}" cy="${cy - 48}" r="7" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
+      <circle cx="${cx - 48}" cy="${cy + 48}" r="7" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
+      <circle cx="${cx + 48}" cy="${cy + 48}" r="7" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
+      <rect x="${cx - 34}" y="${cy - 34}" width="28" height="28" rx="3" fill="#FFFFFF" stroke="#EA580C" stroke-width="1.8"/>
+      <rect x="${cx + 6}" y="${cy - 34}" width="28" height="28" rx="3" fill="#FFFFFF" stroke="#EA580C" stroke-width="1.8"/>
+      <rect x="${cx - 34}" y="${cy + 6}" width="28" height="28" rx="3" fill="#FFFFFF" stroke="#EA580C" stroke-width="1.8"/>
+      <rect x="${cx + 6}" y="${cy + 6}" width="28" height="28" rx="3" fill="#FFFFFF" stroke="#EA580C" stroke-width="1.8"/>
     `;
   } else if (diagramId === 'urethane_screen_th48') {
     cadSvg = `
-      <!-- Panel Modular de Poliuretano con Ranuras de Alivio Troncocónico -->
+      <!-- Panel Modular de Poliuretano con Ranuras de Alivio Troncocónico TH48-30 -->
       <rect x="${cx - 66}" y="${cy - 54}" width="132" height="108" rx="6" fill="#F1F5F9" stroke="#EA580C" stroke-width="2.5"/>
       <rect x="${cx - 48}" y="${cy - 36}" width="24" height="10" rx="2" fill="#FFFFFF" stroke="#0F172A" stroke-width="1.8"/>
       <rect x="${cx - 12}" y="${cy - 36}" width="24" height="10" rx="2" fill="#FFFFFF" stroke="#0F172A" stroke-width="1.8"/>
@@ -245,9 +278,9 @@ export function buildFamilyGeometrySvg(sku, idx) {
       <rect x="${cx - 12}" y="${cy + 24}" width="24" height="10" rx="2" fill="#FFFFFF" stroke="#0F172A" stroke-width="1.8"/>
       <rect x="${cx + 24}" y="${cy + 24}" width="24" height="10" rx="2" fill="#FFFFFF" stroke="#0F172A" stroke-width="1.8"/>
     `;
-  } else if (diagramId === 'filter' || diagramId === 'filter_plate_shifter') {
+  } else if (diagramId === 'filter_press' || diagramId === 'filter') {
     cadSvg = `
-      <!-- Paquete de Placas Recesadas de Filtro Prensa y Uña Corre-Placas -->
+      <!-- Paquete de Placas Recesadas PP 16 bar y Lona Filtrante Multifilamento -->
       <rect x="${cx - 58}" y="${cy - 56}" width="116" height="112" rx="8" fill="#F1F5F9" stroke="#0F172A" stroke-width="2.5"/>
       <rect x="${cx - 38}" y="${cy - 36}" width="76" height="72" rx="4" fill="#FFFFFF" stroke="#0284C7" stroke-width="2"/>
       <circle cx="${cx}" cy="${cy}" r="16" fill="#F8FAFC" stroke="#D97706" stroke-width="2.5"/>
@@ -256,34 +289,62 @@ export function buildFamilyGeometrySvg(sku, idx) {
       <circle cx="${cx - 44}" cy="${cy + 42}" r="6" fill="#0F172A"/>
       <circle cx="${cx + 44}" cy="${cy + 42}" r="6" fill="#0F172A"/>
     `;
-  } else if (diagramId === 'flotation') {
+  } else if (diagramId === 'filter_plate_shifter') {
     cadSvg = `
-      <!-- Mecanismo Suspendido Rotor-Estator con Tubo Central -->
+      <!-- Mecanismo Corre-Placas (Plate Shifter) con Cadena de Rodillos y Trinquete -->
+      <line x1="${cx - 72}" y1="${cy - 28}" x2="${cx + 72}" y2="${cy - 28}" stroke="#0F172A" stroke-width="3.5" stroke-dasharray="10 5"/>
+      <circle cx="${cx - 54}" cy="${cy - 28}" r="14" fill="#FFFFFF" stroke="#D97706" stroke-width="2.5"/>
+      <circle cx="${cx + 54}" cy="${cy - 28}" r="14" fill="#FFFFFF" stroke="#D97706" stroke-width="2.5"/>
+      <rect x="${cx - 26}" y="${cy - 18}" width="52" height="36" rx="4" fill="#F1F5F9" stroke="#0F172A" stroke-width="2.5"/>
+      <path d="M ${cx - 8} ${cy + 18} L ${cx - 16} ${cy + 52} L ${cx + 16} ${cy + 52} L ${cx + 8} ${cy + 18} Z" fill="#FFFFFF" stroke="#0284C7" stroke-width="2.2"/>
+    `;
+  } else if (diagramId === 'flotation_cell' || diagramId === 'flotation') {
+    cadSvg = `
+      <!-- Mecanismo Suspendido Rotor-Estator con Tubo Central (#18 SP / #24 / #30) -->
       <rect x="${cx - 14}" y="${cy - 76}" width="28" height="92" fill="#F1F5F9" stroke="#0F172A" stroke-width="2.5"/>
       <polygon points="${cx - 48},${cy + 16} ${cx + 48},${cy + 16} ${cx + 62},${cy + 54} ${cx - 62},${cy + 54}" fill="#FFFFFF" stroke="#D97706" stroke-width="2.5"/>
       <line x1="${cx - 32}" y1="${cy + 16}" x2="${cx - 38}" y2="${cy + 54}" stroke="#0F172A" stroke-width="2.5"/>
       <line x1="${cx}" y1="${cy + 16}" x2="${cx}" y2="${cy + 54}" stroke="#0F172A" stroke-width="2.5"/>
       <line x1="${cx + 32}" y1="${cy + 16}" x2="${cx + 38}" y2="${cy + 54}" stroke="#0F172A" stroke-width="2.5"/>
     `;
-  } else if (diagramId === 'bearing') {
+  } else if (diagramId === 'bearing_cartridge' || diagramId === 'bearing') {
     cadSvg = `
-      <!-- Cartucho Cilíndrico de Rodamientos Espalda-con-Espalda -->
+      <!-- Cartucho Cilíndrico de Rodamientos Espalda-con-Espalda 005M -->
       <rect x="${cx - 66}" y="${cy - 38}" width="132" height="76" rx="6" fill="#F1F5F9" stroke="#0F172A" stroke-width="2.5"/>
       <line x1="${cx - 82}" y1="${cy}" x2="${cx + 82}" y2="${cy}" stroke="#D97706" stroke-width="4"/>
       <rect x="${cx - 48}" y="${cy - 30}" width="24" height="60" fill="#FFFFFF" stroke="#475569" stroke-width="2"/>
       <rect x="${cx + 24}" y="${cy - 30}" width="24" height="60" fill="#FFFFFF" stroke="#475569" stroke-width="2"/>
     `;
-  } else if (diagramId === 'liners' || diagramId === 'material_kit_grid') {
+  } else if (diagramId === 'expeller_seal' || diagramId === 'expeller') {
     cadSvg = `
-      <!-- Perfil Meridional de Voluta / Cuello de Succión y Matriz 5:5:4 -->
+      <!-- Sello Centrífugo Seco: Expulsor A05 + Anillo Expulsor + Camisa Cerámica -->
+      <circle cx="${cx}" cy="${cy}" r="66" fill="#F1F5F9" stroke="#0F172A" stroke-width="2.5" stroke-dasharray="10 4"/>
+      <circle cx="${cx}" cy="${cy}" r="46" fill="#FFFFFF" stroke="#D97706" stroke-width="2.5"/>
+      <circle cx="${cx}" cy="${cy}" r="20" fill="#F8FAFC" stroke="#0891B2" stroke-width="3"/>
+      <line x1="${cx - 46}" y1="${cy}" x2="${cx - 20}" y2="${cy}" stroke="#0F172A" stroke-width="2.5"/>
+      <line x1="${cx + 20}" y1="${cy}" x2="${cx + 46}" y2="${cy}" stroke="#0F172A" stroke-width="2.5"/>
+      <line x1="${cx}" y1="${cy - 46}" x2="${cx}" y2="${cy - 20}" stroke="#0F172A" stroke-width="2.5"/>
+      <line x1="${cx}" y1="${cy + 20}" x2="${cx}" y2="${cy + 46}" stroke="#0F172A" stroke-width="2.5"/>
+    `;
+  } else if (diagramId === 'wet_kit_554' || diagramId === 'material_kit_grid') {
+    cadSvg = `
+      <!-- Lote Húmedo Sincronizado 5:5:4 (Impulsor + Cuello de Succión + Voluta) -->
+      <circle cx="${cx - 26}" cy="${cy - 12}" r="42" fill="#F1F5F9" stroke="#0F172A" stroke-width="2.5"/>
+      <circle cx="${cx - 26}" cy="${cy - 12}" r="16" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
+      <circle cx="${cx + 28}" cy="${cy + 16}" r="36" fill="#FFFFFF" stroke="#059669" stroke-width="2.5"/>
+      <circle cx="${cx + 28}" cy="${cy + 16}" r="14" fill="#F8FAFC" stroke="#0F172A" stroke-width="2"/>
+    `;
+  } else if (diagramId === 'volute_liner' || diagramId === 'liners') {
+    cadSvg = `
+      <!-- Perfil Meridional de Voluta / Cuello de Succión Cónico y Platos AH -->
       <path d="M ${cx - 58} ${cy - 48} C ${cx + 42} ${cy - 68}, ${cx + 68} ${cy + 48}, ${cx - 48} ${cy + 54} Z" fill="#F1F5F9" stroke="#0F172A" stroke-width="2.5"/>
       <circle cx="${cx - 10}" cy="${cy + 2}" r="28" fill="#FFFFFF" stroke="#059669" stroke-width="2.5"/>
       <circle cx="${cx - 10}" cy="${cy + 2}" r="14" fill="#F8FAFC" stroke="#D97706" stroke-width="2"/>
     `;
-  } else {
+  } else if (diagramId === 'impeller_5vane' || diagramId === 'impeller') {
     const rOuter = Math.max(44, Math.min(110, Math.round((Number(triplet.b_od_mm) || 350) / 6.2)));
     const rInner = Math.max(14, Math.min(rOuter - 16, Math.round((Number(triplet.a_id_mm) || 90) / 3.6)));
-    const vaneCount = 5 + (idx % 4);
+    const vaneCount = 5;
     let vanesSvg = '';
     for (let v = 0; v < vaneCount; v += 1) {
       const angle = ((v * 360) / vaneCount + idx * 19) * (Math.PI / 180);
@@ -298,6 +359,8 @@ export function buildFamilyGeometrySvg(sku, idx) {
       ${vanesSvg}
       <circle cx="${cx}" cy="${cy}" r="${rInner}" fill="#FFFFFF" stroke="#D97706" stroke-width="2.5"/>
     `;
+  } else {
+    throw new Error(`[E_UNKNOWN_CAD_DIAGRAM_ID] diagram_id "${diagramId}" (SKU ${skuKey}) no tiene geometría registrada en buildFamilyGeometrySvg`);
   }
 
   return `
@@ -430,14 +493,6 @@ export async function generateAllProductWebpImages() {
     const outFullPath = path.join(OUTPUT_DIR, outFileName);
     fs.writeFileSync(outFullPath, webpBuffer);
 
-    // También escribir copia para aliases_es históricos para evitar 404 en referencias directas
-    for (const aliasSlug of sku.aliases_es || []) {
-      const aliasPath = path.join(OUTPUT_DIR, `${aliasSlug}.webp`);
-      if (aliasPath !== outFullPath) {
-        fs.writeFileSync(aliasPath, webpBuffer);
-      }
-    }
-
     const dhash64 = await computeImageDHash64(webpBuffer);
     const sha256 = crypto.createHash('sha256').update(webpBuffer).digest('hex');
 
@@ -450,6 +505,14 @@ export async function generateAllProductWebpImages() {
       dhash64,
       path: outFullPath
     });
+  }
+
+  // Purgar cualquier archivo .webp huérfano que no pertenezca a los 19 slugs canónicos (DEB-V34-01)
+  const canonicalWebpSet = new Set(results.map((r) => `${r.slug}.webp`));
+  for (const existingFile of fs.readdirSync(OUTPUT_DIR)) {
+    if (existingFile.toLowerCase().endsWith('.webp') && !canonicalWebpSet.has(existingFile)) {
+      fs.unlinkSync(path.join(OUTPUT_DIR, existingFile));
+    }
   }
 
   const uniqueSha = new Set(results.map((r) => r.sha256)).size;

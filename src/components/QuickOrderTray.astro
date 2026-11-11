@@ -126,6 +126,14 @@ const isEs = lang === 'es';
       >
         {isEs ? '🚀 Enviar Requisición Prioritaria (WhatsApp / Correo)' : '🚀 Dispatch Priority Requisition (WhatsApp / Email)'}
       </a>
+      <a
+        id="smat-qtray-pdf-link"
+        data-qtray-pdf-btn
+        href={isEs ? '/acuse/?reorder=1&tray=SMAT-PUMP-IMP-AH:1:PARO_DE_LINEA' : '/en/thank-you/?reorder=1&tray=SMAT-PUMP-IMP-AH:1:PARO_DE_LINEA'}
+        class="smat-qtray-pdf-btn"
+      >
+        {isEs ? '📄 Emitir Hoja PDF / Folio SAP' : '📄 Issue PDF Sheet / SAP Folio'}
+      </a>
     </div>
   </div>
 </aside>
@@ -136,6 +144,9 @@ const isEs = lang === 'es';
     saveTrayState,
     addTrayItem,
     removeTrayItem,
+    updateTrayItemQty,
+    encodeReorderUrlQuery,
+    hydrateTrayFromReorderQuery,
     buildCmuPrioritySubjectLine,
     computeCmuPriorityDescriptor,
     evaluateBearingCartridgeCoreTradeIn,
@@ -146,6 +157,9 @@ const isEs = lang === 'es';
   function initQuickOrderTray() {
     const root = document.getElementById('smat-quick-order-tray');
     if (!root) return;
+    if (typeof window !== 'undefined' && window.location && window.location.search.includes('tray=')) {
+      hydrateTrayFromReorderQuery(window.location.search);
+    }
     const isEs = root.getAttribute('data-lang') !== 'en';
     const toggleBtn = document.getElementById('smat-qtray-toggle');
     const closeBtn = document.getElementById('smat-qtray-close');
@@ -154,6 +168,7 @@ const isEs = lang === 'es';
     const itemsEl = document.getElementById('smat-qtray-items');
     const badgeEl = document.getElementById('smat-qtray-priority-badge');
     const waLink = document.getElementById('smat-qtray-wa-link') as HTMLAnchorElement | null;
+    const pdfLink = document.getElementById('smat-qtray-pdf-link') as HTMLAnchorElement | null;
     const coreToggle = document.getElementById('smat-qtray-core-tradein') as HTMLInputElement | null;
     const coreBadge = document.getElementById('smat-qtray-core-badge');
 
@@ -203,10 +218,24 @@ const isEs = lang === 'es';
                   <div class="smat-qtray-item-code">${item.id} × ${item.qty}</div>
                   <div class="smat-qtray-item-name">${isEs ? item.nameEs : item.nameEn}</div>
                 </div>
-                <button type="button" data-qtray-remove="${item.id}" class="smat-qtray-remove-btn">✕</button>
+                <div class="smat-qtray-item-controls">
+                  <button type="button" data-qtray-qty-delta="-1" data-qtray-item-id="${item.id}" data-qtray-current-qty="${item.qty}" class="smat-qtray-qty-btn" aria-label="Disminuir cantidad">−</button>
+                  <button type="button" data-qtray-qty-delta="1" data-qtray-item-id="${item.id}" data-qtray-current-qty="${item.qty}" class="smat-qtray-qty-btn" aria-label="Aumentar cantidad">+</button>
+                  <button type="button" data-qtray-remove="${item.id}" class="smat-qtray-remove-btn">✕</button>
+                </div>
               </li>`
             )
             .join('');
+
+          itemsEl.querySelectorAll('[data-qtray-qty-delta]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const id = btn.getAttribute('data-qtray-item-id') || '';
+              const delta = Number(btn.getAttribute('data-qtray-qty-delta') || 0);
+              const currentQty = Number(btn.getAttribute('data-qtray-current-qty') || 1);
+              updateTrayItemQty(id, Math.max(0, currentQty + delta));
+              renderTray();
+            });
+          });
 
           itemsEl.querySelectorAll('[data-qtray-remove]').forEach((btn) => {
             btn.addEventListener('click', () => {
@@ -224,6 +253,12 @@ const isEs = lang === 'es';
         const coreNote = tradeIn.discountPct > 0 ? ` | Core Trade-In: -${tradeIn.discountPct}%` : '';
         const msg = `[SMAT-DGO] ${subject} | Carril: ${selectedLane}${coreNote} | Partidas: ${summary || 'Consulta directa'}`;
         waLink.href = `https://wa.me/526183670664?text=${encodeURIComponent(msg)}`;
+      }
+
+      if (pdfLink) {
+        const reorderQuery = encodeReorderUrlQuery(state);
+        const basePath = isEs ? '/acuse/' : '/en/thank-you/';
+        pdfLink.href = `${basePath}${reorderQuery}&lane=${encodeURIComponent(selectedLane)}`;
       }
     }
 
@@ -545,5 +580,41 @@ const isEs = lang === 'es';
 
   .smat-qtray-wa-btn:hover {
     background: #b45309;
+  }
+
+  .smat-qtray-pdf-btn {
+    display: block;
+    width: 100%;
+    padding: 0.625rem 1rem;
+    border-radius: 12px;
+    background: #0f172a;
+    color: #ffffff;
+    text-align: center;
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 700;
+    transition: background 0.15s ease;
+  }
+
+  .smat-qtray-pdf-btn:hover {
+    background: #1e293b;
+  }
+
+  .smat-qtray-item-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .smat-qtray-qty-btn {
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #0f172a;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
   }
 </style>

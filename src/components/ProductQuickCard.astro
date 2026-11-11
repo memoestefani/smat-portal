@@ -79,9 +79,12 @@ const configOptions: ConfigOption[] = (isEs ? sku.config_options_es : sku.config
   }));
 
 const skuTitle = isEs ? sku.title_es : sku.title_en;
+const cmuTag = sku.stock_regime === 'hay'
+  ? 'P1-CAJA-CHICA-HAY'
+  : (sku.stock_regime === 'se_fabrica' ? 'P3-PROYECTO-50%-ANTICIPO' : 'P2-REPOSICION-LOTE');
 const waDefaultText = isEs
-  ? `Hola Ing. Manuel (SMAT Durango), solicito cotización / pedido rápido de: ${skuTitle} [Ref: ${sku.id} | Config: ${sku.default_material} | SAT: ${satTuple.clave_prod_serv} / ${satTuple.clave_unidad}].`
-  : `Hello SMAT Engineering (Durango), I request a quick quote / order for: ${skuTitle} [Ref: ${sku.id} | Config: ${sku.default_material} | SAT: ${satTuple.clave_prod_serv} / ${satTuple.clave_unidad}].`;
+  ? `[SMAT-DGO | PRIORIDAD-cμ: ${cmuTag}] Hola Ing. Manuel (SMAT Durango), solicito cotización / pedido rápido de: ${skuTitle} [Ref: ${sku.id} | Config: ${sku.default_material} | SAT: ${satTuple.clave_prod_serv} / ${satTuple.clave_unidad}].`
+  : `[SMAT-DGO | PRIORITY-cμ: ${cmuTag}] Hello SMAT Engineering (Durango), I request a quick quote / order for: ${skuTitle} [Ref: ${sku.id} | Config: ${sku.default_material} | SAT: ${satTuple.clave_prod_serv} / ${satTuple.clave_unidad}].`;
 const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waDefaultText)}`;
 
 const regimeConfig: Record<string, { labelEs: string; labelEn: string; cls: string }> = {
@@ -235,6 +238,7 @@ const regime = regimeConfig[sku.stock_regime || 'hay'] || regimeConfig.hay;
             data-sku-id={sku.id}
             data-sku-title={skuTitle}
             data-sku-sat={`${satTuple.clave_prod_serv} / ${satTuple.clave_unidad}`}
+            data-sku-cmu={cmuTag}
             data-sku-lang={lang}
             class="smat-qcard-wa-btn"
           >
@@ -300,10 +304,11 @@ const regime = regimeConfig[sku.stock_regime || 'hay'] || regimeConfig.hay;
             const skuId = waBtn.getAttribute('data-sku-id') || '';
             const title = waBtn.getAttribute('data-sku-title') || '';
             const sat = waBtn.getAttribute('data-sku-sat') || '40151510 / H87';
+            const cmu = waBtn.getAttribute('data-sku-cmu') || 'P1-CAJA-CHICA-HAY';
             const isEn = waBtn.getAttribute('data-sku-lang') === 'en';
             const msg = isEn
-              ? `Hello SMAT Engineering (Durango), I request a quick quote / order for: ${title} [Ref: ${skuId} | Config: ${selectedMat} | SAT: ${sat}].`
-              : `Hola Ing. Manuel (SMAT Durango), solicito cotización / pedido rápido de: ${title} [Ref: ${skuId} | Config: ${selectedMat} | SAT: ${sat}].`;
+              ? `[SMAT-DGO | PRIORITY-cμ: ${cmu}] Hello SMAT Engineering (Durango), I request a quick quote / order for: ${title} [Ref: ${skuId} | Config: ${selectedMat} | SAT: ${sat}].`
+              : `[SMAT-DGO | PRIORIDAD-cμ: ${cmu}] Hola Ing. Manuel (SMAT Durango), solicito cotización / pedido rápido de: ${title} [Ref: ${skuId} | Config: ${selectedMat} | SAT: ${sat}].`;
             waBtn.href = `https://wa.me/526183670664?text=${encodeURIComponent(msg)}`;
           }
         });

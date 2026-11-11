@@ -413,17 +413,17 @@
     "slug_es": "pulverizador-discos-laboratorio",
     "slug_en": "laboratory-disc-pulverizer",
     "aliases_es": [
-      "manga-elastomero-valvula-pinch-lodos",
-      "valvula-pinch-manga-elastomero-r55"
+      "pulverizador-mecanico-discos-laboratorio",
+      "discos-molienda-alto-cromo-pulverizador"
     ],
     "aliases_en": [
-      "slurry-pinch-valve-elastomer-sleeve",
-      "pinch-valve-r55-elastomer-sleeve"
+      "mechanical-lab-disc-pulverizer",
+      "high-chrome-pulverizer-grinding-discs"
     ],
     "vertical": "control",
     "avenue": "avenida_5_laboratorio",
     "secondary_avenues": [
-      "avenida_4_flotacion_valvulas"
+      "avenida_3_cribas_mallas"
     ],
     "stock_regime": "se_pide",
     "availability_regime": "fast_assembly",
@@ -437,7 +437,7 @@
     "reorder_window_days": 150,
     "kit_id": 4,
     "diagram_id": "lab_comminution_pan",
-    "secondary_diagram_id": "pinch-knife-valve",
+    "secondary_diagram_id": "astm_sieves",
     "photo_webp": "/images/productos/pulverizador-discos-laboratorio.webp",
     "default_material": "A05",
     "available_materials": [
@@ -496,18 +496,17 @@
     "slug_es": "filtro-prensa-batch-laboratorio",
     "slug_en": "laboratory-batch-pressure-filter",
     "aliases_es": [
-      "valvula-guillotina-bidireccional-lodos",
-      "valvula-guillotina-bidireccional-puertos-limpios"
+      "filtro-prensa-laboratorio-neumatico",
+      "filtro-presion-batch-100psi-inox"
     ],
     "aliases_en": [
-      "bidirectional-slurry-knife-gate-valve",
-      "clean-port-bidirectional-knife-gate-valve"
+      "pneumatic-lab-batch-filter-press",
+      "stainless-100psi-batch-pressure-filter"
     ],
     "vertical": "control",
     "avenue": "avenida_5_laboratorio",
     "secondary_avenues": [
-      "avenida_5_filtracion",
-      "avenida_4_flotacion_valvulas"
+      "avenida_5_filtracion"
     ],
     "stock_regime": "hay",
     "availability_regime": "stock_durango",
@@ -1359,8 +1358,8 @@
     "coupled_pair_sku": "SMAT-SCR-TH48-30",
     "reorder_window_days": 150,
     "kit_id": 2,
-    "diagram_id": "urethane_screen_th48",
-    "secondary_diagram_id": "urethane_screen_panel_305",
+    "diagram_id": "urethane_screen_panel_305",
+    "secondary_diagram_id": "urethane_screen_th48",
     "photo_webp": "/images/productos/modulos-poliuretano-1x1-pin-camisa.webp",
     "default_material": "PU",
     "available_materials": [
@@ -1436,7 +1435,9 @@
     ],
     "vertical": "filtracion",
     "avenue": "avenida_5_filtracion",
-    "secondary_avenues": [],
+    "secondary_avenues": [
+      "avenida_4_flotacion_valvulas"
+    ],
     "stock_regime": "se_pide",
     "availability_regime": "fast_assembly",
     "gate_lock": "G5",
@@ -1618,7 +1619,8 @@
     "diagram_id": "flotation_cell",
     "secondary_diagram_id": "flotation-rotor-stator",
     "diagram_aliases": [
-      "flotacion"
+      "flotacion",
+      "pinch-knife-valve"
     ],
     "photo_webp": "/images/productos/mecanismo-suspendido-flotacion-18sp.webp",
     "default_material": "PU",
