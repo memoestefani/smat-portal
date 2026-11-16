@@ -37,6 +37,17 @@ interface Props {
     config_options_en?: ConfigOption[];
     sat_tuple?: SatTuple;
     stock_regime?: string;
+    availability_regime?: string;
+    kit_id?: number;
+    warehouse_audit?: {
+      physical_audit_date?: string;
+      warehouse_total_mxn?: number;
+      warehouse_total_units?: number;
+      warehouse_active_sku_count?: number;
+      availability_tier?: string;
+      dehoratius_audit_badge_es?: string;
+      dehoratius_audit_badge_en?: string;
+    };
     gate_lock?: string;
     mass_kg: number;
     atomic_codes: string[];
@@ -105,12 +116,25 @@ const regimeConfig: Record<string, { labelEs: string; labelEn: string; cls: stri
   }
 };
 const regime = regimeConfig[sku.stock_regime || 'hay'] || regimeConfig.hay;
+const auditMeta = sku.warehouse_audit || {};
+const availabilityRegime = sku.availability_regime || 'stock_durango';
+const kitId = sku.kit_id || 1;
+const auditTier = auditMeta.availability_tier || 'TIER_1_IN_PATIO_DURANGO';
+const auditDate = auditMeta.physical_audit_date || '2026-11-10';
+const auditActiveSkus = auditMeta.warehouse_active_sku_count || 35;
+const _auditValuationRef = (auditMeta.warehouse_total_mxn || 0) + (auditMeta.warehouse_total_units || 0) + (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (auditMeta.dehoratius_audit_badge_en ? 1 : 0);
 ---
 
 <section
   class="product-quick-card"
   data-product-quick-card={sku.id}
   data-stock-regime={sku.stock_regime || 'hay'}
+  data-availability-regime={availabilityRegime}
+  data-kit-id={String(kitId)}
+  data-audit-tier={auditTier}
+  data-audit-date={auditDate}
+  data-audit-skus={String(auditActiveSkus)}
+  data-audit-verified={_auditValuationRef > 0 ? '1' : '0'}
   data-gate-lock={sku.gate_lock || 'G1'}
 >
   <!-- Barra superior de Pestañas de Inspección (Fitts h >= 44px) y Régimen -->
@@ -311,6 +335,33 @@ const regime = regimeConfig[sku.stock_regime || 'hay'] || regimeConfig.hay;
               : `[SMAT-DGO | PRIORIDAD-cμ: ${cmu}] Hola Ing. Manuel (SMAT Durango), solicito cotización / pedido rápido de: ${title} [Ref: ${skuId} | Config: ${selectedMat} | SAT: ${sat}].`;
             waBtn.href = `https://wa.me/526183670664?text=${encodeURIComponent(msg)}`;
           }
+          const slugAddBtn = document.querySelector(`[data-slug-add-to-tray="${card.getAttribute('data-product-quick-card')}"]`);
+          if (slugAddBtn instanceof HTMLElement) {
+            slugAddBtn.setAttribute('data-sku-material', selectedMat);
+          }
+          const slugWaBtn = document.querySelector('[data-slug-wa-btn]');
+          if (slugWaBtn instanceof HTMLAnchorElement) {
+            const skuId = slugWaBtn.getAttribute('data-sku-id') || '';
+            const title = slugWaBtn.getAttribute('data-sku-title') || '';
+            const regime = slugWaBtn.getAttribute('data-sku-regime') || 'hay';
+            const mass = slugWaBtn.getAttribute('data-sku-mass') || '';
+            const isEn = slugWaBtn.getAttribute('data-sku-lang') === 'en';
+            const slugMsg = isEn
+              ? `[SMAT-DGO] Hello SMAT, I need an urgent quote for SKU ${skuId} (${title}) in alloy ${selectedMat} [ Regime: ${regime} | Mass: ${mass} kg ].`
+              : `[SMAT-DGO] Hola SMAT, requiero cotizar SKU ${skuId} (${title}) en aleación ${selectedMat} [ Régimen: ${regime} | Masa: ${mass} kg ].`;
+            slugWaBtn.href = `https://wa.me/526183670664?text=${encodeURIComponent(slugMsg)}`;
+          }
+          const slugWbBtn = document.querySelector('[data-slug-workbench-btn]');
+          if (slugWbBtn instanceof HTMLAnchorElement) {
+            const skuId = slugWbBtn.getAttribute('data-sku-id') || '';
+            const isEn = slugWbBtn.getAttribute('data-sku-lang') === 'en';
+            const baseQuotePath = isEn ? '/en/quote/' : '/cotizar/';
+            slugWbBtn.href = `${baseQuotePath}?sku=${encodeURIComponent(skuId)}&mat=${encodeURIComponent(selectedMat)}#rfq`;
+          }
+          document.querySelectorAll('.smat-slug-mat-chip').forEach((chip) => {
+            const matCode = chip.getAttribute('data-mat-code') || '';
+            chip.classList.toggle('is-default', matCode === selectedMat);
+          });
         });
       }
     });

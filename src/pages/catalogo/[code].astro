@@ -23,15 +23,15 @@ export function getStaticPaths() {
     { code: 'd4028a05', part: findPart('D4028') },
     { code: 'd4029a05', part: findPart('D4029') },
     { code: 'd005m', part: findPart('DAM005') },
-    { code: 'd3147-a05', part: findPart('E4147') },
-    { code: 'd3147-r55', part: findPart('E4147') },
+    { code: 'd3147-a05', part: findPart('D3147') },
+    { code: 'd3147-r55', part: { ...findPart('D3147'), metallurgy: 'Elastómero Hule Natural Antiabrasivo R55 (55 Shore A)', hardness: '55 ± 5 Shore A (Resiliencia ≥ 70%)' } },
     { code: 'e4147-a05', part: findPart('E4147') },
-    { code: 'e4147-r55', part: findPart('E4147') },
-    { code: 'f6147-a05', part: findPart('E4147') },
-    { code: 'dam028-a05', part: findPart('D4028') },
-    { code: 'eam028-a05', part: findPart('D4028') },
+    { code: 'e4147-r55', part: { ...findPart('E4147'), metallurgy: 'Elastómero Hule Natural Antiabrasivo R55 (55 Shore A)', hardness: '55 ± 5 Shore A (Resiliencia ≥ 70%)' } },
+    { code: 'f6147-a05', part: findPart('F6147') },
+    { code: 'dam028-a05', part: findPart('DAM028') },
+    { code: 'eam028-a05', part: findPart('EAM028') },
     { code: 'e4083-a05', part: findPart('E4083') },
-    { code: 'e4083-r55', part: findPart('E4083') }
+    { code: 'e4083-r55', part: { ...findPart('E4083'), metallurgy: 'Elastómero Hule Natural Antiabrasivo R55 (55 Shore A)', hardness: '55 ± 5 Shore A (Resiliencia ≥ 70%)' } }
   ];
   const descriptiveAliases = [
     { slugEs: 'impulsor-5-alabes', slugEn: '5-vane-impeller', part: findPart('E4147') },
@@ -233,11 +233,11 @@ const productSchema = {
                   </tr>
                   <tr>
                     <th>Garantía de Ensamble:</th>
-                    <td>{part.fit_guarantee_es}</td>
+                    <td>{part.fit_guarantee_es} (Kits asociados: #{(part.kit_ids || [1]).join(', #')})</td>
                   </tr>
                   <tr data-iso7810-ref="0.76mm">
                     <th>Escala Física Cotidiana (ISO/IEC 7810):</th>
-                    <td>Claro axial óptimo de referencia δ = 0.76 mm (equivalente al espesor exacto de 1 tarjeta bancaria estándar ISO 7810).</td>
+                    <td>{part.everyday_equivalence_es ? `${part.everyday_equivalence_es} • ` : ''}Claro axial óptimo de referencia δ = 0.76 mm (equivalente al espesor exacto de 1 tarjeta bancaria estándar ISO 7810).</td>
                   </tr>
                 </tbody>
               </table>
@@ -251,7 +251,7 @@ const productSchema = {
               <div class="assurance-text">
                 <h3>Garantía de Compatibilidad Dimensional 1:1 (ISO 2768-m)</h3>
                 <p>
-                  Cada pieza {part.part_number} es verificada físicamente en Tripleta Geométrica (A, B, C) antes de ser despachada desde nuestro Almacén Central en Durango. Aseguramos el acople 1:1 en bastidores estándar de la industria. Si una refacción no calza perfectamente con el marco correspondiente en su planta, se reemplaza de inmediato con nuestro stock en piso.
+                  Cada pieza {part.part_number} es verificada físicamente en Tripleta Geométrica (A, B, C) antes de ser despachada desde nuestro Almacén Central en Durango. Aseguramos el acople 1:1 en bastidores estándar de la industria. Si una refacción estándar presenta desviación dimensional respecto al plano confirmado, se gestiona su reposición prioritaria bajo protocolo de Almacén Durango.
                 </p>
               </div>
             </div>
@@ -269,7 +269,7 @@ const productSchema = {
         <!-- Columna Derecha: Muelle de Acción Rápida (WhatsApp & RFQ) -->
         <aside class="part-action-dock">
           <div class="action-card">
-            <span class="dock-badge">DISPONIBILIDAD INMEDIATA</span>
+            <span class="dock-badge">RÉGIMEN DE SUMINISTRO DURANGO</span>
             <h3>Requisición de {part.part_number}</h3>
             <p class="dock-desc">
               Atención directa con nuestro equipo de ingeniería en Durango para cotización inmediata, verificación de existencias y logística de embarque.

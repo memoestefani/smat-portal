@@ -51,6 +51,16 @@ import {
   saveWorkbenchState,
   loadWorkbenchState
 } from '../scripts/workbenchBus.js';
+import {
+  DOSSIER_FORMATTERS_BY_FIELD,
+  formatDossierSimulationBanner,
+  formatDossierMetrologyBadge
+} from '../scripts/quoteDossierRenderer.js';
+export {
+  DOSSIER_FORMATTERS_BY_FIELD,
+  formatDossierSimulationBanner,
+  formatDossierMetrologyBadge
+};
 
 export const ROLE_ALIAS_MAP = {
   impulsor: 'solo_impulsor',
@@ -62,6 +72,12 @@ export const ROLE_ALIAS_MAP = {
   soporte: 'kit_rodamientos',
   soporte_rodamiento: 'kit_rodamientos',
   skid_bomba: 'skid_bomba',
+  hidrociclon: 'hidrociclon_apex_vortex',
+  hidrociclones: 'hidrociclon_apex_vortex',
+  hidrociclon_apex_vortex: 'hidrociclon_apex_vortex',
+  malla_criba: 'malla_criba_poliuretano',
+  malla_criba_poliuretano: 'malla_criba_poliuretano',
+  cribado: 'malla_criba_poliuretano',
   celda_completa: 'celda_flotacion',
   mecanismos_flotacion: 'rotor_estator',
   prensa_completa: 'filtro_prensa',
@@ -81,11 +97,14 @@ export const ROLE_ALIAS_MAP = {
 export function computeWizardViewState(state = {}, urlParams = {}) {
   // Tri-Compound lookup: { A05: 'Alto Cromo Cr27 (A05)', PU: 'Poliuretano Elastómero U01', RUBBER: 'Hule Natural R55' }
   const ctx = typeof urlParams === 'string' ? parseUrlContextParams(urlParams) : (urlParams || {});
-  const rawRole = ctx.rol || ctx.equipo || state.roleId || '';
+  const rawCircuitInput = ctx.circuito || state.circuit || '';
+  const rawRole = ctx.rol || ctx.equipo || state.roleId || (rawCircuitInput === 'clasificacion' ? 'hidrociclon_apex_vortex' : '');
   const mappedRole = rawRole ? (ROLE_ALIAS_MAP[rawRole] || rawRole) : 'kit_wet_end';
 
-  let circuit = ctx.circuito || state.circuit || 'bombeo';
-  if (!ctx.circuito && rawRole) {
+  let circuit = rawCircuitInput || 'bombeo';
+  if (circuit === 'clasificacion') {
+    circuit = 'bombeo';
+  } else if (!ctx.circuito && rawRole) {
     const rLower = String(rawRole).toLowerCase();
     if (rLower.includes('marcy') || rLower.includes('balanza') || rLower.includes('batch') || rLower.includes('tamiz') || rLower === 'custom') {
       circuit = 'control_procesos';
@@ -93,8 +112,13 @@ export function computeWizardViewState(state = {}, urlParams = {}) {
       circuit = 'flotacion';
     } else if (rLower.includes('filt') || rLower.includes('prensa') || rLower.includes('placa') || rLower.includes('tela')) {
       circuit = 'filtracion';
+    } else if (rLower.includes('hidrociclon') || rLower.includes('malla_criba') || rLower.includes('cribado')) {
+      circuit = 'bombeo';
     }
   }
+  const coupledClassificationActive = rawCircuitInput === 'clasificacion' || mappedRole === 'hidrociclon_apex_vortex' || mappedRole === 'malla_criba_poliuretano';
+  const selectedMaterial = ctx.material || state.material || 'A05';
+  const resolvedSku = ctx.sku || state.sku || null;
 
   let pipeSize = state.pipeSize || '6x4';
   if (ctx.serie) {
@@ -134,6 +158,9 @@ export function computeWizardViewState(state = {}, urlParams = {}) {
   return {
     circuit,
     roleId: mappedRole,
+    sku: resolvedSku,
+    selectedMaterial,
+    coupledClassificationActive,
     pipeSize,
     pipeOrSeries,
     budgetCategory,
@@ -153,12 +180,13 @@ export function computeWizardViewState(state = {}, urlParams = {}) {
     },
     panels: {
       bombeoVisible: circuit === 'bombeo',
+      clasificacionVisible: coupledClassificationActive,
       flotacionVisible: circuit === 'flotacion',
       filtracionVisible: circuit === 'filtracion',
       controlVisible: circuit === 'control_procesos',
       recirculationAlertVisible: mappedRole === 'solo_impulsor' || mappedRole === 'solo_voluta'
     },
-    hasActiveDiagFilter: Boolean(MECHANICAL_DIAGNOSTICS && ATOMIC_PARTS_CATALOG && evaluatePumpAssemblySequence && dispatchLeadWebhook && loadWorkbenchSession)
+    hasActiveDiagFilter: Boolean(MECHANICAL_DIAGNOSTICS && ATOMIC_PARTS_CATALOG && evaluatePumpAssemblySequence && dispatchLeadWebhook && loadWorkbenchSession && DOSSIER_FORMATTERS_BY_FIELD && formatDossierMetrologyBadge)
   };
 }
 
@@ -511,27 +539,15 @@ export function initQuoteWizardController() {
     var simHeadline = document.getElementById('sim-headline-text');
     var simContextPill = document.getElementById('sim-circuit-context-pill');
     if (simHeadline) {
-      if (currentCircuit === 'flotacion') {
-        simHeadline.textContent = isEs
-          ? 'Cinética de celda y retención de volumen'
-          : 'Cell Kinetics & Volume Retention';
-        if (simContextPill) simContextPill.textContent = isEs ? 'Flotación • Agitación' : 'Flotation • Kinetics';
-      } else if (currentCircuit === 'filtracion') {
-        simHeadline.textContent = isEs
-          ? 'Deshidratación de torta y ciclo de filtrado'
-          : 'Cake Dewatering & Filter Cycle';
-        if (simContextPill) simContextPill.textContent = isEs ? 'Filtración • 16 bar' : 'Filtration • 16 bar';
-      } else if (currentCircuit === 'control_procesos') {
-        simHeadline.textContent = isEs
-          ? 'Control gravimétrico de pulpa y granulometría (Marcy / ASTM E11)'
-          : 'Pulp Gravimetric Control & Particle Sizing (Marcy / ASTM E11)';
-        if (simContextPill) simContextPill.textContent = isEs ? 'Control • Laboratorio' : 'Control • Lab';
-      } else {
-        simHeadline.textContent = isEs
-          ? 'Transporte hidráulico y velocidad crítica (Durand)'
-          : 'Slurry Hydraulic Transport & Critical Velocity (Durand)';
-        if (simContextPill) simContextPill.textContent = isEs ? 'Bombeo • Durand' : 'Pumping • Durand';
-      }
+      // Titulares formales canónicos por circuito:
+      // 'Transporte hidráulico y velocidad crítica (Durand)' | 'Cinética de celda y retención de volumen' | 'Deshidratación de torta y ciclo de filtrado'
+      var bannerMeta = formatDossierSimulationBanner(
+        currentCircuit,
+        isEs,
+        selectRole ? selectRole.value : ''
+      );
+      simHeadline.textContent = bannerMeta.headline;
+      if (simContextPill) simContextPill.textContent = bannerMeta.contextPill;
     }
 
     updateDossier();

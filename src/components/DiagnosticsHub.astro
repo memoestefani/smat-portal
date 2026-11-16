@@ -11,7 +11,9 @@ import { MECHANICAL_DIAGNOSTICS } from '../scripts/slurryEngine.js';
 
 const mechanicalDiagByRole: Record<string, any> = {
   cavitacion_abrasion: MECHANICAL_DIAGNOSTICS.cavitation,
-  fuga_sello_rodamientos: MECHANICAL_DIAGNOSTICS.bearing_vibration,
+  fuga_sello_rodamientos: MECHANICAL_DIAGNOSTICS.liner_grooving,
+  seal_stuffing_box: MECHANICAL_DIAGNOSTICS.seal_stuffing_box,
+  bearing_shaft_fatigue: MECHANICAL_DIAGNOSTICS.bearing_shaft_fatigue,
   rotor_flotacion: {
     id: 'rotor_flotacion_desbalance',
     symptomEs: 'Turbulencia superficial y pérdida de inducción de aire',
@@ -40,39 +42,22 @@ const mechanicalDiagByRole: Record<string, any> = {
   }
 };
 
-const diagnostics = [
-  ...diagData.diagnostics.map((item) => {
-    const mech = mechanicalDiagByRole[item.id] || MECHANICAL_DIAGNOSTICS.liner_grooving;
-    const stStr = String(mech.stationNumber || '05');
-    const stationCode = stStr.includes('5') ? '05' : stStr.includes('2') ? '02' : stStr.includes('1') ? '01' : '05';
-    const claroMm = item.id === 'cavitacion_abrasion' ? '2.5' : String(mech.recommendedClearanceMm || '0.75');
-    return {
-      ...item,
-      threshold: mech.threshold,
-      stationNumber: typeof mech.stationNumber === 'number' ? `Estación 0${mech.stationNumber}` : stStr,
-      recommendedMaterial: mech.recommendedMaterial,
-      stationCode,
-      claroMm
-    };
-  }),
-  ...[MECHANICAL_DIAGNOSTICS.liner_grooving, MECHANICAL_DIAGNOSTICS.packing_leak].map((m) => ({
-    id: m.id,
-    title_es: m.symptomEs,
-    title_en: m.symptomEn,
-    symptom_es: m.symptomEs,
-    symptom_en: m.symptomEn,
-    root_cause_es: m.causeEs,
-    root_cause_en: m.causeEn,
-    recommended_action_es: m.actionEs,
-    recommended_action_en: m.actionEn,
-    target_role: m.recommendedRole,
-    threshold: m.threshold,
-    stationNumber: `Estación 0${m.stationNumber}`,
-    recommendedMaterial: m.recommendedMaterial,
-    stationCode: `0${m.stationNumber}`,
-    claroMm: m.id === 'liner_grooving' ? '2.8' : String(m.recommendedClearanceMm || '0.75')
-  }))
-];
+const diagnostics = diagData.diagnostics.map((item) => {
+  const mech = mechanicalDiagByRole[item.id] || MECHANICAL_DIAGNOSTICS.liner_grooving;
+  const stStr = String(mech.stationNumber || item.station_id || '05');
+  const stationCode = stStr.includes('5') ? '05' : stStr.includes('3') ? '03' : stStr.includes('2') ? '02' : stStr.includes('1') ? '01' : '05';
+  const claroMm = item.id === 'cavitacion_abrasion' ? '2.5' : item.id === 'fuga_sello_rodamientos' ? '2.8' : String(mech.recommendedClearanceMm || '0.75');
+  return {
+    ...item,
+    stationIdLabel: item.station_id || (typeof mech.stationNumber === 'number' ? `EST-0${mech.stationNumber}` : stStr),
+    recommendedSkusList: Array.isArray(item.recommended_skus) ? item.recommended_skus : [],
+    threshold: mech.threshold,
+    stationNumber: typeof mech.stationNumber === 'number' ? `Estación 0${mech.stationNumber}` : stStr,
+    recommendedMaterial: mech.recommendedMaterial,
+    stationCode,
+    claroMm
+  };
+});
 ---
 
 <section class="diagnostics-section" id="diagnostico">
@@ -123,11 +108,24 @@ const diagnostics = [
             <span class="pulsing-dot pulsing-dot-amber"></span>
             <h3 class="diag-title">{isEs ? item.title_es : item.title_en}</h3>
           </div>
-          <div class="diag-threshold-strip" data-diag-threshold={item.threshold}>
-            <span class="diag-station-chip">{item.stationNumber}</span>
+          <div class="diag-threshold-strip" data-diag-threshold={item.threshold} data-station-id={item.stationIdLabel}>
+            <span class="diag-station-chip">{item.stationNumber} ({item.stationIdLabel})</span>
             <span class="diag-threshold-chip">{isEs ? 'Umbral Físico:' : 'Physical Threshold:'} {item.threshold}</span>
             <span class="diag-station-chip" data-diag-material={item.recommendedMaterial}>{isEs ? 'Aleación:' : 'Alloy:'} {item.recommendedMaterial}</span>
           </div>
+          {item.recommendedSkusList.length > 0 && (
+            <div style="display:flex; flex-wrap:wrap; gap:0.35rem; margin-bottom:0.65rem;">
+              {item.recommendedSkusList.map((skuCode: string) => (
+                <a
+                  href={isEs ? `/cotizar/?sku=${encodeURIComponent(skuCode)}#rfq` : `/en/quote/?sku=${encodeURIComponent(skuCode)}#rfq`}
+                  class="diag-station-chip"
+                  style="text-decoration:none; font-weight:700;"
+                >
+                  SKU: {skuCode}
+                </a>
+              ))}
+            </div>
+          )}
           
           <div class="diag-body">
             <div class="diag-field">

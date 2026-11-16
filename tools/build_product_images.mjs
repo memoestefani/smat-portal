@@ -398,7 +398,6 @@ function buildStudioOverlaySvg(sku, idx) {
     C21: '#0891B2'
   };
   const accent = accentByMaterial[material] || '#D97706';
-  const familyGeometry = buildFamilyGeometrySvg(sku, idx);
 
   return Buffer.from(
     `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480">
@@ -410,13 +409,12 @@ function buildStudioOverlaySvg(sku, idx) {
         </linearGradient>
       </defs>
       <rect width="640" height="480" fill="url(#bgStudioLight)"/>
-      <!-- Marco para fotografía real curada a la izquierda -->
-      <rect x="20" y="76" width="368" height="320" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
-      <g stroke="#CBD5E1" stroke-width="1" opacity="0.65">
-        <line x1="20" y1="236" x2="388" y2="236" stroke-dasharray="4 4"/>
-        <line x1="204" y1="76" x2="204" y2="396" stroke-dasharray="4 4"/>
+      <!-- Marco de estudio diurno completo (sin plano CAD rasterizado duplicado) -->
+      <rect x="20" y="76" width="600" height="320" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+      <g stroke="#CBD5E1" stroke-width="1" opacity="0.45">
+        <line x1="20" y1="236" x2="620" y2="236" stroke-dasharray="4 4"/>
+        <line x1="320" y1="76" x2="320" y2="396" stroke-dasharray="4 4"/>
       </g>
-      ${familyGeometry}
       <!-- Encabezado de inspección Cero-OEM sobre blanco humo -->
       <rect x="20" y="16" width="600" height="48" rx="6" fill="#FFFFFF" stroke="#0F172A" stroke-width="1.5"/>
       <text x="34" y="36" fill="#0F172A" font-family="monospace" font-size="12.5" font-weight="bold">SMAT MINERALS · ${sku.sku_id || sku.id} · ${(sku.title_es || '').slice(0, 32)}</text>
@@ -464,7 +462,7 @@ export async function generateAllProductWebpImages() {
       }
     }
     const fgBuffer = await imgPipe
-      .resize(344, 296, {
+      .resize(560, 296, {
         fit: 'contain',
         background: { r: 248, g: 250, b: 252, alpha: 1 }
       })
@@ -477,7 +475,7 @@ export async function generateAllProductWebpImages() {
         {
           input: fgBuffer,
           top: 88,
-          left: 32,
+          left: 40,
           blend: 'over'
         }
       ]);

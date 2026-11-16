@@ -5,6 +5,8 @@ use walkdir::WalkDir;
 
 pub mod v3_forensic_gates;
 pub use v3_forensic_gates::*;
+pub mod v34_canonical_gates;
+pub use v34_canonical_gates::*;
 
 pub struct GateReport {
     pub name: String,
@@ -31,8 +33,9 @@ pub fn read_quote_wizard_composite(site_root: &Path) -> Result<String, String> {
     let qw = fs::read_to_string(site_root.join("src/components/QuoteWizard.astro")).map_err(|e| e.to_string())?;
     let dossier = fs::read_to_string(site_root.join("src/components/LiveEngineeringDossier.astro")).unwrap_or_default();
     let ctrl = fs::read_to_string(site_root.join("src/scripts/quoteWizardController.js")).unwrap_or_default();
+    let renderer = fs::read_to_string(site_root.join("src/scripts/quoteDossierRenderer.js")).unwrap_or_default();
     let css = fs::read_to_string(site_root.join("src/styles/workbench.css")).unwrap_or_default();
-    Ok(format!("{}\n{}\n{}\n{}", qw, dossier, ctrl, css))
+    Ok(format!("{}\n{}\n{}\n{}\n{}", qw, dossier, ctrl, renderer, css))
 }
 
 /// 1. Verifica integridad SSOT de data/roles.json, data/company.json y erradicacion de roles.copy.json
@@ -862,6 +865,11 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             passed: check_v34_qtray_dual_cta_qcard_cmu_and_reorder_hydration(site_root).is_ok(),
             details: check_v34_qtray_dual_cta_qcard_cmu_and_reorder_hydration(site_root).err().unwrap_or_else(|| "OK: Dual CTA + ?reorder=1 en QuickOrderTray, c*mu en ProductQuickCard, 0 SKU-QC-01 y 4 modulos LCOM4 <=900 LOC.".to_string()),
         },
+        GateReport {
+            name: "38. Cierre Forense 100% V3.5: Clausura 1-Hop _redirects, Puente Plano 1-2 (?sku=SMAT-*, ?mat=), Simuladores Plano 3 en <script>, Par Casado JRP 19 SKUs, Acuse Polimorfico SAT/JRP, D3147/F6147 1:1 y 0 cutwater (Gate V3.5 D1..D12)".to_string(),
+            passed: check_v35_zero_orphan_ast_and_dist_graph_closure(site_root).is_ok(),
+            details: check_v35_zero_orphan_ast_and_dist_graph_closure(site_root).err().unwrap_or_else(|| "OK: 0 cadenas 2-hop, puente Plano 1-2, 6 simuladores Plano 3 vivos, Par Casado JRP 19/19, Acuse SAT/JRP, D3147/F6147 y 0 cutwater verificados.".to_string()),
+        },
     ]
 }
 
@@ -1377,5 +1385,12 @@ mod tests {
         let root = find_site_root();
         let res = check_v34_qtray_dual_cta_qcard_cmu_and_reorder_hydration(&root);
         assert!(res.is_ok(), "Fallo en Gate 37 (V3.4 QuickOrderTray Dual CTA, c*mu & LCOM4 Seams): {:?}", res.err());
+    }
+
+    #[test]
+    fn test_gate_38_v35_zero_orphan_ast_and_dist_graph_closure() {
+        let root = find_site_root();
+        let res = check_v35_zero_orphan_ast_and_dist_graph_closure(&root);
+        assert!(res.is_ok(), "Fallo en Gate 38 (V3.5 Forensic Closure & JRP): {:?}", res.err());
     }
 }

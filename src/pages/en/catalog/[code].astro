@@ -23,15 +23,15 @@ export function getStaticPaths() {
     { code: 'd4028a05', part: findPart('D4028') },
     { code: 'd4029a05', part: findPart('D4029') },
     { code: 'd005m', part: findPart('DAM005') },
-    { code: 'd3147-a05', part: findPart('E4147') },
-    { code: 'd3147-r55', part: findPart('E4147') },
+    { code: 'd3147-a05', part: findPart('D3147') },
+    { code: 'd3147-r55', part: { ...findPart('D3147'), metallurgy: 'Anti-Abrasive Natural Rubber R55 Elastomer (55 Shore A)', hardness: '55 ± 5 Shore A (Rebound ≥ 70%)' } },
     { code: 'e4147-a05', part: findPart('E4147') },
-    { code: 'e4147-r55', part: findPart('E4147') },
-    { code: 'f6147-a05', part: findPart('E4147') },
-    { code: 'dam028-a05', part: findPart('D4028') },
-    { code: 'eam028-a05', part: findPart('D4028') },
+    { code: 'e4147-r55', part: { ...findPart('E4147'), metallurgy: 'Anti-Abrasive Natural Rubber R55 Elastomer (55 Shore A)', hardness: '55 ± 5 Shore A (Rebound ≥ 70%)' } },
+    { code: 'f6147-a05', part: findPart('F6147') },
+    { code: 'dam028-a05', part: findPart('DAM028') },
+    { code: 'eam028-a05', part: findPart('EAM028') },
     { code: 'e4083-a05', part: findPart('E4083') },
-    { code: 'e4083-r55', part: findPart('E4083') }
+    { code: 'e4083-r55', part: { ...findPart('E4083'), metallurgy: 'Anti-Abrasive Natural Rubber R55 Elastomer (55 Shore A)', hardness: '55 ± 5 Shore A (Rebound ≥ 70%)' } }
   ];
   const descriptiveAliases = [
     { slugEs: 'impulsor-5-alabes', slugEn: '5-vane-impeller', part: findPart('E4147') },
@@ -233,11 +233,11 @@ const productSchema = {
                   </tr>
                   <tr>
                     <th>Assembly Guarantee:</th>
-                    <td>{part.fit_guarantee_en}</td>
+                    <td>{part.fit_guarantee_en} (Linked Kits: #{(part.kit_ids || [1]).join(', #')})</td>
                   </tr>
                   <tr data-iso7810-ref="0.76mm">
                     <th>Everyday Physical Scale (ISO/IEC 7810):</th>
-                    <td>Optimal reference axial clearance δ = 0.76 mm (exact thickness of 1 standard ISO 7810 bank card).</td>
+                    <td>{part.everyday_equivalence_en ? `${part.everyday_equivalence_en} • ` : ''}Optimal reference axial clearance δ = 0.76 mm (exact thickness of 1 standard ISO 7810 bank card).</td>
                   </tr>
                 </tbody>
               </table>
@@ -251,7 +251,7 @@ const productSchema = {
               <div class="assurance-text">
                 <h3>1:1 Dimensional Fit Assurance (ISO 2768-m)</h3>
                 <p>
-                  Every {part.part_number} unit is physically matched against standard frame dimensions before dispatch from our Durango Central Warehouse. We ensure 100% drop-in interchangeability with industry-standard frames. Should a standard replacement part fail to fit your pump casing, it is immediately swapped from our floor stock.
+                  Every {part.part_number} unit is physically matched against standard frame dimensions before dispatch from our Durango Central Warehouse. We ensure 100% drop-in interchangeability with industry-standard frames. Should a standard replacement part deviate from confirmed drawings, priority replacement is coordinated under our Durango supply regime.
                 </p>
               </div>
             </div>
@@ -269,7 +269,7 @@ const productSchema = {
         <!-- Right Column: Fast-Track Action Dock (WhatsApp & RFQ) -->
         <aside class="part-action-dock">
           <div class="action-card">
-            <span class="dock-badge">IN-COUNTRY STOCK</span>
+            <span class="dock-badge">DURANGO SUPPLY REGIME</span>
             <h3>Requisition for {part.part_number}</h3>
             <p class="dock-desc">
               Direct consultation with our engineering team in Durango, Mexico for prompt pricing, stock allocation, and direct carrier dispatch to your mine site.

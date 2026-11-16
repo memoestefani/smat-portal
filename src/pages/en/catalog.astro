@@ -334,7 +334,7 @@ const enrichedAtomicParts = atomicParts.map((part) => {
             <h4 class="table-title">Universal Part Number Technical Sheets (Impellers, Throatbushes & Expeller Rings)</h4>
             <span class="table-subtitle">Select any universal part code to view its individual metallurgical specification, verified mass, Waters-NIOSH 1993 ergonomics, and 1:1 dimensional fit</span>
           </div>
-          <span class="matrix-badge">6 ATOMIC SHEETS</span>
+          <span class="matrix-badge">{enrichedAtomicParts.length} ATOMIC SHEETS</span>
         </div>
         <div class="atomic-parts-grid">
           {enrichedAtomicParts.map((part) => (
@@ -348,6 +348,11 @@ const enrichedAtomicParts = atomicParts.map((part) => {
               <p class="atomic-part-desc" style="font-size:0.74rem; color:#0f172a; font-weight:600;">
                 Weight: {part.spec.weight_kg} kg • {part.niosh.badgeEn} • ØD₂ {part.spec.impeller_diameter_mm} mm
               </p>
+              {part.everyday_equivalence_en && (
+                <p class="atomic-part-desc" style="font-size:0.72rem; color:#334155;">
+                  {part.everyday_equivalence_en} {Array.isArray(part.kit_ids) && part.kit_ids.length > 0 ? `• Kits: ${part.kit_ids.join(', ')}` : ''}
+                </p>
+              )}
               <div class="atomic-part-actions no-print">
                 <a href={`/en/catalog/${part.code}/`} class="btn-table-cta">View Sheet {part.part_number} →</a>
                 <a href={part.quoteHref} class="btn-card-quote">Quote →</a>

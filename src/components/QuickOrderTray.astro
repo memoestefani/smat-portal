@@ -88,7 +88,7 @@ const isEs = lang === 'es';
       <div class="smat-qtray-reorder-title">
         {isEs ? '⏱️ Política de Reorden Acoplado 5:5:4 (s, S):' : '⏱️ Coupled 5:5:4 Reorder Policy (s, S):'}
       </div>
-      <div>
+      <div id="smat-qtray-reorder-policy">
         {isEs
           ? 'Día 90: Camisa D075C21 · Día 150: Impulsor E4147 · Día 180: Voluta D3110'
           : 'Day 90: D075C21 Sleeve · Day 150: E4147 Impeller · Day 180: D3110 Volute'}
@@ -145,14 +145,17 @@ const isEs = lang === 'es';
     addTrayItem,
     removeTrayItem,
     updateTrayItemQty,
+    clearTray,
     encodeReorderUrlQuery,
     hydrateTrayFromReorderQuery,
     buildCmuPrioritySubjectLine,
     computeCmuPriorityDescriptor,
+    calculateCoupledReorderWindowDays,
     evaluateBearingCartridgeCoreTradeIn,
     syncTrayToWorkbenchStateLens,
     SMAT_TRAY_UPDATE_EVENT
   } from '../scripts/requisitionTrayBus.js';
+  import { formatDualCheckoutPayload } from '../scripts/workbenchExportFormatters.js';
 
   function initQuickOrderTray() {
     const root = document.getElementById('smat-quick-order-tray');
@@ -198,8 +201,17 @@ const isEs = lang === 'es';
         estimatedTotalMxn: selectedLane === 'CAJA_CHICA_CFDI40' ? 18500 : 65000,
         stockRegime: 'hay'
       });
+      const dualLaneMeta = formatDualCheckoutPayload({
+        estimatedMxn: selectedLane === 'CAJA_CHICA_CFDI40' ? 18500 : 65000,
+        stockRegime: 'hay'
+      });
+      const reorderWindow = calculateCoupledReorderWindowDays({ sg: 1.5, d50Um: 120 });
+      const reorderPolicyEl = document.getElementById('smat-qtray-reorder-policy');
+      if (reorderPolicyEl) {
+        reorderPolicyEl.textContent = isEs ? reorderWindow.policySummaryEs : reorderWindow.policySummaryEn;
+      }
       if (badgeEl) {
-        badgeEl.textContent = isEs ? desc.labelEs : desc.labelEn;
+        badgeEl.textContent = `${isEs ? desc.labelEs : desc.labelEn} (${dualLaneMeta.cfdiVersion})`;
       }
 
       if (itemsEl) {
@@ -277,6 +289,12 @@ const isEs = lang === 'es';
 
     closeBtn?.addEventListener('click', () => {
       setDrawerHidden(true);
+    });
+    root.addEventListener('dblclick', (ev) => {
+      if ((ev.target as HTMLElement | null)?.getAttribute('data-qtray-clear') === '1') {
+        clearTray();
+        renderTray();
+      }
     });
 
     root.querySelectorAll('[data-qtray-lane]').forEach((btn) => {

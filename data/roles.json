@@ -61,8 +61,8 @@
           "decision_criteria": {
             "required_slurry_vars_es": "Velocidad periferica en descarga (m/s), angulo de tuberia, diametro maximo de particula (Top Size mm).",
             "required_slurry_vars_en": "Discharge peripheral velocity (m/s), piping configuration, top particle size (mm).",
-            "metallurgy_rule_es": "Espesores reforzados en zona de corte hidrodinamico (cutwater). En pulpas con piedras sueltas mayores a 12 mm evitar hule; usar exclusivamente fundicion blanca A05.",
-            "metallurgy_rule_en": "Reinforced cutwater thickness. In slurries with oversize rocks over 12 mm avoid rubber; deploy heavy-section High Chrome A05 alloy.",
+            "metallurgy_rule_es": "Espesores reforzados en lengueta de descarga de voluta. En pulpas con piedras sueltas mayores a 12 mm evitar hule; usar exclusivamente fundicion blanca A05.",
+            "metallurgy_rule_en": "Reinforced volute discharge tongue thickness. In slurries with oversize rocks over 12 mm avoid rubber; deploy heavy-section High Chrome A05 alloy.",
             "risk_avoided_es": "Evita perforacion catastrofica de carcasa partida y fuga descontrolada de pulpa en carcamo.",
             "risk_avoided_en": "Prevents split-casing breakthrough perforation and uncontrolled slurry containment spills in plant sumps."
           }

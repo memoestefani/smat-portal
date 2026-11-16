@@ -9,6 +9,7 @@ import {
   buildWizardUrl
 } from '../scripts/workbenchBus.js';
 import { getQuickProductsCatalog } from '../scripts/quickProductsCatalog.js';
+import { verifyDropInEquivalence } from '../scripts/dropInEquivalenceGuard.js';
 
 const canonicalCatalogCount = getQuickProductsCatalog().length;
 
@@ -106,6 +107,7 @@ const rawQuickParts = [
 const quickParts = rawQuickParts.map((item) => {
   const spec = getAtomicPartSpecs(item.lookupKey, '6x4');
   const niosh = formatNioshErgonomicStatus(spec, lang);
+  const dropInCheck = verifyDropInEquivalence(item.lookupKey);
   const targetHref = buildWizardUrl({
     lang,
     circuit: 'bombeo',
@@ -118,7 +120,7 @@ const quickParts = rawQuickParts.map((item) => {
     weightKg: spec.weight_kg,
     arrangement: 'CV'
   });
-  return { ...item, spec, niosh, targetHref };
+  return { ...item, spec, niosh, dropInCheck, targetHref };
 });
 ---
 
@@ -167,6 +169,7 @@ const quickParts = rawQuickParts.map((item) => {
           data-estacion={item.station}
           data-material={item.material || 'iso281_alloy'}
           data-niosh-tier={item.niosh.tier}
+          data-dropin-sku={item.dropInCheck.canonicalSkuId || 'SMAT-PUMP-WETKIT-554'}
         >
           <div class="quick-part-card__top">
             <span class="quick-part-card__code">{item.code}</span>

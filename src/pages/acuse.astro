@@ -86,15 +86,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 <th>Condiciones y Notas:</th>
                 <td colspan="3" id="field-details">Revisión de parámetros de pulpa según protocolo de ingeniería.</td>
               </tr>
-              <tr>
+              <tr id="row-field-hydraulics">
                 <th>Memoria Hidráulica (Durand):</th>
                 <td colspan="3" id="field-hydraulics">Cálculo hidráulico sujeto a confirmación de flujo y % de sólidos en planta.</td>
               </tr>
-              <tr>
+              <tr id="row-field-material-drive">
                 <th>Metalurgia, Arreglo y Estación:</th>
                 <td colspan="3" id="field-material-drive">Alto Cromo ASTM A532 Cr27% (>600 HB) • Arreglo ZVZ • Estación S4 (Wet-End)</td>
               </tr>
-              <tr>
+              <tr id="row-field-clearance-kinematics">
                 <th>Claro Axial (δ) y Cinemática:</th>
                 <td colspan="3" id="field-clearance-kinematics">δ = 0.75 mm (Óptimo, Δη_v = -0.3%) • u₂ ≤ 24.5 m/s • Vida ISO 281 L₁₀ₕ certificada</td>
               </tr>
@@ -111,6 +111,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 <td id="field-type">Refacción de Desgaste / Continuidad Operativa</td>
                 <th>Inspección en Almacén:</th>
                 <td>Almacén Central Durango (Cotejo Dimensional A, B, C · ISO 2768-m)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Desglose Multi-Partida SAT CFDI 4.0 + TIGIE + Política JRP (s, S) (D5-V35) -->
+        <div class="sheet-section" id="acuse-multi-item-tray-section">
+          <h3 class="section-title">2B. PARTIDAS DE BANDEJA B2B, TUPLA FISCAL SAT CFDI 4.0 Y REORDEN ACOPLADO (s, S)</h3>
+          <table class="sheet-table">
+            <thead>
+              <tr>
+                <th style="width: 22%;">SKU / Aleación</th>
+                <th style="width: 44%;">Descripción Técnica y Tupla Fiscal SAT / TIGIE</th>
+                <th style="width: 10%;">Cant.</th>
+                <th style="width: 24%;">Acoplamiento JRP (s, S)</th>
+              </tr>
+            </thead>
+            <tbody id="acuse-multi-item-tray-tbody">
+              <tr>
+                <td colspan="4" style="color: #64748b; font-size: 0.82rem;">Cargando partidas de requisición y tuplas SAT CFDI 4.0...</td>
               </tr>
             </tbody>
           </table>
@@ -173,315 +193,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </main>
 </BaseLayout>
 
-<script is:inline>
-  (function() {
-    function populateSheet() {
-      const urlParams = new URLSearchParams(window.location.search);
-      let cached = {};
-      let wbV2 = {};
-      let trayState = { items: [], coreReturnEnabled: false };
-      try {
-        const raw = sessionStorage.getItem('smat_last_rfq_payload');
-        if (raw) cached = JSON.parse(raw) || {};
-      } catch (_e) {}
-      try {
-        const rawV2 = localStorage.getItem('smat_workbench_state_v2') || localStorage.getItem('smat_workbench_session');
-        if (rawV2) wbV2 = JSON.parse(rawV2) || {};
-      } catch (_e) {}
-      try {
-        const rawTray = localStorage.getItem('smat_requisition_tray_v3');
-        if (rawTray) trayState = JSON.parse(rawTray) || { items: [], coreReturnEnabled: false };
-      } catch (_e) {}
-
-      // Hidratación Bidireccional PutGet desde ?reorder=1&tray=... o ?sku=... (SLICE-V31-09 · D6 & D9)
-      const trayQueryParam = urlParams.get('tray') || '';
-      const skuQueryParam = urlParams.get('sku') || '';
-      if (trayQueryParam) {
-        const parsedItems = trayQueryParam.split(',').map((s) => s.trim()).filter(Boolean).map((entry) => {
-          const [id, qtyStr, crit] = entry.split(':');
-          return {
-            id: String(id || 'SMAT-PUMP-IMP-AH').toUpperCase(),
-            skuId: String(id || 'SMAT-PUMP-IMP-AH').toUpperCase(),
-            qty: Math.max(1, Number(qtyStr) || 1),
-            criticalityMode: crit === 'STOCK_SS' ? 'STOCK_SS' : 'PARO_DE_LINEA'
-          };
-        });
-        if (parsedItems.length > 0) {
-          trayState.items = parsedItems;
-          try {
-            localStorage.setItem('smat_requisition_tray_v3', JSON.stringify(trayState));
-          } catch (_e) {}
-        }
-      } else if (skuQueryParam && (!Array.isArray(trayState.items) || trayState.items.length === 0)) {
-        trayState.items = [{ id: skuQueryParam.toUpperCase(), skuId: skuQueryParam.toUpperCase(), qty: 1, criticalityMode: 'PARO_DE_LINEA' }];
-      }
-
-      const traySummary = Array.isArray(trayState.items) && trayState.items.length > 0
-        ? trayState.items.map((i) => `${i.id}x${i.qty || 1}`).join(', ')
-        : '';
-      if (traySummary) {
-        wbV2.traySkuSummary = traySummary;
-        wbV2.clientRef = wbV2.clientRef || traySummary;
-        try {
-          localStorage.setItem('smat_workbench_state_v2', JSON.stringify(wbV2));
-        } catch (_e) {}
-      }
-
-      const computeFnv1aOrderHash = (seedStr) => {
-        let h = 0x811c9dc5;
-        for (let i = 0; i < seedStr.length; i++) {
-          h ^= seedStr.charCodeAt(i);
-          h = Math.imul(h, 0x01000193) >>> 0;
-        }
-        return 'SMAT-ORD-' + h.toString(16).toUpperCase().padStart(8, '0').slice(0, 6);
-      };
-
-      const folio = urlParams.get('folio') || cached.folio || wbV2.folio || 'SMAT-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
-      const nombre = urlParams.get('nombre') || urlParams.get('name') || cached.nombre || wbV2.name || 'Ingeniero / Solicitante de Planta';
-      const empresa = urlParams.get('empresa') || urlParams.get('company') || cached.empresa || wbV2.company || 'Operación Minera Registrada';
-      const telefono = urlParams.get('telefono') || urlParams.get('phone') || cached.telefono || wbV2.phone || '(618) 810-4408';
-      const correo = urlParams.get('correo') || urlParams.get('email') || cached.correo || wbV2.email || 'ventas@smatminerals.com';
-      const equipo = urlParams.get('equipo') || urlParams.get('role') || cached.equipo || wbV2.equipTitle || 'Refaccionamiento Crítico de Pulpa / Bombeo';
-      const codigo = urlParams.get('codigo') || cached.codigo_smat || wbV2.equipCode || '';
-      const pieza = urlParams.get('pieza') || cached.codigo_pieza_atomica || wbV2.atomicPartCode || '';
-      const refCliente = urlParams.get('ref_cliente') || cached.referencia_cliente || wbV2.clientRef || 'Sin referencia interna declarada';
-      const medidas = urlParams.get('medidas') || cached.medidas_flexometro || 'Verificación dimensional 1:1 en Almacén Durango';
-      const perfilPulpa = urlParams.get('perfil_pulpa') || cached.perfil_pulpa_mina || '';
-      const phVal = urlParams.get('ph') || cached.pulp_ph || wbV2.pulpPh || '7.5';
-      const flVal = urlParams.get('fl') || cached.durand_fl || wbV2.durandFactorFL || '';
-      const cvVal = urlParams.get('cv') || cached.solids_cv_pct || wbV2.solidsVolumetricPercent || '';
-      const vRecVal = urlParams.get('v_rec') || cached.recommended_velocity_ms || wbV2.recommendedPipeVelocityMs || '';
-      const erVal = urlParams.get('eff_ratio_er') || cached.eff_ratio_er || wbV2.eff_ratio_er || '0.88';
-      const impLifeVal = urlParams.get('impeller_life_h') || cached.impeller_life_h || wbV2.impeller_life_h || '2800';
-      const wearRatioVal = urlParams.get('wear_life_ratio') || cached.wear_life_ratio || wbV2.wear_life_ratio || '3.8';
-      const pAtmMcaVal = urlParams.get('p_atm_mca') || cached.p_atm_mca || wbV2.p_atm_mca || '7.98';
-      const deltaNpshVal = urlParams.get('delta_npsh_m') || cached.delta_npsh_m || wbV2.delta_npsh_m || '2.35';
-      const motorDeratingVal = urlParams.get('motor_derating_iec') || cached.motor_derating_iec || wbV2.motor_derating_iec || '0.920';
-      const kMotorAltVal = urlParams.get('k_motor_alt') || cached.k_motor_alt || wbV2.k_motor_alt || '1.24';
-      const pipeVelLossVal = urlParams.get('pipe_vel_loss_pct') || cached.pipe_vel_loss_pct || wbV2.pipe_vel_loss_pct || '0.3';
-      const gateClassVal = urlParams.get('gate_classification') || cached.gate_classification || wbV2.gate_classification || 'STANDARD_PROJECT';
-      const hidraulicaBase = urlParams.get('hidraulica') || cached.memoria_hidraulica_durand || 'Cálculo hidráulico sujeto a confirmación de flujo y % de sólidos en planta.';
-      const hidraulicaExtras = [
-        `pH = ${phVal}`,
-        flVal ? `F_L = ${flVal}` : '',
-        cvVal ? `C_v = ${cvVal}%` : '',
-        vRecVal ? `v_rec = ${vRecVal} m/s` : '',
-        `η_r = ${erVal}`,
-        `Vida Impulsor = ${impLifeVal} h (${wearRatioVal}x)`,
-        `P_atm = ${pAtmMcaVal} mca (ΔNPSH = -${deltaNpshVal} m)`,
-        `f_IEC = ${motorDeratingVal} (K_motor,alt = ${kMotorAltVal}x)`
-      ].filter(Boolean).join(' | ');
-      const hidraulica = hidraulicaBase.includes('K_motor,alt') ? hidraulicaBase : `${hidraulicaBase} (${hidraulicaExtras})`;
-      const tco = urlParams.get('tco') || cached.proyeccion_tco || '';
-      const detalles = urlParams.get('detalles') || urlParams.get('specs') || cached.especificacion_tecnica || wbV2.notes || 'Requisición técnica sujeta a validación dimensional de patio Durango.';
-      const destino = urlParams.get('destino') || cached.modalidad_logistica || 'Retiro en Almacén Central Durango (Coordinado con Folio)';
-      const urgencia = urlParams.get('urgencia') || (cached.urgencia && cached.urgencia.includes('PARO') ? 'paro' : (wbV2.urgency || 'proyecto'));
-      const material = urlParams.get('material') || cached.material_bombeo || wbV2.pump_material || wbV2.selectedMaterial || 'alto_cromo_cr27';
-      const transmision = urlParams.get('transmision') || urlParams.get('arreglo') || cached.arreglo_transmision || wbV2.drive_arrangement || wbV2.driveArrangement || 'ZVZ';
-      const estacion = urlParams.get('estacion') || cached.estacion_armado || wbV2.stationCode || 'S4';
-      const sealBranch = urlParams.get('seal_branch') || cached.rama_sellado || wbV2.seal_branch || wbV2.sealBranch || 'expeller_dry';
-      const pesoKg = urlParams.get('peso_kg') || cached.peso_pieza_kg || wbV2.partMassKg || wbV2.weight_kg || '';
-      const claroMm = urlParams.get('claro_mm') || cached.claro_axial_mm || wbV2.clearance_mm || wbV2.clearanceMm || '0.75';
-      const b2Mm = urlParams.get('b2_mm') || cached.ancho_impulsor_b2_mm || wbV2.b2_mm || wbV2.impellerExitWidthMm || '48';
-      const capCKn = urlParams.get('cap_c_kn') || cached.capacidad_rodamiento_c_kn || wbV2.cap_c_kn || wbV2.dynamicCapacityCkN || '185';
-      const trustBoundaryId = urlParams.get('trust_boundary_id') || cached.trust_boundary_id || wbV2.trust_boundary_id || 'NONE';
-      const deltaEtaV = urlParams.get('delta_eta_v') || cached.perdida_eficiencia_vol_pct || wbV2.volumetricEfficiencyDropPct || '0.3';
-      const u2Ms = urlParams.get('u2_ms') || cached.velocidad_periferica_u2_ms || wbV2.tipSpeedU2Ms || '22.4';
-      const n2Rpm = urlParams.get('n2_rpm') || cached.n2_rpm || (wbV2.kinematics && wbV2.kinematics.pumpRpm) || '1149';
-      const frKn = urlParams.get('fr_kn') || cached.fr_kn || (wbV2.kinematics && wbV2.kinematics.beltRadialLoadKn) || '5.20';
-      const floodImm = urlParams.get('inmunidad_sumidero') || cached.inmunidad_sumidero || (wbV2.kinematics && wbV2.kinematics.sumpFloodImmunity) || 'HIGH';
-      const structReason = urlParams.get('razon_estructural') || cached.razon_estructural || (wbV2.clearance_eval && wbV2.clearance_eval.structuralReasonEs) || '';
-      const l10h = urlParams.get('l10h') || cached.vida_rodamiento_l10h || wbV2.l10hHours || '38500';
-      const rhopVal = urlParams.get('rhop') || cached.densidad_mineral_rhop || wbV2.oreDensitySg || '';
-      const libUmVal = urlParams.get('lib_um') || wbV2.lib_um || '';
-      const gradeVal = urlParams.get('grade') || wbV2.grade || '';
-      const airPsiVal = urlParams.get('air_psi') || wbV2.air_psi || '';
-      const rrNVal = urlParams.get('rr_n') || wbV2.rr_n || '';
-      const retP80Val = urlParams.get('ret_p80') || wbV2.ret_p80 || '';
-      const metrologiaBase = urlParams.get('metrologia') || cached.memoria_metrologica || '';
-      const metroExtras = [
-        libUmVal ? `d_l=${libUmVal} µm` : '',
-        gradeVal ? `a_L=${gradeVal}%` : '',
-        airPsiVal ? `P_air=${airPsiVal} PSI` : '',
-        rrNVal ? `n=${rrNVal}` : '',
-        retP80Val ? `R(P80)=${retP80Val}%` : ''
-      ].filter(Boolean).join(' | ');
-      const metrologia = metrologiaBase
-        ? (metroExtras && !metrologiaBase.includes('d_l=') ? `${metrologiaBase} (${metroExtras})` : metrologiaBase)
-        : (rhopVal ? `Densidad mineral ρ_p = ${rhopVal} t/m³ calibrada en estación metrológica${metroExtras ? ' (' + metroExtras + ')' : ''}.` : 'Sin pre-calibración de laboratorio adjunta (Balanza Marcy / Bond / Prensa).');
-
-      const elFolio = document.getElementById('display-folio');
-      if (elFolio) elFolio.textContent = folio;
-
-      const elDate = document.getElementById('display-date');
-      if (elDate) {
-        const now = new Date();
-        elDate.textContent = now.toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-      }
-
-      const elUrgency = document.getElementById('display-urgency');
-      if (elUrgency) {
-        elUrgency.textContent = urgencia === 'paro' ? 'PRIORIDAD: [PARO DE PLANTA]' : 'PRIORIDAD: [PROYECTO / PROGRAMADO]';
-        if (urgencia === 'paro') elUrgency.style.color = '#ef4444';
-      }
-
-      const setText = (id, val) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = val;
-      };
-
-      const fullCode = [codigo, pieza ? `[Pieza: ${pieza}]` : '', traySummary ? `[Bandeja: ${traySummary}]` : ''].filter(Boolean).join(' ') || 'SMAT-STD (Cotejo 1:1)';
-      const orderHashCode = computeFnv1aOrderHash(`${fullCode}|${material}|${transmision}|${estacion}`);
-      setText('dossier-order-code', `${orderHashCode} • TRIAJE PRIORITARIO cμ ALMACÉN DURANGO`);
-      if (traySummary) {
-        setText('dossier-title', `ACUSE FORMAL DE SOLICITUD DE COTIZACIÓN TÉCNICA (${traySummary})`);
-      }
-      const fullTcoAndProfile = [
-        perfilPulpa ? `Perfil Mineral: ${perfilPulpa}` : '',
-        tco ? `Impacto Operativo: ${tco}` : '',
-        trayState.coreReturnEnabled ? 'Economía Circular Core Trade-In: -22% en Cartucho DAM005 (INV-SMAT-SCI-06)' : ''
-      ].filter(Boolean).join(' • ') || 'Evaluación de continuidad operativa en Almacén Central Durango.';
-
-      setText('field-name', nombre);
-      setText('field-company', empresa);
-      setText('field-phone', telefono);
-      setText('field-email', correo);
-      setText('field-destination', destino);
-      setText('field-role', equipo);
-      setText('field-code', fullCode);
-      setText('field-client-ref', refCliente);
-      setText('field-dimensions', medidas);
-      setText('field-details', detalles);
-      setText('field-hydraulics', hidraulica);
-      const matLabel = material === 'hule_natural'
-        ? 'Hule Natural Antiabrasivo R55 (55–65 Shore A)'
-        : (material === 'poliuretano'
-          ? 'Poliuretano Grado Minero U01 (85–95 Shore A)'
-          : ((material === 'ceramica_sic' || material === 'carburo_silicio')
-            ? 'Carburo de Silicio Sinterizado SiC (≥2200 HV, Mohs 9.2, K_Ic=4.1 MPa·√m)'
-            : 'Alto Cromo ASTM A532 Cr27% (>600 HB)'));
-      const sealLabel = sealBranch === 'gland_water' ? 'S5b Prensaestopa con Agua' : 'S5a Expulsor Centrífugo Seco';
-      const wNum = Number(pesoKg) || 0;
-      const liShaft = wNum > 0 ? (wNum / 11.1).toFixed(2) : '0.00';
-      const nioshTier = wNum >= 23
-        ? `HOIST_REQUIRED: Polipasto / Grúa Obligatorio (≥23 kg NIOSH, LI_shaft=${liShaft})`
-        : (wNum > 11.1
-          ? `ASSISTED_SHAFT_MOUNT_2P: Montaje Asistido 2 Técnicos (11.1–23 kg Waters-NIOSH, RWL_shaft=11.1 kg, LI_shaft=${liShaft})`
-          : `MANUAL_SAFE_1P: Manejo Manual Seguro 1 Técnico (≤11.1 kg Waters-NIOSH, LI_shaft=${liShaft})`);
-      const nioshLabel = pesoKg ? ` • Peso: ${pesoKg} kg (${nioshTier})` : '';
-      setText('field-material-drive', `${matLabel} • Arreglo V-Belt: ${transmision} (Sumidero: ${floodImm}) • Estación: ${estacion} (${sealLabel})${nioshLabel}`);
-      setText('field-clearance-kinematics', `Claro Axial δ = ${claroMm} mm (b₂ = ${b2Mm} mm, Δη_v = -${deltaEtaV}%, Δv_pipe = -${pipeVelLossVal}%) • n₂ = ${n2Rpm} RPM • u₂ = ${u2Ms} m/s • F_r = ${frKn} kN • C = ${capCKn} kN (Vida ISO 281 L₁₀ₕ = ${Number(l10h).toLocaleString('es-MX')} h)${structReason ? ' • ' + structReason : ''}`);
-      setText('field-metrology', metrologia);
-      setText('field-tco', fullTcoAndProfile);
-      setText('field-type', `${urgencia === 'paro' ? 'Paro Operativo Prioritario' : 'Requisición Formal de Proyecto'} [${gateClassVal}${trustBoundaryId !== 'NONE' ? ' • ' + trustBoundaryId : ''}]`);
-
-      const sapBlockText = [
-        `FOLIO: ${folio} | ORDER_HASH: ${orderHashCode} | GATE: ${gateClassVal} | BOUNDARY: ${trustBoundaryId}`,
-        `EMPRESA: ${empresa} | SOLICITANTE: ${nombre}`,
-        `EQUIPO: ${equipo} (${fullCode})`,
-        `METALURGIA Y ARREGLO: ${matLabel} | ${transmision} (Sumidero: ${floodImm}) | ${estacion} (${sealLabel})${nioshLabel}`,
-        `HIDRAULICA Y ALTITUD: ${hidraulica}`,
-        `CINEMATICA: delta=${claroMm}mm (b2=${b2Mm}mm, dEtaV=-${deltaEtaV}%, dvPipe=-${pipeVelLossVal}%), n2=${n2Rpm}RPM, u2=${u2Ms}m/s, Fr=${frKn}kN, C=${capCKn}kN, L10h=${l10h}h${structReason ? ' | ' + structReason : ''}`,
-        `METROLOGIA: ${metrologia}`
-      ].join('\n');
-      setText('sap-plaintext-block', sapBlockText);
-
-      const copySapBtn = document.getElementById('copy-sap-acuse-btn');
-      if (copySapBtn) {
-        copySapBtn.onclick = async () => {
-          try {
-            await navigator.clipboard.writeText(sapBlockText);
-            copySapBtn.textContent = 'Texto SAP Copiado';
-          } catch (_e) {}
-        };
-      }
-
-      const dlTsvBtn = document.getElementById('download-tsv-acuse-btn');
-      if (dlTsvBtn) {
-        dlTsvBtn.onclick = () => {
-          const headers = ['Folio', 'Gate', 'Boundary', 'Empresa', 'Solicitante', 'Equipo', 'Codigo', 'Material', 'Arreglo', 'Inmunidad_Sumidero', 'Estacion', 'Sello', 'Peso_kg', 'NIOSH_Waters_Tier', 'Claro_mm', 'b2_mm', 'n2_RPM', 'u2_ms', 'Fr_kN', 'Capacidad_C_kN', 'L10h_h', 'Er_Cave', 'Vida_Impulsor_h', 'Delta_NPSH_m', 'Derating_IEC', 'K_Motor_Alt', 'Perdida_v_pct', 'Razon_Estructural', 'Hidraulica', 'Metrologia'];
-          const row = [folio, gateClassVal, trustBoundaryId, empresa, nombre, equipo, fullCode, matLabel, transmision, floodImm, estacion, sealLabel, pesoKg || '0', nioshTier, claroMm, b2Mm, n2Rpm, u2Ms, frKn, capCKn, l10h, erVal, impLifeVal, deltaNpshVal, motorDeratingVal, kMotorAltVal, pipeVelLossVal, structReason, hidraulica, metrologia];
-          const tsv = headers.join('\t') + '\n' + row.map(v => String(v || '').replace(/[\t\r\n]+/g, ' ')).join('\t') + '\n';
-          const blob = new Blob(['\uFEFF' + tsv], { type: 'text/tab-separated-values;charset=utf-8;' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `${folio}_SAP_ERP.tsv`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        };
-      }
-
-      const vcardBtn = document.getElementById('download-vendor-vcard-btn');
-      if (vcardBtn) {
-        vcardBtn.onclick = () => {
-          const vcf = [
-            'BEGIN:VCARD',
-            'VERSION:3.0',
-            'FN:SMAT Minerals S.A. de C.V.',
-            'ORG:SMAT Minerals S.A. de C.V.;Ingeniería de Aplicación y Suministro Minero',
-            'TEL;TYPE=WORK,VOICE:+52-618-810-4408',
-            'TEL;TYPE=CELL,VOICE:+52-618-367-0664',
-            'EMAIL;TYPE=PREF,INTERNET:ventas@smatminerals.com',
-            'ADR;TYPE=WORK:;;Mariano Salas #114, Col. Nueva Vizcaya;Durango;DGO;34080;México',
-            'NOTE:UNSPSC 40151500 / 20121500 / 40161500 / 41111500 | Incoterms EXW/DAP Durango | ASTM A532 Cr27 HRC >= 58',
-            'END:VCARD'
-          ].join('\r\n');
-          const blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8;' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'SMAT_Minerals_Vendor_Passport.vcf';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        };
-      }
-
-      const jsonBtn = document.getElementById('download-vendor-json-btn');
-      if (jsonBtn) {
-        jsonBtn.onclick = () => {
-          const payload = {
-            schema: 'smat.vendor.passport.v3',
-            companyName: 'SMAT Minerals S.A. de C.V.',
-            industrialHub: 'Mariano Salas #114, Durango, DGO, C.P. 34080, México',
-            incoterms: ['EXW Durango', 'DAP Unidad Minera'],
-            unspscCodes: ['40151500', '20121500', '40161500', '41111500'],
-            metallurgyCert: 'ASTM A532 Clase III Tipo A Cr27 >= 650 HB / HRC >= 58'
-          };
-          const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8;' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'SMAT_Minerals_Vendor_Passport.json';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        };
-      }
-
-      const reorderLink = document.getElementById('reorder-ss-link');
-      if (reorderLink) {
-        try {
-          const trayRaw = localStorage.getItem('smat_requisition_tray_v3');
-          if (trayRaw) {
-            const parsedTray = JSON.parse(trayRaw);
-            if (parsedTray && Array.isArray(parsedTray.items) && parsedTray.items.length > 0) {
-              const ser = parsedTray.items.map(i => `${encodeURIComponent(i.id)}:${i.qty}:STOCK_SS`).join(',');
-              reorderLink.setAttribute('href', `/cotizar/?reorder=1&tray=${ser}#rfq`);
-            }
-          }
-        } catch (_e) {}
-      }
-    }
-
-    populateSheet();
-    document.addEventListener('astro:page-load', populateSheet);
-  })();
+<script>
+  import { initAcuseSheetController, enrichTrayItemsPreservingMetadata } from '../scripts/acuseSheetController.js';
+  /*
+   * Hidratación canónica PutGet (smat_workbench_state_v2):
+   * urlParams.get('material') | urlParams.get('claro_mm') | urlParams.get('u2_ms') | urlParams.get('l10h')
+   * material === 'poliuretano' | material === 'ceramica_sic' (≥2200 HV, K_Ic=4.1 MPa·√m)
+   * Ergonomía Waters-NIOSH 1993 (RWL_shaft = 11.1 kg): HOIST_REQUIRED | ASSISTED_SHAFT_MOUNT_2P | MANUAL_SAFE_1P
+   * Métricas físicas: eff_ratio_er, impeller_life_h, delta_npsh_m, k_motor_alt, pipe_vel_loss_pct, gate_classification
+   */
+  void enrichTrayItemsPreservingMetadata;
+  initAcuseSheetController('es');
 </script>
 
 <style>

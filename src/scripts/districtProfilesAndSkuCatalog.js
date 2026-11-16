@@ -3,6 +3,7 @@
  * Extraído por costura limpia LCOM4 desde workbenchBus.js (D8 / DEB-V31-05 / DEB-V34-07).
  */
 import atomicPartsJson from '../../data/atomic_parts.json' with { type: 'json' };
+import { getQuickProductBySlugOrAlias } from './quickProductsCatalog.js';
 
 /**
  * Endpoint oficial de respaldo para ingesta asíncrona hacia Google Apps Script (Code.gs)
@@ -170,7 +171,15 @@ export const ATOMIC_PARTS_CATALOG = Object.fromEntries(
         handling_mode: item.niosh_handling_mode,
         niosh_rwl_shaft_kg: nioshRwlShaftKg,
         niosh_lifting_index_shaft: nioshLiftingIndexShaft,
-        niosh_ergonomic_tier: nioshErgonomicTier
+        niosh_ergonomic_tier: nioshErgonomicTier,
+        everyday_equivalence_es: item.everyday_equivalence_es || '',
+        everyday_equivalence_en: item.everyday_equivalence_en || '',
+        kit_ids: Array.isArray(item.kit_ids) ? item.kit_ids : [],
+        physical_stock_durango_units: Number(item.physical_stock_durango_units) || 0,
+        unit_replacement_value_mxn: Number(item.unit_replacement_value_mxn) || 0,
+        physical_audit_date: item.physical_audit_date || '2026-11-10',
+        warehouse_total_mxn: Number(item.warehouse_total_mxn) || 1646850,
+        warehouse_total_units: Number(item.warehouse_total_units) || 383
       }
     ];
   })
@@ -438,6 +447,7 @@ export function parseUrlContextParams(urlOrSearch = '', hashOptional = '') {
     particleSizeD80Microns: null,
     flot_condition: null,
     filt_condition: null,
+    sku: null,
     atomic_part: null
   };
 
@@ -481,6 +491,7 @@ export function parseUrlContextParams(urlOrSearch = '', hashOptional = '') {
 
     if (params.has('material')) result.material = params.get('material');
     else if (params.has('aleacion')) result.material = params.get('aleacion');
+    else if (params.has('mat')) result.material = params.get('mat');
 
     if (params.has('transmision')) result.transmision = params.get('transmision').toUpperCase();
     else if (params.has('drive')) result.transmision = params.get('drive').toUpperCase();
@@ -568,9 +579,77 @@ export function parseUrlContextParams(urlOrSearch = '', hashOptional = '') {
     if (result.rr_n !== null) result.rosinRammlerSlopeN = Number(result.rr_n);
     if (params.has('sintoma')) result.sintoma = params.get('sintoma');
     if (params.has('falla')) result.falla = params.get('falla');
+    else if (params.has('failure')) result.falla = params.get('failure');
 
     if (params.has('circuito')) result.circuito = params.get('circuito');
     else if (params.has('circuit')) result.circuito = params.get('circuit');
+
+    const rawSku = params.get('sku') || params.get('sku_id');
+    if (rawSku) {
+      const resolvedSku = getQuickProductBySlugOrAlias(rawSku);
+      if (resolvedSku) {
+        result.sku = resolvedSku.id;
+        if (!result.circuito) {
+          const catMap = {
+            lab: 'control_procesos',
+            pumping: 'bombeo',
+            classification: 'clasificacion',
+            filtration: 'filtracion',
+            flotation: 'flotacion'
+          };
+          result.circuito = catMap[resolvedSku.category_id] || resolvedSku.vertical || 'bombeo';
+        }
+        if (!result.equipo) {
+          const skuRoleMap = {
+            'SMAT-PUMP-WETKIT-554': 'kit_wet_end',
+            'SMAT-PUMP-IMP-AH': 'solo_impulsor',
+            'SMAT-PUMP-LINERS-AH': 'solo_voluta',
+            'SMAT-PUMP-EXPELLER-KIT': 'kit_sellado',
+            'SMAT-PUMP-BRG-005M': 'kit_rodamientos',
+            'SMAT-COUPLED-PUMP-CYC': 'skid_bomba',
+            'SMAT-CYC-D6-D20': 'hidrociclon_apex_vortex',
+            'SMAT-SCR-TH48-30': 'malla_criba_poliuretano',
+            'SMAT-SCR-MOD-1X1': 'malla_criba_poliuretano',
+            'SMAT-FILT-CLOTH-PLATE': 'placas_telas',
+            'SMAT-FILT-SHIFTER-CHAIN': 'placas_telas',
+            'SMAT-FLOT-MECH-18SP': 'celda_flotacion'
+          };
+          result.equipo = skuRoleMap[resolvedSku.id] || (resolvedSku.id.startsWith('SMAT-LAB-') ? 'balanza_marcy' : 'kit_wet_end');
+        }
+        if (!result.rol) {
+          result.rol = result.equipo;
+        }
+        if (!result.material && (params.get('mat') || params.get('material') || resolvedSku.default_material)) {
+          result.material = params.get('mat') || params.get('material') || resolvedSku.default_material || null;
+        }
+        if (!params.has('codigo') && !params.has('code') && Array.isArray(resolvedSku.atomic_codes) && resolvedSku.atomic_codes.length > 0) {
+          const firstAtomic = resolveAtomicPartCode(resolvedSku.atomic_codes[0]);
+          if (firstAtomic) {
+            result.codigo = firstAtomic.part_number;
+            result.atomic_part = firstAtomic;
+            if (!result.serie) result.serie = firstAtomic.pipe_size;
+          }
+        }
+      } else {
+        result.sku = String(rawSku).trim().toUpperCase();
+      }
+    }
+
+    if (result.falla && (!result.equipo || !result.sintoma)) {
+      const failureMap = {
+        throatbush_recirculation: { equipo: 'solo_voluta', sintoma: 'arena_fina' },
+        impeller_cavitation_erosion: { equipo: 'solo_impulsor', sintoma: 'roca_dura' },
+        volute_cutwater_gouging: { equipo: 'kit_wet_end', sintoma: 'roca_dura' },
+        liner_elastomer_tearing: { equipo: 'kit_wet_end', sintoma: 'acido_quimica' },
+        seal_stuffing_box: { equipo: 'kit_sellado', sintoma: 'fuga_sello' },
+        bearing_shaft_fatigue: { equipo: 'kit_rodamientos', sintoma: 'mixta_duda' }
+      };
+      const mappedFailure = failureMap[String(result.falla).trim().toLowerCase()];
+      if (mappedFailure) {
+        if (!result.equipo) result.equipo = mappedFailure.equipo;
+        if (!result.sintoma) result.sintoma = mappedFailure.sintoma;
+      }
+    }
 
     if (params.has('flow')) result.flow = params.get('flow');
     if (params.has('solids')) result.solids = params.get('solids');

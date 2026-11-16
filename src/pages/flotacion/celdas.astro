@@ -79,16 +79,41 @@ const criteria = celdaRole?.decision_criteria;
           </tbody>
         </table>
 
-        <!-- Reporte de Despiece en 5 Zonas (#18 SP / #24 / #30) y Válvulas Avenida 4 -->
+        <!-- Reporte de Despiece en 5 Zonas (#18 SP / #24 / #30) -->
         <div class="flotation-5zone-box" data-cell-dropin-matrix="gorain-1997" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; color: var(--smat-text-primary); border: 1px solid #cbd5e1; border-left: 4px solid #7c2d12;">
-          <span class="badge badge-copper">PLANO 3 · DESPIECE EN 5 ZONAS (#18 SP, #24, #30) Y VÁLVULAS DE LODOS (AVENIDA 4)</span>
+          <span class="badge badge-copper">PLANO 3 · DESPIECE EN 5 ZONAS (#18 SP, #24, #30) · CANDADO G4</span>
           <h3 style="margin: 0.65rem 0 0.5rem; font-size: 1.08rem; color: var(--smat-text-primary);">Reemplazo Drop-In Sin Modificar Tanque ni Cabezal Existente (Anti-Morita)</h3>
           <p style="font-size: 0.88rem; color: #334155; margin-bottom: 0.85rem;">
-            Cada kit rotor-estator SMAT preserva el número de bombeo de aire N<sub>Q</sub> (0.22–0.26) y el flujo superficial de burbuja S<sub>b</sub> = 6 J<sub>g</sub> / d<sub>32</sub> ≥ 50 s<sup>-1</sup> (Gorain 1997 · <code>evaluateFlotationCellHydrodynamics</code>), verificando amperaje I<sub>motor</sub> y velocidad periférica v<sub>tip</sub> (6.0–7.5 m/s) antes y después del montaje.
+            Cada kit rotor-estator SMAT preserva el número de bombeo de aire N<sub>Q</sub> (0.22–0.26) y el flujo superficial de burbuja <var>S</var><sub>b</sub> = 6 <var>J</var><sub>g</sub> / <var>d</var><sub>32</sub> ≥ 50 s<sup>-1</sup> (Gorain 1997), verificando amperaje I<sub>motor</sub> y velocidad periférica v<sub>tip</sub> (6.0–7.5 m/s) antes y después del montaje.
           </p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.65rem; margin-bottom: 0.85rem; padding: 0.85rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.82rem;">
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Modelo / Ø Rotor (m):</span>
+              <select id="celdas-dia-select" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <option value="0.46">#18 SP (Ø 0.46 m · 50 ft³)</option>
+                <option value="0.61" selected>#24 (Ø 0.61 m · 100 ft³)</option>
+                <option value="0.76">#30 (Ø 0.76 m · 300 ft³)</option>
+              </select>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Velocidad Gas J<sub>g</sub> (cm/s):</span>
+              <input type="number" id="celdas-jg-input" min="0.6" max="3.0" step="0.1" value="1.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Burbuja Sauter d<sub>32</sub> (mm):</span>
+              <input type="number" id="celdas-d32-input" min="0.9" max="2.8" step="0.1" value="1.6" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Velocidad Rotor (RPM):</span>
+              <input type="number" id="celdas-rpm-input" min="120" max="380" step="5" value="215" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+          </div>
+          <div id="celdas-gorain-readout" style="margin-bottom: 0.85rem; padding: 0.65rem 0.85rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-family: var(--smat-font-mono); font-size: 0.82rem; font-weight: 700;">
+            S<sub>b</sub> = <span id="celdas-sb-output">56.25</span> s<sup>-1</sup> · v<sub>tip</sub> = <span id="celdas-vtip-output">6.87</span> m/s · k = <span id="celdas-k-output">1.185</span> min<sup>-1</sup> (Gorain ≥ 50 s<sup>-1</sup> ÓPTIMO)
+          </div>
           <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
             <a href="/productos/mecanismo-suspendido-flotacion-18sp/" class="btn btn-outline" style="font-size:0.8rem;">SMAT-FLOT-MECH-18SP · Mecanismo Suspendido (#18 SP, #24, #30) →</a>
-            <a href="/productos/mecanismo-suspendido-flotacion-18sp/" class="btn btn-outline" style="font-size:0.8rem;">SMAT-FLOT-MECH-18SP · Kit Rotor + Estator (#18 SP) →</a>
+            <a href="/productos/kit-rotor-estator-flotacion/" class="btn btn-outline" style="font-size:0.8rem;">SMAT-FLOT-MECH-18SP · Kit Rotor + Estator (#18 SP) →</a>
           </div>
         </div>
 
@@ -157,6 +182,46 @@ const criteria = celdaRole?.decision_criteria;
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  import { calculateFlotationGorainKineticRate } from '../../scripts/slurryEngine.js';
+
+  function initFlotationCellsGorainPanel() {
+    const diaEl = document.getElementById('celdas-dia-select') as HTMLSelectElement | null;
+    const jgEl = document.getElementById('celdas-jg-input') as HTMLInputElement | null;
+    const d32El = document.getElementById('celdas-d32-input') as HTMLInputElement | null;
+    const rpmEl = document.getElementById('celdas-rpm-input') as HTMLInputElement | null;
+    const sbOut = document.getElementById('celdas-sb-output');
+    const vtipOut = document.getElementById('celdas-vtip-output');
+    const kOut = document.getElementById('celdas-k-output');
+    const readoutBox = document.getElementById('celdas-gorain-readout');
+
+    function updateGorain() {
+      if (!diaEl || !jgEl || !d32El || !rpmEl) return;
+      const res = calculateFlotationGorainKineticRate({
+        rotorDiaM: Number(diaEl.value) || 0.61,
+        jgCmS: Number(jgEl.value) || 1.5,
+        d32Mm: Number(d32El.value) || 1.6,
+        rotorRpm: Number(rpmEl.value) || 215
+      });
+      if (sbOut) sbOut.textContent = String(res.sbInverseSeconds);
+      if (vtipOut) vtipOut.textContent = String(res.tipSpeedMS);
+      if (kOut) kOut.textContent = String(res.rateConstantMin);
+      if (readoutBox) {
+        readoutBox.style.background = res.gorainCompliant ? '#ecfdf5' : '#fffbeb';
+        readoutBox.style.color = res.gorainCompliant ? '#065f46' : '#92400e';
+      }
+    }
+
+    [diaEl, jgEl, d32El, rpmEl].forEach((el) => {
+      el?.addEventListener('input', updateGorain);
+      el?.addEventListener('change', updateGorain);
+    });
+    updateGorain();
+  }
+
+  initFlotationCellsGorainPanel();
+</script>
 
 <style>
   .page-hero {

@@ -80,8 +80,34 @@ const criteria = repRole?.decision_criteria;
           <span class="badge badge-copper">PLANO 3 · DESPIECE EN 5 FAMILIAS DE FILTRO PRENSA (AVENIDA 5 · CANDADO G5)</span>
           <h3 style="margin: 0.65rem 0 0.5rem; font-size: 1.08rem; color: var(--smat-text-primary);">#01 Placas PP · #02 Lonas Calandradas · #03 Plate Shifter · #04 Cadenas · #05 Hidráulica</h3>
           <p style="font-size: 0.88rem; color: #334155; margin-bottom: 0.85rem;">
-            Protección estructural contra rotura de alma por diferencial de presión ΔP &gt; 3.5 bar (Timoshenko, σ<sub>max</sub> = β · ΔP · (a/h)² ≤ 18 MPa · <code>evaluateFilterPressPlateDeflection</code>). Suministro bajo candado G5 (🔵 SE FABRICA con 50% de anticipo y plano confirmado para lotes especiales).
+            Protección estructural contra rotura de alma por diferencial de presión ΔP &gt; 3.5 bar (Timoshenko, σ<sub>max</sub> = β · ΔP · (a/h)² ≤ 18 MPa). Suministro bajo candado G5 (🔵 SE FABRICA con 50% de anticipo y plano confirmado para lotes especiales).
           </p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.65rem; margin-bottom: 0.85rem; padding: 0.85rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.82rem;">
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Formato Placa (mm):</span>
+              <select id="rep-plate-width" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <option value="800">800 × 800 mm</option>
+                <option value="1000">1000 × 1000 mm</option>
+                <option value="1200" selected>1200 × 1200 mm</option>
+                <option value="1500">1500 × 1500 mm</option>
+              </select>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Presión Alimentación (bar):</span>
+              <input type="number" id="rep-pressure-bar" min="4" max="25" step="1" value="12" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Puertos Obstruidos (0–4):</span>
+              <input type="number" id="rep-clogged-ports" min="0" max="4" step="1" value="0" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Espesor Alma (mm):</span>
+              <input type="number" id="rep-plate-thickness" min="45" max="110" step="5" value="65" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+          </div>
+          <div id="rep-timoshenko-readout" style="margin-bottom: 0.85rem; padding: 0.65rem 0.85rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-family: var(--smat-font-mono); font-size: 0.82rem; font-weight: 700;">
+            σ<sub>max</sub> = <span id="rep-stress-out">3.54</span> MPa · Factor Seguridad FS = <span id="rep-fs-out">4.1</span> (<span id="rep-status-out">Operación Segura NOM-141</span>)
+          </div>
           <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
             <a href="/productos/mecanismo-corre-placas-plate-shifter/" class="btn btn-outline" style="font-size:0.8rem;">SMAT-FILT-SHIFTER-CHAIN · Corre-Placas (Plate Shifter) + Cadenas →</a>
             <a href="/productos/lonas-y-placas-filtro-prensa-16bar/" class="btn btn-outline" style="font-size:0.8rem;">SMAT-FILT-CLOTH-PLATE · Lonas y Placas Recesadas PP 16 bar →</a>
@@ -150,6 +176,46 @@ const criteria = repRole?.decision_criteria;
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  import { evaluateFilterPressPlateDeflection } from '../../scripts/slurryEngine.js';
+
+  function initRepuestosTimoshenkoPanel() {
+    const wEl = document.getElementById('rep-plate-width') as HTMLSelectElement | null;
+    const pEl = document.getElementById('rep-pressure-bar') as HTMLInputElement | null;
+    const cEl = document.getElementById('rep-clogged-ports') as HTMLInputElement | null;
+    const tEl = document.getElementById('rep-plate-thickness') as HTMLInputElement | null;
+    const stressOut = document.getElementById('rep-stress-out');
+    const fsOut = document.getElementById('rep-fs-out');
+    const statusOut = document.getElementById('rep-status-out');
+    const readoutBox = document.getElementById('rep-timoshenko-readout');
+
+    function updateFlexure() {
+      if (!wEl || !pEl || !cEl || !tEl) return;
+      const res = evaluateFilterPressPlateDeflection({
+        plateWidthMm: Number(wEl.value) || 1200,
+        feedPressureBar: Number(pEl.value) || 12,
+        cloggedPortsCount: Number(cEl.value) || 0,
+        plateThicknessMm: Number(tEl.value) || 65
+      });
+      if (stressOut) stressOut.textContent = String(res.maxBendingStressMpa);
+      if (fsOut) fsOut.textContent = String(res.flexuralSafetyFactor);
+      if (statusOut) statusOut.textContent = res.isPlateCrackingRisk ? 'Riesgo de Fractura (Desbloquear Puertos)' : 'Operación Segura NOM-141';
+      if (readoutBox) {
+        readoutBox.style.background = res.isPlateCrackingRisk ? '#fef2f2' : '#ecfdf5';
+        readoutBox.style.color = res.isPlateCrackingRisk ? '#991b1b' : '#065f46';
+      }
+    }
+
+    [wEl, pEl, cEl, tEl].forEach((el) => {
+      el?.addEventListener('input', updateFlexure);
+      el?.addEventListener('change', updateFlexure);
+    });
+    updateFlexure();
+  }
+
+  initRepuestosTimoshenkoPanel();
+</script>
 
 <style>
   .page-hero {

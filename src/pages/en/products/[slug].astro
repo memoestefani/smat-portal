@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import ProductQuickCard from '../../../components/ProductQuickCard.astro';
-import { getAllStaticProductRouteEntries } from '../../../scripts/quickProductsCatalog.js';
+import { getAllStaticProductRouteEntries, getQuickProductBySlugOrAlias } from '../../../scripts/quickProductsCatalog.js';
 
 export function getStaticPaths() {
   const entries = getAllStaticProductRouteEntries('en');
@@ -49,6 +49,34 @@ const nioshBadges: Record<string, { label: string; cls: string }> = {
 const niosh = nioshBadges[sku.niosh_mode] || nioshBadges.HOIST_REQUIRED;
 const hasAtomicPumpCodes = Array.isArray(sku.atomic_codes) && sku.atomic_codes.length > 0;
 const castCodeLabel = hasAtomicPumpCodes ? sku.atomic_codes.join(', ') : sku.id;
+const coupledSku = getQuickProductBySlugOrAlias(sku.coupled_pair_sku);
+const telemetryLabelsByVerticalEn: Record<string, { sg: string; d50: string; life: string }> = {
+  control: {
+    sg: 'Density / SG Range (Marcy)',
+    d50: 'Sieve Aperture Range (ASTM E11)',
+    life: 'Calibration Cycle / Service Life'
+  },
+  filtracion: {
+    sg: 'Filter Press Feed Density',
+    d50: 'Cake Particle Cut (d50)',
+    life: 'Typical Cloth / Plate Service Life'
+  },
+  flotacion: {
+    sg: 'Cell Slurry Density',
+    d50: 'Liberation Particle Size (d80)',
+    life: 'Rotor-Stator Wear Life (Weibull)'
+  },
+  clasificacion: {
+    sg: 'Cyclone / Screen Feed Density',
+    d50: 'Plitt Cut Size d50c',
+    life: 'SiC Apex / PU Screen Wear Life'
+  }
+};
+const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
+  sg: 'Slurry Density (Marcy SG)',
+  d50: 'Plitt Cut Size d50c',
+  life: 'Typical Wear Life (Weibull)'
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} canonical={canonicalPath} lang="en">
@@ -138,19 +166,19 @@ const castCodeLabel = hasAtomicPumpCodes ? sku.atomic_codes.join(', ') : sku.id;
           </h2>
           <div class="smat-slug-telemetry-grid">
             <div class="smat-slug-telemetry-box">
-              <div class="smat-slug-telemetry-label">Slurry Density (Marcy SG)</div>
+              <div class="smat-slug-telemetry-label">{telLabels.sg}</div>
               <div class="smat-slug-telemetry-val smat-slug-telemetry-val--amber">
                 {sku.telemetry_hooks.marcy_sg_range[0]} – {sku.telemetry_hooks.marcy_sg_range[1]} t/m³
               </div>
             </div>
             <div class="smat-slug-telemetry-box">
-              <div class="smat-slug-telemetry-label">Plitt Cut Size d50c</div>
+              <div class="smat-slug-telemetry-label">{telLabels.d50}</div>
               <div class="smat-slug-telemetry-val smat-slug-telemetry-val--sky">
                 {sku.telemetry_hooks.plitt_d50_um_range[0]} – {sku.telemetry_hooks.plitt_d50_um_range[1]} µm
               </div>
             </div>
             <div class="smat-slug-telemetry-box">
-              <div class="smat-slug-telemetry-label">Typical Wear Life (Weibull)</div>
+              <div class="smat-slug-telemetry-label">{telLabels.life}</div>
               <div class="smat-slug-telemetry-val smat-slug-telemetry-val--emerald">
                 {sku.telemetry_hooks.wear_life_hours_range[0]} – {sku.telemetry_hooks.wear_life_hours_range[1]} h
               </div>
@@ -172,7 +200,7 @@ const castCodeLabel = hasAtomicPumpCodes ? sku.atomic_codes.join(', ') : sku.id;
           <h2 class="smat-slug-aside-h2">1. Available Alloys / Materials</h2>
           <div class="smat-slug-chip-row">
             {sku.available_materials.map((mat: string) => (
-              <span class={`smat-slug-mat-chip ${mat === sku.default_material ? 'is-default' : ''}`}>
+              <span data-mat-code={mat} class={`smat-slug-mat-chip ${mat === sku.default_material ? 'is-default' : ''}`}>
                 {mat} {mat === sku.default_material ? '(Standard)' : ''}
               </span>
             ))}
@@ -180,9 +208,9 @@ const castCodeLabel = hasAtomicPumpCodes ? sku.atomic_codes.join(', ') : sku.id;
         </div>
 
         <div>
-          {hasAtomicPumpCodes ? (
-            <>
-              <h3 class="smat-slug-aside-h3">2. Linked Atomic Part Codes (13-Part Pump BOM)</h3>
+          {hasAtomicPumpCodes && (
+            <div style="margin-bottom: 0.75rem;">
+              <h3 class="smat-slug-aside-h3">2A. Linked Atomic Part Codes (13-Part Pump BOM)</h3>
               <div class="smat-slug-chip-row">
                 {sku.atomic_codes.map((code: string) => (
                   <a
@@ -193,20 +221,24 @@ const castCodeLabel = hasAtomicPumpCodes ? sku.atomic_codes.join(', ') : sku.id;
                   </a>
                 ))}
               </div>
-            </>
-          ) : (
-            <>
-              <h3 class="smat-slug-aside-h3">2. Circuit Coupling & Preventive Reorder Window (s, S)</h3>
-              <div class="smat-slug-coupled-box">
-                <div>
-                  <strong>Recommended Coupled SKU:</strong> <span>{sku.coupled_pair_sku}</span>
-                </div>
-                <div>
-                  <strong>Preventive Window (s, S):</strong> <span>Every {sku.reorder_window_days} operating days</span>
-                </div>
-              </div>
-            </>
+            </div>
           )}
+          <h3 class="smat-slug-aside-h3">2. Circuit Coupling & Preventive Reorder Window (s, S)</h3>
+          <div class="smat-slug-coupled-box" data-coupled-sku={sku.coupled_pair_sku} data-reorder-days={String(sku.reorder_window_days)}>
+            <div>
+              <strong>Recommended Coupled SKU:</strong>{' '}
+              {coupledSku ? (
+                <a href={`/en/products/${coupledSku.slug_en}/`} class="smat-slug-atomic-link" style="display:inline-block; padding:0.1rem 0.45rem;">
+                  {sku.coupled_pair_sku} ({coupledSku.title_en.split(' ')[0]}) →
+                </a>
+              ) : (
+                <span>{sku.coupled_pair_sku}</span>
+              )}
+            </div>
+            <div>
+              <strong>Preventive Window JRP (s, S):</strong> <span>Every {sku.reorder_window_days} operating days (Lot #{sku.kit_id || 1})</span>
+            </div>
+          </div>
         </div>
 
         <div class="smat-slug-lanes-stack">
@@ -259,12 +291,23 @@ const castCodeLabel = hasAtomicPumpCodes ? sku.atomic_codes.join(', ') : sku.id;
             href={`https://wa.me/526183670664?text=${encodeURIComponent(`[SMAT-DGO] Hello SMAT, I need an urgent quote for SKU ${sku.id} (${sku.title_en}) in alloy ${sku.default_material} [ Regime: ${sku.stock_regime || 'hay'} | Mass: ${sku.mass_kg} kg ].`)}`}
             target="_blank"
             rel="noopener noreferrer"
+            data-slug-wa-btn={sku.id}
+            data-sku-id={sku.id}
+            data-sku-title={sku.title_en}
+            data-sku-regime={sku.stock_regime || 'hay'}
+            data-sku-mass={String(sku.mass_kg)}
+            data-sku-lang="en"
             class="smat-slug-btn-wa"
           >
             💬 Fast Checkout / Petty Cash via Engineering WhatsApp (526183670664)
           </a>
           <a
-            href={`/en/?sku=${encodeURIComponent(sku.id)}&mat=${encodeURIComponent(sku.default_material)}#workbench`}
+            href={`/en/quote/?sku=${encodeURIComponent(sku.id)}&mat=${encodeURIComponent(sku.default_material)}#rfq`}
+            data-home-workbench={`/en/?sku=${encodeURIComponent(sku.id)}&mat=${encodeURIComponent(sku.default_material)}#workbench`}
+            data-slug-workbench-btn={sku.id}
+            data-workbench-anchor="#workbench"
+            data-sku-id={sku.id}
+            data-sku-lang="en"
             class="smat-slug-btn-workbench"
           >
             ⚙️ Open in Hydraulic & Metallurgical Workbench (Plane 2)

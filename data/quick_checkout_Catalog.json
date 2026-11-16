@@ -38,6 +38,26 @@
       "A49",
       "A05"
     ],
+    "config_options_es": [
+      {
+        "value": "A49",
+        "label": "INOX-304 — Vaso Calibrado Acero Inoxidable 304 (1000 cm³) + 12 Anillos SG (2.2 a 4.4)"
+      },
+      {
+        "value": "A05",
+        "label": "KIT-2VASOS — Balanza Marcy + 2 Vasos 1000 cm³ (Inox 304 + Acrílico) para Balance 3 Vasos"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "A49",
+        "label": "SS-304 — Calibrated 304 Stainless Steel Cup (1000 cm³) + 12 SG Rings (2.2 to 4.4)"
+      },
+      {
+        "value": "A05",
+        "label": "2-CUP-KIT — Marcy Scale + 2 Cups 1000 cm³ (304 SS + Acrylic) for 3-Cup Cyclone Balance"
+      }
+    ],
     "mass_kg": 6.5,
     "hardness_spec": "Carátula sellada + Vaso calibrado 1000 cm³ ±0.5 cm³ en Acero Inoxidable 304/316L",
     "niosh_mode": "MANUAL_SAFE",
@@ -119,6 +139,26 @@
       "A49",
       "PU"
     ],
+    "config_options_es": [
+      {
+        "value": "A49",
+        "label": "INOX-304 — Vaso de 1000 mL en Acero Inoxidable 304 con Ranuras de Enrase (Molienda / Ciclones)"
+      },
+      {
+        "value": "PU",
+        "label": "ACRILICO-1000 — Vaso de 1000 mL en Acrílico de Alto Impacto Transparente (Flotación / Espesadores)"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "A49",
+        "label": "SS-304 — 1000 mL 304 Stainless Steel Slurry Cup with Overflow Slots (Grinding / Cyclones)"
+      },
+      {
+        "value": "PU",
+        "label": "ACRYLIC-1000 — 1000 mL High-Impact Clear Acrylic Slurry Cup (Flotation / Thickeners)"
+      }
+    ],
     "mass_kg": 1.2,
     "hardness_spec": "Acero Inoxidable 304 / 316L con volumen 1000.0 ± 0.5 cm³ y asa de suspensión calibrada",
     "niosh_mode": "MANUAL_SAFE",
@@ -198,6 +238,26 @@
     "default_material": "A49",
     "available_materials": [
       "A49"
+    ],
+    "config_options_es": [
+      {
+        "value": "A49",
+        "label": "ASTM-E11-8IN — Serie Mallas Inox 316L #100 a #400 (Ø 8\" · 203.2 mm) + Tapa y Fondo"
+      },
+      {
+        "value": "MESH-200",
+        "label": "MALLA-200 — Tamiz Individual de Control P80 Malla #200 (75 µm · Acero Inox 316L ASTM E11)"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "A49",
+        "label": "ASTM-E11-8IN — 316L Stainless Sieve Stack #100 to #400 (Ø 8\" · 203.2 mm) + Cover & Pan"
+      },
+      {
+        "value": "MESH-200",
+        "label": "MESH-200 — Single P80 Control Test Sieve #200 Mesh (75 µm · 316L SS ASTM E11)"
+      }
     ],
     "mass_kg": 0.45,
     "hardness_spec": "Malla tejida en Acero Inoxidable 316L tensada ópticamente bajo norma ASTM E11 / ISO 3310-1",
@@ -280,6 +340,26 @@
       "A05",
       "A49"
     ],
+    "config_options_es": [
+      {
+        "value": "A05",
+        "label": "ROTAP-8IN — Tamizador Orbital con Martillo Percutor para 6 Tamices de 8\" (110V / 220V 60Hz)"
+      },
+      {
+        "value": "A49",
+        "label": "ROTAP-KIT-E11 — Tamizador Orbital + Columna de 6 Tamices ASTM E11 Inox 316L (#100 a #400)"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "A05",
+        "label": "ROTAP-8IN — Orbital Sieve Shaker with Tapping Hammer for 6 × 8\" Sieves (110V / 220V 60Hz)"
+      },
+      {
+        "value": "A49",
+        "label": "ROTAP-KIT-E11 — Orbital Sieve Shaker + 6-Sieve ASTM E11 316L SS Stack (#100 to #400)"
+      }
+    ],
     "mass_kg": 82,
     "hardness_spec": "Leva y engranaje en acero tratado térmicamente 55 HRC + Amortiguadores de neopreno",
     "niosh_mode": "HOIST_REQUIRED",
@@ -360,6 +440,26 @@
     "available_materials": [
       "PU",
       "R55"
+    ],
+    "config_options_es": [
+      {
+        "value": "PU",
+        "label": "POLIMERO-14IN — Plato de Tentadura Negro/Azul Antirreflejo Ø 14\" (355 mm) con 3 Riflas"
+      },
+      {
+        "value": "R55",
+        "label": "HULE- ESTRIADO — Plato de Tentadura en Hule Natural Vulcanizado para Inspección de Sulfuros"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "PU",
+        "label": "POLYMER-14IN — Matte Black/Blue Ø 14\" (355 mm) Panning Dish with 3 Rougher Riffles"
+      },
+      {
+        "value": "R55",
+        "label": "RUBBER-RIFFLED — Vulcanized Natural Rubber Panning Dish for Sulfide Tailings Inspection"
+      }
     ],
     "mass_kg": 0.38,
     "hardness_spec": "Polímero de Alto Impacto Resistente a Xantatos y Espumantes con Superficie Mate Antirreflejo",
@@ -526,6 +626,26 @@
     "available_materials": [
       "A49",
       "R55"
+    ],
+    "config_options_es": [
+      {
+        "value": "A49",
+        "label": "INOX-100PSI — Cilindro y Tapa en Acero Inoxidable 304 (Capacidad 8 L · 100 psi) + Regulador"
+      },
+      {
+        "value": "R55",
+        "label": "KIT-SELLOS — Juego de Empaques O-Ring + Lonas Filtrantes Ø 8\" para Filtro Batch 100 psi"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "A49",
+        "label": "SS304-100PSI — 304 Stainless Steel Barrel & Lid (8 L Capacity · 100 psi) + Air Regulator"
+      },
+      {
+        "value": "R55",
+        "label": "SEAL-CLOTH-KIT — Replacement O-Ring Gasket Set + Ø 8\" Filter Cloths for 100 psi Batch Filter"
+      }
     ],
     "mass_kg": 21.5,
     "hardness_spec": "Cilindro bridado en Acero Inoxidable 304 probado hidrostáticamente a 150 psi (Operación 100 psi)",
@@ -1456,6 +1576,26 @@
     "available_materials": [
       "PU",
       "R55"
+    ],
+    "config_options_es": [
+      {
+        "value": "PU",
+        "label": "PP-16BAR — Placa Recesada Polipropileno Virgen 16 bar (1200×1200 mm) + Lona Monofilamento Calandrada"
+      },
+      {
+        "value": "R55",
+        "label": "TPE-MEMBRANA — Placa de Membrana Elastómero TPE (Exprimido Secundario) + Lona Cuello Reforzado"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "PU",
+        "label": "PP-16BAR — 16 bar Virgin Polypropylene Recessed Plate (1200×1200 mm) + Calendered Monofilament Cloth"
+      },
+      {
+        "value": "R55",
+        "label": "TPE-MEMBRANE — TPE Elastomer Squeeze Membrane Plate + Reinforced-Neck Filter Cloth"
+      }
     ],
     "mass_kg": 48,
     "hardness_spec": "Polipropileno Isostático Prensado (σ_adm ≥ 18 MPa, Timoshenko) + Lona Monofilamento Calandrada",

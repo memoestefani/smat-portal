@@ -255,7 +255,7 @@ export function buildCmuPrioritySubjectLine(trayState = {}, telemetry = {}) {
  */
 export function buildSmatVendorPassportPayload(companyMeta = {}) {
   const companyName = String(companyMeta.legalName || 'SMAT Minerals S.A. de C.V.');
-  const industrialHub = 'Centro Logístico e Ingeniería de Aplicación: Mariano Salas #114, Col. Nueva Vizcaya, Durango, DGO, C.P. 34080, México';
+  const industrialHub = 'Centro Logístico e Ingeniería de Aplicación: Mariano Salas #114, Col. Primer Presidente, Durango, DGO, C.P. 34166, México';
   const rfcStatus = 'Persona Moral Régimen General de Ley • Opinión de Cumplimiento SAT 32-D Positiva Vigente • REPSE / Padrón Minero';
   const incoterms = ['EXW Almacén Central Durango (Cotejo Dimensional 1:1 en Patio)', 'DAP Unidad Minera (Coordinación Directa con Folio Técnico)'];
   const unspscCodes = [
@@ -276,7 +276,7 @@ export function buildSmatVendorPassportPayload(companyMeta = {}) {
     'TEL;TYPE=CELL,VOICE:+52-618-367-0664',
     'EMAIL;TYPE=PREF,INTERNET:ventas@smatminerals.com',
     'EMAIL;TYPE=INTERNET:contacto@smatminerals.com',
-    'ADR;TYPE=WORK:;;Mariano Salas #114, Col. Nueva Vizcaya;Durango;DGO;34080;México',
+    'ADR;TYPE=WORK:;;Mariano Salas #114, Col. Primer Presidente;Durango;DGO;34166;México',
     'URL:https://smatminerals.com',
     'NOTE:UNSPSC 40151500 / 20121500 / 40161500 / 41111500 | Incoterms EXW/DAP Durango | ASTM A532 Cr27 >= 650 HB',
     'END:VCARD'
@@ -289,7 +289,7 @@ export function buildSmatVendorPassportPayload(companyMeta = {}) {
     cfdiVersion: '4.0',
     satRegimeCode: '601 - General de Ley Personas Morales',
     defaultCfdiUse: 'G01 (Adquisición de mercancías) / G03 (Gastos en general) / I04 (Equipo de cómputo y accesorios / Maquinaria)',
-    postalCode: '34080',
+    postalCode: '34166',
     currencySupport: ['MXN', 'USD'],
     industrialHub,
     contact: {
