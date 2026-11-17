@@ -149,6 +149,35 @@ const dc = soporteRole?.decision_criteria;
           >
             Quote Calibrated Bearing Assembly →
           </a>
+
+          <div
+            data-core-tradein-widget="DAM005"
+            style="width: 100%; margin-top: 0.75rem; padding: 0.85rem; border-radius: 8px; background: #ecfdf5; border: 1px solid #10b981; font-size: 0.78rem; color: #064e3b;"
+          >
+            <div style="font-family: var(--font-mono-tech, monospace); font-weight: 800; color: #065f46; margin-bottom: 0.35rem;">
+              ♻️ DAM005 CORE TRADE-IN PROGRAM (evaluateCoreTradeInEligibility)
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-bottom: 0.4rem;">
+              <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 700;">
+                <span>Used Housing Condition</span>
+                <select data-tradein-condition style="padding: 0.35rem 0.45rem; border: 1px solid #059669; border-radius: 6px; background: #ffffff; color: #1c1917; font-size: 0.75rem;">
+                  <option value="intact_housing" selected>Intact Crack-Free Housing (18% Credit)</option>
+                  <option value="minor_bearing_seizure">Bearing Seizure / Recoverable Bore (10%)</option>
+                  <option value="cracked_housing">Cracked Housing (0% Credit)</option>
+                </select>
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.35rem; font-weight: 700; padding-top: 1rem;">
+                <input type="checkbox" data-tradein-not-welded checked />
+                <span>Unwelded Bearing Bore (ISO IT6)</span>
+              </label>
+            </div>
+            <div data-tradein-result style="font-family: var(--font-mono-tech, monospace); font-weight: 800; color: #065f46;">
+              Core Credit DAM005: 18% (RMA-CORE-DAM005-INTACT • 35 kg CO₂e Saved)
+            </div>
+            <div data-tradein-co2 style="font-size: 0.72rem; color: #047857; margin-top: 0.2rem;">
+              Physical return at Durango Central Hub (Insurgentes Sur, Dgo.)
+            </div>
+          </div>
         </div>
       </div>
 
@@ -167,8 +196,11 @@ const dc = soporteRole?.decision_criteria;
 
 <script>
   import { calculateDriveAndBearingKinematics } from '../../../scripts/slurryEngine.js';
+  import { initCoreTradeInWidgets } from '../../../scripts/vendorPassportAndTradeInController.js';
+  import { saveEngineeringContextSnapshot } from '../../../scripts/wizardCircuitPhysicsController.js';
 
   function initBearingInspectorEn() {
+    initCoreTradeInWidgets(document, 'en');
     const box = document.querySelector('[data-bearing-inspector]');
     if (!box) return;
     const arrSel = box.querySelector('[data-bear-arr]') as HTMLSelectElement | null;
@@ -200,6 +232,7 @@ const dc = soporteRole?.decision_criteria;
       if (ctaEl) {
         ctaEl.href = `/en/quote/?circuito=bombeo&equipo=kit_rodamientos&pieza=bearing_assembly&estacion=S1&transmision=${res.arrangement}&cap_c_kn=${res.dynamicCapacityCkN}&power_kw=${res.shaftPowerKw}&fr_kn=${res.beltRadialLoadKn.toFixed(2)}&l10h=${res.bearingL10Hours}#rfq`;
       }
+      saveEngineeringContextSnapshot('bombeo', res);
     };
 
     [arrSel, cSel, kwInput].forEach((el) => {

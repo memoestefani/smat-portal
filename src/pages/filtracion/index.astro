@@ -138,6 +138,7 @@ import CircuitNavigator from '../../components/CircuitNavigator.astro';
 
 <script>
   import { evaluateFilterPressPlateDeflection } from '../../scripts/slurryEngine.js';
+  import { saveEngineeringContextSnapshot } from '../../scripts/wizardCircuitPhysicsController.js';
 
   const pEl = document.getElementById('filt-pressure-bar') as HTMLInputElement | null;
   const cEl = document.getElementById('filt-clogged-ports') as HTMLInputElement | null;
@@ -164,6 +165,14 @@ import CircuitNavigator from '../../components/CircuitNavigator.astro';
       sumEl.style.background = res.isPlateCrackingRisk ? '#fef2f2' : '#ecfdf5';
       sumEl.style.color = res.isPlateCrackingRisk ? '#991b1b' : '#065f46';
     }
+    saveEngineeringContextSnapshot('filtracion', {
+      ...res,
+      feedPressureBar: Number(pEl.value) || 12,
+      cloggedPortsCount: Number(cEl.value) || 0,
+      plateWidthMm: Number(wEl.value) || 1200,
+      plateThicknessMm: Number(tEl.value) || 65,
+      cakeMoistureTargetPct: Number(mEl.value) || 14
+    });
   }
 
   [pEl, cEl, wEl, tEl, mEl].forEach((el) => {

@@ -5,6 +5,7 @@
 import atomicPartsJson from '../../data/atomic_parts.json' with { type: 'json' };
 import { getQuickProductBySlugOrAlias } from './quickProductsCatalog.js';
 import { resolveBomPartSpecs } from './pumpAssemblyAndDriveEngine.js';
+import { sanitizePublicAtomicPartSpecs } from './vendorPassportAndTradeInController.js';
 
 /**
  * Endpoint oficial de respaldo para ingesta asíncrona hacia Google Apps Script (Code.gs)
@@ -133,7 +134,7 @@ export const ATOMIC_PARTS_CATALOG = Object.fromEntries(
       : (weightVal < 23.0 ? 'ASSISTED_SHAFT_MOUNT_2P' : 'HOIST_MANDATORY');
     return [
       key,
-      {
+      sanitizePublicAtomicPartSpecs({
         ...item,
         ...extra,
         circuit: 'bombeo',
@@ -145,13 +146,8 @@ export const ATOMIC_PARTS_CATALOG = Object.fromEntries(
         niosh_ergonomic_tier: nioshErgonomicTier,
         everyday_equivalence_es: item.everyday_equivalence_es || '',
         everyday_equivalence_en: item.everyday_equivalence_en || '',
-        kit_ids: Array.isArray(item.kit_ids) ? item.kit_ids : [],
-        physical_stock_durango_units: Number(item.physical_stock_durango_units) || 0,
-        unit_replacement_value_mxn: Number(item.unit_replacement_value_mxn) || 0,
-        physical_audit_date: item.physical_audit_date || '2026-11-10',
-        warehouse_total_mxn: Number(item.warehouse_total_mxn) || 1646850,
-        warehouse_total_units: Number(item.warehouse_total_units) || 383
-      }
+        kit_ids: Array.isArray(item.kit_ids) ? item.kit_ids : []
+      })
     ];
   })
 );
@@ -175,6 +171,11 @@ export function resolveAtomicPartCode(rawCode = '') {
  * @param {string} [pipeSeries='6x4']
  */
 export function getAtomicPartSpecs(codeOrSlug = '', pipeSeries = '6x4') {
+  const rawSpec = resolveRawAtomicPartSpecs(codeOrSlug, pipeSeries);
+  return sanitizePublicAtomicPartSpecs(rawSpec);
+}
+
+function resolveRawAtomicPartSpecs(codeOrSlug = '', pipeSeries = '6x4') {
   const direct = resolveAtomicPartCode(codeOrSlug);
   if (direct) return direct;
 

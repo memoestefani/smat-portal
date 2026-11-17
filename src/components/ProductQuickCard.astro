@@ -41,8 +41,6 @@ interface Props {
     kit_id?: number;
     warehouse_audit?: {
       physical_audit_date?: string;
-      warehouse_total_mxn?: number;
-      warehouse_total_units?: number;
       warehouse_active_sku_count?: number;
       availability_tier?: string;
       dehoratius_audit_badge_es?: string;
@@ -122,7 +120,7 @@ const kitId = sku.kit_id || 1;
 const auditTier = auditMeta.availability_tier || 'TIER_1_IN_PATIO_DURANGO';
 const auditDate = auditMeta.physical_audit_date || '2026-11-10';
 const auditActiveSkus = auditMeta.warehouse_active_sku_count || 35;
-const _auditValuationRef = (auditMeta.warehouse_total_mxn || 0) + (auditMeta.warehouse_total_units || 0) + (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (auditMeta.dehoratius_audit_badge_en ? 1 : 0);
+const _auditValuationRef = (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (auditMeta.dehoratius_audit_badge_en ? 1 : 0) + 1;
 ---
 
 <section
@@ -446,9 +444,9 @@ const _auditValuationRef = (auditMeta.warehouse_total_mxn || 0) + (auditMeta.war
   }
 
   .qcard-tab-btn.is-active {
-    border-color: var(--smat-solar-amber-border, #d97706);
-    background: var(--smat-solar-amber-bg, #fffbeb);
-    color: var(--smat-solar-accent, #b45309);
+    border-color: #92400e;
+    background: #fef3c7;
+    color: #78350f;
     font-weight: 700;
   }
 
@@ -653,8 +651,8 @@ const _auditValuationRef = (auditMeta.warehouse_total_mxn || 0) + (auditMeta.war
     gap: 0.4rem;
     padding: 0.5rem 0.85rem;
     border-radius: 8px;
-    border: 1px solid #047857;
-    background: #059669;
+    border: 1px solid #064e3b;
+    background: #065f46;
     color: #ffffff;
     font-size: 0.75rem;
     font-weight: 700;
@@ -676,8 +674,8 @@ const _auditValuationRef = (auditMeta.warehouse_total_mxn || 0) + (auditMeta.war
     gap: 0.5rem;
     padding: 0.5rem 1rem;
     border-radius: 8px;
-    border: 1px solid #92400e;
-    background: #d97706;
+    border: 1px solid #431407;
+    background: #7c2d12;
     color: #ffffff;
     font-size: 0.75rem;
     font-weight: 700;
@@ -686,6 +684,6 @@ const _auditValuationRef = (auditMeta.warehouse_total_mxn || 0) + (auditMeta.war
   }
 
   .smat-qcard-cta-btn:hover {
-    background: #b45309;
+    background: #9a3412;
   }
 </style>

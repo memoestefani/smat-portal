@@ -179,6 +179,7 @@ const criteria = repRole?.decision_criteria;
 
 <script>
   import { evaluateFilterPressPlateDeflection } from '../../scripts/slurryEngine.js';
+  import { saveEngineeringContextSnapshot } from '../../scripts/wizardCircuitPhysicsController.js';
 
   function initRepuestosTimoshenkoPanel() {
     const wEl = document.getElementById('rep-plate-width') as HTMLSelectElement | null;
@@ -205,6 +206,13 @@ const criteria = repRole?.decision_criteria;
         readoutBox.style.background = res.isPlateCrackingRisk ? '#fef2f2' : '#ecfdf5';
         readoutBox.style.color = res.isPlateCrackingRisk ? '#991b1b' : '#065f46';
       }
+      saveEngineeringContextSnapshot('filtracion', {
+        ...res,
+        plateWidthMm: Number(wEl.value) || 1200,
+        feedPressureBar: Number(pEl.value) || 12,
+        cloggedPortsCount: Number(cEl.value) || 0,
+        plateThicknessMm: Number(tEl.value) || 65
+      });
     }
 
     [wEl, pEl, cEl, tEl].forEach((el) => {

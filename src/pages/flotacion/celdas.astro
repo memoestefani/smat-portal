@@ -185,6 +185,7 @@ const criteria = celdaRole?.decision_criteria;
 
 <script>
   import { calculateFlotationGorainKineticRate } from '../../scripts/slurryEngine.js';
+  import { saveEngineeringContextSnapshot } from '../../scripts/wizardCircuitPhysicsController.js';
 
   function initFlotationCellsGorainPanel() {
     const diaEl = document.getElementById('celdas-dia-select') as HTMLSelectElement | null;
@@ -211,6 +212,13 @@ const criteria = celdaRole?.decision_criteria;
         readoutBox.style.background = res.gorainCompliant ? '#ecfdf5' : '#fffbeb';
         readoutBox.style.color = res.gorainCompliant ? '#065f46' : '#92400e';
       }
+      saveEngineeringContextSnapshot('flotacion', {
+        ...res,
+        rotorDiameterM: Number(diaEl.value) || 0.61,
+        superficialGasVelocityCmS: Number(jgEl.value) || 1.5,
+        bubbleDiameterMm: Number(d32El.value) || 1.6,
+        rotorRpm: Number(rpmEl.value) || 215
+      });
     }
 
     [diaEl, jgEl, d32El, rpmEl].forEach((el) => {

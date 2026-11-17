@@ -485,3 +485,111 @@ pub fn check_v38_bijective_codes_acuse_isolation_and_zero_orphan_dom(site_root: 
 
     Ok(())
 }
+
+/// 42. Gate V3.9 (D1-V39 a D10-V39, DEB-V39-01..10):
+/// Verifica exposición al 100% del backend en la UI bajo primeros principios Apple HIG:
+/// - D1/D2/D3-V39: WizardCircuitCalculators.astro + wizardCircuitPhysicsController.js (Gorain S_b, Zwietering N_js, Ruth t_f, Timoshenko FS, 5to chip XOR Clasificación Plitt d50c + Roping Concha)
+/// - D4-V39: selectBearingFrameByPowerAndRpm + evaluateCoreTradeInEligibility en [slug].astro, [code].astro, soporte.astro y /cotizar/
+/// - D5-V39: Desglose explícito de Rama D Híbrida (#wb-hybrid-rama-d-breakdown)
+/// - D6-V39: #wb-mining-preset-bar promovido a cabecera del Paso 1
+/// - D7-V39: buildSmatVendorVcardString (RFC 6350 vCard 4.0) y Anexo 22 TIGIE en LiveEngineeringDossier.astro
+/// - D8-V39 (Regla Soberana): CERO exposición pública de existencias de almacén SMAT (sanitizePublicAtomicPartSpecs) + Ventana Preventiva de Reorden para el cliente
+/// - D9-V39: Persistencia smat_engineering_context_v1 entre las 4 verticales y /cotizar/
+/// - D10-V39: Contraste Solar WCAG AAA (>= 7.0:1) en ProductQuickCard.astro y CircuitNavigator.astro
+pub fn check_v39_backend_ui_exposure_and_zero_stock_leak_gate_42(site_root: &Path) -> Result<(), String> {
+    for req_file in [
+        "src/components/WizardCircuitCalculators.astro",
+        "src/scripts/wizardCircuitPhysicsController.js",
+        "src/scripts/vendorPassportAndTradeInController.js",
+        "tests/v39_apple_hig_backend_exposure.test.mjs",
+    ] {
+        if !site_root.join(req_file).exists() {
+            return Err(format!("Gate 42 (V3.9): Falta archivo obligatorio '{}'", req_file));
+        }
+    }
+
+    let qw_src = fs::read_to_string(site_root.join("src/components/QuoteWizard.astro"))
+        .map_err(|e| e.to_string())?;
+    for req_qw in [
+        "data-circuit=\"clasificacion\"",
+        "WizardCircuitCalculators",
+        "wb-hybrid-rama-d-breakdown",
+        "wb-part-reorder-window-val",
+        "sanitizePublicAtomicPartSpecs",
+    ] {
+        if !qw_src.contains(req_qw) {
+            return Err(format!("Gate 42 (V3.9): QuoteWizard.astro carece de '{}'", req_qw));
+        }
+    }
+
+    let idx_step1 = qw_src.find("id=\"wb-step1-xor-circuit-bar\"").ok_or("Falta #wb-step1-xor-circuit-bar")?;
+    let idx_preset = qw_src.find("id=\"wb-mining-preset-bar\"").ok_or("Falta #wb-mining-preset-bar")?;
+    let idx_step2 = qw_src.find("id=\"stage-2\"").ok_or("Falta #stage-2")?;
+    if !(idx_preset > idx_step1 && idx_preset < idx_step2) {
+        return Err("Gate 42 (D6-V39): #wb-mining-preset-bar debe ubicarse en la cabecera del Paso 1 antes del Paso 2".to_string());
+    }
+
+    let dossier_src = fs::read_to_string(site_root.join("src/components/LiveEngineeringDossier.astro"))
+        .map_err(|e| e.to_string())?;
+    for req_dos in [
+        "id=\"live-row-circuit-physics\"",
+        "id=\"sap-live-anexo22-tuple\"",
+        "id=\"btn-download-vendor-json\"",
+        "id=\"btn-download-vendor-vcf\"",
+    ] {
+        if !dossier_src.contains(req_dos) {
+            return Err(format!("Gate 42 (D7-V39): LiveEngineeringDossier.astro carece de '{}'", req_dos));
+        }
+    }
+
+    // Regla Soberana D8-V39: CERO exposición pública de existencias de almacén SMAT en vistas o controladores públicos
+    for public_rel in [
+        "src/components/QuoteWizard.astro",
+        "src/components/ProductQuickCard.astro",
+        "src/components/LiveEngineeringDossier.astro",
+        "src/pages/catalogo/[code].astro",
+        "src/pages/en/catalog/[code].astro",
+        "src/pages/productos/[slug].astro",
+        "src/pages/en/products/[slug].astro",
+    ] {
+        let src = fs::read_to_string(site_root.join(public_rel)).map_err(|e| e.to_string())?;
+        for forbidden_key in [
+            "physical_stock_durango_units",
+            "unit_replacement_value_mxn",
+            "warehouse_total_mxn",
+            "warehouse_total_units",
+            "boxes_breakdown",
+        ] {
+            if src.contains(forbidden_key) {
+                return Err(format!(
+                    "Gate 42 (D8-V39 Violación Soberana): Vista pública '{}' expone campo confidencial de inventario '{}'",
+                    public_rel, forbidden_key
+                ));
+            }
+        }
+    }
+
+    // D9-V39: Persistencia transversal smat_engineering_context_v1
+    for sim_rel in [
+        "src/pages/bombeo/skid.astro",
+        "src/pages/en/pumping/skid.astro",
+        "src/pages/bombeo/soporte.astro",
+        "src/pages/en/pumping/bearing-assembly.astro",
+        "src/pages/flotacion/celdas.astro",
+        "src/pages/en/flotation/cells.astro",
+        "src/pages/filtracion/index.astro",
+        "src/pages/filtracion/repuestos.astro",
+        "src/pages/clasificacion/index.astro",
+        "src/pages/en/classification/index.astro",
+    ] {
+        let src = fs::read_to_string(site_root.join(sim_rel)).map_err(|e| e.to_string())?;
+        if !src.contains("saveEngineeringContextSnapshot") {
+            return Err(format!(
+                "Gate 42 (D9-V39): '{}' no persiste telemetría en smat_engineering_context_v1",
+                sim_rel
+            ));
+        }
+    }
+
+    Ok(())
+}

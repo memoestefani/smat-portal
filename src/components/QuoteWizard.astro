@@ -6,6 +6,8 @@ import atomicPartsData from '../../data/atomic_parts.json';
 import '../styles/workbench.css';
 import LiveEngineeringDossier from './LiveEngineeringDossier.astro';
 import RequisitionTraySummary from './RequisitionTraySummary.astro';
+import WizardCircuitCalculators from './WizardCircuitCalculators.astro';
+import { sanitizePublicAtomicPartSpecs } from '../scripts/vendorPassportAndTradeInController.js';
 import {
   SLURRY_PRESETS,
   MECHANICAL_DIAGNOSTICS,
@@ -30,7 +32,7 @@ interface Props {
 const { lang = 'es', defaultRole = '', defaultType = 'opex' } = Astro.props;
 const isEs = lang === 'es';
 const miningGroupsJson = JSON.stringify(miningGroupsData.groups);
-const atomicPartsJson = JSON.stringify(atomicPartsData);
+const atomicPartsJson = JSON.stringify(sanitizePublicAtomicPartSpecs(atomicPartsData));
 const leadEndpointUrl = import.meta.env.PUBLIC_LEAD_INTAKE_URL || '';
 const mechDiagnosticsList = Object.values(MECHANICAL_DIAGNOSTICS);
 const defaultSimMetrics = calculateSlurryMetrics({ flowM3H: 180, solidsWeightPercent: 45, particleSizeD80Microns: 180, altitudeM: 2400 });
@@ -109,11 +111,36 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
           <label id="circuit-selector-label" class="circuit-selector-label"><strong>{isEs ? 'Circuito de Proceso en Planta (Statechart XOR):' : 'Plant Mineral Processing Circuit (XOR Statechart):'}</strong></label>
           <div class="circuit-pills-grid" role="group" aria-labelledby="circuit-selector-label">
             <button type="button" class="circuit-pill active" data-circuit="bombeo" aria-pressed="true">[ {isEs ? 'BOMBEO DE PULPA' : 'SLURRY PUMPING'} ]</button>
+            <button type="button" class="circuit-pill" data-circuit="clasificacion" aria-pressed="false">[ {isEs ? 'CLASIFICACIÓN / CICLONES' : 'CLASSIFICATION / CYCLONES'} ]</button>
             <button type="button" class="circuit-pill" data-circuit="flotacion" aria-pressed="false">[ {isEs ? 'FLOTACIÓN DE MINERALES' : 'MINERAL FLOTATION'} ]</button>
             <button type="button" class="circuit-pill" data-circuit="filtracion" aria-pressed="false">[ {isEs ? 'FILTRACIÓN / JALES SECOS' : 'FILTRATION / DRY TAILINGS'} ]</button>
             <button type="button" class="circuit-pill" data-circuit="control_procesos" aria-pressed="false">[ {isEs ? 'CONTROL DE PROCESOS' : 'PROCESS CONTROL'} ]</button>
           </div>
           <input type="hidden" name="process_circuit" id="wb-process-circuit" value="bombeo" />
+        </div>
+
+        <!-- Barra de Auto-Calibración Rápida por Unidad Minera en Cabecera del Paso 1 (D7-V39: 25 Grupos / 44 Minas) -->
+        <div id="wb-mining-preset-bar" class="mining-preset-step1-bar" style="margin-bottom: 0.75rem; padding: 0.65rem 0.85rem; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.6rem;">
+            <div>
+              <label for="wb-mining-group-select" style="font-size: 0.74rem; font-weight: 700; color: #0f172a; display: block; margin-bottom: 0.2rem;">{isEs ? 'Grupo Minero / Operador (Pre-calibración opcional):' : 'Mining Group / Operator (Optional preset):'}</label>
+              <select id="wb-mining-group-select" class="wb-select" style="min-height: 36px; padding: 0.3rem 0.55rem; font-size: 0.78rem;">
+                <option value="">{isEs ? `— Seleccionar grupo minero (${miningGroupsData.total_groups} grupos) —` : `— Select mining group (${miningGroupsData.total_groups} groups) —`}</option>
+                {miningGroupsData.groups.map((grp) => (<option value={grp.id}>{grp.name}</option>))}
+              </select>
+            </div>
+            <div>
+              <label for="wb-mining-unit-select" style="font-size: 0.74rem; font-weight: 700; color: #0f172a; display: block; margin-bottom: 0.2rem;">{isEs ? 'Unidad Minera y Perfil de Pulpa (44 minas):' : 'Mining Unit & Pulp Profile (44 mines):'}</label>
+              <select id="wb-mining-unit-select" class="wb-select" style="min-height: 36px; padding: 0.3rem 0.55rem; font-size: 0.78rem;">
+                <option value="">{isEs ? '— Seleccionar unidad minera para pre-cargar pulpa —' : '— Select mining unit to pre-load slurry profile —'}</option>
+                {miningGroupsData.groups.flatMap((grp) => (grp.units || []).map((u) => (<option value={`${grp.id}::${u.name}`} data-group-id={grp.id} data-group-name={grp.name} data-unit-name={u.name} data-pulp-profile={u.pulp_profile || ''}>{grp.name} — {u.name}</option>)))}
+              </select>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem; margin-top:0.45rem;">
+            <div id="wb-step1-pulp-profile-badge" class="unit-pulp-profile-badge hidden" style="font-size: 0.74rem; color: #082f49; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 4px; padding: 0.35rem 0.6rem; font-weight: 600;"></div>
+            <button type="button" id="btn-apply-mining-preset" data-testid="btn-apply-mining-preset" class="assist-pill-btn" style="padding:0.28rem 0.65rem; font-size:0.72rem; font-weight:700;">{isEs ? 'Pre-calibrar Pulpa y Altitud del Distrito →' : 'Pre-calibrate District Slurry & Altitude →'}</button>
+          </div>
         </div>
 
         <!-- CAPA 1: Selección Inmediata de Pieza / Lote y Tubería Nominal (Input First, Readout Second — Sección 3.2.3) -->
@@ -173,8 +200,10 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
               <div><small>{isEs ? 'Secuencia de Montaje:' : 'Assembly Sequence:'}</small> <strong id="wb-part-order-val">{defaultPartSpecs.assembly_order} ({isEs ? 'Lote' : 'Kit'} {defaultPartSpecs.wet_end_kit_ratio})</strong></div>
               <div><small>{isEs ? 'Dureza Certificada:' : 'Certified Hardness:'}</small> <strong id="wb-part-hardness-val">{defaultPartSpecs.hardness}</strong></div>
               <div><small>{isEs ? 'Garantía Dimensional:' : 'Fit Guarantee:'}</small> <strong id="wb-part-fit-val">{isEs ? defaultPartSpecs.fit_guarantee_es : defaultPartSpecs.fit_guarantee_en}</strong></div>
+              <div><small>{isEs ? 'Planeación Preventiva en Planta:' : 'Preventive Plant Cycle:'}</small> <strong id="wb-part-reorder-window-val" data-testid="wb-part-reorder-window-val">{isEs ? (defaultPartSpecs.dispatchSlaLabelEs || 'Ciclo sugerido: cada 90 días • Despacho Programado Durango') : (defaultPartSpecs.dispatchSlaLabelEn || 'Suggested cycle: every 90 days • Durango Scheduled Dispatch')}</strong></div>
             </div>
           </div>
+          <WizardCircuitCalculators lang={lang} />
         </div>
 
         <!-- Criterio Metalúrgico y Riesgo Evitado en Vivo (Conectado a data/roles.json) -->
@@ -258,29 +287,6 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
               </div>
             </div>
 
-            <div id="wb-mining-preset-bar" class="mining-preset-step1-bar" style="margin-top: 0.75rem; padding: 0.65rem 0.85rem; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px;">
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.6rem;">
-                <div>
-                  <label for="wb-mining-group-select" style="font-size: 0.74rem; font-weight: 700; color: #0f172a; display: block; margin-bottom: 0.2rem;">{isEs ? 'Grupo Minero / Operador (Pre-calibración opcional):' : 'Mining Group / Operator (Optional preset):'}</label>
-                  <select id="wb-mining-group-select" class="wb-select" style="min-height: 36px; padding: 0.3rem 0.55rem; font-size: 0.78rem;">
-                    <option value="">{isEs ? `— Seleccionar grupo minero (${miningGroupsData.total_groups} grupos) —` : `— Select mining group (${miningGroupsData.total_groups} groups) —`}</option>
-                    {miningGroupsData.groups.map((grp) => (<option value={grp.id}>{grp.name}</option>))}
-                  </select>
-                </div>
-                <div>
-                  <label for="wb-mining-unit-select" style="font-size: 0.74rem; font-weight: 700; color: #0f172a; display: block; margin-bottom: 0.2rem;">{isEs ? 'Unidad Minera y Perfil de Pulpa (44 minas):' : 'Mining Unit & Pulp Profile (44 mines):'}</label>
-                  <select id="wb-mining-unit-select" class="wb-select" style="min-height: 36px; padding: 0.3rem 0.55rem; font-size: 0.78rem;">
-                    <option value="">{isEs ? '— Seleccionar unidad minera para pre-cargar pulpa —' : '— Select mining unit to pre-load slurry profile —'}</option>
-                    {miningGroupsData.groups.flatMap((grp) => (grp.units || []).map((u) => (<option value={`${grp.id}::${u.name}`} data-group-id={grp.id} data-group-name={grp.name} data-unit-name={u.name} data-pulp-profile={u.pulp_profile || ''}>{grp.name} — {u.name}</option>)))}
-                  </select>
-                </div>
-              </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem; margin-top:0.45rem;">
-                <div id="wb-step1-pulp-profile-badge" class="unit-pulp-profile-badge hidden" style="font-size: 0.74rem; color: #082f49; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 4px; padding: 0.35rem 0.6rem; font-weight: 600;"></div>
-                <button type="button" id="btn-apply-mining-preset" data-testid="btn-apply-mining-preset" class="assist-pill-btn" style="padding:0.28rem 0.65rem; font-size:0.72rem; font-weight:700;">{isEs ? 'Pre-calibrar Pulpa y Altitud del Distrito →' : 'Pre-calibrate District Slurry & Altitude →'}</button>
-              </div>
-            </div>
-
             <div class="form-group" style="margin-top: 0.75rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.65rem;">
               <div>
                 <label for="wb-pump-material"><strong>{isEs ? 'Material en Contacto Húmedo:' : 'Wet-End Wear Material:'}</strong></label>
@@ -321,6 +327,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
                 <div><strong>{isEs ? 'Piezas Lote:' : 'Lot Parts:'}</strong> <span id="wb-mat-parts-list">{(isEs ? defaultMatSpec.partsIncludedEs : defaultMatSpec.partsIncludedEn).join(', ')}</span></div>
               </div>
               <div id="wb-mat-duty-desc" style="margin-top:0.25rem; color:#334155;">{isEs ? defaultMatSpec.dutyApplicationEs : defaultMatSpec.dutyApplicationEn}</div>
+              <div id="wb-hybrid-rama-d-breakdown" data-testid="wb-hybrid-rama-d-breakdown" class="hidden" style="display:none; margin-top:0.45rem; padding:0.45rem 0.65rem; background:#ecfdf5; border:1px solid #059669; border-radius:5px; color:#065f46; font-weight:700;"></div>
             </div>
 
             <!-- PANEL CIRCUITO 2: FLOTACIÓN DE MINERALES -->

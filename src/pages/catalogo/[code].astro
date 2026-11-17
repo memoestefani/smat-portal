@@ -300,7 +300,42 @@ const productSchema = {
               <p data-atomic-tray-msg hidden style="margin:0; font-size:0.82rem; font-weight:700; color:#065f46;"></p>
             </div>
 
+            {part.part_number === 'DAM005' && (
+              <div
+                data-core-tradein-widget="DAM005"
+                style="margin-top: 1rem; padding: 0.85rem; border-radius: 10px; background: #ecfdf5; border: 1px solid #10b981; font-size: 0.78rem; color: #064e3b;"
+              >
+                <div style="font-family: var(--font-mono-tech, monospace); font-weight: 800; color: #065f46; margin-bottom: 0.35rem;">
+                  ♻️ PROGRAMA CORE TRADE-IN DAM005 (evaluateCoreTradeInEligibility)
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 0.45rem; margin-bottom: 0.4rem;">
+                  <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 700;">
+                    <span>Estado de Carcasa Usada</span>
+                    <select data-tradein-condition style="padding: 0.35rem 0.45rem; border: 1px solid #059669; border-radius: 6px; background: #ffffff; color: #0f172a; font-size: 0.75rem;">
+                      <option value="intact_housing" selected>Carcasa Íntegra Sin Fisuras (18% Crédito)</option>
+                      <option value="minor_bearing_seizure">Rodamiento Amarado / Pista Recuperable (10%)</option>
+                      <option value="cracked_housing">Carcasa Fracturada (0% Crédito)</option>
+                    </select>
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 0.35rem; font-weight: 700;">
+                    <input type="checkbox" data-tradein-not-welded checked />
+                    <span>Alojamiento sin soldadura (ISO IT6)</span>
+                  </label>
+                </div>
+                <div data-tradein-result style="font-family: var(--font-mono-tech, monospace); font-weight: 800; color: #065f46;">
+                  Crédito Core DAM005: 18% (RMA-CORE-DAM005-INTACT • Ahorro 35 kg CO₂e)
+                </div>
+                <div data-tradein-co2 style="font-size: 0.72rem; color: #047857; margin-top: 0.2rem;">
+                  Recepción física en Almacén Central Durango (Insurgentes Sur, Dgo.)
+                </div>
+              </div>
+            )}
+
             <div class="dock-facts">
+              <div class="fact-item">
+                <span class="fact-label">Ventana Preventiva (s, S):</span>
+                <span class="fact-val" data-client-reorder-days={String(fullSpec.client_reorder_window_days || 90)}>Cada {fullSpec.client_reorder_window_days || 90} días operativos</span>
+              </div>
               <div class="fact-item">
                 <span class="fact-label">Centro de Distribución:</span>
                 <span class="fact-val">Durango, Dgo., México</span>
@@ -334,6 +369,10 @@ const productSchema = {
 
 <script>
   import { addTrayItem } from '../../scripts/requisitionTrayBus.js';
+  import { initCoreTradeInWidgets } from '../../scripts/vendorPassportAndTradeInController.js';
+  if (typeof document !== 'undefined') {
+    initCoreTradeInWidgets(document, 'es');
+  }
 
   const btn = document.querySelector('[data-add-atomic-to-tray]') as HTMLButtonElement | null;
   const msg = document.querySelector('[data-atomic-tray-msg]') as HTMLElement | null;

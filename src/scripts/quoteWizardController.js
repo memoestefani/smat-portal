@@ -56,8 +56,21 @@ import {
   DOSSIER_FORMATTERS_BY_FIELD,
   DEFAULT_CLASSIFICATION_CRITERIA_MAP,
   formatDossierSimulationBanner,
-  formatDossierMetrologyBadge
+  formatDossierMetrologyBadge,
+  formatDossierCircuitPhysicsRow
 } from '../scripts/quoteDossierRenderer.js';
+import {
+  evaluateHybridWetEndConfiguration
+} from '../scripts/pumpAssemblyAndDriveEngine.js';
+import {
+  bindWizardCircuitCalculators,
+  loadEngineeringContextSnapshot
+} from '../scripts/wizardCircuitPhysicsController.js';
+import {
+  bindVendorPassportDownloadButtons,
+  initCoreTradeInWidgets,
+  buildSapAnexo22ComplianceSummary
+} from '../scripts/vendorPassportAndTradeInController.js';
 import {
   ROLE_ALIAS_MAP,
   FLOTATION_CONDITION_ALIAS_MAP,
@@ -414,6 +427,31 @@ export function initQuoteWizardController() {
     if (d80PhEl) d80PhEl.textContent = matObj.d80RangeMicrons[0] + '–' + matObj.d80RangeMicrons[1] + ' µm • pH ' + matObj.phRange[0] + '–' + matObj.phRange[1];
     if (partsEl) partsEl.textContent = (isEs ? matObj.partsIncludedEs : matObj.partsIncludedEn).join(' + ');
     if (dutyEl) dutyEl.textContent = isEs ? matObj.dutyApplicationEs : matObj.dutyApplicationEn;
+
+    var hybridBreakdownEl = document.getElementById('wb-hybrid-rama-d-breakdown');
+    if (hybridBreakdownEl) {
+      if (key === 'hybrid_a05_r55') {
+        var pipeSer = selectPipeSize ? selectPipeSize.value : '6x4';
+        var d80Val = sliderD80 ? Number(sliderD80.value) : 220;
+        var cwVal = sliderSolids ? Number(sliderSolids.value) : 45;
+        var phVal = sliderPh ? Number(sliderPh.value) : 7.5;
+        var hybRes = evaluateHybridWetEndConfiguration({
+          d80Microns: d80Val,
+          tipSpeedMs: 21.5,
+          pulpPh: phVal,
+          solidsWeightPercent: cwVal,
+          pipeSeries: pipeSer
+        });
+        hybridBreakdownEl.textContent = isEs
+          ? `[RAMA D] Ventaja Híbrida Rama D (${pipeSer}): Ahorro de -${hybRes.savedMassKg} kg (-${hybRes.massSavingsPct}% masa en grúa vs Full Metal ${hybRes.fullMetalMassKg} kg → ${hybRes.singlePumpMassKg} kg) • Impulsor/Cuello en A05 (≥650 HB) + Forros FPL/CPL en Hule R55.`
+          : `[BRANCH D] Branch D Hybrid Advantage (${pipeSer}): Saves -${hybRes.savedMassKg} kg (-${hybRes.massSavingsPct}% rigging mass vs Full Metal ${hybRes.fullMetalMassKg} kg → ${hybRes.singlePumpMassKg} kg) • A05 Impeller/Throatbush (≥650 HB) + R55 Rubber Liners.`;
+        hybridBreakdownEl.classList.remove('hidden');
+        hybridBreakdownEl.style.display = 'block';
+      } else {
+        hybridBreakdownEl.classList.add('hidden');
+        hybridBreakdownEl.style.display = 'none';
+      }
+    }
   }
 
   function applyCircuitStatechartXOR(circuit) {
@@ -457,6 +495,36 @@ export function initQuoteWizardController() {
       } else {
         panelBombeo.classList.add('hidden');
         panelBombeo.style.display = 'none';
+      }
+    }
+    var panelClasificacion = document.getElementById('circuit-panel-clasificacion');
+    if (panelClasificacion) {
+      if (currentCircuit === 'clasificacion') {
+        panelClasificacion.classList.remove('hidden');
+        panelClasificacion.style.display = 'block';
+      } else {
+        panelClasificacion.classList.add('hidden');
+        panelClasificacion.style.display = 'none';
+      }
+    }
+    var flotGorainBox = document.getElementById('wb-flot-gorain-live-box');
+    if (flotGorainBox) {
+      if (currentCircuit === 'flotacion') {
+        flotGorainBox.classList.remove('hidden');
+        flotGorainBox.style.display = 'block';
+      } else {
+        flotGorainBox.classList.add('hidden');
+        flotGorainBox.style.display = 'none';
+      }
+    }
+    var filtTimoshenkoBox = document.getElementById('wb-filt-timoshenko-live-box');
+    if (filtTimoshenkoBox) {
+      if (currentCircuit === 'filtracion') {
+        filtTimoshenkoBox.classList.remove('hidden');
+        filtTimoshenkoBox.style.display = 'block';
+      } else {
+        filtTimoshenkoBox.classList.add('hidden');
+        filtTimoshenkoBox.style.display = 'none';
       }
     }
     if (panelFlotacion) {
@@ -1492,6 +1560,28 @@ export function initQuoteWizardController() {
 
       if (recircAlertBox) recircAlertBox.classList.add('hidden');
       if (recircWarnDossier) recircWarnDossier.classList.add('hidden');
+    } else if (currentCircuit === 'clasificacion') {
+      var selectRoleClas = document.getElementById('wb-role-clasificacion');
+      var selectClasSize = document.getElementById('wb-clas-dc-mm');
+      var selectClasLiner = document.getElementById('wb-clas-liner');
+      var selectedOptClas = selectRoleClas?.options[selectRoleClas.selectedIndex];
+      roleVal = selectRoleClas?.value || 'apex_vortex_kit';
+      roleText = selectedOptClas ? selectedOptClas.text : (isEs ? 'Kit Apex + Vortex Finder Antiabrasivo (Ciclón Plitt)' : 'Apex + Vortex Finder Anti-Abrasion Kit (Plitt Cyclone)');
+      var dcVal = selectClasSize?.value || '380';
+      sizeText = 'D_c ' + dcVal + ' mm';
+      var linerVal = selectClasLiner?.value || 'ceramica_sic';
+      condText = linerVal === 'ceramica_sic'
+        ? (isEs ? 'Carburo de Silicio Sinterizado SiC (≥2200 HV)' : 'Sintered Silicon Carbide SiC (≥2200 HV)')
+        : (linerVal === 'poliuretano' ? (isEs ? 'Poliuretano Grado Minero (85-95 Shore A)' : 'Mining Polyurethane (85-95 Shore A)') : (isEs ? 'Hule Natural Antiabrasivo R55' : 'Natural Anti-Abrasion Rubber R55'));
+      smatCode = buildSmatCode('clasificacion', roleVal, 'D' + dcVal, linerVal);
+      sapMatText = condText;
+      if (livePipeHeader) livePipeHeader.textContent = isEs ? 'Diámetro de Hidrociclón (D_c):' : 'Hydrocyclone Diameter (D_c):';
+      if (livePipeText) livePipeText.textContent = sizeText;
+      if (liveStressHeader) liveStressHeader.textContent = isEs ? 'Revestimiento Interno Apex/Vortex:' : 'Apex/Vortex Liner Material:';
+      if (liveStressText) liveStressText.textContent = condText;
+      if (liveTableMat) liveTableMat.textContent = sapMatText;
+      if (recircAlertBox) recircAlertBox.classList.add('hidden');
+      if (recircWarnDossier) recircWarnDossier.classList.add('hidden');
     }
 
     var detailsText = inputDetails?.value.trim() || (isEs ? 'Verificación dimensional de acople 1:1 en Almacén Central Durango.' : '1:1 dimensional check at Durango Central Warehouse.');
@@ -1603,6 +1693,20 @@ export function initQuoteWizardController() {
       }
       if (elPartOrderVal) {
         elPartOrderVal.textContent = currentPartSpecs.assembly_order_note || currentPartSpecs.assembly_order;
+      }
+      var elPartReorderVal = document.getElementById('wb-part-reorder-window-val');
+      if (elPartReorderVal) {
+        elPartReorderVal.textContent = isEs
+          ? (currentPartSpecs.dispatchSlaLabelEs || 'Ciclo sugerido en planta: cada 90 días • Despacho Programado Durango')
+          : (currentPartSpecs.dispatchSlaLabelEn || 'Suggested plant cycle: every 90 days • Durango Scheduled Dispatch');
+      }
+      var driveContextualCard = document.getElementById('wb-drive-and-tradein-contextual-card');
+      if (driveContextualCard) {
+        var isDriveOrBearingRole =
+          currentCircuit === 'bombeo' &&
+          (activeRoleForSpecs === 'skid_bomba' || activeRoleForSpecs === 'kit_rodamientos');
+        driveContextualCard.classList.toggle('hidden', !isDriveOrBearingRole);
+        driveContextualCard.style.display = isDriveOrBearingRole ? 'block' : 'none';
       }
       if (elLivePartSpecs) {
         var sphereLive = currentPartSpecs.max_sphere_mm ?? currentPartSpecs.max_particle_mm ?? 45;
@@ -1853,6 +1957,30 @@ export function initQuoteWizardController() {
       var elMetrologyText = document.getElementById('wb-metrology-bridge-text');
       var elLiveRowMetrology = document.getElementById('live-row-metrology');
       var elLiveTableMetrology = document.getElementById('live-table-metrology');
+      var engCtxNow = loadEngineeringContextSnapshot();
+      var physRow = formatDossierCircuitPhysicsRow(
+        currentCircuit,
+        engCtxNow,
+        currentPartSpecs,
+        isEs,
+        matCodeVal
+      );
+      var elPhysLbl = document.getElementById('live-table-circuit-physics-label');
+      var elPhysVal = document.getElementById('live-table-circuit-physics-val');
+      if (elPhysLbl) elPhysLbl.textContent = physRow.label;
+      if (elPhysVal) elPhysVal.textContent = physRow.value;
+
+      var elAnexo22Tuple = document.getElementById('sap-live-anexo22-tuple');
+      if (elAnexo22Tuple) {
+        var anexoSummary = buildSapAnexo22ComplianceSummary({
+          circuit: currentCircuit,
+          smatCode: smatCode,
+          stockRegime: isOpex ? 'hay' : 'se_fabrica',
+          estimatedMxn: isOpex ? 18500 : 85000,
+          lang: isEs ? 'es' : 'en'
+        });
+        elAnexo22Tuple.textContent = anexoSummary.summaryText;
+      }
       if (wbState.cycloneCircuit && wbState.cycloneCircuit.hasUrlTelemetry) {
         var cycBadge = formatDossierMetrologyBadge(wbState, isEs);
         var cycBanner = formatDossierSimulationBanner(wbState, isEs);
@@ -2303,6 +2431,15 @@ export function initQuoteWizardController() {
       roleId = selectRoleCtrl?.value || 'balanza_marcy';
       sizeVal = selectCtrlSpec?.value || 'marcy_12_rings';
       condVal = 'control_laboratorio';
+    } else if (circuit === 'clasificacion') {
+      var selectRoleClasCollect = document.getElementById('wb-role-clasificacion');
+      var selectClasSizeCollect = document.getElementById('wb-clas-dc-mm');
+      var selectClasLinerCollect = document.getElementById('wb-clas-liner');
+      var roleOptCl = selectRoleClasCollect?.options[selectRoleClasCollect.selectedIndex];
+      role = roleOptCl ? roleOptCl.text : 'Kit Apex + Vortex Finder Antiabrasivo (Ciclón Plitt)';
+      roleId = selectRoleClasCollect?.value || 'apex_vortex_kit';
+      sizeVal = 'D' + (selectClasSizeCollect?.value || '380');
+      condVal = selectClasLinerCollect?.value || 'ceramica_sic';
     } else {
       var roleOptP = selectRoleFilt?.options[selectRoleFilt.selectedIndex];
       role = roleOptP ? roleOptP.text : 'Placas y Telas Filtrantes';
@@ -3209,6 +3346,13 @@ export function initQuoteWizardController() {
   sanitizeAndMigrateStorage();
   loadSessionState();
   hydrateMetrologyInputsFromState();
+  bindWizardCircuitCalculators(container, function () {
+    updateDossier();
+  });
+  bindVendorPassportDownloadButtons(document);
+  initCoreTradeInWidgets(document, function () {
+    updateDossier();
+  });
   runSlurryCalculation();
   initProfile();
   checkUrlContext();

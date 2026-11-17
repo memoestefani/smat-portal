@@ -179,6 +179,10 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
               <td><strong>{isEs ? 'Cédula Metrológica Lab:' : 'Lab Metrology Spec:'}</strong></td>
               <td id="live-table-metrology">—</td>
             </tr>
+            <tr id="live-row-circuit-physics" data-testid="live-row-circuit-physics">
+              <td><strong id="live-table-circuit-physics-label">{isEs ? 'Telemetría de Circuito y Reorden:' : 'Circuit Telemetry & Reorder:'}</strong></td>
+              <td id="live-table-circuit-physics-val">{isEs ? 'Ciclo preventivo sugerido: 90 días • Despacho Programado Durango' : 'Suggested preventive cycle: 90 days • Durango Scheduled Dispatch'}</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -272,6 +276,19 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
           <div class="sap-vendor-row">
             <span>{isEs ? 'Contacto Directo:' : 'Direct Contact:'}</span>
             <span>{companyData.contact.phones[0].display} • WhatsApp {companyData.contact.whatsapp.display} • {companyData.contact.emails[0].address} • {companyData.contact.emails[1].address}</span>
+          </div>
+          <div class="sap-vendor-row" style="margin-top:0.35rem; padding-top:0.35rem; border-top:1px dashed #cbd5e1;">
+            <span>{isEs ? 'Validación Fiscal CFDI 4.0 / Anexo 22:' : 'CFDI 4.0 / Anexo 22 Tax Validation:'}</span>
+            <strong id="sap-live-anexo22-tuple" data-testid="sap-live-anexo22-tuple" class="font-mono-tech" style="font-size:0.71rem; color:#065f46;">SMAT-PUMP-6X4-WETKIT | SAT ProdServ: 40142000 | Unidad: H87 | TIGIE: 8413.91.99.00 | UNSPSC: 40151500</strong>
+          </div>
+          <div style="margin-top:0.55rem; display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+            <button type="button" id="btn-download-vendor-json" data-testid="btn-download-vendor-json" class="btn-pill-action" style="background:#0c4a6e; color:#ffffff; border-color:#082f49; font-size:0.72rem; padding:0.35rem 0.7rem;">
+              <span>{isEs ? '⬇ Descargar Pasaporte ERP (.JSON SAP/Coupa)' : '⬇ Download ERP Vendor Passport (.JSON SAP/Coupa)'}</span>
+            </button>
+            <button type="button" id="btn-download-vendor-vcf" data-testid="btn-download-vendor-vcf" class="btn-pill-action" style="background:#065f46; color:#ffffff; border-color:#064e3b; font-size:0.72rem; padding:0.35rem 0.7rem;">
+              <span>{isEs ? '⬇ Guardar Contacto Industrial (.VCF RFC 6350)' : '⬇ Save Industrial Contact (.VCF RFC 6350)'}</span>
+            </button>
+            <small id="sap-vendor-passport-status" class="hidden font-mono-tech" style="font-size:0.69rem; color:#065f46; font-weight:700;"></small>
           </div>
         </div>
       </div>

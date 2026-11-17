@@ -1,0 +1,124 @@
+---
+/**
+ * WizardCircuitCalculators.astro
+ * ---------------------------------------------------------------------------
+ * Sub-componente modular (Parnas LCOM4 = 1, D1-V39 a D6-V39) que expone en el
+ * Nivel Primario del Paso 01 de `/cotizar/` (`QuoteWizard.astro`) las calculadoras
+ * físicas e incentivos comerciales del backend:
+ * 1. `#circuit-panel-clasificacion`: Balance de 3 Vasos Marcy (CC%, Rm, Rw) + Corte Plitt (d50c, Roping) + Cribado Weibull (α).
+ * 2. `#wb-flot-gorain-live-box`: Simulador Cinético JKMRC Gorain (Sb, k, v_tip) + Zwietering (N_js).
+ * 3. `#wb-filt-timoshenko-live-box`: Verificador de Flexión Timoshenko (σ_max, FS) + Ciclo Darcy-Ruth y NOM-141.
+ * 4. `#wb-drive-and-tradein-contextual-card`: Tarjeta contextual de Tren Motriz (CV/ZVZ, Bastidor B–F, L10h),
+ *    Desglose Híbrido `Rama D` (`A05 + R55`, ahorro de masa %) y Widget Interactivo *SMAT Core Trade-In (-22% DAM005)*.
+ */
+interface Props {
+  lang?: 'es' | 'en';
+}
+
+const { lang = 'es' } = Astro.props;
+const isEs = lang === 'es';
+---
+
+<!-- PANEL CIRCUITO CLASIFICACIÓN HIDROCICLÓNICA Y CRIBADO FINO (D3-V39: 3 Vasos Marcy + Plitt + Weibull) -->
+<div id="circuit-panel-clasificacion" class="circuit-panel hidden" style="display:none; margin-top: 0.75rem; padding: 0.75rem 0.9rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px;">
+  <div class="form-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.65rem;">
+    <div class="form-group">
+      <label for="wb-role-cyc"><strong>{isEs ? 'Equipo o Refacción de Clasificación / Cribado:' : 'Classification / Screening Equipment or Part:'}</strong></label>
+      <select id="wb-role-cyc" name="role_id_cyc" class="wb-select" data-wb-circuit-calc-input>
+        <option value="hidrociclon_apex_vortex" selected>{isEs ? 'Hidrociclones D6–D20, Boquilla Ápex SiC y Vortex Finder' : 'D6–D20 Hydrocyclones, SiC Apex Spigot & Vortex Finder'}</option>
+        <option value="malla_criba_poliuretano">{isEs ? 'Mallas Finas de Uretano TH48-30 y Módulos 1\'x1\' (Weibull α ≥ 4.2)' : 'TH48-30 Fine Urethane Screens & 1\'x1\' Modular Panels (Weibull α ≥ 4.2)'}</option>
+        <option value="kit_wet_end">{isEs ? 'Paquete Casado Bomba + Hidrociclón (Sincronizado)' : 'Coupled Slurry Pump + Hydrocyclone Package'}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="wb-cyc-series"><strong>{isEs ? 'Serie de Hidrociclón / Diámetro Dc (mm):' : 'Hydrocyclone Series / Diameter Dc (mm):'}</strong></label>
+      <select id="wb-cyc-series" class="wb-select font-mono-tech" data-wb-circuit-calc-input>
+        <option value="150">{isEs ? 'Serie D6 (Dc = 150 mm • Corte Fino 25–45 µm)' : 'D6 Series (Dc = 150 mm • Fine Cut 25–45 µm)'}</option>
+        <option value="250">{isEs ? 'Serie D10 / D10B (Dc = 250 mm • Corte 40–75 µm)' : 'D10 / D10B Series (Dc = 250 mm • Cut 40–75 µm)'}</option>
+        <option value="380" selected>{isEs ? 'Serie D15 (Dc = 380 mm • Molienda Primaria 55–110 µm)' : 'D15 Series (Dc = 380 mm • Primary Grinding 55–110 µm)'}</option>
+        <option value="500">{isEs ? 'Serie D20 (Dc = 500 mm • Gran Caudal 75–150 µm)' : 'D20 Series (Dc = 500 mm • High Flow 75–150 µm)'}</option>
+      </select>
+    </div>
+  </div>
+
+  <div style="margin-top: 0.55rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(125px, 1fr)); gap: 0.5rem;">
+    <div class="form-group"><label for="wb-cyc-sg-feed"><small><strong>{isEs ? 'Vaso 1 Alim. (SGf):' : 'Cup 1 Feed (SGf):'}</strong></small></label><input type="number" id="wb-cyc-sg-feed" min="1.10" max="1.90" step="0.01" value="1.35" class="wb-input font-mono-tech" data-wb-circuit-calc-input /></div>
+    <div class="form-group"><label for="wb-cyc-sg-uf"><small><strong>{isEs ? 'Vaso 2 Desc. (SGu):' : 'Cup 2 Underflow (SGu):'}</strong></small></label><input type="number" id="wb-cyc-sg-uf" min="1.40" max="2.40" step="0.01" value="1.82" class="wb-input font-mono-tech" data-wb-circuit-calc-input /></div>
+    <div class="form-group"><label for="wb-cyc-sg-of"><small><strong>{isEs ? 'Vaso 3 Finos (SGo):' : 'Cup 3 Overflow (SGo):'}</strong></small></label><input type="number" id="wb-cyc-sg-of" min="1.05" max="1.55" step="0.01" value="1.15" class="wb-input font-mono-tech" data-wb-circuit-calc-input /></div>
+    <div class="form-group"><label for="wb-cyc-pressure-kpa"><small><strong>{isEs ? 'Presión ΔP (kPa):' : 'Pressure ΔP (kPa):'}</strong></small></label><input type="number" id="wb-cyc-pressure-kpa" min="35" max="220" step="5" value="95" class="wb-input font-mono-tech" data-wb-circuit-calc-input /></div>
+    <div class="form-group"><label for="wb-scr-aperture-mm"><small><strong>{isEs ? 'Abertura Malla (mm):' : 'Screen Aperture (mm):'}</strong></small></label><input type="number" id="wb-scr-aperture-mm" min="0.15" max="12.0" step="0.05" value="0.50" class="wb-input font-mono-tech" data-wb-circuit-calc-input /></div>
+  </div>
+
+  <div class="font-mono-tech" style="margin-top: 0.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.4rem; font-size: 0.72rem; color: #0f172a;">
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.32rem 0.5rem;"><strong>{isEs ? 'Carga Circulante (3 Vasos):' : 'Circulating Load (3-Cup):'}</strong> <span id="wb-cyc-res-cc" data-testid="wb-cyc-res-cc">248.5% (Rm 71.3%)</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.32rem 0.5rem;"><strong>{isEs ? 'Corte Plitt (d50c):' : 'Plitt Cut (d50c):'}</strong> <span id="wb-cyc-res-d50" data-testid="wb-cyc-res-d50">58.4 µm</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.32rem 0.5rem;"><strong>{isEs ? 'Régimen Ápex / Roping:' : 'Apex / Roping Regime:'}</strong> <span id="wb-cyc-res-roping" data-testid="wb-cyc-res-roping">{isEs ? 'Descarga Paraguas Estable' : 'Stable Spray Discharge'}</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.32rem 0.5rem;"><strong>{isEs ? 'Partición Criba Uretano:' : 'Urethane Screen Partition:'}</strong> <span id="wb-scr-res-weibull" data-testid="wb-scr-res-weibull">α = 4.4 (SMAT-SCR-TH48-30)</span></div>
+  </div>
+</div>
+
+<!-- SIMULADOR VIVO DE CINÉTICA DE FLOTACIÓN GORAIN + ZWIETERING EN /COTIZAR/ (D1-V39) -->
+<div id="wb-flot-gorain-live-box" data-testid="wb-flot-gorain-live-box" class="hidden" style="display:none; margin-top: 0.65rem; padding: 0.7rem 0.85rem; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem; margin-bottom:0.45rem;">
+    <strong class="font-mono-tech" style="font-size:0.74rem; color:#0c4a6e;">{isEs ? 'SIMULADOR EN VIVO: HIDRODINÁMICA DE CELDA Y CINÉTICA DE GORAIN (Sb & Njs)' : 'LIVE SIMULATOR: CELL HYDRODYNAMICS & GORAIN KINETICS (Sb & Njs)'}</strong>
+    <span class="font-mono-tech" style="font-size:0.68rem; background:#065f46; color:#ffffff; padding:0.12rem 0.45rem; border-radius:4px;">{isEs ? 'Reemplazo Drop-In #18 SP / #24 / #30' : 'Drop-In #18 SP / #24 / #30'}</span>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(125px, 1fr)); gap: 0.45rem;">
+    <div class="form-group"><label for="wb-flot-jg"><small><strong>{isEs ? 'Gas Jg (cm/s):' : 'Gas Jg (cm/s):'}</strong></small></label><input type="number" id="wb-flot-jg" min="0.5" max="3.5" step="0.1" value="1.5" class="wb-input font-mono-tech" data-wb-circuit-calc-input /></div>
+    <div class="form-group"><label for="wb-flot-d32"><small><strong>{isEs ? 'Burbuja d32 (mm):' : 'Bubble d32 (mm):'}</strong></small></label><input type="number" id="wb-flot-d32" min="0.8" max="3.0" step="0.1" value="1.6" class="wb-input font-mono-tech" data-wb-circuit-calc-input /></div>
+    <div class="form-group"><label for="wb-flot-rotor-dia"><small><strong>{isEs ? 'Ø Rotor Dr (m):' : 'Rotor Ø Dr (m):'}</strong></small></label><input type="number" id="wb-flot-rotor-dia" min="0.30" max="1.40" step="0.05" value="0.61" class="wb-input font-mono-tech" data-wb-circuit-calc-input /></div>
+    <div class="form-group"><label for="wb-flot-rpm"><small><strong>{isEs ? 'Velocidad (RPM):' : 'Rotor Speed (RPM):'}</strong></small></label><input type="number" id="wb-flot-rpm" min="110" max="420" step="5" value="215" class="wb-input font-mono-tech" data-wb-circuit-calc-input /></div>
+  </div>
+  <div class="font-mono-tech" style="margin-top:0.45rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.35rem; font-size:0.71rem; color:#0f172a;">
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Flujo Burbuja Sb:' : 'Bubble Flux Sb:'}</strong> <span id="wb-flot-res-sb" data-testid="wb-flot-res-sb">56.25 s⁻¹</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Tasa Cinética k:' : 'Kinetic Rate k:'}</strong> <span id="wb-flot-res-k" data-testid="wb-flot-res-k">0.197 min⁻¹</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Suspensión Zwietering:' : 'Zwietering Njs:'}</strong> <span id="wb-flot-res-njs" data-testid="wb-flot-res-njs">178 RPM</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Vel. Punta v_tip:' : 'Rotor Tip v_tip:'}</strong> <span id="wb-flot-res-vtip" data-testid="wb-flot-res-vtip">6.87 m/s</span></div>
+  </div>
+</div>
+
+<!-- VERIFICADOR VIVO DE PANDEO TIMOSHENKO Y CICLO DARCY-RUTH EN /COTIZAR/ (D2-V39) -->
+<div id="wb-filt-timoshenko-live-box" data-testid="wb-filt-timoshenko-live-box" class="hidden" style="display:none; margin-top: 0.65rem; padding: 0.7rem 0.85rem; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem; margin-bottom:0.45rem;">
+    <strong class="font-mono-tech" style="font-size:0.74rem; color:#78350f;">{isEs ? 'VERIFICADOR EN VIVO: PANDEO DE PLACAS TIMOSHENKO & CICLO DARCY-RUTH (16 BAR)' : 'LIVE VERIFIER: TIMOSHENKO PLATE FLEXURE & DARCY-RUTH CYCLE (16 BAR)'}</strong>
+    <span class="font-mono-tech" style="font-size:0.68rem; background:#78350f; color:#ffffff; padding:0.12rem 0.45rem; border-radius:4px;">{isEs ? 'Jales Secos NOM-141' : 'NOM-141 Dry Stacking'}</span>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(125px, 1fr)); gap: 0.45rem;">
+    <div class="form-group"><label for="wb-filt-pressure-bar"><small><strong>{isEs ? 'Presión Alim. (bar):' : 'Feed Press. (bar):'}</strong></small></label><input type="number" id="wb-filt-pressure-bar" min="4" max="25" step="1" value="12" class="wb-input font-mono-tech" data-wb-circuit-calc-input /></div>
+    <div class="form-group"><label for="wb-filt-clogged-ports"><small><strong>{isEs ? 'Puertos Obstr. (0–4):' : 'Clogged Ports (0–4):'}</strong></small></label><input type="number" id="wb-filt-clogged-ports" min="0" max="4" step="1" value="0" class="wb-input font-mono-tech" data-wb-circuit-calc-input /></div>
+    <div class="form-group"><label for="wb-filt-thickness-mm"><small><strong>{isEs ? 'Espesor Placa (mm):' : 'Plate Thick. (mm):'}</strong></small></label><input type="number" id="wb-filt-thickness-mm" min="45" max="110" step="5" value="65" class="wb-input font-mono-tech" data-wb-circuit-calc-input /></div>
+    <div class="form-group"><label for="wb-filt-moisture-pct"><small><strong>{isEs ? 'Humedad Meta (%):' : 'Target Moisture (%):'}</strong></small></label><input type="number" id="wb-filt-moisture-pct" min="8" max="24" step="0.5" value="14" class="wb-input font-mono-tech" data-wb-circuit-calc-input /></div>
+  </div>
+  <div class="font-mono-tech" style="margin-top:0.45rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.35rem; font-size:0.71rem; color:#0f172a;">
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Esfuerzo σ_max:' : 'Bending Stress σ_max:'}</strong> <span id="wb-filt-res-stress" data-testid="wb-filt-res-stress">3.54 MPa</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Seguridad Placa:' : 'Plate Safety:'}</strong> <span id="wb-filt-res-fs" data-testid="wb-filt-res-fs">FS 4.10</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Capacidad Darcy:' : 'Darcy Capacity:'}</strong> <span id="wb-filt-res-cycles" data-testid="wb-filt-res-cycles">36 ciclos/d (285 t/d)</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Dictamen Tetones:' : 'Bosses Status:'}</strong> <span id="wb-filt-res-status" data-testid="wb-filt-res-status">{isEs ? 'NOM-141 Segura' : 'NOM-141 Safe'}</span></div>
+  </div>
+</div>
+
+<!-- TARJETA CONTEXTUAL DE TREN MOTRIZ (CV/ZVZ + BASTIDOR B-F) Y CORE TRADE-IN (-22% DAM005) (D4-V39 & D6-V39) -->
+<div id="wb-drive-and-tradein-contextual-card" data-testid="wb-drive-and-tradein-contextual-card" class="hidden" style="display:none; margin-top: 0.65rem; padding: 0.75rem 0.9rem; background: #ecfdf5; border: 1px solid #059669; border-radius: 8px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem; margin-bottom:0.4rem;">
+    <strong class="font-mono-tech" style="font-size:0.75rem; color:#065f46;" id="wb-drive-frame-badge" data-testid="wb-drive-frame-badge">{isEs ? 'Bastidor Serie D (Cartucho DAM005 H7 • 55 kW • Elegible Core Trade-In -22%)' : 'Frame Series D (Cartridge DAM005 H7 • 55 kW • -22% Core Trade-In Eligible)'}</strong>
+    <span class="font-mono-tech" style="font-size:0.71rem; color:#0f172a; font-weight:700;" id="wb-drive-contextual-metrics">Arreglo CV • n₂ = 1,149 RPM • u₂ = 22.9 m/s • F_r = 4.2 kN • L₁₀ₕ = 42,500 h</span>
+  </div>
+
+  <!-- Widget Interactivo SMAT Core Trade-In (-22% Intercambio de Casco DAM005 en Tolerancia H7) -->
+  <div data-core-tradein-widget="DAM005" data-lang={lang} style="margin-top:0.45rem; padding:0.55rem 0.7rem; background:#ffffff; border:1px solid #a7f3d0; border-radius:6px; font-size:0.75rem;">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+      <label style="display:flex; align-items:center; gap:0.45rem; font-weight:700; color:#065f46; cursor:pointer;">
+        <input type="checkbox" data-core-tradein-toggle checked />
+        <span>{isEs ? 'Aplicar Programa SMAT Core Trade-In (-22% al entregar casco usado DAM005 H7)' : 'Apply SMAT Core Trade-In Program (-22% with used DAM005 H7 housing return)'}</span>
+      </label>
+      <select data-core-tradein-condition class="wb-select font-mono-tech" style="max-width:250px; min-height:30px; padding:0.15rem 0.45rem; font-size:0.71rem;">
+        <option value="h7_intact" selected>{isEs ? 'Casco Usado Íntegro (Alojamiento H7 sin fractura)' : 'Intact Used Housing (Crack-free H7 bore)'}</option>
+        <option value="cracked_housing">{isEs ? 'Sin casco a cambio / Casco fracturado (Compra directa)' : 'No core return / Cracked housing (Direct purchase)'}</option>
+      </select>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem; margin-top:0.35rem;">
+      <strong data-core-tradein-badge class="font-mono-tech" style="color:#065f46; font-size:0.71rem;">{isEs ? 'Activo: -22% Crédito Core Trade-In (Factor 0.78x)' : 'Active: -22% Core Trade-In Credit (Factor 0.78x)'}</strong>
+      <small data-core-tradein-note style="color:#334155; font-size:0.69rem;">{isEs ? 'Aplica a Cartucho de Rodamientos 005M (DAM005) con devolución de casco en Durango.' : 'Applies to 005M Bearing Cartridge (DAM005) upon core return at Durango warehouse.'}</small>
+    </div>
+  </div>
+</div>

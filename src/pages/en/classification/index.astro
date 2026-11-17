@@ -151,6 +151,7 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
 <script>
   import { calculateThreeCupMarcyCycloneBalance } from '../../../scripts/slurryEngine.js';
   import { saveWorkbenchSession, loadWorkbenchSession } from '../../../scripts/workbenchBus.js';
+  import { saveEngineeringContextSnapshot } from '../../../scripts/wizardCircuitPhysicsController.js';
 
   const feedInput = document.getElementById('cyc-feed-sg') as HTMLInputElement | null;
   const underInput = document.getElementById('cyc-underflow-sg') as HTMLInputElement | null;
@@ -215,6 +216,7 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
         ropingRisk: res.isRopingCritical
       }
     });
+    saveEngineeringContextSnapshot('clasificacion', res);
   }
 
   [feedInput, underInput, overInput, solidsInput, apexInput, vortexInput, pressInput].forEach((el) => {

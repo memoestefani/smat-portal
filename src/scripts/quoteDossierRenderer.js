@@ -120,7 +120,7 @@ export const DEFAULT_CLASSIFICATION_CRITERIA_MAP = Object.freeze({
     rule_es: 'Malla Tensada TH48-30 / Panel Modular 1\'x1\' (305×305 mm) en Poliuretano Colado 85 Shore A con alivio troncocónico θ = 3°–5° (Weibull α ≥ 4.2).',
     rule_en: 'Tensioned TH48-30 Screen / 1\'x1\' (305×305 mm) Modular Panel in Cast 85 Shore A Polyurethane with θ = 3°–5° conical relief (Weibull α ≥ 4.2).',
     risk_es: 'Erradica el cegamiento crónico por partículas críticas (near-size) y reduce paros por cambio de cama completa.',
-    risk_en: 'Eliminates chronic near-size blinding and reduces full-deck replacement downtime.',
+    rule_vars: 'Abertura de corte (mm/µm), % Sólidos Cw, Carga circulante',
     vars_es: 'Abertura de corte (mm/µm), % Sólidos Cw, Carga circulante',
     vars_en: 'Slot aperture (mm/µm), Solids % Cw, Circulating load',
     series: 'TH48-30 (48"×30"), Módulo 1\'x1\' (305×305×30 mm)',
@@ -128,3 +128,64 @@ export const DEFAULT_CLASSIFICATION_CRITERIA_MAP = Object.freeze({
     spec_en: 'Avenue 3 • High-Frequency Screening & Dewatering'
   }
 });
+
+/**
+ * Formatea la fila dinámica `#live-row-circuit-physics` del Dossier A4 según el circuito activo,
+ * el desglose híbrido `Rama D` (`A05 + R55`) y la Ventana Preventiva de Reabastecimiento del Cliente (`D1-V39..D8-V39`).
+ *
+ * @param {string} circuit
+ * @param {any} engCtx
+ * @param {any} partSpecs
+ * @param {boolean} isEs
+ * @param {string} [matCodeVal='alto_cromo_cr27']
+ * @returns {{ label: string, value: string }}
+ */
+export function formatDossierCircuitPhysicsRow(
+  circuit = 'bombeo',
+  engCtx = {},
+  partSpecs = {},
+  isEs = true,
+  matCodeVal = 'alto_cromo_cr27'
+) {
+  const reorderWindow = partSpecs?.clientReorderWindowDays || 90;
+  const reorderSuffix = isEs
+    ? `Ciclo preventivo en mina: ${reorderWindow} días`
+    : `Preventive plant cycle: ${reorderWindow} days`;
+
+  if (circuit === 'flotacion' && engCtx?.flotation) {
+    const f = engCtx.flotation;
+    return {
+      label: isEs ? 'Cinética Gorain / Zwietering:' : 'Gorain / Zwietering Kinetics:',
+      value: `${isEs ? f.summaryEs : f.summaryEn} • ${reorderSuffix}`
+    };
+  }
+  if (circuit === 'filtracion' && engCtx?.filtration) {
+    const flt = engCtx.filtration;
+    return {
+      label: isEs ? 'Flexión Timoshenko / Darcy:' : 'Timoshenko / Darcy Cycle:',
+      value: `${isEs ? flt.summaryEs : flt.summaryEn} • ${reorderSuffix}`
+    };
+  }
+  if (circuit === 'clasificacion' && engCtx?.classification) {
+    const c = engCtx.classification;
+    return {
+      label: isEs ? 'Balance 3 Vasos / Plitt:' : '3-Cup Balance / Plitt:',
+      value: `${isEs ? c.summaryEs : c.summaryEn} • ${reorderSuffix}`
+    };
+  }
+  if (matCodeVal === 'hybrid_a05_r55' && engCtx?.driveAndHybrid) {
+    const dh = engCtx.driveAndHybrid;
+    return {
+      label: isEs ? 'Rama D Híbrida (A05+R55):' : 'Branch D Hybrid (A05+R55):',
+      value: isEs
+        ? `Ahorro en maniobra: -${dh.hybridSavedMassKg ?? 239.2} kg (-${dh.hybridMassSavingsPct ?? 31.8}% vs Full Metal) • Impulsor A05 + Forros R55 • ${reorderSuffix}`
+        : `Rigging mass savings: -${dh.hybridSavedMassKg ?? 239.2} kg (-${dh.hybridMassSavingsPct ?? 31.8}% vs Full Metal) • A05 Impeller + R55 Liners • ${reorderSuffix}`
+    };
+  }
+  return {
+    label: isEs ? 'Planeación Preventiva y Bastidor:' : 'Preventive Cycle & Frame:',
+    value: isEs
+      ? `${engCtx?.driveAndHybrid?.bearingFrameCode || 'FRAME-D'} (${engCtx?.driveAndHybrid?.bearingCartridgeCode || 'DAM005'}) • ${reorderSuffix} • Despacho Programado Durango`
+      : `${engCtx?.driveAndHybrid?.bearingFrameCode || 'FRAME-D'} (${engCtx?.driveAndHybrid?.bearingCartridgeCode || 'DAM005'}) • ${reorderSuffix} • Durango Scheduled Dispatch`
+  };
+}

@@ -128,272 +128,20 @@ export const PUMP_554_ASSEMBLY_STATIONS = PUMP_ASSEMBLY_STATIONS;
  * Fuente única de verdad para PumpAssemblyReport.astro, QuoteWizard.astro y evaluación NIOSH (>= 23 kg).
  */
 export const PUMP_554_BOM_14_PARTS = [
-  {
-    pos: '01',
-    station: 'EST-01',
-    stationNumber: 1,
-    partKey: 'frame',
-    branch: 'common',
-    branchLabelEs: 'Común',
-    branchLabelEn: 'Common',
-    nameEs: 'Soporte Base (Frame / Pedestal)',
-    nameEn: 'Pump Frame / Pedestal Base',
-    specEs: 'Cuna maquinada con tornillo de ajuste axial externo',
-    specEn: 'Machined cradle with external axial adjusting screw',
-    weightKgBySeries: { '3x2': 85.0, '6x4': 165.0, '8x6': 310.0 },
-    weightKg: 165.0,
-    nioshHoistRequired: true,
-    equipo: 'soporte_rodamiento',
-    pieza: 'frame_pedestal',
-    material: 'acero_4140_iso281'
-  },
-  {
-    pos: '02',
-    station: 'EST-01',
-    stationNumber: 1,
-    partKey: 'bearing_assembly',
-    branch: 'common',
-    branchLabelEs: 'Común',
-    branchLabelEn: 'Common',
-    nameEs: 'Cartucho Bearing Assembly (Eje + Rodamientos ISO 281)',
-    nameEn: 'Bearing Assembly Cartridge (Shaft + ISO 281 Bearings)',
-    specEs: 'Rodamientos cónicos espalda con espalda + retenes laberinto',
-    specEn: 'Back-to-back tapered roller bearings + labyrinth seals',
-    weightKgBySeries: { '3x2': 48.0, '6x4': 94.0, '8x6': 185.0 },
-    weightKg: 94.0,
-    nioshHoistRequired: true,
-    equipo: 'soporte_rodamiento',
-    pieza: 'bearing_assembly',
-    material: 'acero_4140_iso281'
-  },
-  {
-    pos: '03',
-    station: 'EST-02',
-    stationNumber: 2,
-    partKey: 'shaft_sleeve',
-    branch: 'common',
-    branchLabelEs: 'Común',
-    branchLabelEn: 'Common',
-    nameEs: 'Camisa Protectora de Eje (Shaft Sleeve) + O-Rings',
-    nameEn: 'Hardened Shaft Sleeve + Seal O-Rings',
-    specEs: 'Acero endurecido / recubrimiento cerámico en zona de sello',
-    specEn: 'Hardened alloy / ceramic-coated sleeve in seal zone',
-    weightKgBySeries: { '3x2': 4.2, '6x4': 7.8, '8x6': 14.5 },
-    weightKg: 7.8,
-    nioshHoistRequired: false,
-    equipo: 'sello_expulsor',
-    pieza: 'shaft_sleeve',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '04',
-    station: 'EST-02',
-    stationNumber: 2,
-    partKey: 'expeller_ring',
-    branch: 'common',
-    branchLabelEs: 'Común',
-    branchLabelEn: 'Common',
-    nameEs: 'Caja de Sello / Anillo Expulsor (Expeller Ring / Stuffing Box)',
-    nameEn: 'Expeller Ring / Stuffing Box Housing',
-    specEs: 'Cámara secundaria con grasera o anillo linterna',
-    specEn: 'Secondary seal chamber with grease port or lantern ring',
-    weightKgBySeries: { '3x2': 18.5, '6x4': 29.0, '8x6': 54.0 },
-    weightKg: 29.0,
-    nioshHoistRequired: true,
-    equipo: 'sello_expulsor',
-    pieza: 'expeller_ring',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '05',
-    station: 'EST-02',
-    stationNumber: 2,
-    partKey: 'expeller_dry',
-    branch: 'common',
-    branchLabelEs: 'Común',
-    branchLabelEn: 'Common',
-    nameEs: 'Expulsor Centrífugo Seco (Expeller)',
-    nameEn: 'Centrifugal Dry Expeller',
-    specEs: 'Turbina auxiliar que abate presión en estopera sin agua externa',
-    specEn: 'Auxiliary rotor that relieves stuffing box pressure without water',
-    weightKgBySeries: { '3x2': 9.5, '6x4': 16.5, '8x6': 31.0 },
-    weightKg: 16.5,
-    nioshHoistRequired: false,
-    equipo: 'sello_expulsor',
-    pieza: 'expeller_sello',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '06',
-    station: 'EST-03',
-    stationNumber: 3,
-    partKey: 'frame_plate',
-    branch: 'common',
-    branchLabelEs: 'Común',
-    branchLabelEn: 'Common',
-    nameEs: 'Carcasa Lado Soporte (Frame Plate)',
-    nameEn: 'Frame Plate (Drive-Side Outer Casing)',
-    specEs: 'Mitad estructural posterior en hierro nodular con espárragos',
-    specEn: 'Rear ductile iron structural half-casing with mounting studs',
-    weightKgBySeries: { '3x2': 62.0, '6x4': 128.0, '8x6': 245.0 },
-    weightKg: 128.0,
-    nioshHoistRequired: true,
-    equipo: 'skid_bomba',
-    pieza: 'frame_plate',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '07',
-    station: 'EST-03',
-    stationNumber: 3,
-    partKey: 'fpl_insert',
-    branch: 'alto_cromo_cr27',
-    branchLabelEs: 'Rama A • Alto Cromo',
-    branchLabelEn: 'Branch A • High Chrome',
-    nameEs: 'Plato de Desgaste Posterior (Frame Plate Liner Insert — FPL Insert)',
-    nameEn: 'Frame Plate Liner Insert (FPL Insert — Rear Wear Plate)',
-    specEs: 'Aleación Cr27% ASTM A532 (≥650 HB) con pernos posteriores',
-    specEn: 'ASTM A532 Cr27% (≥650 HB) rear wear plate with studs',
-    weightKgBySeries: { '3x2': 24.0, '6x4': 48.0, '8x6': 96.0 },
-    weightKg: 48.0,
-    nioshHoistRequired: true,
-    equipo: 'bombeo_hule_cromo',
-    pieza: 'fpl_insert',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '08',
-    station: 'EST-03',
-    stationNumber: 3,
-    partKey: 'frame_plate_liner',
-    branch: 'hule_natural',
-    branchLabelEs: 'Rama B • Hule / PU',
-    branchLabelEn: 'Branch B • Rubber / PU',
-    nameEs: 'Forro Posterior Vulcanizado (Frame Plate Liner — FPL)',
-    nameEn: 'Molded Frame Plate Liner (FPL — Rubber or Polyurethane)',
-    specEs: 'Hule Natural (55–65 Shore A) o Poliuretano con alma de acero',
-    specEn: 'Natural Rubber (55–65 Shore A) or Polyurethane with steel backing',
-    weightKgBySeries: { '3x2': 14.0, '6x4': 26.5, '8x6': 52.0 },
-    weightKg: 26.5,
-    nioshHoistRequired: true,
-    equipo: 'bombeo_hule_cromo',
-    pieza: 'liner_fpl',
-    material: 'hule_natural'
-  },
-  {
-    pos: '09',
-    station: 'EST-03',
-    stationNumber: 3,
-    partKey: 'impeller',
-    branch: 'common',
-    branchLabelEs: 'Ambas Ramas (5-5-4)',
-    branchLabelEn: 'Both Branches (5-5-4)',
-    nameEs: 'Impulsor Cerrado de 5 Álabes (Closed Impeller)',
-    nameEn: '5-Vane Closed Slurry Impeller',
-    specEs: 'Con álabes expulsores posteriores; Alto Cromo ≥650 HB, Hule o PU',
-    specEn: 'With back pump-out vanes; High Chrome ≥650 HB, Rubber, or PU',
-    weightKgBySeries: { '3x2': 32.5, '6x4': 68.0, '8x6': 142.0 },
-    weightKg: 68.0,
-    nioshHoistRequired: true,
-    equipo: 'impulsor_bomba',
-    pieza: 'impulsor_5_alabes',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '10',
-    station: 'EST-03',
-    stationNumber: 3,
-    partKey: 'monolithic_volute',
-    branch: 'alto_cromo_cr27',
-    branchLabelEs: 'Rama A • Alto Cromo',
-    branchLabelEn: 'Branch A • High Chrome',
-    nameEs: 'Voluta Monolítica (Metal Volute Liner)',
-    nameEn: 'Monolithic High-Chrome Volute Liner',
-    specEs: 'Caracol envolvente de 1 pieza en Alto Cromo Cr27% para molienda SAG',
-    specEn: '1-piece Cr27% high-chrome scroll liner for coarse primary duty',
-    weightKgBySeries: { '3x2': 78.0, '6x4': 162.0, '8x6': 320.0 },
-    weightKg: 162.0,
-    nioshHoistRequired: true,
-    equipo: 'bombeo_hule_cromo',
-    pieza: 'voluta_liners',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '11',
-    station: 'EST-03',
-    stationNumber: 3,
-    partKey: 'cover_plate_liner',
-    branch: 'hule_natural',
-    branchLabelEs: 'Rama B • Hule / PU',
-    branchLabelEn: 'Branch B • Rubber / PU',
-    nameEs: 'Forro Frontal Lado Succión (Cover Plate Liner — CPL)',
-    nameEn: 'Cover Plate Liner (CPL — Suction-Side Split Liner)',
-    specEs: 'Mitad frontal en Hule Natural o Poliuretano que cierra la voluta con el FPL',
-    specEn: 'Front elastomer half-liner that mates with FPL to form the volute',
-    weightKgBySeries: { '3x2': 15.5, '6x4': 28.0, '8x6': 56.0 },
-    weightKg: 28.0,
-    nioshHoistRequired: true,
-    equipo: 'bombeo_hule_cromo',
-    pieza: 'liner_cpl',
-    material: 'hule_natural'
-  },
-  {
-    pos: '12',
-    station: 'EST-04',
-    stationNumber: 4,
-    partKey: 'throatbush',
-    branch: 'common',
-    branchLabelEs: 'Ambas Ramas (5-5-4)',
-    branchLabelEn: 'Both Branches (5-5-4)',
-    nameEs: 'Cuello / Anillo de Desgaste de Succión (Throatbush)',
-    nameEn: 'Suction Wear Ring (Throatbush)',
-    specEs: 'Cara cónica frontal de sacrificio; controla recirculación con el impulsor',
-    specEn: 'Conical front wear face; controls suction eye recirculation',
-    weightKgBySeries: { '3x2': 21.0, '6x4': 44.0, '8x6': 88.0 },
-    weightKg: 44.0,
-    nioshHoistRequired: true,
-    equipo: 'bombeo_hule_cromo',
-    pieza: 'throatbush',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '13',
-    station: 'EST-04',
-    stationNumber: 4,
-    partKey: 'cover_plate',
-    branch: 'common',
-    branchLabelEs: 'Común',
-    branchLabelEn: 'Common',
-    nameEs: 'Tapa Carcasa Lado Succión + Pernos (Cover Plate & Clamp Bolts)',
-    nameEn: 'Suction Cover Plate & Casing Clamp Bolts',
-    specEs: 'Mitad frontal bridada con orejas de izaje y espárragos pasantes',
-    specEn: 'Flanged suction outer casing half with lifting lugs and clamp bolts',
-    weightKgBySeries: { '3x2': 58.0, '6x4': 118.0, '8x6': 230.0 },
-    weightKg: 118.0,
-    nioshHoistRequired: true,
-    equipo: 'skid_bomba',
-    pieza: 'cover_plate',
-    material: 'alto_cromo_cr27'
-  },
-  {
-    pos: '14',
-    station: 'EST-05',
-    stationNumber: 5,
-    partKey: 'axial_clearance_adjustment',
-    branch: 'common',
-    branchLabelEs: 'Lote Completo',
-    branchLabelEn: 'Complete Kit',
-    nameEs: 'Lote Húmedo Sincronizado 5-5-4 (5 Juegos Liners + 5 Impulsores + 4 Sellos)',
-    nameEn: 'Synchronized 5-5-4 Wet-End Kit (5 Liner Sets + 5 Impellers + 4 Seals)',
-    specEs: 'Suministro programado por campaña con calibración δ = 0.5–1.0 mm',
-    specEn: 'Campaign-synchronized wet-end lot with δ = 0.5–1.0 mm calibration',
-    weightKgBySeries: { '3x2': 680.0, '6x4': 1410.0, '8x6': 2850.0 },
-    weightKg: 1410.0,
-    nioshHoistRequired: true,
-    equipo: 'bombeo_hule_cromo',
-    pieza: 'lote_554',
-    material: 'alto_cromo_cr27'
-  }
+  { pos: '01', station: 'EST-01', stationNumber: 1, partKey: 'frame', branch: 'common', branchLabelEs: 'Común', branchLabelEn: 'Common', nameEs: 'Soporte Base (Frame / Pedestal)', nameEn: 'Pump Frame / Pedestal Base', specEs: 'Cuna maquinada con tornillo de ajuste axial externo', specEn: 'Machined cradle with external axial adjusting screw', weightKgBySeries: { '3x2': 85.0, '6x4': 165.0, '8x6': 310.0 }, weightKg: 165.0, nioshHoistRequired: true, equipo: 'soporte_rodamiento', pieza: 'frame_pedestal', material: 'acero_4140_iso281' },
+  { pos: '02', station: 'EST-01', stationNumber: 1, partKey: 'bearing_assembly', branch: 'common', branchLabelEs: 'Común', branchLabelEn: 'Common', nameEs: 'Cartucho Bearing Assembly (Eje + Rodamientos ISO 281)', nameEn: 'Bearing Assembly Cartridge (Shaft + ISO 281 Bearings)', specEs: 'Rodamientos cónicos espalda con espalda + retenes laberinto', specEn: 'Back-to-back tapered roller bearings + labyrinth seals', weightKgBySeries: { '3x2': 48.0, '6x4': 94.0, '8x6': 185.0 }, weightKg: 94.0, nioshHoistRequired: true, equipo: 'soporte_rodamiento', pieza: 'bearing_assembly', material: 'acero_4140_iso281' },
+  { pos: '03', station: 'EST-02', stationNumber: 2, partKey: 'shaft_sleeve', branch: 'common', branchLabelEs: 'Común', branchLabelEn: 'Common', nameEs: 'Camisa Protectora de Eje (Shaft Sleeve) + O-Rings', nameEn: 'Hardened Shaft Sleeve + Seal O-Rings', specEs: 'Acero endurecido / recubrimiento cerámico en zona de sello', specEn: 'Hardened alloy / ceramic-coated sleeve in seal zone', weightKgBySeries: { '3x2': 4.2, '6x4': 7.8, '8x6': 14.5 }, weightKg: 7.8, nioshHoistRequired: false, equipo: 'sello_expulsor', pieza: 'shaft_sleeve', material: 'alto_cromo_cr27' },
+  { pos: '04', station: 'EST-02', stationNumber: 2, partKey: 'expeller_ring', branch: 'common', branchLabelEs: 'Común', branchLabelEn: 'Common', nameEs: 'Caja de Sello / Anillo Expulsor (Expeller Ring / Stuffing Box)', nameEn: 'Expeller Ring / Stuffing Box Housing', specEs: 'Cámara secundaria con grasera o anillo linterna', specEn: 'Secondary seal chamber with grease port or lantern ring', weightKgBySeries: { '3x2': 18.5, '6x4': 29.0, '8x6': 54.0 }, weightKg: 29.0, nioshHoistRequired: true, equipo: 'sello_expulsor', pieza: 'expeller_ring', material: 'alto_cromo_cr27' },
+  { pos: '05', station: 'EST-02', stationNumber: 2, partKey: 'expeller_dry', branch: 'common', branchLabelEs: 'Común', branchLabelEn: 'Common', nameEs: 'Expulsor Centrífugo Seco (Expeller)', nameEn: 'Centrifugal Dry Expeller', specEs: 'Turbina auxiliar que abate presión en estopera sin agua externa', specEn: 'Auxiliary rotor that relieves stuffing box pressure without water', weightKgBySeries: { '3x2': 9.5, '6x4': 16.5, '8x6': 31.0 }, weightKg: 16.5, nioshHoistRequired: false, equipo: 'sello_expulsor', pieza: 'expeller_sello', material: 'alto_cromo_cr27' },
+  { pos: '06', station: 'EST-03', stationNumber: 3, partKey: 'frame_plate', branch: 'common', branchLabelEs: 'Común', branchLabelEn: 'Common', nameEs: 'Carcasa Lado Soporte (Frame Plate)', nameEn: 'Frame Plate (Drive-Side Outer Casing)', specEs: 'Mitad estructural posterior en hierro nodular con espárragos', specEn: 'Rear ductile iron structural half-casing with mounting studs', weightKgBySeries: { '3x2': 62.0, '6x4': 128.0, '8x6': 245.0 }, weightKg: 128.0, nioshHoistRequired: true, equipo: 'skid_bomba', pieza: 'frame_plate', material: 'alto_cromo_cr27' },
+  { pos: '07', station: 'EST-03', stationNumber: 3, partKey: 'fpl_insert', branch: 'alto_cromo_cr27', branchLabelEs: 'Rama A • Alto Cromo', branchLabelEn: 'Branch A • High Chrome', nameEs: 'Plato de Desgaste Posterior (Frame Plate Liner Insert — FPL Insert)', nameEn: 'Frame Plate Liner Insert (FPL Insert — Rear Wear Plate)', specEs: 'Aleación Cr27% ASTM A532 (≥650 HB) con pernos posteriores', specEn: 'ASTM A532 Cr27% (≥650 HB) rear wear plate with studs', weightKgBySeries: { '3x2': 24.0, '6x4': 48.0, '8x6': 96.0 }, weightKg: 48.0, nioshHoistRequired: true, equipo: 'bombeo_hule_cromo', pieza: 'fpl_insert', material: 'alto_cromo_cr27' },
+  { pos: '08', station: 'EST-03', stationNumber: 3, partKey: 'frame_plate_liner', branch: 'hule_natural', branchLabelEs: 'Rama B • Hule / PU', branchLabelEn: 'Branch B • Rubber / PU', nameEs: 'Forro Posterior Vulcanizado (Frame Plate Liner — FPL)', nameEn: 'Molded Frame Plate Liner (FPL — Rubber or Polyurethane)', specEs: 'Hule Natural (55–65 Shore A) o Poliuretano con alma de acero', specEn: 'Natural Rubber (55–65 Shore A) or Polyurethane with steel backing', weightKgBySeries: { '3x2': 14.0, '6x4': 26.5, '8x6': 52.0 }, weightKg: 26.5, nioshHoistRequired: true, equipo: 'bombeo_hule_cromo', pieza: 'liner_fpl', material: 'hule_natural' },
+  { pos: '09', station: 'EST-03', stationNumber: 3, partKey: 'impeller', branch: 'common', branchLabelEs: 'Ambas Ramas (5-5-4)', branchLabelEn: 'Both Branches (5-5-4)', nameEs: 'Impulsor Cerrado de 5 Álabes (Closed Impeller)', nameEn: '5-Vane Closed Slurry Impeller', specEs: 'Con álabes expulsores posteriores; Alto Cromo ≥650 HB, Hule o PU', specEn: 'With back pump-out vanes; High Chrome ≥650 HB, Rubber, or PU', weightKgBySeries: { '3x2': 32.5, '6x4': 68.0, '8x6': 142.0 }, weightKg: 68.0, nioshHoistRequired: true, equipo: 'impulsor_bomba', pieza: 'impulsor_5_alabes', material: 'alto_cromo_cr27' },
+  { pos: '10', station: 'EST-03', stationNumber: 3, partKey: 'monolithic_volute', branch: 'alto_cromo_cr27', branchLabelEs: 'Rama A • Alto Cromo', branchLabelEn: 'Branch A • High Chrome', nameEs: 'Voluta Monolítica (Metal Volute Liner)', nameEn: 'Monolithic High-Chrome Volute Liner', specEs: 'Caracol envolvente de 1 pieza en Alto Cromo Cr27% para molienda SAG', specEn: '1-piece Cr27% high-chrome scroll liner for coarse primary duty', weightKgBySeries: { '3x2': 78.0, '6x4': 162.0, '8x6': 320.0 }, weightKg: 162.0, nioshHoistRequired: true, equipo: 'bombeo_hule_cromo', pieza: 'voluta_liners', material: 'alto_cromo_cr27' },
+  { pos: '11', station: 'EST-03', stationNumber: 3, partKey: 'cover_plate_liner', branch: 'hule_natural', branchLabelEs: 'Rama B • Hule / PU', branchLabelEn: 'Branch B • Rubber / PU', nameEs: 'Forro Frontal Lado Succión (Cover Plate Liner — CPL)', nameEn: 'Cover Plate Liner (CPL — Suction-Side Split Liner)', specEs: 'Mitad frontal en Hule Natural o Poliuretano que cierra la voluta con el FPL', specEn: 'Front elastomer half-liner that mates with FPL to form the volute', weightKgBySeries: { '3x2': 15.5, '6x4': 28.0, '8x6': 56.0 }, weightKg: 28.0, nioshHoistRequired: true, equipo: 'bombeo_hule_cromo', pieza: 'liner_cpl', material: 'hule_natural' },
+  { pos: '12', station: 'EST-04', stationNumber: 4, partKey: 'throatbush', branch: 'common', branchLabelEs: 'Ambas Ramas (5-5-4)', branchLabelEn: 'Both Branches (5-5-4)', nameEs: 'Cuello / Anillo de Desgaste de Succión (Throatbush)', nameEn: 'Suction Wear Ring (Throatbush)', specEs: 'Cara cónica frontal de sacrificio; controla recirculación con el impulsor', specEn: 'Conical front wear face; controls suction eye recirculation', weightKgBySeries: { '3x2': 21.0, '6x4': 44.0, '8x6': 88.0 }, weightKg: 44.0, nioshHoistRequired: true, equipo: 'bombeo_hule_cromo', pieza: 'throatbush', material: 'alto_cromo_cr27' },
+  { pos: '13', station: 'EST-04', stationNumber: 4, partKey: 'cover_plate', branch: 'common', branchLabelEs: 'Común', branchLabelEn: 'Common', nameEs: 'Tapa Carcasa Lado Succión + Pernos (Cover Plate & Clamp Bolts)', nameEn: 'Suction Cover Plate & Casing Clamp Bolts', specEs: 'Mitad frontal bridada con orejas de izaje y espárragos pasantes', specEn: 'Flanged suction outer casing half with lifting lugs and clamp bolts', weightKgBySeries: { '3x2': 58.0, '6x4': 118.0, '8x6': 230.0 }, weightKg: 118.0, nioshHoistRequired: true, equipo: 'skid_bomba', pieza: 'cover_plate', material: 'alto_cromo_cr27' },
+  { pos: '14', station: 'EST-05', stationNumber: 5, partKey: 'axial_clearance_adjustment', branch: 'common', branchLabelEs: 'Lote Completo', branchLabelEn: 'Complete Kit', nameEs: 'Lote Húmedo Sincronizado 5-5-4 (5 Juegos Liners + 5 Impulsores + 4 Sellos)', nameEn: 'Synchronized 5-5-4 Wet-End Kit (5 Liner Sets + 5 Impellers + 4 Seals)', specEs: 'Suministro programado por campaña con calibración δ = 0.5–1.0 mm', specEn: 'Campaign-synchronized wet-end lot with δ = 0.5–1.0 mm calibration', weightKgBySeries: { '3x2': 680.0, '6x4': 1410.0, '8x6': 2850.0 }, weightKg: 1410.0, nioshHoistRequired: true, equipo: 'bombeo_hule_cromo', pieza: 'lote_554', material: 'alto_cromo_cr27' }
 ];
 
 /**
@@ -670,6 +418,79 @@ export const DRIVE_ARRANGEMENT_CATALOG = {
 };
 
 /**
+ * Dictamina el bastidor mecánico industrial (Frame B / C / D / E / F), cartucho de rodamientos
+ * y capacidad dinámica base C (kN) según potencia en flecha (kW), RPM y serie de tubería (D4-V39).
+ */
+export function selectBearingFrameByPowerAndRpm({
+  motorPowerKw = 55,
+  pumpRpm = 1150,
+  pipeSeries = '6x4'
+} = {}) {
+  const kw = clamp(motorPowerKw, 2.2, 750, 55);
+  const rpm = clamp(pumpRpm, 250, 3600, 1150);
+  const series = String(pipeSeries || '6x4').toLowerCase();
+
+  if (kw <= 15 || series.includes('1.5x1') || series.includes('2x1.5')) {
+    return {
+      frameCode: 'FRAME-B',
+      cartridgeCode: 'BAM005',
+      maxPowerKw: 15,
+      recommendedDynamicCkN: 95,
+      shaftDiameterMm: 38,
+      serviceFactor: Number((15 / Math.max(2.2, kw)).toFixed(2)),
+      labelEs: 'Bastidor Serie B (Cartucho BAM005 • Hasta 15 kW)',
+      labelEn: 'Frame Series B (Cartridge BAM005 • Up to 15 kW)'
+    };
+  }
+  if (kw <= 30 || series.includes('3x2') || series.includes('4x3')) {
+    return {
+      frameCode: 'FRAME-C',
+      cartridgeCode: 'CAM005',
+      maxPowerKw: 30,
+      recommendedDynamicCkN: 135,
+      shaftDiameterMm: 48,
+      serviceFactor: Number((30 / Math.max(5, kw)).toFixed(2)),
+      labelEs: 'Bastidor Serie C (Cartucho CAM005 • Hasta 30 kW)',
+      labelEn: 'Frame Series C (Cartridge CAM005 • Up to 30 kW)'
+    };
+  }
+  if (kw <= 75 || series.includes('6x4')) {
+    return {
+      frameCode: 'FRAME-D',
+      cartridgeCode: 'DAM005',
+      maxPowerKw: 75,
+      recommendedDynamicCkN: 195,
+      shaftDiameterMm: 65,
+      serviceFactor: Number((75 / Math.max(15, kw)).toFixed(2)),
+      labelEs: `Bastidor Serie D (Cartucho DAM005 H7 • ${kw} kW @ ${rpm} RPM • Elegible Core Trade-In -22%)`,
+      labelEn: `Frame Series D (Cartridge DAM005 H7 • ${kw} kW @ ${rpm} RPM • -22% Core Trade-In Eligible)`
+    };
+  }
+  if (kw <= 160 || series.includes('8x6') || series.includes('10x8')) {
+    return {
+      frameCode: 'FRAME-E',
+      cartridgeCode: 'EAM005',
+      maxPowerKw: 160,
+      recommendedDynamicCkN: 310,
+      shaftDiameterMm: 85,
+      serviceFactor: Number((160 / Math.max(45, kw)).toFixed(2)),
+      labelEs: 'Bastidor Serie E (Cartucho EAM005 • Hasta 160 kW)',
+      labelEn: 'Frame Series E (Cartridge EAM005 • Up to 160 kW)'
+    };
+  }
+  return {
+    frameCode: 'FRAME-F',
+    cartridgeCode: 'FAM005',
+    maxPowerKw: 560,
+    recommendedDynamicCkN: 450,
+    shaftDiameterMm: 110,
+    serviceFactor: Number((560 / Math.max(110, kw)).toFixed(2)),
+    labelEs: 'Bastidor Serie F Trabajo Extra-Pesado (Cartucho FAM005 • Hasta 560 kW)',
+    labelEn: 'Heavy-Duty Frame Series F (Cartridge FAM005 • Up to 560 kW)'
+  };
+}
+
+/**
  * Calcula la cinemática de transmisión por poleas (CV / ZVZ / CRZ / DC), la velocidad periférica
  * del impulsor u2 (m/s) y la vida nominal ISO 281 L10h del Bearing Assembly con rodamientos de rodillos (p = 10/3).
  */
@@ -715,6 +536,11 @@ export function calculateDriveAndBearingKinematics(params = {}) {
   const aIsoContaminatedFelt = 0.22;
   const l10mhLabyrinthHours = Math.round(bearingL10Hours * aIsoLabyrinthSmat);
   const l10mhContaminatedHours = Math.round(bearingL10Hours * aIsoContaminatedFelt);
+  const frameSelection = selectBearingFrameByPowerAndRpm({
+    motorPowerKw: powerKw,
+    pumpRpm,
+    pipeSeries: params.pipeSeries || '6x4'
+  });
 
   return {
     arrangement: arrangementInfo.code,
@@ -729,6 +555,11 @@ export function calculateDriveAndBearingKinematics(params = {}) {
     drivenPulleyMm: drivenMm,
     shaftPowerKw: powerKw,
     dynamicCapacityCkN: capacityCkN,
+    bearingFrameCode: frameSelection.frameCode,
+    bearingCartridgeCode: frameSelection.cartridgeCode,
+    bearingFrameLabelEs: frameSelection.labelEs,
+    bearingFrameLabelEn: frameSelection.labelEn,
+    bearingServiceFactor: frameSelection.serviceFactor,
     wetEndMaterial: matRaw || 'alto_cromo_cr27',
     pumpRpm,
     speedMultiplier,
@@ -804,7 +635,12 @@ export function evaluateHybridWetEndConfiguration({
   const singlePumpMassKg = Number(
     hybridBomParts.filter((p) => p.pos !== '14').reduce((acc, p) => acc + p.activeWeightKg, 0).toFixed(1)
   );
-  const fullMetalMassKg = seriesKey === '3x2' ? 375.5 : (seriesKey === '8x6' ? 1489.0 : 752.3);
+  const fullMetalMassKg = Number(
+    PUMP_554_BOM_14_PARTS.filter((item) => item.pos !== '14' && (item.branch === 'common' || item.branch === 'alto_cromo_cr27'))
+      .reduce((acc, item) => acc + (item.weightKgBySeries?.[seriesKey] ?? item.weightKg), 0)
+      .toFixed(1)
+  );
+  const savedMassKg = Number((fullMetalMassKg - singlePumpMassKg).toFixed(1));
   const massSavingsPct = Number((((fullMetalMassKg - singlePumpMassKg) / fullMetalMassKg) * 100).toFixed(1));
 
   return {
@@ -822,6 +658,8 @@ export function evaluateHybridWetEndConfiguration({
     hybridRecommended,
     wearSynchronizationRatio: hybridRecommended ? '5:5:4 (Sincronizado A05/R55)' : 'Usar 100% Alto Cromo A05 (u2 > 24.5 m/s o d80 > 600 µm)',
     singlePumpMassKg,
+    fullMetalMassKg,
+    savedMassKg,
     massSavingsPct,
     hybridBomParts,
     rationaleEs: hybridRecommended

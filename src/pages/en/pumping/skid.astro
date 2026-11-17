@@ -246,6 +246,7 @@ const dc = skidRole?.decision_criteria;
 <script>
   import { calculateDriveAndBearingKinematics } from '../../../scripts/slurryEngine.js';
   import { saveWorkbenchState, loadWorkbenchState } from '../../../scripts/workbenchBus.js';
+  import { saveEngineeringContextSnapshot } from '../../../scripts/wizardCircuitPhysicsController.js';
 
   function initSkidKinematicsEn() {
     const panel = document.querySelector('[data-skid-kinematics]');
@@ -347,6 +348,7 @@ const dc = skidRole?.decision_criteria;
           rubberThermalLimitExceeded: res.rubberThermalLimitExceeded
         }
       });
+      saveEngineeringContextSnapshot('bombeo', res);
     };
 
     [arrSel, motorRpmSel, driverInput, drivenInput, powerInput, impSel, matSel, capCInput].forEach((el) => {

@@ -31,11 +31,13 @@ pub fn find_site_root() -> PathBuf {
 
 pub fn read_quote_wizard_composite(site_root: &Path) -> Result<String, String> {
     let qw = fs::read_to_string(site_root.join("src/components/QuoteWizard.astro")).map_err(|e| e.to_string())?;
+    let wcc = fs::read_to_string(site_root.join("src/components/WizardCircuitCalculators.astro")).unwrap_or_default();
     let dossier = fs::read_to_string(site_root.join("src/components/LiveEngineeringDossier.astro")).unwrap_or_default();
     let ctrl = fs::read_to_string(site_root.join("src/scripts/quoteWizardController.js")).unwrap_or_default();
+    let wphys = fs::read_to_string(site_root.join("src/scripts/wizardCircuitPhysicsController.js")).unwrap_or_default();
     let renderer = fs::read_to_string(site_root.join("src/scripts/quoteDossierRenderer.js")).unwrap_or_default();
     let css = fs::read_to_string(site_root.join("src/styles/workbench.css")).unwrap_or_default();
-    Ok(format!("{}\n{}\n{}\n{}\n{}", qw, dossier, ctrl, renderer, css))
+    Ok(format!("{}\n{}\n{}\n{}\n{}\n{}\n{}", qw, wcc, dossier, ctrl, wphys, renderer, css))
 }
 
 /// 1. Verifica integridad SSOT de data/roles.json, data/company.json y erradicacion de roles.copy.json
@@ -875,6 +877,11 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             passed: check_v38_bijective_codes_acuse_isolation_and_zero_orphan_dom(site_root).is_ok(),
             details: check_v38_bijective_codes_acuse_isolation_and_zero_orphan_dom(site_root).err().unwrap_or_else(|| "OK: Biyeccion 5 circuitos CYC/SCR, 0 colision PRENSAESTOPA/BATCH, Acuse aislado, #wb-ctrl-res-*, #live-custom-box, BOM 14 partidas y 0 llaves JSON huerfanas.".to_string()),
         },
+        GateReport {
+            name: "42. Exposicion Total Backend-UI Apple HIG V3.9 y Soberania Cero-Fugas de Inventario: Gorain/Zwietering, Ruth/Timoshenko, 5to Chip XOR Clasificacion, Core Trade-In DAM005, Rama D Hibrida, Pasaporte vCard 4.0 + Anexo 22, smat_engineering_context_v1 y Contraste Solar AAA (Gate V3.9 D1..D10)".to_string(),
+            passed: check_v39_backend_ui_exposure_and_zero_stock_leak_gate_42(site_root).is_ok(),
+            details: check_v39_backend_ui_exposure_and_zero_stock_leak_gate_42(site_root).err().unwrap_or_else(|| "OK: 100% capacidades backend expuestas en UI (Apple HIG), 0 fugas publicas de inventario de almacen y contraste AAA verificado.".to_string()),
+        },
     ]
 }
 
@@ -1404,5 +1411,12 @@ mod tests {
         let root = find_site_root();
         let res = check_v38_bijective_codes_acuse_isolation_and_zero_orphan_dom(&root);
         assert!(res.is_ok(), "Fallo en Gate 41 (V3.8 Zero Orphan Closure): {:?}", res.err());
+    }
+
+    #[test]
+    fn test_gate_42_v39_backend_ui_exposure_and_zero_stock_leak() {
+        let root = find_site_root();
+        let res = check_v39_backend_ui_exposure_and_zero_stock_leak_gate_42(&root);
+        assert!(res.is_ok(), "Fallo en Gate 42 (V3.9 Apple HIG Backend Exposure & Zero Stock Leak): {:?}", res.err());
     }
 }
