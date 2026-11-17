@@ -100,6 +100,58 @@ export const FILTRATION_CONDITION_ALIAS_MAP = Object.freeze({
   alta_temperatura_acida: 'alta_temperatura_acida'
 });
 
+export const FLOTATION_DOM_CHIP_MAP = Object.freeze({
+  sulfuros_alta_agitacion: 'sulfuros_alta_agitacion',
+  reactivos_ph_extremo: 'reactivos_ph_extremo',
+  espuma_inestable: 'reactivos_ph_extremo',
+  reactivos_espuma: 'reactivos_ph_extremo',
+  'reactivos-espuma': 'reactivos_ph_extremo',
+  espumado_intenso: 'espumado_intenso',
+  oxidos_particula_gruesa: 'espumado_intenso',
+  limpieza_selectiva: 'espumado_intenso',
+  vibracion_flecha: 'vibracion_flecha',
+  arenero_sedimentacion: 'vibracion_flecha',
+  arena_gruesa_fondo: 'vibracion_flecha',
+  'arena-gruesa-fondo': 'vibracion_flecha'
+});
+
+export const FILTRATION_DOM_CHIP_MAP = Object.freeze({
+  jales_secos: 'jales_secos',
+  recuperacion_agua: 'recuperacion_agua',
+  concentrado_fino: 'recuperacion_agua',
+  colmatacion_telas: 'colmatacion_telas',
+  tela_cegada: 'colmatacion_telas',
+  ciclo_lento: 'colmatacion_telas',
+  'ciclo-lento': 'colmatacion_telas',
+  alta_presion_16bar: 'alta_presion_16bar',
+  chorro_entre_placas: 'alta_presion_16bar',
+  fuga_chorreo: 'alta_presion_16bar',
+  'fuga-chorreo': 'alta_presion_16bar',
+  alta_temperatura_acida: 'alta_presion_16bar'
+});
+
+/**
+ * Resuelve el valor exacto del atributo data-flot-cond en el DOM de QuoteWizard.astro (D2-V37 / DEB-V37-03).
+ * @param {string} [rawCond='']
+ * @returns {string}
+ */
+export function resolveFlotationDomChipKey(rawCond = '') {
+  if (!rawCond) return '';
+  const clean = String(rawCond).trim().toLowerCase();
+  return FLOTATION_DOM_CHIP_MAP[clean] || clean;
+}
+
+/**
+ * Resuelve el valor exacto del atributo data-filt-cond en el DOM de QuoteWizard.astro (D2-V37 / DEB-V37-03).
+ * @param {string} [rawCond='']
+ * @returns {string}
+ */
+export function resolveFiltrationDomChipKey(rawCond = '') {
+  if (!rawCond) return '';
+  const clean = String(rawCond).trim().toLowerCase();
+  return FILTRATION_DOM_CHIP_MAP[clean] || clean;
+}
+
 /**
  * Normaliza llaves de condición operativa en Flotación emitidas desde subpáginas, diagnóstico y CaseCards (D6-V36).
  * @param {string} [rawCond='']
@@ -234,11 +286,15 @@ export function resolveUrlContextDescriptor(ctx = {}) {
   const canonicalRole = resolveCanonicalRoleFromUrlParam(rawRole, rawPieza, ctx.circuito || '');
   const normalizedFlotCondition = normalizeFlotationConditionKey(ctx.flot_condition || '');
   const normalizedFiltCondition = normalizeFiltrationConditionKey(ctx.filt_condition || '');
+  const flotationDomChipKey = resolveFlotationDomChipKey(ctx.flot_condition || '');
+  const filtrationDomChipKey = resolveFiltrationDomChipKey(ctx.filt_condition || '');
   const marcyThreeCup = parseMarcyThreeCupUrlParams(ctx);
   return {
     canonicalRole,
     normalizedFlotCondition,
     normalizedFiltCondition,
+    flotationDomChipKey,
+    filtrationDomChipKey,
     marcyThreeCup
   };
 }

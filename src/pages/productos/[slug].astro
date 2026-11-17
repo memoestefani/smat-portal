@@ -208,7 +208,7 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
           <h2 class="smat-slug-aside-h2">1. Aleaciones / Materiales Disponibles</h2>
           <div class="smat-slug-chip-row">
             {sku.available_materials.map((mat: string) => (
-              <span data-mat-code={mat} class={`smat-slug-mat-chip ${mat === sku.default_material ? 'is-default' : ''}`}>
+              <span role="button" tabindex="0" data-mat-code={mat} class={`smat-slug-mat-chip ${mat === sku.default_material ? 'is-default' : ''}`}>
                 {mat} {mat === sku.default_material ? '(Estándar)' : ''}
               </span>
             ))}
@@ -237,7 +237,7 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
               <strong>SKU Acoplado Recomendado:</strong>{' '}
               {coupledSku ? (
                 <a href={`/productos/${coupledSku.slug_es}/`} class="smat-slug-atomic-link" style="display:inline-block; padding:0.1rem 0.45rem;">
-                  {sku.coupled_pair_sku} ({coupledSku.title_es.split(' ')[0]}) →
+                  {sku.coupled_pair_sku} — {coupledSku.title_es} →
                 </a>
               ) : (
                 <span>{sku.coupled_pair_sku}</span>
@@ -246,6 +246,24 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
             <div>
               <strong>Ventana Preventiva JRP (s, S):</strong> <span>Cada {sku.reorder_window_days} días operativos (Lote #{sku.kit_id || 1})</span>
             </div>
+            {coupledSku && (
+              <div style="margin-top: 0.45rem;">
+                <button
+                  type="button"
+                  data-quick-tray-add={coupledSku.id}
+                  data-add-coupled-pair-btn={coupledSku.id}
+                  data-sku-title={coupledSku.title_es}
+                  data-sku-code={coupledSku.atomic_codes?.[0] || coupledSku.id}
+                  data-sku-material={coupledSku.default_material || 'A05'}
+                  data-sku-regime={coupledSku.stock_regime || 'hay'}
+                  data-sku-mass={String(coupledSku.mass_kg || 15)}
+                  class="smat-slug-atomic-link"
+                  style="cursor:pointer; font-weight:700; width:100%; justify-content:center; padding:0.35rem 0.6rem;"
+                >
+                  + Agregar Par Casado Sincronizado ({coupledSku.id}) a Bandeja
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

@@ -396,6 +396,27 @@ pub fn check_v35_zero_orphan_ast_and_dist_graph_closure(site_root: &Path) -> Res
                 slug_rel
             ));
         }
+        if !slug_src.contains("data-add-coupled-pair-btn") {
+            return Err(format!(
+                "D8-V37 (DEB-V37-08): {} carece de boton directo data-add-coupled-pair-btn para Par Casado",
+                slug_rel
+            ));
+        }
+    }
+
+    // 8. Gate 40 (D1-V37..D10-V37): wizardMiningAndCodeDecoder.js, hybrid_a05_r55, lowercase d075c21 y 0 prd_smatminerals_web.md legacy
+    if !site_root.join("src/scripts/wizardMiningAndCodeDecoder.js").exists() {
+        return Err("D9-V37 (DEB-V37-01): Falta modulo extraido src/scripts/wizardMiningAndCodeDecoder.js".to_string());
+    }
+    if site_root.join("prd_smatminerals_web.md").exists() {
+        return Err("D10-V37 (DEB-V37-09): Debe eliminarse el PRD v2.3 legacy site/prd_smatminerals_web.md".to_string());
+    }
+    if !qw_src.contains("value=\"hybrid_a05_r55\"") {
+        return Err("D4-V37 (DEB-V37-04): QuoteWizard.astro carece de opcion value=\"hybrid_a05_r55\"".to_string());
+    }
+    let footer_src = fs::read_to_string(site_root.join("src/components/Footer.astro")).map_err(|e| e.to_string())?;
+    if footer_src.contains("/catalogo/D075C21/") || footer_src.contains("/en/catalog/D075C21/") {
+        return Err("D5-V37 (DEB-V37-05): Footer.astro conserva enlace en mayusculas /catalogo/D075C21/".to_string());
     }
 
     Ok(())

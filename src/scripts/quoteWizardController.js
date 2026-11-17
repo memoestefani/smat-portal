@@ -14,6 +14,7 @@ import {
   calculateGyMinimumSampleMass,
   recommendAstmSieveSeries,
   resolvePipeDiameterMm,
+  selectOptimalMaterial,
   PIPE_SERIES_DIAMETER_MM,
   WET_END_MATERIAL_MATRIX,
   SLURRY_PRESETS,
@@ -63,10 +64,20 @@ import {
   FILTRATION_CONDITION_ALIAS_MAP,
   normalizeFlotationConditionKey,
   normalizeFiltrationConditionKey,
+  resolveFlotationDomChipKey,
+  resolveFiltrationDomChipKey,
   resolveCanonicalRoleFromUrlParam,
   parseMarcyThreeCupUrlParams,
   resolveUrlContextDescriptor
 } from '../scripts/wizardUrlAndPresetRouter.js';
+import {
+  FORMATTERS_BY_FIELD,
+  projectWorkbenchToDOM,
+  buildSmatCode,
+  decodeSmatCode,
+  resolveMiningUnitPulpPreset,
+  matchMiningGroupByEmailDomain
+} from '../scripts/wizardMiningAndCodeDecoder.js';
 export {
   DOSSIER_FORMATTERS_BY_FIELD,
   formatDossierSimulationBanner,
@@ -76,9 +87,17 @@ export {
   FILTRATION_CONDITION_ALIAS_MAP,
   normalizeFlotationConditionKey,
   normalizeFiltrationConditionKey,
+  resolveFlotationDomChipKey,
+  resolveFiltrationDomChipKey,
   resolveCanonicalRoleFromUrlParam,
   parseMarcyThreeCupUrlParams,
-  resolveUrlContextDescriptor
+  resolveUrlContextDescriptor,
+  FORMATTERS_BY_FIELD,
+  projectWorkbenchToDOM,
+  buildSmatCode,
+  decodeSmatCode,
+  resolveMiningUnitPulpPreset,
+  matchMiningGroupByEmailDomain
 };
 
 /**
@@ -96,7 +115,9 @@ export function computeWizardViewState(state = {}, urlParams = {}) {
   const cycloneCircuit = parseMarcyThreeCupUrlParams(typeof urlParams === 'string' ? urlParams : ctx);
 
   let circuit = rawCircuitInput || 'bombeo';
-  if (circuit === 'clasificacion') {
+  if (circuit === 'control' || circuit === 'lab') {
+    circuit = 'control_procesos';
+  } else if (circuit === 'clasificacion') {
     circuit = 'bombeo';
   } else if (!ctx.circuito && rawRole) {
     const rLower = String(rawRole).toLowerCase();
@@ -185,74 +206,6 @@ export function computeWizardViewState(state = {}, urlParams = {}) {
     },
     hasActiveDiagFilter: Boolean(MECHANICAL_DIAGNOSTICS && ATOMIC_PARTS_CATALOG && evaluatePumpAssemblySequence && dispatchLeadWebhook && loadWorkbenchSession && DOSSIER_FORMATTERS_BY_FIELD && formatDossierMetrologyBadge)
   };
-}
-
-/**
- * Mapa de formateadores declarativos para proyección directa DOM (Decisión 2-C+)
- */
-export const FORMATTERS_BY_FIELD = Object.freeze({
-  durandFactorFL: (v) => (v !== undefined && v !== null ? Number(v).toFixed(2) : '1.08'),
-  solidsVolumetricPercent: (v) => (v !== undefined && v !== null ? `${Number(v).toFixed(1)}%` : '23.3%'),
-  recommendedPipeVelocityMs: (v) => (v !== undefined && v !== null ? `${Number(v).toFixed(2)} m/s` : '3.02 m/s'),
-  criticalSettlingVelocityMs: (v) => (v !== undefined && v !== null ? `${Number(v).toFixed(2)} m/s` : '2.42 m/s'),
-  actualPipeVelocityMs: (v) => (v !== undefined && v !== null ? `${Number(v).toFixed(2)} m/s` : '3.15 m/s'),
-  slurrySpecificGravity: (v) => (v !== undefined && v !== null ? `${Number(v).toFixed(2)} kg/L` : '1.40 kg/L'),
-  pulpPh: (v) => (v !== undefined && v !== null ? `pH ${Number(v).toFixed(1)}` : 'pH 7.0'),
-  sealBranch: (v) => (v === 'gland_water' ? 'Prensaestopa Húmedo (Est. 02B)' : 'Expulsor Seco (Est. 02A)'),
-  impellerExitWidthMm: (v) => (v !== undefined && v !== null ? `${Number(v)} mm` : '48 mm'),
-  dynamicCapacityCkN: (v) => (v !== undefined && v !== null ? `${Number(v)} kN` : '145 kN')
-});
-
-function resolveStateFieldPath(stateObj, fieldPath) {
-  if (!stateObj || !fieldPath) return undefined;
-  if (Object.prototype.hasOwnProperty.call(stateObj, fieldPath)) {
-    return stateObj[fieldPath];
-  }
-  const segments = String(fieldPath).split('.');
-  let cur = stateObj;
-  for (let i = 0; i < segments.length; i += 1) {
-    if (cur === null || cur === undefined || typeof cur !== 'object') return undefined;
-    cur = cur[segments[i]];
-  }
-  return cur;
-}
-
-/**
- * Proyecta declarativamente el estado de ingeniería hacia cualquier nodo con [data-wb-field] o [data-wb-bind]
- * erradicando el acoplamiento manual ad-hoc (Decisión 2-C+).
- * @param {ParentNode} root
- * @param {Object} state
- * @returns {number} Cantidad de nodos actualizados
- */
-export function projectWorkbenchToDOM(root, state = {}) {
-  if (!root || typeof root.querySelectorAll !== 'function') return 0;
-  let updatedCount = 0;
-  const activeEl = typeof document !== 'undefined' ? document.activeElement : null;
-  const fieldNodes = root.querySelectorAll('[data-wb-field]');
-  fieldNodes.forEach((node) => {
-    const fieldKey = (typeof node.getAttribute === 'function' ? node.getAttribute('data-wb-field') : null) || (node.dataset && node.dataset.wbField);
-    const rawVal = resolveStateFieldPath(state, fieldKey);
-    if (rawVal !== undefined && rawVal !== null) {
-      const formatter = FORMATTERS_BY_FIELD[fieldKey];
-      const formatted = formatter ? formatter(rawVal, state) : String(rawVal);
-      if (node.tagName === 'INPUT' || node.tagName === 'SELECT' || node.tagName === 'TEXTAREA') {
-        if (activeEl !== node) node.value = String(rawVal);
-      } else {
-        node.textContent = formatted;
-      }
-      updatedCount += 1;
-    }
-  });
-  const bindNodes = root.querySelectorAll('[data-wb-bind]');
-  bindNodes.forEach((node) => {
-    const bindKey = (typeof node.getAttribute === 'function' ? node.getAttribute('data-wb-bind') : null) || (node.dataset && node.dataset.wbBind);
-    const rawVal = resolveStateFieldPath(state, bindKey);
-    if (rawVal !== undefined && rawVal !== null && activeEl !== node) {
-      node.value = String(rawVal);
-      updatedCount += 1;
-    }
-  });
-  return updatedCount;
 }
 
 export function initQuoteWizardController() {
@@ -566,7 +519,7 @@ export function initQuoteWizardController() {
     .map(function (id) { return document.getElementById(id); })
     .filter(Boolean);
 
-  function syncAssistPillsState() {
+  var syncAssistPillsState = function () {
     assistPills.forEach(function (btn) {
       var targetId = btn.getAttribute('data-assist-target');
       var targetEl = targetId ? document.getElementById(targetId) : null;
@@ -574,7 +527,7 @@ export function initQuoteWizardController() {
       btn.classList.toggle('active', isOpen);
       btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
-  }
+  };
 
   assistPills.forEach(function (btn) {
     btn.addEventListener('click', function () {
@@ -663,21 +616,6 @@ export function initQuoteWizardController() {
   });
 
   // Ejemplos canónicos por circuito: SMAT-PUMP-6X4-WETKIT | SMAT-FLOT-100FT-MECH | SMAT-FILT-1500-PRESS
-  function buildSmatCode(arg1, arg2, arg3, _arg4) {
-    if (arg1 === 'bombeo' || arg1 === 'flotacion' || arg1 === 'filtracion' || arg1 === 'control_procesos') {
-      return generateSmatPartCode({
-        circuit: arg1,
-        role_id: String(arg2 || ''),
-        pipe_size: arg1 === 'bombeo' ? String(arg3 || '6x4') : '',
-        size_val: String(arg3 || '')
-      });
-    }
-    return generateSmatPartCode({
-      role_id: String(arg1 || ''),
-      details: String(arg2 || '')
-    });
-  }
-
   var atomicPartsList = [];
   try {
     var rawAtomic = container?.getAttribute('data-atomic-parts');
@@ -692,21 +630,7 @@ export function initQuoteWizardController() {
   var currentKinematics = {};
   var currentMetrology = null;
 
-  function decodeSmatCode(codeStr) {
-    var parsed = parseSmatPartCode(codeStr, isEs ? 'es' : 'en');
-    if (!parsed || !parsed.valid) return null;
-    return {
-      circuit: parsed.circuit,
-      role: parsed.ui_role || parsed.role_id || parsed.role,
-      size: parsed.size || parsed.pipe_size || '6x4',
-      code: parsed.code || parsed.raw,
-      atomic_code: parsed.atomic_code || '',
-      atomic_label: parsed.atomic_label || '',
-      atomic_metallurgy: parsed.atomic_metallurgy || parsed.alloy || 'High Chrome A05 (27% Cr, ≥ 650 HB)'
-    };
-  }
-
-  function handleDecodeAction() {
+  var handleDecodeAction = function () {
     var rawCode = inputDecoder?.value.trim();
     if (!rawCode) {
       if (decoderStatus) {
@@ -716,7 +640,7 @@ export function initQuoteWizardController() {
       return;
     }
 
-    var decoded = decodeSmatCode(rawCode);
+    var decoded = decodeSmatCode(rawCode, isEs ? 'es' : 'en');
     if (decoded) {
       currentAtomicCode = decoded.atomic_code || '';
       setCircuit(decoded.circuit);
@@ -1039,7 +963,8 @@ export function initQuoteWizardController() {
       }
     }
 
-    var normalizedRecMatKey = normalizeMaterialKey(res.recommendedMaterialKey || res.recommendedMaterial);
+    var optimalMatEval = selectOptimalMaterial({ d80Microns: d80, pulpPh: pHVal, tipSpeedMs: 19.9, solidsCw: Cw });
+    var normalizedRecMatKey = normalizeMaterialKey(res.recommendedMaterialKey || optimalMatEval.materialKey || res.recommendedMaterial);
     var matEntry = WET_END_MATERIAL_MATRIX[normalizedRecMatKey] || WET_END_MATERIAL_MATRIX.alto_cromo_cr27;
     var matName = res.recommendedMaterial === 'A05'
       ? 'High Chrome A05 (>650 HB)'
@@ -1079,6 +1004,7 @@ export function initQuoteWizardController() {
       recommended_alloy: matName,
       recommended_material_key: res.recommendedMaterialKey,
       recommended_material_code: res.recommendedMaterialCode,
+      optimal_material_eval: optimalMatEval,
       estimated_life_hrs: lifeHrs
     };
 
@@ -1621,8 +1547,18 @@ export function initQuoteWizardController() {
 
     try {
       var wbState = loadWorkbenchState() || {};
-      var activeRoleForSpecs = selectRole?.value || 'kit_wet_end';
+      var activeRoleForSpecs = roleVal || selectRole?.value || 'kit_wet_end';
       var activePipeForSpecs = selectPipeSize?.value || '6x4';
+      if (currentCircuit === 'flotacion') {
+        activeRoleForSpecs = selectRoleFlot?.value || 'rotor_estator';
+        activePipeForSpecs = selectFlotCapacity?.value || '100ft';
+      } else if (currentCircuit === 'filtracion') {
+        activeRoleForSpecs = selectRoleFilt?.value || 'placas_telas';
+        activePipeForSpecs = selectFiltCapacity?.value || '1500';
+      } else if (currentCircuit === 'control_procesos') {
+        activeRoleForSpecs = selectRoleCtrl?.value || 'balanza_marcy';
+        activePipeForSpecs = selectCtrlSpec?.value || 'marcy_12_rings';
+      }
       currentPartSpecs = getAtomicPartSpecs(currentAtomicCode || activeRoleForSpecs, activePipeForSpecs);
 
       if (dossierPartHardness && currentPartSpecs.hardness) {
@@ -1682,9 +1618,11 @@ export function initQuoteWizardController() {
         : (activePipeForSpecs === '3x2' ? 38 : (activePipeForSpecs === '8x6' || activePipeForSpecs === '10x8' ? 64 : 48));
 
       currentClearanceEval = evaluateWetEndAssemblyInterference({
-        wetEndBranch: matCodeVal === 'hule_natural'
-          ? 'rubber'
-          : (matCodeVal === 'poliuretano' ? 'polyurethane' : (matCodeVal === 'ceramica_sic' ? 'ceramic_sic' : 'metal')),
+        wetEndBranch: matCodeVal === 'hybrid_a05_r55'
+          ? 'hibrido_a05_r55'
+          : (matCodeVal === 'hule_natural'
+            ? 'rubber'
+            : (matCodeVal === 'poliuretano' ? 'polyurethane' : (matCodeVal === 'ceramica_sic' ? 'ceramic_sic' : 'metal'))),
         sealBranch: sealBranchVal,
         frontClearanceMm: claroMmVal,
         impellerExitWidthMm: b2ValMm,
@@ -1899,7 +1837,14 @@ export function initQuoteWizardController() {
       var elMetrologyText = document.getElementById('wb-metrology-bridge-text');
       var elLiveRowMetrology = document.getElementById('live-row-metrology');
       var elLiveTableMetrology = document.getElementById('live-table-metrology');
-      if (currentMetrology && (currentMetrology.cw !== undefined || currentMetrology.raw || currentMetrology.summary)) {
+      if (wbState.cycloneCircuit && wbState.cycloneCircuit.hasUrlTelemetry) {
+        var cycBadge = formatDossierMetrologyBadge(wbState, isEs);
+        var cycBanner = formatDossierSimulationBanner(wbState, isEs);
+        if (elMetrologyCard) elMetrologyCard.classList.remove('hidden');
+        if (elMetrologyText) elMetrologyText.textContent = cycBanner || cycBadge;
+        if (elLiveRowMetrology) elLiveRowMetrology.classList.remove('hidden');
+        if (elLiveTableMetrology) elLiveTableMetrology.textContent = cycBadge;
+      } else if (currentMetrology && (currentMetrology.cw !== undefined || currentMetrology.raw || currentMetrology.summary)) {
         var mSummary = currentMetrology.summary || currentMetrology.raw || ('Cw=' + (currentMetrology.cw ?? 45) + '% | Sm=' + (currentMetrology.sm ?? 1.40) + ' kg/L | P80=' + (currentMetrology.p80 ?? 150) + ' µm (' + (currentMetrology.primaryControlMesh || '#100') + ') | M_min=' + (currentMetrology.dryMassKg ?? 0.25) + ' kg');
         if (elMetrologyCard) elMetrologyCard.classList.remove('hidden');
         if (elMetrologyText) elMetrologyText.textContent = mSummary;
@@ -2034,7 +1979,7 @@ export function initQuoteWizardController() {
   }
   sanitizeAndMigrateStorage();
 
-  function loadSessionState() {
+  var loadSessionState = function () {
     try {
       var s = loadWorkbenchState() || (localStorage.getItem(STORAGE_KEY_V2) ? JSON.parse(localStorage.getItem(STORAGE_KEY_V2)) : null);
       if (s) {
@@ -2136,13 +2081,13 @@ export function initQuoteWizardController() {
     updateDossier();
   });
 
-  function saveProfile(d) {
+  var saveProfile = function (d) {
     try {
       localStorage.setItem('smat_user_profile', JSON.stringify({
         name: d.name, company: d.company, phone: d.phone, email: d.email, destination: d.destination
       }));
     } catch (e) { }
-  }
+  };
 
   var miningGroups = [];
   try {
@@ -2160,16 +2105,17 @@ export function initQuoteWizardController() {
   var selectedUnitPulpProfile = '';
 
   function applyMiningUnitPreset(groupObj, unitObj) {
-    if (!groupObj || !unitObj) return;
-    var profileText = unitObj.pulp_profile || '';
+    var resolved = resolveMiningUnitPulpPreset(groupObj, unitObj, selectedAltitude);
+    if (!resolved) return;
+    var profileText = resolved.profileText || '';
     selectedUnitPulpProfile = profileText;
 
     if (inputCompany) {
-      inputCompany.value = groupObj.name + ' / ' + unitObj.name.split('(')[0].trim();
+      inputCompany.value = resolved.companyLabel;
       inputCompany.dataset.autofilled = 'true';
     }
     if (inputDest) {
-      inputDest.value = unitObj.name;
+      inputDest.value = resolved.destinationLabel;
     }
     if (step1PulpBadge && profileText) {
       step1PulpBadge.classList.remove('hidden');
@@ -2180,44 +2126,18 @@ export function initQuoteWizardController() {
       unitPulpBadge.textContent = (isEs ? 'Perfil Mineral Detectado (' : 'Detected Mineral Profile (') + unitObj.name + '): ' + profileText;
     }
 
-    var pLower = profileText.toLowerCase();
-    var districtPreset = resolveMiningDistrictPreset(groupObj.id || unitObj.name) || {};
-    var presetCw = districtPreset.solidsCw || 45;
-    var presetD80 = districtPreset.d80Microns || 180;
-    var presetSg = districtPreset.solidsSg || 2.8;
-    var presetAlt = districtPreset.altitudeM || selectedAltitude;
-    var presetPh = districtPreset.pulpPh || 7.5;
-    var presetFlow = districtPreset.flowM3h || 180;
-    if (pLower.includes('hierro') || pLower.includes('ferro') || pLower.includes('manganeso') || pLower.includes('pellet')) {
-      presetCw = 60;
-      presetD80 = 190;
-      presetSg = 4.1;
-    } else if (pLower.includes('alta densidad') || pLower.includes('abrasiv') || pLower.includes('skarn') || pLower.includes('cobre') || pLower.includes('sag') || pLower.includes('pesad')) {
-      presetCw = 56;
-      presetD80 = 210;
-      presetSg = 3.2;
-    } else if (pLower.includes('jales') || pLower.includes('relave') || pLower.includes('espesad') || pLower.includes('filtr')) {
-      presetCw = 58;
-      presetD80 = 135;
-      presetSg = 2.9;
-    } else if (pLower.includes('flotaci') || pLower.includes('cianura') || pLower.includes('fina')) {
-      presetCw = 40;
-      presetD80 = 105;
-      presetSg = 2.7;
-    }
-
-    if (sliderFlow) sliderFlow.value = String(presetFlow);
-    if (sliderSolids) sliderSolids.value = String(presetCw);
-    if (sliderD80) sliderD80.value = String(presetD80);
-    if (sliderSg) sliderSg.value = String(presetSg);
-    if (sliderPh) sliderPh.value = String(presetPh);
-    if (presetAlt) {
-      selectedAltitude = Number(presetAlt);
+    if (sliderFlow) sliderFlow.value = String(resolved.presetFlow);
+    if (sliderSolids) sliderSolids.value = String(resolved.presetCw);
+    if (sliderD80) sliderD80.value = String(resolved.presetD80);
+    if (sliderSg) sliderSg.value = String(resolved.presetSg);
+    if (sliderPh) sliderPh.value = String(resolved.presetPh);
+    if (resolved.presetAlt) {
+      selectedAltitude = Number(resolved.presetAlt);
       if (valAltitude) valAltitude.textContent = selectedAltitude.toLocaleString() + ' msnm';
     }
-    if (ctrlSgInput) ctrlSgInput.value = String(presetSg);
-    if (ctrlCwInput) ctrlCwInput.value = String(presetCw);
-    if (ctrlP80Input) ctrlP80Input.value = String(presetD80);
+    if (ctrlSgInput) ctrlSgInput.value = String(resolved.presetSg);
+    if (ctrlCwInput) ctrlCwInput.value = String(resolved.presetCw);
+    if (ctrlP80Input) ctrlP80Input.value = String(resolved.presetD80);
 
     if (inputDetails && profileText && !inputDetails.value.includes(profileText)) {
       var baseDet = inputDetails.value.trim();
@@ -2227,14 +2147,14 @@ export function initQuoteWizardController() {
     updateDossier();
   }
 
-  function filterStep1UnitsByGroup(groupId) {
+  var filterStep1UnitsByGroup = function (groupId) {
     if (!step1UnitSelect) return;
     Array.from(step1UnitSelect.options).forEach(function (opt, idx) {
       if (idx === 0) return;
       var optGrp = opt.getAttribute('data-group-id') || '';
       opt.hidden = Boolean(groupId && optGrp !== groupId);
     });
-  }
+  };
 
   step1GroupSelect?.addEventListener('change', function () {
     var gId = step1GroupSelect.value;
@@ -2272,14 +2192,8 @@ export function initQuoteWizardController() {
     }
   });
 
-  function checkMiningDomain() {
-    var email = inputEmail?.value.trim() || '';
-    if (!email.includes('@')) {
-      if (hintBox) hintBox.classList.add('hidden');
-      return;
-    }
-    var domain = email.split('@')[1]?.toLowerCase().trim();
-    var match = miningGroups.find(function (g) { return g.domains && g.domains.includes(domain); });
+  var checkMiningDomain = function () {
+    var match = matchMiningGroupByEmailDomain(inputEmail?.value, miningGroups);
 
     if (match && hintBox && hintName && unitChips) {
       hintBox.classList.remove('hidden');
@@ -2320,7 +2234,7 @@ export function initQuoteWizardController() {
     } else {
       if (hintBox) hintBox.classList.add('hidden');
     }
-  }
+  };
 
   inputEmail?.addEventListener('input', checkMiningDomain);
 
@@ -2431,35 +2345,37 @@ export function initQuoteWizardController() {
       part_specs: currentPartSpecs || {},
       clearance_eval: currentClearanceEval || {},
       kinematics: currentKinematics || {},
-      metrology: currentMetrology || {}
+      metrology: currentMetrology || {},
+      cyclone_circuit: (loadWorkbenchState() || {}).cycloneCircuit || null,
+      g5_advance_confirmed: Boolean(document.getElementById('wb-g5-advance-confirm')?.checked)
     };
     saveProfile(data);
     return data;
   }
 
-  function buildSpecText(d) {
+  var buildSpecText = function (d) {
     return formatSapPlaintext(d);
-  }
+  };
 
-  function buildTsvText(d) {
+  var buildTsvText = function (d) {
     return formatSapTsv(d);
-  }
+  };
 
-  function buildAcuseParams(d) {
+  var buildAcuseParams = function (d) {
     return buildAcuseUrlParams(d);
-  }
+  };
 
-  function dispatchLeadToBackend(d, channelOrigin) {
+  var dispatchLeadToBackend = function (d, channelOrigin) {
     if (!d) return;
     saveWorkbenchSession(d);
     var webhookPayload = buildLeadWebhookPayload(d, channelOrigin || 'web_quote_wizard');
     publishWorkbenchUpdate({ lastDispatch: channelOrigin, folio: webhookPayload.folio });
     var resolvedEndpoint = leadEndpointUrl || import.meta.env.PUBLIC_SMAT_LEAD_WEBHOOK_URL || DEFAULT_SMAT_LEAD_WEBHOOK_URL;
     sendLeadToServer(d, channelOrigin || 'web_quote_wizard', resolvedEndpoint);
-  }
+  };
   subscribeWorkbenchUpdate(function (_detail) { });
 
-  function triggerCopyFeedback(btn, successText) {
+  var triggerCopyFeedback = function (btn, successText) {
     if (!btn) return;
     var span = btn.querySelector('span:not(.pill-icon)') || btn;
     var originalHtml = span.innerHTML;
@@ -2475,7 +2391,7 @@ export function initQuoteWizardController() {
       btn.style.borderColor = '';
       btn.style.transform = '';
     }, 2200);
-  }
+  };
 
   var btnCopyPlain = document.getElementById('wb-copy-btn');
   btnCopyPlain?.addEventListener('click', function () {
@@ -2615,7 +2531,7 @@ export function initQuoteWizardController() {
     malla_criba_poliuretano: 'malla_criba_poliuretano'
   };
 
-  function updateRoleCriteriaBar() {
+  var updateRoleCriteriaBar = function () {
     var ruleEl = document.getElementById('wb-criteria-rule');
     var riskEl = document.getElementById('wb-criteria-risk');
     var varsEl = document.getElementById('wb-criteria-vars');
@@ -2942,17 +2858,18 @@ export function initQuoteWizardController() {
         if (decoded) {
           currentAtomicCode = decoded.atomic_code || '';
           setCircuit(decoded.circuit);
+          var effectiveRole = urlRole || decoded.role;
           if (decoded.circuit === 'bombeo') {
-            if (selectRole) selectRole.value = decoded.role;
+            if (selectRole) selectRole.value = effectiveRole;
             if (selectPipeSize) selectPipeSize.value = decoded.size;
           } else if (decoded.circuit === 'flotacion') {
-            if (selectRoleFlot) selectRoleFlot.value = decoded.role;
+            if (selectRoleFlot) selectRoleFlot.value = effectiveRole;
             if (selectFlotCapacity) selectFlotCapacity.value = decoded.size;
           } else if (decoded.circuit === 'filtracion') {
-            if (selectRoleFilt) selectRoleFilt.value = decoded.role;
+            if (selectRoleFilt) selectRoleFilt.value = effectiveRole;
             if (selectFiltCapacity) selectFiltCapacity.value = decoded.size;
           } else if (decoded.circuit === 'control_procesos') {
-            if (selectRoleCtrl) selectRoleCtrl.value = decoded.role;
+            if (selectRoleCtrl) selectRoleCtrl.value = effectiveRole;
             if (selectCtrlSpec) selectCtrlSpec.value = decoded.size;
           }
           if (inputDetails) {
@@ -3030,9 +2947,11 @@ export function initQuoteWizardController() {
 
       if (ctx.flot_condition && inputFlotCondition) {
         var normFlotCond = normalizeFlotationConditionKey(ctx.flot_condition);
-        inputFlotCondition.value = normFlotCond;
+        var domFlotChipKey = resolveFlotationDomChipKey(ctx.flot_condition);
+        inputFlotCondition.value = domFlotChipKey || normFlotCond;
         flotChips.forEach(function (c) {
-          var isMatch = c.getAttribute('data-flot-cond') === normFlotCond || c.getAttribute('data-flot-cond') === ctx.flot_condition;
+          var chipCond = c.getAttribute('data-flot-cond');
+          var isMatch = chipCond === domFlotChipKey || chipCond === normFlotCond || chipCond === ctx.flot_condition;
           c.classList.toggle('active', isMatch);
           c.classList.toggle('chip-ghost', !isMatch);
           c.setAttribute('data-confirmed', isMatch ? 'true' : 'false');
@@ -3042,14 +2961,21 @@ export function initQuoteWizardController() {
 
       if (ctx.filt_condition && inputFiltCondition) {
         var normFiltCond = normalizeFiltrationConditionKey(ctx.filt_condition);
-        inputFiltCondition.value = normFiltCond;
+        var domFiltChipKey = resolveFiltrationDomChipKey(ctx.filt_condition);
+        inputFiltCondition.value = domFiltChipKey || normFiltCond;
         filtChips.forEach(function (c) {
-          var isMatch = c.getAttribute('data-filt-cond') === normFiltCond || c.getAttribute('data-filt-cond') === ctx.filt_condition;
+          var chipCond = c.getAttribute('data-filt-cond');
+          var isMatch = chipCond === domFiltChipKey || chipCond === normFiltCond || chipCond === ctx.filt_condition;
           c.classList.toggle('active', isMatch);
           c.classList.toggle('chip-ghost', !isMatch);
           c.setAttribute('data-confirmed', isMatch ? 'true' : 'false');
           c.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
         });
+      }
+
+      if (ctx.g5_confirm === '1' || ctx.g5_confirm === 'true') {
+        var elG5Confirm = document.getElementById('wb-g5-advance-confirm');
+        if (elG5Confirm) elG5Confirm.checked = true;
       }
 
       if (urlSerie && inputDetails && !urlCodigo) {
@@ -3166,7 +3092,7 @@ export function initQuoteWizardController() {
   }
 
   var offlinePill = document.getElementById('offline-network-pill');
-  function updateNetworkStatus() {
+  var updateNetworkStatus = function () {
     if (!navigator.onLine) {
       if (offlinePill) {
         offlinePill.classList.remove('hidden');
@@ -3175,7 +3101,7 @@ export function initQuoteWizardController() {
     } else {
       if (offlinePill) offlinePill.classList.add('hidden');
     }
-  }
+  };
   window.addEventListener('online', updateNetworkStatus);
   window.addEventListener('offline', updateNetworkStatus);
   updateNetworkStatus();

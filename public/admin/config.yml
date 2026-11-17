@@ -320,3 +320,16 @@ collections:
                 fields:
                   - { label: "Nombre de Unidad y Ubicación", name: "name", widget: "string" }
                   - { label: "Perfil de Pulpa Mineral", name: "pulp_profile", widget: "string" }
+
+      - name: "catalogo_checkout_rapido"
+        label: "Catálogo Canónico de 19 SKUs en Caja Rápida (data/quick_checkout_Catalog.json)"
+        file: "data/quick_checkout_Catalog.json"
+        fields:
+          - { label: "ID SKU Canónico", name: "id", widget: "string" }
+          - { label: "Slug ES", name: "slug_es", widget: "string" }
+          - { label: "Slug EN", name: "slug_en", widget: "string" }
+          - { label: "Título ES", name: "title_es", widget: "string" }
+          - { label: "Título EN", name: "title_en", widget: "string" }
+          - { label: "Régimen de Inventario (hay / se_pide / se_fabrica)", name: "stock_regime", widget: "string" }
+          - { label: "SKU Par Casado (coupled_pair_sku)", name: "coupled_pair_sku", widget: "string" }
+          - { label: "Ventana Preventiva JRP en Días", name: "reorder_window_days", widget: "number" }

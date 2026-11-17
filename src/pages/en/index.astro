@@ -87,7 +87,7 @@ const familyFilterChipsEn = [
             <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=voluta_liners&material=hule_natural#rfq" class="part-chip">Rubber / PU Liners</a>
             <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=throatbush&material=alto_cromo_cr27#rfq" class="part-chip">Throatbush</a>
             <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=fpl_insert&material=alto_cromo_cr27#rfq" class="part-chip">FPL Insert</a>
-            <a href="/en/catalog/D075C21/" class="part-chip part-chip--highlight">Sleeve D075C21</a>
+            <a href="/en/catalog/d075c21/" class="part-chip part-chip--highlight">Sleeve D075C21</a>
             <a href="/en/quote/?equipo=sello_expulsor&pieza=expeller_sello#rfq" class="part-chip">Dry Expeller</a>
             <a href="/en/quote/?equipo=soporte_rodamiento&pieza=bearing_assembly#rfq" class="part-chip">Bearing Assembly</a>
             <a href="/en/quote/?equipo=skid_bomba#rfq" class="part-chip">CV/ZVZ Drive Train</a>
@@ -240,8 +240,9 @@ const familyFilterChipsEn = [
 
       <div class="quick-sku-grid">
         {quickCatalog.map((item) => {
-          const cleanRfqHrefEn = item.atomic_codes.length > 0
-            ? `/en/quote/?sku=${encodeURIComponent(item.id)}&codigo=${encodeURIComponent(item.atomic_codes[0])}#rfq`
+          const isSinglePartSku = item.id === 'SMAT-PUMP-IMP-AH' || item.id === 'SMAT-PUMP-LINERS-AH';
+          const cleanRfqHrefEn = isSinglePartSku && item.atomic_codes.length > 0
+            ? `/en/quote/?sku=${encodeURIComponent(item.id)}&codigo=${encodeURIComponent(item.atomic_codes.includes('E4147') ? 'E4147' : item.atomic_codes[0])}#rfq`
             : `/en/quote/?sku=${encodeURIComponent(item.id)}#rfq`;
           return (
             <article

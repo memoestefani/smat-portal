@@ -296,7 +296,9 @@ const isEs = lang === 'es';
       if (pdfLink) {
         const reorderQuery = encodeReorderUrlQuery(state);
         const basePath = isEs ? '/acuse/' : '/en/thank-you/';
-        pdfLink.href = `${basePath}${reorderQuery}&lane=${encodeURIComponent(selectedLane)}`;
+        const g5Toggle = document.getElementById('smat-qtray-g5-advance') as HTMLInputElement | null;
+        const g5Confirmed = !g5Toggle || g5Toggle.checked;
+        pdfLink.href = `${basePath}${reorderQuery}&lane=${encodeURIComponent(selectedLane)}&g5_confirm=${g5Confirmed ? '1' : '0'}`;
       }
     }
 

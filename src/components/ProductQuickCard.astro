@@ -196,10 +196,12 @@ const _auditValuationRef = (auditMeta.warehouse_total_mxn || 0) + (auditMeta.war
       />
     </div>
 
-    <!-- Panel 3: Rayos X de Desgaste Sincronizado 5:5:4 -->
+    <!-- Panel 3: Rayos X de Desgaste Sincronizado 5:5:4 (reutiliza el SVG único de Panel 1 activando [data-layer="xray-wear"]) -->
     <div data-qcard-panel="xray" class="smat-qcard-panel hidden" hidden>
-      <div class="smat-qcard-diagram-wrap">
-        <TechnicalDiagrams diagram={sku.diagram_id} lang={lang} showXrayOverlay={true} />
+      <div class="smat-qcard-xray-legend" data-xray-overlay-legend={sku.id} style="padding: 0.45rem 0.75rem; background: #fffbeb; border-top: 1px solid #fde68a; font-family: var(--font-mono, monospace); font-size: 0.72rem; color: #92400e;">
+        {isEs
+          ? `🔥 Mapa térmico de erosión 5:5:4 activo sobre plano ${sku.diagram_id} (${triplet.tolerance_std || 'ISO 2768-m'})`
+          : `🔥 Active 5:5:4 erosion thermal overlay on ${sku.diagram_id} blueprint (${triplet.tolerance_std || 'ISO 2768-m'})`}
       </div>
     </div>
   </div>
@@ -306,10 +308,17 @@ const _auditValuationRef = (auditMeta.warehouse_total_mxn || 0) + (auditMeta.war
             t.classList.toggle('is-active', active);
           });
           panels.forEach((panel) => {
-            const match = panel.getAttribute('data-qcard-panel') === target;
+            const pKind = panel.getAttribute('data-qcard-panel');
+            const match = pKind === target || (target === 'xray' && pKind === 'cad');
             panel.classList.toggle('hidden', !match);
             if (panel instanceof HTMLElement) {
               panel.hidden = !match;
+            }
+          });
+          card.querySelectorAll('[data-layer="xray-wear"]').forEach((layer) => {
+            if (layer instanceof HTMLElement || layer instanceof SVGElement) {
+              layer.style.opacity = target === 'xray' ? '1' : '0';
+              layer.style.display = target === 'xray' ? 'block' : 'none';
             }
           });
         });
@@ -361,6 +370,24 @@ const _auditValuationRef = (auditMeta.warehouse_total_mxn || 0) + (auditMeta.war
           document.querySelectorAll('.smat-slug-mat-chip').forEach((chip) => {
             const matCode = chip.getAttribute('data-mat-code') || '';
             chip.classList.toggle('is-default', matCode === selectedMat);
+          });
+        });
+        document.querySelectorAll('.smat-slug-mat-chip[data-mat-code]').forEach((chip) => {
+          if (chip.getAttribute('data-chip-bound') === '1') return;
+          chip.setAttribute('data-chip-bound', '1');
+          const activateChip = () => {
+            const code = chip.getAttribute('data-mat-code') || '';
+            if (code) {
+              configSelect.value = code;
+              configSelect.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+          };
+          chip.addEventListener('click', activateChip);
+          chip.addEventListener('keydown', (ev) => {
+            if (ev instanceof KeyboardEvent && (ev.key === 'Enter' || ev.key === ' ')) {
+              ev.preventDefault();
+              activateChip();
+            }
           });
         });
       }

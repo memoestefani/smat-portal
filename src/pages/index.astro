@@ -87,7 +87,7 @@ const familyFilterChipsEs = [
             <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=voluta_liners&material=hule_natural#rfq" class="part-chip">Liners Hule / PU</a>
             <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=throatbush&material=alto_cromo_cr27#rfq" class="part-chip">Throatbush</a>
             <a href="/cotizar/?equipo=bombeo_hule_cromo&pieza=fpl_insert&material=alto_cromo_cr27#rfq" class="part-chip">FPL Insert</a>
-            <a href="/catalogo/D075C21/" class="part-chip part-chip--highlight">Camisa D075C21</a>
+            <a href="/catalogo/d075c21/" class="part-chip part-chip--highlight">Camisa D075C21</a>
             <a href="/cotizar/?equipo=sello_expulsor&pieza=expeller_sello#rfq" class="part-chip">Expeller Seco</a>
             <a href="/cotizar/?equipo=soporte_rodamiento&pieza=bearing_assembly#rfq" class="part-chip">Bearing Assembly</a>
             <a href="/cotizar/?equipo=skid_bomba#rfq" class="part-chip">Tren Motriz CV/ZVZ</a>
@@ -240,8 +240,9 @@ const familyFilterChipsEs = [
 
       <div class="quick-sku-grid">
         {quickCatalog.map((item) => {
-          const cleanRfqHref = item.atomic_codes.length > 0
-            ? `/cotizar/?sku=${encodeURIComponent(item.id)}&codigo=${encodeURIComponent(item.atomic_codes[0])}#rfq`
+          const isSinglePartSku = item.id === 'SMAT-PUMP-IMP-AH' || item.id === 'SMAT-PUMP-LINERS-AH';
+          const cleanRfqHref = isSinglePartSku && item.atomic_codes.length > 0
+            ? `/cotizar/?sku=${encodeURIComponent(item.id)}&codigo=${encodeURIComponent(item.atomic_codes.includes('E4147') ? 'E4147' : item.atomic_codes[0])}#rfq`
             : `/cotizar/?sku=${encodeURIComponent(item.id)}#rfq`;
           return (
             <article

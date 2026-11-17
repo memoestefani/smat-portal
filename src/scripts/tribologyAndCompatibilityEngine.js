@@ -481,6 +481,34 @@ export const WET_END_MATERIAL_MATRIX = {
     idealForEn: 'High-pressure hydrocyclone feed and extreme silica slurries with aggressive pH.'
   }
 };
+const HYBRID_A05_R55_SPEC = {
+  id: 'hybrid_a05_r55',
+  key: 'hybrid_a05_r55',
+  code: 'A05+R55',
+  nameEs: 'Rama D Híbrida Finnie-Hutchings (Impulsor A05 Cr27% + Forros R55)',
+  nameEn: 'Branch D Finnie-Hutchings Hybrid (A05 Cr27% Impeller + R55 Liners)',
+  visualCueEs: 'Impulsor Metálico Bruñido A05 + Forros Elastómero Negro Mate R55',
+  visualCueEn: 'Burnished A05 Metal Impeller + Matte Black R55 Elastomer Liners',
+  swatchHex: '#0F172A',
+  accentHex: '#B45309',
+  hardness: '≥ 650 HB (Impulsor) + 55 Shore A (Forros)',
+  fractureToughnessMpaSqrtM: 18.5,
+  wearMultiplierVsCr27: 1.32,
+  maxTipSpeedMs: 25.5,
+  d80RangeMicrons: [80, 450],
+  phRange: [3.8, 11.5],
+  wearRatio554: '5:5:4',
+  recommendedClearanceMm: 0.75,
+  wetEndArchitecture: 'hybrid_metal_impeller_elastomer_liners',
+  partsIncludedEs: ['Impulsor 5 Álabes A05 Cr27% (E4147)', 'Cuello de Succión R55 / A05 (E4083)', 'Forro Lado Soporte R55 (E4132)', 'Forro Lado Succión R55 (D4018)'],
+  partsIncludedEn: ['5-Vane A05 Cr27% Impeller (E4147)', 'R55 / A05 Suction Throatbush (E4083)', 'R55 Frame Plate Liner (E4132)', 'R55 Cover Plate Liner (D4018)'],
+  dutyApplicationEs: 'Partición angular Finnie-Hutchings: impulsor A05 resiste corte rasante (α ≈ 15°–30°) y forros R55 absorben impacto normal (α ≈ 75°–90°) con menor masa suspendida.',
+  dutyApplicationEn: 'Finnie-Hutchings angular partition: A05 impeller resists low-angle cutting (α ≈ 15°–30°) while R55 liners absorb normal impact (α ≈ 75°–90°) with lower suspended mass.',
+  idealForEs: 'Descarga de molinos de bolas y alimentación a baterías de hidrociclones (d80 120–350 µm) con ahorro de masa e izaje.',
+  idealForEn: 'Ball mill discharge and hydrocyclone cluster feed (d80 120–350 µm) with reduced suspended mass and lifting load.'
+};
+Object.defineProperty(WET_END_MATERIAL_MATRIX, 'hybrid_a05_r55', { value: HYBRID_A05_R55_SPEC, enumerable: false });
+Object.defineProperty(WET_END_MATERIAL_MATRIX, 'hibrido_a05_r55', { value: HYBRID_A05_R55_SPEC, enumerable: false });
 
 export const WET_END_MATERIAL_KITS = WET_END_MATERIAL_MATRIX;
 

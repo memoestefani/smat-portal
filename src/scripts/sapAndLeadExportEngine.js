@@ -635,6 +635,14 @@ export function buildCanonicalEngineeringSnapshotImpl(d = {}) {
     k_motor_alt: Number(kMotorAlt),
     gate_classification: String(gateClass),
     trust_boundary_id: String(trustBoundaryId),
+    rho_f: d.rho_f ?? d.cyclone_circuit?.feedSg ?? '',
+    rho_u: d.rho_u ?? d.cyclone_circuit?.underflowSg ?? '',
+    rho_o: d.rho_o ?? d.cyclone_circuit?.overflowSg ?? '',
+    rs_pct: d.rs_pct ?? d.cyclone_circuit?.solidsRecoveryPct ?? '',
+    cv_u: d.cv_u ?? d.cyclone_circuit?.underflowCvPct ?? '',
+    d50c: d.d50c ?? d.cyclone_circuit?.d50cMicrons ?? '',
+    roping_risk: d.roping_risk !== undefined ? String(d.roping_risk) : (d.cyclone_circuit?.ropingRisk !== undefined ? (d.cyclone_circuit.ropingRisk ? '1' : '0') : ''),
+    g5_confirm: d.g5_confirm !== undefined ? String(d.g5_confirm) : (d.g5_advance_confirmed ? '1' : ''),
     detalles: d.details || d.detalles || '',
     destino: d.destination || d.destino || ''
   };
@@ -671,7 +679,8 @@ export function buildAcuseUrlParams(d = {}) {
     'rhop', 'lib_um', 'grade', 'air_psi', 'gy_c', 'gy_err', 'rr_n', 'ret_p80',
     'eff_ratio_er', 'impeller_life_h', 'wear_life_ratio',
     'p_atm_mca', 'delta_npsh_m', 'motor_derating_iec', 'k_motor_alt',
-    'gate_classification', 'trust_boundary_id'
+    'gate_classification', 'trust_boundary_id',
+    'rho_f', 'rho_u', 'rho_o', 'rs_pct', 'cv_u', 'd50c', 'roping_risk', 'g5_confirm'
   ];
   for (const key of optionalKeys) {
     if (snap[key] !== undefined && snap[key] !== '') {

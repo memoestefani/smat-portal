@@ -17,3 +17,7 @@ Este documento establece la propiedad, fuente de verdad y consumidores de cada c
 | `NAP` | Identidad Física | `data/company.json` | Dirección Legal | `Footer.astro`, `contacto.astro`, Schema.org, `smat-gate` |
 | `301 Mappings` | Enrutamiento SEO | `data/redirects.csv` | Marketing / SEO | `public/_redirects`, `smat-gate` |
 | `locale_pref` | Estado de Idioma | `localStorage` / Browser | Front-end | `BaseLayout.astro` (Micro-script Zero-FOUC), `Header.astro` |
+| `quick_checkout_skus` | 19 SKUs Canónicos Caja Rápida | `data/quick_checkout_Catalog.json` | Ingeniería / Ventas | `quickProductsCatalog.js`, `ProductQuickCard.astro`, `productos/[slug].astro`, `QuickOrderTray.astro`, `smat-gate` |
+| `atomic_parts_13` | 13 Piezas Atómicas BOM | `data/atomic_parts.json` | Ingeniería Planta | `districtProfilesAndSkuCatalog.js`, `catalogo/[code].astro`, `PumpAssemblyReport.astro`, `QuickPartSelectorStrip.astro` |
+| `workbench_lens_v2` | Lente Bidireccional PutGet | `smat_workbench_state_v2` | Arquitectura / UX | `workbenchBus.js`, `quoteWizardController.js`, `wizardMiningAndCodeDecoder.js`, `wizardUrlAndPresetRouter.js`, `acuse.astro` |
+| `hybrid_a05_r55` | Rama D Híbrida Finnie-Hutchings | `WET_END_MATERIAL_MATRIX` | Metalurgia / Tribología | `tribologyAndCompatibilityEngine.js`, `pumpAssemblyAndDriveEngine.js`, `QuoteWizard.astro`, `PumpAssemblyReport.astro` |

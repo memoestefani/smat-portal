@@ -5,11 +5,15 @@ import atomicParts from '../../data/atomic_parts.json';
 import rolesData from '../../data/roles.json';
 import { PIPE_SERIES_DIAMETER_MM, WET_END_MATERIAL_MATRIX } from '../scripts/slurryEngine.js';
 import { getAtomicPartSpecs, formatNioshErgonomicStatus, buildWizardUrl } from '../scripts/workbenchBus.js';
+import { getQuickProductsByAvenue, verifyCatalogReferentialIntegrity, verifyDiagramSurjectivity } from '../scripts/quickProductsCatalog.js';
 
 const title = "Catálogo Técnico Digital 2026 | Bombas para Lodos, Mecanismos de Flotación, Filtros Prensa y Balanzas | SMAT Minerals";
 const description = "Catálogo técnico digital con diagramas CAD de bombas para lodos (9 series 1.5x1 a 14x12), lotes de contacto húmedo (Alto Cromo, Hule, Poliuretano y SiC Cerámico), Bearing Assembly / Housing, mecanismos de flotación, filtros prensa y laboratorio metrológico.";
 
 const wetEndMaterialsList = Object.values(WET_END_MATERIAL_MATRIX);
+const quickByAvenue = getQuickProductsByAvenue();
+const catalogIntegrity = verifyCatalogReferentialIntegrity();
+const diagramSurjectivity = verifyDiagramSurjectivity();
 const controlVertical = rolesData.verticals.find((v) => v.id === 'control_procesos' || v.id === 'balanzas_marcy');
 const controlProcessItems = controlVertical ? [...(controlVertical.capex || []), ...(controlVertical.opex || [])] : [];
 const enrichedAtomicParts = atomicParts.map((part) => {
@@ -31,7 +35,7 @@ const enrichedAtomicParts = atomicParts.map((part) => {
 ---
 
 <BaseLayout title={title} description={description} lang="es">
-  <div class="catalog-page-container">
+  <div class="catalog-page-container" data-catalog-integrity={catalogIntegrity.valid ? '1' : '0'} data-diagram-surjectivity={diagramSurjectivity.surjective ? '1' : '0'} data-avenues-count={String(Object.keys(quickByAvenue).length)}>
     
     <!-- Barra Superior Ejecutiva -->
     <div class="catalog-action-bar no-print">

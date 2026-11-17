@@ -208,7 +208,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
           <h2 class="smat-slug-aside-h2">1. Available Alloys / Materials</h2>
           <div class="smat-slug-chip-row">
             {sku.available_materials.map((mat: string) => (
-              <span data-mat-code={mat} class={`smat-slug-mat-chip ${mat === sku.default_material ? 'is-default' : ''}`}>
+              <span role="button" tabindex="0" data-mat-code={mat} class={`smat-slug-mat-chip ${mat === sku.default_material ? 'is-default' : ''}`}>
                 {mat} {mat === sku.default_material ? '(Standard)' : ''}
               </span>
             ))}
@@ -237,7 +237,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
               <strong>Recommended Coupled SKU:</strong>{' '}
               {coupledSku ? (
                 <a href={`/en/products/${coupledSku.slug_en}/`} class="smat-slug-atomic-link" style="display:inline-block; padding:0.1rem 0.45rem;">
-                  {sku.coupled_pair_sku} ({coupledSku.title_en.split(' ')[0]}) →
+                  {sku.coupled_pair_sku} — {coupledSku.title_en} →
                 </a>
               ) : (
                 <span>{sku.coupled_pair_sku}</span>
@@ -246,6 +246,24 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
             <div>
               <strong>Preventive Window JRP (s, S):</strong> <span>Every {sku.reorder_window_days} operating days (Lot #{sku.kit_id || 1})</span>
             </div>
+            {coupledSku && (
+              <div style="margin-top: 0.45rem;">
+                <button
+                  type="button"
+                  data-quick-tray-add={coupledSku.id}
+                  data-add-coupled-pair-btn={coupledSku.id}
+                  data-sku-title={coupledSku.title_en}
+                  data-sku-code={coupledSku.atomic_codes?.[0] || coupledSku.id}
+                  data-sku-material={coupledSku.default_material || 'A05'}
+                  data-sku-regime={coupledSku.stock_regime || 'hay'}
+                  data-sku-mass={String(coupledSku.mass_kg || 15)}
+                  class="smat-slug-atomic-link"
+                  style="cursor:pointer; font-weight:700; width:100%; justify-content:center; padding:0.35rem 0.6rem;"
+                >
+                  + Add Synchronized Coupled Pair ({coupledSku.id}) to Tray
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

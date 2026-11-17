@@ -1,4 +1,4 @@
-# Arquitectura del Sistema Web — SMAT Minerals v2.3
+# Arquitectura del Sistema Web — SMAT Minerals v3.7
 
 ## 1. Visión General
 El sitio web de **SMAT Minerals (`smatminerals.com`)** está concebido como una arquitectura desacoplada, estática y sin servidor ($0.00 USD/mes), orientada al rendimiento extremo ($<50$ ms TTFB), a la confianza institucional y a la conversión sin fricción de leads B2B en la industria minera de Norteamérica.
@@ -82,3 +82,8 @@ El sitio web de **SMAT Minerals (`smatminerals.com`)** está concebido como una 
     - `src/pages/catalogo.astro` y `src/pages/en/catalog.astro`: Paridad SSG 100% con las 9 series de tubería (`PIPE_SERIES_DIAMETER_MM`), las 4 aleaciones de extremo húmedo (`WET_END_MATERIAL_MATRIX`), las 6 fichas atómicas enriquecidas y los 3 instrumentos de control de procesos (`roles.json`).
     - `src/components/PumpAssemblyReport.astro`, `src/pages/bombeo/index.astro` y `src/pages/en/pumping/index.astro`: Cuarta rama `ceramica_sic` ($\delta=0.65\text{ mm}$), propagación reactiva `syncAllAssemblyLinks()` hacia las 14 filas BOM y las 5 estaciones, y consolidación del selector superior en 3 pestañas XOR (`kits`, `systems`, `atomic`).
     - `src/components/CaseCards.astro`, `src/pages/nosotros.astro` y `src/pages/en/about.astro`: Polaridad Solar Industrial Light-First WCAG AAA (`#F8FAFC` / `#FFFFFF`, contraste $\ge 9.6:1$).
+  - **Consolidación v3.7 (Biyección Runtime 4-Circuitos, Case-Sensitivity POSIX, Deduplicación SVG 50% y `SIRA = 100%` — `GOLD-703` / `ARB-SMAT-45`):**
+    - `src/scripts/wizardMiningAndCodeDecoder.js` y `src/scripts/wizardUrlAndPresetRouter.js`: Partición $\text{LCOM}_4 = 1$ ($\partial(C)=0$) de `quoteWizardController.js`, unión discriminada de 4 circuitos (`bombeo`, `clasificacion`, `flotacion`, `filtracion`, `control_procesos`) en `getAtomicPartSpecs()`, resolución de chips DOM `resolveFlotationDomChipKey` / `resolveFiltrationDomChipKey` y preservación de rol de kit (`kit_wet_end`, `skid_bomba`) frente a `?codigo=`.
+    - `src/components/QuoteWizard.astro` y `src/scripts/tribologyAndCompatibilityEngine.js`: Quinto material seleccionable `hybrid_a05_r55` (Rama D Híbrida Finnie-Hutchings: Impulsor `A05` + Forros `R55`).
+    - `src/components/ProductQuickCard.astro`, `src/pages/productos/[slug].astro` y `src/pages/en/products/[slug].astro`: Deduplicación del 50% de nodos SVG activando `[data-layer="xray-wear"]` sobre la instancia única de `<TechnicalDiagrams />`, chips de aleación interactivos `.smat-slug-mat-chip[role="button"]`, título íntegro del par casado y botón `[ + Agregar Par Casado Sincronizado ]`.
+    - `src/components/Footer.astro`, `src/pages/index.astro`, `src/pages/en/index.astro` y `public/_redirects`: Normalización POSIX a minúsculas `/catalogo/d075c21/` y `/en/catalog/d075c21/` con redirecciones `301` canónicas.
