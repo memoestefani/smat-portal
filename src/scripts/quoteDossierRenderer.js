@@ -89,8 +89,42 @@ export function formatDossierMetrologyBadge(metrology, isEs = true) {
   if (Number.isFinite(Number(metrology.p80 || metrology.targetP80Microns))) {
     parts.push(`P80 ${Number(metrology.p80 || metrology.targetP80Microns).toFixed(0)} µm`);
   }
+  if (metrology.cycloneCircuit && typeof metrology.cycloneCircuit === 'object') {
+    const cyc = metrology.cycloneCircuit;
+    if (Number.isFinite(Number(cyc.solidsRecoveryPct))) {
+      parts.push(`Rs ${Number(cyc.solidsRecoveryPct).toFixed(1)}%`);
+    }
+    if (Number.isFinite(Number(cyc.d50cMicrons))) {
+      parts.push(`d50c ${Number(cyc.d50cMicrons).toFixed(0)} µm`);
+    }
+  }
   if (parts.length === 0) {
     return String(metrology.summary || metrology.raw || '');
   }
   return (isEs ? 'Metrología: ' : 'Metrology: ') + parts.join(' • ');
 }
+
+export const DEFAULT_CLASSIFICATION_CRITERIA_MAP = Object.freeze({
+  hidrociclon_apex_vortex: {
+    rule_es: 'Ápex Monolítico SiC (≥2200 HV, Mohs 9.2) cuando Cv,u > 48% o ΔP ≥ 12 psi; Conos PU U01 (85 Shore A) con escalón interno δ_r ≤ 0.76 mm para suprimir roping.',
+    rule_en: 'Monolithic SiC Apex (≥2200 HV, Mohs 9.2) when Cv,u > 48% or ΔP ≥ 12 psi; U01 PU Cone Liners (85 Shore A) with inter-cone step δ_r ≤ 0.76 mm to suppress roping.',
+    risk_es: 'Previene colapso del núcleo de aire (acordonamiento Cv,u > 52%) y bypass de gruesos a flotación.',
+    risk_en: 'Prevents air-core collapse (roping Cv,u > 52%) and coarse particle bypass to flotation.',
+    vars_es: 'ρ_f (Alimentación), ρ_u (Descarga), ρ_o (Rebose), ΔP (kPa), du/do (mm)',
+    vars_en: 'ρ_f (Feed SG), ρ_u (Underflow SG), ρ_o (Overflow SG), ΔP (kPa), du/do (mm)',
+    series: 'D6, D10, D10B, D15, D20, D26',
+    spec_es: '5 Zonas de Hidrociclón + Balance 3 Vasos Marcy',
+    spec_en: '5-Zone Hydrocyclone + 3-Cup Marcy Balance'
+  },
+  malla_criba_poliuretano: {
+    rule_es: 'Malla Tensada TH48-30 / Panel Modular 1\'x1\' (305×305 mm) en Poliuretano Colado 85 Shore A con alivio troncocónico θ = 3°–5° (Weibull α ≥ 4.2).',
+    rule_en: 'Tensioned TH48-30 Screen / 1\'x1\' (305×305 mm) Modular Panel in Cast 85 Shore A Polyurethane with θ = 3°–5° conical relief (Weibull α ≥ 4.2).',
+    risk_es: 'Erradica el cegamiento crónico por partículas críticas (near-size) y reduce paros por cambio de cama completa.',
+    risk_en: 'Eliminates chronic near-size blinding and reduces full-deck replacement downtime.',
+    vars_es: 'Abertura de corte (mm/µm), % Sólidos Cw, Carga circulante',
+    vars_en: 'Slot aperture (mm/µm), Solids % Cw, Circulating load',
+    series: 'TH48-30 (48"×30"), Módulo 1\'x1\' (305×305×30 mm)',
+    spec_es: 'Avenida 3 • Cribado de Alta Frecuencia y Desaguado',
+    spec_en: 'Avenue 3 • High-Frequency Screening & Dewatering'
+  }
+});

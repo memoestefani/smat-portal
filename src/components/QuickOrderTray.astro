@@ -115,6 +115,27 @@ const isEs = lang === 'es';
       </label>
     </div>
 
+    <!-- Confirmación Interactiva Candado G5 (50% Anticipo / 50% Contra Aviso de Embarque para 🔵 SE FABRICA · D10-V36) -->
+    <div class="smat-qtray-tradein-box" style="margin-top: 0.45rem; background: #eff6ff; border-color: #bfdbfe;">
+      <label class="smat-qtray-tradein-label">
+        <input
+          type="checkbox"
+          id="smat-qtray-g5-advance"
+          data-g5-advance-confirm
+          class="smat-qtray-checkbox"
+          checked
+        />
+        <span>
+          <strong>{isEs ? '🔵 Candado G5 (50% Anticipo / 50% Contra Aviso de Embarque)' : '🔵 Gate G5 (50% Advance / 50% Upon Ready-to-Ship Notice)'}</strong>
+          <span id="smat-qtray-g5-badge" class="smat-qtray-tradein-note">
+            {isEs
+              ? 'Aplicable a partidas bajo fabricación programada (🔵 SE FABRICA / Placas 16 bar / Mecanismos)'
+              : 'Applies to scheduled manufacturing items (🔵 MADE TO ORDER / 16 bar Plates / Mechanisms)'}
+          </span>
+        </span>
+      </label>
+    </div>
+
     <!-- Acciones de Despacho -->
     <div class="smat-qtray-actions">
       <a
@@ -263,7 +284,12 @@ const isEs = lang === 'es';
         const subject = buildCmuPrioritySubjectLine(state, { cvPct: 48 });
         const summary = state.items.map((i: any) => `${i.id}(x${i.qty} ${i.material})`).join(', ');
         const coreNote = tradeIn.discountPct > 0 ? ` | Core Trade-In: -${tradeIn.discountPct}%` : '';
-        const msg = `[SMAT-DGO] ${subject} | Carril: ${selectedLane}${coreNote} | Partidas: ${summary || 'Consulta directa'}`;
+        const g5Toggle = document.getElementById('smat-qtray-g5-advance') as HTMLInputElement | null;
+        const g5Confirmed = !g5Toggle || g5Toggle.checked;
+        const g5Note = g5Confirmed
+          ? ' | [CONDICIÓN G5 CONFIRMADA: 50% ANTICIPO / 50% CONTRA EMBARQUE]'
+          : ' | [CONDICIÓN G5 POR CONFIRMAR CON COMPRAS]';
+        const msg = `[SMAT-DGO] ${subject} | Carril: ${selectedLane}${coreNote}${g5Note} | Partidas: ${summary || 'Consulta directa'}`;
         waLink.href = `https://wa.me/526183670664?text=${encodeURIComponent(msg)}`;
       }
 
@@ -278,6 +304,11 @@ const isEs = lang === 'es';
       const st = getTrayState();
       const updated = saveTrayState({ ...st, coreReturnEnabled: Boolean(coreToggle.checked) });
       syncTrayToWorkbenchStateLens(updated);
+      renderTray();
+    });
+
+    const g5ToggleEl = document.getElementById('smat-qtray-g5-advance') as HTMLInputElement | null;
+    g5ToggleEl?.addEventListener('change', () => {
       renderTray();
     });
 

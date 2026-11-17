@@ -5,6 +5,7 @@ import CircuitNavigator from '../../../components/CircuitNavigator.astro';
 import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
 import SharePurchasing from '../../../components/SharePurchasing.astro';
 import PumpAssemblyReport from '../../../components/PumpAssemblyReport.astro';
+import QuickPartSelectorStrip from '../../../components/QuickPartSelectorStrip.astro';
 import atomicParts from '../../../../data/atomic_parts.json';
 import { getAtomicPartSpecs, formatNioshErgonomicStatus, buildWizardUrl } from '../../../scripts/workbenchBus.js';
 ---
@@ -27,6 +28,7 @@ import { getAtomicPartSpecs, formatNioshErgonomicStatus, buildWizardUrl } from '
   <section class="section" id="bombeo-main-section">
     <div class="container">
       <TechnicalDiagrams diagram="pump" lang="en" />
+      <QuickPartSelectorStrip lang="en" collapsible={true} />
 
       <!-- UNIFIED 3-TAB XOR CONSOLE: KITS BY MATERIAL, SUB-ASSEMBLIES & UNIVERSAL PART SHEETS (DECISION 6 / DEB-V42-06) -->
       <div class="bombeo-catalog-tabs" id="bombeo-catalog-tabs" style="margin-top: 2.25rem;">

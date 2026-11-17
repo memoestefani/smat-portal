@@ -10,7 +10,7 @@ const title = "Official Technical Catalog 2026 | Slurry Pumps, Flotation Mechani
 const description = "Technical digital catalog with CAD diagrams of slurry pumps (9 series 1.5x1 to 14x12), wet-end wear lots (High Chrome, Rubber, Polyurethane & Ceramic SiC), Bearing Assembly / Housing, flotation mechanisms, filter presses and process control metrology.";
 
 const wetEndMaterialsList = Object.values(WET_END_MATERIAL_MATRIX);
-const controlVertical = rolesData.verticals.find((v) => v.id === 'balanzas_marcy');
+const controlVertical = rolesData.verticals.find((v) => v.id === 'control_procesos' || v.id === 'balanzas_marcy');
 const controlProcessItems = controlVertical ? [...(controlVertical.capex || []), ...(controlVertical.opex || [])] : [];
 const enrichedAtomicParts = atomicParts.map((part) => {
   const spec = getAtomicPartSpecs(part.part_number, '6x4');

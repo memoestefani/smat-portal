@@ -269,6 +269,76 @@ export function getAtomicPartSpecs(codeOrSlug = '', pipeSeries = '6x4') {
   if (slug.includes('e4083') || slug.includes('throatbush') || slug.includes('cuello') || slug.includes('voluta') || slug.includes('liner') || slug.includes('fpl')) {
     return ATOMIC_PARTS_CATALOG.E4083;
   }
+  if (slug.includes('hidrociclon') || slug.includes('apex') || slug.includes('vortex') || slug.includes('cyc')) {
+    return {
+      code: 'cyc_apex_sic',
+      part_number: 'CYC-APEX-SIC',
+      frame: 'D10-D20',
+      name_es: 'Boquilla Ápex y Vortex Finder para Hidrociclón D6–D20 en Carburo de Silicio (SiC)',
+      name_en: 'Sintered Silicon Carbide (SiC) Hydrocyclone Apex Spigot & Vortex Finder D6–D20',
+      type_es: 'Zona Crítica de Corte Hidrodinámico #02/#05 (Plitt d50c)',
+      type_en: 'Critical Hydrodynamic Cut Zone #02/#05 (Plitt d50c)',
+      metallurgy: 'Carburo de Silicio Sinterizado SiC (≥ 2200 HV) / Alto Cromo A05 / Poliuretano U01',
+      hardness: '≥ 2200 HV (Mohs 9.2) / 85 Shore A',
+      vanes: 0,
+      weight_kg: 4.2,
+      impeller_diameter_mm: 254,
+      max_particle_mm: 12,
+      max_sphere_mm: 12,
+      wall_thickness_mm: 25,
+      station_number: 5,
+      station: 'Z5',
+      station_name_es: 'Zona 05: Boquilla Ápex / Spigot Anticordón (Cv,u ≤ 52%)',
+      station_name_en: 'Zone 05: Anti-Roping Apex / Spigot Insert (Cv,u ≤ 52%)',
+      assembly_order: '05. Boquilla Ápex Monolítica SiC y Camisa Porta-Ápex (Zona 05)',
+      assembly_order_note: '05. Boquilla Ápex Monolítica SiC (Zona 05 • Escalón δ_r ≤ 0.76 mm)',
+      wet_end_kit_ratio: '2:1',
+      niosh_handling_mode: 'MANUAL_SAFE',
+      handling_mode: 'MANUAL_SAFE',
+      niosh_rwl_shaft_kg: 11.1,
+      niosh_lifting_index_shaft: 0.38,
+      niosh_ergonomic_tier: 'MANUAL_1P_SAFE',
+      circuit: 'clasificacion',
+      pipe_size: 'D15',
+      role: 'hidrociclon_apex_vortex',
+      smat_code: 'SMAT-CYC-D15-APEX'
+    };
+  }
+  if (slug.includes('malla_criba') || slug.includes('th48') || slug.includes('criba') || slug.includes('screen') || slug.includes('mod-1x1')) {
+    return {
+      code: 'scr_th48_30',
+      part_number: 'SCR-TH48-30',
+      frame: '48x30',
+      name_es: 'Malla Fina de Poliuretano TH48-30 / Panel Modular 1\'x1\' con Alivio Cónico 3°–5°',
+      name_en: 'TH48-30 Fine Urethane Screen Mat / 1\'x1\' Modular Panel with 3°–5° Relief Angle',
+      type_es: 'Panel Elastómero de Cribado de Alta Frecuencia (Weibull α ≥ 4.2)',
+      type_en: 'High-Frequency Elastomer Screening Deck Panel (Weibull α ≥ 4.2)',
+      metallurgy: 'Poliuretano Colado U01 (85 Shore A) con Cuerdas de Aramida',
+      hardness: '85 ± 3 Shore A',
+      vanes: 0,
+      weight_kg: 9.5,
+      impeller_diameter_mm: 305,
+      max_particle_mm: 25,
+      max_sphere_mm: 25,
+      wall_thickness_mm: 30,
+      station_number: 3,
+      station: 'A3',
+      station_name_es: 'Avenida 03: Cama de Cribado y Desaguado sin Cegamiento',
+      station_name_en: 'Avenue 03: Non-Blinding Screening & Dewatering Deck',
+      assembly_order: '03. Malla Tensada TH48-30 / Módulo 1\'x1\' Pin y Camisa',
+      assembly_order_note: '03. Malla Tensada TH48-30 (Alivio troncocónico θ = 3°–5°)',
+      wet_end_kit_ratio: '1:1',
+      niosh_handling_mode: 'MANUAL_SAFE',
+      handling_mode: 'MANUAL_SAFE',
+      niosh_rwl_shaft_kg: 11.1,
+      niosh_lifting_index_shaft: 0.86,
+      niosh_ergonomic_tier: 'MANUAL_1P_SAFE',
+      circuit: 'clasificacion',
+      pipe_size: 'TH48-30',
+      role: 'malla_criba_poliuretano',
+      smat_code: 'SMAT-SCR-TH48-30'
+    };
+  }
 
   if (series.includes('3x2') || series.includes('4x3') || series.includes('1.5x1')) {
     return ATOMIC_PARTS_CATALOG.D3147;
@@ -612,7 +682,18 @@ export function parseUrlContextParams(urlOrSearch = '', hashOptional = '') {
             'SMAT-SCR-MOD-1X1': 'malla_criba_poliuretano',
             'SMAT-FILT-CLOTH-PLATE': 'placas_telas',
             'SMAT-FILT-SHIFTER-CHAIN': 'placas_telas',
-            'SMAT-FLOT-MECH-18SP': 'celda_flotacion'
+            'SMAT-FLOT-MECH-18SP': 'celda_flotacion',
+            'SMAT-LAB-MARCY-1000': 'balanza_marcy',
+            'SMAT-LAB-VASO-1000': 'balanza_marcy',
+            'SMAT-LAB-TAMIZ-E11': 'tamices_laboratorio',
+            'SMAT-LAB-ROTAP-MECH': 'tamices_laboratorio',
+            'SMAT-LAB-PULV-DISC': 'balanza_marcy',
+            'SMAT-LAB-PLATO-TENT': 'balanza_marcy',
+            'SMAT-LAB-FILTRO-BATCH': 'filtro_batch_lab',
+            'SMAT-LAB-FILTER-LPLT': 'filtro_batch_lab',
+            'SMAT-LAB-FILTER-BARREL': 'filtro_batch_lab',
+            'SMAT-LAB-FILTER-SPARES': 'filtro_batch_lab',
+            'SMAT-LAB-BOND-JAR': 'filtro_batch_lab'
           };
           result.equipo = skuRoleMap[resolvedSku.id] || (resolvedSku.id.startsWith('SMAT-LAB-') ? 'balanza_marcy' : 'kit_wet_end');
         }
@@ -623,7 +704,10 @@ export function parseUrlContextParams(urlOrSearch = '', hashOptional = '') {
           result.material = params.get('mat') || params.get('material') || resolvedSku.default_material || null;
         }
         if (!params.has('codigo') && !params.has('code') && Array.isArray(resolvedSku.atomic_codes) && resolvedSku.atomic_codes.length > 0) {
-          const firstAtomic = resolveAtomicPartCode(resolvedSku.atomic_codes[0]);
+          const preferredCode = resolvedSku.id === 'SMAT-PUMP-IMP-AH' && resolvedSku.atomic_codes.includes('E4147')
+            ? 'E4147'
+            : resolvedSku.atomic_codes[0];
+          const firstAtomic = resolveAtomicPartCode(preferredCode);
           if (firstAtomic) {
             result.codigo = firstAtomic.part_number;
             result.atomic_part = firstAtomic;
@@ -734,6 +818,18 @@ export function generateSmatPartCode(data = {}) {
     if (roleLower === 'placas_membrana' || roleLower.includes('membrana')) return `SMAT-FILT-${pCap}-MEMBR`;
     if (roleLower === 'bomba_prensa') return `SMAT-FILT-${pCap}-PUMP`;
     return `SMAT-FILT-${pCap}-CLOTH`;
+  }
+
+  if (roleLower.includes('hidrociclon') || roleLower.includes('apex') || roleLower.includes('vortex')) {
+    let cycTag = 'D15';
+    if (sizeVal.includes('d6') || pipe.includes('d6') || details.includes('D6')) cycTag = 'D6';
+    else if (sizeVal.includes('d10') || pipe.includes('d10') || details.includes('D10')) cycTag = 'D10';
+    else if (sizeVal.includes('d20') || pipe.includes('d20') || details.includes('D20')) cycTag = 'D20';
+    return `SMAT-CYC-${cycTag}-APEX`;
+  }
+  if (roleLower.includes('malla_criba') || roleLower.includes('cribado') || roleLower.includes('th48')) {
+    if (sizeVal.includes('1x1') || details.includes('1X1') || details.includes('305')) return 'SMAT-SCR-MOD-1X1';
+    return 'SMAT-SCR-TH48-30';
   }
 
   // Bombeo: series puramente nominales (sin letras de bastidor B/C/D/E/F)

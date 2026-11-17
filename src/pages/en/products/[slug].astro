@@ -79,7 +79,15 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
 };
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} canonical={canonicalPath} lang="en">
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={canonicalPath}
+  canonicalPath={canonicalPath}
+  alternateEsPath={`/productos/${sku.slug_es}/`}
+  alternateEnPath={`/en/products/${sku.slug_en}/`}
+  lang="en"
+>
   <main class="smat-slug-main">
     <!-- Breadcrumb & language switcher -->
     <nav class="smat-slug-breadcrumb" aria-label="Breadcrumb">

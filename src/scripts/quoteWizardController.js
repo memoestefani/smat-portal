@@ -53,41 +53,32 @@ import {
 } from '../scripts/workbenchBus.js';
 import {
   DOSSIER_FORMATTERS_BY_FIELD,
+  DEFAULT_CLASSIFICATION_CRITERIA_MAP,
   formatDossierSimulationBanner,
   formatDossierMetrologyBadge
 } from '../scripts/quoteDossierRenderer.js';
+import {
+  ROLE_ALIAS_MAP,
+  FLOTATION_CONDITION_ALIAS_MAP,
+  FILTRATION_CONDITION_ALIAS_MAP,
+  normalizeFlotationConditionKey,
+  normalizeFiltrationConditionKey,
+  resolveCanonicalRoleFromUrlParam,
+  parseMarcyThreeCupUrlParams,
+  resolveUrlContextDescriptor
+} from '../scripts/wizardUrlAndPresetRouter.js';
 export {
   DOSSIER_FORMATTERS_BY_FIELD,
   formatDossierSimulationBanner,
-  formatDossierMetrologyBadge
-};
-
-export const ROLE_ALIAS_MAP = {
-  impulsor: 'solo_impulsor',
-  impulsor_bomba: 'solo_impulsor',
-  revestimientos: 'kit_wet_end',
-  bombeo_hule_cromo: 'kit_wet_end',
-  sello: 'kit_sellado',
-  sello_expulsor: 'kit_sellado',
-  soporte: 'kit_rodamientos',
-  soporte_rodamiento: 'kit_rodamientos',
-  skid_bomba: 'skid_bomba',
-  hidrociclon: 'hidrociclon_apex_vortex',
-  hidrociclones: 'hidrociclon_apex_vortex',
-  hidrociclon_apex_vortex: 'hidrociclon_apex_vortex',
-  malla_criba: 'malla_criba_poliuretano',
-  malla_criba_poliuretano: 'malla_criba_poliuretano',
-  cribado: 'malla_criba_poliuretano',
-  celda_completa: 'celda_flotacion',
-  mecanismos_flotacion: 'rotor_estator',
-  prensa_completa: 'filtro_prensa',
-  repuestos_prensa: 'placas_telas',
-  placas_filtrantes: 'placas_telas',
-  balanza_marcy: 'balanza_marcy',
-  filtro_batch_lab: 'filtro_batch_lab',
-  tamices_laboratorio: 'tamices_laboratorio',
-  tamices_astm_e11: 'tamices_laboratorio',
-  custom: 'balanza_marcy'
+  formatDossierMetrologyBadge,
+  ROLE_ALIAS_MAP,
+  FLOTATION_CONDITION_ALIAS_MAP,
+  FILTRATION_CONDITION_ALIAS_MAP,
+  normalizeFlotationConditionKey,
+  normalizeFiltrationConditionKey,
+  resolveCanonicalRoleFromUrlParam,
+  parseMarcyThreeCupUrlParams,
+  resolveUrlContextDescriptor
 };
 
 /**
@@ -99,7 +90,10 @@ export function computeWizardViewState(state = {}, urlParams = {}) {
   const ctx = typeof urlParams === 'string' ? parseUrlContextParams(urlParams) : (urlParams || {});
   const rawCircuitInput = ctx.circuito || state.circuit || '';
   const rawRole = ctx.rol || ctx.equipo || state.roleId || (rawCircuitInput === 'clasificacion' ? 'hidrociclon_apex_vortex' : '');
-  const mappedRole = rawRole ? (ROLE_ALIAS_MAP[rawRole] || rawRole) : 'kit_wet_end';
+  const mappedRole = resolveCanonicalRoleFromUrlParam(rawRole, ctx.pieza || '', rawCircuitInput);
+  const flotCondition = normalizeFlotationConditionKey(ctx.flot_condition || state.flot_condition || '');
+  const filtCondition = normalizeFiltrationConditionKey(ctx.filt_condition || state.filt_condition || '');
+  const cycloneCircuit = parseMarcyThreeCupUrlParams(typeof urlParams === 'string' ? urlParams : ctx);
 
   let circuit = rawCircuitInput || 'bombeo';
   if (circuit === 'clasificacion') {
@@ -161,6 +155,9 @@ export function computeWizardViewState(state = {}, urlParams = {}) {
     sku: resolvedSku,
     selectedMaterial,
     coupledClassificationActive,
+    flotCondition,
+    filtCondition,
+    cycloneCircuit,
     pipeSize,
     pipeOrSeries,
     budgetCategory,
@@ -2613,7 +2610,9 @@ export function initQuoteWizardController() {
     bomba_prensa: 'skid_bomba',
     balanza_marcy: 'balanza_marcy',
     filtro_batch_lab: 'filtro_batch_lab',
-    tamices_laboratorio: 'tamices_laboratorio'
+    tamices_laboratorio: 'tamices_laboratorio',
+    hidrociclon_apex_vortex: 'hidrociclon_apex_vortex',
+    malla_criba_poliuretano: 'malla_criba_poliuretano'
   };
 
   function updateRoleCriteriaBar() {
@@ -2630,7 +2629,7 @@ export function initQuoteWizardController() {
     else if (currentCircuit === 'control_procesos' && selectRoleCtrl) activeRoleVal = selectRoleCtrl.value;
 
     var cKey = roleToCriteriaKey[activeRoleVal] || 'revestimientos';
-    var cObj = rolesCriteriaData[cKey];
+    var cObj = rolesCriteriaData[cKey] || DEFAULT_CLASSIFICATION_CRITERIA_MAP[cKey];
     if (cObj) {
       ruleEl.textContent = isEs ? cObj.rule_es : cObj.rule_en;
       riskEl.textContent = isEs ? cObj.risk_es : cObj.risk_en;
@@ -2795,8 +2794,9 @@ export function initQuoteWizardController() {
 
       var urlCodigo = ctx.codigo || '';
       var urlCircuit = ctx.circuito || '';
+      var urlDesc = resolveUrlContextDescriptor(ctx);
       var rawUrlRole = ctx.rol || ctx.equipo || '';
-      var urlRole = rawUrlRole ? (ROLE_ALIAS_MAP[rawUrlRole] || rawUrlRole) : '';
+      var urlRole = (rawUrlRole || ctx.pieza) ? urlDesc.canonicalRole : '';
       var urlSerie = ctx.serie || '';
       var urlFalla = ctx.falla || '';
       var urlSintoma = ctx.sintoma || '';
@@ -2807,6 +2807,9 @@ export function initQuoteWizardController() {
       var urlD80 = ctx.d80 || ctx.p80 || '';
       var urlPieza = ctx.pieza || '';
       var urlMaterial = ctx.material || '';
+      if (urlDesc.marcyThreeCup && urlDesc.marcyThreeCup.hasUrlTelemetry) {
+        saveWorkbenchState({ cycloneCircuit: urlDesc.marcyThreeCup });
+      }
       var urlTransmision = (ctx.transmision || '').toUpperCase();
       var urlEstacion = (ctx.estacion || '').toUpperCase();
       var urlClaroMm = ctx.claro_mm || '';
@@ -3026,9 +3029,10 @@ export function initQuoteWizardController() {
       }
 
       if (ctx.flot_condition && inputFlotCondition) {
-        inputFlotCondition.value = ctx.flot_condition;
+        var normFlotCond = normalizeFlotationConditionKey(ctx.flot_condition);
+        inputFlotCondition.value = normFlotCond;
         flotChips.forEach(function (c) {
-          var isMatch = c.getAttribute('data-flot-cond') === ctx.flot_condition;
+          var isMatch = c.getAttribute('data-flot-cond') === normFlotCond || c.getAttribute('data-flot-cond') === ctx.flot_condition;
           c.classList.toggle('active', isMatch);
           c.classList.toggle('chip-ghost', !isMatch);
           c.setAttribute('data-confirmed', isMatch ? 'true' : 'false');
@@ -3037,9 +3041,10 @@ export function initQuoteWizardController() {
       }
 
       if (ctx.filt_condition && inputFiltCondition) {
-        inputFiltCondition.value = ctx.filt_condition;
+        var normFiltCond = normalizeFiltrationConditionKey(ctx.filt_condition);
+        inputFiltCondition.value = normFiltCond;
         filtChips.forEach(function (c) {
-          var isMatch = c.getAttribute('data-filt-cond') === ctx.filt_condition;
+          var isMatch = c.getAttribute('data-filt-cond') === normFiltCond || c.getAttribute('data-filt-cond') === ctx.filt_condition;
           c.classList.toggle('active', isMatch);
           c.classList.toggle('chip-ghost', !isMatch);
           c.setAttribute('data-confirmed', isMatch ? 'true' : 'false');

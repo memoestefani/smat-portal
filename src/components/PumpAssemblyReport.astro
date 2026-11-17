@@ -527,7 +527,7 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
 </section>
 
 <script>
-  import { evaluateWetEndAssemblyInterference, computeSelectionOrderCodeHash } from '../scripts/slurryEngine.js';
+  import { evaluateWetEndAssemblyInterference, evaluateHybridWetEndConfiguration, computeSelectionOrderCodeHash } from '../scripts/slurryEngine.js';
   import { saveWorkbenchState, loadWorkbenchState } from '../scripts/workbenchBus.js';
 
   function initPumpAssemblyReport() {
@@ -637,13 +637,25 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
             ? `Pipe Vc margin impact: -${res.pipeVelocityMarginLossPct.toFixed(2)}%`
             : `Margen Vc tubería: -${res.pipeVelocityMarginLossPct.toFixed(2)}%`;
         }
+        const isHybridActive = activeMaterialKey === 'hybrid_a05_r55' || activeMaterialKey === 'hibrido_a05_r55';
+        const hybridEval = isHybridActive
+          ? evaluateHybridWetEndConfiguration({ d80Microns: 220, tipSpeedMs: 21.8, pulpPh: 7.5, solidsWeightPercent: 48, pipeSeries })
+          : null;
         if (lot554El) {
-          lot554El.textContent = isEnDoc ? res.wearRatioImpact554En : res.wearRatioImpact554;
+          lot554El.textContent = hybridEval
+            ? (isEnDoc
+              ? `${hybridEval.wearSynchronizationRatio} • Finnie-Hutchings (Impeller A05 α=75°–90° + Liners R55 α≤25°, u₂≤24.5 m/s)`
+              : `${hybridEval.wearSynchronizationRatio} • Finnie-Hutchings (Impulsor A05 α=75°–90° + Forros R55 α≤25°, u₂≤24.5 m/s)`)
+            : (isEnDoc ? res.wearRatioImpact554En : res.wearRatioImpact554);
         }
         if (massTotalEl) {
-          massTotalEl.textContent = isEnDoc
-            ? `${res.totalAssemblyMassKg.toFixed(1)} kg • ${res.nioshHoistPartsCount} NIOSH hoists (≥23 kg)`
-            : `${res.totalAssemblyMassKg.toFixed(1)} kg • ${res.nioshHoistPartsCount} izajes NIOSH (≥23 kg)`;
+          massTotalEl.textContent = hybridEval
+            ? (isEnDoc
+              ? `${hybridEval.singlePumpMassKg.toFixed(1)} kg (-${hybridEval.massSavingsPct}% mass vs full metal) • ${res.nioshHoistPartsCount} NIOSH hoists`
+              : `${hybridEval.singlePumpMassKg.toFixed(1)} kg (-${hybridEval.massSavingsPct}% masa vs 100% metal) • ${res.nioshHoistPartsCount} izajes NIOSH`)
+            : (isEnDoc
+              ? `${res.totalAssemblyMassKg.toFixed(1)} kg • ${res.nioshHoistPartsCount} NIOSH hoists (≥23 kg)`
+              : `${res.totalAssemblyMassKg.toFixed(1)} kg • ${res.nioshHoistPartsCount} izajes NIOSH (≥23 kg)`);
         }
         if (seqStatusEl) {
           seqStatusEl.textContent = res.sequenceValid
@@ -709,7 +721,11 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
 
           svgBranches.forEach((g) => {
             const gBranch = g.getAttribute('data-svg-branch');
-            const active = selectedBranch === 'all' || gBranch === selectedBranch || (selectedBranch === 'ceramica_sic' && gBranch === 'alto_cromo_cr27');
+            const isHybridSel = selectedBranch === 'hybrid_a05_r55' || selectedBranch === 'hibrido_a05_r55';
+            const active = selectedBranch === 'all'
+              || gBranch === selectedBranch
+              || (selectedBranch === 'ceramica_sic' && gBranch === 'alto_cromo_cr27')
+              || (isHybridSel && (gBranch === 'alto_cromo_cr27' || gBranch === 'hule_natural'));
             (g as HTMLElement).style.opacity = active ? '1' : '0.28';
           });
           updateClearanceSimulation();

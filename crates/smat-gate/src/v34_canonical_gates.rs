@@ -356,15 +356,45 @@ pub fn check_v35_zero_orphan_ast_and_dist_graph_closure(site_root: &Path) -> Res
         }
     }
 
-    // 6. D12-V35: Modulos extraidos existen
+    // 6. D12-V35 & D13-V36..D14-V36: Modulos extraidos y compuertas V3.6 existen
     for mod_rel in [
         "src/scripts/acuseSheetController.js",
         "src/scripts/quoteDossierRenderer.js",
+        "src/scripts/wizardUrlAndPresetRouter.js",
         "crates/smat-gate/src/v34_canonical_gates.rs",
         "tests/v35_forensic_closure_and_jrp.test.mjs",
+        "tests/v36_forensic_closure_and_epistemic_parity.test.mjs",
     ] {
         if !site_root.join(mod_rel).exists() {
-            return Err(format!("D12-V35: Falta artefacto modular V3.5 '{}'", mod_rel));
+            return Err(format!("D12-V35/V36: Falta artefacto modular '{}'", mod_rel));
+        }
+    }
+
+    // 7. D1-V36, D2-V36, D3-V36 & D7-V36: Verificación de paridad SSR en catalogo.astro y hreflang en [slug].astro
+    for cat_rel in ["src/pages/catalogo.astro", "src/pages/en/catalog.astro"] {
+        let cat_src = fs::read_to_string(site_root.join(cat_rel)).map_err(|e| e.to_string())?;
+        if !cat_src.contains("v.id === 'control_procesos'") {
+            return Err(format!(
+                "D2-V36 (DEB-V36-03): {} no filtra control_procesos desde data/roles.json",
+                cat_rel
+            ));
+        }
+    }
+    let strip_src = fs::read_to_string(site_root.join("src/components/QuickPartSelectorStrip.astro"))
+        .map_err(|e| e.to_string())?;
+    if strip_src.contains("lookupKey: 'E4110'") || strip_src.contains("lookupKey: 'E4029'") {
+        return Err(
+            "D3-V36 (DEB-V36-04): QuickPartSelectorStrip.astro conserva lookupKey rotos E4110/E4029 en vez de D3110/D4029"
+                .to_string(),
+        );
+    }
+    for slug_rel in ["src/pages/productos/[slug].astro", "src/pages/en/products/[slug].astro"] {
+        let slug_src = fs::read_to_string(site_root.join(slug_rel)).map_err(|e| e.to_string())?;
+        if !slug_src.contains("alternateEsPath=") || !slug_src.contains("alternateEnPath=") {
+            return Err(format!(
+                "D7-V36 (DEB-V36-08): {} no inyecta alternateEsPath y alternateEnPath explicitos a BaseLayout",
+                slug_rel
+            ));
         }
     }
 

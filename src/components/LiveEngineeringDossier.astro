@@ -185,14 +185,14 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
             <span class="seal-title">{isEs ? 'VERIFICACIÓN METROLÓGICA EN ALMACÉN CENTRAL DURANGO' : 'DURANGO CENTRAL WAREHOUSE METROLOGICAL VERIFICATION'}</span>
           </div>
           <div class="seal-specs-grid">
-            <span class="seal-spec-item font-mono-tech">ISO 1940 Grado G2.5</span>
-            <span class="seal-spec-item font-mono-tech">Acople Brida 1:1 (&lt;0.05 mm)</span>
-            <span class="seal-spec-item font-mono-tech">{isEs ? 'Dureza Metalúrgica Certificada' : 'Certified Metallurgy Hardness'}</span>
+            <span class="seal-spec-item font-mono-tech">{isEs ? 'Cotejo Durango: Triplete (A, B, C) ISO 2768-m • Acople Brida 1:1' : 'Durango Check: (A, B, C) Triplet ISO 2768-m • Acople Brida 1:1'}</span>
+            <span class="seal-spec-item font-mono-tech">{isEs ? 'Origen Fundición: ISO 1940 Grado G2.5 (<0.05 mm)' : 'Foundry Origin: ISO 1940 Grado G2.5 (<0.05 mm)'}</span>
+            <span class="seal-spec-item font-mono-tech">{isEs ? 'Dureza Metalúrgica Certificada (ASTM A532 ≥650 HB)' : 'Certified Metallurgy Hardness (ASTM A532 ≥650 HB)'}</span>
           </div>
           <p class="seal-address-note" id="live-clause-text">
             {isEs 
-              ? `Garantía de acople dimensional 1:1 en Almacén Central Durango SMAT. Domicilio fiscal y patio de maniobras: Mariano Salas #114, Durango, Dgo. CP 34166.` 
-              : `SMAT 1:1 dimensional fit warranty. Fiscal HQ & staging yard: Mariano Salas #114, Durango, Mexico ZIP 34166.`}
+              ? `Garantía de acople dimensional 1:1 en Almacén Central Durango SMAT (verificación física de Triplete Geométrico A, B, C bajo ISO 2768-m). Domicilio fiscal y patio de maniobras: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166.` 
+              : `SMAT 1:1 dimensional fit warranty (physical verification of A, B, C Geometric Triplet under ISO 2768-m). Fiscal HQ & staging yard: Mariano Salas #114, Col. Primer Presidente, Durango, Mexico ZIP 34166.`}
           </p>
           <small class="dossier-maneuvers-access-note" style="display:block; margin-top:0.25rem; font-size:0.68rem; color:#334155;">
             {companyData.logistics.maneuvers_access}

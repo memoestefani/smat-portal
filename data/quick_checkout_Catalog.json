@@ -1196,7 +1196,8 @@
       "buscador-vortice-hidrociclon",
       "hidrociclones-completos-d6-d20",
       "forro-conico-inferior-poliuretano-hidrociclon",
-      "revestimientos-cono-cilindro-hidrociclon"
+      "revestimientos-cono-cilindro-hidrociclon",
+      "hidrociclones-uretanos-sic"
     ],
     "aliases_en": [
       "silicon-carbide-ceramic-hydrocyclone-apex",
@@ -1206,7 +1207,8 @@
       "hydrocyclone-vortex-finder",
       "complete-hydrocyclones-d6-d20",
       "lower-cone-polyurethane-liner-hydrocyclone",
-      "hydrocyclone-cone-cylinder-liners"
+      "hydrocyclone-cone-cylinder-liners",
+      "urethane-sic-hydrocyclones"
     ],
     "vertical": "clasificacion",
     "avenue": "avenida_2_hidrociclones",
@@ -1541,14 +1543,17 @@
       "placa-polipropileno-recesada-membrana-filtro-prensa",
       "placas-polipropileno-recesadas-membrana",
       "placas-polipropileno-filtro-prensa",
+      "placas-filtro-prensa-polipropileno",
       "lona-filtrante-monofilamento-filtro-prensa",
       "lonas-filtrantes-monofilamento-calandradas",
+      "lonas-filtrantes-polipropileno",
       "telas-filtrantes-filtro-prensa"
     ],
     "aliases_en": [
       "recessed-membrane-polypropylene-filter-press-plate",
       "recessed-membrane-polypropylene-plates",
       "filter-press-polypropylene-plates",
+      "polypropylene-filter-press-plates",
       "monofilament-filter-press-cloth",
       "calendered-monofilament-filter-cloths",
       "filter-press-cloths"
@@ -1730,6 +1735,7 @@
     "slug_en": "suspended-flotation-mechanism-18sp",
     "aliases_es": [
       "kit-rotor-estator-flotacion-drop-in",
+      "kit-rotor-estator-flotacion",
       "impulsor-rotor-difusor-estator-flotacion",
       "mecanismo-flotacion-18-sp",
       "rotor-estator-celda-flotacion",
@@ -1737,6 +1743,7 @@
     ],
     "aliases_en": [
       "drop-in-flotation-rotor-stator-kit",
+      "flotation-rotor-stator-kit",
       "flotation-rotor-stator-disperser",
       "flotation-cell-mechanism-18-sp",
       "flotation-cell-rotor-stator",

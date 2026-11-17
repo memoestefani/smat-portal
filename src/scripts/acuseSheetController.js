@@ -237,18 +237,29 @@ export function initAcuseSheetController(lang = 'es') {
     const airPsiVal = urlParams.get('air_psi') || wbV2.air_psi || '';
     const rrNVal = urlParams.get('rr_n') || wbV2.rr_n || '';
     const retP80Val = urlParams.get('ret_p80') || wbV2.ret_p80 || '';
+    const rhoFVal = urlParams.get('rho_f') || (wbV2.cycloneCircuit && wbV2.cycloneCircuit.feedSg) || '';
+    const rhoUVal = urlParams.get('rho_u') || (wbV2.cycloneCircuit && wbV2.cycloneCircuit.underflowSg) || '';
+    const rhoOVal = urlParams.get('rho_o') || (wbV2.cycloneCircuit && wbV2.cycloneCircuit.overflowSg) || '';
+    const rsPctVal = urlParams.get('rs_pct') || (wbV2.cycloneCircuit && wbV2.cycloneCircuit.solidsRecoveryPct) || '';
+    const cvUVal = urlParams.get('cv_u') || (wbV2.cycloneCircuit && wbV2.cycloneCircuit.underflowCvPct) || '';
+    const d50cVal = urlParams.get('d50c') || (wbV2.cycloneCircuit && wbV2.cycloneCircuit.d50cMicrons) || '';
+    const hasMarcy3Cup = Boolean(urlParams.get('rho_f') || urlParams.get('rho_u') || urlParams.get('rs_pct') || urlParams.get('circuito') === 'clasificacion' || wbV2.circuit === 'clasificacion');
+    const marcy3CupSummary = hasMarcy3Cup
+      ? `3-Vasos Marcy: ρ_f=${rhoFVal || '1.35'} | ρ_u=${rhoUVal || '1.82'} | ρ_o=${rhoOVal || '1.15'} | R_s=${rsPctVal || '84.2'}%${cvUVal ? ' | Cv,u=' + cvUVal + '%' : ''}${d50cVal ? ' | d50c=' + d50cVal + ' µm' : ''}`
+      : '';
     const metrologiaBase = urlParams.get('metrologia') || cached.memoria_metrologica || '';
     const metroExtras = [
       libUmVal ? `d_l=${libUmVal} µm` : '',
       gradeVal ? `a_L=${gradeVal}%` : '',
       airPsiVal ? `P_air=${airPsiVal} PSI` : '',
       rrNVal ? `n=${rrNVal}` : '',
-      retP80Val ? `R(P80)=${retP80Val}%` : ''
+      retP80Val ? `R(P80)=${retP80Val}%` : '',
+      marcy3CupSummary
     ].filter(Boolean).join(' | ');
     const metrologia = metrologiaBase
-      ? (metroExtras && !metrologiaBase.includes('d_l=') ? `${metrologiaBase} (${metroExtras})` : metrologiaBase)
-      : (rhopVal
-        ? (isEn ? `Ore density ρ_p = ${rhopVal} t/m³ calibrated at metrology station${metroExtras ? ' (' + metroExtras + ')' : ''}.` : `Densidad mineral ρ_p = ${rhopVal} t/m³ calibrada en estación metrológica${metroExtras ? ' (' + metroExtras + ')' : ''}.`)
+      ? (metroExtras && !metrologiaBase.includes('d_l=') && !metrologiaBase.includes('3-Vasos') ? `${metrologiaBase} (${metroExtras})` : metrologiaBase)
+      : (rhopVal || marcy3CupSummary
+        ? (isEn ? `Ore density ρ_p = ${rhopVal || '2.70'} t/m³ calibrated at metrology station${metroExtras ? ' (' + metroExtras + ')' : ''}.` : `Densidad mineral ρ_p = ${rhopVal || '2.70'} t/m³ calibrada en estación metrológica${metroExtras ? ' (' + metroExtras + ')' : ''}.`)
         : (isEn ? 'No laboratory pre-calibration attached (Marcy Scale / Bond / Filter Press).' : 'Sin pre-calibración de laboratorio adjunta (Balanza Marcy / Bond / Prensa).'));
 
     const elFolio = document.getElementById('display-folio');

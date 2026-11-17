@@ -10,7 +10,7 @@ const title = "Catálogo Técnico Digital 2026 | Bombas para Lodos, Mecanismos d
 const description = "Catálogo técnico digital con diagramas CAD de bombas para lodos (9 series 1.5x1 a 14x12), lotes de contacto húmedo (Alto Cromo, Hule, Poliuretano y SiC Cerámico), Bearing Assembly / Housing, mecanismos de flotación, filtros prensa y laboratorio metrológico.";
 
 const wetEndMaterialsList = Object.values(WET_END_MATERIAL_MATRIX);
-const controlVertical = rolesData.verticals.find((v) => v.id === 'balanzas_marcy');
+const controlVertical = rolesData.verticals.find((v) => v.id === 'control_procesos' || v.id === 'balanzas_marcy');
 const controlProcessItems = controlVertical ? [...(controlVertical.capex || []), ...(controlVertical.opex || [])] : [];
 const enrichedAtomicParts = atomicParts.map((part) => {
   const spec = getAtomicPartSpecs(part.part_number, '6x4');

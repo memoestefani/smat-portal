@@ -2923,7 +2923,7 @@ test('154. Franja Superior de Selección Rápida de Pieza (<QuickPartSelectorStr
     'src/pages/en/pumping/index.astro'
   ]) {
     const pageContent = fs.readFileSync(path.join(siteRoot, pageRel), 'utf-8');
-    assert.ok(pageContent.includes('data-bombeo-tab="kits"') && !pageContent.includes('<QuickPartSelectorStrip'), `${pageRel} debe consolidar la consola 3-tab XOR sin duplicar <QuickPartSelectorStrip`);
+    assert.ok(pageContent.includes('data-bombeo-tab="kits"') && pageContent.includes('collapsible={true}'), `${pageRel} debe consolidar la consola 3-tab XOR con <QuickPartSelectorStrip colapsable (PRD §8.2 / D3-V36)`);
   }
 });
 
@@ -4091,7 +4091,7 @@ test('Test 199 (Decisión 1-C++ / DEB-E3-01..04): Eliminación física de Flight
     const content = fs.readFileSync(path.join(siteRoot, rel), 'utf-8');
     assert.ok(content.includes('<QuoteWizard'), `${rel} debe montar <QuoteWizard /> directamente`);
     assert.ok(!content.includes('<FlightDeck'), `${rel} no debe referenciar <FlightDeck />`);
-    assert.ok(!content.includes('<QuickPartSelectorStrip'), `${rel} no debe duplicar <QuickPartSelectorStrip /> (DEB-E3-03)`);
+    assert.ok(content.includes('<QuickPartSelectorStrip') && content.includes('collapsible={true}'), `${rel} debe montar <QuickPartSelectorStrip collapsible={true} /> (PRD §8.2 / D3-V36)`);
     assert.ok(content.includes('class="extension-card"'), `${rel} debe conservar las tarjetas de extensión P&ID y Diagnóstico`);
   }
 

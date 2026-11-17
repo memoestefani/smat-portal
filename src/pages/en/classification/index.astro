@@ -167,6 +167,7 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
   const d50El = document.getElementById('cyc-res-d50c');
   const actionEl = document.getElementById('cyc-res-action');
   const skuLink = document.getElementById('cyc-recommended-sku-link') as HTMLAnchorElement | null;
+  const rfqLink = document.getElementById('cyc-rfq-link') as HTMLAnchorElement | null;
 
   function updateCycloneBalance() {
     if (!feedInput || !underInput || !overInput) return;
@@ -194,6 +195,10 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
         ? '/en/products/coupled-pump-hydrocyclone-package/'
         : '/en/products/hydrocyclone-assembly-and-spigots-d6-d20/';
       skuLink.textContent = `Configure Recommended Spare (${res.recommendedSkuId}) →`;
+    }
+    if (rfqLink) {
+      const matRec = res.isRopingCritical ? 'ceramica_sic' : 'alto_cromo_cr27';
+      rfqLink.href = `/en/quote/?circuito=clasificacion&equipo=hidrociclon_apex_vortex&sku=${encodeURIComponent(res.recommendedSkuId)}&mat=${matRec}&rho_f=${res.feedSg}&rho_u=${res.underflowSg}&rho_o=${res.overflowSg}&rs_pct=${res.solidsRecoveryPct}&cv_u=${res.cvUnderflowPct}&d50c=${res.d50cMicrons}&roping_risk=${res.isRopingCritical ? '1' : '0'}#rfq`;
     }
 
     const prev = loadWorkbenchSession();

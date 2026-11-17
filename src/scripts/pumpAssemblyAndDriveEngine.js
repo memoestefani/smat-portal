@@ -406,10 +406,11 @@ export function evaluatePumpAssemblySequence(params = {}) {
   const opts = typeof params === 'number' ? { frontClearanceMm: params } : (params || {});
   const branchRaw = String(opts.wetEndBranch || opts.material || 'metal').toLowerCase();
   const isCeramic = branchRaw === 'ceramica_sic' || branchRaw === 'sic' || branchRaw === 'ceramic';
-  const isElastomer = !isCeramic && (branchRaw === 'rubber' || branchRaw === 'hule' || branchRaw === 'hule_natural' || branchRaw === 'polyurethane' || branchRaw === 'poliuretano');
+  const isHybrid = !isCeramic && (branchRaw === 'hibrido_a05_r55' || branchRaw === 'hybrid' || branchRaw.includes('hibrido'));
+  const isElastomer = !isCeramic && (isHybrid || branchRaw === 'rubber' || branchRaw === 'hule' || branchRaw === 'hule_natural' || branchRaw === 'polyurethane' || branchRaw === 'poliuretano');
   const wetEndBranch = isCeramic
     ? 'ceramica_sic'
-    : (isElastomer ? (branchRaw.includes('poly') || branchRaw.includes('poli') ? 'polyurethane' : 'rubber') : 'metal');
+    : (isHybrid ? 'hibrido_a05_r55' : (isElastomer ? (branchRaw.includes('poly') || branchRaw.includes('poli') ? 'polyurethane' : 'rubber') : 'metal'));
   const isMonolithicArchitecture = wetEndBranch === 'metal' || wetEndBranch === 'ceramica_sic';
   const sealBranch = opts.sealBranch === 'gland_water' ? 'gland_water' : 'expeller_dry';
 
@@ -592,14 +593,18 @@ export function evaluatePumpAssemblySequence(params = {}) {
     spallingWarningEn,
     structuralReasonEs: isCeramic
       ? 'El Carburo de Silicio Sinterizado (SiC, ≥ 2200 HV, Mohs 9.2, K_Ic = 4.1 MPa·√m) emplea arquitectura de Voluta Compuesta Monolítica + Throatbush SiC para resistir abrasión por sílice fina-media y pH extremo (1.0–13.5), limitado a d80 ≤ 800 µm y u₂ ≤ 28.0 m/s.'
-      : (wetEndBranch === 'metal'
-        ? 'El alto cromo (≥650 HB) posee módulo elástico E ≈ 210 GPa y soporta esfuerzos de membrana en succión como Voluta Monolítica de 1 pieza + FPL Insert posterior + Throatbush frontal.'
-        : 'El hule/poliuretano (E ≈ 0.01–0.05 GPa) requiere respaldo metálico continuo contra colapso por vacío en el ojo de succión, dividiendo la carcasa húmeda en 2 mitades simétricas (Frame Plate Liner + Cover Plate Liner) + Throatbush.'),
+      : (isHybrid
+        ? 'Partición Angular Finnie-Hutchings (INV-SMAT-SCI-05): Impulsor Cerrado en Alto Cromo 27% Cr (A05 ≥ 650 HB) para resistir corte frontal (α ≤ 25°, u₂ ≤ 24.5 m/s) + Forros Bipartidos FPL/CPL en Hule Natural R55 (55 Shore A) para amortiguar impacto cuasi-normal (α = 75°–90°) en carcasa estacionaria.'
+        : (wetEndBranch === 'metal'
+          ? 'El alto cromo (≥650 HB) posee módulo elástico E ≈ 210 GPa y soporta esfuerzos de membrana en succión como Voluta Monolítica de 1 pieza + FPL Insert posterior + Throatbush frontal.'
+          : 'El hule/poliuretano (E ≈ 0.01–0.05 GPa) requiere respaldo metálico continuo contra colapso por vacío en el ojo de succión, dividiendo la carcasa húmeda en 2 mitades simétricas (Frame Plate Liner + Cover Plate Liner) + Throatbush.')),
     structuralReasonEn: isCeramic
       ? 'Sintered Silicon Carbide (SiC, ≥ 2200 HV, Mohs 9.2, K_Ic = 4.1 MPa·√m) uses a Monolithic Composite Volute + SiC Throatbush architecture to resist fine-to-medium silica abrasion and extreme pH (1.0–13.5), bounded to d80 ≤ 800 µm and u₂ ≤ 28.0 m/s.'
-      : (wetEndBranch === 'metal'
-        ? 'High chrome white iron (≥650 HB, E ≈ 210 GPa) resists suction vacuum hoop stresses as a 1-piece Monolithic Volute + rear FPL Insert + front Throatbush.'
-        : 'Elastomers (rubber/polyurethane, E ≈ 0.01–0.05 GPa) require continuous split-casing metal backing against suction vacuum buckling, using 2 symmetrical halves (Frame Plate Liner + Cover Plate Liner) + Throatbush.')
+      : (isHybrid
+        ? 'Finnie-Hutchings Angular Partition (INV-SMAT-SCI-05): 27% High Chrome Closed Impeller (A05 ≥ 650 HB) resists leading-edge grazing shear (α ≤ 25°, u₂ ≤ 24.5 m/s) + Split R55 Natural Rubber Liners (FPL/CPL, 55 Shore A) absorb quasi-normal impact (α = 75°–90°) in stationary volute.'
+        : (wetEndBranch === 'metal'
+          ? 'High chrome white iron (≥650 HB, E ≈ 210 GPa) resists suction vacuum hoop stresses as a 1-piece Monolithic Volute + rear FPL Insert + front Throatbush.'
+          : 'Elastomers (rubber/polyurethane, E ≈ 0.01–0.05 GPa) require continuous split-casing metal backing against suction vacuum buckling, using 2 symmetrical halves (Frame Plate Liner + Cover Plate Liner) + Throatbush.'))
   };
 }
 

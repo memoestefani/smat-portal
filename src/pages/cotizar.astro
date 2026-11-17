@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import QuoteWizard from '../components/QuoteWizard.astro';
+import QuickPartSelectorStrip from '../components/QuickPartSelectorStrip.astro';
 import FaqAccordion from '../components/FaqAccordion.astro';
 ---
 
@@ -37,6 +38,9 @@ import FaqAccordion from '../components/FaqAccordion.astro';
   </section>
 
   <div class="quote-workbench-shell">
+    <div class="container" style="padding-top: 1rem;">
+      <QuickPartSelectorStrip lang="es" collapsible={true} showAssemblyLink={false} />
+    </div>
     <QuoteWizard lang="es" />
   </div>
 

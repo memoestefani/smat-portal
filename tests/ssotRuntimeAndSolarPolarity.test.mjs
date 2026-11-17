@@ -188,7 +188,7 @@ test('6. [DECISIÓN 6 / DEB-V42-06] Consolidación 3-Tab XOR en /bombeo/ y /en/p
   const pumpingEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/pumping/index.astro'), 'utf-8');
 
   for (const [label, content] of [['bombeo/index.astro', bombeoEs], ['en/pumping/index.astro', pumpingEn]]) {
-    assert.ok(!content.includes('<QuickPartSelectorStrip'), `${label} no debe duplicar <QuickPartSelectorStrip arriba de la consola`);
+    assert.ok(content.includes('<QuickPartSelectorStrip') && content.includes('collapsible={true}'), `${label} debe montar <QuickPartSelectorStrip en modo colapsable (PRD §8.2 / D3-V36)`);
     assert.ok(content.includes('data-bombeo-tab="kits"'), `${label} debe integrar los lotes por material como Tab 1 (kits)`);
     assert.ok(content.includes('data-bombeo-tab="systems"'), `${label} debe incluir Tab 2 (systems)`);
     assert.ok(content.includes('data-bombeo-tab="atomic"'), `${label} debe incluir Tab 3 (atomic)`);

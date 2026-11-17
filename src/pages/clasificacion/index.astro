@@ -167,6 +167,7 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
   const d50El = document.getElementById('cyc-res-d50c');
   const actionEl = document.getElementById('cyc-res-action');
   const skuLink = document.getElementById('cyc-recommended-sku-link') as HTMLAnchorElement | null;
+  const rfqLink = document.getElementById('cyc-rfq-link') as HTMLAnchorElement | null;
 
   function updateCycloneBalance() {
     if (!feedInput || !underInput || !overInput) return;
@@ -194,6 +195,10 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
         ? '/productos/paquete-casado-bomba-hidrociclon/'
         : '/productos/hidrociclon-completo-y-boquillas-d6-d20/';
       skuLink.textContent = `Configurar Repuesto Recomendado (${res.recommendedSkuId}) →`;
+    }
+    if (rfqLink) {
+      const matRec = res.isRopingCritical ? 'ceramica_sic' : 'alto_cromo_cr27';
+      rfqLink.href = `/cotizar/?circuito=clasificacion&equipo=hidrociclon_apex_vortex&sku=${encodeURIComponent(res.recommendedSkuId)}&mat=${matRec}&rho_f=${res.feedSg}&rho_u=${res.underflowSg}&rho_o=${res.overflowSg}&rs_pct=${res.solidsRecoveryPct}&cv_u=${res.cvUnderflowPct}&d50c=${res.d50cMicrons}&roping_risk=${res.isRopingCritical ? '1' : '0'}#rfq`;
     }
 
     const prev = loadWorkbenchSession();

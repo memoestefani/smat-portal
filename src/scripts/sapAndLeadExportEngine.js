@@ -294,7 +294,7 @@ export function formatSapPlaintextImpl(data = {}) {
     `   - Partida / Equipo:  ${partName}`,
     `   - Código SMAT:       ${smatCode}${atomicCode ? ` (Refacción Específica: ${atomicCode})` : ''}`,
     `   - Cantidad:          ${partQty} pza(s)`,
-    `   - Domicilio Fiscal:  Mariano Salas #114, Col. Hipódromo, Durango, Dgo. CP 34166`,
+    `   - Domicilio Fiscal:  Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166`,
     `   - Almacén/Despacho:  Durango, Dgo. (Retiro en patio coordinado con folio)`
   );
   const rawLookupCode = data.atomic_code || data.code || data.codigo || '';

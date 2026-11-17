@@ -863,6 +863,13 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
             </select>
           </div>
 
+          <div class="form-group" style="margin-top: 0.65rem; padding: 0.6rem 0.75rem; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px;">
+            <label style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.82rem; cursor: pointer;">
+              <input type="checkbox" id="wb-g5-advance-confirm" name="g5_advance_confirm" data-g5-advance-confirm checked style="margin-top: 0.2rem;" />
+              <span><strong>{isEs ? 'Confirmación Candado G5 (Partidas [SE FABRICA]):' : 'Gate G5 Confirmation ([MADE TO ORDER] Items):'}</strong> {isEs ? 'Enterado de condición comercial 50% anticipo para orden de fundición/maquinado y 50% contra aviso de embarque con reporte fotográfico dimensional.' : 'Acknowledged 50% advance payment terms for scheduled casting/machining and 50% upon ready-to-ship notice with dimensional photo report.'}</span>
+            </label>
+          </div>
+
           <div class="form-group" style="margin-top: 0.75rem;">
             <label><strong>{isEs ? 'Canal de Respuesta Preferido:' : 'Preferred Response Channel:'}</strong></label>
             <div class="segmented-control" id="wb-channel-selector" role="radiogroup" aria-label={isEs ? 'Canal de respuesta preferido' : 'Preferred response channel'}>
