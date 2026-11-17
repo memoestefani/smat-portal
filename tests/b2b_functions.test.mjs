@@ -4091,7 +4091,7 @@ test('Test 199 (Decisión 1-C++ / DEB-E3-01..04): Eliminación física de Flight
     const content = fs.readFileSync(path.join(siteRoot, rel), 'utf-8');
     assert.ok(content.includes('<QuoteWizard'), `${rel} debe montar <QuoteWizard /> directamente`);
     assert.ok(!content.includes('<FlightDeck'), `${rel} no debe referenciar <FlightDeck />`);
-    assert.ok(content.includes('<QuickPartSelectorStrip') && content.includes('collapsible={true}'), `${rel} debe montar <QuickPartSelectorStrip collapsible={true} /> (PRD §8.2 / D3-V36)`);
+    assert.ok(!content.includes('<QuickPartSelectorStrip'), `${rel} no debe duplicar <QuickPartSelectorStrip /> arriba de QuoteWizard (D3-V40)`);
     assert.ok(content.includes('class="extension-card"'), `${rel} debe conservar las tarjetas de extensión P&ID y Diagnóstico`);
   }
 

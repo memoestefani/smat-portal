@@ -38,24 +38,9 @@ const familyFilterChipsEn = [
 
       <div class="hero-actions">
         <a href="/en/quote/#rfq" class="btn btn-primary btn-lg">Request Quotation</a>
-        <a href="/en/pumping/#how-a-slurry-pump-is-assembled" class="btn btn-outline btn-lg">View Exploded BOM & Pump Assembly</a>
+        <a href="/en/pumping/#pump-assembly-report" class="btn btn-outline btn-lg">View Exploded BOM & Pump Assembly</a>
         <a href="/en/classification/" class="btn btn-outline btn-lg">Hydrocyclones & 3-Cup Marcy Balance</a>
         <a href="/en/catalog/" class="btn btn-outline btn-lg">Master Catalog (19 SKUs + 13 Codes)</a>
-      </div>
-
-      <!-- 8-Chip Quick Product Family Filter Bar in the Hero (PRD §2.1) -->
-      <div class="hero-family-chip-bar" role="toolbar" aria-label="Quick product family filter" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem;">
-        {familyFilterChipsEn.map((chip, idx) => (
-          <button
-            type="button"
-            data-family-chip={chip.id}
-            aria-pressed={idx === 0 ? 'true' : 'false'}
-            class={`part-chip ${idx === 0 ? 'part-chip--highlight' : ''}`}
-            style="cursor: pointer;"
-          >
-            {chip.label}
-          </button>
-        ))}
       </div>
     </div>
   </section>
@@ -196,12 +181,12 @@ const familyFilterChipsEn = [
     </div>
   </section>
 
-  <!-- 19 QUICK-CHECKOUT SKUS SHOWCASE (MVP V3.0 • D1, D2, D3, D4, D6) -->
+  <!-- 19 QUICK-CHECKOUT SKUS SHOWCASE (MVP V3.0 • D4-V40 COWAN <= 4.00) -->
   <section class="quick-sku-home-section" id="home-quick-checkout-catalog" aria-label="19 Quick-Checkout SKUs">
     <div class="container">
       <div class="showcase-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
         <div>
-          <span class="section-eyebrow">1-CLICK QUICK CHECKOUT • ISO/IEC 7810 (0.76 MM) PHYSICAL SCALE • MULTI-ITEM TRAY (c·μ)</span>
+          <span class="section-eyebrow">1-CLICK QUICK CHECKOUT • ISO/IEC 7810 (0.76 MM) PHYSICAL SCALE • MULTI-ITEM REQUISITION</span>
           <h2>19 Critical Plant SKUs & 13 Verified Atomic Part Sheets</h2>
         </div>
         <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
@@ -238,36 +223,55 @@ const familyFilterChipsEn = [
         <p data-dropin-result-en style="width: 100%; margin: 0.35rem 0 0; font-family: var(--smat-font-mono); font-size: 0.78rem; color: #065f46; display: none;"></p>
       </div>
 
-      <div class="quick-sku-grid">
-        {quickCatalog.map((item) => {
-          const isSinglePartSku = item.id === 'SMAT-PUMP-IMP-AH' || item.id === 'SMAT-PUMP-LINERS-AH';
-          const cleanRfqHrefEn = isSinglePartSku && item.atomic_codes.length > 0
-            ? `/en/quote/?sku=${encodeURIComponent(item.id)}&codigo=${encodeURIComponent(item.atomic_codes.includes('E4147') ? 'E4147' : item.atomic_codes[0])}#rfq`
-            : `/en/quote/?sku=${encodeURIComponent(item.id)}#rfq`;
-          return (
-            <article
-              class="quick-sku-card"
-              data-sku-family={item.vertical}
-              data-sku-id={item.id}
+      <details class="home-catalog-drawer" id="home-quick-catalog-drawer" data-progressive-cowan-drawer="true" style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 1rem 1.25rem;">
+        <summary class="home-catalog-summary" style="cursor: pointer; font-weight: 800; color: #0f172a; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+          <span>▾ Explore Quick Catalog of All 19 SMAT Configurations & Kits (8 Plant Families)</span>
+          <span style="font-family: var(--smat-font-mono); font-size: 0.76rem; color: #7c2d12; background: #fff7ed; border: 1px solid #fed7aa; padding: 0.25rem 0.65rem; border-radius: 999px;">EXPAND 19 SKUS ▾</span>
+        </summary>
+        <div class="hero-family-chip-bar" role="toolbar" aria-label="Quick product family filter" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0 1.25rem;">
+          {familyFilterChipsEn.map((chip, idx) => (
+            <button
+              type="button"
+              data-family-chip={chip.id}
+              aria-pressed={idx === 0 ? 'true' : 'false'}
+              class={`part-chip ${idx === 0 ? 'part-chip--highlight' : ''}`}
+              style="cursor: pointer;"
             >
-              <div class="quick-sku-top">
-                <span class="quick-sku-id">{item.id} · {item.stock_regime === 'se_fabrica' ? '🔵 CUSTOM' : item.stock_regime === 'se_pide' ? '🟡 BATCH' : '🟢 IN STOCK'}</span>
-                {item.atomic_codes.length > 0 && (
-                  <span class="quick-sku-atomic">{item.atomic_codes.join(' · ')}</span>
-                )}
-              </div>
-              <h3 class="quick-sku-title">
-                <a href={`/en/products/${item.slug_en}/`}>{item.title_en}</a>
-              </h3>
-              <ProductQuickCard sku={item} lang="en" />
-              <div class="quick-sku-actions" style="margin-top: 0.75rem;">
-                <a href={`/en/products/${item.slug_en}/`} class="part-chip part-chip--highlight">View Full Sheet & X-Ray →</a>
-                <a href={cleanRfqHrefEn} class="part-chip">+ RFQ Dossier</a>
-              </div>
-            </article>
-          );
-        })}
-      </div>
+              {chip.label}
+            </button>
+          ))}
+        </div>
+        <div class="quick-sku-grid">
+          {quickCatalog.map((item) => {
+            const isSinglePartSku = item.id === 'SMAT-PUMP-IMP-AH' || item.id === 'SMAT-PUMP-LINERS-AH';
+            const cleanRfqHrefEn = isSinglePartSku && item.atomic_codes.length > 0
+              ? `/en/quote/?sku=${encodeURIComponent(item.id)}&codigo=${encodeURIComponent(item.atomic_codes.includes('E4147') ? 'E4147' : item.atomic_codes[0])}#rfq`
+              : `/en/quote/?sku=${encodeURIComponent(item.id)}#rfq`;
+            return (
+              <article
+                class="quick-sku-card"
+                data-sku-family={item.vertical}
+                data-sku-id={item.id}
+              >
+                <div class="quick-sku-top">
+                  <span class="quick-sku-id">{item.id} · {item.stock_regime === 'se_fabrica' ? '🔵 CUSTOM' : item.stock_regime === 'se_pide' ? '🟡 BATCH' : '🟢 IN STOCK'}</span>
+                  {item.atomic_codes.length > 0 && (
+                    <span class="quick-sku-atomic">{item.atomic_codes.join(' · ')}</span>
+                  )}
+                </div>
+                <h3 class="quick-sku-title">
+                  <a href={`/en/products/${item.slug_en}/`}>{item.title_en}</a>
+                </h3>
+                <ProductQuickCard sku={item} lang="en" />
+                <div class="quick-sku-actions" style="margin-top: 0.75rem;">
+                  <a href={`/en/products/${item.slug_en}/`} class="part-chip part-chip--highlight">View Full Sheet & X-Ray →</a>
+                  <a href={cleanRfqHrefEn} class="part-chip">+ RFQ Dossier</a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </details>
     </div>
   </section>
 

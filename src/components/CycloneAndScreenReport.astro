@@ -79,7 +79,7 @@ const cycloneModels = [
     <div class="smat-csr-card-head">
       <div>
         <span class="smat-csr-kicker">
-          {isEs ? 'PLANO 3 · REPORTE DE DESPIECE EN 5 ZONAS (AVENIDA 2 · CANDADO G3)' : 'PLANE 3 · 5-ZONE EXPLODED WEAR REPORT (AVENUE 2 · GATE G3)'}
+          {isEs ? 'REPORTE DE DESPIECE EN 5 ZONAS DE DESGASTE' : '5-ZONE EXPLODED WEAR REPORT'}
         </span>
         <h2 class="smat-csr-title">
           {isEs
@@ -91,7 +91,7 @@ const cycloneModels = [
         href={isEs ? '/productos/paquete-casado-bomba-lodos-hidrociclon/' : '/en/products/married-slurry-pump-hydrocyclone-package/'}
         class="smat-csr-primary-link"
       >
-        {isEs ? '🔗 Ver Paquete Casado Bomba + Hidrociclón (Avenida 6A) →' : '🔗 View Married Pump + Cyclone Package (Avenue 6A) →'}
+        {isEs ? '🔗 Ver Paquete Casado Bomba + Hidrociclón →' : '🔗 View Married Pump + Cyclone Package →'}
       </a>
     </div>
 
@@ -133,8 +133,8 @@ const cycloneModels = [
     </h2>
     <p class="smat-csr-lead">
       {isEs
-        ? 'Dimensionamiento acoplado Plitt-Marcy para evitar desbalance entre bomba de alimentación y batería de clasificación.'
-        : 'Coupled Plitt-Marcy sizing to prevent hydraulic mismatch between cyclone feed pump and classification cluster.'}
+        ? 'Dimensionamiento hidráulico acoplado para evitar desbalance entre la bomba de alimentación y la batería de clasificación.'
+        : 'Coupled hydraulic sizing to prevent mismatch between cyclone feed pump and classification cluster.'}
     </p>
 
     <table class="smat-csr-table">
@@ -142,10 +142,10 @@ const cycloneModels = [
         <tr>
           <th>{isEs ? 'Modelo SMAT' : 'SMAT Model'}</th>
           <th>{isEs ? 'Capacidad (m³/h)' : 'Capacity (m³/h)'}</th>
-          <th>{isEs ? 'Corte Plitt d50c (µm)' : 'Plitt Cut d50c (µm)'}</th>
+          <th>{isEs ? 'Corte Granulométrico d50c (µm)' : 'Cut Size d50c (µm)'}</th>
           <th>{isEs ? 'Rango Ápex du (mm)' : 'Apex Range du (mm)'}</th>
           <th>{isEs ? 'Rango Vortex do (mm)' : 'Vortex Range do (mm)'}</th>
-          <th>{isEs ? 'Paquete Casado (6A)' : 'Married Package (6A)'}</th>
+          <th>{isEs ? 'Paquete Casado Bomba + Nido' : 'Married Pump + Cluster'}</th>
         </tr>
       </thead>
       <tbody>
@@ -165,15 +165,15 @@ const cycloneModels = [
 
   <!-- Bloque 3: Avenida 3 — Mallas Finas de Uretano TH48-30 y Módulos 1'x1' (ARB-SMAT-29) -->
   <div class="smat-csr-card smat-csr-card--highlight">
-    <div class="smat-csr-card-head">
+    <div class="smat-csr-card-head" data-smat-arb="ARB-SMAT-29">
       <div>
         <span class="smat-csr-kicker smat-csr-kicker--amber">
-          {isEs ? 'AVENIDA 3 · CRIBADO FINO ANTI-CEGAMIENTO (ARB-SMAT-29)' : 'AVENUE 3 · ANTI-BLINDING FINE SCREENING (ARB-SMAT-29)'}
+          {isEs ? 'CRIBADO FINO ANTI-CEGAMIENTO Y ALTA FRECUENCIA' : 'ANTI-BLINDING FINE SCREENING'}
         </span>
         <h2 class="smat-csr-title">
           {isEs
-            ? 'Mallas Finas de Uretano TH48-30 y Paneles Modulares 1\'x1\' (Weibull α ≥ 4.2)'
-            : 'TH48-30 Fine Urethane Screens & 1\'x1\' Modular Panels (Weibull α ≥ 4.2)'}
+            ? 'Mallas Finas de Uretano TH48-30 y Paneles Modulares 1\'x1\' (Nitidez α ≥ 4.2)'
+            : 'TH48-30 Fine Urethane Screens & 1\'x1\' Modular Panels (Sharpness α ≥ 4.2)'}
         </h2>
       </div>
       <div class="smat-csr-btn-group">

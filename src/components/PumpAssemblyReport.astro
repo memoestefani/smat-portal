@@ -131,7 +131,8 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
           class="branch-tab"
           data-assembly-branch-btn="hybrid_a05_r55"
           data-wet-branch="hybrid_a05_r55"
-          title={isEs ? 'Partición Angular Finnie-Hutchings (INV-SMAT-SCI-05): Impulsor Cr27 A05 (α=75°–90°) + Forros Bipartidos R55 (α≤25°, u2≤24.5 m/s)' : 'Finnie-Hutchings Angular Partition (INV-SMAT-SCI-05): Cr27 A05 Impeller (α=75°–90°) + R55 Split Liners (α≤25°, u2≤24.5 m/s)'}
+          data-smat-invariant="INV-SMAT-SCI-05"
+          title={isEs ? 'Configuración Híbrida (Finnie-Hutchings): Impulsor Cr27 A05 (α=75°–90°) + Forros Bipartidos R55 (α≤25°, u2≤24.5 m/s)' : 'Hybrid Configuration (Finnie-Hutchings): Cr27 A05 Impeller (α=75°–90°) + R55 Split Liners (α≤25°, u2≤24.5 m/s)'}
         >
           {isEs ? 'Rama D Híbrida: Impulsor A05 + Forros R55' : 'Branch D Hybrid: A05 Impeller + R55 Liners'}
         </button>
@@ -146,7 +147,7 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
         {isEs ? 'Rayos X de Desgaste: ACTIVO' : 'Wear X-Ray Layer: ON'}
       </button>
 
-      <span class="assembly-report__order-hash" data-selection-order-hash title={isEs ? 'Código determinista FNV-1a de configuración seleccionada' : 'Deterministic FNV-1a selection order code'}>
+      <span class="assembly-report__order-hash" data-selection-order-hash data-hash-algo="fnv1a" title={isEs ? 'Folio de verificación técnica de la configuración seleccionada' : 'Technical verification folio for selected configuration'}>
         Ref: SMAT-7A4F-9C12
       </span>
 

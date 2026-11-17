@@ -37,7 +37,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
         <div class="sheet-title-bar">
           <h2 id="dossier-title">FORMAL ENGINEERING REQUISITION & QUOTATION RECEIPT</h2>
-          <span class="badge-sla" id="dossier-order-code">PRIORITY cμ TRIAGE • DURANGO WAREHOUSE FIT CHECK</span>
+          <span class="badge-sla" id="dossier-order-code" data-hash-algo="fnv1a">PRIORITY DISPATCH • DURANGO WAREHOUSE FIT CHECK</span>
         </div>
 
         <!-- Applicant & Mine Unit Information Table -->
@@ -116,16 +116,16 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           </table>
         </div>
 
-        <!-- Multi-Item Tray Breakdown, SAT CFDI 4.0 + TIGIE Tuple & JRP (s, S) Policy (D5-V35) -->
+        <!-- Multi-Item Tray Breakdown, SAT CFDI 4.0 + TIGIE Tuple & Reorder Cycle -->
         <div class="sheet-section" id="acuse-multi-item-tray-section">
-          <h3 class="section-title">2B. B2B TRAY LINE ITEMS, SAT CFDI 4.0 TAX TUPLE & COUPLED JRP (s, S)</h3>
+          <h3 class="section-title">2B. REQUISITION LINE ITEMS, SAT CFDI 4.0 TAX TUPLE & COUPLED REORDER CYCLE</h3>
           <table class="sheet-table">
             <thead>
               <tr>
                 <th style="width: 22%;">SKU / Alloy</th>
                 <th style="width: 44%;">Technical Description & SAT / TIGIE Tax Tuple</th>
                 <th style="width: 10%;">Qty</th>
-                <th style="width: 24%;">Coupled JRP (s, S)</th>
+                <th style="width: 24%;">Matched Pair & Reorder Cycle</th>
               </tr>
             </thead>
             <tbody id="acuse-multi-item-tray-tbody">
@@ -140,12 +140,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         <div class="sheet-section terms-section">
           <h3 class="section-title">3. TECHNICAL PROTOCOL & QUALITY CONTROL AT CENTRAL WAREHOUSE</h3>
           <p class="terms-text">
-            This document certifies formal intake of your procurement requisition under the unique institutional folio. All rotating assemblies, impellers, and pump casings supplied by SMAT Minerals include certified High Chrome 27% (A05) melt metallurgy with guaranteed hardness &gt;650 HB (ASTM A532 HRC &ge; 58), ISO 2768-m geometric triplet (A, B, C) dimensional fit verification, and priority cμ triage at SMAT Durango facilities (Fiscal HQ: Mariano Salas #114).
+            This document certifies formal intake of your procurement requisition under the unique institutional folio. All rotating assemblies, impellers, and pump casings supplied by SMAT Minerals include certified High Chrome 27% (A05) melt metallurgy with guaranteed hardness &gt;650 HB (ASTM A532 HRC &ge; 58), ISO 2768-m geometric triplet (A, B, C) dimensional fit verification, and priority dispatch routing at SMAT Durango facilities (Fiscal HQ: Mariano Salas #114).
           </p>
           <div class="coyote-seal-notice facility-guarantee-notice" id="vendor-passport-section">
             <strong>Central Warehouse Validity &amp; B2B Vendor Passport Clause:</strong> This technical proposal and operational backing are valid for components inspected and dispatched from Durango Central Warehouse (Incoterms EXW / DAP Durango • UNSPSC 40151500 / 20121500 / 40161500 / 41111500 • ASTM A532 Cr27 Melt Cert HRC &ge; 58). Complete equipment and coupled packages are built-to-order based on customer slurry variables; common wear parts maintain continuous inventory rotation.
           </div>
-          <pre id="sap-plaintext-block" style="margin: 1rem 0 0; padding: 0.85rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace; font-size: 0.76rem; color: #0f172a; overflow-x: auto; white-space: pre-wrap;">FOLIO: SMAT-2026-RFQ | DETERMINISTIC FNV-1a ORDER</pre>
+          <pre id="sap-plaintext-block" data-hash-algo="fnv1a" style="margin: 1rem 0 0; padding: 0.85rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace; font-size: 0.76rem; color: #0f172a; overflow-x: auto; white-space: pre-wrap;">FOLIO: SMAT-2026-RFQ | TECHNICAL VERIFICATION FOLIO</pre>
           <div class="signatures-row">
             <div class="sig-block">
               <span class="sig-line"></span>
@@ -177,7 +177,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           ERP Onboarding (.json)
         </button>
         <a href="/en/quote/?reorder=1&tray=SMAT-PUMP-IMP-AH:1:PARO_DE_LINEA#rfq" class="btn btn-secondary" id="reorder-ss-link">
-          1-Click (s, S) Policy Reorder
+          1-Click Preventive Reorder
         </a>
         <a href="/en/" class="btn btn-secondary">
           Return Home

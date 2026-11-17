@@ -227,7 +227,7 @@ export function buildCmuPrioritySubjectLine(trayState = {}, telemetry = {}) {
   const state = getTrayState(trayState);
   const skuCount = Math.max(1, state.items.length);
   const isLineStop = state.criticalityMode === 'PARO_DE_LINEA' || state.items.some((i) => i.criticalityMode === 'PARO_DE_LINEA');
-  const modeTag = isLineStop ? 'PARO DE LÍNEA' : 'REPOSICIÓN STOCK (s,S)';
+  const modeTag = isLineStop ? 'PARO DE LÍNEA' : 'REPOSICIÓN DE STOCK';
 
   const cvPct = Math.round(Number(telemetry.cvPct ?? telemetry.solidsVolumetricPercent ?? telemetry.cwPct ?? 48));
   const rawMat = String(telemetry.material || (state.items[0] && state.items[0].material) || 'Cr27').toUpperCase();
@@ -428,8 +428,8 @@ export function computeCmuPriorityDescriptor(params = {}) {
     stockRegime,
     advancePaymentPct: stockRegime === 'se_pide' ? 30 : 0,
     slaResponseMinutes: 60,
-    labelEs: '🟡 P2 · REPOSICIÓN PROGRAMADA (s, S) / ORDEN DE COMPRA',
-    labelEn: '🟡 P2 · SCHEDULED REPLENISHMENT (s, S) / PURCHASE ORDER'
+    labelEs: '🟡 P2 · REPOSICIÓN PROGRAMADA / ORDEN DE COMPRA',
+    labelEn: '🟡 P2 · SCHEDULED REPLENISHMENT / PURCHASE ORDER'
   };
 }
 
@@ -491,9 +491,10 @@ export function evaluateBearingCartridgeCoreTradeIn(trayState = {}, coreReturnOv
     discountPct,
     creditFactor,
     eligibleItemIds: eligibleItems.map((i) => i.id),
+    invariantId: 'INV-SMAT-SCI-06',
     housingMaterial: 'Hierro Dúctil GGG40 + Eje SAE 4140 Bonificado (ISO 281)',
-    inspectionGateEs: 'Bonificación -22% aplicable al entregar casco usado (tambor GGG40 sin fisuras y alojamientos dentro de tolerancia H7) en Almacén Durango (INV-SMAT-SCI-06).',
-    inspectionGateEn: '22% Core Trade-In credit applied upon returning crack-free GGG40 housing barrel within H7 bore concentricity at Durango Warehouse (INV-SMAT-SCI-06).'
+    inspectionGateEs: 'Bonificación -22% aplicable al entregar casco usado (tambor GGG40 sin fisuras y alojamientos dentro de tolerancia H7) en Almacén Durango.',
+    inspectionGateEn: '22% Core Trade-In credit applied upon returning crack-free GGG40 housing barrel within H7 bore concentricity at Durango Warehouse.'
   };
 }
 

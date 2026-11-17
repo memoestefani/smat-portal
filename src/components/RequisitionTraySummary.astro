@@ -16,10 +16,10 @@ const isEs = lang === 'es';
   <div class="req-tray-header">
     <div>
       <span class="req-tray-badge">
-        {isEs ? 'BANDEJA DE REQUISICIÓN INDUSTRIAL MULTI-PARTIDA • D3 & D5' : 'MULTI-ITEM B2B REQUISITION TRAY • D3 & D5'}
+        {isEs ? 'PARTIDAS ADICIONALES DE LA REQUISICIÓN INDUSTRIAL' : 'MULTI-ITEM B2B REQUISITION TRAY'}
       </span>
       <h3 id="req-tray-title" class="req-tray-title">
-        {isEs ? 'Partidas Activas y Enrutamiento Prioritario (Regla c·μ)' : 'Active Line Items & Priority Routing (c·μ Rule)'}
+        {isEs ? 'Partidas Activas y Enrutamiento Prioritario de Despacho' : 'Active Line Items & Priority Dispatch Routing'}
       </h3>
     </div>
     <button type="button" class="req-tray-clear-btn" id="tray-clear-btn">
@@ -29,7 +29,7 @@ const isEs = lang === 'es';
 
   <div class="req-tray-cmu-strip">
     <span class="req-tray-cmu-label">
-      {isEs ? 'CABECERA DE PRIORIDAD EN BANDEJA DURANGO (c·μ):' : 'DURANGO INBOX PRIORITY HEADER (c·μ):'}
+      {isEs ? 'CABECERA DE PRIORIDAD DE DESPACHO DURANGO:' : 'DURANGO DISPATCH PRIORITY HEADER:'}
     </span>
     <code id="tray-cmu-subject-line" class="req-tray-cmu-code">
       [SMAT-DGO] [PARO DE LÍNEA | C_v=48% Cr27 | 1 SKUs | Ref: SMAT-7A4F-9C12]
@@ -52,8 +52,8 @@ const isEs = lang === 'es';
     </select>
     <input type="number" id="tray-quick-qty-input" class="req-tray-qty" min="1" max="999" value="1" aria-label={isEs ? 'Cantidad' : 'Quantity'} />
     <select id="tray-quick-mode-select" class="req-tray-mode" aria-label={isEs ? 'Modo de criticidad' : 'Criticality mode'}>
-      <option value="PARO_DE_LINEA">{isEs ? 'Paro de Línea (Urgente c·μ)' : 'Line-Stop (Urgent c·μ)'}</option>
-      <option value="STOCK_SS">{isEs ? 'Reposición Stock (s, S)' : 'Stock Replenishment (s, S)'}</option>
+      <option value="PARO_DE_LINEA">{isEs ? 'Paro de Línea (Urgente)' : 'Line-Stop (Urgent)'}</option>
+      <option value="STOCK_SS">{isEs ? 'Reposición Programada de Stock' : 'Scheduled Stock Replenishment'}</option>
     </select>
     <button type="button" id="tray-quick-add-btn" class="req-tray-add-btn">
       {isEs ? '+ Añadir SKU' : '+ Add SKU'}
@@ -154,7 +154,7 @@ const isEs = lang === 'es';
             <td><strong>${item.skuId}</strong></td>
             <td>${isEn ? item.nameEn : item.nameEs}</td>
             <td><strong>${item.qty}</strong></td>
-            <td><span class="req-mode-pill">${item.criticalityMode === 'PARO_DE_LINEA' ? (isEn ? 'LINE-STOP' : 'PARO DE LÍNEA') : 'STOCK (s,S)'}</span></td>
+            <td><span class="req-mode-pill">${item.criticalityMode === 'PARO_DE_LINEA' ? (isEn ? 'LINE-STOP' : 'PARO DE LÍNEA') : (isEn ? 'STOCK REPLENISHMENT' : 'REPOSICIÓN STOCK')}</span></td>
             <td><button type="button" class="req-remove-btn" data-remove-sku="${item.id}">×</button></td>
           </tr>
         `

@@ -47,17 +47,35 @@ const acuseHref = isEs
   : `/en/thank-you/?${acuseBaseParams.toString()}`;
 ---
 
-<div class="share-purchasing-widget">
+<details class="share-purchasing-widget share-purchasing-drawer" data-canonical-erp-drawer="true">
+  <summary class="share-purchasing-summary">
+    <span class="share-badge">{isEs ? 'Herramientas ERP para Compras / SAP' : 'ERP & Purchasing Export Tools'}</span>
+    <span class="share-summary-hint">
+      {isEs
+        ? 'Expandir utilidades de exportación individual (Texto SAP, Tabla TSV o Acuse A4)'
+        : 'Expand single-item ERP export utilities (SAP Text, TSV Row or A4 Spec Sheet)'}
+    </span>
+  </summary>
   <div class="share-box">
     <div class="share-info">
-      <span class="share-badge">{isEs ? 'Requisición para Compras / ERP' : 'Procurement & ERP Spec'}</span>
       <p class="share-desc">
         {isEs 
-          ? 'Copie la especificación técnica en formato SAP/ERP o abra el acuse membretado A4 listo para impresión.'
-          : 'Copy the technical specification in SAP/ERP format or open the printable A4 requisition sheet.'}
+          ? 'Copie la especificación técnica en formato SAP/ERP, agregue la partida a su Bandeja Global o abra el acuse membretado A4 listo para impresión.'
+          : 'Copy the technical specification in SAP/ERP format, add the line item to your Global Requisition Tray, or open the printable A4 requisition sheet.'}
       </p>
     </div>
     <div class="share-actions">
+      <button
+        type="button"
+        class="btn btn-secondary btn-sm delegate-qtray-btn"
+        data-delegate-qtray-btn="true"
+        data-title={resolvedTitle}
+        data-code={smatCode}
+        data-atomic-code={partCode}
+        data-circuit={circuit}
+      >
+        {isEs ? '+ Consolidar en Bandeja Global' : '+ Add to Global Requisition Tray'}
+      </button>
       <button 
         type="button" 
         class="btn btn-outline btn-sm copy-spec-btn" 
@@ -103,9 +121,9 @@ const acuseHref = isEs
     </div>
   </div>
   <div id="copy-toast" class="copy-toast hidden" role="status" aria-live="polite">
-    ✓ {isEs ? 'Especificación técnica SAP/ERP copiada al portapapeles.' : 'SAP/ERP technical specification copied to clipboard.'}
+    {isEs ? 'Especificación técnica SAP/ERP copiada al portapapeles.' : 'SAP/ERP technical specification copied to clipboard.'}
   </div>
-</div>
+</details>
 
 <script>
   import {
@@ -117,6 +135,7 @@ const acuseHref = isEs
     formatSapTsv,
     getAtomicPartSpecs
   } from '../scripts/workbenchBus.js';
+  import { addTrayItem } from '../scripts/requisitionTrayBus.js';
 
   function buildEnrichedSharePayload(btn: Element) {
     const title = btn.getAttribute('data-title') || 'Equipo Industrial SMAT';
@@ -212,6 +231,32 @@ const acuseHref = isEs
         });
       });
     });
+
+    document.querySelectorAll('[data-delegate-qtray-btn]').forEach((btn) => {
+      if (btn.getAttribute('data-bound') === 'true') return;
+      btn.setAttribute('data-bound', 'true');
+      btn.addEventListener('click', () => {
+        const code = btn.getAttribute('data-code') || 'SMAT-PUMP-6X4-WETKIT';
+        const title = btn.getAttribute('data-title') || code;
+        const atomicCode = btn.getAttribute('data-atomic-code') || code;
+        const circuit = btn.getAttribute('data-circuit') || 'bombeo';
+        addTrayItem({
+          skuId: code,
+          atomicCode,
+          nameEs: title,
+          nameEn: title,
+          circuit,
+          qty: 1,
+          criticalityMode: 'PARO_DE_LINEA'
+        });
+        const drawer = document.getElementById('smat-qtray-drawer');
+        const toggleBtn = document.getElementById('smat-qtray-toggle-btn');
+        if (drawer && drawer.hasAttribute('hidden')) {
+          drawer.removeAttribute('hidden');
+          toggleBtn?.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
   }
 
   initSharePurchasing();
@@ -220,19 +265,39 @@ const acuseHref = isEs
 
 <style>
   .share-purchasing-widget {
-    margin-top: 1.75rem;
-    margin-bottom: 1.75rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    background-color: #f8fafc;
+    border: 1px solid var(--smat-border-strong, #cbd5e1);
+    border-left: 4px solid var(--smat-copper-accent, #c25e00);
+    border-radius: var(--smat-radius-md, 8px);
+    padding: 0.75rem 1.15rem;
+  }
+
+  .share-purchasing-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    cursor: pointer;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .share-summary-hint {
+    font-size: 0.82rem;
+    color: #334155;
+    font-weight: 600;
   }
 
   .share-box {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #f8fafc;
-    border: 1px solid var(--smat-border-strong, #cbd5e1);
-    border-left: 4px solid var(--smat-copper-accent, #c25e00);
-    border-radius: var(--smat-radius-md, 8px);
-    padding: 1.15rem 1.4rem;
+    padding-top: 0.85rem;
+    margin-top: 0.65rem;
+    border-top: 1px dashed #cbd5e1;
     gap: 1.25rem;
     flex-wrap: wrap;
   }

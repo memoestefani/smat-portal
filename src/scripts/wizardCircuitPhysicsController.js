@@ -198,8 +198,8 @@ export function evaluateFlotationCellHydrodynamics(params = {}) {
     zwieteringNjsRpm,
     suspensionSafe,
     wearLifeMultiplierPuVsRubber,
-    summaryEs: `Gorain Sb = ${gorain.sbInverseSeconds} s⁻¹ | k = ${gorain.rateConstantMin} min⁻¹ | v_tip = ${gorain.tipSpeedMS} m/s | Zwietering N_js = ${zwieteringNjsRpm} RPM (${suspensionSafe ? 'Suspensión Completa' : 'Riesgo de Arenero'})`,
-    summaryEn: `Gorain Sb = ${gorain.sbInverseSeconds} s⁻¹ | k = ${gorain.rateConstantMin} min⁻¹ | v_tip = ${gorain.tipSpeedMS} m/s | Zwietering N_js = ${zwieteringNjsRpm} RPM (${suspensionSafe ? 'Full Suspension' : 'Sanding Risk'})`
+    summaryEs: `Flujo Burbuja Sb = ${gorain.sbInverseSeconds} s⁻¹ | k = ${gorain.rateConstantMin} min⁻¹ | v_tip = ${gorain.tipSpeedMS} m/s | Suspensión N_js = ${zwieteringNjsRpm} RPM (${suspensionSafe ? 'Suspensión Completa' : 'Riesgo de Arenero'})`,
+    summaryEn: `Bubble Flux Sb = ${gorain.sbInverseSeconds} s⁻¹ | k = ${gorain.rateConstantMin} min⁻¹ | v_tip = ${gorain.tipSpeedMS} m/s | Suspension N_js = ${zwieteringNjsRpm} RPM (${suspensionSafe ? 'Full Suspension' : 'Sanding Risk'})`
   };
 }
 
@@ -237,8 +237,8 @@ export function calculateFilterPressCycleCapacity(params = {}) {
     totalCycleMin,
     cyclesPerDay,
     dryTonnesPerDay,
-    summaryEs: `Timoshenko σ_max = ${plateEval.maxBendingStressMpa} MPa (FS ${plateEval.flexuralSafetyFactor}) | ${cyclesPerDay} ciclos/día (~${dryTonnesPerDay} t/d secas) | Humedad ${plateEval.cakeMoistureTargetPct}% (${plateEval.isPlateCrackingRisk ? 'Alerta: Desbloquear Puertos' : 'NOM-141 Segura'})`,
-    summaryEn: `Timoshenko σ_max = ${plateEval.maxBendingStressMpa} MPa (SF ${plateEval.flexuralSafetyFactor}) | ${cyclesPerDay} cycles/day (~${dryTonnesPerDay} dry t/d) | Moisture ${plateEval.cakeMoistureTargetPct}% (${plateEval.isPlateCrackingRisk ? 'Alert: Clear Feed Ports' : 'NOM-141 Compliant'})`
+    summaryEs: `Esfuerzo Placa σ_max = ${plateEval.maxBendingStressMpa} MPa (FS ${plateEval.flexuralSafetyFactor}) | ${cyclesPerDay} ciclos/día (~${dryTonnesPerDay} t/d secas) | Humedad ${plateEval.cakeMoistureTargetPct}% (${plateEval.isPlateCrackingRisk ? 'Alerta: Desbloquear Puertos' : 'NOM-141 Segura'})`,
+    summaryEn: `Plate Stress σ_max = ${plateEval.maxBendingStressMpa} MPa (SF ${plateEval.flexuralSafetyFactor}) | ${cyclesPerDay} cycles/day (~${dryTonnesPerDay} dry t/d) | Moisture ${plateEval.cakeMoistureTargetPct}% (${plateEval.isPlateCrackingRisk ? 'Alert: Clear Feed Ports' : 'NOM-141 Compliant'})`
   };
 }
 
@@ -268,8 +268,8 @@ export function evaluateHydrocycloneCutPoint(params = {}) {
     screenWeibull: screen,
     cutPointD50cUm: d50cVal,
     sharpnessAlpha: screen.sharpnessAlpha,
-    summaryEs: `3 Vasos Marcy: CC = ${balance.circulatingLoadPct}% (Rm = ${rmVal}%) | Plitt d50c = ${d50cVal} µm (${ropEs}) | Criba Uretano α = ${screen.sharpnessAlpha}`,
-    summaryEn: `3-Cup Marcy: CL = ${balance.circulatingLoadPct}% (Rm = ${rmVal}%) | Plitt d50c = ${d50cVal} µm (${ropEn}) | Urethane Screen α = ${screen.sharpnessAlpha}`
+    summaryEs: `3 Vasos Marcy: CC = ${balance.circulatingLoadPct}% (Rm = ${rmVal}%) | Corte d50c = ${d50cVal} µm (${ropEs}) | Criba Uretano α = ${screen.sharpnessAlpha}`,
+    summaryEn: `3-Cup Marcy: CL = ${balance.circulatingLoadPct}% (Rm = ${rmVal}%) | Cut d50c = ${d50cVal} µm (${ropEn}) | Urethane Screen α = ${screen.sharpnessAlpha}`
   };
 }
 

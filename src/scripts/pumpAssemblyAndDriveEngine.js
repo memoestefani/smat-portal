@@ -342,14 +342,14 @@ export function evaluatePumpAssemblySequence(params = {}) {
     structuralReasonEs: isCeramic
       ? 'El Carburo de Silicio Sinterizado (SiC, ≥ 2200 HV, Mohs 9.2, K_Ic = 4.1 MPa·√m) emplea arquitectura de Voluta Compuesta Monolítica + Throatbush SiC para resistir abrasión por sílice fina-media y pH extremo (1.0–13.5), limitado a d80 ≤ 800 µm y u₂ ≤ 28.0 m/s.'
       : (isHybrid
-        ? 'Partición Angular Finnie-Hutchings (INV-SMAT-SCI-05): Impulsor Cerrado en Alto Cromo 27% Cr (A05 ≥ 650 HB) para resistir corte frontal (α ≤ 25°, u₂ ≤ 24.5 m/s) + Forros Bipartidos FPL/CPL en Hule Natural R55 (55 Shore A) para amortiguar impacto cuasi-normal (α = 75°–90°) en carcasa estacionaria.'
+        ? 'Partición Angular Finnie-Hutchings: Impulsor Cerrado en Alto Cromo 27% Cr (A05 ≥ 650 HB) para resistir corte frontal (α ≤ 25°, u₂ ≤ 24.5 m/s) + Forros Bipartidos FPL/CPL en Hule Natural R55 (55 Shore A) para amortiguar impacto cuasi-normal (α = 75°–90°) en carcasa estacionaria.'
         : (wetEndBranch === 'metal'
           ? 'El alto cromo (≥650 HB) posee módulo elástico E ≈ 210 GPa y soporta esfuerzos de membrana en succión como Voluta Monolítica de 1 pieza + FPL Insert posterior + Throatbush frontal.'
           : 'El hule/poliuretano (E ≈ 0.01–0.05 GPa) requiere respaldo metálico continuo contra colapso por vacío en el ojo de succión, dividiendo la carcasa húmeda en 2 mitades simétricas (Frame Plate Liner + Cover Plate Liner) + Throatbush.')),
     structuralReasonEn: isCeramic
       ? 'Sintered Silicon Carbide (SiC, ≥ 2200 HV, Mohs 9.2, K_Ic = 4.1 MPa·√m) uses a Monolithic Composite Volute + SiC Throatbush architecture to resist fine-to-medium silica abrasion and extreme pH (1.0–13.5), bounded to d80 ≤ 800 µm and u₂ ≤ 28.0 m/s.'
       : (isHybrid
-        ? 'Finnie-Hutchings Angular Partition (INV-SMAT-SCI-05): 27% High Chrome Closed Impeller (A05 ≥ 650 HB) resists leading-edge grazing shear (α ≤ 25°, u₂ ≤ 24.5 m/s) + Split R55 Natural Rubber Liners (FPL/CPL, 55 Shore A) absorb quasi-normal impact (α = 75°–90°) in stationary volute.'
+        ? 'Finnie-Hutchings Angular Partition: 27% High Chrome Closed Impeller (A05 ≥ 650 HB) resists leading-edge grazing shear (α ≤ 25°, u₂ ≤ 24.5 m/s) + Split R55 Natural Rubber Liners (FPL/CPL, 55 Shore A) absorb quasi-normal impact (α = 75°–90°) in stationary volute.'
         : (wetEndBranch === 'metal'
           ? 'High chrome white iron (≥650 HB, E ≈ 210 GPa) resists suction vacuum hoop stresses as a 1-piece Monolithic Volute + rear FPL Insert + front Throatbush.'
           : 'Elastomers (rubber/polyurethane, E ≈ 0.01–0.05 GPa) require continuous split-casing metal backing against suction vacuum buckling, using 2 symmetrical halves (Frame Plate Liner + Cover Plate Liner) + Throatbush.'))
@@ -661,12 +661,13 @@ export function evaluateHybridWetEndConfiguration({
     fullMetalMassKg,
     savedMassKg,
     massSavingsPct,
+    invariantId: 'INV-SMAT-SCI-05',
     hybridBomParts,
     rationaleEs: hybridRecommended
-      ? `Configuración Híbrida Óptima (Finnie-Hutchings INV-SMAT-SCI-05): Impulsor Cerrado en Alto Cromo 27% A05 (resiste impacto frontal α ≈ 75°–90° con d80 = ${d80} µm) + Forros Bipartidos FPL/CPL en Hule Natural R55 (absorbe abrasión rasante α ≤ 25° a u₂ = ${u2} m/s ≤ 24.5 m/s), reduciendo ${massSavingsPct}% la masa suspendida en maniobra.`
+      ? `Configuración Híbrida Óptima (Finnie-Hutchings): Impulsor Cerrado en Alto Cromo 27% A05 (resiste impacto frontal α ≈ 75°–90° con d80 = ${d80} µm) + Forros Bipartidos FPL/CPL en Hule Natural R55 (absorbe abrasión rasante α ≤ 25° a u₂ = ${u2} m/s ≤ 24.5 m/s), reduciendo ${massSavingsPct}% la masa suspendida en maniobra.`
       : `Fuera de ventana híbrida (u₂ = ${u2} m/s, d80 = ${d80} µm): excede límite viscoelástico (24.5 m/s) o umbral de desgarre de partícula cortante (600 µm). Se recomienda Extremo Húmedo 100% Metálico Cr27 A05.`,
     rationaleEn: hybridRecommended
-      ? `Optimal Hybrid Wet-End (Finnie-Hutchings INV-SMAT-SCI-05): 27% High Chrome A05 Closed Impeller (resists leading-edge impact α ≈ 75°–90° at d80 = ${d80} µm) + Split R55 Natural Rubber Liners FPL/CPL (absorbs grazing abrasion α ≤ 25° at u₂ = ${u2} m/s ≤ 24.5 m/s), reducing rigging mass by ${massSavingsPct}%.`
+      ? `Optimal Hybrid Wet-End (Finnie-Hutchings): 27% High Chrome A05 Closed Impeller (resists leading-edge impact α ≈ 75°–90° at d80 = ${d80} µm) + Split R55 Natural Rubber Liners FPL/CPL (absorbs grazing abrasion α ≤ 25° at u₂ = ${u2} m/s ≤ 24.5 m/s), reducing rigging mass by ${massSavingsPct}%.`
       : `Outside hybrid window (u₂ = ${u2} m/s, d80 = ${d80} µm): exceeds viscoelastic thermal ceiling (24.5 m/s) or coarse tear threshold (600 µm). Full 27% High Chrome A05 Metal Wet-End recommended.`
   };
 }

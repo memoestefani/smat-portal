@@ -37,7 +37,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         <div class="sheet-title-bar">
           <h2 id="dossier-title">ACUSE FORMAL DE SOLICITUD DE COTIZACIÓN TÉCNICA</h2>
-          <span class="badge-sla" id="dossier-order-code">TRIAJE PRIORITARIO cμ • COTEJO EN ALMACÉN DURANGO</span>
+          <span class="badge-sla" id="dossier-order-code" data-hash-algo="fnv1a">ATENCIÓN PRIORITARIA • COTEJO EN ALMACÉN DURANGO</span>
         </div>
 
         <!-- Tabla de Datos del Solicitante -->
@@ -116,16 +116,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </table>
         </div>
 
-        <!-- Desglose Multi-Partida SAT CFDI 4.0 + TIGIE + Política JRP (s, S) (D5-V35) -->
+        <!-- Desglose Multi-Partida SAT CFDI 4.0 + TIGIE + Ciclo de Reorden -->
         <div class="sheet-section" id="acuse-multi-item-tray-section">
-          <h3 class="section-title">2B. PARTIDAS DE BANDEJA B2B, TUPLA FISCAL SAT CFDI 4.0 Y REORDEN ACOPLADO (s, S)</h3>
+          <h3 class="section-title">2B. PARTIDAS DE LA REQUISICIÓN, TUPLA FISCAL SAT CFDI 4.0 Y CICLO DE REORDEN CONJUNTO</h3>
           <table class="sheet-table">
             <thead>
               <tr>
                 <th style="width: 22%;">SKU / Aleación</th>
                 <th style="width: 44%;">Descripción Técnica y Tupla Fiscal SAT / TIGIE</th>
                 <th style="width: 10%;">Cant.</th>
-                <th style="width: 24%;">Acoplamiento JRP (s, S)</th>
+                <th style="width: 24%;">Par Casado y Ciclo de Reorden</th>
               </tr>
             </thead>
             <tbody id="acuse-multi-item-tray-tbody">
@@ -140,12 +140,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="sheet-section terms-section">
           <h3 class="section-title">3. PROTOCOLO TÉCNICO Y CONTROL DE CALIDAD EN ALMACÉN CENTRAL</h3>
           <p class="terms-text">
-            Este acuse certifica el registro formal de su requerimiento en los sistemas de SMAT Minerals. Todo conjunto rotativo, impulsor y carcasa suministrada cuenta con certificado de colada High Chrome 27% (A05) con dureza garantizada &gt;650 HB (ASTM A532 HRC &ge; 58), cotejo dimensional de tripleta geométrica (A, B, C) bajo ISO 2768-m y triaje prioritario cμ en instalaciones de SMAT Durango (Domicilio fiscal para facturación: Mariano Salas #114).
+            Este acuse certifica el registro formal de su requerimiento en los sistemas de SMAT Minerals. Todo conjunto rotativo, impulsor y carcasa suministrada cuenta con certificado de colada High Chrome 27% (A05) con dureza garantizada &gt;650 HB (ASTM A532 HRC &ge; 58), cotejo dimensional de tripleta geométrica (A, B, C) bajo ISO 2768-m y atención prioritaria de despacho en instalaciones de SMAT Durango (Domicilio fiscal para facturación: Mariano Salas #114).
           </p>
           <div class="coyote-seal-notice facility-guarantee-notice" id="vendor-passport-section">
             <strong>Cláusula de Validez de Almacén Central y Pasaporte de Proveedor B2B:</strong> Esta propuesta técnica y su respaldo operativo son válidos para componentes inspeccionados y despachados en Almacén Central SMAT Durango (Incoterms EXW / DAP Durango • UNSPSC 40151500 / 20121500 / 40161500 / 41111500 • Certificación de Colada ASTM A532 Cr27 HRC &ge; 58). Equipos y paquetes acoplados completos se configuran bajo pedido según variables de pulpa del cliente; refacciones de desgaste comunes en rotación continua de inventario.
           </div>
-          <pre id="sap-plaintext-block" style="margin: 1rem 0 0; padding: 0.85rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace; font-size: 0.76rem; color: #0f172a; overflow-x: auto; white-space: pre-wrap;">FOLIO: SMAT-2026-RFQ | ORDEN DETERMINISTA FNV-1a</pre>
+          <pre id="sap-plaintext-block" data-hash-algo="fnv1a" style="margin: 1rem 0 0; padding: 0.85rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace; font-size: 0.76rem; color: #0f172a; overflow-x: auto; white-space: pre-wrap;">FOLIO: SMAT-2026-RFQ | FOLIO DE VERIFICACIÓN TÉCNICA</pre>
           <div class="signatures-row">
             <div class="sig-block">
               <span class="sig-line"></span>
@@ -178,7 +178,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           Ficha Alta ERP (.json)
         </button>
         <a href="/cotizar/?reorder=1&tray=SMAT-PUMP-IMP-AH:1:PARO_DE_LINEA#rfq" class="btn btn-secondary" id="reorder-ss-link">
-          Reorden 1-Clic Política (s, S)
+          Reorden Preventivo en 1 Clic
         </a>
         <a href="/" class="btn btn-secondary">
           Volver al Inicio

@@ -26,7 +26,7 @@ const isEs = lang === 'es';
       <label for="wb-role-cyc"><strong>{isEs ? 'Equipo o Refacción de Clasificación / Cribado:' : 'Classification / Screening Equipment or Part:'}</strong></label>
       <select id="wb-role-cyc" name="role_id_cyc" class="wb-select" data-wb-circuit-calc-input>
         <option value="hidrociclon_apex_vortex" selected>{isEs ? 'Hidrociclones D6–D20, Boquilla Ápex SiC y Vortex Finder' : 'D6–D20 Hydrocyclones, SiC Apex Spigot & Vortex Finder'}</option>
-        <option value="malla_criba_poliuretano">{isEs ? 'Mallas Finas de Uretano TH48-30 y Módulos 1\'x1\' (Weibull α ≥ 4.2)' : 'TH48-30 Fine Urethane Screens & 1\'x1\' Modular Panels (Weibull α ≥ 4.2)'}</option>
+        <option value="malla_criba_poliuretano">{isEs ? 'Mallas Finas de Uretano TH48-30 y Módulos 1\'x1\' (Nitidez α ≥ 4.2)' : 'TH48-30 Fine Urethane Screens & 1\'x1\' Modular Panels (Sharpness α ≥ 4.2)'}</option>
         <option value="kit_wet_end">{isEs ? 'Paquete Casado Bomba + Hidrociclón (Sincronizado)' : 'Coupled Slurry Pump + Hydrocyclone Package'}</option>
       </select>
     </div>
@@ -51,16 +51,16 @@ const isEs = lang === 'es';
 
   <div class="font-mono-tech" style="margin-top: 0.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.4rem; font-size: 0.72rem; color: #0f172a;">
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.32rem 0.5rem;"><strong>{isEs ? 'Carga Circulante (3 Vasos):' : 'Circulating Load (3-Cup):'}</strong> <span id="wb-cyc-res-cc" data-testid="wb-cyc-res-cc">248.5% (Rm 71.3%)</span></div>
-    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.32rem 0.5rem;"><strong>{isEs ? 'Corte Plitt (d50c):' : 'Plitt Cut (d50c):'}</strong> <span id="wb-cyc-res-d50" data-testid="wb-cyc-res-d50">58.4 µm</span></div>
-    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.32rem 0.5rem;"><strong>{isEs ? 'Régimen Ápex / Roping:' : 'Apex / Roping Regime:'}</strong> <span id="wb-cyc-res-roping" data-testid="wb-cyc-res-roping">{isEs ? 'Descarga Paraguas Estable' : 'Stable Spray Discharge'}</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.32rem 0.5rem;"><strong>{isEs ? 'Corte Granulométrico (d50c):' : 'Cut Size (d50c):'}</strong> <span id="wb-cyc-res-d50" data-testid="wb-cyc-res-d50">58.4 µm</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.32rem 0.5rem;"><strong>{isEs ? 'Régimen Ápex / Descarga:' : 'Apex / Discharge Regime:'}</strong> <span id="wb-cyc-res-roping" data-testid="wb-cyc-res-roping">{isEs ? 'Descarga Paraguas Estable' : 'Stable Spray Discharge'}</span></div>
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.32rem 0.5rem;"><strong>{isEs ? 'Partición Criba Uretano:' : 'Urethane Screen Partition:'}</strong> <span id="wb-scr-res-weibull" data-testid="wb-scr-res-weibull">α = 4.4 (SMAT-SCR-TH48-30)</span></div>
   </div>
 </div>
 
-<!-- SIMULADOR VIVO DE CINÉTICA DE FLOTACIÓN GORAIN + ZWIETERING EN /COTIZAR/ (D1-V39) -->
+<!-- SIMULADOR VIVO DE CINÉTICA DE FLOTACIÓN Y AIREACIÓN EN /COTIZAR/ (D1-V39) -->
 <div id="wb-flot-gorain-live-box" data-testid="wb-flot-gorain-live-box" class="hidden" style="display:none; margin-top: 0.65rem; padding: 0.7rem 0.85rem; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px;">
   <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem; margin-bottom:0.45rem;">
-    <strong class="font-mono-tech" style="font-size:0.74rem; color:#0c4a6e;">{isEs ? 'SIMULADOR EN VIVO: HIDRODINÁMICA DE CELDA Y CINÉTICA DE GORAIN (Sb & Njs)' : 'LIVE SIMULATOR: CELL HYDRODYNAMICS & GORAIN KINETICS (Sb & Njs)'}</strong>
+    <strong class="font-mono-tech" style="font-size:0.74rem; color:#0c4a6e;">{isEs ? 'SIMULADOR EN VIVO: AIREACIÓN DE CELDA, FLUJO DE BURBUJA (Sb) Y SUSPENSIÓN (Njs)' : 'LIVE SIMULATOR: CELL AERATION, BUBBLE FLUX (Sb) & SOLIDS SUSPENSION (Njs)'}</strong>
     <span class="font-mono-tech" style="font-size:0.68rem; background:#065f46; color:#ffffff; padding:0.12rem 0.45rem; border-radius:4px;">{isEs ? 'Reemplazo Drop-In #18 SP / #24 / #30' : 'Drop-In #18 SP / #24 / #30'}</span>
   </div>
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(125px, 1fr)); gap: 0.45rem;">
@@ -72,15 +72,15 @@ const isEs = lang === 'es';
   <div class="font-mono-tech" style="margin-top:0.45rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.35rem; font-size:0.71rem; color:#0f172a;">
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Flujo Burbuja Sb:' : 'Bubble Flux Sb:'}</strong> <span id="wb-flot-res-sb" data-testid="wb-flot-res-sb">56.25 s⁻¹</span></div>
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Tasa Cinética k:' : 'Kinetic Rate k:'}</strong> <span id="wb-flot-res-k" data-testid="wb-flot-res-k">0.197 min⁻¹</span></div>
-    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Suspensión Zwietering:' : 'Zwietering Njs:'}</strong> <span id="wb-flot-res-njs" data-testid="wb-flot-res-njs">178 RPM</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Suspensión Mínima Njs:' : 'Min Suspension Njs:'}</strong> <span id="wb-flot-res-njs" data-testid="wb-flot-res-njs">178 RPM</span></div>
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Vel. Punta v_tip:' : 'Rotor Tip v_tip:'}</strong> <span id="wb-flot-res-vtip" data-testid="wb-flot-res-vtip">6.87 m/s</span></div>
   </div>
 </div>
 
-<!-- VERIFICADOR VIVO DE PANDEO TIMOSHENKO Y CICLO DARCY-RUTH EN /COTIZAR/ (D2-V39) -->
+<!-- VERIFICADOR VIVO DE RESISTENCIA DE PLACA Y CICLO DE FILTRADO EN /COTIZAR/ (D2-V39) -->
 <div id="wb-filt-timoshenko-live-box" data-testid="wb-filt-timoshenko-live-box" class="hidden" style="display:none; margin-top: 0.65rem; padding: 0.7rem 0.85rem; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px;">
   <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem; margin-bottom:0.45rem;">
-    <strong class="font-mono-tech" style="font-size:0.74rem; color:#78350f;">{isEs ? 'VERIFICADOR EN VIVO: PANDEO DE PLACAS TIMOSHENKO & CICLO DARCY-RUTH (16 BAR)' : 'LIVE VERIFIER: TIMOSHENKO PLATE FLEXURE & DARCY-RUTH CYCLE (16 BAR)'}</strong>
+    <strong class="font-mono-tech" style="font-size:0.74rem; color:#78350f;">{isEs ? 'VERIFICADOR EN VIVO: RESISTENCIA DE PLACAS A 16 BAR Y CICLO DE FILTRADO' : 'LIVE VERIFIER: 16-BAR PLATE STRENGTH & FILTRATION CYCLE'}</strong>
     <span class="font-mono-tech" style="font-size:0.68rem; background:#78350f; color:#ffffff; padding:0.12rem 0.45rem; border-radius:4px;">{isEs ? 'Jales Secos NOM-141' : 'NOM-141 Dry Stacking'}</span>
   </div>
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(125px, 1fr)); gap: 0.45rem;">
@@ -92,7 +92,7 @@ const isEs = lang === 'es';
   <div class="font-mono-tech" style="margin-top:0.45rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.35rem; font-size:0.71rem; color:#0f172a;">
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Esfuerzo σ_max:' : 'Bending Stress σ_max:'}</strong> <span id="wb-filt-res-stress" data-testid="wb-filt-res-stress">3.54 MPa</span></div>
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Seguridad Placa:' : 'Plate Safety:'}</strong> <span id="wb-filt-res-fs" data-testid="wb-filt-res-fs">FS 4.10</span></div>
-    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Capacidad Darcy:' : 'Darcy Capacity:'}</strong> <span id="wb-filt-res-cycles" data-testid="wb-filt-res-cycles">36 ciclos/d (285 t/d)</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Capacidad de Ciclo:' : 'Cycle Capacity:'}</strong> <span id="wb-filt-res-cycles" data-testid="wb-filt-res-cycles">36 ciclos/d (285 t/d)</span></div>
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Dictamen Tetones:' : 'Bosses Status:'}</strong> <span id="wb-filt-res-status" data-testid="wb-filt-res-status">{isEs ? 'NOM-141 Segura' : 'NOM-141 Safe'}</span></div>
   </div>
 </div>

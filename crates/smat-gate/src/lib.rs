@@ -882,6 +882,11 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             passed: check_v39_backend_ui_exposure_and_zero_stock_leak_gate_42(site_root).is_ok(),
             details: check_v39_backend_ui_exposure_and_zero_stock_leak_gate_42(site_root).err().unwrap_or_else(|| "OK: 100% capacidades backend expuestas en UI (Apple HIG), 0 fugas publicas de inventario de almacen y contraste AAA verificado.".to_string()),
         },
+        GateReport {
+            name: "43. Unificacion Transaccional V4.0 (1 Carrito Canonico por Vista), Consola 4-Tab en /bombeo/, Portada Cowan <= 4.00 y Cero Metalenguaje Visible APL-03 (Gate V4.0 D1..D8)".to_string(),
+            passed: check_v40_single_canonical_surface_and_zero_visible_metalanguage_gate_43(site_root).is_ok(),
+            details: check_v40_single_canonical_surface_and_zero_visible_metalanguage_gate_43(site_root).err().unwrap_or_else(|| "OK: 1 carrito canonico por vista, consola 4-tab en /bombeo/, portada Cowan <= 4.00 y 0 metalenguaje visible (PRIORIDAD-cμ, FNV-1a, INV-SMAT-*).".to_string()),
+        },
     ]
 }
 
@@ -1418,5 +1423,12 @@ mod tests {
         let root = find_site_root();
         let res = check_v39_backend_ui_exposure_and_zero_stock_leak_gate_42(&root);
         assert!(res.is_ok(), "Fallo en Gate 42 (V3.9 Apple HIG Backend Exposure & Zero Stock Leak): {:?}", res.err());
+    }
+
+    #[test]
+    fn test_gate_43_v40_single_canonical_surface_and_zero_visible_metalanguage() {
+        let root = find_site_root();
+        let res = check_v40_single_canonical_surface_and_zero_visible_metalanguage_gate_43(&root);
+        assert!(res.is_ok(), "Fallo en Gate 43 (V4.0 Single Canonical Surface & Zero Visible Metalanguage): {:?}", res.err());
     }
 }

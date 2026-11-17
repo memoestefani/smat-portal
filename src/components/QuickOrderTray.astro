@@ -22,7 +22,7 @@ const isEs = lang === 'es';
     aria-expanded="false"
     aria-controls="smat-qtray-drawer"
   >
-    <span>🛒 {isEs ? 'Bandeja B2B (cμ)' : 'B2B Tray (cμ)'}</span>
+    <span>🛒 {isEs ? 'Bandeja de Requisición' : 'Requisition Tray'}</span>
     <span
       id="smat-qtray-count"
       class="smat-qtray-count-pill"
@@ -40,7 +40,7 @@ const isEs = lang === 'es';
     <div class="smat-qtray-drawer-head">
       <div>
         <div class="smat-qtray-title">
-          {isEs ? 'Bandeja Rápida B2B · Regla cμ' : 'Fast B2B Requisition Tray · cμ Rule'}
+          {isEs ? 'Bandeja Rápida de Requisición B2B' : 'Fast B2B Requisition Tray'}
         </div>
         <div id="smat-qtray-priority-badge" class="smat-qtray-priority">
           {isEs ? '⚡ P1 · CAJA CHICA (< 25,000 MXN) / OC SAP' : '⚡ P1 · PETTY CASH (< 25,000 MXN) / SAP PO'}
@@ -83,10 +83,10 @@ const isEs = lang === 'es';
       </li>
     </ul>
 
-    <!-- Ventana de Reorden Acoplado (s, S) -->
-    <div class="smat-qtray-reorder-box">
+    <!-- Ventana de Reorden Preventivo 5:5:4 -->
+    <div class="smat-qtray-reorder-box" data-smat-invariant="INV-SMAT-SCI-03">
       <div class="smat-qtray-reorder-title">
-        {isEs ? '⏱️ Política de Reorden Acoplado 5:5:4 (s, S):' : '⏱️ Coupled 5:5:4 Reorder Policy (s, S):'}
+        {isEs ? '⏱️ Ciclo Preventivo de Reorden 5:5:4:' : '⏱️ Preventive 5:5:4 Reorder Cycle:'}
       </div>
       <div id="smat-qtray-reorder-policy">
         {isEs
@@ -95,8 +95,8 @@ const isEs = lang === 'es';
       </div>
     </div>
 
-    <!-- Intercambio de Casco / Core Trade-In (-22% Remanufactura ISO 281 · D4 / INV-SMAT-SCI-06) -->
-    <div class="smat-qtray-tradein-box">
+    <!-- Intercambio de Casco / Core Trade-In (-22% Remanufactura ISO 281) -->
+    <div class="smat-qtray-tradein-box" data-smat-invariant="INV-SMAT-SCI-06">
       <label class="smat-qtray-tradein-label">
         <input
           type="checkbox"
@@ -108,8 +108,8 @@ const isEs = lang === 'es';
           <strong>{isEs ? '♻️ Intercambio de Casco DAM005 (-22% Core Trade-In)' : '♻️ DAM005 Bearing Cartridge Core Trade-In (-22%)'}</strong>
           <span id="smat-qtray-core-badge" class="smat-qtray-tradein-note">
             {isEs
-              ? 'Bonificación -22% al entregar tambor GGG40 en tolerancia H7 (INV-SMAT-SCI-06)'
-              : '22% credit when returning crack-free GGG40 barrel in H7 tolerance (INV-SMAT-SCI-06)'}
+              ? 'Bonificación -22% al entregar tambor GGG40 en tolerancia H7 en Almacén Durango'
+              : '22% credit when returning crack-free GGG40 barrel in H7 tolerance at Durango Warehouse'}
           </span>
         </span>
       </label>

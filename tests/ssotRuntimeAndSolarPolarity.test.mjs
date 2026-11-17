@@ -192,7 +192,7 @@ test('6. [DECISIÓN 6 / DEB-V42-06] Consolidación 3-Tab XOR en /bombeo/ y /en/p
     assert.ok(content.includes('data-bombeo-tab="kits"'), `${label} debe integrar los lotes por material como Tab 1 (kits)`);
     assert.ok(content.includes('data-bombeo-tab="systems"'), `${label} debe incluir Tab 2 (systems)`);
     assert.ok(content.includes('data-bombeo-tab="atomic"'), `${label} debe incluir Tab 3 (atomic)`);
-    assert.ok(content.includes('<PumpAssemblyReport'), `${label} debe mantener el reporte interactivo de 5 estaciones`);
+    assert.ok(content.includes('data-bombeo-tab="assembly"') && content.includes('<PumpAssemblyReport'), `${label} debe integrar PumpAssemblyReport como Tab 4 (assembly) dentro de la consola única (D3-V40)`);
   }
 });
 

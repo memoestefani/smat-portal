@@ -28,16 +28,18 @@ import { getAtomicPartSpecs, formatNioshErgonomicStatus, buildWizardUrl } from '
   <section class="section" id="bombeo-main-section">
     <div class="container">
       <TechnicalDiagrams diagram="pump" lang="en" />
-      <QuickPartSelectorStrip lang="en" collapsible={true} />
 
-      <!-- UNIFIED 3-TAB XOR CONSOLE: KITS BY MATERIAL, SUB-ASSEMBLIES & UNIVERSAL PART SHEETS (DECISION 6 / DEB-V42-06) -->
-      <div class="bombeo-catalog-tabs" id="bombeo-catalog-tabs" style="margin-top: 2.25rem;">
+      <!-- UNIFIED 4-TAB XOR CONSOLE: KITS BY MATERIAL, SUB-ASSEMBLIES, UNIVERSAL PART SHEETS & ASSEMBLY 01-05 (D3-V40) -->
+      <div class="bombeo-catalog-tabs" id="bombeo-catalog-tabs" data-canonical-single-console="true" style="margin-top: 2.25rem;">
+        <div class="bombeo-console-quickstrip" style="margin-bottom: 1rem;">
+          <QuickPartSelectorStrip lang="en" collapsible={true} />
+        </div>
         <div class="bombeo-tabs-header">
           <div>
-            <span class="section-eyebrow">CONSOLIDATED PUMPING & WEAR SPARES CATALOG (3-TAB XOR CONSOLE)</span>
-            <h2 style="margin: 0.2rem 0 0.35rem;">5-5-4 Wet-End Kits, Sub-Assemblies & Universal Part Number Sheets</h2>
+            <span class="section-eyebrow">CONSOLIDATED PUMPING & WEAR SPARES CATALOG (4-TAB XOR CONSOLE)</span>
+            <h2 style="margin: 0.2rem 0 0.35rem;">5-5-4 Wet-End Kits, Sub-Assemblies, Universal Part Sheets & 01–05 Assembly</h2>
           </div>
-          <div class="bombeo-tab-switcher" role="tablist" aria-label="Material Kits, Sub-assemblies or Universal Part Sheets Selector">
+          <div class="bombeo-tab-switcher" role="tablist" aria-label="Material Kits, Sub-assemblies, Universal Part Sheets or 01-05 Assembly Selector">
             <button
               type="button"
               role="tab"
@@ -64,6 +66,15 @@ import { getAtomicPartSpecs, formatNioshErgonomicStatus, buildWizardUrl } from '
               data-bombeo-tab="atomic"
             >
               3. Universal Part Number Sheets (13)
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected="false"
+              class="bombeo-tab-btn"
+              data-bombeo-tab="assembly"
+            >
+              4. Wet-End Assembly 01–05
             </button>
           </div>
         </div>
@@ -221,10 +232,21 @@ import { getAtomicPartSpecs, formatNioshErgonomicStatus, buildWizardUrl } from '
             })}
           </div>
         </div>
-      </div>
 
-      <!-- HOW A SLURRY PUMP IS ASSEMBLED REPORT (DECISION 3-C+ & DECISION 5) -->
-      <PumpAssemblyReport lang="en" />
+        <!-- TAB 4: WET-END ASSEMBLY 01–05 REPORT + P&ID MAP (D3-V40) -->
+        <div class="bombeo-tab-panel" data-bombeo-panel="assembly" style="margin-top: 1.25rem; display: none;">
+          <PumpAssemblyReport lang="en" />
+          <details class="bombeo-circuit-drawer" id="bombeo-circuit-drawer" style="margin-top: 1.5rem;">
+            <summary class="bombeo-circuit-drawer__summary">
+              <span>View Grinding Circuit P&ID Map & Metallurgical Rules by Role</span>
+              <span class="bombeo-circuit-drawer__badge">P&ID APPENDIX ▾</span>
+            </summary>
+            <div class="bombeo-circuit-drawer__body">
+              <CircuitNavigator currentCircuit="molienda" lang="en" />
+            </div>
+          </details>
+        </div>
+      </div>
 
       <SharePurchasing
         roleTitle="Slurry Pumps & Wet-End Spare Parts Lot (5-5-4)"
@@ -288,34 +310,32 @@ import { getAtomicPartSpecs, formatNioshErgonomicStatus, buildWizardUrl } from '
     </div>
   </section>
 
-  <details class="bombeo-circuit-drawer" id="bombeo-circuit-drawer">
-    <summary class="bombeo-circuit-drawer__summary container">
-      <span>View Grinding Circuit P&ID Map & Metallurgical Rules by Role</span>
-      <span class="bombeo-circuit-drawer__badge">P&ID APPENDIX ▾</span>
-    </summary>
-    <div class="bombeo-circuit-drawer__body">
-      <CircuitNavigator currentCircuit="molienda" lang="en" />
-    </div>
-  </details>
-
   <script>
     function initBombeoCatalogTabs() {
       const tabBtns = document.querySelectorAll('[data-bombeo-tab]');
       const tabPanels = document.querySelectorAll('[data-bombeo-panel]');
+      const activateTab = (target: string) => {
+        tabBtns.forEach((b) => {
+          const active = b.getAttribute('data-bombeo-tab') === target;
+          b.classList.toggle('is-active', active);
+          b.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        tabPanels.forEach((p) => {
+          const active = p.getAttribute('data-bombeo-panel') === target;
+          p.classList.toggle('is-active', active);
+          (p as HTMLElement).style.display = active ? 'block' : 'none';
+        });
+      };
       tabBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
-          const target = btn.getAttribute('data-bombeo-tab') || 'systems';
-          tabBtns.forEach((b) => {
-            const active = b.getAttribute('data-bombeo-tab') === target;
-            b.classList.toggle('is-active', active);
-            b.setAttribute('aria-selected', active ? 'true' : 'false');
-          });
-          tabPanels.forEach((p) => {
-            const active = p.getAttribute('data-bombeo-panel') === target;
-            p.classList.toggle('is-active', active);
-            (p as HTMLElement).style.display = active ? 'block' : 'none';
-          });
+          activateTab(btn.getAttribute('data-bombeo-tab') || 'kits');
         });
+      });
+      if (['#pump-assembly-report', '#como-se-arma-una-bomba', '#how-a-slurry-pump-is-assembled'].includes(window.location.hash)) {
+        activateTab('assembly');
+      }
+      document.querySelectorAll('a[href="#pump-assembly-report"], a[href="#como-se-arma-una-bomba"], a[href="#how-a-slurry-pump-is-assembled"]').forEach((link) => {
+        link.addEventListener('click', () => activateTab('assembly'));
       });
     }
     initBombeoCatalogTabs();

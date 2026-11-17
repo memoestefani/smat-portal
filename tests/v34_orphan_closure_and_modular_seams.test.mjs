@@ -161,7 +161,7 @@ test('SLICE-V34-09 & SLICE-V34-10: QuickOrderTray Dual CTA + ?reorder=1, Product
   assert.ok(qtray.includes('hydrateTrayFromReorderQuery'));
 
   const qcard = fs.readFileSync(path.join(SITE_ROOT, 'src', 'components', 'ProductQuickCard.astro'), 'utf8');
-  assert.ok(qcard.includes('[SMAT-DGO | PRIORIDAD-cμ'));
+  assert.ok(qcard.includes('data-priority-tier=') && qcard.includes('[SMAT Durango · Prioridad Operativa:'));
 
   const tyEn = fs.readFileSync(path.join(SITE_ROOT, 'src', 'pages', 'en', 'thank-you.astro'), 'utf8');
   assert.ok(!tyEn.includes('SKU-QC-01'));

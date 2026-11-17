@@ -64,18 +64,18 @@ const telemetryLabelsByVertical: Record<string, { sg: string; d50: string; life:
   flotacion: {
     sg: 'Densidad de Pulpa en Celda',
     d50: 'Granulometría de Liberación (d80)',
-    life: 'Vida Útil Rotor-Estator (Weibull)'
+    life: 'Vida Útil Operativa Rotor-Estator'
   },
   clasificacion: {
     sg: 'Densidad Alimentación Ciclón / Criba',
-    d50: 'Corte Granulométrico Plitt d50c',
+    d50: 'Corte Granulométrico d50c',
     life: 'Vida Útil Ápex SiC / Malla PU'
   }
 };
 const telLabels = telemetryLabelsByVertical[sku.vertical] || {
   sg: 'Densidad Pulpa (Marcy SG)',
   d50: 'Corte Granulométrico d50c',
-  life: 'Vida Útil Típica (Weibull)'
+  life: 'Vida Útil Típica en Planta'
 };
 ---
 
@@ -231,7 +231,7 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
               </div>
             </div>
           )}
-          <h3 class="smat-slug-aside-h3">2. Acoplamiento de Circuito y Ventana de Reorden (s, S)</h3>
+          <h3 class="smat-slug-aside-h3">2. Acoplamiento de Circuito y Ciclo de Reorden Preventivo</h3>
           <div class="smat-slug-coupled-box" data-coupled-sku={sku.coupled_pair_sku} data-reorder-days={String(sku.reorder_window_days)}>
             <div>
               <strong>SKU Acoplado Recomendado:</strong>{' '}
@@ -244,7 +244,7 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
               )}
             </div>
             <div>
-              <strong>Ventana Preventiva JRP (s, S):</strong> <span>Cada {sku.reorder_window_days} días operativos (Lote #{sku.kit_id || 1})</span>
+              <strong>Ciclo de Reorden Preventivo:</strong> <span>Cada {sku.reorder_window_days} días operativos (Lote #{sku.kit_id || 1})</span>
             </div>
             {coupledSku && (
               <div style="margin-top: 0.45rem;">
@@ -306,7 +306,7 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
             style="padding: 0.9rem; border-radius: 12px; background: #ecfdf5; border: 1px solid #10b981; font-size: 0.78rem; color: #064e3b;"
           >
             <div style="font-family: var(--font-mono, monospace); font-weight: 800; color: #065f46; margin-bottom: 0.4rem;">
-              ♻️ PROGRAMA CORE TRADE-IN DAM005 (evaluateCoreTradeInEligibility)
+              ♻️ PROGRAMA DE INTERCAMBIO DE CASCO DAM005 (-22% CORE TRADE-IN)
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.45rem;">
               <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 700;">

@@ -200,8 +200,8 @@ pub fn check_v34_qtray_dual_cta_qcard_cmu_and_reorder_hydration(
 
     let qcard = fs::read_to_string(site_root.join("src/components/ProductQuickCard.astro"))
         .map_err(|e| e.to_string())?;
-    if !qcard.contains("[SMAT-DGO | PRIORIDAD-cμ") {
-        return Err("D6-V34: ProductQuickCard.astro no inyecta [SMAT-DGO | PRIORIDAD-cμ en el enlace WhatsApp".to_string());
+    if !qcard.contains("data-priority-tier=") || !qcard.contains("[SMAT Durango · Prioridad Operativa:") {
+        return Err("D6-V34 / D5-V40: ProductQuickCard.astro carece de data-priority-tier o etiqueta comercial [SMAT Durango · Prioridad Operativa:".to_string());
     }
 
     let ty_en = fs::read_to_string(site_root.join("src/pages/en/thank-you.astro"))
@@ -588,6 +588,114 @@ pub fn check_v39_backend_ui_exposure_and_zero_stock_leak_gate_42(site_root: &Pat
                 "Gate 42 (D9-V39): '{}' no persiste telemetría en smat_engineering_context_v1",
                 sim_rel
             ));
+        }
+    }
+
+    Ok(())
+}
+
+/// 43. Gate V4.0 (D1-V40 a D8-V40, DEB-V40-01..10):
+/// Verifica la unificación de superficie transaccional (1 carrito canónico por vista),
+/// consolidación de 5 sistemas de navegación en 1 consola de 4 pestañas en /bombeo/,
+/// reducción del Cowan Score en Portada (<= 4.00 con <details id="home-quick-catalog-drawer">)
+/// y erradicación 100% de metalenguaje visible (PRIORIDAD-cμ, ORDEN DETERMINISTA FNV-1a, INV-SMAT-* en texto).
+pub fn check_v40_single_canonical_surface_and_zero_visible_metalanguage_gate_43(
+    site_root: &Path,
+) -> Result<(), String> {
+    if !site_root
+        .join("tests/v40_single_surface_and_zero_metalanguage.test.mjs")
+        .exists()
+    {
+        return Err("Gate 43 (V4.0): Falta suite tests/v40_single_surface_and_zero_metalanguage.test.mjs".to_string());
+    }
+
+    // D1-V40: BaseLayout suprime QuickOrderTray en rutas terminales y LiveEngineeringDossier absorbe RequisitionTraySummary
+    let base_layout = fs::read_to_string(site_root.join("src/layouts/BaseLayout.astro"))
+        .map_err(|e| e.to_string())?;
+    if !base_layout.contains("isTransactionTerminal")
+        || !base_layout.contains("{!isTransactionTerminal && <QuickOrderTray")
+    {
+        return Err("Gate 43 (D1-V40): BaseLayout.astro debe suprimir <QuickOrderTray /> en rutas terminales (!isTransactionTerminal)".to_string());
+    }
+
+    let dossier_src = fs::read_to_string(site_root.join("src/components/LiveEngineeringDossier.astro"))
+        .map_err(|e| e.to_string())?;
+    if !dossier_src.contains("<RequisitionTraySummary") || !dossier_src.contains("data-dossier-embedded-tray=\"true\"") {
+        return Err("Gate 43 (D1-V40): LiveEngineeringDossier.astro debe integrar <RequisitionTraySummary /> como superficie única".to_string());
+    }
+
+    // D1-V40 & D3-V40: /cotizar/ y /en/quote/ montan únicamente QuoteWizard sin QuickPartSelectorStrip ni SharePurchasing sueltos
+    for quote_rel in ["src/pages/cotizar.astro", "src/pages/en/quote.astro"] {
+        let q_src = fs::read_to_string(site_root.join(quote_rel)).map_err(|e| e.to_string())?;
+        for forbidden_dup in ["<QuickPartSelectorStrip", "<RequisitionTraySummary", "<SharePurchasing"] {
+            if q_src.contains(forbidden_dup) {
+                return Err(format!(
+                    "Gate 43 (D1/D3-V40): '{}' conserva componente competidor duplicado '{}'",
+                    quote_rel, forbidden_dup
+                ));
+            }
+        }
+    }
+
+    // D2-V40: SharePurchasing.astro encapsulado en <details class="share-purchasing-widget share-purchasing-drawer">
+    let share_src = fs::read_to_string(site_root.join("src/components/SharePurchasing.astro"))
+        .map_err(|e| e.to_string())?;
+    if !share_src.contains("<details class=\"share-purchasing-widget share-purchasing-drawer\"")
+        || !share_src.contains("data-delegate-qtray-btn")
+    {
+        return Err("Gate 43 (D2-V40): SharePurchasing.astro debe ser un cajón <details> colapsado con delegación a QuickOrderTray".to_string());
+    }
+
+    // D3-V40: /bombeo/ y /en/pumping/ integran PumpAssemblyReport como Pestaña 4 (data-bombeo-tab="assembly")
+    for pump_rel in ["src/pages/bombeo/index.astro", "src/pages/en/pumping/index.astro"] {
+        let p_src = fs::read_to_string(site_root.join(pump_rel)).map_err(|e| e.to_string())?;
+        if !p_src.contains("data-bombeo-tab=\"assembly\"")
+            || !p_src.contains("data-bombeo-panel=\"assembly\"")
+        {
+            return Err(format!(
+                "Gate 43 (D3-V40): '{}' debe integrar PumpAssemblyReport como Pestaña 4 (data-bombeo-tab=\"assembly\")",
+                pump_rel
+            ));
+        }
+    }
+
+    // D4-V40: Portada /index.astro y /en/index.astro encapsulan las 19 tarjetas en <details id="home-quick-catalog-drawer">
+    for home_rel in ["src/pages/index.astro", "src/pages/en/index.astro"] {
+        let h_src = fs::read_to_string(site_root.join(home_rel)).map_err(|e| e.to_string())?;
+        if !h_src.contains("id=\"home-quick-catalog-drawer\"") {
+            return Err(format!(
+                "Gate 43 (D4-V40): '{}' debe encapsular el catálogo de 19 SKUs en <details id=\"home-quick-catalog-drawer\">",
+                home_rel
+            ));
+        }
+    }
+
+    // D5-V40: Cero metalenguaje visible (PRIORIDAD-cμ, ORDEN DETERMINISTA FNV-1a, evaluateCoreTradeInEligibility)
+    for ui_rel in [
+        "src/components/ProductQuickCard.astro",
+        "src/components/QuickOrderTray.astro",
+        "src/components/RequisitionTraySummary.astro",
+        "src/pages/acuse.astro",
+        "src/pages/en/thank-you.astro",
+        "src/pages/productos/[slug].astro",
+        "src/pages/en/products/[slug].astro",
+        "src/pages/catalogo/[code].astro",
+        "src/pages/en/catalog/[code].astro",
+    ] {
+        let u_src = fs::read_to_string(site_root.join(ui_rel)).map_err(|e| e.to_string())?;
+        for banned_meta in [
+            "PRIORIDAD-cμ",
+            "PRIORITY-cμ",
+            "ORDEN DETERMINISTA FNV-1a",
+            "DETERMINISTIC FNV-1a ORDER",
+            "(evaluateCoreTradeInEligibility)",
+        ] {
+            if u_src.contains(banned_meta) {
+                return Err(format!(
+                    "Gate 43 (D5-V40 APL-03): '{}' conserva metalenguaje visible prohibido '{}'",
+                    ui_rel, banned_meta
+                ));
+            }
         }
     }
 

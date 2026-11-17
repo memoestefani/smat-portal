@@ -97,12 +97,14 @@ test('D3-V36 (3-C+ / DEB-V36-04): QuickPartSelectorStrip.astro usa llaves válid
 
   for (const rel of [
     'src/pages/bombeo/index.astro',
-    'src/pages/en/pumping/index.astro',
-    'src/pages/cotizar.astro',
-    'src/pages/en/quote.astro'
+    'src/pages/en/pumping/index.astro'
   ]) {
     const pageSrc = readText(rel);
     assert.ok(pageSrc.includes('<QuickPartSelectorStrip') && pageSrc.includes('collapsible={true}'), `${rel} debe montar <QuickPartSelectorStrip collapsible={true} />`);
+  }
+  for (const rel of ['src/pages/cotizar.astro', 'src/pages/en/quote.astro']) {
+    const pageSrc = readText(rel);
+    assert.ok(!pageSrc.includes('<QuickPartSelectorStrip'), `${rel} debe usar QuoteWizard como consola única sin duplicar <QuickPartSelectorStrip /> (D3-V40)`);
   }
 });
 

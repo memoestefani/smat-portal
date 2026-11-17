@@ -157,7 +157,7 @@ export function initAcuseSheetController(lang = 'es') {
               <td style="font-family:monospace;font-weight:700;">${it.id}<br/><small>${it.material || 'STD'}</small></td>
               <td><strong>${isEn ? it.nameEn : it.nameEs}</strong><br/><small style="font-family:monospace;color:#475569;">${it.satLine}</small></td>
               <td style="text-align:center;font-weight:700;">${it.qty}</td>
-              <td style="font-family:monospace;font-size:0.75rem;">${it.coupledPairSku} (JRP: ${it.reorderWindowDays}d · ${checkoutMeta.lane})</td>
+              <td style="font-family:monospace;font-size:0.75rem;">${it.coupledPairSku} (${isEn ? 'Cycle' : 'Ciclo'}: ${it.reorderWindowDays}d · ${checkoutMeta.lane})</td>
             </tr>`
           )
           .join('');
@@ -301,7 +301,7 @@ export function initAcuseSheetController(lang = 'es') {
 
     const fullCode = [codigo, pieza ? `[${isEn ? 'Part' : 'Pieza'}: ${pieza}]` : '', traySummary ? `[${isEn ? 'Tray' : 'Bandeja'}: ${traySummary}]` : ''].filter(Boolean).join(' ') || (isEn ? 'SMAT-STD (1:1 Fit)' : 'SMAT-STD (Cotejo 1:1)');
     const orderHashCode = computeFnv1aOrderHash(`${fullCode}|${material}|${transmision}|${estacion}`);
-    setText('dossier-order-code', isEn ? `${orderHashCode} • PRIORITY cμ TRIAGE DURANGO HUB` : `${orderHashCode} • TRIAJE PRIORITARIO cμ ALMACÉN DURANGO`);
+    setText('dossier-order-code', isEn ? `${orderHashCode} • PRIORITY DISPATCH DURANGO HUB` : `${orderHashCode} • DESPACHO PRIORITARIO ALMACÉN DURANGO`);
     if (traySummary) {
       setText('dossier-title', isEn ? `FORMAL ENGINEERING REQUISITION & QUOTATION RECEIPT (${traySummary})` : `ACUSE FORMAL DE SOLICITUD DE COTIZACIÓN TÉCNICA (${traySummary})`);
     }
@@ -309,7 +309,7 @@ export function initAcuseSheetController(lang = 'es') {
       perfilPulpa ? `${isEn ? 'Mineral Profile' : 'Perfil Mineral'}: ${perfilPulpa}` : '',
       tco ? `${isEn ? 'Operational Impact' : 'Impacto Operativo'}: ${tco}` : '',
       trayState.coreReturnEnabled
-        ? (isEn ? 'Circular Economy Core Trade-In: -22% on DAM005 Cartridge (INV-SMAT-SCI-06)' : 'Economía Circular Core Trade-In: -22% en Cartucho DAM005 (INV-SMAT-SCI-06)')
+        ? (isEn ? 'Circular Economy Core Trade-In: -22% on DAM005 Cartridge (H7 Bore Verified)' : 'Economía Circular Core Trade-In: -22% en Cartucho DAM005 (Alojamiento H7 Verificado)')
         : ''
     ].filter(Boolean).join(' • ') || (isEn ? 'Operational continuity assessment at Durango Central Warehouse.' : 'Evaluación de continuidad operativa en Almacén Central Durango.');
 
@@ -326,7 +326,7 @@ export function initAcuseSheetController(lang = 'es') {
     setText('field-hydraulics', hidraulica);
 
     const matLabel = material === 'hybrid_a05_r55' || material === 'hibrido_a05_r55'
-      ? (isEn ? 'Branch D Finnie-Hutchings Hybrid: Cr27% A05 Impeller + R55 Natural Rubber Liners' : 'Rama D Híbrida Finnie-Hutchings: Impulsor Alto Cromo Cr27% A05 + Forros Hule R55')
+      ? (isEn ? 'Branch D Hybrid Wet-End: Cr27% A05 Impeller + R55 Natural Rubber Liners' : 'Rama D Híbrida de Extremo Húmedo: Impulsor Alto Cromo Cr27% A05 + Forros Hule R55')
       : (material === 'hule_natural' || material === 'R55'
         ? (isEn ? 'Anti-Abrasion Natural Rubber R55 (55–65 Shore A)' : 'Hule Natural Antiabrasivo R55 (55–65 Shore A)')
         : (material === 'poliuretano' || material === 'PU'
@@ -340,10 +340,10 @@ export function initAcuseSheetController(lang = 'es') {
     const wNum = Number(pesoKg) || 0;
     const liShaft = wNum > 0 ? (wNum / 11.1).toFixed(2) : '0.00';
     const nioshTier = wNum >= 23
-      ? (isEn ? `HOIST_REQUIRED: Mandatory Hoist / Crane (≥23 kg NIOSH, LI_shaft=${liShaft})` : `HOIST_REQUIRED: Polipasto / Grúa Obligatorio (≥23 kg NIOSH, LI_shaft=${liShaft})`)
+      ? (isEn ? `HOIST_REQUIRED: Mandatory Hoist / Crane (≥23 kg NOM-036-1, LI_shaft=${liShaft})` : `HOIST_REQUIRED: Polipasto / Grúa Obligatorio (≥23 kg NOM-036-1, LI_shaft=${liShaft})`)
       : (wNum > 11.1
-        ? (isEn ? `ASSISTED_SHAFT_MOUNT_2P: 2-Tech Assisted Shaft Mount (11.1–23 kg Waters-NIOSH, RWL_shaft=11.1 kg, LI_shaft=${liShaft})` : `ASSISTED_SHAFT_MOUNT_2P: Montaje Asistido 2 Técnicos (11.1–23 kg Waters-NIOSH, RWL_shaft=11.1 kg, LI_shaft=${liShaft})`)
-        : (isEn ? `MANUAL_SAFE_1P: Safe 1-Tech Manual Handling (≤11.1 kg Waters-NIOSH, LI_shaft=${liShaft})` : `MANUAL_SAFE_1P: Manejo Manual Seguro 1 Técnico (≤11.1 kg Waters-NIOSH, LI_shaft=${liShaft})`));
+        ? (isEn ? `ASSISTED_SHAFT_MOUNT_2P: 2-Tech Assisted Shaft Mount (11.1–23 kg NOM-036-1, RWL_shaft=11.1 kg, LI_shaft=${liShaft})` : `ASSISTED_SHAFT_MOUNT_2P: Montaje Asistido 2 Técnicos (11.1–23 kg NOM-036-1, RWL_shaft=11.1 kg, LI_shaft=${liShaft})`)
+        : (isEn ? `MANUAL_SAFE_1P: Safe 1-Tech Manual Handling (≤11.1 kg NOM-036-1, LI_shaft=${liShaft})` : `MANUAL_SAFE_1P: Manejo Manual Seguro 1 Técnico (≤11.1 kg NOM-036-1, LI_shaft=${liShaft})`));
     const nioshLabel = pesoKg ? ` • ${isEn ? 'Weight' : 'Peso'}: ${pesoKg} kg (${nioshTier})` : '';
     setText(
       'field-material-drive',

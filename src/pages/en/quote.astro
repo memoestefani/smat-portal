@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import QuoteWizard from '../../components/QuoteWizard.astro';
-import QuickPartSelectorStrip from '../../components/QuickPartSelectorStrip.astro';
 import FaqAccordion from '../../components/FaqAccordion.astro';
 ---
 
@@ -15,14 +14,8 @@ import FaqAccordion from '../../components/FaqAccordion.astro';
 >
   <section class="quote-route-banner no-print">
     <div class="container">
-      <nav class="doors-breadcrumb" aria-label="Quick navigation to the 3 supply lines">
+      <nav class="doors-breadcrumb" aria-label="Return to home">
         <a href="/en/" class="crumb-home">← Home</a>
-        <span class="crumb-sep">/</span>
-        <a href="/en/process-equipment/" class="crumb-door">1. Process Equipment</a>
-        <span class="crumb-sep">•</span>
-        <a href="/en/pumping/" class="crumb-door">2. Slurry Pumps & Spare Parts</a>
-        <span class="crumb-sep">•</span>
-        <a href="/en/process-control/" class="crumb-door">3. Process Control</a>
       </nav>
       <div class="quote-route-heading">
         <span class="route-pill">
@@ -37,10 +30,7 @@ import FaqAccordion from '../../components/FaqAccordion.astro';
     </div>
   </section>
 
-  <div class="quote-workbench-shell">
-    <div class="container" style="padding-top: 1rem;">
-      <QuickPartSelectorStrip lang="en" collapsible={true} showAssemblyLink={false} />
-    </div>
+  <div class="quote-workbench-shell" data-canonical-single-entry="quote-wizard">
     <QuoteWizard lang="en" />
   </div>
 

@@ -1,6 +1,7 @@
 ---
 import companyData from '../../data/company.json';
 import { formatNioshErgonomicStatus } from '../scripts/workbenchBus.js';
+import RequisitionTraySummary from './RequisitionTraySummary.astro';
 
 interface Props {
   lang?: 'es' | 'en';
@@ -255,6 +256,9 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
               </tr>
             </tbody>
           </table>
+        </div>
+        <div class="dossier-embedded-tray-section" data-dossier-embedded-tray="true" style="margin-top:0.85rem;">
+          <RequisitionTraySummary lang={lang} />
         </div>
       </div>
 
