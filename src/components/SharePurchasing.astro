@@ -33,6 +33,7 @@ const atomicSpecs = partCode ? getAtomicPartSpecs(partCode, series) : null;
 const smatCode = atomicSpecs?.smat_code || generateSmatPartCode({ circuit, role_id: resolvedRoleId, details: `${resolvedTitle} ${series}` });
 const detallesText = `${series} • ${metallurgy} • ${specs}`;
 const acuseBaseParams = new URLSearchParams({
+  circuito: circuit,
   equipo: resolvedTitle,
   codigo: smatCode,
   detalles: detallesText,

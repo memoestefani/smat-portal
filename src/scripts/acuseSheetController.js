@@ -58,7 +58,18 @@ export function isNonPumpDomain(circuit = '', skuId = '', code = '') {
   const c = String(circuit || '').toLowerCase();
   const s = String(skuId || '').toUpperCase();
   const k = String(code || '').toUpperCase();
-  if (c === 'bombeo' || s.startsWith('SMAT-PUMP-') || s === 'SMAT-COUPLED-PUMP-CYC' || k.startsWith('SMAT-PUMP-')) {
+  if (
+    c === 'bombeo' ||
+    s.startsWith('SMAT-PUMP-') ||
+    s.startsWith('SMAT-SEAL-') ||
+    s.startsWith('SMAT-BEAR-') ||
+    s.startsWith('SMAT-SKID-') ||
+    s === 'SMAT-COUPLED-PUMP-CYC' ||
+    k.startsWith('SMAT-PUMP-') ||
+    k.startsWith('SMAT-SEAL-') ||
+    k.startsWith('SMAT-BEAR-') ||
+    k.startsWith('SMAT-SKID-')
+  ) {
     return false;
   }
   return Boolean(c || s || k);
@@ -163,14 +174,17 @@ export function initAcuseSheetController(lang = 'es') {
     const hasPumpItem = Array.isArray(trayState.items) && trayState.items.some(
       (it) => !isNonPumpDomain(it.circuit, it.id, it.skuId)
     );
-    if (isReorderOnly && !hasPumpItem) {
+    const leadItem = Array.isArray(trayState.items) && trayState.items.length > 0 ? trayState.items[0] : null;
+    const activeCircuit = urlParams.get('circuito') || cached.circuito || wbV2.circuit || '';
+    const codigo = urlParams.get('codigo') || cached.codigo_smat || wbV2.equipCode || (leadItem ? leadItem.id : '');
+    const isNonPumpRequisition = isNonPumpDomain(activeCircuit, urlParams.get('sku') || '', codigo) && !hasPumpItem;
+    if ((isReorderOnly && !hasPumpItem) || isNonPumpRequisition) {
       ['row-field-hydraulics', 'row-field-material-drive', 'row-field-clearance-kinematics'].forEach((rowId) => {
         const tr = document.getElementById(rowId);
         if (tr) tr.style.display = 'none';
       });
     }
 
-    const leadItem = Array.isArray(trayState.items) && trayState.items.length > 0 ? trayState.items[0] : null;
     const defaultRoleTitle = leadItem
       ? (isEn ? leadItem.nameEn : leadItem.nameEs)
       : (isEn ? 'Critical Slurry Pumping Wear Replacement' : 'Refaccionamiento Crítico de Pulpa / Bombeo');
@@ -181,7 +195,6 @@ export function initAcuseSheetController(lang = 'es') {
     const telefono = urlParams.get('telefono') || urlParams.get('phone') || cached.telefono || wbV2.phone || (isEn ? '+52 (618) 810-4408' : '(618) 810-4408');
     const correo = urlParams.get('correo') || urlParams.get('email') || cached.correo || wbV2.email || 'ventas@smatminerals.com';
     const equipo = urlParams.get('equipo') || urlParams.get('role') || cached.equipo || wbV2.equipTitle || defaultRoleTitle;
-    const codigo = urlParams.get('codigo') || cached.codigo_smat || wbV2.equipCode || (leadItem ? leadItem.id : '');
     const pieza = urlParams.get('pieza') || cached.codigo_pieza_atomica || wbV2.atomicPartCode || '';
     const refCliente = urlParams.get('ref_cliente') || cached.referencia_cliente || wbV2.clientRef || (isEn ? 'No internal reference declared' : 'Sin referencia interna declarada');
     const medidas = urlParams.get('medidas') || cached.medidas_flexometro || (isEn ? '1:1 dimensional verification at Durango Warehouse' : 'Verificación dimensional 1:1 en Almacén Durango');
@@ -212,7 +225,9 @@ export function initAcuseSheetController(lang = 'es') {
     ].filter(Boolean).join(' | ');
     const hidraulica = hidraulicaBase.includes('K_motor,alt') ? hidraulicaBase : `${hidraulicaBase} (${hidraulicaExtras})`;
     const tco = urlParams.get('tco') || cached.proyeccion_tco || '';
-    const detalles = urlParams.get('detalles') || urlParams.get('specs') || cached.especificacion_tecnica || wbV2.notes || (isEn ? 'Technical requisition subject to Durango yard dimensional inspection.' : 'Requisición técnica sujeta a validación dimensional de patio Durango.');
+    const notasEspeciales = urlParams.get('notas_especiales') || cached.custom_notes || wbV2.custom_notes || '';
+    const detallesBase = urlParams.get('detalles') || urlParams.get('specs') || cached.especificacion_tecnica || wbV2.notes || (isEn ? 'Technical requisition subject to Durango yard dimensional inspection.' : 'Requisición técnica sujeta a validación dimensional de patio Durango.');
+    const detalles = notasEspeciales && !detallesBase.includes(notasEspeciales) ? `${detallesBase} | ${notasEspeciales}` : detallesBase;
     const destino = urlParams.get('destino') || cached.modalidad_logistica || (isEn ? 'Durango Central Warehouse Pickup (Folio Scheduled)' : 'Retiro en Almacén Central Durango (Coordinado con Folio)');
     const urgencia = urlParams.get('urgencia') || (cached.urgencia && cached.urgencia.includes('PARO') ? 'paro' : (wbV2.urgency || 'proyecto'));
     const material = urlParams.get('material') || cached.material_bombeo || wbV2.pump_material || wbV2.selectedMaterial || (leadItem ? leadItem.material : 'alto_cromo_cr27');
@@ -310,13 +325,15 @@ export function initAcuseSheetController(lang = 'es') {
     setText('field-details', detalles);
     setText('field-hydraulics', hidraulica);
 
-    const matLabel = material === 'hule_natural' || material === 'R55'
-      ? (isEn ? 'Anti-Abrasion Natural Rubber R55 (55–65 Shore A)' : 'Hule Natural Antiabrasivo R55 (55–65 Shore A)')
-      : (material === 'poliuretano' || material === 'PU'
-        ? (isEn ? 'Mining Polyurethane U01 (85–95 Shore A)' : 'Poliuretano Grado Minero U01 (85–95 Shore A)')
-        : ((material === 'ceramica_sic' || material === 'carburo_silicio' || material === 'SiC')
-          ? (isEn ? 'Sintered Silicon Carbide SiC (≥2200 HV, Mohs 9.2, K_Ic=4.1 MPa·√m)' : 'Carburo de Silicio Sinterizado SiC (≥2200 HV, Mohs 9.2, K_Ic=4.1 MPa·√m)')
-          : (isEn ? 'High Chrome ASTM A532 Cr27% (>600 HB)' : 'Alto Cromo ASTM A532 Cr27% (>600 HB)')));
+    const matLabel = material === 'hybrid_a05_r55' || material === 'hibrido_a05_r55'
+      ? (isEn ? 'Branch D Finnie-Hutchings Hybrid: Cr27% A05 Impeller + R55 Natural Rubber Liners' : 'Rama D Híbrida Finnie-Hutchings: Impulsor Alto Cromo Cr27% A05 + Forros Hule R55')
+      : (material === 'hule_natural' || material === 'R55'
+        ? (isEn ? 'Anti-Abrasion Natural Rubber R55 (55–65 Shore A)' : 'Hule Natural Antiabrasivo R55 (55–65 Shore A)')
+        : (material === 'poliuretano' || material === 'PU'
+          ? (isEn ? 'Mining Polyurethane U01 (85–95 Shore A)' : 'Poliuretano Grado Minero U01 (85–95 Shore A)')
+          : ((material === 'ceramica_sic' || material === 'carburo_silicio' || material === 'SiC')
+            ? (isEn ? 'Sintered Silicon Carbide SiC (≥2200 HV, Mohs 9.2, K_Ic=4.1 MPa·√m)' : 'Carburo de Silicio Sinterizado SiC (≥2200 HV, Mohs 9.2, K_Ic=4.1 MPa·√m)')
+            : (isEn ? 'High Chrome ASTM A532 Cr27% (>600 HB)' : 'Alto Cromo ASTM A532 Cr27% (>600 HB)'))));
     const sealLabel = sealBranch === 'gland_water'
       ? (isEn ? 'S5b Flushed Gland Packing' : 'S5b Prensaestopa con Agua')
       : (isEn ? 'S5a Dry Centrifugal Expeller' : 'S5a Expulsor Centrífugo Seco');
@@ -357,9 +374,13 @@ export function initAcuseSheetController(lang = 'es') {
       `${isEn ? 'COMPANY' : 'EMPRESA'}: ${empresa} | ${isEn ? 'REQUESTER' : 'SOLICITANTE'}: ${nombre}`,
       `${isEn ? 'EQUIPMENT' : 'EQUIPO'}: ${equipo} (${fullCode})`,
       ...sapTrayLines,
-      `${isEn ? 'METALLURGY & DRIVE' : 'METALURGIA Y ARREGLO'}: ${matLabel} | ${transmision} (${floodImm}) | ${estacion} (${sealLabel})${nioshLabel}`,
-      `${isEn ? 'HYDRAULICS & ALTITUDE' : 'HIDRAULICA Y ALTITUD'}: ${hidraulica}`,
-      `KINEMATICS: delta=${claroMm}mm (b2=${b2Mm}mm, dEtaV=-${deltaEtaV}%, dvPipe=-${pipeVelLossVal}%), n2=${n2Rpm}RPM, u2=${u2Ms}m/s, Fr=${frKn}kN, C=${capCKn}kN, L10h=${l10h}h${structReason ? ' | ' + structReason : ''}`,
+      ...(isNonPumpRequisition
+        ? []
+        : [
+            `${isEn ? 'METALLURGY & DRIVE' : 'METALURGIA Y ARREGLO'}: ${matLabel} | ${transmision} (${floodImm}) | ${estacion} (${sealLabel})${nioshLabel}`,
+            `${isEn ? 'HYDRAULICS & ALTITUDE' : 'HIDRAULICA Y ALTITUD'}: ${hidraulica}`,
+            `KINEMATICS: delta=${claroMm}mm (b2=${b2Mm}mm, dEtaV=-${deltaEtaV}%, dvPipe=-${pipeVelLossVal}%), n2=${n2Rpm}RPM, u2=${u2Ms}m/s, Fr=${frKn}kN, C=${capCKn}kN, L10h=${l10h}h${structReason ? ' | ' + structReason : ''}`
+          ]),
       `${isEn ? 'METROLOGY' : 'METROLOGIA'}: ${metrologia}`
     ].join('\n');
     setText('sap-plaintext-block', sapBlockText);

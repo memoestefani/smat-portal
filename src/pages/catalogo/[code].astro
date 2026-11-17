@@ -16,7 +16,7 @@ export function getStaticPaths() {
   const alloySuffixedCodes = [
     { code: 'd4147a05', part: findPart('E4147') },
     { code: 'd4083a05', part: findPart('E4083') },
-    { code: 'd4110a05', part: findPart('D3110') },
+    { code: 'd4110a05', part: { ...findPart('E4083'), name_es: 'Voluta Monolítica en Alto Cromo Cr27% (6x4" — A05)', name_en: 'Monolithic High-Chrome Volute Liner (6x4" — A05)' } },
     { code: 'd4041a05', part: findPart('E4132') },
     { code: 'd4018r55', part: findPart('D4018') },
     { code: 'd4032r55', part: findPart('E4132') },
@@ -36,8 +36,8 @@ export function getStaticPaths() {
   const descriptiveAliases = [
     { slugEs: 'impulsor-5-alabes', slugEn: '5-vane-impeller', part: findPart('E4147') },
     { slugEs: 'cuello-succion', slugEn: 'suction-throatbush', part: findPart('E4083') },
-    { slugEs: 'voluta-revestimiento', slugEn: 'volute-liner', part: { ...findPart('D3110'), name_es: 'Revestimiento de Voluta Bipartida (6x4" — A05)', name_en: 'Split Volute Casing Liner (6x4" — A05)', type_es: 'Revestimiento de Voluta en Contacto Húmedo (Lote 5:5:4)', type_en: 'Wet-End Volute Liner (5:5:4 Lot)' } },
-    { slugEs: 'expulsor-centrifugo', slugEn: 'centrifugal-expeller', part: findPart('D4028') },
+    { slugEs: 'voluta-revestimiento', slugEn: 'volute-liner', part: { ...findPart('E4083'), name_es: 'Revestimiento de Voluta Bipartida (6x4" — A05)', name_en: 'Split Volute Casing Liner (6x4" — A05)', type_es: 'Revestimiento de Voluta en Contacto Húmedo (Lote 5:5:4)', type_en: 'Wet-End Volute Liner (5:5:4 Lot)' } },
+    { slugEs: 'expulsor-centrifugo', slugEn: 'centrifugal-expeller', part: findPart('EAM028') },
     { slugEs: 'cartucho-rodamientos', slugEn: 'bearing-assembly-cartridge', part: { ...findPart('DAM005'), name_es: 'Cartucho de Rodamientos Completo (Bearing Assembly 6x4")', name_en: 'Complete Bearing Assembly Cartridge (6x4")', type_es: 'Conjunto Motriz Ensamblado (Estación 01)', type_en: 'Complete Assembled Drive Cartridge (Station 01)' } },
     { slugEs: 'anillo-expulsor', slugEn: 'expeller-ring', part: findPart('D4029') },
     { slugEs: 'camisa-flecha', slugEn: 'shaft-sleeve', part: findPart('D075C21') },

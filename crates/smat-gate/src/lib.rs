@@ -870,6 +870,11 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             passed: check_v35_zero_orphan_ast_and_dist_graph_closure(site_root).is_ok(),
             details: check_v35_zero_orphan_ast_and_dist_graph_closure(site_root).err().unwrap_or_else(|| "OK: 0 cadenas 2-hop, puente Plano 1-2, 6 simuladores Plano 3 vivos, Par Casado JRP 19/19, Acuse SAT/JRP, D3147/F6147 y 0 cutwater verificados.".to_string()),
         },
+        GateReport {
+            name: "41. Clausura Cero-Huerfanos V3.8: Biyeccion CYC/SCR en parseSmatPartCode, 0 Colision PRENSAESTOPA/BATCH, Aislamiento Acuse No-Bombeo, #wb-ctrl-res-{sm,bias,gy,rr}, #live-custom-box, 14 Partidas BOM y 5 [data-wb-field] (Gate V3.8 D1..D8)".to_string(),
+            passed: check_v38_bijective_codes_acuse_isolation_and_zero_orphan_dom(site_root).is_ok(),
+            details: check_v38_bijective_codes_acuse_isolation_and_zero_orphan_dom(site_root).err().unwrap_or_else(|| "OK: Biyeccion 5 circuitos CYC/SCR, 0 colision PRENSAESTOPA/BATCH, Acuse aislado, #wb-ctrl-res-*, #live-custom-box, BOM 14 partidas y 0 llaves JSON huerfanas.".to_string()),
+        },
     ]
 }
 
@@ -1392,5 +1397,12 @@ mod tests {
         let root = find_site_root();
         let res = check_v35_zero_orphan_ast_and_dist_graph_closure(&root);
         assert!(res.is_ok(), "Fallo en Gate 38 (V3.5 Forensic Closure & JRP): {:?}", res.err());
+    }
+
+    #[test]
+    fn test_gate_41_v38_bijective_codes_acuse_isolation_and_zero_orphan_dom() {
+        let root = find_site_root();
+        let res = check_v38_bijective_codes_acuse_isolation_and_zero_orphan_dom(&root);
+        assert!(res.is_ok(), "Fallo en Gate 41 (V3.8 Zero Orphan Closure): {:?}", res.err());
     }
 }

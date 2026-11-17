@@ -4,6 +4,7 @@
  */
 import atomicPartsJson from '../../data/atomic_parts.json' with { type: 'json' };
 import { getQuickProductBySlugOrAlias } from './quickProductsCatalog.js';
+import { resolveBomPartSpecs } from './pumpAssemblyAndDriveEngine.js';
 
 /**
  * Endpoint oficial de respaldo para ingesta asíncrona hacia Google Apps Script (Code.gs)
@@ -309,14 +310,18 @@ export function getAtomicPartSpecs(codeOrSlug = '', pipeSeries = '6x4') {
       station_number: 5, station: 'L5', station_name_es: 'Avenida 05: Serie de Tamices Certificados ASTM E11 8" Inox', station_name_en: 'Avenue 05: Certified 8" Stainless Steel ASTM E11 Sieve Series',
       assembly_order: '05. Torre de Tamizado Granulométrico ASTM E11 #4 a #400 (Estación L5)', assembly_order_note: '05. Torre de Tamizado ASTM E11 (Estación L5 • Corte P80 Rosin-Rammler)',
       wet_end_kit_ratio: '1:1', niosh_handling_mode: 'MANUAL_SAFE', handling_mode: 'MANUAL_SAFE', niosh_rwl_shaft_kg: 11.1, niosh_lifting_index_shaft: 0.08,
-      niosh_ergonomic_tier: 'MANUAL_1P_SAFE', circuit: 'control_procesos', pipe_size: 'sieves_8in_e11', role: 'tamices_laboratorio', smat_code: 'SMAT-CTRL-E11-8IN'
+      niosh_ergonomic_tier: 'MANUAL_1P_SAFE', circuit: 'control_procesos', pipe_size: 'astm_8in_inox', role: 'tamices_laboratorio', smat_code: 'SMAT-CTRL-E11-8IN'
     };
   }
 
-  if (series.includes('3x2') || series.includes('4x3') || series.includes('1.5x1')) {
+  const bomSpec = resolveBomPartSpecs(slug, series);
+  if (bomSpec) return bomSpec;
+
+  const isMultiSeriesRange = /\b(?:1\.5x1|3x2|4x3)\b.*\b(?:a|to|-)\b.*\b(?:10x8|12x10|14x12)\b/i.test(series);
+  if (!isMultiSeriesRange && (series.includes('3x2') || series.includes('4x3') || series.includes('1.5x1'))) {
     return ATOMIC_PARTS_CATALOG.D3147;
   }
-  if (series.includes('8x6') || series.includes('10x8')) {
+  if (!isMultiSeriesRange && (series.includes('8x6') || series.includes('10x8'))) {
     return ATOMIC_PARTS_CATALOG.F6147;
   }
   return ATOMIC_PARTS_CATALOG.E4147;
@@ -792,43 +797,50 @@ export function generateSmatPartCode(data = {}) {
   const circuit = (data.circuit || data.process_circuit || '').toLowerCase();
   const role = data.role_id || data.role || 'kit_wet_end';
   const roleLower = String(role).toLowerCase();
-  const details = String(data.details || data.spec_details || '').toUpperCase();
+  const details = String(data.details || data.spec_details || '').toUpperCase().replace(/PRENSAESTOPA/g, 'ESTOPERA');
   const pipe = String(data.pipe_size || data.pipe || '').toLowerCase();
   const sizeVal = String(data.size_val || data.flot_capacity || data.filt_capacity || '').toLowerCase();
+  const isPump = circuit === 'bombeo' || circuit === 'pumping';
+  const isClass = circuit === 'clasificacion' || circuit === 'classification';
 
-  const isCtrl = circuit === 'control_procesos' || circuit === 'control' || roleLower.includes('marcy') || roleLower.includes('balanza') || roleLower.includes('batch') || roleLower.includes('tamiz') || roleLower.includes('tamices') || roleLower.includes('sieve') || details.includes('MARCY') || details.includes('TAMIZ') || details.includes('ASTM E11');
-  const isFlot = !isCtrl && (circuit === 'flotacion' || roleLower.includes('celda') || roleLower.includes('flotacion') || roleLower.includes('rotor') || roleLower.includes('estator') || roleLower.includes('mecanismo') || details.includes('FLOT') || details.includes('CELDA'));
-  const isFilt = !isCtrl && (circuit === 'filtracion' || roleLower.includes('filtro') || roleLower.includes('prensa') || roleLower.includes('placa') || roleLower.includes('tela') || details.includes('FILT') || details.includes('PRENSA'));
+  const isCtrl = !isPump && !isClass && (circuit === 'control_procesos' || circuit === 'control' || roleLower.includes('marcy') || roleLower.includes('balanza') || roleLower.includes('batch') || roleLower.includes('tamiz') || roleLower.includes('tamices') || roleLower.includes('sieve') || (!circuit && (details.includes('MARCY') || details.includes('TAMIZ') || details.includes('ASTM E11'))));
+  const isFlot = !isPump && !isClass && !isCtrl && (circuit === 'flotacion' || roleLower.includes('celda') || roleLower.includes('flotacion') || roleLower.includes('rotor') || roleLower.includes('estator') || roleLower.includes('mecanismo') || (!circuit && (details.includes('FLOT') || details.includes('CELDA'))));
+  const isFilt = !isPump && !isClass && !isCtrl && !isFlot && (circuit === 'filtracion' || roleLower.includes('filtro') || roleLower.includes('prensa') || roleLower.includes('placa') || roleLower.includes('tela') || (!circuit && (details.includes('FILT') || details.includes('PRENSA'))));
 
   if (isCtrl) {
-    if (roleLower.includes('batch') || details.includes('BATCH')) return 'SMAT-CTRL-BATCH-LAB';
-    if (roleLower.includes('tamiz') || roleLower.includes('tamices') || roleLower.includes('sieve') || details.includes('TAMIZ') || details.includes('ASTM')) return 'SMAT-CTRL-SIEVE-ASTM';
+    if (roleLower.includes('marcy') || roleLower.includes('balanza')) return 'SMAT-CTRL-MARCY-1000';
+    if (roleLower.includes('batch')) return 'SMAT-CTRL-BATCH-LAB';
+    if (roleLower.includes('tamiz') || roleLower.includes('tamices') || roleLower.includes('sieve')) return 'SMAT-CTRL-SIEVE-ASTM';
+    if (details.includes('BATCH')) return 'SMAT-CTRL-BATCH-LAB';
+    if (details.includes('TAMIZ') || details.includes('ASTM')) return 'SMAT-CTRL-SIEVE-ASTM';
     return 'SMAT-CTRL-MARCY-1000';
   }
 
   if (isFlot) {
     let cap = '100FT';
-    if (sizeVal.includes('50') || details.includes('50')) cap = '50FT';
-    else if (sizeVal.includes('200') || details.includes('200')) cap = '200FT';
-    else if (sizeVal.includes('300') || details.includes('300')) cap = '300FT';
-    else if (sizeVal.includes('100') || details.includes('100')) cap = '100FT';
+    const dFlot = /\b50\b.*\b(?:A|TO|-)\b.*\b300\b/i.test(details) ? '' : details;
+    if (sizeVal.includes('50') || dFlot.includes('50')) cap = '50FT';
+    else if (sizeVal.includes('200') || dFlot.includes('200')) cap = '200FT';
+    else if (sizeVal.includes('300') || dFlot.includes('300')) cap = '300FT';
+    else if (sizeVal.includes('100') || dFlot.includes('100')) cap = '100FT';
 
-    if (roleLower === 'celda_flotacion' || roleLower.includes('celda')) return `SMAT-FLOT-${cap}-CELL`;
     if (roleLower === 'bateria_celdas' || roleLower.includes('bateria')) return `SMAT-FLOT-${cap}-BANK`;
+    if (roleLower === 'celda_flotacion' || roleLower.includes('celda')) return `SMAT-FLOT-${cap}-CELL`;
     if (roleLower === 'manto_difusor' || roleLower.includes('difusor')) return `SMAT-FLOT-${cap}-SHROUD`;
     return `SMAT-FLOT-${cap}-MECH`;
   }
 
   if (isFilt) {
     let pCap = '1500';
-    if (sizeVal.includes('800') || details.includes('800')) pCap = '800';
-    else if (sizeVal.includes('1200') || details.includes('1200')) pCap = '1200';
-    else if (sizeVal.includes('2000') || details.includes('2000')) pCap = '2000';
-    else if (sizeVal.includes('1500') || details.includes('1500')) pCap = '1500';
+    const dFilt = /800.*\b(?:A|TO|-)\b.*1500/i.test(details) ? '' : details;
+    if (sizeVal.includes('800') || dFilt.includes('800')) pCap = '800';
+    else if (sizeVal.includes('1200') || dFilt.includes('1200')) pCap = '1200';
+    else if (sizeVal.includes('2000') || dFilt.includes('2000')) pCap = '2000';
+    else if (sizeVal.includes('1500') || dFilt.includes('1500')) pCap = '1500';
 
+    if (roleLower === 'bomba_prensa') return `SMAT-FILT-${pCap}-PUMP`;
     if (roleLower === 'filtro_prensa' || roleLower.includes('prensa')) return `SMAT-FILT-${pCap}-PRESS`;
     if (roleLower === 'placas_membrana' || roleLower.includes('membrana')) return `SMAT-FILT-${pCap}-MEMBR`;
-    if (roleLower === 'bomba_prensa') return `SMAT-FILT-${pCap}-PUMP`;
     return `SMAT-FILT-${pCap}-CLOTH`;
   }
 
@@ -846,15 +858,16 @@ export function generateSmatPartCode(data = {}) {
 
   // Bombeo: series puramente nominales (sin letras de bastidor B/C/D/E/F)
   let pipeTag = '6X4';
-  if (pipe === '1.5x1' || details.includes('1.5X1')) pipeTag = '1.5X1';
-  else if (pipe === '2x1.5' || details.includes('2X1.5')) pipeTag = '2X1.5';
-  else if (pipe === '3x2' || details.includes('3X2') || (roleLower === 'sello' && details.includes('4X3'))) pipeTag = '3X2';
-  else if (pipe === '4x3' || details.includes('4X3')) pipeTag = '4X3';
-  else if (pipe === '6x4' || details.includes('6X4')) pipeTag = '6X4';
-  else if (pipe === '8x6' || details.includes('8X6')) pipeTag = '8X6';
-  else if (pipe === '10x8' || details.includes('10X8')) pipeTag = '10X8';
-  else if (pipe === '12x10' || details.includes('12X10')) pipeTag = '12X10';
-  else if (pipe === '14x12' || details.includes('14X12')) pipeTag = '14X12';
+  const dPipe = /\b(?:1\.5X1|4X3)\b.*\b(?:A|TO|-)\b.*\b(?:14X12|10X8)\b/i.test(details) ? '' : details;
+  if (pipe === '1.5x1' || dPipe.includes('1.5X1')) pipeTag = '1.5X1';
+  else if (pipe === '2x1.5' || dPipe.includes('2X1.5')) pipeTag = '2X1.5';
+  else if (pipe === '3x2' || dPipe.includes('3X2') || (roleLower === 'sello' && dPipe.includes('4X3'))) pipeTag = '3X2';
+  else if (pipe === '4x3' || dPipe.includes('4X3')) pipeTag = '4X3';
+  else if (pipe === '6x4' || dPipe.includes('6X4')) pipeTag = '6X4';
+  else if (pipe === '8x6' || dPipe.includes('8X6')) pipeTag = '8X6';
+  else if (pipe === '10x8' || dPipe.includes('10X8')) pipeTag = '10X8';
+  else if (pipe === '12x10' || dPipe.includes('12X10')) pipeTag = '12X10';
+  else if (pipe === '14x12' || dPipe.includes('14X12')) pipeTag = '14X12';
 
   if (roleLower.includes('kit_sellado') || roleLower === 'sello') return `SMAT-SEAL-${pipeTag}-EXP`;
   if (roleLower.includes('kit_rodamientos') || roleLower === 'soporte') return `SMAT-BEAR-${pipeTag}-ASSY`;

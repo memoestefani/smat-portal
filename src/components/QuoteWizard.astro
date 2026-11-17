@@ -263,7 +263,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
                 <div>
                   <label for="wb-mining-group-select" style="font-size: 0.74rem; font-weight: 700; color: #0f172a; display: block; margin-bottom: 0.2rem;">{isEs ? 'Grupo Minero / Operador (Pre-calibración opcional):' : 'Mining Group / Operator (Optional preset):'}</label>
                   <select id="wb-mining-group-select" class="wb-select" style="min-height: 36px; padding: 0.3rem 0.55rem; font-size: 0.78rem;">
-                    <option value="">{isEs ? '— Seleccionar grupo minero (25 grupos) —' : '— Select mining group (25 groups) —'}</option>
+                    <option value="">{isEs ? `— Seleccionar grupo minero (${miningGroupsData.total_groups} grupos) —` : `— Select mining group (${miningGroupsData.total_groups} groups) —`}</option>
                     {miningGroupsData.groups.map((grp) => (<option value={grp.id}>{grp.name}</option>))}
                   </select>
                 </div>
@@ -447,6 +447,12 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
                 <div class="form-group"><label for="wb-ctrl-ret-p80"><strong>{isEs ? '% Ret. en P80:' : '% Ret. at P80:'}</strong></label><input type="number" id="wb-ctrl-ret-p80" min="5" max="40" step="1" value="20" class="wb-input font-mono-tech" /></div>
               </div>
               <div id="wb-ctrl-live-metrics" class="font-mono-tech" style="margin-top:0.5rem; padding:0.45rem 0.65rem; background:#f0f9ff; border:1px solid #bae6fd; border-radius:6px; font-size:0.71rem; color:#082f49;"></div>
+              <div class="font-mono-tech" style="margin-top:0.4rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(165px, 1fr)); gap:0.35rem; font-size:0.69rem; color:#0f172a;">
+                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Pulpa / Anillo:' : 'Pulp / Ring:'}</strong> <span id="wb-ctrl-res-sm">1.406 kg/L (Ss 2.8)</span></div>
+                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Sesgo Anillo:' : 'Ring Bias:'}</strong> <span id="wb-ctrl-res-bias">±0.0 pts %Cw</span></div>
+                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Muestra Gy / Batch:' : 'Gy / Batch:'}</strong> <span id="wb-ctrl-res-gy">0.25 kg (1 ciclo Batch)</span></div>
+                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Malla Control RR:' : 'RR Control Mesh:'}</strong> <span id="wb-ctrl-res-rr">#100 • n = 1.15</span></div>
+              </div>
               <div style="margin-top: 0.5rem; overflow-x: auto; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.5rem;">
                 <span class="font-mono-tech" style="display:block; font-size:0.68rem; font-weight:800; color:#475569; margin-bottom:0.35rem;">{isEs ? 'SERIE DE TAMICES ASTM E11 / ROSIN-RAMMLER EN VIVO (7 MALLAS)' : 'LIVE ASTM E11 / ROSIN-RAMMLER SIEVE STACK (7 MESHES)'}</span>
                 <table id="wb-ctrl-sieve-table" style="width:100%; border-collapse:collapse; font-size:0.72rem;">

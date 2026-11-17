@@ -177,3 +177,5 @@ export function matchMiningGroupByEmailDomain(email = '', miningGroups = []) {
   if (!domain) return null;
   return miningGroups.find((g) => Array.isArray(g.domains) && g.domains.includes(domain)) || null;
 }
+
+export { resolveBomPartSpecs } from './pumpAssemblyAndDriveEngine.js';

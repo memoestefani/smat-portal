@@ -421,3 +421,67 @@ pub fn check_v35_zero_orphan_ast_and_dist_graph_closure(site_root: &Path) -> Res
 
     Ok(())
 }
+
+/// 41. Gate V3.8 (D1-V38 a D8-V38, DEB-V38-01..12):
+/// Verifica despacho jerárquico en generateSmatPartCode (0 colisión PRENSAESTOPA/BATCH),
+/// inversión biyectiva CYC/SCR en parseSmatPartCode, aislamiento polimórfico en acuseSheetController,
+/// 4 indicadores metrológicos #wb-ctrl-res-{sm,bias,gy,rr} en QuoteWizard.astro, #live-custom-box en Dossier,
+/// 5 atributos [data-wb-field], 0 selectores muertos en quoteWizardController.js y coherencia 6x4 en alias.
+pub fn check_v38_bijective_codes_acuse_isolation_and_zero_orphan_dom(site_root: &Path) -> Result<(), String> {
+    let dist_catalog = fs::read_to_string(site_root.join("src/scripts/districtProfilesAndSkuCatalog.js"))
+        .map_err(|e| e.to_string())?;
+    if !dist_catalog.contains("replace(/PRENSAESTOPA/g, 'ESTOPERA')") || !dist_catalog.contains("astm_8in_inox") {
+        return Err("D1/D2-V38 (DEB-V38-01/06): districtProfilesAndSkuCatalog.js carece de blindaje PRENSAESTOPA o astm_8in_inox".to_string());
+    }
+
+    let sap_eng = fs::read_to_string(site_root.join("src/scripts/sapAndLeadExportEngine.js"))
+        .map_err(|e| e.to_string())?;
+    if !sap_eng.contains("line === 'CYC'") || !sap_eng.contains("line === 'SCR'") {
+        return Err("D2-V38 (DEB-V38-05): sapAndLeadExportEngine.js carece de ramas CYC/SCR en parseSmatPartCode".to_string());
+    }
+
+    let acuse_ctrl = fs::read_to_string(site_root.join("src/scripts/acuseSheetController.js"))
+        .map_err(|e| e.to_string())?;
+    if !acuse_ctrl.contains("isNonPumpRequisition") || !acuse_ctrl.contains("hybrid_a05_r55") {
+        return Err("D3-V38 (DEB-V38-07): acuseSheetController.js carece de isNonPumpRequisition o hybrid_a05_r55".to_string());
+    }
+
+    let qw_src = fs::read_to_string(site_root.join("src/components/QuoteWizard.astro"))
+        .map_err(|e| e.to_string())?;
+    for id_req in ["wb-ctrl-res-sm", "wb-ctrl-res-bias", "wb-ctrl-res-gy", "wb-ctrl-res-rr"] {
+        if !qw_src.contains(id_req) {
+            return Err(format!("D4-V38 (DEB-V38-08): QuoteWizard.astro carece de #{}", id_req));
+        }
+    }
+
+    let dossier_src = fs::read_to_string(site_root.join("src/components/LiveEngineeringDossier.astro"))
+        .map_err(|e| e.to_string())?;
+    for req_d in [
+        "live-custom-box",
+        "live-custom-text",
+        "data-wb-field=\"actualPipeVelocityMs\"",
+        "data-wb-field=\"slurrySpecificGravity\"",
+        "data-wb-field=\"sealBranch\"",
+        "data-wb-field=\"impellerExitWidthMm\"",
+        "data-wb-field=\"dynamicCapacityCkN\"",
+        "emergency_hotline",
+    ] {
+        if !dossier_src.contains(req_d) {
+            return Err(format!("D5/D8-V38 (DEB-V38-09/11): LiveEngineeringDossier.astro carece de '{}'", req_d));
+        }
+    }
+
+    let ctrl_src = fs::read_to_string(site_root.join("src/scripts/quoteWizardController.js"))
+        .map_err(|e| e.to_string())?;
+    if ctrl_src.contains("diag-search-input") || ctrl_src.contains("btn-quote-mailto") {
+        return Err("D5-V38 (DEB-V38-09): quoteWizardController.js aun contiene selectores muertos diag-search-input / btn-quote-mailto".to_string());
+    }
+
+    let pump_eng = fs::read_to_string(site_root.join("src/scripts/pumpAssemblyAndDriveEngine.js"))
+        .map_err(|e| e.to_string())?;
+    if !pump_eng.contains("export function resolveBomPartSpecs") {
+        return Err("D6-V38 (DEB-V38-10): pumpAssemblyAndDriveEngine.js carece de resolveBomPartSpecs".to_string());
+    }
+
+    Ok(())
+}

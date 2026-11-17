@@ -394,6 +394,7 @@ export function initQuoteWizardController() {
   var defaultTypeAttr = containerElem ? containerElem.getAttribute('data-default-type') : 'opex';
   var isOpex = defaultTypeAttr !== 'capex';
   var isCustomEquipment = false;
+  var currentBomOverride = null;
 
   function renderWetEndMaterialMatrixCard(matKey) {
     var key = matKey || 'alto_cromo_cr27';
@@ -1559,7 +1560,20 @@ export function initQuoteWizardController() {
         activeRoleForSpecs = selectRoleCtrl?.value || 'balanza_marcy';
         activePipeForSpecs = selectCtrlSpec?.value || 'marcy_12_rings';
       }
-      currentPartSpecs = getAtomicPartSpecs(currentAtomicCode || activeRoleForSpecs, activePipeForSpecs);
+      currentPartSpecs = getAtomicPartSpecs(
+        currentAtomicCode || (currentBomOverride && currentBomOverride.pieza) || activeRoleForSpecs,
+        activePipeForSpecs
+      );
+      if (currentBomOverride) {
+        var ovWeight = Number(currentBomOverride.peso_kg);
+        if (Number.isFinite(ovWeight) && ovWeight > 0) {
+          currentPartSpecs = Object.assign({}, currentPartSpecs, { weight_kg: ovWeight });
+        }
+        if (currentBomOverride.estacion) {
+          var ovStNum = Number(String(currentBomOverride.estacion).replace(/\D+/g, '')) || currentPartSpecs.station_number;
+          currentPartSpecs = Object.assign({}, currentPartSpecs, { station_number: ovStNum, station: 'S' + ovStNum });
+        }
+      }
 
       if (dossierPartHardness && currentPartSpecs.hardness) {
         dossierPartHardness.textContent = currentPartSpecs.hardness;
@@ -1727,13 +1741,15 @@ export function initQuoteWizardController() {
         elMetricDriveFlood.textContent = currentKinematics.sumpFloodImmunity || 'HIGH';
       }
       if (elLiveKinematics) {
-        var matHuman = matCodeVal === 'hule_natural'
-          ? (isEs ? 'Hule Natural Antiabrasivo (55–65 Shore A)' : 'Natural Rubber (55–65 Shore A)')
-          : (matCodeVal === 'poliuretano'
-            ? (isEs ? 'Poliuretano Grado Minero (85–95 Shore A)' : 'Mining Polyurethane (85–95 Shore A)')
-            : (matCodeVal === 'ceramica_sic'
-              ? (isEs ? 'Carburo de Silicio Sinterizado SiC (≥2200 HV, K_Ic=4.1 MPa·√m)' : 'Sintered Silicon Carbide SiC (≥2200 HV, K_Ic=4.1 MPa·√m)')
-              : (isEs ? 'Alto Cromo ASTM A532 Cr27% (≥650 HB)' : 'High Chrome ASTM A532 Cr27% (≥650 HB)')));
+        var matHuman = matCodeVal === 'hybrid_a05_r55'
+          ? (isEs ? 'Rama D Híbrida Finnie-Hutchings (Impulsor A05 Cr27% + Forros Hule R55)' : 'Branch D Finnie-Hutchings Hybrid (Cr27% A05 Impeller + R55 Rubber Liners)')
+          : (matCodeVal === 'hule_natural'
+            ? (isEs ? 'Hule Natural Antiabrasivo (55–65 Shore A)' : 'Natural Rubber (55–65 Shore A)')
+            : (matCodeVal === 'poliuretano'
+              ? (isEs ? 'Poliuretano Grado Minero (85–95 Shore A)' : 'Mining Polyurethane (85–95 Shore A)')
+              : (matCodeVal === 'ceramica_sic'
+                ? (isEs ? 'Carburo de Silicio Sinterizado SiC (≥2200 HV, K_Ic=4.1 MPa·√m)' : 'Sintered Silicon Carbide SiC (≥2200 HV, K_Ic=4.1 MPa·√m)')
+                : (isEs ? 'Alto Cromo ASTM A532 Cr27% (≥650 HB)' : 'High Chrome ASTM A532 Cr27% (≥650 HB)'))));
         var collShort = currentClearanceEval.sequenceValid
           ? (isEs ? 'Secuencia S1→S5 libre de colisión axial' : 'S1→S5 sequence collision-free')
           : (isEs ? ('BLOQUEO ' + currentClearanceEval.outOfOrderStationId + ': ' + currentClearanceEval.collisionDetailsEs) : ('BLOCKED ' + currentClearanceEval.outOfOrderStationId + ': ' + currentClearanceEval.collisionDetailsEn));
@@ -1869,6 +1885,10 @@ export function initQuoteWizardController() {
         filt_condition: isPConfirmed ? pCondVal : '',
         dim_outer_dia: dimOuterDia?.value,
         dim_shaft_bore: dimShaftBore?.value,
+        is_custom: isCustomEquipment,
+        custom_equip_type: customEquipType?.value || '',
+        custom_equip_capacity: customEquipCapacity?.value || '',
+        custom_equip_notes: customEquipNotes?.value || '',
         altitude: selectedAltitude, tcoAlloy: selectedTcoAlloy,
         flow: sliderFlow?.value, solids: sliderSolids?.value, d80: sliderD80?.value,
         sg: sliderSg?.value, ph: sliderPh?.value,
@@ -2050,6 +2070,13 @@ export function initQuoteWizardController() {
         }
         if (s.dim_outer_dia && dimOuterDia) dimOuterDia.value = s.dim_outer_dia;
         if (s.dim_shaft_bore && dimShaftBore) dimShaftBore.value = s.dim_shaft_bore;
+        if (s.custom_equip_type && customEquipType) customEquipType.value = s.custom_equip_type;
+        if (s.custom_equip_capacity && customEquipCapacity) customEquipCapacity.value = s.custom_equip_capacity;
+        if (s.custom_equip_notes && customEquipNotes) customEquipNotes.value = s.custom_equip_notes;
+        if (s.is_custom && customEquipDetails) {
+          customEquipDetails.open = true;
+          isCustomEquipment = true;
+        }
 
         if (s.flow && sliderFlow) sliderFlow.value = s.flow;
         if (s.solids && sliderSolids) sliderSolids.value = s.solids;
@@ -2313,7 +2340,9 @@ export function initQuoteWizardController() {
       mission: isOpex ? 'refacciones' : 'equipos',
       package_items: isOpex ? [] : pkgItems,
       is_custom: isCustomEquipment,
-      custom_notes: isCustomEquipment ? `${customEquipType?.value || ''} - ${customEquipCapacity?.value || ''}` : '',
+      custom_notes: isCustomEquipment
+        ? [customEquipType?.value?.trim(), customEquipCapacity?.value?.trim(), customEquipNotes?.value?.trim()].filter(Boolean).join(' — ')
+        : '',
       pump_material: document.getElementById('wb-pump-material')?.value || 'alto_cromo_cr27',
       wet_material: document.getElementById('wb-pump-material')?.value || 'alto_cromo_cr27',
       material: document.getElementById('wb-pump-material')?.value || 'alto_cromo_cr27',
@@ -2433,7 +2462,7 @@ export function initQuoteWizardController() {
 
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault();
-      var searchInput = document.getElementById('diag-search-input') || document.getElementById('wb-code-decoder-input');
+      var searchInput = document.getElementById('wb-code-decoder-input');
       if (searchInput) {
         searchInput.focus();
         searchInput.select?.();
@@ -2485,7 +2514,6 @@ export function initQuoteWizardController() {
   };
 
   document.getElementById('wb-email-btn')?.addEventListener('click', triggerMailto);
-  document.getElementById('btn-quote-mailto')?.addEventListener('click', triggerMailto);
 
   document.getElementById('wb-whatsapp-btn')?.addEventListener('click', function () {
     var d = collectData();
@@ -2995,7 +3023,14 @@ export function initQuoteWizardController() {
         selectDriveArrangement.value = urlTransmision;
         selectDriveArrangement.dataset.userTouched = 'true';
       }
-      if (urlPieza || urlMaterial || urlTransmision || urlEstacion) {
+      if (urlPieza || ctx.peso_kg || urlMaterial || urlTransmision || urlEstacion) {
+        if (urlPieza || ctx.peso_kg || urlEstacion) {
+          currentBomOverride = {
+            pieza: urlPieza || '',
+            peso_kg: ctx.peso_kg || '',
+            estacion: urlEstacion || ''
+          };
+        }
         var partNotes = [];
         if (urlPieza) partNotes.push((isEs ? 'Pieza: ' : 'Part: ') + urlPieza);
         if (urlMaterial) partNotes.push((isEs ? 'Material: ' : 'Material: ') + urlMaterial);

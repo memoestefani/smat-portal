@@ -59,7 +59,7 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
     <div class="dossier-sla-bar" id="dossier-sla-bar">
       <span class="sla-badge" id="live-priority-tag">[PARO DE PLANTA / PRIORIDAD]</span>
       <span class="sla-badge" id="gate-lead-status" data-testid="gate-lead-status" style="background:#065f46; color:#ffffff; padding:0.15rem 0.45rem; border-radius:3px; font-size:0.68rem;">{isEs ? 'PLANTA MINERA VERIFICADA • PARÁMETROS PLAUSIBLES' : 'VERIFIED MINING PLANT • PLAUSIBLE PARAMETERS'}</span>
-      <span class="sla-clock">Durango: {companyData.contact.phones[0].display} • WhatsApp: {companyData.contact.whatsapp.display} • {companyData.logistics.warehouse_hours}</span>
+      <span class="sla-clock" data-emergency-hotline={String(companyData.contact.whatsapp.emergency_hotline)}>Durango: {companyData.contact.phones[0].display} • WhatsApp: {companyData.contact.whatsapp.display} • {companyData.logistics.warehouse_hours}</span>
     </div>
     <div id="trust-boundary-alert" data-testid="trust-boundary-alert" class="hidden" style="margin:0.4rem 0; padding:0.5rem 0.7rem; background:#fef2f2; border-left:4px solid #991b1b; border-radius:4px; font-size:0.75rem; color:#7f1d1d;">
       <strong id="trust-boundary-title">{isEs ? 'Límite Técnico Detectado' : 'Technical Boundary Alert'}</strong>
@@ -108,6 +108,10 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
             <span class="ref-label">{isEs ? 'Referencia Confidencial Cliente:' : 'Client Confidential Ref:'}</span>
             <strong id="live-client-ref-text"></strong>
           </div>
+          <div id="live-custom-box" class="live-client-ref-box hidden" style="margin-top:0.25rem;">
+            <span class="ref-label">{isEs ? 'Equipo Especial Fuera de Catálogo:' : 'Custom Engineered Equipment:'}</span>
+            <strong id="live-custom-text"></strong>
+          </div>
           <div id="live-pipe-meta-box" class="live-pipe-meta-box">
             <span class="spec-label" id="live-pipe-header">{isEs ? 'Línea de Tubería / Capacidad:' : 'Process Line / Capacity:'}</span>
             <strong id="live-pipe-text" class="font-mono-tech">{isEs ? 'Tubería 6" a 4" (Línea Principal de Proceso)' : '6" to 4" Piping (Main Process Slurry)'}</strong>
@@ -115,6 +119,9 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
             <strong id="live-stress-text" class="font-mono-tech">{isEs ? 'Pendiente de dictamen en campo (Asesoría SMAT solicitada)' : 'Pending field assessment (SMAT technical advice requested)'}</strong>
             <span class="spec-label" id="live-criteria-header" style="margin-top:0.3rem;">{isEs ? 'Criterios de Aceptación Operativa (Rol):' : 'Role Acceptance Criteria:'}</span>
             <strong id="live-role-criteria" data-testid="live-role-criteria" class="font-mono-tech">{isEs ? 'Intercambiabilidad dimensional 1:1 • Dureza >600 HB • Disponibilidad en Almacén Durango' : '1:1 dimensional fit • Hardness >600 HB • Durango Warehouse availability'}</strong>
+            <div class="font-mono-tech" style="margin-top:0.25rem; font-size:0.7rem; color:#475569;">
+              <span data-wb-field="actualPipeVelocityMs">3.15 m/s</span> • <span data-wb-field="slurrySpecificGravity">1.40 kg/L</span> • <span data-wb-field="sealBranch">Expulsor Seco (Est. 02A)</span> • b₂ <span data-wb-field="impellerExitWidthMm">48 mm</span> • C <span data-wb-field="dynamicCapacityCkN">145 kN</span>
+            </div>
           </div>
           <div id="live-recirc-warning-dossier" class="live-recirc-warning-dossier hidden">
             <span class="recirc-warn-tag">AVISO DE RECIRCULACIÓN</span>

@@ -289,12 +289,16 @@ export function resolveUrlContextDescriptor(ctx = {}) {
   const flotationDomChipKey = resolveFlotationDomChipKey(ctx.flot_condition || '');
   const filtrationDomChipKey = resolveFiltrationDomChipKey(ctx.filt_condition || '');
   const marcyThreeCup = parseMarcyThreeCupUrlParams(ctx);
+  const bomOverride = (rawPieza || ctx.peso_kg || ctx.estacion)
+    ? { pieza: rawPieza, peso_kg: ctx.peso_kg || '', estacion: ctx.estacion || '' }
+    : null;
   return {
     canonicalRole,
     normalizedFlotCondition,
     normalizedFiltCondition,
     flotationDomChipKey,
     filtrationDomChipKey,
-    marcyThreeCup
+    marcyThreeCup,
+    bomOverride
   };
 }

@@ -102,19 +102,34 @@ export function parseSmatPartCode(code = '', lang = 'es') {
     isOpex = false;
     mission = 'equipos';
   } else if (line === 'PUMP') {
-    if (clean.includes('WETKIT')) {
-      role_id = 'kit_wet_end';
+    if (clean.includes('WETKIT') || clean.includes('FPL')) {
+      role_id = clean.includes('FPL') ? 'revestimientos' : 'kit_wet_end';
       ui_role = 'kit_wet_end';
-    } else if (clean.includes('VOL')) {
+    } else if (clean.includes('VOL') || clean.includes('CPL')) {
       role_id = 'solo_voluta';
       ui_role = 'solo_voluta';
     } else if (clean.includes('LINER')) {
       role_id = 'revestimientos';
       ui_role = 'solo_voluta';
+    } else if (clean.includes('BRG')) {
+      role_id = 'soporte';
+      ui_role = 'kit_rodamientos';
     } else {
       role_id = 'impulsor';
       ui_role = 'solo_impulsor';
     }
+  } else if (line === 'CYC') {
+    circuit = 'clasificacion';
+    role_id = 'hidrociclon_apex_vortex';
+    ui_role = 'hidrociclon_apex_vortex';
+    size = series === 'D6' ? 'D6' : (series === 'D10' ? 'D10' : (series === 'D20' ? 'D20' : 'D15'));
+    alloy = 'Carburo de Silicio Sinterizado SiC (≥ 2200 HV) / Alto Cromo A05';
+  } else if (line === 'SCR') {
+    circuit = 'clasificacion';
+    role_id = 'malla_criba_poliuretano';
+    ui_role = 'malla_criba_poliuretano';
+    size = clean.includes('1X1') ? 'MOD-1X1' : 'TH48-30';
+    alloy = 'Poliuretano Colado U01 (85 Shore A) con Cuerdas de Aramida';
   } else if (line === 'SEAL') {
     role_id = 'sello';
     ui_role = 'kit_sellado';
@@ -208,7 +223,7 @@ export function parseSmatPartCode(code = '', lang = 'es') {
   const frameMatch = series.match(/\d+X\d+([A-Z])/);
   if (frameMatch) frame = frameMatch[1];
 
-  const resolvedSpecs = circuit === 'bombeo' ? getAtomicPartSpecs(ui_role, size) : null;
+  const resolvedSpecs = getAtomicPartSpecs(ui_role, size);
 
   return {
     valid: true,
@@ -643,6 +658,8 @@ export function buildCanonicalEngineeringSnapshotImpl(d = {}) {
     d50c: d.d50c ?? d.cyclone_circuit?.d50cMicrons ?? '',
     roping_risk: d.roping_risk !== undefined ? String(d.roping_risk) : (d.cyclone_circuit?.ropingRisk !== undefined ? (d.cyclone_circuit.ropingRisk ? '1' : '0') : ''),
     g5_confirm: d.g5_confirm !== undefined ? String(d.g5_confirm) : (d.g5_advance_confirmed ? '1' : ''),
+    circuito: d.circuit || d.circuito || '',
+    notas_especiales: d.custom_notes || d.notas_especiales || '',
     detalles: d.details || d.detalles || '',
     destino: d.destination || d.destino || ''
   };
@@ -671,6 +688,7 @@ export function buildAcuseUrlParams(d = {}) {
     urgencia: snap.urgencia
   };
   const optionalKeys = [
+    'circuito', 'notas_especiales',
     'pieza', 'material', 'transmision', 'estacion', 'peso_kg',
     'claro_mm', 'delta_eta_v', 'pipe_vel_loss_pct', 'u2_ms', 'n2_rpm',
     'fr_kn', 'inmunidad_sumidero', 'razon_estructural', 'l10h', 'metrologia',

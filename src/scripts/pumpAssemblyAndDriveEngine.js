@@ -406,7 +406,7 @@ export function evaluatePumpAssemblySequence(params = {}) {
   const opts = typeof params === 'number' ? { frontClearanceMm: params } : (params || {});
   const branchRaw = String(opts.wetEndBranch || opts.material || 'metal').toLowerCase();
   const isCeramic = branchRaw === 'ceramica_sic' || branchRaw === 'sic' || branchRaw === 'ceramic';
-  const isHybrid = !isCeramic && (branchRaw === 'hibrido_a05_r55' || branchRaw === 'hybrid' || branchRaw.includes('hibrido'));
+  const isHybrid = !isCeramic && (branchRaw === 'hibrido_a05_r55' || branchRaw === 'hybrid_a05_r55' || branchRaw === 'hybrid' || branchRaw.includes('hibrido') || branchRaw.includes('dual'));
   const isElastomer = !isCeramic && (isHybrid || branchRaw === 'rubber' || branchRaw === 'hule' || branchRaw === 'hule_natural' || branchRaw === 'polyurethane' || branchRaw === 'poliuretano');
   const wetEndBranch = isCeramic
     ? 'ceramica_sic'
@@ -830,5 +830,47 @@ export function evaluateHybridWetEndConfiguration({
     rationaleEn: hybridRecommended
       ? `Optimal Hybrid Wet-End (Finnie-Hutchings INV-SMAT-SCI-05): 27% High Chrome A05 Closed Impeller (resists leading-edge impact α ≈ 75°–90° at d80 = ${d80} µm) + Split R55 Natural Rubber Liners FPL/CPL (absorbs grazing abrasion α ≤ 25° at u₂ = ${u2} m/s ≤ 24.5 m/s), reducing rigging mass by ${massSavingsPct}%.`
       : `Outside hybrid window (u₂ = ${u2} m/s, d80 = ${d80} µm): exceeds viscoelastic thermal ceiling (24.5 m/s) or coarse tear threshold (600 µm). Full 27% High Chrome A05 Metal Wet-End recommended.`
+  };
+}
+
+const BOM_ALIAS_TO_PIEZA = {
+  frame_pedestal: 'frame_pedestal', pedestal: 'frame_pedestal',
+  bearing_assembly: 'bearing_assembly', bearing_cartridge_iso281: 'bearing_assembly', shaft_4140: 'bearing_assembly', labyrinth_purged: 'bearing_assembly',
+  shaft_sleeve: 'shaft_sleeve', shaft_sleeve_420: 'shaft_sleeve',
+  expeller_ring: 'expeller_ring', expeller_ring_gland: 'expeller_ring', stuffing_box_gland: 'expeller_ring',
+  expeller_sello: 'expeller_sello', expeller_dry: 'expeller_sello',
+  frame_plate: 'frame_plate', fpl_insert: 'fpl_insert', liner_fpl: 'liner_fpl',
+  impulsor_5_alabes: 'impulsor_5_alabes', impeller_5v: 'impulsor_5_alabes',
+  voluta_liners: 'voluta_liners', volute_casing: 'voluta_liners',
+  liner_cpl: 'liner_cpl', throatbush: 'throatbush', cover_plate: 'cover_plate', lote_554: 'lote_554'
+};
+
+export function resolveBomPartSpecs(codeOrSlug = '', pipeSeries = '6x4', overrides = {}) {
+  const key = String(codeOrSlug || '').trim().toLowerCase().replace(/-/g, '_');
+  const targetPieza = BOM_ALIAS_TO_PIEZA[key];
+  if (!targetPieza) return null;
+  const bomItem = PUMP_554_BOM_14_PARTS.find((it) => it.pieza === targetPieza);
+  if (!bomItem) return null;
+  const sLow = String(pipeSeries || '6x4').toLowerCase();
+  const isRange = /\b(?:1\.5x1|3x2|4x3)\b.*\b(?:a|to|-)\b.*\b(?:10x8|12x10|14x12)\b/i.test(sLow);
+  const seriesKey = !isRange && (sLow.includes('3x2') || sLow.includes('4x3') || sLow.includes('1.5x1')) ? '3x2' : (!isRange && (sLow.includes('8x6') || sLow.includes('10x8')) ? '8x6' : '6x4');
+  const overrideWeight = Number(overrides?.peso_kg ?? overrides?.weight_kg);
+  const weightKg = Number.isFinite(overrideWeight) && overrideWeight > 0 ? overrideWeight : (bomItem.weightKgBySeries?.[seriesKey] ?? bomItem.weightKg);
+  const liShaft = Number((weightKg / 11.1).toFixed(2));
+  const tier = weightKg >= 23 ? 'HOIST_REQUIRED' : (weightKg > 11.1 ? 'ASSISTED_SHAFT_MOUNT_2P' : 'MANUAL_1P_SAFE');
+  const mode = weightKg >= 23 ? 'HOIST_REQUIRED' : 'MANUAL_SAFE';
+  const rawSt = String(overrides?.estacion || bomItem.station || `S${bomItem.stationNumber}`).toUpperCase();
+  const stNum = Number(rawSt.replace(/\D+/g, '')) || bomItem.stationNumber;
+  return {
+    code: bomItem.pieza, part_number: `BOM-${bomItem.pos}-${bomItem.pieza.toUpperCase()}`, frame: seriesKey,
+    name_es: bomItem.nameEs, name_en: bomItem.nameEn, type_es: bomItem.specEs, type_en: bomItem.specEn,
+    metallurgy: bomItem.material === 'acero_4140_iso281' ? 'Acero SAE 4140 Bonificado + Hierro Dúctil GGG40 (ISO 281)' : (bomItem.material === 'hule_natural' ? 'Elastómero Hule Natural R55 (55–65 Shore A)' : 'Alto Cromo Cr27% ASTM A532 (≥ 650 HB)'),
+    hardness: bomItem.material === 'hule_natural' ? '55–65 Shore A' : '≥ 650 HB (58–62 HRC)',
+    vanes: bomItem.partKey === 'impeller' ? 5 : 0, weight_kg: weightKg, impeller_diameter_mm: seriesKey === '3x2' ? 245 : (seriesKey === '8x6' ? 510 : 380),
+    max_particle_mm: seriesKey === '3x2' ? 28 : (seriesKey === '8x6' ? 62 : 45), max_sphere_mm: seriesKey === '3x2' ? 28 : (seriesKey === '8x6' ? 62 : 45), wall_thickness_mm: 32,
+    station_number: stNum, station: `S${stNum}`, station_name_es: `${bomItem.station}: ${bomItem.nameEs}`, station_name_en: `${bomItem.station}: ${bomItem.nameEn}`,
+    assembly_order: `${bomItem.pos}. ${bomItem.nameEs} (${bomItem.station})`, assembly_order_note: `${bomItem.pos}. ${bomItem.nameEs} (${bomItem.station} • ${bomItem.branchLabelEs})`,
+    wet_end_kit_ratio: '5:5:4', niosh_handling_mode: mode, handling_mode: mode, niosh_rwl_shaft_kg: 11.1, niosh_lifting_index_shaft: liShaft,
+    niosh_ergonomic_tier: tier, circuit: 'bombeo', pipe_size: seriesKey, role: bomItem.equipo, smat_code: `SMAT-PUMP-${seriesKey.toUpperCase()}-WETKIT`
   };
 }

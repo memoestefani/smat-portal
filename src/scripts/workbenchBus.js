@@ -70,7 +70,7 @@ export const DEFAULT_WORKBENCH_STATE_V2 = Object.freeze({ version: 2, circuit: '
 export function normalizeMaterialKey(raw = '') {
   const s = String(raw || '').trim().toLowerCase();
   if (!s) return 'alto_cromo_cr27';
-  if (s === 'hybrid_a05_r55' || s === 'hibrido_a05_r55' || s === 'a05+r55' || s.includes('hybrid') || s.includes('hibrid')) {
+  if (s === 'hybrid_a05_r55' || s === 'hibrido_a05_r55' || s === 'a05+r55' || s === 'elastomer_a05_dual' || s.includes('hybrid') || s.includes('hibrid') || s.includes('dual')) {
     return 'hybrid_a05_r55';
   }
   if (s === 'ceramica_sic' || s === 'sic' || s === 'ceramic' || s.includes('ceramica') || s.includes('carburo')) {
