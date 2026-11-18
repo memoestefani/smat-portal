@@ -375,4 +375,5 @@ export function computeSelectionOrderCodeHash(payload = {}) {
 }
 export { calculateUrethaneScreenPartitionWeibull, calculateFlotationGorainKineticRate } from './mechanicalAndSeparationEngine.js';
 export { evaluateCentrifugalSealPressureBalance } from './pumpingSealAndTribologyCalculators.js';
-export * from './tribologyAndCompatibilityEngine.js';
+export { MARCY_STANDARD_RINGS, ASTM_E11_SIEVE_TABLE, selectOptimalMaterial, calculateMarcyScaleReading, calculateGyMinimumSampleMass, recommendAstmSieveSeries, WET_END_MATERIAL_MATRIX, WET_END_MATERIAL_KITS } from './tribologyAndCompatibilityEngine.js';
+export { PUMP_ASSEMBLY_STATIONS, PUMP_554_ASSEMBLY_STATIONS, PUMP_554_BOM_14_PARTS, evaluatePumpAssemblySequence, evaluateWetEndAssemblyInterference, DRIVE_ARRANGEMENT_CATALOG, selectBearingFrameByPowerAndRpm, calculateDriveAndBearingKinematics, DRIVE_ARRANGEMENTS, calculateDriveKinematics, calculateMarcyScale, evaluateHybridWetEndConfiguration, resolveBomPartSpecs } from './pumpAssemblyAndDriveEngine.js';

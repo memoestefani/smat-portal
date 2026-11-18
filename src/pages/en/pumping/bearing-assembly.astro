@@ -204,7 +204,7 @@ const dc = soporteRole?.decision_criteria;
   import { calculateDriveAndBearingKinematics } from '../../../scripts/slurryEngine.js';
   import { selectBearingFrameByPowerAndRpm } from '../../../scripts/pumpAssemblyAndDriveEngine.js';
   import { initCoreTradeInWidgets } from '../../../scripts/vendorPassportAndTradeInController.js';
-  import { saveEngineeringContextSnapshot } from '../../../scripts/wizardCircuitPhysicsController.js';
+  import { commitVerticalSimulation } from '../../../scripts/verticalStateAndCtaSyncBridge.js';
 
   function initBearingInspectorEn() {
     initCoreTradeInWidgets(document, 'en');
@@ -221,7 +221,6 @@ const dc = soporteRole?.decision_criteria;
     const contEl = box.querySelector('[data-bear-l10mh-cont]');
     const frameSpecEl = box.querySelector('[data-bear-frame-spec]');
     const frameLimEl = box.querySelector('[data-bear-frame-limits]');
-    const ctaEl = box.querySelector('[data-bear-cta]') as HTMLAnchorElement | null;
 
     const update = () => {
       const arrangement = arrSel?.value || 'CV';
@@ -241,10 +240,16 @@ const dc = soporteRole?.decision_criteria;
       if (contEl) contEl.textContent = `${res.l10mhContaminatedHours.toLocaleString('en-US')} h (a_ISO = ${res.aIsoContaminatedFelt}×)`;
       if (frameSpecEl) frameSpecEl.textContent = `${frameEval.labelEn} (Shaft Ø ${frameEval.shaftDiameterMm} mm)`;
       if (frameLimEl) frameLimEl.textContent = `P_max = ${frameEval.maxPowerKw} kW • n_max = ${frameEval.maxRpm} RPM • C_dyn = ${frameEval.recommendedDynamicCkN} kN`;
-      if (ctaEl) {
-        ctaEl.href = `/en/quote/?circuito=bombeo&equipo=kit_rodamientos&pieza=bearing_assembly&estacion=S1&transmision=${res.arrangement}&cap_c_kn=${res.dynamicCapacityCkN}&power_kw=${res.shaftPowerKw}&fr_kn=${res.beltRadialLoadKn.toFixed(2)}&l10h=${res.bearingL10Hours}#rfq`;
-      }
-      saveEngineeringContextSnapshot('bombeo', { ...res, ...frameEval });
+      commitVerticalSimulation('bombeo', { ...res, ...frameEval }, {
+        root: document,
+        queryPatch: {
+          transmision: res.arrangement,
+          cap_c_kn: res.dynamicCapacityCkN,
+          power_kw: res.shaftPowerKw,
+          fr_kn: res.beltRadialLoadKn.toFixed(2),
+          l10h: res.bearingL10Hours,
+        },
+      });
     };
 
     [arrSel, cSel, kwInput].forEach((el) => {

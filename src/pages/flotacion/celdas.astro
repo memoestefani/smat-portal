@@ -195,10 +195,11 @@ const criteria = celdaRole?.decision_criteria;
   import { calculateFlotationGorainKineticRate } from '../../scripts/slurryEngine.js';
   import { evaluateFlotationCellHydrodynamics, saveEngineeringContextSnapshot } from '../../scripts/wizardCircuitPhysicsController.js';
   import { bindCanonicalFlotationCalculator } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
-  void calculateFlotationGorainKineticRate;
-  void evaluateFlotationCellHydrodynamics;
-  void saveEngineeringContextSnapshot;
-  bindCanonicalFlotationCalculator(document, 'es');
+  bindCanonicalFlotationCalculator(document, 'es', {
+    calculateFlotationGorainKineticRate,
+    evaluateFlotationCellHydrodynamics,
+    saveEngineeringContextSnapshot,
+  });
 </script>
 
 <style>

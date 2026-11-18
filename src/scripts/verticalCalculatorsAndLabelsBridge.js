@@ -28,6 +28,18 @@ import {
   saveWorkbenchSession,
   loadWorkbenchSession,
 } from './workbenchBus.js';
+import {
+  commitVerticalSimulation,
+  syncVerticalCtaLinks,
+  loadUnifiedEngineeringAndWorkbenchState,
+  projectVerticalPayloadToWorkbenchPatch,
+} from './verticalStateAndCtaSyncBridge.js';
+export {
+  commitVerticalSimulation,
+  syncVerticalCtaLinks,
+  loadUnifiedEngineeringAndWorkbenchState,
+  projectVerticalPayloadToWorkbenchPatch,
+} from './verticalStateAndCtaSyncBridge.js';
 export {
   evaluateCentrifugalSealPressureBalance,
   bindCanonicalSealBalanceCalculator,
@@ -215,7 +227,7 @@ export function formatDiagramHumanTitle(diagramId, lang = 'es') {
  * evaluando simultáneamente Timoshenko (`evaluateFilterPressPlateDeflection`) y Darcy-Ruth
  * (`calculateFilterPressCycleCapacity`) y persistiendo en `smat_engineering_context_v1` (`D1-V42`).
  */
-export function bindCanonicalFiltrationCalculator(root, lang = 'es') {
+export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = {}) {
   if (!root || typeof root.querySelector !== 'function') return null;
   const isEn = String(lang).toLowerCase() === 'en';
   BRIDGE_RUNTIME_REGISTRY.lastBoundCircuit = 'filtracion';
@@ -289,13 +301,26 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es') {
       readoutBox.style.color = isAlert ? '#991b1b' : '#065f46';
     }
 
-    saveEngineeringContextSnapshot('filtracion', {
+    const filtPayload = {
       ...res,
       feedPressureBar,
       cloggedPortsCount,
       plateWidthMm,
       plateThicknessMm,
       cakeMoistureTargetPct,
+    };
+    saveEngineeringContextSnapshot('filtracion', filtPayload);
+    commitVerticalSimulation('filtracion', filtPayload, {
+      root,
+      queryPatch: {
+        bar: feedPressureBar,
+        clogged_ports: cloggedPortsCount,
+        plate_mm: plateWidthMm,
+        thickness_mm: plateThicknessMm,
+        moisture_pct: cakeMoistureTargetPct,
+        stress_mpa: res.maxBendingStressMpa,
+        fs: res.flexuralSafetyFactor,
+      },
     });
     return res;
   }
@@ -314,7 +339,7 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es') {
  * Conecta de forma canónica la calculadora de Flotación (#flot-*) ejecutando
  * `evaluateFlotationCellHydrodynamics` (Gorain $S_b, k, v_{\text{tip}}$ + Zwietering $N_{js}$) (`D1-V42` / `D1-V44`).
  */
-export function bindCanonicalFlotationCalculator(root, lang = 'es') {
+export function bindCanonicalFlotationCalculator(root, lang = 'es', _options = {}) {
   if (!root || typeof root.querySelector !== 'function') return null;
   const isEn = String(lang).toLowerCase() === 'en';
   BRIDGE_RUNTIME_REGISTRY.lastBoundCircuit = 'flotacion';
@@ -386,7 +411,7 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es') {
       readoutBox.style.color = isOptimal ? '#065f46' : '#92400e';
     }
 
-    saveEngineeringContextSnapshot('flotacion', {
+    const flotPayload = {
       ...res,
       rotorDiameterM: rotorDiaM,
       superficialGasVelocityCmS: jgCmS,
@@ -394,6 +419,22 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es') {
       rotorRpm,
       particleSizeUm,
       solidsCwPct,
+    };
+    saveEngineeringContextSnapshot('flotacion', flotPayload);
+    commitVerticalSimulation('flotacion', flotPayload, {
+      root,
+      queryPatch: {
+        rotor_m: rotorDiaM,
+        jg: jgCmS,
+        d32: d32Mm,
+        rpm: rotorRpm,
+        d80: particleSizeUm,
+        cw: solidsCwPct,
+        sb: sbVal,
+        k: kVal,
+        vtip: vtipVal,
+        njs: res.zwieteringNjsRpm,
+      },
     });
     return res;
   }
@@ -412,7 +453,7 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es') {
  * Conecta en una sola estación acoplada el Balance de 3 Vasos Marcy + Plitt ($d_{50c}$)
  * con la Criba de Uretano Weibull ($d_{80} = 2.2 \times d_{50c}$) en `/clasificacion/` (`D2-V42` / `D4-V44`).
  */
-export function bindCoupledClassificationStation(root, lang = 'es') {
+export function bindCoupledClassificationStation(root, lang = 'es', _options = {}) {
   if (!root || typeof root.querySelector !== 'function') return null;
   const isEn = String(lang).toLowerCase() === 'en';
   BRIDGE_RUNTIME_REGISTRY.lastBoundCircuit = 'clasificacion';

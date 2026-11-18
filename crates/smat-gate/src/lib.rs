@@ -13,6 +13,8 @@ pub mod v43_contract_and_sensitivity_gates;
 pub use v43_contract_and_sensitivity_gates::*;
 pub mod v44_zero_duplication_and_contiguity_gates;
 pub use v44_zero_duplication_and_contiguity_gates::*;
+pub mod v45_ergos_and_backend_parity_gates;
+pub use v45_ergos_and_backend_parity_gates::*;
 
 pub struct GateReport {
     pub name: String,
@@ -914,6 +916,11 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             passed: check_v44_scalar_purity_zero_duplication_and_xor_contiguity_gate_47(site_root).is_ok(),
             details: check_v44_scalar_purity_zero_duplication_and_xor_contiguity_gate_47(site_root).err().unwrap_or_else(|| "OK: Pureza escalar ISO 80000-1, 0 duplicacion lado a lado en [slug].astro, 3NF en [code].astro, estacion contigua en /clasificacion/ y proyeccion Harel XOR en /cotizar/.".to_string()),
         },
+        GateReport {
+            name: "48. Clausura Ergonomica Apple HIG + Tepehuana (0 Duplicados SVG INV-ERG-23, Pliegue Above-the-Fold, Fitts >= 48px, Contraste AAA >= 7.2:1), Bus Isomorfico Glitch-Free Verticales <-> Workbench <-> Acuse, Matriz 7 Avenidas / 19 SKUs en /catalogo/ y Pasaporte B2B .vcf/.json (Gate V4.5 D1..D10)".to_string(),
+            passed: check_v45_ergos_apple_hig_and_backend_parity_gate_48(site_root).is_ok(),
+            details: check_v45_ergos_apple_hig_and_backend_parity_gate_48(site_root).err().unwrap_or_else(|| "OK: Bus isomorfico glitch-free, JRP dinamico en /acuse/, Gorain en /flotacion/, 7 Avenidas / 19 SKUs + 5 ramas en /catalogo/, Pasaporte B2B .vcf/.json, pureza escalar ISO 80000-1 y 0 violaciones CDP en ergos.".to_string()),
+        },
     ]
 }
 
@@ -1010,7 +1017,11 @@ pub fn verify_manuel_lexical_and_route_separation_gate(site_root: &Path) -> Resu
 }
 
 pub fn verify_backend_ui_parity_and_apple_cowan(site_root: &Path) -> Result<(), String> {
-    let report_str = fs::read_to_string(site_root.join("src/components/PumpAssemblyReport.astro")).map_err(|e| e.to_string())?;
+    let mut report_str = fs::read_to_string(site_root.join("src/components/PumpAssemblyReport.astro")).map_err(|e| e.to_string())?;
+    if let Ok(ctrl_str) = fs::read_to_string(site_root.join("src/scripts/pumpAssemblyReportController.js")) {
+        report_str.push('\n');
+        report_str.push_str(&ctrl_str);
+    }
     if !report_str.contains("evaluateWetEndAssemblyInterference") || !report_str.contains("data-clearance-slider") {
         return Err("PumpAssemblyReport.astro no expone evaluateWetEndAssemblyInterference ni el calibrador de claro axial".to_string());
     }
@@ -1485,5 +1496,12 @@ mod tests {
         let root = find_site_root();
         let res = check_v44_scalar_purity_zero_duplication_and_xor_contiguity_gate_47(&root);
         assert!(res.is_ok(), "Fallo en Gate 47 (V4.4 Scalar Purity ISO 80000-1, Zero Duplication & XOR Contiguity): {:?}", res.err());
+    }
+
+    #[test]
+    fn test_gate_48_v45_ergos_apple_hig_and_backend_parity() {
+        let root = find_site_root();
+        let res = check_v45_ergos_apple_hig_and_backend_parity_gate_48(&root);
+        assert!(res.is_ok(), "Fallo en Gate 48 (V4.5 Ergos Apple HIG + Tepehuana & Backend-UI Parity): {:?}", res.err());
     }
 }

@@ -143,9 +143,10 @@ import CircuitNavigator from '../../components/CircuitNavigator.astro';
   import { evaluateFilterPressPlateDeflection } from '../../scripts/slurryEngine.js';
   import { bindCanonicalFiltrationCalculator } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
   import { saveEngineeringContextSnapshot } from '../../scripts/wizardCircuitPhysicsController.js';
-  void evaluateFilterPressPlateDeflection;
-  void saveEngineeringContextSnapshot;
-  bindCanonicalFiltrationCalculator(document, 'es');
+  bindCanonicalFiltrationCalculator(document, 'es', {
+    evaluateFilterPressPlateDeflection,
+    saveEngineeringContextSnapshot,
+  });
 </script>
 
 <style>

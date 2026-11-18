@@ -185,10 +185,11 @@ const criteria = repRole?.decision_criteria;
   import { evaluateFilterPressPlateDeflection } from '../../scripts/slurryEngine.js';
   import { calculateFilterPressCycleCapacity, saveEngineeringContextSnapshot } from '../../scripts/wizardCircuitPhysicsController.js';
   import { bindCanonicalFiltrationCalculator } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
-  void evaluateFilterPressPlateDeflection;
-  void calculateFilterPressCycleCapacity;
-  void saveEngineeringContextSnapshot;
-  bindCanonicalFiltrationCalculator(document, 'es');
+  bindCanonicalFiltrationCalculator(document, 'es', {
+    evaluateFilterPressPlateDeflection,
+    calculateFilterPressCycleCapacity,
+    saveEngineeringContextSnapshot,
+  });
 </script>
 
 <style>

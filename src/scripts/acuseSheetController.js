@@ -11,6 +11,12 @@
 import { getQuickProductBySlugOrAlias } from './quickProductsCatalog.js';
 import { calculateCoupledReorderWindowDays } from './requisitionTrayBus.js';
 import { formatSatTigieInvoiceLine, formatDualCheckoutPayload } from './workbenchExportFormatters.js';
+import { loadUnifiedEngineeringAndWorkbenchState } from './verticalStateAndCtaSyncBridge.js';
+import {
+  buildSmatVendorVcardString,
+  buildSapAnexo22ComplianceSummary,
+  bindVendorPassportDownloadButtons,
+} from './vendorPassportAndTradeInController.js';
 
 export function computeFnv1aOrderHash(seedStr = '') {
   let h = 0x811c9dc5;
@@ -75,7 +81,7 @@ export function isNonPumpDomain(circuit = '', skuId = '', code = '') {
   return Boolean(c || s || k);
 }
 
-export function initAcuseSheetController(lang = 'es') {
+export function initAcuseSheetController(lang = 'es', _options = {}) {
   const isEn = lang === 'en';
 
   function populateSheet() {
@@ -140,7 +146,11 @@ export function initAcuseSheetController(lang = 'es') {
       } catch (_e) {}
     }
 
-    const jrpWindow = calculateCoupledReorderWindowDays({ sg: 1.5, d50Um: 120 });
+    const unifiedState = loadUnifiedEngineeringAndWorkbenchState(window.location.search);
+    const engCtx = unifiedState.engCtx || {};
+    const resolvedSg = unifiedState.sg || 1.5;
+    const resolvedD50Um = unifiedState.d50Um || 120;
+    const jrpWindow = calculateCoupledReorderWindowDays({ sg: resolvedSg, d50Um: resolvedD50Um });
     const selectedLaneParam = urlParams.get('lane') || 'CAJA_CHICA_CFDI40';
     const checkoutMeta = formatDualCheckoutPayload({
       estimatedMxn: selectedLaneParam === 'ORDEN_COMPRA_SAP' ? 65000 : 18500,
@@ -152,13 +162,21 @@ export function initAcuseSheetController(lang = 'es') {
       if (Array.isArray(trayState.items) && trayState.items.length > 0) {
         trayTbody.innerHTML = trayState.items
           .map(
-            (it) => `
+            (it) => {
+              const itemJrp = calculateCoupledReorderWindowDays({
+                sg: resolvedSg,
+                d50Um: resolvedD50Um,
+                criticalityMode: it.criticalityMode,
+                stockRegime: it.stockRegime,
+              });
+              return `
             <tr>
               <td style="font-family:monospace;font-weight:700;">${it.id}<br/><small>${it.material || 'STD'}</small></td>
               <td><strong>${isEn ? it.nameEn : it.nameEs}</strong><br/><small style="font-family:monospace;color:#475569;">${it.satLine}</small></td>
               <td style="text-align:center;font-weight:700;">${it.qty}</td>
-              <td style="font-family:monospace;font-size:0.75rem;">${it.coupledPairSku} (${isEn ? 'Cycle' : 'Ciclo'}: T10=${jrpWindow.t10InspectionDays}d / T50=${jrpWindow.t50ReorderTriggerDays}d / T80=${jrpWindow.t80CriticalChangeoutDays}d · Buffer ${jrpWindow.leadTimeBufferDays}d · Sev ${jrpWindow.wearSeverityFactor}× · ${jrpWindow.wearAcceleratedLifeHours}h · ${isEn ? jrpWindow.dispatchModeLabelEn : jrpWindow.dispatchModeLabelEs} · ${checkoutMeta.lane})</td>
-            </tr>`
+              <td style="font-family:monospace;font-size:0.75rem;">${it.coupledPairSku} (${isEn ? 'Cycle' : 'Ciclo'}: T10=${itemJrp.t10InspectionDays}d / T50=${itemJrp.t50ReorderTriggerDays}d / T80=${itemJrp.t80CriticalChangeoutDays}d · Buffer ${itemJrp.leadTimeBufferDays}d · Sev ${itemJrp.wearSeverityFactor}× · ${itemJrp.wearAcceleratedLifeHours}h · ${isEn ? itemJrp.dispatchModeLabelEn : itemJrp.dispatchModeLabelEs} · ${checkoutMeta.lane})</td>
+            </tr>`;
+            }
           )
           .join('');
       } else {
@@ -175,7 +193,7 @@ export function initAcuseSheetController(lang = 'es') {
       (it) => !isNonPumpDomain(it.circuit, it.id, it.skuId)
     );
     const leadItem = Array.isArray(trayState.items) && trayState.items.length > 0 ? trayState.items[0] : null;
-    const activeCircuit = urlParams.get('circuito') || cached.circuito || wbV2.circuit || '';
+    const activeCircuit = urlParams.get('circuito') || cached.circuito || wbV2.circuit || engCtx.activeCircuit || '';
     const codigo = urlParams.get('codigo') || cached.codigo_smat || wbV2.equipCode || (leadItem ? leadItem.id : '');
     const isNonPumpRequisition = isNonPumpDomain(activeCircuit, urlParams.get('sku') || '', codigo) && !hasPumpItem;
     if ((isReorderOnly && !hasPumpItem) || isNonPumpRequisition) {
@@ -413,21 +431,12 @@ export function initAcuseSheetController(lang = 'es') {
       };
     }
 
+    bindVendorPassportDownloadButtons(document, lang);
+
     const vcardBtn = document.getElementById('download-vendor-vcard-btn');
     if (vcardBtn) {
       vcardBtn.onclick = () => {
-        const vcf = [
-          'BEGIN:VCARD',
-          'VERSION:3.0',
-          'FN:SMAT Minerals S.A. de C.V.',
-          'ORG:SMAT Minerals S.A. de C.V.;Ingeniería de Aplicación y Suministro Minero',
-          'TEL;TYPE=WORK,VOICE:+52-618-810-4408',
-          'TEL;TYPE=CELL,VOICE:+52-618-367-0664',
-          'EMAIL;TYPE=PREF,INTERNET:ventas@smatminerals.com',
-          'ADR;TYPE=WORK:;;Mariano Salas #114, Col. Primer Presidente;Durango;DGO;34166;México',
-          'NOTE:UNSPSC 40151500 / 20121500 / 40161500 / 41111500 | Incoterms EXW/DAP Durango | ASTM A532 Cr27 HRC >= 58',
-          'END:VCARD'
-        ].join('\r\n');
+        const vcf = buildSmatVendorVcardString();
         const blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -443,6 +452,7 @@ export function initAcuseSheetController(lang = 'es') {
     const jsonBtn = document.getElementById('download-vendor-json-btn');
     if (jsonBtn) {
       jsonBtn.onclick = () => {
+        const anexo22 = buildSapAnexo22ComplianceSummary(lang);
         const payload = {
           schema: 'smat.vendor.passport.v3',
           companyName: 'SMAT Minerals S.A. de C.V.',
@@ -450,7 +460,8 @@ export function initAcuseSheetController(lang = 'es') {
           postalCode: '34166',
           incoterms: ['EXW Durango', isEn ? 'DAP Mine Site' : 'DAP Unidad Minera'],
           unspscCodes: ['40151500', '20121500', '40161500', '41111500'],
-          metallurgyCert: 'ASTM A532 Clase III Tipo A Cr27 >= 650 HB / HRC >= 58'
+          metallurgyCert: 'ASTM A532 Clase III Tipo A Cr27 >= 650 HB / HRC >= 58',
+          anexo22Compliance: anexo22,
         };
         const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8;' });
         const url = URL.createObjectURL(blob);

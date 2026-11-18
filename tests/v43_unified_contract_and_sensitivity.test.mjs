@@ -237,7 +237,7 @@ test('D3-V43, D9-V43 & D10-V43: Pump assembly sequence aliases, Centrifugal Seal
   const tribBound = bindCanonicalTribologySelector(tribDom, 'es');
   assert.ok(tribBound);
   assert.equal(tribBound.spallingRiskDetected, true);
-  assert.ok(tribDom.querySelector('#trib-kic-out').textContent.includes('Spalling'));
+  assert.ok(tribDom.querySelector('#trib-status-out').textContent.includes('Spalling'));
 
   // 4. Hero card mode on Filtration (#filt-res-stress + #filt-res-secondary) and Flotation (#celdas-d80-input + #celdas-cw-input)
   const filtHeroDom = createDomMock({

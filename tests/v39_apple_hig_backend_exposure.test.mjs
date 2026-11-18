@@ -245,8 +245,8 @@ test('D9-V39: Persistencia de telemetría transversal smat_engineering_context_v
   ]) {
     const content = fs.readFileSync(path.join(siteRoot, rel), 'utf8');
     assert.ok(
-      content.includes('saveEngineeringContextSnapshot'),
-      `${rel} debe persistir telemetría en smat_engineering_context_v1 mediante saveEngineeringContextSnapshot`
+      content.includes('saveEngineeringContextSnapshot') || content.includes('commitVerticalSimulation'),
+      `${rel} debe persistir telemetría en smat_engineering_context_v1 mediante saveEngineeringContextSnapshot o commitVerticalSimulation`
     );
   }
 });

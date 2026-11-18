@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
+import CatalogAvenuesMatrix from '../components/CatalogAvenuesMatrix.astro';
 import atomicParts from '../../data/atomic_parts.json';
 import rolesData from '../../data/roles.json';
 import { PIPE_SERIES_DIAMETER_MM, WET_END_MATERIAL_MATRIX } from '../scripts/slurryEngine.js';
@@ -8,9 +9,12 @@ import { getAtomicPartSpecs, formatNioshErgonomicStatus, buildWizardUrl } from '
 import { getQuickProductsByAvenue, verifyCatalogReferentialIntegrity, verifyDiagramSurjectivity } from '../scripts/quickProductsCatalog.js';
 
 const title = "Catálogo Técnico Digital 2026 | Bombas para Lodos, Mecanismos de Flotación, Filtros Prensa y Balanzas | SMAT Minerals";
-const description = "Catálogo técnico digital con diagramas CAD de bombas para lodos (9 series 1.5x1 a 14x12), lotes de contacto húmedo (Alto Cromo, Hule, Poliuretano y SiC Cerámico), Bearing Assembly / Housing, mecanismos de flotación, filtros prensa y laboratorio metrológico.";
+const description = "Catálogo técnico digital con diagramas CAD de bombas para lodos (9 series 1.5x1 a 14x12), lotes de contacto húmedo (5 ramas tribológicas SSOT: Alto Cromo, Hule, Poliuretano, SiC Cerámico y Rama D Híbrida A05+R55), Bearing Assembly / Housing, mecanismos de flotación, filtros prensa y laboratorio metrológico.";
 
-const wetEndMaterialsList = Object.values(WET_END_MATERIAL_MATRIX);
+const wetEndMaterialsList = [
+  ...Object.values(WET_END_MATERIAL_MATRIX),
+  ...((WET_END_MATERIAL_MATRIX as any).hybrid_a05_r55 ? [(WET_END_MATERIAL_MATRIX as any).hybrid_a05_r55] : []),
+];
 const quickByAvenue = getQuickProductsByAvenue();
 const catalogIntegrity = verifyCatalogReferentialIntegrity();
 const diagramSurjectivity = verifyDiagramSurjectivity();
@@ -41,7 +45,7 @@ const enrichedAtomicParts = atomicParts.map((part) => {
     <div class="catalog-action-bar no-print">
       <div class="action-bar-left">
         <a href="/" class="btn-back">← Volver al Inicio</a>
-        <span class="catalog-edition-pill">EDICIÓN TÉCNICA V4.3 (MVP V3.0) • 2026</span>
+        <span class="catalog-edition-pill">EDICIÓN TÉCNICA V4.5 (SSOT) • 2026</span>
       </div>
       <div class="action-bar-right">
         <button type="button" class="btn-action btn-print" onclick="window.print()">
@@ -243,7 +247,7 @@ const enrichedAtomicParts = atomicParts.map((part) => {
               <td>30 – 50 HP (22-37 kW)</td>
               <td>Alto Cromo (&gt;650 HB) / Hule / Poliuretano / SiC</td>
               <td>Alimentación a celdas, sumideros y finos.</td>
-              <td class="no-print"><a href="/cotizar/?equipo=skid_bomba&serie=4x3#rfq" class="btn-table-cta">Cotizar 4x3 →</a></td>
+              <td class="no-print"><a href="/cotizar/?circuito=bombeo&equipo=skid_bomba&serie=4x3#rfq" class="btn-table-cta">Cotizar 4x3 →</a></td>
             </tr>
             <tr class="dim-row" data-dimension="dim-c" data-series="6x4">
               <td><span class="series-pill highlight">6x4"</span></td>
@@ -254,7 +258,7 @@ const enrichedAtomicParts = atomicParts.map((part) => {
               <td>50 – 100 HP (37-75 kW)</td>
               <td>Alto Cromo (&gt;650 HB) / Hule / Poliuretano / SiC</td>
               <td>Descarga de molinos SAG a hidrociclones.</td>
-              <td class="no-print"><a href="/cotizar/?equipo=skid_bomba&serie=6x4#rfq" class="btn-table-cta">Cotizar 6x4 →</a></td>
+              <td class="no-print"><a href="/cotizar/?circuito=bombeo&equipo=skid_bomba&serie=6x4#rfq" class="btn-table-cta">Cotizar 6x4 →</a></td>
             </tr>
             <tr class="dim-row" data-dimension="dim-c" data-series="8x6">
               <td><span class="series-pill">8x6"</span></td>
@@ -265,7 +269,7 @@ const enrichedAtomicParts = atomicParts.map((part) => {
               <td>100 – 200 HP (75-150 kW)</td>
               <td>Alto Cromo (&gt;650 HB) / Hule / SiC</td>
               <td>Molienda primaria y jales espesados.</td>
-              <td class="no-print"><a href="/cotizar/?equipo=skid_bomba&serie=8x6#rfq" class="btn-table-cta">Cotizar 8x6 →</a></td>
+              <td class="no-print"><a href="/cotizar/?circuito=bombeo&equipo=skid_bomba&serie=8x6#rfq" class="btn-table-cta">Cotizar 8x6 →</a></td>
             </tr>
             <tr class="dim-row" data-dimension="dim-c" data-series="10x8">
               <td><span class="series-pill">10x8"</span></td>
@@ -276,7 +280,7 @@ const enrichedAtomicParts = atomicParts.map((part) => {
               <td>150 – 250 HP (110-185 kW)</td>
               <td>Alto Cromo (&gt;650 HB) / Hule / SiC</td>
               <td>Gran caudal de relaves y plantas &gt;1,500 t/d.</td>
-              <td class="no-print"><a href="/cotizar/?equipo=skid_bomba&serie=10x8#rfq" class="btn-table-cta">Cotizar 10x8 →</a></td>
+              <td class="no-print"><a href="/cotizar/?circuito=bombeo&equipo=skid_bomba&serie=10x8#rfq" class="btn-table-cta">Cotizar 10x8 →</a></td>
             </tr>
             <tr class="dim-row" data-dimension="dim-c" data-series="12x10">
               <td><span class="series-pill">12x10"</span></td>
@@ -304,14 +308,14 @@ const enrichedAtomicParts = atomicParts.map((part) => {
         </table>
       </div>
 
-      <!-- Matriz Tribológica de las 4 Aleaciones en Contacto Húmedo (WET_END_MATERIAL_MATRIX — Decisión 3 & 4) -->
+      <!-- Matriz Tribológica de las 5 Ramas en Contacto Húmedo (WET_END_MATERIAL_MATRIX — D8-V45) -->
       <div class="atomic-parts-catalog-block" id="matriz-aleaciones-ssot" style="margin-bottom: 1.5rem;">
         <div class="table-header-flex">
           <div>
-            <h4 class="table-title">Matriz Metalúrgica y Tribológica de Extremo Húmedo (4 Aleaciones SSOT)</h4>
-            <span class="table-subtitle">Selección determinista por dureza Vickers/Brinell, tenacidad a la fractura (K_Ic), límite de velocidad periférica (u₂) y proporción de lote 5-5-4</span>
+            <h4 class="table-title">Matriz Metalúrgica y Tribológica de Extremo Húmedo ({wetEndMaterialsList.length} Ramas / Aleaciones SSOT)</h4>
+            <span class="table-subtitle">Selección determinista por dureza Vickers/Brinell, tenacidad a la fractura (K_Ic), límite de velocidad periférica (u₂) y proporción de lote 5-5-4 (incluye Rama D Híbrida A05+R55)</span>
           </div>
-          <span class="matrix-badge">4 MATERIALES SSOT</span>
+          <span class="matrix-badge">{wetEndMaterialsList.length} MATERIALES SSOT</span>
         </div>
         <div class="atomic-parts-grid">
           {wetEndMaterialsList.map((mat) => (
@@ -330,6 +334,8 @@ const enrichedAtomicParts = atomicParts.map((part) => {
           ))}
         </div>
       </div>
+
+      <CatalogAvenuesMatrix lang="es" />
 
       <!-- Fichas Técnicas Atómicas de Piezas de Desgaste (atomic_parts.json + getAtomicPartSpecs + Waters-NIOSH) -->
       <div class="atomic-parts-catalog-block" id="fichas-atomicas">
@@ -360,6 +366,18 @@ const enrichedAtomicParts = atomicParts.map((part) => {
               <div class="atomic-part-actions no-print">
                 <a href={`/catalogo/${part.code}/`} class="btn-table-cta">Ver Ficha {part.part_number} →</a>
                 <a href={part.quoteHref} class="btn-card-quote">Cotizar →</a>
+                <button
+                  type="button"
+                  class="btn-table-cta btn-avenue-tray"
+                  data-add-tray-sku={part.spec.smat_code || part.part_number}
+                  data-tray-part-code={part.part_number}
+                  data-tray-title={part.name_es}
+                  data-tray-series={part.spec.pipe_size || '6x4'}
+                  data-tray-material="A05"
+                  data-tray-category="BOMBA_SLURRY"
+                  data-tray-source="catalog_fichas_atomicas"
+                  style="min-height: 48px;"
+                >+ Bandeja</button>
               </div>
             </div>
           ))}

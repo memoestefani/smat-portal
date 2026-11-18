@@ -65,9 +65,12 @@ interface Props {
   lang?: 'es' | 'en';
   compact?: boolean;
   showXrayOverlay?: boolean;
+  instanceId?: string;
 }
 
-const { lang = 'es', compact = false, showXrayOverlay = true } = Astro.props;
+const { lang = 'es', compact = false, showXrayOverlay = true, instanceId } = Astro.props;
+const seq = ((globalThis as any).__smatSvgInstanceSeq = ((globalThis as any).__smatSvgInstanceSeq || 0) + 1);
+const uid = instanceId || `s${seq}`;
 const rawDiagram = (Astro.props.diagram ?? Astro.props.type ?? 'pump') as string;
 const DIAGRAM_ALIAS_MAP: Record<string, string> = {
   'impulsor': 'impeller',
@@ -143,11 +146,11 @@ const xrayWearStyle = showXrayOverlay ? '' : 'display: none;';
     {diagram === 'pump' && (
       <svg viewBox="0 0 680 280" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <pattern id="grid-pump" width="20" height="20" patternUnits="userSpaceOnUse">
+          <pattern id={`grid-pump-${uid}`} width="20" height="20" patternUnits="userSpaceOnUse">
             <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
           </pattern>
         </defs>
-        <rect width="680" height="280" fill="url(#grid-pump)" />
+        <rect width="680" height="280" fill={`url(#grid-pump-${uid})`} />
         <!-- Eje central -->
         <line x1="40" y1="150" x2="640" y2="150" stroke="#94a3b8" stroke-width="1" stroke-dasharray="8 4 2 4" />
         <!-- Succión (Izquierda) -->
@@ -192,11 +195,11 @@ const xrayWearStyle = showXrayOverlay ? '' : 'display: none;';
     {diagram === 'impeller' && (
       <svg viewBox="0 0 680 260" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <pattern id="grid-imp" width="20" height="20" patternUnits="userSpaceOnUse">
+          <pattern id={`grid-imp-${uid}`} width="20" height="20" patternUnits="userSpaceOnUse">
             <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
           </pattern>
         </defs>
-        <rect width="680" height="260" fill="url(#grid-imp)" />
+        <rect width="680" height="260" fill={`url(#grid-imp-${uid})`} />
         <!-- Vista Frontal (Izquierda) -->
         <circle cx="185" cy="130" r="92" fill="#fff7ed" stroke="#c25e00" stroke-width="2.5" />
         <circle cx="185" cy="130" r="42" fill="#ffffff" stroke="#0f172a" stroke-width="2" />
@@ -231,11 +234,11 @@ const xrayWearStyle = showXrayOverlay ? '' : 'display: none;';
     {diagram === 'liners' && (
       <svg viewBox="0 0 680 260" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <pattern id="grid-lin" width="20" height="20" patternUnits="userSpaceOnUse">
+          <pattern id={`grid-lin-${uid}`} width="20" height="20" patternUnits="userSpaceOnUse">
             <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
           </pattern>
         </defs>
-        <rect width="680" height="260" fill="url(#grid-lin)" />
+        <rect width="680" height="260" fill={`url(#grid-lin-${uid})`} />
         <line x1="40" y1="135" x2="640" y2="135" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4" />
         <!-- 1. Cuello (Throatbush) -->
         <g transform="translate(70, 65)">
@@ -282,11 +285,11 @@ const xrayWearStyle = showXrayOverlay ? '' : 'display: none;';
     {diagram === 'bearing' && (
       <svg viewBox="0 0 680 270" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <pattern id="grid-bear" width="20" height="20" patternUnits="userSpaceOnUse">
+          <pattern id={`grid-bear-${uid}`} width="20" height="20" patternUnits="userSpaceOnUse">
             <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
           </pattern>
         </defs>
-        <rect width="680" height="270" fill="url(#grid-bear)" />
+        <rect width="680" height="270" fill={`url(#grid-bear-${uid})`} />
         <!-- Eje de simetría -->
         <line x1="30" y1="135" x2="650" y2="135" stroke="#94a3b8" stroke-width="1" stroke-dasharray="8 4 2 4" />
         <!-- Flecha completa con rosca lado impulsor y cuñero lado motor -->
@@ -335,11 +338,11 @@ const xrayWearStyle = showXrayOverlay ? '' : 'display: none;';
     {diagram === 'expeller' && (
       <svg viewBox="0 0 680 240" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <pattern id="grid-exp" width="20" height="20" patternUnits="userSpaceOnUse">
+          <pattern id={`grid-exp-${uid}`} width="20" height="20" patternUnits="userSpaceOnUse">
             <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
           </pattern>
         </defs>
-        <rect width="680" height="240" fill="url(#grid-exp)" />
+        <rect width="680" height="240" fill={`url(#grid-exp-${uid})`} />
         <line x1="50" y1="120" x2="630" y2="120" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4" />
         <!-- Flecha y Camisa -->
         <rect x="100" y="102" width="460" height="36" fill="#cbd5e1" stroke="#0f172a" stroke-width="2" />
@@ -369,11 +372,11 @@ const xrayWearStyle = showXrayOverlay ? '' : 'display: none;';
     {diagram === 'flotation' && (
       <svg viewBox="0 0 680 270" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <pattern id="grid-flot" width="20" height="20" patternUnits="userSpaceOnUse">
+          <pattern id={`grid-flot-${uid}`} width="20" height="20" patternUnits="userSpaceOnUse">
             <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
           </pattern>
         </defs>
-        <rect width="680" height="270" fill="url(#grid-flot)" />
+        <rect width="680" height="270" fill={`url(#grid-flot-${uid})`} />
         <!-- Cabezal y Polea Superior -->
         <rect x="255" y="22" width="170" height="38" rx="4" fill="#cbd5e1" stroke="#0f172a" stroke-width="2.2" />
         <!-- Housing de rodamientos vertical -->
@@ -403,11 +406,11 @@ const xrayWearStyle = showXrayOverlay ? '' : 'display: none;';
     {diagram === 'filter' && (
       <svg viewBox="0 0 680 250" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <pattern id="grid-filt" width="20" height="20" patternUnits="userSpaceOnUse">
+          <pattern id={`grid-filt-${uid}`} width="20" height="20" patternUnits="userSpaceOnUse">
             <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
           </pattern>
         </defs>
-        <rect width="680" height="250" fill="url(#grid-filt)" />
+        <rect width="680" height="250" fill={`url(#grid-filt-${uid})`} />
         <!-- Vigas laterales -->
         <line x1="75" y1="85" x2="605" y2="85" stroke="#0f172a" stroke-width="4" />
         <line x1="75" y1="175" x2="605" y2="175" stroke="#0f172a" stroke-width="4" />
@@ -444,11 +447,11 @@ const xrayWearStyle = showXrayOverlay ? '' : 'display: none;';
     {diagram === 'marcy' && (
       <svg viewBox="0 0 680 250" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <pattern id="grid-marcy" width="20" height="20" patternUnits="userSpaceOnUse">
+          <pattern id={`grid-marcy-${uid}`} width="20" height="20" patternUnits="userSpaceOnUse">
             <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
           </pattern>
         </defs>
-        <rect width="680" height="250" fill="url(#grid-marcy)" />
+        <rect width="680" height="250" fill={`url(#grid-marcy-${uid})`} />
         <!-- Argolla superior -->
         <circle cx="240" cy="24" r="10" fill="none" stroke="#0f172a" stroke-width="2.2" />
         <!-- Carátula circular graduada -->
@@ -482,11 +485,11 @@ const xrayWearStyle = showXrayOverlay ? '' : 'display: none;';
     {diagram === 'batch_filter' && (
       <svg viewBox="0 0 680 260" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <pattern id="grid-batch" width="20" height="20" patternUnits="userSpaceOnUse">
+          <pattern id={`grid-batch-${uid}`} width="20" height="20" patternUnits="userSpaceOnUse">
             <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
           </pattern>
         </defs>
-        <rect width="680" height="260" fill="url(#grid-batch)" />
+        <rect width="680" height="260" fill={`url(#grid-batch-${uid})`} />
         <!-- Columnas guía laterales y bastidor de piso/banco -->
         <rect x="135" y="220" width="190" height="16" rx="2" fill="#cbd5e1" stroke="#0f172a" stroke-width="2.2" />
         <line x1="162" y1="38" x2="162" y2="220" stroke="#0f172a" stroke-width="4" />
@@ -526,11 +529,11 @@ const xrayWearStyle = showXrayOverlay ? '' : 'display: none;';
     {diagram === 'sieves' && (
       <svg viewBox="0 0 680 260" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <pattern id="grid-sieves" width="20" height="20" patternUnits="userSpaceOnUse">
+          <pattern id={`grid-sieves-${uid}`} width="20" height="20" patternUnits="userSpaceOnUse">
             <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
           </pattern>
         </defs>
-        <rect width="680" height="260" fill="url(#grid-sieves)" />
+        <rect width="680" height="260" fill={`url(#grid-sieves-${uid})`} />
         <!-- Columna apilada de Tamices ASTM E11 / ISO 3310 (8" / 12") -->
         <!-- Tapa superior -->
         <rect x="135" y="24" width="170" height="16" rx="3" fill="#cbd5e1" stroke="#0f172a" stroke-width="2" />
@@ -567,11 +570,11 @@ const xrayWearStyle = showXrayOverlay ? '' : 'display: none;';
     {diagram === 'drive_arrangements' && (
       <svg viewBox="0 0 680 280" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <pattern id="grid-drives" width="20" height="20" patternUnits="userSpaceOnUse">
+          <pattern id={`grid-drives-${uid}`} width="20" height="20" patternUnits="userSpaceOnUse">
             <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
           </pattern>
         </defs>
-        <rect width="680" height="280" fill="url(#grid-drives)" />
+        <rect width="680" height="280" fill={`url(#grid-drives-${uid})`} />
 
         <!-- Cuadrante 1: Arreglo CV (Motor Superior sobre Bastidor - Piggyback) -->
         <g transform="translate(14, 12)">
@@ -672,11 +675,11 @@ const xrayWearStyle = showXrayOverlay ? '' : 'display: none;';
     {diagram === 'material_kit_grid' && (
       <svg viewBox="0 0 680 275" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <pattern id="grid-matkit" width="20" height="20" patternUnits="userSpaceOnUse">
+          <pattern id={`grid-matkit-${uid}`} width="20" height="20" patternUnits="userSpaceOnUse">
             <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
           </pattern>
         </defs>
-        <rect width="680" height="275" fill="url(#grid-matkit)" />
+        <rect width="680" height="275" fill={`url(#grid-matkit-${uid})`} />
 
         <!-- Columna 1: Alto Cromo Cr27% (≥650 HB) - Azul / Gris Metálico -->
         <g transform="translate(14, 12)">
@@ -762,11 +765,11 @@ const xrayWearStyle = showXrayOverlay ? '' : 'display: none;';
     {diagram === 'suction_throatbush' && (
       <svg viewBox="0 0 680 265" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <pattern id="grid-suction" width="20" height="20" patternUnits="userSpaceOnUse">
+          <pattern id={`grid-suction-${uid}`} width="20" height="20" patternUnits="userSpaceOnUse">
             <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
           </pattern>
         </defs>
-        <rect width="680" height="265" fill="url(#grid-suction)" />
+        <rect width="680" height="265" fill={`url(#grid-suction-${uid})`} />
 
         <!-- Vista Frontal de Boca de Succión (Izquierda) -->
         <g transform="translate(22, 16)">

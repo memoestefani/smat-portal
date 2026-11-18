@@ -186,12 +186,13 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
   import { evaluateHydrocycloneCutPoint, saveEngineeringContextSnapshot } from '../../scripts/wizardCircuitPhysicsController.js';
   import { bindCoupledClassificationStation } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
   // Serialización en vivo hacia #cyc-rfq-link: rho_f=${res.feedSg}&rho_u=${res.underflowSg}&rho_o=${res.overflowSg}&rs_pct=${res.solidsRecoveryPct}
-  void calculateThreeCupMarcyCycloneBalance;
-  void saveWorkbenchSession;
-  void loadWorkbenchSession;
-  void evaluateHydrocycloneCutPoint;
-  void saveEngineeringContextSnapshot;
-  bindCoupledClassificationStation(document, 'es');
+  bindCoupledClassificationStation(document, 'es', {
+    calculateThreeCupMarcyCycloneBalance,
+    saveWorkbenchSession,
+    loadWorkbenchSession,
+    evaluateHydrocycloneCutPoint,
+    saveEngineeringContextSnapshot,
+  });
 </script>
 
 <style>

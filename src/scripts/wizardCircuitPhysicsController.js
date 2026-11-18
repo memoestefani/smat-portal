@@ -236,7 +236,8 @@ export function mergeEngineeringContext(circuitOrPartial = {}, maybePayloadOrBas
  */
 export function saveEngineeringContextSnapshot(circuitOrPartial = {}, maybePayload = null) {
   const normalizedPartial = normalizeEngineeringContextInput(circuitOrPartial, maybePayload);
-  const merged = mergeEngineeringContext(normalizedPartial, memoryContextFallback);
+  const currentBase = loadEngineeringContextSnapshot();
+  const merged = mergeEngineeringContext(normalizedPartial, currentBase || memoryContextFallback);
   memoryContextFallback = merged;
   try {
     if (typeof window !== 'undefined') {

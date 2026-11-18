@@ -271,7 +271,7 @@ const diagnostics = diagData.diagnostics.map((item) => {
   .diag-filter-legend {
     font-size: 0.74rem;
     font-weight: 700;
-    color: var(--smat-text-muted, #64748b);
+    color: #334155;
     letter-spacing: 0.05em;
     font-family: var(--smat-font-mono, monospace);
   }
@@ -288,6 +288,12 @@ const diagnostics = diagData.diagnostics.map((item) => {
     background: #ffffff;
     border: 1px solid #cbd5e1;
     color: #1e293b;
+    min-height: 48px;
+    min-width: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
     padding: 0.5rem 0.95rem;
     border-radius: var(--smat-radius-sm, 4px);
     font-family: var(--smat-font-mono, monospace);
@@ -296,12 +302,12 @@ const diagnostics = diagData.diagnostics.map((item) => {
     cursor: pointer;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    transition: all 0.15s ease;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
   }
 
   .diag-pill:hover {
-    border-color: var(--smat-copper-accent, #c25e00);
-    color: var(--smat-copper-accent, #c25e00);
+    border-color: #7c2d12;
+    color: #7c2d12;
     background: #fffdfa;
   }
 
@@ -315,7 +321,7 @@ const diagnostics = diagData.diagnostics.map((item) => {
   .diag-search-count {
     font-size: 0.78rem;
     font-family: var(--smat-font-mono, monospace);
-    color: var(--smat-text-muted, #64748b);
+    color: #334155;
     margin-top: 0.25rem;
   }
 
@@ -430,7 +436,7 @@ const diagnostics = diagData.diagnostics.map((item) => {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--smat-text-muted);
+    color: #334155;
   }
 
   .field-text {
@@ -464,12 +470,14 @@ const diagnostics = diagData.diagnostics.map((item) => {
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 48px;
+    box-sizing: border-box;
     font-size: 0.82rem;
     font-weight: 700;
     padding: 0.55rem 1rem;
     border-radius: var(--smat-radius-sm);
     text-decoration: none;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .btn-emergency {
@@ -536,8 +544,9 @@ const diagnostics = diagData.diagnostics.map((item) => {
     .diag-pill {
       flex: 0 0 auto;
       white-space: nowrap;
-      padding: 0.28rem 0.55rem;
-      font-size: 0.68rem;
+      min-height: 48px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.72rem;
     }
     .diag-search-count {
       display: none;
@@ -547,6 +556,7 @@ const diagnostics = diagData.diagnostics.map((item) => {
 
 <script>
   import { saveWorkbenchState, loadWorkbenchState } from '../scripts/workbenchBus.js';
+  import { saveEngineeringContextSnapshot } from '../scripts/wizardCircuitPhysicsController.js';
 
   function initDiagFilters() {
     const pills = document.querySelectorAll<HTMLButtonElement>('.diag-pill');
@@ -604,7 +614,7 @@ const diagnostics = diagData.diagnostics.map((item) => {
       });
     });
 
-    // Conexión fluida con el cotizador (Decisión 6 & 9-C)
+    // Conexión fluida con el cotizador (Decisión 6 & 9-C + V4.5 Engineering Context Mirror)
     const quoteBtns = document.querySelectorAll<HTMLAnchorElement>('.diag-quote-btn');
     quoteBtns.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -623,6 +633,14 @@ const diagnostics = diagData.diagnostics.map((item) => {
           material: material || prev.material,
           estacion: station || prev.estacion,
           equipo: role || prev.equipo
+        });
+        saveEngineeringContextSnapshot('bombeo', {
+          source: 'diagnostics_hub',
+          frontClearanceMm: claroMm,
+          stressSymptom: symptom,
+          material: material || prev.material,
+          station: station || prev.estacion,
+          role: role || prev.equipo
         });
       });
     });

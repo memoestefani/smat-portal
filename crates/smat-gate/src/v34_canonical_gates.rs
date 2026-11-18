@@ -583,7 +583,7 @@ pub fn check_v39_backend_ui_exposure_and_zero_stock_leak_gate_42(site_root: &Pat
         "src/pages/en/classification/index.astro",
     ] {
         let src = fs::read_to_string(site_root.join(sim_rel)).map_err(|e| e.to_string())?;
-        if !src.contains("saveEngineeringContextSnapshot") {
+        if !src.contains("saveEngineeringContextSnapshot") && !src.contains("commitVerticalSimulation") {
             return Err(format!(
                 "Gate 42 (D9-V39): '{}' no persiste telemetría en smat_engineering_context_v1",
                 sim_rel

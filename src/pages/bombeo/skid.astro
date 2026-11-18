@@ -324,7 +324,7 @@ const dc = skidRole?.decision_criteria;
       }
       if (ctaEl) {
         const base = ctaEl.getAttribute('data-quote-base') || '/cotizar/';
-        ctaEl.href = `${base}?equipo=skid_bomba&transmision=${res.arrangement}&material=${wetEndMaterial}&driver_mm=${res.driverPulleyMm}&driven_mm=${res.drivenPulleyMm}&motor_rpm=${res.motorRpm}&power_kw=${res.shaftPowerKw}&n2_rpm=${res.pumpRpm}&fr_kn=${res.beltRadialLoadKn.toFixed(2)}&u2_ms=${res.tipSpeedMs.toFixed(2)}&l10h=${res.bearingL10Hours}&cap_c_kn=${res.dynamicCapacityCkN}#rfq`;
+        ctaEl.href = `${base}?circuito=bombeo&equipo=skid_bomba&transmision=${res.arrangement}&material=${wetEndMaterial}&driver_mm=${res.driverPulleyMm}&driven_mm=${res.drivenPulleyMm}&motor_rpm=${res.motorRpm}&power_kw=${res.shaftPowerKw}&n2_rpm=${res.pumpRpm}&fr_kn=${res.beltRadialLoadKn.toFixed(2)}&u2_ms=${res.tipSpeedMs.toFixed(2)}&l10h=${res.bearingL10Hours}&cap_c_kn=${res.dynamicCapacityCkN}#rfq`;
       }
 
       const prev = loadWorkbenchState() || {};

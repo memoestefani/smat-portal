@@ -3,6 +3,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
 import CircuitNavigator from '../../../components/CircuitNavigator.astro';
+import SharePurchasing from '../../../components/SharePurchasing.astro';
 ---
 
 <BaseLayout 
@@ -102,7 +103,56 @@ import CircuitNavigator from '../../../components/CircuitNavigator.astro';
             </tbody>
           </table>
         </div>
+
+        <div class="flotation-hub-calculator" style="margin-top: 1.5rem; padding: 1.25rem; border-radius: 8px; background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #7c2d12;">
+          <span class="badge badge-copper">LIVE HYDRODYNAMIC SIMULATOR · GORAIN S_b & ZWIETERING N_js</span>
+          <h3 style="margin: 0.5rem 0 0.4rem; font-size: 1.05rem;">Bubble Surface Area Flux (S<sub>b</sub> = 6 J<sub>g</sub> / d<sub>32</sub>) & Solids Suspension Calibration</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.65rem; margin: 0.75rem 0; padding: 0.85rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.82rem;">
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Model / Rotor Ø (m):</span>
+              <select id="celdas-dia-select" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <option value="0.46">#18 SP (Ø 0.46 m · 50 ft³)</option>
+                <option value="0.61" selected>#24 (Ø 0.61 m · 100 ft³)</option>
+                <option value="0.76">#30 (Ø 0.76 m · 300 ft³)</option>
+              </select>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Gas Velocity J<sub>g</sub> (cm/s):</span>
+              <input type="number" id="celdas-jg-input" min="0.6" max="3.0" step="0.1" value="1.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Sauter Bubble d<sub>32</sub> (mm):</span>
+              <input type="number" id="celdas-d32-input" min="0.9" max="2.8" step="0.1" value="1.6" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Rotor Speed (RPM):</span>
+              <input type="number" id="celdas-rpm-input" min="120" max="380" step="5" value="215" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Particle Size d<sub>80</sub> (µm):</span>
+              <input type="number" id="celdas-d80-input" min="25" max="850" step="10" value="150" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Slurry Solids C<sub>w</sub> (%):</span>
+              <input type="number" id="celdas-cw-input" min="15" max="65" step="1" value="35" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+          </div>
+          <div id="celdas-gorain-readout" style="padding: 0.65rem 0.85rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-family: var(--smat-font-mono); font-size: 0.82rem; font-weight: 700;">
+            S<sub>b</sub> (s<sup>-1</sup>): <span id="celdas-sb-output">56.25</span> · v<sub>tip</sub> (m/s): <span id="celdas-vtip-output">6.87</span> · k (min<sup>-1</sup>): <span id="celdas-k-output">1.185</span> · N<sub>js</sub>: <span id="celdas-njs-output">156</span> RPM (<span id="celdas-status-output">Gorain ≥ 50 s⁻¹ OPTIMAL · Zwietering FULL SUSPENSION</span>)
+          </div>
+        </div>
       </div>
+
+      <SharePurchasing
+        roleTitle="Flotation Cell Mechanisms & Rotor-Stator Assemblies"
+        partCode="SMAT-FLOT-MECH-18SP"
+        specs="1:1 Drop-In across 5 zones (#18 SP, #24, #30) · Gorain Sb ≥ 50 s⁻¹"
+        metallurgy="U01 Polyurethane (85–95 Shore A) / R55 Natural Rubber"
+        series="50 ft³ – 300 ft³"
+        roleId="celda_flotacion"
+        circuit="flotacion"
+        lang="en"
+      />
     </div>
   </section>
 
@@ -124,6 +174,11 @@ import CircuitNavigator from '../../../components/CircuitNavigator.astro';
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  import { bindCanonicalFlotationCalculator } from '../../../scripts/verticalCalculatorsAndLabelsBridge.js';
+  bindCanonicalFlotationCalculator(document, 'en');
+</script>
 
 <style>
   .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 3rem 0; border-bottom: 2px solid var(--smat-copper-accent); }

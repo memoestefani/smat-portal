@@ -3,9 +3,10 @@
 // 1. Balance de Presión de Sellado Centrífugo Expeller (Rama 02A Seco vs 02B Prensaestopas Húmedo)
 // 2. Selector Tribológico Finnie-Hutchings (5 Ramas de Material + Tenacidad K_Ic + Cavitación NPSHa)
 
-import { selectOptimalMaterial, evaluateHybridWetEndConfiguration } from './tribologyAndCompatibilityEngine.js';
+import { selectOptimalMaterial, evaluateHybridWetEndConfiguration, WET_END_MATERIAL_KITS } from './tribologyAndCompatibilityEngine.js';
 import { evaluatePumpAssemblySequence } from './pumpAssemblyAndDriveEngine.js';
 import { saveEngineeringContextSnapshot } from './wizardCircuitPhysicsController.js';
+import { commitVerticalSimulation } from './verticalStateAndCtaSyncBridge.js';
 
 export const PUMPING_CALCULATOR_STATE = {
   version: '4.3.0',
@@ -125,7 +126,7 @@ export function bindCanonicalSealBalanceCalculator(root, lang = 'es') {
     });
 
     if (pexpOut) pexpOut.textContent = `${res.expellerCounterPressureKpa} kPa`;
-    if (pboxOut) pboxOut.textContent = `${res.stuffingBoxResidualKpa} kPa (Hs/Hd ${(res.suctionToDischargeRatio * 100).toFixed(1)}%)`;
+    if (pboxOut) pboxOut.textContent = `${res.stuffingBoxResidualKpa} kPa`;
     if (pwaterOut) {
       pwaterOut.textContent = res.expellerViable
         ? (isEn ? '0 L/min (Dry 02A)' : '0 L/min (Seco 02A)')
@@ -144,13 +145,29 @@ export function bindCanonicalSealBalanceCalculator(root, lang = 'es') {
       }
     }
 
-    saveEngineeringContextSnapshot('bombeo', {
+    const sealPayload = {
       sealBranch: res.recommendedSealBranch,
+      seal_branch: res.recommendedSealBranch,
       sealStationCode: res.recommendedStationCode,
       dischargeHeadM,
       suctionHeadM,
+      expellerDiaMm,
+      pumpRpm,
+      slurrySg,
       expellerCounterPressureKpa: res.expellerCounterPressureKpa,
       requiredGlandWaterPressureKpa: res.requiredGlandWaterPressureKpa,
+    };
+    saveEngineeringContextSnapshot('bombeo', sealPayload);
+    commitVerticalSimulation('bombeo', sealPayload, {
+      root,
+      queryPatch: {
+        seal_branch: res.recommendedSealBranch,
+        hd_m: dischargeHeadM,
+        hs_m: suctionHeadM,
+        exp_dia: expellerDiaMm,
+        n2_rpm: pumpRpm,
+        sg: slurrySg,
+      },
     });
     return res;
   }
@@ -223,15 +240,26 @@ export function bindCanonicalTribologySelector(root, lang = 'es') {
         : (isEn ? matEval.nameEn : matEval.nameEs);
     }
     if (kicOut) {
-      kicOut.textContent = `${asmEval.fractureToughnessMpaSqrtM} MPa·√m (${asmEval.spallingRiskDetected ? (isEn ? 'Spalling Risk!' : '¡Riesgo Spalling!') : (isEn ? 'Toughness OK' : 'Tenacidad OK')})`;
+      kicOut.textContent = `${asmEval.fractureToughnessMpaSqrtM} MPa·√m`;
     }
     if (archOut) {
       archOut.textContent = `${asmEval.totalAssemblyMassKg} kg · ${asmEval.nioshHoistPartsCount} NIOSH ≥ 23 kg (${asmEval.pipeSeries})`;
     }
+    const resolvedMaterialKey = effectiveBranch === 'hibrido_a05_r55'
+      ? 'hybrid_a05_r55'
+      : (matEval.materialKey || 'alto_cromo_cr27');
+    const kitSpec = WET_END_MATERIAL_KITS[resolvedMaterialKey] || WET_END_MATERIAL_KITS.alto_cromo_cr27;
+    const kitDuty = kitSpec
+      ? (isEn ? kitSpec.dutyApplicationEn : kitSpec.dutyApplicationEs)
+      : '';
+    const kicTag = asmEval.spallingRiskDetected
+      ? (isEn ? 'Spalling Risk!' : '¡Riesgo Spalling!')
+      : (isEn ? 'Toughness OK' : 'Tenacidad OK');
+
     if (statusOut) {
       const reason = isEn ? asmEval.structuralReasonEn : asmEval.structuralReasonEs;
       const warn = isEn ? asmEval.spallingWarningEn : asmEval.spallingWarningEs;
-      statusOut.textContent = `${reason} | ${warn}`;
+      statusOut.textContent = `${kicTag} | ${reason} | ${warn}${kitDuty ? ' | ' + kitDuty : ''}`;
       if (statusOut.style) {
         statusOut.style.background = asmEval.spallingRiskDetected ? '#fef2f2' : '#ecfdf5';
         statusOut.style.color = asmEval.spallingRiskDetected ? '#991b1b' : '#065f46';
@@ -242,14 +270,26 @@ export function bindCanonicalTribologySelector(root, lang = 'es') {
       ...matEval,
       ...hybridEval,
       ...asmEval,
+      materialKey: resolvedMaterialKey,
       d80Microns,
       impellerTipSpeedMs,
       slurryPh,
       effectiveBranch,
+      pipeSeries,
     };
     PUMPING_CALCULATOR_STATE.lastTribologyCalc = combined;
     PUMPING_CALCULATOR_STATE.lastUpdatedIso = new Date().toISOString();
     saveEngineeringContextSnapshot('bombeo', combined);
+    commitVerticalSimulation('bombeo', combined, {
+      root,
+      queryPatch: {
+        material: resolvedMaterialKey,
+        d80: d80Microns,
+        u2_ms: impellerTipSpeedMs,
+        ph: slurryPh,
+        serie: pipeSeries,
+      },
+    });
     return combined;
   }
 

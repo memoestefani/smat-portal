@@ -1889,8 +1889,8 @@ test('106. Erradicación del Botón Neón Flotante de WhatsApp y Deep-Links RFC 
   const catEs = fs.readFileSync(path.join(siteRoot, 'src/pages/catalogo.astro'), 'utf-8');
   const catEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/catalog.astro'), 'utf-8');
 
-  assert.ok(catEs.includes('/cotizar/?equipo=skid_bomba&serie=4x3#rfq'), 'catalogo.astro debe contener deep link con formato estándar RFC hacia /cotizar/');
-  assert.ok(catEn.includes('/en/quote/?equipo=skid_bomba&serie=4x3#rfq'), 'catalog.astro en inglés debe contener deep link con formato estándar RFC hacia /en/quote/');
+  assert.ok(catEs.includes('/cotizar/?circuito=bombeo&equipo=skid_bomba&serie=4x3#rfq'), 'catalogo.astro debe contener deep link con formato estándar RFC hacia /cotizar/');
+  assert.ok(catEn.includes('/en/quote/?circuito=bombeo&equipo=skid_bomba&serie=4x3#rfq'), 'catalog.astro en inglés debe contener deep link con formato estándar RFC hacia /en/quote/');
 });
 
 test('107. Conmutador Multi-Circuito y Paneles Condicionales (Ola 21 - Decisión 8-C)', () => {
@@ -3094,7 +3094,9 @@ test('161. MS-02: Ficha Física de atomic_parts (weight_kg NIOSH, D2) y Trazabil
 });
 
 test('162. MS-03: Calibrador en Vivo de Claro Axial δ_frontal en PumpAssemblyReport.astro y Contraste AAA en QuickPartSelectorStrip.astro (Decisiones 1-C+ y 10-C)', () => {
-  const report = fs.readFileSync(path.join(siteRoot, 'src/components/PumpAssemblyReport.astro'), 'utf-8');
+  const report = fs.readFileSync(path.join(siteRoot, 'src/components/PumpAssemblyReport.astro'), 'utf-8')
+    + '\n'
+    + fs.readFileSync(path.join(siteRoot, 'src/scripts/pumpAssemblyReportController.js'), 'utf-8');
   assert.ok(report.includes('evaluateWetEndAssemblyInterference'), 'PumpAssemblyReport debe importar y ejecutar evaluateWetEndAssemblyInterference');
   assert.ok(report.includes('id="station-05-calibrator"'), 'PumpAssemblyReport debe incluir <details id="station-05-calibrator">');
   assert.ok(report.includes('data-clearance-slider') && report.includes('data-clearance-loss') && report.includes('data-clearance-lot554'), 'Debe exponer controles y métricas de Δη_v y lote 5-5-4');
@@ -4029,8 +4031,10 @@ test('Test 192 (MS-04 / Decisión 4-C+): Estación Metrológica Bidireccional (#
 });
 
 test('Test 193 (MS-05 y MS-06 / Decisiones 5-C+, 6-C+, 8-C+): Consumo directo de PUMP_ASSEMBLY_STATIONS, WET_END_MATERIAL_MATRIX y DRIVE_ARRANGEMENT_CATALOG sin re-declaración manual (DEB-SMAT-05..08)', () => {
-  const report = fs.readFileSync(path.join(siteRoot, 'src/components/PumpAssemblyReport.astro'), 'utf-8');
-  assert.ok(report.includes('PUMP_ASSEMBLY_STATIONS') && report.includes('WET_END_MATERIAL_MATRIX'), 'PumpAssemblyReport.astro debe importar PUMP_ASSEMBLY_STATIONS y WET_END_MATERIAL_MATRIX desde slurryEngine.js');
+  const report = fs.readFileSync(path.join(siteRoot, 'src/components/PumpAssemblyReport.astro'), 'utf-8')
+    + '\n'
+    + fs.readFileSync(path.join(siteRoot, 'src/scripts/pumpAssemblyReportController.js'), 'utf-8');
+  assert.ok((report.includes('PUMP_ASSEMBLY_STATIONS') || report.includes('PUMP_554_ASSEMBLY_STATIONS')) && report.includes('WET_END_MATERIAL_MATRIX'), 'PumpAssemblyReport.astro debe importar PUMP_554_ASSEMBLY_STATIONS y WET_END_MATERIAL_MATRIX desde slurryEngine.js');
   assert.ok(report.includes('data-seal-branch-select'), 'PumpAssemblyReport.astro debe exponer selector [data-seal-branch-select] para S5a/S5b');
   assert.ok(report.includes('saveWorkbenchState('), 'PumpAssemblyReport.astro debe persistir el claro axial y rama de sellado en saveWorkbenchState');
 

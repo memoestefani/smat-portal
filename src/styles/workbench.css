@@ -2,7 +2,7 @@
 /* Polaridad Solar AAA (Tajo Abierto 50,000 lux - WCAG 2.1 AAA >= 7.0:1) */
 
 .workbench-container {
-  padding: 2.5rem 1.5rem;
+  padding: 1.15rem 1.25rem;
   font-family: var(--smat-font-ui);
   background: #f1f5f9;
   border-radius: var(--smat-radius-lg, 12px);
@@ -10,14 +10,14 @@
 
 .workbench-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 0.85rem;
 }
 
 .badge-row {
   display: flex;
   justify-content: center;
   gap: 0.6rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.45rem;
   flex-wrap: wrap;
 }
 
@@ -37,20 +37,20 @@
 }
 
 .workbench-title {
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-size: clamp(1.35rem, 2.3vw, 1.8rem);
   color: var(--smat-text-primary);
   font-family: var(--smat-font-editorial);
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
   letter-spacing: -0.02em;
 }
 
 .workbench-subtitle {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   color: var(--smat-text-secondary);
   max-width: 680px;
   margin: 0 auto;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
 /* Split Layout */
@@ -81,7 +81,7 @@
   background: #f8fafc;
   border: 1px solid #cbd5e1;
   border-radius: var(--smat-radius-lg, 12px);
-  padding: 1.5rem;
+  padding: 1rem 1.25rem;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
@@ -93,9 +93,9 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: #334155;
-  padding-bottom: 0.75rem;
+  padding-bottom: 0.45rem;
   border-bottom: 1px solid #cbd5e1;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.75rem;
 }
 
 @media (max-width: 768px) {
@@ -2455,6 +2455,7 @@ details[open] .accordion-arrow {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-height: 48px;
   cursor: pointer;
   font-size: 0.8rem;
   font-weight: 700;
@@ -2470,6 +2471,25 @@ details[open] .accordion-arrow {
   font-family: var(--smat-font-mono);
   color: #9a4a00;
   font-weight: 800;
+}
+
+/* Contrato Ergonómico Fitts >= 48x48 px para todas las Gavetas <summary> y Controles del Workbench (D3-V45) */
+.wb-progressive-summary,
+.durand-summary,
+.custom-equip-summary,
+.smat-decoder-summary,
+.worn-piece-summary,
+.wb-step1-more-summary,
+summary.control-card-header,
+.circuit-pill,
+.circuit-tab-btn,
+.user-chip-reset,
+.erp-justification-summary-btn {
+  min-height: 48px !important;
+  min-width: 48px !important;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 .hidden { display: none !important; }

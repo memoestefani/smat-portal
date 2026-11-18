@@ -332,8 +332,9 @@ p {
   100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
 
-/* --- SOLAR LIGHT-FIRST WCAG AAA & HIDDEN INVARIANT (PRD v3.2 / ARB-SMAT-31..32) --- */
+/* --- SOLAR LIGHT-FIRST WCAG AAA & HIDDEN INVARIANT (PRD v3.2 / ARB-SMAT-31..32 / D3-V45) --- */
 :root {
+  --smat-tap-min: 48px;
   --smat-solar-bg: #f8fafc;
   --smat-solar-surface: #ffffff;
   --smat-solar-ink: #0f172a;
@@ -343,6 +344,24 @@ p {
   --smat-solar-amber-ink: #92400e;
   --smat-solar-emerald-bg: #ecfdf5;
   --smat-solar-emerald-ink: #065f46;
+}
+
+/* Contrato Universal de Ley de Fitts (>= 48x48 px en Desktop y Móvil - D3-V45) */
+details > summary,
+button,
+.btn,
+select,
+input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+[role="button"],
+.tap-target {
+  min-height: var(--smat-tap-min, 48px);
+  min-width: var(--smat-tap-min, 48px);
+  box-sizing: border-box;
+}
+
+details > summary {
+  display: flex;
+  align-items: center;
 }
 
 .hidden, [hidden] {

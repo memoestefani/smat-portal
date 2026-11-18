@@ -171,10 +171,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <button type="button" class="btn btn-secondary" id="download-tsv-acuse-btn">
           Descargar TSV / Excel
         </button>
-        <button type="button" class="btn btn-secondary" id="download-vendor-vcard-btn">
+        <button type="button" class="btn btn-secondary" id="download-vendor-vcard-btn" data-vendor-passport-btn="vcf" data-download-passport-vcf="1">
           Pasaporte Proveedor (.vcf)
         </button>
-        <button type="button" class="btn btn-secondary" id="download-vendor-json-btn">
+        <button type="button" class="btn btn-secondary" id="download-vendor-json-btn" data-vendor-passport-btn="json" data-download-passport-json="1">
           Ficha Alta ERP (.json)
         </button>
         <a href="/cotizar/?reorder=1&tray=SMAT-PUMP-IMP-AH:1:PARO_DE_LINEA#rfq" class="btn btn-secondary" id="reorder-ss-link">
@@ -196,14 +196,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <script>
   import { initAcuseSheetController, enrichTrayItemsPreservingMetadata } from '../scripts/acuseSheetController.js';
   /*
-   * Hidratación canónica PutGet (smat_workbench_state_v2):
+   * Hidratación canónica PutGet (smat_workbench_state_v2 ⊕ smat_engineering_context_v1):
    * urlParams.get('material') | urlParams.get('claro_mm') | urlParams.get('u2_ms') | urlParams.get('l10h')
    * material === 'poliuretano' | material === 'ceramica_sic' (≥2200 HV, K_Ic=4.1 MPa·√m)
    * Ergonomía Waters-NIOSH 1993 (RWL_shaft = 11.1 kg): HOIST_REQUIRED | ASSISTED_SHAFT_MOUNT_2P | MANUAL_SAFE_1P
    * Métricas físicas: eff_ratio_er, impeller_life_h, delta_npsh_m, k_motor_alt, pipe_vel_loss_pct, gate_classification
    */
-  void enrichTrayItemsPreservingMetadata;
-  initAcuseSheetController('es');
+  initAcuseSheetController('es', { enrichTrayItemsPreservingMetadata });
 </script>
 
 <style>

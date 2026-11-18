@@ -1,0 +1,323 @@
+---
+/**
+ * CatalogAvenuesMatrix.astro
+ * ---------------------------------------------------------------------------
+ * Proyección SSOT de los 19 SKUs Canónicos agrupados en las 7 Avenidas
+ * Industriales (`getQuickProductsByAvenue()` + `AVENUE_METADATA`) y los
+ * Kits Tribológicos Preconfigurados (`WET_END_MATERIAL_KITS`) para
+ * `/catalogo/` y `/en/catalog/` (`D8-V45`, LCOM4 = 1).
+ */
+import {
+  AVENUE_METADATA,
+  STOCK_REGIME_LABELS,
+  getQuickProductsByAvenue,
+} from '../scripts/quickProductsCatalog.js';
+import { WET_END_MATERIAL_KITS } from '../scripts/tribologyAndCompatibilityEngine.js';
+
+interface Props {
+  lang?: 'es' | 'en';
+}
+
+const { lang = 'es' } = Astro.props;
+const isEs = lang === 'es';
+const quickByAvenue = getQuickProductsByAvenue();
+const avenueKeys = Object.keys(AVENUE_METADATA);
+const avenueMetaMap: Record<string, any> = AVENUE_METADATA as any;
+const quickByAvenueMap: Record<string, any[]> = quickByAvenue as any;
+const stockRegimeMap: Record<string, any> = STOCK_REGIME_LABELS as any;
+const hybridKit = (WET_END_MATERIAL_KITS as any).hybrid_a05_r55;
+---
+
+<section class="catalog-avenues-ssot-section" id="indice-19-skus-7-avenidas" data-testid="catalog-avenues-matrix">
+  <div class="avenues-section-header">
+    <div>
+      <span class="avenues-eyebrow">
+        {isEs ? 'ÍNDICE MAESTRO SSOT • 19 SKUS CANÓNICOS EN 7 AVENIDAS OPERATIVAS' : 'SSOT MASTER INDEX • 19 CANONICAL SKUS ACROSS 7 OPERATIONAL AVENUES'}
+      </span>
+      <h2 class="avenues-title">
+        {isEs
+          ? 'Matriz de Suministro Rápido por Avenida Industrial y Régimen de Almacén Durango'
+          : 'Quick-Supply Matrix by Industrial Avenue & Durango Warehouse Regime'}
+      </h2>
+      <p class="avenues-subtitle">
+        {isEs
+          ? 'Cada partida incluye verificación geométrica 1:1 (A, B, C), par acoplado de reabastecimiento JRP (s, S), tupla fiscal SAT CFDI 4.0 y adición directa a su Bandeja Multiparte.'
+          : 'Every line item includes 1:1 geometric verification (A, B, C), coupled JRP (s, S) replenishment pairing, SAT CFDI 4.0 tax tuple, and 1-click addition to your Multi-Part Requisition Tray.'}
+      </p>
+    </div>
+    {hybridKit && (
+      <div class="hybrid-kit-callout" data-hybrid-kit-code={hybridKit.code}>
+        <strong>{isEs ? hybridKit.nameEs : hybridKit.nameEn}</strong>
+        <span>{isEs ? hybridKit.dutyApplicationEs : hybridKit.dutyApplicationEn}</span>
+      </div>
+    )}
+  </div>
+
+  <div class="avenues-groups-stack">
+    {avenueKeys.map((avKey) => {
+      const meta = avenueMetaMap[avKey];
+      const skus = quickByAvenueMap[avKey] || [];
+      if (!meta || skus.length === 0) return null;
+      return (
+        <div class="avenue-group-card" data-avenue-id={meta.id} data-avenue-code={meta.code}>
+          <div class="avenue-group-header">
+            <span class="avenue-code-pill">{meta.code} • {meta.gateLock}</span>
+            <h3 class="avenue-group-title">{isEs ? meta.labelEs : meta.labelEn}</h3>
+            <span class="avenue-count-badge">{skus.length} SKUs</span>
+          </div>
+          <div class="avenue-skus-grid">
+            {skus.map((sku) => {
+              const skuId = sku.id || sku.sku_id;
+              const reg = stockRegimeMap[sku.stock_regime] || STOCK_REGIME_LABELS.hay;
+              const prodHref = isEs
+                ? `/productos/${sku.slug_es}/`
+                : `/en/products/${sku.slug_en}/`;
+              const quoteHref = isEs
+                ? `/cotizar/?circuito=${encodeURIComponent(sku.vertical || 'bombeo')}&sku=${encodeURIComponent(skuId)}#rfq`
+                : `/en/quote/?circuito=${encodeURIComponent(sku.vertical || 'bombeo')}&sku=${encodeURIComponent(skuId)}#rfq`;
+              return (
+                <article class="avenue-sku-item" data-catalog-sku-id={skuId}>
+                  <div class="avenue-sku-top">
+                    <code class="avenue-sku-code">{skuId}</code>
+                    <span class="avenue-sku-regime">{isEs ? reg.badgeEs : reg.badgeEn}</span>
+                  </div>
+                  <strong class="avenue-sku-name">{isEs ? sku.title_es : sku.title_en}</strong>
+                  <p class="avenue-sku-meta">
+                    {sku.mass_kg} kg • {isEs ? 'Reorden JRP' : 'JRP Window'}: {sku.reorder_window_days}d • {isEs ? 'Par Casado' : 'Coupled'}: <code>{sku.coupled_pair_sku}</code>
+                  </p>
+                  <div class="avenue-sku-actions no-print">
+                    <a href={prodHref} class="btn-avenue-link">
+                      {isEs ? 'Ficha 1:1' : '1:1 Sheet'}
+                    </a>
+                    <button
+                      type="button"
+                      class="btn-avenue-tray"
+                      data-add-tray-sku={skuId}
+                      data-sku-title={isEs ? sku.title_es : sku.title_en}
+                      data-sku-circuit={sku.vertical || 'bombeo'}
+                      data-sku-material={sku.default_material || 'A05'}
+                      data-sku-mass={String(sku.mass_kg || 12)}
+                    >
+                      {isEs ? '+ Bandeja' : '+ Tray'}
+                    </button>
+                    <a href={quoteHref} class="btn-avenue-quote">
+                      {isEs ? 'Cotizar →' : 'Quote →'}
+                    </a>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</section>
+
+<script>
+  import { addTrayItem } from '../scripts/requisitionTrayBus.js';
+
+  function bindCatalogAvenuesTrayButtons() {
+    const btns = document.querySelectorAll<HTMLButtonElement>('[data-add-tray-sku]');
+    btns.forEach((btn) => {
+      if (btn.getAttribute('data-tray-bound') === '1') return;
+      btn.setAttribute('data-tray-bound', '1');
+      btn.addEventListener('click', () => {
+        const skuId = btn.getAttribute('data-add-tray-sku') || 'SMAT-PUMP-IMP-AH';
+        const title = btn.getAttribute('data-sku-title') || skuId;
+        const circuit = btn.getAttribute('data-sku-circuit') || 'bombeo';
+        const material = btn.getAttribute('data-sku-material') || 'A05';
+        const unitWeightKg = Number(btn.getAttribute('data-sku-mass')) || 12;
+        addTrayItem({
+          id: skuId,
+          skuId,
+          nameEs: title,
+          nameEn: title,
+          circuit,
+          material,
+          unitWeightKg,
+          qty: 1,
+          criticalityMode: 'PARO_DE_LINEA',
+        });
+        const isEn = document.documentElement.lang === 'en';
+        btn.textContent = isEn ? '✓ In Tray' : '✓ En Bandeja';
+      });
+    });
+  }
+
+  bindCatalogAvenuesTrayButtons();
+  document.addEventListener('astro:page-load', bindCatalogAvenuesTrayButtons);
+</script>
+
+<style>
+  .catalog-avenues-ssot-section {
+    margin: 2rem 0 2.5rem;
+    padding: 1.5rem;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-left: 4px solid #7c2d12;
+    border-radius: 10px;
+  }
+  .avenues-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 1rem;
+  }
+  .avenues-eyebrow {
+    display: inline-block;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: #7c2d12;
+    letter-spacing: 0.05em;
+  }
+  .avenues-title {
+    margin: 0.25rem 0 0.35rem;
+    font-size: 1.25rem;
+    color: #0f172a;
+  }
+  .avenues-subtitle {
+    margin: 0;
+    font-size: 0.88rem;
+    color: #334155;
+    max-width: 760px;
+  }
+  .hybrid-kit-callout {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: 0.78rem;
+    color: #1e293b;
+  }
+  .avenues-groups-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+  }
+  .avenue-group-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  .avenue-group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+  .avenue-code-pill {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 800;
+    background: #0f172a;
+    color: #ffffff;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+  }
+  .avenue-group-title {
+    margin: 0;
+    font-size: 0.98rem;
+    color: #0f172a;
+    flex: 1;
+  }
+  .avenue-count-badge {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #334155;
+  }
+  .avenue-skus-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 0.75rem;
+  }
+  .avenue-sku-item {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.45rem;
+  }
+  .avenue-sku-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .avenue-sku-code {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: #0f172a;
+    background: #f1f5f9;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+  }
+  .avenue-sku-regime {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #1e293b;
+  }
+  .avenue-sku-name {
+    font-size: 0.88rem;
+    color: #0f172a;
+    line-height: 1.3;
+  }
+  .avenue-sku-meta {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #334155;
+  }
+  .avenue-sku-actions {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    margin-top: 0.35rem;
+  }
+  .btn-avenue-link,
+  .btn-avenue-tray,
+  .btn-avenue-quote {
+    min-height: 48px;
+    padding: 0.4rem 0.65rem;
+    border-radius: 6px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+  .btn-avenue-link {
+    background: #f8fafc;
+    border: 1px solid #94a3b8;
+    color: #0f172a;
+  }
+  .btn-avenue-tray {
+    background: #f0f9ff;
+    border: 1px solid #0284c7;
+    color: #082f49;
+  }
+  .btn-avenue-quote {
+    background: #0f172a;
+    border: 1px solid #0f172a;
+    color: #ffffff;
+  }
+</style>

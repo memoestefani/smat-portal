@@ -15,8 +15,9 @@ const wetMaterials = [
   WET_END_MATERIAL_MATRIX.alto_cromo_cr27,
   WET_END_MATERIAL_MATRIX.hule_natural,
   WET_END_MATERIAL_MATRIX.poliuretano,
-  WET_END_MATERIAL_MATRIX.ceramica_sic
-];
+  WET_END_MATERIAL_MATRIX.ceramica_sic,
+  (WET_END_MATERIAL_MATRIX as any).hybrid_a05_r55
+].filter(Boolean);
 ---
 
 <BaseLayout 
@@ -137,11 +138,11 @@ const wetMaterials = [
           </div>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 0.6rem; margin-bottom: 0.65rem; font-family: var(--smat-font-mono); font-size: 0.8rem;">
             <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Active Configuration:</strong> <span id="trib-mat-out">Hybrid Branch D: A05 Impeller + R55 Liners</span></div>
-            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Toughness K<sub>Ic</sub>:</strong> <span id="trib-kic-out">18.5 MPa·√m (Toughness OK)</span></div>
-            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>NIOSH Mass &amp; Rigging:</strong> <span id="trib-arch-out">418 kg · 5 NIOSH ≥ 23 kg (6x4)</span></div>
+            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Toughness K<sub>Ic</sub>:</strong> <span id="trib-kic-out">18.5 MPa·√m</span></div>
+            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>NIOSH Mass &amp; Rigging:</strong> <span id="trib-arch-out">418 kg · 5 NIOSH ≥ 23 kg</span></div>
           </div>
           <div id="trib-status-out" style="padding: 0.6rem 0.8rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-family: var(--smat-font-mono); font-size: 0.79rem; font-weight: 700;">
-            Finnie-Hutchings Angular Partition: 27% High Chrome Closed Impeller (A05) + Split R55 Natural Rubber Liners (FPL/CPL).
+            Toughness OK · Series 6x4 · Finnie-Hutchings Angular Partition: 27% High Chrome Closed Impeller (A05) + Split R55 Natural Rubber Liners (FPL/CPL).
           </div>
         </div>
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:0.85rem; margin-top:0.85rem;">
@@ -153,7 +154,7 @@ const wetMaterials = [
               <div class="font-mono-tech" style="font-size:0.73rem; color:#475569; margin-bottom:0.55rem;">
                 u₂ ≤ {mat.maxTipSpeedMs} m/s • K_Ic = {mat.fractureToughnessMpaSqrtM} MPa·√m • Clearance δ = {mat.recommendedClearanceMm} mm • Lot {mat.wearRatio554}
               </div>
-              <a href={`/en/quote/?circuito=bombeo&equipo=kit_wet_end&material=${mat.key}&claro_mm=${mat.recommendedClearanceMm}&estacion=S3#rfq`} class="btn btn-primary" style="width:100%; text-align:center; font-size:0.78rem;">Quote {mat.code} Kit →</a>
+              <a href={`/en/quote/?circuito=bombeo&equipo=kit_wet_end&material=${mat.key}&claro_mm=${mat.recommendedClearanceMm}&estacion=S3#rfq`} data-card-fixed-params="material" class="btn btn-primary" style="width:100%; text-align:center; font-size:0.78rem;">Quote {mat.code} Kit →</a>
             </div>
           ))}
         </div>
@@ -172,6 +173,18 @@ const wetMaterials = [
             <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
               <a href={`/en/catalog/${throatbushPart.code}/`} class="btn btn-outline">View {throatbushPart.part_number} Sheet →</a>
               <a href={`/en/quote/?codigo=${throatbushPart.part_number}&circuito=bombeo&equipo=kit_wet_end&serie=${throatbushPart.pipe_size}&peso_kg=${throatbushPart.weight_kg}&estacion=S${throatbushPart.station_number}#rfq`} class="btn btn-primary">Quote {throatbushPart.part_number} →</a>
+              <button
+                type="button"
+                class="btn btn-outline btn-avenue-tray"
+                data-add-tray-sku="SMAT-PUMP-TB-083"
+                data-tray-part-code={throatbushPart.part_number}
+                data-tray-title={throatbushPart.name_en}
+                data-tray-series={throatbushPart.pipe_size}
+                data-tray-material="A05"
+                data-tray-category="BOMBA_SLURRY"
+                data-tray-source="throatbush_atomic_card"
+                style="min-height: 48px;"
+              >+ Tray</button>
             </div>
           </div>
         )}
@@ -202,7 +215,9 @@ const wetMaterials = [
 
 <script>
   import { bindCanonicalTribologySelector } from '../../../scripts/verticalCalculatorsAndLabelsBridge.js';
+  import { bindAtomicPartTrayButtons } from '../../../scripts/verticalStateAndCtaSyncBridge.js';
   bindCanonicalTribologySelector(document, 'en');
+  bindAtomicPartTrayButtons(document);
 </script>
 
 <style>

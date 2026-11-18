@@ -15,8 +15,9 @@ const wetMaterials = [
   WET_END_MATERIAL_MATRIX.alto_cromo_cr27,
   WET_END_MATERIAL_MATRIX.hule_natural,
   WET_END_MATERIAL_MATRIX.poliuretano,
-  WET_END_MATERIAL_MATRIX.ceramica_sic
-];
+  WET_END_MATERIAL_MATRIX.ceramica_sic,
+  (WET_END_MATERIAL_MATRIX as any).hybrid_a05_r55
+].filter(Boolean);
 ---
 
 <BaseLayout 
@@ -116,13 +117,25 @@ const wetMaterials = [
               <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
                 <a href={`/en/catalog/${ip.code}/`} class="btn btn-outline">View {ip.part_number} Sheet →</a>
                 <a href={`/en/quote/?codigo=${ip.part_number}&circuito=bombeo&equipo=solo_impulsor&serie=${ip.pipe_size}&peso_kg=${ip.weight_kg}&estacion=S${ip.station_number}#rfq`} class="btn btn-primary">Quote {ip.part_number} →</a>
+                <button
+                  type="button"
+                  class="btn btn-outline btn-avenue-tray"
+                  data-add-tray-sku="SMAT-PUMP-IMP-147"
+                  data-tray-part-code={ip.part_number}
+                  data-tray-title={ip.name_en}
+                  data-tray-series={ip.pipe_size}
+                  data-tray-material="A05"
+                  data-tray-category="BOMBA_SLURRY"
+                  data-tray-source="impeller_atomic_card"
+                  style="min-height: 48px;"
+                >+ Tray</button>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <!-- 4 Wet-End Material Matrix + Live Finnie-Hutchings / K_Ic Tribology Selector (D10-V43) -->
+      <!-- 5 Wet-End Material Matrix + Live Finnie-Hutchings / K_Ic Tribology Selector (D3-V46) -->
       <div style="margin-top: 2rem;" data-testid="impeller-material-matrix">
         <h2>Tribological Wet-End Material Selection (A05 / R55 / U01 / SiC / Hybrid Branch D)</h2>
         <div class="card" style="margin-top: 0.85rem; margin-bottom: 1rem; background: #f8fafc; border: 1.5px solid #cbd5e1; padding: 1.25rem;">
@@ -163,11 +176,11 @@ const wetMaterials = [
           </div>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 0.6rem; margin-bottom: 0.65rem; font-family: var(--smat-font-mono); font-size: 0.8rem;">
             <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Recommended Material:</strong> <span id="trib-mat-out">27% High Chrome (A05)</span></div>
-            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Toughness K<sub>Ic</sub>:</strong> <span id="trib-kic-out">18.5 MPa·√m (Toughness OK)</span></div>
-            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>NIOSH Mass &amp; Rigging:</strong> <span id="trib-arch-out">492 kg · 6 NIOSH ≥ 23 kg (6x4)</span></div>
+            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Toughness K<sub>Ic</sub>:</strong> <span id="trib-kic-out">18.5 MPa·√m</span></div>
+            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>NIOSH Mass &amp; Rigging:</strong> <span id="trib-arch-out">492 kg · 6 NIOSH ≥ 23 kg</span></div>
           </div>
           <div id="trib-status-out" style="padding: 0.6rem 0.8rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-family: var(--smat-font-mono); font-size: 0.79rem; font-weight: 700;">
-            No brittle spalling risk under current kinematic regime.
+            Toughness OK · Series 6x4 · No brittle spalling risk under current kinematic regime.
           </div>
         </div>
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:0.85rem; margin-top:0.85rem;">
@@ -178,7 +191,7 @@ const wetMaterials = [
               <div class="font-mono-tech" style="font-size:0.74rem; color:#334155; margin-bottom:0.45rem;">
                 u₂ ≤ {mat.maxTipSpeedMs} m/s • K_Ic = {mat.fractureToughnessMpaSqrtM} MPa·√m • d₈₀: {mat.d80RangeMicrons[0]}–{mat.d80RangeMicrons[1]} µm • pH {mat.phRange[0]}–{mat.phRange[1]}
               </div>
-              <a href={`/en/quote/?circuito=bombeo&equipo=solo_impulsor&material=${mat.key}&estacion=S3#rfq`} class="btn btn-outline" style="width:100%; text-align:center; font-size:0.78rem;">Configure in {mat.code} →</a>
+              <a href={`/en/quote/?circuito=bombeo&equipo=solo_impulsor&material=${mat.key}&estacion=S3#rfq`} data-card-fixed-params="material" class="btn btn-outline" style="width:100%; text-align:center; font-size:0.78rem;">Configure in {mat.code} →</a>
             </div>
           ))}
         </div>
@@ -199,7 +212,9 @@ const wetMaterials = [
 
 <script>
   import { bindCanonicalTribologySelector } from '../../../scripts/verticalCalculatorsAndLabelsBridge.js';
+  import { bindAtomicPartTrayButtons } from '../../../scripts/verticalStateAndCtaSyncBridge.js';
   bindCanonicalTribologySelector(document, 'en');
+  bindAtomicPartTrayButtons(document);
 </script>
 
 <style>

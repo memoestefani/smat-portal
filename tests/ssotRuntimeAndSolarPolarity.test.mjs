@@ -167,7 +167,9 @@ test('4. [DECISIÓN 4 / DEB-V42-04] Evaluación Waters-NIOSH 1993 (RWL_shaft = 1
 });
 
 test('5. [DECISIÓN 5 / DEB-V42-05] Propagación Reactiva del Slider de Estación 05 y 4ª Rama ceramica_sic en PumpAssemblyReport.astro', () => {
-  const report = fs.readFileSync(path.join(siteRoot, 'src/components/PumpAssemblyReport.astro'), 'utf-8');
+  const report = fs.readFileSync(path.join(siteRoot, 'src/components/PumpAssemblyReport.astro'), 'utf-8')
+    + '\n'
+    + fs.readFileSync(path.join(siteRoot, 'src/scripts/pumpAssemblyReportController.js'), 'utf-8');
 
   assert.ok(
     report.includes('data-assembly-branch-btn="ceramica_sic"') && report.includes('data-branch-btn="ceramica_sic"'),
