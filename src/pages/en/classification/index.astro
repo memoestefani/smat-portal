@@ -151,7 +151,7 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
 <script>
   import { calculateThreeCupMarcyCycloneBalance } from '../../../scripts/slurryEngine.js';
   import { saveWorkbenchSession, loadWorkbenchSession } from '../../../scripts/workbenchBus.js';
-  import { saveEngineeringContextSnapshot } from '../../../scripts/wizardCircuitPhysicsController.js';
+  import { evaluateHydrocycloneCutPoint, saveEngineeringContextSnapshot } from '../../../scripts/wizardCircuitPhysicsController.js';
 
   const feedInput = document.getElementById('cyc-feed-sg') as HTMLInputElement | null;
   const underInput = document.getElementById('cyc-underflow-sg') as HTMLInputElement | null;
@@ -188,9 +188,23 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
     }
     if (recEl) recEl.textContent = `${res.solidsRecoveryPct}%`;
     if (circEl) circEl.textContent = `${res.circulatingLoadPct}%`;
-    if (cvuEl) cvuEl.textContent = `${res.cvUnderflowPct}%`;
+    if (cvuEl) cvuEl.textContent = `${res.cvUnderflowPct}% (du/do=${res.apexToVortexRatio})`;
     if (d50El) d50El.textContent = `${res.d50cMicrons} µm`;
-    if (actionEl) actionEl.textContent = res.diagnosticActionEn;
+    if (actionEl) {
+      const threeCupsInfo = `3-Cup: Feed Cw ${res.cwFeedPct}% (Cv ${res.cvFeedPct}%) | UF Cw ${res.cwUnderflowPct}% | OF Cw ${res.cwOverflowPct}% (Cv ${res.cvOverflowPct}%) • ${res.isUmbrellaDilute ? 'Dilute Umbrella' : 'Stable Spray'}`;
+      actionEl.textContent = `${res.diagnosticActionEn} [${threeCupsInfo}]`;
+    }
+    const csrFeedInput = document.getElementById('csr-feed-um') as HTMLInputElement | null;
+    if (csrFeedInput) {
+      csrFeedInput.value = String(Math.round(res.d50cMicrons * 2.2));
+      csrFeedInput.dispatchEvent(new Event('input'));
+    }
+    const coupledEval = evaluateHydrocycloneCutPoint({
+      feedSg: res.feedSg,
+      underflowSg: res.underflowSg,
+      overflowSg: res.overflowSg,
+      feedPressureKpa: res.feedPressureKpa
+    });
     if (skuLink) {
       skuLink.href = res.recommendedSkuId === 'SMAT-COUPLED-PUMP-CYC'
         ? '/en/products/coupled-pump-hydrocyclone-package/'

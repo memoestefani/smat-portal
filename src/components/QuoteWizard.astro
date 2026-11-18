@@ -5,7 +5,6 @@ import rolesData from '../../data/roles.json';
 import atomicPartsData from '../../data/atomic_parts.json';
 import '../styles/workbench.css';
 import LiveEngineeringDossier from './LiveEngineeringDossier.astro';
-import RequisitionTraySummary from './RequisitionTraySummary.astro';
 import WizardCircuitCalculators from './WizardCircuitCalculators.astro';
 import { sanitizePublicAtomicPartSpecs } from '../scripts/vendorPassportAndTradeInController.js';
 import {
@@ -186,25 +185,178 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
               {isEs ? 'Diámetro interno hidráulico (D): 150 mm (Serie 6x4)' : 'Internal hydraulic diameter (D): 150 mm (6x4 Series)'}
             </small>
           </div>
-
-          <!-- Ficha Física de Pieza Atómica y Ergonomía NIOSH (Readout Reactivo Pos-Selección) -->
-          <div id="wb-atomic-part-card" data-testid="wb-atomic-part-card" class="atomic-part-spec-card" style="margin-bottom: 0.65rem;">
-            <div class="atomic-part-spec-header">
-              <span class="atomic-part-spec-tag font-mono-tech" id="wb-part-station-tag">{defaultPartSpecs.station_number} • {defaultPartSpecs.code}</span>
-              <span class="atomic-part-niosh-badge" id="wb-part-niosh-badge">
-                {isEs ? `Peso: ${defaultPartSpecs.weight_kg} kg • ${defaultNioshEval.badgeEs}` : `Weight: ${defaultPartSpecs.weight_kg} kg • ${defaultNioshEval.badgeEn}`}
-              </span>
-            </div>
-            <div class="atomic-part-spec-grid">
-              <div><small>{isEs ? 'Geometría Hidráulica:' : 'Hydraulic Geometry:'}</small> <strong id="wb-part-geom-val">ØD₂ {defaultPartSpecs.impeller_diameter_mm} mm • {defaultPartSpecs.vanes} {isEs ? 'álabes' : 'vanes'} • Paso {defaultPartSpecs.max_particle_mm} mm</strong></div>
-              <div><small>{isEs ? 'Secuencia de Montaje:' : 'Assembly Sequence:'}</small> <strong id="wb-part-order-val">{defaultPartSpecs.assembly_order} ({isEs ? 'Lote' : 'Kit'} {defaultPartSpecs.wet_end_kit_ratio})</strong></div>
-              <div><small>{isEs ? 'Dureza Certificada:' : 'Certified Hardness:'}</small> <strong id="wb-part-hardness-val">{defaultPartSpecs.hardness}</strong></div>
-              <div><small>{isEs ? 'Garantía Dimensional:' : 'Fit Guarantee:'}</small> <strong id="wb-part-fit-val">{isEs ? defaultPartSpecs.fit_guarantee_es : defaultPartSpecs.fit_guarantee_en}</strong></div>
-              <div><small>{isEs ? 'Planeación Preventiva en Planta:' : 'Preventive Plant Cycle:'}</small> <strong id="wb-part-reorder-window-val" data-testid="wb-part-reorder-window-val">{isEs ? (defaultPartSpecs.dispatchSlaLabelEs || 'Ciclo sugerido: cada 90 días • Despacho Programado Durango') : (defaultPartSpecs.dispatchSlaLabelEn || 'Suggested cycle: every 90 days • Durango Scheduled Dispatch')}</strong></div>
-            </div>
-          </div>
-          <WizardCircuitCalculators lang={lang} />
         </div>
+
+        <!-- PANEL CIRCUITO 2: FLOTACIÓN DE MINERALES (Promovido a Nivel Primario XOR — D1-V41) -->
+        <div id="circuit-panel-flotacion" class="circuit-panel hidden" style="display:none; margin-top: 0.75rem;">
+          <div class="form-group">
+            <label for="wb-role-flot"><strong>{isEs ? 'Equipo o Componente Requerido en Flotación:' : 'Required Flotation Equipment or Part:'}</strong></label>
+            <select id="wb-role-flot" name="role_id_flot" class="wb-select">
+              <option value="rotor_estator" selected>{isEs ? 'Mecanismo Rotor y Estator de Elastómero (Desgaste)' : 'Elastomer Rotor & Stator Mechanism (Wear Spares)'}</option>
+              <option value="celda_flotacion">{isEs ? 'Mecanismo para Celda de Flotación Completa y Acondicionador' : 'Complete Flotation Cell Mechanism & Pulp Conditioner'}</option>
+              <option value="bateria_celdas">{isEs ? 'Batería Modular de Celdas Rougher / Scavenger' : 'Rougher / Scavenger Modular Cell Bank'}</option>
+              <option value="manto_difusor">{isEs ? 'Difusor de Fondo y Manto de Protección Antidesgaste' : 'Bottom Diffuser & Protective Wear Shroud'}</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-top: 0.75rem;">
+            <label for="wb-flot-capacity"><strong>{isEs ? 'Capacidad / Volumen de Celda de Flotación:' : 'Flotation Cell Volume / Capacity:'}</strong></label>
+            <select id="wb-flot-capacity" name="flot_capacity" class="wb-select">
+              <option value="50ft">{isEs ? 'Celda 50 ft³ (1.4 m³ — Banco Cleaner / Limpieza / Piloto)' : '50 ft³ Cell (1.4 m³ — Cleaner Bank / Pilot Plant)'}</option>
+              <option value="100ft" selected>{isEs ? 'Celda 100 ft³ (2.8 m³ — Circuito Intermedio / Concentración)' : '100 ft³ Cell (2.8 m³ — Intermediate Concentration Circuit)'}</option>
+              <option value="200ft">{isEs ? 'Celda 200 ft³ (5.7 m³ — Rougher Primario / Desbaste)' : '200 ft³ Cell (5.7 m³ — Primary Rougher Stage)'}</option>
+              <option value="300ft">{isEs ? 'Celda 300 ft³ (8.5 m³ — Gran Capacidad / Scavenger)' : '300 ft³ Cell (8.5 m³ — High Capacity / Scavenger)'}</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-top: 0.75rem;">
+            <label id="flot-chips-label"><strong>{isEs ? 'Condición de Operación en Celda / Agitación:' : 'Cell Operating Condition / Agitation:'}</strong></label>
+            <div class="flot-chips-grid" role="group" aria-labelledby="flot-chips-label">
+              <button type="button" class="flot-chip chip-ghost" data-flot-cond="sulfuros_alta_agitacion" data-confirmed="false" aria-pressed="false">
+                [ {isEs ? 'SULFUROS MASIVOS / ALTA VELOCIDAD DE AGITACIÓN' : 'MASSIVE SULFIDES & HIGH SHEAR'} ]
+              </button>
+              <button type="button" class="flot-chip" data-flot-cond="reactivos_ph_extremo" data-confirmed="false" aria-pressed="false">
+                [ {isEs ? 'ATAQUE POR REACTIVOS / PH EXTREMO' : 'REAGENT ATTACK & EXTREME PH'} ]
+              </button>
+              <button type="button" class="flot-chip" data-flot-cond="espumado_intenso" data-confirmed="false" aria-pressed="false">
+                [ {isEs ? 'ESPUMADO INTENSO / DESGASTE POR IMPACTO' : 'INTENSE FROTH & SLURRY IMPACT'} ]
+              </button>
+              <button type="button" class="flot-chip" data-flot-cond="vibracion_flecha" data-confirmed="false" aria-pressed="false">
+                [ {isEs ? 'VIBRACIÓN EN FLECHA / CAMBIO PREVENTIVO' : 'SHAFT VIBRATION & PREVENTIVE OVERHAUL'} ]
+              </button>
+            </div>
+            <input type="hidden" name="flot_condition" id="wb-flot-condition" value="" />
+          </div>
+        </div>
+
+        <!-- PANEL CIRCUITO 3: FILTRACIÓN Y JALES SECOS (Promovido a Nivel Primario XOR — D1-V41) -->
+        <div id="circuit-panel-filtracion" class="circuit-panel hidden" style="display:none; margin-top: 0.75rem;">
+          <div class="form-group">
+            <label for="wb-role-filt"><strong>{isEs ? 'Equipo o Refacción Requerida en Filtración e Instrumentación:' : 'Required Filtration or Instrumentation Equipment:'}</strong></label>
+            <select id="wb-role-filt" name="role_id_filt" class="wb-select">
+              <option value="placas_telas" selected>{isEs ? 'Paquete de Placas de Polipropileno y Telas Filtrantes' : 'Polypropylene Plates & Filter Cloths Pack'}</option>
+              <option value="filtro_prensa">{isEs ? 'Filtro Prensa Hidráulico Automático (16 bar)' : 'Automatic Hydraulic Filter Press (16 bar)'}</option>
+              <option value="placas_membrana">{isEs ? 'Placas de Membrana para Exprimido a Alta Presión' : 'Membrane Squeeze Plates Pack'}</option>
+              <option value="bomba_prensa">{isEs ? 'Bomba de Pulpa para Alimentación de Filtro Prensa' : 'Slurry Feed Pump for Filter Press'}</option>
+              <option value="balanza_marcy">{isEs ? 'Balanza de Densidad de Pulpa (Tipo Marcy) — Recipiente 1000 cm³ y 12 Diales' : 'Pulp Density Scale (Marcy Type) — 1000 cm³ Container & 12 Dials'}</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-top: 0.75rem;">
+            <label for="wb-filt-capacity"><strong>{isEs ? 'Dimensión de Placa / Capacidad de Filtrado:' : 'Plate Dimension / Filtration Capacity:'}</strong></label>
+            <select id="wb-filt-capacity" name="filt_capacity" class="wb-select">
+              <option value="800">{isEs ? 'Placas 800 x 800 mm (Planta Piloto / Concentrados Preciosos)' : '800 x 800 mm Plates (Pilot Plant / Precious Concentrates)'}</option>
+              <option value="1200">{isEs ? 'Placas 1200 x 1200 mm (Planta Media / Concentrados Bulk)' : '1200 x 1200 mm Plates (Mid-Size Plant / Bulk Concentrates)'}</option>
+              <option value="1500" selected>{isEs ? 'Placas 1500 x 1500 mm (Alta Capacidad / Jales Secos 16 bar)' : '1500 x 1500 mm Plates (High Capacity / Dry Tailings 16 bar)'}</option>
+              <option value="2000">{isEs ? 'Placas 2000 x 2000 mm (Mega-Filtración / Presas de Jales)' : '2000 x 2000 mm Plates (Mega-Filtration / Tailings Dams)'}</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-top: 0.75rem;">
+            <label id="filt-chips-label"><strong>{isEs ? 'Objetivo Operativo de Filtrado / Ciclo:' : 'Filtration Operational Target / Cycle:'}</strong></label>
+            <div class="filt-chips-grid" role="group" aria-labelledby="filt-chips-label">
+              <button type="button" class="filt-chip chip-ghost" data-filt-cond="jales_secos" data-confirmed="false" aria-pressed="false">
+                [ {isEs ? 'JALES SECOS (<15% HUMEDAD RESIDUAL)' : 'DRY STACK TAILINGS (<15% MOISTURE)'} ]
+              </button>
+              <button type="button" class="filt-chip" data-filt-cond="recuperacion_agua" data-confirmed="false" aria-pressed="false">
+                [ {isEs ? 'RECUPERACIÓN RÁPIDA DE AGUA DE PROCESO' : 'PROCESS WATER RECOVERY'} ]
+              </button>
+              <button type="button" class="filt-chip" data-filt-cond="colmatacion_telas" data-confirmed="false" aria-pressed="false">
+                [ {isEs ? 'COLMATACIÓN SEVERA / REEMPLAZO URGENTE' : 'SEVERE BLINDING & CLOTH REPLACEMENT'} ]
+              </button>
+              <button type="button" class="filt-chip" data-filt-cond="alta_presion_16bar" data-confirmed="false" aria-pressed="false">
+                [ {isEs ? 'CICLOS RÁPIDOS A ALTA PRESIÓN (16 BAR)' : 'HIGH-PRESSURE FAST CYCLES (16 BAR)'} ]
+              </button>
+            </div>
+            <input type="hidden" name="filt_condition" id="wb-filt-condition" value="" />
+          </div>
+        </div>
+
+        <!-- PANEL CIRCUITO 4: CONTROL DE PROCESOS Y LABORATORIO METALÚRGICO (Promovido a Nivel Primario XOR — D1-V41 / D7-V41) -->
+        <div id="circuit-panel-control" class="circuit-panel hidden" style="display:none; margin-top: 0.75rem;">
+          <div class="form-group">
+            <label for="wb-role-ctrl"><strong>{isEs ? 'Instrumento o Paquete de Control Requerido:' : 'Required Process Control Instrument or Package:'}</strong></label>
+            <select id="wb-role-ctrl" name="role_id_ctrl" class="wb-select">
+              <option value="balanza_marcy" selected>{isEs ? 'Balanza de Densidad de Pulpa y % de Sólidos (Tipo Marcy) — Vaso 1000 cm³ + 12 Anillos' : 'Pulp Density & % Solids Scale (Marcy Type) — 1000 cm³ Cup + 12 Rings'}</option>
+              <option value="filtro_batch_lab">{isEs ? 'Filtro de Presión Batch de Laboratorio SMAT (60–100 psi / Husillo en T)' : 'SMAT Laboratory Batch Pressure Filter (60–100 psi / T-Bar Clamp)'}</option>
+              <option value="tamices_laboratorio">{isEs ? 'Tamices de Laboratorio Certificados ASTM E11 / ISO 3310 (5" a #635 / 20 µm) y Tamizadores' : 'Certified ASTM E11 / ISO 3310 Test Sieves (5" to #635 / 20 µm) & Shakers'}</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-top: 0.55rem;">
+            <label for="wb-ctrl-spec"><strong>{isEs ? 'Rango de Gravedad Específica (Ss) o Serie de Mallas:' : 'Ore Specific Gravity (Ss) Range or Sieve Series:'}</strong></label>
+            <select id="wb-ctrl-spec" name="ctrl_spec" class="wb-select">
+              <option value="marcy_12_rings" selected>{isEs ? 'Juego Completo 12 Carátulas (Ss 2.2 a 4.4) + Vaso 1000 cm³ Acero Inoxidable 304' : 'Full 12-Ring Dial Set (Ss 2.2 to 4.4) + 1000 cm³ 304 Stainless Steel Cup'}</option>
+              <option value="batch_100psi">{isEs ? 'Cámara de Presión Batch de Acero Pesado (60 a 100 psi) + Columnas Guía y Drenaje' : 'Heavy-Duty Steel Batch Pressure Barrel (60 to 100 psi) + Twin Guide Rods'}</option>
+              <option value="astm_8in_inox">{isEs ? 'Columna de Tamices 8" en Acero Inoxidable (Corte P80 #40 a #400 / #635) + Tapa y Fondo' : '8" Stainless Steel Sieve Stack (P80 Control #40 to #400 / #635) + Cover & Pan'}</option>
+              <option value="astm_12in_bronce">{isEs ? 'Columna de Tamices 12" en Bronce / Inox + Tamizador Mecánico y Cuarteador' : '12" Brass / Stainless Sieve Stack + Mechanical Sieve Shaker & Splitter'}</option>
+            </select>
+          </div>
+          <div class="form-row" style="margin-top: 0.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.45rem;">
+            <label for="wb-ctrl-solve-mode" style="font-size:0.73rem; font-weight:700; color:#0f172a;">{isEs ? 'Inversión Algebraica Balanza Marcy (3 Vías):' : '3-Way Marcy Algebraic Inversion:'}</label>
+            <select id="wb-ctrl-solve-mode" data-testid="wb-ctrl-solve-mode" class="wb-select font-mono-tech" style="max-width:340px; min-height:32px; padding:0.2rem 0.5rem; font-size:0.74rem;">
+              <option value="cw" selected>{isEs ? 'Modo 1: Dado Ss y %Cw ➔ Calcular ρp (kg/L)' : 'Mode 1: Given Ss & %Cw ➔ Solve ρp (kg/L)'}</option>
+              <option value="rhop">{isEs ? 'Modo 2: Dado Ss y ρp ➔ Calcular %Cw' : 'Mode 2: Given Ss & ρp ➔ Solve %Cw'}</option>
+              <option value="ore_density_rhop">{isEs ? 'Modo 3: Dado ρp y %Cw (Horno) ➔ Despejar Ss Real' : 'Mode 3: Given ρp & Lab %Cw ➔ Solve True Ore Ss'}</option>
+            </select>
+            <button type="button" id="btn-apply-ss-to-circuit" data-testid="btn-apply-ss-to-circuit" class="assist-pill-btn" style="padding:0.22rem 0.6rem; font-size:0.71rem; font-weight:700;">{isEs ? 'Aplicar Ss al Circuito →' : 'Apply Ss to Circuit →'}</button>
+          </div>
+          <div class="form-row" style="margin-top: 0.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 0.5rem;">
+            <div class="form-group"><label for="wb-ctrl-sg"><strong>{isEs ? 'SG Mineral (Ss):' : 'Ore SG (Ss):'}</strong></label><input type="number" id="wb-ctrl-sg" min="2.2" max="4.4" step="0.1" value="2.8" class="wb-input font-mono-tech" /></div>
+            <div class="form-group"><label for="wb-ctrl-cw"><strong>{isEs ? '% Sólidos (Cw):' : 'Solids (% Cw):'}</strong></label><input type="number" id="wb-ctrl-cw" min="10" max="75" step="1" value="45" class="wb-input font-mono-tech" /></div>
+            <div class="form-group"><label for="wb-ctrl-rhop"><strong>{isEs ? 'Densidad ρp (kg/L):' : 'Pulp ρp (kg/L):'}</strong></label><input type="number" id="wb-ctrl-rhop" min="1.05" max="2.40" step="0.005" value="1.406" class="wb-input font-mono-tech" /></div>
+            <div class="form-group"><label for="wb-ctrl-d95"><strong>{isEs ? 'Top d95 Gy (mm):' : 'Gy d95 (mm):'}</strong></label><input type="number" id="wb-ctrl-d95" min="0.04" max="25.0" step="0.01" value="0.21" class="wb-input font-mono-tech" /></div>
+            <div class="form-group"><label for="wb-ctrl-lib"><strong>{isEs ? 'Liberación dl (µm):' : 'Lib. dl (µm):'}</strong></label><input type="number" id="wb-ctrl-lib" min="10" max="1000" step="5" value="100" class="wb-input font-mono-tech" /></div>
+            <div class="form-group"><label for="wb-ctrl-grade"><strong>{isEs ? 'Ley Mineral (aL):' : 'Ore Grade (aL):'}</strong></label><input type="number" id="wb-ctrl-grade" min="0.001" max="0.95" step="0.005" value="0.05" class="wb-input font-mono-tech" /></div>
+            <div class="form-group"><label for="wb-ctrl-air-psi"><strong>{isEs ? 'Presión Batch (psi):' : 'Batch Air (psi):'}</strong></label><select id="wb-ctrl-air-psi" class="wb-select font-mono-tech"><option value="60">60 psi</option><option value="80">80 psi</option><option value="90" selected>90 psi</option><option value="100">100 psi</option></select></div>
+            <div class="form-group"><label for="wb-ctrl-gy-c"><strong>{isEs ? 'Constante Gy C:' : 'Gy Constant C:'}</strong></label><input type="number" id="wb-ctrl-gy-c" min="0.05" max="50" step="0.05" value="1.35" class="wb-input font-mono-tech" /></div>
+            <div class="form-group"><label for="wb-ctrl-gy-err"><strong>{isEs ? 'Error Rel. Gy (s):' : 'Gy Rel. Err (s):'}</strong></label><select id="wb-ctrl-gy-err" class="wb-select font-mono-tech"><option value="0.01">1% (0.01)</option><option value="0.05" selected>5% (0.05)</option><option value="0.10">10% (10%)</option></select></div>
+            <div class="form-group"><label for="wb-ctrl-p80"><strong>{isEs ? 'Corte P80 (µm):' : 'Target P80 (µm):'}</strong></label><input type="number" id="wb-ctrl-p80" min="25" max="2000" step="5" value="150" class="wb-input font-mono-tech" /></div>
+            <div class="form-group"><label for="wb-ctrl-rr-n"><strong>{isEs ? 'Pendiente RR (n):' : 'RR Slope (n):'}</strong></label><input type="number" id="wb-ctrl-rr-n" min="0.50" max="2.50" step="0.05" value="1.15" class="wb-input font-mono-tech" /></div>
+            <div class="form-group"><label for="wb-ctrl-ret-p80"><strong>{isEs ? '% Ret. en P80:' : '% Ret. at P80:'}</strong></label><input type="number" id="wb-ctrl-ret-p80" min="5" max="40" step="1" value="20" class="wb-input font-mono-tech" /></div>
+          </div>
+          <div id="wb-ctrl-live-metrics" class="font-mono-tech" style="margin-top:0.5rem; padding:0.45rem 0.65rem; background:#f0f9ff; border:1px solid #bae6fd; border-radius:6px; font-size:0.71rem; color:#082f49;"></div>
+          <div class="font-mono-tech" style="margin-top:0.4rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(165px, 1fr)); gap:0.35rem; font-size:0.69rem; color:#0f172a;">
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Pulpa / Anillo:' : 'Pulp / Ring:'}</strong> <span id="wb-ctrl-res-sm">1.406 kg/L (Ss 2.8)</span></div>
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Sesgo Anillo:' : 'Ring Bias:'}</strong> <span id="wb-ctrl-res-bias">±0.0 pts %Cw</span></div>
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Muestra Gy / Batch:' : 'Gy / Batch:'}</strong> <span id="wb-ctrl-res-gy">0.25 kg (1 ciclo Batch)</span></div>
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Malla Control RR:' : 'RR Control Mesh:'}</strong> <span id="wb-ctrl-res-rr">#100 • n = 1.15</span></div>
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Volumen Pulpa Gy:' : 'Gy Wet Pulp Vol:'}</strong> <span id="wb-ctrl-gy-pulp-liters" data-testid="wb-ctrl-gy-pulp-liters">{isEs ? 'Volumen Pulpa Húmeda: 0.39 L (1 ciclo Batch)' : 'Wet Pulp Volume: 0.39 L (1 Batch cycle)'}</span></div>
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Bastidor ASTM E11:' : 'ASTM E11 Frame:'}</strong> <span id="wb-ctrl-sieve-frame-rec" data-testid="wb-ctrl-sieve-frame-rec">{isEs ? 'Tamizado Húmedo Requerido • Bastidor Acero Inox 304/316' : 'Wet Screening Required • 304/316 Stainless Steel Frame'}</span></div>
+          </div>
+          <div id="wb-ctrl-marcy-rings-strip" data-testid="wb-ctrl-marcy-rings-strip" class="font-mono-tech" style="margin-top:0.35rem; font-size:0.68rem; color:#334155; background:#f8fafc; border:1px solid #e2e8f0; border-radius:4px; padding:0.28rem 0.5rem;">
+            {isEs ? '12 Anillos Marcy (Ss 2.2–4.4): Anillo #4 [Ss 2.8] activo' : '12 Marcy Rings (Ss 2.2–4.4): Ring #4 [Ss 2.8] active'}
+          </div>
+          <div style="margin-top: 0.5rem; overflow-x: auto; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.5rem;">
+            <span class="font-mono-tech" style="display:block; font-size:0.68rem; font-weight:800; color:#475569; margin-bottom:0.35rem;">{isEs ? 'SERIE DE TAMICES ASTM E11 / ROSIN-RAMMLER EN VIVO (7 MALLAS)' : 'LIVE ASTM E11 / ROSIN-RAMMLER SIEVE STACK (7 MESHES)'}</span>
+            <table id="wb-ctrl-sieve-table" style="width:100%; border-collapse:collapse; font-size:0.72rem;">
+              <thead>
+                <tr style="border-bottom:1px solid #cbd5e1; text-align:left;">
+                  <th style="padding:0.22rem 0.35rem;">{isEs ? 'Malla (Tyler)' : 'Mesh (Tyler)'}</th>
+                  <th style="padding:0.22rem 0.35rem;">µm</th>
+                  <th style="padding:0.22rem 0.35rem;">{isEs ? '% Ret. Indiv.' : '% Indiv. Ret.'}</th>
+                  <th style="padding:0.22rem 0.35rem;">{isEs ? '% Ret. Acum.' : '% Cum. Ret.'}</th>
+                  <th style="padding:0.22rem 0.35rem;">{isEs ? '% Pasante' : '% Passing'}</th>
+                  <th style="padding:0.22rem 0.35rem;">{isEs ? 'Masa (g) / Rol' : 'Mass (g) / Role'}</th>
+                </tr>
+              </thead>
+              <tbody id="wb-ctrl-sieve-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Ficha Física de Pieza Atómica y Ergonomía NIOSH (Readout Reactivo Independiente del Circuito — D1-V41) -->
+        <div id="wb-atomic-part-card" data-testid="wb-atomic-part-card" class="atomic-part-spec-card" style="margin-top: 0.65rem; margin-bottom: 0.65rem;">
+          <div class="atomic-part-spec-header">
+            <span class="atomic-part-spec-tag font-mono-tech" id="wb-part-station-tag">{defaultPartSpecs.station_number} • {defaultPartSpecs.code}</span>
+            <span class="atomic-part-niosh-badge" id="wb-part-niosh-badge">
+              {isEs ? `Peso: ${defaultPartSpecs.weight_kg} kg • ${defaultNioshEval.badgeEs}` : `Weight: ${defaultPartSpecs.weight_kg} kg • ${defaultNioshEval.badgeEn}`}
+            </span>
+          </div>
+          <div class="atomic-part-spec-grid">
+            <div><small>{isEs ? 'Geometría Hidráulica:' : 'Hydraulic Geometry:'}</small> <strong id="wb-part-geom-val">ØD₂ {defaultPartSpecs.impeller_diameter_mm} mm • {defaultPartSpecs.vanes} {isEs ? 'álabes' : 'vanes'} • Paso {defaultPartSpecs.max_particle_mm} mm</strong></div>
+            <div><small>{isEs ? 'Secuencia de Montaje:' : 'Assembly Sequence:'}</small> <strong id="wb-part-order-val">{defaultPartSpecs.assembly_order} ({isEs ? 'Lote' : 'Kit'} {defaultPartSpecs.wet_end_kit_ratio})</strong></div>
+            <div><small>{isEs ? 'Dureza Certificada:' : 'Certified Hardness:'}</small> <strong id="wb-part-hardness-val">{defaultPartSpecs.hardness}</strong></div>
+            <div><small>{isEs ? 'Garantía Dimensional:' : 'Fit Guarantee:'}</small> <strong id="wb-part-fit-val">{isEs ? defaultPartSpecs.fit_guarantee_es : defaultPartSpecs.fit_guarantee_en}</strong></div>
+            <div><small>{isEs ? 'Planeación Preventiva en Planta:' : 'Preventive Plant Cycle:'}</small> <strong id="wb-part-reorder-window-val" data-testid="wb-part-reorder-window-val">{isEs ? (defaultPartSpecs.dispatchSlaLabelEs || 'Ciclo sugerido: cada 90 días • Despacho Programado Durango') : (defaultPartSpecs.dispatchSlaLabelEn || 'Suggested cycle: every 90 days • Durango Scheduled Dispatch')}</strong></div>
+          </div>
+        </div>
+        <WizardCircuitCalculators lang={lang} />
 
         <!-- Criterio Metalúrgico y Riesgo Evitado en Vivo (Conectado a data/roles.json) -->
         <div id="wb-role-criteria-bar" class="role-criteria-inline-bar">
@@ -254,10 +406,10 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
           </div>
         </details>
 
-        <!-- CAPA 2B: Gaveta Progresiva de Configuración de Circuito, Unidad Minera, Material y Arreglo (Decisión 2-C+) -->
+        <!-- CAPA 2B: Gaveta Progresiva de Configuración de Paquete, Material y Arreglo (Confinada por Circuito — D1-V41) -->
         <details class="wb-progressive-drawer" id="wb-engineering-config-details">
           <summary class="wb-progressive-summary">
-            <span>{isEs ? '+ Configuración de Circuito (Flotación / Filtración / Lab), Material Cr27/Hule, Arreglo V-Belt y Unidad Minera' : '+ Circuit Config (Flotation / Filtration / Lab), Cr27/Rubber Material, V-Belt Arrangement & Mining Unit'}</span>
+            <span>{isEs ? '+ Configuración de Alcance (Refacciones / Paquete CAPEX), Material Cr27/Hule y Arreglo V-Belt' : '+ Scope Config (Spares / CAPEX Package), Cr27/Rubber Material & V-Belt Arrangement'}</span>
             <span class="wb-step1-more-arrow">▾</span>
           </summary>
           <div class="wb-progressive-body">
@@ -287,194 +439,49 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
               </div>
             </div>
 
-            <div class="form-group" style="margin-top: 0.75rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.65rem;">
-              <div>
-                <label for="wb-pump-material"><strong>{isEs ? 'Material en Contacto Húmedo:' : 'Wet-End Wear Material:'}</strong></label>
-                <select id="wb-pump-material" name="pump_material" class="wb-select">
-                  <option value="alto_cromo_cr27" selected>{isEs ? 'Alto Cromo Cr27% (ASTM A532 ≥650 HB)' : 'High Chrome Cr27% (ASTM A532 ≥650 HB)'}</option>
-                  <option value="hule_natural">{isEs ? 'Hule Natural Antiabrasivo (55–65 Shore A)' : 'Natural Rubber (55–65 Shore A)'}</option>
-                  <option value="poliuretano">{isEs ? 'Poliuretano Grado Minero (85–95 Shore A)' : 'Mining Polyurethane (85–95 Shore A)'}</option>
-                  <option value="ceramica_sic">{isEs ? 'Carburo de Silicio Sinterizado SiC (≥2200 HV / Mohs 9.2)' : 'Sintered Silicon Carbide SiC (≥2200 HV / Mohs 9.2)'}</option>
-                  <option value="hybrid_a05_r55">{isEs ? 'Rama D Híbrida (Impulsor Alto Cromo A05 + Forros Hule R55)' : 'Branch D Hybrid (High Chrome A05 Impeller + R55 Rubber Liners)'}</option>
-                </select>
-              </div>
-              <div>
-                <label for="wb-drive-arrangement"><strong>{isEs ? 'Arreglo de Transmisión (Base Estructural):' : 'Base Frame Drive Arrangement:'}</strong></label>
-                <select id="wb-drive-arrangement" name="drive_arrangement" class="wb-select" data-wb-bind="drive_arrangement">
-                  <option value="CV" selected>{isEs ? 'Arreglo CV (Motor Superior sobre Bastidor)' : 'CV Arrangement (Overhead Motor)'}</option>
-                  <option value="ZVZ">{isEs ? 'Arreglo ZVZ (Motor Trasero Elevado)' : 'ZVZ Arrangement (Elevated Rear Motor)'}</option>
-                  <option value="CRZ">{isEs ? 'Arreglo CRZ (Motor Lateral Paralelo en Base)' : 'CRZ Arrangement (Side-by-Side on Base Frame)'}</option>
-                  <option value="DC">{isEs ? 'Arreglo DC (Acoplamiento Directo Inline)' : 'DC Arrangement (Direct Inline Coupling)'}</option>
-                </select>
-              </div>
-              <div>
-                <label for="wb-seal-branch"><strong>{isEs ? 'Rama de Sellado de Eje (Estación 02):' : 'Shaft Sealing Branch (Station 02):'}</strong></label>
-                <select id="wb-seal-branch" name="seal_branch" class="wb-select" data-wb-bind="seal_branch">
-                  <option value="expeller_dry" selected>{isEs ? 'Est. 02A — Expulsor Centrífugo Seco (Sin agua de sello)' : 'St. 02A — Dry Centrifugal Expeller (Zero gland water)'}</option>
-                  <option value="gland_water">{isEs ? 'Est. 02B — Prensaestopa Húmedo (Anillo Linterna)' : 'St. 02B — Wet Gland Packing (Lantern Ring)'}</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Tarjeta Tribológica Viva desde WET_END_MATERIAL_MATRIX (Decisión 7-C++) -->
-            <div id="wb-material-matrix-card" data-testid="wb-material-matrix-card" style="margin-top:0.65rem; padding:0.6rem 0.8rem; background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; font-size:0.74rem;">
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem; margin-bottom:0.3rem;">
-                <strong id="wb-mat-code-badge" class="font-mono-tech" style="color:#082f49;">[{defaultMatSpec.code}] {isEs ? defaultMatSpec.nameEs : defaultMatSpec.nameEn}</strong>
-                <span class="font-mono-tech" style="background:#e0f2fe; color:#0c4a6e; padding:0.12rem 0.45rem; border-radius:4px; font-weight:800;"><span id="wb-mat-hardness">{defaultMatSpec.hardness}</span> • u₂ ≤ <span id="wb-mat-tip-limit">{defaultMatSpec.maxTipSpeedMs}</span> m/s • Lote <span id="wb-mat-wear-554">{defaultMatSpec.wearRatio554}</span></span>
-              </div>
-              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.35rem; color:#1e293b;">
-                <div><strong>d₈₀ / pH:</strong> <span id="wb-mat-d80-ph">{defaultMatSpec.d80RangeMicrons} µm • pH {defaultMatSpec.phRange}</span></div>
-                <div><strong>{isEs ? 'Piezas Lote:' : 'Lot Parts:'}</strong> <span id="wb-mat-parts-list">{(isEs ? defaultMatSpec.partsIncludedEs : defaultMatSpec.partsIncludedEn).join(', ')}</span></div>
-              </div>
-              <div id="wb-mat-duty-desc" style="margin-top:0.25rem; color:#334155;">{isEs ? defaultMatSpec.dutyApplicationEs : defaultMatSpec.dutyApplicationEn}</div>
-              <div id="wb-hybrid-rama-d-breakdown" data-testid="wb-hybrid-rama-d-breakdown" class="hidden" style="display:none; margin-top:0.45rem; padding:0.45rem 0.65rem; background:#ecfdf5; border:1px solid #059669; border-radius:5px; color:#065f46; font-weight:700;"></div>
-            </div>
-
-            <!-- PANEL CIRCUITO 2: FLOTACIÓN DE MINERALES -->
-            <div id="circuit-panel-flotacion" class="circuit-panel hidden" style="display:none; margin-top: 0.75rem;">
-              <div class="form-group">
-                <label for="wb-role-flot"><strong>{isEs ? 'Equipo o Componente Requerido en Flotación:' : 'Required Flotation Equipment or Part:'}</strong></label>
-                <select id="wb-role-flot" name="role_id_flot" class="wb-select">
-                  <option value="rotor_estator" selected>{isEs ? 'Mecanismo Rotor y Estator de Elastómero (Desgaste)' : 'Elastomer Rotor & Stator Mechanism (Wear Spares)'}</option>
-                  <option value="celda_flotacion">{isEs ? 'Mecanismo para Celda de Flotación Completa y Acondicionador' : 'Complete Flotation Cell Mechanism & Pulp Conditioner'}</option>
-                  <option value="bateria_celdas">{isEs ? 'Batería Modular de Celdas Rougher / Scavenger' : 'Rougher / Scavenger Modular Cell Bank'}</option>
-                  <option value="manto_difusor">{isEs ? 'Difusor de Fondo y Manto de Protección Antidesgaste' : 'Bottom Diffuser & Protective Wear Shroud'}</option>
-                </select>
-              </div>
-              <div class="form-group" style="margin-top: 0.75rem;">
-                <label for="wb-flot-capacity"><strong>{isEs ? 'Capacidad / Volumen de Celda de Flotación:' : 'Flotation Cell Volume / Capacity:'}</strong></label>
-                <select id="wb-flot-capacity" name="flot_capacity" class="wb-select">
-                  <option value="50ft">{isEs ? 'Celda 50 ft³ (1.4 m³ — Banco Cleaner / Limpieza / Piloto)' : '50 ft³ Cell (1.4 m³ — Cleaner Bank / Pilot Plant)'}</option>
-                  <option value="100ft" selected>{isEs ? 'Celda 100 ft³ (2.8 m³ — Circuito Intermedio / Concentración)' : '100 ft³ Cell (2.8 m³ — Intermediate Concentration Circuit)'}</option>
-                  <option value="200ft">{isEs ? 'Celda 200 ft³ (5.7 m³ — Rougher Primario / Desbaste)' : '200 ft³ Cell (5.7 m³ — Primary Rougher Stage)'}</option>
-                  <option value="300ft">{isEs ? 'Celda 300 ft³ (8.5 m³ — Gran Capacidad / Scavenger)' : '300 ft³ Cell (8.5 m³ — High Capacity / Scavenger)'}</option>
-                </select>
-              </div>
-              <div class="form-group" style="margin-top: 0.75rem;">
-                <label id="flot-chips-label"><strong>{isEs ? 'Condición de Operación en Celda / Agitación:' : 'Cell Operating Condition / Agitation:'}</strong></label>
-                <div class="flot-chips-grid" role="group" aria-labelledby="flot-chips-label">
-                  <button type="button" class="flot-chip chip-ghost" data-flot-cond="sulfuros_alta_agitacion" data-confirmed="false" aria-pressed="false">
-                    [ {isEs ? 'SULFUROS MASIVOS / ALTA VELOCIDAD DE AGITACIÓN' : 'MASSIVE SULFIDES & HIGH SHEAR'} ]
-                  </button>
-                  <button type="button" class="flot-chip" data-flot-cond="reactivos_ph_extremo" data-confirmed="false" aria-pressed="false">
-                    [ {isEs ? 'ATAQUE POR REACTIVOS / PH EXTREMO' : 'REAGENT ATTACK & EXTREME PH'} ]
-                  </button>
-                  <button type="button" class="flot-chip" data-flot-cond="espumado_intenso" data-confirmed="false" aria-pressed="false">
-                    [ {isEs ? 'ESPUMADO INTENSO / DESGASTE POR IMPACTO' : 'INTENSE FROTH & SLURRY IMPACT'} ]
-                  </button>
-                  <button type="button" class="flot-chip" data-flot-cond="vibracion_flecha" data-confirmed="false" aria-pressed="false">
-                    [ {isEs ? 'VIBRACIÓN EN FLECHA / CAMBIO PREVENTIVO' : 'SHAFT VIBRATION & PREVENTIVE OVERHAUL'} ]
-                  </button>
+            <!-- Controles Exclusivos de Bombeo (Ocultos automáticamente cuando currentCircuit !== 'bombeo' — D1-V41) -->
+            <div id="wb-pump-only-engineering-controls" data-only-circuit="bombeo">
+              <div class="form-group" style="margin-top: 0.75rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.65rem;">
+                <div>
+                  <label for="wb-pump-material"><strong>{isEs ? 'Material en Contacto Húmedo:' : 'Wet-End Wear Material:'}</strong></label>
+                  <select id="wb-pump-material" name="pump_material" class="wb-select">
+                    <option value="alto_cromo_cr27" selected>{isEs ? 'Alto Cromo Cr27% (ASTM A532 ≥650 HB)' : 'High Chrome Cr27% (ASTM A532 ≥650 HB)'}</option>
+                    <option value="hule_natural">{isEs ? 'Hule Natural Antiabrasivo (55–65 Shore A)' : 'Natural Rubber (55–65 Shore A)'}</option>
+                    <option value="poliuretano">{isEs ? 'Poliuretano Grado Minero (85–95 Shore A)' : 'Mining Polyurethane (85–95 Shore A)'}</option>
+                    <option value="ceramica_sic">{isEs ? 'Carburo de Silicio Sinterizado SiC (≥2200 HV / Mohs 9.2)' : 'Sintered Silicon Carbide SiC (≥2200 HV / Mohs 9.2)'}</option>
+                    <option value="hybrid_a05_r55">{isEs ? 'Rama D Híbrida (Impulsor Alto Cromo A05 + Forros Hule R55)' : 'Branch D Hybrid (High Chrome A05 Impeller + R55 Rubber Liners)'}</option>
+                  </select>
                 </div>
-                <input type="hidden" name="flot_condition" id="wb-flot-condition" value="" />
-              </div>
-            </div>
-
-            <!-- PANEL CIRCUITO 3: FILTRACIÓN Y JALES SECOS -->
-            <div id="circuit-panel-filtracion" class="circuit-panel hidden" style="display:none; margin-top: 0.75rem;">
-              <div class="form-group">
-                <label for="wb-role-filt"><strong>{isEs ? 'Equipo o Refacción Requerida en Filtración e Instrumentación:' : 'Required Filtration or Instrumentation Equipment:'}</strong></label>
-                <select id="wb-role-filt" name="role_id_filt" class="wb-select">
-                  <option value="placas_telas" selected>{isEs ? 'Paquete de Placas de Polipropileno y Telas Filtrantes' : 'Polypropylene Plates & Filter Cloths Pack'}</option>
-                  <option value="filtro_prensa">{isEs ? 'Filtro Prensa Hidráulico Automático (16 bar)' : 'Automatic Hydraulic Filter Press (16 bar)'}</option>
-                  <option value="placas_membrana">{isEs ? 'Placas de Membrana para Exprimido a Alta Presión' : 'Membrane Squeeze Plates Pack'}</option>
-                  <option value="bomba_prensa">{isEs ? 'Bomba de Pulpa para Alimentación de Filtro Prensa' : 'Slurry Feed Pump for Filter Press'}</option>
-                  <option value="balanza_marcy">{isEs ? 'Balanza de Densidad de Pulpa (Tipo Marcy) — Recipiente 1000 cm³ y 12 Diales' : 'Pulp Density Scale (Marcy Type) — 1000 cm³ Container & 12 Dials'}</option>
-                </select>
-              </div>
-              <div class="form-group" style="margin-top: 0.75rem;">
-                <label for="wb-filt-capacity"><strong>{isEs ? 'Dimensión de Placa / Capacidad de Filtrado:' : 'Plate Dimension / Filtration Capacity:'}</strong></label>
-                <select id="wb-filt-capacity" name="filt_capacity" class="wb-select">
-                  <option value="800">{isEs ? 'Placas 800 x 800 mm (Planta Piloto / Concentrados Preciosos)' : '800 x 800 mm Plates (Pilot Plant / Precious Concentrates)'}</option>
-                  <option value="1200">{isEs ? 'Placas 1200 x 1200 mm (Planta Media / Concentrados Bulk)' : '1200 x 1200 mm Plates (Mid-Size Plant / Bulk Concentrates)'}</option>
-                  <option value="1500" selected>{isEs ? 'Placas 1500 x 1500 mm (Alta Capacidad / Jales Secos 16 bar)' : '1500 x 1500 mm Plates (High Capacity / Dry Tailings 16 bar)'}</option>
-                  <option value="2000">{isEs ? 'Placas 2000 x 2000 mm (Mega-Filtración / Presas de Jales)' : '2000 x 2000 mm Plates (Mega-Filtration / Tailings Dams)'}</option>
-                </select>
-              </div>
-              <div class="form-group" style="margin-top: 0.75rem;">
-                <label id="filt-chips-label"><strong>{isEs ? 'Objetivo Operativo de Filtrado / Ciclo:' : 'Filtration Operational Target / Cycle:'}</strong></label>
-                <div class="filt-chips-grid" role="group" aria-labelledby="filt-chips-label">
-                  <button type="button" class="filt-chip chip-ghost" data-filt-cond="jales_secos" data-confirmed="false" aria-pressed="false">
-                    [ {isEs ? 'JALES SECOS (<15% HUMEDAD RESIDUAL)' : 'DRY STACK TAILINGS (<15% MOISTURE)'} ]
-                  </button>
-                  <button type="button" class="filt-chip" data-filt-cond="recuperacion_agua" data-confirmed="false" aria-pressed="false">
-                    [ {isEs ? 'RECUPERACIÓN RÁPIDA DE AGUA DE PROCESO' : 'PROCESS WATER RECOVERY'} ]
-                  </button>
-                  <button type="button" class="filt-chip" data-filt-cond="colmatacion_telas" data-confirmed="false" aria-pressed="false">
-                    [ {isEs ? 'COLMATACIÓN SEVERA / REEMPLAZO URGENTE' : 'SEVERE BLINDING & CLOTH REPLACEMENT'} ]
-                  </button>
-                  <button type="button" class="filt-chip" data-filt-cond="alta_presion_16bar" data-confirmed="false" aria-pressed="false">
-                    [ {isEs ? 'CICLOS RÁPIDOS A ALTA PRESIÓN (16 BAR)' : 'HIGH-PRESSURE FAST CYCLES (16 BAR)'} ]
-                  </button>
+                <div>
+                  <label for="wb-drive-arrangement"><strong>{isEs ? 'Arreglo de Transmisión (Base Estructural):' : 'Base Frame Drive Arrangement:'}</strong></label>
+                  <select id="wb-drive-arrangement" name="drive_arrangement" class="wb-select" data-wb-bind="drive_arrangement">
+                    <option value="CV" selected>{isEs ? 'Arreglo CV (Motor Superior sobre Bastidor)' : 'CV Arrangement (Overhead Motor)'}</option>
+                    <option value="ZVZ">{isEs ? 'Arreglo ZVZ (Motor Trasero Elevado)' : 'ZVZ Arrangement (Elevated Rear Motor)'}</option>
+                    <option value="CRZ">{isEs ? 'Arreglo CRZ (Motor Lateral Paralelo en Base)' : 'CRZ Arrangement (Side-by-Side on Base Frame)'}</option>
+                    <option value="DC">{isEs ? 'Arreglo DC (Acoplamiento Directo Inline)' : 'DC Arrangement (Direct Inline Coupling)'}</option>
+                  </select>
                 </div>
-                <input type="hidden" name="filt_condition" id="wb-filt-condition" value="" />
+                <div>
+                  <label for="wb-seal-branch"><strong>{isEs ? 'Rama de Sellado de Eje (Estación 02):' : 'Shaft Sealing Branch (Station 02):'}</strong></label>
+                  <select id="wb-seal-branch" name="seal_branch" class="wb-select" data-wb-bind="seal_branch">
+                    <option value="expeller_dry" selected>{isEs ? 'Est. 02A — Expulsor Centrífugo Seco (Sin agua de sello)' : 'St. 02A — Dry Centrifugal Expeller (Zero gland water)'}</option>
+                    <option value="gland_water">{isEs ? 'Est. 02B — Prensaestopa Húmedo (Anillo Linterna)' : 'St. 02B — Wet Gland Packing (Lantern Ring)'}</option>
+                  </select>
+                </div>
               </div>
-            </div>
 
-            <!-- PANEL CIRCUITO 4: CONTROL DE PROCESOS Y LABORATORIO METALÚRGICO (Decisión 5-C++) -->
-            <div id="circuit-panel-control" class="circuit-panel hidden" style="display:none; margin-top: 0.75rem;">
-              <div class="form-group">
-                <label for="wb-role-ctrl"><strong>{isEs ? 'Instrumento o Paquete de Control Requerido:' : 'Required Process Control Instrument or Package:'}</strong></label>
-                <select id="wb-role-ctrl" name="role_id_ctrl" class="wb-select">
-                  <option value="balanza_marcy" selected>{isEs ? 'Balanza de Densidad de Pulpa y % de Sólidos (Tipo Marcy) — Vaso 1000 cm³ + 12 Anillos' : 'Pulp Density & % Solids Scale (Marcy Type) — 1000 cm³ Cup + 12 Rings'}</option>
-                  <option value="filtro_batch_lab">{isEs ? 'Filtro de Presión Batch de Laboratorio SMAT (60–100 psi / Husillo en T)' : 'SMAT Laboratory Batch Pressure Filter (60–100 psi / T-Bar Clamp)'}</option>
-                  <option value="tamices_laboratorio">{isEs ? 'Tamices de Laboratorio Certificados ASTM E11 / ISO 3310 (5" a #635 / 20 µm) y Tamizadores' : 'Certified ASTM E11 / ISO 3310 Test Sieves (5" to #635 / 20 µm) & Shakers'}</option>
-                </select>
-              </div>
-              <div class="form-group" style="margin-top: 0.55rem;">
-                <label for="wb-ctrl-spec"><strong>{isEs ? 'Rango de Gravedad Específica (Ss) o Serie de Mallas:' : 'Ore Specific Gravity (Ss) Range or Sieve Series:'}</strong></label>
-                <select id="wb-ctrl-spec" name="ctrl_spec" class="wb-select">
-                  <option value="marcy_12_rings" selected>{isEs ? 'Juego Completo 12 Carátulas (Ss 2.2 a 4.4) + Vaso 1000 cm³ Acero Inoxidable 304' : 'Full 12-Ring Dial Set (Ss 2.2 to 4.4) + 1000 cm³ 304 Stainless Steel Cup'}</option>
-                  <option value="batch_100psi">{isEs ? 'Cámara de Presión Batch de Acero Pesado (60 a 100 psi) + Columnas Guía y Drenaje' : 'Heavy-Duty Steel Batch Pressure Barrel (60 to 100 psi) + Twin Guide Rods'}</option>
-                  <option value="astm_8in_inox">{isEs ? 'Columna de Tamices 8" en Acero Inoxidable (Corte P80 #40 a #400 / #635) + Tapa y Fondo' : '8" Stainless Steel Sieve Stack (P80 Control #40 to #400 / #635) + Cover & Pan'}</option>
-                  <option value="astm_12in_bronce">{isEs ? 'Columna de Tamices 12" en Bronce / Inox + Tamizador Mecánico y Cuarteador' : '12" Brass / Stainless Sieve Stack + Mechanical Sieve Shaker & Splitter'}</option>
-                </select>
-              </div>
-              <div class="form-row" style="margin-top: 0.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.45rem;">
-                <label for="wb-ctrl-solve-mode" style="font-size:0.73rem; font-weight:700; color:#0f172a;">{isEs ? 'Inversión Algebraica Balanza Marcy (3 Vías):' : '3-Way Marcy Algebraic Inversion:'}</label>
-                <select id="wb-ctrl-solve-mode" data-testid="wb-ctrl-solve-mode" class="wb-select font-mono-tech" style="max-width:340px; min-height:32px; padding:0.2rem 0.5rem; font-size:0.74rem;">
-                  <option value="cw" selected>{isEs ? 'Modo 1: Dado Ss y %Cw ➔ Calcular ρp (kg/L)' : 'Mode 1: Given Ss & %Cw ➔ Solve ρp (kg/L)'}</option>
-                  <option value="rhop">{isEs ? 'Modo 2: Dado Ss y ρp ➔ Calcular %Cw' : 'Mode 2: Given Ss & ρp ➔ Solve %Cw'}</option>
-                  <option value="ore_density_rhop">{isEs ? 'Modo 3: Dado ρp y %Cw (Horno) ➔ Despejar Ss Real' : 'Mode 3: Given ρp & Lab %Cw ➔ Solve True Ore Ss'}</option>
-                </select>
-                <button type="button" id="btn-apply-ss-to-circuit" data-testid="btn-apply-ss-to-circuit" class="assist-pill-btn" style="padding:0.22rem 0.6rem; font-size:0.71rem; font-weight:700;">{isEs ? 'Aplicar Ss al Circuito →' : 'Apply Ss to Circuit →'}</button>
-              </div>
-              <div class="form-row" style="margin-top: 0.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 0.5rem;">
-                <div class="form-group"><label for="wb-ctrl-sg"><strong>{isEs ? 'SG Mineral (Ss):' : 'Ore SG (Ss):'}</strong></label><input type="number" id="wb-ctrl-sg" min="2.2" max="4.4" step="0.1" value="2.8" class="wb-input font-mono-tech" /></div>
-                <div class="form-group"><label for="wb-ctrl-cw"><strong>{isEs ? '% Sólidos (Cw):' : 'Solids (% Cw):'}</strong></label><input type="number" id="wb-ctrl-cw" min="10" max="75" step="1" value="45" class="wb-input font-mono-tech" /></div>
-                <div class="form-group"><label for="wb-ctrl-rhop"><strong>{isEs ? 'Densidad ρp (kg/L):' : 'Pulp ρp (kg/L):'}</strong></label><input type="number" id="wb-ctrl-rhop" min="1.05" max="2.40" step="0.005" value="1.406" class="wb-input font-mono-tech" /></div>
-                <div class="form-group"><label for="wb-ctrl-d95"><strong>{isEs ? 'Top d95 Gy (mm):' : 'Gy d95 (mm):'}</strong></label><input type="number" id="wb-ctrl-d95" min="0.04" max="25.0" step="0.01" value="0.21" class="wb-input font-mono-tech" /></div>
-                <div class="form-group"><label for="wb-ctrl-lib"><strong>{isEs ? 'Liberación dl (µm):' : 'Lib. dl (µm):'}</strong></label><input type="number" id="wb-ctrl-lib" min="10" max="1000" step="5" value="100" class="wb-input font-mono-tech" /></div>
-                <div class="form-group"><label for="wb-ctrl-grade"><strong>{isEs ? 'Ley Mineral (aL):' : 'Ore Grade (aL):'}</strong></label><input type="number" id="wb-ctrl-grade" min="0.001" max="0.95" step="0.005" value="0.05" class="wb-input font-mono-tech" /></div>
-                <div class="form-group"><label for="wb-ctrl-air-psi"><strong>{isEs ? 'Presión Batch (psi):' : 'Batch Air (psi):'}</strong></label><select id="wb-ctrl-air-psi" class="wb-select font-mono-tech"><option value="60">60 psi</option><option value="80">80 psi</option><option value="90" selected>90 psi</option><option value="100">100 psi</option></select></div>
-                <div class="form-group"><label for="wb-ctrl-gy-c"><strong>{isEs ? 'Constante Gy C:' : 'Gy Constant C:'}</strong></label><input type="number" id="wb-ctrl-gy-c" min="0.05" max="50" step="0.05" value="1.35" class="wb-input font-mono-tech" /></div>
-                <div class="form-group"><label for="wb-ctrl-gy-err"><strong>{isEs ? 'Error Rel. Gy (s):' : 'Gy Rel. Err (s):'}</strong></label><select id="wb-ctrl-gy-err" class="wb-select font-mono-tech"><option value="0.01">1% (0.01)</option><option value="0.05" selected>5% (0.05)</option><option value="0.10">10% (0.10)</option></select></div>
-                <div class="form-group"><label for="wb-ctrl-p80"><strong>{isEs ? 'Corte P80 (µm):' : 'Target P80 (µm):'}</strong></label><input type="number" id="wb-ctrl-p80" min="25" max="2000" step="5" value="150" class="wb-input font-mono-tech" /></div>
-                <div class="form-group"><label for="wb-ctrl-rr-n"><strong>{isEs ? 'Pendiente RR (n):' : 'RR Slope (n):'}</strong></label><input type="number" id="wb-ctrl-rr-n" min="0.50" max="2.50" step="0.05" value="1.15" class="wb-input font-mono-tech" /></div>
-                <div class="form-group"><label for="wb-ctrl-ret-p80"><strong>{isEs ? '% Ret. en P80:' : '% Ret. at P80:'}</strong></label><input type="number" id="wb-ctrl-ret-p80" min="5" max="40" step="1" value="20" class="wb-input font-mono-tech" /></div>
-              </div>
-              <div id="wb-ctrl-live-metrics" class="font-mono-tech" style="margin-top:0.5rem; padding:0.45rem 0.65rem; background:#f0f9ff; border:1px solid #bae6fd; border-radius:6px; font-size:0.71rem; color:#082f49;"></div>
-              <div class="font-mono-tech" style="margin-top:0.4rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(165px, 1fr)); gap:0.35rem; font-size:0.69rem; color:#0f172a;">
-                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Pulpa / Anillo:' : 'Pulp / Ring:'}</strong> <span id="wb-ctrl-res-sm">1.406 kg/L (Ss 2.8)</span></div>
-                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Sesgo Anillo:' : 'Ring Bias:'}</strong> <span id="wb-ctrl-res-bias">±0.0 pts %Cw</span></div>
-                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Muestra Gy / Batch:' : 'Gy / Batch:'}</strong> <span id="wb-ctrl-res-gy">0.25 kg (1 ciclo Batch)</span></div>
-                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Malla Control RR:' : 'RR Control Mesh:'}</strong> <span id="wb-ctrl-res-rr">#100 • n = 1.15</span></div>
-              </div>
-              <div style="margin-top: 0.5rem; overflow-x: auto; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.5rem;">
-                <span class="font-mono-tech" style="display:block; font-size:0.68rem; font-weight:800; color:#475569; margin-bottom:0.35rem;">{isEs ? 'SERIE DE TAMICES ASTM E11 / ROSIN-RAMMLER EN VIVO (7 MALLAS)' : 'LIVE ASTM E11 / ROSIN-RAMMLER SIEVE STACK (7 MESHES)'}</span>
-                <table id="wb-ctrl-sieve-table" style="width:100%; border-collapse:collapse; font-size:0.72rem;">
-                  <thead>
-                    <tr style="border-bottom:1px solid #cbd5e1; text-align:left;">
-                      <th style="padding:0.22rem 0.35rem;">{isEs ? 'Malla (Tyler)' : 'Mesh (Tyler)'}</th>
-                      <th style="padding:0.22rem 0.35rem;">µm</th>
-                      <th style="padding:0.22rem 0.35rem;">{isEs ? '% Ret. Indiv.' : '% Indiv. Ret.'}</th>
-                      <th style="padding:0.22rem 0.35rem;">{isEs ? '% Ret. Acum.' : '% Cum. Ret.'}</th>
-                      <th style="padding:0.22rem 0.35rem;">{isEs ? '% Pasante' : '% Passing'}</th>
-                      <th style="padding:0.22rem 0.35rem;">{isEs ? 'Masa (g) / Rol' : 'Mass (g) / Role'}</th>
-                    </tr>
-                  </thead>
-                  <tbody id="wb-ctrl-sieve-tbody"></tbody>
-                </table>
+              <!-- Tarjeta Tribológica Viva desde WET_END_MATERIAL_MATRIX (Decisión 7-C++) -->
+              <div id="wb-material-matrix-card" data-testid="wb-material-matrix-card" style="margin-top:0.65rem; padding:0.6rem 0.8rem; background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; font-size:0.74rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem; margin-bottom:0.3rem;">
+                  <strong id="wb-mat-code-badge" class="font-mono-tech" style="color:#082f49;">[{defaultMatSpec.code}] {isEs ? defaultMatSpec.nameEs : defaultMatSpec.nameEn}</strong>
+                  <span class="font-mono-tech" style="background:#e0f2fe; color:#0c4a6e; padding:0.12rem 0.45rem; border-radius:4px; font-weight:800;"><span id="wb-mat-hardness">{defaultMatSpec.hardness}</span> • u₂ ≤ <span id="wb-mat-tip-limit">{defaultMatSpec.maxTipSpeedMs}</span> m/s • Lote <span id="wb-mat-wear-554">{defaultMatSpec.wearRatio554}</span></span>
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.35rem; color:#1e293b;">
+                  <div><strong>d₈₀ / pH:</strong> <span id="wb-mat-d80-ph">{defaultMatSpec.d80RangeMicrons} µm • pH {defaultMatSpec.phRange}</span></div>
+                  <div><strong>{isEs ? 'Piezas Lote:' : 'Lot Parts:'}</strong> <span id="wb-mat-parts-list">{(isEs ? defaultMatSpec.partsIncludedEs : defaultMatSpec.partsIncludedEn).join(', ')}</span></div>
+                </div>
+                <div id="wb-mat-duty-desc" style="margin-top:0.25rem; color:#334155;">{isEs ? defaultMatSpec.dutyApplicationEs : defaultMatSpec.dutyApplicationEn}</div>
+                <div id="wb-hybrid-rama-d-breakdown" data-testid="wb-hybrid-rama-d-breakdown" class="hidden" style="display:none; margin-top:0.45rem; padding:0.45rem 0.65rem; background:#ecfdf5; border:1px solid #059669; border-radius:5px; color:#065f46; font-weight:700;"></div>
               </div>
             </div>
 
@@ -730,6 +737,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
               <input type="range" id="wb-clearance-slider" data-testid="wb-clearance-slider" min="0.20" max="4.00" step="0.05" value="0.75" class="wb-slider" />
               <div class="clearance-kinematics-meta"><span id="metric-clearance-loss">{isEs ? defaultClearanceEval.wearRatioImpact554 : defaultClearanceEval.wearRatioImpact554En}</span> • <span>{isEs ? 'Pérdida margen Vc:' : 'Vc margin loss:'} <strong id="wb-clearance-vel-loss" data-testid="wb-clearance-vel-loss">-{defaultClearanceEval.pipeVelocityMarginLossPct ?? 1.2}%</strong></span></div>
               <div class="clearance-kinematics-meta" style="margin-top:0.25rem; font-size:0.72rem; color:#0c4a6e;"><span id="metric-structural-reason">{isEs ? defaultClearanceEval.structuralReasonEs : defaultClearanceEval.structuralReasonEn}</span></div>
+              <div id="wb-clearance-ng-ns-spalling" data-testid="wb-clearance-ng-ns-spalling" class="clearance-kinematics-meta font-mono-tech" style="margin-top:0.2rem; font-size:0.71rem; color:#065f46; font-weight:700;">{isEs ? 'Secuencia Ensamble: Ng=0 interferencias • Ns=0 subensambles inestables • Banda óptima 0.5–1.0 mm • Sin riesgo de spalling Cr27%' : 'Assembly Sequence: Ng=0 interferences • Ns=0 unstable subassemblies • Optimal band 0.5–1.0 mm • Zero Cr27% spalling risk'}</div>
 
               <div class="form-row" style="margin-top:0.65rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.55rem;">
                 <div>
@@ -907,8 +915,6 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
 
           <input type="text" name="website" id="wb-website" tabindex="-1" autocomplete="off" style="position: absolute; left: -9999px; opacity: 0;" aria-hidden="true" />
         </details>
-
-        <RequisitionTraySummary lang={lang} />
       </div>
     </div>
 

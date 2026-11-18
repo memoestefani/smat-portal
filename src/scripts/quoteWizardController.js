@@ -15,6 +15,8 @@ import {
   recommendAstmSieveSeries,
   resolvePipeDiameterMm,
   selectOptimalMaterial,
+  MARCY_STANDARD_RINGS,
+  ASTM_E11_SIEVE_TABLE,
   PIPE_SERIES_DIAMETER_MM,
   WET_END_MATERIAL_MATRIX,
   SLURRY_PRESETS,
@@ -71,6 +73,14 @@ import {
   initCoreTradeInWidgets,
   buildSapAnexo22ComplianceSummary
 } from '../scripts/vendorPassportAndTradeInController.js';
+import {
+  calculateCoupledReorderWindowDays
+} from '../scripts/requisitionTrayBus.js';
+import {
+  projectPumpDriveAndHybridTelemetry,
+  projectMetrologyAndReorderTelemetry,
+  projectHydraulicAltitudeAndLeadValidation
+} from '../scripts/wizardLivePhysicsProjector.js';
 import {
   ROLE_ALIAS_MAP,
   FLOTATION_CONDITION_ALIAS_MAP,
@@ -455,9 +465,9 @@ export function initQuoteWizardController() {
   }
 
   function applyCircuitStatechartXOR(circuit) {
-    var engDrawer = document.getElementById('wb-engineering-config-details');
-    if (engDrawer && circuit && circuit !== 'bombeo') {
-      engDrawer.open = true;
+    var pumpOnlyControls = document.getElementById('wb-pump-only-engineering-controls');
+    if (pumpOnlyControls) {
+      pumpOnlyControls.style.display = (!circuit || circuit === 'bombeo') ? '' : 'none';
     }
     if (wbStep2ControlSummary) {
       if (circuit === 'control_procesos') {
@@ -1128,8 +1138,15 @@ export function initQuoteWizardController() {
     if (metricDeltaNpsh) {
       metricDeltaNpsh.textContent = '-' + deltaNpsh.toFixed(2) + ' m (Patm ' + pAtm.toFixed(2) + ' mca)';
     }
-    document.querySelectorAll('#metric-delta-npsh').forEach(function (el) {
-      el.textContent = '-' + deltaNpsh.toFixed(2) + ' m (Patm ' + pAtm.toFixed(2) + ' mca)';
+    var dossierDeltaNpsh = document.getElementById('dossier-metric-delta-npsh');
+    if (dossierDeltaNpsh) {
+      dossierDeltaNpsh.textContent = '-' + deltaNpsh.toFixed(2) + ' m NPSHa';
+    }
+    projectHydraulicAltitudeAndLeadValidation(container, {
+      altRes: altData,
+      slurryRes: simOut,
+      matOpt: optimalMatEval,
+      isEs: isEs
     });
     if (metricMaterial) metricMaterial.textContent = matName;
     if (metricLife) metricLife.textContent = '~' + lifeHrs + ' h (' + wearRatio.toFixed(1) + '×)';
@@ -1219,6 +1236,14 @@ export function initQuoteWizardController() {
     if (elCtrlResRr) {
       elCtrlResRr.textContent = liveSieves.primaryControlMesh + ' • n = ' + liveSieves.rosinRammlerSlopeN.toFixed(2) + ' (d₆₃.₂ = ' + liveSieves.characteristicSizeD63Microns + ' µm)';
     }
+    projectMetrologyAndReorderTelemetry(container, {
+      marcyRes: liveMarcy,
+      gyRes: liveGy,
+      sieveRes: liveSieves,
+      marcyRings: MARCY_STANDARD_RINGS,
+      astmTable: ASTM_E11_SIEVE_TABLE,
+      isEs: isEs
+    });
 
     if (ctrlSieveTbody && Array.isArray(liveSieves.sieveStack)) {
       ctrlSieveTbody.innerHTML = liveSieves.sieveStack.map(function (s) {
@@ -1876,6 +1901,31 @@ export function initQuoteWizardController() {
         frontClearanceMm: currentClearanceEval.frontClearanceMm,
         tipSpeedMs: currentKinematics.tipSpeedMs,
         smat_code: smatCode
+      });
+      var liveAssemblySeq = evaluatePumpAssemblySequence({
+        clearanceMm: currentClearanceEval.frontClearanceMm,
+        impellerTorqueNm: 450,
+        d80Um: currentHydraulicMetrics.d80_um || 180
+      });
+      var liveReorderEval = calculateCoupledReorderWindowDays({
+        solidsVolumetricPct: currentHydraulicMetrics.solids_cv || 22,
+        d80Microns: currentHydraulicMetrics.d80_um || 180,
+        tipSpeedMs: currentKinematics.tipSpeedMs || 21.5,
+        materialKey: matCodeVal
+      });
+      projectPumpDriveAndHybridTelemetry(container, {
+        driveEval: currentKinematics,
+        clearanceEval: currentClearanceEval,
+        assemblySeq: liveAssemblySeq,
+        isEs: isEs
+      });
+      projectMetrologyAndReorderTelemetry(container, {
+        reorderRes: liveReorderEval,
+        isEs: isEs
+      });
+      projectHydraulicAltitudeAndLeadValidation(container, {
+        leadVal: gateOut,
+        isEs: isEs
       });
       var elGateBadge = document.getElementById('gate-lead-status');
       var elTrustAlert = document.getElementById('trust-boundary-alert');

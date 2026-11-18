@@ -4423,7 +4423,7 @@ test('Test 229 (Decisiones 1, 2, 3, 5, 7 / DEB-P4-04 & DEB-P4-07): LiveEngineeri
     'id="metric-er"',
     'id="metric-wear-hours"',
     'id="metric-patm-mca"',
-    'id="metric-delta-npsh"',
+    'id="dossier-metric-delta-npsh"',
     'id="metric-motor-iec"',
     'id="metric-k-motor-alt"',
     'id="wb-pipe-vel-loss"',

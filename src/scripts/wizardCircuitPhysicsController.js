@@ -23,8 +23,15 @@ import {
 import {
   calculateDriveAndBearingKinematics,
   selectBearingFrameByPowerAndRpm,
-  evaluateHybridWetEndConfiguration
+  evaluateHybridWetEndConfiguration,
+  evaluateWetEndAssemblyInterference,
+  evaluatePumpAssemblySequence
 } from './pumpAssemblyAndDriveEngine.js';
+import {
+  projectPumpDriveAndHybridTelemetry,
+  projectClassificationAndScreenTelemetry,
+  projectFlotationAndFiltrationTelemetry
+} from './wizardLivePhysicsProjector.js';
 
 export const SMAT_ENGINEERING_CONTEXT_KEY = 'smat_engineering_context_v1';
 
@@ -114,14 +121,80 @@ export function loadEngineeringContextSnapshot() {
 }
 
 /**
- * Fusiona sin pérdida una actualización parcial sobre el contexto de ingeniería (`PutGet`).
+ * Normaliza entradas polimórficas (1 argumento `{ flotation, ... }` o 2 argumentos `(circuitSlug, payloadObj)`)
+ * hacia la estructura canónica de `DEFAULT_ENGINEERING_CONTEXT` (`D2-V41` — Ley `PutGet`).
  *
- * @param {any} partial
- * @param {any} [base]
+ * @param {any} circuitOrPartial
+ * @param {any} [maybePayload]
  * @returns {any}
  */
-export function mergeEngineeringContext(partial = {}, base = null) {
-  const current = base || loadEngineeringContextSnapshot();
+function normalizeEngineeringContextInput(circuitOrPartial = {}, maybePayload = null) {
+  if (typeof circuitOrPartial === 'string') {
+    const slug = circuitOrPartial.trim().toLowerCase();
+    const p = maybePayload && typeof maybePayload === 'object' ? maybePayload : {};
+    if (slug === 'flotacion' || slug === 'flotation') {
+      return {
+        activeCircuit: 'flotacion',
+        flotation: {
+          ...p,
+          rotorDiaM: Number(p.rotorDiaM ?? p.rotorDiameterM ?? DEFAULT_ENGINEERING_CONTEXT.flotation.rotorDiaM),
+          jgCmS: Number(p.jgCmS ?? p.superficialGasVelocityCmS ?? DEFAULT_ENGINEERING_CONTEXT.flotation.jgCmS),
+          d32Mm: Number(p.d32Mm ?? p.bubbleDiameterMm ?? p.sauterBubbleDiaMm ?? DEFAULT_ENGINEERING_CONTEXT.flotation.d32Mm)
+        }
+      };
+    }
+    if (slug === 'filtracion' || slug === 'filtration') {
+      return {
+        activeCircuit: 'filtracion',
+        filtration: { ...p }
+      };
+    }
+    if (slug === 'clasificacion' || slug === 'classification') {
+      return {
+        activeCircuit: 'clasificacion',
+        classification: {
+          ...p,
+          cutPointD50cUm: Number(p.cutPointD50cUm ?? p.d50cMicrons ?? DEFAULT_ENGINEERING_CONTEXT.classification.cutPointD50cUm)
+        }
+      };
+    }
+    if (slug === 'bombeo' || slug === 'pumping' || slug === 'driveandhybrid') {
+      return {
+        activeCircuit: 'bombeo',
+        driveAndHybrid: {
+          ...p,
+          arrangementCode: String(p.arrangementCode ?? p.arrangement ?? DEFAULT_ENGINEERING_CONTEXT.driveAndHybrid.arrangementCode),
+          motorPowerKw: Number(p.motorPowerKw ?? p.shaftPowerKw ?? DEFAULT_ENGINEERING_CONTEXT.driveAndHybrid.motorPowerKw),
+          recommendedDynamicCkN: Number(p.recommendedDynamicCkN ?? p.dynamicCapacityCkN ?? 0)
+        }
+      };
+    }
+    if (slug === 'control_procesos' || slug === 'control' || slug === 'process_control') {
+      return {
+        activeCircuit: 'control_procesos',
+        processControl: { ...p }
+      };
+    }
+    return { activeCircuit: slug };
+  }
+  return circuitOrPartial && typeof circuitOrPartial === 'object' ? circuitOrPartial : {};
+}
+
+/**
+ * Fusiona sin pérdida una actualización parcial sobre el contexto de ingeniería (`PutGet`).
+ * Soporta firma de 1 objeto `(partialObj, base)` y firma polimórfica de 2 argumentos `(circuitSlug, payloadObj)`.
+ *
+ * @param {any} circuitOrPartial
+ * @param {any} [maybePayloadOrBase]
+ * @returns {any}
+ */
+export function mergeEngineeringContext(circuitOrPartial = {}, maybePayloadOrBase = null) {
+  const isTwoArgSlugCall = typeof circuitOrPartial === 'string';
+  const partial = normalizeEngineeringContextInput(
+    circuitOrPartial,
+    isTwoArgSlugCall ? maybePayloadOrBase : null
+  );
+  const current = (!isTwoArgSlugCall && maybePayloadOrBase) ? maybePayloadOrBase : loadEngineeringContextSnapshot();
   return {
     activeCircuit: partial.activeCircuit || partial.circuit || current.activeCircuit || 'bombeo',
     updatedAtIso: partial.updatedAtIso || new Date().toISOString(),
@@ -144,18 +217,26 @@ export function mergeEngineeringContext(partial = {}, base = null) {
       ...DEFAULT_ENGINEERING_CONTEXT.driveAndHybrid,
       ...(current.driveAndHybrid || {}),
       ...(partial.driveAndHybrid || {})
+    },
+    processControl: {
+      ...(current.processControl || {}),
+      ...(partial.processControl || {})
     }
   };
 }
 
 /**
  * Persiste una actualización parcial en `sessionStorage` y `localStorage` (`smat_engineering_context_v1`).
+ * Soporta tanto `saveEngineeringContextSnapshot({ flotation: {...} })` como
+ * `saveEngineeringContextSnapshot('flotacion', { rotorDiameterM, ... })` (`D2-V41`).
  *
- * @param {any} partial
+ * @param {any} circuitOrPartial
+ * @param {any} [maybePayload]
  * @returns {any}
  */
-export function saveEngineeringContextSnapshot(partial = {}) {
-  const merged = mergeEngineeringContext(partial, memoryContextFallback);
+export function saveEngineeringContextSnapshot(circuitOrPartial = {}, maybePayload = null) {
+  const normalizedPartial = normalizeEngineeringContextInput(circuitOrPartial, maybePayload);
+  const merged = mergeEngineeringContext(normalizedPartial, memoryContextFallback);
   memoryContextFallback = merged;
   try {
     if (typeof window !== 'undefined') {
@@ -234,6 +315,7 @@ export function calculateFilterPressCycleCapacity(params = {}) {
     plateWidthMm,
     feedPressureBar,
     plateThicknessMm,
+    filtrationMinutes,
     totalCycleMin,
     cyclesPerDay,
     dryTonnesPerDay,
@@ -357,6 +439,9 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
           : 'NOM-141 Safe';
     }
 
+    // Proyección de campos secundarios de Flotación y Filtración (V4.1 LCOM4=1)
+    projectFlotationAndFiltrationTelemetry(wizardRoot, { flotRes, filtRes, isEs });
+
     // C. Clasificación 3 Vasos Marcy + Plitt + Weibull
     const cycSerieStr = String(wizardRoot.querySelector('#wb-cyc-series')?.value || '380');
     const cycRes = evaluateHydrocycloneCutPoint({
@@ -376,13 +461,18 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
     if (elCycRoping) elCycRoping.textContent = isEs ? cycRes.ropingStatusEs : cycRes.ropingStatusEn;
     if (elScrWeibull) elScrWeibull.textContent = `α = ${cycRes.sharpnessAlpha} (${cycRes.screenWeibull.recommendedSkuId})`;
 
-    // D. Tren Motriz y Bastidor Contextual + Rama D Híbrida
+    // Proyección de Cw/Cv de los 3 Vasos Marcy, du/do y aceleración G de zaranda (V4.1)
+    projectClassificationAndScreenTelemetry(wizardRoot, { cycRes, isEs });
+
+    // D. Tren Motriz y Bastidor Contextual + Rama D Híbrida + Secuencia de Ensamble
     const pipeSeries = String(wizardRoot.querySelector('#wb-pipe-size')?.value || '6x4');
     const arrCode = String(wizardRoot.querySelector('#wb-drive-arrangement')?.value || 'CV');
     const motorRpm = Number(wizardRoot.querySelector('#wb-motor-rpm')?.value ?? 1775);
     const driverPulleyMm = Number(wizardRoot.querySelector('#wb-driver-pulley')?.value ?? 220);
     const drivenPulleyMm = Number(wizardRoot.querySelector('#wb-driven-pulley')?.value ?? 340);
     const motorPowerKw = Number(wizardRoot.querySelector('#wb-shaft-power')?.value ?? 55);
+    const clearanceMm = Number(wizardRoot.querySelector('#wb-throatbush-clearance')?.value ?? 0.8);
+    const d80Val = Number(wizardRoot.querySelector('#slider-d80')?.value ?? 180);
 
     const driveEval = calculateDriveAndBearingKinematics({
       arrangementCode: arrCode,
@@ -392,12 +482,23 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
       motorPowerKw,
       pipeSeries
     });
+    const frameSelect = selectBearingFrameByPowerAndRpm(motorPowerKw, driveEval.pumpRpm, pipeSeries);
     const hybridEval = evaluateHybridWetEndConfiguration({
-      d80Microns: Number(wizardRoot.querySelector('#slider-d80')?.value ?? 180),
+      d80Microns: d80Val,
       tipSpeedMs: driveEval.tipSpeedMs,
       pulpPh: Number(wizardRoot.querySelector('#slider-ph')?.value ?? 7.5),
       solidsWeightPercent: Number(wizardRoot.querySelector('#slider-solids')?.value ?? 45),
       pipeSeries
+    });
+    const clearanceEval = evaluateWetEndAssemblyInterference({
+      throatbushClearanceMm: clearanceMm,
+      d80Microns: d80Val,
+      tipSpeedMs: driveEval.tipSpeedMs
+    });
+    const assemblySeq = evaluatePumpAssemblySequence({
+      clearanceMm,
+      impellerTorqueNm: 450,
+      d80Um: d80Val
     });
 
     const elFrameBadge = wizardRoot.querySelector('#wb-drive-frame-badge');
@@ -411,6 +512,15 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
         : `Arrangement ${driveEval.arrangementCode} • n₂ = ${driveEval.pumpRpm} RPM • u₂ = ${driveEval.tipSpeedMs} m/s • F_r = ${driveEval.beltRadialLoadKn} kN • L₁₀ₕ = ${driveEval.bearingL10Hours.toLocaleString()} h`;
     }
 
+    projectPumpDriveAndHybridTelemetry(wizardRoot, {
+      driveEval,
+      frameSelect,
+      hybridEval,
+      clearanceEval,
+      assemblySeq,
+      isEs
+    });
+
     const updatedSnapshot = saveEngineeringContextSnapshot({
       flotation: {
         jgCmS: flotRes.superficialGasVelocityCmS || Number(wizardRoot.querySelector('#wb-flot-jg')?.value ?? 1.5),
@@ -421,6 +531,9 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
         tipSpeedMS: flotRes.tipSpeedMS,
         rateConstantMin: flotRes.rateConstantMin,
         zwieteringNjsRpm: flotRes.zwieteringNjsRpm,
+        suspensionSafe: flotRes.suspensionSafe,
+        wearLifeMultiplierPuVsRubber: flotRes.wearLifeMultiplierPuVsRubber,
+        tipSpeedWindowOptimal: flotRes.tipSpeedWindowOptimal,
         gorainCompliant: flotRes.gorainCompliant,
         summaryEs: flotRes.summaryEs,
         summaryEn: flotRes.summaryEn
@@ -433,8 +546,14 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
         cakeMoistureTargetPct: filtRes.cakeMoistureTargetPct,
         maxBendingStressMpa: filtRes.maxBendingStressMpa,
         flexuralSafetyFactor: filtRes.flexuralSafetyFactor,
+        filtrationMinutes: filtRes.filtrationMinutes,
+        totalCycleMin: filtRes.totalCycleMin,
         cyclesPerDay: filtRes.cyclesPerDay,
         dryTonnesPerDay: filtRes.dryTonnesPerDay,
+        deltaPAsymmetricMpa: filtRes.deltaPAsymmetricMpa,
+        ppFatigueAllowableMpa: filtRes.ppFatigueAllowableMpa,
+        recommendedPlateSkuId: filtRes.recommendedPlateSkuId,
+        recommendedClothSkuId: filtRes.recommendedClothSkuId,
         isPlateCrackingRisk: filtRes.isPlateCrackingRisk,
         summaryEs: filtRes.summaryEs,
         summaryEn: filtRes.summaryEn
@@ -445,9 +564,16 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
         overflowSg: cycRes.overflowSg,
         feedPressureKpa: cycRes.feedPressureKpa,
         circulatingLoadPct: cycRes.circulatingLoadPct,
+        cwFeedPct: cycRes.cwFeedPct,
+        cwUnderflowPct: cycRes.cwUnderflowPct,
+        cwOverflowPct: cycRes.cwOverflowPct,
+        cvFeedPct: cycRes.cvFeedPct,
+        cvOverflowPct: cycRes.cvOverflowPct,
+        apexToVortexRatio: cycRes.apexToVortexRatio,
         cutPointD50cUm: cycRes.cutPointD50cUm,
         sharpnessAlpha: cycRes.sharpnessAlpha,
         isRopingRisk: cycRes.isRopingRisk,
+        isUmbrellaDilute: cycRes.isUmbrellaDilute,
         summaryEs: cycRes.summaryEs,
         summaryEn: cycRes.summaryEn
       },
@@ -462,6 +588,13 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
         bearingCartridgeCode: driveEval.bearingCartridgeCode,
         bearingL10Hours: driveEval.bearingL10Hours,
         beltRadialLoadKn: driveEval.beltRadialLoadKn,
+        aIsoLabyrinthSmat: driveEval.aIsoLabyrinthSmat,
+        aIsoContaminatedFelt: driveEval.aIsoContaminatedFelt,
+        maxPowerKw: frameSelect.maxPowerKw,
+        maxRpm: frameSelect.maxRpm,
+        shaftDiameterMm: frameSelect.shaftDiameterMm,
+        recommendedDynamicCkN: frameSelect.recommendedDynamicCkN,
+        ceramicSafeTipSpeed: hybridEval.ceramicSafeTipSpeed,
         hybridMassSavingsPct: hybridEval.massSavingsPct,
         hybridSavedMassKg: hybridEval.savedMassKg,
         hybridSinglePumpMassKg: hybridEval.singlePumpMassKg,

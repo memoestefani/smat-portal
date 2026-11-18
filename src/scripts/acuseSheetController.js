@@ -157,7 +157,7 @@ export function initAcuseSheetController(lang = 'es') {
               <td style="font-family:monospace;font-weight:700;">${it.id}<br/><small>${it.material || 'STD'}</small></td>
               <td><strong>${isEn ? it.nameEn : it.nameEs}</strong><br/><small style="font-family:monospace;color:#475569;">${it.satLine}</small></td>
               <td style="text-align:center;font-weight:700;">${it.qty}</td>
-              <td style="font-family:monospace;font-size:0.75rem;">${it.coupledPairSku} (${isEn ? 'Cycle' : 'Ciclo'}: ${it.reorderWindowDays}d · ${checkoutMeta.lane})</td>
+              <td style="font-family:monospace;font-size:0.75rem;">${it.coupledPairSku} (${isEn ? 'Cycle' : 'Ciclo'}: T10=${jrpWindow.t10InspectionDays}d / T50=${jrpWindow.t50ReorderTriggerDays}d / T80=${jrpWindow.t80CriticalChangeoutDays}d · Buffer ${jrpWindow.leadTimeBufferDays}d · Sev ${jrpWindow.wearSeverityFactor}× · ${jrpWindow.wearAcceleratedLifeHours}h · ${isEn ? jrpWindow.dispatchModeLabelEn : jrpWindow.dispatchModeLabelEs} · ${checkoutMeta.lane})</td>
             </tr>`
           )
           .join('');

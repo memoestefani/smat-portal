@@ -311,22 +311,22 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.45rem;">
               <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 700;">
                 <span>Estado de Carcasa Usada</span>
-                <select data-tradein-condition style="padding: 0.35rem 0.45rem; border: 1px solid #059669; border-radius: 6px; background: #ffffff; color: #0f172a; font-size: 0.75rem;">
-                  <option value="intact_housing" selected>Carcasa Íntegra Sin Fisuras (18% Crédito)</option>
-                  <option value="minor_bearing_seizure">Rodamiento Amarado / Pista Recuperable (10%)</option>
-                  <option value="cracked_housing">Carcasa Fracturada (0% Crédito)</option>
+                <select data-tradein-condition data-core-tradein-condition style="padding: 0.35rem 0.45rem; border: 1px solid #059669; border-radius: 6px; background: #ffffff; color: #0f172a; font-size: 0.75rem;">
+                  <option value="h7_intact" selected>Carcasa Íntegra Sin Fisuras (-22% • 0.78x)</option>
+                  <option value="minor_bearing_seizure">Rodamiento Amarrado / Pista Recuperable (-12% • 0.88x)</option>
+                  <option value="cracked_housing">Carcasa Fracturada o Soldada (0% • 1.00x)</option>
                 </select>
               </label>
               <label style="display: flex; align-items: center; gap: 0.35rem; font-weight: 700; padding-top: 1rem;">
-                <input type="checkbox" data-tradein-not-welded checked />
-                <span>Alojamiento sin soldadura (ISO IT6)</span>
+                <input type="checkbox" data-tradein-not-welded data-core-tradein-toggle checked />
+                <span>Alojamiento H7 sin soldadura (ISO IT6)</span>
               </label>
             </div>
-            <div data-tradein-result style="font-family: var(--font-mono, monospace); font-weight: 800; color: #065f46;">
-              Crédito Core DAM005: 18% (RMA-CORE-DAM005-INTACT • Ahorro 35 kg CO₂e)
+            <div data-tradein-result data-core-tradein-badge style="font-family: var(--font-mono, monospace); font-weight: 800; color: #065f46;">
+              Activo: -22% Crédito Core Trade-In (Factor 0.78x • RMA-CORE-DAM005-INTACT)
             </div>
-            <div data-tradein-co2 style="font-size: 0.72rem; color: #047857; margin-top: 0.2rem;">
-              Recepción física en Almacén Central Durango (Insurgentes Sur, Dgo.)
+            <div data-tradein-co2 data-core-tradein-note style="font-size: 0.72rem; color: #047857; margin-top: 0.2rem;">
+              Recepción física en Almacén Central: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (35 kg CO₂e evitados)
             </div>
           </div>
         )}

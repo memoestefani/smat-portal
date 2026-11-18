@@ -375,7 +375,9 @@ export function hydrateTrayFromReorderQuery(searchString = '') {
  * @returns {any}
  */
 export function computeCmuPriorityDescriptor(params = {}) {
-  const urgency = String(params.urgency || 'normal').toLowerCase();
+  const hasTrayShape = Array.isArray(params.items) || typeof params.criticalityMode === 'string';
+  const rawUrgency = params.urgency || (hasTrayShape && params.criticalityMode === 'PARO_DE_LINEA' ? 'paro_de_linea' : 'normal');
+  const urgency = String(rawUrgency).toLowerCase();
   const estimatedTotalMxn = Math.max(0, Number(params.estimatedTotalMxn ?? 18000));
   const stockRegime = String(params.stockRegime || 'hay').toLowerCase();
 
@@ -383,53 +385,73 @@ export function computeCmuPriorityDescriptor(params = {}) {
   const checkoutLane = isPettyCash ? 'CAJA_CHICA_CFDI40' : 'ORDEN_COMPRA_SAP';
 
   if (urgency === 'emergency' || urgency === 'paro_de_linea') {
+    const labelEs = '🚨 P1 · PARO DE LÍNEA (Atención Ingeniería < 15 min)';
+    const labelEn = '🚨 P1 · LINE DOWNTIME (Engineering SLA < 15 min)';
     return {
       priorityCode: 'P1-PARO-PLANTA',
       cmuScore: 98.5,
+      priorityRankScore: 4800,
       checkoutLane,
       stockRegime,
       advancePaymentPct: stockRegime === 'se_fabrica' ? 50 : 0,
       slaResponseMinutes: 15,
-      labelEs: '🚨 P1 · PARO DE LÍNEA (Atención Ingeniería < 15 min)',
-      labelEn: '🚨 P1 · LINE DOWNTIME (Engineering SLA < 15 min)'
+      labelEs,
+      labelEn,
+      priorityLabelEs: labelEs,
+      priorityLabelEn: labelEn
     };
   }
 
   if (stockRegime === 'se_fabrica') {
+    const labelEs = '🔵 P3 · FABRICACIÓN BAJO PLANO (50% Anticipo + OC)';
+    const labelEn = '🔵 P3 · CUSTOM FABRICATION (50% Advance + PO)';
     return {
       priorityCode: 'P3-PROYECTO-50%-ANTICIPO',
       cmuScore: 62.0,
+      priorityRankScore: 3020,
       checkoutLane: 'ORDEN_COMPRA_SAP',
       stockRegime,
       advancePaymentPct: 50,
       slaResponseMinutes: 120,
-      labelEs: '🔵 P3 · FABRICACIÓN BAJO PLANO (50% Anticipo + OC)',
-      labelEn: '🔵 P3 · CUSTOM FABRICATION (50% Advance + PO)'
+      labelEs,
+      labelEn,
+      priorityLabelEs: labelEs,
+      priorityLabelEn: labelEn
     };
   }
 
   if (isPettyCash && stockRegime === 'hay') {
+    const labelEs = '⚡ P1 · CAJA CHICA (< 25,000 MXN · CFDI 4.0 Hoy)';
+    const labelEn = '⚡ P1 · PETTY CASH (< 25,000 MXN · CFDI 4.0 Today)';
     return {
       priorityCode: 'P1-CAJA-CHICA-HAY',
       cmuScore: 91.0,
+      priorityRankScore: 4435,
       checkoutLane: 'CAJA_CHICA_CFDI40',
       stockRegime,
       advancePaymentPct: 0,
       slaResponseMinutes: 30,
-      labelEs: '⚡ P1 · CAJA CHICA (< 25,000 MXN · CFDI 4.0 Hoy)',
-      labelEn: '⚡ P1 · PETTY CASH (< 25,000 MXN · CFDI 4.0 Today)'
+      labelEs,
+      labelEn,
+      priorityLabelEs: labelEs,
+      priorityLabelEn: labelEn
     };
   }
 
+  const labelEs = '🟡 P2 · REPOSICIÓN PROGRAMADA / ORDEN DE COMPRA';
+  const labelEn = '🟡 P2 · SCHEDULED REPLENISHMENT / PURCHASE ORDER';
   return {
     priorityCode: 'P2-REPOSICION-LOTE',
     cmuScore: 76.0,
+    priorityRankScore: 3705,
     checkoutLane,
     stockRegime,
     advancePaymentPct: stockRegime === 'se_pide' ? 30 : 0,
     slaResponseMinutes: 60,
-    labelEs: '🟡 P2 · REPOSICIÓN PROGRAMADA / ORDEN DE COMPRA',
-    labelEn: '🟡 P2 · SCHEDULED REPLENISHMENT / PURCHASE ORDER'
+    labelEs,
+    labelEn,
+    priorityLabelEs: labelEs,
+    priorityLabelEn: labelEn
   };
 }
 
@@ -441,32 +463,74 @@ export function computeCmuPriorityDescriptor(params = {}) {
  * @returns {any}
  */
 export function calculateCoupledReorderWindowDays(telemetry = {}) {
-  const sg = Math.max(1.0, Math.min(2.4, Number(telemetry.sg ?? 1.50)));
-  const d50Um = Math.max(15, Math.min(1000, Number(telemetry.d50Um ?? 120)));
-  const severityFactor = Number(((sg / 1.50) * Math.pow(d50Um / 120, 0.15)).toFixed(2));
+  const sg = Math.max(1.0, Math.min(2.4, Number(telemetry.sg ?? (telemetry.solidsVolumetricPct ? 1.0 + telemetry.solidsVolumetricPct * 0.018 : 1.50))));
+  const d50Um = Math.max(15, Math.min(1000, Number(telemetry.d50Um ?? telemetry.d80Microns ?? 120)));
+  const tipSpeedMs = Math.max(8, Math.min(38, Number(telemetry.tipSpeedMs ?? 21.5)));
+  const severityFactor = Number(((sg / 1.50) * Math.pow(d50Um / 120, 0.15) * Math.pow(tipSpeedMs / 21.5, 0.25)).toFixed(2));
+  const baseWearHours = Math.max(720, Number(telemetry.estimatedWearHours ?? telemetry.predictedWearHours ?? 2160));
+  const dailyHours = Math.max(1, Number(telemetry.dailyOperatingHours ?? telemetry.operatingHoursPerDay ?? 24));
+  const wearAcceleratedLifeHours = Math.max(720, Math.round(baseWearHours / Math.max(0.6, severityFactor)));
+  const rawLifeDays = Math.round(wearAcceleratedLifeHours / dailyHours);
+  const reorderWindowDays = rawLifeDays <= 105 ? 90 : (rawLifeDays <= 165 ? 150 : 180);
 
   return {
     sleeveInspectionDay: 90,
     impellerThroatbushSwapDay: 150,
     voluteLinerOverhaulDay: 180,
+    t10InspectionDays: 90,
+    t50ReorderTriggerDays: 150,
+    t80CriticalChangeoutDays: 180,
+    reorderWindowDays,
+    recommendedWindowDays: reorderWindowDays,
+    leadTimeBufferDays: 14,
     severityFactor,
+    wearSeverityFactor: severityFactor,
+    wearAcceleratedLifeHours,
+    dispatchModeLabelEs: 'Despacho Programado Almacén Central Durango (Política s,S)',
+    dispatchModeLabelEn: 'Scheduled Dispatch Durango Central Warehouse (s,S Policy)',
     policySummaryEs: 'Día 90: Camisa HVOF D075C21 + Expulsor | Día 150: Impulsor E4147 + Throatbush E4083 | Día 180: Overhaul Voluta D3110 5:5:4',
     policySummaryEn: 'Day 90: D075C21 HVOF Sleeve + Expeller | Day 150: E4147 Impeller + E4083 Throatbush | Day 180: D3110 Volute 5:5:4 Overhaul'
   };
 }
 
 /**
- * Evalúa la elegibilidad y bonificación de Economía Circular Industrial (-22% Core Trade-In)
+ * Evalúa la elegibilidad y bonificación de Economía Circular Industrial (-22% / -12% / 0% Core Trade-In)
  * para intercambio de Cartucho de Rodamientos (Bearing Assembly DAM005 / Estación 01)
- * bajo el modelo de remanufactura de Guide & Van Wassenhove (2001) e ISO 281 (INV-SMAT-SCI-06).
+ * bajo el modelo de remanufactura de Guide & Van Wassenhove (2001) e ISO 281 (INV-SMAT-SCI-06, D3-V41).
  *
  * @param {any} [trayState={}]
- * @param {boolean|null} [coreReturnOverride=null]
+ * @param {boolean|string|null} [coreReturnOverride=null]
  * @returns {any}
  */
 export function evaluateBearingCartridgeCoreTradeIn(trayState = {}, coreReturnOverride = null) {
   const state = getTrayState(trayState);
-  const coreReturnEnabled = coreReturnOverride !== null ? Boolean(coreReturnOverride) : Boolean(state.coreReturnEnabled);
+  const rawCondition = String(
+    (typeof coreReturnOverride === 'string' ? coreReturnOverride : '') ||
+    trayState.housingCondition ||
+    state.housingCondition ||
+    'h7_intact'
+  ).toLowerCase();
+
+  const isCrackedOrWelded =
+    rawCondition.includes('crack') ||
+    rawCondition.includes('weld') ||
+    rawCondition.includes('fractur') ||
+    trayState.hasStructuralWeld === true ||
+    trayState.boreIntact === false;
+  const isMinorRebore =
+    !isCrackedOrWelded &&
+    (rawCondition.includes('minor') ||
+      rawCondition.includes('rebore') ||
+      rawCondition.includes('seizure') ||
+      rawCondition.includes('scoring'));
+
+  const coreReturnEnabled =
+    typeof coreReturnOverride === 'boolean'
+      ? coreReturnOverride
+      : typeof coreReturnOverride === 'string'
+        ? !isCrackedOrWelded
+        : Boolean(trayState.coreReturnEnabled ?? state.coreReturnEnabled);
+
   const eligibleItems = state.items.filter((item) => {
     const token = `${item.id} ${item.skuId} ${item.atomicCode} ${item.nameEs} ${item.nameEn}`.toUpperCase();
     return (
@@ -481,20 +545,48 @@ export function evaluateBearingCartridgeCoreTradeIn(trayState = {}, coreReturnOv
     );
   });
 
-  const eligible = eligibleItems.length > 0 || state.items.length === 0;
-  const discountPct = eligible && coreReturnEnabled ? 22 : 0;
+  const eligible = (eligibleItems.length > 0 || state.items.length === 0) && !isCrackedOrWelded;
+  const tierDiscount = isCrackedOrWelded ? 0 : isMinorRebore ? 12 : 22;
+  const discountPct = eligible && coreReturnEnabled ? tierDiscount : 0;
   const creditFactor = Number((1.0 - discountPct / 100.0).toFixed(2));
+  const rmaCode =
+    discountPct === 22
+      ? 'RMA-CORE-DAM005-INTACT'
+      : discountPct === 12
+        ? 'RMA-CORE-DAM005-REBORE'
+        : 'RMA-CORE-DAM005-NONE';
+  const co2SavedKg = discountPct === 22 ? 35 : discountPct === 12 ? 28 : 0;
+  const returnAddress = 'Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166';
+
+  const policyNoteEs =
+    discountPct === 22
+      ? `Bonificación -22% (${rmaCode}) al entregar casco DAM005 H7 íntegro en Almacén Central (${returnAddress}) • ${co2SavedKg} kg CO₂e evitados.`
+      : discountPct === 12
+        ? `Bonificación -12% (${rmaCode} por re-encamisado H7) en Almacén Central (${returnAddress}) • ${co2SavedKg} kg CO₂e evitados.`
+        : `Suministro directo de cartucho nuevo DAM005 (Factor 1.00x). Recepción en ${returnAddress}.`;
+  const policyNoteEn =
+    discountPct === 22
+      ? `-22% Core Trade-In credit (${rmaCode}) upon returning intact DAM005 H7 housing at Central Warehouse (${returnAddress}) • ${co2SavedKg} kg CO₂e saved.`
+      : discountPct === 12
+        ? `-12% Core Trade-In credit (${rmaCode} H7 rebore tier) at Central Warehouse (${returnAddress}) • ${co2SavedKg} kg CO₂e saved.`
+        : `Direct new DAM005 cartridge supply (Factor 1.00x). Central Warehouse: ${returnAddress}.`;
 
   return {
     eligible,
-    coreReturnEnabled,
+    coreReturnEnabled: eligible && coreReturnEnabled,
     discountPct,
     creditFactor,
+    rmaCode,
+    co2SavedKg,
+    returnAddress,
+    housingCondition: isCrackedOrWelded ? 'cracked_housing' : isMinorRebore ? 'minor_scoring' : 'h7_intact',
     eligibleItemIds: eligibleItems.map((i) => i.id),
     invariantId: 'INV-SMAT-SCI-06',
     housingMaterial: 'Hierro Dúctil GGG40 + Eje SAE 4140 Bonificado (ISO 281)',
-    inspectionGateEs: 'Bonificación -22% aplicable al entregar casco usado (tambor GGG40 sin fisuras y alojamientos dentro de tolerancia H7) en Almacén Durango.',
-    inspectionGateEn: '22% Core Trade-In credit applied upon returning crack-free GGG40 housing barrel within H7 bore concentricity at Durango Warehouse.'
+    policyNoteEs,
+    policyNoteEn,
+    inspectionGateEs: policyNoteEs,
+    inspectionGateEn: policyNoteEn
   };
 }
 

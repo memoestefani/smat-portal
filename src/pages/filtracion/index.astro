@@ -138,7 +138,7 @@ import CircuitNavigator from '../../components/CircuitNavigator.astro';
 
 <script>
   import { evaluateFilterPressPlateDeflection } from '../../scripts/slurryEngine.js';
-  import { saveEngineeringContextSnapshot } from '../../scripts/wizardCircuitPhysicsController.js';
+  import { calculateFilterPressCycleCapacity, saveEngineeringContextSnapshot } from '../../scripts/wizardCircuitPhysicsController.js';
 
   const pEl = document.getElementById('filt-pressure-bar') as HTMLInputElement | null;
   const cEl = document.getElementById('filt-clogged-ports') as HTMLInputElement | null;
@@ -151,17 +151,25 @@ import CircuitNavigator from '../../components/CircuitNavigator.astro';
 
   function updatePlateFlexure() {
     if (!pEl || !cEl || !wEl || !tEl || !mEl) return;
-    const res = evaluateFilterPressPlateDeflection({
+    const baseEval = evaluateFilterPressPlateDeflection({
       feedPressureBar: Number(pEl.value) || 12,
       cloggedPortsCount: Number(cEl.value) || 0,
       plateWidthMm: Number(wEl.value) || 1200,
       plateThicknessMm: Number(tEl.value) || 65,
       cakeMoistureTargetPct: Number(mEl.value) || 14
     });
-    if (stressEl) stressEl.textContent = `${res.maxBendingStressMpa} MPa`;
-    if (fsEl) fsEl.textContent = `${res.flexuralSafetyFactor}`;
+    const res = calculateFilterPressCycleCapacity({
+      ...baseEval,
+      feedPressureBar: Number(pEl.value) || 12,
+      cloggedPortsCount: Number(cEl.value) || 0,
+      plateWidthMm: Number(wEl.value) || 1200,
+      plateThicknessMm: Number(tEl.value) || 65,
+      cakeMoistureTargetPct: Number(mEl.value) || 14
+    });
+    if (stressEl) stressEl.textContent = `${res.maxBendingStressMpa} MPa (ΔP_asim=${res.deltaPAsymmetricMpa} MPa | σ_adm=${res.ppFatigueAllowableMpa} MPa)`;
+    if (fsEl) fsEl.textContent = `FS ${res.flexuralSafetyFactor} (${res.cyclesPerDay} ciclos/d • ${res.dryTonnesPerDay} t/d • ${res.filtrationMinutes}+12=${res.totalCycleMin} min)`;
     if (sumEl) {
-      sumEl.textContent = res.summaryEs;
+      sumEl.textContent = `${res.summaryEs} | Placa: ${res.recommendedPlateSkuId} | Tela: ${res.recommendedClothSkuId}`;
       sumEl.style.background = res.isPlateCrackingRisk ? '#fef2f2' : '#ecfdf5';
       sumEl.style.color = res.isPlateCrackingRisk ? '#991b1b' : '#065f46';
     }

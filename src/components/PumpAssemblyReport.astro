@@ -528,7 +528,7 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
 </section>
 
 <script>
-  import { evaluateWetEndAssemblyInterference, evaluateHybridWetEndConfiguration, computeSelectionOrderCodeHash } from '../scripts/slurryEngine.js';
+  import { evaluateWetEndAssemblyInterference, evaluatePumpAssemblySequence, evaluateHybridWetEndConfiguration, computeSelectionOrderCodeHash } from '../scripts/slurryEngine.js';
   import { saveWorkbenchState, loadWorkbenchState } from '../scripts/workbenchBus.js';
 
   function initPumpAssemblyReport() {
@@ -642,11 +642,16 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
         const hybridEval = isHybridActive
           ? evaluateHybridWetEndConfiguration({ d80Microns: 220, tipSpeedMs: 21.8, pulpPh: 7.5, solidsWeightPercent: 48, pipeSeries })
           : null;
+        const seqAudit = evaluatePumpAssemblySequence({
+          clearanceMm: frontClearanceMm,
+          impellerTorqueNm: 450,
+          d80Um: 220
+        });
         if (lot554El) {
           lot554El.textContent = hybridEval
             ? (isEnDoc
-              ? `${hybridEval.wearSynchronizationRatio} • Finnie-Hutchings (Impeller A05 α=75°–90° + Liners R55 α≤25°, u₂≤24.5 m/s)`
-              : `${hybridEval.wearSynchronizationRatio} • Finnie-Hutchings (Impulsor A05 α=75°–90° + Forros R55 α≤25°, u₂≤24.5 m/s)`)
+              ? `${hybridEval.wearSynchronizationRatio} • Finnie-Hutchings (Impeller A05 α=${hybridEval.impellerImpactAngleDeg}° + Liners R55 α=${hybridEval.linerGrazingAngleDeg}°, Thermal=${hybridEval.rubberThermalSafe ? 'OK' : 'Alert'}, Cut=${hybridEval.particleCutSafe ? 'OK' : 'Alert'})`
+              : `${hybridEval.wearSynchronizationRatio} • Finnie-Hutchings (Impulsor A05 α=${hybridEval.impellerImpactAngleDeg}° + Forros R55 α=${hybridEval.linerGrazingAngleDeg}°, Térmico=${hybridEval.rubberThermalSafe ? 'OK' : 'Alerta'}, Corte=${hybridEval.particleCutSafe ? 'OK' : 'Alerta'})`)
             : (isEnDoc ? res.wearRatioImpact554En : res.wearRatioImpact554);
         }
         if (massTotalEl) {
@@ -659,8 +664,12 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
               : `${res.totalAssemblyMassKg.toFixed(1)} kg • ${res.nioshHoistPartsCount} izajes NIOSH (≥23 kg)`);
         }
         if (seqStatusEl) {
+          const bandStr = Array.isArray(seqAudit.optimalClearanceBandMm) ? seqAudit.optimalClearanceBandMm.join('–') : '0.5–1.0';
+          const spallStr = isEnDoc ? seqAudit.spallingWarningEn : seqAudit.spallingWarningEs;
           seqStatusEl.textContent = res.sequenceValid
-            ? (isEnDoc ? 'Sequence 01–05 valid with zero axial collision' : 'Secuencia 01–05 válida sin colisión axial')
+            ? (isEnDoc
+              ? `Sequence 01–05 valid (Ng=${seqAudit.geometricInterferencesNg}, Ns=${seqAudit.unstableSubassembliesNs}, Band ${bandStr} mm • ${spallStr})`
+              : `Secuencia 01–05 válida (Ng=${seqAudit.geometricInterferencesNg}, Ns=${seqAudit.unstableSubassembliesNs}, Banda ${bandStr} mm • ${spallStr})`)
             : (isEnDoc ? `BLOCKED (${res.outOfOrderStationId}): ${res.collisionDetailsEn}` : `BLOQUEO (${res.outOfOrderStationId}): ${res.collisionDetailsEs}`);
         }
         if (svgValEl) svgValEl.textContent = `${res.frontClearanceMm.toFixed(2)} mm`;

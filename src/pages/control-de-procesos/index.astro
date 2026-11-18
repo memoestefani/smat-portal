@@ -330,9 +330,12 @@ const tamizRole = ctrlVertical?.opex?.find((r) => r.role_id === 'tamices_laborat
   import {
     calculateMarcyScaleReading,
     calculateGyMinimumSampleMass,
-    recommendAstmSieveSeries
+    recommendAstmSieveSeries,
+    MARCY_STANDARD_RINGS,
+    ASTM_E11_SIEVE_TABLE
   } from '../../scripts/slurryEngine.js';
   import { saveWorkbenchState, loadWorkbenchState } from '../../scripts/workbenchBus.js';
+  import { saveEngineeringContextSnapshot } from '../../scripts/wizardCircuitPhysicsController.js';
 
   function updateMetrologyCalculator(evt?: Event) {
     const sgEl = document.getElementById('met-sg-input') as HTMLInputElement | null;
@@ -443,23 +446,27 @@ const tamizRole = ctrlVertical?.opex?.find((r) => r.role_id === 'tamices_laborat
       marcyMain.textContent = `${marcy.cupNetMassGrams} g netos • ρp = ${marcy.pulpDensityKgL.toFixed(3)} kg/L`;
     }
     if (marcySub) {
-      marcySub.textContent = `Anillo Marcy activo: SG ${marcy.recommendedRingSg.toFixed(1)} (Fracción volumétrica Cv = ${marcy.solidsVolumePercent}%)`;
+      const ringObj = MARCY_STANDARD_RINGS.find((r: any) => Math.abs(Number(r.oreSg) - Number(marcy.recommendedRingSg)) < 0.06) || MARCY_STANDARD_RINGS[3];
+      marcySub.textContent = `Anillo Marcy activo: #${ringObj?.ringNumber || 4} SG ${marcy.recommendedRingSg.toFixed(1)} (${ringObj?.colorCode || 'Std'} de ${MARCY_STANDARD_RINGS.length} anillos • Cv = ${marcy.solidsVolumePercent}%)`;
     }
     if (marcyBias) {
       marcyBias.textContent = `Sólidos secos en vaso: ${marcy.drySolidsMassGramsInCup} g • Cw aparente en anillo: ${marcy.ringApparentCw}% (Sesgo ΔC_bias = ${marcy.wrongRingBiasPoints} pts) • ${marcy.recommendedContainerEs}`;
     }
     if (gyMain) {
-      gyMain.textContent = `${gy.minDrySampleGrams} g secos (${wetDryLabel}) • ${gy.slurrySampleLiters} L pulpa`;
+      const wetLiters = gy.wetPulpVolumeLiters ?? gy.slurrySampleLiters;
+      gyMain.textContent = `${gy.minDrySampleGrams} g secos (${wetDryLabel}) • ${wetLiters} L pulpa húmeda`;
     }
     if (gySub) {
       gySub.textContent = `Masa teórica Pierre Gy: ${gy.theoreticalGyGrams} g (d95=${gy.topSizeD95Mm} mm, c=${gy.samplingConstantC}) • Filtro Batch: ${gy.batchFilterCycles} ciclo(s) a ${gy.recommendedAirPressurePsi} (${gy.estimatedCycleMinutes} min/ciclo, humedad torta ~${gy.residualCakeMoisturePct}%)`;
     }
     const meshLabels = sieveStack.sieveStackSummary;
     if (sievesMain) {
-      sievesMain.textContent = meshLabels;
+      sievesMain.textContent = `${meshLabels} (Catálogo ASTM E11: ${ASTM_E11_SIEVE_TABLE.length} mallas)`;
     }
     if (sievesSub) {
-      sievesSub.textContent = `Corte central: ${sieveStack.primaryControlMesh} (${sieveStack.primaryApertureMicrons} µm) • y'=${sieveStack.rosinRammlerYPrime} (n=${sieveStack.rosinRammlerSlopeN}) • ${frame}`;
+      const frameRec = sieveStack.recommendedFrameMaterialEs || frame;
+      const wetReq = sieveStack.wetScreeningRequired ? 'Tamizado Húmedo Requerido' : 'Tamizado Seco';
+      sievesSub.textContent = `Corte central: ${sieveStack.primaryControlMesh} (${sieveStack.primaryApertureMicrons} µm) • y'=${sieveStack.rosinRammlerYPrime} (n=${sieveStack.rosinRammlerSlopeN}) • ${wetReq} • ${frameRec}`;
     }
     if (sieveTbody && Array.isArray(sieveStack.sieveStack)) {
       sieveTbody.innerHTML = sieveStack.sieveStack.map((s: any) => {
@@ -530,6 +537,16 @@ const tamizRole = ctrlVertical?.opex?.find((r) => r.role_id === 'tamices_laborat
         sieveStack: sieveStack.sieveStack,
         summary: metrologiaStr
       }
+    });
+    saveEngineeringContextSnapshot('control_procesos', {
+      specificGravity: sg,
+      solidsPctCw: cw,
+      pulpDensityKgL: marcy.pulpDensityKgL,
+      recommendedRingSg: marcy.recommendedRingSg,
+      wetPulpVolumeLiters: gy.wetPulpVolumeLiters ?? gy.slurrySampleLiters,
+      wetScreeningRequired: sieveStack.wetScreeningRequired,
+      recommendedFrameMaterialEs: sieveStack.recommendedFrameMaterialEs,
+      summary: metrologiaStr
     });
   }
 

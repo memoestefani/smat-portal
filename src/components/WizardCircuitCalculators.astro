@@ -54,6 +54,9 @@ const isEs = lang === 'es';
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.32rem 0.5rem;"><strong>{isEs ? 'Corte Granulométrico (d50c):' : 'Cut Size (d50c):'}</strong> <span id="wb-cyc-res-d50" data-testid="wb-cyc-res-d50">58.4 µm</span></div>
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.32rem 0.5rem;"><strong>{isEs ? 'Régimen Ápex / Descarga:' : 'Apex / Discharge Regime:'}</strong> <span id="wb-cyc-res-roping" data-testid="wb-cyc-res-roping">{isEs ? 'Descarga Paraguas Estable' : 'Stable Spray Discharge'}</span></div>
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.32rem 0.5rem;"><strong>{isEs ? 'Partición Criba Uretano:' : 'Urethane Screen Partition:'}</strong> <span id="wb-scr-res-weibull" data-testid="wb-scr-res-weibull">α = 4.4 (SMAT-SCR-TH48-30)</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.32rem 0.5rem;"><strong>{isEs ? 'Sólidos 3 Vasos (Cw/Cv):' : '3-Cup Solids (Cw/Cv):'}</strong> <span id="wb-cyc-res-cw-cv-3cups" data-testid="wb-cyc-res-cw-cv-3cups">Cw Alim 41.2% (Cv 20.1%) | Cw Desc 71.5% | Cw Reb 21.8% (Cv 9.1%)</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.32rem 0.5rem;"><strong>{isEs ? 'Relación Ápex/Vortex:' : 'Apex/Vortex Ratio:'}</strong> <span id="wb-cyc-res-dudo-ratio" data-testid="wb-cyc-res-dudo-ratio">du/do = 0.45 • Paraguas Estable</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.32rem 0.5rem;"><strong>{isEs ? 'Dinámica Criba:' : 'Screen Dynamics:'}</strong> <span id="wb-scr-res-vibration-g" data-testid="wb-scr-res-vibration-g">4.5 G • Anti-cegamiento Activo (θ ≥ 3.5°)</span></div>
   </div>
 </div>
 
@@ -74,6 +77,8 @@ const isEs = lang === 'es';
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Tasa Cinética k:' : 'Kinetic Rate k:'}</strong> <span id="wb-flot-res-k" data-testid="wb-flot-res-k">0.197 min⁻¹</span></div>
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Suspensión Mínima Njs:' : 'Min Suspension Njs:'}</strong> <span id="wb-flot-res-njs" data-testid="wb-flot-res-njs">178 RPM</span></div>
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Vel. Punta v_tip:' : 'Rotor Tip v_tip:'}</strong> <span id="wb-flot-res-vtip" data-testid="wb-flot-res-vtip">6.87 m/s</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Vida PU vs Hule:' : 'PU vs Rubber Life:'}</strong> <span id="wb-flot-res-pu-life" data-testid="wb-flot-res-pu-life">{isEs ? 'Vida PU vs Hule: 2.1× • Ventana v_tip óptima (5.5–7.5 m/s)' : 'PU vs Rubber Life: 2.1× • Optimal v_tip window (5.5–7.5 m/s)'}</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Estado Zwietering:' : 'Zwietering Status:'}</strong> <span id="wb-flot-res-susp-status" data-testid="wb-flot-res-susp-status">{isEs ? 'Suspensión Completa (Sin Arenero)' : 'Full Suspension (Zero Sanding)'}</span></div>
   </div>
 </div>
 
@@ -94,6 +99,9 @@ const isEs = lang === 'es';
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Seguridad Placa:' : 'Plate Safety:'}</strong> <span id="wb-filt-res-fs" data-testid="wb-filt-res-fs">FS 4.10</span></div>
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Capacidad de Ciclo:' : 'Cycle Capacity:'}</strong> <span id="wb-filt-res-cycles" data-testid="wb-filt-res-cycles">36 ciclos/d (285 t/d)</span></div>
     <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Dictamen Tetones:' : 'Bosses Status:'}</strong> <span id="wb-filt-res-status" data-testid="wb-filt-res-status">{isEs ? 'NOM-141 Segura' : 'NOM-141 Safe'}</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Desglose Ciclo:' : 'Cycle Breakdown:'}</strong> <span id="wb-filt-res-cycle-min" data-testid="wb-filt-res-cycle-min">{isEs ? 'Filtrado 18.0 min + Descarga 12 min = 30.0 min/ciclo' : 'Filtration 18.0 min + Turnaround 12 min = 30.0 min/cycle'}</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'ΔP Asimétrica / Fatiga:' : 'Asymmetric ΔP / Fatigue:'}</strong> <span id="wb-filt-res-asym-dp" data-testid="wb-filt-res-asym-dp">ΔP_asim = 0.00 MPa | σ_adm,PP = 14.5 MPa</span></div>
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'SKUs Placa y Tela:' : 'Plate & Cloth SKUs:'}</strong> <span id="wb-filt-res-skus" data-testid="wb-filt-res-skus">Placa: SMAT-FP-1500-PP | Tela: SMAT-CL-PP750</span></div>
   </div>
 </div>
 
@@ -103,22 +111,26 @@ const isEs = lang === 'es';
     <strong class="font-mono-tech" style="font-size:0.75rem; color:#065f46;" id="wb-drive-frame-badge" data-testid="wb-drive-frame-badge">{isEs ? 'Bastidor Serie D (Cartucho DAM005 H7 • 55 kW • Elegible Core Trade-In -22%)' : 'Frame Series D (Cartridge DAM005 H7 • 55 kW • -22% Core Trade-In Eligible)'}</strong>
     <span class="font-mono-tech" style="font-size:0.71rem; color:#0f172a; font-weight:700;" id="wb-drive-contextual-metrics">Arreglo CV • n₂ = 1,149 RPM • u₂ = 22.9 m/s • F_r = 4.2 kN • L₁₀ₕ = 42,500 h</span>
   </div>
+  <div class="font-mono-tech" style="font-size:0.70rem; color:#065f46; margin-bottom:0.35rem;" id="wb-drive-frame-specs" data-testid="wb-drive-frame-specs">
+    {isEs ? 'P_max = 110 kW • n_max = 1400 RPM • Ø Eje = 75 mm • C_din = 215 kN • a_ISO = 1.85 vs 0.35 (Fieltro) • SiC Seguro' : 'P_max = 110 kW • n_max = 1400 RPM • Shaft Ø = 75 mm • C_dyn = 215 kN • a_ISO = 1.85 vs 0.35 (Felt) • SiC Safe'}
+  </div>
 
   <!-- Widget Interactivo SMAT Core Trade-In (-22% Intercambio de Casco DAM005 en Tolerancia H7) -->
   <div data-core-tradein-widget="DAM005" data-lang={lang} style="margin-top:0.45rem; padding:0.55rem 0.7rem; background:#ffffff; border:1px solid #a7f3d0; border-radius:6px; font-size:0.75rem;">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
       <label style="display:flex; align-items:center; gap:0.45rem; font-weight:700; color:#065f46; cursor:pointer;">
         <input type="checkbox" data-core-tradein-toggle checked />
-        <span>{isEs ? 'Aplicar Programa SMAT Core Trade-In (-22% al entregar casco usado DAM005 H7)' : 'Apply SMAT Core Trade-In Program (-22% with used DAM005 H7 housing return)'}</span>
+        <span>{isEs ? 'Aplicar Programa SMAT Core Trade-In (-22% / -12% al entregar casco usado DAM005 H7)' : 'Apply SMAT Core Trade-In Program (-22% / -12% with used DAM005 H7 housing return)'}</span>
       </label>
-      <select data-core-tradein-condition class="wb-select font-mono-tech" style="max-width:250px; min-height:30px; padding:0.15rem 0.45rem; font-size:0.71rem;">
-        <option value="h7_intact" selected>{isEs ? 'Casco Usado Íntegro (Alojamiento H7 sin fractura)' : 'Intact Used Housing (Crack-free H7 bore)'}</option>
-        <option value="cracked_housing">{isEs ? 'Sin casco a cambio / Casco fracturado (Compra directa)' : 'No core return / Cracked housing (Direct purchase)'}</option>
+      <select data-core-tradein-condition class="wb-select font-mono-tech" style="max-width:270px; min-height:30px; padding:0.15rem 0.45rem; font-size:0.71rem;">
+        <option value="h7_intact" selected>{isEs ? 'Casco H7 Íntegro sin soldadura (-22% • 0.78x)' : 'Intact H7 Housing without weld (-22% • 0.78x)'}</option>
+        <option value="minor_scoring">{isEs ? 'Desgaste menor / Re-encamisado H7 (-12% • 0.88x)' : 'Minor bore scoring / H7 rebore (-12% • 0.88x)'}</option>
+        <option value="cracked_housing">{isEs ? 'Casco fracturado / Con soldadura (0% • 1.00x)' : 'Cracked or welded housing (0% • 1.00x)'}</option>
       </select>
     </div>
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem; margin-top:0.35rem;">
-      <strong data-core-tradein-badge class="font-mono-tech" style="color:#065f46; font-size:0.71rem;">{isEs ? 'Activo: -22% Crédito Core Trade-In (Factor 0.78x)' : 'Active: -22% Core Trade-In Credit (Factor 0.78x)'}</strong>
-      <small data-core-tradein-note style="color:#334155; font-size:0.69rem;">{isEs ? 'Aplica a Cartucho de Rodamientos 005M (DAM005) con devolución de casco en Durango.' : 'Applies to 005M Bearing Cartridge (DAM005) upon core return at Durango warehouse.'}</small>
+      <strong data-core-tradein-badge class="font-mono-tech" style="color:#065f46; font-size:0.71rem;">{isEs ? 'Activo: -22% Crédito Core Trade-In (Factor 0.78x • RMA-CORE-DAM005-INTACT)' : 'Active: -22% Core Trade-In Credit (Factor 0.78x • RMA-CORE-DAM005-INTACT)'}</strong>
+      <small data-core-tradein-note style="color:#334155; font-size:0.69rem;">{isEs ? 'Devolución en Almacén Central: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (35 kg CO₂e evitados).' : 'Core return at Central Warehouse: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (35 kg CO₂e saved).'}</small>
     </div>
   </div>
 </div>

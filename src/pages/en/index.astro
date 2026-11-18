@@ -317,7 +317,7 @@ const familyFilterChipsEn = [
         const res = verifyDropInEquivalence(input.value);
         out.style.display = 'block';
         if (res.matched && res.geometricTripletMm) {
-          out.innerHTML = `✅ DROP-IN MATCH: <strong>${res.canonicalSkuId}</strong> (${res.titleEn}) | Alloy: <strong>${res.alloyCode}</strong> | ${res.geometricTripletMm.label_en} (${res.toleranceStd}) · <a href="/en/products/${res.slugEn}/" style="color:#b45309;text-decoration:underline;">Open Sheet →</a>`;
+          out.innerHTML = `✅ DROP-IN MATCH: <strong>${res.canonicalSkuId}</strong> (${res.titleEn}) | Alloy: <strong>${res.alloyCode}</strong> | ${res.geometricTripletMm.label_en} (${res.toleranceStd}) | Regime: <strong>${res.regimeBadgeEn}</strong> (${res.gateLock}) | Scale: ${res.iso7810Scale} · <a href="/en/products/${res.slugEn}/" style="color:#b45309;text-decoration:underline;">Open Sheet →</a>`;
         } else {
           out.innerHTML = `ℹ️ ${res.reasonEn}`;
         }

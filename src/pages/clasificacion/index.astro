@@ -151,7 +151,7 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
 <script>
   import { calculateThreeCupMarcyCycloneBalance } from '../../scripts/slurryEngine.js';
   import { saveWorkbenchSession, loadWorkbenchSession } from '../../scripts/workbenchBus.js';
-  import { saveEngineeringContextSnapshot } from '../../scripts/wizardCircuitPhysicsController.js';
+  import { evaluateHydrocycloneCutPoint, saveEngineeringContextSnapshot } from '../../scripts/wizardCircuitPhysicsController.js';
 
   const feedInput = document.getElementById('cyc-feed-sg') as HTMLInputElement | null;
   const underInput = document.getElementById('cyc-underflow-sg') as HTMLInputElement | null;
@@ -188,9 +188,23 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
     }
     if (recEl) recEl.textContent = `${res.solidsRecoveryPct}%`;
     if (circEl) circEl.textContent = `${res.circulatingLoadPct}%`;
-    if (cvuEl) cvuEl.textContent = `${res.cvUnderflowPct}%`;
+    if (cvuEl) cvuEl.textContent = `${res.cvUnderflowPct}% (du/do=${res.apexToVortexRatio})`;
     if (d50El) d50El.textContent = `${res.d50cMicrons} µm`;
-    if (actionEl) actionEl.textContent = res.diagnosticActionEs;
+    if (actionEl) {
+      const threeCupsInfo = `3 Vasos: Cw Alim ${res.cwFeedPct}% (Cv ${res.cvFeedPct}%) | Cw Desc ${res.cwUnderflowPct}% | Cw Reb ${res.cwOverflowPct}% (Cv ${res.cvOverflowPct}%) • ${res.isUmbrellaDilute ? 'Paraguas Diluido' : 'Paraguas Estable'}`;
+      actionEl.textContent = `${res.diagnosticActionEs} [${threeCupsInfo}]`;
+    }
+    const csrFeedInput = document.getElementById('csr-feed-um') as HTMLInputElement | null;
+    if (csrFeedInput) {
+      csrFeedInput.value = String(Math.round(res.d50cMicrons * 2.2));
+      csrFeedInput.dispatchEvent(new Event('input'));
+    }
+    const coupledEval = evaluateHydrocycloneCutPoint({
+      feedSg: res.feedSg,
+      underflowSg: res.underflowSg,
+      overflowSg: res.overflowSg,
+      feedPressureKpa: res.feedPressureKpa
+    });
     if (skuLink) {
       skuLink.href = res.recommendedSkuId === 'SMAT-COUPLED-PUMP-CYC'
         ? '/productos/paquete-casado-bomba-hidrociclon/'

@@ -225,7 +225,7 @@ const quickParts = rawQuickParts.map((item) => {
           <strong class="quick-part-card__title">{item.title}</strong>
           <span class="quick-part-card__sub">{item.sub}</span>
           <span class="quick-part-card__sub" style="font-family:var(--smat-font-mono, monospace); font-size:0.68rem; color:#082f49; font-weight:700;">
-            {item.spec.weight_kg} kg • {isEs ? item.niosh.badgeEs : item.niosh.badgeEn}
+            {item.spec.weight_kg} kg • {isEs ? item.niosh.badgeEs : item.niosh.badgeEn} • {isEs ? item.dropInCheck.regimeBadgeEs : item.dropInCheck.regimeBadgeEn} ({item.dropInCheck.gateLock} • {item.dropInCheck.iso7810Scale})
           </span>
           <span class="quick-part-card__cta">
             {isEs ? 'Cotizar pieza →' : 'Quote part →'}

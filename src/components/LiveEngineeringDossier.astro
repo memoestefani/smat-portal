@@ -161,7 +161,7 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
             <tr>
               <td><strong>{isEs ? 'Altitud y Pinza Térmica IEC:' : 'Altitude & IEC Thermal Pincer:'}</strong></td>
               <td id="live-table-altitude">
-                Patm = <strong id="metric-patm-mca" data-testid="metric-patm-mca">7.89 mca</strong> (<span id="metric-delta-npsh">-2.44 m NPSHa</span>) | IEC = <strong id="metric-motor-iec" data-testid="metric-motor-iec">0.880</strong> | K_motor,alt = <strong id="metric-k-motor-alt" data-testid="metric-k-motor-alt">1.326x</strong>
+                Patm = <strong id="metric-patm-mca" data-testid="metric-patm-mca">7.89 mca</strong> (<span id="dossier-metric-delta-npsh" data-testid="dossier-metric-delta-npsh">-2.44 m NPSHa</span>) | IEC = <strong id="metric-motor-iec" data-testid="metric-motor-iec">0.880</strong> | K_motor,alt = <strong id="metric-k-motor-alt" data-testid="metric-k-motor-alt">1.326x</strong>
               </td>
             </tr>
             <tr>
@@ -257,9 +257,6 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
             </tbody>
           </table>
         </div>
-        <div class="dossier-embedded-tray-section" data-dossier-embedded-tray="true" style="margin-top:0.85rem;">
-          <RequisitionTraySummary lang={lang} />
-        </div>
       </div>
 
       <div class="dossier-section">
@@ -339,6 +336,11 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
             : 'Protection against unscheduled line shutdown: 40,000 USD/hour in estimated deferred production. 24-48h guaranteed dispatch from Durango warehouse with <0.05 mm runout bench check.'}
         </p>
       </div>
+    </div>
+
+    <!-- Bandeja Canónica Única de Requisición Multi-Ítem B2B (Compartida entre Ingeniería y Compras — D4-V41) -->
+    <div class="dossier-embedded-tray-section" data-dossier-embedded-tray="true" style="margin-top:0.85rem; margin-bottom:0.85rem;">
+      <RequisitionTraySummary lang={lang} />
     </div>
 
     <!-- Suite Jerárquica de Exportación B2B -->

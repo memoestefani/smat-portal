@@ -34,6 +34,9 @@ const isEs = lang === 'es';
     <code id="tray-cmu-subject-line" class="req-tray-cmu-code">
       [SMAT-DGO] [PARO DE LÍNEA | C_v=48% Cr27 | 1 SKUs | Ref: SMAT-7A4F-9C12]
     </code>
+    <div id="tray-priority-sla-meta" data-testid="tray-priority-sla-meta" class="font-mono-tech" style="margin-top:0.25rem; font-size:0.71rem; color:#0c4a6e; font-weight:700;">
+      {isEs ? 'Carril: PARO DE LÍNEA (IMMEDIATE_PICK) • SLA Respuesta: ≤ 15 min • Índice cμ = 4800' : 'Lane: LINE-STOP (IMMEDIATE_PICK) • Response SLA: ≤ 15 min • cμ Index = 4800'}
+    </div>
   </div>
 
   <div class="req-tray-quickadd">
@@ -90,21 +93,23 @@ const isEs = lang === 'es';
     getTrayState,
     addTrayItem,
     removeTrayItem,
+    computeCmuPriorityDescriptor,
     buildCmuPrioritySubjectLine,
     hydrateTrayFromReorderQuery
   } from '../scripts/requisitionTrayBus.js';
 
   function initRequisitionTraySummary() {
-    const root = document.getElementById('smat-requisition-tray-summary');
+    const root = document.querySelector('[data-requisition-tray]') as HTMLElement | null;
     if (!root) return;
     const isEn = document.documentElement.lang === 'en';
-    const tbody = document.getElementById('tray-items-tbody');
-    const cmuCode = document.getElementById('tray-cmu-subject-line');
-    const skuSelect = document.getElementById('tray-quick-sku-select') as HTMLSelectElement | null;
-    const qtyInput = document.getElementById('tray-quick-qty-input') as HTMLInputElement | null;
-    const modeSelect = document.getElementById('tray-quick-mode-select') as HTMLSelectElement | null;
-    const addBtn = document.getElementById('tray-quick-add-btn');
-    const clearBtn = document.getElementById('tray-clear-btn');
+    const tbody = root.querySelector('#tray-items-tbody') as HTMLElement | null;
+    const cmuCode = root.querySelector('#tray-cmu-subject-line') as HTMLElement | null;
+    const cmuMeta = root.querySelector('#tray-priority-sla-meta') as HTMLElement | null;
+    const skuSelect = root.querySelector('#tray-quick-sku-select') as HTMLSelectElement | null;
+    const qtyInput = root.querySelector('#tray-quick-qty-input') as HTMLInputElement | null;
+    const modeSelect = root.querySelector('#tray-quick-mode-select') as HTMLSelectElement | null;
+    const addBtn = root.querySelector('#tray-quick-add-btn') as HTMLElement | null;
+    const clearBtn = root.querySelector('#tray-clear-btn') as HTMLElement | null;
 
     if (typeof window !== 'undefined' && window.location.search.includes('tray=')) {
       hydrateTrayFromReorderQuery(window.location.search);
@@ -134,8 +139,14 @@ const isEs = lang === 'es';
 
     const renderTray = () => {
       const state = getTrayState();
+      const desc = computeCmuPriorityDescriptor(state);
       if (cmuCode) {
         cmuCode.textContent = buildCmuPrioritySubjectLine(state, { cvPct: 52, material: 'Cr27' });
+      }
+      if (cmuMeta) {
+        cmuMeta.textContent = isEn
+          ? `Lane: ${desc.priorityLabelEn} (${desc.checkoutLane}) • Response SLA: ≤ ${desc.slaResponseMinutes} min • cμ Index = ${desc.priorityRankScore}`
+          : `Carril: ${desc.priorityLabelEs} (${desc.checkoutLane}) • SLA Respuesta: ≤ ${desc.slaResponseMinutes} min • Índice cμ = ${desc.priorityRankScore}`;
       }
       if (!tbody) return;
       if (!state.items.length) {

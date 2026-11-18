@@ -21,6 +21,7 @@ import {
   calculateCoupledReorderWindowDays,
   evaluateBearingCartridgeCoreTradeIn
 } from './requisitionTrayBus.js';
+export { evaluateBearingCartridgeCoreTradeIn };
 import {
   formatSatTigieInvoiceLine,
   formatDualCheckoutPayload
@@ -171,7 +172,7 @@ export function buildSapAnexo22ComplianceSummary(params = {}) {
     dualCheckout,
     passport,
     laneLabel,
-    summaryText: `${satTigieLine} • ${laneLabel}`
+    summaryText: `${satTigieLine} • ${laneLabel} • ${passport.rfcStatus || 'SAT 32-D Positiva'} (CP ${passport.jsonMetadata?.postalCode || '34166'})`
   };
 }
 
@@ -215,65 +216,84 @@ export function triggerVendorPassportDownload(kind = 'json', companyMeta = {}) {
 }
 
 /**
- * Enlaza los botones de descarga del Pasaporte ERP (`.json` y `.vcf`) en `LiveEngineeringDossier.astro`.
+ * Enlaza los botones de descarga del Pasaporte ERP (`.json` y `.vcf`) en `LiveEngineeringDossier.astro`
+ * y en las fichas de producto/catálogo.
  *
  * @param {Document|HTMLElement} [rootDoc]
+ * @param {string} [lang]
  */
-export function bindVendorPassportDownloadButtons(rootDoc = typeof document !== 'undefined' ? document : null) {
-  if (!rootDoc) return;
-  const btnJson = rootDoc.querySelector('#btn-download-vendor-json');
-  const btnVcf = rootDoc.querySelector('#btn-download-vendor-vcf');
-  const statusEl = rootDoc.querySelector('#sap-vendor-passport-status');
+export function bindVendorPassportDownloadButtons(
+  rootDoc = typeof document !== 'undefined' ? document : null,
+  lang = 'es'
+) {
+  if (!rootDoc || typeof rootDoc.querySelectorAll !== 'function') return;
+  const isEn = lang === 'en' || (typeof document !== 'undefined' && document.documentElement?.lang === 'en');
+  const statusEl = rootDoc.querySelector('#sap-vendor-passport-status, [data-passport-status]');
 
-  if (btnJson && btnJson.getAttribute('data-passport-bound') !== '1') {
+  const jsonBtns = rootDoc.querySelectorAll('#btn-download-vendor-json, [data-download-passport-json]');
+  jsonBtns.forEach((btnJson) => {
+    if (btnJson.getAttribute('data-passport-bound') === '1') return;
     btnJson.setAttribute('data-passport-bound', '1');
     btnJson.addEventListener('click', () => {
       const res = triggerVendorPassportDownload('json');
       if (statusEl) {
-        statusEl.textContent = `✓ ${res.filename} generado (CFDI 4.0 / Anexo 22 / SAP)`;
+        statusEl.textContent = isEn
+          ? `✓ ${res.filename} generated (CFDI 4.0 / Anexo 22 / SAP)`
+          : `✓ ${res.filename} generado (CFDI 4.0 / Anexo 22 / SAP)`;
         statusEl.classList.remove('hidden');
       }
     });
-  }
+  });
 
-  if (btnVcf && btnVcf.getAttribute('data-passport-bound') !== '1') {
+  const vcfBtns = rootDoc.querySelectorAll('#btn-download-vendor-vcf, [data-download-passport-vcf]');
+  vcfBtns.forEach((btnVcf) => {
+    if (btnVcf.getAttribute('data-passport-bound') === '1') return;
     btnVcf.setAttribute('data-passport-bound', '1');
     btnVcf.addEventListener('click', () => {
       const res = triggerVendorPassportDownload('vcf');
       if (statusEl) {
-        statusEl.textContent = `✓ ${res.filename} descargado (RFC 6350 vCard 4.0)`;
+        statusEl.textContent = isEn
+          ? `✓ ${res.filename} downloaded (RFC 6350 vCard 4.0)`
+          : `✓ ${res.filename} descargado (RFC 6350 vCard 4.0)`;
         statusEl.classList.remove('hidden');
       }
     });
-  }
+  });
 }
 
 /**
- * Inicializa y sincroniza todos los widgets interactivos `[data-core-tradein-widget]`
- * para el programa *SMAT Core Trade-In (-22%)* del Cartucho `DAM005` (`SMAT-PUMP-BRG-005M`)
- * en sus 4 superficies (`/productos/cartucho-rodamientos-005m/`, `/catalogo/dam005/`,
- * `/bombeo/soporte/` y `/cotizar/`) (`D6-V39`).
+ * Inicializa y sincroniza todos los widgets interactivos `[data-core-tradein-widget]` y `[data-tradein-widget]`
+ * para el programa unificado *SMAT Core Trade-In (-22% / -12% / 0%)* del Cartucho `DAM005` (`SMAT-PUMP-BRG-005M`)
+ * en sus 6 superficies (`/productos/[slug]`, `/en/products/[slug]`, `/catalogo/[code]`, `/en/catalog/[code]`,
+ * `/bombeo/soporte`, `/en/pumping/bearing-assembly` y `/cotizar/`) (`D3-V41`).
  *
  * @param {Document|HTMLElement} [rootDoc]
- * @param {(evalResult: any) => void} [onTradeInChange]
+ * @param {string|((evalResult: any) => void)} [langOrCallback]
  */
 export function initCoreTradeInWidgets(
   rootDoc = typeof document !== 'undefined' ? document : null,
-  onTradeInChange = null
+  langOrCallback = null
 ) {
   if (!rootDoc || typeof rootDoc.querySelectorAll !== 'function') return;
 
-  const widgets = rootDoc.querySelectorAll('[data-core-tradein-widget]');
+  const onTradeInChange = typeof langOrCallback === 'function' ? langOrCallback : null;
+  const explicitLang = typeof langOrCallback === 'string' ? langOrCallback : null;
+
+  const widgets = rootDoc.querySelectorAll('[data-core-tradein-widget], [data-tradein-widget]');
   widgets.forEach((widget) => {
     if (widget.getAttribute('data-tradein-bound') === '1') return;
     widget.setAttribute('data-tradein-bound', '1');
 
-    const checkbox = widget.querySelector('[data-core-tradein-toggle]');
-    const conditionSelect = widget.querySelector('[data-core-tradein-condition]');
-    const statusBadge = widget.querySelector('[data-core-tradein-badge]');
-    const detailNote = widget.querySelector('[data-core-tradein-note]');
-    const addWithTradeInBtn = widget.querySelector('[data-core-tradein-add-btn]');
-    const isEn = widget.getAttribute('data-lang') === 'en';
+    const checkbox = widget.querySelector('[data-core-tradein-toggle], [data-tradein-toggle], [data-tradein-not-welded]');
+    const conditionSelect = widget.querySelector('[data-core-tradein-condition], [data-tradein-condition]');
+    const statusBadge = widget.querySelector('[data-core-tradein-badge], [data-tradein-badge], [data-tradein-discount], [data-tradein-result]');
+    const detailNote = widget.querySelector('[data-core-tradein-note], [data-tradein-note], [data-tradein-co2]');
+    const rmaEl = widget.querySelector('[data-tradein-rma]');
+    const addWithTradeInBtn = widget.querySelector('[data-core-tradein-add-btn], [data-tradein-cta]');
+    const isEn =
+      explicitLang === 'en' ||
+      widget.getAttribute('data-lang') === 'en' ||
+      (typeof document !== 'undefined' && document.documentElement?.lang === 'en');
 
     const syncWidgetUi = (enabledOverride = null) => {
       const currentTray = getTrayState();
@@ -287,19 +307,21 @@ export function initCoreTradeInWidgets(
           ? Boolean(enabledOverride)
           : checkbox instanceof HTMLInputElement
             ? checkbox.checked
-            : Boolean(currentTray.coreReturnEnabled);
+            : true;
       const housingCondition =
         conditionSelect instanceof HTMLSelectElement
           ? conditionSelect.value
           : 'h7_intact';
-      const conditionEligible = housingCondition !== 'cracked_housing';
+      const conditionEligible =
+        !housingCondition.includes('crack') && !housingCondition.includes('weld');
       const effectiveEnabled = isChecked && conditionEligible;
 
       const simulatedTray = hasDam005InTray
-        ? { ...currentTray, coreReturnEnabled: effectiveEnabled }
+        ? { ...currentTray, coreReturnEnabled: effectiveEnabled, housingCondition }
         : {
             ...currentTray,
             coreReturnEnabled: effectiveEnabled,
+            housingCondition,
             items: [
               ...currentTray.items,
               {
@@ -312,39 +334,52 @@ export function initCoreTradeInWidgets(
             ]
           };
 
-      const evalResult = evaluateBearingCartridgeCoreTradeIn(simulatedTray, effectiveEnabled);
+      const evalResult = evaluateBearingCartridgeCoreTradeIn(
+        simulatedTray,
+        effectiveEnabled ? housingCondition : false
+      );
 
       if (checkbox instanceof HTMLInputElement) {
         checkbox.checked = isChecked;
       }
 
       if (statusBadge) {
-        if (!conditionEligible && isChecked) {
+        if (!conditionEligible) {
           statusBadge.textContent = isEn
-            ? 'H7 Housing Required (No Cracks)'
-            : 'Requiere Alojamiento H7 sin Fractura';
+            ? '0% Credit (Factor 1.00x • Direct New Cartridge)'
+            : '0% Crédito (Factor 1.00x • Suministro Directo Nuevo)';
         } else if (evalResult.coreReturnEnabled) {
           statusBadge.textContent = isEn
-            ? `Active: -${evalResult.discountPct}% Core Trade-In Credit (Factor ${evalResult.creditFactor}x)`
-            : `Activo: -${evalResult.discountPct}% Crédito Core Trade-In (Factor ${evalResult.creditFactor}x)`;
+            ? `Active: -${evalResult.discountPct}% Core Trade-In Credit (Factor ${evalResult.creditFactor.toFixed(2)}x • ${evalResult.rmaCode})`
+            : `Activo: -${evalResult.discountPct}% Crédito Core Trade-In (Factor ${evalResult.creditFactor.toFixed(2)}x • ${evalResult.rmaCode})`;
         } else {
           statusBadge.textContent = isEn
-            ? 'Available: -22% Core Exchange Credit (DAM005 H7)'
-            : 'Disponible: -22% Crédito por Intercambio de Casco (DAM005 H7)';
+            ? 'Available: -22% / -12% Core Exchange Credit (DAM005 H7)'
+            : 'Disponible: -22% / -12% Crédito Intercambio de Casco (DAM005 H7)';
         }
       }
 
-      if (detailNote) {
-        detailNote.textContent = !conditionEligible && isChecked
-          ? isEn
-            ? 'Fractured outer housings do not qualify for H7 remanufacturing core credit; direct new cartridge supply applies.'
-            : 'Cascos con fractura estructural no califican para remanufactura H7; aplica suministro directo de cartucho nuevo.'
-          : isEn
-            ? evalResult.policyNoteEn
-            : evalResult.policyNoteEs;
+      if (rmaEl) {
+        rmaEl.textContent = evalResult.rmaCode;
       }
 
-      // Actualizar enlaces de WhatsApp o cotización en la misma vista
+      if (detailNote) {
+        detailNote.textContent = isEn ? evalResult.policyNoteEn : evalResult.policyNoteEs;
+      }
+
+      if (addWithTradeInBtn instanceof HTMLAnchorElement) {
+        try {
+          const baseHref = addWithTradeInBtn.getAttribute('href') || '/cotizar/';
+          const u = new URL(baseHref, 'https://smatminerals.com');
+          u.searchParams.set('core_tradein', evalResult.coreReturnEnabled ? '1' : '0');
+          u.searchParams.set('rma', evalResult.rmaCode);
+          u.searchParams.set('discount_pct', String(evalResult.discountPct));
+          addWithTradeInBtn.setAttribute('href', `${u.pathname}${u.search}`);
+        } catch (_) {
+          // Conservar href original
+        }
+      }
+
       const waLinks = document.querySelectorAll('[data-slug-wa-btn], [data-qcard-wa-btn], [data-core-tradein-wa-link]');
       waLinks.forEach((link) => {
         if (link instanceof HTMLAnchorElement && link.href.includes('wa.me/')) {
@@ -354,8 +389,8 @@ export function initCoreTradeInWidgets(
             const cleanText = rawText.replace(/\s*\|\s*Core Trade-In DAM005:\s*[^\]]+/gi, '');
             const tradeSuffix = evalResult.coreReturnEnabled
               ? isEn
-                ? ' | Core Trade-In DAM005: -22% H7 Exchange Active'
-                : ' | Core Trade-In DAM005: -22% Intercambio H7 Activo'
+                ? ` | Core Trade-In DAM005: -${evalResult.discountPct}% (${evalResult.rmaCode})`
+                : ` | Core Trade-In DAM005: -${evalResult.discountPct}% (${evalResult.rmaCode})`
               : '';
             if (tradeSuffix && !cleanText.includes('Core Trade-In DAM005')) {
               urlObj.searchParams.set('text', `${cleanText}${tradeSuffix}`);
@@ -365,7 +400,7 @@ export function initCoreTradeInWidgets(
               link.href = urlObj.toString();
             }
           } catch (_) {
-            // Conservar enlace original si URL no es parseable
+            // Conservar enlace original
           }
         }
       });
@@ -391,7 +426,7 @@ export function initCoreTradeInWidgets(
       });
     }
 
-    if (addWithTradeInBtn) {
+    if (addWithTradeInBtn && !(addWithTradeInBtn instanceof HTMLAnchorElement)) {
       addWithTradeInBtn.addEventListener('click', () => {
         if (checkbox instanceof HTMLInputElement) {
           checkbox.checked = true;

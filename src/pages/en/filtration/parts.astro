@@ -178,6 +178,7 @@ const criteria = repRole?.decision_criteria;
 
 <script>
   import { evaluateFilterPressPlateDeflection } from '../../../scripts/slurryEngine.js';
+  import { calculateFilterPressCycleCapacity, saveEngineeringContextSnapshot } from '../../../scripts/wizardCircuitPhysicsController.js';
 
   function initPartsTimoshenkoPanelEn() {
     const wEl = document.getElementById('rep-plate-width') as HTMLSelectElement | null;
@@ -191,19 +192,33 @@ const criteria = repRole?.decision_criteria;
 
     function updateFlexure() {
       if (!wEl || !pEl || !cEl || !tEl) return;
-      const res = evaluateFilterPressPlateDeflection({
+      const baseEval = evaluateFilterPressPlateDeflection({
         plateWidthMm: Number(wEl.value) || 1200,
         feedPressureBar: Number(pEl.value) || 12,
         cloggedPortsCount: Number(cEl.value) || 0,
         plateThicknessMm: Number(tEl.value) || 65
       });
-      if (stressOut) stressOut.textContent = String(res.maxBendingStressMpa);
-      if (fsOut) fsOut.textContent = String(res.flexuralSafetyFactor);
-      if (statusOut) statusOut.textContent = res.isPlateCrackingRisk ? 'Web Fracture Risk (Unclog Feed Ports)' : 'NOM-141 Safe Operation';
+      const res = calculateFilterPressCycleCapacity({
+        ...baseEval,
+        plateWidthMm: Number(wEl.value) || 1200,
+        feedPressureBar: Number(pEl.value) || 12,
+        cloggedPortsCount: Number(cEl.value) || 0,
+        plateThicknessMm: Number(tEl.value) || 65
+      });
+      if (stressOut) stressOut.textContent = `${res.maxBendingStressMpa} (ΔP_asym=${res.deltaPAsymmetricMpa} MPa / σ_allow=${res.ppFatigueAllowableMpa} MPa)`;
+      if (fsOut) fsOut.textContent = `${res.flexuralSafetyFactor} (${res.cyclesPerDay} cycles/d • ${res.dryTonnesPerDay} t/d)`;
+      if (statusOut) statusOut.textContent = `${res.isPlateCrackingRisk ? 'Web Fracture Risk (Unclog Feed Ports)' : 'NOM-141 Safe Operation'} • Plate ${res.recommendedPlateSkuId} + Cloth ${res.recommendedClothSkuId}`;
       if (readoutBox) {
         readoutBox.style.background = res.isPlateCrackingRisk ? '#fef2f2' : '#ecfdf5';
         readoutBox.style.color = res.isPlateCrackingRisk ? '#991b1b' : '#065f46';
       }
+      saveEngineeringContextSnapshot('filtracion', {
+        ...res,
+        plateWidthMm: Number(wEl.value) || 1200,
+        feedPressureBar: Number(pEl.value) || 12,
+        cloggedPortsCount: Number(cEl.value) || 0,
+        plateThicknessMm: Number(tEl.value) || 65
+      });
     }
 
     [wEl, pEl, cEl, tEl].forEach((el) => {

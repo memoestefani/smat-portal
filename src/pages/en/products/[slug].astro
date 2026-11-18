@@ -310,22 +310,22 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.45rem;">
               <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 700;">
                 <span>Used Housing Condition</span>
-                <select data-tradein-condition style="padding: 0.35rem 0.45rem; border: 1px solid #059669; border-radius: 6px; background: #ffffff; color: #0f172a; font-size: 0.75rem;">
-                  <option value="intact_housing" selected>Intact Crack-Free Housing (18% Credit)</option>
-                  <option value="minor_bearing_seizure">Bearing Seizure / Recoverable Bore (10%)</option>
-                  <option value="cracked_housing">Cracked Housing (0% Credit)</option>
+                <select data-tradein-condition data-core-tradein-condition style="padding: 0.35rem 0.45rem; border: 1px solid #059669; border-radius: 6px; background: #ffffff; color: #0f172a; font-size: 0.75rem;">
+                  <option value="h7_intact" selected>Intact Crack-Free Housing (-22% • 0.78x)</option>
+                  <option value="minor_bearing_seizure">Bearing Seizure / Recoverable Bore (-12% • 0.88x)</option>
+                  <option value="cracked_housing">Cracked or Welded Housing (0% • 1.00x)</option>
                 </select>
               </label>
               <label style="display: flex; align-items: center; gap: 0.35rem; font-weight: 700; padding-top: 1rem;">
-                <input type="checkbox" data-tradein-not-welded checked />
-                <span>Unwelded Bearing Bore (ISO IT6)</span>
+                <input type="checkbox" data-tradein-not-welded data-core-tradein-toggle checked />
+                <span>Unwelded H7 Bearing Bore (ISO IT6)</span>
               </label>
             </div>
-            <div data-tradein-result style="font-family: var(--font-mono, monospace); font-weight: 800; color: #065f46;">
-              Core Credit DAM005: 18% (RMA-CORE-DAM005-INTACT • 35 kg CO₂e Saved)
+            <div data-tradein-result data-core-tradein-badge style="font-family: var(--font-mono, monospace); font-weight: 800; color: #065f46;">
+              Active: -22% Core Trade-In Credit (Factor 0.78x • RMA-CORE-DAM005-INTACT)
             </div>
-            <div data-tradein-co2 style="font-size: 0.72rem; color: #047857; margin-top: 0.2rem;">
-              Physical return at Durango Central Hub (Insurgentes Sur, Dgo.)
+            <div data-tradein-co2 data-core-tradein-note style="font-size: 0.72rem; color: #047857; margin-top: 0.2rem;">
+              Physical return at Central Warehouse: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (35 kg CO₂e saved)
             </div>
           </div>
         )}

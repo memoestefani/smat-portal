@@ -229,10 +229,12 @@ const isEs = lang === 'es';
       const reorderWindow = calculateCoupledReorderWindowDays({ sg: 1.5, d50Um: 120 });
       const reorderPolicyEl = document.getElementById('smat-qtray-reorder-policy');
       if (reorderPolicyEl) {
-        reorderPolicyEl.textContent = isEs ? reorderWindow.policySummaryEs : reorderWindow.policySummaryEn;
+        const basePol = isEs ? reorderWindow.policySummaryEs : reorderWindow.policySummaryEn;
+        const dispLbl = isEs ? reorderWindow.dispatchModeLabelEs : reorderWindow.dispatchModeLabelEn;
+        reorderPolicyEl.textContent = `${basePol} (T10=${reorderWindow.t10InspectionDays}d / T50=${reorderWindow.t50ReorderTriggerDays}d / T80=${reorderWindow.t80CriticalChangeoutDays}d • Buffer ${reorderWindow.leadTimeBufferDays}d • Sev=${reorderWindow.wearSeverityFactor}× • Vida=${reorderWindow.wearAcceleratedLifeHours}h • ${dispLbl})`;
       }
       if (badgeEl) {
-        badgeEl.textContent = `${isEs ? desc.labelEs : desc.labelEn} (${dualLaneMeta.cfdiVersion})`;
+        badgeEl.textContent = `${isEs ? desc.labelEs : desc.labelEn} (${desc.checkoutLane} • SLA ≤${desc.slaResponseMinutes} min • cμ=${desc.priorityRankScore} • ${dualLaneMeta.cfdiVersion})`;
       }
 
       if (itemsEl) {

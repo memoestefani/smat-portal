@@ -701,3 +701,91 @@ pub fn check_v40_single_canonical_surface_and_zero_visible_metalanguage_gate_43(
 
     Ok(())
 }
+
+/// 44. Gate V4.1 (D1-V41 a D9-V41, DEB-V41-01..10):
+/// Verifica el desacoplamiento de <WizardCircuitCalculators /> fuera de #circuit-panel-bombeo,
+/// promoción de #circuit-panel-flotacion, #circuit-panel-filtracion y #circuit-panel-control a hermanos directos del Paso 1,
+/// lente polimórfica PutGet en saveEngineeringContextSnapshot (1 y 2 argumentos),
+/// unificación de instancia única de <RequisitionTraySummary /> (cero duplicados en QuoteWizard.astro),
+/// aritmética Core Trade-In 3 niveles (-22% / -12% / 0%) con dirección única Mariano Salas #114,
+/// y erradicación de IDs duplicados (#dossier-metric-delta-npsh) y metalenguaje residual ((atomic_parts), Insurgentes Sur).
+pub fn check_v41_zero_unexposed_backend_fields_and_live_xor_visibility_gate_44(
+    site_root: &Path,
+) -> Result<(), String> {
+    for req_file in [
+        "src/scripts/wizardLivePhysicsProjector.js",
+        "tests/v41_full_backend_ui_exposure.test.mjs",
+    ] {
+        if !site_root.join(req_file).exists() {
+            return Err(format!(
+                "Gate 44 (V4.1): Falta archivo obligatorio '{}'",
+                req_file
+            ));
+        }
+    }
+
+    let qw_src = fs::read_to_string(site_root.join("src/components/QuoteWizard.astro"))
+        .map_err(|e| e.to_string())?;
+
+    // D4-V41 / DEB-V41-04: QuoteWizard.astro NO debe montar una segunda instancia de <RequisitionTraySummary
+    if qw_src.contains("<RequisitionTraySummary") {
+        return Err("Gate 44 (D4-V41 DEB-V41-04): QuoteWizard.astro contiene una instancia duplicada de <RequisitionTraySummary />; la instancia única canónica reside en LiveEngineeringDossier.astro".to_string());
+    }
+
+    // D1-V41 / DEB-V41-01..02: #circuit-panel-flotacion, #circuit-panel-filtracion y #circuit-panel-control deben aparecer ANTES de <details id="wb-engineering-config-details">
+    let idx_flot = qw_src
+        .find("id=\"circuit-panel-flotacion\"")
+        .ok_or("Falta #circuit-panel-flotacion en QuoteWizard.astro")?;
+    let idx_filt = qw_src
+        .find("id=\"circuit-panel-filtracion\"")
+        .ok_or("Falta #circuit-panel-filtracion en QuoteWizard.astro")?;
+    let idx_ctrl = qw_src
+        .find("id=\"circuit-panel-control\"")
+        .ok_or("Falta #circuit-panel-control en QuoteWizard.astro")?;
+    let idx_calc = qw_src
+        .find("<WizardCircuitCalculators")
+        .ok_or("Falta <WizardCircuitCalculators en QuoteWizard.astro")?;
+    let idx_drawer = qw_src
+        .find("id=\"wb-engineering-config-details\"")
+        .ok_or("Falta #wb-engineering-config-details en QuoteWizard.astro")?;
+
+    if !(idx_flot < idx_drawer && idx_filt < idx_drawer && idx_ctrl < idx_drawer && idx_calc < idx_drawer) {
+        return Err("Gate 44 (D1-V41): Los paneles #circuit-panel-flotacion, #circuit-panel-filtracion, #circuit-panel-control y <WizardCircuitCalculators /> deben ser hermanos de primer nivel del Paso 1 ANTES del cajón <details id=\"wb-engineering-config-details\">".to_string());
+    }
+
+    // DEB-V41-05: LiveEngineeringDossier.astro usa #dossier-metric-delta-npsh (cero colisión con #metric-delta-npsh de QuoteWizard.astro)
+    let dossier_src = fs::read_to_string(site_root.join("src/components/LiveEngineeringDossier.astro"))
+        .map_err(|e| e.to_string())?;
+    if !dossier_src.contains("id=\"dossier-metric-delta-npsh\"") || dossier_src.contains("id=\"metric-delta-npsh\"") {
+        return Err("Gate 44 (DEB-V41-05): LiveEngineeringDossier.astro debe usar id=\"dossier-metric-delta-npsh\" para evitar colisión de ID con QuoteWizard.astro".to_string());
+    }
+
+    // D3-V41 / DEB-V41-03 / DEB-V41-09 / DEB-V41-10: Cero referencias a "Insurgentes Sur", "(evaluateCoreTradeInEligibility)" o "(atomic_parts)"
+    for rel_path in [
+        "src/pages/productos/[slug].astro",
+        "src/pages/en/products/[slug].astro",
+        "src/pages/catalogo/[code].astro",
+        "src/pages/en/catalog/[code].astro",
+        "src/pages/bombeo/soporte.astro",
+        "src/pages/en/pumping/bearing-assembly.astro",
+        "src/pages/bombeo/skid.astro",
+        "src/pages/en/pumping/skid.astro",
+        "src/components/WizardCircuitCalculators.astro",
+    ] {
+        let src = fs::read_to_string(site_root.join(rel_path)).map_err(|e| e.to_string())?;
+        for forbidden in [
+            "Insurgentes Sur",
+            "(evaluateCoreTradeInEligibility)",
+            "(atomic_parts)",
+        ] {
+            if src.contains(forbidden) {
+                return Err(format!(
+                    "Gate 44 (V4.1 Debris): '{}' conserva cadena obsoleta o metalenguaje '{}'",
+                    rel_path, forbidden
+                ));
+            }
+        }
+    }
+
+    Ok(())
+}

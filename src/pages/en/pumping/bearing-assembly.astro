@@ -140,6 +140,11 @@ const dc = soporteRole?.decision_criteria;
             <div style="font-size:1.1rem; font-weight:800; color:#991b1b;" data-bear-l10mh-cont>9,229 h (a_ISO = 0.22×)</div>
             <div style="font-size:0.75rem; color:#7f1d1d;">Silica ingress (e_c ≤ 0.1) cuts life by -82%</div>
           </div>
+          <div style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:0.75rem;">
+            <span class="font-mono-tech" style="font-size:0.68rem; color:#0c4a6e; font-weight:800;">RECOMMENDED FRAME (P_max / n_max / SHAFT Ø)</span>
+            <div style="font-size:0.95rem; font-weight:800; color:#082f49;" data-bear-frame-spec>Frame Series D (DAM005 • Shaft Ø 75 mm)</div>
+            <div style="font-size:0.74rem; color:#0369a1;" data-bear-frame-limits>P_max = 110 kW • n_max = 1400 RPM • C_dyn = 215 kN</div>
+          </div>
         </div>
         <div style="margin-top:0.85rem;">
           <a
@@ -152,30 +157,31 @@ const dc = soporteRole?.decision_criteria;
 
           <div
             data-core-tradein-widget="DAM005"
+            data-lang="en"
             style="width: 100%; margin-top: 0.75rem; padding: 0.85rem; border-radius: 8px; background: #ecfdf5; border: 1px solid #10b981; font-size: 0.78rem; color: #064e3b;"
           >
             <div style="font-family: var(--font-mono-tech, monospace); font-weight: 800; color: #065f46; margin-bottom: 0.35rem;">
-              ♻️ DAM005 CORE TRADE-IN PROGRAM (evaluateCoreTradeInEligibility)
+              ♻️ SMAT DAM005 CORE TRADE-IN PROGRAM (-22% / -12% H7 REMANUFACTURING)
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-bottom: 0.4rem;">
               <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 700;">
                 <span>Used Housing Condition</span>
-                <select data-tradein-condition style="padding: 0.35rem 0.45rem; border: 1px solid #059669; border-radius: 6px; background: #ffffff; color: #1c1917; font-size: 0.75rem;">
-                  <option value="intact_housing" selected>Intact Crack-Free Housing (18% Credit)</option>
-                  <option value="minor_bearing_seizure">Bearing Seizure / Recoverable Bore (10%)</option>
-                  <option value="cracked_housing">Cracked Housing (0% Credit)</option>
+                <select data-tradein-condition data-core-tradein-condition style="padding: 0.35rem 0.45rem; border: 1px solid #059669; border-radius: 6px; background: #ffffff; color: #1c1917; font-size: 0.75rem;">
+                  <option value="h7_intact" selected>Intact Crack-Free Housing (-22% • 0.78x)</option>
+                  <option value="minor_bearing_seizure">Bearing Seizure / Recoverable Bore (-12% • 0.88x)</option>
+                  <option value="cracked_housing">Cracked or Welded Housing (0% • 1.00x)</option>
                 </select>
               </label>
               <label style="display: flex; align-items: center; gap: 0.35rem; font-weight: 700; padding-top: 1rem;">
-                <input type="checkbox" data-tradein-not-welded checked />
-                <span>Unwelded Bearing Bore (ISO IT6)</span>
+                <input type="checkbox" data-tradein-not-welded data-core-tradein-toggle checked />
+                <span>Unwelded H7 Bearing Bore (ISO IT6)</span>
               </label>
             </div>
-            <div data-tradein-result style="font-family: var(--font-mono-tech, monospace); font-weight: 800; color: #065f46;">
-              Core Credit DAM005: 18% (RMA-CORE-DAM005-INTACT • 35 kg CO₂e Saved)
+            <div data-tradein-result data-core-tradein-badge style="font-family: var(--font-mono-tech, monospace); font-weight: 800; color: #065f46;">
+              Active: -22% Core Trade-In Credit (Factor 0.78x • RMA-CORE-DAM005-INTACT)
             </div>
-            <div data-tradein-co2 style="font-size: 0.72rem; color: #047857; margin-top: 0.2rem;">
-              Physical return at Durango Central Hub (Insurgentes Sur, Dgo.)
+            <div data-tradein-co2 data-core-tradein-note style="font-size: 0.72rem; color: #047857; margin-top: 0.2rem;">
+              Physical return at Central Warehouse: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (35 kg CO₂e saved)
             </div>
           </div>
         </div>
@@ -196,6 +202,7 @@ const dc = soporteRole?.decision_criteria;
 
 <script>
   import { calculateDriveAndBearingKinematics } from '../../../scripts/slurryEngine.js';
+  import { selectBearingFrameByPowerAndRpm } from '../../../scripts/pumpAssemblyAndDriveEngine.js';
   import { initCoreTradeInWidgets } from '../../../scripts/vendorPassportAndTradeInController.js';
   import { saveEngineeringContextSnapshot } from '../../../scripts/wizardCircuitPhysicsController.js';
 
@@ -212,6 +219,8 @@ const dc = soporteRole?.decision_criteria;
     const l10hEl = box.querySelector('[data-bear-l10h]');
     const labEl = box.querySelector('[data-bear-l10mh-lab]');
     const contEl = box.querySelector('[data-bear-l10mh-cont]');
+    const frameSpecEl = box.querySelector('[data-bear-frame-spec]');
+    const frameLimEl = box.querySelector('[data-bear-frame-limits]');
     const ctaEl = box.querySelector('[data-bear-cta]') as HTMLAnchorElement | null;
 
     const update = () => {
@@ -224,15 +233,18 @@ const dc = soporteRole?.decision_criteria;
         dynamicCapacityCkN,
         shaftPowerKw
       });
+      const frameEval = selectBearingFrameByPowerAndRpm(shaftPowerKw, res.pumpRpm, '6x4');
       if (frEl) frEl.textContent = `${res.beltRadialLoadKn.toFixed(2)} kN (P = ${res.equivalentLoadPkN.toFixed(2)} kN)`;
       if (rpmEl) rpmEl.textContent = `n₂ = ${res.pumpRpm} RPM • u₂ = ${res.tipSpeedMs.toFixed(2)} m/s`;
       if (l10hEl) l10hEl.textContent = `Base ISO 281 L₁₀h = ${res.bearingL10Hours.toLocaleString('en-US')} h (e_c ≥ 0.6)`;
-      if (labEl) labEl.textContent = `${res.l10mhLabyrinthHours.toLocaleString('en-US')} h (a_ISO = 1.25×)`;
-      if (contEl) contEl.textContent = `${res.l10mhContaminatedHours.toLocaleString('en-US')} h (a_ISO = 0.22×)`;
+      if (labEl) labEl.textContent = `${res.l10mhLabyrinthHours.toLocaleString('en-US')} h (a_ISO = ${res.aIsoLabyrinthSmat}×)`;
+      if (contEl) contEl.textContent = `${res.l10mhContaminatedHours.toLocaleString('en-US')} h (a_ISO = ${res.aIsoContaminatedFelt}×)`;
+      if (frameSpecEl) frameSpecEl.textContent = `${frameEval.labelEn} (Shaft Ø ${frameEval.shaftDiameterMm} mm)`;
+      if (frameLimEl) frameLimEl.textContent = `P_max = ${frameEval.maxPowerKw} kW • n_max = ${frameEval.maxRpm} RPM • C_dyn = ${frameEval.recommendedDynamicCkN} kN`;
       if (ctaEl) {
         ctaEl.href = `/en/quote/?circuito=bombeo&equipo=kit_rodamientos&pieza=bearing_assembly&estacion=S1&transmision=${res.arrangement}&cap_c_kn=${res.dynamicCapacityCkN}&power_kw=${res.shaftPowerKw}&fr_kn=${res.beltRadialLoadKn.toFixed(2)}&l10h=${res.bearingL10Hours}#rfq`;
       }
-      saveEngineeringContextSnapshot('bombeo', res);
+      saveEngineeringContextSnapshot('bombeo', { ...res, ...frameEval });
     };
 
     [arrSel, cSel, kwInput].forEach((el) => {

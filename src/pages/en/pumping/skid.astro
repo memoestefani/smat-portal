@@ -158,7 +158,7 @@ const dc = skidRole?.decision_criteria;
                 <input type="range" min="15" max="315" step="5" value="45" data-kin-power />
               </label>
               <label class="kin-field">
-                <span>Impeller Diameter ØD₂ (atomic_parts):</span>
+                <span>Impeller Diameter ØD₂ (Dimensional Census):</span>
                 <select data-kin-impeller>
                   <option value="270">270 mm — 3x2 / 4x3 Series (D3147)</option>
                   <option value="380" selected>380 mm — 6x4 Series (E4147)</option>
@@ -245,6 +245,7 @@ const dc = skidRole?.decision_criteria;
 
 <script>
   import { calculateDriveAndBearingKinematics } from '../../../scripts/slurryEngine.js';
+  import { selectBearingFrameByPowerAndRpm } from '../../../scripts/pumpAssemblyAndDriveEngine.js';
   import { saveWorkbenchState, loadWorkbenchState } from '../../../scripts/workbenchBus.js';
   import { saveEngineeringContextSnapshot } from '../../../scripts/wizardCircuitPhysicsController.js';
 
@@ -303,19 +304,21 @@ const dc = skidRole?.decision_criteria;
         wetEndMaterial
       });
 
+      const frameEval = selectBearingFrameByPowerAndRpm(shaftPowerKw, res.pumpRpm, '6x4');
       if (rpmEl) rpmEl.textContent = `${res.pumpRpm} RPM`;
-      if (ratioEl) ratioEl.textContent = `Motor ${res.motorRpm} RPM • i=${res.reductionRatio.toFixed(2)}:1 (${res.speedMultiplier.toFixed(2)}×)`;
+      if (ratioEl) ratioEl.textContent = `Motor ${res.motorRpm} RPM • i=${res.reductionRatio.toFixed(2)}:1 (${res.speedMultiplier.toFixed(2)}×) • Frame ${frameEval.frameCode} (Ø${frameEval.shaftDiameterMm} mm, P_max ${frameEval.maxPowerKw} kW, n_max ${frameEval.maxRpm} RPM)`;
       if (u2El) u2El.textContent = `${res.tipSpeedMs.toFixed(2)} m/s`;
       if (u2StatusEl) {
+        const sicNote = res.ceramicSafeTipSpeed ? 'SiC Safe' : 'SiC Alert >28 m/s';
         u2StatusEl.textContent = res.rubberSafeTipSpeed
-          ? `Safe for Rubber/PU/A05 (Suggested: ${res.recommendedWetMaterialByTipSpeed})`
-          : `Exceeds 24.5 m/s: Exclusive ${res.recommendedWetMaterialByTipSpeed} (≥650 HB)`;
+          ? `Safe for Rubber/PU/A05 (${sicNote} • Suggested: ${res.recommendedWetMaterialByTipSpeed})`
+          : `Exceeds 24.5 m/s: Exclusive ${res.recommendedWetMaterialByTipSpeed} (${sicNote} • ≥650 HB)`;
       }
       if (frEl) frEl.textContent = `${res.beltRadialLoadKn.toFixed(2)} kN`;
-      if (frSubEl) frSubEl.textContent = `P=${res.equivalentLoadPkN.toFixed(2)} kN (C=${res.dynamicCapacityCkN} kN) • Footprint ${res.footprintFactor.toFixed(2)}×`;
+      if (frSubEl) frSubEl.textContent = `P=${res.equivalentLoadPkN.toFixed(2)} kN (C=${res.dynamicCapacityCkN} kN / C_rec=${frameEval.recommendedDynamicCkN} kN) • Footprint ${res.footprintFactor.toFixed(2)}×`;
       const l10mhEl = panel.querySelector('[data-kin-l10mh]');
       if (l10hEl) l10hEl.textContent = `${res.bearingL10Hours.toLocaleString('en-US')} h`;
-      if (l10mhEl) l10mhEl.textContent = `L₁₀ₘₕ Labyrinth: ${res.l10mhLabyrinthHours.toLocaleString('en-US')} h (1.25×) vs Contaminated: ${res.l10mhContaminatedHours.toLocaleString('en-US')} h (0.22×)`;
+      if (l10mhEl) l10mhEl.textContent = `L₁₀ₘₕ Labyrinth: ${res.l10mhLabyrinthHours.toLocaleString('en-US')} h (a_ISO=${res.aIsoLabyrinthSmat}×) vs Contaminated: ${res.l10mhContaminatedHours.toLocaleString('en-US')} h (a_ISO=${res.aIsoContaminatedFelt}×)`;
       if (alertBox) {
         alertBox.style.display = (res.rubberThermalLimitExceeded || res.ceramicSpallingSpeedExceeded) ? 'flex' : 'none';
       }

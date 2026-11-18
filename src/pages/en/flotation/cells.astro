@@ -184,7 +184,7 @@ const criteria = celdaRole?.decision_criteria;
 
 <script>
   import { calculateFlotationGorainKineticRate } from '../../../scripts/slurryEngine.js';
-  import { saveEngineeringContextSnapshot } from '../../../scripts/wizardCircuitPhysicsController.js';
+  import { evaluateFlotationCellHydrodynamics, saveEngineeringContextSnapshot } from '../../../scripts/wizardCircuitPhysicsController.js';
 
   function initFlotationCellsGorainPanelEn() {
     const diaEl = document.getElementById('celdas-dia-select') as HTMLSelectElement | null;
@@ -198,14 +198,21 @@ const criteria = celdaRole?.decision_criteria;
 
     function updateGorain() {
       if (!diaEl || !jgEl || !d32El || !rpmEl) return;
-      const res = calculateFlotationGorainKineticRate({
+      const baseGorain = calculateFlotationGorainKineticRate({
         rotorDiaM: Number(diaEl.value) || 0.61,
         jgCmS: Number(jgEl.value) || 1.5,
         d32Mm: Number(d32El.value) || 1.6,
         rotorRpm: Number(rpmEl.value) || 215
       });
-      if (sbOut) sbOut.textContent = String(res.sbInverseSeconds);
-      if (vtipOut) vtipOut.textContent = String(res.tipSpeedMS);
+      const res = evaluateFlotationCellHydrodynamics({
+        ...baseGorain,
+        rotorDiaM: Number(diaEl.value) || 0.61,
+        jgCmS: Number(jgEl.value) || 1.5,
+        d32Mm: Number(d32El.value) || 1.6,
+        rotorRpm: Number(rpmEl.value) || 215
+      });
+      if (sbOut) sbOut.textContent = `${res.sbInverseSeconds} (N_js=${res.zwieteringNjsRpm} RPM, ${res.suspensionSafe ? 'Suspension OK' : 'Sanding Risk'})`;
+      if (vtipOut) vtipOut.textContent = `${res.tipSpeedMS} (${res.tipSpeedWindowOptimal ? 'Optimal Window' : 'Adjust RPM'} • PU ${res.wearLifeMultiplierPuVsRubber}×)`;
       if (kOut) kOut.textContent = String(res.rateConstantMin);
       if (readoutBox) {
         readoutBox.style.background = res.gorainCompliant ? '#ecfdf5' : '#fffbeb';

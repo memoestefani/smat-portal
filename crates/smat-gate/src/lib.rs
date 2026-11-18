@@ -1077,7 +1077,7 @@ pub fn verify_backend_ui_full_parity_and_altitude_pincer(site_root: &Path) -> Re
         "id=\"metric-er\"",
         "id=\"metric-wear-hours\"",
         "id=\"metric-patm-mca\"",
-        "id=\"metric-delta-npsh\"",
+        "id=\"dossier-metric-delta-npsh\"",
         "id=\"metric-motor-iec\"",
         "id=\"metric-k-motor-alt\"",
         "id=\"wb-pipe-vel-loss\"",
@@ -1430,5 +1430,12 @@ mod tests {
         let root = find_site_root();
         let res = check_v40_single_canonical_surface_and_zero_visible_metalanguage_gate_43(&root);
         assert!(res.is_ok(), "Fallo en Gate 43 (V4.0 Single Canonical Surface & Zero Visible Metalanguage): {:?}", res.err());
+    }
+
+    #[test]
+    fn test_gate_44_v41_zero_unexposed_backend_fields_and_live_xor_visibility() {
+        let root = find_site_root();
+        let res = check_v41_zero_unexposed_backend_fields_and_live_xor_visibility_gate_44(&root);
+        assert!(res.is_ok(), "Fallo en Gate 44 (V4.1 Zero Unexposed Backend Fields & Live XOR Visibility): {:?}", res.err());
     }
 }

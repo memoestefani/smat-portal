@@ -265,8 +265,8 @@ const cycloneModels = [
         feedParticleUm: Number(feedEl.value) || 420
       });
       outEl.textContent = isEn
-        ? `Oversize Partition: ${res.partitionToOversizePct}% · Dilation Δa/a: ${res.elasticDilationPct}% · SKU: ${res.recommendedSkuId}`
-        : `Retención Oversize: ${res.partitionToOversizePct}% · Dilatación Δa/a: ${res.elasticDilationPct}% · SKU: ${res.recommendedSkuId}`;
+        ? `Oversize Partition: ${res.partitionToOversizePct}% · Dilation Δa/a: ${res.elasticDilationPct}% (${res.vibrationG}G, ${res.antiBlindingCompliant ? 'Anti-Blinding OK' : 'Review θ'}) · SKU: ${res.recommendedSkuId}`
+        : `Retención Oversize: ${res.partitionToOversizePct}% · Dilatación Δa/a: ${res.elasticDilationPct}% (${res.vibrationG}G, ${res.antiBlindingCompliant ? 'Anti-Cegamiento OK' : 'Revisar θ'}) · SKU: ${res.recommendedSkuId}`;
     }
 
     [apEl, relEl, feedEl].forEach((el) => {
