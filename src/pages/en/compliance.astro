@@ -18,7 +18,7 @@ const passport = buildSmatVendorPassportPayload();
   <main class="compliance-page-main">
     <div class="container">
       <div class="compliance-header">
-        <span class="badge badge-copper">FAST-TRACK MINING PROCUREMENT VENDOR DOSSIER · D7 (7-C++)</span>
+        <span class="badge badge-copper" data-smat-decision="D7">FAST-TRACK MINING PROCUREMENT VENDOR DOSSIER · SAT CFDI 4.0</span>
         <h1 class="compliance-title">B2B Vendor Onboarding &amp; Compliance Passport (SAT CFDI 4.0)</h1>
         <p class="compliance-lead">
           Streamline vendor registration across SAP Ariba, Coupa, and Oracle ERP. Download our corporate vCard (<code>.vcf</code>) or copy the structured JSON payload containing UNSPSC commodity codes, SAT CFDI 4.0 fiscal status, EXW/DAP Durango Warehouse Incoterms, and ASTM A532 foundry heat traceability.
@@ -93,7 +93,7 @@ const passport = buildSmatVendorPassportPayload();
 
         <div class="compliance-json-box">
           <div class="compliance-json-header">
-            <strong>Structured ERP JSON Payload (`buildSmatVendorPassportPayload`)</strong>
+            <strong>Structured ERP JSON Payload (SAP Ariba / Coupa)</strong>
             <span id="vendor-passport-status" class="compliance-status">Ready for ERP import</span>
           </div>
           <pre id="vendor-passport-json-pre">{JSON.stringify(passport.jsonMetadata, null, 2)}</pre>

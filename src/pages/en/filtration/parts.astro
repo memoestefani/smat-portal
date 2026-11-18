@@ -104,6 +104,10 @@ const criteria = repRole?.decision_criteria;
               <span>Web Thickness (mm):</span>
               <input type="number" id="rep-plate-thickness" min="45" max="110" step="5" value="65" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
             </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Cake Moisture (%):</span>
+              <input type="number" id="rep-cake-moisture" min="8" max="26" step="0.5" value="14" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
           </div>
           <div id="rep-timoshenko-readout" style="margin-bottom: 0.85rem; padding: 0.65rem 0.85rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-family: var(--smat-font-mono); font-size: 0.82rem; font-weight: 700;">
             σ<sub>max</sub> = <span id="rep-stress-out">3.54</span> MPa · Safety Factor FS = <span id="rep-fs-out">4.1</span> (<span id="rep-status-out">NOM-141 Safe Operation</span>)
@@ -116,7 +120,7 @@ const criteria = repRole?.decision_criteria;
 
         {criteria && (
           <div class="decision-criteria-panel" data-testid="role-decision-criteria" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #9a3412;">
-            <span class="badge badge-copper">METALLURGICAL DECISION CRITERIA • ROLES.JSON</span>
+            <span class="badge badge-copper">PLANT METALLURGICAL DECISION CRITERIA</span>
             <h3 style="margin: 0.45rem 0 0.75rem; font-size: 1.08rem; color: var(--smat-text-primary);">Plates & Filter Cloths Selection Matrix ({repRole?.series})</h3>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem; font-size: 0.88rem;">
               <div style="background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
@@ -179,56 +183,11 @@ const criteria = repRole?.decision_criteria;
 <script>
   import { evaluateFilterPressPlateDeflection } from '../../../scripts/slurryEngine.js';
   import { calculateFilterPressCycleCapacity, saveEngineeringContextSnapshot } from '../../../scripts/wizardCircuitPhysicsController.js';
-
-  function initPartsTimoshenkoPanelEn() {
-    const wEl = document.getElementById('rep-plate-width') as HTMLSelectElement | null;
-    const pEl = document.getElementById('rep-pressure-bar') as HTMLInputElement | null;
-    const cEl = document.getElementById('rep-clogged-ports') as HTMLInputElement | null;
-    const tEl = document.getElementById('rep-plate-thickness') as HTMLInputElement | null;
-    const stressOut = document.getElementById('rep-stress-out');
-    const fsOut = document.getElementById('rep-fs-out');
-    const statusOut = document.getElementById('rep-status-out');
-    const readoutBox = document.getElementById('rep-timoshenko-readout');
-
-    function updateFlexure() {
-      if (!wEl || !pEl || !cEl || !tEl) return;
-      const baseEval = evaluateFilterPressPlateDeflection({
-        plateWidthMm: Number(wEl.value) || 1200,
-        feedPressureBar: Number(pEl.value) || 12,
-        cloggedPortsCount: Number(cEl.value) || 0,
-        plateThicknessMm: Number(tEl.value) || 65
-      });
-      const res = calculateFilterPressCycleCapacity({
-        ...baseEval,
-        plateWidthMm: Number(wEl.value) || 1200,
-        feedPressureBar: Number(pEl.value) || 12,
-        cloggedPortsCount: Number(cEl.value) || 0,
-        plateThicknessMm: Number(tEl.value) || 65
-      });
-      if (stressOut) stressOut.textContent = `${res.maxBendingStressMpa} (ΔP_asym=${res.deltaPAsymmetricMpa} MPa / σ_allow=${res.ppFatigueAllowableMpa} MPa)`;
-      if (fsOut) fsOut.textContent = `${res.flexuralSafetyFactor} (${res.cyclesPerDay} cycles/d • ${res.dryTonnesPerDay} t/d)`;
-      if (statusOut) statusOut.textContent = `${res.isPlateCrackingRisk ? 'Web Fracture Risk (Unclog Feed Ports)' : 'NOM-141 Safe Operation'} • Plate ${res.recommendedPlateSkuId} + Cloth ${res.recommendedClothSkuId}`;
-      if (readoutBox) {
-        readoutBox.style.background = res.isPlateCrackingRisk ? '#fef2f2' : '#ecfdf5';
-        readoutBox.style.color = res.isPlateCrackingRisk ? '#991b1b' : '#065f46';
-      }
-      saveEngineeringContextSnapshot('filtracion', {
-        ...res,
-        plateWidthMm: Number(wEl.value) || 1200,
-        feedPressureBar: Number(pEl.value) || 12,
-        cloggedPortsCount: Number(cEl.value) || 0,
-        plateThicknessMm: Number(tEl.value) || 65
-      });
-    }
-
-    [wEl, pEl, cEl, tEl].forEach((el) => {
-      el?.addEventListener('input', updateFlexure);
-      el?.addEventListener('change', updateFlexure);
-    });
-    updateFlexure();
-  }
-
-  initPartsTimoshenkoPanelEn();
+  import { bindCanonicalFiltrationCalculator } from '../../../scripts/verticalCalculatorsAndLabelsBridge.js';
+  void evaluateFilterPressPlateDeflection;
+  void calculateFilterPressCycleCapacity;
+  void saveEngineeringContextSnapshot;
+  bindCanonicalFiltrationCalculator(document, 'en');
 </script>
 
 <style>

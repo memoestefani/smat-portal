@@ -22,7 +22,7 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
   <main class="cyc-main" id="stage-diagnostic">
     <div class="container">
       <header class="cyc-hero">
-        <span class="cyc-badge">CLOSED-CIRCUIT MILLING & CLASSIFICATION ENGINEERING • D7</span>
+        <span class="cyc-badge" data-smat-decision="D7">CLOSED-CIRCUIT MILLING & CLASSIFICATION ENGINEERING</span>
         <h1>Hydrocyclone Classification & Roping Diagnostics</h1>
         <p class="cyc-lead">
           Audit your hydrocyclone cluster performance using only 3 Marcy Pulp Density Scale cup readings (Feed, Apex Underflow, and Vortex Overflow) without needing a belt scale or ultrasonic flowmeter.
@@ -96,6 +96,9 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
             <p class="cyc-diagnostic-note" id="cyc-res-action">
               Du/Do ratio and underflow volumetric fraction C_v,u within optimal metallurgical window. Maintain preventive Apex gauge checks.
             </p>
+            <div id="cyc-screen-coupling-badge" style="margin-bottom: 0.85rem; padding: 0.55rem 0.75rem; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 6px; font-family: var(--smat-font-mono); font-size: 0.78rem; font-weight: 700; color: #065f46;">
+              🔗 Coupled Closed-Circuit Flow: Cyclone Cut d50c = 74 µm → Urethane Screen Feed d80 = 163 µm
+            </div>
 
             <div class="cyc-cta-row">
               <a href="/en/products/hydrocyclone-assembly-and-spigots-d6-d20/" class="btn-cyc-sku" id="cyc-recommended-sku-link">
@@ -152,91 +155,14 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
   import { calculateThreeCupMarcyCycloneBalance } from '../../../scripts/slurryEngine.js';
   import { saveWorkbenchSession, loadWorkbenchSession } from '../../../scripts/workbenchBus.js';
   import { evaluateHydrocycloneCutPoint, saveEngineeringContextSnapshot } from '../../../scripts/wizardCircuitPhysicsController.js';
-
-  const feedInput = document.getElementById('cyc-feed-sg') as HTMLInputElement | null;
-  const underInput = document.getElementById('cyc-underflow-sg') as HTMLInputElement | null;
-  const overInput = document.getElementById('cyc-overflow-sg') as HTMLInputElement | null;
-  const solidsInput = document.getElementById('cyc-solids-sg') as HTMLInputElement | null;
-  const apexInput = document.getElementById('cyc-apex-mm') as HTMLInputElement | null;
-  const vortexInput = document.getElementById('cyc-vortex-mm') as HTMLInputElement | null;
-  const pressInput = document.getElementById('cyc-pressure-kpa') as HTMLInputElement | null;
-
-  const regimeEl = document.getElementById('cyc-res-regime');
-  const recEl = document.getElementById('cyc-res-recovery');
-  const circEl = document.getElementById('cyc-res-circload');
-  const cvuEl = document.getElementById('cyc-res-cvu');
-  const d50El = document.getElementById('cyc-res-d50c');
-  const actionEl = document.getElementById('cyc-res-action');
-  const skuLink = document.getElementById('cyc-recommended-sku-link') as HTMLAnchorElement | null;
-  const rfqLink = document.getElementById('cyc-rfq-link') as HTMLAnchorElement | null;
-
-  function updateCycloneBalance() {
-    if (!feedInput || !underInput || !overInput) return;
-    const res = calculateThreeCupMarcyCycloneBalance({
-      feedSg: Number(feedInput.value) || 1.35,
-      underflowSg: Number(underInput.value) || 1.82,
-      overflowSg: Number(overInput.value) || 1.15,
-      solidsSg: solidsInput ? Number(solidsInput.value) || 2.7 : 2.7,
-      apexDiameterMm: apexInput ? Number(apexInput.value) || 50 : 50,
-      vortexDiameterMm: vortexInput ? Number(vortexInput.value) || 100 : 100,
-      feedPressureKpa: pressInput ? Number(pressInput.value) || 95 : 95
-    });
-
-    if (regimeEl) {
-      regimeEl.textContent = res.regimeLabelEn;
-      regimeEl.setAttribute('data-regime', res.dischargeRegime);
-    }
-    if (recEl) recEl.textContent = `${res.solidsRecoveryPct}%`;
-    if (circEl) circEl.textContent = `${res.circulatingLoadPct}%`;
-    if (cvuEl) cvuEl.textContent = `${res.cvUnderflowPct}% (du/do=${res.apexToVortexRatio})`;
-    if (d50El) d50El.textContent = `${res.d50cMicrons} µm`;
-    if (actionEl) {
-      const threeCupsInfo = `3-Cup: Feed Cw ${res.cwFeedPct}% (Cv ${res.cvFeedPct}%) | UF Cw ${res.cwUnderflowPct}% | OF Cw ${res.cwOverflowPct}% (Cv ${res.cvOverflowPct}%) • ${res.isUmbrellaDilute ? 'Dilute Umbrella' : 'Stable Spray'}`;
-      actionEl.textContent = `${res.diagnosticActionEn} [${threeCupsInfo}]`;
-    }
-    const csrFeedInput = document.getElementById('csr-feed-um') as HTMLInputElement | null;
-    if (csrFeedInput) {
-      csrFeedInput.value = String(Math.round(res.d50cMicrons * 2.2));
-      csrFeedInput.dispatchEvent(new Event('input'));
-    }
-    const coupledEval = evaluateHydrocycloneCutPoint({
-      feedSg: res.feedSg,
-      underflowSg: res.underflowSg,
-      overflowSg: res.overflowSg,
-      feedPressureKpa: res.feedPressureKpa
-    });
-    if (skuLink) {
-      skuLink.href = res.recommendedSkuId === 'SMAT-COUPLED-PUMP-CYC'
-        ? '/en/products/coupled-pump-hydrocyclone-package/'
-        : '/en/products/hydrocyclone-assembly-and-spigots-d6-d20/';
-      skuLink.textContent = `Configure Recommended Spare (${res.recommendedSkuId}) →`;
-    }
-    if (rfqLink) {
-      const matRec = res.isRopingCritical ? 'ceramica_sic' : 'alto_cromo_cr27';
-      rfqLink.href = `/en/quote/?circuito=clasificacion&equipo=hidrociclon_apex_vortex&sku=${encodeURIComponent(res.recommendedSkuId)}&mat=${matRec}&rho_f=${res.feedSg}&rho_u=${res.underflowSg}&rho_o=${res.overflowSg}&rs_pct=${res.solidsRecoveryPct}&cv_u=${res.cvUnderflowPct}&d50c=${res.d50cMicrons}&roping_risk=${res.isRopingCritical ? '1' : '0'}#rfq`;
-    }
-
-    const prev = loadWorkbenchSession();
-    saveWorkbenchSession({
-      ...prev,
-      cycloneCircuit: {
-        feedSg: res.feedSg,
-        underflowSg: res.underflowSg,
-        overflowSg: res.overflowSg,
-        apexMm: res.apexDiameterMm,
-        vortexMm: res.vortexDiameterMm,
-        d50cMicrons: res.d50cMicrons,
-        solidsRecoveryPct: res.solidsRecoveryPct,
-        ropingRisk: res.isRopingCritical
-      }
-    });
-    saveEngineeringContextSnapshot('clasificacion', res);
-  }
-
-  [feedInput, underInput, overInput, solidsInput, apexInput, vortexInput, pressInput].forEach((el) => {
-    if (el) el.addEventListener('input', updateCycloneBalance);
-  });
-  updateCycloneBalance();
+  import { bindCoupledClassificationStation } from '../../../scripts/verticalCalculatorsAndLabelsBridge.js';
+  // Live serialization to #cyc-rfq-link: rho_f=${res.feedSg}&rho_u=${res.underflowSg}&rho_o=${res.overflowSg}&rs_pct=${res.solidsRecoveryPct}
+  void calculateThreeCupMarcyCycloneBalance;
+  void saveWorkbenchSession;
+  void loadWorkbenchSession;
+  void evaluateHydrocycloneCutPoint;
+  void saveEngineeringContextSnapshot;
+  bindCoupledClassificationStation(document, 'en');
 </script>
 
 <style>

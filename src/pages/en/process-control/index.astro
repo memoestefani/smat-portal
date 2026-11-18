@@ -65,7 +65,7 @@ const tamizRole = ctrlVertical?.opex?.find((r) => r.role_id === 'tamices_laborat
             <div><strong>12 Interchangeable Rings:</strong> Dry ore specific gravity from SG 2.2 up to SG 4.4</div>
             <div><strong>Control Points:</strong> Mill discharge, hydrocyclone overflow, flotation feed, and thickener underflow</div>
             {marcyRole?.decision_criteria && (
-              <div><strong>Metallurgical Rule (roles.json):</strong> {marcyRole.decision_criteria.metallurgy_rule_en} • <em>Risk mitigated:</em> {marcyRole.decision_criteria.risk_avoided_en}</div>
+              <div><strong>Metallurgical Selection Rule:</strong> {marcyRole.decision_criteria.metallurgy_rule_en} • <em>Risk mitigated:</em> {marcyRole.decision_criteria.risk_avoided_en}</div>
             )}
           </div>
           <div class="control-actions">
@@ -89,7 +89,7 @@ const tamizRole = ctrlVertical?.opex?.find((r) => r.role_id === 'tamices_laborat
             <div><strong>Top Closure & Seal:</strong> Trapezoidal lead-screw T-handle clamp and O-ring sealing lid</div>
             <div><strong>Pneumatic Operation:</strong> Top compressed-air inlet with pressure gauge, relief valve, and regulator for 60 to 100 psi ({batchRole?.flow_range})</div>
             {batchRole?.decision_criteria && (
-              <div><strong>Metallurgical Rule (roles.json):</strong> {batchRole.decision_criteria.metallurgy_rule_en} • <em>Risk mitigated:</em> {batchRole.decision_criteria.risk_avoided_en}</div>
+              <div><strong>Metallurgical Selection Rule:</strong> {batchRole.decision_criteria.metallurgy_rule_en} • <em>Risk mitigated:</em> {batchRole.decision_criteria.risk_avoided_en}</div>
             )}
           </div>
           <div class="control-actions">
@@ -113,7 +113,7 @@ const tamizRole = ctrlVertical?.opex?.find((r) => r.role_id === 'tamices_laborat
             <div><strong>Frame Options:</strong> 8" (203 mm) and 12" (305 mm) in 304/316 Stainless Steel or Brass, with cover and receiver pan</div>
             <div><strong>Accessory Equipment:</strong> Mechanical / electromagnetic sieve shakers and Riffle sample splitters</div>
             {tamizRole?.decision_criteria && (
-              <div><strong>Metallurgical Rule (roles.json):</strong> {tamizRole.decision_criteria.metallurgy_rule_en} • <em>Risk mitigated:</em> {tamizRole.decision_criteria.risk_avoided_en}</div>
+              <div><strong>Metallurgical Selection Rule:</strong> {tamizRole.decision_criteria.metallurgy_rule_en} • <em>Risk mitigated:</em> {tamizRole.decision_criteria.risk_avoided_en}</div>
             )}
           </div>
           <div class="control-actions">

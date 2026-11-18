@@ -65,7 +65,7 @@ const tamizRole = ctrlVertical?.opex?.find((r) => r.role_id === 'tamices_laborat
             <div><strong>12 Anillos Intercambiables:</strong> Gravedad específica de mineral seco desde SG 2.2 hasta SG 4.4</div>
             <div><strong>Puntos de Control:</strong> Descarga de molino, rebose de hidrociclones, alimentación a flotación y espesadores</div>
             {marcyRole?.decision_criteria && (
-              <div><strong>Criterio Metalúrgico (roles.json):</strong> {marcyRole.decision_criteria.metallurgy_rule_es} • <em>Riesgo mitigado:</em> {marcyRole.decision_criteria.risk_avoided_es}</div>
+              <div><strong>Criterio Metalúrgico de Selección:</strong> {marcyRole.decision_criteria.metallurgy_rule_es} • <em>Riesgo mitigado:</em> {marcyRole.decision_criteria.risk_avoided_es}</div>
             )}
           </div>
           <div class="control-actions">
@@ -89,7 +89,7 @@ const tamizRole = ctrlVertical?.opex?.find((r) => r.role_id === 'tamices_laborat
             <div><strong>Cierre y Sellado:</strong> Husillo superior de rosca trapezoidal con maneral en T y empaque anular</div>
             <div><strong>Operación Neumática:</strong> Entrada superior con manómetro, válvula de alivio y regulador para 60 a 100 psi ({batchRole?.flow_range})</div>
             {batchRole?.decision_criteria && (
-              <div><strong>Criterio Metalúrgico (roles.json):</strong> {batchRole.decision_criteria.metallurgy_rule_es} • <em>Riesgo mitigado:</em> {batchRole.decision_criteria.risk_avoided_es}</div>
+              <div><strong>Criterio Metalúrgico de Selección:</strong> {batchRole.decision_criteria.metallurgy_rule_es} • <em>Riesgo mitigado:</em> {batchRole.decision_criteria.risk_avoided_es}</div>
             )}
           </div>
           <div class="control-actions">
@@ -113,7 +113,7 @@ const tamizRole = ctrlVertical?.opex?.find((r) => r.role_id === 'tamices_laborat
             <div><strong>Configuración de Marco:</strong> 8" (203 mm) y 12" (305 mm) en Acero Inoxidable 304/316 o Bronce, con tapa y cazuela receptora</div>
             <div><strong>Equipos Complementarios:</strong> Tamizadores mecánicos Ro-Tap / electromagnéticos y cuarteadores Riffle</div>
             {tamizRole?.decision_criteria && (
-              <div><strong>Criterio Metalúrgico (roles.json):</strong> {tamizRole.decision_criteria.metallurgy_rule_es} • <em>Riesgo mitigado:</em> {tamizRole.decision_criteria.risk_avoided_es}</div>
+              <div><strong>Criterio Metalúrgico de Selección:</strong> {tamizRole.decision_criteria.metallurgy_rule_es} • <em>Riesgo mitigado:</em> {tamizRole.decision_criteria.risk_avoided_es}</div>
             )}
           </div>
           <div class="control-actions">

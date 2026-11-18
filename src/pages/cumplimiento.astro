@@ -18,7 +18,7 @@ const passport = buildSmatVendorPassportPayload();
   <main class="compliance-page-main">
     <div class="container">
       <div class="compliance-header">
-        <span class="badge badge-copper">EXPEDIENTE DE ALTA RÁPIDA EN COMPRAS MINERAS · D7 (7-C++)</span>
+        <span class="badge badge-copper" data-smat-decision="D7">EXPEDIENTE DE ALTA RÁPIDA EN COMPRAS MINERAS · SAT CFDI 4.0</span>
         <h1 class="compliance-title">Pasaporte de Cumplimiento y Alta de Proveedor B2B (SAT CFDI 4.0)</h1>
         <p class="compliance-lead">
           Eliminamos la fricción burocrática de alta de proveedor en SAP Ariba, Coupa y Oracle ERP. Descargue el contacto corporativo vCard (<code>.vcf</code>) o copie el bloque estructurado JSON con códigos UNSPSC, régimen fiscal SAT CFDI 4.0, Incoterms EXW/DAP Almacén Durango y trazabilidad de colada ASTM A532.
@@ -93,7 +93,7 @@ const passport = buildSmatVendorPassportPayload();
 
         <div class="compliance-json-box">
           <div class="compliance-json-header">
-            <strong>Payload JSON Estructurado (`buildSmatVendorPassportPayload`)</strong>
+            <strong>Payload JSON Estructurado para Portales ERP (SAP Ariba / Coupa)</strong>
             <span id="vendor-passport-status" class="compliance-status">Listo para exportar a ERP</span>
           </div>
           <pre id="vendor-passport-json-pre">{JSON.stringify(passport.jsonMetadata, null, 2)}</pre>

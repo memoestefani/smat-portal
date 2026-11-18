@@ -365,6 +365,12 @@ export function initCoreTradeInWidgets(
 
       if (detailNote) {
         detailNote.textContent = isEn ? evalResult.policyNoteEn : evalResult.policyNoteEs;
+        if (typeof detailNote.setAttribute === 'function') {
+          detailNote.setAttribute('data-co2-saved-kg', String(evalResult.co2SavedKg ?? 35));
+          detailNote.setAttribute('data-return-address', String(evalResult.returnAddress || ''));
+          detailNote.setAttribute('data-eligible-items', Array.isArray(evalResult.eligibleItemIds) ? evalResult.eligibleItemIds.join(',') : '');
+          detailNote.setAttribute('data-smat-invariant', String(evalResult.invariantId || 'INV-SMAT-SCI-06'));
+        }
       }
 
       if (addWithTradeInBtn instanceof HTMLAnchorElement) {

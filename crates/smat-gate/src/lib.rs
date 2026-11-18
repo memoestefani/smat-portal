@@ -7,6 +7,8 @@ pub mod v3_forensic_gates;
 pub use v3_forensic_gates::*;
 pub mod v34_canonical_gates;
 pub use v34_canonical_gates::*;
+pub mod v42_html_surface_and_contract_gates;
+pub use v42_html_surface_and_contract_gates::*;
 
 pub struct GateReport {
     pub name: String,
@@ -1437,5 +1439,12 @@ mod tests {
         let root = find_site_root();
         let res = check_v41_zero_unexposed_backend_fields_and_live_xor_visibility_gate_44(&root);
         assert!(res.is_ok(), "Fallo en Gate 44 (V4.1 Zero Unexposed Backend Fields & Live XOR Visibility): {:?}", res.err());
+    }
+
+    #[test]
+    fn test_gate_45_v42_zero_visible_html_leaks_and_canonical_calculators() {
+        let root = find_site_root();
+        let res = check_v42_zero_visible_html_leaks_and_canonical_calculators_gate_45(&root);
+        assert!(res.is_ok(), "Fallo en Gate 45 (V4.2 Zero Visible HTML Leaks & Canonical Calculators): {:?}", res.err());
     }
 }

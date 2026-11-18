@@ -184,6 +184,7 @@ export function projectClassificationAndScreenTelemetry(wizardRoot, cycRes = {},
   const cvO = cycRes.cvOverflowPct ?? 9.4;
   const duDoRatio = cycRes.apexToVortexRatio ?? 0.5;
   const umbrellaDilute = Boolean(cycRes.isUmbrellaDilute ?? false);
+  const cutD50c = cycRes.cutPointD50cUm ?? cycRes.d50cMicrons ?? 74;
   const screenObj = cycRes.screenWeibull || {};
   const vibG = screenObj.vibrationG ?? cycRes.vibrationG ?? 4.5;
   const antiBlind = Boolean(screenObj.antiBlindingCompliant ?? cycRes.antiBlindingCompliant ?? true);
@@ -192,8 +193,8 @@ export function projectClassificationAndScreenTelemetry(wizardRoot, cycRes = {},
     wizardRoot,
     '#wb-cyc-res-cw-cv-3cups',
     isEs
-      ? `Vaso 1 Alim.: ${cwF}% Cw (${cvF}% Cv) • Vaso 2 Ápex: ${cwU}% Cw (${cvU}% Cv) • Vaso 3 Rebose: ${cwO}% Cw (${cvO}% Cv)`
-      : `Cup 1 Feed: ${cwF}% Cw (${cvF}% Cv) • Cup 2 Apex: ${cwU}% Cw (${cvU}% Cv) • Cup 3 Overflow: ${cwO}% Cw (${cvO}% Cv)`
+      ? `Vaso 1 Alim.: ${cwF}% Cw (${cvF}% Cv) • Vaso 2 Ápex: ${cwU}% Cw (${cvU}% Cv) • Vaso 3 Rebose: ${cwO}% Cw (${cvO}% Cv) • d50c=${cutD50c} µm`
+      : `Cup 1 Feed: ${cwF}% Cw (${cvF}% Cv) • Cup 2 Apex: ${cwU}% Cw (${cvU}% Cv) • Cup 3 Overflow: ${cwO}% Cw (${cvO}% Cv) • d50c=${cutD50c} µm`
   );
 
   setNodeTextAndAttrs(
@@ -404,6 +405,8 @@ export function projectHydraulicAltitudeAndLeadValidation(wizardRoot, payload = 
   );
 
   const flowCondTxt = results.flowConditionText || results.flowCondition || 'SAFE_HOMOGENEOUS';
+  const vCrit = results.criticalVelocityMS ?? results.criticalVelocityMs ?? 2.85;
+  const vAct = results.actualVelocityMS ?? 3.42;
   const matName = isEs
     ? results.materialNameEs || optMat.nameEs || results.recommendedMaterial
     : results.materialNameEn || optMat.nameEn || results.recommendedMaterial;
@@ -417,7 +420,26 @@ export function projectHydraulicAltitudeAndLeadValidation(wizardRoot, payload = 
     setNodeTextAndAttrs(
       wizardRoot,
       '#metric-rationale',
-      `${matName ? `[${matName} • ${wearMult}×] ` : ''}${matReason} (${flowCondTxt}${isAcid ? (isEs ? ' • Régimen Ácido' : ' • Acidic Regime') : ''})`
+      `${matName ? `[${matName} • ${wearMult}×] ` : ''}${matReason} (${flowCondTxt} • v=${vAct}/${vCrit} m/s${isAcid ? (isEs ? ' • Régimen Ácido' : ' • Acidic Regime') : ''})`
+    );
+  }
+
+  if (payload.anexo22Summary) {
+    const ax = payload.anexo22Summary;
+    const contact = ax.passport?.contact || {};
+    const meta = ax.passport?.jsonMetadata || {};
+    setNodeTextAndAttrs(
+      wizardRoot,
+      '#sap-live-anexo22-tuple',
+      `${ax.satTigieLine || ''} • ${ax.laneLabel || ''} (${ax.dualCheckout?.requiresAdvancePct ?? ax.requiresAdvancePct ?? 0}% anticipo)`,
+      {
+        'data-hub-location': ax.passport?.industrialHub || ax.hubLocation || 'Durango CP 34166',
+        'data-currencies': (meta.currencySupport || ax.currencySupport || ['MXN', 'USD']).join(','),
+        'data-sales-email': contact.salesEmail || ax.salesEmail || 'ventas@smatminerals.com',
+        'data-eng-email': contact.engineeringEmail || ax.engineeringEmail || 'contacto@smatminerals.com',
+        'data-phone-office': contact.phoneOffice || ax.phoneOffice || '+52 618 810 4408',
+        'data-phone-wa': contact.phoneWhatsapp || ax.phoneWhatsapp || '+52 618 367 0664'
+      }
     );
   }
 

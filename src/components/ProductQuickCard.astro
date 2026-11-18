@@ -1,5 +1,6 @@
 ---
 import TechnicalDiagrams from './TechnicalDiagrams.astro';
+import { formatDiagramHumanTitle } from '../scripts/verticalCalculatorsAndLabelsBridge.js';
 
 interface GeometricTriplet {
   a_id_mm: number;
@@ -196,10 +197,10 @@ const _auditValuationRef = (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (audi
 
     <!-- Panel 3: Rayos X de Desgaste Sincronizado 5:5:4 (reutiliza el SVG único de Panel 1 activando [data-layer="xray-wear"]) -->
     <div data-qcard-panel="xray" class="smat-qcard-panel hidden" hidden>
-      <div class="smat-qcard-xray-legend" data-xray-overlay-legend={sku.id} style="padding: 0.45rem 0.75rem; background: #fffbeb; border-top: 1px solid #fde68a; font-family: var(--font-mono, monospace); font-size: 0.72rem; color: #92400e;">
+      <div class="smat-qcard-xray-legend" data-xray-overlay-legend={sku.id} data-diagram-id={sku.diagram_id} style="padding: 0.45rem 0.75rem; background: #fffbeb; border-top: 1px solid #fde68a; font-family: var(--font-mono, monospace); font-size: 0.72rem; color: #92400e;">
         {isEs
-          ? `🔥 Mapa térmico de erosión 5:5:4 activo sobre plano ${sku.diagram_id} (${triplet.tolerance_std || 'ISO 2768-m'})`
-          : `🔥 Active 5:5:4 erosion thermal overlay on ${sku.diagram_id} blueprint (${triplet.tolerance_std || 'ISO 2768-m'})`}
+          ? `🔥 Mapa térmico de erosión 5:5:4 activo sobre plano: ${formatDiagramHumanTitle(sku.diagram_id, 'es')} (${triplet.tolerance_std || 'ISO 2768-m'})`
+          : `🔥 Active 5:5:4 erosion thermal overlay on blueprint: ${formatDiagramHumanTitle(sku.diagram_id, 'en')} (${triplet.tolerance_std || 'ISO 2768-m'})`}
       </div>
     </div>
   </div>

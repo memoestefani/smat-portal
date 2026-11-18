@@ -8,6 +8,7 @@ const isEs = lang === 'es';
 
 import diagData from '../../data/diagnostics.json';
 import { MECHANICAL_DIAGNOSTICS } from '../scripts/slurryEngine.js';
+import { formatMaterialHumanLabel } from '../scripts/verticalCalculatorsAndLabelsBridge.js';
 
 const mechanicalDiagByRole: Record<string, any> = {
   cavitacion_abrasion: MECHANICAL_DIAGNOSTICS.cavitation,
@@ -103,7 +104,7 @@ const diagnostics = diagData.diagnostics.map((item) => {
 
     <div class="diagnostics-grid">
       {diagnostics.map((item) => (
-        <article class="card diag-card" data-tags={`${item.id} ${item.title_es} ${item.title_en} ${item.target_role} ${item.threshold} ${item.stationNumber} ${item.recommendedMaterial}`.toLowerCase()}>
+        <article class="card diag-card" data-failure-link={item.id} data-tags={`${item.id} ${item.title_es} ${item.title_en} ${item.target_role} ${item.stationNumber} ${formatMaterialHumanLabel(item.recommendedMaterial, lang)}`.toLowerCase()}>
           <div class="diag-header">
             <span class="pulsing-dot pulsing-dot-amber"></span>
             <h3 class="diag-title">{isEs ? item.title_es : item.title_en}</h3>
@@ -111,7 +112,7 @@ const diagnostics = diagData.diagnostics.map((item) => {
           <div class="diag-threshold-strip" data-diag-threshold={item.threshold} data-station-id={item.stationIdLabel}>
             <span class="diag-station-chip">{item.stationNumber} ({item.stationIdLabel})</span>
             <span class="diag-threshold-chip">{isEs ? 'Umbral Físico:' : 'Physical Threshold:'} {item.threshold}</span>
-            <span class="diag-station-chip" data-diag-material={item.recommendedMaterial}>{isEs ? 'Aleación:' : 'Alloy:'} {item.recommendedMaterial}</span>
+            <span class="diag-station-chip" data-diag-material={item.recommendedMaterial}>{isEs ? 'Aleación:' : 'Alloy:'} {formatMaterialHumanLabel(item.recommendedMaterial, lang)}</span>
           </div>
           {item.recommendedSkusList.length > 0 && (
             <div style="display:flex; flex-wrap:wrap; gap:0.35rem; margin-bottom:0.65rem;">
@@ -162,6 +163,7 @@ const diagnostics = diagData.diagnostics.map((item) => {
             <a 
               href={isEs ? `/cotizar/?equipo=${item.target_role}&origen=diagnostico&falla=${item.id}&sintoma=${encodeURIComponent(item.title_es)}&material=${item.recommendedMaterial}&estacion=${item.stationCode}&claro_mm=${item.claroMm}&urgencia=paro#rfq` : `/en/quote/?equipo=${item.target_role}&origen=diagnostico&falla=${item.id}&sintoma=${encodeURIComponent(item.title_en)}&material=${item.recommendedMaterial}&estacion=${item.stationCode}&claro_mm=${item.claroMm}&urgencia=paro#rfq`}
               class="btn btn-secondary btn-sm diag-action-btn diag-quote-btn diag-quote-link"
+              data-failure-link={item.id}
               data-symptom={item.title_es}
               data-material={item.recommendedMaterial}
               data-station={item.stationCode}

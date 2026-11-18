@@ -10,6 +10,7 @@ import {
   evaluateHybridWetEndConfiguration
 } from '../scripts/slurryEngine.js';
 import { formatNioshErgonomicStatus } from '../scripts/workbenchBus.js';
+import { formatStationHumanBadge } from '../scripts/verticalCalculatorsAndLabelsBridge.js';
 
 interface Props {
   lang?: 'es' | 'en';
@@ -22,7 +23,8 @@ const primaryId = isEs ? 'como-se-arma-una-bomba' : 'how-a-slurry-pump-is-assemb
 const secondaryId = isEs ? 'how-a-slurry-pump-is-assembled' : 'como-se-arma-una-bomba';
 
 const stations = PUMP_ASSEMBLY_STATIONS.map((st) => ({
-  code: st.id,
+  rawId: st.id,
+  code: formatStationHumanBadge(st.id, isEs ? 'es' : 'en'),
   stationKey: `S${st.station}`,
   num: String(st.station).padStart(2, '0'),
   branch: st.station === 3 ? 'bifurcated' : 'common',
@@ -323,7 +325,7 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
     {stations.map((st) => (
       <article class="station-card">
         <div class="station-card__top">
-          <span class="station-card__code">{st.code}</span>
+          <span class="station-card__code" data-station-id={st.rawId}>{st.code}</span>
           <span class="station-card__num">{isEs ? `PASO ${st.num}` : `STEP ${st.num}`}</span>
         </div>
         <h3 class="station-card__title">{st.title}</h3>

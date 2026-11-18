@@ -169,7 +169,9 @@ const quickParts = rawQuickParts.map((item) => {
           data-estacion={item.station}
           data-material={item.material || 'iso281_alloy'}
           data-niosh-tier={item.niosh.tier}
-          data-dropin-sku={item.dropInCheck.canonicalSkuId || 'SMAT-PUMP-WETKIT-554'}
+          data-dropin-sku={item.dropInCheck.canonicalSkuId || item.dropInCheck.smatSkuId || 'SMAT-PUMP-WETKIT-554'}
+          data-dropin-root={item.dropInCheck.normalizedRoot || item.code}
+          data-dropin-hash={item.dropInCheck.fnv1aHash || ''}
         >
           <div class="quick-part-card__top">
             <span class="quick-part-card__code">{item.code}</span>

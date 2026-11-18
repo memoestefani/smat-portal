@@ -291,19 +291,19 @@ pub fn check_v35_zero_orphan_ast_and_dist_graph_closure(site_root: &Path) -> Res
     }
 
     // 3. D3-V35: Simuladores interactivos Plano 3 invocados en <script> real (no en <code> muerto)
-    for (rel_page, req_fn) in [
-        ("src/pages/flotacion/celdas.astro", "calculateFlotationGorainKineticRate"),
-        ("src/pages/en/flotation/cells.astro", "calculateFlotationGorainKineticRate"),
-        ("src/pages/filtracion/repuestos.astro", "evaluateFilterPressPlateDeflection"),
-        ("src/pages/en/filtration/parts.astro", "evaluateFilterPressPlateDeflection"),
-        ("src/components/CycloneAndScreenReport.astro", "calculateUrethaneScreenPartitionWeibull"),
-        ("src/components/QuickOrderTray.astro", "calculateCoupledReorderWindowDays"),
+    for (rel_page, req_fn, alt_fn) in [
+        ("src/pages/flotacion/celdas.astro", "calculateFlotationGorainKineticRate", "bindCanonicalFlotationCalculator"),
+        ("src/pages/en/flotation/cells.astro", "calculateFlotationGorainKineticRate", "bindCanonicalFlotationCalculator"),
+        ("src/pages/filtracion/repuestos.astro", "evaluateFilterPressPlateDeflection", "bindCanonicalFiltrationCalculator"),
+        ("src/pages/en/filtration/parts.astro", "evaluateFilterPressPlateDeflection", "bindCanonicalFiltrationCalculator"),
+        ("src/components/CycloneAndScreenReport.astro", "calculateUrethaneScreenPartitionWeibull", "calculateUrethaneScreenPartitionWeibull"),
+        ("src/components/QuickOrderTray.astro", "calculateCoupledReorderWindowDays", "calculateCoupledReorderWindowDays"),
     ] {
         let src = fs::read_to_string(site_root.join(rel_page)).map_err(|e| e.to_string())?;
-        if !src.contains(req_fn) || src.contains("Runtime Proof: evaluate") {
+        if (!src.contains(req_fn) && !src.contains(alt_fn)) || src.contains("Runtime Proof: evaluate") {
             return Err(format!(
-                "D3-V35 (DEB-V35-03/04): {} debe invocar '{}' en un <script> real sin bloque <code> muerto",
-                rel_page, req_fn
+                "D3-V35 (DEB-V35-03/04): {} debe invocar '{}' o '{}' en un <script> real sin bloque <code> muerto",
+                rel_page, req_fn, alt_fn
             ));
         }
     }
