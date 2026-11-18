@@ -162,10 +162,11 @@ export function evaluatePumpAssemblySequence(params = {}) {
   const isMonolithicArchitecture = wetEndBranch === 'metal' || wetEndBranch === 'ceramica_sic';
   const sealBranch = opts.sealBranch === 'gland_water' ? 'gland_water' : 'expeller_dry';
 
-  const clearanceMm = clamp(opts.frontClearanceMm, 0.1, 8.0, 0.75);
+  const clearanceMm = clamp(opts.frontClearanceMm ?? opts.clearanceMm ?? opts.throatbushClearanceMm, 0.1, 8.0, 0.75);
   const b2Mm = clamp(opts.impellerExitWidthMm, 15.0, 180.0, 48.0);
-  const d80Val = clamp(opts.d80Microns ?? opts.particleSizeD80Microns ?? 180, 5, 10000, 180);
+  const d80Val = clamp(opts.d80Microns ?? opts.particleSizeD80Microns ?? opts.d80Um ?? 180, 5, 10000, 180);
   const tipSpeedVal = clamp(opts.impellerTipSpeedMs ?? opts.tipSpeedMs ?? 20.0, 5, 45, 20.0);
+  const impellerTorqueNm = clamp(opts.impellerTorqueNm, 50, 2500, 450);
   const seriesRaw = String(opts.pipeSeries || '6x4').toLowerCase();
   const seriesKey = (seriesRaw.includes('3x2') || seriesRaw.includes('4x3') || seriesRaw.includes('1.5x1'))
     ? '3x2'
@@ -325,6 +326,7 @@ export function evaluatePumpAssemblySequence(params = {}) {
       : `INVALID SEQUENCE (${outOfOrderStationId}): ${collisionDetailsEn.join(' ')}`,
     frontClearanceMm: clearanceMm,
     impellerExitWidthMm: b2Mm,
+    impellerTorqueNm,
     optimalClearanceBandMm: [0.5, 1.0],
     volumetricEfficiencyDropPct,
     volumetricLossPct: volumetricEfficiencyDropPct,

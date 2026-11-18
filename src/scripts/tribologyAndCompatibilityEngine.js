@@ -184,10 +184,11 @@ export function calculateGyMinimumSampleMass(params = {}) {
   const dMm = clamp(rawMm, 0.02, 25.0, 2.0);
   const ss = clamp(params.solidsSpecificGravity ?? params.solidsSg, 1.8, 5.2, 2.8);
   const libMicrons = clamp(params.liberationSizeMicrons, 5, 2000, 100);
-  const oreGrade = clamp(params.oreGradeDecimal, 0.0001, 0.80, 0.02);
+  const rawGrade = params.oreGradeDecimal ?? (params.headGradePercent !== undefined ? Number(params.headGradePercent) / 100 : undefined);
+  const oreGrade = clamp(rawGrade, 0.0001, 0.80, 0.02);
 
   const cConst = clamp(params.samplingConstantC, 0.2, 15.0, 1.6);
-  const sFse = clamp(params.targetRelativeStdError ?? params.relativeVarianceError ?? params.samplingRelativeVariance, 0.01, 0.20, 0.05);
+  const sFse = clamp(params.targetRelativeStdError ?? params.relativeErrorSigma ?? params.relativeVarianceError ?? params.samplingRelativeVariance, 0.01, 0.20, 0.05);
   const cw = clamp(params.solidsWeightPercent, 10, 80, 40);
 
   const rawPressure = String(params.airPressurePsi ?? '80 - 100 psi').trim();
@@ -200,8 +201,18 @@ export function calculateGyMinimumSampleMass(params = {}) {
   const estimatedCycleMinutes = isHighPressure ? 6 : 9;
   const residualCakeMoisturePct = isHighPressure ? 9.5 : 12.5;
 
+  const liberationFactorBeta = Number(clamp(Math.sqrt((libMicrons / 1000) / Math.max(0.05, dMm)), 0.12, 1.25, 0.2236).toFixed(4));
+  const mineralogicalFactorM = Number(clamp(Math.pow(0.02 / oreGrade, 0.35), 0.45, 3.2, 1.0).toFixed(4));
+  const hasExplicitLiberationOrGrade =
+    params.liberationSizeMicrons !== undefined ||
+    params.oreGradeDecimal !== undefined ||
+    params.headGradePercent !== undefined;
+  const gyCompositeModifier = hasExplicitLiberationOrGrade
+    ? (liberationFactorBeta / 0.2236) * mineralogicalFactorM
+    : 1.0;
+
   const dCm = dMm / 10.0;
-  const theoreticalGrams = (cConst * Math.pow(dCm, 3)) / Math.pow(sFse, 2);
+  const theoreticalGrams = (cConst * gyCompositeModifier * Math.pow(dCm, 3)) / Math.pow(sFse, 2);
   const minDrySampleGrams = Math.max(250, Math.round(theoreticalGrams));
   const minDrySampleKg = Number((minDrySampleGrams / 1000).toFixed(2));
 
@@ -216,6 +227,8 @@ export function calculateGyMinimumSampleMass(params = {}) {
     samplingConstantC: Number(cConst.toFixed(2)),
     liberationSizeMicrons: Math.round(libMicrons),
     oreGradeDecimal: Number(oreGrade.toFixed(4)),
+    liberationFactorBeta,
+    mineralogicalFactorM,
     targetRelativeStdError: Number(sFse.toFixed(4)),
     targetRelativeStdErrorPercent: Number((sFse * 100).toFixed(1)),
     theoreticalGyGrams: Number(theoreticalGrams.toFixed(1)),
@@ -253,6 +266,8 @@ export function recommendAstmSieveSeries(params = {}) {
   const mode = wetScreeningRequired ? 'wet' : 'dry';
   const frameDiameterInches = Number(params.frameDiameterInches) === 12 ? 12 : 8;
   const retainedR = clamp(params.retainedPercentAtP80, 1, 99, 20);
+  const topSizeD95Mm = clamp(params.topSizeD95Mm, 0.05, 50.0, Number(((targetP80 * 2.5) / 1000).toFixed(2)));
+  const drySampleMassGrams = clamp(params.drySampleMassGrams, 50, 25000, 500);
 
   let closestIdx = 0;
   let bestDist = Infinity;
@@ -270,7 +285,10 @@ export function recommendAstmSieveSeries(params = {}) {
   const primaryControlSieve = ASTM_E11_SIEVE_TABLE[closestIdx];
 
   const rosinRammlerYPrime = Number(Math.log10(Math.log10(100.0 / retainedR)).toFixed(4));
-  const rosinRammlerSlopeN = Number(clamp(params.rosinRammlerSlopeN, 0.4, 2.5, targetP80 <= 106 ? 1.25 : 1.08).toFixed(2));
+  const defaultSlope = params.topSizeD95Mm !== undefined
+    ? clamp((targetP80 <= 106 ? 1.25 : 1.08) - Math.log10(Math.max(0.25, topSizeD95Mm / Math.max(0.05, targetP80 / 1000))) * 0.14, 0.4, 2.5, 1.08)
+    : (targetP80 <= 106 ? 1.25 : 1.08);
+  const rosinRammlerSlopeN = Number(clamp(params.rosinRammlerSlopeN, 0.4, 2.5, defaultSlope).toFixed(2));
   const requiresStainless = wetScreeningRequired;
   const frameMaterialLabel = requiresStainless ? 'Acero Inoxidable 304/316' : 'Bronce / Acero Inox';
 
@@ -284,6 +302,8 @@ export function recommendAstmSieveSeries(params = {}) {
     prevCumRetained = cumulativeRetainedPct;
     const cumulativePassingPct = Number((100.0 - cumulativeRetainedPct).toFixed(1));
     const rosinRammlerY = Number(Math.log10(Math.log10(100.0 / cumulativeRetainedPct)).toFixed(4));
+    const estimatedMassRetainedGrams = Number(((retainedIndividualPct / 100.0) * drySampleMassGrams).toFixed(1));
+    const cumulativeMassRetainedGrams = Number(((cumulativeRetainedPct / 100.0) * drySampleMassGrams).toFixed(1));
     return {
       ...s,
       sieveNumber: s.mesh,
@@ -293,6 +313,8 @@ export function recommendAstmSieveSeries(params = {}) {
       retainedIndividualPct,
       cumulativePassingPct,
       rosinRammlerY,
+      estimatedMassRetainedGrams,
+      cumulativeMassRetainedGrams,
       isPrimaryP80Control: s.mesh === primaryControlSieve.mesh
     };
   });
@@ -302,6 +324,8 @@ export function recommendAstmSieveSeries(params = {}) {
     screeningMode: mode,
     wetScreeningRequired,
     frameDiameterInches,
+    topSizeD95Mm: Number(topSizeD95Mm.toFixed(2)),
+    drySampleMassGrams: Math.round(drySampleMassGrams),
     primaryControlMesh: primaryControlSieve.mesh,
     primaryApertureMicrons: primaryControlSieve.apertureMicrons,
     sieveStack: selectedSieves,

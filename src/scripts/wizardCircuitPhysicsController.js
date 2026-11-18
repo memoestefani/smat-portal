@@ -298,9 +298,10 @@ export function calculateFilterPressCycleCapacity(params = {}) {
   const plateThicknessMm = Math.max(45, Math.min(110, Number(params.plateThicknessMm ?? 65)));
   const chamberCount = Math.max(10, Math.min(120, Number(params.chamberCount ?? (plateWidthMm >= 1500 ? 60 : 40))));
 
-  // Tiempo de ciclo por ley parabólica Darcy-Ruth (\tau_form \propto h^2 / \Delta P^{1-s})
+  // Tiempo de ciclo por ley parabólica Darcy-Ruth acoplada con desaguado capilar de humedad objetivo
+  const moistureFactor = Math.pow(14.0 / Math.max(8, plateEval.cakeMoistureTargetPct), 0.35);
   const filtrationMinutes = Number(
-    (18.0 * Math.pow(plateThicknessMm / 65, 1.6) * Math.pow(12 / feedPressureBar, 0.45)).toFixed(1)
+    (18.0 * Math.pow(plateThicknessMm / 65, 1.6) * Math.pow(12 / feedPressureBar, 0.45) * moistureFactor).toFixed(1)
   );
   const mechanicalTurnaroundMin = 12.0;
   const totalCycleMin = Number((filtrationMinutes + mechanicalTurnaroundMin).toFixed(1));
@@ -309,6 +310,13 @@ export function calculateFilterPressCycleCapacity(params = {}) {
   const dryTonnesPerDay = Math.round(
     cyclesPerDay * chamberCount * areaPerPlateM2 * (plateThicknessMm / 1000) * 0.5 * 1.85
   );
+
+  const statusTagEs = plateEval.isPlateCrackingRisk
+    ? 'Alerta: Desbloquear Puertos'
+    : (!plateEval.nom141Compliant ? `Alerta NOM-141 (${plateEval.cakeMoistureTargetPct}% > 16%)` : 'NOM-141 Segura');
+  const statusTagEn = plateEval.isPlateCrackingRisk
+    ? 'Alert: Clear Feed Ports'
+    : (!plateEval.nom141Compliant ? `NOM-141 Alert (${plateEval.cakeMoistureTargetPct}% > 16%)` : 'NOM-141 Compliant');
 
   return {
     ...plateEval,
@@ -319,8 +327,8 @@ export function calculateFilterPressCycleCapacity(params = {}) {
     totalCycleMin,
     cyclesPerDay,
     dryTonnesPerDay,
-    summaryEs: `Esfuerzo Placa σ_max = ${plateEval.maxBendingStressMpa} MPa (FS ${plateEval.flexuralSafetyFactor}) | ${cyclesPerDay} ciclos/día (~${dryTonnesPerDay} t/d secas) | Humedad ${plateEval.cakeMoistureTargetPct}% (${plateEval.isPlateCrackingRisk ? 'Alerta: Desbloquear Puertos' : 'NOM-141 Segura'})`,
-    summaryEn: `Plate Stress σ_max = ${plateEval.maxBendingStressMpa} MPa (SF ${plateEval.flexuralSafetyFactor}) | ${cyclesPerDay} cycles/day (~${dryTonnesPerDay} dry t/d) | Moisture ${plateEval.cakeMoistureTargetPct}% (${plateEval.isPlateCrackingRisk ? 'Alert: Clear Feed Ports' : 'NOM-141 Compliant'})`
+    summaryEs: `Esfuerzo Placa σ_max = ${plateEval.maxBendingStressMpa} MPa (FS ${plateEval.flexuralSafetyFactor}) | ${cyclesPerDay} ciclos/día (~${dryTonnesPerDay} t/d secas) | Humedad ${plateEval.cakeMoistureTargetPct}% (${statusTagEs})`,
+    summaryEn: `Plate Stress σ_max = ${plateEval.maxBendingStressMpa} MPa (SF ${plateEval.flexuralSafetyFactor}) | ${cyclesPerDay} cycles/day (~${dryTonnesPerDay} dry t/d) | Moisture ${plateEval.cakeMoistureTargetPct}% (${statusTagEn})`
   };
 }
 
@@ -434,9 +442,13 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
         ? isEs
           ? 'Alerta Puertos Obstruidos'
           : 'Clogged Ports Alert'
-        : isEs
-          ? 'NOM-141 Segura'
-          : 'NOM-141 Safe';
+        : !filtRes.nom141Compliant
+          ? isEs
+            ? `Alerta NOM-141 (${filtRes.cakeMoistureTargetPct}% > 16%)`
+            : `NOM-141 Alert (${filtRes.cakeMoistureTargetPct}% > 16%)`
+          : isEs
+            ? 'NOM-141 Segura'
+            : 'NOM-141 Safe';
     }
 
     // Proyección de campos secundarios de Flotación y Filtración (V4.1 LCOM4=1)
@@ -471,8 +483,9 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
     const driverPulleyMm = Number(wizardRoot.querySelector('#wb-driver-pulley')?.value ?? 220);
     const drivenPulleyMm = Number(wizardRoot.querySelector('#wb-driven-pulley')?.value ?? 340);
     const motorPowerKw = Number(wizardRoot.querySelector('#wb-shaft-power')?.value ?? 55);
-    const clearanceMm = Number(wizardRoot.querySelector('#wb-throatbush-clearance')?.value ?? 0.8);
+    const clearanceMm = Number(wizardRoot.querySelector('#wb-clearance-slider, #wb-throatbush-clearance')?.value ?? 0.8);
     const d80Val = Number(wizardRoot.querySelector('#slider-d80')?.value ?? 180);
+    const seqPreset = String(wizardRoot.querySelector('#wb-assembly-sequence')?.value || 'canonical');
 
     const driveEval = calculateDriveAndBearingKinematics({
       arrangementCode: arrCode,
@@ -491,14 +504,19 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
       pipeSeries
     });
     const clearanceEval = evaluateWetEndAssemblyInterference({
-      throatbushClearanceMm: clearanceMm,
+      frontClearanceMm: clearanceMm,
       d80Microns: d80Val,
-      tipSpeedMs: driveEval.tipSpeedMs
+      impellerTipSpeedMs: driveEval.tipSpeedMs,
+      pipeSeries,
+      sequencePreset: seqPreset
     });
     const assemblySeq = evaluatePumpAssemblySequence({
-      clearanceMm,
+      frontClearanceMm: clearanceMm,
       impellerTorqueNm: 450,
-      d80Um: d80Val
+      d80Microns: d80Val,
+      impellerTipSpeedMs: driveEval.tipSpeedMs,
+      pipeSeries,
+      sequencePreset: seqPreset
     });
 
     const elFrameBadge = wizardRoot.querySelector('#wb-drive-frame-badge');

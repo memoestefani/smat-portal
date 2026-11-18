@@ -341,22 +341,25 @@ export function evaluateFilterPressPlateDeflection({ feedPressureBar = 12, clogg
   const safeWidthMm = Math.max(630, Math.min(2000, Number(plateWidthMm) || 1200));
   const safeThicknessMm = Math.max(40, Math.min(120, Number(plateThicknessMm) || 65));
   const safeMoisturePct = Math.max(8, Math.min(28, Number(cakeMoistureTargetPct) || 14));
-  const portAsymmetryFactor = safeCloggedPorts === 0
-    ? 0.18
-    : Math.min(1.0, 0.38 + safeCloggedPorts * 0.22);
+  const portAsymmetryFactor = safeCloggedPorts === 0 ? 0.18 : Math.min(1.0, 0.38 + safeCloggedPorts * 0.22);
   const deltaPAsymmetricMpa = Number((safePressureBar * 0.1 * portAsymmetryFactor).toFixed(3));
-  const timoshenkoBeta = 0.048;
-  const slendernessRatio = safeWidthMm / safeThicknessMm;
-  const maxBendingStressMpa = Number((timoshenkoBeta * deltaPAsymmetricMpa * Math.pow(slendernessRatio, 2)).toFixed(2));
+  const maxBendingStressMpa = Number((0.048 * deltaPAsymmetricMpa * Math.pow(safeWidthMm / safeThicknessMm, 2)).toFixed(2));
   const ppFatigueAllowableMpa = 14.5;
   const flexuralSafetyFactor = Number((ppFatigueAllowableMpa / Math.max(0.5, maxBendingStressMpa)).toFixed(2));
   const isPlateCrackingRisk = flexuralSafetyFactor < 1.25 || safeCloggedPorts >= 2;
-  const nom141Compliant = safeMoisturePct <= 16.0 && !isPlateCrackingRisk;
-  return { feedPressureBar: safePressureBar, cloggedPortsCount: safeCloggedPorts, plateWidthMm: safeWidthMm, plateThicknessMm: safeThicknessMm, cakeMoistureTargetPct: safeMoisturePct, deltaPAsymmetricMpa, maxBendingStressMpa, ppFatigueAllowableMpa, flexuralSafetyFactor, isPlateCrackingRisk, nom141Compliant, recommendedClothSkuId: 'SMAT-FILT-CLOTH-PLATE', recommendedPlateSkuId: 'SMAT-FILT-SHIFTER-CHAIN',
-    summaryEs: isPlateCrackingRisk
-      ? `Riesgo crítico de fractura en membrana/recámara (σ_max = ${maxBendingStressMpa} MPa, FS = ${flexuralSafetyFactor} < 1.25). Desbloquee puertos de alimentación e instale Placas de Polipropileno Virgen con Anillos de Cuello y Telas Calandradas (SMAT-FILT-CLOTH-PLATE) y Corre-Placas (SMAT-FILT-SHIFTER-CHAIN).`
-      : `Operación estructural segura (σ_max = ${maxBendingStressMpa} MPa, FS = ${flexuralSafetyFactor}). Cumple criterio de torta seca NOM-141 (${safeMoisturePct}% humedad residual).`
-  };
+  const nom141MoistureCompliant = safeMoisturePct <= 16.0;
+  const nom141Compliant = nom141MoistureCompliant && !isPlateCrackingRisk;
+  const summaryEs = isPlateCrackingRisk
+    ? `Riesgo crítico de fractura en membrana/recámara (σ_max = ${maxBendingStressMpa} MPa, FS = ${flexuralSafetyFactor} < 1.25). Desbloquee puertos de alimentación e instale Placas de Polipropileno Virgen con Anillos de Cuello y Telas Calandradas (SMAT-FILT-CLOTH-PLATE) y Corre-Placas (SMAT-FILT-SHIFTER-CHAIN).`
+    : (!nom141MoistureCompliant
+      ? `Alerta NOM-141-SEMARNAT: Humedad residual (${safeMoisturePct}% > 16.0%) excede el límite geotécnico de apilamiento en seco (Dry Stacking), aunque la placa opera en rango elástico (σ_max = ${maxBendingStressMpa} MPa, FS = ${flexuralSafetyFactor}). Incremente presión de exprimido o instale Lonas Calandradas (SMAT-FILT-CLOTH-PLATE).`
+      : `Operación estructural segura (σ_max = ${maxBendingStressMpa} MPa, FS = ${flexuralSafetyFactor}). Cumple criterio de torta seca NOM-141 (${safeMoisturePct}% humedad residual).`);
+  const summaryEn = isPlateCrackingRisk
+    ? `Critical membrane/chamber cracking risk (σ_max = ${maxBendingStressMpa} MPa, FS = ${flexuralSafetyFactor} < 1.25). Clear clogged feed ports and install Virgin Polypropylene Plates with Neck Rings & Calendered Cloths (SMAT-FILT-CLOTH-PLATE) and Plate Shifter (SMAT-FILT-SHIFTER-CHAIN).`
+    : (!nom141MoistureCompliant
+      ? `NOM-141-SEMARNAT Alert: Residual cake moisture (${safeMoisturePct}% > 16.0%) exceeds the geotechnical Dry Stacking threshold, although the plate remains within elastic range (σ_max = ${maxBendingStressMpa} MPa, FS = ${flexuralSafetyFactor}). Increase squeeze pressure or install Calendered Cloths (SMAT-FILT-CLOTH-PLATE).`
+      : `Safe structural operation (σ_max = ${maxBendingStressMpa} MPa, FS = ${flexuralSafetyFactor}). Meets NOM-141 dry stacking cake criteria (${safeMoisturePct}% residual moisture).`);
+  return { feedPressureBar: safePressureBar, cloggedPortsCount: safeCloggedPorts, plateWidthMm: safeWidthMm, plateThicknessMm: safeThicknessMm, cakeMoistureTargetPct: safeMoisturePct, deltaPAsymmetricMpa, maxBendingStressMpa, ppFatigueAllowableMpa, flexuralSafetyFactor, isPlateCrackingRisk, nom141MoistureCompliant, nom141Compliant, recommendedClothSkuId: 'SMAT-FILT-CLOTH-PLATE', recommendedPlateSkuId: 'SMAT-FILT-SHIFTER-CHAIN', recommendedRecessedPlateSkuId: 'SMAT-FILT-CLOTH-PLATE', recommendedShifterSkuId: 'SMAT-FILT-SHIFTER-CHAIN', summaryEs, summaryEn };
 }
 export function computeSelectionOrderCodeHash(payload = {}) {
   const canonicalKeys = Object.keys(payload || {}).sort();
@@ -371,4 +374,5 @@ export function computeSelectionOrderCodeHash(payload = {}) {
   return `SMAT-${hex.slice(0, 4)}-${hex.slice(4, 8)}`;
 }
 export { calculateUrethaneScreenPartitionWeibull, calculateFlotationGorainKineticRate } from './mechanicalAndSeparationEngine.js';
+export { evaluateCentrifugalSealPressureBalance } from './pumpingSealAndTribologyCalculators.js';
 export * from './tribologyAndCompatibilityEngine.js';

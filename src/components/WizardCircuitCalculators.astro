@@ -39,6 +39,15 @@ const isEs = lang === 'es';
         <option value="500">{isEs ? 'Serie D20 (Dc = 500 mm • Gran Caudal 75–150 µm)' : 'D20 Series (Dc = 500 mm • High Flow 75–150 µm)'}</option>
       </select>
     </div>
+    <div class="form-group">
+      <label for="wb-cyc-liner"><strong>{isEs ? 'Metalurgia Ápex / Revestimiento Ciclón:' : 'Apex / Cyclone Liner Metallurgy:'}</strong></label>
+      <select id="wb-cyc-liner" name="cyc_liner" class="wb-select font-mono-tech" data-wb-circuit-calc-input>
+        <option value="ceramica_sic" selected>{isEs ? 'Ápex Cerámico SiC Sinterizado + Cono Poliuretano' : 'Sintered SiC Ceramic Apex + Polyurethane Cone'}</option>
+        <option value="hule_r55">{isEs ? 'Forro Interior Hule Natural R55 + Ápex SiC' : 'R55 Natural Rubber Inner Liner + SiC Apex'}</option>
+        <option value="poliuretano">{isEs ? 'Poliuretano Minero 85–90 Shore A (Mallas TH48 / Conos)' : '85–90 Shore A Mining Polyurethane (TH48 Screens / Cones)'}</option>
+        <option value="alto_cromo_a05">{isEs ? 'Fundición Alto Cromo 27% Cr (ASTM A532 A05)' : '27% High-Chrome White Iron (ASTM A532 A05)'}</option>
+      </select>
+    </div>
   </div>
 
   <div style="margin-top: 0.55rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(125px, 1fr)); gap: 0.5rem;">

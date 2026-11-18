@@ -645,9 +645,13 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
           ? evaluateHybridWetEndConfiguration({ d80Microns: 220, tipSpeedMs: 21.8, pulpPh: 7.5, solidsWeightPercent: 48, pipeSeries })
           : null;
         const seqAudit = evaluatePumpAssemblySequence({
-          clearanceMm: frontClearanceMm,
+          frontClearanceMm,
           impellerTorqueNm: 450,
-          d80Um: 220
+          d80Microns: 220,
+          wetEndBranch: activeMaterialKey,
+          sealBranch,
+          pipeSeries,
+          sequencePreset
         });
         if (lot554El) {
           lot554El.textContent = hybridEval

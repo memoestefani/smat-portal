@@ -27,6 +27,11 @@ import {
   saveWorkbenchSession,
   loadWorkbenchSession,
 } from './workbenchBus.js';
+export {
+  evaluateCentrifugalSealPressureBalance,
+  bindCanonicalSealBalanceCalculator,
+  bindCanonicalTribologySelector,
+} from './pumpingSealAndTribologyCalculators.js';
 
 const BRIDGE_RUNTIME_REGISTRY = {
   lastBoundCircuit: 'none',
@@ -223,6 +228,7 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es') {
 
   const stressEl = root.querySelector('#filt-res-stress, #rep-stress-out');
   const fsEl = root.querySelector('#filt-res-fs, #rep-fs-out');
+  const secondaryEl = root.querySelector('#filt-res-secondary');
   const sumEl = root.querySelector('#filt-res-summary, #rep-status-out');
   const readoutBox = root.querySelector('#rep-timoshenko-readout');
 
@@ -250,27 +256,38 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es') {
       cakeMoistureTargetPct,
     });
 
+    const isHeroCardMode = stressEl && stressEl.id === 'filt-res-stress';
     if (stressEl) {
-      stressEl.textContent = `${res.maxBendingStressMpa} MPa (ΔP_asim=${res.deltaPAsymmetricMpa} MPa | σ_adm=${res.ppFatigueAllowableMpa} MPa)`;
+      stressEl.textContent = isHeroCardMode
+        ? `${res.maxBendingStressMpa} MPa`
+        : `${res.maxBendingStressMpa} MPa (ΔP_asim=${res.deltaPAsymmetricMpa} MPa | σ_adm=${res.ppFatigueAllowableMpa} MPa)`;
     }
     if (fsEl) {
-      fsEl.textContent = isEn
-        ? `FS ${res.flexuralSafetyFactor} (${res.cyclesPerDay} cyc/d • ${res.dryTonnesPerDay} t/d • ${res.filtrationMinutes}+12=${res.totalCycleMin} min)`
-        : `FS ${res.flexuralSafetyFactor} (${res.cyclesPerDay} ciclos/d • ${res.dryTonnesPerDay} t/d • ${res.filtrationMinutes}+12=${res.totalCycleMin} min)`;
+      fsEl.textContent = isHeroCardMode
+        ? `FS ${res.flexuralSafetyFactor}`
+        : (isEn
+          ? `FS ${res.flexuralSafetyFactor} (${res.cyclesPerDay} cyc/d • ${res.dryTonnesPerDay} t/d • ${res.filtrationMinutes}+12=${res.totalCycleMin} min)`
+          : `FS ${res.flexuralSafetyFactor} (${res.cyclesPerDay} ciclos/d • ${res.dryTonnesPerDay} t/d • ${res.filtrationMinutes}+12=${res.totalCycleMin} min)`);
     }
+    if (secondaryEl) {
+      secondaryEl.textContent = isEn
+        ? `ΔP_asym = ${res.deltaPAsymmetricMpa} MPa · σ_adm = ${res.ppFatigueAllowableMpa} MPa · ${res.cyclesPerDay} cyc/d · ${res.dryTonnesPerDay} t/d (${res.filtrationMinutes} + 12 = ${res.totalCycleMin} min)`
+        : `ΔP_asim = ${res.deltaPAsymmetricMpa} MPa · σ_adm = ${res.ppFatigueAllowableMpa} MPa · ${res.cyclesPerDay} ciclos/d · ${res.dryTonnesPerDay} t/d (${res.filtrationMinutes} + 12 = ${res.totalCycleMin} min)`;
+    }
+    const isAlert = Boolean(res.isPlateCrackingRisk || !res.nom141Compliant);
     if (sumEl) {
       const baseSummary = isEn ? res.summaryEn : res.summaryEs;
       sumEl.textContent = isEn
-        ? `${baseSummary} | Plate: ${res.recommendedPlateSkuId} | Cloth: ${res.recommendedClothSkuId}`
-        : `${baseSummary} | Placa: ${res.recommendedPlateSkuId} | Tela: ${res.recommendedClothSkuId}`;
+        ? `${baseSummary} | Plate: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Shifter: ${res.recommendedPlateSkuId}`
+        : `${baseSummary} | Placa/Tela: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Corre-Placas: ${res.recommendedPlateSkuId}`;
       if (sumEl.style && !readoutBox) {
-        sumEl.style.background = res.isPlateCrackingRisk ? '#fef2f2' : '#ecfdf5';
-        sumEl.style.color = res.isPlateCrackingRisk ? '#991b1b' : '#065f46';
+        sumEl.style.background = isAlert ? '#fef2f2' : '#ecfdf5';
+        sumEl.style.color = isAlert ? '#991b1b' : '#065f46';
       }
     }
     if (readoutBox && readoutBox.style) {
-      readoutBox.style.background = res.isPlateCrackingRisk ? '#fef2f2' : '#ecfdf5';
-      readoutBox.style.color = res.isPlateCrackingRisk ? '#991b1b' : '#065f46';
+      readoutBox.style.background = isAlert ? '#fef2f2' : '#ecfdf5';
+      readoutBox.style.color = isAlert ? '#991b1b' : '#065f46';
     }
 
     saveEngineeringContextSnapshot('filtracion', {
@@ -308,10 +325,13 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es') {
   const d32El = root.querySelector('#flot-d32-input, #celdas-d32-input');
   const diaEl = root.querySelector('#flot-rotor-dia, #celdas-dia-select');
   const rpmEl = root.querySelector('#flot-rotor-rpm, #celdas-rpm-input');
+  const d80El = root.querySelector('#flot-d80-input, #celdas-d80-input');
+  const cwEl = root.querySelector('#flot-cw-input, #celdas-cw-input');
   const sbOut = root.querySelector('#flot-sb-out, #celdas-sb-output');
   const kOut = root.querySelector('#flot-k-out, #celdas-k-output');
   const vtipOut = root.querySelector('#flot-vtip-out, #celdas-vtip-output');
-  const statusOut = root.querySelector('#flot-status-out');
+  const njsOut = root.querySelector('#flot-njs-out, #celdas-njs-output');
+  const statusOut = root.querySelector('#flot-status-out, #celdas-status-output');
   const readoutBox = root.querySelector('#flot-gorain-readout, #celdas-gorain-readout');
 
   function recompute() {
@@ -320,6 +340,8 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es') {
     const d32Mm = Number(d32El.value) || 1.6;
     const rotorDiaM = Number(diaEl.value) || 0.61;
     const rotorRpm = Number(rpmEl.value) || 215;
+    const particleSizeUm = d80El ? Number(d80El.value) || 150 : 150;
+    const solidsCwPct = cwEl ? Number(cwEl.value) || 35 : 35;
 
     const baseGorain = calculateFlotationGorainKineticRate({
       rotorDiaM,
@@ -333,6 +355,8 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es') {
       jgCmS,
       d32Mm,
       rotorRpm,
+      particleSizeUm,
+      solidsCwPct,
     });
 
     const sbVal = res.sbInverseSeconds ?? res.bubbleSurfaceAreaFluxSb;
@@ -347,6 +371,9 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es') {
     }
     if (vtipOut) {
       vtipOut.textContent = `${vtipVal} (${res.tipSpeedWindowOptimal ? (isEn ? 'Optimal Window' : 'Ventana Óptima') : (isEn ? 'Adjust RPM' : 'Ajustar RPM')} • PU ${res.wearLifeMultiplierPuVsRubber}×)`;
+    }
+    if (njsOut) {
+      njsOut.textContent = String(res.zwieteringNjsRpm);
     }
     if (statusOut) {
       statusOut.textContent = isEn ? res.summaryEn : res.summaryEs;
@@ -363,11 +390,13 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es') {
       superficialGasVelocityCmS: jgCmS,
       bubbleDiameterMm: d32Mm,
       rotorRpm,
+      particleSizeUm,
+      solidsCwPct,
     });
     return res;
   }
 
-  [jgEl, d32El, diaEl, rpmEl].forEach((el) => {
+  [jgEl, d32El, diaEl, rpmEl, d80El, cwEl].forEach((el) => {
     if (el && typeof el.addEventListener === 'function') {
       el.addEventListener('input', recompute);
       el.addEventListener('change', recompute);

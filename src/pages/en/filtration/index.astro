@@ -94,15 +94,18 @@ import CircuitNavigator from '../../../components/CircuitNavigator.astro';
           </div>
 
           <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 1.25rem;">
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1rem;">
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 0.65rem;">
               <div>
                 <span style="font-size: 0.72rem; font-weight: 800; color: #475569; display: block;">TIMOSHENKO STRESS (σ<sub>max</sub>)</span>
                 <strong id="filt-res-stress" style="font-family: var(--smat-font-mono); font-size: 1.25rem;">3.54 MPa</strong>
               </div>
               <div>
                 <span style="font-size: 0.72rem; font-weight: 800; color: #475569; display: block;">SAFETY FACTOR (FS)</span>
-                <strong id="filt-res-fs" style="font-family: var(--smat-font-mono); font-size: 1.25rem;">4.10</strong>
+                <strong id="filt-res-fs" style="font-family: var(--smat-font-mono); font-size: 1.25rem;">FS 4.10</strong>
               </div>
+            </div>
+            <div id="filt-res-secondary" style="font-family: var(--smat-font-mono); font-size: 0.78rem; color: #334155; margin-bottom: 0.85rem; padding: 0.45rem 0.65rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px;">
+              ΔP_asym = 0.216 MPa · σ_adm = 14.5 MPa · 45 cyc/d · 512 t/d (18.0 + 12 = 30.0 min)
             </div>
             <p id="filt-res-summary" style="font-size: 0.88rem; line-height: 1.5; margin: 0 0 1rem; padding: 0.75rem; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 6px; color: #065f46; font-weight: 600;">
               Safe structural operation. Meets NOM-141 dry stacking cake criteria.

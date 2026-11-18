@@ -90,24 +90,55 @@ const sealParts = [getAtomicPartSpecs('DAM028'), getAtomicPartSpecs('EAM028')].f
         </div>
       </div>
 
-      <!-- Comparador Bifurcado Estación 02A (Expeller Seco) vs Estación 02B (Gland Water) y Ley VFD -->
+      <!-- Comparador Bifurcado Estación 02A (Expeller Seco) vs Estación 02B (Gland Water) y Calculadora Interactiva (D9-V43) -->
       <div class="card" data-seal-branch-comparator style="margin-top: 2rem; background: #f8fafc; border: 1.5px solid #cbd5e1;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.85rem;">
           <span class="badge badge-copper">BIFURCACIÓN DE SELLADO ESTACIÓN 02</span>
           <span class="font-mono-tech" style="font-size:0.75rem; font-weight:700; color:#0c4a6e;">ΔP_exp = ½·ρ_m·k_ω²·ω²·(R_exp² - R_h²) &gt; P_s + ΔP_back</span>
         </div>
-        <h3>Selector Técnico: Estación 02A (Expulsor Seco) vs Estación 02B (Prensaestopa con Anillo Linterna)</h3>
+        <h3>Calculadora en Vivo: Contrapresión de Expeller (02A Seco) vs Agua de Prensaestopas (02B Húmedo)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.65rem; margin: 0.85rem 0; padding: 0.85rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.82rem;">
+          <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+            <span>Carga Total TDH (m):</span>
+            <input type="number" id="seal-hd-m" min="5" max="110" step="1" value="28" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+            <span>Carga Succión H<sub>s</sub> (m):</span>
+            <input type="number" id="seal-hs-m" min="0" max="25" step="0.5" value="3.2" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+            <span>Ø Expeller (mm):</span>
+            <input type="number" id="seal-exp-dia" min="140" max="520" step="10" value="280" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+            <span>Velocidad Bomba (RPM):</span>
+            <input type="number" id="seal-rpm" min="400" max="2200" step="25" value="1150" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+            <span>Densidad Pulpa (SG<sub>m</sub>):</span>
+            <input type="number" id="seal-sg" min="1.05" max="2.20" step="0.02" value="1.38" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+          </label>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 0.65rem; margin-bottom: 0.75rem; font-family: var(--smat-font-mono); font-size: 0.8rem;">
+          <div style="background: #ffffff; padding: 0.55rem 0.75rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Contrapresión Expeller:</strong> <span id="seal-pexp-out">118.4 kPa</span></div>
+          <div style="background: #ffffff; padding: 0.55rem 0.75rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Presión Caja Estopas:</strong> <span id="seal-pbox-out">88.8 kPa (Hs/Hd 11.4%)</span></div>
+          <div style="background: #ffffff; padding: 0.55rem 0.75rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Agua de Sello Req.:</strong> <span id="seal-pwater-out">0 L/min (Seco 02A)</span></div>
+          <div style="background: #ffffff; padding: 0.55rem 0.75rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Rama Recomendada:</strong> <span id="seal-branch-out">02A · Expeller Centrífugo Seco</span></div>
+        </div>
+        <div id="seal-status-out" style="margin-bottom: 0.85rem; padding: 0.65rem 0.85rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-family: var(--smat-font-mono); font-size: 0.8rem; font-weight: 700;">
+          Rama 02A Viable (Sellado Seco Expeller • 0 L/min agua): Margen centrífugo positivo.
+        </div>
         <div class="grid-2" style="margin-top:0.85rem;">
           <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:1rem;">
-            <span class="font-mono-tech" style="font-size:0.72rem; font-weight:800; color:#065f46;">[ESTACIÓN 02A — EXPELLER_DRY]</span>
+            <span class="font-mono-tech" style="font-size:0.72rem; font-weight:800; color:#065f46;">[ESTACIÓN 02A — SELLADO SECO EXPELLER]</span>
             <h4 style="margin:0.35rem 0;">Expulsor Centrífugo Seco (Cero Agua de Sello)</h4>
-            <p style="font-size:0.85rem; color:#334155;">Recomendado cuando la presión de succión P_s ≤ 15% de la carga total H y velocidad fija o VFD ≥ 70% RPM nominal. Evita diluir el %Cw hacia hidrociclones y flotación.</p>
+            <p style="font-size:0.85rem; color:#334155;">Recomendado cuando la presión de succión P_s ≤ 18% de la carga total H y velocidad fija o VFD ≥ 70% RPM nominal. Evita diluir el %Cw hacia hidrociclones y flotación.</p>
             <a href="/cotizar/?circuito=bombeo&equipo=kit_sellado&seal_branch=expeller_dry&estacion=S2#rfq" class="btn btn-primary" style="margin-top:0.5rem;">Configurar Estación 02A (Seco) →</a>
           </div>
           <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:1rem;">
-            <span class="font-mono-tech" style="font-size:0.72rem; font-weight:800; color:#0c4a6e;">[ESTACIÓN 02B — GLAND_WATER]</span>
+            <span class="font-mono-tech" style="font-size:0.72rem; font-weight:800; color:#0c4a6e;">[ESTACIÓN 02B — PRENSAESTOPAS HÚMEDO]</span>
             <h4 style="margin:0.35rem 0;">Prensaestopa Húmedo (Flushing con Anillo Linterna)</h4>
-            <p style="font-size:0.85rem; color:#334155;">Requerido en bombas en serie (etapa 2+), carga positiva de succión P_s &gt; 20% H o variador de frecuencia VFD a baja velocidad donde cae ω² del expulsor.</p>
+            <p style="font-size:0.85rem; color:#334155;">Requerido en bombas en serie (etapa 2+), carga positiva de succión P_s &gt; 18% H o variador de frecuencia VFD a baja velocidad donde cae ω² del expulsor.</p>
             <a href="/cotizar/?circuito=bombeo&equipo=kit_sellado&seal_branch=gland_water&estacion=S2#rfq" class="btn btn-outline" style="margin-top:0.5rem;">Configurar Estación 02B (Húmedo) →</a>
           </div>
         </div>
@@ -149,6 +180,11 @@ const sealParts = [getAtomicPartSpecs('DAM028'), getAtomicPartSpecs('EAM028')].f
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  import { bindCanonicalSealBalanceCalculator } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
+  bindCanonicalSealBalanceCalculator(document, 'es');
+</script>
 
 <style>
   .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 2.75rem 0; border-bottom: 2px solid var(--smat-copper-accent); }

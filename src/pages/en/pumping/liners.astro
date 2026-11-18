@@ -96,9 +96,54 @@ const wetMaterials = [
         </div>
       </div>
 
-      <!-- 4 Wet-End Material Cards (A05, R55, U01, SiC) + Atomic Throatbush Card E4083 -->
+      <!-- 4 Wet-End Material Cards + Live Hybrid Branch D Tribology Simulator (D10-V43) -->
       <div style="margin-top: 2rem;" data-testid="liners-material-matrix">
-        <h2>4-Material Wet-End Matrix (A05 / R55 / U01 / SiC Ceramic) & Gülich Law Δη_v = k_r·(δ/b₂)^1.5</h2>
+        <h2>Wet-End Material Matrix (A05 / R55 / U01 / SiC Ceramic / Hybrid Branch D) &amp; Gülich Law Δη_v = k_r·(δ/b₂)^1.5</h2>
+        <div class="card" style="margin-top: 0.85rem; margin-bottom: 1rem; background: #f8fafc; border: 1.5px solid #cbd5e1; padding: 1.25rem;">
+          <span class="badge badge-copper">LIVE SIMULATOR · MONOLITHIC VS SPLIT CASING ARCHITECTURE &amp; HYBRID BRANCH D</span>
+          <h3 style="margin: 0.45rem 0 0.65rem; font-size: 1.02rem;">FPL/CPL Split Liners, Monolithic Volute &amp; Finnie-Hutchings Angular Partition Verifier</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 0.65rem; margin-bottom: 0.75rem; padding: 0.75rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.82rem;">
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Particle Size d<sub>80</sub> (µm):</span>
+              <input type="number" id="trib-d80-um" min="20" max="6000" step="25" value="250" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Tip Speed u₂ (m/s):</span>
+              <input type="number" id="trib-vtip-ms" min="10" max="36" step="0.5" value="21.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Slurry pH:</span>
+              <input type="number" id="trib-ph" min="1.0" max="13.5" step="0.5" value="7.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>5-5-4 Lot Architecture:</span>
+              <select id="trib-branch" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <option value="hibrido_a05_r55" selected>Hybrid Branch D (A05 Impeller + R55 Liners)</option>
+                <option value="auto">Auto (Finnie-Hutchings)</option>
+                <option value="metal">Monolithic 27% High Chrome (A05)</option>
+                <option value="rubber">Split Natural Rubber (R55)</option>
+                <option value="polyurethane">Split Polyurethane (U01)</option>
+                <option value="ceramica_sic">Monolithic SiC Ceramic</option>
+              </select>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Pump Series:</span>
+              <select id="trib-series" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <option value="3x2">3x2 / 4x3</option>
+                <option value="6x4" selected>6x4</option>
+                <option value="8x6">8x6 / 10x8</option>
+              </select>
+            </label>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 0.6rem; margin-bottom: 0.65rem; font-family: var(--smat-font-mono); font-size: 0.8rem;">
+            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Active Configuration:</strong> <span id="trib-mat-out">Hybrid Branch D: A05 Impeller + R55 Liners</span></div>
+            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Toughness K<sub>Ic</sub>:</strong> <span id="trib-kic-out">18.5 MPa·√m (Toughness OK)</span></div>
+            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>NIOSH Mass &amp; Rigging:</strong> <span id="trib-arch-out">418 kg · 5 NIOSH ≥ 23 kg (6x4)</span></div>
+          </div>
+          <div id="trib-status-out" style="padding: 0.6rem 0.8rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-family: var(--smat-font-mono); font-size: 0.79rem; font-weight: 700;">
+            Finnie-Hutchings Angular Partition: 27% High Chrome Closed Impeller (A05) + Split R55 Natural Rubber Liners (FPL/CPL).
+          </div>
+        </div>
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:0.85rem; margin-top:0.85rem;">
           {wetMaterials.map((mat) => (
             <div class="card" style="background:#ffffff; border:1px solid #cbd5e1; padding:1rem;">
@@ -154,6 +199,11 @@ const wetMaterials = [
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  import { bindCanonicalTribologySelector } from '../../../scripts/verticalCalculatorsAndLabelsBridge.js';
+  bindCanonicalTribologySelector(document, 'en');
+</script>
 
 <style>
   .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 2.75rem 0; border-bottom: 2px solid var(--smat-copper-accent); }

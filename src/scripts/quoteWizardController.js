@@ -1203,8 +1203,8 @@ export function initQuoteWizardController() {
     var liveGy = calculateGyMinimumSampleMass({
       topSizeD95Mm: ctrlD95Val,
       liberationSizeMicrons: ctrlLibVal,
-      headGradePercent: ctrlGradeVal,
-      relativeErrorSigma: ctrlGyErrVal,
+      oreGradeDecimal: ctrlGradeVal,
+      targetRelativeStdError: ctrlGyErrVal,
       samplingConstantC: ctrlGyCVal,
       solidsWeightPercent: ctrlCwVal,
       solidsSpecificGravity: ctrlSgVal,
@@ -1586,9 +1586,9 @@ export function initQuoteWizardController() {
       if (recircAlertBox) recircAlertBox.classList.add('hidden');
       if (recircWarnDossier) recircWarnDossier.classList.add('hidden');
     } else if (currentCircuit === 'clasificacion') {
-      var selectRoleClas = document.getElementById('wb-role-clasificacion');
-      var selectClasSize = document.getElementById('wb-clas-dc-mm');
-      var selectClasLiner = document.getElementById('wb-clas-liner');
+      var selectRoleClas = document.getElementById('wb-role-cyc');
+      var selectClasSize = document.getElementById('wb-cyc-series');
+      var selectClasLiner = document.getElementById('wb-cyc-liner');
       var selectedOptClas = selectRoleClas?.options[selectRoleClas.selectedIndex];
       roleVal = selectRoleClas?.value || 'apex_vortex_kit';
       roleText = selectedOptClas ? selectedOptClas.text : (isEs ? 'Kit Apex + Vortex Finder Antiabrasivo (Ciclón Plitt)' : 'Apex + Vortex Finder Anti-Abrasion Kit (Plitt Cyclone)');
@@ -1674,6 +1674,11 @@ export function initQuoteWizardController() {
       } else if (currentCircuit === 'control_procesos') {
         activeRoleForSpecs = selectRoleCtrl?.value || 'balanza_marcy';
         activePipeForSpecs = selectCtrlSpec?.value || 'marcy_12_rings';
+      } else if (currentCircuit === 'clasificacion') {
+        var selectRoleClasSpec = document.getElementById('wb-role-cyc');
+        var selectClasSizeSpec = document.getElementById('wb-cyc-series');
+        activeRoleForSpecs = selectRoleClasSpec?.value || 'hidrociclon_apex_vortex';
+        activePipeForSpecs = 'D' + (selectClasSizeSpec?.value || '380');
       }
       currentPartSpecs = getAtomicPartSpecs(
         currentAtomicCode || (currentBomOverride && currentBomOverride.pieza) || activeRoleForSpecs,
@@ -1903,9 +1908,10 @@ export function initQuoteWizardController() {
         smat_code: smatCode
       });
       var liveAssemblySeq = evaluatePumpAssemblySequence({
-        clearanceMm: currentClearanceEval.frontClearanceMm,
+        frontClearanceMm: currentClearanceEval.frontClearanceMm,
         impellerTorqueNm: 450,
-        d80Um: currentHydraulicMetrics.d80_um || 180
+        d80Microns: currentHydraulicMetrics.d80_um || 180,
+        sequencePreset: String(document.getElementById('wb-assembly-sequence')?.value || 'canonical')
       });
       var liveReorderEval = calculateCoupledReorderWindowDays({
         solidsVolumetricPct: currentHydraulicMetrics.solids_cv || 22,
@@ -2110,6 +2116,9 @@ export function initQuoteWizardController() {
     selectRole,
     selectRoleFlot, selectFlotCapacity,
     selectRoleFilt, selectFiltCapacity,
+    document.getElementById('wb-role-cyc'),
+    document.getElementById('wb-cyc-series'),
+    document.getElementById('wb-cyc-liner'),
     dimOuterDia, dimShaftBore,
     inputDetails, inputClientRef, inputName, inputCompany, inputPhone, inputEmail, inputDest
   ].forEach(function (el) {
@@ -2482,9 +2491,9 @@ export function initQuoteWizardController() {
       sizeVal = selectCtrlSpec?.value || 'marcy_12_rings';
       condVal = 'control_laboratorio';
     } else if (circuit === 'clasificacion') {
-      var selectRoleClasCollect = document.getElementById('wb-role-clasificacion');
-      var selectClasSizeCollect = document.getElementById('wb-clas-dc-mm');
-      var selectClasLinerCollect = document.getElementById('wb-clas-liner');
+      var selectRoleClasCollect = document.getElementById('wb-role-cyc');
+      var selectClasSizeCollect = document.getElementById('wb-cyc-series');
+      var selectClasLinerCollect = document.getElementById('wb-cyc-liner');
       var roleOptCl = selectRoleClasCollect?.options[selectRoleClasCollect.selectedIndex];
       role = roleOptCl ? roleOptCl.text : 'Kit Apex + Vortex Finder Antiabrasivo (Ciclón Plitt)';
       roleId = selectRoleClasCollect?.value || 'apex_vortex_kit';

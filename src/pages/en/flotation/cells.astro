@@ -107,9 +107,17 @@ const criteria = celdaRole?.decision_criteria;
               <span>Rotor Speed (RPM):</span>
               <input type="number" id="celdas-rpm-input" min="120" max="380" step="5" value="215" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
             </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Particle Size d<sub>80</sub> (µm):</span>
+              <input type="number" id="celdas-d80-input" min="25" max="850" step="10" value="150" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+              <span>Solids by Weight C<sub>w</sub> (%):</span>
+              <input type="number" id="celdas-cw-input" min="15" max="65" step="1" value="35" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
           </div>
           <div id="celdas-gorain-readout" style="margin-bottom: 0.85rem; padding: 0.65rem 0.85rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-family: var(--smat-font-mono); font-size: 0.82rem; font-weight: 700;">
-            S<sub>b</sub> = <span id="celdas-sb-output">56.25</span> s<sup>-1</sup> · v<sub>tip</sub> = <span id="celdas-vtip-output">6.87</span> m/s · k = <span id="celdas-k-output">1.185</span> min<sup>-1</sup> · N<sub>js</sub> = <span id="celdas-njs-output">156</span> RPM (Gorain ≥ 50 s<sup>-1</sup> OPTIMAL · Zwietering FULL SUSPENSION)
+            S<sub>b</sub> (s<sup>-1</sup>): <span id="celdas-sb-output">56.25</span> · v<sub>tip</sub> (m/s): <span id="celdas-vtip-output">6.87</span> · k (min<sup>-1</sup>): <span id="celdas-k-output">1.185</span> · N<sub>js</sub>: <span id="celdas-njs-output">156</span> RPM (<span id="celdas-status-output">Gorain ≥ 50 s⁻¹ OPTIMAL · Zwietering FULL SUSPENSION</span>)
           </div>
           <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
             <a href="/en/products/suspended-flotation-mechanism-18sp/" class="btn btn-outline" style="font-size:0.8rem;">SMAT-FLOT-MECH-18SP · Suspended Mechanism (#18 SP, #24, #30) →</a>

@@ -9,6 +9,8 @@ pub mod v34_canonical_gates;
 pub use v34_canonical_gates::*;
 pub mod v42_html_surface_and_contract_gates;
 pub use v42_html_surface_and_contract_gates::*;
+pub mod v43_contract_and_sensitivity_gates;
+pub use v43_contract_and_sensitivity_gates::*;
 
 pub struct GateReport {
     pub name: String,
@@ -899,6 +901,11 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             passed: check_v42_zero_visible_html_leaks_and_canonical_calculators_gate_45(site_root).is_ok(),
             details: check_v42_zero_visible_html_leaks_and_canonical_calculators_gate_45(site_root).err().unwrap_or_else(|| "OK: Puente canonico verticalCalculatorsAndLabelsBridge.js (LCOM4=1), 0 campos huerfanos y 0 fugas snake_case/ROLES.JSON/D7/D8 en dist/**/*.html.".to_string()),
         },
+        GateReport {
+            name: "46. Contrato Tipado Unificado DOM <-> Fisica <-> Slots, 0 IDs Fantasma, Sensibilidad Diferencial (∂y/∂x != 0) en Gy/RR/Darcy, Calculadoras de Bombeo y 5 Ramas de Material (Gate V4.3 D1..D11)".to_string(),
+            passed: check_v43_unified_contract_zero_phantom_ids_and_sensitivity_gate_46(site_root).is_ok(),
+            details: check_v43_unified_contract_zero_phantom_ids_and_sensitivity_gate_46(site_root).err().unwrap_or_else(|| "OK: 0 IDs fantasma, sensibilidad diferencial no nula en Gy/Rosin-Rammler/Darcy-Ruth, alerta NOM-141 >16%, calculadoras interactivas en Bombeo/Filtracion/Flotacion y 5 ramas de material.".to_string()),
+        },
     ]
 }
 
@@ -1456,5 +1463,12 @@ mod tests {
         let root = find_site_root();
         let res = check_v42_zero_visible_html_leaks_and_canonical_calculators_gate_45(&root);
         assert!(res.is_ok(), "Fallo en Gate 45 (V4.2 Zero Visible HTML Leaks & Canonical Calculators): {:?}", res.err());
+    }
+
+    #[test]
+    fn test_gate_46_v43_unified_contract_zero_phantom_ids_and_sensitivity() {
+        let root = find_site_root();
+        let res = check_v43_unified_contract_zero_phantom_ids_and_sensitivity_gate_46(&root);
+        assert!(res.is_ok(), "Fallo en Gate 46 (V4.3 Unified Contract, Zero Phantom IDs & Differential Sensitivity): {:?}", res.err());
     }
 }
