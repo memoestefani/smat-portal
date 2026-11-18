@@ -103,7 +103,7 @@ export function projectPumpDriveAndHybridTelemetry(wizardRoot, payload = {}) {
     }
   );
 
-  const maxRpmVal = frameInfo.maxRpm ?? 2200;
+  const maxRpmVal = frameEval.maxRpm ?? 2200;
   setNodeTextAndAttrs(
     wizardRoot,
     '#wb-drive-frame-specs',
