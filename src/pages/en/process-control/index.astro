@@ -445,8 +445,9 @@ const tamizRole = ctrlVertical?.opex?.find((r) => r.role_id === 'tamices_laborat
       marcyMain.textContent = `${marcy.cupNetMassGrams} g net • ρp = ${marcy.pulpDensityKgL.toFixed(3)} kg/L`;
     }
     if (marcySub) {
-      const ringObj = MARCY_STANDARD_RINGS.find((r: any) => Math.abs(Number(r.oreSg) - Number(marcy.recommendedRingSg)) < 0.06) || MARCY_STANDARD_RINGS[3];
-      marcySub.textContent = `Active Marcy ring: #${ringObj?.ringNumber || 4} SG ${marcy.recommendedRingSg.toFixed(1)} (${ringObj?.colorCode || 'Std'} of ${MARCY_STANDARD_RINGS.length} rings • Cv = ${marcy.solidsVolumePercent}%)`;
+      const ringIdx = MARCY_STANDARD_RINGS.findIndex((r: any) => Math.abs(Number(r?.oreSg ?? r) - Number(marcy.recommendedRingSg)) < 0.06);
+      const ringNum = ringIdx >= 0 ? ringIdx + 1 : 4;
+      marcySub.textContent = `Active Marcy ring: #${ringNum} SG ${marcy.recommendedRingSg.toFixed(1)} (of ${MARCY_STANDARD_RINGS.length} rings • Cv = ${marcy.solidsVolumePercent}%)`;
     }
     if (marcyBias) {
       marcyBias.textContent = `Dry solids in cup: ${marcy.drySolidsMassGramsInCup} g • Apparent ring Cw: ${marcy.ringApparentCw}% (Bias ΔC_bias = ${marcy.wrongRingBiasPoints} pts) • ${marcy.recommendedContainerEn}`;

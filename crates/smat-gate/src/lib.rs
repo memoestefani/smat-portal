@@ -889,6 +889,16 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             passed: check_v40_single_canonical_surface_and_zero_visible_metalanguage_gate_43(site_root).is_ok(),
             details: check_v40_single_canonical_surface_and_zero_visible_metalanguage_gate_43(site_root).err().unwrap_or_else(|| "OK: 1 carrito canonico por vista, consola 4-tab en /bombeo/, portada Cowan <= 4.00 y 0 metalenguaje visible (PRIORIDAD-cμ, FNV-1a, INV-SMAT-*).".to_string()),
         },
+        GateReport {
+            name: "44. Visibilidad XOR Viva de las 3 Calculadoras en /cotizar/, Lente Polimorfica PutGet, Core Trade-In 3-Niveles (-22%/-12%/0%) y Proyeccion >90 Campos Backend (Gate V4.1 D1..D9)".to_string(),
+            passed: check_v41_zero_unexposed_backend_fields_and_live_xor_visibility_gate_44(site_root).is_ok(),
+            details: check_v41_zero_unexposed_backend_fields_and_live_xor_visibility_gate_44(site_root).err().unwrap_or_else(|| "OK: 3 calculadoras XOR vivas en /cotizar/, Lente PutGet polimorfica, Core Trade-In 3 niveles y >90 campos proyectados.".to_string()),
+        },
+        GateReport {
+            name: "45. Puente Canonico de Calculadoras Verticales (LCOM4=1), Clausura 100% de Retornos Backend (0 Huerfanos) y Cero Fugas Visibles en 286 Paginas dist/**/*.html (Gate V4.2 D1..D9)".to_string(),
+            passed: check_v42_zero_visible_html_leaks_and_canonical_calculators_gate_45(site_root).is_ok(),
+            details: check_v42_zero_visible_html_leaks_and_canonical_calculators_gate_45(site_root).err().unwrap_or_else(|| "OK: Puente canonico verticalCalculatorsAndLabelsBridge.js (LCOM4=1), 0 campos huerfanos y 0 fugas snake_case/ROLES.JSON/D7/D8 en dist/**/*.html.".to_string()),
+        },
     ]
 }
 

@@ -446,8 +446,9 @@ const tamizRole = ctrlVertical?.opex?.find((r) => r.role_id === 'tamices_laborat
       marcyMain.textContent = `${marcy.cupNetMassGrams} g netos • ρp = ${marcy.pulpDensityKgL.toFixed(3)} kg/L`;
     }
     if (marcySub) {
-      const ringObj = MARCY_STANDARD_RINGS.find((r: any) => Math.abs(Number(r.oreSg) - Number(marcy.recommendedRingSg)) < 0.06) || MARCY_STANDARD_RINGS[3];
-      marcySub.textContent = `Anillo Marcy activo: #${ringObj?.ringNumber || 4} SG ${marcy.recommendedRingSg.toFixed(1)} (${ringObj?.colorCode || 'Std'} de ${MARCY_STANDARD_RINGS.length} anillos • Cv = ${marcy.solidsVolumePercent}%)`;
+      const ringIdx = MARCY_STANDARD_RINGS.findIndex((r: any) => Math.abs(Number(r?.oreSg ?? r) - Number(marcy.recommendedRingSg)) < 0.06);
+      const ringNum = ringIdx >= 0 ? ringIdx + 1 : 4;
+      marcySub.textContent = `Anillo Marcy activo: #${ringNum} SG ${marcy.recommendedRingSg.toFixed(1)} (de ${MARCY_STANDARD_RINGS.length} anillos • Cv = ${marcy.solidsVolumePercent}%)`;
     }
     if (marcyBias) {
       marcyBias.textContent = `Sólidos secos en vaso: ${marcy.drySolidsMassGramsInCup} g • Cw aparente en anillo: ${marcy.ringApparentCw}% (Sesgo ΔC_bias = ${marcy.wrongRingBiasPoints} pts) • ${marcy.recommendedContainerEs}`;

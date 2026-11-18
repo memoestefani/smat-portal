@@ -103,12 +103,13 @@ export function projectPumpDriveAndHybridTelemetry(wizardRoot, payload = {}) {
     }
   );
 
+  const maxRpmVal = frameInfo.maxRpm ?? 2200;
   setNodeTextAndAttrs(
     wizardRoot,
     '#wb-drive-frame-specs',
     isEs
-      ? `Flecha Ø${shaftDiaMm} mm • Capacidad C ≥ ${recDynamicCkN} kN • P_máx ${maxPowerKw} kW • Factor Servicio ${frameServiceFactor} • a_ISO Laberinto ${aIsoLab}× vs Fieltro ${aIsoCont}×`
-      : `Shaft Ø${shaftDiaMm} mm • Dynamic C ≥ ${recDynamicCkN} kN • P_max ${maxPowerKw} kW • Service Factor ${frameServiceFactor} • a_ISO Labyrinth ${aIsoLab}× vs Felt ${aIsoCont}×`
+      ? `Flecha Ø${shaftDiaMm} mm • Capacidad C ≥ ${recDynamicCkN} kN • P_máx ${maxPowerKw} kW • n_máx ${maxRpmVal} RPM • Factor Servicio ${frameServiceFactor} • a_ISO Laberinto ${aIsoLab}× vs Fieltro ${aIsoCont}×`
+      : `Shaft Ø${shaftDiaMm} mm • Dynamic C ≥ ${recDynamicCkN} kN • P_max ${maxPowerKw} kW • n_max ${maxRpmVal} RPM • Service Factor ${frameServiceFactor} • a_ISO Labyrinth ${aIsoLab}× vs Felt ${aIsoCont}×`
   );
 
   // Rama D Híbrida (evaluateHybridWetEndConfiguration)

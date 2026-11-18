@@ -421,11 +421,11 @@ export const DRIVE_ARRANGEMENT_CATALOG = {
  * Dictamina el bastidor mecánico industrial (Frame B / C / D / E / F), cartucho de rodamientos
  * y capacidad dinámica base C (kN) según potencia en flecha (kW), RPM y serie de tubería (D4-V39).
  */
-export function selectBearingFrameByPowerAndRpm({
-  motorPowerKw = 55,
-  pumpRpm = 1150,
-  pipeSeries = '6x4'
-} = {}) {
+export function selectBearingFrameByPowerAndRpm(arg1 = {}, arg2, arg3) {
+  const isPositional = typeof arg1 === 'number' || typeof arg1 === 'string';
+  const motorPowerKw = isPositional ? arg1 : (arg1?.motorPowerKw ?? 55);
+  const pumpRpm = isPositional ? (arg2 ?? 1150) : (arg1?.pumpRpm ?? 1150);
+  const pipeSeries = isPositional ? (arg3 ?? '6x4') : (arg1?.pipeSeries ?? '6x4');
   const kw = clamp(motorPowerKw, 2.2, 750, 55);
   const rpm = clamp(pumpRpm, 250, 3600, 1150);
   const series = String(pipeSeries || '6x4').toLowerCase();
@@ -435,6 +435,7 @@ export function selectBearingFrameByPowerAndRpm({
       frameCode: 'FRAME-B',
       cartridgeCode: 'BAM005',
       maxPowerKw: 15,
+      maxRpm: 3200,
       recommendedDynamicCkN: 95,
       shaftDiameterMm: 38,
       serviceFactor: Number((15 / Math.max(2.2, kw)).toFixed(2)),
@@ -447,6 +448,7 @@ export function selectBearingFrameByPowerAndRpm({
       frameCode: 'FRAME-C',
       cartridgeCode: 'CAM005',
       maxPowerKw: 30,
+      maxRpm: 2600,
       recommendedDynamicCkN: 135,
       shaftDiameterMm: 48,
       serviceFactor: Number((30 / Math.max(5, kw)).toFixed(2)),
@@ -459,6 +461,7 @@ export function selectBearingFrameByPowerAndRpm({
       frameCode: 'FRAME-D',
       cartridgeCode: 'DAM005',
       maxPowerKw: 75,
+      maxRpm: 2200,
       recommendedDynamicCkN: 195,
       shaftDiameterMm: 65,
       serviceFactor: Number((75 / Math.max(15, kw)).toFixed(2)),
@@ -471,6 +474,7 @@ export function selectBearingFrameByPowerAndRpm({
       frameCode: 'FRAME-E',
       cartridgeCode: 'EAM005',
       maxPowerKw: 160,
+      maxRpm: 1600,
       recommendedDynamicCkN: 310,
       shaftDiameterMm: 85,
       serviceFactor: Number((160 / Math.max(45, kw)).toFixed(2)),
@@ -482,6 +486,7 @@ export function selectBearingFrameByPowerAndRpm({
     frameCode: 'FRAME-F',
     cartridgeCode: 'FAM005',
     maxPowerKw: 560,
+    maxRpm: 1200,
     recommendedDynamicCkN: 450,
     shaftDiameterMm: 110,
     serviceFactor: Number((560 / Math.max(110, kw)).toFixed(2)),

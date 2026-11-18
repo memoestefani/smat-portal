@@ -10,6 +10,7 @@ fn main() {
     println!("============================================================");
 
     let reports = run_all_checks(&site_root);
+    let total_gates = reports.len();
     let mut all_passed = true;
 
     for rep in reports {
@@ -25,7 +26,7 @@ fn main() {
 
     println!("------------------------------------------------------------");
     if all_passed {
-        println!(" [EXITO] Todas las 20 compuertas soberanas pasaron al 100%.");
+        println!(" [EXITO] Todas las {} compuertas soberanas pasaron al 100%.", total_gates);
         println!("         El arbol estatico esta listo para compilacion.");
         println!("============================================================");
         exit(0);
