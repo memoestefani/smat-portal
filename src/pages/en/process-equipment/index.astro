@@ -5,6 +5,17 @@ import TechnicalDiagrams from '../../../components/TechnicalDiagrams.astro';
 import CircuitNavigator from '../../../components/CircuitNavigator.astro';
 import CaseCards from '../../../components/CaseCards.astro';
 import SharePurchasing from '../../../components/SharePurchasing.astro';
+import { getQuickProductsCatalog, AVENUE_METADATA } from '../../../scripts/quickProductsCatalog.js';
+
+const allQuickSkus: any[] = getQuickProductsCatalog() as any[];
+const avenueCount = Object.keys(AVENUE_METADATA).length;
+const skusByVertical: Record<string, any[]> = {
+  flotacion: allQuickSkus.filter((s) => s.vertical === 'flotacion'),
+  filtracion: allQuickSkus.filter((s) => s.vertical === 'filtracion'),
+  bombeo: allQuickSkus.filter((s) => s.vertical === 'bombeo'),
+  clasificacion: allQuickSkus.filter((s) => s.vertical === 'clasificacion'),
+  control: allQuickSkus.filter((s) => s.vertical === 'control')
+};
 ---
 
 <BaseLayout
@@ -31,9 +42,31 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
 
   <section class="section" id="stage-diagnostic">
     <div class="container">
+      <div class="equipos-ssot-toolbar" style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 0.9rem 1.15rem; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: center; justify-content: space-between;">
+        <div style="flex: 1 1 300px;">
+          <label for="equipos-sku-search" style="display: block; font-family: var(--smat-font-mono); font-size: 0.74rem; font-weight: 800; color: #7c2d12; text-transform: uppercase; margin-bottom: 0.35rem;">
+            SSOT QUICK SEARCH ({allQuickSkus.length} SKUS ACROSS {avenueCount} AVENUES • 1-CLICK + TRAY)
+          </label>
+          <input
+            id="equipos-sku-search"
+            type="search"
+            placeholder="Filter by SKU (SMAT-ULTRAMET-4X3), code (E4147, D075C21), series (800-1500, D6-D20, Marcy)..."
+            style="width: 100%; min-height: 48px; padding: 0.55rem 0.85rem; border: 1.5px solid #94a3b8; border-radius: 8px; font-size: 0.92rem; background: #ffffff; color: #0f172a; box-sizing: border-box;"
+          />
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.35rem;">
+          <span data-equipos-search-count style="font-family: var(--smat-font-mono); font-size: 0.78rem; font-weight: 800; color: #0f172a; background: #ffffff; border: 1px solid #cbd5e1; padding: 0.35rem 0.75rem; border-radius: 999px;">
+            Showing {allQuickSkus.length} of {allQuickSkus.length} canonical SSOT SKUs across {avenueCount} Avenues
+          </span>
+          <a href="/en/catalog/" style="font-family: var(--smat-font-mono); font-size: 0.75rem; font-weight: 700; color: #9a3412; text-decoration: underline;">
+            Open Master {avenueCount}-Avenue Matrix ({allQuickSkus.length} SKUs) →
+          </a>
+        </div>
+      </div>
+
       <div class="process-equipment-grid">
         <!-- Equipment 1: Flotation Cell Mechanisms & Conditioners -->
-        <article class="card equipment-block">
+        <article class="card equipment-block" data-equipment-block="flotacion" data-equipment-block-blob="flotation cells mechanisms conditioners 18sp">
           <div class="equipment-block-header">
             <span class="badge badge-copper">CONCENTRATION CIRCUIT • 50 TO 300 FT³</span>
             <h2>Flotation Cell Mechanisms & Pulp Conditioners</h2>
@@ -47,6 +80,28 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
             <div><strong>Aeration:</strong> Self-aspirated or low-pressure forced air</div>
             <div><strong>Wear Elastomers:</strong> Abrasion-resistant natural rubber and molded Polyurethane</div>
           </div>
+          <details class="equipment-ssot-drawer" data-equipment-ssot-drawer style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.5rem 0.85rem; background: #f8fafc;">
+            <summary style="cursor: pointer; font-weight: 800; font-size: 0.86rem; color: #0f172a; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+              <span>▾ Canonical Flotation SSOT SKUs ({skusByVertical.flotacion.length} SKU • AV-07)</span>
+              <span style="font-family: var(--smat-font-mono); font-size: 0.72rem; color: #9a3412;">+ DIRECT TRAY ▾</span>
+            </summary>
+            <div class="equipment-ssot-skus" style="display: grid; gap: 0.6rem; margin-top: 0.65rem;">
+              {skusByVertical.flotacion.map((sku) => (
+                <div
+                  class="equipment-sku-pill"
+                  data-equipos-sku-pill={sku.id}
+                  data-equipos-search-blob={`${sku.id} ${sku.title_es} ${sku.title_en} ${(sku.atomic_codes || []).join(' ')} ${sku.avenueCode} ${sku.vertical}`}
+                  style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; padding: 0.55rem 0.75rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;"
+                >
+                  <div>
+                    <a href={`/en/products/${sku.slug_en}/`} style="font-weight: 800; color: #0f172a; text-decoration: underline; font-size: 0.86rem;">{sku.id} — {sku.title_en}</a>
+                    <div style="font-family: var(--smat-font-mono); font-size: 0.74rem; color: #475569;">{sku.avenueCode} · {sku.mass_kg} kg · JRP {sku.reorder_window_days}d</div>
+                  </div>
+                  <button type="button" class="btn btn-outline btn-avenue-tray" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={sku.title_en} style="min-height: 48px; padding: 0.35rem 0.75rem; font-size: 0.78rem;">+ Tray</button>
+                </div>
+              ))}
+            </div>
+          </details>
           <div class="equipment-actions">
             <a href="/en/flotation/" class="btn btn-outline">View Flotation Line</a>
             <a href="/en/flotation/cells/" class="btn btn-outline">50-300 ft³ Mechanisms</a>
@@ -56,7 +111,7 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
         </article>
 
         <!-- Equipment 2: Recessed-Chamber Filter Presses -->
-        <article class="card equipment-block">
+        <article class="card equipment-block" data-equipment-block="filtracion" data-equipment-block-blob="filtration filter presses cloths plates shifter 800 1500">
           <div class="equipment-block-header">
             <span class="badge badge-copper">CONCENTRATE & DRY TAILINGS FILTRATION • 800 TO 1500 MM</span>
             <h2>Recessed-Chamber Filter Presses (Up to 16 bar)</h2>
@@ -70,6 +125,28 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
             <div><strong>Operating Pressure:</strong> Up to 16 bar with manifold cake air-blow</div>
             <div><strong>Residual Cake Moisture:</strong> 10% to 14% depending on concentrate or tailings PSD</div>
           </div>
+          <details class="equipment-ssot-drawer" data-equipment-ssot-drawer style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.5rem 0.85rem; background: #f8fafc;">
+            <summary style="cursor: pointer; font-weight: 800; font-size: 0.86rem; color: #0f172a; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+              <span>▾ Canonical Filtration SSOT SKUs ({skusByVertical.filtracion.length} SKUs • AV-06)</span>
+              <span style="font-family: var(--smat-font-mono); font-size: 0.72rem; color: #9a3412;">+ DIRECT TRAY ▾</span>
+            </summary>
+            <div class="equipment-ssot-skus" style="display: grid; gap: 0.6rem; margin-top: 0.65rem;">
+              {skusByVertical.filtracion.map((sku) => (
+                <div
+                  class="equipment-sku-pill"
+                  data-equipos-sku-pill={sku.id}
+                  data-equipos-search-blob={`${sku.id} ${sku.title_es} ${sku.title_en} ${(sku.atomic_codes || []).join(' ')} ${sku.avenueCode} ${sku.vertical}`}
+                  style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; padding: 0.55rem 0.75rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;"
+                >
+                  <div>
+                    <a href={`/en/products/${sku.slug_en}/`} style="font-weight: 800; color: #0f172a; text-decoration: underline; font-size: 0.86rem;">{sku.id} — {sku.title_en}</a>
+                    <div style="font-family: var(--smat-font-mono); font-size: 0.74rem; color: #475569;">{sku.avenueCode} · {sku.mass_kg} kg · JRP {sku.reorder_window_days}d</div>
+                  </div>
+                  <button type="button" class="btn btn-outline btn-avenue-tray" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={sku.title_en} style="min-height: 48px; padding: 0.35rem 0.75rem; font-size: 0.78rem;">+ Tray</button>
+                </div>
+              ))}
+            </div>
+          </details>
           <div class="equipment-actions">
             <a href="/en/filtration/" class="btn btn-outline">View Filtration Line</a>
             <a href="/en/filtration/press/" class="btn btn-outline">800-1500 mm Filter Presses</a>
@@ -79,7 +156,7 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
         </article>
 
         <!-- Equipment 3: Complete Project Slurry Pump Packages -->
-        <article class="card equipment-block">
+        <article class="card equipment-block" data-equipment-block="bombeo" data-equipment-block-blob="pumping slurry pumps wet end impeller liners expeller cartridge 005m">
           <div class="equipment-block-header">
             <span class="badge badge-copper">PROJECT SLURRY PUMPING • 1.5X1" TO 14X12"</span>
             <h2>Complete Horizontal & Vertical Slurry Pump Packages</h2>
@@ -95,6 +172,28 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
             <div><strong>Shaft Sealing:</strong> Dry centrifugal expeller and stuffing box (no mechanical seals)</div>
             <div><strong>Operational Spares:</strong> Available under <a href="/en/pumping/">Slurry Pumps & Spare Parts</a></div>
           </div>
+          <details class="equipment-ssot-drawer" data-equipment-ssot-drawer style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.5rem 0.85rem; background: #f8fafc;">
+            <summary style="cursor: pointer; font-weight: 800; font-size: 0.86rem; color: #0f172a; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+              <span>▾ Canonical Pumping & Dry-Seal SSOT SKUs ({skusByVertical.bombeo.length} SKUs • AV-03 / AV-04)</span>
+              <span style="font-family: var(--smat-font-mono); font-size: 0.72rem; color: #9a3412;">+ DIRECT TRAY ▾</span>
+            </summary>
+            <div class="equipment-ssot-skus" style="display: grid; gap: 0.6rem; margin-top: 0.65rem;">
+              {skusByVertical.bombeo.map((sku) => (
+                <div
+                  class="equipment-sku-pill"
+                  data-equipos-sku-pill={sku.id}
+                  data-equipos-search-blob={`${sku.id} ${sku.title_es} ${sku.title_en} ${(sku.atomic_codes || []).join(' ')} ${sku.avenueCode} ${sku.vertical}`}
+                  style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; padding: 0.55rem 0.75rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;"
+                >
+                  <div>
+                    <a href={`/en/products/${sku.slug_en}/`} style="font-weight: 800; color: #0f172a; text-decoration: underline; font-size: 0.86rem;">{sku.id} — {sku.title_en}</a>
+                    <div style="font-family: var(--smat-font-mono); font-size: 0.74rem; color: #475569;">{sku.avenueCode} · {sku.mass_kg} kg · JRP {sku.reorder_window_days}d · {(sku.atomic_codes || []).slice(0, 4).join(', ')}</div>
+                  </div>
+                  <button type="button" class="btn btn-outline btn-avenue-tray" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={sku.title_en} style="min-height: 48px; padding: 0.35rem 0.75rem; font-size: 0.78rem;">+ Tray</button>
+                </div>
+              ))}
+            </div>
+          </details>
           <div class="equipment-actions">
             <a href="/en/pumping/skid/#drive-arrangements" class="btn btn-outline">View CV / ZVZ / CRZ / DC Drives</a>
             <a href="/en/pumping/#how-a-slurry-pump-is-assembled" class="btn btn-outline">View Pump Assembly & Exploded BOM</a>
@@ -104,7 +203,7 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
         </article>
 
         <!-- Equipment 4: Classification Hydrocyclones, Apex & Vortex Finder -->
-        <article class="card equipment-block">
+        <article class="card equipment-block" data-equipment-block="clasificacion" data-equipment-block-blob="classification hydrocyclones apex vortex finder screens th48 d6 d20">
           <div class="equipment-block-header">
             <span class="badge badge-copper">CLASSIFICATION & GRINDING • PLITT d50c • 3-CUP MARCY BALANCE</span>
             <h2>Classification Hydrocyclones, Apex Spigots & Vortex Finders</h2>
@@ -118,11 +217,70 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
             <div><strong>Hydrodynamic Control:</strong> Du/Do ratio & Plitt d<sub>50c</sub> model without belt scales</div>
             <div><strong>Field Diagnostics:</strong> Early roping alert (C<sub>v,u</sub> ≥ 56%) and umbrella spray detection</div>
           </div>
+          <details class="equipment-ssot-drawer" data-equipment-ssot-drawer style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.5rem 0.85rem; background: #f8fafc;">
+            <summary style="cursor: pointer; font-weight: 800; font-size: 0.86rem; color: #0f172a; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+              <span>▾ Canonical Classification & Screening SSOT SKUs ({skusByVertical.clasificacion.length} SKUs • AV-05)</span>
+              <span style="font-family: var(--smat-font-mono); font-size: 0.72rem; color: #9a3412;">+ DIRECT TRAY ▾</span>
+            </summary>
+            <div class="equipment-ssot-skus" style="display: grid; gap: 0.6rem; margin-top: 0.65rem;">
+              {skusByVertical.clasificacion.map((sku) => (
+                <div
+                  class="equipment-sku-pill"
+                  data-equipos-sku-pill={sku.id}
+                  data-equipos-search-blob={`${sku.id} ${sku.title_es} ${sku.title_en} ${(sku.atomic_codes || []).join(' ')} ${sku.avenueCode} ${sku.vertical}`}
+                  style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; padding: 0.55rem 0.75rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;"
+                >
+                  <div>
+                    <a href={`/en/products/${sku.slug_en}/`} style="font-weight: 800; color: #0f172a; text-decoration: underline; font-size: 0.86rem;">{sku.id} — {sku.title_en}</a>
+                    <div style="font-family: var(--smat-font-mono); font-size: 0.74rem; color: #475569;">{sku.avenueCode} · {sku.mass_kg} kg · JRP {sku.reorder_window_days}d</div>
+                  </div>
+                  <button type="button" class="btn btn-outline btn-avenue-tray" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={sku.title_en} style="min-height: 48px; padding: 0.35rem 0.75rem; font-size: 0.78rem;">+ Tray</button>
+                </div>
+              ))}
+            </div>
+          </details>
           <div class="equipment-actions">
             <a href="/en/classification/" class="btn btn-outline">Open 3-Cup Marcy Simulator</a>
             <a href="/en/products/hydrocyclone-assembly-and-spigots-d6-d20/" class="btn btn-outline">View Apex Sheet SMAT-CYC-D6-D20</a>
             <a href="/en/products/coupled-pump-hydrocyclone-package/" class="btn btn-outline">View Package Sheet SMAT-COUPLED-PUMP-CYC</a>
             <a href="/en/quote/?circuito=clasificacion&equipo=hidrociclon&sku=SMAT-CYC-D6-D20#rfq" class="btn btn-primary">Quote Hydrocyclone / Apex →</a>
+          </div>
+        </article>
+
+        <!-- Equipment 5: Metallurgical Instrumentation, Marcy Scales & ASTM E11 Sieves (AV-01 / AV-02) -->
+        <article class="card equipment-block" data-equipment-block="control" data-equipment-block-blob="control marcy scale batch filter astm e11 sieves rotap pulverizer">
+          <div class="equipment-block-header">
+            <span class="badge badge-copper">PULP METROLOGY & LAB COMMINUTION • AV-01 & AV-02</span>
+            <h2>Marcy Scales, Batch Lab Filter Presses & ASTM E11 Sieves</h2>
+            <p style="color: var(--smat-text-secondary);">
+              Shift metallurgical instrumentation for pulp density (% solids) audits, 100 PSI batch sample dewatering, and P<sub>80</sub> particle-size distribution (4 to 400 Mesh).
+            </p>
+          </div>
+          <details class="equipment-ssot-drawer" data-equipment-ssot-drawer style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.5rem 0.85rem; background: #f8fafc;">
+            <summary style="cursor: pointer; font-weight: 800; font-size: 0.86rem; color: #0f172a; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+              <span>▾ Canonical Metrology & Lab SSOT SKUs ({skusByVertical.control.length} SKUs • AV-01 / AV-02)</span>
+              <span style="font-family: var(--smat-font-mono); font-size: 0.72rem; color: #9a3412;">+ DIRECT TRAY ▾</span>
+            </summary>
+            <div class="equipment-ssot-skus" style="display: grid; gap: 0.6rem; margin-top: 0.65rem;">
+              {skusByVertical.control.map((sku) => (
+                <div
+                  class="equipment-sku-pill"
+                  data-equipos-sku-pill={sku.id}
+                  data-equipos-search-blob={`${sku.id} ${sku.title_es} ${sku.title_en} ${(sku.atomic_codes || []).join(' ')} ${sku.avenueCode} ${sku.vertical}`}
+                  style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; padding: 0.55rem 0.75rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;"
+                >
+                  <div>
+                    <a href={`/en/products/${sku.slug_en}/`} style="font-weight: 800; color: #0f172a; text-decoration: underline; font-size: 0.86rem;">{sku.id} — {sku.title_en}</a>
+                    <div style="font-family: var(--smat-font-mono); font-size: 0.74rem; color: #475569;">{sku.avenueCode} · {sku.mass_kg} kg · JRP {sku.reorder_window_days}d</div>
+                  </div>
+                  <button type="button" class="btn btn-outline btn-avenue-tray" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={sku.title_en} style="min-height: 48px; padding: 0.35rem 0.75rem; font-size: 0.78rem;">+ Tray</button>
+                </div>
+              ))}
+            </div>
+          </details>
+          <div class="equipment-actions">
+            <a href="/en/process-control/" class="btn btn-outline">View Process Control & Lab Line</a>
+            <a href="/en/catalog/#avenue-avenue_1_metrology" class="btn btn-outline">Open Avenues AV-01 & AV-02</a>
           </div>
         </article>
       </div>
@@ -152,6 +310,12 @@ import SharePurchasing from '../../../components/SharePurchasing.astro';
       </div>
     </details>
   </section>
+
+  <script>
+    import { bindEquipmentCatalogSearchAndTray } from '../../../scripts/homeAndEquipmentCatalogFilter.js';
+    bindEquipmentCatalogSearchAndTray(document, 'en');
+    document.addEventListener('astro:page-load', () => bindEquipmentCatalogSearchAndTray(document, 'en'));
+  </script>
 </BaseLayout>
 
 <style>

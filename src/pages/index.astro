@@ -4,9 +4,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import TrustMatrix from '../components/TrustMatrix.astro';
 import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
 import ProductQuickCard from '../components/ProductQuickCard.astro';
-import { getQuickProductsCatalog } from '../scripts/quickProductsCatalog.js';
+import { getQuickProductsCatalog, getQuickProductsByAvenue, AVENUE_METADATA as RAW_AVENUE_METADATA } from '../scripts/quickProductsCatalog.js';
 
+const AVENUE_METADATA: Record<string, any> = RAW_AVENUE_METADATA as any;
 const quickCatalog = getQuickProductsCatalog();
+const quickByAvenue: Record<string, any[]> = getQuickProductsByAvenue() as any;
+const avenueKeys = Object.keys(AVENUE_METADATA);
 const familyFilterChipsEs = [
   { id: 'all', label: 'Todas las Familias (19)' },
   { id: 'control', label: '⚖️ Balanza Marcy y Lab (7)' },
@@ -38,9 +41,7 @@ const familyFilterChipsEs = [
 
       <div class="hero-actions">
         <a href="/cotizar/#rfq" class="btn btn-primary btn-lg">Solicitar Cotización</a>
-        <a href="/bombeo/#pump-assembly-report" class="btn btn-outline btn-lg">Ver Despiece y Cómo se Arma una Bomba</a>
-        <a href="/clasificacion/" class="btn btn-outline btn-lg">Hidrociclones y Balance 3 Vasos Marcy</a>
-        <a href="/catalogo/" class="btn btn-outline btn-lg">Catálogo General (19 SKUs + 13 Códigos)</a>
+        <a href="/catalogo/" class="btn btn-outline btn-lg">Catálogo General ({quickCatalog.length} SKUs en {avenueKeys.length} Avenidas)</a>
       </div>
     </div>
   </section>
@@ -225,8 +226,8 @@ const familyFilterChipsEs = [
 
       <details class="home-catalog-drawer" id="home-quick-catalog-drawer" data-progressive-cowan-drawer="true" style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 0.75rem 1.25rem;">
         <summary class="home-catalog-summary" style="cursor: pointer; font-weight: 800; color: #0f172a; display: flex; justify-content: space-between; align-items: center; min-height: 48px; box-sizing: border-box; gap: 0.75rem; flex-wrap: wrap;">
-          <span>▾ Explorar Catálogo Rápido de las 19 Configuraciones y Kits SMAT (8 Familias de Planta)</span>
-          <span style="font-family: var(--smat-font-mono); font-size: 0.76rem; color: #7c2d12; background: #fff7ed; border: 1px solid #fed7aa; padding: 0.25rem 0.65rem; border-radius: 999px;">DESPLEGAR 19 SKUS ▾</span>
+          <span>▾ Explorar Catálogo Rápido de las {quickCatalog.length} Configuraciones y Kits SMAT ({avenueKeys.length} Avenidas SSOT)</span>
+          <span style="font-family: var(--smat-font-mono); font-size: 0.76rem; color: #7c2d12; background: #fff7ed; border: 1px solid #fed7aa; padding: 0.25rem 0.65rem; border-radius: 999px;">DESPLEGAR {quickCatalog.length} SKUS EN {avenueKeys.length} AVENIDAS ▾</span>
         </summary>
         <div class="hero-family-chip-bar" role="toolbar" aria-label="Filtro rápido por familia de producto" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0 1.25rem;">
           {familyFilterChipsEs.map((chip, idx) => (
@@ -241,33 +242,56 @@ const familyFilterChipsEs = [
             </button>
           ))}
         </div>
-        <div class="quick-sku-grid">
-          {quickCatalog.map((item) => {
-            const isSinglePartSku = item.id === 'SMAT-PUMP-IMP-AH' || item.id === 'SMAT-PUMP-LINERS-AH';
-            const cleanRfqHref = isSinglePartSku && item.atomic_codes.length > 0
-              ? `/cotizar/?sku=${encodeURIComponent(item.id)}&codigo=${encodeURIComponent(item.atomic_codes.includes('E4147') ? 'E4147' : item.atomic_codes[0])}#rfq`
-              : `/cotizar/?sku=${encodeURIComponent(item.id)}#rfq`;
+        <div class="home-avenues-stack" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          {avenueKeys.map((avKey) => {
+            const meta = AVENUE_METADATA[avKey];
+            const skus = quickByAvenue[avKey] || [];
             return (
-              <article
-                class="quick-sku-card"
-                data-sku-family={item.vertical}
-                data-sku-id={item.id}
+              <div
+                class="home-avenue-group"
+                data-home-avenue-group={meta.id}
+                data-avenue-code={meta.code}
+                style="border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.9rem 1rem; background: #f8fafc;"
               >
-                <div class="quick-sku-top">
-                  <span class="quick-sku-id">{item.id} · {item.stock_regime === 'se_fabrica' ? '🔵 SE FABRICA' : item.stock_regime === 'se_pide' ? '🟡 SE PIDE' : '🟢 HAY'}</span>
-                  {item.atomic_codes.length > 0 && (
-                    <span class="quick-sku-atomic">{item.atomic_codes.join(' · ')}</span>
-                  )}
+                <div class="home-avenue-group-head" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e2e8f0;">
+                  <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                    <span style="font-family: var(--smat-font-mono); font-size: 0.74rem; font-weight: 800; color: #9a3412; background: #ffedd5; border: 1px solid #fdba74; padding: 0.15rem 0.5rem; border-radius: 999px;">{meta.code} • {meta.gateLock}</span>
+                    <strong style="font-size: 0.95rem; color: #0f172a;">{meta.labelEs}</strong>
+                  </div>
+                  <span style="font-family: var(--smat-font-mono); font-size: 0.74rem; font-weight: 700; color: #475569;">{skus.length} SKUs SSOT</span>
                 </div>
-                <h3 class="quick-sku-title">
-                  <a href={`/productos/${item.slug_es}/`}>{item.title_es}</a>
-                </h3>
-                <ProductQuickCard sku={item} lang="es" />
-                <div class="quick-sku-actions" style="margin-top: 0.75rem;">
-                  <a href={`/productos/${item.slug_es}/`} class="part-chip part-chip--highlight">Ver Ficha Completa y Rayos X →</a>
-                  <a href={cleanRfqHref} class="part-chip">+ Dossier RFQ</a>
+                <div class="quick-sku-grid">
+                  {skus.map((item) => {
+                    const isSinglePartSku = item.id === 'SMAT-PUMP-IMP-AH' || item.id === 'SMAT-PUMP-LINERS-AH';
+                    const cleanRfqHref = isSinglePartSku && item.atomic_codes.length > 0
+                      ? `/cotizar/?sku=${encodeURIComponent(item.id)}&codigo=${encodeURIComponent(item.atomic_codes.includes('E4147') ? 'E4147' : item.atomic_codes[0])}#rfq`
+                      : `/cotizar/?sku=${encodeURIComponent(item.id)}#rfq`;
+                    return (
+                      <article
+                        class="quick-sku-card"
+                        data-sku-family={item.vertical}
+                        data-sku-id={item.id}
+                        data-sku-avenue={meta.id}
+                      >
+                        <div class="quick-sku-top">
+                          <span class="quick-sku-id">{item.id} · {item.stock_regime === 'se_fabrica' ? '🔵 SE FABRICA' : item.stock_regime === 'se_pide' ? '🟡 SE PIDE' : '🟢 HAY'}</span>
+                          {item.atomic_codes.length > 0 && (
+                            <span class="quick-sku-atomic">{item.atomic_codes.join(' · ')}</span>
+                          )}
+                        </div>
+                        <h3 class="quick-sku-title">
+                          <a href={`/productos/${item.slug_es}/`}>{item.title_es}</a>
+                        </h3>
+                        <ProductQuickCard sku={item} lang="es" />
+                        <div class="quick-sku-actions" style="margin-top: 0.75rem;">
+                          <a href={`/productos/${item.slug_es}/`} class="part-chip part-chip--highlight">Ver Ficha Completa y Rayos X →</a>
+                          <a href={cleanRfqHref} class="part-chip">+ Dossier RFQ</a>
+                        </div>
+                      </article>
+                    );
+                  })}
                 </div>
-              </article>
+              </div>
             );
           })}
         </div>
@@ -276,65 +300,9 @@ const familyFilterChipsEs = [
   </section>
 
   <script>
-    import { verifyDropInEquivalence } from '../scripts/dropInEquivalenceGuard.js';
-    function matchesFamilyFilter(skuId: string, vertical: string, filterId: string): boolean {
-      if (!filterId || filterId === 'all') return true;
-      if (filterId === 'tamices') return skuId === 'SMAT-LAB-TAMIZ-E11' || skuId === 'SMAT-LAB-ROTAP-MECH';
-      if (filterId === 'sello_potencia') return skuId === 'SMAT-PUMP-EXPELLER-KIT' || skuId === 'SMAT-PUMP-BRG-005M';
-      return vertical === filterId;
-    }
-    function bindDropInVerifier() {
-      const chips = document.querySelectorAll('[data-family-chip]');
-      const skuCards = document.querySelectorAll('[data-sku-family]');
-      chips.forEach((chip) => {
-        chip.addEventListener('click', () => {
-          const filterId = chip.getAttribute('data-family-chip') || 'all';
-          chips.forEach((c) => {
-            const active = c.getAttribute('data-family-chip') === filterId;
-            c.setAttribute('aria-pressed', active ? 'true' : 'false');
-            c.classList.toggle('part-chip--highlight', active);
-          });
-          skuCards.forEach((card) => {
-            const skuId = card.getAttribute('data-sku-id') || '';
-            const vertical = card.getAttribute('data-sku-family') || '';
-            const visible = matchesFamilyFilter(skuId, vertical, filterId);
-            if (card instanceof HTMLElement) {
-              card.style.display = visible ? '' : 'none';
-            }
-          });
-          const catalogSection = document.getElementById('home-quick-checkout-catalog');
-          catalogSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-      });
-
-      const box = document.querySelector('[data-dropin-verifier]');
-      if (!box) return;
-      const input = box.querySelector('[data-dropin-input]') as HTMLInputElement | null;
-      const btn = box.querySelector('[data-dropin-btn]');
-      const out = box.querySelector('[data-dropin-result]') as HTMLElement | null;
-      const run = () => {
-        if (!input || !out) return;
-        const res = verifyDropInEquivalence(input.value);
-        out.style.display = 'block';
-        if (res.matched && res.geometricTripletMm) {
-          out.innerHTML = `✅ MATCH DROP-IN: <strong>${res.canonicalSkuId}</strong> (${res.titleEs}) | Aleación: <strong>${res.alloyCode}</strong> | ${res.geometricTripletMm.label_es} (${res.toleranceStd}) | Régimen: <strong>${res.regimeBadgeEs}</strong> (${res.gateLock}) | Escala: ${res.iso7810Scale} · <a href="/productos/${res.slugEs}/" style="color:#b45309;text-decoration:underline;">Abrir Ficha →</a>`;
-        } else {
-          out.innerHTML = `ℹ️ ${res.reasonEs}`;
-        }
-      };
-      btn?.addEventListener('click', run);
-      input?.addEventListener('keydown', (ev) => {
-        if (ev.key === 'Enter') run();
-      });
-      const params = new URLSearchParams(window.location.search);
-      const urlSku = params.get('sku');
-      if (urlSku && input) {
-        input.value = urlSku;
-        run();
-      }
-    }
-    bindDropInVerifier();
-    document.addEventListener('astro:page-load', bindDropInVerifier);
+    import { bindHomeCatalogDrawerAndDropIn } from '../scripts/homeAndEquipmentCatalogFilter.js';
+    bindHomeCatalogDrawerAndDropIn(document, 'es');
+    document.addEventListener('astro:page-load', () => bindHomeCatalogDrawerAndDropIn(document, 'es'));
   </script>
 
   <TrustMatrix lang="es" hideBoundaries={true} />

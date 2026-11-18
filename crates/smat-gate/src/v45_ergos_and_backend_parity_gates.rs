@@ -287,5 +287,82 @@ pub fn check_v45_ergos_apple_hig_and_backend_parity_gate_48(
         ));
     }
 
-    Ok("OK: Gate 48 V4.5 + V4.6 verificado al 100% (Bus isomórfico glitch-free, lentes Pinned-Key Alignment, 5/5 materiales SSOT, 9/9 series canónicas, + Bandeja en fichas atómicas, PUMP_554_ASSEMBLY_STATIONS con pumpAssemblyReportController.js < 950 LOC y pureza escalar ISO 80000-1 desde SSR).".to_string())
+    // 8. Sub-candado 48H (V4.7 — D1-V47..D5-V47, ARB-SMAT-55, DEB-V47-01..05):
+    //    Par focal ortogonal (1 Primario + 1 Secundario) en .hero-actions de / y /en/ (3.3b),
+    //    partición 7-Avenidas ([data-home-avenue-group]) en #home-quick-catalog-drawer (3.4b-1),
+    //    controlador compartido LCOM4=1 homeAndEquipmentCatalogFilter.js, y proyección SSOT de 19 SKUs
+    //    con buscador #equipos-sku-search y botón + Bandeja en /equipos/ y /en/process-equipment/ (3.4b-2).
+    let filter_ctrl_path = site_root.join("src/scripts/homeAndEquipmentCatalogFilter.js");
+    if !filter_ctrl_path.exists() {
+        return Err(
+            "Gate 48H (D2-V47 / D3-V47): src/scripts/homeAndEquipmentCatalogFilter.js debe existir como controlador LCOM4=1".to_string(),
+        );
+    }
+    let filter_ctrl_src = fs::read_to_string(&filter_ctrl_path).map_err(|e| e.to_string())?;
+    for req_fn in [
+        "export function matchesFamilyFilter",
+        "export function matchesEquipmentSearchQuery",
+        "export function applyHomeAvenueCatalogFilter",
+        "export function bindHomeCatalogDrawerAndDropIn",
+        "export function bindEquipmentCatalogSearchAndTray",
+    ] {
+        if !filter_ctrl_src.contains(req_fn) {
+            return Err(format!(
+                "Gate 48H: homeAndEquipmentCatalogFilter.js debe exportar '{}'",
+                req_fn
+            ));
+        }
+    }
+
+    for home_rel in ["src/pages/index.astro", "src/pages/en/index.astro"] {
+        let home_src = fs::read_to_string(site_root.join(home_rel)).map_err(|e| e.to_string())?;
+        if !home_src.contains("getQuickProductsByAvenue")
+            || !home_src.contains("data-home-avenue-group={meta.id}")
+            || !home_src.contains("bindHomeCatalogDrawerAndDropIn")
+            || home_src.contains("function matchesFamilyFilter")
+        {
+            return Err(format!(
+                "Gate 48H (D2-V47 DEB-V47-02/03): {} debe agrupar #home-quick-catalog-drawer por 7 Avenidas (getQuickProductsByAvenue + data-home-avenue-group) y delegar en bindHomeCatalogDrawerAndDropIn",
+                home_rel
+            ));
+        }
+        if let Some(start_idx) = home_src.find("<div class=\"hero-actions\">") {
+            let after_start = &home_src[start_idx..];
+            if let Some(end_idx) = after_start.find("</div>") {
+                let hero_block = &after_start[..end_idx];
+                if hero_block.contains("#pump-assembly-report")
+                    || hero_block.contains("/clasificacion/")
+                    || hero_block.contains("/en/classification/")
+                {
+                    return Err(format!(
+                        "Gate 48H (D1-V47 DEB-V47-01): {} .hero-actions no debe duplicar botones hacia las Puertas 1 y 2 (#pump-assembly-report o /clasificacion/)",
+                        home_rel
+                    ));
+                }
+            }
+        }
+    }
+
+    for eq_rel in [
+        "src/pages/equipos/index.astro",
+        "src/pages/en/process-equipment/index.astro",
+    ] {
+        let eq_src = fs::read_to_string(site_root.join(eq_rel)).map_err(|e| e.to_string())?;
+        for req_token in [
+            "getQuickProductsCatalog",
+            "id=\"equipos-sku-search\"",
+            "data-equipos-sku-pill={sku.id}",
+            "data-add-tray-sku={sku.id}",
+            "bindEquipmentCatalogSearchAndTray",
+        ] {
+            if !eq_src.contains(req_token) {
+                return Err(format!(
+                    "Gate 48H (D3-V47 DEB-V47-04): {} debe contener '{}'",
+                    eq_rel, req_token
+                ));
+            }
+        }
+    }
+
+    Ok("OK: Gate 48 V4.5 + V4.6 + V4.7 verificado al 100% (Bus isomórfico glitch-free, lentes Pinned-Key Alignment, 5/5 materiales SSOT, 9/9 series canónicas, + Bandeja en fichas atómicas y /equipos/, PUMP_554_ASSEMBLY_STATIONS, par focal ortogonal en .hero-actions, partición 7-Avenidas en Home y pureza escalar ISO 80000-1 desde SSR).".to_string())
 }

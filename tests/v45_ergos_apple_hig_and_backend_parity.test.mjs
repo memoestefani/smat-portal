@@ -35,6 +35,13 @@ import {
   getQuickProductsByAvenue,
   AVENUE_METADATA
 } from '../src/scripts/quickProductsCatalog.js';
+import {
+  matchesFamilyFilter,
+  matchesEquipmentSearchQuery,
+  applyHomeAvenueCatalogFilter,
+  bindHomeCatalogDrawerAndDropIn,
+  bindEquipmentCatalogSearchAndTray
+} from '../src/scripts/homeAndEquipmentCatalogFilter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -383,4 +390,100 @@ test('V46-5 (D6-V46 / DEB-V46-08,09): PumpAssemblyReport.astro (< 950 LOC) proye
   assert.ok(reportSrc.includes('station-card__parts'), 'PumpAssemblyReport.astro debe proyectar las partes st.parts en .station-card');
   assert.ok(reportSrc.includes("from '../scripts/pumpAssemblyReportController.js'"), 'PumpAssemblyReport.astro debe delegar en pumpAssemblyReportController.js');
   assert.equal(typeof initPumpAssemblyReport, 'function', 'pumpAssemblyReportController.js debe exportar initPumpAssemblyReport');
+});
+
+test('V47-1 (D1-V47 / DEB-V47-01): .hero-actions en index.astro y en/index.astro conserva únicamente el par focal ortogonal (1 Primario + 1 Secundario) sin duplicar enlaces a las Puertas 1 y 2', () => {
+  for (const [rel, expectedPrimary, expectedSecondary] of [
+    ['src/pages/index.astro', '/cotizar/#rfq', '/catalogo/'],
+    ['src/pages/en/index.astro', '/en/quote/#rfq', '/en/catalog/']
+  ]) {
+    const src = fs.readFileSync(path.join(SITE_ROOT, rel), 'utf8');
+    const heroMatch = src.match(/<div class="hero-actions">([\s\S]*?)<\/div>/);
+    assert.ok(heroMatch, `${rel} debe incluir <div class="hero-actions">`);
+    const heroBlock = heroMatch[1];
+    const anchorCount = (heroBlock.match(/<a\s+/g) || []).length;
+    assert.equal(anchorCount, 2, `${rel} .hero-actions debe contener exactamente 2 CTAs ortogonales (encontrados: ${anchorCount})`);
+    assert.ok(heroBlock.includes(`href="${expectedPrimary}"`), `${rel} .hero-actions debe incluir el CTA Primario ${expectedPrimary}`);
+    assert.ok(heroBlock.includes(`href="${expectedSecondary}"`), `${rel} .hero-actions debe incluir el CTA Secundario ${expectedSecondary}`);
+    assert.ok(!heroBlock.includes('#pump-assembly-report'), `${rel} .hero-actions no debe duplicar enlace a #pump-assembly-report (DEB-V47-01)`);
+    assert.ok(!heroBlock.includes('/clasificacion/') && !heroBlock.includes('/en/classification/'), `${rel} .hero-actions no debe duplicar enlace a /clasificacion/ (DEB-V47-01)`);
+  }
+});
+
+test('V47-2 (D2-V47 / DEB-V47-02,03): #home-quick-catalog-drawer particiona los 19 SKUs en las 7 Avenidas SSOT ([data-home-avenue-group]) y oculta grupos vacíos al filtrar vía homeAndEquipmentCatalogFilter.js', () => {
+  for (const rel of ['src/pages/index.astro', 'src/pages/en/index.astro']) {
+    const src = fs.readFileSync(path.join(SITE_ROOT, rel), 'utf8');
+    assert.ok(src.includes('getQuickProductsByAvenue'), `${rel} debe importar getQuickProductsByAvenue`);
+    assert.ok(src.includes('data-home-avenue-group={meta.id}'), `${rel} debe agrupar las tarjetas en [data-home-avenue-group]`);
+    assert.ok(src.includes('bindHomeCatalogDrawerAndDropIn'), `${rel} debe delegar el filtrado en bindHomeCatalogDrawerAndDropIn`);
+    assert.ok(!src.includes('function matchesFamilyFilter'), `${rel} no debe duplicar matchesFamilyFilter inline (DEB-V47-03)`);
+  }
+
+  assert.equal(matchesFamilyFilter('SMAT-LAB-TAMIZ-E11', 'control', 'tamices'), true);
+  assert.equal(matchesFamilyFilter('SMAT-LAB-MARCY-1000', 'control', 'tamices'), false);
+  assert.equal(matchesFamilyFilter('SMAT-PUMP-EXPELLER-KIT', 'bombeo', 'sello_potencia'), true);
+  assert.equal(matchesFamilyFilter('SMAT-FLOT-MECH-18SP', 'flotacion', 'flotacion'), true);
+
+  // Simular ocultamiento automático de grupos de avenida vacíos
+  const cardFlot = {
+    style: {},
+    attrs: { 'data-sku-family': 'flotacion', 'data-sku-id': 'SMAT-FLOT-MECH-18SP' },
+    getAttribute(k) { return this.attrs[k] || ''; },
+    setAttribute(k, v) { this.attrs[k] = v; }
+  };
+  const cardPump = {
+    style: {},
+    attrs: { 'data-sku-family': 'bombeo', 'data-sku-id': 'SMAT-ULTRAMET-4X3' },
+    getAttribute(k) { return this.attrs[k] || ''; },
+    setAttribute(k, v) { this.attrs[k] = v; }
+  };
+  const groupFlot = {
+    style: {},
+    attrs: {},
+    querySelectorAll: () => [cardFlot],
+    setAttribute(k, v) { this.attrs[k] = v; }
+  };
+  const groupPump = {
+    style: {},
+    attrs: {},
+    querySelectorAll: () => [cardPump],
+    setAttribute(k, v) { this.attrs[k] = v; }
+  };
+  const mockRoot = {
+    querySelectorAll(sel) {
+      if (sel === '[data-sku-family]') return [cardFlot, cardPump];
+      if (sel === '[data-home-avenue-group]') return [groupFlot, groupPump];
+      return [];
+    }
+  };
+
+  const res = applyHomeAvenueCatalogFilter(mockRoot, 'flotacion');
+  assert.equal(res.visibleCards, 1);
+  assert.equal(res.visibleGroups, 1);
+  assert.equal(groupFlot.style.display, '');
+  assert.equal(groupPump.style.display, 'none', 'El grupo de avenida sin coincidencias debe ocultarse automáticamente');
+  assert.equal(typeof bindHomeCatalogDrawerAndDropIn, 'function');
+});
+
+test('V47-3 (D3-V47 & D4-V47 / DEB-V47-04,05): /equipos/ y /en/process-equipment/ proyectan los 19 SKUs desde quickProductsCatalog.js con buscador #equipos-sku-search y botón + Bandeja [data-add-tray-sku]', () => {
+  for (const rel of ['src/pages/equipos/index.astro', 'src/pages/en/process-equipment/index.astro']) {
+    const src = fs.readFileSync(path.join(SITE_ROOT, rel), 'utf8');
+    assert.ok(src.includes('getQuickProductsCatalog'), `${rel} debe importar getQuickProductsCatalog`);
+    assert.ok(src.includes('id="equipos-sku-search"'), `${rel} debe exponer el buscador instantáneo #equipos-sku-search`);
+    assert.ok(src.includes('data-equipos-sku-pill={sku.id}'), `${rel} debe proyectar las fichas [data-equipos-sku-pill]`);
+    assert.ok(src.includes('data-add-tray-sku={sku.id}'), `${rel} debe exponer el botón directo + Bandeja [data-add-tray-sku]`);
+    assert.ok(src.includes('bindEquipmentCatalogSearchAndTray'), `${rel} debe invocar bindEquipmentCatalogSearchAndTray`);
+  }
+
+  for (const [rel, pillText] of [
+    ['src/pages/catalogo.astro', 'EDICIÓN TÉCNICA V4.7 (SSOT) • 2026'],
+    ['src/pages/en/catalog.astro', 'TECHNICAL EDITION V4.7 (SSOT) • 2026']
+  ]) {
+    const src = fs.readFileSync(path.join(SITE_ROOT, rel), 'utf8');
+    assert.ok(src.includes(pillText), `${rel} debe mostrar la insignia actualizada ${pillText}`);
+  }
+
+  assert.equal(matchesEquipmentSearchQuery('SMAT-ULTRAMET-4X3 Bomba E4147 AV-03 bombeo', 'e4147 4x3'), true);
+  assert.equal(matchesEquipmentSearchQuery('SMAT-ULTRAMET-4X3 Bomba E4147 AV-03 bombeo', 'marcy'), false);
+  assert.equal(typeof bindEquipmentCatalogSearchAndTray, 'function');
 });
