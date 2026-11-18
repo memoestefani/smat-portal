@@ -11,6 +11,8 @@ pub mod v42_html_surface_and_contract_gates;
 pub use v42_html_surface_and_contract_gates::*;
 pub mod v43_contract_and_sensitivity_gates;
 pub use v43_contract_and_sensitivity_gates::*;
+pub mod v44_zero_duplication_and_contiguity_gates;
+pub use v44_zero_duplication_and_contiguity_gates::*;
 
 pub struct GateReport {
     pub name: String,
@@ -38,10 +40,11 @@ pub fn read_quote_wizard_composite(site_root: &Path) -> Result<String, String> {
     let wcc = fs::read_to_string(site_root.join("src/components/WizardCircuitCalculators.astro")).unwrap_or_default();
     let dossier = fs::read_to_string(site_root.join("src/components/LiveEngineeringDossier.astro")).unwrap_or_default();
     let ctrl = fs::read_to_string(site_root.join("src/scripts/quoteWizardController.js")).unwrap_or_default();
+    let wxor = fs::read_to_string(site_root.join("src/scripts/wizardCircuitXorStatechart.js")).unwrap_or_default();
     let wphys = fs::read_to_string(site_root.join("src/scripts/wizardCircuitPhysicsController.js")).unwrap_or_default();
     let renderer = fs::read_to_string(site_root.join("src/scripts/quoteDossierRenderer.js")).unwrap_or_default();
     let css = fs::read_to_string(site_root.join("src/styles/workbench.css")).unwrap_or_default();
-    Ok(format!("{}\n{}\n{}\n{}\n{}\n{}\n{}", qw, wcc, dossier, ctrl, wphys, renderer, css))
+    Ok(format!("{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}", qw, wcc, dossier, ctrl, wxor, wphys, renderer, css))
 }
 
 /// 1. Verifica integridad SSOT de data/roles.json, data/company.json y erradicacion de roles.copy.json
@@ -906,6 +909,11 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             passed: check_v43_unified_contract_zero_phantom_ids_and_sensitivity_gate_46(site_root).is_ok(),
             details: check_v43_unified_contract_zero_phantom_ids_and_sensitivity_gate_46(site_root).err().unwrap_or_else(|| "OK: 0 IDs fantasma, sensibilidad diferencial no nula en Gy/Rosin-Rammler/Darcy-Ruth, alerta NOM-141 >16%, calculadoras interactivas en Bombeo/Filtracion/Flotacion y 5 ramas de material.".to_string()),
         },
+        GateReport {
+            name: "47. Pureza Escalar ISO 80000-1 (0 Parentesis en Spans Numericos), Modo Media-Only en [slug].astro, 3NF Visual en [code].astro, Estacion Contigua 3 Vasos <-> Criba Weibull en /clasificacion/ y Statechart XOR wizardCircuitXorStatechart.js en /cotizar/ (Gate V4.4 D1..D9)".to_string(),
+            passed: check_v44_scalar_purity_zero_duplication_and_xor_contiguity_gate_47(site_root).is_ok(),
+            details: check_v44_scalar_purity_zero_duplication_and_xor_contiguity_gate_47(site_root).err().unwrap_or_else(|| "OK: Pureza escalar ISO 80000-1, 0 duplicacion lado a lado en [slug].astro, 3NF en [code].astro, estacion contigua en /clasificacion/ y proyeccion Harel XOR en /cotizar/.".to_string()),
+        },
     ]
 }
 
@@ -1470,5 +1478,12 @@ mod tests {
         let root = find_site_root();
         let res = check_v43_unified_contract_zero_phantom_ids_and_sensitivity_gate_46(&root);
         assert!(res.is_ok(), "Fallo en Gate 46 (V4.3 Unified Contract, Zero Phantom IDs & Differential Sensitivity): {:?}", res.err());
+    }
+
+    #[test]
+    fn test_gate_47_v44_scalar_purity_zero_duplication_and_xor_contiguity() {
+        let root = find_site_root();
+        let res = check_v44_scalar_purity_zero_duplication_and_xor_contiguity_gate_47(&root);
+        assert!(res.is_ok(), "Fallo en Gate 47 (V4.4 Scalar Purity ISO 80000-1, Zero Duplication & XOR Contiguity): {:?}", res.err());
     }
 }

@@ -121,8 +121,10 @@ test('D1-V42 & D2-V42: Canonical calculators execute live State <-> DOM bijectiv
   assert.ok(filtRes, 'bindCanonicalFiltrationCalculator must return computed filtration metrics');
   assert.ok(filtRes.cyclesPerDay > 0);
   assert.ok(filtRes.dryTonnesPerDay > 0);
-  assert.ok(filtMock.querySelector('#rep-fs-out').textContent.includes('ciclos/d'));
-  assert.ok(filtMock.querySelector('#rep-stress-out').textContent.includes('ΔP_asim='));
+  assert.equal(filtMock.querySelector('#rep-fs-out').textContent.includes('('), false);
+  assert.equal(filtMock.querySelector('#rep-stress-out').textContent.includes('('), false);
+  assert.ok(filtMock.querySelector('#rep-status-out').textContent.includes('ciclos/d'));
+  assert.ok(filtMock.querySelector('#rep-status-out').textContent.includes('ΔP_asim'));
 
   // 2. Flotation (#celdas-* in /flotacion/celdas/)
   const flotMock = createInteractiveDomMock({
@@ -133,12 +135,16 @@ test('D1-V42 & D2-V42: Canonical calculators execute live State <-> DOM bijectiv
     'celdas-sb-output': '',
     'celdas-k-output': '',
     'celdas-vtip-output': '',
+    'celdas-njs-output': '',
+    'celdas-status-output': '',
   });
   const flotRes = bindCanonicalFlotationCalculator(flotMock, 'es');
   assert.ok(flotRes, 'bindCanonicalFlotationCalculator must return computed hydrodynamics');
   assert.ok(flotRes.zwieteringNjsRpm > 0);
-  assert.ok(flotMock.querySelector('#celdas-sb-output').textContent.includes('N_js='));
-  assert.ok(flotMock.querySelector('#celdas-vtip-output').textContent.includes('PU '));
+  assert.equal(flotMock.querySelector('#celdas-sb-output').textContent.includes('('), false);
+  assert.equal(flotMock.querySelector('#celdas-vtip-output').textContent.includes('('), false);
+  assert.ok(flotMock.querySelector('#celdas-status-output').textContent.includes('N_js='));
+  assert.ok(flotMock.querySelector('#celdas-status-output').textContent.includes('PU '));
 
   // 3. Coupled Classification (#cyc-* -> #csr-feed-um and #cyc-screen-coupling-badge)
   const cycMock = createInteractiveDomMock({

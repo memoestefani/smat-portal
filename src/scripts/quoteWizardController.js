@@ -101,7 +101,15 @@ import {
   resolveMiningUnitPulpPreset,
   matchMiningGroupByEmailDomain
 } from '../scripts/wizardMiningAndCodeDecoder.js';
+import {
+  CIRCUIT_XOR_VIEW_SPEC,
+  getCircuitXorViewProjection,
+  applyCircuitStatechartXOR as applyCanonicalCircuitXorStatechart,
+  renderWetEndMaterialMatrixCard as renderCanonicalWetEndMaterialMatrixCard
+} from '../scripts/wizardCircuitXorStatechart.js';
 export {
+  CIRCUIT_XOR_VIEW_SPEC,
+  getCircuitXorViewProjection,
   DOSSIER_FORMATTERS_BY_FIELD,
   formatDossierSimulationBanner,
   formatDossierMetrologyBadge,
@@ -420,70 +428,21 @@ export function initQuoteWizardController() {
   var currentBomOverride = null;
 
   function renderWetEndMaterialMatrixCard(matKey) {
-    var key = matKey || 'alto_cromo_cr27';
-    var matObj = WET_END_MATERIAL_MATRIX[key] || WET_END_MATERIAL_MATRIX.alto_cromo_cr27;
-    if (!matObj) return;
-    var badgeEl = document.getElementById('wb-mat-code-badge');
-    var hardEl = document.getElementById('wb-mat-hardness');
-    var tipEl = document.getElementById('wb-mat-tip-limit');
-    var wearEl = document.getElementById('wb-mat-wear-554');
-    var d80PhEl = document.getElementById('wb-mat-d80-ph');
-    var partsEl = document.getElementById('wb-mat-parts-list');
-    var dutyEl = document.getElementById('wb-mat-duty-desc');
-    if (badgeEl) badgeEl.textContent = matObj.code + ' • ' + (isEs ? matObj.nameEs : matObj.nameEn);
-    if (hardEl) hardEl.textContent = matObj.hardness;
-    if (tipEl) tipEl.textContent = '≤ ' + matObj.maxTipSpeedMs.toFixed(1) + ' m/s';
-    if (wearEl) wearEl.textContent = matObj.wearRatio554 + ' (δ = ' + matObj.recommendedClearanceMm.toFixed(2) + ' mm)';
-    if (d80PhEl) d80PhEl.textContent = matObj.d80RangeMicrons[0] + '–' + matObj.d80RangeMicrons[1] + ' µm • pH ' + matObj.phRange[0] + '–' + matObj.phRange[1];
-    if (partsEl) partsEl.textContent = (isEs ? matObj.partsIncludedEs : matObj.partsIncludedEn).join(' + ');
-    if (dutyEl) dutyEl.textContent = isEs ? matObj.dutyApplicationEs : matObj.dutyApplicationEn;
-
-    var hybridBreakdownEl = document.getElementById('wb-hybrid-rama-d-breakdown');
-    if (hybridBreakdownEl) {
-      if (key === 'hybrid_a05_r55') {
-        var pipeSer = selectPipeSize ? selectPipeSize.value : '6x4';
-        var d80Val = sliderD80 ? Number(sliderD80.value) : 220;
-        var cwVal = sliderSolids ? Number(sliderSolids.value) : 45;
-        var phVal = sliderPh ? Number(sliderPh.value) : 7.5;
-        var hybRes = evaluateHybridWetEndConfiguration({
-          d80Microns: d80Val,
-          tipSpeedMs: 21.5,
-          pulpPh: phVal,
-          solidsWeightPercent: cwVal,
-          pipeSeries: pipeSer
-        });
-        hybridBreakdownEl.textContent = isEs
-          ? `[RAMA D] Ventaja Híbrida Rama D (${pipeSer}): Ahorro de -${hybRes.savedMassKg} kg (-${hybRes.massSavingsPct}% masa en grúa vs Full Metal ${hybRes.fullMetalMassKg} kg → ${hybRes.singlePumpMassKg} kg) • Impulsor/Cuello en A05 (≥650 HB) + Forros FPL/CPL en Hule R55.`
-          : `[BRANCH D] Branch D Hybrid Advantage (${pipeSer}): Saves -${hybRes.savedMassKg} kg (-${hybRes.massSavingsPct}% rigging mass vs Full Metal ${hybRes.fullMetalMassKg} kg → ${hybRes.singlePumpMassKg} kg) • A05 Impeller/Throatbush (≥650 HB) + R55 Rubber Liners.`;
-        hybridBreakdownEl.classList.remove('hidden');
-        hybridBreakdownEl.style.display = 'block';
-      } else {
-        hybridBreakdownEl.classList.add('hidden');
-        hybridBreakdownEl.style.display = 'none';
-      }
-    }
+    return renderCanonicalWetEndMaterialMatrixCard(matKey, {
+      doc: document,
+      isEs,
+      pipeSeries: selectPipeSize ? selectPipeSize.value : '6x4',
+      d80Microns: sliderD80 ? Number(sliderD80.value) : 220,
+      solidsWeightPercent: sliderSolids ? Number(sliderSolids.value) : 45,
+      pulpPh: sliderPh ? Number(sliderPh.value) : 7.5
+    });
   }
 
   function applyCircuitStatechartXOR(circuit) {
-    var pumpOnlyControls = document.getElementById('wb-pump-only-engineering-controls');
-    if (pumpOnlyControls) {
-      pumpOnlyControls.style.display = (!circuit || circuit === 'bombeo') ? '' : 'none';
-    }
-    if (wbStep2ControlSummary) {
-      if (circuit === 'control_procesos') {
-        wbStep2ControlSummary.classList.remove('hidden');
-        wbStep2ControlSummary.style.display = 'block';
-      } else {
-        wbStep2ControlSummary.classList.add('hidden');
-        wbStep2ControlSummary.style.display = 'none';
-      }
-    }
-    if (wbClearanceKinematicsCard) {
-      wbClearanceKinematicsCard.style.display = circuit === 'control_procesos' ? 'none' : '';
-    }
+    return applyCanonicalCircuitXorStatechart(circuit, { doc: document, isEs });
   }
 
-  // Controlador del Conmutador de Circuitos (Decisión 6-B, 8-C & 3-C++ Harel Statechart XOR)
+  // Controlador del Conmutador de Circuitos (Decisión 6-B, 8-C, 3-C++ & D5..D7-V44 Harel Statechart XOR)
   function setCircuit(circuit) {
     currentCircuit = circuit || 'bombeo';
     if (inputCircuit) inputCircuit.value = currentCircuit;
@@ -498,72 +457,6 @@ export function initQuoteWizardController() {
         p.setAttribute('aria-pressed', 'false');
       }
     });
-    if (panelBombeo) {
-      if (currentCircuit === 'bombeo') {
-        panelBombeo.classList.remove('hidden');
-        panelBombeo.style.display = '';
-      } else {
-        panelBombeo.classList.add('hidden');
-        panelBombeo.style.display = 'none';
-      }
-    }
-    var panelClasificacion = document.getElementById('circuit-panel-clasificacion');
-    if (panelClasificacion) {
-      if (currentCircuit === 'clasificacion') {
-        panelClasificacion.classList.remove('hidden');
-        panelClasificacion.style.display = 'block';
-      } else {
-        panelClasificacion.classList.add('hidden');
-        panelClasificacion.style.display = 'none';
-      }
-    }
-    var flotGorainBox = document.getElementById('wb-flot-gorain-live-box');
-    if (flotGorainBox) {
-      if (currentCircuit === 'flotacion') {
-        flotGorainBox.classList.remove('hidden');
-        flotGorainBox.style.display = 'block';
-      } else {
-        flotGorainBox.classList.add('hidden');
-        flotGorainBox.style.display = 'none';
-      }
-    }
-    var filtTimoshenkoBox = document.getElementById('wb-filt-timoshenko-live-box');
-    if (filtTimoshenkoBox) {
-      if (currentCircuit === 'filtracion') {
-        filtTimoshenkoBox.classList.remove('hidden');
-        filtTimoshenkoBox.style.display = 'block';
-      } else {
-        filtTimoshenkoBox.classList.add('hidden');
-        filtTimoshenkoBox.style.display = 'none';
-      }
-    }
-    if (panelFlotacion) {
-      if (currentCircuit === 'flotacion') {
-        panelFlotacion.classList.remove('hidden');
-        panelFlotacion.style.display = '';
-      } else {
-        panelFlotacion.classList.add('hidden');
-        panelFlotacion.style.display = 'none';
-      }
-    }
-    if (panelFiltracion) {
-      if (currentCircuit === 'filtracion') {
-        panelFiltracion.classList.remove('hidden');
-        panelFiltracion.style.display = '';
-      } else {
-        panelFiltracion.classList.add('hidden');
-        panelFiltracion.style.display = 'none';
-      }
-    }
-    if (panelControl) {
-      if (currentCircuit === 'control_procesos') {
-        panelControl.classList.remove('hidden');
-        panelControl.style.display = '';
-      } else {
-        panelControl.classList.add('hidden');
-        panelControl.style.display = 'none';
-      }
-    }
 
     var simHeadline = document.getElementById('sim-headline-text');
     var simContextPill = document.getElementById('sim-circuit-context-pill');

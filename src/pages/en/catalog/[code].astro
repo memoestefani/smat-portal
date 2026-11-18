@@ -190,30 +190,6 @@ const productSchema = {
                     <td>{part.type_en}</td>
                   </tr>
                   <tr>
-                    <th>Unit Mass & NIOSH Handling:</th>
-                    <td><strong>{fullSpec.weight_kg} kg</strong> — <span class="font-mono-tech">{nioshModeLabelEn}</span></td>
-                  </tr>
-                  <tr>
-                    <th>Critical Wall Thickness:</th>
-                    <td><strong>{fullSpec.wall_thickness_mm} mm</strong> ({part.metallurgy})</td>
-                  </tr>
-                  {fullSpec.impeller_diameter_mm && (
-                    <tr>
-                      <th>Outer Diameter (∅D₂):</th>
-                      <td><strong>{fullSpec.impeller_diameter_mm} mm</strong></td>
-                    </tr>
-                  )}
-                  {fullSpec.max_particle_mm && (
-                    <tr>
-                      <th>Max Sphere Passage (Solids):</th>
-                      <td><strong>{fullSpec.max_particle_mm} mm</strong></td>
-                    </tr>
-                  )}
-                  <tr>
-                    <th>BOM Station & Precedence:</th>
-                    <td><strong>Station 0{fullSpec.station_number}</strong> — {fullSpec.assembly_order_note}</td>
-                  </tr>
-                  <tr>
                     <th>Metallurgy:</th>
                     <td>{part.metallurgy}</td>
                   </tr>

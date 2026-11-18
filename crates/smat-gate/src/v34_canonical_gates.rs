@@ -296,7 +296,7 @@ pub fn check_v35_zero_orphan_ast_and_dist_graph_closure(site_root: &Path) -> Res
         ("src/pages/en/flotation/cells.astro", "calculateFlotationGorainKineticRate", "bindCanonicalFlotationCalculator"),
         ("src/pages/filtracion/repuestos.astro", "evaluateFilterPressPlateDeflection", "bindCanonicalFiltrationCalculator"),
         ("src/pages/en/filtration/parts.astro", "evaluateFilterPressPlateDeflection", "bindCanonicalFiltrationCalculator"),
-        ("src/components/CycloneAndScreenReport.astro", "calculateUrethaneScreenPartitionWeibull", "calculateUrethaneScreenPartitionWeibull"),
+        ("src/pages/clasificacion/index.astro", "calculateUrethaneScreenPartitionWeibull", "bindCoupledClassificationStation"),
         ("src/components/QuickOrderTray.astro", "calculateCoupledReorderWindowDays", "calculateCoupledReorderWindowDays"),
     ] {
         let src = fs::read_to_string(site_root.join(rel_page)).map_err(|e| e.to_string())?;

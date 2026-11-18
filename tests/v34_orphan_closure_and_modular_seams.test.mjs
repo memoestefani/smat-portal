@@ -251,5 +251,6 @@ test('SLICE-V34-17: Cierre 100% de los 4 micro-residuos finales (0 SKU-QC-01, 0 
   const prdV3 = fs.readFileSync(path.join(SITE_ROOT, 'prd_smatminerals_web_v3.md'), 'utf8');
   assert.ok(!prdV3.includes('catalog_master.json'), 'prd_smatminerals_web_v3.md no debe citar el archivo inexistente catalog_master.json');
   assert.ok(prdV3.includes('quick_checkout_Catalog.json'), 'prd_smatminerals_web_v3.md debe citar quick_checkout_Catalog.json');
+  assert.ok(fs.existsSync(path.join(SITE_ROOT, 'src', 'scripts', 'wizardCircuitXorStatechart.js')), 'Debe existir la costura LCOM4 wizardCircuitXorStatechart.js');
 });
 

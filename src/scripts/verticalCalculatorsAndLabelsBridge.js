@@ -16,6 +16,7 @@ import {
   evaluateFilterPressPlateDeflection,
   calculateFlotationGorainKineticRate,
   calculateThreeCupMarcyCycloneBalance,
+  calculateUrethaneScreenPartitionWeibull,
 } from './slurryEngine.js';
 import {
   calculateFilterPressCycleCapacity,
@@ -256,30 +257,28 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es') {
       cakeMoistureTargetPct,
     });
 
-    const isHeroCardMode = stressEl && stressEl.id === 'filt-res-stress';
     if (stressEl) {
-      stressEl.textContent = isHeroCardMode
-        ? `${res.maxBendingStressMpa} MPa`
-        : `${res.maxBendingStressMpa} MPa (ΔP_asim=${res.deltaPAsymmetricMpa} MPa | σ_adm=${res.ppFatigueAllowableMpa} MPa)`;
+      stressEl.textContent = `${res.maxBendingStressMpa} MPa`;
     }
     if (fsEl) {
-      fsEl.textContent = isHeroCardMode
-        ? `FS ${res.flexuralSafetyFactor}`
-        : (isEn
-          ? `FS ${res.flexuralSafetyFactor} (${res.cyclesPerDay} cyc/d • ${res.dryTonnesPerDay} t/d • ${res.filtrationMinutes}+12=${res.totalCycleMin} min)`
-          : `FS ${res.flexuralSafetyFactor} (${res.cyclesPerDay} ciclos/d • ${res.dryTonnesPerDay} t/d • ${res.filtrationMinutes}+12=${res.totalCycleMin} min)`);
+      fsEl.textContent = `FS ${res.flexuralSafetyFactor}`;
     }
+    const secondaryBreakdown = isEn
+      ? `ΔP_asym = ${res.deltaPAsymmetricMpa} MPa · σ_adm = ${res.ppFatigueAllowableMpa} MPa · ${res.cyclesPerDay} cyc/d · ${res.dryTonnesPerDay} t/d (${res.filtrationMinutes}+12=${res.totalCycleMin} min)`
+      : `ΔP_asim = ${res.deltaPAsymmetricMpa} MPa · σ_adm = ${res.ppFatigueAllowableMpa} MPa · ${res.cyclesPerDay} ciclos/d · ${res.dryTonnesPerDay} t/d (${res.filtrationMinutes}+12=${res.totalCycleMin} min)`;
     if (secondaryEl) {
-      secondaryEl.textContent = isEn
-        ? `ΔP_asym = ${res.deltaPAsymmetricMpa} MPa · σ_adm = ${res.ppFatigueAllowableMpa} MPa · ${res.cyclesPerDay} cyc/d · ${res.dryTonnesPerDay} t/d (${res.filtrationMinutes} + 12 = ${res.totalCycleMin} min)`
-        : `ΔP_asim = ${res.deltaPAsymmetricMpa} MPa · σ_adm = ${res.ppFatigueAllowableMpa} MPa · ${res.cyclesPerDay} ciclos/d · ${res.dryTonnesPerDay} t/d (${res.filtrationMinutes} + 12 = ${res.totalCycleMin} min)`;
+      secondaryEl.textContent = secondaryBreakdown;
     }
     const isAlert = Boolean(res.isPlateCrackingRisk || !res.nom141Compliant);
     if (sumEl) {
       const baseSummary = isEn ? res.summaryEn : res.summaryEs;
-      sumEl.textContent = isEn
-        ? `${baseSummary} | Plate: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Shifter: ${res.recommendedPlateSkuId}`
-        : `${baseSummary} | Placa/Tela: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Corre-Placas: ${res.recommendedPlateSkuId}`;
+      const skuTail = isEn
+        ? `Plate: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Shifter: ${res.recommendedPlateSkuId}`
+        : `Placa/Tela: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Corre-Placas: ${res.recommendedPlateSkuId}`;
+      const isRepStatusMode = sumEl.id === 'rep-status-out';
+      sumEl.textContent = (secondaryEl && !isRepStatusMode)
+        ? `${baseSummary} | ${skuTail}`
+        : `${baseSummary} | ${secondaryBreakdown} | ${skuTail}`;
       if (sumEl.style && !readoutBox) {
         sumEl.style.background = isAlert ? '#fef2f2' : '#ecfdf5';
         sumEl.style.color = isAlert ? '#991b1b' : '#065f46';
@@ -313,7 +312,7 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es') {
 
 /**
  * Conecta de forma canónica la calculadora de Flotación (#flot-*) ejecutando
- * `evaluateFlotationCellHydrodynamics` (Gorain $S_b, k, v_{\text{tip}}$ + Zwietering $N_{js}$) (`D1-V42`).
+ * `evaluateFlotationCellHydrodynamics` (Gorain $S_b, k, v_{\text{tip}}$ + Zwietering $N_{js}$) (`D1-V42` / `D1-V44`).
  */
 export function bindCanonicalFlotationCalculator(root, lang = 'es') {
   if (!root || typeof root.querySelector !== 'function') return null;
@@ -364,19 +363,22 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es') {
     const vtipVal = res.tipSpeedMS ?? res.impellerTipSpeedMs;
 
     if (sbOut) {
-      sbOut.textContent = `${sbVal} (N_js=${res.zwieteringNjsRpm} RPM, ${res.suspensionSafe ? (isEn ? 'Suspension OK' : 'Suspensión OK') : (isEn ? 'Sanding Risk' : 'Alerta Arenero')})`;
+      sbOut.textContent = String(sbVal);
     }
     if (kOut) {
       kOut.textContent = String(kVal);
     }
     if (vtipOut) {
-      vtipOut.textContent = `${vtipVal} (${res.tipSpeedWindowOptimal ? (isEn ? 'Optimal Window' : 'Ventana Óptima') : (isEn ? 'Adjust RPM' : 'Ajustar RPM')} • PU ${res.wearLifeMultiplierPuVsRubber}×)`;
+      vtipOut.textContent = String(vtipVal);
     }
     if (njsOut) {
       njsOut.textContent = String(res.zwieteringNjsRpm);
     }
     if (statusOut) {
-      statusOut.textContent = isEn ? res.summaryEn : res.summaryEs;
+      const baseSummary = isEn ? res.summaryEn : res.summaryEs;
+      const suspTag = `N_js=${res.zwieteringNjsRpm} RPM (${res.suspensionSafe ? (isEn ? 'Suspension OK' : 'Suspensión OK') : (isEn ? 'Sanding Risk' : 'Alerta Arenero')})`;
+      const tipTag = `${res.tipSpeedWindowOptimal ? (isEn ? 'Optimal Window' : 'Ventana Óptima') : (isEn ? 'Adjust RPM' : 'Ajustar RPM')} · PU ${res.wearLifeMultiplierPuVsRubber}×`;
+      statusOut.textContent = `${baseSummary} · ${suspTag} · ${tipTag}`;
     }
     if (readoutBox && readoutBox.style) {
       const isOptimal = Boolean(res.gorainCompliant ?? res.isOptimalDispersion) && Boolean(res.suspensionSafe);
@@ -408,7 +410,7 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es') {
 
 /**
  * Conecta en una sola estación acoplada el Balance de 3 Vasos Marcy + Plitt ($d_{50c}$)
- * con la Criba de Uretano Weibull ($d_{80} = 2.2 \times d_{50c}$) en `/clasificacion/` (`D2-V42`).
+ * con la Criba de Uretano Weibull ($d_{80} = 2.2 \times d_{50c}$) en `/clasificacion/` (`D2-V42` / `D4-V44`).
  */
 export function bindCoupledClassificationStation(root, lang = 'es') {
   if (!root || typeof root.querySelector !== 'function') return null;
@@ -434,6 +436,41 @@ export function bindCoupledClassificationStation(root, lang = 'es') {
   const skuLink = root.querySelector('#cyc-recommended-sku-link');
   const rfqLink = root.querySelector('#cyc-rfq-link');
 
+  const csrApertureInput = root.querySelector('#csr-aperture-mm');
+  const csrReliefInput = root.querySelector('#csr-relief-deg');
+  const csrFeedInput = root.querySelector('#csr-feed-um');
+  const csrWeibullOut = root.querySelector('#csr-weibull-out');
+  const csrRfqLink = root.querySelector('#csr-rfq-link');
+
+  function recomputeScreenWeibull(overrideFeedUm = null) {
+    const apertureMm = csrApertureInput ? Number(csrApertureInput.value) || 0.50 : 0.50;
+    const reliefAngleDeg = csrReliefInput ? Number(csrReliefInput.value) || 4.0 : 4.0;
+    const feedParticleUm =
+      overrideFeedUm !== null
+        ? Number(overrideFeedUm)
+        : csrFeedInput
+          ? Number(csrFeedInput.value) || 163
+          : 163;
+    if (csrFeedInput && overrideFeedUm !== null) {
+      csrFeedInput.value = String(feedParticleUm);
+    }
+    const weibullRes = calculateUrethaneScreenPartitionWeibull({
+      apertureMm,
+      reliefAngleDeg,
+      feedParticleUm,
+    });
+    if (csrWeibullOut) {
+      csrWeibullOut.textContent = isEn
+        ? `Oversize Partition: ${weibullRes.partitionToOversizePct}% · Dilation Δa/a: ${weibullRes.elasticDilationPct}% (${weibullRes.vibrationG}G, ${weibullRes.antiBlindingCompliant ? 'Anti-Blinding OK' : 'Review θ'}) · SKU: ${weibullRes.recommendedSkuId}`
+        : `Retención Oversize: ${weibullRes.partitionToOversizePct}% · Dilatación Δa/a: ${weibullRes.elasticDilationPct}% (${weibullRes.vibrationG}G, ${weibullRes.antiBlindingCompliant ? 'Anti-Cegamiento OK' : 'Revisar θ'}) · SKU: ${weibullRes.recommendedSkuId}`;
+    }
+    if (csrRfqLink) {
+      const basePath = isEn ? '/en/quote/' : '/cotizar/';
+      csrRfqLink.href = `${basePath}?circuito=clasificacion&equipo=malla_criba_poliuretano&sku=${encodeURIComponent(weibullRes.recommendedSkuId)}&mat=poliuretano&aperture_mm=${apertureMm}&relief_deg=${reliefAngleDeg}&screen_d80_um=${feedParticleUm}#rfq`;
+    }
+    return weibullRes;
+  }
+
   function recompute() {
     if (!feedInput || !underInput || !overInput) return null;
     const res = calculateThreeCupMarcyCycloneBalance({
@@ -458,13 +495,7 @@ export function bindCoupledClassificationStation(root, lang = 'es') {
     if (d50El) d50El.textContent = `${res.d50cMicrons} µm`;
 
     const coupledD80Um = Math.round(res.d50cMicrons * 2.2);
-    const csrFeedInput = root.querySelector('#csr-feed-um');
-    if (csrFeedInput) {
-      csrFeedInput.value = String(coupledD80Um);
-      if (typeof csrFeedInput.dispatchEvent === 'function' && typeof Event === 'function') {
-        csrFeedInput.dispatchEvent(new Event('input'));
-      }
-    }
+    const weibullRes = recomputeScreenWeibull(coupledD80Um);
 
     if (couplingBadgeEl) {
       couplingBadgeEl.textContent = isEn
@@ -505,7 +536,7 @@ export function bindCoupledClassificationStation(root, lang = 'es') {
     if (rfqLink) {
       const matRec = res.isRopingCritical ? 'ceramica_sic' : 'alto_cromo_cr27';
       const basePath = isEn ? '/en/quote/' : '/cotizar/';
-      rfqLink.href = `${basePath}?circuito=clasificacion&equipo=hidrociclon_apex_vortex&sku=${encodeURIComponent(res.recommendedSkuId)}&mat=${matRec}&rho_f=${res.feedSg}&rho_u=${res.underflowSg}&rho_o=${res.overflowSg}&rs_pct=${res.solidsRecoveryPct}&cv_u=${res.cvUnderflowPct}&d50c=${res.d50cMicrons}&roping_risk=${res.isRopingCritical ? '1' : '0'}#rfq`;
+      rfqLink.href = `${basePath}?circuito=clasificacion&equipo=hidrociclon_apex_vortex&sku=${encodeURIComponent(res.recommendedSkuId)}&mat=${matRec}&rho_f=${res.feedSg}&rho_u=${res.underflowSg}&rho_o=${res.overflowSg}&rs_pct=${res.solidsRecoveryPct}&cv_u=${res.cvUnderflowPct}&d50c=${res.d50cMicrons}&aperture_mm=${weibullRes.apertureMm}&screen_d80_um=${coupledD80Um}&roping_risk=${res.isRopingCritical ? '1' : '0'}#rfq`;
     }
 
     const prev = loadWorkbenchSession();
@@ -527,14 +558,34 @@ export function bindCoupledClassificationStation(root, lang = 'es') {
       ...res,
       ...coupledEval,
       coupledScreenFeedD80Um: coupledD80Um,
+      apertureMm: weibullRes.apertureMm,
+      reliefAngleDeg: weibullRes.reliefAngleDeg,
+      partitionToOversizePct: weibullRes.partitionToOversizePct,
     });
     return res;
+  }
+
+  function onManualScreenChange() {
+    const weibullRes = recomputeScreenWeibull(null);
+    saveEngineeringContextSnapshot('clasificacion', {
+      apertureMm: weibullRes.apertureMm,
+      reliefAngleDeg: weibullRes.reliefAngleDeg,
+      coupledScreenFeedD80Um: weibullRes.feedParticleUm,
+      partitionToOversizePct: weibullRes.partitionToOversizePct,
+    });
   }
 
   [feedInput, underInput, overInput, solidsInput, apexInput, vortexInput, pressInput].forEach((el) => {
     if (el && typeof el.addEventListener === 'function') {
       el.addEventListener('input', recompute);
       el.addEventListener('change', recompute);
+    }
+  });
+
+  [csrApertureInput, csrReliefInput, csrFeedInput].forEach((el) => {
+    if (el && typeof el.addEventListener === 'function') {
+      el.addEventListener('input', onManualScreenChange);
+      el.addEventListener('change', onManualScreenChange);
     }
   });
 

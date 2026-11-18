@@ -4543,6 +4543,9 @@ test('Test 235 (SLICE-17 / D3, D5, D6): requisitionTrayBus.js (Bandeja Multi-Ít
   const normState = normalizeWorkbenchStateV2({ cycloneCircuit: { feedSg: 1.42, underflowSg: 1.95, ropingRisk: true } });
   assert.equal(normState.cycloneCircuit.feedSg, 1.42);
   assert.equal(normState.cycloneCircuit.ropingRisk, true);
+  const { getCircuitXorViewProjection } = await import('../src/scripts/wizardCircuitXorStatechart.js');
+  assert.equal(getCircuitXorViewProjection('bombeo', true).showDriveAndTradeInCard, true);
+  assert.equal(getCircuitXorViewProjection('control_procesos', true).showStep2DurandPipeControls, false);
 });
 
 

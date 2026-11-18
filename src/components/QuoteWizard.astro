@@ -406,10 +406,10 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
           </div>
         </details>
 
-        <!-- CAPA 2B: Gaveta Progresiva de Configuración de Paquete, Material y Arreglo (Confinada por Circuito — D1-V41) -->
+        <!-- CAPA 2B: Gaveta Progresiva de Configuración de Paquete, Material y Arreglo (Confinada por Circuito — D1-V41 / D6-V44) -->
         <details class="wb-progressive-drawer" id="wb-engineering-config-details">
           <summary class="wb-progressive-summary">
-            <span>{isEs ? '+ Configuración de Alcance (Refacciones / Paquete CAPEX), Material Cr27/Hule y Arreglo V-Belt' : '+ Scope Config (Spares / CAPEX Package), Cr27/Rubber Material & V-Belt Arrangement'}</span>
+            <span id="wb-engineering-config-summary-text">{isEs ? '+ Configuración de Alcance (Refacciones / Paquete CAPEX), Material Cr27/Hule y Arreglo V-Belt' : '+ Scope Config (Spares / CAPEX Package), Cr27/Rubber Material & V-Belt Arrangement'}</span>
             <span class="wb-step1-more-arrow">▾</span>
           </summary>
           <div class="wb-progressive-body">
@@ -651,11 +651,17 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
             <div class="pre-engineering-hint-box" style="margin-bottom: 1.25rem;">
               <span class="hint-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>
               <div class="hint-text">
-                <strong>{isEs ? '¿Cuenta con datos de laboratorio del mineral o tonelaje diario?' : 'Working from mineral lab tests or daily tonnage?'}</strong>
-                <p>{isEs ? 'No requiere planos de ingeniería de detalle para cotizar. Nuestro equipo en Durango valida la compatibilidad y dimensionamiento de bombas, celdas y filtros SMAT sin costo adicional como parte de su propuesta técnico-económica formal.' : 'No detailed engineering drawings required to request a quote. Our Durango applications team verifies SMAT cell, pump, and filter sizing compatibility as part of your formal technical proposal.'}</p>
+                <strong id="wb-step2-hint-title">{isEs ? '¿Cuenta con datos de laboratorio del mineral o tonelaje diario?' : 'Working from mineral lab tests or daily tonnage?'}</strong>
+                <p id="wb-step2-hint-body">{isEs ? 'No requiere planos de ingeniería de detalle para cotizar. Nuestro equipo en Durango valida la compatibilidad y dimensionamiento de bombas, celdas y filtros SMAT sin costo adicional como parte de su propuesta técnico-económica formal.' : 'No detailed engineering drawings required to request a quote. Our Durango applications team verifies SMAT cell, pump, and filter sizing compatibility as part of your formal technical proposal.'}</p>
               </div>
             </div>
 
+            <div id="wb-step2-control-summary" class="hidden" style="display:none; margin-bottom:0.85rem; padding:0.75rem 0.9rem; background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; font-size:0.78rem; color:#082f49;">
+              <strong class="font-mono-tech" style="display:block; margin-bottom:0.25rem;">{isEs ? '[RESUMEN DE ESTACIÓN METROLÓGICA ACTIVA — MARCY + PIERRE GY + ASTM E11]' : '[ACTIVE METROLOGY STATION SUMMARY — MARCY + PIERRE GY + ASTM E11]'}</strong>
+              <span id="wb-step2-control-summary-text">{isEs ? 'Cédula de laboratorio sincronizada con el simulador hidráulico Durand.' : 'Laboratory schedule synchronized with the Durand hydraulic simulator.'}</span>
+            </div>
+
+            <div id="wb-step2-durand-controls-wrap">
             <div class="presets-section">
               <span class="presets-label">{isEs ? 'PRESETS DE OPERACIÓN FRECUENTE:' : 'COMMON MINING PRESETS:'}</span>
               <div class="preset-chips-grid">
@@ -722,11 +728,6 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
               <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'Cinemática (u₂ / L₁₀ₕ):' : 'Kinematics (u₂ / L₁₀ₕ):'}</span><strong class="sim-metric-val pro-tabular-nums" id="metric-drive-u2" data-testid="metric-drive-u2">{defaultKinematics.tipSpeedMs} m/s • <span id="metric-drive-l10h">{defaultKinematics.bearingL10Hours.toLocaleString()} h</span></strong></div>
               <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'RPM Bomba (n₂) / Carga Radial (F_r):' : 'Pump Speed (n₂) / Radial Load (F_r):'}</span><strong class="sim-metric-val pro-tabular-nums"><span id="metric-drive-rpm">{defaultKinematics.pumpRpm} RPM</span> • <span id="metric-drive-fr">{defaultKinematics.beltRadialLoadKn} kN</span></strong></div>
               <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'Inmunidad de Sumidero (Arreglo):' : 'Sump Flood Immunity:'}</span><strong class="sim-metric-val pro-tabular-nums" id="metric-drive-flood">{isEs ? defaultKinematics.sumpFloodImmunity : defaultKinematics.sumpFloodImmunityEn}</strong></div>
-            </div>
-
-            <div id="wb-step2-control-summary" class="hidden" style="display:none; margin-bottom:0.85rem; padding:0.75rem 0.9rem; background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; font-size:0.78rem; color:#082f49;">
-              <strong class="font-mono-tech" style="display:block; margin-bottom:0.25rem;">{isEs ? '[RESUMEN DE ESTACIÓN METROLÓGICA ACTIVA — MARCY + PIERRE GY + ASTM E11]' : '[ACTIVE METROLOGY STATION SUMMARY — MARCY + PIERRE GY + ASTM E11]'}</strong>
-              <span id="wb-step2-control-summary-text">{isEs ? 'Cédula de laboratorio sincronizada con el simulador hidráulico Durand.' : 'Laboratory schedule synchronized with the Durand hydraulic simulator.'}</span>
             </div>
 
             <div class="clearance-kinematics-inline-card" id="wb-clearance-kinematics-card">
@@ -797,6 +798,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
                 <span class="regime-pill safe" id="regime-pill"><span class="pulsing-dot pulsing-dot-green"></span>{isEs ? 'Régimen Seguro / Flujo Homogéneo (V > 1.25 Vc)' : 'Safe Regime / Homogeneous Flow (V > 1.25 Vc)'}</span>
                 <small class="regime-detail" id="regime-detail">{isEs ? `Velocidad recomendada: >${defaultSimMetrics.results.recommendedPipeVelocityMs} m/s (Patm ${(defaultAltData as any).pAtmHeadMca} mca)` : `Recommended velocity: >${defaultSimMetrics.results.recommendedPipeVelocityMs} m/s (Patm ${(defaultAltData as any).pAtmHeadMca} mca)`}</small>
               </div>
+            </div>
             </div>
 
             <div class="mech-diagnostics-inline-box" id="mech-diagnostics-inline">

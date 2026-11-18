@@ -135,8 +135,8 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
           <div class="smat-slug-kpi-value">{sku.hardness_spec}</div>
         </div>
         <div class="smat-slug-kpi-box">
-          <div class="smat-slug-kpi-label">Everyday Calibration Scale (ISO/IEC 7810)</div>
-          <div class="smat-slug-kpi-value smat-slug-kpi-value--sky">{sku.everyday_scale_en}</div>
+          <div class="smat-slug-kpi-label">Preventive Reorder Window (JRP)</div>
+          <div class="smat-slug-kpi-value smat-slug-kpi-value--sky">Every {sku.reorder_window_days} days · Pair: {sku.coupled_pair_sku}</div>
         </div>
       </div>
     </header>
@@ -144,7 +144,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
     <!-- 2-Column Body: 3-in-1 ProductQuickCard + Dual B2B Checkout -->
     <div class="smat-slug-layout-grid">
       <div class="smat-slug-col-left">
-        <ProductQuickCard sku={sku} lang="en" />
+        <ProductQuickCard sku={sku} lang="en" mode="media-only" />
 
         <!-- 3-Step Plant Validation Box -->
         <section class="smat-slug-validation-card">
@@ -379,6 +379,45 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
   import { initCoreTradeInWidgets } from '../../../scripts/vendorPassportAndTradeInController.js';
   if (typeof document !== 'undefined') {
     initCoreTradeInWidgets(document, 'en');
+    const chips = document.querySelectorAll('.smat-slug-mat-chip[data-mat-code]');
+    const trayBtn = document.querySelector('[data-slug-add-to-tray]');
+    const waBtn = document.querySelector('[data-slug-wa-btn]') as HTMLAnchorElement | null;
+    const wbBtn = document.querySelector('[data-slug-workbench-btn]') as HTMLAnchorElement | null;
+    const activateSlugMatChip = (chip: Element) => {
+      const mat = chip.getAttribute('data-mat-code') || '';
+      if (!mat) return;
+      chips.forEach((c) => {
+        const isCurrent = c === chip;
+        c.classList.toggle('is-default', isCurrent);
+        c.setAttribute('aria-pressed', isCurrent ? 'true' : 'false');
+      });
+      if (trayBtn) {
+        trayBtn.setAttribute('data-sku-material', mat);
+      }
+      if (waBtn) {
+        const skuId = waBtn.getAttribute('data-sku-id') || '';
+        const skuTitle = waBtn.getAttribute('data-sku-title') || '';
+        const regime = waBtn.getAttribute('data-sku-regime') || 'hay';
+        const mass = waBtn.getAttribute('data-sku-mass') || '15';
+        const msg = `[SMAT-DGO] Hello SMAT, I need an urgent quote for SKU ${skuId} (${skuTitle}) in alloy ${mat} [ Regime: ${regime} | Mass: ${mass} kg ].`;
+        waBtn.href = `https://wa.me/526183670664?text=${encodeURIComponent(msg)}`;
+      }
+      if (wbBtn) {
+        const skuId = wbBtn.getAttribute('data-sku-id') || '';
+        wbBtn.href = `/en/quote/?sku=${encodeURIComponent(skuId)}&mat=${encodeURIComponent(mat)}#rfq`;
+        wbBtn.setAttribute('data-home-workbench', `/en/?sku=${encodeURIComponent(skuId)}&mat=${encodeURIComponent(mat)}#workbench`);
+      }
+    };
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => activateSlugMatChip(chip));
+      chip.addEventListener('keydown', (ev: Event) => {
+        const ke = ev as KeyboardEvent;
+        if (ke.key === 'Enter' || ke.key === ' ') {
+          ke.preventDefault();
+          activateSlugMatChip(chip);
+        }
+      });
+    });
   }
 </script>
 

@@ -55,9 +55,11 @@ interface Props {
     geometric_triplet_mm?: GeometricTriplet;
   };
   lang?: 'es' | 'en';
+  mode?: 'card' | 'media-only';
 }
 
-const { sku, lang = 'es' } = Astro.props;
+const { sku, lang = 'es', mode = 'card' } = Astro.props;
+const isMediaOnly = mode === 'media-only';
 const isEs = lang === 'es';
 const photoUrl = sku.photo_webp || `/images/productos/${sku.slug_es}.webp`;
 const triplet = sku.geometric_triplet_mm || {
@@ -224,68 +226,72 @@ const _auditValuationRef = (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (audi
           <strong>{isEs ? 'Escala cotidiana (0.76 mm):' : 'Everyday scale (0.76 mm):'}</strong>{' '}
           {isEs ? sku.everyday_scale_es : sku.everyday_scale_en}
         </p>
-        <div class="smat-qcard-fiscal-row" data-qcard-fiscal-badge={sku.id}>
-          <span class="smat-qcard-fiscal-pill">
-            {isEs
-              ? `SAT CFDI 4.0: ClaveProdServ ${satTuple.clave_prod_serv} · Unidad ${satTuple.clave_unidad} (Pieza) · UsoCFDI ${satTuple.uso_cfdi}`
-              : `SAT CFDI 4.0: UNSPSC ${satTuple.clave_prod_serv} · Unit ${satTuple.clave_unidad} (Piece) · CFDI Use ${satTuple.uso_cfdi}`}
-          </span>
-          <span class="smat-qcard-lane-pill">
-            {isEs
-              ? '⚡ Caja Chica < 25,000 MXN (CFDI 4.0 Hoy) · OC SAP > 25,000 MXN'
-              : '⚡ Petty Cash < 25,000 MXN (CFDI 4.0 Today) · SAP PO > 25,000 MXN'}
-          </span>
-        </div>
+        {!isMediaOnly && (
+          <div class="smat-qcard-fiscal-row" data-qcard-fiscal-badge={sku.id}>
+            <span class="smat-qcard-fiscal-pill">
+              {isEs
+                ? `SAT CFDI 4.0: ClaveProdServ ${satTuple.clave_prod_serv} · Unidad ${satTuple.clave_unidad} (Pieza) · UsoCFDI ${satTuple.uso_cfdi}`
+                : `SAT CFDI 4.0: UNSPSC ${satTuple.clave_prod_serv} · Unit ${satTuple.clave_unidad} (Piece) · CFDI Use ${satTuple.uso_cfdi}`}
+            </span>
+            <span class="smat-qcard-lane-pill">
+              {isEs
+                ? '⚡ Caja Chica < 25,000 MXN (CFDI 4.0 Hoy) · OC SAP > 25,000 MXN'
+                : '⚡ Petty Cash < 25,000 MXN (CFDI 4.0 Today) · SAP PO > 25,000 MXN'}
+            </span>
+          </div>
+        )}
       </div>
 
-      <div class="smat-qcard-controls">
-        <label class="smat-qcard-config-label">
-          <span>{isEs ? 'Configuración / Material:' : 'Configuration / Material:'}</span>
-          <select
-            class="smat-qcard-config-select"
-            data-qcard-config={sku.id}
-            aria-label={isEs ? `Seleccionar configuración para ${sku.title_es}` : `Select configuration for ${sku.title_en}`}
-          >
-            {configOptions.map((opt) => (
-              <option value={opt.value} selected={opt.value === sku.default_material}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        </label>
+      {!isMediaOnly && (
+        <div class="smat-qcard-controls">
+          <label class="smat-qcard-config-label">
+            <span>{isEs ? 'Configuración / Material:' : 'Configuration / Material:'}</span>
+            <select
+              class="smat-qcard-config-select"
+              data-qcard-config={sku.id}
+              aria-label={isEs ? `Seleccionar configuración para ${sku.title_es}` : `Select configuration for ${sku.title_en}`}
+            >
+              {configOptions.map((opt) => (
+                <option value={opt.value} selected={opt.value === sku.default_material}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </label>
 
-        <div class="smat-qcard-actions">
-          <a
-            href={waDefaultHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-qcard-wa-btn={sku.id}
-            data-sku-id={sku.id}
-            data-sku-title={skuTitle}
-            data-sku-sat={`${satTuple.clave_prod_serv} / ${satTuple.clave_unidad}`}
-            data-sku-cmu={cmuTag}
-            data-priority-tier={cmuTag}
-            data-sku-lang={lang}
-            class="smat-qcard-wa-btn"
-          >
-            <span>{isEs ? '💬 Cotizar / Pedir por WhatsApp (1 Clic)' : '💬 1-Click WhatsApp Quote / Order'}</span>
-          </a>
+          <div class="smat-qcard-actions">
+            <a
+              href={waDefaultHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-qcard-wa-btn={sku.id}
+              data-sku-id={sku.id}
+              data-sku-title={skuTitle}
+              data-sku-sat={`${satTuple.clave_prod_serv} / ${satTuple.clave_unidad}`}
+              data-sku-cmu={cmuTag}
+              data-priority-tier={cmuTag}
+              data-sku-lang={lang}
+              class="smat-qcard-wa-btn"
+            >
+              <span>{isEs ? '💬 Cotizar / Pedir por WhatsApp (1 Clic)' : '💬 1-Click WhatsApp Quote / Order'}</span>
+            </a>
 
-          <button
-            type="button"
-            data-qcard-add-btn={sku.id}
-            data-quick-tray-add={sku.id}
-            data-sku-title={skuTitle}
-            data-sku-code={sku.atomic_codes[0] || sku.id}
-            data-sku-material={sku.default_material}
-            data-sku-regime={sku.stock_regime || 'hay'}
-            data-sku-mass={sku.mass_kg}
-            class="smat-qcard-cta-btn"
-          >
-            <span>+ {isEs ? 'Sumar a Lista de Cotización' : 'Add to Quote List'}</span>
-          </button>
+            <button
+              type="button"
+              data-qcard-add-btn={sku.id}
+              data-quick-tray-add={sku.id}
+              data-sku-title={skuTitle}
+              data-sku-code={sku.atomic_codes[0] || sku.id}
+              data-sku-material={sku.default_material}
+              data-sku-regime={sku.stock_regime || 'hay'}
+              data-sku-mass={sku.mass_kg}
+              class="smat-qcard-cta-btn"
+            >
+              <span>+ {isEs ? 'Sumar a Lista de Cotización' : 'Add to Quote List'}</span>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   </div>
 </section>

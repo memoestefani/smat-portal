@@ -226,58 +226,22 @@ const cycloneModels = [
     </div>
 
     <div style="margin-top: 1rem; padding: 0.85rem; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: center; justify-content: space-between; font-size: 0.8rem;">
-      <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center;">
-        <label style="font-weight: 700;">
-          {isEs ? 'Abertura a (mm):' : 'Slot Aperture a (mm):'}
-          <input type="number" id="csr-aperture-mm" min="0.18" max="12.0" step="0.05" value="0.50" style="width: 72px; margin-left: 0.35rem; padding: 0.25rem;" />
-        </label>
-        <label style="font-weight: 700;">
-          {isEs ? 'Ángulo Alivio (°):' : 'Relief Angle (°):'}
-          <input type="number" id="csr-relief-deg" min="2.0" max="6.0" step="0.5" value="4.0" style="width: 64px; margin-left: 0.35rem; padding: 0.25rem;" />
-        </label>
-        <label style="font-weight: 700;">
-          {isEs ? 'Partícula d (µm):' : 'Particle d (µm):'}
-          <input type="number" id="csr-feed-um" min="45" max="2000" step="25" value="420" style="width: 78px; margin-left: 0.35rem; padding: 0.25rem;" />
-        </label>
+      <div style="color: #0f172a; font-weight: 700;">
+        {isEs
+          ? '🔗 La simulación acoplada en vivo (Corte Plitt d50c ↔ Partición Weibull TH48-30) se controla directamente en la Estación Superior de Circuito Cerrado.'
+          : '🔗 Live coupled simulation (Plitt Cut d50c ↔ TH48-30 Weibull Partition) is controlled directly in the Top Closed-Circuit Station.'}
       </div>
-      <div id="csr-weibull-out" style="font-family: var(--font-mono, monospace); font-weight: 700; color: #047857;">
-        {isEs ? 'Retención Oversize: 33.1% · Dilatación Δa/a: 3.06% · SKU: SMAT-SCR-TH48-30' : 'Oversize Partition: 33.1% · Dilation Δa/a: 3.06% · SKU: SMAT-SCR-TH48-30'}
+      <div style="display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center;">
+        <a href="#stage-2" style="font-family: var(--font-mono, monospace); font-weight: 800; color: #065f46; text-decoration: underline;">
+          {isEs ? '↑ Ir a Estación Acoplada 3 Vasos + Criba Weibull' : '↑ Jump to Coupled 3-Cup + Weibull Screen Station'}
+        </a>
+        <a href={isEs ? '/productos/mallas-finas-uretano-th48-30/' : '/en/products/fine-urethane-screens-th48-30/'} style="font-family: var(--font-mono, monospace); font-weight: 800; color: #0c4a6e; text-decoration: underline;">
+          {isEs ? 'Abrir Ficha SMAT-SCR-TH48-30 →' : 'Open Spec Sheet SMAT-SCR-TH48-30 →'}
+        </a>
       </div>
     </div>
   </div>
 </section>
-
-<script>
-  import { calculateUrethaneScreenPartitionWeibull } from '../scripts/slurryEngine.js';
-
-  function initCycloneScreenWeibullVerifier() {
-    const apEl = document.getElementById('csr-aperture-mm') as HTMLInputElement | null;
-    const relEl = document.getElementById('csr-relief-deg') as HTMLInputElement | null;
-    const feedEl = document.getElementById('csr-feed-um') as HTMLInputElement | null;
-    const outEl = document.getElementById('csr-weibull-out');
-    const isEn = document.documentElement.lang === 'en';
-
-    function updateWeibull() {
-      if (!apEl || !relEl || !feedEl || !outEl) return;
-      const res = calculateUrethaneScreenPartitionWeibull({
-        apertureMm: Number(apEl.value) || 0.50,
-        reliefAngleDeg: Number(relEl.value) || 4.0,
-        feedParticleUm: Number(feedEl.value) || 420
-      });
-      outEl.textContent = isEn
-        ? `Oversize Partition: ${res.partitionToOversizePct}% · Dilation Δa/a: ${res.elasticDilationPct}% (${res.vibrationG}G, ${res.antiBlindingCompliant ? 'Anti-Blinding OK' : 'Review θ'}) · SKU: ${res.recommendedSkuId}`
-        : `Retención Oversize: ${res.partitionToOversizePct}% · Dilatación Δa/a: ${res.elasticDilationPct}% (${res.vibrationG}G, ${res.antiBlindingCompliant ? 'Anti-Cegamiento OK' : 'Revisar θ'}) · SKU: ${res.recommendedSkuId}`;
-    }
-
-    [apEl, relEl, feedEl].forEach((el) => {
-      el?.addEventListener('input', updateWeibull);
-      el?.addEventListener('change', updateWeibull);
-    });
-    updateWeibull();
-  }
-
-  initCycloneScreenWeibullVerifier();
-</script>
 
 <style>
   .cyclone-screen-report {
