@@ -3111,7 +3111,7 @@ test('163. MS-04: Motor Cinemático V-Belt (CV/ZVZ/CRZ/DC), Candado u2 <= 24.5 m
   const skidEn = fs.readFileSync(path.join(siteRoot, 'src/pages/en/pumping/skid.astro'), 'utf-8');
 
   for (const content of [skidEs, skidEn]) {
-    assert.ok(content.includes('calculateDriveAndBearingKinematics'), 'Skid debe importar y ejecutar calculateDriveAndBearingKinematics');
+    assert.ok(content.includes('calculateDriveAndBearingKinematics') || content.includes('initSkidKinematicsInspector'), 'Skid debe delegar en calculateDriveAndBearingKinematics / initSkidKinematicsInspector');
     assert.ok(content.includes('id="skid-kinematics-panel"'), 'Skid debe incluir <details id="skid-kinematics-panel">');
     assert.ok(content.includes('data-kin-u2') && content.includes('data-kin-l10h') && content.includes('data-kin-rubber-alert'), 'Skid debe mostrar u2, L10h y alerta de límite térmico de hule (24.5 m/s)');
   }
@@ -4043,7 +4043,7 @@ test('Test 193 (MS-05 y MS-06 / Decisiones 5-C+, 6-C+, 8-C+): Consumo directo de
     assert.ok(skid.includes('DRIVE_ARRANGEMENT_CATALOG'), `${skidRel} debe importar DRIVE_ARRANGEMENT_CATALOG desde slurryEngine.js`);
     assert.ok(skid.includes('data-kin-capacity-c'), `${skidRel} debe exponer input [data-kin-capacity-c] para capacidad dinámica C (kN)`);
     assert.ok(skid.includes('data-kin-ratio') && skid.includes('data-kin-flood') && skid.includes('data-kin-load-p'), `${skidRel} debe proyectar relación i, inmunidad de sumidero y carga equivalente P`);
-    assert.ok(skid.includes('saveWorkbenchState('), `${skidRel} debe persistir la cinemática en saveWorkbenchState`);
+    assert.ok(skid.includes('saveWorkbenchState(') || skid.includes('initSkidKinematicsInspector'), `${skidRel} debe persistir la cinemática en saveWorkbenchState o initSkidKinematicsInspector`);
   }
 });
 

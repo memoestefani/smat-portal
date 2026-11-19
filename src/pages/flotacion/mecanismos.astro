@@ -17,17 +17,76 @@ const criteria = mecRole?.decision_criteria;
   alternateEsPath="/flotacion/mecanismos/"
   alternateEnPath="/en/flotation/mechanisms/"
 >
-  <section class="page-hero">
-    <div class="container text-center">
-      <span class="badge badge-emergency">REFACCIONES DE FLOTACIÓN • POLIURETANO Y HULE</span>
-      <h1>Impulsores y Difusores de Flotación</h1>
-      <p class="subtitle">Repuestos en poliuretano y hule para mecanismos de celdas de flotación y acondicionadores.</p>
+  <section class="page-hero smat-compact-hero">
+    <div class="container">
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:0.4rem;">
+        <h1 style="margin:0;">Impulsores y Difusores de Flotación</h1>
+        <span class="badge badge-emergency">REFACCIONES DE FLOTACIÓN • POLIURETANO Y HULE</span>
+      </div>
+      <p class="smat-hero-sub">Repuestos en poliuretano y hule para mecanismos de celdas de flotación y acondicionadores.</p>
     </div>
   </section>
 
-  <section class="section-spacing">
+  <section class="section-spacing smat-stage-compact">
     <div class="container content-container">
       <div class="card detail-card">
+        <!-- Estrato 1: Calculadora Interactiva de Impulsor-Difusor Gorain + Zwietering + Vida PU vs R55 -->
+        <div class="flotation-5zone-box" id="stratum1-mechanisms-sim" data-cell-dropin-matrix="gorain-1997" data-stratum-1-instrument style="margin-bottom: 1.25rem; padding: clamp(0.7rem, 1.4vw, 1.15rem); border-radius: 10px; background: #f8fafc; color: var(--smat-text-primary); border: 1.5px solid #cbd5e1; border-left: 4px solid #7c2d12;">
+          <span class="badge badge-copper">SIMULADOR EN VIVO · VELOCIDAD PERIFÉRICA v<sub>tip</sub>, S<sub>b</sub> GORAIN &amp; SUSPENSIÓN N<sub>js</sub></span>
+          <h2 style="margin: 0.25rem 0 0.35rem; font-size: clamp(0.96rem, 1.4vw, 1.12rem); color: var(--smat-text-primary); display:block; border:none; padding:0;">Cálculo de Rotor Estrella y Difusor Drop-In (Poliuretano 85–95 Shore A vs Hule R55)</h2>
+          <div class="smat-stratum1-display">
+            <div id="celdas-gorain-readout" style="padding: 0.55rem 0.75rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #059669; color: #064e3b; font-family: var(--smat-font-mono); font-size: 0.8rem; font-weight: 700;">
+              S<sub>b</sub> (s<sup>-1</sup>): <span id="celdas-sb-output">56.25</span> · v<sub>tip</sub> (m/s): <span id="celdas-vtip-output">6.87</span> · k (min<sup>-1</sup>): <span id="celdas-k-output">1.185</span> · N<sub>js</sub>: <span id="celdas-njs-output">156</span> RPM (<span id="celdas-status-output">Gorain ≥ 50 s⁻¹ ÓPTIMO · Zwietering SUSPENSIÓN COMPLETA</span>)
+            </div>
+          </div>
+          <div class="smat-inputs-2col" style="margin-bottom: 0.65rem; padding: 0.65rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.8rem;">
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Modelo / Ø Rotor (m):</span>
+              <select id="celdas-dia-select" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <option value="0.46">#18 SP (Ø 0.46 m · 50 ft³)</option>
+                <option value="0.61" selected>#24 (Ø 0.61 m · 100 ft³)</option>
+                <option value="0.76">#30 (Ø 0.76 m · 300 ft³)</option>
+              </select>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Gas Superficial J<sub>g</sub> (cm/s):</span>
+              <input type="number" id="celdas-jg-input" min="0.6" max="3.0" step="0.1" value="1.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Burbuja Sauter d<sub>32</sub> (mm):</span>
+              <input type="number" id="celdas-d32-input" min="0.9" max="2.8" step="0.1" value="1.6" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Velocidad Rotor (RPM):</span>
+              <input type="number" id="celdas-rpm-input" min="120" max="380" step="5" value="215" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Granulometría d<sub>80</sub> (µm):</span>
+              <input type="number" id="celdas-d80-input" min="25" max="850" step="10" value="150" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Sólidos Pulpa C<sub>w</sub> (%):</span>
+              <input type="number" id="celdas-cw-input" min="15" max="65" step="1" value="35" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+          </div>
+          <div style="display: flex; gap: 0.65rem; flex-wrap: wrap; align-items: center;">
+            <a href="/cotizar/?circuito=flotacion&equipo=rotor_estator&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq" data-quote-base="/cotizar/" class="btn btn-primary" style="min-height:48px; display:inline-flex; align-items:center;">Cotizar Rotor-Estator Calibrado →</a>
+            <button
+              type="button"
+              class="btn btn-outline btn-avenue-tray"
+              data-vertical-tray-btn
+              data-add-tray-sku="SMAT-FLOT-MECH-18SP"
+              data-tray-part-code="Ø0.61m"
+              data-tray-title="Kit Rotor-Estator Drop-In (Ø0.61 m)"
+              data-tray-series="100ft"
+              data-tray-material="PU_SHORE90"
+              data-tray-circuit="flotacion"
+              data-tray-source="flotation_mechanisms_stratum1_calc"
+              style="min-height:48px;"
+            >+ Bandeja Rotor-Estator 18SP</button>
+          </div>
+        </div>
+
         <div style="margin-bottom: 1.75rem;">
           <TechnicalDiagrams type="flotation" lang="es" />
         </div>
@@ -88,45 +147,6 @@ const criteria = mecRole?.decision_criteria;
           </div>
         )}
 
-        <!-- Calculadora Interactiva de Impulsor-Difusor Gorain + Zwietering + Vida PU vs R55 (D10-V43) -->
-        <div class="flotation-5zone-box" data-cell-dropin-matrix="gorain-1997" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; color: var(--smat-text-primary); border: 1px solid #cbd5e1; border-left: 4px solid #7c2d12;">
-          <span class="badge badge-copper">SIMULADOR EN VIVO · VELOCIDAD PERIFÉRICA v<sub>tip</sub>, S<sub>b</sub> GORAIN &amp; SUSPENSIÓN N<sub>js</sub></span>
-          <h3 style="margin: 0.65rem 0 0.5rem; font-size: 1.08rem; color: var(--smat-text-primary);">Cálculo de Rotor Estrella y Difusor Drop-In (Poliuretano 85–95 Shore A vs Hule R55)</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 0.65rem; margin-bottom: 0.85rem; padding: 0.85rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.82rem;">
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Modelo / Ø Rotor (m):</span>
-              <select id="celdas-dia-select" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
-                <option value="0.46">#18 SP (Ø 0.46 m · 50 ft³)</option>
-                <option value="0.61" selected>#24 (Ø 0.61 m · 100 ft³)</option>
-                <option value="0.76">#30 (Ø 0.76 m · 300 ft³)</option>
-              </select>
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Gas Superficial J<sub>g</sub> (cm/s):</span>
-              <input type="number" id="celdas-jg-input" min="0.6" max="3.0" step="0.1" value="1.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Burbuja Sauter d<sub>32</sub> (mm):</span>
-              <input type="number" id="celdas-d32-input" min="0.9" max="2.8" step="0.1" value="1.6" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Velocidad Rotor (RPM):</span>
-              <input type="number" id="celdas-rpm-input" min="120" max="380" step="5" value="215" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Granulometría d<sub>80</sub> (µm):</span>
-              <input type="number" id="celdas-d80-input" min="25" max="850" step="10" value="150" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Sólidos Pulpa C<sub>w</sub> (%):</span>
-              <input type="number" id="celdas-cw-input" min="15" max="65" step="1" value="35" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-          </div>
-          <div id="celdas-gorain-readout" style="margin-bottom: 0.45rem; padding: 0.65rem 0.85rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-family: var(--smat-font-mono); font-size: 0.82rem; font-weight: 700;">
-            S<sub>b</sub> (s<sup>-1</sup>): <span id="celdas-sb-output">56.25</span> · v<sub>tip</sub> (m/s): <span id="celdas-vtip-output">6.87</span> · k (min<sup>-1</sup>): <span id="celdas-k-output">1.185</span> · N<sub>js</sub>: <span id="celdas-njs-output">156</span> RPM (<span id="celdas-status-output">Gorain ≥ 50 s⁻¹ ÓPTIMO · Zwietering SUSPENSIÓN COMPLETA</span>)
-          </div>
-        </div>
-
         <div class="flotation-selector-box" data-testid="flotation-contextual-selector" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #fffbeb; border: 1px solid #fde68a;">
           <span class="badge badge-copper">PRE-SELECCIÓN CONTEXTUAL • PUENTE A COTIZADOR</span>
           <h3 style="margin: 0.45rem 0 0.5rem; font-size: 1.05rem; color: var(--smat-text-primary);">Cotizar Rotor / Estator por Capacidad y Condición</h3>
@@ -172,33 +192,14 @@ const criteria = mecRole?.decision_criteria;
 <script>
   import { bindCanonicalFlotationCalculator } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
   bindCanonicalFlotationCalculator(document, 'es');
+  document.addEventListener('astro:page-load', () => bindCanonicalFlotationCalculator(document, 'es'));
 </script>
 
 <style>
-  .page-hero {
-    padding: 4.5rem 0 3.5rem;
-    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
-    border-bottom: 1px solid var(--smat-border-light);
-  }
-
   .text-center {
     text-align: center;
     max-width: 800px;
     margin: 0 auto;
-  }
-
-  .page-hero h1 {
-    color: #090d16;
-    margin-top: 0.75rem;
-    font-size: clamp(2rem, 3.5vw, 2.75rem);
-    letter-spacing: -0.02em;
-  }
-
-  .subtitle {
-    font-size: 1.125rem;
-    margin-top: 0.75rem;
-    color: #475569;
-    line-height: 1.6;
   }
 
   .content-container {
@@ -210,7 +211,7 @@ const criteria = mecRole?.decision_criteria;
     background-color: #ffffff;
     border: 1px solid var(--smat-border-light);
     border-radius: 14px;
-    padding: 2.5rem;
+    padding: clamp(0.7rem, 2vw, 1.5rem);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
   }
 
@@ -268,7 +269,7 @@ const criteria = mecRole?.decision_criteria;
   }
 
   .cta-rfq-header p {
-    color: #475569;
+    color: #334155;
     font-size: 1rem;
     margin-bottom: 1.5rem;
   }

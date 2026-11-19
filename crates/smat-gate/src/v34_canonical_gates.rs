@@ -570,6 +570,8 @@ pub fn check_v39_backend_ui_exposure_and_zero_stock_leak_gate_42(site_root: &Pat
     }
 
     // D9-V39: Persistencia transversal smat_engineering_context_v1
+    let lens_src = fs::read_to_string(site_root.join("src/scripts/verticalBidirectionalHydrationLens.js")).unwrap_or_default();
+    let lens_commits_ctx = lens_src.contains("commitVerticalSimulation");
     for sim_rel in [
         "src/pages/bombeo/skid.astro",
         "src/pages/en/pumping/skid.astro",
@@ -583,7 +585,13 @@ pub fn check_v39_backend_ui_exposure_and_zero_stock_leak_gate_42(site_root: &Pat
         "src/pages/en/classification/index.astro",
     ] {
         let src = fs::read_to_string(site_root.join(sim_rel)).map_err(|e| e.to_string())?;
-        if !src.contains("saveEngineeringContextSnapshot") && !src.contains("commitVerticalSimulation") {
+        let has_unified_inspector = (src.contains("initSkidKinematicsInspector")
+            || src.contains("initBearingSupportInspector"))
+            && lens_commits_ctx;
+        if !src.contains("saveEngineeringContextSnapshot")
+            && !src.contains("commitVerticalSimulation")
+            && !has_unified_inspector
+        {
             return Err(format!(
                 "Gate 42 (D9-V39): '{}' no persiste telemetría en smat_engineering_context_v1",
                 sim_rel

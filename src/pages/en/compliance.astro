@@ -140,36 +140,50 @@ const passport = buildSmatVendorPassportPayload();
 
 <style>
   .compliance-page-main {
-    padding: 3.5rem 0 4.5rem;
+    padding: clamp(0.65rem, 1.8vw, 1.75rem) 0 3rem;
     background-color: #fafaf9;
     color: #0f172a;
   }
 
   .compliance-header {
     max-width: 860px;
-    margin: 0 auto 2.5rem;
+    margin: 0 auto clamp(0.65rem, 1.5vw, 1.35rem);
     text-align: center;
   }
 
   .compliance-title {
     font-family: var(--smat-font-editorial);
-    font-size: clamp(1.9rem, 3.3vw, 2.6rem);
+    font-size: clamp(1.25rem, 2.8vw, 2.25rem);
+    line-height: 1.15;
     color: #0f172a;
-    margin: 0.75rem 0;
+    margin: 0.35rem 0 0.25rem;
   }
 
   .compliance-lead {
-    font-size: 1.02rem;
+    font-size: clamp(0.82rem, 1.2vw, 0.98rem);
     color: #334155;
-    line-height: 1.6;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .compliance-header {
+      text-align: left;
+    }
+    .compliance-lead {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
   }
 
   .compliance-card {
     background: #ffffff;
     border: 1px solid #cbd5e1;
-    border-top: 4px solid #9a3412;
+    border-top: 4px solid var(--smat-copper-accent, #7c2d12);
     border-radius: 12px;
-    padding: 2rem;
+    padding: clamp(1rem, 2vw, 1.85rem);
     box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
   }
 
@@ -188,9 +202,9 @@ const passport = buildSmatVendorPassportPayload();
     font-family: var(--smat-font-mono);
     font-size: 0.72rem;
     font-weight: 700;
-    color: #9a3412;
+    color: var(--smat-solar-accent, #7c2d12);
     background: #fff7ed;
-    border: 1px solid #fed7aa;
+    border: 1px solid #92400e;
     padding: 0.2rem 0.55rem;
     border-radius: 6px;
     margin-bottom: 0.45rem;
@@ -205,7 +219,7 @@ const passport = buildSmatVendorPassportPayload();
   .compliance-hub {
     margin: 0;
     font-size: 0.9rem;
-    color: #475569;
+    color: #334155;
   }
 
   .compliance-actions {

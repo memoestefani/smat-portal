@@ -173,6 +173,19 @@ const diagnostics = diagData.diagnostics.map((item) => {
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
               {isEs ? 'Cotizar Refacción →' : 'Quote Spares →'}
             </a>
+            <button
+              type="button"
+              class="btn btn-outline btn-sm diag-action-btn btn-avenue-tray"
+              data-add-tray-sku={item.recommendedSkusList[0] || 'SMAT-PUMP-IMP-AH'}
+              data-tray-part-code={item.stationIdLabel}
+              data-tray-title={isEs ? item.title_es : item.title_en}
+              data-tray-material={item.recommendedMaterial}
+              data-tray-circuit="diagnostico"
+              data-tray-source="diagnostics_hub"
+              style="min-height: 48px;"
+            >
+              {isEs ? '+ Bandeja' : '+ Add to Tray'}
+            </button>
           </div>
         </article>
       ))}
@@ -557,8 +570,10 @@ const diagnostics = diagData.diagnostics.map((item) => {
 <script>
   import { saveWorkbenchState, loadWorkbenchState } from '../scripts/workbenchBus.js';
   import { saveEngineeringContextSnapshot } from '../scripts/wizardCircuitPhysicsController.js';
+  import { bindAtomicPartTrayButtons } from '../scripts/verticalStateAndCtaSyncBridge.js';
 
   function initDiagFilters() {
+    bindAtomicPartTrayButtons(document);
     const pills = document.querySelectorAll<HTMLButtonElement>('.diag-pill');
     const cards = document.querySelectorAll<HTMLElement>('.diag-card');
     const countEl = document.getElementById('diag-search-count');
@@ -651,4 +666,5 @@ const diagnostics = diagData.diagnostics.map((item) => {
   } else {
     initDiagFilters();
   }
+  document.addEventListener('astro:page-load', initDiagFilters);
 </script>

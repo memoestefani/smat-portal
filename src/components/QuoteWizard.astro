@@ -140,6 +140,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
             <div id="wb-step1-pulp-profile-badge" class="unit-pulp-profile-badge hidden" style="font-size: 0.74rem; color: #082f49; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 4px; padding: 0.35rem 0.6rem; font-weight: 600;"></div>
             <button type="button" id="btn-apply-mining-preset" data-testid="btn-apply-mining-preset" class="assist-pill-btn" style="padding:0.28rem 0.65rem; font-size:0.72rem; font-weight:700;">{isEs ? 'Pre-calibrar Pulpa y Altitud del Distrito →' : 'Pre-calibrate District Slurry & Altitude →'}</button>
           </div>
+          <div id="wb-mining-preset-telemetry" data-mining-preset-telemetry style="display:none; margin-top:0.45rem; padding:0.45rem 0.65rem; background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; font-size:0.76rem; color:#0f172a;"></div>
         </div>
 
         <!-- CAPA 1: Selección Inmediata de Pieza / Lote y Tubería Nominal (Input First, Readout Second — Sección 3.2.3) -->
@@ -926,5 +927,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
 
 <script>
   import { initQuoteWizardController } from '../scripts/quoteWizardController.js';
+  import { initMiningPresetTelemetryBridge } from '../scripts/wizardMiningAndCodeDecoder.js';
   initQuoteWizardController();
+  initMiningPresetTelemetryBridge();
 </script>

@@ -466,30 +466,49 @@ export function calculateCoupledReorderWindowDays(telemetry = {}) {
   const sg = Math.max(1.0, Math.min(2.4, Number(telemetry.sg ?? (telemetry.solidsVolumetricPct ? 1.0 + telemetry.solidsVolumetricPct * 0.018 : 1.50))));
   const d50Um = Math.max(15, Math.min(1000, Number(telemetry.d50Um ?? telemetry.d80Microns ?? 120)));
   const tipSpeedMs = Math.max(8, Math.min(38, Number(telemetry.tipSpeedMs ?? 21.5)));
-  const severityFactor = Number(((sg / 1.50) * Math.pow(d50Um / 120, 0.15) * Math.pow(tipSpeedMs / 21.5, 0.25)).toFixed(2));
+  const rawCrit = String(telemetry.criticalityMode || 'normal').trim().toLowerCase();
+  const isParoPlanta = rawCrit === 'paro_planta' || rawCrit === 'emergency' || rawCrit === 'critical' || rawCrit === 'paro_de_linea';
+  const criticalityMode = isParoPlanta ? 'paro_planta' : 'normal';
+  const criticalityFactor = isParoPlanta ? 0.75 : 1.0;
+
+  const baseSeverity = (sg / 1.50) * Math.pow(d50Um / 120, 0.15) * Math.pow(tipSpeedMs / 21.5, 0.25);
+  const severityFactor = Number((baseSeverity * (isParoPlanta ? 1.33 : 1.0)).toFixed(2));
   const baseWearHours = Math.max(720, Number(telemetry.estimatedWearHours ?? telemetry.predictedWearHours ?? 2160));
   const dailyHours = Math.max(1, Number(telemetry.dailyOperatingHours ?? telemetry.operatingHoursPerDay ?? 24));
-  const wearAcceleratedLifeHours = Math.max(720, Math.round(baseWearHours / Math.max(0.6, severityFactor)));
+  const wearAcceleratedLifeHours = Math.max(720, Math.round((baseWearHours * criticalityFactor) / Math.max(0.6, baseSeverity)));
   const rawLifeDays = Math.round(wearAcceleratedLifeHours / dailyHours);
-  const reorderWindowDays = rawLifeDays <= 105 ? 90 : (rawLifeDays <= 165 ? 150 : 180);
+
+  const sleeveInspectionDay = Math.round(90 * criticalityFactor);
+  const impellerThroatbushSwapDay = Math.round(150 * criticalityFactor);
+  const voluteLinerOverhaulDay = Math.round(180 * criticalityFactor);
+  let reorderWindowDays = rawLifeDays <= 105 ? 90 : (rawLifeDays <= 165 ? 150 : 180);
+  if (isParoPlanta) {
+    reorderWindowDays = Math.min(reorderWindowDays, 90);
+  }
 
   return {
-    sleeveInspectionDay: 90,
-    impellerThroatbushSwapDay: 150,
-    voluteLinerOverhaulDay: 180,
-    t10InspectionDays: 90,
-    t50ReorderTriggerDays: 150,
-    t80CriticalChangeoutDays: 180,
+    sleeveInspectionDay,
+    impellerThroatbushSwapDay,
+    voluteLinerOverhaulDay,
+    t10InspectionDays: sleeveInspectionDay,
+    t50ReorderTriggerDays: impellerThroatbushSwapDay,
+    t80CriticalChangeoutDays: voluteLinerOverhaulDay,
     reorderWindowDays,
     recommendedWindowDays: reorderWindowDays,
-    leadTimeBufferDays: 14,
+    leadTimeBufferDays: isParoPlanta ? 7 : 14,
+    criticalityMode,
+    criticalityFactor,
     severityFactor,
     wearSeverityFactor: severityFactor,
     wearAcceleratedLifeHours,
-    dispatchModeLabelEs: 'Despacho Programado Almacén Central Durango (Política s,S)',
-    dispatchModeLabelEn: 'Scheduled Dispatch Durango Central Warehouse (s,S Policy)',
-    policySummaryEs: 'Día 90: Camisa HVOF D075C21 + Expulsor | Día 150: Impulsor E4147 + Throatbush E4083 | Día 180: Overhaul Voluta D3110 5:5:4',
-    policySummaryEn: 'Day 90: D075C21 HVOF Sleeve + Expeller | Day 150: E4147 Impeller + E4083 Throatbush | Day 180: D3110 Volute 5:5:4 Overhaul'
+    dispatchModeLabelEs: isParoPlanta
+      ? 'Despacho Crítico Paro de Planta (Política Armónica s,S 0.75×)'
+      : 'Despacho Programado Almacén Central Durango (Política s,S)',
+    dispatchModeLabelEn: isParoPlanta
+      ? 'Critical Plant-Stop Dispatch (Harmonic s,S Policy 0.75×)'
+      : 'Scheduled Dispatch Durango Central Warehouse (s,S Policy)',
+    policySummaryEs: `Día ${sleeveInspectionDay}: Camisa HVOF D075C21 + Expulsor | Día ${impellerThroatbushSwapDay}: Impulsor E4147 + Throatbush E4083 | Día ${voluteLinerOverhaulDay}: Overhaul Voluta D3110 5:5:4`,
+    policySummaryEn: `Day ${sleeveInspectionDay}: D075C21 HVOF Sleeve + Expeller | Day ${impellerThroatbushSwapDay}: E4147 Impeller + E4083 Throatbush | Day ${voluteLinerOverhaulDay}: D3110 Volute 5:5:4 Overhaul`
   };
 }
 

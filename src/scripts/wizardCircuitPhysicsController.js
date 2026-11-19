@@ -133,14 +133,16 @@ function normalizeEngineeringContextInput(circuitOrPartial = {}, maybePayload = 
     const slug = circuitOrPartial.trim().toLowerCase();
     const p = maybePayload && typeof maybePayload === 'object' ? maybePayload : {};
     if (slug === 'flotacion' || slug === 'flotation') {
+      const flotationPatch = { ...p };
+      const rawRotor = p.rotorDiaM ?? p.rotorDiameterM;
+      const rawJg = p.jgCmS ?? p.superficialGasVelocityCmS;
+      const rawD32 = p.d32Mm ?? p.bubbleDiameterMm ?? p.sauterBubbleDiaMm;
+      if (rawRotor !== undefined && rawRotor !== null) flotationPatch.rotorDiaM = Number(rawRotor);
+      if (rawJg !== undefined && rawJg !== null) flotationPatch.jgCmS = Number(rawJg);
+      if (rawD32 !== undefined && rawD32 !== null) flotationPatch.d32Mm = Number(rawD32);
       return {
         activeCircuit: 'flotacion',
-        flotation: {
-          ...p,
-          rotorDiaM: Number(p.rotorDiaM ?? p.rotorDiameterM ?? DEFAULT_ENGINEERING_CONTEXT.flotation.rotorDiaM),
-          jgCmS: Number(p.jgCmS ?? p.superficialGasVelocityCmS ?? DEFAULT_ENGINEERING_CONTEXT.flotation.jgCmS),
-          d32Mm: Number(p.d32Mm ?? p.bubbleDiameterMm ?? p.sauterBubbleDiaMm ?? DEFAULT_ENGINEERING_CONTEXT.flotation.d32Mm)
-        }
+        flotation: flotationPatch
       };
     }
     if (slug === 'filtracion' || slug === 'filtration') {
@@ -150,23 +152,31 @@ function normalizeEngineeringContextInput(circuitOrPartial = {}, maybePayload = 
       };
     }
     if (slug === 'clasificacion' || slug === 'classification') {
+      const classificationPatch = { ...p };
+      const rawCut = p.cutPointD50cUm ?? p.d50cMicrons;
+      if (rawCut !== undefined && rawCut !== null) classificationPatch.cutPointD50cUm = Number(rawCut);
       return {
         activeCircuit: 'clasificacion',
-        classification: {
-          ...p,
-          cutPointD50cUm: Number(p.cutPointD50cUm ?? p.d50cMicrons ?? DEFAULT_ENGINEERING_CONTEXT.classification.cutPointD50cUm)
-        }
+        classification: classificationPatch
       };
     }
     if (slug === 'bombeo' || slug === 'pumping' || slug === 'driveandhybrid') {
+      const drivePatch = { ...p };
+      const rawArr = p.arrangementCode ?? p.arrangement;
+      const rawKw = p.motorPowerKw ?? p.shaftPowerKw;
+      const rawCapC = p.recommendedDynamicCkN ?? p.dynamicCapacityCkN;
+      if (rawArr !== undefined && rawArr !== null && String(rawArr).trim() !== '') {
+        drivePatch.arrangementCode = String(rawArr);
+      }
+      if (rawKw !== undefined && rawKw !== null) {
+        drivePatch.motorPowerKw = Number(rawKw);
+      }
+      if (rawCapC !== undefined && rawCapC !== null) {
+        drivePatch.recommendedDynamicCkN = Number(rawCapC);
+      }
       return {
         activeCircuit: 'bombeo',
-        driveAndHybrid: {
-          ...p,
-          arrangementCode: String(p.arrangementCode ?? p.arrangement ?? DEFAULT_ENGINEERING_CONTEXT.driveAndHybrid.arrangementCode),
-          motorPowerKw: Number(p.motorPowerKw ?? p.shaftPowerKw ?? DEFAULT_ENGINEERING_CONTEXT.driveAndHybrid.motorPowerKw),
-          recommendedDynamicCkN: Number(p.recommendedDynamicCkN ?? p.dynamicCapacityCkN ?? 0)
-        }
+        driveAndHybrid: drivePatch
       };
     }
     if (slug === 'control_procesos' || slug === 'control' || slug === 'process_control') {

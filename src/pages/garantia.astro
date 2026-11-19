@@ -25,7 +25,9 @@ import FaqAccordion from '../components/FaqAccordion.astro';
       </div>
 
       <!-- Matriz de Garantía y Límites -->
-      <TrustMatrix lang="es" />
+      <div id="stratum1-warranty-trust" data-stratum-1-instrument>
+        <TrustMatrix lang="es" />
+      </div>
 
       <!-- Protocolos de Verificación Dimensional en Almacén Durango -->
       <div class="protocol-request-card">
@@ -82,45 +84,57 @@ import FaqAccordion from '../components/FaqAccordion.astro';
 
 <style>
   .trust-page-main {
-    padding-top: 3.5rem;
-    padding-bottom: 4.5rem;
+    padding-top: clamp(0.65rem, 1.8vw, 1.75rem);
+    padding-bottom: 3rem;
     background-color: #fafaf9;
   }
 
   .page-header {
     text-align: center;
     max-width: 840px;
-    margin: 0 auto 3rem;
+    margin: 0 auto clamp(0.65rem, 1.5vw, 1.35rem);
   }
 
   .trust-badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;
     background: #fff7ed;
-    border: 1px solid #fed7aa;
+    border: 1px solid #92400e;
     border-radius: var(--smat-radius-pill);
     color: var(--smat-copper-accent);
     font-size: 0.75rem;
     font-weight: 800;
     letter-spacing: 0.05em;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.35rem;
   }
 
   .page-title {
     font-family: var(--smat-font-editorial);
-    font-size: clamp(2rem, 3.5vw, 2.7rem);
+    font-size: clamp(1.25rem, 2.8vw, 2.25rem);
     font-weight: 800;
     color: var(--smat-text-primary);
-    line-height: 1.2;
-    margin-bottom: 1rem;
+    line-height: 1.15;
+    margin-bottom: 0.35rem;
     letter-spacing: -0.02em;
   }
 
   .page-lead {
-    font-size: 1.05rem;
+    font-size: clamp(0.82rem, 1.2vw, 0.98rem);
     color: var(--smat-text-secondary);
-    line-height: 1.6;
+    line-height: 1.4;
     margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .page-header {
+      text-align: left;
+    }
+    .page-lead {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
   }
 
   .protocol-request-card {

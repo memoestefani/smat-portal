@@ -13,16 +13,73 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
 >
   <section class="page-hero">
     <div class="container">
-      <span class="badge badge-copper">FLOTACIÓN Y ACONDICIONAMIENTO</span>
-      <h1>Mecanismos para Celdas de Flotación y Acondicionadores</h1>
-      <p style="font-size: 1.08rem; max-width: 720px; color: var(--smat-text-secondary);">
-        Mecanismos completos de agitación, acondicionadores de pulpa, cabezales de transmisión, tubos de aire y conjuntos rotor-estator en hule y poliuretano.
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:0.5rem;">
+        <h1 style="margin:0;">Mecanismos para Celdas de Flotación y Acondicionadores</h1>
+        <span class="badge badge-copper">FLOTACIÓN Y ACONDICIONAMIENTO</span>
+      </div>
+      <p style="font-size: 0.94rem; max-width: 760px; color: var(--smat-text-secondary); margin: 0.35rem 0 0;">
+        Calibre flujo superficial de burbuja Gorain (S<sub>b</sub> = 6 J<sub>g</sub> / d<sub>32</sub>) y velocidad de suspensión Zwietering N<sub>js</sub> para mecanismos rotor-estator en Hule R55 y Poliuretano U01.
       </p>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" id="flotacion-main-section">
     <div class="container">
+      <!-- Estrato 1: Simulador Hidrodinámico en Vivo Gorain & Zwietering -->
+      <div class="flotation-hub-calculator" data-stratum-1-instrument style="margin-top: 0; margin-bottom: 1.75rem; padding: 1.25rem; border-radius: 10px; background: #f8fafc; border: 1.5px solid #cbd5e1; border-left: 4px solid #7c2d12;">
+        <span class="badge badge-copper">SIMULADOR HIDRODINÁMICO EN VIVO · GORAIN S_b &amp; ZWIETERING N_js</span>
+        <h2 style="margin: 0.45rem 0 0.4rem; font-size: 1.12rem;">Calibración de Flujo Superficial de Burbuja (S<sub>b</sub> = 6 J<sub>g</sub> / d<sub>32</sub>) y Suspensión de Sólidos</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.65rem; margin: 0.75rem 0; padding: 0.85rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.82rem;">
+          <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+            <span>Modelo / Ø Rotor (m):</span>
+            <select id="celdas-dia-select" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+              <option value="0.46">#18 SP (Ø 0.46 m · 50 ft³)</option>
+              <option value="0.61" selected>#24 (Ø 0.61 m · 100 ft³)</option>
+              <option value="0.76">#30 (Ø 0.76 m · 300 ft³)</option>
+            </select>
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+            <span>Velocidad Gas J<sub>g</sub> (cm/s):</span>
+            <input type="number" id="celdas-jg-input" min="0.6" max="3.0" step="0.1" value="1.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+            <span>Burbuja Sauter d<sub>32</sub> (mm):</span>
+            <input type="number" id="celdas-d32-input" min="0.9" max="2.8" step="0.1" value="1.6" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+            <span>Velocidad Rotor (RPM):</span>
+            <input type="number" id="celdas-rpm-input" min="120" max="380" step="5" value="215" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+            <span>Granulometría d<sub>80</sub> (µm):</span>
+            <input type="number" id="celdas-d80-input" min="25" max="850" step="10" value="150" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
+            <span>Sólidos Pulpa C<sub>w</sub> (%):</span>
+            <input type="number" id="celdas-cw-input" min="15" max="65" step="1" value="35" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+          </label>
+        </div>
+        <div id="celdas-gorain-readout" style="padding: 0.65rem 0.85rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-family: var(--smat-font-mono); font-size: 0.82rem; font-weight: 700; margin-bottom: 0.85rem;">
+          S<sub>b</sub> (s<sup>-1</sup>): <span id="celdas-sb-output">56.25</span> · v<sub>tip</sub> (m/s): <span id="celdas-vtip-output">6.87</span> · k (min<sup>-1</sup>): <span id="celdas-k-output">1.185</span> · N<sub>js</sub>: <span id="celdas-njs-output">156</span> RPM (<span id="celdas-status-output">Gorain ≥ 50 s⁻¹ ÓPTIMO · Zwietering SUSPENSIÓN COMPLETA</span>)
+        </div>
+        <div style="display: flex; gap: 0.65rem; flex-wrap: wrap; align-items: center;">
+          <a href="/cotizar/?circuito=flotacion&equipo=celda_flotacion&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq" data-quote-base="/cotizar/" class="btn btn-primary" style="min-height:48px; display:inline-flex; align-items:center;">Cotizar Calibrado →</a>
+          <button
+            type="button"
+            class="btn btn-outline btn-avenue-tray"
+            data-vertical-tray-btn
+            data-add-tray-sku="SMAT-FLOT-MECH-18SP"
+            data-tray-part-code="Ø0.61m"
+            data-tray-title="Mecanismo Rotor-Estator Flotación (Ø0.61 m)"
+            data-tray-series="0.61m"
+            data-tray-material="PU_SHORE90"
+            data-tray-circuit="flotacion"
+            data-tray-source="flotation_stratum1_calc"
+            style="min-height:48px;"
+          >+ Bandeja Mecanismo 18SP</button>
+        </div>
+      </div>
+
       <TechnicalDiagrams diagram="flotation" lang="es" />
 
       <div class="grid-2" style="margin-top: 1.75rem;">
@@ -104,43 +161,6 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
           </table>
         </div>
 
-        <div class="flotation-hub-calculator" style="margin-top: 1.5rem; padding: 1.25rem; border-radius: 8px; background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #7c2d12;">
-          <span class="badge badge-copper">SIMULADOR HIDRODINÁMICO EN VIVO · GORAIN S_b & ZWIETERING N_js</span>
-          <h3 style="margin: 0.5rem 0 0.4rem; font-size: 1.05rem;">Calibración de Flujo Superficial de Burbuja (S<sub>b</sub> = 6 J<sub>g</sub> / d<sub>32</sub>) y Suspensión de Sólidos</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.65rem; margin: 0.75rem 0; padding: 0.85rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.82rem;">
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Modelo / Ø Rotor (m):</span>
-              <select id="celdas-dia-select" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
-                <option value="0.46">#18 SP (Ø 0.46 m · 50 ft³)</option>
-                <option value="0.61" selected>#24 (Ø 0.61 m · 100 ft³)</option>
-                <option value="0.76">#30 (Ø 0.76 m · 300 ft³)</option>
-              </select>
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Velocidad Gas J<sub>g</sub> (cm/s):</span>
-              <input type="number" id="celdas-jg-input" min="0.6" max="3.0" step="0.1" value="1.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Burbuja Sauter d<sub>32</sub> (mm):</span>
-              <input type="number" id="celdas-d32-input" min="0.9" max="2.8" step="0.1" value="1.6" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Velocidad Rotor (RPM):</span>
-              <input type="number" id="celdas-rpm-input" min="120" max="380" step="5" value="215" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Granulometría d<sub>80</sub> (µm):</span>
-              <input type="number" id="celdas-d80-input" min="25" max="850" step="10" value="150" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Sólidos Pulpa C<sub>w</sub> (%):</span>
-              <input type="number" id="celdas-cw-input" min="15" max="65" step="1" value="35" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-          </div>
-          <div id="celdas-gorain-readout" style="padding: 0.65rem 0.85rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-family: var(--smat-font-mono); font-size: 0.82rem; font-weight: 700;">
-            S<sub>b</sub> (s<sup>-1</sup>): <span id="celdas-sb-output">56.25</span> · v<sub>tip</sub> (m/s): <span id="celdas-vtip-output">6.87</span> · k (min<sup>-1</sup>): <span id="celdas-k-output">1.185</span> · N<sub>js</sub>: <span id="celdas-njs-output">156</span> RPM (<span id="celdas-status-output">Gorain ≥ 50 s⁻¹ ÓPTIMO · Zwietering SUSPENSIÓN COMPLETA</span>)
-          </div>
-        </div>
       </div>
 
       <SharePurchasing
@@ -178,9 +198,15 @@ import SharePurchasing from '../../components/SharePurchasing.astro';
 <script>
   import { bindCanonicalFlotationCalculator } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
   bindCanonicalFlotationCalculator(document, 'es');
+  document.addEventListener('astro:page-load', () => bindCanonicalFlotationCalculator(document, 'es'));
 </script>
 
 <style>
-  .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 3rem 0; border-bottom: 2px solid var(--smat-copper-accent); }
-  .page-hero h1 { color: var(--smat-text-primary); margin-top: 0.65rem; }
+  .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 0.9rem 0 0.85rem; border-bottom: 2px solid var(--smat-copper-accent); }
+  .page-hero h1 { color: var(--smat-text-primary); margin: 0.25rem 0 0; font-size: 1.65rem; }
+  @media (max-width: 640px) {
+    .page-hero { padding: 0.65rem 0; }
+    .page-hero h1 { font-size: 1.32rem; margin: 0.15rem 0; }
+    #flotacion-main-section { padding-top: 0.65rem; }
+  }
 </style>

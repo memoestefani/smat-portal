@@ -5,8 +5,8 @@
 
 import { selectOptimalMaterial, evaluateHybridWetEndConfiguration, WET_END_MATERIAL_KITS } from './tribologyAndCompatibilityEngine.js';
 import { evaluatePumpAssemblySequence } from './pumpAssemblyAndDriveEngine.js';
-import { saveEngineeringContextSnapshot } from './wizardCircuitPhysicsController.js';
-import { commitVerticalSimulation } from './verticalStateAndCtaSyncBridge.js';
+import { commitVerticalSimulation, bindAtomicPartTrayButtons } from './verticalStateAndCtaSyncBridge.js';
+import { hydrateVerticalInputsFromUnifiedState, syncReactiveTraySkuButton } from './verticalBidirectionalHydrationLens.js';
 
 export const PUMPING_CALCULATOR_STATE = {
   version: '4.3.0',
@@ -109,7 +109,9 @@ export function bindCanonicalSealBalanceCalculator(root, lang = 'es') {
   const branchOut = root.querySelector('#seal-branch-out');
   const statusOut = root.querySelector('#seal-status-out');
 
-  function recompute() {
+  const hydration = hydrateVerticalInputsFromUnifiedState(root, 'seal');
+
+  function recompute(isInitialMount = false) {
     if (!hdEl || !hsEl) return null;
     const dischargeHeadM = Number(hdEl.value) || 28;
     const suctionHeadM = Number(hsEl.value) || 3.2;
@@ -145,6 +147,17 @@ export function bindCanonicalSealBalanceCalculator(root, lang = 'es') {
       }
     }
 
+    syncReactiveTraySkuButton(root, {
+      skuId: res.recommendedSkuId,
+      partCode: res.recommendedStationCode === '02A' ? 'E4028' : 'D075C21',
+      title: isEn
+        ? `Centrifugal Seal System (${res.recommendedStationCode}, Hs/Hd ${(res.suctionToDischargeRatio * 100).toFixed(0)}%)`
+        : `Sistema Sellado Expeller (${res.recommendedStationCode}, Hs/Hd ${(res.suctionToDischargeRatio * 100).toFixed(0)}%)`,
+      series: res.recommendedStationCode,
+      material: 'A05',
+      circuit: 'bombeo',
+    });
+
     const sealPayload = {
       sealBranch: res.recommendedSealBranch,
       seal_branch: res.recommendedSealBranch,
@@ -157,9 +170,9 @@ export function bindCanonicalSealBalanceCalculator(root, lang = 'es') {
       expellerCounterPressureKpa: res.expellerCounterPressureKpa,
       requiredGlandWaterPressureKpa: res.requiredGlandWaterPressureKpa,
     };
-    saveEngineeringContextSnapshot('bombeo', sealPayload);
     commitVerticalSimulation('bombeo', sealPayload, {
       root,
+      skipStorageWrite: Boolean(isInitialMount) && !hydration.hasPersistedState,
       queryPatch: {
         seal_branch: res.recommendedSealBranch,
         hd_m: dischargeHeadM,
@@ -172,14 +185,16 @@ export function bindCanonicalSealBalanceCalculator(root, lang = 'es') {
     return res;
   }
 
+  bindAtomicPartTrayButtons(root);
+
   [hdEl, hsEl, diaEl, rpmEl, sgEl].forEach((el) => {
     if (el && typeof el.addEventListener === 'function') {
-      el.addEventListener('input', recompute);
-      el.addEventListener('change', recompute);
+      el.addEventListener('input', () => recompute(false));
+      el.addEventListener('change', () => recompute(false));
     }
   });
 
-  return recompute();
+  return recompute(true);
 }
 
 /**
@@ -201,7 +216,9 @@ export function bindCanonicalTribologySelector(root, lang = 'es') {
   const archOut = root.querySelector('#trib-arch-out');
   const statusOut = root.querySelector('#trib-status-out');
 
-  function recompute() {
+  const hydration = hydrateVerticalInputsFromUnifiedState(root, 'tribology');
+
+  function recompute(isInitialMount = false) {
     if (!d80El || !vtipEl) return null;
     const d80Microns = Number(d80El.value) || 450;
     const impellerTipSpeedMs = Number(vtipEl.value) || 22.5;
@@ -279,9 +296,21 @@ export function bindCanonicalTribologySelector(root, lang = 'es') {
     };
     PUMPING_CALCULATOR_STATE.lastTribologyCalc = combined;
     PUMPING_CALCULATOR_STATE.lastUpdatedIso = new Date().toISOString();
-    saveEngineeringContextSnapshot('bombeo', combined);
+
+    syncReactiveTraySkuButton(root, {
+      skuId: resolvedMaterialKey === 'hybrid_a05_r55' ? 'SMAT-PUMP-KIT-HYB' : 'SMAT-PUMP-IMP-147',
+      partCode: resolvedMaterialKey === 'hybrid_a05_r55' ? 'HYBRID-D' : '147/083',
+      title: isEn
+        ? `Calibrated Wet-End Kit (${resolvedMaterialKey}, Series ${pipeSeries}, d80 ${d80Microns} µm)`
+        : `Kit Extremo Húmedo (${resolvedMaterialKey}, Serie ${pipeSeries}, d80 ${d80Microns} µm)`,
+      series: pipeSeries,
+      material: resolvedMaterialKey,
+      circuit: 'bombeo',
+    });
+
     commitVerticalSimulation('bombeo', combined, {
       root,
+      skipStorageWrite: Boolean(isInitialMount) && !hydration.hasPersistedState,
       queryPatch: {
         material: resolvedMaterialKey,
         d80: d80Microns,
@@ -293,12 +322,14 @@ export function bindCanonicalTribologySelector(root, lang = 'es') {
     return combined;
   }
 
+  bindAtomicPartTrayButtons(root);
+
   [d80El, vtipEl, phEl, branchEl, seriesEl].forEach((el) => {
     if (el && typeof el.addEventListener === 'function') {
-      el.addEventListener('input', recompute);
-      el.addEventListener('change', recompute);
+      el.addEventListener('input', () => recompute(false));
+      el.addEventListener('change', () => recompute(false));
     }
   });
 
-  return recompute();
+  return recompute(true);
 }

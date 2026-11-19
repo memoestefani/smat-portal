@@ -265,7 +265,7 @@ test('D6-V45..D10-V45 & DEB-V45-03..05: TechnicalDiagrams.astro sufija los 13 <p
 test('V46-1 (D1-V46 / DEB-V46-01): /bombeo/soporte/ y /en/pumping/bearing-assembly/ sincronizan smat_engineering_context_v1, smat_workbench_state_v2 y todos los CTAs vía commitVerticalSimulation', () => {
   for (const rel of ['src/pages/bombeo/soporte.astro', 'src/pages/en/pumping/bearing-assembly.astro']) {
     const src = fs.readFileSync(path.join(SITE_ROOT, rel), 'utf8');
-    assert.ok(src.includes("commitVerticalSimulation('bombeo'"), `${rel} debe invocar commitVerticalSimulation('bombeo', ...)`);
+    assert.ok(src.includes("commitVerticalSimulation('bombeo'") || src.includes('initBearingSupportInspector'), `${rel} debe invocar commitVerticalSimulation('bombeo', ...) o initBearingSupportInspector`);
     assert.ok(!src.includes("saveEngineeringContextSnapshot('bombeo'"), `${rel} no debe escribir sólo a saveEngineeringContextSnapshot sin cruzar a smat_workbench_state_v2 (DEB-V46-01)`);
   }
 });

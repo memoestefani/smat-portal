@@ -38,9 +38,22 @@ test('Hallazgo 1 (D1 = 1-C+ & D2 = 2-C+ · ARB-SMAT-31/32): Cero clases utilitar
 
   const bannedTailwindRegex = /\b(bg-slate-\d+|text-slate-\d+|border-slate-\d+|min-h-\[\d+px\]|grid-cols-\d+|rounded-2xl|shadow-2xl|backdrop-blur)\b/;
 
+  const slugSolarCss = fs.readFileSync(path.join(SITE_ROOT, 'src/styles/productSlugSolar.css'), 'utf8');
+  assert.equal(
+    bannedTailwindRegex.test(slugSolarCss),
+    false,
+    'src/styles/productSlugSolar.css no debe contener clases utilitarias Tailwind huérfanas'
+  );
+
   for (const rel of v32AstroFiles) {
     const content = fs.readFileSync(path.join(SITE_ROOT, rel), 'utf8');
-    assert.ok(content.includes('<style>'), `${rel} debe tener su bloque <style> nativo`);
+    const hasScopedOrSharedCss =
+      content.includes('<style>') ||
+      (rel.endsWith('[slug].astro') && content.includes('productSlugSolar.css'));
+    assert.ok(
+      hasScopedOrSharedCss,
+      `${rel} debe tener su bloque <style> nativo o importar productSlugSolar.css`
+    );
     assert.equal(
       bannedTailwindRegex.test(content),
       false,

@@ -22,16 +22,16 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
   <main class="cyc-main" id="stage-diagnostic">
     <div class="container">
       <header class="cyc-hero">
-        <span class="cyc-badge" data-smat-decision="D7">INGENIERÍA DE CLASIFICACIÓN Y MOLIENDA CERRADA</span>
-        <h1>Clasificación por Hidrociclones y Diagnóstico de Roping</h1>
+        <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:0.5rem;">
+          <h1 style="margin:0; font-size:1.65rem;">Clasificación por Hidrociclones y Diagnóstico de Roping</h1>
+          <span class="cyc-badge" style="margin-bottom:0;" data-smat-decision="D7">INGENIERÍA DE CLASIFICACIÓN Y MOLIENDA CERRADA</span>
+        </div>
         <p class="cyc-lead">
-          Audite el desempeño de su batería de ciclones midiendo únicamente 3 vasos con Balanza Marcy (Alimentación, Descarga Apex y Rebalse Vortex) sin necesidad de báscula de banda ni flujómetro ultrasónico.
+          Audite el desempeño de su batería de ciclones midiendo únicamente 3 vasos con Balanza Marcy (Alimentación, Descarga Apex y Rebalse Vortex) sin báscula de banda ni flujómetro.
         </p>
       </header>
 
-      <TechnicalDiagrams diagram="cyclone-apex-vortex" lang="es" showXrayOverlay={true} />
-
-      <section class="cyc-sim-card" id="marcy-3cup-cyclone-calculator" aria-labelledby="cyc-sim-heading">
+      <section class="cyc-sim-card" id="marcy-3cup-cyclone-calculator" data-stratum-1-instrument aria-labelledby="cyc-sim-heading" style="margin-top:0; margin-bottom:1.5rem;">
         <div class="cyc-sim-header">
           <h2 id="cyc-sim-heading">Calculadora de Balance de Masa por 3 Vasos Marcy y Corte Plitt (d<sub>50c</sub>)</h2>
           <span class="cyc-sim-tag">CERO BÁSCULA • CERO FLUJÓMETRO</span>
@@ -96,11 +96,11 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
             <p class="cyc-diagnostic-note" id="cyc-res-action">
               Relación Du/Do y fracción volumétrica C_v,u en ventana metalúrgica óptima. Mantenga monitoreo preventivo de diámetro de Apex con galga cilíndrica.
             </p>
-            <div id="cyc-screen-coupling-badge" style="margin-bottom: 0.65rem; padding: 0.55rem 0.75rem; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 6px; font-family: var(--smat-font-mono); font-size: 0.78rem; font-weight: 700; color: #065f46;">
+            <div id="cyc-screen-coupling-badge" style="margin-bottom: 0.65rem; padding: 0.55rem 0.75rem; background: #ecfdf5; border: 1px solid #059669; border-radius: 6px; font-family: var(--smat-font-mono); font-size: 0.78rem; font-weight: 700; color: #064e3b;">
               🔗 Flujo Acoplado en Circuito Cerrado: Corte Ciclón d50c = 74 µm → Alimentación Criba d80 = 163 µm
             </div>
 
-            <!-- Sub-estación Contigua: Criba de Uretano TH48-30 en Cascada (D4-V44 Mayer & Moreno) -->
+            <!-- Sub-estación Contigua: Criba de Uretano TH48-30 en Cascada (Mayer & Moreno) -->
             <div id="cyc-coupled-screen-station" style="margin-bottom: 0.85rem; padding: 0.75rem 0.85rem; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.78rem;">
               <div style="font-family: var(--smat-font-mono); font-weight: 800; color: #0f172a; margin-bottom: 0.45rem;">
                 ETAPA 2 EN CASCADA · CRIBA DE URETANO TH48-30 (PARTICIÓN WEIBULL α ≥ 4.2)
@@ -120,12 +120,27 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
                 </label>
               </div>
               <div style="display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center; justify-content: space-between;">
-                <div id="csr-weibull-out" style="font-family: var(--smat-font-mono); font-weight: 700; color: #047857;">
+                <div id="csr-weibull-out" style="font-family: var(--smat-font-mono); font-weight: 700; color: #064e3b;">
                   Retención Oversize: 3.1% · Dilatación Δa/a: 3.06% (4.5G, Anti-Cegamiento OK) · SKU: SMAT-SCR-TH48-30
                 </div>
-                <a href="/cotizar/?circuito=clasificacion&equipo=malla_criba_poliuretano&sku=SMAT-SCR-TH48-30&mat=poliuretano#rfq" id="csr-rfq-link" style="font-family: var(--smat-font-mono); font-size: 0.74rem; font-weight: 800; color: #0c4a6e; text-decoration: underline;">
-                  Cotizar Malla TH48-30 →
-                </a>
+                <div style="display:flex; flex-wrap:wrap; gap:0.45rem; align-items:center;">
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-avenue-tray"
+                    data-screen-tray-btn
+                    data-add-tray-sku="SMAT-SCR-URETHANE-PANEL"
+                    data-tray-part-code="TH48-30"
+                    data-tray-title="Panel Criba Uretano Alta Frecuencia 0.50mm"
+                    data-tray-series="0.50mm"
+                    data-tray-material="U01"
+                    data-tray-circuit="clasificacion"
+                    data-tray-source="classification_screen_stratum1"
+                    style="font-size:0.74rem; padding:0.32rem 0.6rem; min-height:48px;"
+                  >+ Bandeja Criba Uretano</button>
+                  <a href="/cotizar/?circuito=clasificacion&equipo=malla_criba_poliuretano&sku=SMAT-SCR-TH48-30&mat=poliuretano#rfq" id="csr-rfq-link" style="font-family: var(--smat-font-mono); font-size: 0.74rem; font-weight: 800; color: #0c4a6e; text-decoration: underline;">
+                    Cotizar Malla TH48-30 →
+                  </a>
+                </div>
               </div>
             </div>
 
@@ -133,6 +148,19 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
               <a href="/productos/hidrociclon-completo-y-boquillas-d6-d20/" class="btn-cyc-sku" id="cyc-recommended-sku-link">
                 Configurar Boquilla Apex (SMAT-CYC-D6-D20) →
               </a>
+              <button
+                type="button"
+                class="btn btn-outline btn-avenue-tray"
+                data-vertical-tray-btn
+                data-add-tray-sku="SMAT-CYC-COUPLED-KIT"
+                data-tray-part-code="D6-D20"
+                data-tray-title="Ensamble Hidrociclón Calibrado (Corte 74 µm)"
+                data-tray-series="74um"
+                data-tray-material="SiC"
+                data-tray-circuit="clasificacion"
+                data-tray-source="classification_cyclone_stratum1"
+                style="min-height:48px;"
+              >+ Bandeja Hidrociclón</button>
               <a href="/cotizar/?circuito=clasificacion&equipo=apex-boquilla-hidrociclon&sku=SMAT-CYC-D6-D20#rfq" class="btn-cyc-rfq" id="cyc-rfq-link">
                 Sincronizar al Cotizador A4 →
               </a>
@@ -140,6 +168,8 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
           </div>
         </div>
       </section>
+
+      <TechnicalDiagrams diagram="cyclone-apex-vortex" lang="es" showXrayOverlay={true} />
 
       <section class="cyc-sku-catalog" aria-label="Repuestos críticos de hidrociclón">
         <h2>Repuestos Críticos de Hidrociclón con Cotejo Dimensional 1:1 en Durango</h2>
@@ -186,22 +216,24 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
   import { evaluateHydrocycloneCutPoint, saveEngineeringContextSnapshot } from '../../scripts/wizardCircuitPhysicsController.js';
   import { bindCoupledClassificationStation } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
   // Serialización en vivo hacia #cyc-rfq-link: rho_f=${res.feedSg}&rho_u=${res.underflowSg}&rho_o=${res.overflowSg}&rs_pct=${res.solidsRecoveryPct}
-  bindCoupledClassificationStation(document, 'es', {
+  const deps = {
     calculateThreeCupMarcyCycloneBalance,
     saveWorkbenchSession,
     loadWorkbenchSession,
     evaluateHydrocycloneCutPoint,
     saveEngineeringContextSnapshot,
-  });
+  };
+  bindCoupledClassificationStation(document, 'es', deps);
+  document.addEventListener('astro:page-load', () => bindCoupledClassificationStation(document, 'es', deps));
 </script>
 
 <style>
   .cyc-main {
-    padding: 2.5rem 0 4rem;
+    padding: 0.9rem 0 3.25rem;
     background: #f8fafc;
   }
   .cyc-hero {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.85rem;
   }
   .cyc-badge {
     display: inline-block;
@@ -216,9 +248,10 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
     margin-bottom: 0.6rem;
   }
   .cyc-lead {
-    font-size: 1.05rem;
+    font-size: 0.94rem;
     color: #334155;
     max-width: 78ch;
+    margin: 0.25rem 0 0;
   }
   .cyc-sim-card {
     background: #ffffff;
@@ -239,8 +272,8 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
   }
   .cyc-sim-tag {
     background: #ecfdf5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
+    color: #064e3b;
+    border: 1px solid #059669;
     padding: 0.25rem 0.6rem;
     border-radius: 4px;
     font-family: var(--smat-font-mono, monospace);
@@ -289,8 +322,8 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
     font-weight: 800;
     font-size: 0.92rem;
     background: #ecfdf5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
+    color: #064e3b;
+    border: 1px solid #059669;
     margin-bottom: 1rem;
   }
   .cyc-regime-banner[data-regime="ROPING_CORDON"] {
@@ -314,7 +347,7 @@ const description = 'Boquillas Apex en Cerámica SiC / Cr27, Buscadores de Vórt
     display: block;
     font-size: 0.7rem;
     font-weight: 800;
-    color: #475569;
+    color: #334155;
     margin-bottom: 0.35rem;
   }
   .cyc-kpi-val {

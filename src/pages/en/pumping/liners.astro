@@ -25,22 +25,106 @@ const wetMaterials = [
   description="Wet-end wear parts in High Chrome, Rubber, and Polyurethane: volutes, throatbushes, and frame plate liner inserts supplied by lot."
   lang="en"
 >
-  <section class="page-hero">
+  <section class="page-hero smat-compact-hero">
     <div class="container">
       <a href="/en/pumping/" class="back-link">← Back to Slurry Pumps</a>
-      <div style="margin-top: 1rem;">
-        <span class="badge badge-copper">WET-END WEAR PARTS</span>
+      <div style="margin-top: 0.3rem;">
+        <span class="badge badge-copper">WET-END WEAR PARTS · 5-5-4 LOT</span>
       </div>
       <h1>Volute Liners, Throatbushes & Liners</h1>
-      <p style="font-size: 1.08rem; max-width: 720px; color: var(--smat-text-secondary);">
-        Wet-end contact parts manufactured in <strong>High Chrome, Rubber, and Polyurethane</strong>: volutes, throatbushes, and frame plate liner inserts for slurry pumps.
+      <p class="smat-hero-sub">
+        Live tribological calibration for wet-end lots across 27% High Chrome A05, Natural Rubber R55, Polyurethane U01, SiC, and Hybrid Branch D.
       </p>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section smat-stage-compact">
     <div class="container">
-      <TechnicalDiagrams diagram="liners" lang="en" />
+      <!-- STRATUM 1: Volute Liner Comparison Matrix -->
+      <div id="stratum1-liners-sim" data-testid="liners-material-matrix" data-stratum-1-instrument>
+        <div class="card" style="margin-bottom: 1rem; background: #f8fafc; border: 1.5px solid #cbd5e1; padding: clamp(0.7rem, 1.4vw, 1.1rem);">
+          <span class="badge badge-copper">LIVE SIMULATOR · MONOLITHIC VS SPLIT CASING ARCHITECTURE &amp; HYBRID BRANCH D</span>
+          <h2 style="margin: 0.3rem 0 0.45rem; font-size: clamp(0.98rem, 1.4vw, 1.1rem);">FPL/CPL Split Liners, Monolithic Volute &amp; Finnie-Hutchings Angular Partition Verifier</h2>
+          <div class="smat-stratum1-display">
+            <div id="trib-status-out" style="padding: 0.5rem 0.75rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #059669; color: #064e3b; font-family: var(--smat-font-mono); font-size: 0.79rem; font-weight: 700;">
+              Toughness OK · Series 6x4 · Finnie-Hutchings Angular Partition: 27% High Chrome Closed Impeller (A05) + Split R55 Natural Rubber Liners (FPL/CPL).
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.45rem; font-family: var(--smat-font-mono); font-size: 0.78rem;">
+              <div style="background: #ffffff; padding: 0.45rem 0.65rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Active Configuration:</strong> <span id="trib-mat-out">Hybrid Branch D: A05 Impeller + R55 Liners</span></div>
+              <div style="background: #ffffff; padding: 0.45rem 0.65rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Toughness K<sub>Ic</sub>:</strong> <span id="trib-kic-out">18.5 MPa·√m</span></div>
+              <div style="background: #ffffff; padding: 0.45rem 0.65rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>NIOSH Mass &amp; Rigging:</strong> <span id="trib-arch-out">418 kg · 5 NIOSH ≥ 23 kg</span></div>
+            </div>
+          </div>
+          <div class="smat-inputs-2col" style="margin-bottom: 0.65rem; padding: 0.6rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.8rem;">
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Particle Size d<sub>80</sub> (µm):</span>
+              <input type="number" id="trib-d80-um" min="20" max="6000" step="25" value="250" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Tip Speed u₂ (m/s):</span>
+              <input type="number" id="trib-vtip-ms" min="10" max="36" step="0.5" value="21.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Slurry pH:</span>
+              <input type="number" id="trib-ph" min="1.0" max="13.5" step="0.5" value="7.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>5-5-4 Lot Architecture:</span>
+              <select id="trib-branch" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <option value="hibrido_a05_r55" selected>Hybrid Branch D (A05 Impeller + R55 Liners)</option>
+                <option value="auto">Auto (Finnie-Hutchings)</option>
+                <option value="metal">Monolithic 27% High Chrome (A05)</option>
+                <option value="rubber">Split Natural Rubber (R55)</option>
+                <option value="polyurethane">Split Polyurethane (U01)</option>
+                <option value="ceramica_sic">Monolithic SiC Ceramic</option>
+              </select>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Pump Series:</span>
+              <select id="trib-series" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <option value="3x2">3x2 / 4x3</option>
+                <option value="6x4" selected>6x4</option>
+                <option value="8x6">8x6 / 10x8</option>
+              </select>
+            </label>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center;">
+            <a href="/en/quote/?circuito=bombeo&equipo=kit_wet_end&pieza=voluta_liners&estacion=S3#rfq" class="btn btn-primary" style="min-height: 48px; display: inline-flex; align-items: center;">Quote Calibrated Wet-End Lot →</a>
+            <button
+              type="button"
+              class="btn btn-outline btn-avenue-tray"
+              data-vertical-tray-btn
+              data-add-tray-sku="SMAT-PUMP-TB-083"
+              data-tray-part-code="E4083"
+              data-tray-title="Calibrated Wet-End Lot & Throatbush 5-5-4"
+              data-tray-series="6x4"
+              data-tray-material="hybrid_a05_r55"
+              data-tray-circuit="bombeo"
+              data-tray-source="liners_stratum1_calc"
+              style="min-height: 48px;"
+            >+ Add Calibrated SKU to Tray</button>
+          </div>
+        </div>
+        <h3 style="margin-top: 1.25rem;">Wet-End Material Matrix (A05 / R55 / U01 / SiC Ceramic / Hybrid Branch D) &amp; Gülich Law Δη_v = k_r·(δ/b₂)^1.5</h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:0.85rem; margin-top:0.65rem;">
+          {wetMaterials.map((mat) => (
+            <div class="card" style="background:#ffffff; border:1px solid #cbd5e1; padding:1rem;">
+              <span class="font-mono-tech" style="font-size:0.72rem; font-weight:800; color:#082f49;">[{mat.code}] {mat.hardness}</span>
+              <h3 style="margin:0.35rem 0; font-size:0.98rem;">{mat.nameEn}</h3>
+              <p style="font-size:0.82rem; color:#334155; margin-bottom:0.45rem;">{mat.dutyApplicationEn}</p>
+              <div class="font-mono-tech" style="font-size:0.73rem; color:#475569; margin-bottom:0.55rem;">
+                u₂ ≤ {mat.maxTipSpeedMs} m/s • K_Ic = {mat.fractureToughnessMpaSqrtM} MPa·√m • Clearance δ = {mat.recommendedClearanceMm} mm • Lot {mat.wearRatio554}
+              </div>
+              <a href={`/en/quote/?circuito=bombeo&equipo=kit_wet_end&material=${mat.key}&claro_mm=${mat.recommendedClearanceMm}&estacion=S3#rfq`} data-card-fixed-params="material" class="btn btn-primary" style="width:100%; text-align:center; font-size:0.78rem;">Quote {mat.code} Kit →</a>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- STRATO 2: Technical CAD Diagrams & Engineering Breakdown -->
+      <div style="margin-top: 2rem;">
+        <TechnicalDiagrams diagram="liners" lang="en" />
+      </div>
 
       <div class="grid-2" style="margin-top: 1.75rem;">
         <div>
@@ -97,98 +181,36 @@ const wetMaterials = [
         </div>
       </div>
 
-      <!-- 4 Wet-End Material Cards + Live Hybrid Branch D Tribology Simulator (D10-V43) -->
-      <div style="margin-top: 2rem;" data-testid="liners-material-matrix">
-        <h2>Wet-End Material Matrix (A05 / R55 / U01 / SiC Ceramic / Hybrid Branch D) &amp; Gülich Law Δη_v = k_r·(δ/b₂)^1.5</h2>
-        <div class="card" style="margin-top: 0.85rem; margin-bottom: 1rem; background: #f8fafc; border: 1.5px solid #cbd5e1; padding: 1.25rem;">
-          <span class="badge badge-copper">LIVE SIMULATOR · MONOLITHIC VS SPLIT CASING ARCHITECTURE &amp; HYBRID BRANCH D</span>
-          <h3 style="margin: 0.45rem 0 0.65rem; font-size: 1.02rem;">FPL/CPL Split Liners, Monolithic Volute &amp; Finnie-Hutchings Angular Partition Verifier</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 0.65rem; margin-bottom: 0.75rem; padding: 0.75rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.82rem;">
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Particle Size d<sub>80</sub> (µm):</span>
-              <input type="number" id="trib-d80-um" min="20" max="6000" step="25" value="250" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Tip Speed u₂ (m/s):</span>
-              <input type="number" id="trib-vtip-ms" min="10" max="36" step="0.5" value="21.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Slurry pH:</span>
-              <input type="number" id="trib-ph" min="1.0" max="13.5" step="0.5" value="7.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>5-5-4 Lot Architecture:</span>
-              <select id="trib-branch" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
-                <option value="hibrido_a05_r55" selected>Hybrid Branch D (A05 Impeller + R55 Liners)</option>
-                <option value="auto">Auto (Finnie-Hutchings)</option>
-                <option value="metal">Monolithic 27% High Chrome (A05)</option>
-                <option value="rubber">Split Natural Rubber (R55)</option>
-                <option value="polyurethane">Split Polyurethane (U01)</option>
-                <option value="ceramica_sic">Monolithic SiC Ceramic</option>
-              </select>
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Pump Series:</span>
-              <select id="trib-series" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
-                <option value="3x2">3x2 / 4x3</option>
-                <option value="6x4" selected>6x4</option>
-                <option value="8x6">8x6 / 10x8</option>
-              </select>
-            </label>
+      {throatbushPart && (
+        <div class="card" data-testid="throatbush-atomic-card" style="margin-top:1.75rem; background:#f8fafc; border:1.5px solid #cbd5e1;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+            <span class="badge badge-copper">{throatbushPart.part_number} — {throatbushPart.name_en} ({throatbushPart.smat_code})</span>
+            <span class="font-mono-tech" style="font-size:0.75rem; font-weight:800; color:var(--smat-text-primary);">
+              Mass: {throatbushPart.weight_kg} kg • {throatbushPart.niosh_handling_mode} (LI={throatbushPart.niosh_lifting_index_shaft}) • Wall: {throatbushPart.wall_thickness_mm} mm
+            </span>
           </div>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 0.6rem; margin-bottom: 0.65rem; font-family: var(--smat-font-mono); font-size: 0.8rem;">
-            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Active Configuration:</strong> <span id="trib-mat-out">Hybrid Branch D: A05 Impeller + R55 Liners</span></div>
-            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Toughness K<sub>Ic</sub>:</strong> <span id="trib-kic-out">18.5 MPa·√m</span></div>
-            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>NIOSH Mass &amp; Rigging:</strong> <span id="trib-arch-out">418 kg · 5 NIOSH ≥ 23 kg</span></div>
-          </div>
-          <div id="trib-status-out" style="padding: 0.6rem 0.8rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-family: var(--smat-font-mono); font-size: 0.79rem; font-weight: 700;">
-            Toughness OK · Series 6x4 · Finnie-Hutchings Angular Partition: 27% High Chrome Closed Impeller (A05) + Split R55 Natural Rubber Liners (FPL/CPL).
+          <p style="font-size:0.85rem; color:#334155; margin:0.5rem 0;">
+            {throatbushPart.summary_en} <strong>Station 0{throatbushPart.station_number}:</strong> {throatbushPart.assembly_order_note}. Calibrating front clearance within <strong>δ = 0.5–1.0 mm</strong> prevents volumetric recirculation loss Δη_v = k_r·(δ/b₂)^1.5 from degrading the 5:5:4 wear lot ratio into 5:9:4.
+          </p>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <a href={`/en/catalog/${throatbushPart.code}/`} class="btn btn-outline">View {throatbushPart.part_number} Sheet →</a>
+            <a href={`/en/quote/?codigo=${throatbushPart.part_number}&circuito=bombeo&equipo=kit_wet_end&serie=${throatbushPart.pipe_size}&peso_kg=${throatbushPart.weight_kg}&estacion=S${throatbushPart.station_number}#rfq`} class="btn btn-primary">Quote {throatbushPart.part_number} →</a>
+            <button
+              type="button"
+              class="btn btn-outline btn-avenue-tray"
+              data-add-tray-sku="SMAT-PUMP-TB-083"
+              data-tray-part-code={throatbushPart.part_number}
+              data-tray-title={throatbushPart.name_en}
+              data-tray-series={throatbushPart.pipe_size}
+              data-tray-material="A05"
+              data-tray-circuit="bombeo"
+              data-tray-category="BOMBA_SLURRY"
+              data-tray-source="throatbush_atomic_card"
+              style="min-height: 48px;"
+            >+ Tray</button>
           </div>
         </div>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:0.85rem; margin-top:0.85rem;">
-          {wetMaterials.map((mat) => (
-            <div class="card" style="background:#ffffff; border:1px solid #cbd5e1; padding:1rem;">
-              <span class="font-mono-tech" style="font-size:0.72rem; font-weight:800; color:#082f49;">[{mat.code}] {mat.hardness}</span>
-              <h3 style="margin:0.35rem 0; font-size:0.98rem;">{mat.nameEn}</h3>
-              <p style="font-size:0.82rem; color:#334155; margin-bottom:0.45rem;">{mat.dutyApplicationEn}</p>
-              <div class="font-mono-tech" style="font-size:0.73rem; color:#475569; margin-bottom:0.55rem;">
-                u₂ ≤ {mat.maxTipSpeedMs} m/s • K_Ic = {mat.fractureToughnessMpaSqrtM} MPa·√m • Clearance δ = {mat.recommendedClearanceMm} mm • Lot {mat.wearRatio554}
-              </div>
-              <a href={`/en/quote/?circuito=bombeo&equipo=kit_wet_end&material=${mat.key}&claro_mm=${mat.recommendedClearanceMm}&estacion=S3#rfq`} data-card-fixed-params="material" class="btn btn-primary" style="width:100%; text-align:center; font-size:0.78rem;">Quote {mat.code} Kit →</a>
-            </div>
-          ))}
-        </div>
-
-        {throatbushPart && (
-          <div class="card" data-testid="throatbush-atomic-card" style="margin-top:1.25rem; background:#f8fafc; border:1.5px solid #cbd5e1;">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
-              <span class="badge badge-copper">{throatbushPart.part_number} — {throatbushPart.name_en} ({throatbushPart.smat_code})</span>
-              <span class="font-mono-tech" style="font-size:0.75rem; font-weight:800; color:var(--smat-text-primary);">
-                Mass: {throatbushPart.weight_kg} kg • {throatbushPart.niosh_handling_mode} (LI={throatbushPart.niosh_lifting_index_shaft}) • Wall: {throatbushPart.wall_thickness_mm} mm
-              </span>
-            </div>
-            <p style="font-size:0.85rem; color:#334155; margin:0.5rem 0;">
-              {throatbushPart.summary_en} <strong>Station 0{throatbushPart.station_number}:</strong> {throatbushPart.assembly_order_note}. Calibrating front clearance within <strong>δ = 0.5–1.0 mm</strong> prevents volumetric recirculation loss Δη_v = k_r·(δ/b₂)^1.5 from degrading the 5:5:4 wear lot ratio into 5:9:4.
-            </p>
-            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-              <a href={`/en/catalog/${throatbushPart.code}/`} class="btn btn-outline">View {throatbushPart.part_number} Sheet →</a>
-              <a href={`/en/quote/?codigo=${throatbushPart.part_number}&circuito=bombeo&equipo=kit_wet_end&serie=${throatbushPart.pipe_size}&peso_kg=${throatbushPart.weight_kg}&estacion=S${throatbushPart.station_number}#rfq`} class="btn btn-primary">Quote {throatbushPart.part_number} →</a>
-              <button
-                type="button"
-                class="btn btn-outline btn-avenue-tray"
-                data-add-tray-sku="SMAT-PUMP-TB-083"
-                data-tray-part-code={throatbushPart.part_number}
-                data-tray-title={throatbushPart.name_en}
-                data-tray-series={throatbushPart.pipe_size}
-                data-tray-material="A05"
-                data-tray-category="BOMBA_SLURRY"
-                data-tray-source="throatbush_atomic_card"
-                style="min-height: 48px;"
-              >+ Tray</button>
-            </div>
-          </div>
-        )}
-      </div>
+      )}
 
       <div style="margin-top: 2.25rem;">
         <h2>Wet-End Kit Comparison by Material: High Chrome (≥650 HB), Natural Rubber & Polyurethane</h2>
@@ -221,13 +243,6 @@ const wetMaterials = [
 </script>
 
 <style>
-  .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 2.75rem 0; border-bottom: 2px solid var(--smat-copper-accent); }
-  .page-hero h1 { color: var(--smat-text-primary); margin-top: 0.5rem; }
-  .back-link { color: var(--smat-copper-accent); font-size: 0.9rem; font-weight: 700; text-decoration: none; }
+  .back-link { color: var(--smat-solar-accent); font-size: 0.88rem; font-weight: 700; text-decoration: none; }
   .back-link:hover { text-decoration: underline; }
-  @media (max-width: 640px) {
-    .page-hero { padding: 0.75rem 0; }
-    .page-hero h1 { font-size: 1.35rem; margin: 0.2rem 0; }
-    .page-hero p { font-size: 0.82rem !important; line-height: 1.3; margin: 0.2rem 0; }
-  }
 </style>

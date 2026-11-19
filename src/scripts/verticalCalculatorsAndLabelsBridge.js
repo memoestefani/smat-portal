@@ -13,38 +13,36 @@
  */
 
 import {
-  evaluateFilterPressPlateDeflection,
   calculateFlotationGorainKineticRate,
   calculateThreeCupMarcyCycloneBalance,
   calculateUrethaneScreenPartitionWeibull,
+  evaluateFilterPressPlateDeflection,
 } from './slurryEngine.js';
+import {
+  hydrateVerticalInputsFromUnifiedState,
+  syncReactiveTraySkuButton,
+} from './verticalBidirectionalHydrationLens.js';
+import {
+  bindAtomicPartTrayButtons,
+  commitVerticalSimulation
+} from './verticalStateAndCtaSyncBridge.js';
 import {
   calculateFilterPressCycleCapacity,
   evaluateFlotationCellHydrodynamics,
   evaluateHydrocycloneCutPoint,
-  saveEngineeringContextSnapshot,
 } from './wizardCircuitPhysicsController.js';
 import {
-  saveWorkbenchSession,
   loadWorkbenchSession,
+  saveWorkbenchSession,
 } from './workbenchBus.js';
-import {
-  commitVerticalSimulation,
-  syncVerticalCtaLinks,
-  loadUnifiedEngineeringAndWorkbenchState,
-  projectVerticalPayloadToWorkbenchPatch,
-} from './verticalStateAndCtaSyncBridge.js';
 export {
-  commitVerticalSimulation,
-  syncVerticalCtaLinks,
-  loadUnifiedEngineeringAndWorkbenchState,
-  projectVerticalPayloadToWorkbenchPatch,
-} from './verticalStateAndCtaSyncBridge.js';
-export {
-  evaluateCentrifugalSealPressureBalance,
   bindCanonicalSealBalanceCalculator,
-  bindCanonicalTribologySelector,
+  bindCanonicalTribologySelector, evaluateCentrifugalSealPressureBalance
 } from './pumpingSealAndTribologyCalculators.js';
+export {
+  commitVerticalSimulation, loadUnifiedEngineeringAndWorkbenchState,
+  projectVerticalPayloadToWorkbenchPatch, syncVerticalCtaLinks
+} from './verticalStateAndCtaSyncBridge.js';
 
 const BRIDGE_RUNTIME_REGISTRY = {
   lastBoundCircuit: 'none',
@@ -244,8 +242,12 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
   const secondaryEl = root.querySelector('#filt-res-secondary');
   const sumEl = root.querySelector('#filt-res-summary, #rep-status-out');
   const readoutBox = root.querySelector('#rep-timoshenko-readout');
+  const shifterBadgeEl = root.querySelector('#filt-shifter-sku-badge, #rep-shifter-sku-badge');
+  const nom141BadgeEl = root.querySelector('#filt-nom141-badge, #rep-nom141-badge');
 
-  function recompute() {
+  const hydration = hydrateVerticalInputsFromUnifiedState(root, 'filtration');
+
+  function recompute(isInitialMount = false) {
     if (!pEl || !cEl || !wEl || !tEl) return null;
     const feedPressureBar = Number(pEl.value) || 12;
     const cloggedPortsCount = Number(cEl.value) || 0;
@@ -260,7 +262,7 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
       plateThicknessMm,
       cakeMoistureTargetPct,
     });
-    const res = calculateFilterPressCycleCapacity({
+    const cycleRes = calculateFilterPressCycleCapacity({
       ...baseEval,
       feedPressureBar,
       cloggedPortsCount,
@@ -268,6 +270,12 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
       plateThicknessMm,
       cakeMoistureTargetPct,
     });
+    const res = {
+      ...baseEval,
+      ...cycleRes,
+      recommendedShifterSkuId: baseEval.recommendedShifterSkuId || 'SMAT-FILT-SHIFTER-CHAIN',
+      nom141MoistureCompliant: baseEval.nom141MoistureCompliant,
+    };
 
     if (stressEl) {
       stressEl.textContent = `${res.maxBendingStressMpa} MPa`;
@@ -281,12 +289,20 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
     if (secondaryEl) {
       secondaryEl.textContent = secondaryBreakdown;
     }
+    if (shifterBadgeEl) {
+      shifterBadgeEl.textContent = res.recommendedShifterSkuId;
+    }
+    if (nom141BadgeEl) {
+      nom141BadgeEl.textContent = res.nom141MoistureCompliant
+        ? (isEn ? `NOM-141 Moisture OK (${cakeMoistureTargetPct}% ≤ 16%)` : `NOM-141 Humedad OK (${cakeMoistureTargetPct}% ≤ 16%)`)
+        : (isEn ? `NOM-141 Alert (${cakeMoistureTargetPct}% > 16%)` : `Alerta NOM-141 (${cakeMoistureTargetPct}% > 16%)`);
+    }
     const isAlert = Boolean(res.isPlateCrackingRisk || !res.nom141Compliant);
     if (sumEl) {
       const baseSummary = isEn ? res.summaryEn : res.summaryEs;
       const skuTail = isEn
-        ? `Plate: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Shifter: ${res.recommendedPlateSkuId}`
-        : `Placa/Tela: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Corre-Placas: ${res.recommendedPlateSkuId}`;
+        ? `Plate: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Shifter: ${res.recommendedShifterSkuId}`
+        : `Placa/Tela: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Corre-Placas: ${res.recommendedShifterSkuId}`;
       const isRepStatusMode = sumEl.id === 'rep-status-out';
       sumEl.textContent = (secondaryEl && !isRepStatusMode)
         ? `${baseSummary} | ${skuTail}`
@@ -301,6 +317,18 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
       readoutBox.style.color = isAlert ? '#991b1b' : '#065f46';
     }
 
+    syncReactiveTraySkuButton(root, {
+      skuId: res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId || 'SMAT-FILT-CLOTH-PLATE',
+      partCode: `${plateWidthMm}x${plateWidthMm}`,
+      title: isEn
+        ? `Filter Press Plates & Cloths (${plateWidthMm}×${plateWidthMm} mm, ${feedPressureBar} bar)`
+        : `Placas y Lonas Filtro Prensa (${plateWidthMm}×${plateWidthMm} mm, ${feedPressureBar} bar)`,
+      series: `${plateWidthMm}mm`,
+      material: 'PP_VIRGEN',
+      circuit: 'filtracion',
+      category: 'FILTRACION_PRENSA',
+    });
+
     const filtPayload = {
       ...res,
       feedPressureBar,
@@ -309,9 +337,9 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
       plateThicknessMm,
       cakeMoistureTargetPct,
     };
-    saveEngineeringContextSnapshot('filtracion', filtPayload);
     commitVerticalSimulation('filtracion', filtPayload, {
       root,
+      skipStorageWrite: Boolean(isInitialMount) && !hydration.hasPersistedState,
       queryPatch: {
         bar: feedPressureBar,
         clogged_ports: cloggedPortsCount,
@@ -325,14 +353,16 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
     return res;
   }
 
+  bindAtomicPartTrayButtons(root);
+
   [pEl, cEl, wEl, tEl, mEl].forEach((el) => {
     if (el && typeof el.addEventListener === 'function') {
-      el.addEventListener('input', recompute);
-      el.addEventListener('change', recompute);
+      el.addEventListener('input', () => recompute(false));
+      el.addEventListener('change', () => recompute(false));
     }
   });
 
-  return recompute();
+  return recompute(true);
 }
 
 /**
@@ -358,7 +388,9 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es', _options = {
   const statusOut = root.querySelector('#flot-status-out, #celdas-status-output');
   const readoutBox = root.querySelector('#flot-gorain-readout, #celdas-gorain-readout');
 
-  function recompute() {
+  const hydration = hydrateVerticalInputsFromUnifiedState(root, 'flotation');
+
+  function recompute(isInitialMount = false) {
     if (!jgEl || !d32El || !diaEl || !rpmEl) return null;
     const jgCmS = Number(jgEl.value) || 1.5;
     const d32Mm = Number(d32El.value) || 1.6;
@@ -411,8 +443,21 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es', _options = {
       readoutBox.style.color = isOptimal ? '#065f46' : '#92400e';
     }
 
+    syncReactiveTraySkuButton(root, {
+      skuId: res.recommendedSkuId || 'SMAT-FLOT-MECH-18SP',
+      partCode: `Ø${rotorDiaM}m`,
+      title: isEn
+        ? `Flotation Rotor-Stator Assembly (Ø${rotorDiaM} m, Sb=${sbVal} s⁻¹)`
+        : `Mecanismo Rotor-Estator Flotación (Ø${rotorDiaM} m, Sb=${sbVal} s⁻¹)`,
+      series: `${rotorDiaM}m`,
+      material: 'PU_SHORE90',
+      circuit: 'flotacion',
+      category: 'FLOTACION_ROTOR',
+    });
+
     const flotPayload = {
       ...res,
+      cellVolumeKey: String(rotorDiaM),
       rotorDiameterM: rotorDiaM,
       superficialGasVelocityCmS: jgCmS,
       bubbleDiameterMm: d32Mm,
@@ -420,9 +465,9 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es', _options = {
       particleSizeUm,
       solidsCwPct,
     };
-    saveEngineeringContextSnapshot('flotacion', flotPayload);
     commitVerticalSimulation('flotacion', flotPayload, {
       root,
+      skipStorageWrite: Boolean(isInitialMount) && !hydration.hasPersistedState,
       queryPatch: {
         rotor_m: rotorDiaM,
         jg: jgCmS,
@@ -439,14 +484,16 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es', _options = {
     return res;
   }
 
+  bindAtomicPartTrayButtons(root);
+
   [jgEl, d32El, diaEl, rpmEl, d80El, cwEl].forEach((el) => {
     if (el && typeof el.addEventListener === 'function') {
-      el.addEventListener('input', recompute);
-      el.addEventListener('change', recompute);
+      el.addEventListener('input', () => recompute(false));
+      el.addEventListener('change', () => recompute(false));
     }
   });
 
-  return recompute();
+  return recompute(true);
 }
 
 /**
@@ -482,6 +529,9 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
   const csrFeedInput = root.querySelector('#csr-feed-um');
   const csrWeibullOut = root.querySelector('#csr-weibull-out');
   const csrRfqLink = root.querySelector('#csr-rfq-link');
+  const screenTrayBtn = root.querySelector('[data-screen-tray-btn]');
+
+  const hydration = hydrateVerticalInputsFromUnifiedState(root, 'classification');
 
   function recomputeScreenWeibull(overrideFeedUm = null) {
     const apertureMm = csrApertureInput ? Number(csrApertureInput.value) || 0.50 : 0.50;
@@ -509,10 +559,20 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
       const basePath = isEn ? '/en/quote/' : '/cotizar/';
       csrRfqLink.href = `${basePath}?circuito=clasificacion&equipo=malla_criba_poliuretano&sku=${encodeURIComponent(weibullRes.recommendedSkuId)}&mat=poliuretano&aperture_mm=${apertureMm}&relief_deg=${reliefAngleDeg}&screen_d80_um=${feedParticleUm}#rfq`;
     }
+    if (screenTrayBtn) {
+      const setAttr = (name, prop, val) => {
+        if (typeof screenTrayBtn.setAttribute === 'function') screenTrayBtn.setAttribute(name, String(val));
+        if (screenTrayBtn.dataset) screenTrayBtn.dataset[prop] = String(val);
+      };
+      setAttr('data-add-tray-sku', 'addTraySku', weibullRes.recommendedSkuId || 'SMAT-SCR-URETHANE-PANEL');
+      setAttr('data-tray-series', 'traySeries', `${apertureMm}mm`);
+      setAttr('data-tray-material', 'trayMaterial', 'U01');
+      setAttr('data-tray-circuit', 'trayCircuit', 'clasificacion');
+    }
     return weibullRes;
   }
 
-  function recompute() {
+  function recompute(isInitialMount = false) {
     if (!feedInput || !underInput || !overInput) return null;
     const res = calculateThreeCupMarcyCycloneBalance({
       feedSg: Number(feedInput.value) || 1.35,
@@ -535,7 +595,9 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
     if (cvuEl) cvuEl.textContent = `${res.cvUnderflowPct}% (du/do=${res.apexToVortexRatio})`;
     if (d50El) d50El.textContent = `${res.d50cMicrons} µm`;
 
-    const coupledD80Um = Math.round(res.d50cMicrons * 2.2);
+    const coupledD80Um = isInitialMount && hydration.hasPersistedState && hydration.unifiedState?.persistedFields?.feedTopSizeUm
+      ? hydration.unifiedState.persistedFields.feedTopSizeUm
+      : Math.round(res.d50cMicrons * 2.2);
     const weibullRes = recomputeScreenWeibull(coupledD80Um);
 
     if (couplingBadgeEl) {
@@ -580,46 +642,91 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
       rfqLink.href = `${basePath}?circuito=clasificacion&equipo=hidrociclon_apex_vortex&sku=${encodeURIComponent(res.recommendedSkuId)}&mat=${matRec}&rho_f=${res.feedSg}&rho_u=${res.underflowSg}&rho_o=${res.overflowSg}&rs_pct=${res.solidsRecoveryPct}&cv_u=${res.cvUnderflowPct}&d50c=${res.d50cMicrons}&aperture_mm=${weibullRes.apertureMm}&screen_d80_um=${coupledD80Um}&roping_risk=${res.isRopingCritical ? '1' : '0'}#rfq`;
     }
 
-    const prev = loadWorkbenchSession();
-    saveWorkbenchSession({
-      ...prev,
-      cycloneCircuit: {
-        feedSg: res.feedSg,
-        underflowSg: res.underflowSg,
-        overflowSg: res.overflowSg,
-        solidsRecoveryPct: res.solidsRecoveryPct,
-        circulatingLoadPct: res.circulatingLoadPct,
-        cvUnderflowPct: res.cvUnderflowPct,
-        d50cMicrons: res.d50cMicrons,
-        dischargeRegime: res.dischargeRegime,
-        recommendedSkuId: res.recommendedSkuId,
-      },
+    syncReactiveTraySkuButton(root, {
+      skuId: res.recommendedSkuId || 'SMAT-CYC-COUPLED-KIT',
+      partCode: `${res.apexDiameterMm}/${res.vortexDiameterMm}`,
+      title: isEn
+        ? `Hydrocyclone Assembly (${res.d50cMicrons} µm cut, Apex ${res.apexDiameterMm} mm)`
+        : `Hidrociclón Calibrado (Corte d50c ${res.d50cMicrons} µm, Apex ${res.apexDiameterMm} mm)`,
+      series: `Ø${res.apexDiameterMm}/${res.vortexDiameterMm}`,
+      material: res.isRopingCritical ? 'SiC' : 'R55',
+      circuit: 'clasificacion',
+      category: 'HIDROCICLON_CLASIFICACION',
     });
-    saveEngineeringContextSnapshot('clasificacion', {
+
+    const skipWrite = Boolean(isInitialMount) && !hydration.hasPersistedState;
+    const cycPayload = {
       ...res,
       ...coupledEval,
+      feedPressureKpa: res.feedPressureKpa,
+      apexMm: res.apexDiameterMm,
+      vortexMm: res.vortexDiameterMm,
       coupledScreenFeedD80Um: coupledD80Um,
       apertureMm: weibullRes.apertureMm,
       reliefAngleDeg: weibullRes.reliefAngleDeg,
       partitionToOversizePct: weibullRes.partitionToOversizePct,
+    };
+
+    if (!skipWrite) {
+      const prev = loadWorkbenchSession();
+      saveWorkbenchSession({
+        ...prev,
+        hasUserCalibration: true,
+        cycloneCircuit: {
+          feedSg: res.feedSg,
+          underflowSg: res.underflowSg,
+          overflowSg: res.overflowSg,
+          solidsRecoveryPct: res.solidsRecoveryPct,
+          circulatingLoadPct: res.circulatingLoadPct,
+          cvUnderflowPct: res.cvUnderflowPct,
+          d50cMicrons: res.d50cMicrons,
+          dischargeRegime: res.dischargeRegime,
+          recommendedSkuId: res.recommendedSkuId,
+        },
+      });
+    }
+
+    commitVerticalSimulation('clasificacion', cycPayload, {
+      root,
+      skipStorageWrite: skipWrite,
+      queryPatch: {
+        rho_f: res.feedSg,
+        uf_sg: res.underflowSg,
+        of_sg: res.overflowSg,
+        solids_sg: res.solidsSg,
+        apex_mm: res.apexDiameterMm,
+        vortex_mm: res.vortexDiameterMm,
+        press_kpa: res.feedPressureKpa,
+        d50c: res.d50cMicrons,
+        aperture_mm: weibullRes.apertureMm,
+      },
     });
     return res;
   }
 
   function onManualScreenChange() {
     const weibullRes = recomputeScreenWeibull(null);
-    saveEngineeringContextSnapshot('clasificacion', {
+    commitVerticalSimulation('clasificacion', {
       apertureMm: weibullRes.apertureMm,
       reliefAngleDeg: weibullRes.reliefAngleDeg,
       coupledScreenFeedD80Um: weibullRes.feedParticleUm,
+      feedTopSizeUm: weibullRes.feedParticleUm,
       partitionToOversizePct: weibullRes.partitionToOversizePct,
+    }, {
+      root,
+      queryPatch: {
+        aperture_mm: weibullRes.apertureMm,
+        feed_um: weibullRes.feedParticleUm,
+      },
     });
   }
 
+  bindAtomicPartTrayButtons(root);
+
   [feedInput, underInput, overInput, solidsInput, apexInput, vortexInput, pressInput].forEach((el) => {
     if (el && typeof el.addEventListener === 'function') {
-      el.addEventListener('input', recompute);
-      el.addEventListener('change', recompute);
+      el.addEventListener('input', () => recompute(false));
+      el.addEventListener('change', () => recompute(false));
     }
   });
 
@@ -630,5 +737,5 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
     }
   });
 
-  return recompute();
+  return recompute(true);
 }

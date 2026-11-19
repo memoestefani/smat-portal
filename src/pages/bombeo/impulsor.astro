@@ -25,22 +25,106 @@ const wetMaterials = [
   description="Impulsores cerrados de 5 álabes y de paso amplio en Alto Cromo, Hule y Poliuretano para bombas de lodos."
   lang="es"
 >
-  <section class="page-hero">
+  <section class="page-hero smat-compact-hero">
     <div class="container">
       <a href="/bombeo/" class="back-link">← Volver a Bombas para Lodos</a>
-      <div style="margin-top: 1rem;">
-        <span class="badge badge-copper">PIEZA EN CONTACTO HÚMEDO</span>
+      <div style="margin-top: 0.3rem;">
+        <span class="badge badge-copper">ESTACIÓN 03 · PIEZA EN CONTACTO HÚMEDO</span>
       </div>
       <h1>Impulsor para Bomba de Lodos</h1>
-      <p style="font-size: 1.08rem; max-width: 700px; color: var(--smat-text-secondary);">
-        Impulsor de servicio pesado con álabes principales de paso amplio y álabes expulsores en ambas caras para bombas de lodos en molienda, clasificación y jales.
+      <p class="smat-hero-sub">
+        Calibración tribológica en vivo de álabes, velocidad periférica u₂ y selección en A05 / R55 / U01 / SiC / Híbrido Rama D.
       </p>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section smat-stage-compact">
     <div class="container">
-      <TechnicalDiagrams diagram="impeller" lang="es" />
+      <!-- ESTRATO 1: Matriz Comparativa Aleaciones Impulsor -->
+      <div id="stratum1-impeller-sim" data-testid="impeller-material-matrix" data-stratum-1-instrument>
+        <div class="card" style="background: #f8fafc; border: 1.5px solid #cbd5e1; padding: clamp(0.7rem, 1.4vw, 1.1rem); margin-bottom: 1rem;">
+          <span class="badge badge-copper">SIMULADOR TRIBOLÓGICO EN VIVO · FINNIE-HUTCHINGS &amp; TENACIDAD K<sub>Ic</sub></span>
+          <h2 style="margin: 0.3rem 0 0.45rem; font-size: clamp(0.98rem, 1.4vw, 1.12rem);">Verificador de Velocidad Periférica u₂, Desconchamiento (Spalling SiC) y Masa NIOSH</h2>
+          <div class="smat-stratum1-display">
+            <div id="trib-status-out" style="padding: 0.5rem 0.75rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #059669; color: #064e3b; font-family: var(--smat-font-mono); font-size: 0.79rem; font-weight: 700;">
+              Tenacidad OK · Serie 6x4 · Sin riesgo de desconchamiento frágil (Spalling) en régimen cinemático actual.
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.45rem; font-family: var(--smat-font-mono); font-size: 0.78rem;">
+              <div style="background: #ffffff; padding: 0.45rem 0.65rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Material Recomendado:</strong> <span id="trib-mat-out">Alto Cromo 27% (A05)</span></div>
+              <div style="background: #ffffff; padding: 0.45rem 0.65rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Tenacidad K<sub>Ic</sub>:</strong> <span id="trib-kic-out">18.5 MPa·√m</span></div>
+              <div style="background: #ffffff; padding: 0.45rem 0.65rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Masa e Izaje NIOSH:</strong> <span id="trib-arch-out">492 kg · 6 NIOSH ≥ 23 kg</span></div>
+            </div>
+          </div>
+          <div class="smat-inputs-2col" style="margin-bottom: 0.65rem; padding: 0.6rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.8rem;">
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Granulometría d<sub>80</sub> (µm):</span>
+              <input type="number" id="trib-d80-um" min="20" max="6000" step="25" value="450" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Velocidad Punta u₂ (m/s):</span>
+              <input type="number" id="trib-vtip-ms" min="10" max="36" step="0.5" value="22.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>pH de Pulpa:</span>
+              <input type="number" id="trib-ph" min="1.0" max="13.5" step="0.5" value="7.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Rama de Material:</span>
+              <select id="trib-branch" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <option value="auto" selected>Auto (Finnie-Hutchings)</option>
+                <option value="metal">Alto Cromo 27% Cr (A05)</option>
+                <option value="rubber">Hule Natural (R55)</option>
+                <option value="polyurethane">Poliuretano (U01)</option>
+                <option value="ceramica_sic">Cerámica SiC</option>
+                <option value="hibrido_a05_r55">Rama D Híbrida (A05+R55)</option>
+              </select>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Serie de Bomba:</span>
+              <select id="trib-series" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <option value="3x2">3x2 / 4x3</option>
+                <option value="6x4" selected>6x4</option>
+                <option value="8x6">8x6 / 10x8</option>
+              </select>
+            </label>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center;">
+            <a href="/cotizar/?circuito=bombeo&equipo=solo_impulsor&pieza=impulsor_5_alabes&estacion=S3#rfq" class="btn btn-primary" style="min-height: 48px; display: inline-flex; align-items: center;">Cotizar Impulsor Calibrado →</a>
+            <button
+              type="button"
+              class="btn btn-outline btn-avenue-tray"
+              data-vertical-tray-btn
+              data-add-tray-sku="SMAT-PUMP-IMP-147"
+              data-tray-part-code="147/083"
+              data-tray-title="Impulsor 5 Álabes Calibrado"
+              data-tray-series="6x4"
+              data-tray-material="alto_cromo_cr27"
+              data-tray-circuit="bombeo"
+              data-tray-source="impeller_stratum1_calc"
+              style="min-height: 48px;"
+            >+ Sumar SKU Calibrado a Bandeja</button>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 1.25rem;">Selección Tribológica por Material Húmedo (5 Ramas Certificadas)</h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:0.85rem; margin-top:0.65rem;">
+          {wetMaterials.map((mat) => (
+            <div class="card" style="background:#f8fafc; border:1px solid #cbd5e1; padding:1rem;">
+              <span class="font-mono-tech" style="font-size:0.72rem; font-weight:800; color:#082f49;">[{mat.code}] {mat.hardness}</span>
+              <h4 style="margin:0.35rem 0; font-size:0.95rem;">{mat.nameEs}</h4>
+              <div class="font-mono-tech" style="font-size:0.74rem; color:#334155; margin-bottom:0.45rem;">
+                u₂ ≤ {mat.maxTipSpeedMs} m/s • K_Ic = {mat.fractureToughnessMpaSqrtM} MPa·√m • d₈₀: {mat.d80RangeMicrons[0]}–{mat.d80RangeMicrons[1]} µm • pH {mat.phRange[0]}–{mat.phRange[1]}
+              </div>
+              <a href={`/cotizar/?circuito=bombeo&equipo=solo_impulsor&material=${mat.key}&estacion=S3#rfq`} data-card-fixed-params="material" class="btn btn-outline" style="width:100%; text-align:center; font-size:0.78rem;">Configurar en {mat.code} →</a>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- ESTRATO 2: Diagrama CAD Técnico y Fichas Atómicas -->
+      <div style="margin-top: 2rem;">
+        <TechnicalDiagrams diagram="impeller" lang="es" />
+      </div>
 
       <div class="grid-2" style="margin-top: 1.75rem;">
         <div>
@@ -125,73 +209,12 @@ const wetMaterials = [
                   data-tray-title={ip.name_es}
                   data-tray-series={ip.pipe_size}
                   data-tray-material="A05"
+                  data-tray-circuit="bombeo"
                   data-tray-category="BOMBA_SLURRY"
                   data-tray-source="impeller_atomic_card"
                   style="min-height: 48px;"
                 >+ Bandeja</button>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <!-- Matriz de 5 Materiales Húmedos + Selector Tribológico Interactivo Finnie-Hutchings / K_Ic (D3-V46) -->
-      <div style="margin-top: 2rem;" data-testid="impeller-material-matrix">
-        <h2>Selección Tribológica de Material Húmedo (A05 / R55 / U01 / SiC / Híbrido Rama D)</h2>
-        <div class="card" style="margin-top: 0.85rem; margin-bottom: 1rem; background: #f8fafc; border: 1.5px solid #cbd5e1; padding: 1.25rem;">
-          <span class="badge badge-copper">SIMULADOR TRIBOLÓGICO EN VIVO · FINNIE-HUTCHINGS &amp; TENACIDAD K<sub>Ic</sub></span>
-          <h3 style="margin: 0.45rem 0 0.65rem; font-size: 1.02rem;">Verificador de Velocidad Periférica u₂, Desconchamiento (Spalling SiC) y Masa NIOSH</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 0.65rem; margin-bottom: 0.75rem; padding: 0.75rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.82rem;">
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Granulometría d<sub>80</sub> (µm):</span>
-              <input type="number" id="trib-d80-um" min="20" max="6000" step="25" value="450" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Velocidad Punta u₂ (m/s):</span>
-              <input type="number" id="trib-vtip-ms" min="10" max="36" step="0.5" value="22.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>pH de Pulpa:</span>
-              <input type="number" id="trib-ph" min="1.0" max="13.5" step="0.5" value="7.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Rama de Material:</span>
-              <select id="trib-branch" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
-                <option value="auto" selected>Auto (Finnie-Hutchings)</option>
-                <option value="metal">Alto Cromo 27% Cr (A05)</option>
-                <option value="rubber">Hule Natural (R55)</option>
-                <option value="polyurethane">Poliuretano (U01)</option>
-                <option value="ceramica_sic">Cerámica SiC</option>
-                <option value="hibrido_a05_r55">Rama D Híbrida (A05+R55)</option>
-              </select>
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Serie de Bomba:</span>
-              <select id="trib-series" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
-                <option value="3x2">3x2 / 4x3</option>
-                <option value="6x4" selected>6x4</option>
-                <option value="8x6">8x6 / 10x8</option>
-              </select>
-            </label>
-          </div>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 0.6rem; margin-bottom: 0.65rem; font-family: var(--smat-font-mono); font-size: 0.8rem;">
-            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Material Recomendado:</strong> <span id="trib-mat-out">Alto Cromo 27% (A05)</span></div>
-            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Tenacidad K<sub>Ic</sub>:</strong> <span id="trib-kic-out">18.5 MPa·√m</span></div>
-            <div style="background: #ffffff; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid #cbd5e1;"><strong>Masa e Izaje NIOSH:</strong> <span id="trib-arch-out">492 kg · 6 NIOSH ≥ 23 kg</span></div>
-          </div>
-          <div id="trib-status-out" style="padding: 0.6rem 0.8rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-family: var(--smat-font-mono); font-size: 0.79rem; font-weight: 700;">
-            Tenacidad OK · Serie 6x4 · Sin riesgo de desconchamiento frágil (Spalling) en régimen cinemático actual.
-          </div>
-        </div>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:0.85rem; margin-top:0.85rem;">
-          {wetMaterials.map((mat) => (
-            <div class="card" style="background:#f8fafc; border:1px solid #cbd5e1; padding:1rem;">
-              <span class="font-mono-tech" style="font-size:0.72rem; font-weight:800; color:#082f49;">[{mat.code}] {mat.hardness}</span>
-              <h4 style="margin:0.35rem 0; font-size:0.95rem;">{mat.nameEs}</h4>
-              <div class="font-mono-tech" style="font-size:0.74rem; color:#334155; margin-bottom:0.45rem;">
-                u₂ ≤ {mat.maxTipSpeedMs} m/s • K_Ic = {mat.fractureToughnessMpaSqrtM} MPa·√m • d₈₀: {mat.d80RangeMicrons[0]}–{mat.d80RangeMicrons[1]} µm • pH {mat.phRange[0]}–{mat.phRange[1]}
-              </div>
-              <a href={`/cotizar/?circuito=bombeo&equipo=solo_impulsor&material=${mat.key}&estacion=S3#rfq`} data-card-fixed-params="material" class="btn btn-outline" style="width:100%; text-align:center; font-size:0.78rem;">Configurar en {mat.code} →</a>
             </div>
           ))}
         </div>
@@ -218,13 +241,6 @@ const wetMaterials = [
 </script>
 
 <style>
-  .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 2.75rem 0; border-bottom: 2px solid var(--smat-copper-accent); }
-  .page-hero h1 { color: var(--smat-text-primary); margin-top: 0.5rem; }
-  .back-link { color: var(--smat-copper-accent); font-size: 0.9rem; font-weight: 700; text-decoration: none; }
+  .back-link { color: var(--smat-solar-accent); font-size: 0.88rem; font-weight: 700; text-decoration: none; }
   .back-link:hover { text-decoration: underline; }
-  @media (max-width: 640px) {
-    .page-hero { padding: 0.75rem 0; }
-    .page-hero h1 { font-size: 1.35rem; margin: 0.2rem 0; }
-    .page-hero p { font-size: 0.82rem !important; line-height: 1.3; margin: 0.2rem 0; }
-  }
 </style>

@@ -2,6 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import ProductQuickCard from '../../../components/ProductQuickCard.astro';
 import { getAllStaticProductRouteEntries, getQuickProductBySlugOrAlias } from '../../../scripts/quickProductsCatalog.js';
+import '../../../styles/productSlugSolar.css';
 
 export function getStaticPaths() {
   const entries = getAllStaticProductRouteEntries('en');
@@ -124,6 +125,64 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
       <p class="smat-slug-lead">
         {sku.summary_en}
       </p>
+
+      <!-- Stratum 1: 3-Horizon Harmonic JRP Card (s, c, S) + Synchronized Coupled Pair -->
+      <div id="stratum1-slug-card" data-jrp-window-card data-jrp-criticality="normal" data-stratum-1-instrument style="margin:0.5rem 0 0.75rem 0; padding:0.9rem 1rem; background:#f8fafc; border:1.5px solid #cbd5e1; border-left:4px solid #0c4a6e; border-radius:8px;">
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+          <span style="font-family:var(--smat-font-mono, monospace); font-size:0.74rem; font-weight:800; color:#0c4a6e;">HARMONIC PREVENTIVE WINDOW (T₀/2 • T₀ • 2T₀)</span>
+          <span data-jrp-telemetry-badge style="font-family:var(--smat-font-mono, monospace); font-size:0.74rem; font-weight:700; color:#334155;">Session Pulp SG 1.45 • d50 280 µm</span>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:0.45rem; align-items:center; margin-bottom:0.6rem;">
+          <span style="font-size:0.78rem; font-weight:700; color:#1e293b;">Criticality Mode:</span>
+          <button type="button" data-jrp-criticality-toggle="normal" aria-pressed="true" style="padding:0.35rem 0.75rem; border:1px solid #0c4a6e; border-radius:6px; background:#0c4a6e; color:#ffffff; font-size:0.76rem; font-weight:700; cursor:pointer; min-height:48px;">Normal (1.0×)</button>
+          <button type="button" data-jrp-criticality-toggle="paro_planta" aria-pressed="false" style="padding:0.35rem 0.75rem; border:1px solid #94a3b8; border-radius:6px; background:#ffffff; color:#0f172a; font-size:0.76rem; font-weight:700; cursor:pointer; min-height:48px;">Plant Shutdown (0.75×)</button>
+          <span data-jrp-window-days style="margin-left:auto; font-family:var(--smat-font-mono, monospace); font-size:0.78rem; font-weight:800; color:#064e3b;">90 d window</span>
+          <span data-jrp-severity style="font-family:var(--smat-font-mono, monospace); font-size:0.75rem; color:#334155;">1.00× (1.00×)</span>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.55rem; margin-bottom:0.6rem;">
+          <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:0.5rem 0.65rem;">
+            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">SHAFT SLEEVE (T₀/2)</span>
+            <strong data-jrp-sleeve-day style="font-size:0.95rem; color:#0f172a;">Day 90</strong>
+          </div>
+          <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:0.5rem 0.65rem;">
+            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">IMPELLER + THROAT (T₀)</span>
+            <strong data-jrp-impeller-day style="font-size:0.95rem; color:#0f172a;">Day 150</strong>
+          </div>
+          <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:0.5rem 0.65rem;">
+            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">VOLUTE + LINER (2T₀)</span>
+            <strong data-jrp-volute-day style="font-size:0.95rem; color:#0f172a;">Day 180</strong>
+          </div>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:0.6rem; align-items:center; justify-content:space-between;">
+          <span data-jrp-policy-summary style="font-size:0.78rem; color:#334155;">Harmonic coupled replacement to minimize unplanned downtime.</span>
+          <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+            <button
+              type="button"
+              class="btn btn-outline"
+              data-add-tray-sku={sku.id}
+              data-tray-part-code={sku.atomic_codes?.[0] || sku.id}
+              data-tray-title={sku.title_en}
+              data-tray-series={(sku as any).series || '6x4'}
+              data-tray-material={sku.default_material || 'A05'}
+              data-tray-circuit={sku.vertical || 'bombeo'}
+              data-tray-source="product_slug_stratum1"
+              style="min-height:48px; padding:0.45rem 0.85rem; font-size:0.8rem;"
+            >+ Add {sku.id} to Tray</button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-add-coupled-pair-btn
+              data-pair-primary-sku={sku.id}
+              data-pair-primary-title={sku.title_en}
+              data-pair-secondary-sku={sku.coupled_pair_sku || 'SMAT-PUMP-TB-083'}
+              data-pair-secondary-title={coupledSku ? coupledSku.title_en : (sku.coupled_pair_sku || 'SMAT-PUMP-TB-083')}
+              data-pair-series={(sku as any).series || '6x4'}
+              data-pair-material={sku.default_material || 'A05'}
+              style="min-height:48px; padding:0.45rem 0.85rem; font-size:0.8rem;"
+            >+ Add Coupled Pair to Tray</button>
+          </div>
+        </div>
+      </div>
 
       <div class="smat-slug-kpi-grid">
         <div class="smat-slug-kpi-box">
@@ -304,7 +363,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
             data-core-tradein-widget={sku.id}
             style="padding: 0.9rem; border-radius: 12px; background: #ecfdf5; border: 1px solid #10b981; font-size: 0.78rem; color: #064e3b;"
           >
-            <div style="font-family: var(--font-mono, monospace); font-weight: 800; color: #065f46; margin-bottom: 0.4rem;">
+            <div style="font-family: var(--font-mono, monospace); font-weight: 800; color: #064e3b; margin-bottom: 0.4rem;">
               ♻️ DAM005 CORE TRADE-IN PROGRAM (-22% CREDIT)
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.45rem;">
@@ -321,10 +380,10 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
                 <span>Unwelded H7 Bearing Bore (ISO IT6)</span>
               </label>
             </div>
-            <div data-tradein-result data-core-tradein-badge style="font-family: var(--font-mono, monospace); font-weight: 800; color: #065f46;">
+            <div data-tradein-result data-core-tradein-badge style="font-family: var(--font-mono, monospace); font-weight: 800; color: #064e3b;">
               Active: -22% Core Trade-In Credit (Factor 0.78x • RMA-CORE-DAM005-INTACT)
             </div>
-            <div data-tradein-co2 data-core-tradein-note style="font-size: 0.72rem; color: #047857; margin-top: 0.2rem;">
+            <div data-tradein-co2 data-core-tradein-note style="font-size: 0.72rem; color: #064e3b; margin-top: 0.2rem;">
               Physical return at Central Warehouse: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (35 kg CO₂e saved)
             </div>
           </div>
@@ -377,8 +436,12 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
 
 <script>
   import { initCoreTradeInWidgets } from '../../../scripts/vendorPassportAndTradeInController.js';
-  if (typeof document !== 'undefined') {
+  import { initHarmonicJrpWindowAndPairCard } from '../../../scripts/catalogDropInAndJrpProjector.js';
+
+  function initSlugSheetEn() {
+    if (typeof document === 'undefined') return;
     initCoreTradeInWidgets(document, 'en');
+    initHarmonicJrpWindowAndPairCard(document, 'en');
     const chips = document.querySelectorAll('.smat-slug-mat-chip[data-mat-code]');
     const trayBtn = document.querySelector('[data-slug-add-to-tray]');
     const waBtn = document.querySelector('[data-slug-wa-btn]') as HTMLAnchorElement | null;
@@ -409,6 +472,8 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
       }
     };
     chips.forEach((chip) => {
+      if ((chip as HTMLElement).dataset?.slugChipBound === '1') return;
+      if ((chip as HTMLElement).dataset) (chip as HTMLElement).dataset.slugChipBound = '1';
       chip.addEventListener('click', () => activateSlugMatChip(chip));
       chip.addEventListener('keydown', (ev: Event) => {
         const ke = ev as KeyboardEvent;
@@ -419,568 +484,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
       });
     });
   }
+  initSlugSheetEn();
+  document.addEventListener('astro:page-load', initSlugSheetEn);
 </script>
 
-<style>
-  .smat-slug-main {
-    max-width: 72rem;
-    margin: 0 auto;
-    padding: 2.5rem 1rem;
-    color: var(--smat-solar-ink, #0f172a);
-  }
-
-  @media (min-width: 640px) {
-    .smat-slug-main {
-      padding: 2.5rem 1.5rem;
-    }
-  }
-
-  .smat-slug-breadcrumb {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    color: var(--smat-solar-muted, #334155);
-  }
-
-  .smat-slug-breadcrumb-links {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .smat-slug-nav-link {
-    color: var(--smat-solar-muted, #334155);
-    text-decoration: none;
-  }
-
-  .smat-slug-nav-link:hover {
-    color: var(--smat-solar-accent, #b45309);
-  }
-
-  .smat-slug-breadcrumb-current {
-    font-weight: 700;
-    color: var(--smat-solar-accent, #b45309);
-  }
-
-  .smat-slug-lang-switch {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.25rem 0.75rem;
-    border-radius: 6px;
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-    background: #ffffff;
-    color: var(--smat-solar-ink, #0f172a);
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  .smat-slug-lang-switch:hover {
-    border-color: var(--smat-solar-amber-border, #d97706);
-  }
-
-  .smat-slug-header {
-    background: var(--smat-solar-surface, #ffffff);
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-  }
-
-  @media (min-width: 640px) {
-    .smat-slug-header {
-      padding: 2rem;
-    }
-  }
-
-  .smat-slug-badge-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .smat-slug-badge {
-    padding: 0.25rem 0.625rem;
-    border-radius: 6px;
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    font-weight: 700;
-    border: 1px solid transparent;
-  }
-
-  .smat-slug-badge--amber {
-    background: var(--smat-solar-amber-bg, #fffbeb);
-    border-color: var(--smat-solar-amber-border, #d97706);
-    color: var(--smat-solar-accent, #b45309);
-  }
-
-  .smat-slug-badge--emerald {
-    background: var(--smat-solar-emerald-bg, #ecfdf5);
-    border-color: var(--smat-solar-emerald-border, #059669);
-    color: var(--smat-solar-emerald, #047857);
-  }
-
-  .smat-slug-badge--rose {
-    background: #fff1f2;
-    border-color: #e11d48;
-    color: #be123c;
-  }
-
-  .smat-slug-badge--neutral {
-    background: var(--smat-solar-bg, #f8fafc);
-    border-color: var(--smat-solar-border, #cbd5e1);
-    color: var(--smat-solar-ink, #0f172a);
-  }
-
-  .smat-slug-h1 {
-    margin: 0 0 0.75rem 0;
-    font-size: 1.75rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    color: var(--smat-solar-ink, #0f172a);
-  }
-
-  @media (min-width: 640px) {
-    .smat-slug-h1 {
-      font-size: 2.25rem;
-    }
-  }
-
-  .smat-slug-lead {
-    margin: 0 0 1.25rem 0;
-    max-width: 56rem;
-    font-size: 1rem;
-    line-height: 1.6;
-    color: var(--smat-solar-muted, #334155);
-  }
-
-  .smat-slug-kpi-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--smat-solar-border, #cbd5e1);
-    font-size: 0.875rem;
-  }
-
-  @media (min-width: 768px) {
-    .smat-slug-kpi-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  .smat-slug-kpi-box {
-    padding: 0.875rem;
-    border-radius: 12px;
-    background: var(--smat-solar-bg, #f8fafc);
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-  }
-
-  .smat-slug-kpi-label {
-    margin-bottom: 0.25rem;
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    color: var(--smat-solar-muted, #334155);
-  }
-
-  .smat-slug-kpi-value {
-    font-weight: 700;
-    color: var(--smat-solar-ink, #0f172a);
-  }
-
-  .smat-slug-kpi-value--amber {
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    color: var(--smat-solar-accent, #b45309);
-  }
-
-  .smat-slug-kpi-value--sky {
-    color: #0369a1;
-  }
-
-  .smat-slug-layout-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    align-items: start;
-  }
-
-  @media (min-width: 1024px) {
-    .smat-slug-layout-grid {
-      grid-template-columns: 7fr 5fr;
-    }
-  }
-
-  .smat-slug-col-left {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .smat-slug-validation-card {
-    padding: 1.25rem;
-    border-radius: 16px;
-    border: 1px solid var(--smat-solar-emerald-border, #059669);
-    background: var(--smat-solar-emerald-bg, #ecfdf5);
-  }
-
-  .smat-slug-section-kicker {
-    margin: 0 0 0.75rem 0;
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.8125rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--smat-solar-muted, #334155);
-  }
-
-  .smat-slug-section-kicker--emerald {
-    color: var(--smat-solar-emerald, #047857);
-  }
-
-  .smat-slug-steps-grid {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-    font-size: 0.75rem;
-    color: var(--smat-solar-ink, #0f172a);
-  }
-
-  @media (min-width: 640px) {
-    .smat-slug-steps-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  .smat-slug-step-item {
-    padding: 0.75rem;
-    border-radius: 12px;
-    background: #ffffff;
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-    line-height: 1.45;
-  }
-
-  .smat-slug-step-title {
-    display: block;
-    margin-bottom: 0.25rem;
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    color: var(--smat-solar-accent, #b45309);
-  }
-
-  .smat-slug-mono-inline {
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-weight: 700;
-  }
-
-  .smat-slug-telemetry-card {
-    padding: 1.5rem;
-    border-radius: 16px;
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-    background: #ffffff;
-  }
-
-  .smat-slug-telemetry-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.75rem;
-    text-align: center;
-  }
-
-  .smat-slug-telemetry-box {
-    padding: 0.75rem;
-    border-radius: 12px;
-    background: var(--smat-solar-bg, #f8fafc);
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-  }
-
-  .smat-slug-telemetry-label {
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    color: var(--smat-solar-muted, #334155);
-  }
-
-  .smat-slug-telemetry-val {
-    margin-top: 0.25rem;
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 1.0625rem;
-    font-weight: 800;
-  }
-
-  .smat-slug-telemetry-val--amber {
-    color: var(--smat-solar-accent, #b45309);
-  }
-
-  .smat-slug-telemetry-val--sky {
-    color: #0369a1;
-  }
-
-  .smat-slug-telemetry-val--emerald {
-    color: var(--smat-solar-emerald, #047857);
-  }
-
-  .smat-slug-checkout-aside {
-    padding: 1.5rem;
-    border-radius: 16px;
-    border: 2px solid var(--smat-solar-amber-border, #d97706);
-    background: #ffffff;
-    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .smat-slug-aside-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--smat-solar-border, #cbd5e1);
-  }
-
-  .smat-slug-aside-kicker {
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--smat-solar-accent, #b45309);
-  }
-
-  .smat-slug-aside-hub {
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--smat-solar-emerald, #047857);
-  }
-
-  .smat-slug-aside-h2 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1rem;
-    font-weight: 800;
-    color: var(--smat-solar-ink, #0f172a);
-  }
-
-  .smat-slug-aside-h3 {
-    margin: 0 0 0.5rem 0;
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--smat-solar-muted, #334155);
-  }
-
-  .smat-slug-chip-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .smat-slug-mat-chip {
-    padding: 0.375rem 0.75rem;
-    border-radius: 8px;
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    font-weight: 700;
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-    background: var(--smat-solar-bg, #f8fafc);
-    color: var(--smat-solar-ink, #0f172a);
-  }
-
-  .smat-slug-mat-chip.is-default {
-    background: var(--smat-solar-amber-bg, #fffbeb);
-    border-color: var(--smat-solar-amber-border, #d97706);
-    color: var(--smat-solar-accent, #b45309);
-  }
-
-  .smat-slug-atomic-link {
-    padding: 0.25rem 0.75rem;
-    border-radius: 6px;
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-    background: var(--smat-solar-bg, #f8fafc);
-    color: var(--smat-solar-accent, #b45309);
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-decoration: none;
-  }
-
-  .smat-slug-atomic-link:hover {
-    border-color: var(--smat-solar-amber-border, #d97706);
-  }
-
-  .smat-slug-coupled-box {
-    padding: 0.75rem;
-    border-radius: 10px;
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-    background: var(--smat-solar-bg, #f8fafc);
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    color: var(--smat-solar-ink, #0f172a);
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .smat-slug-lanes-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .smat-slug-lane-card {
-    padding: 0.875rem;
-    border-radius: 12px;
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-  }
-
-  .smat-slug-lane-card--emerald {
-    background: var(--smat-solar-emerald-bg, #ecfdf5);
-    border-color: var(--smat-solar-emerald-border, #059669);
-  }
-
-  .smat-slug-lane-card--amber {
-    background: var(--smat-solar-amber-bg, #fffbeb);
-    border-color: var(--smat-solar-amber-border, #d97706);
-  }
-
-  .smat-slug-lane-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.25rem;
-  }
-
-  .smat-slug-lane-title {
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    font-weight: 700;
-  }
-
-  .smat-slug-lane-title--emerald,
-  .smat-slug-lane-tag--emerald {
-    color: var(--smat-solar-emerald, #047857);
-  }
-
-  .smat-slug-lane-title--amber,
-  .smat-slug-lane-tag--amber {
-    color: var(--smat-solar-accent, #b45309);
-  }
-
-  .smat-slug-lane-tag {
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.6875rem;
-    font-weight: 700;
-  }
-
-  .smat-slug-lane-desc {
-    margin: 0;
-    font-size: 0.75rem;
-    line-height: 1.45;
-    color: var(--smat-solar-ink, #0f172a);
-  }
-
-  .smat-slug-sat-pill {
-    margin-top: 0.5rem;
-    padding: 0.375rem 0.625rem;
-    border-radius: 6px;
-    background: #ffffff;
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.6875rem;
-    color: var(--smat-solar-muted, #334155);
-  }
-
-  .smat-slug-passport-box {
-    padding: 1rem;
-    border-radius: 12px;
-    background: var(--smat-solar-bg, #f8fafc);
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-    font-size: 0.75rem;
-    color: var(--smat-solar-muted, #334155);
-  }
-
-  .smat-slug-passport-box p {
-    margin: 0.25rem 0 0 0;
-  }
-
-  .smat-slug-passport-title {
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-weight: 700;
-    color: var(--smat-solar-ink, #0f172a);
-  }
-
-  .smat-slug-cta-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .smat-slug-btn-primary {
-    width: 100%;
-    min-height: 48px;
-    padding: 0.875rem 1.25rem;
-    border-radius: 12px;
-    border: 1px solid #92400e;
-    background: #d97706;
-    color: #ffffff;
-    font-size: 0.875rem;
-    font-weight: 700;
-    text-align: center;
-    cursor: pointer;
-    transition: background 0.15s ease;
-  }
-
-  .smat-slug-btn-primary:hover {
-    background: #b45309;
-  }
-
-  .smat-slug-btn-wa {
-    display: block;
-    width: 100%;
-    padding: 0.75rem 1.25rem;
-    border-radius: 12px;
-    border: 1px solid var(--smat-solar-emerald-border, #059669);
-    background: var(--smat-solar-emerald-bg, #ecfdf5);
-    color: var(--smat-solar-emerald, #047857);
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-align: center;
-    text-decoration: none;
-  }
-
-  .smat-slug-btn-wa:hover {
-    background: #d1fae5;
-  }
-
-  .smat-slug-btn-workbench {
-    display: block;
-    width: 100%;
-    padding: 0.625rem 1rem;
-    border-radius: 12px;
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-    background: var(--smat-solar-bg, #f8fafc);
-    color: var(--smat-solar-ink, #0f172a);
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-  }
-
-  .smat-slug-btn-workbench:hover {
-    border-color: #0284c7;
-    color: #0369a1;
-  }
-</style>

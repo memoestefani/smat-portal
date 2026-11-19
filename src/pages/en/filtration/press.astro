@@ -17,17 +17,92 @@ const criteria = prensaRole?.decision_criteria;
   alternateEsPath="/filtracion/prensa/"
   alternateEnPath="/en/filtration/press/"
 >
-  <section class="page-hero">
-    <div class="container text-center">
-      <span class="badge badge-capex">FILTRATION EQUIPMENT • 800 TO 1500 MM</span>
-      <h1>Filter Presses</h1>
-      <p class="subtitle">Hydraulic filtration equipment for mineral concentrates and dry tailings dewatering.</p>
+  <section class="page-hero smat-compact-hero">
+    <div class="container">
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:0.4rem;">
+        <h1 style="margin:0;">Filter Presses — Darcy-Ruth &amp; Timoshenko 16-bar Simulator</h1>
+        <span class="badge badge-capex">FILTRATION EQUIPMENT • 800 TO 1500 MM</span>
+      </div>
+      <p class="smat-hero-sub">Hydraulic filtration equipment for mineral concentrates and dry tailings dewatering.</p>
     </div>
   </section>
 
-  <section class="section-spacing">
+  <section class="section-spacing smat-stage-compact">
     <div class="container content-container">
       <div class="card detail-card">
+        <!-- Stratum 1: Live Interactive Darcy-Ruth Cycle Capacity & Timoshenko Plate Calculator -->
+        <div class="filtration-5family-box" id="stratum1-press-sim" data-plate-flexure-panel="timoshenko-g5" data-stratum-1-instrument style="margin-bottom: 1.25rem; padding: clamp(0.7rem, 1.4vw, 1.15rem); border-radius: 10px; background: #f8fafc; color: var(--smat-text-primary); border: 1.5px solid #cbd5e1; border-left: 4px solid #7c2d12;">
+          <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:0.45rem; margin-bottom:0.35rem;">
+            <span class="badge badge-copper">LIVE SIZING · DARCY-RUTH CYCLE CAPACITY &amp; TIMOSHENKO FLEXURE</span>
+            <div style="display:flex; flex-wrap:wrap; gap:0.4rem; align-items:center;">
+              <span id="filt-nom141-badge" style="font-family:var(--smat-font-mono); font-size:0.72rem; font-weight:800; padding:0.2rem 0.55rem; border-radius:4px; background:#ecfdf5; border:1px solid #059669; color:#064e3b;">NOM-141 ≤16% Compliant</span>
+              <span id="filt-shifter-sku-badge" style="font-family:var(--smat-font-mono); font-size:0.72rem; font-weight:800; padding:0.2rem 0.55rem; border-radius:4px; background:#eff6ff; border:1px solid #0284c7; color:#0c4a6e;">SKU: SMAT-FILT-SHIFTER-CHAIN</span>
+            </div>
+          </div>
+          <h2 style="margin: 0.25rem 0 0.45rem; font-size: clamp(0.98rem, 1.4vw, 1.12rem); color: var(--smat-text-primary);">Dry Tonnage (t/d), Daily Cycles &amp; 16-bar Plate Bending Simulator</h2>
+          <div class="smat-stratum1-display">
+            <div id="filt-res-summary" style="padding: 0.55rem 0.75rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #059669; color: #064e3b; font-family: var(--smat-font-mono); font-size: 0.8rem; font-weight: 700;">
+              Safe structural operation. Meets NOM-141 dry stacking cake criteria.
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.55rem;">
+              <div style="background: #ffffff; padding: 0.5rem 0.65rem; border-radius: 6px; border: 1px solid #e2e8f0;">
+                <span style="font-size: 0.7rem; font-weight: 800; color: #334155; display: block;">TIMOSHENKO STRESS (σ<sub>max</sub>)</span>
+                <strong id="filt-res-stress" style="font-family: var(--smat-font-mono); font-size: 1.05rem;">3.54 MPa</strong>
+              </div>
+              <div style="background: #ffffff; padding: 0.5rem 0.65rem; border-radius: 6px; border: 1px solid #e2e8f0;">
+                <span style="font-size: 0.7rem; font-weight: 800; color: #334155; display: block;">SAFETY FACTOR (FS)</span>
+                <strong id="filt-res-fs" style="font-family: var(--smat-font-mono); font-size: 1.05rem;">FS 4.10</strong>
+              </div>
+            </div>
+            <div id="filt-res-secondary" style="font-family: var(--smat-font-mono); font-size: 0.77rem; color: #334155; padding: 0.45rem 0.65rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px;">
+              ΔP_asym = 0.288 MPa · σ_adm = 14.5 MPa · 48 cyc/d · 545 t/d
+            </div>
+          </div>
+          <div class="smat-inputs-2col" style="margin-bottom: 0.65rem; padding: 0.65rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.8rem;">
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Plate Format (mm):</span>
+              <select id="filt-plate-width" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <option value="800">800 × 800 mm</option>
+                <option value="1000">1000 × 1000 mm</option>
+                <option value="1200">1200 × 1200 mm</option>
+                <option value="1500" selected>1500 × 1500 mm</option>
+              </select>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Pressing Pressure (bar):</span>
+              <input type="number" id="filt-pressure-bar" min="4" max="25" step="1" value="16" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Clogged Ports (0–4):</span>
+              <input type="number" id="filt-clogged-ports" min="0" max="4" step="1" value="0" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Web Thickness (mm):</span>
+              <input type="number" id="filt-plate-thickness" min="45" max="110" step="5" value="65" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Cake Moisture (%):</span>
+              <input type="number" id="filt-cake-moisture" min="8" max="26" step="0.5" value="14" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+          </div>
+          <div style="display:flex; gap:0.65rem; flex-wrap:wrap; align-items:center;">
+            <a href="/en/quote/?circuito=filtracion&equipo=filtro_prensa&serie=1500&filt_condition=jales_secos#rfq" class="btn btn-primary" data-quote-base="/en/quote/" style="min-height:48px; display:inline-flex; align-items:center;">Quote Calibrated Filter Press →</a>
+            <button
+              type="button"
+              class="btn btn-outline btn-avenue-tray"
+              data-vertical-tray-btn
+              data-add-tray-sku="SMAT-FILT-PRESS-1500"
+              data-tray-part-code="FP-1500"
+              data-tray-title="Hydraulic Filter Press 1500 mm (16 bar)"
+              data-tray-series="1500"
+              data-tray-material="PP-Steel"
+              data-tray-circuit="filtracion"
+              data-tray-source="filter_press_stratum1_calc"
+              style="min-height:48px;"
+            >+ Add Filter Press to Tray</button>
+          </div>
+        </div>
+
         <div style="margin-bottom: 1.75rem;">
           <TechnicalDiagrams type="filter" lang="en" />
         </div>
@@ -74,55 +149,6 @@ const criteria = prensaRole?.decision_criteria;
             </tr>
           </tbody>
         </table>
-
-        <!-- Live Interactive Darcy-Ruth Cycle Capacity & Timoshenko Plate Calculator (D8-V43) -->
-        <div class="filtration-5family-box" data-plate-flexure-panel="timoshenko-g5" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; color: var(--smat-text-primary); border: 1px solid #cbd5e1; border-left: 4px solid #7c2d12;">
-          <span class="badge badge-copper">LIVE SIZING · DARCY-RUTH CYCLE CAPACITY &amp; TIMOSHENKO FLEXURE</span>
-          <h3 style="margin: 0.65rem 0 0.5rem; font-size: 1.08rem; color: var(--smat-text-primary);">Dry Tonnage (t/d), Daily Cycles &amp; 16-bar Plate Bending Simulator</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.65rem; margin-bottom: 0.85rem; padding: 0.85rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.82rem;">
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Plate Format (mm):</span>
-              <select id="filt-plate-width" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
-                <option value="800">800 × 800 mm</option>
-                <option value="1000">1000 × 1000 mm</option>
-                <option value="1200">1200 × 1200 mm</option>
-                <option value="1500" selected>1500 × 1500 mm</option>
-              </select>
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Pressing Pressure (bar):</span>
-              <input type="number" id="filt-pressure-bar" min="4" max="25" step="1" value="16" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Clogged Ports (0–4):</span>
-              <input type="number" id="filt-clogged-ports" min="0" max="4" step="1" value="0" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Web Thickness (mm):</span>
-              <input type="number" id="filt-plate-thickness" min="45" max="110" step="5" value="65" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Cake Moisture (%):</span>
-              <input type="number" id="filt-cake-moisture" min="8" max="26" step="0.5" value="14" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-          </div>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 0.65rem;">
-            <div style="background: #ffffff; padding: 0.65rem; border-radius: 6px; border: 1px solid #e2e8f0;">
-              <span style="font-size: 0.72rem; font-weight: 800; color: #475569; display: block;">TIMOSHENKO STRESS (σ<sub>max</sub>)</span>
-              <strong id="filt-res-stress" style="font-family: var(--smat-font-mono); font-size: 1.15rem;">3.54 MPa</strong>
-            </div>
-            <div style="background: #ffffff; padding: 0.65rem; border-radius: 6px; border: 1px solid #e2e8f0;">
-              <span style="font-size: 0.72rem; font-weight: 800; color: #475569; display: block;">SAFETY FACTOR (FS)</span>
-              <strong id="filt-res-fs" style="font-family: var(--smat-font-mono); font-size: 1.15rem;">FS 4.10</strong>
-            </div>
-          </div>
-          <div id="filt-res-secondary" style="font-family: var(--smat-font-mono); font-size: 0.78rem; color: #334155; margin-bottom: 0.65rem; padding: 0.45rem 0.65rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px;">
-            ΔP_asym = 0.288 MPa · σ_adm = 14.5 MPa · 48 cyc/d · 545 t/d
-          </div>
-          <div id="filt-res-summary" style="padding: 0.65rem 0.85rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-family: var(--smat-font-mono); font-size: 0.82rem; font-weight: 700;">
-            Safe structural operation. Meets NOM-141 dry stacking cake criteria.
-          </div>
-        </div>
 
         {criteria && (
           <div class="decision-criteria-panel" data-testid="role-decision-criteria" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #9a3412;">
@@ -192,33 +218,14 @@ const criteria = prensaRole?.decision_criteria;
 <script>
   import { bindCanonicalFiltrationCalculator } from '../../../scripts/verticalCalculatorsAndLabelsBridge.js';
   bindCanonicalFiltrationCalculator(document, 'en');
+  document.addEventListener('astro:page-load', () => bindCanonicalFiltrationCalculator(document, 'en'));
 </script>
 
 <style>
-  .page-hero {
-    padding: 4.5rem 0 3.5rem;
-    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
-    border-bottom: 1px solid var(--smat-border-light);
-  }
-
   .text-center {
     text-align: center;
     max-width: 800px;
     margin: 0 auto;
-  }
-
-  .page-hero h1 {
-    color: #090d16;
-    margin-top: 0.75rem;
-    font-size: clamp(2rem, 3.5vw, 2.75rem);
-    letter-spacing: -0.02em;
-  }
-
-  .subtitle {
-    font-size: 1.125rem;
-    margin-top: 0.75rem;
-    color: #475569;
-    line-height: 1.6;
   }
 
   .content-container {
@@ -230,7 +237,7 @@ const criteria = prensaRole?.decision_criteria;
     background-color: #ffffff;
     border: 1px solid var(--smat-border-light);
     border-radius: 14px;
-    padding: 2.5rem;
+    padding: clamp(0.7rem, 2vw, 1.5rem);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
   }
 
@@ -288,7 +295,7 @@ const criteria = prensaRole?.decision_criteria;
   }
 
   .cta-rfq-header p {
-    color: #475569;
+    color: #334155;
     font-size: 1rem;
     margin-bottom: 1.5rem;
   }

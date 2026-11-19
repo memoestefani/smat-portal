@@ -10,6 +10,7 @@
 
 import { verifyDropInEquivalence } from './dropInEquivalenceGuard.js';
 import { bindAtomicPartTrayButtons } from './verticalStateAndCtaSyncBridge.js';
+import { bindDropInEquivalenceVerifier } from './catalogDropInAndJrpProjector.js';
 
 /**
  * Evaluates whether a canonical SKU card matches the active family filter chip.
@@ -140,56 +141,8 @@ export function bindHomeCatalogDrawerAndDropIn(
     });
   });
 
-  // Bind Drop-In Equivalence Verifier (ES & EN)
-  const verifierBox = root.querySelector('[data-dropin-verifier], [data-dropin-verifier-en]');
-  if (!verifierBox) return;
-  if (verifierBox.dataset && verifierBox.dataset.bound === 'true') return;
-  if (verifierBox.dataset) verifierBox.dataset.bound = 'true';
-
-  const input = verifierBox.querySelector('[data-dropin-input], [data-dropin-input-en]');
-  const btn = verifierBox.querySelector('[data-dropin-btn], [data-dropin-btn-en]');
-  const resultEl = verifierBox.querySelector('[data-dropin-result], [data-dropin-result-en]');
-
-  const runCheck = () => {
-    const code = input && typeof input.value === 'string' ? input.value : '';
-    const res = verifyDropInEquivalence(code);
-    if (!resultEl) return;
-    if (resultEl.style) {
-      resultEl.style.display = 'block';
-    }
-    if (res.matched && res.geometricTripletMm) {
-      if (lang === 'en') {
-        resultEl.innerHTML = `✅ DROP-IN MATCH: <strong>${res.canonicalSkuId}</strong> (${res.titleEn}) | Alloy: <strong>${res.alloyCode}</strong> | ${res.geometricTripletMm.label_en} (${res.toleranceStd}) | Regime: <strong>${res.regimeBadgeEn}</strong> (${res.gateLock}) | Scale: ${res.iso7810Scale} · <a href="/en/products/${res.slugEn}/" style="color:#b45309;text-decoration:underline;">Open Sheet →</a>`;
-      } else {
-        resultEl.innerHTML = `✅ MATCH DROP-IN: <strong>${res.canonicalSkuId}</strong> (${res.titleEs}) | Aleación: <strong>${res.alloyCode}</strong> | ${res.geometricTripletMm.label_es} (${res.toleranceStd}) | Régimen: <strong>${res.regimeBadgeEs}</strong> (${res.gateLock}) | Escala: ${res.iso7810Scale} · <a href="/productos/${res.slugEs}/" style="color:#b45309;text-decoration:underline;">Abrir Ficha →</a>`;
-      }
-      resultEl.textContent = resultEl.textContent || `${res.canonicalSkuId}`;
-    } else {
-      const msg = lang === 'en' ? res.reasonEn : res.reasonEs;
-      resultEl.innerHTML = `ℹ️ ${msg}`;
-      resultEl.textContent = `ℹ️ ${msg}`;
-    }
-  };
-
-  if (btn && typeof btn.addEventListener === 'function') {
-    btn.addEventListener('click', runCheck);
-  }
-  if (input && typeof input.addEventListener === 'function') {
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        if (typeof e.preventDefault === 'function') e.preventDefault();
-        runCheck();
-      }
-    });
-  }
-  if (typeof window !== 'undefined' && window.location && window.location.search && input) {
-    const params = new URLSearchParams(window.location.search);
-    const urlSku = params.get('sku');
-    if (urlSku) {
-      input.value = urlSku;
-      runCheck();
-    }
-  }
+  // Delegate Drop-In Equivalence Verifier (ES & EN) to modular projector (DEB-V48-05)
+  bindDropInEquivalenceVerifier(root, lang);
 }
 
 /**
@@ -215,15 +168,41 @@ export function bindEquipmentCatalogSearchAndTray(
   const countEl = root.querySelector('[data-equipos-search-count]');
   const pills = root.querySelectorAll('[data-equipos-sku-pill]');
   const blocks = root.querySelectorAll('[data-equipment-block]');
+  const dropinBanner =
+    typeof root.getElementById === 'function'
+      ? root.getElementById('equipos-dropin-match-banner')
+      : root.querySelector('#equipos-dropin-match-banner');
   const totalPills = pills.length;
 
   const updateFilter = (rawQuery = '') => {
+    const trimmedQuery = String(rawQuery || '').trim();
+    const dropinRes = trimmedQuery.length >= 3 ? verifyDropInEquivalence(trimmedQuery) : { matched: false };
+    const dropinMatchedSku = dropinRes.matched ? String(dropinRes.canonicalSkuId || '') : '';
+
+    if (dropinBanner) {
+      if (dropinRes.matched && dropinRes.geometricTripletMm) {
+        if (dropinBanner.style) dropinBanner.style.display = 'block';
+        const isEn = lang === 'en';
+        const trayBtn = isEn
+          ? `<button type="button" class="btn btn-primary" style="min-height:48px;padding:0.4rem 0.85rem;font-size:0.8rem;" data-add-tray-sku="${dropinRes.canonicalSkuId}" data-tray-part-code="${dropinRes.atomicCode || dropinRes.canonicalSkuId}" data-tray-title="${dropinRes.titleEn}" data-tray-material="${dropinRes.alloyCode}" data-tray-circuit="equipos">+ Add Matched Part to Tray</button>`
+          : `<button type="button" class="btn btn-primary" style="min-height:48px;padding:0.4rem 0.85rem;font-size:0.8rem;" data-add-tray-sku="${dropinRes.canonicalSkuId}" data-tray-part-code="${dropinRes.atomicCode || dropinRes.canonicalSkuId}" data-tray-title="${dropinRes.titleEs}" data-tray-material="${dropinRes.alloyCode}" data-tray-circuit="equipos">+ Sumar Match a Bandeja</button>`;
+        dropinBanner.innerHTML = isEn
+          ? `✅ <strong>Dimensional Drop-In Equivalent Found:</strong> <code>${dropinRes.canonicalSkuId}</code> (${dropinRes.titleEn}) · Alloy <strong>${dropinRes.alloyCode}</strong> · ${dropinRes.geometricTripletMm.label_en} · <a href="/en/products/${dropinRes.slugEn}/" style="color:#0c4a6e;font-weight:800;text-decoration:underline;">Open Sheet →</a> ${trayBtn}`
+          : `✅ <strong>Equivalencia Dimensional Drop-In Detectada:</strong> <code>${dropinRes.canonicalSkuId}</code> (${dropinRes.titleEs}) · Aleación <strong>${dropinRes.alloyCode}</strong> · ${dropinRes.geometricTripletMm.label_es} · <a href="/productos/${dropinRes.slugEs}/" style="color:#0c4a6e;font-weight:800;text-decoration:underline;">Abrir Ficha →</a> ${trayBtn}`;
+        bindAtomicPartTrayButtons(dropinBanner);
+      } else if (dropinBanner.style) {
+        dropinBanner.style.display = 'none';
+      }
+    }
+
     let visiblePills = 0;
 
     pills.forEach((pill) => {
       const blob =
         pill.getAttribute('data-equipos-search-blob') || pill.textContent || '';
-      const isMatch = matchesEquipmentSearchQuery(blob, rawQuery);
+      const pillSku = pill.querySelector('[data-add-tray-sku]')?.getAttribute('data-add-tray-sku') || '';
+      const matchesLegacy = Boolean(dropinMatchedSku && (pillSku === dropinMatchedSku || blob.includes(dropinMatchedSku)));
+      const isMatch = matchesEquipmentSearchQuery(blob, rawQuery) || matchesLegacy;
       if (pill.style) {
         pill.style.display = isMatch ? '' : 'none';
       }

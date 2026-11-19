@@ -141,8 +141,8 @@ test('Sección 2.1.6 y 2.1.7: Subpáginas de Bombeo, Flotación, Filtración y C
   // Verificar calculadoras/comparadores científicos en Bombeo, Flotación y Filtración
   const soporteEs = readText('src/pages/bombeo/soporte.astro');
   const soporteEn = readText('src/pages/en/pumping/bearing-assembly.astro');
-  assert.ok(soporteEs.includes('data-bearing-inspector') && soporteEs.includes('calculateDriveAndBearingKinematics'), 'soporte.astro debe incluir inspector ISO 281:2007');
-  assert.ok(soporteEn.includes('data-bearing-inspector') && soporteEn.includes('calculateDriveAndBearingKinematics'), 'bearing-assembly.astro debe incluir inspector ISO 281:2007');
+  assert.ok(soporteEs.includes('data-bearing-inspector') && (soporteEs.includes('calculateDriveAndBearingKinematics') || soporteEs.includes('initBearingSupportInspector')), 'soporte.astro debe incluir inspector ISO 281:2007');
+  assert.ok(soporteEn.includes('data-bearing-inspector') && (soporteEn.includes('calculateDriveAndBearingKinematics') || soporteEn.includes('initBearingSupportInspector')), 'bearing-assembly.astro debe incluir inspector ISO 281:2007');
 
   const selloEs = readText('src/pages/bombeo/sello.astro');
   const selloEn = readText('src/pages/en/pumping/seal.astro');

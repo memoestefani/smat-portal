@@ -178,4 +178,89 @@ export function matchMiningGroupByEmailDomain(email = '', miningGroups = []) {
   return miningGroups.find((g) => Array.isArray(g.domains) && g.domains.includes(domain)) || null;
 }
 
+/**
+ * Proyecta en vivo la telemetría geológico-metalúrgica de la unidad o distrito
+ * minero activo hacia `#wb-mining-preset-telemetry` en `/cotizar/` (`D9-V48`).
+ *
+ * @param {ParentNode | null} root
+ * @param {string | Record<string, any> | null} queryOrPreset
+ * @param {string} [lang]
+ */
+export function renderMiningPresetTelemetry(
+  root = typeof document !== 'undefined' ? document : null,
+  queryOrPreset = '',
+  lang = 'es'
+) {
+  if (!root || typeof root.querySelector !== 'function') return null;
+  const el = root.querySelector('#wb-mining-preset-telemetry, [data-mining-preset-telemetry]');
+  const preset = typeof queryOrPreset === 'string'
+    ? resolveMiningDistrictPreset(queryOrPreset)
+    : (queryOrPreset && queryOrPreset.matched ? queryOrPreset : null);
+
+  if (!preset) {
+    if (el) {
+      if (el.style) el.style.display = 'none';
+      el.textContent = '';
+      if (typeof el.removeAttribute === 'function') {
+        el.removeAttribute('data-preset-group');
+      }
+    }
+    return null;
+  }
+
+  const isEn = String(lang).toLowerCase() === 'en';
+  const groupName = String(preset.groupName || preset.groupId || '');
+  const unitName = String(preset.unitName || preset.mineName || '');
+  const pulpProfile = String(preset.pulpProfileEs || preset.pulpProfile || '');
+  const alt = Number(preset.altitudeMsnm ?? preset.altitudeM ?? 2200);
+  const sg = Number(preset.solidsSg ?? 2.8);
+  const cw = Number(preset.solidsCw ?? preset.solidsPct ?? 48);
+  const d80 = Number(preset.d80Microns ?? 180);
+  const ph = Number(preset.pulpPh ?? 7.5);
+
+  if (el) {
+    if (el.style) el.style.display = 'block';
+    if (typeof el.setAttribute === 'function') {
+      el.setAttribute('data-preset-group', String(preset.groupId || ''));
+    }
+    el.innerHTML = isEn
+      ? `<strong>${groupName} — ${unitName}</strong>: ${pulpProfile} · Altitude <strong>${alt} masl</strong> · Ss <strong>${sg.toFixed(1)}</strong> · Cw <strong>${cw}%</strong> · d80 <strong>${d80} µm</strong> · <strong>pH ${ph.toFixed(1)}</strong>`
+      : `<strong>${groupName} — ${unitName}</strong>: ${pulpProfile} · Altitud <strong>${alt} m s.n.m.</strong> · Ss <strong>${sg.toFixed(1)}</strong> · Cw <strong>${cw}%</strong> · d80 <strong>${d80} µm</strong> · <strong>pH ${ph.toFixed(1)}</strong>`;
+  }
+
+  return preset;
+}
+
+export function initMiningPresetTelemetryBridge(root = typeof document !== 'undefined' ? document : null) {
+  if (!root || typeof root.getElementById !== 'function') return null;
+  const syncFromControls = () => {
+    const groupSelect = root.getElementById('wb-mining-group-select');
+    const unitSelect = root.getElementById('wb-mining-unit-select');
+    const lang = root.documentElement?.lang?.toLowerCase().startsWith('en') ? 'en' : 'es';
+    let query = '';
+    if (unitSelect && unitSelect.value) {
+      const selectedOpt = unitSelect.options?.[unitSelect.selectedIndex];
+      query = selectedOpt?.dataset?.unitName
+        || String(unitSelect.value).split('::')[1]
+        || String(unitSelect.value).split('::')[0]
+        || '';
+    } else if (groupSelect && groupSelect.value) {
+      query = groupSelect.value;
+    }
+    return renderMiningPresetTelemetry(root, query, lang);
+  };
+  const bar = root.getElementById('wb-mining-preset-bar');
+  if (bar && (!bar.dataset || bar.dataset.smatPresetTelemetryInit !== '1')) {
+    if (bar.dataset) bar.dataset.smatPresetTelemetryInit = '1';
+    root.getElementById('wb-mining-group-select')?.addEventListener('change', syncFromControls);
+    root.getElementById('wb-mining-unit-select')?.addEventListener('change', syncFromControls);
+    root.getElementById('btn-apply-mining-preset')?.addEventListener('click', syncFromControls);
+  }
+  if (typeof document !== 'undefined' && root === document && !document.documentElement?.dataset?.smatPresetPageLoadBound) {
+    if (document.documentElement?.dataset) document.documentElement.dataset.smatPresetPageLoadBound = '1';
+    document.addEventListener('astro:page-load', () => initMiningPresetTelemetryBridge(document));
+  }
+  return syncFromControls();
+}
+
 export { resolveBomPartSpecs } from './pumpAssemblyAndDriveEngine.js';

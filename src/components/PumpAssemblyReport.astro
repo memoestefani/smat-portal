@@ -37,6 +37,11 @@ const stations = PUMP_554_ASSEMBLY_STATIONS.map((st) => ({
 }));
 
 const wetEndMatrixRef = WET_END_MATERIAL_MATRIX;
+const hybridBranchPreview = evaluateHybridWetEndConfiguration({
+  d80Microns: 240,
+  tipSpeedMs: 21.5,
+  pipeSeries: '6x4'
+});
 
 // Fuente única de verdad desde slurryEngine.js (rango canónico pos: '01' a pos: '14')
 const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
@@ -136,6 +141,7 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
           class="branch-tab"
           data-assembly-branch-btn="hybrid_a05_r55"
           data-wet-branch="hybrid_a05_r55"
+          data-hybrid-savings-pct={String(hybridBranchPreview.massSavingsPct)}
           data-smat-invariant="INV-SMAT-SCI-05"
           title={isEs ? 'Configuración Híbrida (Finnie-Hutchings): Impulsor Cr27 A05 (α=75°–90°) + Forros Bipartidos R55 (α≤25°, u2≤24.5 m/s)' : 'Hybrid Configuration (Finnie-Hutchings): Cr27 A05 Impeller (α=75°–90°) + R55 Split Liners (α≤25°, u2≤24.5 m/s)'}
         >
@@ -351,6 +357,35 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
         >
           {isEs ? `Cotizar ${st.code} →` : `Quote ${st.code} →`}
         </a>
+        {st.stationKey === 'S1' && (
+          <div
+            data-core-tradein-widget="DAM005"
+            data-lang={isEs ? 'es' : 'en'}
+            class="no-print"
+            style="width:100%; margin-top:0.65rem; padding:0.7rem; border-radius:8px; background:#ecfdf5; border:1px solid #10b981; font-size:0.74rem; color:#064e3b;"
+          >
+            <div style="font-family:var(--smat-font-mono, monospace); font-weight:800; color:#065f46; margin-bottom:0.3rem;">
+              {isEs ? '♻️ CANJE NÚCLEO DAM005 (-22% / -12% REMANUFACTURA H7)' : '♻️ DAM005 CORE TRADE-IN (-22% / -12% H7 REMANUFACTURING)'}
+            </div>
+            <div style="display:flex; flex-direction:column; gap:0.35rem; margin-bottom:0.35rem;">
+              <select data-tradein-condition data-core-tradein-condition style="padding:0.3rem; border:1px solid #059669; border-radius:6px; background:#ffffff; color:#1c1917; font-size:0.72rem;">
+                <option value="h7_intact" selected>{isEs ? 'Carcasa Intacta Sin Fisuras (-22% • 0.78x)' : 'Intact Crack-Free Housing (-22% • 0.78x)'}</option>
+                <option value="minor_bearing_seizure">{isEs ? 'Alojamiento Recuperable (-12% • 0.88x)' : 'Recoverable Bore (-12% • 0.88x)'}</option>
+                <option value="cracked_housing">{isEs ? 'Carcasa Fisurada/Soldada (0% • 1.00x)' : 'Cracked/Welded Housing (0% • 1.00x)'}</option>
+              </select>
+              <label style="display:flex; align-items:center; gap:0.35rem; font-weight:700;">
+                <input type="checkbox" data-tradein-not-welded data-core-tradein-toggle checked />
+                <span>{isEs ? 'Alojamiento H7 Sin Soldadura (ISO IT6)' : 'Unwelded H7 Bore (ISO IT6)'}</span>
+              </label>
+            </div>
+            <div data-tradein-result data-core-tradein-badge style="font-family:var(--smat-font-mono, monospace); font-weight:800; color:#065f46;">
+              {isEs ? 'Activo: -22% Crédito Núcleo Usado (Factor 0.78x)' : 'Active: -22% Core Trade-In Credit (Factor 0.78x)'}
+            </div>
+            <div data-tradein-co2 data-core-tradein-note style="font-size:0.7rem; color:#047857; margin-top:0.15rem;">
+              {isEs ? 'Retorno Durango, Dgo. CP 34166 (35 kg CO₂e ahorrados)' : 'Durango Warehouse Return CP 34166 (35 kg CO₂e saved)'}
+            </div>
+          </div>
+        )}
       </article>
     ))}
   </div>
@@ -541,9 +576,15 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
 
 <script>
   import { initPumpAssemblyReport } from '../scripts/pumpAssemblyReportController.js';
+  import { initCoreTradeInWidgets } from '../scripts/vendorPassportAndTradeInController.js';
 
-  initPumpAssemblyReport(document);
-  document.addEventListener('astro:page-load', () => initPumpAssemblyReport(document));
+  const bootAssemblyReport = () => {
+    const docLang = document.documentElement?.lang === 'en' ? 'en' : 'es';
+    initPumpAssemblyReport(document);
+    initCoreTradeInWidgets(document, docLang);
+  };
+  bootAssemblyReport();
+  document.addEventListener('astro:page-load', bootAssemblyReport);
 </script>
 
 <style>
@@ -799,147 +840,29 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
     font-size: 0.68rem;
     font-weight: 800;
   }
-  .branch-alto_cromo_cr27 {
-    background: #dbeafe;
-    color: #1e3a8a;
-  }
-  .branch-hule_natural {
-    background: #e2e8f0;
-    color: #0f172a;
-  }
-  .branch-common {
-    background: #f0fdf4;
-    color: #166534;
-  }
-  .bom-quote-link {
-    display: inline-flex;
-    align-items: center;
-    min-height: 48px;
-    white-space: nowrap;
-    font-family: var(--smat-font-mono, monospace);
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: #0d78c6;
-    text-decoration: none;
-  }
-  .assembly-clearance-calibrator {
-    margin: 0 0 1.5rem 0;
-    border: 1.5px solid #f59e0b;
-    border-radius: 10px;
-    background: #fffbeb;
-    overflow: hidden;
-  }
-  .assembly-clearance-calibrator__summary {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.65rem;
-    padding: 0.8rem 1rem;
-    cursor: pointer;
-    list-style: none;
-  }
-  .assembly-clearance-calibrator__badge {
-    background: #92400e;
-    color: #ffffff;
-    font-family: var(--smat-font-mono, monospace);
-    font-size: 0.68rem;
-    font-weight: 800;
-    padding: 0.18rem 0.5rem;
-    border-radius: 4px;
-  }
-  .assembly-clearance-calibrator__title {
-    font-size: 0.9rem;
-    font-weight: 800;
-    color: #1c1917;
-    flex: 1;
-  }
-  .assembly-clearance-calibrator__hint {
-    font-family: var(--smat-font-mono, monospace);
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: #78350f;
-  }
-  .assembly-clearance-calibrator__body {
-    padding: 1rem;
-    background: #ffffff;
-    border-top: 1px solid #fde68a;
-  }
-  .assembly-clearance-calibrator__controls {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-  .clearance-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    font-size: 0.82rem;
-    color: #1c1917;
-  }
-  .clearance-field__label {
-    display: flex;
-    justify-content: space-between;
-    font-weight: 700;
-  }
-  .clearance-field__scale {
-    display: flex;
-    justify-content: space-between;
-    font-family: var(--smat-font-mono, monospace);
-    font-size: 0.68rem;
-    color: #475569;
-  }
-  .assembly-clearance-calibrator__metrics {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 0.75rem;
-  }
-  .clearance-metric-card {
-    background: #f8fafc;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    padding: 0.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-  .clearance-metric-card__kicker {
-    font-family: var(--smat-font-mono, monospace);
-    font-size: 0.66rem;
-    font-weight: 800;
-    color: #475569;
-  }
-  .clearance-metric-card__val {
-    font-size: 0.96rem;
-    font-weight: 800;
-    color: #1c1917;
-  }
-  .clearance-metric-card__sub {
-    font-size: 0.75rem;
-    color: #334155;
-  }
-  .clearance-metric-card__cta {
-    margin-top: 0.25rem;
-    font-family: var(--smat-font-mono, monospace);
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: #082f49;
-    text-decoration: underline;
-  }
-  .bom-quote-link:hover {
-    text-decoration: underline;
-  }
+  .branch-alto_cromo_cr27 { background: #dbeafe; color: #1e3a8a; }
+  .branch-hule_natural { background: #e2e8f0; color: #0f172a; }
+  .branch-common { background: #f0fdf4; color: #166534; }
+  .bom-quote-link { display: inline-flex; align-items: center; min-height: 48px; white-space: nowrap; font-family: var(--smat-font-mono, monospace); font-size: 0.72rem; font-weight: 800; color: #0d78c6; text-decoration: none; }
+  .assembly-clearance-calibrator { margin: 0 0 1.5rem 0; border: 1.5px solid #f59e0b; border-radius: 10px; background: #fffbeb; overflow: hidden; }
+  .assembly-clearance-calibrator__summary { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.65rem; padding: 0.8rem 1rem; cursor: pointer; list-style: none; }
+  .assembly-clearance-calibrator__badge { background: #92400e; color: #ffffff; font-family: var(--smat-font-mono, monospace); font-size: 0.68rem; font-weight: 800; padding: 0.18rem 0.5rem; border-radius: 4px; }
+  .assembly-clearance-calibrator__title { font-size: 0.9rem; font-weight: 800; color: #1c1917; flex: 1; }
+  .assembly-clearance-calibrator__hint { font-family: var(--smat-font-mono, monospace); font-size: 0.72rem; font-weight: 800; color: #78350f; }
+  .assembly-clearance-calibrator__body { padding: 1rem; background: #ffffff; border-top: 1px solid #fde68a; }
+  .assembly-clearance-calibrator__controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+  .clearance-field { display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.82rem; color: #1c1917; }
+  .clearance-field__label { display: flex; justify-content: space-between; font-weight: 700; }
+  .clearance-field__scale { display: flex; justify-content: space-between; font-family: var(--smat-font-mono, monospace); font-size: 0.68rem; color: #475569; }
+  .assembly-clearance-calibrator__metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; }
+  .clearance-metric-card { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.25rem; }
+  .clearance-metric-card__kicker { font-family: var(--smat-font-mono, monospace); font-size: 0.66rem; font-weight: 800; color: #475569; }
+  .clearance-metric-card__val { font-size: 0.96rem; font-weight: 800; color: #1c1917; }
+  .clearance-metric-card__sub { font-size: 0.75rem; color: #334155; }
+  .clearance-metric-card__cta { margin-top: 0.25rem; font-family: var(--smat-font-mono, monospace); font-size: 0.72rem; font-weight: 800; color: #082f49; text-decoration: underline; }
+  .bom-quote-link:hover { text-decoration: underline; }
   @media print {
-    .assembly-report__controls,
-    .bom-col-action {
-      display: none !important;
-    }
-    .assembly-report {
-      border: 1px solid #000;
-      box-shadow: none;
-      margin: 0;
-      padding: 0.5rem;
-    }
+    .assembly-report__controls, .bom-col-action { display: none !important; }
+    .assembly-report { border: 1px solid #000; box-shadow: none; margin: 0; padding: 0.5rem; }
   }
 </style>

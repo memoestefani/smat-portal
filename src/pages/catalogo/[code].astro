@@ -146,6 +146,70 @@ const productSchema = {
           </div>
 
           <div class="spec-body">
+            <!-- Estrato 1: Acción Directa + Tarjeta Armónica JRP 3 Horizontes (s, c, S) -->
+            <div id="stratum1-atomic-code-card" data-stratum-1-instrument style="display:flex; flex-wrap:wrap; gap:0.65rem; align-items:center; margin-bottom:1rem; padding:0.75rem 0.9rem; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px;">
+              <a href={rfqDeepLink} class="btn btn-primary" style="min-height:48px; padding:0.55rem 1rem; font-size:0.86rem;">Cotizar {part.part_number} →</a>
+              <button
+                type="button"
+                class="btn btn-rfq-wizard"
+                data-add-tray-sku={part.part_number === 'DAM005' ? 'SMAT-PUMP-BRG-005M' : `SMAT-PUMP-${part.part_number}`}
+                data-tray-part-code={part.part_number}
+                data-tray-title={part.name_es}
+                data-tray-series={pipeSizeUpper}
+                data-tray-material={part.part_number === 'DAM005' ? 'GGG40' : 'A05'}
+                data-tray-circuit="bombeo"
+                data-tray-source="catalog_code_stratum1"
+                style="min-height:48px; padding:0.55rem 1rem; font-size:0.86rem;"
+              >
+                + Bandeja ({part.part_number})
+              </button>
+            </div>
+
+            <div data-jrp-window-card data-jrp-criticality="normal" style="margin-bottom:1.25rem; padding:0.95rem 1.05rem; background:#f8fafc; border:1.5px solid #cbd5e1; border-left:4px solid #0c4a6e; border-radius:8px;">
+              <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:0.5rem; margin-bottom:0.55rem;">
+                <span class="font-mono-tech" style="font-size:0.74rem; font-weight:800; color:#0c4a6e;">VENTANA PREVENTIVA ARMÓNICA (T₀/2 • T₀ • 2T₀)</span>
+                <span class="font-mono-tech" data-jrp-telemetry-badge style="font-size:0.74rem; font-weight:700; color:#334155;">Pulpa Sesión SG 1.45 • d50 280 µm</span>
+              </div>
+              <div style="display:flex; flex-wrap:wrap; gap:0.45rem; align-items:center; margin-bottom:0.65rem;">
+                <span style="font-size:0.78rem; font-weight:700; color:#1e293b;">Régimen Operativo:</span>
+                <button type="button" data-jrp-criticality-toggle="normal" aria-pressed="true" style="padding:0.35rem 0.75rem; border:1px solid #0c4a6e; border-radius:6px; background:#0c4a6e; color:#ffffff; font-size:0.76rem; font-weight:700; cursor:pointer; min-height:48px;">Normal (1.0×)</button>
+                <button type="button" data-jrp-criticality-toggle="paro_planta" aria-pressed="false" style="padding:0.35rem 0.75rem; border:1px solid #94a3b8; border-radius:6px; background:#ffffff; color:#0f172a; font-size:0.76rem; font-weight:700; cursor:pointer; min-height:48px;">Paro Planta (0.75×)</button>
+                <span class="font-mono-tech" data-jrp-window-days style="margin-left:auto; font-size:0.78rem; font-weight:800; color:#064e3b;">90 d ventana</span>
+                <span class="font-mono-tech" data-jrp-severity style="font-size:0.75rem; color:#334155;">1.00× (1.00×)</span>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.55rem; margin-bottom:0.6rem;">
+                <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:0.5rem 0.65rem;">
+                  <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">CAMISA / MANGA (T₀/2)</span>
+                  <strong data-jrp-sleeve-day style="font-size:0.95rem; color:#0f172a;">Día 90</strong>
+                </div>
+                <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:0.5rem 0.65rem;">
+                  <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">IMPULSOR + THROAT (T₀)</span>
+                  <strong data-jrp-impeller-day style="font-size:0.95rem; color:#0f172a;">Día 150</strong>
+                </div>
+                <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:0.5rem 0.65rem;">
+                  <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">VOLUTA + LINER (2T₀)</span>
+                  <strong data-jrp-volute-day style="font-size:0.95rem; color:#0f172a;">Día 180</strong>
+                </div>
+              </div>
+              <div style="display:flex; flex-wrap:wrap; gap:0.6rem; align-items:center; justify-content:space-between;">
+                <span data-jrp-policy-summary style="font-size:0.78rem; color:#334155;">Reemplazo casado armónico para minimizar paros no programados.</span>
+                <button
+                  type="button"
+                  class="btn btn-rfq-wizard"
+                  data-add-coupled-pair-btn
+                  data-pair-primary-sku={part.part_number === 'DAM005' ? 'SMAT-PUMP-BRG-005M' : `SMAT-PUMP-${part.part_number}`}
+                  data-pair-primary-title={part.name_es}
+                  data-pair-secondary-sku="SMAT-PUMP-TB-083"
+                  data-pair-secondary-title="Throatbush Emparejado 1:1 (Cuello de Succión)"
+                  data-pair-series={pipeSizeUpper}
+                  data-pair-material={part.part_number === 'DAM005' ? 'GGG40' : 'A05'}
+                  style="min-height:48px; padding:0.45rem 0.85rem; font-size:0.8rem;"
+                >
+                  + Agregar Par Casado a Bandeja
+                </button>
+              </div>
+            </div>
+
             <p class="part-lead">{cleanSummaryEs}</p>
 
             <!-- 3 Tarjetas Semánticas de Ingeniería Física (Ley de Miller ≤ 3 métricas por grupo) -->
@@ -346,30 +410,36 @@ const productSchema = {
 <script>
   import { addTrayItem } from '../../scripts/requisitionTrayBus.js';
   import { initCoreTradeInWidgets } from '../../scripts/vendorPassportAndTradeInController.js';
-  if (typeof document !== 'undefined') {
-    initCoreTradeInWidgets(document, 'es');
-  }
+  import { initHarmonicJrpWindowAndPairCard } from '../../scripts/catalogDropInAndJrpProjector.js';
 
-  const btn = document.querySelector('[data-add-atomic-to-tray]') as HTMLButtonElement | null;
-  const msg = document.querySelector('[data-atomic-tray-msg]') as HTMLElement | null;
-  if (btn) {
-    btn.addEventListener('click', () => {
-      const code = btn.getAttribute('data-atomic-code') || 'E4147';
-      const updated = addTrayItem({
-        skuId: code,
-        atomicCode: code,
-        nameEs: btn.getAttribute('data-name-es') || code,
-        nameEn: btn.getAttribute('data-name-en') || code,
-        unitWeightKg: Number(btn.getAttribute('data-weight-kg')) || 18.0,
-        qty: 1,
-        criticalityMode: 'PARO_DE_LINEA'
+  function bootCatalogCodeSheetEs() {
+    if (typeof document === 'undefined') return;
+    initCoreTradeInWidgets(document, 'es');
+    initHarmonicJrpWindowAndPairCard(document, 'es');
+    const btn = document.querySelector('[data-add-atomic-to-tray]') as HTMLButtonElement | null;
+    const msg = document.querySelector('[data-atomic-tray-msg]') as HTMLElement | null;
+    if (btn && btn.dataset.atomicTrayBound !== '1') {
+      btn.dataset.atomicTrayBound = '1';
+      btn.addEventListener('click', () => {
+        const code = btn.getAttribute('data-atomic-code') || 'E4147';
+        const updated = addTrayItem({
+          skuId: code,
+          atomicCode: code,
+          nameEs: btn.getAttribute('data-name-es') || code,
+          nameEn: btn.getAttribute('data-name-en') || code,
+          unitWeightKg: Number(btn.getAttribute('data-weight-kg')) || 18.0,
+          qty: 1,
+          criticalityMode: 'PARO_DE_LINEA'
+        });
+        if (msg) {
+          msg.hidden = false;
+          msg.textContent = `✓ ${code} agregado a la Bandeja B2B (${updated.items.length} partidas activas).`;
+        }
       });
-      if (msg) {
-        msg.hidden = false;
-        msg.textContent = `✓ ${code} agregado a la Bandeja B2B (${updated.items.length} partidas activas).`;
-      }
-    });
+    }
   }
+  bootCatalogCodeSheetEs();
+  document.addEventListener('astro:page-load', bootCatalogCodeSheetEs);
 </script>
 
 <style>

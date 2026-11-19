@@ -17,17 +17,81 @@ const criteria = celdaRole?.decision_criteria;
   alternateEsPath="/flotacion/celdas/"
   alternateEnPath="/en/flotation/cells/"
 >
-  <section class="page-hero">
-    <div class="container text-center">
-      <span class="badge badge-opex">[PRESUPUESTO OPERATIVO: MECANISMOS SUSPENDIDOS Y RETROFIT DROP-IN • 50 A 300 FT³]</span>
-      <h1>Mecanismos para Celdas de Flotación y Acondicionadores</h1>
-      <p class="subtitle">Conjuntos de transmisión, eje hueco, tubo de tiro e impulsor-difusor para celdas de 50 a 300 ft³ (1.4 a 8.5 m³) y tanques acondicionadores sin demoler tanques ni obra civil.</p>
+  <section class="page-hero smat-compact-hero">
+    <div class="container">
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:0.4rem;">
+        <h1 style="margin:0;">Mecanismos para Celdas de Flotación y Acondicionadores</h1>
+        <span class="badge badge-opex">MECANISMOS SUSPENDIDOS Y RETROFIT DROP-IN • 50 A 300 FT³</span>
+      </div>
+      <p class="smat-hero-sub">Conjuntos de transmisión, eje hueco, tubo de tiro e impulsor-difusor para celdas de 50 a 300 ft³ (1.4 a 8.5 m³) y tanques acondicionadores sin demoler tanques ni obra civil.</p>
     </div>
   </section>
 
-  <section class="section-spacing">
+  <section class="section-spacing smat-stage-compact">
     <div class="container content-container">
       <div class="card detail-card">
+        <!-- Estrato 1: Reporte de Despiece en 5 Zonas (#18 SP / #24 / #30) & Simulador Gorain -->
+        <div class="flotation-5zone-box" id="stratum1-cells-sim" data-cell-dropin-matrix="gorain-1997" data-stratum-1-instrument style="margin-bottom: 1.25rem; padding: clamp(0.7rem, 1.4vw, 1.15rem); border-radius: 10px; background: #f8fafc; color: var(--smat-text-primary); border: 1.5px solid #cbd5e1; border-left: 4px solid #7c2d12;">
+          <span class="badge badge-copper">PLANO 3 · DESPIECE EN 5 ZONAS (#18 SP, #24, #30) · CANDADO G4</span>
+          <h2 style="margin: 0.25rem 0 0.35rem; font-size: clamp(0.96rem, 1.4vw, 1.12rem); color: var(--smat-text-primary); display:block; border:none; padding:0;">Reemplazo Drop-In Sin Modificar Tanque ni Cabezal Existente (Anti-Morita)</h2>
+          <div class="smat-stratum1-display">
+            <div id="celdas-gorain-readout" style="padding: 0.55rem 0.75rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #059669; color: #064e3b; font-family: var(--smat-font-mono); font-size: 0.8rem; font-weight: 700;">
+              S<sub>b</sub> (s<sup>-1</sup>): <span id="celdas-sb-output">56.25</span> · v<sub>tip</sub> (m/s): <span id="celdas-vtip-output">6.87</span> · k (min<sup>-1</sup>): <span id="celdas-k-output">1.185</span> · N<sub>js</sub>: <span id="celdas-njs-output">156</span> RPM (<span id="celdas-status-output">Gorain ≥ 50 s⁻¹ ÓPTIMO · Zwietering SUSPENSIÓN COMPLETA</span>)
+            </div>
+          </div>
+          <p style="font-size: 0.8rem; color: #334155; margin: 0 0 0.55rem;">
+            Cada kit rotor-estator SMAT preserva el número de bombeo de aire N<sub>Q</sub> (0.22–0.26) y el flujo superficial de burbuja <var>S</var><sub>b</sub> = 6 <var>J</var><sub>g</sub> / <var>d</var><sub>32</sub> ≥ 50 s<sup>-1</sup> (Gorain 1997), verificando amperaje I<sub>motor</sub> y velocidad periférica v<sub>tip</sub> (6.0–7.5 m/s) antes y después del montaje.
+          </p>
+          <div class="smat-inputs-2col" style="margin-bottom: 0.65rem; padding: 0.65rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.8rem;">
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Modelo / Ø Rotor (m):</span>
+              <select id="celdas-dia-select" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <option value="0.46">#18 SP (Ø 0.46 m · 50 ft³)</option>
+                <option value="0.61" selected>#24 (Ø 0.61 m · 100 ft³)</option>
+                <option value="0.76">#30 (Ø 0.76 m · 300 ft³)</option>
+              </select>
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Velocidad Gas J<sub>g</sub> (cm/s):</span>
+              <input type="number" id="celdas-jg-input" min="0.6" max="3.0" step="0.1" value="1.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Burbuja Sauter d<sub>32</sub> (mm):</span>
+              <input type="number" id="celdas-d32-input" min="0.9" max="2.8" step="0.1" value="1.6" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Velocidad Rotor (RPM):</span>
+              <input type="number" id="celdas-rpm-input" min="120" max="380" step="5" value="215" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Granulometría d<sub>80</sub> (µm):</span>
+              <input type="number" id="celdas-d80-input" min="25" max="850" step="10" value="150" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 600;">
+              <span>Sólidos Pulpa C<sub>w</sub> (%):</span>
+              <input type="number" id="celdas-cw-input" min="15" max="65" step="1" value="35" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
+            </label>
+          </div>
+          <div style="display: flex; gap: 0.65rem; flex-wrap: wrap; align-items: center;">
+            <a href="/cotizar/?circuito=flotacion&equipo=celda_flotacion&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq" data-quote-base="/cotizar/" class="btn btn-primary" style="min-height:48px; display:inline-flex; align-items:center;">Cotizar Celda Calibrada →</a>
+            <button
+              type="button"
+              class="btn btn-outline btn-avenue-tray"
+              data-vertical-tray-btn
+              data-add-tray-sku="SMAT-FLOT-CELL-100"
+              data-tray-part-code="Ø0.61m"
+              data-tray-title="Mecanismo Celda Flotación 100 ft³ (Ø0.61 m)"
+              data-tray-series="100ft"
+              data-tray-material="PU_SHORE90"
+              data-tray-circuit="flotacion"
+              data-tray-source="flotation_cells_stratum1_calc"
+              style="min-height:48px;"
+            >+ Bandeja Celda 100 ft³</button>
+            <a href="/productos/mecanismo-suspendido-flotacion-18sp/" class="btn btn-outline" style="font-size:0.8rem;">SMAT-FLOT-MECH-18SP · Mecanismo Suspendido →</a>
+            <a href="/productos/kit-rotor-estator-flotacion-drop-in/" class="btn btn-outline" style="font-size:0.8rem;">SMAT-FLOT-MECH-18SP · Kit Rotor + Estator →</a>
+          </div>
+        </div>
+
         <div style="margin-bottom: 1.75rem;">
           <TechnicalDiagrams type="flotation" lang="es" />
         </div>
@@ -79,52 +143,6 @@ const criteria = celdaRole?.decision_criteria;
           </tbody>
         </table>
 
-        <!-- Reporte de Despiece en 5 Zonas (#18 SP / #24 / #30) -->
-        <div class="flotation-5zone-box" data-cell-dropin-matrix="gorain-1997" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; color: var(--smat-text-primary); border: 1px solid #cbd5e1; border-left: 4px solid #7c2d12;">
-          <span class="badge badge-copper">PLANO 3 · DESPIECE EN 5 ZONAS (#18 SP, #24, #30) · CANDADO G4</span>
-          <h3 style="margin: 0.65rem 0 0.5rem; font-size: 1.08rem; color: var(--smat-text-primary);">Reemplazo Drop-In Sin Modificar Tanque ni Cabezal Existente (Anti-Morita)</h3>
-          <p style="font-size: 0.88rem; color: #334155; margin-bottom: 0.85rem;">
-            Cada kit rotor-estator SMAT preserva el número de bombeo de aire N<sub>Q</sub> (0.22–0.26) y el flujo superficial de burbuja <var>S</var><sub>b</sub> = 6 <var>J</var><sub>g</sub> / <var>d</var><sub>32</sub> ≥ 50 s<sup>-1</sup> (Gorain 1997), verificando amperaje I<sub>motor</sub> y velocidad periférica v<sub>tip</sub> (6.0–7.5 m/s) antes y después del montaje.
-          </p>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.65rem; margin-bottom: 0.85rem; padding: 0.85rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.82rem;">
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Modelo / Ø Rotor (m):</span>
-              <select id="celdas-dia-select" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;">
-                <option value="0.46">#18 SP (Ø 0.46 m · 50 ft³)</option>
-                <option value="0.61" selected>#24 (Ø 0.61 m · 100 ft³)</option>
-                <option value="0.76">#30 (Ø 0.76 m · 300 ft³)</option>
-              </select>
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Velocidad Gas J<sub>g</sub> (cm/s):</span>
-              <input type="number" id="celdas-jg-input" min="0.6" max="3.0" step="0.1" value="1.5" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Burbuja Sauter d<sub>32</sub> (mm):</span>
-              <input type="number" id="celdas-d32-input" min="0.9" max="2.8" step="0.1" value="1.6" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Velocidad Rotor (RPM):</span>
-              <input type="number" id="celdas-rpm-input" min="120" max="380" step="5" value="215" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Granulometría d<sub>80</sub> (µm):</span>
-              <input type="number" id="celdas-d80-input" min="25" max="850" step="10" value="150" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-            <label style="display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600;">
-              <span>Sólidos Pulpa C<sub>w</sub> (%):</span>
-              <input type="number" id="celdas-cw-input" min="15" max="65" step="1" value="35" style="padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px;" />
-            </label>
-          </div>
-          <div id="celdas-gorain-readout" style="margin-bottom: 0.85rem; padding: 0.65rem 0.85rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-family: var(--smat-font-mono); font-size: 0.82rem; font-weight: 700;">
-            S<sub>b</sub> (s<sup>-1</sup>): <span id="celdas-sb-output">56.25</span> · v<sub>tip</sub> (m/s): <span id="celdas-vtip-output">6.87</span> · k (min<sup>-1</sup>): <span id="celdas-k-output">1.185</span> · N<sub>js</sub>: <span id="celdas-njs-output">156</span> RPM (<span id="celdas-status-output">Gorain ≥ 50 s⁻¹ ÓPTIMO · Zwietering SUSPENSIÓN COMPLETA</span>)
-          </div>
-          <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
-            <a href="/productos/mecanismo-suspendido-flotacion-18sp/" class="btn btn-outline" style="font-size:0.8rem;">SMAT-FLOT-MECH-18SP · Mecanismo Suspendido (#18 SP, #24, #30) →</a>
-            <a href="/productos/kit-rotor-estator-flotacion-drop-in/" class="btn btn-outline" style="font-size:0.8rem;">SMAT-FLOT-MECH-18SP · Kit Rotor + Estator (#18 SP) →</a>
-          </div>
-        </div>
-
         {criteria && (
           <div class="decision-criteria-panel" data-testid="role-decision-criteria" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #9a3412;">
             <span class="badge badge-copper">CRITERIOS DE DECISIÓN METALÚRGICA EN PLANTA</span>
@@ -149,7 +167,7 @@ const criteria = celdaRole?.decision_criteria;
         <div class="flotation-selector-box" data-testid="flotation-contextual-selector" style="margin-bottom: 2rem; padding: 1.35rem; border-radius: 10px; background: #fffbeb; border: 1px solid #fde68a;">
           <span class="badge badge-copper">PRE-SELECCIÓN CONTEXTUAL • PUENTE A COTIZADOR</span>
           <h3 style="margin: 0.45rem 0 0.5rem; font-size: 1.05rem; color: var(--smat-text-primary);">Seleccione Volumen de Celda y Condición Operativa</h3>
-          <p style="font-size: 0.88rem; color: #475569; margin-bottom: 0.85rem;">
+          <p style="font-size: 0.88rem; color: #334155; margin-bottom: 0.85rem;">
             Pre-cargue directamente la capacidad de celda (50 a 300 ft³) y el régimen químico/abrasivo en la mesa de trabajo RFQ:
           </p>
           <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
@@ -195,38 +213,16 @@ const criteria = celdaRole?.decision_criteria;
   import { calculateFlotationGorainKineticRate } from '../../scripts/slurryEngine.js';
   import { evaluateFlotationCellHydrodynamics, saveEngineeringContextSnapshot } from '../../scripts/wizardCircuitPhysicsController.js';
   import { bindCanonicalFlotationCalculator } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
-  bindCanonicalFlotationCalculator(document, 'es', {
-    calculateFlotationGorainKineticRate,
-    evaluateFlotationCellHydrodynamics,
-    saveEngineeringContextSnapshot,
-  });
+  const deps = { calculateFlotationGorainKineticRate, evaluateFlotationCellHydrodynamics, saveEngineeringContextSnapshot };
+  bindCanonicalFlotationCalculator(document, 'es', deps);
+  document.addEventListener('astro:page-load', () => bindCanonicalFlotationCalculator(document, 'es', deps));
 </script>
 
 <style>
-  .page-hero {
-    padding: 4.5rem 0 3.5rem;
-    background: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
-    border-bottom: 1px solid var(--smat-border-light);
-  }
-
   .text-center {
     text-align: center;
     max-width: 800px;
     margin: 0 auto;
-  }
-
-  .page-hero h1 {
-    color: #1e293b;
-    margin-top: 0.75rem;
-    font-size: clamp(2rem, 3.5vw, 2.75rem);
-    letter-spacing: -0.02em;
-  }
-
-  .subtitle {
-    font-size: 1.125rem;
-    margin-top: 0.75rem;
-    color: #475569;
-    line-height: 1.6;
   }
 
   .content-container {
@@ -238,7 +234,7 @@ const criteria = celdaRole?.decision_criteria;
     background-color: #ffffff;
     border: 1px solid var(--smat-border-light);
     border-radius: 14px;
-    padding: 2.5rem;
+    padding: clamp(0.7rem, 2vw, 1.5rem);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
   }
 
@@ -296,7 +292,7 @@ const criteria = celdaRole?.decision_criteria;
   }
 
   .cta-rfq-header p {
-    color: #475569;
+    color: #334155;
     font-size: 1rem;
     margin-bottom: 1.5rem;
   }

@@ -445,6 +445,8 @@ pub fn verify_seven_findings_and_v32_closure_gate_32(site_root: &Path) -> Result
                 .to_string(),
         );
     }
+    let slug_css_rel = "src/styles/productSlugSolar.css";
+    let slug_css_src = fs::read_to_string(site_root.join(slug_css_rel)).unwrap_or_default();
     for astro_rel in [
         "src/components/ProductQuickCard.astro",
         "src/components/QuickOrderTray.astro",
@@ -453,9 +455,11 @@ pub fn verify_seven_findings_and_v32_closure_gate_32(site_root: &Path) -> Result
         "src/pages/en/products/[slug].astro",
     ] {
         let src = fs::read_to_string(site_root.join(astro_rel)).map_err(|e| e.to_string())?;
-        if !src.contains("<style>") {
+        let uses_shared_slug_css =
+            astro_rel.ends_with("[slug].astro") && src.contains("productSlugSolar.css") && !slug_css_src.is_empty();
+        if !src.contains("<style>") && !uses_shared_slug_css {
             return Err(format!(
-                "Hallazgo 1 (DEB-V32-01): {} carece de bloque <style> nativo scoped",
+                "Hallazgo 1 (DEB-V32-01): {} carece de bloque <style> nativo scoped o CSS compartido productSlugSolar.css",
                 astro_rel
             ));
         }
@@ -466,7 +470,7 @@ pub fn verify_seven_findings_and_v32_closure_gate_32(site_root: &Path) -> Result
             "backdrop-blur-md",
             "border-slate-700",
         ] {
-            if src.contains(bad_tw) {
+            if src.contains(bad_tw) || (uses_shared_slug_css && slug_css_src.contains(bad_tw)) {
                 return Err(format!(
                     "Hallazgo 1/2 (DEB-V32-01/02): {} contiene clase utilitaria Tailwind huerfana '{}'",
                     astro_rel, bad_tw

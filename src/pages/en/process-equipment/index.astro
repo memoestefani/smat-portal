@@ -42,7 +42,7 @@ const skusByVertical: Record<string, any[]> = {
 
   <section class="section" id="stage-diagnostic">
     <div class="container">
-      <div class="equipos-ssot-toolbar" style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 0.9rem 1.15rem; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: center; justify-content: space-between;">
+      <div id="stratum1-equipos-search" data-stratum-1-instrument class="equipos-ssot-toolbar" style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 0.9rem 1.15rem; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: center; justify-content: space-between;">
         <div style="flex: 1 1 300px;">
           <label for="equipos-sku-search" style="display: block; font-family: var(--smat-font-mono); font-size: 0.74rem; font-weight: 800; color: #7c2d12; text-transform: uppercase; margin-bottom: 0.35rem;">
             SSOT QUICK SEARCH ({allQuickSkus.length} SKUS ACROSS {avenueCount} AVENUES • 1-CLICK + TRAY)
@@ -53,12 +53,13 @@ const skusByVertical: Record<string, any[]> = {
             placeholder="Filter by SKU (SMAT-ULTRAMET-4X3), code (E4147, D075C21), series (800-1500, D6-D20, Marcy)..."
             style="width: 100%; min-height: 48px; padding: 0.55rem 0.85rem; border: 1.5px solid #94a3b8; border-radius: 8px; font-size: 0.92rem; background: #ffffff; color: #0f172a; box-sizing: border-box;"
           />
+          <div id="equipos-dropin-match-banner" style="display:none; margin-top:0.65rem; padding:0.75rem 1rem; border-radius:8px; background:#ecfdf5; border:1px solid #10b981; font-size:0.84rem; color:#065f46;"></div>
         </div>
         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.35rem;">
           <span data-equipos-search-count style="font-family: var(--smat-font-mono); font-size: 0.78rem; font-weight: 800; color: #0f172a; background: #ffffff; border: 1px solid #cbd5e1; padding: 0.35rem 0.75rem; border-radius: 999px;">
             Showing {allQuickSkus.length} of {allQuickSkus.length} canonical SSOT SKUs across {avenueCount} Avenues
           </span>
-          <a href="/en/catalog/" style="font-family: var(--smat-font-mono); font-size: 0.75rem; font-weight: 700; color: #9a3412; text-decoration: underline;">
+          <a href="/en/catalog/" style="font-family: var(--smat-font-mono); font-size: 0.75rem; font-weight: 700; color: #7c2d12; text-decoration: underline;">
             Open Master {avenueCount}-Avenue Matrix ({allQuickSkus.length} SKUs) →
           </a>
         </div>
@@ -83,7 +84,7 @@ const skusByVertical: Record<string, any[]> = {
           <details class="equipment-ssot-drawer" data-equipment-ssot-drawer style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.5rem 0.85rem; background: #f8fafc;">
             <summary style="cursor: pointer; font-weight: 800; font-size: 0.86rem; color: #0f172a; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
               <span>▾ Canonical Flotation SSOT SKUs ({skusByVertical.flotacion.length} SKU • AV-07)</span>
-              <span style="font-family: var(--smat-font-mono); font-size: 0.72rem; color: #9a3412;">+ DIRECT TRAY ▾</span>
+              <span style="font-family: var(--smat-font-mono); font-size: 0.72rem; color: #7c2d12;">+ DIRECT TRAY ▾</span>
             </summary>
             <div class="equipment-ssot-skus" style="display: grid; gap: 0.6rem; margin-top: 0.65rem;">
               {skusByVertical.flotacion.map((sku) => (
@@ -95,7 +96,7 @@ const skusByVertical: Record<string, any[]> = {
                 >
                   <div>
                     <a href={`/en/products/${sku.slug_en}/`} style="font-weight: 800; color: #0f172a; text-decoration: underline; font-size: 0.86rem;">{sku.id} — {sku.title_en}</a>
-                    <div style="font-family: var(--smat-font-mono); font-size: 0.74rem; color: #475569;">{sku.avenueCode} · {sku.mass_kg} kg · JRP {sku.reorder_window_days}d</div>
+                    <div style="font-family: var(--smat-font-mono); font-size: 0.74rem; color: #334155;">{sku.avenueCode} · {sku.mass_kg} kg · JRP {sku.reorder_window_days}d</div>
                   </div>
                   <button type="button" class="btn btn-outline btn-avenue-tray" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={sku.title_en} style="min-height: 48px; padding: 0.35rem 0.75rem; font-size: 0.78rem;">+ Tray</button>
                 </div>
@@ -128,7 +129,7 @@ const skusByVertical: Record<string, any[]> = {
           <details class="equipment-ssot-drawer" data-equipment-ssot-drawer style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.5rem 0.85rem; background: #f8fafc;">
             <summary style="cursor: pointer; font-weight: 800; font-size: 0.86rem; color: #0f172a; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
               <span>▾ Canonical Filtration SSOT SKUs ({skusByVertical.filtracion.length} SKUs • AV-06)</span>
-              <span style="font-family: var(--smat-font-mono); font-size: 0.72rem; color: #9a3412;">+ DIRECT TRAY ▾</span>
+              <span style="font-family: var(--smat-font-mono); font-size: 0.72rem; color: #7c2d12;">+ DIRECT TRAY ▾</span>
             </summary>
             <div class="equipment-ssot-skus" style="display: grid; gap: 0.6rem; margin-top: 0.65rem;">
               {skusByVertical.filtracion.map((sku) => (
@@ -140,7 +141,7 @@ const skusByVertical: Record<string, any[]> = {
                 >
                   <div>
                     <a href={`/en/products/${sku.slug_en}/`} style="font-weight: 800; color: #0f172a; text-decoration: underline; font-size: 0.86rem;">{sku.id} — {sku.title_en}</a>
-                    <div style="font-family: var(--smat-font-mono); font-size: 0.74rem; color: #475569;">{sku.avenueCode} · {sku.mass_kg} kg · JRP {sku.reorder_window_days}d</div>
+                    <div style="font-family: var(--smat-font-mono); font-size: 0.74rem; color: #334155;">{sku.avenueCode} · {sku.mass_kg} kg · JRP {sku.reorder_window_days}d</div>
                   </div>
                   <button type="button" class="btn btn-outline btn-avenue-tray" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={sku.title_en} style="min-height: 48px; padding: 0.35rem 0.75rem; font-size: 0.78rem;">+ Tray</button>
                 </div>
@@ -175,7 +176,7 @@ const skusByVertical: Record<string, any[]> = {
           <details class="equipment-ssot-drawer" data-equipment-ssot-drawer style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.5rem 0.85rem; background: #f8fafc;">
             <summary style="cursor: pointer; font-weight: 800; font-size: 0.86rem; color: #0f172a; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
               <span>▾ Canonical Pumping & Dry-Seal SSOT SKUs ({skusByVertical.bombeo.length} SKUs • AV-03 / AV-04)</span>
-              <span style="font-family: var(--smat-font-mono); font-size: 0.72rem; color: #9a3412;">+ DIRECT TRAY ▾</span>
+              <span style="font-family: var(--smat-font-mono); font-size: 0.72rem; color: #7c2d12;">+ DIRECT TRAY ▾</span>
             </summary>
             <div class="equipment-ssot-skus" style="display: grid; gap: 0.6rem; margin-top: 0.65rem;">
               {skusByVertical.bombeo.map((sku) => (
@@ -187,7 +188,7 @@ const skusByVertical: Record<string, any[]> = {
                 >
                   <div>
                     <a href={`/en/products/${sku.slug_en}/`} style="font-weight: 800; color: #0f172a; text-decoration: underline; font-size: 0.86rem;">{sku.id} — {sku.title_en}</a>
-                    <div style="font-family: var(--smat-font-mono); font-size: 0.74rem; color: #475569;">{sku.avenueCode} · {sku.mass_kg} kg · JRP {sku.reorder_window_days}d · {(sku.atomic_codes || []).slice(0, 4).join(', ')}</div>
+                    <div style="font-family: var(--smat-font-mono); font-size: 0.74rem; color: #334155;">{sku.avenueCode} · {sku.mass_kg} kg · JRP {sku.reorder_window_days}d · {(sku.atomic_codes || []).slice(0, 4).join(', ')}</div>
                   </div>
                   <button type="button" class="btn btn-outline btn-avenue-tray" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={sku.title_en} style="min-height: 48px; padding: 0.35rem 0.75rem; font-size: 0.78rem;">+ Tray</button>
                 </div>
@@ -220,7 +221,7 @@ const skusByVertical: Record<string, any[]> = {
           <details class="equipment-ssot-drawer" data-equipment-ssot-drawer style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.5rem 0.85rem; background: #f8fafc;">
             <summary style="cursor: pointer; font-weight: 800; font-size: 0.86rem; color: #0f172a; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
               <span>▾ Canonical Classification & Screening SSOT SKUs ({skusByVertical.clasificacion.length} SKUs • AV-05)</span>
-              <span style="font-family: var(--smat-font-mono); font-size: 0.72rem; color: #9a3412;">+ DIRECT TRAY ▾</span>
+              <span style="font-family: var(--smat-font-mono); font-size: 0.72rem; color: #7c2d12;">+ DIRECT TRAY ▾</span>
             </summary>
             <div class="equipment-ssot-skus" style="display: grid; gap: 0.6rem; margin-top: 0.65rem;">
               {skusByVertical.clasificacion.map((sku) => (
@@ -232,7 +233,7 @@ const skusByVertical: Record<string, any[]> = {
                 >
                   <div>
                     <a href={`/en/products/${sku.slug_en}/`} style="font-weight: 800; color: #0f172a; text-decoration: underline; font-size: 0.86rem;">{sku.id} — {sku.title_en}</a>
-                    <div style="font-family: var(--smat-font-mono); font-size: 0.74rem; color: #475569;">{sku.avenueCode} · {sku.mass_kg} kg · JRP {sku.reorder_window_days}d</div>
+                    <div style="font-family: var(--smat-font-mono); font-size: 0.74rem; color: #334155;">{sku.avenueCode} · {sku.mass_kg} kg · JRP {sku.reorder_window_days}d</div>
                   </div>
                   <button type="button" class="btn btn-outline btn-avenue-tray" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={sku.title_en} style="min-height: 48px; padding: 0.35rem 0.75rem; font-size: 0.78rem;">+ Tray</button>
                 </div>
@@ -259,7 +260,7 @@ const skusByVertical: Record<string, any[]> = {
           <details class="equipment-ssot-drawer" data-equipment-ssot-drawer style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.5rem 0.85rem; background: #f8fafc;">
             <summary style="cursor: pointer; font-weight: 800; font-size: 0.86rem; color: #0f172a; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
               <span>▾ Canonical Metrology & Lab SSOT SKUs ({skusByVertical.control.length} SKUs • AV-01 / AV-02)</span>
-              <span style="font-family: var(--smat-font-mono); font-size: 0.72rem; color: #9a3412;">+ DIRECT TRAY ▾</span>
+              <span style="font-family: var(--smat-font-mono); font-size: 0.72rem; color: #7c2d12;">+ DIRECT TRAY ▾</span>
             </summary>
             <div class="equipment-ssot-skus" style="display: grid; gap: 0.6rem; margin-top: 0.65rem;">
               {skusByVertical.control.map((sku) => (
@@ -271,7 +272,7 @@ const skusByVertical: Record<string, any[]> = {
                 >
                   <div>
                     <a href={`/en/products/${sku.slug_en}/`} style="font-weight: 800; color: #0f172a; text-decoration: underline; font-size: 0.86rem;">{sku.id} — {sku.title_en}</a>
-                    <div style="font-family: var(--smat-font-mono); font-size: 0.74rem; color: #475569;">{sku.avenueCode} · {sku.mass_kg} kg · JRP {sku.reorder_window_days}d</div>
+                    <div style="font-family: var(--smat-font-mono); font-size: 0.74rem; color: #334155;">{sku.avenueCode} · {sku.mass_kg} kg · JRP {sku.reorder_window_days}d</div>
                   </div>
                   <button type="button" class="btn btn-outline btn-avenue-tray" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={sku.title_en} style="min-height: 48px; padding: 0.35rem 0.75rem; font-size: 0.78rem;">+ Tray</button>
                 </div>

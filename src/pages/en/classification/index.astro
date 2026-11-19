@@ -22,18 +22,18 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
   <main class="cyc-main" id="stage-diagnostic">
     <div class="container">
       <header class="cyc-hero">
-        <span class="cyc-badge" data-smat-decision="D7">CLOSED-CIRCUIT MILLING & CLASSIFICATION ENGINEERING</span>
-        <h1>Hydrocyclone Classification & Roping Diagnostics</h1>
+        <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:0.5rem;">
+          <h1 style="margin:0; font-size:1.65rem;">Hydrocyclone Classification &amp; Roping Diagnostics</h1>
+          <span class="cyc-badge" style="margin-bottom:0;" data-smat-decision="D7">CLOSED-CIRCUIT MILLING &amp; CLASSIFICATION ENGINEERING</span>
+        </div>
         <p class="cyc-lead">
-          Audit your hydrocyclone cluster performance using only 3 Marcy Pulp Density Scale cup readings (Feed, Apex Underflow, and Vortex Overflow) without needing a belt scale or ultrasonic flowmeter.
+          Audit your hydrocyclone cluster performance using only 3 Marcy Pulp Density Scale cup readings (Feed, Apex Underflow, and Vortex Overflow) without needing a belt scale or flowmeter.
         </p>
       </header>
 
-      <TechnicalDiagrams diagram="cyclone-apex-vortex" lang="en" showXrayOverlay={true} />
-
-      <section class="cyc-sim-card" id="marcy-3cup-cyclone-calculator" aria-labelledby="cyc-sim-heading">
+      <section class="cyc-sim-card" id="marcy-3cup-cyclone-calculator" data-stratum-1-instrument aria-labelledby="cyc-sim-heading" style="margin-top:0; margin-bottom:1.5rem;">
         <div class="cyc-sim-header">
-          <h2 id="cyc-sim-heading">3-Cup Marcy Mass Balance & Plitt Cut-Size (d<sub>50c</sub>) Calculator</h2>
+          <h2 id="cyc-sim-heading">3-Cup Marcy Mass Balance &amp; Plitt Cut-Size (d<sub>50c</sub>) Calculator</h2>
           <span class="cyc-sim-tag">ZERO BELT SCALE • ZERO FLOWMETER</span>
         </div>
 
@@ -96,11 +96,11 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
             <p class="cyc-diagnostic-note" id="cyc-res-action">
               Du/Do ratio and underflow volumetric fraction C_v,u within optimal metallurgical window. Maintain preventive Apex gauge checks.
             </p>
-            <div id="cyc-screen-coupling-badge" style="margin-bottom: 0.65rem; padding: 0.55rem 0.75rem; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 6px; font-family: var(--smat-font-mono); font-size: 0.78rem; font-weight: 700; color: #065f46;">
+            <div id="cyc-screen-coupling-badge" style="margin-bottom: 0.65rem; padding: 0.55rem 0.75rem; background: #ecfdf5; border: 1px solid #059669; border-radius: 6px; font-family: var(--smat-font-mono); font-size: 0.78rem; font-weight: 700; color: #064e3b;">
               🔗 Coupled Closed-Circuit Flow: Cyclone Cut d50c = 74 µm → Urethane Screen Feed d80 = 163 µm
             </div>
 
-            <!-- Contiguous Sub-Station: Cascaded TH48-30 Urethane Screen (D4-V44 Mayer & Moreno) -->
+            <!-- Contiguous Sub-Station: Cascaded TH48-30 Urethane Screen (Mayer & Moreno) -->
             <div id="cyc-coupled-screen-station" style="margin-bottom: 0.85rem; padding: 0.75rem 0.85rem; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.78rem;">
               <div style="font-family: var(--smat-font-mono); font-weight: 800; color: #0f172a; margin-bottom: 0.45rem;">
                 CASCADED STAGE 2 · TH48-30 URETHANE SCREEN (WEIBULL PARTITION α ≥ 4.2)
@@ -120,12 +120,27 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
                 </label>
               </div>
               <div style="display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center; justify-content: space-between;">
-                <div id="csr-weibull-out" style="font-family: var(--smat-font-mono); font-weight: 700; color: #047857;">
+                <div id="csr-weibull-out" style="font-family: var(--smat-font-mono); font-weight: 700; color: #064e3b;">
                   Oversize Partition: 3.1% · Dilation Δa/a: 3.06% (4.5G, Anti-Blinding OK) · SKU: SMAT-SCR-TH48-30
                 </div>
-                <a href="/en/quote/?circuito=clasificacion&equipo=malla_criba_poliuretano&sku=SMAT-SCR-TH48-30&mat=poliuretano#rfq" id="csr-rfq-link" style="font-family: var(--smat-font-mono); font-size: 0.74rem; font-weight: 800; color: #0c4a6e; text-decoration: underline;">
-                  Quote TH48-30 Screen →
-                </a>
+                <div style="display:flex; flex-wrap:wrap; gap:0.45rem; align-items:center;">
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-avenue-tray"
+                    data-screen-tray-btn
+                    data-add-tray-sku="SMAT-SCR-URETHANE-PANEL"
+                    data-tray-part-code="TH48-30"
+                    data-tray-title="Urethane High-Frequency Screen Panel 0.50mm"
+                    data-tray-series="0.50mm"
+                    data-tray-material="U01"
+                    data-tray-circuit="clasificacion"
+                    data-tray-source="classification_screen_stratum1"
+                    style="font-size:0.74rem; padding:0.32rem 0.6rem; min-height:48px;"
+                  >+ Add Screen Panel to Tray</button>
+                  <a href="/en/quote/?circuito=clasificacion&equipo=malla_criba_poliuretano&sku=SMAT-SCR-TH48-30&mat=poliuretano#rfq" id="csr-rfq-link" style="font-family: var(--smat-font-mono); font-size: 0.74rem; font-weight: 800; color: #0c4a6e; text-decoration: underline;">
+                    Quote TH48-30 Screen →
+                  </a>
+                </div>
               </div>
             </div>
 
@@ -133,6 +148,19 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
               <a href="/en/products/hydrocyclone-assembly-and-spigots-d6-d20/" class="btn-cyc-sku" id="cyc-recommended-sku-link">
                 Configure Apex Spigot (SMAT-CYC-D6-D20) →
               </a>
+              <button
+                type="button"
+                class="btn btn-outline btn-avenue-tray"
+                data-vertical-tray-btn
+                data-add-tray-sku="SMAT-CYC-COUPLED-KIT"
+                data-tray-part-code="D6-D20"
+                data-tray-title="Hydrocyclone Assembly (74 µm cut)"
+                data-tray-series="74um"
+                data-tray-material="SiC"
+                data-tray-circuit="clasificacion"
+                data-tray-source="classification_cyclone_stratum1"
+                style="min-height:48px;"
+              >+ Add Hydrocyclone to Tray</button>
               <a href="/en/quote/?circuito=clasificacion&equipo=apex-boquilla-hidrociclon&sku=SMAT-CYC-D6-D20#rfq" class="btn-cyc-rfq" id="cyc-rfq-link">
                 Sync to A4 Quote Workbench →
               </a>
@@ -140,6 +168,8 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
           </div>
         </div>
       </section>
+
+      <TechnicalDiagrams diagram="cyclone-apex-vortex" lang="en" showXrayOverlay={true} />
 
       <section class="cyc-sku-catalog" aria-label="Critical hydrocyclone wear parts">
         <h2>Critical Hydrocyclone Wear Parts with 1:1 Dimensional Check in Durango</h2>
@@ -186,21 +216,24 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
   import { evaluateHydrocycloneCutPoint, saveEngineeringContextSnapshot } from '../../../scripts/wizardCircuitPhysicsController.js';
   import { bindCoupledClassificationStation } from '../../../scripts/verticalCalculatorsAndLabelsBridge.js';
   // Live serialization to #cyc-rfq-link: rho_f=${res.feedSg}&rho_u=${res.underflowSg}&rho_o=${res.overflowSg}&rs_pct=${res.solidsRecoveryPct}
-  void calculateThreeCupMarcyCycloneBalance;
-  void saveWorkbenchSession;
-  void loadWorkbenchSession;
-  void evaluateHydrocycloneCutPoint;
-  void saveEngineeringContextSnapshot;
-  bindCoupledClassificationStation(document, 'en');
+  const deps = {
+    calculateThreeCupMarcyCycloneBalance,
+    saveWorkbenchSession,
+    loadWorkbenchSession,
+    evaluateHydrocycloneCutPoint,
+    saveEngineeringContextSnapshot,
+  };
+  bindCoupledClassificationStation(document, 'en', deps);
+  document.addEventListener('astro:page-load', () => bindCoupledClassificationStation(document, 'en', deps));
 </script>
 
 <style>
   .cyc-main {
-    padding: 2.5rem 0 4rem;
+    padding: 0.9rem 0 3.25rem;
     background: #f8fafc;
   }
   .cyc-hero {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.85rem;
   }
   .cyc-badge {
     display: inline-block;
@@ -215,9 +248,10 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
     margin-bottom: 0.6rem;
   }
   .cyc-lead {
-    font-size: 1.05rem;
+    font-size: 0.94rem;
     color: #334155;
     max-width: 78ch;
+    margin: 0.25rem 0 0;
   }
   .cyc-sim-card {
     background: #ffffff;
@@ -238,8 +272,8 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
   }
   .cyc-sim-tag {
     background: #ecfdf5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
+    color: #064e3b;
+    border: 1px solid #059669;
     padding: 0.25rem 0.6rem;
     border-radius: 4px;
     font-family: var(--smat-font-mono, monospace);
@@ -288,8 +322,8 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
     font-weight: 800;
     font-size: 0.92rem;
     background: #ecfdf5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
+    color: #064e3b;
+    border: 1px solid #059669;
     margin-bottom: 1rem;
   }
   .cyc-regime-banner[data-regime="ROPING_CORDON"] {
@@ -313,7 +347,7 @@ const description = 'SiC Ceramic / Cr27 Apex Spigots, Vortex Finders, and Cone L
     display: block;
     font-size: 0.7rem;
     font-weight: 800;
-    color: #475569;
+    color: #334155;
     margin-bottom: 0.35rem;
   }
   .cyc-kpi-val {

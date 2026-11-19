@@ -15,6 +15,10 @@ pub mod v44_zero_duplication_and_contiguity_gates;
 pub use v44_zero_duplication_and_contiguity_gates::*;
 pub mod v45_ergos_and_backend_parity_gates;
 pub use v45_ergos_and_backend_parity_gates::*;
+pub mod v48_instrument_first_and_lens_gates;
+pub use v48_instrument_first_and_lens_gates::*;
+pub mod solar_contrast_and_token_gate;
+pub use solar_contrast_and_token_gate::*;
 
 pub struct GateReport {
     pub name: String,
@@ -921,6 +925,16 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             passed: check_v45_ergos_apple_hig_and_backend_parity_gate_48(site_root).is_ok(),
             details: check_v45_ergos_apple_hig_and_backend_parity_gate_48(site_root).err().unwrap_or_else(|| "OK: Bus isomorfico glitch-free, JRP dinamico en /acuse/, Gorain en /flotacion/, 7 Avenidas / 19 SKUs + 5 ramas en /catalogo/, Pasaporte B2B .vcf/.json, pureza escalar ISO 80000-1 y 0 violaciones CDP en ergos.".to_string()),
         },
+        GateReport {
+            name: "49. Estandarizacion Instrument-First Estrato 1, Lente Bidireccional GetPut<PutGet, Drop-In Verifier, JRP Normal/Paro + Par Casado, Core Trade-In DAM005 y Def-Use 100% V4.8 (Gate 48I D1-V48..D10-V48)".to_string(),
+            passed: check_v48_instrument_first_bidirectional_lens_and_parity_gate_48i(site_root).is_ok(),
+            details: check_v48_instrument_first_bidirectional_lens_and_parity_gate_48i(site_root).err().unwrap_or_else(|| "OK: Estrato 1 Instrument-First en 26 rutas verticales ES/EN, lente bidireccional GetPut<PutGet, Drop-In Verifier /catalogo/ + /equipos/, JRP paro_planta + Par Casado, Core Trade-In DAM005, Def-Use metrológico y preset minero en /cotizar/.".to_string()),
+        },
+        GateReport {
+            name: "50. Clausura Solar WCAG AAA (>=7.0:1) + APCA (|Lc|>=75), Variables var(--*) Cerradas, Extraccion CSS [slug] (<550 LOC), Display-First Vertical y Tour 27/27 (Gate 48J D1-V481..D5-V481)".to_string(),
+            passed: check_v481_solar_contrast_token_closure_and_tour27_gate_48j(site_root).is_ok(),
+            details: check_v481_solar_contrast_token_closure_and_tour27_gate_48j(site_root).err().unwrap_or_else(|| "OK: Contraste solar WCAG AAA + APCA >= 75, tokens :root sin huecos, CSS compartido productSlugSolar.css, Estrato 1 Display-First y ergos/tour.toml 27/27.".to_string()),
+        },
     ]
 }
 
@@ -1028,7 +1042,11 @@ pub fn verify_backend_ui_parity_and_apple_cowan(site_root: &Path) -> Result<(), 
 
     let skid_es = fs::read_to_string(site_root.join("src/pages/bombeo/skid.astro")).map_err(|e| e.to_string())?;
     let skid_en = fs::read_to_string(site_root.join("src/pages/en/pumping/skid.astro")).map_err(|e| e.to_string())?;
-    if !skid_es.contains("calculateDriveAndBearingKinematics") || !skid_en.contains("calculateDriveAndBearingKinematics") {
+    let lens_src = fs::read_to_string(site_root.join("src/scripts/verticalBidirectionalHydrationLens.js")).unwrap_or_default();
+    let lens_has_kin = lens_src.contains("calculateDriveAndBearingKinematics");
+    let skid_es_ok = skid_es.contains("calculateDriveAndBearingKinematics") || (skid_es.contains("initSkidKinematicsInspector") && lens_has_kin);
+    let skid_en_ok = skid_en.contains("calculateDriveAndBearingKinematics") || (skid_en.contains("initSkidKinematicsInspector") && lens_has_kin);
+    if !skid_es_ok || !skid_en_ok {
         return Err("skid.astro o en/pumping/skid.astro no exponen calculateDriveAndBearingKinematics".to_string());
     }
 
@@ -1503,5 +1521,19 @@ mod tests {
         let root = find_site_root();
         let res = check_v45_ergos_apple_hig_and_backend_parity_gate_48(&root);
         assert!(res.is_ok(), "Fallo en Gate 48 (V4.5 Ergos Apple HIG + Tepehuana & Backend-UI Parity): {:?}", res.err());
+    }
+
+    #[test]
+    fn test_gate_48i_v48_instrument_first_and_bidirectional_lens() {
+        let root = find_site_root();
+        let res = check_v48_instrument_first_bidirectional_lens_and_parity_gate_48i(&root);
+        assert!(res.is_ok(), "Fallo en Gate 48I (V4.8 Instrument-First Stratum 1, Bidirectional Lens & Parity): {:?}", res.err());
+    }
+
+    #[test]
+    fn test_gate_48j_v481_solar_contrast_token_closure_and_tour27() {
+        let root = find_site_root();
+        let res = check_v481_solar_contrast_token_closure_and_tour27_gate_48j(&root);
+        assert!(res.is_ok(), "Fallo en Gate 48J (V4.8.1 Solar AAA+APCA, Token Closure, [slug] CSS, Display-First & Tour 27/27): {:?}", res.err());
     }
 }

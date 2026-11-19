@@ -20,18 +20,174 @@ const dc = skidRole?.decision_criteria;
   <section class="page-hero">
     <div class="container">
       <a href="/en/pumping/" class="back-link">← Back to Slurry Pumps</a>
-      <div style="margin-top: 1rem;">
-        <span class="badge badge-copper">COMPLETE PUMP</span>
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:0.5rem; margin-top:0.45rem;">
+        <h1 style="margin:0;">Slurry Pumps — V-Belt Kinematics &amp; Drive Assembly</h1>
+        <span class="badge badge-copper">COMPLETE PUMP • CV / ZVZ / CRZ / DC DRIVES</span>
       </div>
-      <h1>Slurry Pumps</h1>
-      <p style="font-size: 1.08rem; max-width: 700px; color: var(--smat-text-secondary);">
-        Heavy-duty horizontal centrifugal slurry pumps for mill discharge, hydrocyclone feed, flotation circuits, and tailings disposal.
+      <p style="font-size:0.94rem; max-width:760px; color:var(--smat-text-secondary); margin:0.35rem 0 0;">
+        Calibrate V-Belt sheave ratio, peripheral tip speed (u₂ ≤ 24.5 m/s Rubber R55 vs A05), and ISO 281 L₁₀h life before requesting your skid quote.
       </p>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" id="skid-main-section">
     <div class="container">
+      <!-- Stratum 1: V-Belt Kinematics Calibrator, 5/5 Materials + Hybrid Branch D + DAM005 Trade-In + Tray -->
+      <details class="skid-kinematics-calibrator" id="skid-kinematics-panel" data-skid-kinematics open data-stratum-1-instrument style="margin-top:0; margin-bottom:1.5rem;">
+        <summary class="skid-kinematics-calibrator__summary">
+          <span class="skid-kinematics-calibrator__badge">ISO 281 KINEMATICS SIMULATOR</span>
+          <span class="skid-kinematics-calibrator__title">
+            V-Belt Sheave Ratio, Tip Speed (u₂), Wet-End Metallurgy (A05 / R55 / U01 / SiC / Hybrid) &amp; Bearing Life (L₁₀h)
+          </span>
+          <span class="skid-kinematics-calibrator__hint">Active instrument ▾</span>
+        </summary>
+
+        <div class="skid-kinematics-calibrator__body">
+          <div class="skid-kinematics-calibrator__controls">
+            <label class="kin-field">
+              <span>Drive Arrangement:</span>
+              <select data-kin-arrangement>
+                <option value="CV" selected>CV — Overhead Piggyback Motor</option>
+                <option value="ZVZ">ZVZ — Elevated Rear Motor</option>
+                <option value="CRZ">CRZ — Side-by-Side Base Motor</option>
+                <option value="DC">DC — Direct Inline Coupling (Fr = 0 kN)</option>
+              </select>
+            </label>
+            <label class="kin-field">
+              <span>Electric Motor Speed (RPM):</span>
+              <select data-kin-motor-rpm>
+                <option value="1780" selected>1780 RPM (4-Pole • 60 Hz)</option>
+                <option value="1480">1480 RPM (4-Pole • 50 Hz / VFD)</option>
+                <option value="1180">1180 RPM (6-Pole • 60 Hz)</option>
+              </select>
+            </label>
+            <label class="kin-field">
+              <span>Driver Motor Sheave (mm): <strong data-kin-driver-val>180 mm</strong></span>
+              <input type="range" min="120" max="380" step="10" value="180" data-kin-driver />
+            </label>
+            <label class="kin-field">
+              <span>Driven Pump Sheave (mm): <strong data-kin-driven-val>320 mm</strong></span>
+              <input type="range" min="160" max="560" step="10" value="320" data-kin-driven />
+            </label>
+            <label class="kin-field">
+              <span>Shaft Power (kW): <strong data-kin-power-val>45 kW (60 HP)</strong></span>
+              <input type="range" min="15" max="315" step="5" value="45" data-kin-power />
+            </label>
+            <label class="kin-field">
+              <span>Impeller Diameter ØD₂ (Dimensional Census):</span>
+              <select data-kin-impeller>
+                <option value="270">270 mm — 3x2 / 4x3 Series (D3147)</option>
+                <option value="380" selected>380 mm — 6x4 Series (E4147)</option>
+                <option value="510">510 mm — 8x6 Series (F6147)</option>
+                <option value="640">640 mm — 10x8 Series (G8147)</option>
+              </select>
+            </label>
+            <label class="kin-field">
+              <span>Wet-End Material (5/5):</span>
+              <select data-kin-material>
+                <option value="alto_cromo_cr27" selected>27% High Chrome A05 (u₂ max 32.0 m/s • K_Ic=20 MPa·√m)</option>
+                <option value="hule_natural">Natural Rubber R55 (u₂ max 24.5 m/s • K_Ic=12 MPa·√m)</option>
+                <option value="poliuretano">Polyurethane U01 (u₂ max 26.0 m/s • K_Ic=14 MPa·√m)</option>
+                <option value="ceramica_sic">Sintered Silicon Carbide SiC (u₂ max 28.0 m/s • ≥2200 HV)</option>
+                <option value="hybrid_a05_r55">Hybrid Branch D (A05 Impeller + R55 Liners • u₂ max 24.5 m/s • K_Ic=18.5 MPa·√m)</option>
+              </select>
+            </label>
+            <label class="kin-field">
+              <span>Dynamic Bearing Capacity C (kN — ISO 281):</span>
+              <input type="number" min="60" max="450" step="5" value="145" data-kin-capacity-c />
+            </label>
+          </div>
+
+          <div class="skid-kinematics-calibrator__metrics">
+            <div class="kin-metric-card">
+              <span class="kin-metric-card__kicker">PUMP SHAFT SPEED</span>
+              <strong class="kin-metric-card__val" data-kin-rpm>1001 RPM</strong>
+              <span class="kin-metric-card__sub" data-kin-ratio>Motor 1780 RPM • Ratio 0.56×</span>
+            </div>
+            <div class="kin-metric-card">
+              <span class="kin-metric-card__kicker">IMPELLER TIP SPEED (u₂)</span>
+              <strong class="kin-metric-card__val" data-kin-u2>19.92 m/s</strong>
+              <span class="kin-metric-card__sub" data-kin-u2-status>Safe for Rubber R55, PU &amp; High Chrome A05</span>
+              <div class="kin-metric-card__sub" data-kin-hybrid-note style="margin-top:0.25rem; font-weight:700; color:#0c4a6e;"></div>
+            </div>
+            <div class="kin-metric-card">
+              <span class="kin-metric-card__kicker">RADIAL BELT LOAD (Fᵣ)</span>
+              <strong class="kin-metric-card__val" data-kin-fr>6.71 kN</strong>
+              <span class="kin-metric-card__sub" data-kin-fr-sub data-kin-load-p>Eq. load P = 14.37 kN • Footprint 1.00×</span>
+            </div>
+            <div class="kin-metric-card">
+              <span class="kin-metric-card__kicker">ISO 281 BEARING LIFE (L₁₀h / L₁₀ₘₕ LABYRINTH)</span>
+              <strong class="kin-metric-card__val" data-kin-l10h>42,800 h</strong>
+              <span class="kin-metric-card__sub" data-kin-l10mh>L₁₀ₘₕ Labyrinth: 53,500 h vs Contam. Felt: 9,416 h</span>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-wrap:wrap; align-items:center; gap:0.65rem; margin-top:0.85rem;">
+            <a
+              href="/en/quote/?circuito=bombeo&equipo=skid_bomba&transmision=CV&material=alto_cromo_cr27&u2_ms=19.92&l10h=42800#rfq"
+              class="btn btn-primary"
+              data-kin-cta
+              data-quote-base="/en/quote/"
+              style="min-height:48px; display:inline-flex; align-items:center;"
+            >
+              Quote Pump with this Kinematics →
+            </a>
+            <button
+              type="button"
+              class="btn btn-outline btn-avenue-tray"
+              data-vertical-tray-btn
+              data-add-tray-sku="SMAT-PUMP-DRIVE-SKID"
+              data-tray-part-code="CV-6x4"
+              data-tray-title="Motor-Pump Skid CV (6x4, 45 kW, alto_cromo_cr27)"
+              data-tray-series="6x4"
+              data-tray-material="alto_cromo_cr27"
+              data-tray-circuit="bombeo"
+              data-tray-source="skid_stratum1_calc"
+              style="min-height: 48px;"
+            >+ Add Drive Skid to Tray</button>
+          </div>
+
+          <div
+            data-core-tradein-widget="DAM005"
+            data-lang="en"
+            style="width: 100%; margin-top: 0.75rem; padding: 0.85rem; border-radius: 8px; background: #ecfdf5; border: 1px solid #10b981; font-size: 0.78rem; color: #064e3b;"
+          >
+            <div style="font-family: var(--font-mono-tech, monospace); font-weight: 800; color: #065f46; margin-bottom: 0.35rem;">
+              ♻️ SMAT DAM005 CORE TRADE-IN PROGRAM (-22% / -12% H7 REMANUFACTURING)
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-bottom: 0.4rem;">
+              <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 700;">
+                <span>Used Housing Condition</span>
+                <select data-tradein-condition data-core-tradein-condition style="padding: 0.35rem 0.45rem; border: 1px solid #059669; border-radius: 6px; background: #ffffff; color: #1c1917; font-size: 0.75rem;">
+                  <option value="h7_intact" selected>Intact Crack-Free Housing (-22% • 0.78x)</option>
+                  <option value="minor_bearing_seizure">Bearing Seizure / Recoverable Bore (-12% • 0.88x)</option>
+                  <option value="cracked_housing">Cracked or Welded Housing (0% • 1.00x)</option>
+                </select>
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.35rem; font-weight: 700; padding-top: 1rem;">
+                <input type="checkbox" data-tradein-not-welded data-core-tradein-toggle checked />
+                <span>Unwelded H7 Bearing Bore (ISO IT6)</span>
+              </label>
+            </div>
+            <div data-tradein-result data-core-tradein-badge style="font-family: var(--font-mono-tech, monospace); font-weight: 800; color: #065f46;">
+              Active: -22% Core Trade-In Credit (Factor 0.78x • RMA-CORE-DAM005-INTACT)
+            </div>
+            <div data-tradein-co2 data-core-tradein-note style="font-size: 0.72rem; color: #047857; margin-top: 0.2rem;">
+              Physical return at Central Warehouse: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (35 kg CO₂e saved)
+            </div>
+          </div>
+
+          <div class="skid-kinematics-calibrator__alert" data-kin-rubber-alert style="display:none">
+            <div>
+              <strong>PERIPHERAL TIP SPEED ALERT:</strong> Peripheral tip speed exceeds <strong>24.5 m/s</strong> in Natural Rubber (R55), causing viscoelastic hysteresis blistering.
+            </div>
+            <button type="button" class="btn btn-primary" data-kin-switch-a05>
+              Switch to High Chrome A05 (≥650 HB)
+            </button>
+          </div>
+        </div>
+      </details>
+
       <TechnicalDiagrams diagram="pump" lang="en" />
 
       <div class="grid-2" style="margin-top: 1.75rem;">
@@ -111,117 +267,10 @@ const dc = skidRole?.decision_criteria;
               <small style="display:block; margin-bottom:0.65rem; font-family:var(--smat-font-mono); font-size:0.74rem; color:#082f49; font-weight:700;" data-kin-flood>
                 Footprint: {arr.footprintFactor.toFixed(2)}× • Sump Flood: {Boolean(arr.sumpFloodImmunity) ? 'Elevated Motor (Splash Immune)' : 'Baseplate level / Sump drainage'}
               </small>
-              <a href={`/en/quote/?equipo=skid_bomba&transmision=${arr.code}#rfq`} class="btn btn-primary">Quote {arr.code} Arrangement Pump →</a>
+              <a href={`/en/quote/?equipo=skid_bomba&transmision=${arr.code}#rfq`} class="btn btn-primary" data-card-fixed-params="transmision">Quote {arr.code} Arrangement Pump →</a>
             </div>
           ))}
         </div>
-
-        <!-- V-Belt Kinematics, Tip Speed u2 <= 24.5 m/s & ISO 281 L10h Calibrator (Decision 2-C+, Arbitrage #8) -->
-        <details class="skid-kinematics-calibrator" id="skid-kinematics-panel" data-skid-kinematics>
-          <summary class="skid-kinematics-calibrator__summary">
-            <span class="skid-kinematics-calibrator__badge">ISO 281 KINEMATICS SIMULATOR</span>
-            <span class="skid-kinematics-calibrator__title">
-              Calculate V-Belt Sheave Ratio, Impeller Tip Speed (u₂ ≤ 24.5 m/s) & Bearing Life (L₁₀h)
-            </span>
-            <span class="skid-kinematics-calibrator__hint">Open kinematics calculator ▾</span>
-          </summary>
-
-          <div class="skid-kinematics-calibrator__body">
-            <div class="skid-kinematics-calibrator__controls">
-              <label class="kin-field">
-                <span>Drive Arrangement:</span>
-                <select data-kin-arrangement>
-                  <option value="CV" selected>CV — Overhead Piggyback Motor</option>
-                  <option value="ZVZ">ZVZ — Elevated Rear Motor</option>
-                  <option value="CRZ">CRZ — Side-by-Side Base Motor</option>
-                  <option value="DC">DC — Direct Inline Coupling (Fr = 0 kN)</option>
-                </select>
-              </label>
-              <label class="kin-field">
-                <span>Electric Motor Speed (RPM):</span>
-                <select data-kin-motor-rpm>
-                  <option value="1780" selected>1780 RPM (4-Pole • 60 Hz)</option>
-                  <option value="1480">1480 RPM (4-Pole • 50 Hz / VFD)</option>
-                  <option value="1180">1180 RPM (6-Pole • 60 Hz)</option>
-                </select>
-              </label>
-              <label class="kin-field">
-                <span>Driver Motor Sheave (mm): <strong data-kin-driver-val>180 mm</strong></span>
-                <input type="range" min="120" max="380" step="10" value="180" data-kin-driver />
-              </label>
-              <label class="kin-field">
-                <span>Driven Pump Sheave (mm): <strong data-kin-driven-val>320 mm</strong></span>
-                <input type="range" min="160" max="560" step="10" value="320" data-kin-driven />
-              </label>
-              <label class="kin-field">
-                <span>Shaft Power (kW): <strong data-kin-power-val>45 kW (60 HP)</strong></span>
-                <input type="range" min="15" max="315" step="5" value="45" data-kin-power />
-              </label>
-              <label class="kin-field">
-                <span>Impeller Diameter ØD₂ (Dimensional Census):</span>
-                <select data-kin-impeller>
-                  <option value="270">270 mm — 3x2 / 4x3 Series (D3147)</option>
-                  <option value="380" selected>380 mm — 6x4 Series (E4147)</option>
-                  <option value="510">510 mm — 8x6 Series (F6147)</option>
-                  <option value="640">640 mm — 10x8 Series (G8147)</option>
-                </select>
-              </label>
-              <label class="kin-field">
-                <span>Wet-End Material:</span>
-                <select data-kin-material>
-                  <option value="alto_cromo_cr27" selected>27% High Chrome A05 (u₂ max 32.0 m/s • K_Ic=20 MPa·√m)</option>
-                  <option value="hule_natural">Natural Rubber R55 (u₂ max 24.5 m/s • K_Ic=12 MPa·√m)</option>
-                  <option value="poliuretano">Polyurethane U01 (u₂ max 26.0 m/s • K_Ic=14 MPa·√m)</option>
-                  <option value="ceramica_sic">Sintered Silicon Carbide SiC (u₂ max 28.0 m/s • ≥2200 HV)</option>
-                </select>
-              </label>
-              <label class="kin-field">
-                <span>Dynamic Bearing Capacity C (kN — ISO 281):</span>
-                <input type="number" min="60" max="450" step="5" value="145" data-kin-capacity-c />
-              </label>
-            </div>
-
-            <div class="skid-kinematics-calibrator__metrics">
-              <div class="kin-metric-card">
-                <span class="kin-metric-card__kicker">PUMP SHAFT SPEED</span>
-                <strong class="kin-metric-card__val" data-kin-rpm>1001 RPM</strong>
-                <span class="kin-metric-card__sub" data-kin-ratio>Motor 1780 RPM • Ratio 0.56×</span>
-              </div>
-              <div class="kin-metric-card">
-                <span class="kin-metric-card__kicker">IMPELLER TIP SPEED (u₂)</span>
-                <strong class="kin-metric-card__val" data-kin-u2>19.92 m/s</strong>
-                <span class="kin-metric-card__sub" data-kin-u2-status>Safe for Rubber R55, PU & High Chrome A05</span>
-              </div>
-              <div class="kin-metric-card">
-                <span class="kin-metric-card__kicker">RADIAL BELT LOAD (Fᵣ)</span>
-                <strong class="kin-metric-card__val" data-kin-fr>6.71 kN</strong>
-                <span class="kin-metric-card__sub" data-kin-fr-sub data-kin-load-p>Eq. load P = 14.37 kN • Footprint 1.00×</span>
-              </div>
-              <div class="kin-metric-card">
-                <span class="kin-metric-card__kicker">ISO 281 BEARING LIFE (L₁₀h / L₁₀ₘₕ LABYRINTH)</span>
-                <strong class="kin-metric-card__val" data-kin-l10h>42,800 h</strong>
-                <span class="kin-metric-card__sub" data-kin-l10mh>L₁₀ₘₕ Labyrinth: 53,500 h vs Contam. Felt: 9,416 h</span>
-                <a
-                  href="/en/quote/?equipo=skid_bomba&transmision=CV&material=alto_cromo_cr27&u2_ms=19.92&l10h=42800#rfq"
-                  class="kin-metric-card__cta"
-                  data-kin-cta
-                  data-quote-base="/en/quote/"
-                >
-                  Quote Pump with this Kinematics →
-                </a>
-              </div>
-            </div>
-
-            <div class="skid-kinematics-calibrator__alert" data-kin-rubber-alert data-smat-invariant="INV-SMAT-SCI-13" style="display:none">
-              <div>
-                <strong>PERIPHERAL TIP SPEED ALERT:</strong> Peripheral tip speed exceeds <strong>24.5 m/s</strong> in Natural Rubber (R55), causing viscoelastic hysteresis blistering.
-              </div>
-              <button type="button" class="btn btn-primary" data-kin-switch-a05>
-                Switch to High Chrome A05 (≥650 HB)
-              </button>
-            </div>
-          </div>
-        </details>
       </div>
 
       <!-- SUCTION THROATBUSH & AXIAL CLEARANCE CALIBRATION (DON MANUEL REF 4) -->
@@ -244,140 +293,14 @@ const dc = skidRole?.decision_criteria;
 </BaseLayout>
 
 <script>
-  import { calculateDriveAndBearingKinematics } from '../../../scripts/slurryEngine.js';
-  import { selectBearingFrameByPowerAndRpm } from '../../../scripts/pumpAssemblyAndDriveEngine.js';
-  import { saveWorkbenchState, loadWorkbenchState } from '../../../scripts/workbenchBus.js';
-  import { saveEngineeringContextSnapshot } from '../../../scripts/wizardCircuitPhysicsController.js';
-
-  function initSkidKinematicsEn() {
-    const panel = document.querySelector('[data-skid-kinematics]');
-    if (!panel) return;
-
-    const arrSel = panel.querySelector('[data-kin-arrangement]') as HTMLSelectElement | null;
-    const motorRpmSel = panel.querySelector('[data-kin-motor-rpm]') as HTMLSelectElement | null;
-    const driverInput = panel.querySelector('[data-kin-driver]') as HTMLInputElement | null;
-    const drivenInput = panel.querySelector('[data-kin-driven]') as HTMLInputElement | null;
-    const powerInput = panel.querySelector('[data-kin-power]') as HTMLInputElement | null;
-    const impSel = panel.querySelector('[data-kin-impeller]') as HTMLSelectElement | null;
-    const matSel = panel.querySelector('[data-kin-material]') as HTMLSelectElement | null;
-    const capCInput = panel.querySelector('[data-kin-capacity-c]') as HTMLInputElement | null;
-
-    const driverVal = panel.querySelector('[data-kin-driver-val]');
-    const drivenVal = panel.querySelector('[data-kin-driven-val]');
-    const powerVal = panel.querySelector('[data-kin-power-val]');
-    const rpmEl = panel.querySelector('[data-kin-rpm]');
-    const ratioEl = panel.querySelector('[data-kin-ratio]');
-    const u2El = panel.querySelector('[data-kin-u2]');
-    const u2StatusEl = panel.querySelector('[data-kin-u2-status]');
-    const frEl = panel.querySelector('[data-kin-fr]');
-    const frSubEl = panel.querySelector('[data-kin-fr-sub]');
-    const l10hEl = panel.querySelector('[data-kin-l10h]');
-    const alertBox = panel.querySelector('[data-kin-rubber-alert]') as HTMLElement | null;
-    const switchBtn = panel.querySelector('[data-kin-switch-a05]');
-    const ctaEl = panel.querySelector('[data-kin-cta]') as HTMLAnchorElement | null;
-
-    const updateKinematics = () => {
-      const arrangement = (arrSel?.value || 'CV') as 'CV' | 'ZVZ' | 'CRZ' | 'DC';
-      const motorRpm = Number(motorRpmSel?.value) || 1780;
-      const driverPulleyMm = Number(driverInput?.value) || 180;
-      const drivenPulleyMm = Number(drivenInput?.value) || 320;
-      const shaftPowerKw = Number(powerInput?.value) || 45;
-      const impellerDiameterMm = Number(impSel?.value) || 380;
-      const wetEndMaterial = matSel?.value || 'alto_cromo_cr27';
-      const dynamicCapacityCkN = Number(capCInput?.value) || 145;
-
-      if (driverInput) driverInput.disabled = arrangement === 'DC';
-      if (drivenInput) drivenInput.disabled = arrangement === 'DC';
-
-      if (driverVal) driverVal.textContent = arrangement === 'DC' ? 'Direct 1:1' : `${driverPulleyMm} mm`;
-      if (drivenVal) drivenVal.textContent = arrangement === 'DC' ? 'Direct 1:1' : `${drivenPulleyMm} mm`;
-      if (powerVal) powerVal.textContent = `${shaftPowerKw} kW (${Math.round(shaftPowerKw * 1.341)} HP)`;
-
-      const res = calculateDriveAndBearingKinematics({
-        arrangement,
-        motorRpm,
-        driverPulleyMm,
-        drivenPulleyMm,
-        impellerDiameterMm,
-        shaftPowerKw,
-        dynamicCapacityCkN,
-        wetEndMaterial
-      });
-
-      const frameEval = selectBearingFrameByPowerAndRpm(shaftPowerKw, res.pumpRpm, '6x4');
-      if (rpmEl) rpmEl.textContent = `${res.pumpRpm} RPM`;
-      if (ratioEl) ratioEl.textContent = `Motor ${res.motorRpm} RPM • i=${res.reductionRatio.toFixed(2)}:1 (${res.speedMultiplier.toFixed(2)}×) • Frame ${frameEval.frameCode} (Ø${frameEval.shaftDiameterMm} mm, P_max ${frameEval.maxPowerKw} kW, n_max ${frameEval.maxRpm} RPM)`;
-      if (u2El) u2El.textContent = `${res.tipSpeedMs.toFixed(2)} m/s`;
-      if (u2StatusEl) {
-        const sicNote = res.ceramicSafeTipSpeed ? 'SiC Safe' : 'SiC Alert >28 m/s';
-        u2StatusEl.textContent = res.rubberSafeTipSpeed
-          ? `Safe for Rubber/PU/A05 (${sicNote} • Suggested: ${res.recommendedWetMaterialByTipSpeed})`
-          : `Exceeds 24.5 m/s: Exclusive ${res.recommendedWetMaterialByTipSpeed} (${sicNote} • ≥650 HB)`;
-      }
-      if (frEl) frEl.textContent = `${res.beltRadialLoadKn.toFixed(2)} kN`;
-      if (frSubEl) frSubEl.textContent = `P=${res.equivalentLoadPkN.toFixed(2)} kN (C=${res.dynamicCapacityCkN} kN / C_rec=${frameEval.recommendedDynamicCkN} kN) • Footprint ${res.footprintFactor.toFixed(2)}×`;
-      const l10mhEl = panel.querySelector('[data-kin-l10mh]');
-      if (l10hEl) l10hEl.textContent = `${res.bearingL10Hours.toLocaleString('en-US')} h`;
-      if (l10mhEl) l10mhEl.textContent = `L₁₀ₘₕ Labyrinth: ${res.l10mhLabyrinthHours.toLocaleString('en-US')} h (a_ISO=${res.aIsoLabyrinthSmat}×) vs Contaminated: ${res.l10mhContaminatedHours.toLocaleString('en-US')} h (a_ISO=${res.aIsoContaminatedFelt}×)`;
-      if (alertBox) {
-        alertBox.style.display = (res.rubberThermalLimitExceeded || res.ceramicSpallingSpeedExceeded) ? 'flex' : 'none';
-      }
-      if (ctaEl) {
-        const base = ctaEl.getAttribute('data-quote-base') || '/en/quote/';
-        ctaEl.href = `${base}?circuito=bombeo&equipo=skid_bomba&transmision=${res.arrangement}&material=${wetEndMaterial}&driver_mm=${res.driverPulleyMm}&driven_mm=${res.drivenPulleyMm}&motor_rpm=${res.motorRpm}&power_kw=${res.shaftPowerKw}&n2_rpm=${res.pumpRpm}&fr_kn=${res.beltRadialLoadKn.toFixed(2)}&u2_ms=${res.tipSpeedMs.toFixed(2)}&l10h=${res.bearingL10Hours}&cap_c_kn=${res.dynamicCapacityCkN}#rfq`;
-      }
-
-      const prev = loadWorkbenchState() || {};
-      saveWorkbenchState({
-        ...prev,
-        cap_c_kn: res.dynamicCapacityCkN,
-        kinematics: {
-          arrangement: res.arrangement,
-          motorRpm: res.motorRpm,
-          driverPulleyMm: res.driverPulleyMm,
-          drivenPulleyMm: res.drivenPulleyMm,
-          impellerDiameterMm: res.impellerDiameterMm,
-          shaftPowerKw: res.shaftPowerKw,
-          dynamicCapacityCkN: res.dynamicCapacityCkN,
-          reductionRatio: res.reductionRatio,
-          sumpFloodImmunity: res.sumpFloodImmunity,
-          recommendedWetMaterialByTipSpeed: res.recommendedWetMaterialByTipSpeed,
-          wetEndMaterial: res.wetEndMaterial,
-          pumpRpm: res.pumpRpm,
-          tipSpeedMs: res.tipSpeedMs,
-          beltRadialLoadKn: res.beltRadialLoadKn,
-          equivalentLoadPkN: res.equivalentLoadPkN,
-          bearingL10Hours: res.bearingL10Hours,
-          rubberThermalLimitExceeded: res.rubberThermalLimitExceeded
-        }
-      });
-      saveEngineeringContextSnapshot('bombeo', res);
-    };
-
-    [arrSel, motorRpmSel, driverInput, drivenInput, powerInput, impSel, matSel, capCInput].forEach((el) => {
-      if (el) {
-        el.addEventListener('input', updateKinematics);
-        el.addEventListener('change', updateKinematics);
-      }
-    });
-
-    if (switchBtn && matSel) {
-      switchBtn.addEventListener('click', () => {
-        matSel.value = 'alto_cromo_cr27';
-        updateKinematics();
-      });
-    }
-
-    updateKinematics();
-  }
-
-  initSkidKinematicsEn();
-  document.addEventListener('astro:page-load', initSkidKinematicsEn);
+  import { initSkidKinematicsInspector } from '../../../scripts/verticalBidirectionalHydrationLens.js';
+  initSkidKinematicsInspector(document, 'en');
+  document.addEventListener('astro:page-load', () => initSkidKinematicsInspector(document, 'en'));
 </script>
 
 <style>
-  .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 2.75rem 0; border-bottom: 2px solid var(--smat-copper-accent); }
-  .page-hero h1 { color: var(--smat-text-primary); margin-top: 0.5rem; }
+  .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 0.9rem 0 0.85rem; border-bottom: 2px solid var(--smat-copper-accent); }
+  .page-hero h1 { color: var(--smat-text-primary); margin: 0.25rem 0 0; font-size: 1.65rem; }
   .back-link { color: var(--smat-copper-accent); font-size: 0.9rem; font-weight: 700; text-decoration: none; }
   .back-link:hover { text-decoration: underline; }
   .skid-kinematics-calibrator { margin-top: 1.5rem; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #f8fafc; overflow: hidden; }
@@ -396,8 +319,9 @@ const dc = skidRole?.decision_criteria;
   .kin-metric-card__cta { margin-top: 0.25rem; font-family: var(--smat-font-mono, monospace); font-size: 0.72rem; font-weight: 800; color: #082f49; text-decoration: underline; }
   .skid-kinematics-calibrator__alert { margin-top: 0.9rem; padding: 0.85rem 1rem; border-radius: 8px; background: #fef2f2; border: 1.5px solid #dc2626; color: #7f1d1d; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; font-size: 0.82rem; }
   @media (max-width: 640px) {
-    .page-hero { padding: 0.75rem 0; }
-    .page-hero h1 { font-size: 1.35rem; margin: 0.2rem 0; }
-    .page-hero p { font-size: 0.82rem !important; line-height: 1.3; margin: 0.2rem 0; }
+    .page-hero { padding: 0.65rem 0; }
+    .page-hero h1 { font-size: 1.32rem; margin: 0.15rem 0; }
+    .page-hero p { font-size: 0.82rem !important; line-height: 1.3; margin: 0.2rem 0 0; }
+    #skid-main-section { padding-top: 0.65rem; }
   }
 </style>

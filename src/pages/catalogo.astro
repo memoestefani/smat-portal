@@ -4,8 +4,8 @@ import TechnicalDiagrams from '../components/TechnicalDiagrams.astro';
 import CatalogAvenuesMatrix from '../components/CatalogAvenuesMatrix.astro';
 import atomicParts from '../../data/atomic_parts.json';
 import rolesData from '../../data/roles.json';
-import { PIPE_SERIES_DIAMETER_MM, WET_END_MATERIAL_MATRIX } from '../scripts/slurryEngine.js';
-import { getAtomicPartSpecs, formatNioshErgonomicStatus, buildWizardUrl } from '../scripts/workbenchBus.js';
+import { PIPE_SERIES_DIAMETER_MM, PIPE_DIAMETERS_MM, WET_END_MATERIAL_MATRIX } from '../scripts/slurryEngine.js';
+import { ATOMIC_PARTS_SSOT_COUNT, getAtomicPartSpecs, formatNioshErgonomicStatus, buildWizardUrl } from '../scripts/workbenchBus.js';
 import { getQuickProductsByAvenue, verifyCatalogReferentialIntegrity, verifyDiagramSurjectivity } from '../scripts/quickProductsCatalog.js';
 
 const title = "Catálogo Técnico Digital 2026 | Bombas para Lodos, Mecanismos de Flotación, Filtros Prensa y Balanzas | SMAT Minerals";
@@ -18,6 +18,7 @@ const wetEndMaterialsList = [
 const quickByAvenue = getQuickProductsByAvenue();
 const catalogIntegrity = verifyCatalogReferentialIntegrity();
 const diagramSurjectivity = verifyDiagramSurjectivity();
+const canonicalSeriesCount = Object.keys(PIPE_DIAMETERS_MM).length;
 const controlVertical = rolesData.verticals.find((v) => v.id === 'control_procesos' || v.id === 'balanzas_marcy');
 const controlProcessItems = controlVertical ? [...(controlVertical.capex || []), ...(controlVertical.opex || [])] : [];
 const enrichedAtomicParts = atomicParts.map((part) => {
@@ -72,6 +73,63 @@ const enrichedAtomicParts = atomicParts.map((part) => {
         <span class="doc-contact">Tel: (618) 810-4408 • Guardia: (618) 367-0664 • ventas@smatminerals.com</span>
       </div>
     </header>
+
+    <!-- INSTRUMENTO ESTRATO 1: Verificador de Equivalencia Dimensional (Drop-In) + Telemetría SSOT -->
+    <section
+      id="stratum1-dropin-verifier"
+      class="card no-print"
+      data-stratum-1-instrument
+      data-dropin-verifier
+      style="margin: 0.5rem 0 1rem 0; padding: 0.95rem 1.1rem; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #ffffff;"
+    >
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.75rem;">
+        <div>
+          <span style="display: inline-block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.04em; color: #7c2d12; text-transform: uppercase;">
+            HERRAMIENTA DE INGENIERÍA DE COMPATIBILIDAD
+          </span>
+          <h2 style="margin: 0.2rem 0 0.25rem 0; font-size: 1.15rem; color: #0f172a;">
+            Verificador de Equivalencia Dimensional (Drop-In)
+          </h2>
+          <p style="margin: 0; font-size: 0.86rem; color: #334155;">
+            Valide el intercambio 1:1 de códigos de plano (ej. E4147, E4110, D3147, DAM005, SMAT-PUMP-6X4) por brida y geometría de acoplamiento sin modificar bancada ni tubería existente.
+          </p>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: center;">
+          <span style="background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.28rem 0.6rem; font-size: 0.76rem; font-weight: 700;">
+            {ATOMIC_PARTS_SSOT_COUNT} Piezas Atómicas
+          </span>
+          <span style="background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.28rem 0.6rem; font-size: 0.76rem; font-weight: 700;">
+            {canonicalSeriesCount} Series Hidráulicas
+          </span>
+          <span data-ssot-integrity-badge style="background: #ecfdf5; color: #064e3b; border: 1px solid #059669; border-radius: 6px; padding: 0.28rem 0.6rem; font-size: 0.76rem; font-weight: 700;">
+            {catalogIntegrity.valid ? 'Integridad Referencial: Verificada' : 'Integridad Referencial: Revisar'}
+          </span>
+          <span data-ssot-surjectivity-badge style="background: #ecfdf5; color: #064e3b; border: 1px solid #059669; border-radius: 6px; padding: 0.28rem 0.6rem; font-size: 0.76rem; font-weight: 700;">
+            {diagramSurjectivity.surjective ? 'Cobertura CAD: 100%' : 'Cobertura CAD: Parcial'}
+          </span>
+        </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center;">
+        <input
+          type="text"
+          data-dropin-input
+          placeholder="Ingrese código de plano o SKU (ej. E4147, D3147, DAM005, SMAT-ULTRAMET-6X4)..."
+          style="flex: 1 1 280px; min-height: 48px; padding: 0.55rem 0.85rem; border: 1.5px solid #64748b; border-radius: 8px; font-size: 0.9rem; color: #0f172a; background: #ffffff; box-sizing: border-box;"
+        />
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-dropin-btn
+          style="min-height: 48px; padding: 0.6rem 1.2rem; background: #0c4a6e; color: #ffffff; border: 1.5px solid #0c4a6e; border-radius: 8px; font-weight: 800; font-size: 0.86rem; cursor: pointer;"
+        >
+          Verificar Equivalencia →
+        </button>
+      </div>
+      <div
+        data-dropin-result
+        style="display: none; margin-top: 0.7rem; padding: 0.75rem 0.95rem; border-radius: 8px; background: #f8fafc; border: 1px solid #cbd5e1; font-size: 0.84rem; color: #0f172a;"
+      ></div>
+    </section>
 
     <div class="catalog-intro-banner no-print">
       <div class="intro-icon">
@@ -606,7 +664,7 @@ const enrichedAtomicParts = atomicParts.map((part) => {
   .catalog-page-container {
     max-width: 1180px;
     margin: 0 auto;
-    padding: 1.5rem 1rem 4rem;
+    padding: clamp(0.45rem, 1.3vw, 1.15rem) 1rem 3.5rem;
     font-family: var(--smat-font-ui);
     color: var(--smat-text-primary);
   }
@@ -619,11 +677,11 @@ const enrichedAtomicParts = atomicParts.map((part) => {
     background: #ffffff;
     border: 1px solid var(--smat-border-medium);
     border-radius: var(--smat-radius-md);
-    padding: 0.75rem 1.25rem;
-    margin-bottom: 2rem;
+    padding: 0.45rem 0.85rem;
+    margin-bottom: clamp(0.5rem, 1.2vw, 1rem);
     box-shadow: var(--smat-shadow-sm);
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 0.5rem;
   }
 
   .action-bar-left {
@@ -696,16 +754,16 @@ const enrichedAtomicParts = atomicParts.map((part) => {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    border-bottom: 3px solid #0f172a;
-    padding-bottom: 1.25rem;
-    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: clamp(0.45rem, 1vw, 0.85rem);
+    margin-bottom: clamp(0.5rem, 1.1vw, 0.9rem);
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 0.45rem 1rem;
   }
 
   .brand-title {
     font-family: var(--smat-font-editorial);
-    font-size: 2.1rem;
+    font-size: clamp(1.3rem, 2.5vw, 1.9rem);
     font-weight: 800;
     letter-spacing: 0.04em;
     color: #090d16;
@@ -1256,5 +1314,18 @@ const enrichedAtomicParts = atomicParts.map((part) => {
       });
     });
   })();
+</script>
+
+<script>
+  import { bindDropInEquivalenceVerifier } from '../scripts/catalogDropInAndJrpProjector.js';
+  import { bindAtomicPartTrayButtons } from '../scripts/verticalStateAndCtaSyncBridge.js';
+
+  function initCatalogInstruments() {
+    bindDropInEquivalenceVerifier(document, 'es');
+    bindAtomicPartTrayButtons(document);
+  }
+
+  initCatalogInstruments();
+  document.addEventListener('astro:page-load', initCatalogInstruments);
 </script>
 

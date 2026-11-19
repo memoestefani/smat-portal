@@ -210,11 +210,12 @@ pub fn check_v45_ergos_apple_hig_and_backend_parity_gate_48(
         "src/pages/en/pumping/bearing-assembly.astro",
     ] {
         let bearing_src = fs::read_to_string(site_root.join(bearing_rel)).map_err(|e| e.to_string())?;
-        if !bearing_src.contains("commitVerticalSimulation('bombeo'")
+        if (!bearing_src.contains("commitVerticalSimulation('bombeo'")
+            && !bearing_src.contains("initBearingSupportInspector"))
             || bearing_src.contains("saveEngineeringContextSnapshot('bombeo'")
         {
             return Err(format!(
-                "Gate 48G (D1-V46 DEB-V46-01): {} debe usar commitVerticalSimulation('bombeo', ...) en lugar de saveEngineeringContextSnapshot aislado",
+                "Gate 48G (D1-V46 DEB-V46-01): {} debe usar commitVerticalSimulation('bombeo', ...) o initBearingSupportInspector en lugar de saveEngineeringContextSnapshot aislado",
                 bearing_rel
             ));
         }

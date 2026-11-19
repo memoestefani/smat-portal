@@ -15,22 +15,135 @@ const dc = soporteRole?.decision_criteria;
   description="Bearing Assembly / Housing: equipo completo ensamblado con carcasa cilíndrica, flecha, rodamientos cónicos y sellos laberinto para bombas de lodos."
   lang="es"
 >
-  <section class="page-hero">
+  <section class="page-hero smat-compact-hero">
     <div class="container">
       <a href="/bombeo/" class="back-link">← Volver a Bombas para Lodos</a>
-      <div style="margin-top: 1rem;">
-        <span class="badge badge-copper">EQUIPO COMPLETO ENSAMBLADO</span>
+      <div style="margin-top: 0.3rem;">
+        <span class="badge badge-copper">ESTACIÓN 01 · BEARING ASSEMBLY / HOUSING</span>
       </div>
       <h1>Bearing Assembly / Housing</h1>
-      <p style="font-size: 1.08rem; max-width: 700px; color: var(--smat-text-secondary);">
-        Cartucho cilíndrico completo (<strong>Bearing Assembly / Housing</strong>) listo para instalarse en el bastidor de la bomba para lodos.
+      <p class="smat-hero-sub">
+        Calibración en vivo de vida modificada ISO 281 L₁₀ₘₕ, bastidor recomendado e intercambio Core Trade-In DAM005 (-22% / -12%).
       </p>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section smat-stage-compact">
     <div class="container">
-      <!-- Diagrama Técnico Principal del Bearing Assembly / Housing -->
+      <!-- ESTRATO 1: Inspector Cinemático ISO 281:2007 L10h y L10mh + Acción Dual -->
+      <div class="card" id="stratum1-bearing-inspector" data-bearing-inspector data-stratum-1-instrument style="margin-bottom: 1.5rem; background: #f8fafc; border: 1.5px solid #cbd5e1; padding: clamp(0.7rem, 1.4vw, 1.1rem);">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.45rem; margin-bottom:0.45rem;">
+          <span class="badge badge-copper">MEMORIA ISO 281:2007 (p = 10/3)</span>
+          <span class="font-mono-tech" style="font-size:0.75rem; font-weight:700; color:#0c4a6e;">L₁₀ₘₕ = a_ISO(e_c·C_u/P, κ) · (C/P)^(10/3)</span>
+        </div>
+        <h2 style="margin:0 0 0.45rem; font-size: clamp(0.98rem, 1.4vw, 1.12rem);">Inspector de Vida Modificada L₁₀ₘₕ (Sello Laberinto vs Fieltro Contaminado) y Carga Radial Fᵣ</h2>
+
+        <div class="smat-stratum1-display">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.45rem;">
+            <div style="background:#ecfdf5; border:1px solid #059669; border-radius:8px; padding:0.5rem 0.65rem;">
+              <span class="font-mono-tech" style="font-size:0.68rem; color:#064e3b; font-weight:800;">VIDA MODIFICADA SELLO LABERINTO SMAT</span>
+              <div style="font-size:1.05rem; font-weight:800; color:#064e3b;" data-bear-l10mh-lab>52,438 h (a_ISO = 1.25×)</div>
+              <div style="font-size:0.74rem; color:#064e3b;" data-bear-l10h>Base ISO 281 L₁₀h = 41,950 h (e_c ≥ 0.6)</div>
+            </div>
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:0.5rem 0.65rem;">
+              <span class="font-mono-tech" style="font-size:0.68rem; color:#334155; font-weight:800;">CARGA RADIAL BANDAS (Fᵣ) Y P_eq</span>
+              <div style="font-size:1.05rem; font-weight:800; color:var(--smat-text-primary);" data-bear-fr>6.71 kN (P = 14.81 kN)</div>
+              <div style="font-size:0.74rem; color:#334155;" data-bear-rpm>n₂ = 1001 RPM • u₂ = 19.92 m/s</div>
+            </div>
+            <div style="background:#fef2f2; border:1px solid #dc2626; border-radius:8px; padding:0.5rem 0.65rem;">
+              <span class="font-mono-tech" style="font-size:0.68rem; color:#7f1d1d; font-weight:800;">RIESGO RETENES DE FIELTRO CONTAMINADOS</span>
+              <div style="font-size:1.05rem; font-weight:800; color:#7f1d1d;" data-bear-l10mh-cont>9,229 h (a_ISO = 0.22×)</div>
+              <div style="font-size:0.74rem; color:#7f1d1d;">Ingresión de sílice (e_c ≤ 0.1) reduce vida -82%</div>
+            </div>
+            <div style="background:#f0f9ff; border:1px solid #0284c7; border-radius:8px; padding:0.5rem 0.65rem;">
+              <span class="font-mono-tech" style="font-size:0.68rem; color:#0c4a6e; font-weight:800;">BASTIDOR RECOMENDADO (P_max / n_max / Ø EJE)</span>
+              <div style="font-size:0.92rem; font-weight:800; color:#082f49;" data-bear-frame-spec>Bastidor Serie D (DAM005 • Ø Eje 75 mm)</div>
+              <div style="font-size:0.74rem; color:#0c4a6e;" data-bear-frame-limits>P_max = 110 kW • n_max = 1400 RPM • C_din = 215 kN</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="smat-inputs-2col" style="margin:0.5rem 0 0.65rem; padding:0.6rem; background:#ffffff; border:1px solid #e2e8f0; border-radius:8px;">
+          <label style="display:flex; flex-direction:column; gap:0.2rem; font-size:0.78rem; font-weight:700;">
+            <span>Arreglo Motriz (Transmisión):</span>
+            <select data-bear-arr style="padding:0.35rem; border:1px solid #cbd5e1; border-radius:6px;">
+              <option value="CV" selected>CV — Motor Superior (Overhead)</option>
+              <option value="ZVZ">ZVZ — Motor Trasero Elevado</option>
+              <option value="CRZ">CRZ — Motor Lateral en Base</option>
+              <option value="DC">DC — Acoplamiento Directo (Fᵣ = 0 kN)</option>
+            </select>
+          </label>
+          <label style="display:flex; flex-direction:column; gap:0.2rem; font-size:0.78rem; font-weight:700;">
+            <span>Capacidad Dinámica C (kN):</span>
+            <select data-bear-c style="padding:0.35rem; border:1px solid #cbd5e1; border-radius:6px;">
+              <option value="95">95 kN — Serie 3x2" / 4x3"</option>
+              <option value="195" selected>195 kN — Serie 6x4"</option>
+              <option value="285">285 kN — Serie 8x6"</option>
+              <option value="390">390 kN — Serie 10x8" / 12x10"</option>
+            </select>
+          </label>
+          <label style="display:flex; flex-direction:column; gap:0.2rem; font-size:0.78rem; font-weight:700;">
+            <span>Potencia en Eje P (kW): <strong data-bear-kw-lbl>45 kW</strong></span>
+            <input type="range" min="15" max="250" step="5" value="45" data-bear-kw />
+          </label>
+        </div>
+        <div style="margin-top:0.85rem;">
+          <div style="display:flex; flex-wrap:wrap; gap:0.65rem; align-items:center;">
+            <a
+              href="/cotizar/?circuito=bombeo&equipo=kit_rodamientos&pieza=bearing_assembly&estacion=S1&transmision=CV&cap_c_kn=195&l10h=41950#rfq"
+              class="btn btn-primary"
+              data-bear-cta
+              style="min-height:48px; display:inline-flex; align-items:center;"
+            >
+              Cotizar Bearing Assembly Calibrado →
+            </a>
+            <button
+              type="button"
+              class="btn btn-outline btn-avenue-tray"
+              data-vertical-tray-btn
+              data-add-tray-sku="SMAT-PUMP-BRG-005M"
+              data-tray-part-code="DAM005"
+              data-tray-title="Cartucho Rodamientos Completo (DAM005)"
+              data-tray-series="CV"
+              data-tray-material="GGG40"
+              data-tray-circuit="bombeo"
+              data-tray-source="bearing_stratum1_calc"
+              style="min-height: 48px;"
+            >+ Sumar SKU Calibrado a Bandeja</button>
+          </div>
+
+          <div
+            data-core-tradein-widget="DAM005"
+            style="width: 100%; margin-top: 0.75rem; padding: 0.85rem; border-radius: 8px; background: #ecfdf5; border: 1px solid #10b981; font-size: 0.78rem; color: #064e3b;"
+          >
+            <div style="font-family: var(--font-mono-tech, monospace); font-weight: 800; color: #065f46; margin-bottom: 0.35rem;">
+              ♻️ PROGRAMA SMAT CORE TRADE-IN DAM005 (-22% / -12% REMANUFACTURA H7)
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-bottom: 0.4rem;">
+              <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 700;">
+                <span>Estado de Carcasa Usada</span>
+                <select data-tradein-condition data-core-tradein-condition style="padding: 0.35rem 0.45rem; border: 1px solid #059669; border-radius: 6px; background: #ffffff; color: #1c1917; font-size: 0.75rem;">
+                  <option value="h7_intact" selected>Carcasa Íntegra Sin Fisuras (-22% • 0.78x)</option>
+                  <option value="minor_bearing_seizure">Rodamiento Amarrado / Pista Recuperable (-12% • 0.88x)</option>
+                  <option value="cracked_housing">Carcasa Fracturada o Soldada (0% • 1.00x)</option>
+                </select>
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.35rem; font-weight: 700; padding-top: 1rem;">
+                <input type="checkbox" data-tradein-not-welded data-core-tradein-toggle checked />
+                <span>Alojamiento H7 sin soldadura (ISO IT6)</span>
+              </label>
+            </div>
+            <div data-tradein-result data-core-tradein-badge style="font-family: var(--font-mono-tech, monospace); font-weight: 800; color: #065f46;">
+              Activo: -22% Crédito Core Trade-In (Factor 0.78x • RMA-CORE-DAM005-INTACT)
+            </div>
+            <div data-tradein-co2 data-core-tradein-note style="font-size: 0.72rem; color: #047857; margin-top: 0.2rem;">
+              Recepción física en Almacén Central: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (35 kg CO₂e evitados)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ESTRATO 2: Diagrama Técnico Principal del Bearing Assembly / Housing -->
       <TechnicalDiagrams diagram="bearing" lang="es" />
 
       <div class="grid-2" style="margin-top: 1.75rem;">
@@ -92,100 +205,6 @@ const dc = soporteRole?.decision_criteria;
         </div>
       </div>
 
-      <!-- Inspector Cinemático ISO 281:2007 L10h y L10mh (INV-SMAT-SCI-29) -->
-      <div class="card" data-bearing-inspector style="margin-top: 2rem; background: #f8fafc; border: 1.5px solid #cbd5e1;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.85rem;">
-          <span class="badge badge-copper">MEMORIA ISO 281:2007 (p = 10/3)</span>
-          <span class="font-mono-tech" style="font-size:0.75rem; font-weight:700; color:#0c4a6e;">L₁₀ₘₕ = a_ISO(e_c·C_u/P, κ) · (C/P)^(10/3)</span>
-        </div>
-        <h3>Inspector de Vida Modificada L₁₀ₘₕ (Sello Laberinto vs Fieltro Contaminado) y Carga Radial Fᵣ</h3>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:0.75rem; margin-top:0.85rem;">
-          <label style="display:flex; flex-direction:column; gap:0.3rem; font-size:0.8rem; font-weight:700;">
-            <span>Arreglo Motriz (Transmisión):</span>
-            <select data-bear-arr style="padding:0.4rem; border:1px solid #cbd5e1; border-radius:6px;">
-              <option value="CV" selected>CV — Motor Superior (Overhead)</option>
-              <option value="ZVZ">ZVZ — Motor Trasero Elevado</option>
-              <option value="CRZ">CRZ — Motor Lateral en Base</option>
-              <option value="DC">DC — Acoplamiento Directo (Fᵣ = 0 kN)</option>
-            </select>
-          </label>
-          <label style="display:flex; flex-direction:column; gap:0.3rem; font-size:0.8rem; font-weight:700;">
-            <span>Capacidad Dinámica C (kN):</span>
-            <select data-bear-c style="padding:0.4rem; border:1px solid #cbd5e1; border-radius:6px;">
-              <option value="95">95 kN — Serie 3x2" / 4x3"</option>
-              <option value="195" selected>195 kN — Serie 6x4"</option>
-              <option value="285">285 kN — Serie 8x6"</option>
-              <option value="390">390 kN — Serie 10x8" / 12x10"</option>
-            </select>
-          </label>
-          <label style="display:flex; flex-direction:column; gap:0.3rem; font-size:0.8rem; font-weight:700;">
-            <span>Potencia en Eje P (kW): <strong data-bear-kw-lbl>45 kW</strong></span>
-            <input type="range" min="15" max="250" step="5" value="45" data-bear-kw />
-          </label>
-        </div>
-
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:0.75rem; margin-top:1rem;">
-          <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:0.75rem;">
-            <span class="font-mono-tech" style="font-size:0.68rem; color:#475569; font-weight:800;">CARGA RADIAL BANDAS (Fᵣ) Y P_eq</span>
-            <div style="font-size:1.1rem; font-weight:800; color:var(--smat-text-primary);" data-bear-fr>6.71 kN (P = 14.81 kN)</div>
-            <div style="font-size:0.75rem; color:#334155;" data-bear-rpm>n₂ = 1001 RPM • u₂ = 19.92 m/s</div>
-          </div>
-          <div style="background:#ecfdf5; border:1px solid #6ee7b7; border-radius:8px; padding:0.75rem;">
-            <span class="font-mono-tech" style="font-size:0.68rem; color:#065f46; font-weight:800;">VIDA MODIFICADA SELLO LABERINTO SMAT</span>
-            <div style="font-size:1.1rem; font-weight:800; color:#065f46;" data-bear-l10mh-lab>52,438 h (a_ISO = 1.25×)</div>
-            <div style="font-size:0.75rem; color:#047857;" data-bear-l10h>Base ISO 281 L₁₀h = 41,950 h (e_c ≥ 0.6)</div>
-          </div>
-          <div style="background:#fef2f2; border:1px solid #fca5a5; border-radius:8px; padding:0.75rem;">
-            <span class="font-mono-tech" style="font-size:0.68rem; color:#991b1b; font-weight:800;">RIESGO RETENES DE FIELTRO CONTAMINADOS</span>
-            <div style="font-size:1.1rem; font-weight:800; color:#991b1b;" data-bear-l10mh-cont>9,229 h (a_ISO = 0.22×)</div>
-            <div style="font-size:0.75rem; color:#7f1d1d;">Ingresión de sílice (e_c ≤ 0.1) reduce vida -82%</div>
-          </div>
-          <div style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:0.75rem;">
-            <span class="font-mono-tech" style="font-size:0.68rem; color:#0c4a6e; font-weight:800;">BASTIDOR RECOMENDADO (P_max / n_max / Ø EJE)</span>
-            <div style="font-size:0.95rem; font-weight:800; color:#082f49;" data-bear-frame-spec>Bastidor Serie D (DAM005 • Ø Eje 75 mm)</div>
-            <div style="font-size:0.74rem; color:#0369a1;" data-bear-frame-limits>P_max = 110 kW • n_max = 1400 RPM • C_din = 215 kN</div>
-          </div>
-        </div>
-        <div style="margin-top:0.85rem;">
-          <a
-            href="/cotizar/?circuito=bombeo&equipo=kit_rodamientos&pieza=bearing_assembly&estacion=S1&transmision=CV&cap_c_kn=195&l10h=41950#rfq"
-            class="btn btn-primary"
-            data-bear-cta
-          >
-            Cotizar Bearing Assembly Calibrado →
-          </a>
-
-          <div
-            data-core-tradein-widget="DAM005"
-            style="width: 100%; margin-top: 0.75rem; padding: 0.85rem; border-radius: 8px; background: #ecfdf5; border: 1px solid #10b981; font-size: 0.78rem; color: #064e3b;"
-          >
-            <div style="font-family: var(--font-mono-tech, monospace); font-weight: 800; color: #065f46; margin-bottom: 0.35rem;">
-              ♻️ PROGRAMA SMAT CORE TRADE-IN DAM005 (-22% / -12% REMANUFACTURA H7)
-            </div>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-bottom: 0.4rem;">
-              <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 700;">
-                <span>Estado de Carcasa Usada</span>
-                <select data-tradein-condition data-core-tradein-condition style="padding: 0.35rem 0.45rem; border: 1px solid #059669; border-radius: 6px; background: #ffffff; color: #1c1917; font-size: 0.75rem;">
-                  <option value="h7_intact" selected>Carcasa Íntegra Sin Fisuras (-22% • 0.78x)</option>
-                  <option value="minor_bearing_seizure">Rodamiento Amarrado / Pista Recuperable (-12% • 0.88x)</option>
-                  <option value="cracked_housing">Carcasa Fracturada o Soldada (0% • 1.00x)</option>
-                </select>
-              </label>
-              <label style="display: flex; align-items: center; gap: 0.35rem; font-weight: 700; padding-top: 1rem;">
-                <input type="checkbox" data-tradein-not-welded data-core-tradein-toggle checked />
-                <span>Alojamiento H7 sin soldadura (ISO IT6)</span>
-              </label>
-            </div>
-            <div data-tradein-result data-core-tradein-badge style="font-family: var(--font-mono-tech, monospace); font-weight: 800; color: #065f46;">
-              Activo: -22% Crédito Core Trade-In (Factor 0.78x • RMA-CORE-DAM005-INTACT)
-            </div>
-            <div data-tradein-co2 data-core-tradein-note style="font-size: 0.72rem; color: #047857; margin-top: 0.2rem;">
-              Recepción física en Almacén Central: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (35 kg CO₂e evitados)
-            </div>
-          </div>
-        </div>
-      </div>
-
       <SharePurchasing
         roleTitle="Bearing Assembly / Housing Completo"
         series="Series 4x3 a 10x8 (Succión × Descarga)"
@@ -200,76 +219,12 @@ const dc = soporteRole?.decision_criteria;
 </BaseLayout>
 
 <script>
-  import { calculateDriveAndBearingKinematics } from '../../scripts/slurryEngine.js';
-  import { selectBearingFrameByPowerAndRpm } from '../../scripts/pumpAssemblyAndDriveEngine.js';
-  import { initCoreTradeInWidgets } from '../../scripts/vendorPassportAndTradeInController.js';
-  import { commitVerticalSimulation } from '../../scripts/verticalStateAndCtaSyncBridge.js';
-
-  function initBearingInspector() {
-    initCoreTradeInWidgets(document, 'es');
-    const box = document.querySelector('[data-bearing-inspector]');
-    if (!box) return;
-    const arrSel = box.querySelector('[data-bear-arr]') as HTMLSelectElement | null;
-    const cSel = box.querySelector('[data-bear-c]') as HTMLSelectElement | null;
-    const kwInput = box.querySelector('[data-bear-kw]') as HTMLInputElement | null;
-    const kwLbl = box.querySelector('[data-bear-kw-lbl]');
-    const frEl = box.querySelector('[data-bear-fr]');
-    const rpmEl = box.querySelector('[data-bear-rpm]');
-    const l10hEl = box.querySelector('[data-bear-l10h]');
-    const labEl = box.querySelector('[data-bear-l10mh-lab]');
-    const contEl = box.querySelector('[data-bear-l10mh-cont]');
-    const frameSpecEl = box.querySelector('[data-bear-frame-spec]');
-    const frameLimEl = box.querySelector('[data-bear-frame-limits]');
-
-    const update = () => {
-      const arrangement = arrSel?.value || 'CV';
-      const dynamicCapacityCkN = Number(cSel?.value) || 195;
-      const shaftPowerKw = Number(kwInput?.value) || 45;
-      if (kwLbl) kwLbl.textContent = `${shaftPowerKw} kW`;
-      const res = calculateDriveAndBearingKinematics({
-        arrangement,
-        dynamicCapacityCkN,
-        shaftPowerKw
-      });
-      const frameEval = selectBearingFrameByPowerAndRpm(shaftPowerKw, res.pumpRpm, '6x4');
-      if (frEl) frEl.textContent = `${res.beltRadialLoadKn.toFixed(2)} kN (P = ${res.equivalentLoadPkN.toFixed(2)} kN)`;
-      if (rpmEl) rpmEl.textContent = `n₂ = ${res.pumpRpm} RPM • u₂ = ${res.tipSpeedMs.toFixed(2)} m/s`;
-      if (l10hEl) l10hEl.textContent = `Base ISO 281 L₁₀h = ${res.bearingL10Hours.toLocaleString('es-MX')} h (e_c ≥ 0.6)`;
-      if (labEl) labEl.textContent = `${res.l10mhLabyrinthHours.toLocaleString('es-MX')} h (a_ISO = ${res.aIsoLabyrinthSmat}×)`;
-      if (contEl) contEl.textContent = `${res.l10mhContaminatedHours.toLocaleString('es-MX')} h (a_ISO = ${res.aIsoContaminatedFelt}×)`;
-      if (frameSpecEl) frameSpecEl.textContent = `${frameEval.labelEs} (Ø Eje ${frameEval.shaftDiameterMm} mm)`;
-      if (frameLimEl) frameLimEl.textContent = `P_max = ${frameEval.maxPowerKw} kW • n_max = ${frameEval.maxRpm} RPM • C_din = ${frameEval.recommendedDynamicCkN} kN`;
-      commitVerticalSimulation('bombeo', { ...res, ...frameEval }, {
-        root: document,
-        queryPatch: {
-          transmision: res.arrangement,
-          cap_c_kn: res.dynamicCapacityCkN,
-          power_kw: res.shaftPowerKw,
-          fr_kn: res.beltRadialLoadKn.toFixed(2),
-          l10h: res.bearingL10Hours,
-        },
-      });
-    };
-
-    [arrSel, cSel, kwInput].forEach((el) => {
-      el?.addEventListener('input', update);
-      el?.addEventListener('change', update);
-    });
-    update();
-  }
-
-  initBearingInspector();
-  document.addEventListener('astro:page-load', initBearingInspector);
+  import { initBearingSupportInspector } from '../../scripts/verticalBidirectionalHydrationLens.js';
+  initBearingSupportInspector(document, 'es');
+  document.addEventListener('astro:page-load', () => initBearingSupportInspector(document, 'es'));
 </script>
 
 <style>
-  .page-hero { background-color: #ffffff; color: var(--smat-text-primary); padding: 2.75rem 0; border-bottom: 2px solid var(--smat-copper-accent); }
-  .page-hero h1 { color: var(--smat-text-primary); margin-top: 0.5rem; }
-  .back-link { color: var(--smat-copper-accent); font-size: 0.9rem; font-weight: 700; text-decoration: none; }
+  .back-link { color: var(--smat-solar-accent); font-size: 0.88rem; font-weight: 700; text-decoration: none; }
   .back-link:hover { text-decoration: underline; }
-  @media (max-width: 640px) {
-    .page-hero { padding: 0.75rem 0; }
-    .page-hero h1 { font-size: 1.35rem; margin: 0.2rem 0; }
-    .page-hero p { font-size: 0.82rem !important; line-height: 1.3; margin: 0.2rem 0; }
-  }
 </style>

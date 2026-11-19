@@ -10,57 +10,104 @@
 
   /* --- PALETA LUMINOUS EXECUTIVE EDITORIAL & CORPORATE IDENTITY (Decisiones 1-B, 2-B, 3-B) --- */
   /* Paleta Corporativa Oficial SMAT Minerals (Identidad de Logotipo) */
-  --smat-navy-deep: #051B2E;         /* Fondo oscuro abisal / Lienzo institucional */
-  --smat-navy-surface: #083860;      /* Superficie técnica / MINERALS exacto */
-  --smat-navy-border: #0E4A7D;       /* Delimitación estructural 1px */
-  --smat-navy-highlight: #145994;    /* Resalte suave en interacción */
+  --smat-navy-deep: #051B2E;
+  /* Fondo oscuro abisal / Lienzo institucional */
+  --smat-navy-surface: #083860;
+  /* Superficie técnica / MINERALS exacto */
+  --smat-navy-border: #0E4A7D;
+  /* Delimitación estructural 1px */
+  --smat-navy-highlight: #145994;
+  /* Resalte suave en interacción */
 
-  --smat-blue-royal: #0c4a6e;        /* Primario Instrumental WCAG AAA Solar (9.61:1 sobre #ffffff, 8.56:1 sobre #eff6ff) */
-  --smat-blue-royal-hover: #082f49;  /* Hover de controles primarios (13.68:1) */
-  --smat-blue-royal-soft: rgba(13, 120, 198, 0.08); /* Fondo de selección */
+  --smat-blue-royal: #0c4a6e;
+  /* Primario Instrumental WCAG AAA Solar (9.61:1 sobre #ffffff, 8.56:1 sobre #eff6ff) */
+  --smat-blue-royal-hover: #082f49;
+  /* Hover de controles primarios (13.68:1) */
+  --smat-blue-royal-soft: rgba(13, 120, 198, 0.08);
+  /* Fondo de selección */
 
-  --smat-blue-vortex: #4FAEEB;       /* Acento de flujo hidrodinámico */
-  --smat-blue-vortex-glow: #7AC8F5;  /* Resplandor superior de vórtice */
-  --smat-blue-vortex-light: #E0F2FE; /* Superficie secundaria de ingeniería */
-  --smat-blue-vortex-bg: #F0F9FF;    /* Fondo de notas y badges de precisión */
+  --smat-blue-vortex: #4FAEEB;
+  /* Acento de flujo hidrodinámico */
+  --smat-blue-vortex-glow: #7AC8F5;
+  /* Resplandor superior de vórtice */
+  --smat-blue-vortex-light: #E0F2FE;
+  /* Superficie secundaria de ingeniería */
+  --smat-blue-vortex-bg: #F0F9FF;
+  /* Fondo de notas y badges de precisión */
 
   --smat-specular-vortex: linear-gradient(90deg, transparent, rgba(79, 174, 235, 0.45), transparent);
   --smat-focus-ring-blue: 0 0 0 3px rgba(13, 120, 198, 0.20);
 
   /* Fondos y Superficies Principales (Lienzo Claro Editorial) */
-  --smat-bg-page: #fafaf9;           /* Papel blanco cálido nítido */
-  --smat-canvas-bg: #fafaf9;          /* Alias lienzo claro */
-  --smat-bg-surface: #ffffff;        /* Tarjetas y módulos en blanco puro */
-  --smat-bg-subtle: #f4f4f5;         /* Superficies secundarias de apoyo */
-  --smat-bg-contrast: var(--smat-navy-deep);       /* Marco Deep Mineral Navy para acentos */
-  --smat-navy-950: var(--smat-navy-deep);          /* Alias Deep Mineral Navy */
+  --smat-bg-page: #fafaf9;
+  /* Papel blanco cálido nítido */
+  --smat-canvas-bg: #fafaf9;
+  /* Alias lienzo claro */
+  --smat-bg-surface: #ffffff;
+  /* Tarjetas y módulos en blanco puro */
+  --smat-bg-subtle: #f4f4f5;
+  /* Superficies secundarias de apoyo */
+  --smat-bg-contrast: var(--smat-navy-deep);
+  /* Marco Deep Mineral Navy para acentos */
+  --smat-navy-950: var(--smat-navy-deep);
+  /* Alias Deep Mineral Navy */
 
   /* Textos y Jerarquía Tipográfica (Polaridad Solar WCAG AAA >= 7.0:1) */
-  --smat-text-primary: #090d16;      /* Tinta carbón profundo (máxima legibilidad) */
-  --smat-text-secondary: #1e293b;    /* Gris pizarra solar AAA (~12.9:1 sobre blanco) */
-  --smat-text-muted: #334155;        /* Subtítulos y metadatos AAA (~9.8:1 sobre blanco) */
-  --smat-text-inverse: #ffffff;      /* Texto sobre fondos oscuros */
+  --smat-text-primary: #090d16;
+  /* Tinta carbón profundo (máxima legibilidad) */
+  --smat-text-secondary: #1e293b;
+  /* Gris pizarra solar AAA (~12.9:1 sobre blanco) */
+  --smat-text-muted: #334155;
+  /* Subtítulos y metadatos AAA (~9.8:1 sobre blanco) */
+  --smat-text-inverse: #ffffff;
+  /* Texto sobre fondos oscuros */
 
   /* Bordes y Líneas de Precisión */
-  --smat-border-light: #e2e8f0;      /* Línea fina milimétrica */
-  --smat-border-medium: #cbd5e1;     /* Borde de tarjeta y tabla */
-  --smat-border-focus: #7c2d12;      /* Enfoque en cobre mineral AAA */
+  --smat-border-light: #e2e8f0;
+  /* Línea fina milimétrica */
+  --smat-border-medium: #cbd5e1;
+  /* Borde de tarjeta y tabla */
+  --smat-border-focus: #7c2d12;
+  /* Enfoque en cobre mineral AAA */
 
   /* Acentos de Planta e Industria Metalúrgica (Fotometría Solar AAA >= 8.5:1) */
-  --smat-copper-accent: #7c2d12;     /* Cobre forjado oscuro AAA (10.65:1 sobre #ffffff, 10.18:1 sobre #fafaf9) */
-  --smat-copper-hover: #431407;      /* Hover cobre profundo (15.42:1) */
-  --smat-copper-light: #fff7ed;      /* Fondo tenue cobre */
+  --smat-copper-accent: #7c2d12;
+  /* Cobre forjado oscuro AAA (10.65:1 sobre #ffffff, 10.18:1 sobre #fafaf9) */
+  --smat-copper-hover: #431407;
+  /* Hover cobre profundo (15.42:1) */
+  --smat-copper-light: #fff7ed;
+  /* Fondo tenue cobre */
   --smat-copper-border: #ea580c;
   --smat-copper-glow: rgba(194, 94, 0, 0.15);
 
-  /* Polaridad Solar AAA (Tajo Abierto 50,000 lux - WCAG 2.1 AAA >= 7.0:1) */
+  /* Polaridad Solar AAA (Tajo Abierto 50,000 lux - WCAG 2.1 AAA >= 7.0:1 + APCA |Lc| >= 75) */
   --smat-copper-surface-aaa: #E56B38;
   --smat-on-copper-aaa: #090D16;
   --smat-whatsapp-surface-aaa: #25D366;
   --smat-on-whatsapp-aaa: #090D16;
+  --smat-solar-bg: #f8fafc;
+  --smat-solar-surface: #ffffff;
+  --smat-solar-ink: #0f172a;
+  --smat-solar-muted: #334155;
+  --smat-solar-border: #cbd5e1;
+  --smat-solar-accent: #7c2d12;
+  --smat-solar-amber-bg: #fffbeb;
+  --smat-solar-amber-ink: #7c2d12;
+  --smat-solar-amber-border: #92400e;
+  --smat-solar-emerald: #064e3b;
+  --smat-solar-emerald-bg: #ecfdf5;
+  --smat-solar-emerald-ink: #064e3b;
+  --smat-solar-emerald-border: #059669;
+  --smat-solar-sky-ink: #0c4a6e;
+
+  /* Ritmo Vertical Fluido Above-the-Fold (D1-V481 / clamp()) */
+  --smat-hero-pad-y: clamp(0.42rem, 1.2vw, 0.85rem);
+  --smat-h1-op: clamp(1.22rem, 2.4vw, 1.65rem);
+  --smat-stage-pad-top: clamp(0.45rem, 1.3vw, 1.05rem);
 
   /* Estatus Operativo & Disponibilidad en Planta */
-  --smat-emerald-stock: #059669;     /* Verde disponibilidad e inspección en planta */
+  --smat-emerald-stock: #059669;
+  /* Verde disponibilidad e inspección en planta */
   --smat-emerald-bg: #ecfdf5;
   --smat-emerald-border: #10b981;
   --smat-emerald-text: #065f46;
@@ -98,21 +145,20 @@
   --apple-bg-surface: #111622;
   --apple-bg-surface-elevated: #161d2e;
   --apple-bg-surface-hover: #1d263b;
-  
+
   --apple-border-subtle: rgba(255, 255, 255, 0.06);
   --apple-border-standard: rgba(255, 255, 255, 0.10);
   --apple-border-specular: inset 0 1px 0 rgba(255, 255, 255, 0.12);
   --apple-shadow-elevation: 0 8px 32px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  
+
   --apple-font-mono: "SF Mono", "Roboto Mono", "JetBrains Mono", ui-monospace, monospace;
-  
+
   --apple-status-green: #10b981;
   --apple-status-amber: #f59e0b;
   --apple-status-red: #ef4444;
   --apple-accent-blue: #38bdf8;
   --apple-titanium: #94a3b8;
-  
+
   --apple-spring-snappy: cubic-bezier(0.16, 1, 0.3, 1);
   --apple-spring-smooth: 240ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-
