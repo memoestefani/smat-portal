@@ -51,7 +51,7 @@ pub fn check_v45_ergos_apple_hig_and_backend_parity_gate_48(
     }
 
     for skid_rel in ["src/pages/bombeo/skid.astro", "src/pages/en/pumping/skid.astro"] {
-        let skid_src = fs::read_to_string(site_root.join(skid_rel)).map_err(|e| e.to_string())?;
+        let skid_src = crate::read_page_with_islands_composite(site_root, skid_rel)?;
         if !skid_src.contains("circuito=bombeo&equipo=skid_bomba") {
             return Err(format!(
                 "Gate 48A (D1-V45): {} debe incluir circuito=bombeo&equipo=skid_bomba en su CTA dinámico [data-kin-cta]",
@@ -68,7 +68,7 @@ pub fn check_v45_ergos_apple_hig_and_backend_parity_gate_48(
         "src/pages/flotacion/celdas.astro",
         "src/pages/clasificacion/index.astro",
     ] {
-        let page_src = fs::read_to_string(site_root.join(void_rel)).map_err(|e| e.to_string())?;
+        let page_src = crate::read_page_with_islands_composite(site_root, void_rel)?;
         if page_src.contains("void enrichTrayItemsPreservingMetadata")
             || page_src.contains("void saveEngineeringContextSnapshot")
         {
@@ -93,7 +93,7 @@ pub fn check_v45_ergos_apple_hig_and_backend_parity_gate_48(
 
     // 3. Sub-candado 48C: Calculadora Gorain S_b + Zwietering N_js y SharePurchasing en /flotacion/ (D3-V45)
     for flot_rel in ["src/pages/flotacion/index.astro", "src/pages/en/flotation/index.astro"] {
-        let flot_src = fs::read_to_string(site_root.join(flot_rel)).map_err(|e| e.to_string())?;
+        let flot_src = crate::read_page_with_islands_composite(site_root, flot_rel)?;
         for needle in [
             "id=\"celdas-gorain-readout\"",
             "bindCanonicalFlotationCalculator",
@@ -122,7 +122,7 @@ pub fn check_v45_ergos_apple_hig_and_backend_parity_gate_48(
         );
     }
     for cat_rel in ["src/pages/catalogo.astro", "src/pages/en/catalog.astro"] {
-        let cat_src = fs::read_to_string(site_root.join(cat_rel)).map_err(|e| e.to_string())?;
+        let cat_src = crate::read_page_with_islands_composite(site_root, cat_rel)?;
         if !cat_src.contains("<CatalogAvenuesMatrix") || !cat_src.contains("hybrid_a05_r55") {
             return Err(format!(
                 "Gate 48D (D4-V45 DEB-V45-06): {} debe montar <CatalogAvenuesMatrix /> e incluir hybrid_a05_r55",
@@ -161,9 +161,8 @@ pub fn check_v45_ergos_apple_hig_and_backend_parity_gate_48(
         );
     }
 
-    // 6. Sub-candado 48F: IDs SVG únicos en TechnicalDiagrams.astro (INV-ERG-23), tour.toml y ergonomía Fitts/Contraste (D6-V45..D10-V45)
-    let diag_svg_src = fs::read_to_string(site_root.join("src/components/TechnicalDiagrams.astro"))
-        .map_err(|e| e.to_string())?;
+    // 6. Sub-candado 48F: IDs SVG únicos en TechnicalDiagrams compuesto (INV-ERG-23), tour.toml y ergonomía Fitts/Contraste (D6-V45..D10-V45)
+    let diag_svg_src = crate::read_technical_diagrams_composite(site_root)?;
     if !diag_svg_src.contains("id={`grid-flot-${uid}`}")
         || !diag_svg_src.contains("id={`grid-marcy-${uid}`}")
         || !diag_svg_src.contains("id={`grid-sieves-${uid}`}")
@@ -209,7 +208,7 @@ pub fn check_v45_ergos_apple_hig_and_backend_parity_gate_48(
         "src/pages/bombeo/soporte.astro",
         "src/pages/en/pumping/bearing-assembly.astro",
     ] {
-        let bearing_src = fs::read_to_string(site_root.join(bearing_rel)).map_err(|e| e.to_string())?;
+        let bearing_src = crate::read_page_with_islands_composite(site_root, bearing_rel)?;
         if (!bearing_src.contains("commitVerticalSimulation('bombeo'")
             && !bearing_src.contains("initBearingSupportInspector"))
             || bearing_src.contains("saveEngineeringContextSnapshot('bombeo'")
@@ -227,7 +226,7 @@ pub fn check_v45_ergos_apple_hig_and_backend_parity_gate_48(
         "src/pages/en/pumping/impeller.astro",
         "src/pages/en/pumping/liners.astro",
     ] {
-        let wet_src = fs::read_to_string(site_root.join(wet_rel)).map_err(|e| e.to_string())?;
+        let wet_src = crate::read_page_with_islands_composite(site_root, wet_rel)?;
         if !wet_src.contains("hybrid_a05_r55")
             || !wet_src.contains("data-card-fixed-params=\"material\"")
             || !wet_src.contains("<span id=\"trib-kic-out\">18.5 MPa·√m</span>")
@@ -244,7 +243,7 @@ pub fn check_v45_ergos_apple_hig_and_backend_parity_gate_48(
         "src/pages/bombeo/sello.astro",
         "src/pages/en/pumping/seal.astro",
     ] {
-        let seal_src = fs::read_to_string(site_root.join(seal_rel)).map_err(|e| e.to_string())?;
+        let seal_src = crate::read_page_with_islands_composite(site_root, seal_rel)?;
         if !seal_src.contains("data-card-fixed-params=\"seal_branch\"")
             || !seal_src.contains("<span id=\"seal-pbox-out\">88.8 kPa</span>")
             || !seal_src.contains("bindAtomicPartTrayButtons")
@@ -257,7 +256,7 @@ pub fn check_v45_ergos_apple_hig_and_backend_parity_gate_48(
     }
 
     for cat_rel in ["src/pages/catalogo.astro", "src/pages/en/catalog.astro"] {
-        let cat_src = fs::read_to_string(site_root.join(cat_rel)).map_err(|e| e.to_string())?;
+        let cat_src = crate::read_page_with_islands_composite(site_root, cat_rel)?;
         if cat_src.contains("?equipo=skid_bomba&serie=")
             || !cat_src.contains("data-tray-source=\"catalog_fichas_atomicas\"")
         {
@@ -316,14 +315,13 @@ pub fn check_v45_ergos_apple_hig_and_backend_parity_gate_48(
     }
 
     for home_rel in ["src/pages/index.astro", "src/pages/en/index.astro"] {
-        let home_src = fs::read_to_string(site_root.join(home_rel)).map_err(|e| e.to_string())?;
+        let home_src = crate::read_page_with_islands_composite(site_root, home_rel)?;
         if !home_src.contains("getQuickProductsByAvenue")
-            || !home_src.contains("data-home-avenue-group={meta.id}")
-            || !home_src.contains("bindHomeCatalogDrawerAndDropIn")
+            || home_src.contains("home-quick-catalog-drawer")
             || home_src.contains("function matchesFamilyFilter")
         {
             return Err(format!(
-                "Gate 48H (D2-V47 DEB-V47-02/03): {} debe agrupar #home-quick-catalog-drawer por 7 Avenidas (getQuickProductsByAvenue + data-home-avenue-group) y delegar en bindHomeCatalogDrawerAndDropIn",
+                "Gate 48H (D2-V47 / DEB-V50-01): {} debe delegar en HomeLandingIsland (getQuickProductsByAvenue) y erradicar #home-quick-catalog-drawer",
                 home_rel
             ));
         }
@@ -344,11 +342,19 @@ pub fn check_v45_ergos_apple_hig_and_backend_parity_gate_48(
         }
     }
 
+    let catalog_island_src = fs::read_to_string(site_root.join("src/components/islands/CatalogFacetedIsland.astro"))
+        .map_err(|e| e.to_string())?;
+    if !catalog_island_src.contains("getQuickProductsByAvenue")
+        || !catalog_island_src.contains("avenueKeys")
+    {
+        return Err("Gate 48H (D2-V47 / V5.0): CatalogFacetedIsland.astro debe exponer el catálogo facetado de 7 Avenidas / 19 SKUs".to_string());
+    }
+
     for eq_rel in [
         "src/pages/equipos/index.astro",
         "src/pages/en/process-equipment/index.astro",
     ] {
-        let eq_src = fs::read_to_string(site_root.join(eq_rel)).map_err(|e| e.to_string())?;
+        let eq_src = crate::read_page_with_islands_composite(site_root, eq_rel)?;
         for req_token in [
             "getQuickProductsCatalog",
             "id=\"equipos-sku-search\"",

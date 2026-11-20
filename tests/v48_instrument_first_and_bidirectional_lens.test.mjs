@@ -449,6 +449,16 @@ test('D7-V48 / D8-V48 / D6-V48 / D9-V48: JRP Paro de Planta, Drop-In Verifier, M
   assert.equal(bindAtomicPartTrayButtons(new MockNode('div', {}, [trayBtn])), 1);
 });
 
+function readPageWithIslandsComposite(rel) {
+  let src = fs.readFileSync(path.join(SITE_ROOT, rel), 'utf8');
+  const islandDir = path.join(SITE_ROOT, 'src/components/islands');
+  src = src.replace(/<([A-Z][A-Za-z0-9]*Island)\b[^>]*\/>/g, (_m, islandName) => {
+    const islandPath = path.join(islandDir, `${islandName}.astro`);
+    return fs.existsSync(islandPath) ? fs.readFileSync(islandPath, 'utf8') : '';
+  });
+  return src;
+}
+
 test('D1-V48 / D5-V48 / DEB-V48-03..05: Estrato 1 Above-the-Fold, paridad bilingüe y cero metalenguaje visible en V4.8', () => {
   const stratum1WithDiagram = [
     'src/pages/bombeo/impulsor.astro',
@@ -478,7 +488,7 @@ test('D1-V48 / D5-V48 / DEB-V48-03..05: Estrato 1 Above-the-Fold, paridad biling
   ];
 
   for (const rel of stratum1WithDiagram) {
-    const src = fs.readFileSync(path.join(SITE_ROOT, rel), 'utf8');
+    const src = readPageWithIslandsComposite(rel);
     const idxInst = src.indexOf('data-stratum-1-instrument');
     const idxDiag = src.indexOf('<TechnicalDiagrams');
     assert.ok(idxInst !== -1, `${rel} debe declarar data-stratum-1-instrument`);
@@ -493,7 +503,7 @@ test('D1-V48 / D5-V48 / DEB-V48-03..05: Estrato 1 Above-the-Fold, paridad biling
     'src/pages/control-de-procesos/index.astro',
     'src/pages/en/process-control/index.astro'
   ]) {
-    const src = fs.readFileSync(path.join(SITE_ROOT, metRel), 'utf8');
+    const src = readPageWithIslandsComposite(metRel);
     const idxInst = src.indexOf('data-stratum-1-instrument');
     const idxGrid = src.indexOf('control-equipment-grid');
     assert.ok(idxInst !== -1 && idxGrid !== -1 && idxInst < idxGrid, `${metRel} debe colocar #metrology-calculator arriba de .control-equipment-grid`);
@@ -503,7 +513,7 @@ test('D1-V48 / D5-V48 / DEB-V48-03..05: Estrato 1 Above-the-Fold, paridad biling
   }
 
   for (const catRel of ['src/pages/catalogo.astro', 'src/pages/en/catalog.astro']) {
-    const src = fs.readFileSync(path.join(SITE_ROOT, catRel), 'utf8');
+    const src = readPageWithIslandsComposite(catRel);
     assert.ok(src.includes('data-dropin-verifier'), `${catRel} debe incluir data-dropin-verifier`);
     assert.ok(src.includes('ATOMIC_PARTS_SSOT_COUNT'), `${catRel} debe proyectar ATOMIC_PARTS_SSOT_COUNT`);
     assert.ok(src.includes('PIPE_DIAMETERS_MM'), `${catRel} debe proyectar PIPE_DIAMETERS_MM`);
@@ -511,7 +521,7 @@ test('D1-V48 / D5-V48 / DEB-V48-03..05: Estrato 1 Above-the-Fold, paridad biling
   }
 
   for (const eqRel of ['src/pages/equipos/index.astro', 'src/pages/en/process-equipment/index.astro']) {
-    const src = fs.readFileSync(path.join(SITE_ROOT, eqRel), 'utf8');
+    const src = readPageWithIslandsComposite(eqRel);
     assert.ok(src.includes('id="equipos-dropin-match-banner"'), `${eqRel} debe montar #equipos-dropin-match-banner`);
   }
 

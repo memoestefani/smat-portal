@@ -1,0 +1,543 @@
+---
+/**
+ * HomeLandingIsland.astro
+ * ---------------------------------------------------------------------------
+ * Isla Canónica Bilingüe para / y /en/ (D2-V50, D4-V50, D7-V50, DEB-V50-01).
+ * Arquitectura de las 3 Puertas de Suministro + Verificador Drop-In + Enlaces
+ * directos a las 7 Avenidas en /catalogo/#avenue-* sin cajón inflado (>325 KB).
+ */
+import TrustMatrix from '../TrustMatrix.astro';
+import TechnicalDiagrams from '../TechnicalDiagrams.astro';
+import {
+  getQuickProductsCatalog,
+  getQuickProductsByAvenue,
+  AVENUE_METADATA as RAW_AVENUE_METADATA,
+} from '../../scripts/quickProductsCatalog.js';
+
+interface Props {
+  locale?: 'es' | 'en';
+}
+
+const { locale = 'es' } = Astro.props;
+const isEs = locale === 'es';
+const lang = locale;
+
+const AVENUE_METADATA: Record<string, any> = RAW_AVENUE_METADATA as any;
+const quickCatalog = getQuickProductsCatalog();
+const quickByAvenue: Record<string, any[]> = getQuickProductsByAvenue() as any;
+const avenueKeys = Object.keys(AVENUE_METADATA);
+
+const catalogPath = isEs ? '/catalogo/' : '/en/catalog/';
+const quotePath = isEs ? '/cotizar/' : '/en/quote/';
+const pumpingPath = isEs ? '/bombeo/' : '/en/pumping/';
+const classificationPath = isEs ? '/clasificacion/' : '/en/classification/';
+const equipmentPath = isEs ? '/equipos/' : '/en/process-equipment/';
+const controlPath = isEs ? '/control-de-procesos/' : '/en/process-control/';
+const productsPath = isEs ? '/productos/' : '/en/products/';
+---
+
+<section class="hero-home">
+  <div class="container">
+    <div class="hero-badge-pill">
+      <span class="live-dot" aria-hidden="true"></span>
+      <span>
+        {isEs
+          ? 'SMAT MINERALS • ALMACÉN CENTRAL DURANGO • SUMINISTRO PARA PLANTAS DE BENEFICIO'
+          : 'SMAT MINERALS • DURANGO CENTRAL WAREHOUSE • MINERAL PROCESSING SUPPLY'}
+      </span>
+    </div>
+
+    <h1>
+      {isEs ? 'Bombas para Lodos y Refacciones' : 'Slurry Pumps & Wear Spares'}<br />
+      <span class="hero-sub-accent">
+        {isEs
+          ? 'Mecanismos de Flotación, Filtros Prensa y Balanzas. Hidrociclones.'
+          : 'Flotation Mechanisms, Filter Presses & Pulp Density Scales. Hydrocyclones.'}
+      </span>
+    </h1>
+
+    <div class="hero-actions">
+      <a href={`${quotePath}#rfq`} class="btn btn-primary btn-lg">
+        {isEs ? 'Solicitar Cotización' : 'Request Quotation'}
+      </a>
+      <a href={catalogPath} class="btn btn-outline btn-lg">
+        {isEs
+          ? `Catálogo General (${quickCatalog.length} SKUs en ${avenueKeys.length} Avenidas)`
+          : `Master Catalog (${quickCatalog.length} SKUs across ${avenueKeys.length} Avenues)`}
+      </a>
+    </div>
+  </div>
+</section>
+
+<section
+  class="equipment-showcase-section"
+  aria-label={isEs ? 'Las Tres Puertas de Suministro SMAT' : 'The Three SMAT Supply Doors'}
+>
+  <div class="container">
+    <div class="showcase-header">
+      <span class="section-eyebrow">
+        {isEs
+          ? 'SELECCIÓN DIRECTA DE PIEZA Y EQUIPO • DIAGRAMAS CAD RAYOS X'
+          : 'DIRECT PART & EQUIPMENT SELECTION • X-RAY CAD DIAGRAMS'}
+      </span>
+      <h2>{isEs ? 'Seleccione su Pieza o Área de Suministro en Planta' : 'Select Your Spare Part or Plant Supply Area'}</h2>
+    </div>
+
+    <div class="showcase-grid">
+      <article class="showcase-card">
+        <div>
+          <div class="showcase-card-top">
+            <span class="showcase-tag">
+              {isEs ? 'Puerta 1 • Bombeo de Lodos y Refacciones' : 'Door 1 • Slurry Pumping & Wear Spares'}
+            </span>
+            <span class="showcase-series">
+              {isEs ? '1.5x1" a 14x12" • 13 Códigos' : '1.5x1" to 14x12" • 13 Codes'}
+            </span>
+          </div>
+          <h3>{isEs ? 'Bombas para Lodos y Spare Parts' : 'Slurry Pumps & Spare Parts'}</h3>
+          <TechnicalDiagrams diagram="pump" lang={lang} compact={true} />
+          <p class="door-concise-summary">
+            {isEs
+              ? 'Lotes 5-5-4 en Alto Cromo (≥650 HB), Hule, Poliuretano y SiC + Camisa D075C21 y Bearing Assembly.'
+              : '5-5-4 Wet-End Lots in High Chrome (≥650 HB), Rubber, PU & SiC + D075C21 Sleeve & Bearing Assembly.'}
+          </p>
+          <div class="part-chip-strip" aria-label={isEs ? 'Selección directa de refacción de bomba' : 'Direct slurry pump spare selection'}>
+            <a href={`${quotePath}?equipo=bombeo_hule_cromo&pieza=lote_554&material=alto_cromo_cr27#rfq`} class="part-chip part-chip--highlight">
+              {isEs ? 'Lote 5-5-4' : '5-5-4 Kit'}
+            </a>
+            <a href={`${catalogPath}d075c21/`} class="part-chip part-chip--highlight">
+              {isEs ? 'Camisa D075C21' : 'Sleeve D075C21'}
+            </a>
+            <a href={`${quotePath}?equipo=sello_expulsor&pieza=expeller_sello#rfq`} class="part-chip">
+              {isEs ? 'Expeller Seco' : 'Dry Expeller'}
+            </a>
+            <a href={`${quotePath}?equipo=soporte_rodamiento&pieza=bearing_assembly#rfq`} class="part-chip">
+              Bearing Assembly
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="pro-keyspecs-box">
+            <div class="keyspec-row">
+              <span class="ks-label">{isEs ? 'Materiales:' : 'Materials:'}</span>
+              <span class="ks-val">
+                {isEs ? 'Alto Cromo (≥650 HB), Hule, PU y SiC' : 'High Chrome (≥650 HB), Rubber, PU & SiC'}
+              </span>
+            </div>
+            <div class="keyspec-row">
+              <span class="ks-label">{isEs ? 'Lote Húmedo:' : 'Wet-End Lot:'}</span>
+              <span class="ks-val">
+                {isEs ? '5 Impulsores + 5 Cuellos + 4 Volutas' : '5 Impellers + 5 Throatbushes + 4 Volutes'}
+              </span>
+            </div>
+            <div class="keyspec-row">
+              <span class="ks-label">{isEs ? 'Reporte Despiece:' : 'Assembly Report:'}</span>
+              <span class="ks-val">
+                <a href={`${pumpingPath}#${isEs ? 'como-se-arma-una-bomba' : 'how-a-slurry-pump-is-assembled'}`} class="inline-spec-link">
+                  {isEs ? 'Cómo se arma una bomba (14 piezas) →' : 'How a pump is assembled (14 parts) →'}
+                </a>
+              </span>
+            </div>
+          </div>
+          <div class="showcase-links">
+            <a href={pumpingPath} class="showcase-cta-primary">
+              {isEs ? 'Ver Piezas y Despiece →' : 'View Parts & Exploded BOM →'}
+            </a>
+            <a href={`${quotePath}?equipo=bombeo_hule_cromo&pieza=lote_554#rfq`} class="showcase-cta-secondary">
+              {isEs ? 'Cotizar Lote 5-5-4' : 'Quote 5-5-4 Lot'}
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <article class="showcase-card">
+        <div>
+          <div class="showcase-card-top">
+            <span class="showcase-tag">
+              {isEs ? 'Puerta 2 • Clasificación y Cribado Fino' : 'Door 2 • Classification & Fine Screening'}
+            </span>
+            <span class="showcase-series">D6–D20 • TH48-30 • 1'x1'</span>
+          </div>
+          <h3>{isEs ? 'Hidrociclones y Mallas de Uretano' : 'Hydrocyclones & Urethane Screens'}</h3>
+          <TechnicalDiagrams diagram="cyclone_d6_d20" lang={lang} compact={true} />
+          <p class="door-concise-summary">
+            {isEs
+              ? "Hidrociclones D6–D20 (Apex SiC y Vortex Finder), Paquete Casado Bomba + Ciclón y Mallas de Uretano TH48-30 / 1'x1'."
+              : "D6–D20 Hydrocyclones (SiC Apex & Vortex Finder), Married Pump + Cyclone Package & TH48-30 / 1'x1' Urethane Screens."}
+          </p>
+          <div class="part-chip-strip" aria-label={isEs ? 'Selección rápida de Clasificación y Cribado' : 'Quick selection of Classification & Screening'}>
+            <a href={classificationPath} class="part-chip part-chip--highlight">
+              {isEs ? 'Hidrociclones D6–D20' : 'D6–D20 Hydrocyclones'}
+            </a>
+            <a
+              href={`${productsPath}${isEs ? 'paquete-casado-bomba-hidrociclon/' : 'coupled-pump-hydrocyclone-package/'}`}
+              class="part-chip part-chip--highlight"
+            >
+              {isEs ? 'Paquete Casado' : 'Married Package'}
+            </a>
+            <a
+              href={`${productsPath}${isEs ? 'mallas-finas-uretano-th48-30/' : 'high-frequency-urethane-screens-th48-30/'}`}
+              class="part-chip"
+            >
+              {isEs ? 'Mallas TH48-30' : 'TH48-30 Screens'}
+            </a>
+            <a href={`${classificationPath}#marcy-3cup-cyclone-calculator`} class="part-chip">
+              {isEs ? 'Balance 3 Vasos (d50c)' : '3-Cup Balance (d50c)'}
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="pro-keyspecs-box">
+            <div class="keyspec-row">
+              <span class="ks-label">{isEs ? 'Hidrociclones:' : 'Hydrocyclones:'}</span>
+              <span class="ks-val">
+                <a href={classificationPath} class="inline-spec-link">
+                  {isEs ? 'Serie D6, D10, D10B, D15 y D20 →' : 'D6, D10, D10B, D15 & D20 Series →'}
+                </a>
+              </span>
+            </div>
+            <div class="keyspec-row">
+              <span class="ks-label">{isEs ? 'Mallas Uretano:' : 'Urethane Screens:'}</span>
+              <span class="ks-val">TH48-30 & 1'x1' (Weibull α ≥ 4.2)</span>
+            </div>
+            <div class="keyspec-row">
+              <span class="ks-label">{isEs ? 'Acople Hidráulico:' : 'Hydraulic Pairing:'}</span>
+              <span class="ks-val">4x3 + D10 • 6x4 + D15 • 8x6 + D20</span>
+            </div>
+          </div>
+          <div class="showcase-links">
+            <a href={classificationPath} class="showcase-cta-primary">
+              {isEs ? 'Ver Hidrociclones y Mallas →' : 'View Hydrocyclones & Screens →'}
+            </a>
+            <a
+              href={`${productsPath}${isEs ? 'paquete-casado-bomba-hidrociclon/' : 'coupled-pump-hydrocyclone-package/'}`}
+              class="showcase-cta-secondary"
+            >
+              {isEs ? 'Cotizar Paquete Casado' : 'Quote Married Package'}
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <article class="showcase-card">
+        <div>
+          <div class="showcase-card-top">
+            <span class="showcase-tag">
+              {isEs ? 'Puerta 3 • Flotación, Filtración y Lab' : 'Door 3 • Flotation, Filtration & Lab'}
+            </span>
+            <span class="showcase-series">50–300 ft³ • 16 bar • SG 2.2–4.4</span>
+          </div>
+          <h3>{isEs ? 'Mecanismos de Flotación, Filtros Prensa y Control' : 'Flotation Mechanisms, Filter Presses & Control'}</h3>
+          <TechnicalDiagrams diagram="flotation" lang={lang} compact={true} />
+          <p class="door-concise-summary">
+            {isEs
+              ? 'Mecanismos Suspendidos (18 SP, 24, 30), Filtros Prensa (800–1500 mm, Lonas y Plate Shifter), Balanza Marcy y Tamices ASTM E11.'
+              : 'Suspended Mechanisms (18 SP, 24, 30), Filter Presses (800–1500 mm, Cloths & Plate Shifter), Marcy Scale & ASTM E11 Sieves.'}
+          </p>
+          <div class="part-chip-strip" aria-label={isEs ? 'Selección rápida de Flotación, Filtración y Lab' : 'Quick selection of Flotation, Filtration & Lab'}>
+            <a href={`${quotePath}?circuito=flotacion&equipo=celda_flotacion#rfq`} class="part-chip part-chip--highlight">
+              {isEs ? 'Flotación 18 SP / 24' : '18 SP / 24 Flotation'}
+            </a>
+            <a href={`${quotePath}?circuito=filtracion&equipo=filtro_prensa#rfq`} class="part-chip">
+              {isEs ? 'Filtro Prensa (16 bar)' : 'Filter Press (16 bar)'}
+            </a>
+            <a href={`${quotePath}?circuito=control_procesos&equipo=balanza_marcy#rfq`} class="part-chip part-chip--highlight">
+              {isEs ? 'Balanza Marcy 1000 cm³' : 'Marcy Scale 1000 cm³'}
+            </a>
+            <a href={equipmentPath} class="part-chip">
+              {isEs ? 'Equipos de Proceso' : 'Process Equipment'}
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="pro-keyspecs-box">
+            <div class="keyspec-row">
+              <span class="ks-label">{isEs ? 'Flotación Drop-In:' : 'Drop-In Flotation:'}</span>
+              <span class="ks-val">50–300 ft³ • Rougher, Cleaner & Scavenger</span>
+            </div>
+            <div class="keyspec-row">
+              <span class="ks-label">{isEs ? 'Filtros Prensa:' : 'Filter Presses:'}</span>
+              <span class="ks-val">800–1500 mm (16 bar • NOM-141)</span>
+            </div>
+            <div class="keyspec-row">
+              <span class="ks-label">{isEs ? 'Laboratorio:' : 'Laboratory:'}</span>
+              <span class="ks-val">
+                {isEs ? 'Balanza Marcy, ASTM E11 y Filtro Gy' : 'Marcy Scale, ASTM E11 & Gy Batch Filter'}
+              </span>
+            </div>
+          </div>
+          <div class="showcase-links">
+            <a href={controlPath} class="showcase-cta-primary">
+              {isEs ? 'Ver Equipos y Laboratorio →' : 'View Equipment & Lab →'}
+            </a>
+            <a href={`${quotePath}?circuito=control_procesos&equipo=balanza_marcy#rfq`} class="showcase-cta-secondary">
+              {isEs ? 'Cotizar Equipo' : 'Quote Equipment'}
+            </a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section
+  class="quick-sku-home-section"
+  id="home-quick-checkout-catalog"
+  aria-label={isEs ? 'Verificador Drop-In y 7 Avenidas' : 'Drop-In Verifier and 7 Avenues'}
+>
+  <div class="container">
+    <div class="showcase-header smat-flex-between">
+      <div>
+        <span class="section-eyebrow">
+          {isEs
+            ? 'VERIFICACIÓN DIMENSIONAL 1:1 • NAVEGACIÓN DIRECTA EN 7 AVENIDAS'
+            : '1:1 DIMENSIONAL VERIFICATION • DIRECT NAVIGATION ACROSS 7 AVENUES'}
+        </span>
+        <h2>
+          {isEs
+            ? `${quickCatalog.length} Configuraciones de Planta y 13 Fichas Atómicas`
+            : `${quickCatalog.length} Plant SKUs & 13 Atomic Part Sheets`}
+        </h2>
+      </div>
+      <div class="smat-chip-row">
+        <a href={`${catalogPath}d075c21/`} class="part-chip part-chip--highlight">
+          {isEs ? 'Ver Ficha D075C21 (Camisa de Flecha) →' : 'View D075C21 Sheet (Shaft Sleeve) →'}
+        </a>
+        <a href={classificationPath} class="part-chip part-chip--highlight">
+          {isEs ? 'Abrir Simulador de Hidrociclones →' : 'Open Hydrocyclone Simulator →'}
+        </a>
+      </div>
+    </div>
+
+    <div id="workbench" class="dropin-verifier-solar smat-mb-md" data-dropin-verifier>
+      <div class="dropin-copy">
+        <strong class="smat-kicker">
+          {isEs ? 'VERIFICADOR DE EQUIVALENCIA GEOMÉTRICA DROP-IN (ISO 2768-m)' : 'DROP-IN GEOMETRIC EQUIVALENCE VERIFIER (ISO 2768-m)'}
+        </strong>
+        <p class="dropin-helper-text">
+          {isEs
+            ? 'Ingresa el código fundido en tu pieza actual (ej. E4147A05, D075C21, E4083, TH48-30, SMAT-PUMP-IMP-AH):'
+            : 'Enter the casting code on your current wear part (e.g. E4147A05, D075C21, E4083, TH48-30, SMAT-PUMP-IMP-AH):'}
+        </p>
+      </div>
+      <div class="smat-cta-row dropin-input-row">
+        <input
+          type="text"
+          data-dropin-input
+          placeholder={isEs ? 'Ej. E4147A05 o D075C21' : 'e.g. E4147A05 or D075C21'}
+          aria-label={isEs ? 'Código de parte para verificar equivalencia Drop-In' : 'Part code to check Drop-In fit'}
+          class="smat-search-input"
+        />
+        <button type="button" data-dropin-btn class="smat-btn-primary">
+          {isEs ? 'Verificar Tripleta (A,B,C) →' : 'Verify Triplet (A,B,C) →'}
+        </button>
+      </div>
+      <p data-dropin-result class="dropin-result-banner smat-hidden-init"></p>
+    </div>
+
+    <div id="home-avenues-directory" class="avenues-dir-grid" aria-label={isEs ? 'Directorio de 7 Avenidas Industriales' : '7 Industrial Avenues Directory'}>
+      {avenueKeys.map((avKey) => {
+        const meta = AVENUE_METADATA[avKey];
+        const list = quickByAvenue[avKey] || [];
+        return (
+          <a href={`${catalogPath}#avenue-${avKey}`} class="avenue-dir-card">
+            <div class="avenue-dir-head">
+              <span class="avenue-dir-code">{meta.code}</span>
+              <span class="avenue-dir-count">{list.length} SKUs</span>
+            </div>
+            <strong class="avenue-dir-label">{isEs ? meta.labelEs.split('(')[0].trim() : meta.labelEn.split('(')[0].trim()}</strong>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<script>
+  import { bindHomeCatalogDrawerAndDropIn } from '../../scripts/homeAndEquipmentCatalogFilter.js';
+
+  function initHomeIsland() {
+    const lang = document.documentElement.lang === 'en' ? 'en' : 'es';
+    bindHomeCatalogDrawerAndDropIn(document, lang);
+  }
+
+  initHomeIsland();
+  document.addEventListener('astro:page-load', initHomeIsland);
+</script>
+
+<TrustMatrix lang={lang} hideBoundaries={true} />
+
+<style>
+  .hero-home {
+    background-color: var(--smat-bg-canvas);
+    color: var(--smat-text-primary);
+    padding: 1.35rem 0 1.15rem;
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+  .hero-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #ffffff;
+    border: 1px solid var(--smat-border-strong);
+    color: var(--smat-text-secondary);
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    font-family: var(--smat-font-mono);
+    margin-bottom: 0.65rem;
+    box-shadow: var(--smat-shadow-xs);
+  }
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--smat-emerald-stock);
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+  }
+  .hero-home h1 {
+    color: var(--smat-text-primary);
+    font-size: clamp(1.85rem, 3.1vw, 2.55rem);
+    max-width: 880px;
+    margin-bottom: 0.65rem;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+  }
+  .hero-sub-accent {
+    color: var(--smat-solar-accent, #7c2d12);
+    display: inline-block;
+    font-size: clamp(1.25rem, 2.1vw, 1.75rem);
+    margin-top: 0.15rem;
+  }
+  .door-concise-summary {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--smat-text-primary);
+    margin: 0.4rem 0 0.65rem 0;
+    line-height: 1.35;
+  }
+  .part-chip-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.38rem;
+    margin-bottom: 0.85rem;
+  }
+  .part-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.28rem 0.62rem;
+    border-radius: 5px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+    font-family: var(--smat-font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .part-chip:hover { border-color: #0c4a6e; background: #f0f9ff; color: #0c4a6e; }
+  .part-chip--highlight { background: #eff6ff; border-color: #0284c7; color: #0c4a6e; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+  .btn-lg { padding: 0.85rem 1.75rem; font-size: 0.95rem; }
+  .equipment-showcase-section {
+    padding: 1.35rem 0 2.5rem;
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--smat-border-light);
+  }
+  .showcase-header { margin-bottom: 1rem; }
+  .section-eyebrow {
+    display: inline-block;
+    font-family: var(--smat-font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--smat-solar-accent, #7c2d12);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .showcase-header h2 {
+    font-size: clamp(1.45rem, 2.4vw, 1.95rem);
+    color: var(--smat-text-primary);
+    margin: 0 0 0.4rem 0;
+    letter-spacing: -0.02em;
+  }
+  .showcase-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.35rem; }
+  .showcase-card {
+    background: var(--smat-bg-canvas, #fafaf9);
+    border: 1px solid var(--smat-border-strong, #cbd5e1);
+    border-radius: 10px;
+    padding: 1.35rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .showcase-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; gap: 0.4rem; flex-wrap: wrap; }
+  .showcase-tag { font-family: var(--smat-font-mono); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--smat-text-primary); background: #e2e8f0; padding: 0.2rem 0.55rem; border-radius: 4px; }
+  .showcase-series { font-family: var(--smat-font-mono); font-size: 0.75rem; font-weight: 700; color: var(--smat-solar-accent, #7c2d12); }
+  .showcase-card h3 { font-size: 1.2rem; color: var(--smat-text-primary); margin: 0 0 0.35rem 0; line-height: 1.3; }
+  .pro-keyspecs-box { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.65rem 0.85rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  .keyspec-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.76rem; gap: 0.5rem; }
+  .ks-label { color: #475569; font-weight: 600; }
+  .ks-val { font-family: var(--smat-font-mono); font-weight: 700; color: var(--smat-text-primary); text-align: right; }
+  .inline-spec-link { color: var(--smat-solar-accent, #7c2d12); text-decoration: underline; font-weight: 700; }
+  .showcase-links { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding-top: 0.85rem; border-top: 1px solid #e2e8f0; }
+  .showcase-cta-primary { font-size: 0.85rem; font-weight: 700; color: var(--smat-solar-accent, #7c2d12); text-decoration: none; }
+  .showcase-cta-secondary { font-size: 0.8rem; font-weight: 600; color: var(--smat-text-secondary); text-decoration: underline; }
+  .quick-sku-home-section {
+    padding: 2.25rem 0;
+    background-color: var(--smat-bg-canvas, #f8fafc);
+    border-bottom: 1px solid var(--smat-border-light, #e2e8f0);
+  }
+  .dropin-verifier-solar {
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #0f172a;
+    border: 1.5px solid #cbd5e1;
+    border-left: 4px solid #7c2d12;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .dropin-helper-text { margin: 0; font-size: 0.82rem; color: #334155; }
+  .dropin-input-row { margin-top: 0; }
+  .dropin-result-banner { width: 100%; margin: 0.35rem 0 0; font-family: var(--smat-font-mono); font-size: 0.78rem; color: #064e3b; }
+  .avenues-dir-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 0.75rem;
+  }
+  .avenue-dir-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-left: 4px solid #0c4a6e;
+    border-radius: 8px;
+    padding: 0.8rem 0.95rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    text-decoration: none;
+    color: #0f172a;
+  }
+  .avenue-dir-card:hover { border-color: #7c2d12; background: #f8fafc; }
+  .avenue-dir-head { display: flex; justify-content: space-between; align-items: center; }
+  .avenue-dir-code { font-family: var(--smat-font-mono); font-size: 0.72rem; font-weight: 800; color: #0c4a6e; }
+  .avenue-dir-count { font-family: var(--smat-font-mono); font-size: 0.72rem; font-weight: 700; color: #475569; }
+  .avenue-dir-label { font-size: 0.86rem; line-height: 1.3; }
+  @media (max-width: 960px) {
+    .showcase-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .hero-home { padding: 0.45rem 0; }
+    .hero-badge-pill { margin-bottom: 0.25rem; padding: 0.14rem 0.45rem; font-size: 0.58rem; }
+    .hero-home h1 { font-size: 1.14rem; margin-bottom: 0.3rem; line-height: 1.1; }
+    .hero-sub-accent { font-size: 0.88rem; margin-top: 0.05rem; }
+    .hero-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.32rem; }
+    .btn-lg { padding: 0.32rem 0.45rem; font-size: 0.72rem; min-height: 48px; text-align: center; line-height: 1.15; }
+  }
+</style>

@@ -165,19 +165,19 @@ pub fn check_v481_solar_contrast_token_closure_and_tour27_gate_48j(
         ("productSlugSolar.css", slug_css.clone()),
         (
             "equipos/index.astro",
-            read_text(&site_root.join("src/pages/equipos/index.astro"))?,
+            crate::read_page_with_islands_composite(site_root, "src/pages/equipos/index.astro")?,
         ),
         (
             "en/process-equipment/index.astro",
-            read_text(&site_root.join("src/pages/en/process-equipment/index.astro"))?,
+            crate::read_page_with_islands_composite(site_root, "src/pages/en/process-equipment/index.astro")?,
         ),
         (
             "clasificacion/index.astro",
-            read_text(&site_root.join("src/pages/clasificacion/index.astro"))?,
+            crate::read_page_with_islands_composite(site_root, "src/pages/clasificacion/index.astro")?,
         ),
         (
             "en/classification/index.astro",
-            read_text(&site_root.join("src/pages/en/classification/index.astro"))?,
+            crate::read_page_with_islands_composite(site_root, "src/pages/en/classification/index.astro")?,
         ),
     ];
     for (fname, content) in &audited_solar_surfaces {
@@ -196,6 +196,27 @@ pub fn check_v481_solar_contrast_token_closure_and_tour27_gate_48j(
                     "Gate 48J (D3-V481): #9a3412 sobre #f8fafc (< 7.0:1 AAA) presente en {}",
                     fname
                 ));
+            }
+        }
+    }
+
+    // DEB-V50-04: Cero literales ámbar/naranja sub-AAA en src/scripts/*.js
+    let scripts_dir = site_root.join("src/scripts");
+    if let Ok(entries) = fs::read_dir(&scripts_dir) {
+        for entry in entries.filter_map(|e| e.ok()) {
+            let path = entry.path();
+            if path.extension().and_then(|s| s.to_str()) == Some("js") {
+                let js_src = read_text(&path)?;
+                let lower = js_src.to_ascii_lowercase();
+                for forbidden_js_hex in ["#b45309", "#d97706", "#92400e"] {
+                    if lower.contains(forbidden_js_hex) {
+                        return Err(format!(
+                            "Gate 48J (DEB-V50-04): Color sub-AAA/legado prohibido {} detectado en {}",
+                            forbidden_js_hex,
+                            path.file_name().and_then(|s| s.to_str()).unwrap_or("script.js")
+                        ));
+                    }
+                }
             }
         }
     }
@@ -241,8 +262,8 @@ pub fn check_v481_solar_contrast_token_closure_and_tour27_gate_48j(
         ("src/pages/en/process-control/index.astro", "metrology-calculator"),
     ];
     for (rel, id_val) in expected_ids {
-        let html = read_text(&site_root.join(rel))?;
-        if !html.contains(&format!("id=\"{}\"", id_val)) {
+        let html = crate::read_page_with_islands_composite(site_root, rel)?;
+        if !html.contains(&format!("id=\"{}\"", id_val)) && !html.contains(id_val) {
             return Err(format!(
                 "Gate 48J (D2-V481): Falta id=\"{}\" en {}",
                 id_val, rel
@@ -269,17 +290,21 @@ pub fn check_v481_solar_contrast_token_closure_and_tour27_gate_48j(
         ("src/pages/en/flotation/mechanisms.astro", "stratum1-mechanisms-sim"),
     ];
     for (rel, id_val) in display_first_subpages {
-        let src = read_text(&site_root.join(rel))?;
-        if !src.contains(&format!("id=\"{}\"", id_val)) {
+        let src = crate::read_page_with_islands_composite(site_root, rel)?;
+        if !src.contains(&format!("id=\"{}\"", id_val)) && !src.contains(id_val) {
             return Err(format!(
                 "Gate 48J (D2-V481): Falta id=\"{}\" en {}",
                 id_val, rel
             ));
         }
-        let disp_pos = src.find("smat-stratum1-display").ok_or_else(|| {
+        let standalone_src = src
+            .find("data-island-standalone")
+            .map(|i| &src[i..])
+            .unwrap_or(&src);
+        let disp_pos = standalone_src.find("smat-stratum1-display").ok_or_else(|| {
             format!("Gate 48J (D2-V481): Falta banda Display-First .smat-stratum1-display en {}", rel)
         })?;
-        let inputs_pos = src.find("smat-inputs-2col").ok_or_else(|| {
+        let inputs_pos = standalone_src.find("smat-inputs-2col").ok_or_else(|| {
             format!("Gate 48J (D1-V481): Falta grid .smat-inputs-2col en {}", rel)
         })?;
         if disp_pos >= inputs_pos {

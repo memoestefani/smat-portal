@@ -101,18 +101,18 @@ const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waDe
 
 const regimeConfig: Record<string, { labelEs: string; labelEn: string; cls: string }> = {
   hay: {
-    labelEs: '🟢 HAY EN STOCK DURANGO (24–72 h)',
-    labelEn: '🟢 IN DURANGO STOCK (24–72 h)',
+    labelEs: 'EN STOCK DURANGO (24–72 h)',
+    labelEn: 'IN DURANGO STOCK (24–72 h)',
     cls: 'smat-qcard-regime--hay'
   },
   se_pide: {
-    labelEs: '🟡 SE PIDE / LOTE PROGRAMADO (2–4 sem)',
-    labelEn: '🟡 SCHEDULED BATCH ORDER (2–4 wks)',
+    labelEs: 'SE PIDE / LOTE PROGRAMADO (2–4 sem)',
+    labelEn: 'SCHEDULED BATCH ORDER (2–4 wks)',
     cls: 'smat-qcard-regime--se-pide'
   },
   se_fabrica: {
-    labelEs: '🔵 SE FABRICA BAJO PLANO (50% ANTICIPO)',
-    labelEn: '🔵 CUSTOM MANUFACTURED (50% ADVANCE)',
+    labelEs: 'BAJO PLANO (50% ANTICIPO)',
+    labelEn: 'CUSTOM MANUFACTURED (50% ADVANCE)',
     cls: 'smat-qcard-regime--se-fabrica'
   }
 };
@@ -148,7 +148,7 @@ const _auditValuationRef = (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (audi
         data-qcard-tab="cad"
         class="qcard-tab-btn is-active"
       >
-        {isEs ? '📐 Plano CAD' : '📐 CAD Blueprint'}
+        {isEs ? 'Plano CAD' : 'CAD Blueprint'}
       </button>
       <button
         type="button"
@@ -157,7 +157,7 @@ const _auditValuationRef = (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (audi
         data-qcard-tab="photo"
         class="qcard-tab-btn"
       >
-        {isEs ? '📸 Foto Real Cero-OEM' : '📸 Zero-OEM Real Photo'}
+        {isEs ? 'Foto Real Cero-OEM' : 'Zero-OEM Real Photo'}
       </button>
       <button
         type="button"
@@ -166,7 +166,7 @@ const _auditValuationRef = (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (audi
         data-qcard-tab="xray"
         class="qcard-tab-btn"
       >
-        {isEs ? '🔥 Rayos X 5:5:4' : '🔥 5:5:4 X-Ray Wear'}
+        {isEs ? 'Rayos X 5:5:4' : '5:5:4 X-Ray Wear'}
       </button>
     </div>
 
@@ -199,10 +199,10 @@ const _auditValuationRef = (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (audi
 
     <!-- Panel 3: Rayos X de Desgaste Sincronizado 5:5:4 (reutiliza el SVG único de Panel 1 activando [data-layer="xray-wear"]) -->
     <div data-qcard-panel="xray" class="smat-qcard-panel hidden" hidden>
-      <div class="smat-qcard-xray-legend" data-xray-overlay-legend={sku.id} data-diagram-id={sku.diagram_id} style="padding: 0.45rem 0.75rem; background: #fffbeb; border-top: 1px solid #fde68a; font-family: var(--font-mono, monospace); font-size: 0.72rem; color: #92400e;">
+      <div class="smat-qcard-xray-legend" data-xray-overlay-legend={sku.id} data-diagram-id={sku.diagram_id} style="padding: 0.45rem 0.75rem; background: #fffbeb; border-top: 1px solid #fde68a; font-family: var(--font-mono, monospace); font-size: 0.72rem; color: #7c2d12;">
         {isEs
-          ? `🔥 Mapa térmico de erosión 5:5:4 activo sobre plano: ${formatDiagramHumanTitle(sku.diagram_id, 'es')} (${triplet.tolerance_std || 'ISO 2768-m'})`
-          : `🔥 Active 5:5:4 erosion thermal overlay on blueprint: ${formatDiagramHumanTitle(sku.diagram_id, 'en')} (${triplet.tolerance_std || 'ISO 2768-m'})`}
+          ? `Mapa térmico de erosión 5:5:4 activo sobre plano: ${formatDiagramHumanTitle(sku.diagram_id, 'es')} (${triplet.tolerance_std || 'ISO 2768-m'})`
+          : `Active 5:5:4 erosion thermal overlay on blueprint: ${formatDiagramHumanTitle(sku.diagram_id, 'en')} (${triplet.tolerance_std || 'ISO 2768-m'})`}
       </div>
     </div>
   </div>
@@ -235,8 +235,8 @@ const _auditValuationRef = (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (audi
             </span>
             <span class="smat-qcard-lane-pill">
               {isEs
-                ? '⚡ Caja Chica < 25,000 MXN (CFDI 4.0 Hoy) · OC SAP > 25,000 MXN'
-                : '⚡ Petty Cash < 25,000 MXN (CFDI 4.0 Today) · SAP PO > 25,000 MXN'}
+                ? 'Caja Chica < 25,000 MXN (CFDI 4.0 Hoy) · OC SAP > 25,000 MXN'
+                : 'Petty Cash < 25,000 MXN (CFDI 4.0 Today) · SAP PO > 25,000 MXN'}
             </span>
           </div>
         )}
@@ -273,7 +273,7 @@ const _auditValuationRef = (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (audi
               data-sku-lang={lang}
               class="smat-qcard-wa-btn"
             >
-              <span>{isEs ? '💬 Cotizar / Pedir por WhatsApp (1 Clic)' : '💬 1-Click WhatsApp Quote / Order'}</span>
+              <span>{isEs ? 'Cotizar / Pedir por WhatsApp (1 Clic)' : '1-Click WhatsApp Quote / Order'}</span>
             </a>
 
             <button
@@ -477,8 +477,8 @@ const _auditValuationRef = (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (audi
 
   .smat-qcard-regime--se-pide {
     background: var(--smat-solar-amber-bg, #fffbeb);
-    border-color: var(--smat-solar-amber-border, #d97706);
-    color: var(--smat-solar-accent, #b45309);
+    border-color: var(--smat-solar-amber-border, #7c2d12);
+    color: var(--smat-solar-accent, #7c2d12);
   }
 
   .smat-qcard-regime--se-fabrica {
@@ -560,7 +560,7 @@ const _auditValuationRef = (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (audi
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--smat-solar-accent, #b45309);
+    color: var(--smat-solar-accent, #7c2d12);
   }
 
   .smat-qcard-triplet-badge {
@@ -612,8 +612,8 @@ const _auditValuationRef = (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (audi
 
   .smat-qcard-lane-pill {
     background: var(--smat-solar-amber-bg, #fffbeb);
-    border-color: var(--smat-solar-amber-border, #d97706);
-    color: var(--smat-solar-accent, #b45309);
+    border-color: var(--smat-solar-amber-border, #7c2d12);
+    color: var(--smat-solar-accent, #7c2d12);
   }
 
   .smat-qcard-controls {

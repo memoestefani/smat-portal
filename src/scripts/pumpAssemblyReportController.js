@@ -176,7 +176,7 @@ export function initPumpAssemblyReport(root = typeof document !== 'undefined' ? 
       if (svgBoxEl) {
         const strokeColor = !res.sequenceValid || res.clearanceStatus === 'RUBBING_RISK'
           ? '#dc2626'
-          : (res.clearanceStatus === 'OPTIMAL_CALIBRATION' ? '#15803d' : '#d97706');
+          : (res.clearanceStatus === 'OPTIMAL_CALIBRATION' ? '#15803d' : '#7c2d12');
         svgBoxEl.setAttribute('stroke', strokeColor);
       }
       if (quoteCta) {

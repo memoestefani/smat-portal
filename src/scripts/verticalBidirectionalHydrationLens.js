@@ -62,11 +62,11 @@ export const VERTICAL_STATION_LENS_DESCRIPTORS = Object.freeze({
     '[data-kin-capacity-c]': (f) => f.dynamicCapacityCkN,
   },
   filtration: {
-    '#filt-pressure-bar': (f) => f.feedPressureBar,
-    '#filt-clogged-ports': (f) => f.cloggedPortsCount,
-    '#filt-plate-width': (f) => f.plateWidthMm,
-    '#filt-plate-thickness': (f) => f.plateThicknessMm,
-    '#filt-cake-moisture': (f) => f.cakeMoistureTargetPct,
+    '#filt-pressure-bar, #wb-filt-pressure': (f) => f.feedPressureBar,
+    '#filt-clogged-ports, #wb-filt-clogged': (f) => f.cloggedPortsCount,
+    '#filt-plate-width, #wb-filt-width': (f) => f.plateWidthMm,
+    '#filt-plate-thickness, #wb-filt-thickness': (f) => f.plateThicknessMm,
+    '#filt-cake-moisture, #wb-filt-moisture': (f) => f.cakeMoistureTargetPct,
     '#rep-pressure-bar': (f) => f.feedPressureBar,
     '#rep-clogged-ports': (f) => f.cloggedPortsCount,
     '#rep-plate-width': (f) => f.plateWidthMm,
@@ -74,23 +74,40 @@ export const VERTICAL_STATION_LENS_DESCRIPTORS = Object.freeze({
     '#rep-cake-moisture': (f) => f.cakeMoistureTargetPct,
   },
   flotation: {
-    '#flot-jg-input, #celdas-jg-input': (f) => f.jgCmS,
-    '#flot-d32-input, #celdas-d32-input': (f) => f.d32Mm,
-    '#flot-rotor-dia, #celdas-dia-select': (f) => f.cellVolumeKey,
-    '#flot-rotor-rpm, #celdas-rpm-input': (f) => f.rotorRpm,
-    '#flot-d80-input, #celdas-d80-input': (f) => f.d80Um,
-    '#flot-cw-input, #celdas-cw-input': (f) => f.cw,
+    '#flot-jg-input, #celdas-jg-input, #wb-flot-jg': (f) => f.jgCmS,
+    '#flot-d32-input, #celdas-d32-input, #wb-flot-d32': (f) => f.d32Mm,
+    '#flot-rotor-dia, #celdas-dia-select, #wb-flot-dia': (f) => f.cellVolumeKey,
+    '#flot-rotor-rpm, #celdas-rpm-input, #wb-flot-rpm': (f) => f.rotorRpm,
+    '#wb-flot-p, #celdas-p-input': (f) => f.floatabilityP,
+    '#wb-flot-rf, #celdas-rf-input': (f) => f.frothRecoveryRf,
+    '#flot-d80-input, #celdas-d80-input, #wb-flot-d80': (f) => f.d80Um,
+    '#flot-cw-input, #celdas-cw-input, #wb-flot-cw': (f) => f.cw,
   },
   classification: {
-    '#cyc-feed-sg': (f) => f.sg,
-    '#cyc-underflow-sg': (f) => f.underflowSg,
-    '#cyc-overflow-sg': (f) => f.overflowSg,
-    '#cyc-solids-sg': (f) => f.solidsSg,
-    '#cyc-apex-mm': (f) => f.apexMm,
-    '#cyc-vortex-mm': (f) => f.vortexMm,
-    '#cyc-pressure-kpa': (f) => f.feedPressureKpa,
-    '#csr-aperture-mm': (f) => f.apertureMm,
+    '#cyc-feed-sg, #wb-cyc-sg-feed': (f) => f.sg,
+    '#cyc-underflow-sg, #wb-cyc-sg-uf': (f) => f.underflowSg,
+    '#cyc-overflow-sg, #wb-cyc-sg-of': (f) => f.overflowSg,
+    '#cyc-solids-sg, #wb-cyc-solids-sg': (f) => f.solidsSg,
+    '#cyc-apex-mm, #wb-cyc-apex-mm': (f) => f.apexMm,
+    '#cyc-vortex-mm, #wb-cyc-vortex-mm': (f) => f.vortexMm,
+    '#cyc-pressure-kpa, #wb-cyc-pressure-kpa': (f) => f.feedPressureKpa,
+    '#csr-aperture-mm, #wb-scr-aperture-mm': (f) => f.apertureMm,
     '#csr-feed-um': (f) => f.feedTopSizeUm,
+    '#wb-scr-relief-deg': (f) => f.reliefAngleDeg,
+    '#wb-scr-vibration-g': (f) => f.vibrationG,
+    '#wb-scr-alpha': (f) => f.sharpnessAlpha,
+  },
+  pumping: {
+    '#slider-flow, #wb-flow': (f) => f.flowM3H ?? f.flow,
+    '#slider-solids, #wb-solids': (f) => f.cw ?? f.solids,
+    '#slider-d80, #wb-d80': (f) => f.d80Um ?? f.d80,
+    '#wb-altitude-input': (f) => f.altitude ?? f.altitudeM,
+    '#wb-temp-c': (f) => f.tempC,
+  },
+  jrp: {
+    '#wb-jrp-wear-hours': (f) => f.predictedWearHours,
+    '#wb-jrp-daily-hours': (f) => f.operatingHoursPerDay,
+    '#wb-jrp-criticality': (f) => f.criticalityMode,
   },
 });
 
@@ -210,6 +227,9 @@ export function syncReactiveTraySkuButton(root, spec = {}) {
 /**
  * Controlador canónico unificado (ES/EN) del Inspector ISO 281:2007 en `/bombeo/soporte/`
  * y `/en/pumping/bearing-assembly/` con pre-hidratación `GetPut` (`D3-V48`, purga `DEB-V48-03`).
+ *
+ * @param {Document | Element | null} [root]
+ * @param {string} [lang]
  */
 export function initBearingSupportInspector(root = typeof document !== 'undefined' ? document : null, lang = 'es') {
   if (!root || typeof root.querySelector !== 'function') return null;
@@ -307,6 +327,9 @@ export function initBearingSupportInspector(root = typeof document !== 'undefine
  * Controlador canónico unificado (ES/EN) del Calibrador Cinemático en `/bombeo/skid/`
  * y `/en/pumping/skid/` con `GetPut`, 5/5 materiales (`hybrid_a05_r55`), `commitVerticalSimulation`,
  * widget Core Trade-In `DAM005` y `+ Bandeja` (`D3-V48`, `D9-V48`, purga `DEB-V48-04`).
+ *
+ * @param {Document | Element | null} [root]
+ * @param {string} [lang]
  */
 export function initSkidKinematicsInspector(root = typeof document !== 'undefined' ? document : null, lang = 'es') {
   if (!root || typeof root.querySelector !== 'function') return null;

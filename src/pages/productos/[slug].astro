@@ -35,15 +35,15 @@ const triplet = sku.geometric_triplet_mm || {
 
 const nioshBadges: Record<string, { label: string; cls: string }> = {
   MANUAL_SAFE: {
-    label: '🟢 Manejo Manual Seguro (< 11.1 kg NIOSH)',
+    label: 'Manejo Manual Seguro (< 11.1 kg NIOSH)',
     cls: 'smat-slug-badge--emerald'
   },
   ASSISTED_SHAFT_MOUNT_2P: {
-    label: '🟡 Montaje Asistido 2 Operadores (11.1–23.0 kg NIOSH)',
+    label: 'Montaje Asistido 2 Operadores (11.1–23.0 kg NIOSH)',
     cls: 'smat-slug-badge--amber'
   },
   HOIST_REQUIRED: {
-    label: '🔴 Izaje Mecánico Obligatorio (> 23.0 kg NOM-036-1-STPS)',
+    label: 'Izaje Mecánico Obligatorio (> 23.0 kg NOM-036-1-STPS)',
     cls: 'smat-slug-badge--rose'
   }
 };
@@ -109,7 +109,7 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
     <header class="smat-slug-header">
       <div class="smat-slug-badge-row">
         <span class="smat-slug-badge smat-slug-badge--amber">
-          {sku.id} · {sku.vertical.toUpperCase()} · CANDADO {sku.gate_lock || 'G1'}
+          {sku.id} · {sku.vertical.toUpperCase()} · RÉGIMEN {sku.gate_lock || 'G1'}
         </span>
         <span class={`smat-slug-badge ${niosh.cls}`}>
           {niosh.label}
@@ -126,10 +126,10 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
         {sku.summary_es}
       </p>
 
-      <!-- Estrato 1: Tarjeta Armónica JRP 3 Horizontes (s, c, S) + Par Casado Sincronizado -->
+      <!-- Estrato 1: Ventana Preventiva de Reemplazo 3 Hitos + Par Casado Sincronizado -->
       <div id="stratum1-slug-card" data-jrp-window-card data-jrp-criticality="normal" data-stratum-1-instrument style="margin:0.5rem 0 0.75rem 0; padding:0.9rem 1rem; background:#f8fafc; border:1.5px solid #cbd5e1; border-left:4px solid #0c4a6e; border-radius:8px;">
         <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
-          <span style="font-family:var(--smat-font-mono, monospace); font-size:0.74rem; font-weight:800; color:#0c4a6e;">VENTANA PREVENTIVA ARMÓNICA (T₀/2 • T₀ • 2T₀)</span>
+          <span style="font-family:var(--smat-font-mono, monospace); font-size:0.74rem; font-weight:800; color:#0c4a6e;">VENTANA PREVENTIVA DE REEMPLAZO POR ESTACIÓN (3 HITOS)</span>
           <span data-jrp-telemetry-badge style="font-family:var(--smat-font-mono, monospace); font-size:0.74rem; font-weight:700; color:#334155;">Pulpa Sesión SG 1.45 • d50 280 µm</span>
         </div>
         <div style="display:flex; flex-wrap:wrap; gap:0.45rem; align-items:center; margin-bottom:0.6rem;">
@@ -141,15 +141,15 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
         </div>
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.55rem; margin-bottom:0.6rem;">
           <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:0.5rem 0.65rem;">
-            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">CAMISA / MANGA (T₀/2)</span>
+            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">CAMISA / MANGA (HITO 1)</span>
             <strong data-jrp-sleeve-day style="font-size:0.95rem; color:#0f172a;">Día 90</strong>
           </div>
           <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:0.5rem 0.65rem;">
-            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">IMPULSOR + THROAT (T₀)</span>
+            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">IMPULSOR + THROAT (HITO 2)</span>
             <strong data-jrp-impeller-day style="font-size:0.95rem; color:#0f172a;">Día 150</strong>
           </div>
           <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:0.5rem 0.65rem;">
-            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">VOLUTA + LINER (2T₀)</span>
+            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">VOLUTA + LINER (HITO 3)</span>
             <strong data-jrp-volute-day style="font-size:0.95rem; color:#0f172a;">Día 180</strong>
           </div>
         </div>
@@ -194,7 +194,7 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
           <div class="smat-slug-kpi-value">{sku.hardness_spec}</div>
         </div>
         <div class="smat-slug-kpi-box">
-          <div class="smat-slug-kpi-label">Ventana Preventiva de Reorden (JRP)</div>
+          <div class="smat-slug-kpi-label">Ventana Preventiva de Reorden</div>
           <div class="smat-slug-kpi-value smat-slug-kpi-value--sky">Cada {sku.reorder_window_days} días · Par: {sku.coupled_pair_sku}</div>
         </div>
       </div>
@@ -208,7 +208,7 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
         <!-- Recuadro PRD v3.0: Cómo validar tu pieza en planta en 3 pasos -->
         <section class="smat-slug-validation-card">
           <h2 class="smat-slug-section-kicker smat-slug-section-kicker--emerald">
-            📋 Cómo validar tu pieza en planta en 3 pasos (Cero Riesgo de Paro)
+            Cómo validar tu pieza en planta en 3 pasos (Cero Riesgo de Paro)
           </h2>
           <ol class="smat-slug-steps-grid">
             <li class="smat-slug-step-item">
@@ -284,7 +284,7 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
                     href={`/catalogo/${code.toLowerCase()}/`}
                     class="smat-slug-atomic-link"
                   >
-                    🔗 {code}
+                    {code}
                   </a>
                 ))}
               </div>
@@ -330,17 +330,17 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
         <div class="smat-slug-lanes-stack">
           <div class="smat-slug-lane-card smat-slug-lane-card--emerald">
             <div class="smat-slug-lane-head">
-              <span class="smat-slug-lane-title smat-slug-lane-title--emerald">⚡ CARRIL A: CAJA CHICA (&lt; 25,000 MXN)</span>
+              <span class="smat-slug-lane-title smat-slug-lane-title--emerald">CARRIL A: CAJA CHICA (&lt; 25,000 MXN)</span>
               <span class="smat-slug-lane-tag smat-slug-lane-tag--emerald">P1 · CFDI 4.0 HOY</span>
             </div>
             <p class="smat-slug-lane-desc">
-              Liberación exprés por SPEI o Tarjeta Corporativa sin alta de proveedor SAP. Salida el mismo día para piezas en régimen <strong>🟢 HAY</strong>.
+              Liberación exprés por SPEI o Tarjeta Corporativa sin alta de proveedor SAP. Salida el mismo día para piezas en régimen <strong>HAY</strong>.
             </p>
           </div>
 
           <div class="smat-slug-lane-card smat-slug-lane-card--amber">
             <div class="smat-slug-lane-head">
-              <span class="smat-slug-lane-title smat-slug-lane-title--amber">🏢 CARRIL B: ORDEN DE COMPRA (&gt; 25,000 MXN)</span>
+              <span class="smat-slug-lane-title smat-slug-lane-title--amber">CARRIL B: ORDEN DE COMPRA (&gt; 25,000 MXN)</span>
               <span class="smat-slug-lane-tag smat-slug-lane-tag--amber">SAP / ORACLE · PASAPORTE B2B</span>
             </div>
             <p class="smat-slug-lane-desc">
@@ -353,7 +353,7 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
         </div>
 
         <div class="smat-slug-passport-box">
-          <div class="smat-slug-passport-title">📋 Incluye Pasaporte de Proveedor SMAT:</div>
+          <div class="smat-slug-passport-title">Incluye Pasaporte de Proveedor SMAT:</div>
           <p>• Certificado Metalúrgico de Colada (PMI / Dureza Brinell ASTM A532)</p>
           <p>• Cotejo Dimensional de Tripleta Geométrica (ISO 2768-m) en Durango</p>
           <p>• Huella de Seguridad NIOSH / NOM-036-1-STPS para Maniobra en Patio</p>
@@ -365,7 +365,7 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
             style="padding: 0.9rem; border-radius: 12px; background: #ecfdf5; border: 1px solid #10b981; font-size: 0.78rem; color: #064e3b;"
           >
             <div style="font-family: var(--font-mono, monospace); font-weight: 800; color: #064e3b; margin-bottom: 0.4rem;">
-              ♻️ PROGRAMA DE INTERCAMBIO DE CASCO DAM005 (-22% CORE TRADE-IN)
+              PROGRAMA DE INTERCAMBIO DE CASCO DAM005 (-22% CORE TRADE-IN)
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.45rem;">
               <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 700;">
@@ -402,7 +402,7 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
             data-sku-mass={sku.mass_kg}
             class="smat-slug-btn-primary"
           >
-            🛒 Agregar a Bandeja B2B / Solicitar Pasaporte SAP ({sku.id}) →
+            Agregar a Bandeja B2B / Solicitar Pasaporte SAP ({sku.id}) →
           </button>
           <a
             href={`https://wa.me/526183670664?text=${encodeURIComponent(`[SMAT-DGO] Hola SMAT, requiero cotizar SKU ${sku.id} (${sku.title_es}) en aleación ${sku.default_material} [ Régimen: ${sku.stock_regime || 'hay'} | Masa: ${sku.mass_kg} kg ].`)}`}
@@ -416,7 +416,7 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
             data-sku-lang="es"
             class="smat-slug-btn-wa"
           >
-            💬 Compra Rápida / Caja Chica por WhatsApp Ingeniería (526183670664)
+            Compra Rápida / Caja Chica por WhatsApp Ingeniería (526183670664)
           </a>
           <a
             href={`/cotizar/?sku=${encodeURIComponent(sku.id)}&mat=${encodeURIComponent(sku.default_material)}#rfq`}
@@ -427,7 +427,7 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
             data-sku-lang="es"
             class="smat-slug-btn-workbench"
           >
-            ⚙️ Abrir en Simulador Hidráulico y Metalúrgico (Plano 2)
+            Abrir en Simulador Hidráulico y Metalúrgico (Plano 2)
           </a>
         </div>
       </aside>

@@ -100,7 +100,7 @@ pub fn check_v48_instrument_first_bidirectional_lens_and_parity_gate_48i(
     ];
 
     for rel in stratum1_diagram_routes {
-        let src = fs::read_to_string(site_root.join(rel)).map_err(|e| e.to_string())?;
+        let src = crate::read_page_with_islands_composite(site_root, rel)?;
         let idx_inst = src.find("data-stratum-1-instrument");
         let idx_diag = src.find("<TechnicalDiagrams");
         match (idx_inst, idx_diag) {
@@ -127,7 +127,7 @@ pub fn check_v48_instrument_first_bidirectional_lens_and_parity_gate_48i(
         "src/pages/control-de-procesos/index.astro",
         "src/pages/en/process-control/index.astro",
     ] {
-        let src = fs::read_to_string(site_root.join(met_rel)).map_err(|e| e.to_string())?;
+        let src = crate::read_page_with_islands_composite(site_root, met_rel)?;
         let idx_inst = src.find("data-stratum-1-instrument");
         let idx_grid = src.find("control-equipment-grid");
         match (idx_inst, idx_grid) {
@@ -155,7 +155,7 @@ pub fn check_v48_instrument_first_bidirectional_lens_and_parity_gate_48i(
     }
 
     for cat_rel in ["src/pages/catalogo.astro", "src/pages/en/catalog.astro"] {
-        let src = fs::read_to_string(site_root.join(cat_rel)).map_err(|e| e.to_string())?;
+        let src = crate::read_page_with_islands_composite(site_root, cat_rel)?;
         for tok in [
             "data-dropin-verifier",
             "ATOMIC_PARTS_SSOT_COUNT",
@@ -175,7 +175,7 @@ pub fn check_v48_instrument_first_bidirectional_lens_and_parity_gate_48i(
         "src/pages/equipos/index.astro",
         "src/pages/en/process-equipment/index.astro",
     ] {
-        let src = fs::read_to_string(site_root.join(eq_rel)).map_err(|e| e.to_string())?;
+        let src = crate::read_page_with_islands_composite(site_root, eq_rel)?;
         if !src.contains("id=\"equipos-dropin-match-banner\"") {
             return Err(format!(
                 "Gate 48I (D8-V48 DEB-V48-05): {} debe incluir #equipos-dropin-match-banner",
@@ -190,7 +190,7 @@ pub fn check_v48_instrument_first_bidirectional_lens_and_parity_gate_48i(
         "src/pages/productos/[slug].astro",
         "src/pages/en/products/[slug].astro",
     ] {
-        let src = fs::read_to_string(site_root.join(jrp_rel)).map_err(|e| e.to_string())?;
+        let src = crate::read_page_with_islands_composite(site_root, jrp_rel)?;
         for tok in [
             "data-jrp-window-card",
             "data-add-coupled-pair-btn",
@@ -225,7 +225,7 @@ pub fn check_v48_instrument_first_bidirectional_lens_and_parity_gate_48i(
         "src/pages/bombeo/index.astro",
         "src/pages/en/pumping/index.astro",
     ] {
-        let src = fs::read_to_string(site_root.join(pump_idx)).map_err(|e| e.to_string())?;
+        let src = crate::read_page_with_islands_composite(site_root, pump_idx)?;
         if !src.contains("data-add-tray-sku=") || !src.contains("bindAtomicPartTrayButtons") {
             return Err(format!(
                 "Gate 48I (D5-V48): {} debe habilitar + Bandeja directo y bindAtomicPartTrayButtons",

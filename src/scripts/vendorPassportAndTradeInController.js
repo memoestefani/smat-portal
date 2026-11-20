@@ -230,16 +230,17 @@ export function bindVendorPassportDownloadButtons(
   const isEn = lang === 'en' || (typeof document !== 'undefined' && document.documentElement?.lang === 'en');
   const statusEl = rootDoc.querySelector('#sap-vendor-passport-status, [data-passport-status]');
 
-  const jsonBtns = rootDoc.querySelectorAll('#btn-download-vendor-json, [data-download-passport-json]');
+  const jsonBtns = rootDoc.querySelectorAll('#btn-download-vendor-json, #catalog-download-passport-btn, [data-download-passport-json]');
   jsonBtns.forEach((btnJson) => {
     if (btnJson.getAttribute('data-passport-bound') === '1') return;
     btnJson.setAttribute('data-passport-bound', '1');
     btnJson.addEventListener('click', () => {
-      const res = triggerVendorPassportDownload('json');
+      const kind = btnJson.getAttribute('data-passport-kind') === 'vcf' ? 'vcf' : 'json';
+      const res = triggerVendorPassportDownload(kind);
       if (statusEl) {
         statusEl.textContent = isEn
-          ? `✓ ${res.filename} generated (CFDI 4.0 / Anexo 22 / SAP)`
-          : `✓ ${res.filename} generado (CFDI 4.0 / Anexo 22 / SAP)`;
+          ? `${res.filename} generated (CFDI 4.0 / Annex 22 / SAP)`
+          : `${res.filename} generado (CFDI 4.0 / Anexo 22 / SAP)`;
         statusEl.classList.remove('hidden');
       }
     });

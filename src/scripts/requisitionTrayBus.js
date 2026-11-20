@@ -348,9 +348,9 @@ export function hydrateTrayFromReorderQuery(searchString = '') {
     return getTrayState();
   }
 
-  const entries = trayParam.split(',').map((s) => s.trim()).filter(Boolean);
-  const items = entries.map((entry) => {
-    const [idRaw, qtyRaw, modeRaw] = entry.split(':');
+  const rawTrayTokens = trayParam.split(',').map((s) => s.trim()).filter(Boolean);
+  const items = rawTrayTokens.map((rawToken) => {
+    const [idRaw, qtyRaw, modeRaw] = rawToken.split(':');
     return normalizeTrayItem({
       id: decodeURIComponent(idRaw || 'SMAT-PUMP-IMP-AH'),
       skuId: decodeURIComponent(idRaw || 'SMAT-PUMP-IMP-AH'),
@@ -473,9 +473,9 @@ export function calculateCoupledReorderWindowDays(telemetry = {}) {
 
   const baseSeverity = (sg / 1.50) * Math.pow(d50Um / 120, 0.15) * Math.pow(tipSpeedMs / 21.5, 0.25);
   const severityFactor = Number((baseSeverity * (isParoPlanta ? 1.33 : 1.0)).toFixed(2));
-  const baseWearHours = Math.max(720, Number(telemetry.estimatedWearHours ?? telemetry.predictedWearHours ?? 2160));
-  const dailyHours = Math.max(1, Number(telemetry.dailyOperatingHours ?? telemetry.operatingHoursPerDay ?? 24));
-  const wearAcceleratedLifeHours = Math.max(720, Math.round((baseWearHours * criticalityFactor) / Math.max(0.6, baseSeverity)));
+  const baseWearHours = Math.max(240, Number(telemetry.estimatedWearHours ?? telemetry.predictedWearHours ?? 2160));
+  const dailyHours = Math.max(1, Math.min(24, Number(telemetry.dailyOperatingHours ?? telemetry.operatingHoursPerDay ?? 24)));
+  const wearAcceleratedLifeHours = Math.max(240, Math.round((baseWearHours * criticalityFactor) / Math.max(0.6, baseSeverity)));
   const rawLifeDays = Math.round(wearAcceleratedLifeHours / dailyHours);
 
   const sleeveInspectionDay = Math.round(90 * criticalityFactor);
@@ -496,6 +496,9 @@ export function calculateCoupledReorderWindowDays(telemetry = {}) {
     reorderWindowDays,
     recommendedWindowDays: reorderWindowDays,
     leadTimeBufferDays: isParoPlanta ? 7 : 14,
+    predictedWearHours: baseWearHours,
+    operatingHoursPerDay: dailyHours,
+    rawLifeDays,
     criticalityMode,
     criticalityFactor,
     severityFactor,
@@ -591,6 +594,7 @@ export function evaluateBearingCartridgeCoreTradeIn(trayState = {}, coreReturnOv
         : `Direct new DAM005 cartridge supply (Factor 1.00x). Central Warehouse: ${returnAddress}.`;
 
   return {
+    version: state.version ?? 3,
     eligible,
     coreReturnEnabled: eligible && coreReturnEnabled,
     discountPct,

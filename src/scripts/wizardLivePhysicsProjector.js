@@ -45,14 +45,12 @@ function setNodeTextAndAttrs(root, selector, text, attrs = {}) {
  * @param {any} payload
  */
 export function projectPumpDriveAndHybridTelemetry(wizardRoot, payload = {}) {
-  const {
-    driveEval = {},
-    frameEval = {},
-    hybridEval = {},
-    interferenceEval = {},
-    seqEval = {},
-    isEs = true
-  } = payload;
+  const driveEval = payload.driveEval || {};
+  const frameEval = payload.frameEval || payload.frameSelect || {};
+  const hybridEval = payload.hybridEval || {};
+  const interferenceEval = payload.interferenceEval || payload.clearanceEval || {};
+  const seqEval = payload.seqEval || payload.assemblySeq || {};
+  const isEs = payload.isEs !== undefined ? payload.isEs : true;
 
   PROJECTOR_STATE_CACHE.activeCircuit = 'bombeo';
 
@@ -165,6 +163,29 @@ export function projectPumpDriveAndHybridTelemetry(wizardRoot, payload = {}) {
       'data-spalling-risk': spallingRisk
     }
   );
+
+  // Salidas antes descartadas (UNREAD RETURNS: DEB-V50-13): Serie, Masa Activa, Izaje NIOSH, Material Activo y Híbrido
+  const activeSeriesVal = activeInterf.activeSeries ?? activeInterf.selectedPartSpec?.series ?? activeInterf.pipeSeries ?? '6x4';
+  const activeWeightVal = activeInterf.activeWeightKg ?? activeInterf.selectedPartSpec?.weight_kg ?? activeInterf.totalAssemblyMassKg ?? 0;
+  const activeHoistVal = Boolean(activeInterf.activeNioshHoistRequired ?? (Number(activeWeightVal) >= 23));
+  const activeMaterialVal = activeInterf.activeMaterialCode ?? activeInterf.selectedPartSpec?.material ?? hybridEval.impellerMaterialCode ?? 'A05';
+
+  setNodeTextAndAttrs(wizardRoot, '#wb-asm-active-series', String(activeSeriesVal));
+  setNodeTextAndAttrs(wizardRoot, '#wb-asm-active-weight', `${Number(activeWeightVal).toFixed(1)} kg`);
+  setNodeTextAndAttrs(wizardRoot, '#wb-asm-active-hoist', activeHoistVal ? (isEs ? 'Izaje Mecánico (>=23 kg)' : 'Hoist Required (>=23 kg)') : (isEs ? 'Manual (<23 kg)' : 'Manual (<23 kg)'), {
+    'data-niosh-hoist': String(activeHoistVal)
+  });
+  setNodeTextAndAttrs(wizardRoot, '#wb-asm-active-material', String(activeMaterialVal));
+  setNodeTextAndAttrs(wizardRoot, '#wb-hybrid-verdict', hybRec ? (isEs ? 'Híbrido A05+R55 Recomendado' : 'Hybrid A05+R55 Recommended') : (isEs ? 'Monometálico Cr27 / R55' : 'Monometallic Cr27 / R55'), {
+    'data-hybrid-recommended': String(hybRec)
+  });
+  setNodeTextAndAttrs(wizardRoot, '#wb-hybrid-mass-savings', `-${Number(hybridEval.massSavingsPct ?? 31.8).toFixed(1)}%`);
+
+  const volLoss = activeInterf.volumetricEfficiencyDropPct ?? activeInterf.volumetricEfficiencyLossPct ?? 1.6;
+  const pipeLoss = activeInterf.pipeVelocityMarginLossPct ?? Number((volLoss * 0.75).toFixed(2));
+  setNodeTextAndAttrs(wizardRoot, '#trib-vol-loss-out', `-${Number(volLoss).toFixed(1)}%`);
+  setNodeTextAndAttrs(wizardRoot, '#trib-pipe-loss-out', `-${Number(pipeLoss).toFixed(1)}%`);
+  setNodeTextAndAttrs(wizardRoot, '#trib-status-out', collisionNote);
 }
 
 /**
@@ -172,36 +193,49 @@ export function projectPumpDriveAndHybridTelemetry(wizardRoot, payload = {}) {
  * Corte Plitt (`evaluateHydrocycloneCutPoint`) y Criba de Uretano Weibull (`calculateUrethaneScreenPartitionWeibull`) (`D6-V41`).
  *
  * @param {HTMLElement|Document} wizardRoot
- * @param {any} cycRes
+ * @param {any} cycResOrPayload
  * @param {boolean} [isEs=true]
  */
-export function projectClassificationAndScreenTelemetry(wizardRoot, cycRes = {}, isEs = true) {
+export function projectClassificationAndScreenTelemetry(wizardRoot, cycResOrPayload = {}, isEs = true) {
   PROJECTOR_STATE_CACHE.activeCircuit = 'clasificacion';
+  const raw = cycResOrPayload || {};
+  const cycRes = raw.cycRes || raw;
+  const scrRes = raw.scrRes || cycRes.screenWeibull || {};
+  const langEs = raw.isEs !== undefined ? raw.isEs : isEs;
   const cwF = cycRes.cwFeedPct ?? 41.9;
   const cwU = cycRes.cwUnderflowPct ?? 71.3;
   const cwO = cycRes.cwOverflowPct ?? 21.8;
   const cvF = cycRes.cvFeedPct ?? 21.1;
-  const cvU = cycRes.cvUnderflowPct ?? 48.0;
+  const cvU = cycRes.cvUnderflow ?? cycRes.cvUnderflowPct ?? 48.0;
   const cvO = cycRes.cvOverflowPct ?? 9.4;
   const duDoRatio = cycRes.apexToVortexRatio ?? 0.5;
   const umbrellaDilute = Boolean(cycRes.isUmbrellaDilute ?? false);
   const cutD50c = cycRes.cutPointD50cUm ?? cycRes.d50cMicrons ?? 74;
-  const screenObj = cycRes.screenWeibull || {};
-  const vibG = screenObj.vibrationG ?? cycRes.vibrationG ?? 4.5;
-  const antiBlind = Boolean(screenObj.antiBlindingCompliant ?? cycRes.antiBlindingCompliant ?? true);
+  const vibG = scrRes.vibrationG ?? cycRes.vibrationG ?? 4.5;
+  const alphaVal = scrRes.sharpnessAlpha ?? cycRes.sharpnessAlpha ?? 4.4;
+  const antiBlind = Boolean(scrRes.antiBlindingCompliant ?? cycRes.antiBlindingCompliant ?? true);
 
   setNodeTextAndAttrs(
     wizardRoot,
     '#wb-cyc-res-cw-cv-3cups',
-    isEs
+    langEs
       ? `Vaso 1 Alim.: ${cwF}% Cw (${cvF}% Cv) • Vaso 2 Ápex: ${cwU}% Cw (${cvU}% Cv) • Vaso 3 Rebose: ${cwO}% Cw (${cvO}% Cv) • d50c=${cutD50c} µm`
       : `Cup 1 Feed: ${cwF}% Cw (${cvF}% Cv) • Cup 2 Apex: ${cwU}% Cw (${cvU}% Cv) • Cup 3 Overflow: ${cwO}% Cw (${cvO}% Cv) • d50c=${cutD50c} µm`
   );
 
+  setNodeTextAndAttrs(wizardRoot, '#wb-cyc-res-cc', `${cycRes.circulatingLoadPct ?? 215}%`);
+  setNodeTextAndAttrs(wizardRoot, '#wb-cyc-res-d50', `${cutD50c} µm`);
+  setNodeTextAndAttrs(wizardRoot, '#wb-cyc-res-cvu', `${Number(cvU).toFixed(2)}`);
+  setNodeTextAndAttrs(wizardRoot, '#wb-cyc-res-dudo', `${duDoRatio}`);
+  setNodeTextAndAttrs(wizardRoot, '#wb-cyc-res-roping', cycRes.dischargeRegime || (umbrellaDilute ? 'UMBRELLA_DILUTE' : 'SEMI_UMBRELLA'));
+  setNodeTextAndAttrs(wizardRoot, '#wb-scr-res-oversize', `${scrRes.partitionToOversizePct ?? 91.5}%`);
+  setNodeTextAndAttrs(wizardRoot, '#wb-scr-res-dilation', `${scrRes.elasticDilationPct ?? 1.8}%`);
+  setNodeTextAndAttrs(wizardRoot, '#wb-scr-res-weibull', `α=${alphaVal}`);
+
   setNodeTextAndAttrs(
     wizardRoot,
     '#wb-cyc-res-dudo-ratio',
-    isEs
+    langEs
       ? `Relación Ápex/Vórtice Du/Do = ${duDoRatio} • ${umbrellaDilute ? 'Descarga Paraguas Diluida (Ajustar Ápex)' : 'Ángulo Semi-Paraguas Estable'}`
       : `Apex/Vortex Ratio Du/Do = ${duDoRatio} • ${umbrellaDilute ? 'Dilute Umbrella Spray (Check Apex)' : 'Stable Semi-Umbrella Cone'}`
   );
@@ -209,9 +243,9 @@ export function projectClassificationAndScreenTelemetry(wizardRoot, cycRes = {},
   setNodeTextAndAttrs(
     wizardRoot,
     '#wb-scr-res-vibration-g',
-    isEs
-      ? `Aceleración Criba: ${vibG} G • Nitidez α = ${cycRes.sharpnessAlpha ?? 4.4} • ${antiBlind ? 'Anti-cegamiento Activo (3°–5°)' : 'Revisar Tensión de Malla'}`
-      : `Screen Accel: ${vibG} G • Sharpness α = ${cycRes.sharpnessAlpha ?? 4.4} • ${antiBlind ? 'Anti-Blinding Compliant (3°–5°)' : 'Check Screen Tension'}`
+    langEs
+      ? `Aceleración Criba: ${vibG} G • Nitidez α = ${alphaVal} • ${antiBlind ? 'Anti-cegamiento Activo (3°–5°)' : 'Revisar Tensión de Malla'}`
+      : `Screen Accel: ${vibG} G • Sharpness α = ${alphaVal} • ${antiBlind ? 'Anti-Blinding Compliant (3°–5°)' : 'Check Screen Tension'}`
   );
 }
 
@@ -234,8 +268,8 @@ export function projectFlotationAndFiltrationTelemetry(wizardRoot, payload = {})
     wizardRoot,
     '#wb-flot-res-susp-status',
     isEs
-      ? `Zwietering N_js = ${flotRes.zwieteringNjsRpm ?? 178} RPM (${suspSafe ? 'Suspensión Completa' : 'Alerta de Embancamiento'}) • Ventana v_tip: ${tipOpt ? 'Óptima (6.0–7.8 m/s)' : 'Fuera de ventana'}`
-      : `Zwietering N_js = ${flotRes.zwieteringNjsRpm ?? 178} RPM (${suspSafe ? 'Full Solids Suspension' : 'Sanding Risk Alert'}) • v_tip Window: ${tipOpt ? 'Optimal (6.0–7.8 m/s)' : 'Out of window'}`
+      ? `Zwietering N_js = ${flotRes.zwieteringNjsRpm ?? 178} RPM (${suspSafe ? 'Suspensión Completa' : 'Alerta de Embancamiento'}) • Ventana u₂: ${tipOpt ? 'Óptima (6.0–7.8 m/s)' : 'Fuera de ventana'}`
+      : `Zwietering N_js = ${flotRes.zwieteringNjsRpm ?? 178} RPM (${suspSafe ? 'Full Solids Suspension' : 'Sanding Risk Alert'}) • u₂ Window: ${tipOpt ? 'Optimal (6.0–7.8 m/s)' : 'Out of window'}`
   );
 
   setNodeTextAndAttrs(
@@ -245,6 +279,13 @@ export function projectFlotationAndFiltrationTelemetry(wizardRoot, payload = {})
       ? `Vida Útil Poliuretano vs Hule: ${puMult}× mayor resistencia al corte • SKU: ${flotRes.recommendedSkuId || 'SMAT-FLOT-MECH-18SP'}`
       : `Polyurethane vs Rubber Wear Life: ${puMult}× longer shear life • SKU: ${flotRes.recommendedSkuId || 'SMAT-FLOT-MECH-18SP'}`
   );
+  if (flotRes.sbInverseSeconds !== undefined) setNodeTextAndAttrs(wizardRoot, '#wb-flot-res-sb', `${flotRes.sbInverseSeconds} s⁻¹`);
+  if (flotRes.rateConstantMin !== undefined) setNodeTextAndAttrs(wizardRoot, '#wb-flot-res-k', `${flotRes.rateConstantMin} min⁻¹`);
+  if (flotRes.tipSpeedMS !== undefined) setNodeTextAndAttrs(wizardRoot, '#wb-flot-res-vtip', `${flotRes.tipSpeedMS} m/s`);
+  if (flotRes.zwieteringNjsRpm !== undefined) setNodeTextAndAttrs(wizardRoot, '#wb-flot-res-njs', `${flotRes.zwieteringNjsRpm} RPM`);
+  if (flotRes.floatabilityP !== undefined) setNodeTextAndAttrs(wizardRoot, '#wb-flot-res-p', `${flotRes.floatabilityP}`);
+  if (flotRes.frothRecoveryRf !== undefined) setNodeTextAndAttrs(wizardRoot, '#wb-flot-res-rf', `${flotRes.frothRecoveryRf}`);
+  if (flotRes.recommendedSkuId) setNodeTextAndAttrs(wizardRoot, '#wb-flot-res-sku', flotRes.recommendedSkuId);
 
   // Filtración: filtrationMinutes, totalCycleMin, deltaPAsymmetricMpa, ppFatigueAllowableMpa, recommendedPlateSkuId, recommendedClothSkuId
   const filtMin = filtRes.filtrationMinutes ?? 18.0;
@@ -277,6 +318,11 @@ export function projectFlotationAndFiltrationTelemetry(wizardRoot, payload = {})
       ? `Prescripción Acoplada: Placa [${plateSku}] + Lona [${clothSku}]`
       : `Coupled Prescription: Plate [${plateSku}] + Cloth [${clothSku}]`
   );
+  if (filtRes.maxBendingStressMpa !== undefined) setNodeTextAndAttrs(wizardRoot, '#wb-filt-res-stress', `${filtRes.maxBendingStressMpa} MPa`);
+  if (filtRes.flexuralSafetyFactor !== undefined) setNodeTextAndAttrs(wizardRoot, '#wb-filt-res-fs', `${filtRes.flexuralSafetyFactor}`);
+  if (filtRes.cyclesPerDay !== undefined) setNodeTextAndAttrs(wizardRoot, '#wb-filt-res-cycles', `${filtRes.cyclesPerDay} c/d`);
+  if (filtRes.dryTonnesPerDay !== undefined) setNodeTextAndAttrs(wizardRoot, '#wb-filt-res-tpd', `${filtRes.dryTonnesPerDay} t/d`);
+  setNodeTextAndAttrs(wizardRoot, '#wb-filt-res-nom141', filtRes.nom141Compliant !== false ? (isEs ? 'Cumple NOM-141' : 'NOM-141 OK') : (isEs ? 'Alerta NOM-141' : 'NOM-141 Alert'));
 }
 
 /**
@@ -288,20 +334,33 @@ export function projectFlotationAndFiltrationTelemetry(wizardRoot, payload = {})
  * @param {any} payload
  */
 export function projectMetrologyAndReorderTelemetry(wizardRoot, payload = {}) {
-  const {
-    gyEval = {},
-    sieveEval = {},
-    marcyEval = {},
-    reorderEval = {},
-    cmuEval = {},
-    isEs = true
-  } = payload;
+  const gyEval = payload.gyEval || {};
+  const sieveEval = payload.sieveEval || {};
+  const marcyEval = payload.marcyEval || {};
+  const reorderEval = payload.reorderEval || payload.reorderRes || {};
+  const tradeInEval = payload.tradeInEval || {};
+  const trayState = payload.trayState || {};
+  const cmuEval = payload.cmuEval || {};
+  const isEs = payload.isEs !== undefined ? payload.isEs : true;
 
   const wetLiters = gyEval.wetPulpVolumeLiters ?? gyEval.requiredPulpLiters ?? 0.52;
   const minMassKg = gyEval.minimumSampleMassKg ?? Number(((gyEval.minimumSampleMassGrams ?? 250) / 1000).toFixed(3));
   const relErrPct = gyEval.targetRelativeStdErrorPercent ?? 5.0;
   const gyRec = isEs ? gyEval.recommendationEs || 'Muestreo representativo en turno' : gyEval.recommendationEn || 'Representative shift sampling';
-  const pulpSg = marcyEval.pulpDensitySg ?? marcyEval.slurryDensityKgL ?? 1.406;
+  const pulpSg = marcyEval.pulpDensitySg ?? marcyEval.pulpDensityKgL ?? marcyEval.slurryDensityKgL ?? 1.406;
+
+  setNodeTextAndAttrs(wizardRoot, '#wb-ctrl-res-sm', `${Number(pulpSg).toFixed(3)} kg/L`);
+  setNodeTextAndAttrs(wizardRoot, '#wb-ctrl-res-cw', `${Number(marcyEval.cwPct ?? marcyEval.solidsWeightPercent ?? 45).toFixed(1)}%`);
+  setNodeTextAndAttrs(wizardRoot, '#wb-ctrl-res-gy', `${minMassKg} kg`);
+  const topSieve = (Array.isArray(sieveEval.sieveStack) && sieveEval.sieveStack[0]?.sieveNumber) || sieveEval.sieveNumber || sieveEval.primaryControlMesh || '#100';
+  const drySampleG = sieveEval.drySampleMassGrams ?? Math.round(minMassKg * 1000);
+  const hoistReq = Boolean(gyEval.hoistRequired ?? (minMassKg >= 23));
+  const twoPersonReq = Boolean(gyEval.twoPersonAssistRequired ?? (minMassKg >= 15 && minMassKg < 23));
+  setNodeTextAndAttrs(wizardRoot, '#wb-ctrl-res-sieve', String(topSieve));
+  setNodeTextAndAttrs(wizardRoot, '#wb-ctrl-res-drysample', `${drySampleG} g`);
+  setNodeTextAndAttrs(wizardRoot, '#wb-ctrl-res-hoist', hoistReq ? (isEs ? 'Requiere polipasto (>=23 kg)' : 'Hoist Required (>=23 kg)') : (isEs ? 'Manual seguro' : 'Safe Manual'));
+  setNodeTextAndAttrs(wizardRoot, '#wb-ctrl-res-two-person', twoPersonReq ? (isEs ? 'Asistencia 2 operadores' : 'Two-Person Assist') : (isEs ? '1 operador' : 'Single Operator'));
+  setNodeTextAndAttrs(wizardRoot, '#wb-ctrl-res-rr', `n=${sieveEval.rosinRammlerUniformityN ?? sieveEval.rosinRammlerSlopeN ?? 1.08}`);
 
   setNodeTextAndAttrs(
     wizardRoot,
@@ -358,7 +417,18 @@ export function projectMetrologyAndReorderTelemetry(wizardRoot, payload = {}) {
         'data-severity-factor': sevFac
       }
     );
+    setNodeTextAndAttrs(wizardRoot, '#jrp-stage-1-days', `${dSleeve} d`);
+    setNodeTextAndAttrs(wizardRoot, '#jrp-stage-2-days', `${dImp} d`);
+    setNodeTextAndAttrs(wizardRoot, '#jrp-stage-3-days', `${dVol} d`);
+    setNodeTextAndAttrs(wizardRoot, '#wb-jrp-window-days', `${reorderEval.reorderWindowDays ?? reorderEval.recommendedWindowDays} d`);
   }
+
+  setNodeTextAndAttrs(
+    wizardRoot,
+    '#wb-core-tradein-eligible',
+    Boolean(tradeInEval.eligible ?? true) ? (isEs ? 'Casco DAM005 Elegible (-22%/-12%)' : 'DAM005 Core Eligible (-22%/-12%)') : (isEs ? 'No elegible' : 'Ineligible')
+  );
+  setNodeTextAndAttrs(wizardRoot, '#qtray-state-version', `v${trayState.version ?? tradeInEval.version ?? 3}`);
 
   if (cmuEval && cmuEval.priorityCode) {
     setNodeTextAndAttrs(
@@ -379,20 +449,28 @@ export function projectMetrologyAndReorderTelemetry(wizardRoot, payload = {}) {
  * @param {any} payload
  */
 export function projectHydraulicAltitudeAndLeadValidation(wizardRoot, payload = {}) {
-  const {
-    simMetrics = {},
-    altData = {},
-    optMat = {},
-    leadValid = {},
-    isEs = true
-  } = payload;
+  const simMetrics = payload.simMetrics || payload.slurryRes || {};
+  const altData = payload.altData || payload.altRes || {};
+  const optMat = payload.optMat || payload.matOpt || {};
+  const leadValid = payload.leadValid || payload.leadVal || {};
+  const isEs = payload.isEs !== undefined ? payload.isEs : true;
 
   const results = simMetrics.results || simMetrics;
   const baroKpa = altData.barometricPressureKpa ?? results.altitudeCorrection?.barometricPressureKpa ?? 75.6;
   const altTier = altData.altitudeTier || results.altitudeTier || 'HIGH_SIERRA';
   const altTierTxt = altData.altitudeTierText || results.altitudeTierText || (isEs ? 'Alta Montaña (Sierra Madre > 2,000 msnm)' : 'High Mountain (> 2,000 MASL)');
   const npshWarn = Boolean(altData.npshSafeMarginWarning ?? results.npshSafeMarginWarning ?? true);
-  const kMotorAlt = simMetrics.combinedMotorAltitudeMultiplier ?? 1.326;
+  const kMotorAlt = simMetrics.combinedMotorAltitudeMultiplier ?? altData.combinedMotorAltitudeMultiplier ?? 1.326;
+  const patmVal = Number(altData.pAtmHeadMca ?? 10.33);
+  const deltaNpshVal = Number(altData.deltaNpshLossM ?? 0);
+  const motorDeratVal = Number(altData.motorDeratingFactor ?? 1.0);
+  const penaltyPct = Number(altData.motorSizingPenaltyPct ?? Math.round((1 / Math.max(0.5, motorDeratVal) - 1) * 1000) / 10);
+
+  setNodeTextAndAttrs(wizardRoot, '#metric-patm', `${patmVal.toFixed(2)} mca`);
+  setNodeTextAndAttrs(wizardRoot, '#metric-delta-npsh', `${deltaNpshVal.toFixed(2)} m`);
+  setNodeTextAndAttrs(wizardRoot, '#metric-iec-derating', `${motorDeratVal.toFixed(3)}`);
+  setNodeTextAndAttrs(wizardRoot, '#metric-k-motor-alt', `${Number(kMotorAlt).toFixed(3)}x`);
+  setNodeTextAndAttrs(wizardRoot, '#metric-motor-penalty-pct', `+${penaltyPct.toFixed(1)}%`);
 
   setNodeTextAndAttrs(
     wizardRoot,

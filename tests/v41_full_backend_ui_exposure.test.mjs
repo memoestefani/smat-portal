@@ -56,24 +56,42 @@ function createMockRoot() {
   };
 }
 
+function readQuoteWizardComposite() {
+  let qwSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/QuoteWizard.astro'), 'utf8');
+  const wccSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/WizardCircuitCalculators.astro'), 'utf8');
+  const cycSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/CycloneScreenIsland.astro'), 'utf8');
+  const flotSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/FlotationCalculatorIsland.astro'), 'utf8');
+  const filtSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/FiltrationCalculatorIsland.astro'), 'utf8');
+  const ctrlSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/ProcessControlIsland.astro'), 'utf8');
+  const sealSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/SealDriveBearingIsland.astro'), 'utf8');
+  const expandedCalculators = `${wccSrc}\n${cycSrc}\n${flotSrc}\n${filtSrc}\n${sealSrc}`;
+  qwSrc = qwSrc.replace(/<ProcessControlIsland\b[^>]*\/>/, ctrlSrc);
+  qwSrc = qwSrc.replace(/<WizardCircuitCalculators\b[^>]*\/>/, expandedCalculators);
+  return qwSrc;
+}
+
 test('D1-V41 & DEB-V41-01..02: QuoteWizard.astro decouples <WizardCircuitCalculators /> and promotes all 4 non-pumping panels out of #circuit-panel-bombeo and <details>', () => {
-  const qwPath = path.join(SITE_ROOT, 'src/components/QuoteWizard.astro');
-  const qwSrc = fs.readFileSync(qwPath, 'utf8');
+  const rawQwSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/QuoteWizard.astro'), 'utf8');
+  const qwSrc = readQuoteWizardComposite();
 
   const idxBombeoOpen = qwSrc.indexOf('id="circuit-panel-bombeo"');
   const idxAtomicPartCard = qwSrc.indexOf('id="wb-atomic-part-card"');
-  const idxCalculators = qwSrc.indexOf('<WizardCircuitCalculators');
+  const idxCalculators = rawQwSrc.indexOf('<WizardCircuitCalculators');
+  const idxCtrlIsland = rawQwSrc.indexOf('<ProcessControlIsland');
   const idxFlot = qwSrc.indexOf('id="circuit-panel-flotacion"');
   const idxFilt = qwSrc.indexOf('id="circuit-panel-filtracion"');
   const idxCtrl = qwSrc.indexOf('id="circuit-panel-control"');
   const idxDetails = qwSrc.indexOf('id="wb-engineering-config-details"');
+  const rawIdxDetails = rawQwSrc.indexOf('id="wb-engineering-config-details"');
+  const rawIdxBombeo = rawQwSrc.indexOf('id="circuit-panel-bombeo"');
 
   assert.ok(idxBombeoOpen > 0, '#circuit-panel-bombeo must exist');
-  assert.ok(idxCalculators > idxBombeoOpen, '<WizardCircuitCalculators /> must appear after #circuit-panel-bombeo');
+  assert.ok(idxCalculators > rawIdxBombeo, '<WizardCircuitCalculators /> must appear after #circuit-panel-bombeo');
+  assert.ok(idxCtrlIsland > rawIdxBombeo && idxCtrlIsland < rawIdxDetails, '<ProcessControlIsland /> must appear before <details id="wb-engineering-config-details">');
   assert.ok(idxFlot < idxDetails, '#circuit-panel-flotacion must appear before <details id="wb-engineering-config-details">');
   assert.ok(idxFilt < idxDetails, '#circuit-panel-filtracion must appear before <details id="wb-engineering-config-details">');
   assert.ok(idxCtrl < idxDetails, '#circuit-panel-control must appear before <details id="wb-engineering-config-details">');
-  assert.ok(idxCalculators < idxDetails, '<WizardCircuitCalculators /> must appear before <details id="wb-engineering-config-details">');
+  assert.ok(idxCalculators < rawIdxDetails, '<WizardCircuitCalculators /> must appear before <details id="wb-engineering-config-details">');
 
   // Verify #circuit-panel-bombeo closes before #wb-atomic-part-card
   const sliceBetweenBombeoAndPartCard = qwSrc.slice(idxBombeoOpen, idxAtomicPartCard);

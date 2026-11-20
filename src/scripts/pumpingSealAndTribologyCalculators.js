@@ -142,8 +142,8 @@ export function bindCanonicalSealBalanceCalculator(root, lang = 'es') {
     if (statusOut) {
       statusOut.textContent = isEn ? res.summaryEn : res.summaryEs;
       if (statusOut.style) {
-        statusOut.style.background = res.expellerViable ? '#ecfdf5' : '#fffbeb';
-        statusOut.style.color = res.expellerViable ? '#065f46' : '#92400e';
+        statusOut.style.background = res.expellerViable ? '#ecfdf5' : '#fff7ed';
+        statusOut.style.color = res.expellerViable ? '#064e3b' : '#7c2d12';
       }
     }
 
@@ -201,19 +201,34 @@ export function bindCanonicalSealBalanceCalculator(root, lang = 'es') {
  * Conecta de forma canónica el selector tribológico Finnie-Hutchings + Tenacidad K_Ic + Despiece 5-5-4
  * en `/bombeo/impulsor/`, `/bombeo/revestimientos/`, `/en/pumping/impeller/` y `/en/pumping/liners/` (`D10-V43`).
  */
+const TRIBOLOGY_BRANCH_OVERRIDE_MAP = {
+  metal: { branch: 'metal', key: 'alto_cromo_cr27', es: 'Alto Cromo 27% (A05)', en: '27% High Chrome (A05)' },
+  alto_cromo_cr27: { branch: 'metal', key: 'alto_cromo_cr27', es: 'Alto Cromo 27% (A05)', en: '27% High Chrome (A05)' },
+  rubber: { branch: 'rubber', key: 'hule_natural', es: 'Hule Natural (R55)', en: 'Natural Rubber (R55)' },
+  hule_natural: { branch: 'rubber', key: 'hule_natural', es: 'Hule Natural (R55)', en: 'Natural Rubber (R55)' },
+  polyurethane: { branch: 'polyurethane', key: 'poliuretano', es: 'Poliuretano (U01)', en: 'Polyurethane (U01)' },
+  poliuretano: { branch: 'polyurethane', key: 'poliuretano', es: 'Poliuretano (U01)', en: 'Polyurethane (U01)' },
+  ceramica_sic: { branch: 'ceramica_sic', key: 'ceramica_sic', es: 'Cerámica SiC (≥2200 HV)', en: 'SiC Ceramic (≥2200 HV)' },
+  hibrido_a05_r55: { branch: 'hibrido_a05_r55', key: 'hybrid_a05_r55', es: 'Rama D Híbrida: Impulsor A05 + Forros R55', en: 'Hybrid Branch D: A05 Impeller + R55 Liners' },
+  hybrid_a05_r55: { branch: 'hibrido_a05_r55', key: 'hybrid_a05_r55', es: 'Rama D Híbrida: Impulsor A05 + Forros R55', en: 'Hybrid Branch D: A05 Impeller + R55 Liners' },
+};
+
 export function bindCanonicalTribologySelector(root, lang = 'es') {
   if (!root || typeof root.querySelector !== 'function') return null;
   const isEn = String(lang).toLowerCase() === 'en';
 
   const d80El = root.querySelector('#trib-d80-um');
-  const vtipEl = root.querySelector('#trib-vtip-ms');
+  const vtipEl = root.querySelector('#trib-u2-ms') || root.querySelector('#trib-vtip-ms');
   const phEl = root.querySelector('#trib-ph');
-  const branchEl = root.querySelector('#trib-branch');
-  const seriesEl = root.querySelector('#trib-series');
+  const branchEl = root.querySelector('#trib-mat-select') || root.querySelector('#trib-branch');
+  const clearEl = root.querySelector('#trib-clearance-mm');
+  const seriesEl = root.querySelector('#trib-series') || root.querySelector('#wb-pipe-size');
 
   const matOut = root.querySelector('#trib-mat-out');
   const kicOut = root.querySelector('#trib-kic-out');
   const archOut = root.querySelector('#trib-arch-out');
+  const volLossOut = root.querySelector('#trib-vol-loss-out');
+  const pipeLossOut = root.querySelector('#trib-pipe-loss-out');
   const statusOut = root.querySelector('#trib-status-out');
 
   const hydration = hydrateVerticalInputsFromUnifiedState(root, 'tribology');
@@ -224,6 +239,7 @@ export function bindCanonicalTribologySelector(root, lang = 'es') {
     const impellerTipSpeedMs = Number(vtipEl.value) || 22.5;
     const slurryPh = phEl ? Number(phEl.value) || 7.5 : 7.5;
     const selectedBranch = branchEl ? String(branchEl.value || 'auto') : 'auto';
+    const frontClearanceMm = clearEl ? clampNum(clearEl.value, 0.2, 6.0, 0.75) : 0.75;
     const pipeSeries = seriesEl ? String(seriesEl.value || '6x4') : '6x4';
 
     const matEval = selectOptimalMaterial(d80Microns, 45, slurryPh);
@@ -235,25 +251,29 @@ export function bindCanonicalTribologySelector(root, lang = 'es') {
       pipeSeries,
     });
 
-    const effectiveBranch = selectedBranch === 'auto'
-      ? (matEval.materialKey === 'ceramica_sic'
+    const manualSpec = selectedBranch !== 'auto' ? TRIBOLOGY_BRANCH_OVERRIDE_MAP[selectedBranch] : null;
+    const effectiveBranch = manualSpec
+      ? manualSpec.branch
+      : (matEval.materialKey === 'ceramica_sic'
         ? 'ceramica_sic'
         : (matEval.materialKey === 'hule_natural'
           ? 'rubber'
-          : (matEval.materialKey === 'poliuretano' ? 'polyurethane' : 'metal')))
-      : selectedBranch;
+          : (matEval.materialKey === 'poliuretano' ? 'polyurethane' : 'metal')));
 
     const asmEval = evaluatePumpAssemblySequence({
       wetEndBranch: effectiveBranch,
       d80Microns,
       impellerTipSpeedMs,
       pipeSeries,
-      frontClearanceMm: 0.75,
+      frontClearanceMm,
     });
 
+    const volLoss = Number(asmEval.volumetricEfficiencyDropPct ?? 1.6);
+    const pipeLoss = Number(asmEval.pipeVelocityMarginLossPct ?? (volLoss * 0.75).toFixed(2));
+
     if (matOut) {
-      matOut.textContent = effectiveBranch === 'hibrido_a05_r55'
-        ? (isEn ? 'Hybrid Branch D: A05 Impeller + R55 Liners' : 'Rama D Híbrida: Impulsor A05 + Forros R55')
+      matOut.textContent = manualSpec
+        ? (isEn ? manualSpec.en : manualSpec.es)
         : (isEn ? matEval.nameEn : matEval.nameEs);
     }
     if (kicOut) {
@@ -262,24 +282,30 @@ export function bindCanonicalTribologySelector(root, lang = 'es') {
     if (archOut) {
       archOut.textContent = `${asmEval.totalAssemblyMassKg} kg · ${asmEval.nioshHoistPartsCount} NIOSH ≥ 23 kg (${asmEval.pipeSeries})`;
     }
-    const resolvedMaterialKey = effectiveBranch === 'hibrido_a05_r55'
-      ? 'hybrid_a05_r55'
+    if (volLossOut) {
+      volLossOut.textContent = `-${volLoss.toFixed(1)}%`;
+    }
+    if (pipeLossOut) {
+      pipeLossOut.textContent = `-${pipeLoss.toFixed(1)}%`;
+    }
+    const resolvedMaterialKey = manualSpec
+      ? manualSpec.key
       : (matEval.materialKey || 'alto_cromo_cr27');
     const kitSpec = WET_END_MATERIAL_KITS[resolvedMaterialKey] || WET_END_MATERIAL_KITS.alto_cromo_cr27;
     const kitDuty = kitSpec
       ? (isEn ? kitSpec.dutyApplicationEn : kitSpec.dutyApplicationEs)
       : '';
     const kicTag = asmEval.spallingRiskDetected
-      ? (isEn ? 'Spalling Risk!' : '¡Riesgo Spalling!')
+      ? (isEn ? 'Spalling Risk!' : 'Riesgo de Spalling!')
       : (isEn ? 'Toughness OK' : 'Tenacidad OK');
 
     if (statusOut) {
       const reason = isEn ? asmEval.structuralReasonEn : asmEval.structuralReasonEs;
       const warn = isEn ? asmEval.spallingWarningEn : asmEval.spallingWarningEs;
-      statusOut.textContent = `${kicTag} | ${reason} | ${warn}${kitDuty ? ' | ' + kitDuty : ''}`;
+      statusOut.textContent = `${kicTag} | δ=${frontClearanceMm.toFixed(2)} mm (-${volLoss.toFixed(1)}%) | ${reason} | ${warn}${kitDuty ? ' | ' + kitDuty : ''}`;
       if (statusOut.style) {
         statusOut.style.background = asmEval.spallingRiskDetected ? '#fef2f2' : '#ecfdf5';
-        statusOut.style.color = asmEval.spallingRiskDetected ? '#991b1b' : '#065f46';
+        statusOut.style.color = asmEval.spallingRiskDetected ? '#991b1b' : '#064e3b';
       }
     }
 
@@ -290,6 +316,9 @@ export function bindCanonicalTribologySelector(root, lang = 'es') {
       materialKey: resolvedMaterialKey,
       d80Microns,
       impellerTipSpeedMs,
+      frontClearanceMm,
+      volumetricLossPct: volLoss,
+      pipeVelocityMarginLossPct: pipeLoss,
       slurryPh,
       effectiveBranch,
       pipeSeries,
@@ -315,6 +344,7 @@ export function bindCanonicalTribologySelector(root, lang = 'es') {
         material: resolvedMaterialKey,
         d80: d80Microns,
         u2_ms: impellerTipSpeedMs,
+        claro_mm: frontClearanceMm,
         ph: slurryPh,
         serie: pipeSeries,
       },
@@ -324,7 +354,7 @@ export function bindCanonicalTribologySelector(root, lang = 'es') {
 
   bindAtomicPartTrayButtons(root);
 
-  [d80El, vtipEl, phEl, branchEl, seriesEl].forEach((el) => {
+  [d80El, vtipEl, phEl, branchEl, clearEl, seriesEl].forEach((el) => {
     if (el && typeof el.addEventListener === 'function') {
       el.addEventListener('input', () => recompute(false));
       el.addEventListener('change', () => recompute(false));

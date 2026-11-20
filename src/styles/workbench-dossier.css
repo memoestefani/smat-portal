@@ -1,0 +1,390 @@
+/* Panel Derecho: Live Dossier */
+.workbench-preview-panel {
+  position: sticky;
+  top: 5rem;
+}
+
+/* Única Hoja A4 Blanca con Oclusión Ambiental Multicapa (Decisión 4-C / GOLD-176) */
+.dossier-card {
+  background: #ffffff;
+  border: 1px solid rgba(203, 213, 225, 0.6);
+  border-top: 3px solid var(--smat-navy-deep, #051B2E);
+  border-radius: var(--smat-radius-md, 8px);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 12px 32px -4px rgba(5, 27, 46, 0.08),
+    0 24px 48px -6px rgba(5, 27, 46, 0.12);
+  padding: var(--smat-space-md, 24px);
+  transition: box-shadow 0.2s ease;
+  position: relative;
+}
+
+.dossier-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--smat-specular-vortex, linear-gradient(90deg, transparent, rgba(79, 174, 235, 0.45), transparent));
+  pointer-events: none;
+  border-radius: var(--smat-radius-md, 8px) var(--smat-radius-md, 8px) 0 0;
+}
+
+/* Selector de Pestañas Dual (Decisión 8-A / 5-C) */
+.dossier-tab-switcher {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #cbd5e1;
+  padding-bottom: 0.5rem;
+}
+
+.dossier-tab-btn {
+  flex: 1;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+  border-radius: var(--smat-radius-sm);
+  background: #f1f5f9;
+  color: var(--smat-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.dossier-tab-btn:hover {
+  color: #0f172a;
+  background: #e2e8f0;
+}
+
+.dossier-tab-btn.active {
+  background: #ffffff;
+  color: var(--smat-blue-royal, #0D78C6);
+  border-color: #cbd5e1;
+  border-bottom-color: #ffffff;
+}
+
+/* Conmutación Estricta de Pestañas en Pantalla (Decisión 3-C / D3) */
+.dossier-pane {
+  display: none;
+}
+.dossier-pane.active-pane {
+  display: block;
+}
+.dossier-pane.hidden-pane {
+  display: none !important;
+}
+
+.dossier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.brand-title {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #090d16;
+}
+
+.brand-sub {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #334155;
+  letter-spacing: 0.05em;
+}
+
+.brand-address {
+  display: block;
+  font-size: 0.65rem;
+  color: #334155;
+  margin-top: 0.2rem;
+}
+
+.dossier-folio-wrap { text-align: right; }
+.folio-label { display: block; font-size: 0.65rem; font-weight: 800; color: #334155; }
+.folio-code { display: block; font-size: 1.1rem; font-family: var(--smat-font-mono); color: #9a4a00; }
+.dossier-date { display: block; font-size: 0.7rem; color: #475569; font-family: var(--smat-font-mono); }
+
+.dossier-divider { height: 1px; background: var(--smat-border-light); margin: 1rem 0 0.85rem; }
+
+.dossier-sla-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border-left: 2px solid var(--smat-emergency-red);
+  border-top: 1px solid var(--smat-border-light);
+  border-right: 1px solid var(--smat-border-light);
+  border-bottom: 1px solid var(--smat-border-light);
+  padding: 0.4rem 0.6rem;
+  font-size: 0.72rem;
+  margin-bottom: 1rem;
+}
+
+.sla-badge { font-weight: 800; color: #991b1b; }
+.sla-clock { color: #334155; font-weight: 600; }
+
+.dossier-section { margin-bottom: 0.9rem; }
+.dossier-section-title {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #334155;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.2rem;
+  margin-bottom: 0.4rem;
+}
+
+/* Rejilla Micro-Tipográfica Semántica (Decisión 4-C / GOLD-171) */
+.spec-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem 1rem;
+  margin: 0;
+  padding: 0;
+}
+.spec-pair {
+  margin: 0;
+  padding: 0;
+}
+.spec-label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #334155;
+  margin-bottom: 0.15rem;
+}
+.spec-value {
+  display: block;
+  font-size: 0.82rem;
+  color: #0f172a;
+  margin: 0;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+.dossier-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.78rem; }
+.d-label { display: block; color: #334155; font-size: 0.68rem; }
+.d-val { display: block; color: #0f172a; font-size: 0.8rem; }
+
+.dossier-part-box {
+  background: transparent;
+  border: none;
+  border-left: 2px solid var(--smat-copper-accent);
+  padding: 0.5rem 0 0.5rem 0.75rem;
+  border-radius: 0;
+}
+
+.part-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem; flex-wrap: wrap; gap: 0.35rem; }
+.part-name { font-size: 0.85rem; color: #0f172a; }
+.part-fit-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: transparent;
+  color: #065f46;
+  border: 1px solid #10b981;
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--smat-radius-sm);
+}
+
+.part-details-text { font-size: 0.75rem; color: #334155; margin: 0; line-height: 1.35; }
+
+.live-custom-box {
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--smat-border-light);
+}
+
+.custom-badge-tag {
+  font-size: 0.62rem;
+  font-weight: 800;
+  background: transparent;
+  color: #92400e;
+  border: 1px solid rgba(194, 94, 0, 0.3);
+  padding: 0.1rem 0.3rem;
+  border-radius: var(--smat-radius-sm);
+}
+
+.custom-spec-text {
+  font-size: 0.72rem;
+  color: #334155;
+  margin: 0.2rem 0 0;
+}
+
+.dossier-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+.dossier-table td { padding: 0.35rem 0.5rem; border-bottom: 1px solid #e2e8f0; color: #334155; }
+.highlight-cell { color: #065f46; font-weight: 700; }
+
+.dossier-clause-box {
+  background: transparent;
+  border: none;
+  border-left: 2px solid var(--smat-border-medium);
+  padding: 0.5rem 0 0.5rem 0.75rem;
+  font-size: 0.72rem;
+  color: var(--smat-text-secondary);
+  line-height: 1.45;
+}
+
+/* Sello Metrológico Almacén Durango (Decisión 7-C / GOLD-173) */
+.durango-seal-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 3px solid var(--smat-copper-accent, #c25e00);
+  border-radius: var(--smat-radius-sm, 6px);
+  padding: 0.65rem 0.85rem;
+}
+.seal-badge-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+}
+.seal-icon {
+  font-weight: 800;
+  color: #065f46;
+  font-size: 0.85rem;
+}
+.seal-title {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #0f172a;
+}
+.seal-specs-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+}
+.seal-spec-item {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #075985;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+.seal-address-note {
+  font-size: 0.7rem;
+  color: #334155;
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* Justificación ERP Comprimida & Drawer (Decisión 5-C / GOLD-170) */
+.sap-justification-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.justification-executive-summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  background: #f8fafc;
+  border-left: 3px solid var(--smat-copper-accent, #c25e00);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--smat-radius-sm, 4px);
+}
+.justification-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--smat-copper-accent, #c25e00);
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+.justification-executive-summary p {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.4;
+}
+.erp-justification-drawer {
+  border: 1px solid #e2e8f0;
+  border-radius: var(--smat-radius-sm, 4px);
+  background: #ffffff;
+}
+.erp-justification-summary-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.erp-justification-summary-btn::-webkit-details-marker { display: none; }
+.btn-copy-justification {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #0f172a;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-copy-justification:hover {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+.erp-justification-drawer .sap-justification-box {
+  padding: 0.5rem 0.65rem;
+  border-top: 1px solid #e2e8f0;
+  font-size: 0.72rem;
+  color: #334155;
+  line-height: 1.4;
+}
+
+/* Micro-Interacción Tinta Viva Causa-Efecto (Decisión 9-C / GOLD-172) */
+@keyframes live-ink-glow {
+  0% {
+    background-color: rgba(194, 94, 0, 0.22);
+    color: #9a4a00;
+    border-radius: 2px;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+.live-ink-flash {
+  animation: live-ink-glow 350ms ease-out;
+}
+
+/* Export Grid */
+.dossier-export-section {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--smat-border-light);
+}
+
+.export-heading {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #334155;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.6rem;
+}
+

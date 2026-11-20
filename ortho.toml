@@ -10,6 +10,7 @@ max_files = 140
 max_loc = 18000
 max_html_tags = 680
 max_css_bytes = 204800
+max_total_bytes = 512000
 max_functions_per_file = 35
 max_cognitive_complexity = 25
 

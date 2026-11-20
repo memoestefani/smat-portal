@@ -76,7 +76,7 @@ pub fn check_v42_zero_visible_html_leaks_and_canonical_calculators_gate_45(
 ) -> Result<(), String> {
     for req_file in [
         "src/scripts/verticalCalculatorsAndLabelsBridge.js",
-        "tests/v42_canonical_components_and_zero_leaks.test.mjs",
+        "tests/v50_canonical_islands_and_non_vacuous_witness.test.mjs",
     ] {
         if !site_root.join(req_file).exists() {
             return Err(format!(
@@ -97,7 +97,7 @@ pub fn check_v42_zero_visible_html_leaks_and_canonical_calculators_gate_45(
         ("src/pages/clasificacion/index.astro", "bindCoupledClassificationStation"),
         ("src/pages/en/classification/index.astro", "bindCoupledClassificationStation"),
     ] {
-        let src = fs::read_to_string(site_root.join(rel_page)).map_err(|e| e.to_string())?;
+        let src = crate::read_page_with_islands_composite(site_root, rel_page)?;
         if !src.contains(expected_fn) {
             return Err(format!(
                 "Gate 45 (D1/D2-V42): '{}' debe delegar al controlador canónico '{}'",
@@ -106,12 +106,12 @@ pub fn check_v42_zero_visible_html_leaks_and_canonical_calculators_gate_45(
         }
     }
 
-    // D1-V42: filtracion/repuestos.astro y en/filtration/parts.astro incluyen #rep-cake-moisture
+    // D1-V42: filtracion/repuestos.astro y en/filtration/parts.astro incluyen #filt-cake-moisture (o #rep-cake-moisture)
     for rep_rel in ["src/pages/filtracion/repuestos.astro", "src/pages/en/filtration/parts.astro"] {
-        let src = fs::read_to_string(site_root.join(rep_rel)).map_err(|e| e.to_string())?;
-        if !src.contains("id=\"rep-cake-moisture\"") {
+        let src = crate::read_page_with_islands_composite(site_root, rep_rel)?;
+        if !src.contains("id=\"filt-cake-moisture\"") && !src.contains("id=\"rep-cake-moisture\"") {
             return Err(format!(
-                "Gate 45 (D1-V42): '{}' debe incluir el input de humedad residual id=\"rep-cake-moisture\"",
+                "Gate 45 (D1-V42): '{}' debe incluir el input de humedad residual id=\"filt-cake-moisture\"",
                 rep_rel
             ));
         }
@@ -119,7 +119,7 @@ pub fn check_v42_zero_visible_html_leaks_and_canonical_calculators_gate_45(
 
     // D2-V42: clasificacion/index.astro y en/classification/index.astro exponen #cyc-screen-coupling-badge
     for cyc_rel in ["src/pages/clasificacion/index.astro", "src/pages/en/classification/index.astro"] {
-        let src = fs::read_to_string(site_root.join(cyc_rel)).map_err(|e| e.to_string())?;
+        let src = crate::read_page_with_islands_composite(site_root, cyc_rel)?;
         if !src.contains("id=\"cyc-screen-coupling-badge\"") {
             return Err(format!(
                 "Gate 45 (D2-V42): '{}' debe incluir la insignia de acople id=\"cyc-screen-coupling-badge\"",

@@ -47,15 +47,18 @@ export function bindDropInEquivalenceVerifier(
         const trayBtnHtml = isEn
           ? `<button type="button" class="btn btn-outline" style="margin-left:0.5rem;padding:0.28rem 0.65rem;font-size:0.76rem;min-height:48px;" data-add-tray-sku="${res.canonicalSkuId}" data-tray-part-code="${res.atomicCode || res.canonicalSkuId}" data-tray-title="${res.titleEn}" data-tray-material="${res.alloyCode}" data-tray-circuit="catalogo">+ Add to Tray</button>`
           : `<button type="button" class="btn btn-outline" style="margin-left:0.5rem;padding:0.28rem 0.65rem;font-size:0.76rem;min-height:48px;" data-add-tray-sku="${res.canonicalSkuId}" data-tray-part-code="${res.atomicCode || res.canonicalSkuId}" data-tray-title="${res.titleEs}" data-tray-material="${res.alloyCode}" data-tray-circuit="catalogo">+ Bandeja</button>`;
+        const satBadge = res.satTuple
+          ? ` | SAT ${res.satTuple.clave_prod_serv || '40151700'}/${res.satTuple.clave_unidad || 'H87'}${res.satTuple.fraccion_arancelaria ? ` · TIGIE ${res.satTuple.fraccion_arancelaria}` : ''}`
+          : '';
         if (isEn) {
-          resultEl.innerHTML = `✅ DROP-IN MATCH: <strong>${res.canonicalSkuId}</strong> (${res.titleEn}) | Alloy: <strong>${res.alloyCode}</strong> | ${res.geometricTripletMm.label_en} (${res.toleranceStd}) | Regime: <strong>${res.regimeBadgeEn}</strong> · <a href="/en/products/${res.slugEn}/" style="color:#b45309;text-decoration:underline;">Open Sheet →</a> ${trayBtnHtml}`;
+          resultEl.innerHTML = `<span class="smat-badge-solar">DROP-IN MATCH</span> <strong>${res.canonicalSkuId}</strong> (${res.titleEn}) | Alloy: <strong>${res.alloyCode}</strong> | ${res.geometricTripletMm.label_en} (${res.toleranceStd}) | Regime: <strong>${res.regimeBadgeEn}</strong>${satBadge} · <a href="/en/products/${res.slugEn}/" class="smat-dropin-link">Open Sheet →</a> ${trayBtnHtml}`;
         } else {
-          resultEl.innerHTML = `✅ MATCH DROP-IN: <strong>${res.canonicalSkuId}</strong> (${res.titleEs}) | Aleación: <strong>${res.alloyCode}</strong> | ${res.geometricTripletMm.label_es} (${res.toleranceStd}) | Régimen: <strong>${res.regimeBadgeEs}</strong> · <a href="/productos/${res.slugEs}/" style="color:#b45309;text-decoration:underline;">Abrir Ficha →</a> ${trayBtnHtml}`;
+          resultEl.innerHTML = `<span class="smat-badge-solar">MATCH DROP-IN</span> <strong>${res.canonicalSkuId}</strong> (${res.titleEs}) | Aleación: <strong>${res.alloyCode}</strong> | ${res.geometricTripletMm.label_es} (${res.toleranceStd}) | Régimen: <strong>${res.regimeBadgeEs}</strong>${satBadge} · <a href="/productos/${res.slugEs}/" class="smat-dropin-link">Abrir Ficha →</a> ${trayBtnHtml}`;
         }
         bindAtomicPartTrayButtons(resultEl);
       } else {
         const msg = isEn ? res.reasonEn : res.reasonEs;
-        resultEl.innerHTML = `ℹ️ ${msg}`;
+        resultEl.textContent = msg;
       }
       return res;
     };
@@ -89,6 +92,9 @@ export function bindDropInEquivalenceVerifier(
  * Inicializa la tarjeta Armónica JRP `(s, c, S)` de 3 etapas (`T0/2, T0, 2T0`)
  * hidratada con `sg` y `d50Um` reales del bus unificado, con selector `normal` vs
  * `paro_planta` y botón de Par Casado Sincronizado (`D7-V48`).
+ *
+ * @param {Document | Element | null} [root]
+ * @param {string} [lang]
  */
 export function initHarmonicJrpWindowAndPairCard(
   root = typeof document !== 'undefined' ? document : null,

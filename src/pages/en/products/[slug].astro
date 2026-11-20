@@ -35,15 +35,15 @@ const triplet = sku.geometric_triplet_mm || {
 
 const nioshBadges: Record<string, { label: string; cls: string }> = {
   MANUAL_SAFE: {
-    label: '🟢 Safe Manual Handling (< 11.1 kg NIOSH)',
+    label: 'Safe Manual Handling (< 11.1 kg NIOSH)',
     cls: 'smat-slug-badge--emerald'
   },
   ASSISTED_SHAFT_MOUNT_2P: {
-    label: '🟡 2-Operator Assisted Mount (11.1–23.0 kg NIOSH)',
+    label: '2-Operator Assisted Mount (11.1–23.0 kg NIOSH)',
     cls: 'smat-slug-badge--amber'
   },
   HOIST_REQUIRED: {
-    label: '🔴 Mechanical Hoist Required (> 23.0 kg NOM-036-1-STPS)',
+    label: 'Mechanical Hoist Required (> 23.0 kg NOM-036-1-STPS)',
     cls: 'smat-slug-badge--rose'
   }
 };
@@ -126,10 +126,10 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
         {sku.summary_en}
       </p>
 
-      <!-- Stratum 1: 3-Horizon Harmonic JRP Card (s, c, S) + Synchronized Coupled Pair -->
+      <!-- Stratum 1: 3-Milestone Preventive Replacement Card + Synchronized Coupled Pair -->
       <div id="stratum1-slug-card" data-jrp-window-card data-jrp-criticality="normal" data-stratum-1-instrument style="margin:0.5rem 0 0.75rem 0; padding:0.9rem 1rem; background:#f8fafc; border:1.5px solid #cbd5e1; border-left:4px solid #0c4a6e; border-radius:8px;">
         <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
-          <span style="font-family:var(--smat-font-mono, monospace); font-size:0.74rem; font-weight:800; color:#0c4a6e;">HARMONIC PREVENTIVE WINDOW (T₀/2 • T₀ • 2T₀)</span>
+          <span style="font-family:var(--smat-font-mono, monospace); font-size:0.74rem; font-weight:800; color:#0c4a6e;">STATION-COUPLED PREVENTIVE REPLACEMENT WINDOW (3 MILESTONES)</span>
           <span data-jrp-telemetry-badge style="font-family:var(--smat-font-mono, monospace); font-size:0.74rem; font-weight:700; color:#334155;">Session Pulp SG 1.45 • d50 280 µm</span>
         </div>
         <div style="display:flex; flex-wrap:wrap; gap:0.45rem; align-items:center; margin-bottom:0.6rem;">
@@ -141,15 +141,15 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
         </div>
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.55rem; margin-bottom:0.6rem;">
           <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:0.5rem 0.65rem;">
-            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">SHAFT SLEEVE (T₀/2)</span>
+            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">SHAFT SLEEVE (STAGE 1)</span>
             <strong data-jrp-sleeve-day style="font-size:0.95rem; color:#0f172a;">Day 90</strong>
           </div>
           <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:0.5rem 0.65rem;">
-            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">IMPELLER + THROAT (T₀)</span>
+            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">IMPELLER + THROAT (STAGE 2)</span>
             <strong data-jrp-impeller-day style="font-size:0.95rem; color:#0f172a;">Day 150</strong>
           </div>
           <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:0.5rem 0.65rem;">
-            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">VOLUTE + LINER (2T₀)</span>
+            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">VOLUTE + LINER (STAGE 3)</span>
             <strong data-jrp-volute-day style="font-size:0.95rem; color:#0f172a;">Day 180</strong>
           </div>
         </div>
@@ -194,7 +194,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
           <div class="smat-slug-kpi-value">{sku.hardness_spec}</div>
         </div>
         <div class="smat-slug-kpi-box">
-          <div class="smat-slug-kpi-label">Preventive Reorder Window (JRP)</div>
+          <div class="smat-slug-kpi-label">Preventive Reorder Window</div>
           <div class="smat-slug-kpi-value smat-slug-kpi-value--sky">Every {sku.reorder_window_days} days · Pair: {sku.coupled_pair_sku}</div>
         </div>
       </div>
@@ -208,7 +208,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
         <!-- 3-Step Plant Validation Box -->
         <section class="smat-slug-validation-card">
           <h2 class="smat-slug-section-kicker smat-slug-section-kicker--emerald">
-            📋 How to Validate Your Part in Plant in 3 Steps (Zero Downtime Risk)
+            How to Validate Your Part in Plant in 3 Steps (Zero Downtime Risk)
           </h2>
           <ol class="smat-slug-steps-grid">
             <li class="smat-slug-step-item">
@@ -284,7 +284,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
                     href={`/en/catalog/${code.toLowerCase()}/`}
                     class="smat-slug-atomic-link"
                   >
-                    🔗 {code}
+                    {code}
                   </a>
                 ))}
               </div>
@@ -329,17 +329,17 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
         <div class="smat-slug-lanes-stack">
           <div class="smat-slug-lane-card smat-slug-lane-card--emerald">
             <div class="smat-slug-lane-head">
-              <span class="smat-slug-lane-title smat-slug-lane-title--emerald">⚡ LANE A: PETTY CASH (&lt; 25,000 MXN)</span>
+              <span class="smat-slug-lane-title smat-slug-lane-title--emerald">LANE A: PETTY CASH (&lt; 25,000 MXN)</span>
               <span class="smat-slug-lane-tag smat-slug-lane-tag--emerald">P1 · CFDI 4.0 TODAY</span>
             </div>
             <p class="smat-slug-lane-desc">
-              Express SPEI or corporate card release without SAP vendor onboarding delay. Same-day dispatch for <strong>🟢 IN STOCK</strong> items.
+              Express SPEI or corporate card release without SAP vendor onboarding delay. Same-day dispatch for <strong>IN STOCK</strong> items.
             </p>
           </div>
 
           <div class="smat-slug-lane-card smat-slug-lane-card--amber">
             <div class="smat-slug-lane-head">
-              <span class="smat-slug-lane-title smat-slug-lane-title--amber">🏢 LANE B: PURCHASE ORDER (&gt; 25,000 MXN)</span>
+              <span class="smat-slug-lane-title smat-slug-lane-title--amber">LANE B: PURCHASE ORDER (&gt; 25,000 MXN)</span>
               <span class="smat-slug-lane-tag smat-slug-lane-tag--amber">SAP / ORACLE · B2B PASSPORT</span>
             </div>
             <p class="smat-slug-lane-desc">
@@ -352,7 +352,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
         </div>
 
         <div class="smat-slug-passport-box">
-          <div class="smat-slug-passport-title">📋 Includes SMAT Vendor Passport:</div>
+          <div class="smat-slug-passport-title">Includes SMAT Vendor Passport:</div>
           <p>• Heat Metallurgical Certificate (PMI / Brinell Hardness ASTM A532)</p>
           <p>• Geometric Triplet Dimensional Verification (ISO 2768-m) in Durango</p>
           <p>• NIOSH / NOM-036-1-STPS Rigging & Ergonomic Safety Footprint</p>
@@ -364,7 +364,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
             style="padding: 0.9rem; border-radius: 12px; background: #ecfdf5; border: 1px solid #10b981; font-size: 0.78rem; color: #064e3b;"
           >
             <div style="font-family: var(--font-mono, monospace); font-weight: 800; color: #064e3b; margin-bottom: 0.4rem;">
-              ♻️ DAM005 CORE TRADE-IN PROGRAM (-22% CREDIT)
+              DAM005 CORE TRADE-IN PROGRAM (-22% CREDIT)
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.45rem;">
               <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 700;">
@@ -401,7 +401,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
             data-sku-mass={sku.mass_kg}
             class="smat-slug-btn-primary"
           >
-            🛒 Add to B2B Quote Tray / Request SAP Passport ({sku.id}) →
+            Add to B2B Quote Tray / Request SAP Passport ({sku.id}) →
           </button>
           <a
             href={`https://wa.me/526183670664?text=${encodeURIComponent(`[SMAT-DGO] Hello SMAT, I need an urgent quote for SKU ${sku.id} (${sku.title_en}) in alloy ${sku.default_material} [ Regime: ${sku.stock_regime || 'hay'} | Mass: ${sku.mass_kg} kg ].`)}`}
@@ -415,7 +415,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
             data-sku-lang="en"
             class="smat-slug-btn-wa"
           >
-            💬 Fast Checkout / Petty Cash via Engineering WhatsApp (526183670664)
+            Fast Checkout / Petty Cash via Engineering WhatsApp (526183670664)
           </a>
           <a
             href={`/en/quote/?sku=${encodeURIComponent(sku.id)}&mat=${encodeURIComponent(sku.default_material)}#rfq`}
@@ -426,7 +426,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
             data-sku-lang="en"
             class="smat-slug-btn-workbench"
           >
-            ⚙️ Open in Hydraulic & Metallurgical Workbench (Plane 2)
+            Open in Hydraulic & Metallurgical Workbench (Plane 2)
           </a>
         </div>
       </aside>

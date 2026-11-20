@@ -93,7 +93,7 @@ pub fn check_v44_scalar_purity_zero_duplication_and_xor_contiguity_gate_47(
         "src/pages/clasificacion/index.astro",
         "src/pages/en/classification/index.astro",
     ] {
-        let clas_src = fs::read_to_string(site_root.join(clas_rel)).map_err(|e| e.to_string())?;
+        let clas_src = crate::read_page_with_islands_composite(site_root, clas_rel)?;
         for req_id in [
             "id=\"cyc-coupled-screen-station\"",
             "id=\"csr-aperture-mm\"",

@@ -231,27 +231,32 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
   BRIDGE_RUNTIME_REGISTRY.lastBoundCircuit = 'filtracion';
   BRIDGE_RUNTIME_REGISTRY.lastUpdatedIso = new Date().toISOString();
 
-  const pEl = root.querySelector('#filt-pressure-bar, #rep-pressure-bar');
-  const cEl = root.querySelector('#filt-clogged-ports, #rep-clogged-ports');
-  const wEl = root.querySelector('#filt-plate-width, #rep-plate-width');
-  const tEl = root.querySelector('#filt-plate-thickness, #rep-plate-thickness');
-  const mEl = root.querySelector('#filt-cake-moisture, #rep-cake-moisture');
+  const pEl = root.querySelector('#filt-pressure-bar, #wb-filt-pressure-bar');
+  const cEl = root.querySelector('#filt-clogged-ports, #wb-filt-clogged-ports');
+  const wEl = root.querySelector('#filt-plate-width, #wb-filt-plate-width, #wb-plate-size');
+  const tEl = root.querySelector('#filt-plate-thickness, #wb-filt-thickness-mm');
+  const mEl = root.querySelector('#filt-cake-moisture, #wb-filt-moisture-pct');
 
-  const stressEl = root.querySelector('#filt-res-stress, #rep-stress-out');
-  const fsEl = root.querySelector('#filt-res-fs, #rep-fs-out');
+  const stressEl = root.querySelector('#filt-res-stress, #wb-filt-res-stress');
+  const fsEl = root.querySelector('#filt-res-fs, #wb-filt-res-fs');
   const secondaryEl = root.querySelector('#filt-res-secondary');
-  const sumEl = root.querySelector('#filt-res-summary, #rep-status-out');
-  const readoutBox = root.querySelector('#rep-timoshenko-readout');
-  const shifterBadgeEl = root.querySelector('#filt-shifter-sku-badge, #rep-shifter-sku-badge');
-  const nom141BadgeEl = root.querySelector('#filt-nom141-badge, #rep-nom141-badge');
+  const sumEl = root.querySelector('#filt-res-summary, #wb-filt-res-status');
+  const cyclesEl = root.querySelector('#wb-filt-res-cycles');
+  const cycleMinEl = root.querySelector('#wb-filt-res-cycle-min');
+  const asymDpEl = root.querySelector('#wb-filt-res-asym-dp');
+  const skusEl = root.querySelector('#wb-filt-res-skus');
+  const readoutBox = root.querySelector('#filt-timoshenko-readout');
+  const shifterBadgeEl = root.querySelector('#filt-shifter-sku-badge');
+  const nom141BadgeEl = root.querySelector('#filt-nom141-badge');
 
   const hydration = hydrateVerticalInputsFromUnifiedState(root, 'filtration');
 
   function recompute(isInitialMount = false) {
-    if (!pEl || !cEl || !wEl || !tEl) return null;
+    if (!pEl || !cEl || !tEl) return null;
     const feedPressureBar = Number(pEl.value) || 12;
     const cloggedPortsCount = Number(cEl.value) || 0;
-    const plateWidthMm = Number(wEl.value) || 1200;
+    const rawW = wEl ? Number(String(wEl.value || '').replace(/[^0-9.]/g, '')) : 1200;
+    const plateWidthMm = Number.isFinite(rawW) && rawW >= 630 ? rawW : 1200;
     const plateThicknessMm = Number(tEl.value) || 65;
     const cakeMoistureTargetPct = mEl ? Number(mEl.value) || 14 : 14;
 
@@ -283,6 +288,26 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
     if (fsEl) {
       fsEl.textContent = `FS ${res.flexuralSafetyFactor}`;
     }
+    if (cyclesEl) {
+      cyclesEl.textContent = isEn
+        ? `${res.cyclesPerDay} cyc/d (${res.dryTonnesPerDay} t/d)`
+        : `${res.cyclesPerDay} ciclos/d (${res.dryTonnesPerDay} t/d)`;
+    }
+    if (cycleMinEl) {
+      cycleMinEl.textContent = isEn
+        ? `Filtration ${res.filtrationMinutes} min + Turnaround 12 min = ${res.totalCycleMin} min/cycle`
+        : `Filtrado ${res.filtrationMinutes} min + Descarga 12 min = ${res.totalCycleMin} min/ciclo`;
+    }
+    if (asymDpEl) {
+      asymDpEl.textContent = `ΔP = ${res.deltaPAsymmetricMpa} MPa | σ_adm,PP = ${res.ppFatigueAllowableMpa} MPa`;
+    }
+    if (skusEl) {
+      const plateSku = res.recommendedRecessedPlateSkuId || 'SMAT-FILT-CLOTH-PLATE';
+      const clothSku = res.recommendedClothSkuId || 'SMAT-CL-PP750';
+      skusEl.textContent = isEn
+        ? `Plate: ${plateSku} | Cloth: ${clothSku}`
+        : `Placa: ${plateSku} | Tela: ${clothSku}`;
+    }
     const secondaryBreakdown = isEn
       ? `ΔP_asym = ${res.deltaPAsymmetricMpa} MPa · σ_adm = ${res.ppFatigueAllowableMpa} MPa · ${res.cyclesPerDay} cyc/d · ${res.dryTonnesPerDay} t/d (${res.filtrationMinutes}+12=${res.totalCycleMin} min)`
       : `ΔP_asim = ${res.deltaPAsymmetricMpa} MPa · σ_adm = ${res.ppFatigueAllowableMpa} MPa · ${res.cyclesPerDay} ciclos/d · ${res.dryTonnesPerDay} t/d (${res.filtrationMinutes}+12=${res.totalCycleMin} min)`;
@@ -303,18 +328,17 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
       const skuTail = isEn
         ? `Plate: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Shifter: ${res.recommendedShifterSkuId}`
         : `Placa/Tela: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Corre-Placas: ${res.recommendedShifterSkuId}`;
-      const isRepStatusMode = sumEl.id === 'rep-status-out';
-      sumEl.textContent = (secondaryEl && !isRepStatusMode)
+      sumEl.textContent = secondaryEl
         ? `${baseSummary} | ${skuTail}`
         : `${baseSummary} | ${secondaryBreakdown} | ${skuTail}`;
-      if (sumEl.style && !readoutBox) {
+      if (sumEl.style && !readoutBox && sumEl.id === 'filt-res-summary') {
         sumEl.style.background = isAlert ? '#fef2f2' : '#ecfdf5';
-        sumEl.style.color = isAlert ? '#991b1b' : '#065f46';
+        sumEl.style.color = isAlert ? '#991b1b' : '#064e3b';
       }
     }
     if (readoutBox && readoutBox.style) {
       readoutBox.style.background = isAlert ? '#fef2f2' : '#ecfdf5';
-      readoutBox.style.color = isAlert ? '#991b1b' : '#065f46';
+      readoutBox.style.color = isAlert ? '#991b1b' : '#064e3b';
     }
 
     syncReactiveTraySkuButton(root, {
@@ -375,17 +399,22 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es', _options = {
   BRIDGE_RUNTIME_REGISTRY.lastBoundCircuit = 'flotacion';
   BRIDGE_RUNTIME_REGISTRY.lastUpdatedIso = new Date().toISOString();
 
-  const jgEl = root.querySelector('#flot-jg-input, #celdas-jg-input');
-  const d32El = root.querySelector('#flot-d32-input, #celdas-d32-input');
-  const diaEl = root.querySelector('#flot-rotor-dia, #celdas-dia-select');
-  const rpmEl = root.querySelector('#flot-rotor-rpm, #celdas-rpm-input');
-  const d80El = root.querySelector('#flot-d80-input, #celdas-d80-input');
-  const cwEl = root.querySelector('#flot-cw-input, #celdas-cw-input');
-  const sbOut = root.querySelector('#flot-sb-out, #celdas-sb-output');
-  const kOut = root.querySelector('#flot-k-out, #celdas-k-output');
-  const vtipOut = root.querySelector('#flot-vtip-out, #celdas-vtip-output');
-  const njsOut = root.querySelector('#flot-njs-out, #celdas-njs-output');
-  const statusOut = root.querySelector('#flot-status-out, #celdas-status-output');
+  const jgEl = root.querySelector('#flot-jg-input, #celdas-jg-input, #wb-flot-jg');
+  const d32El = root.querySelector('#flot-d32-input, #celdas-d32-input, #wb-flot-d32');
+  const diaEl = root.querySelector('#flot-rotor-dia, #celdas-dia-select, #wb-flot-dia, #wb-flot-rotor-dia');
+  const rpmEl = root.querySelector('#flot-rotor-rpm, #celdas-rpm-input, #wb-flot-rpm');
+  const d80El = root.querySelector('#flot-d80-input, #celdas-d80-input, #wb-flot-d80');
+  const cwEl = root.querySelector('#flot-cw-input, #celdas-cw-input, #wb-flot-cw');
+  const pEl = root.querySelector('#flot-p-input, #celdas-p-input, #wb-flot-p');
+  const rfEl = root.querySelector('#flot-rf-input, #celdas-rf-input, #wb-flot-rf');
+  const sbOut = root.querySelector('#flot-sb-out, #celdas-sb-output, #wb-flot-res-sb');
+  const kOut = root.querySelector('#flot-k-out, #celdas-k-output, #wb-flot-res-k');
+  const vtipOut = root.querySelector('#flot-vtip-out, #celdas-vtip-output, #wb-flot-res-vtip');
+  const njsOut = root.querySelector('#flot-njs-out, #celdas-njs-output, #wb-flot-res-njs');
+  const pOut = root.querySelector('#flot-p-out, #celdas-p-output, #wb-flot-res-p');
+  const rfOut = root.querySelector('#flot-rf-out, #celdas-rf-output, #wb-flot-res-rf');
+  const puLifeOut = root.querySelector('#wb-flot-res-pu-life');
+  const statusOut = root.querySelector('#flot-status-out, #celdas-status-output, #wb-flot-res-susp-status');
   const readoutBox = root.querySelector('#flot-gorain-readout, #celdas-gorain-readout');
 
   const hydration = hydrateVerticalInputsFromUnifiedState(root, 'flotation');
@@ -398,12 +427,16 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es', _options = {
     const rotorRpm = Number(rpmEl.value) || 215;
     const particleSizeUm = d80El ? Number(d80El.value) || 150 : 150;
     const solidsCwPct = cwEl ? Number(cwEl.value) || 35 : 35;
+    const floatabilityP = pEl ? (Number(pEl.value) || 0.0045) : 0.0045;
+    const frothRecoveryRf = rfEl ? (Number(rfEl.value) || 0.78) : 0.78;
 
     const baseGorain = calculateFlotationGorainKineticRate({
       rotorDiaM,
       jgCmS,
       d32Mm,
       rotorRpm,
+      floatabilityP,
+      frothRecoveryRf,
     });
     const res = evaluateFlotationCellHydrodynamics({
       ...baseGorain,
@@ -413,23 +446,37 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es', _options = {
       rotorRpm,
       particleSizeUm,
       solidsCwPct,
+      floatabilityP,
+      frothRecoveryRf,
     });
 
     const sbVal = res.sbInverseSeconds ?? res.bubbleSurfaceAreaFluxSb;
     const kVal = res.rateConstantMin ?? res.firstOrderRateConstantKMin;
     const vtipVal = res.tipSpeedMS ?? res.impellerTipSpeedMs;
+    const isWb = sbOut?.id === 'wb-flot-res-sb';
 
     if (sbOut) {
-      sbOut.textContent = String(sbVal);
+      sbOut.textContent = isWb ? `${sbVal} s⁻¹` : String(sbVal);
     }
     if (kOut) {
-      kOut.textContent = String(kVal);
+      kOut.textContent = isWb ? `${kVal} min⁻¹` : String(kVal);
     }
     if (vtipOut) {
-      vtipOut.textContent = String(vtipVal);
+      vtipOut.textContent = isWb ? `${vtipVal} m/s` : String(vtipVal);
     }
     if (njsOut) {
-      njsOut.textContent = String(res.zwieteringNjsRpm);
+      njsOut.textContent = isWb ? `${res.zwieteringNjsRpm} RPM` : String(res.zwieteringNjsRpm);
+    }
+    if (pOut) {
+      pOut.textContent = Number(baseGorain.floatabilityP ?? floatabilityP).toFixed(4);
+    }
+    if (rfOut) {
+      rfOut.textContent = Number(baseGorain.frothRecoveryRf ?? frothRecoveryRf).toFixed(2);
+    }
+    if (puLifeOut) {
+      puLifeOut.textContent = isEn
+        ? `PU vs Rubber Life: ${res.wearLifeMultiplierPuVsRubber}× · u₂ ${res.tipSpeedWindowOptimal ? 'optimal (5.5–7.5 m/s)' : 'adjust RPM'}`
+        : `Vida PU vs Hule: ${res.wearLifeMultiplierPuVsRubber}× · u₂ ${res.tipSpeedWindowOptimal ? 'óptima (5.5–7.5 m/s)' : 'ajustar RPM'}`;
     }
     if (statusOut) {
       const baseSummary = isEn ? res.summaryEn : res.summaryEs;
@@ -440,7 +487,7 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es', _options = {
     if (readoutBox && readoutBox.style) {
       const isOptimal = Boolean(res.gorainCompliant ?? res.isOptimalDispersion) && Boolean(res.suspensionSafe);
       readoutBox.style.background = isOptimal ? '#ecfdf5' : '#fffbeb';
-      readoutBox.style.color = isOptimal ? '#065f46' : '#92400e';
+      readoutBox.style.color = isOptimal ? '#064e3b' : '#7c2d12';
     }
 
     syncReactiveTraySkuButton(root, {
@@ -464,6 +511,8 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es', _options = {
       rotorRpm,
       particleSizeUm,
       solidsCwPct,
+      floatabilityP,
+      frothRecoveryRf,
     };
     commitVerticalSimulation('flotacion', flotPayload, {
       root,
@@ -475,6 +524,8 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es', _options = {
         rpm: rotorRpm,
         d80: particleSizeUm,
         cw: solidsCwPct,
+        p_flot: floatabilityP,
+        rf_froth: frothRecoveryRf,
         sb: sbVal,
         k: kVal,
         vtip: vtipVal,
@@ -486,7 +537,7 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es', _options = {
 
   bindAtomicPartTrayButtons(root);
 
-  [jgEl, d32El, diaEl, rpmEl, d80El, cwEl].forEach((el) => {
+  [jgEl, d32El, diaEl, rpmEl, d80El, cwEl, pEl, rfEl].forEach((el) => {
     if (el && typeof el.addEventListener === 'function') {
       el.addEventListener('input', () => recompute(false));
       el.addEventListener('change', () => recompute(false));
@@ -527,6 +578,8 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
   const csrApertureInput = root.querySelector('#csr-aperture-mm');
   const csrReliefInput = root.querySelector('#csr-relief-deg');
   const csrFeedInput = root.querySelector('#csr-feed-um');
+  const csrVibrationInput = root.querySelector('#csr-vibration-g');
+  const csrAlphaInput = root.querySelector('#csr-alpha-select');
   const csrWeibullOut = root.querySelector('#csr-weibull-out');
   const csrRfqLink = root.querySelector('#csr-rfq-link');
   const screenTrayBtn = root.querySelector('[data-screen-tray-btn]');
@@ -536,6 +589,8 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
   function recomputeScreenWeibull(overrideFeedUm = null) {
     const apertureMm = csrApertureInput ? Number(csrApertureInput.value) || 0.50 : 0.50;
     const reliefAngleDeg = csrReliefInput ? Number(csrReliefInput.value) || 4.0 : 4.0;
+    const vibrationG = csrVibrationInput ? Number(csrVibrationInput.value) || 4.5 : 4.5;
+    const sharpnessAlpha = csrAlphaInput ? Number(csrAlphaInput.value) || 4.4 : 4.4;
     const feedParticleUm =
       overrideFeedUm !== null
         ? Number(overrideFeedUm)
@@ -548,12 +603,14 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
     const weibullRes = calculateUrethaneScreenPartitionWeibull({
       apertureMm,
       reliefAngleDeg,
+      vibrationG,
+      sharpnessAlpha,
       feedParticleUm,
     });
     if (csrWeibullOut) {
       csrWeibullOut.textContent = isEn
-        ? `Oversize Partition: ${weibullRes.partitionToOversizePct}% · Dilation Δa/a: ${weibullRes.elasticDilationPct}% (${weibullRes.vibrationG}G, ${weibullRes.antiBlindingCompliant ? 'Anti-Blinding OK' : 'Review θ'}) · SKU: ${weibullRes.recommendedSkuId}`
-        : `Retención Oversize: ${weibullRes.partitionToOversizePct}% · Dilatación Δa/a: ${weibullRes.elasticDilationPct}% (${weibullRes.vibrationG}G, ${weibullRes.antiBlindingCompliant ? 'Anti-Cegamiento OK' : 'Revisar θ'}) · SKU: ${weibullRes.recommendedSkuId}`;
+        ? `Oversize Partition: ${weibullRes.partitionToOversizePct}% · Dilation Δa/a: ${weibullRes.elasticDilationPct}% (${weibullRes.vibrationG}G · α=${weibullRes.sharpnessAlpha}, ${weibullRes.antiBlindingCompliant ? 'Anti-Blinding OK' : 'Review θ'}) · SKU: ${weibullRes.recommendedSkuId}`
+        : `Retención Oversize: ${weibullRes.partitionToOversizePct}% · Dilatación Δa/a: ${weibullRes.elasticDilationPct}% (${weibullRes.vibrationG}G · α=${weibullRes.sharpnessAlpha}, ${weibullRes.antiBlindingCompliant ? 'Anti-Cegamiento OK' : 'Revisar θ'}) · SKU: ${weibullRes.recommendedSkuId}`;
     }
     if (csrRfqLink) {
       const basePath = isEn ? '/en/quote/' : '/cotizar/';
@@ -602,8 +659,8 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
 
     if (couplingBadgeEl) {
       couplingBadgeEl.textContent = isEn
-        ? `🔗 Coupled Closed-Circuit Flow: Cyclone Cut d50c = ${res.d50cMicrons} µm → Urethane Screen Feed d80 = ${coupledD80Um} µm`
-        : `🔗 Flujo Acoplado en Circuito Cerrado: Corte Ciclón d50c = ${res.d50cMicrons} µm → Alimentación Criba d80 = ${coupledD80Um} µm`;
+        ? `Coupled Closed-Circuit Flow: Cyclone Cut d50c = ${res.d50cMicrons} µm → Urethane Screen Feed d80 = ${coupledD80Um} µm`
+        : `Flujo Acoplado en Circuito Cerrado: Corte Ciclón d50c = ${res.d50cMicrons} µm → Alimentación Criba d80 = ${coupledD80Um} µm`;
     }
 
     if (actionEl) {
@@ -730,7 +787,7 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
     }
   });
 
-  [csrApertureInput, csrReliefInput, csrFeedInput].forEach((el) => {
+  [csrApertureInput, csrReliefInput, csrFeedInput, csrVibrationInput, csrAlphaInput].forEach((el) => {
     if (el && typeof el.addEventListener === 'function') {
       el.addEventListener('input', onManualScreenChange);
       el.addEventListener('change', onManualScreenChange);

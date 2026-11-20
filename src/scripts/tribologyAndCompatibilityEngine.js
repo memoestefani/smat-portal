@@ -514,7 +514,7 @@ const HYBRID_A05_R55_SPEC = {
   visualCueEs: 'Impulsor Metálico Bruñido A05 + Forros Elastómero Negro Mate R55',
   visualCueEn: 'Burnished A05 Metal Impeller + Matte Black R55 Elastomer Liners',
   swatchHex: '#0F172A',
-  accentHex: '#B45309',
+  accentHex: '#7C2D12',
   hardness: '≥ 650 HB (Impulsor) + 55 Shore A (Forros)',
   fractureToughnessMpaSqrtM: 18.5,
   wearMultiplierVsCr27: 1.32,

@@ -1,23 +1,23 @@
-import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import {
   calculateGyMinimumSampleMass,
-  recommendAstmSieveSeries,
+  evaluateCentrifugalSealPressureBalance,
   evaluateFilterPressPlateDeflection,
   evaluatePumpAssemblySequence,
-  evaluateCentrifugalSealPressureBalance,
+  recommendAstmSieveSeries,
 } from '../src/scripts/slurryEngine.js';
-import { calculateFilterPressCycleCapacity } from '../src/scripts/wizardCircuitPhysicsController.js';
 import {
   bindCanonicalFiltrationCalculator,
   bindCanonicalFlotationCalculator,
   bindCanonicalSealBalanceCalculator,
   bindCanonicalTribologySelector,
 } from '../src/scripts/verticalCalculatorsAndLabelsBridge.js';
+import { calculateFilterPressCycleCapacity } from '../src/scripts/wizardCircuitPhysicsController.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -225,9 +225,9 @@ test('D3-V43, D9-V43 & D10-V43: Pump assembly sequence aliases, Centrifugal Seal
 
   const tribDom = createDomMock({
     'trib-d80-um': '950',
-    'trib-vtip-ms': '29.5',
+    'trib-u2-ms': '29.5',
     'trib-ph': '7.0',
-    'trib-branch': 'ceramica_sic',
+    'trib-mat-select': 'ceramica_sic',
     'trib-series': '6x4',
     'trib-mat-out': '',
     'trib-kic-out': '',
@@ -288,7 +288,11 @@ test('D3-V43, D9-V43 & D10-V43: Pump assembly sequence aliases, Centrifugal Seal
 });
 
 test('D1-V43, D2-V43, D4-V43 & D11-V43: Zero phantom DOM IDs in controllers and 5-branch material showcase in /bombeo/', () => {
-  const qwCtrl = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/quoteWizardController.js'), 'utf8');
+  const qwCtrl = [
+    fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/quoteWizardController.js'), 'utf8'),
+    fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/wizardDossierProjector.js'), 'utf8'),
+    fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/wizardStateAndUrlLens.js'), 'utf8'),
+  ].join('\n');
   assert.equal(qwCtrl.includes('wb-role-clasificacion'), false);
   assert.equal(qwCtrl.includes('wb-clas-dc-mm'), false);
   assert.equal(qwCtrl.includes('wb-clas-liner'), false);
@@ -300,8 +304,10 @@ test('D1-V43, D2-V43, D4-V43 & D11-V43: Zero phantom DOM IDs in controllers and 
 
   const bombeoEs = fs.readFileSync(path.join(SITE_ROOT, 'src/pages/bombeo/index.astro'), 'utf8');
   const bombeoEn = fs.readFileSync(path.join(SITE_ROOT, 'src/pages/en/pumping/index.astro'), 'utf8');
-  assert.ok(bombeoEs.includes('1. Lotes por Material (5)'));
-  assert.ok(bombeoEn.includes('1. Kits by Material (5)'));
-  assert.ok(bombeoEs.includes('data-hybrid-branch-d-card'));
-  assert.ok(bombeoEn.includes('data-hybrid-branch-d-card'));
+  const pumpingIsland = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/PumpingHubIsland.astro'), 'utf8');
+  assert.ok(bombeoEs.includes('<PumpingHubIsland'));
+  assert.ok(bombeoEn.includes('<PumpingHubIsland'));
+  assert.ok(pumpingIsland.includes('1. Kits por Material (5)') || pumpingIsland.includes('lotes-por-material'));
+  assert.ok(pumpingIsland.includes('1. Kits by Material (5)') || pumpingIsland.includes('kits-by-material'));
+  assert.ok(pumpingIsland.includes('data-hybrid-branch-d-card'));
 });

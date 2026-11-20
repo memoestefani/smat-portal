@@ -1,0 +1,707 @@
+/* Export Section — Polaridad Solar AAA (Decisión 4-C / 7-C+) */
+.export-btn-king {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.1rem;
+  background: var(--smat-copper-surface-aaa, #E56B38);
+  color: var(--smat-on-copper-aaa, #090D16);
+  border: 1px solid var(--smat-solar-accent, #7c2d12);
+  border-radius: var(--smat-radius-md);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(194, 94, 0, 0.2);
+  margin-bottom: 0.65rem;
+}
+
+.export-btn-king:hover {
+  background: #f97316;
+  border-color: #9a4a00;
+  box-shadow: 0 4px 12px rgba(194, 94, 0, 0.3);
+}
+
+.king-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  color: var(--smat-on-copper-aaa, #090D16);
+}
+
+.king-text strong {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--smat-on-copper-aaa, #090D16);
+  font-weight: 800;
+}
+
+.king-text small {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--smat-on-copper-aaa, #090D16);
+  font-weight: 600;
+  margin-top: 0.1rem;
+}
+
+/* Botón Rey Dominante WhatsApp Técnico — Polaridad Solar AAA >= 7.0:1 (Decisión 8-B / 7-C+) */
+.export-btn-whatsapp {
+  background: var(--smat-whatsapp-surface-aaa, #25D366) !important;
+  border: 1px solid #15803d !important;
+  color: var(--smat-on-whatsapp-aaa, #090D16) !important;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.28) !important;
+}
+
+.export-btn-whatsapp .king-icon,
+.export-btn-whatsapp .king-text strong,
+.export-btn-whatsapp .king-text small {
+  color: var(--smat-on-whatsapp-aaa, #090D16) !important;
+}
+
+.export-btn-whatsapp:hover {
+  background: #4ade80 !important;
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.38) !important;
+  transform: translateY(-1px);
+}
+
+.secondary-export-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+}
+
+@media (max-width: 640px) {
+  .secondary-export-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.btn-pill-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 44px;
+  padding: 0.5rem 0.6rem;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--smat-radius-sm);
+  color: var(--smat-text-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s var(--apple-spring-snappy, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.btn-pill-action:hover {
+  background: #ffffff;
+  border-color: var(--smat-copper-accent);
+  color: #9a4a00;
+}
+
+/* Ingesta Confidencial (Decisión 6-A) */
+.confidential-hint {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.72rem;
+  color: var(--smat-text-secondary);
+  line-height: 1.35;
+}
+
+/* Semáforo de Transporte Hidráulico Durand (Decisión 5-A) */
+.flow-regime-bar-wrap {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--smat-border-light);
+}
+
+.regime-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--smat-text-secondary);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+}
+
+.regime-status-bar {
+  background: #f8fafc;
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--smat-radius-sm);
+  padding: 0.55rem 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.regime-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--smat-radius-sm);
+}
+
+.regime-pill.safe {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #10b981;
+}
+
+.regime-pill.warning {
+  background: #fffbeb;
+  color: #92400e;
+  border: 1px solid #f59e0b;
+}
+
+.regime-pill.danger {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #ef4444;
+}
+
+.regime-detail {
+  font-size: 0.72rem;
+  color: var(--smat-text-secondary);
+}
+
+/* Módulo Continuo TCO Costo de Paro (Decisión 3-C) */
+.tco-integrated-card {
+  margin-top: 1rem;
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--smat-radius-sm);
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.tco-integrated-header {
+  padding: 0.75rem 0.85rem;
+  border-bottom: 1px solid var(--smat-border-light);
+  background: #fafaf9;
+  border-radius: var(--smat-radius-sm) var(--smat-radius-sm) 0 0;
+}
+
+.tco-integrated-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #9a4a00;
+  margin-bottom: 0.25rem;
+}
+
+.tco-integrated-title {
+  font-family: var(--smat-font-ui);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--smat-text-primary);
+  margin: 0;
+}
+
+/* Pastilla Discreta de Reorden / Decodificador (Decisión 4-C) */
+.smat-decoder-details {
+  margin-top: 0.75rem;
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--smat-radius-sm);
+  background: #fbfbfc;
+  transition: all 0.2s ease;
+}
+
+.smat-decoder-details[open] {
+  border-color: var(--smat-copper-accent);
+  background: #ffffff;
+}
+
+.smat-decoder-summary {
+  padding: 0.55rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--smat-text-secondary);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.smat-decoder-summary::-webkit-details-marker { display: none; }
+
+.smat-decoder-summary:hover {
+  color: var(--smat-text-primary);
+}
+
+.smat-decoder-details[open] .decoder-arrow {
+  transform: rotate(180deg);
+}
+
+.dossier-subdivider {
+  display: none;
+  position: relative;
+  border-top: 1px solid var(--smat-border-light);
+  margin: 1.25rem 0 0.5rem 0;
+  text-align: center;
+}
+
+.subdivider-tag {
+  position: relative;
+  top: -0.65rem;
+  background: #ffffff;
+  padding: 0 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--smat-text-secondary);
+  letter-spacing: 0.05em;
+}
+
+.dossier-focus-highlight {
+  outline: 2px solid rgba(194, 94, 0, 0.35);
+  outline-offset: 4px;
+  border-radius: var(--smat-radius-sm);
+  transition: outline 0.3s ease;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm 15mm;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .dossier-tab-switcher, .dossier-export-section, .workbench-form-panel {
+    display: none !important;
+  }
+  .workbench-preview-panel, .dossier-card {
+    width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+  .dossier-pane {
+    display: block !important;
+  }
+  .dossier-subdivider {
+    display: block !important;
+  }
+  .erp-justification-drawer {
+    border: none !important;
+  }
+  .erp-justification-drawer .sap-justification-box {
+    display: block !important;
+    padding: 0 !important;
+  }
+}
+
+.tco-body {
+  padding: 0.75rem 0.85rem;
+  border-top: 1px solid var(--smat-border-light);
+  background: #ffffff;
+  border-radius: 0 0 var(--smat-radius-sm) var(--smat-radius-sm);
+}
+
+.tco-output-box {
+  background: transparent;
+  border: none;
+  border-left: 2px solid var(--smat-copper-accent);
+  padding: 0.5rem 0.75rem;
+}
+
+.tco-metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--smat-text-primary);
+}
+
+.tco-metric-val {
+  font-family: var(--smat-font-mono);
+  color: #9a4a00;
+  font-size: 1rem;
+}
+
+.tco-note {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.7rem;
+  color: var(--smat-text-secondary);
+  line-height: 1.35;
+}
+
+.smat-part-code-tag {
+  display: block;
+  font-family: var(--smat-font-mono);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #075985;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--smat-radius-sm);
+  margin-top: 0.2rem;
+}
+
+.live-client-ref-box {
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--smat-border-light);
+  font-size: 0.72rem;
+  color: #075985;
+}
+
+.ref-label {
+  font-weight: 700;
+  margin-right: 0.35rem;
+}
+
+/* SAP Table & Vendor Box (Decisión 8-A) */
+.sap-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--smat-radius-sm);
+}
+
+.sap-item-table th {
+  background: #f1f5f9;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.4rem 0.5rem;
+  color: var(--smat-text-primary);
+}
+
+.sap-code-badge {
+  display: block;
+  font-family: var(--smat-font-mono);
+  font-size: 0.68rem;
+  color: #075985;
+  font-weight: 700;
+  margin-top: 0.15rem;
+}
+
+.sap-vendor-box {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0.25rem 0;
+  font-size: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sap-vendor-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.sap-vendor-row span:first-child {
+  color: var(--smat-text-secondary);
+}
+
+.btn-pill-tsv:hover {
+  border-color: #0284c7;
+  color: #075985;
+}
+
+.pill-icon {
+  font-size: 0.88rem;
+}
+
+.wb-toast {
+  margin-top: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  background: #065f46;
+  color: #ffffff;
+  border-radius: var(--smat-radius-sm);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.privacy-pledge-footer {
+  margin-top: 0.65rem;
+  text-align: center;
+  color: var(--smat-text-secondary);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+/* SMAT Decoder Bar (Decisión 6-A) */
+.smat-decoder-bar {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: var(--smat-radius-sm);
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.decoder-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #075985;
+  margin-bottom: 0.35rem;
+}
+.decoder-input-group {
+  display: flex;
+  gap: 0.4rem;
+}
+.decoder-input {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  font-family: var(--smat-font-mono);
+  font-size: 0.78rem;
+  border: 1px solid #7dd3fc;
+  border-radius: var(--smat-radius-sm);
+  background: #ffffff;
+  color: #0f172a;
+}
+.decoder-input:focus {
+  outline: none;
+  border-color: #0284c7;
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
+}
+.btn-decoder-load {
+  padding: 0.4rem 0.75rem;
+  background: #075985;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--smat-radius-sm);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.btn-decoder-load:hover {
+  background: #0c4a6e;
+}
+.decoder-status {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-top: 0.3rem;
+}
+.decoder-status.success { color: #065f46; }
+.decoder-status.error { color: #991b1b; }
+
+/* Altitude Selector (Decisión 5-A) */
+.altitude-chips-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+.alt-chip,
+.altitude-chip {
+  background: #f8fafc;
+  border: 1px solid var(--smat-border-medium);
+  border-radius: var(--smat-radius-sm);
+  padding: 0.45rem 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  transition: all 0.15s;
+  text-align: left;
+  color: var(--smat-text-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.alt-chip:hover,
+.altitude-chip:hover {
+  border-color: var(--smat-copper-accent);
+  background: #fff7ed;
+}
+.alt-chip.active,
+.altitude-chip.active {
+  background: #fff7ed;
+  border-color: var(--smat-copper-accent);
+  box-shadow: 0 0 0 1px var(--smat-copper-accent);
+}
+
+/* Micro-Alerta Fiduciaria de Recirculación (Decisión 1-C) */
+.recirculation-alert-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 3px solid var(--smat-solar-accent, #7c2d12);
+  border-radius: var(--smat-radius-sm);
+  padding: 0.5rem 0.65rem;
+  margin-top: 0.4rem;
+}
+.recirc-icon { font-size: 0.95rem; line-height: 1.2; }
+.recirc-text {
+  font-size: 0.72rem;
+  color: #92400e;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Píldoras Táctiles de Síntoma Clínico de Destrucción — Contraste Solar AAA (Decisión 3-C / 7-C+) */
+.stress-chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+.stress-chip, .flot-chip, .filt-chip {
+  background: #ffffff;
+  border: 1px solid #94a3b8;
+  border-radius: var(--smat-radius-sm, 4px);
+  padding: 0.45rem 0.65rem;
+  min-height: 40px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--smat-text-secondary, #334155);
+  font-family: var(--smat-font-mono, monospace);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  user-select: none;
+}
+.stress-chip:hover, .flot-chip:hover, .filt-chip:hover {
+  background: #f1f5f9;
+  border-color: #475569;
+  color: #0f172a;
+}
+.stress-chip.active, .flot-chip.active, .filt-chip.active {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.2);
+}
+
+/* Ghost State con Contraste Solar AAA >= 7.0:1 (Sin opacidad 0.45 degradada) */
+.chip-ghost,
+.stress-chip[data-confirmed="false"],
+.flot-chip[data-confirmed="false"],
+.filt-chip[data-confirmed="false"] {
+  border: 1px dashed #64748b !important;
+  background: #ffffff !important;
+  color: var(--smat-text-secondary, #334155) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stress-chip[data-confirmed="true"],
+.flot-chip[data-confirmed="true"],
+.filt-chip[data-confirmed="true"] {
+  border: 1px solid #0f172a !important;
+  background: #0f172a !important;
+  color: #ffffff !important;
+}
+
+
+/* =========================================================================
+   Clases Utilitarias Semánticas V5.0 (Purga de Inline Styles & Solar AAA)
+   ========================================================================= */
+.smat-island-card {
+  background: var(--smat-surface-card, #ffffff);
+  border: 1px solid var(--smat-border-subtle, #e2e8f0);
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+}
+.smat-panel-soft {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem;
+}
+.smat-meter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+.smat-warn-solar {
+  color: var(--smat-solar-accent, #7c2d12);
+  font-weight: 700;
+}
+.smat-dropin-link {
+  color: var(--smat-solar-accent, #7c2d12);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.smat-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+.smat-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0.9rem;
+}
+.smat-badge-solar {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #eff6ff;
+  color: #1e3a8a;
+  border: 1px solid #bfdbfe;
+}
+.smat-kicker {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #475569;
+  margin-bottom: 0.35rem;
+}
+.smat-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+.smat-mono-val {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: #0f172a;
+}
+.smat-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.65rem 1.15rem;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  text-decoration: none;
+  border: 1px solid #0f172a;
+  cursor: pointer;
+}
+.smat-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.65rem 1.15rem;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-decoration: none;
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+}

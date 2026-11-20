@@ -1,0 +1,139 @@
+---
+interface Props {
+  diagram: string;
+  isEs: boolean;
+  xrayWearStyle: string;
+  uid: string;
+}
+const { diagram, isEs, xrayWearStyle, uid } = Astro.props;
+---
+
+    {diagram === 'flotation' && (
+      <svg viewBox="0 0 680 270" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id={`grid-flot-${uid}`} width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
+          </pattern>
+        </defs>
+        <rect width="680" height="270" fill={`url(#grid-flot-${uid})`} />
+        <!-- Cabezal y Polea Superior -->
+        <rect x="255" y="22" width="170" height="38" rx="4" fill="#cbd5e1" stroke="#0f172a" stroke-width="2.2" />
+        <!-- Housing de rodamientos vertical -->
+        <rect x="305" y="60" width="70" height="65" fill="#f8fafc" stroke="#0f172a" stroke-width="2.2" />
+        <!-- Tubo de aire concéntrico y flecha -->
+        <rect x="318" y="125" width="44" height="82" fill="#dbeafe" stroke="#0d78c6" stroke-width="2" />
+        <line x1="340" y1="22" x2="340" y2="245" stroke="#0f172a" stroke-width="2" stroke-dasharray="6 3" />
+        <!-- Rotor / Impulsor y Estator / Difusor inferior -->
+        <rect x="245" y="198" width="190" height="44" rx="4" fill="#fff7ed" stroke="#c25e00" stroke-width="2.4" />
+        <rect x="285" y="204" width="110" height="32" fill="#fde68a" stroke="#7c2d12" stroke-width="2" />
+        <!-- Callouts -->
+        <g font-family="SF Mono, monospace" font-size="10.5" font-weight="700" fill="#0f172a">
+          <text x="440" y="45">{isEs ? '1. TRANSMISIÓN Y POLEA' : '1. DRIVE & PULLEY HEAD'}</text>
+          <text x="390" y="95">{isEs ? '2. PORTA-RODAMIENTOS VERTICAL' : '2. VERTICAL BEARING HOUSING'}</text>
+          <text x="378" y="165" fill="#0d78c6">{isEs ? '3. COLUMNA / TUBO DE AIRE' : '3. STANDPIPE / AIR COLUMN'}</text>
+          <text x="448" y="225" fill="#c25e00">{isEs ? '4. ROTOR - ESTATOR / IMPULSOR' : '4. ROTOR - STATOR / IMPELLER'}</text>
+          <text x="55" y="225">{isEs ? 'CELDAS Y ACONDICIONADORES' : 'CELLS & CONDITIONERS'}</text>
+        </g>
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <rect x="278" y="200" width="8" height="40" fill="#dc2626" opacity="0.85" />
+          <rect x="394" y="200" width="8" height="40" fill="#dc2626" opacity="0.85" />
+          <text x="35" y="45" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">{isEs ? 'RAYOS X • CLARO RADIAL Dr/Ds (Sb ≥ 55 s⁻¹)' : 'X-RAY • Dr/Ds RADIAL GAP (Sb ≥ 55 s⁻¹)'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'filter' && (
+      <svg viewBox="0 0 680 250" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id={`grid-filt-${uid}`} width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.6" />
+          </pattern>
+        </defs>
+        <rect width="680" height="250" fill={`url(#grid-filt-${uid})`} />
+        <!-- Vigas laterales -->
+        <line x1="75" y1="85" x2="605" y2="85" stroke="#0f172a" stroke-width="4" />
+        <line x1="75" y1="175" x2="605" y2="175" stroke="#0f172a" stroke-width="4" />
+        <!-- Cabezal fijo -->
+        <rect x="75" y="55" width="38" height="150" fill="#cbd5e1" stroke="#0f172a" stroke-width="2.2" />
+        <!-- Paquete de Placas Filtrantes (800 a 1500 mm) -->
+        <g fill="#dbeafe" stroke="#0d78c6" stroke-width="1.8">
+          <rect x="130" y="62" width="22" height="136" />
+          <rect x="160" y="62" width="22" height="136" />
+          <rect x="190" y="62" width="22" height="136" />
+          <rect x="220" y="62" width="22" height="136" />
+          <rect x="250" y="62" width="22" height="136" />
+          <rect x="280" y="62" width="22" height="136" />
+          <rect x="310" y="62" width="22" height="136" />
+          <rect x="340" y="62" width="22" height="136" />
+          <rect x="370" y="62" width="22" height="136" />
+        </g>
+        <!-- Cabezal móvil y Cilindro Hidráulico -->
+        <rect x="405" y="55" width="34" height="150" fill="#fff7ed" stroke="#c25e00" stroke-width="2.2" />
+        <rect x="439" y="112" width="85" height="36" fill="#94a3b8" stroke="#0f172a" stroke-width="2" />
+        <rect x="524" y="92" width="75" height="76" fill="#cbd5e1" stroke="#0f172a" stroke-width="2.2" />
+        <g font-family="SF Mono, monospace" font-size="10.5" font-weight="700" fill="#0f172a">
+          <text x="135" y="42" fill="#0d78c6">{isEs ? 'PLACAS DE POLIPROPILENO Y TELAS (800 MM A 1500 MM)' : 'POLYPROPYLENE PLATES & CLOTHS (800 MM TO 1500 MM)'}</text>
+          <text x="455" y="42" fill="#c25e00">{isEs ? 'CIERRE HIDRÁULICO' : 'HYDRAULIC CLOSURE'}</text>
+          <text x="135" y="226">{isEs ? 'POLIPROPILENO VIRGEN COPOLÍMERO + FIELTRO AGUJADO' : 'VIRGIN COPOLYMER POLYPROPYLENE + NEEDLE FELT'}</text>
+        </g>
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <line x1="125" y1="130" x2="395" y2="130" stroke="#dc2626" stroke-width="3" stroke-dasharray="5 3" />
+          <text x="405" y="226" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">{isEs ? 'RAYOS X • CUELLO CENTRAL ΔP ≤ 3.5 BAR (TIMOSHENKO)' : 'X-RAY • CENTER PORT ΔP ≤ 3.5 BAR (TIMOSHENKO)'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'flotation-rotor-stator' && (
+      <svg viewBox="0 0 680 240" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="240" fill="#f8fafc" />
+        <!-- Estator Exterior -->
+        <circle cx="156" cy="120" r="82" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.4" stroke-dasharray="12 6" />
+        <!-- Rotor Estrella Interior (Zona Roja de Velocidad Periférica) -->
+        <circle cx="156" cy="120" r="52" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
+        <circle cx="156" cy="120" r="16" fill="#0f172a" />
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="276" y="56" fill="#dc2626">{isEs ? '1. IMPULSOR / ROTOR ESTRELLA (u2 = 6.0–6.8 M/S)' : '1. STAR ROTOR IMPELLER (u2 = 6.0–6.8 M/S)'}</text>
+          <text x="276" y="76" font-size="9" fill="#475569">{isEs ? '• Micro-dispersión de aire J_g = 1.2–1.8 cm/s' : '• Micro-bubble air dispersion J_g = 1.2–1.8 cm/s'}</text>
+          <text x="276" y="114" fill="#0284c7">{isEs ? '2. DIFUSOR / ESTATOR RADIAL (RELACIÓN Dr/Ds = 0.68–0.74)' : '2. RADIAL STATOR DIFFUSER (Dr/Ds = 0.68–0.74 RATIO)'}</text>
+          <text x="276" y="134" font-size="9" fill="#475569">{isEs ? '• Montaje Drop-In 1:1 en Celdas Auto-Aspirantes y Aire Forzado' : '• 1:1 Drop-In fit on Self-Aspirating & Forced-Air Cells'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'filter-press-plate-cloth' && (
+      <svg viewBox="0 0 680 240" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="240" fill="#f8fafc" />
+        <rect x="64" y="28" width="176" height="184" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.4" />
+        <rect x="84" y="48" width="136" height="144" rx="4" fill="#fef3c7" stroke="#92400e" stroke-width="2" stroke-dasharray="5 3" />
+        <circle cx="152" cy="120" r="24" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="272" y="54" fill="#dc2626">{isEs ? '1. CUELLO CENTRAL REFORZADO (PRESIÓN DIFERENCIAL TIMOSHENKO)' : '1. REINFORCED CENTER FEED PORT (TIMOSHENKO FLEXURE)'}</text>
+          <text x="272" y="74" font-size="9" fill="#475569">{isEs ? '• Previene rotura por puertos obstruidos hasta 16 bar' : '• Prevents plate cracking under clogged ports up to 16 bar'}</text>
+          <text x="272" y="112" fill="#7c2d12">{isEs ? '2. TELA MULTIFILAMENTO CALANDRADA (5–25 CFM)' : '2. CALENDERED MULTIFILAMENT CLOTH (5–25 CFM)'}</text>
+          <text x="272" y="132" font-size="9" fill="#475569">{isEs ? '• Desprendimiento limpio de torta <= 16% humedad (NOM-141)' : '• Clean cake release <= 16% moisture (SEMARNAT NOM-141)'}</text>
+          <text x="272" y="170" fill="#0284c7">{isEs ? '3. PLACA DE POLIPROPILENO VIRGEN PRENSADO (800–1500 MM)' : '3. PRESSED VIRGIN POLYPROPYLENE PLATE (800–1500 MM)'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'filter_plate_shifter' && (
+      <svg viewBox="0 0 680 240" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="240" fill="#f8fafc" />
+        <!-- Riel guía y cadena -->
+        <rect x="44" y="148" width="212" height="22" rx="4" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" />
+        <line x1="48" y1="132" x2="252" y2="132" stroke="#0f172a" stroke-width="3" stroke-dasharray="8 4" />
+        <!-- Carro corre-placas y gatillo indexador -->
+        <rect x="96" y="78" width="104" height="64" rx="6" fill="#fef3c7" stroke="#92400e" stroke-width="2.2" />
+        <polygon points="126,78 164,44 172,78" fill="#f1f5f9" stroke="#0f172a" stroke-width="2.2" />
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <polygon points="126,78 164,44 172,78" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
+        </g>
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="280" y="54" fill="#dc2626">{isEs ? '1. GATILLO DE ARRASTRE Y TRINQUETE INDEXADOR (52–56 HRC)' : '1. CATCHER PAWL & INDEXING RATCHET (52–56 HRC)'}</text>
+          <text x="280" y="74" font-size="9" fill="#475569">{isEs ? '• Enganche secuencial placa por placa sin impacto excéntrico' : '• Sequential plate-by-plate engagement with zero eccentric shock'}</text>
+          <text x="280" y="114" fill="#7c2d12">{isEs ? '2. CARRO CORRE-PLACAS Y CADENA DE TRANSMISIÓN PASO ANSI' : '2. PLATE SHIFTER CARRIAGE & ANSI PITCH DRIVE CHAIN'}</text>
+          <text x="280" y="134" font-size="9" fill="#475569">{isEs ? '• Holgura lateral de riel guía: 1.52 mm (2 tarjetas ISO/IEC 7810)' : '• Guide rail lateral clearance: 1.52 mm (2 ISO/IEC 7810 cards)'}</text>
+          <text x="280" y="172" fill="#0284c7">{isEs ? '3. SINCRONIZACIÓN CON PLACAS PP 16 BAR (NOM-141 SEMARNAT)' : '3. SYNCHRONIZED WITH 16 BAR PP PLATES (NOM-141 SEMARNAT)'}</text>
+        </g>
+      </svg>
+    )}

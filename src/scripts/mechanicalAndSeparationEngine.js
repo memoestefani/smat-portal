@@ -51,8 +51,8 @@ export function calculateFlotationGorainKineticRate(params = {}) {
   const sauterBubbleDiaMm = Math.max(0.8, Math.min(3.0, Number(params.d32Mm ?? 1.6)));
   const rotorDiameterM = Math.max(0.25, Math.min(1.5, Number(params.rotorDiaM ?? 0.61)));
   const rotorRpm = Math.max(100, Math.min(450, Number(params.rotorRpm ?? 215)));
-  const floatabilityFactorP = Math.max(0.0001, Math.min(0.02, Number(params.floatabilityP ?? 0.0045)));
-  const frothRecoveryRf = Math.max(0.2, Math.min(1.0, Number(params.frothRecoveryRf ?? 0.78)));
+  const floatabilityFactorP = Math.max(0.0001, Math.min(0.02, Number(params.floatabilityP ?? params.pFloatability ?? 0.0045)));
+  const frothRecoveryRf = Math.max(0.2, Math.min(1.0, Number(params.frothRecoveryRf ?? params.frothRecovery ?? 0.78)));
 
   // S_b = 6 * J_g / d_32 (con J_g en cm/s y d_32 en cm -> 60 * J_g_cm_s / d32_mm)
   const sbInverseSeconds = Number(((60 * superficialGasVelocityCmS) / sauterBubbleDiaMm).toFixed(2));
@@ -63,6 +63,8 @@ export function calculateFlotationGorainKineticRate(params = {}) {
     sbInverseSeconds,
     tipSpeedMS,
     rateConstantMin,
+    floatabilityP: Number(floatabilityFactorP.toFixed(5)),
+    frothRecoveryRf: Number(frothRecoveryRf.toFixed(3)),
     gorainCompliant: sbInverseSeconds >= 50.0,
     tipSpeedWindowOptimal: tipSpeedMS >= 6.0 && tipSpeedMS <= 7.8,
     recommendedSkuId: 'SMAT-FLOT-MECH-18SP'

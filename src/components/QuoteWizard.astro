@@ -6,6 +6,7 @@ import atomicPartsData from '../../data/atomic_parts.json';
 import '../styles/workbench.css';
 import LiveEngineeringDossier from './LiveEngineeringDossier.astro';
 import WizardCircuitCalculators from './WizardCircuitCalculators.astro';
+import ProcessControlIsland from './islands/ProcessControlIsland.astro';
 import { sanitizePublicAtomicPartSpecs } from '../scripts/vendorPassportAndTradeInController.js';
 import {
   SLURRY_PRESETS,
@@ -269,77 +270,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
           </div>
         </div>
 
-        <!-- PANEL CIRCUITO 4: CONTROL DE PROCESOS Y LABORATORIO METALÚRGICO (Promovido a Nivel Primario XOR — D1-V41 / D7-V41) -->
-        <div id="circuit-panel-control" class="circuit-panel hidden" style="display:none; margin-top: 0.75rem;">
-          <div class="form-group">
-            <label for="wb-role-ctrl"><strong>{isEs ? 'Instrumento o Paquete de Control Requerido:' : 'Required Process Control Instrument or Package:'}</strong></label>
-            <select id="wb-role-ctrl" name="role_id_ctrl" class="wb-select">
-              <option value="balanza_marcy" selected>{isEs ? 'Balanza de Densidad de Pulpa y % de Sólidos (Tipo Marcy) — Vaso 1000 cm³ + 12 Anillos' : 'Pulp Density & % Solids Scale (Marcy Type) — 1000 cm³ Cup + 12 Rings'}</option>
-              <option value="filtro_batch_lab">{isEs ? 'Filtro de Presión Batch de Laboratorio SMAT (60–100 psi / Husillo en T)' : 'SMAT Laboratory Batch Pressure Filter (60–100 psi / T-Bar Clamp)'}</option>
-              <option value="tamices_laboratorio">{isEs ? 'Tamices de Laboratorio Certificados ASTM E11 / ISO 3310 (5" a #635 / 20 µm) y Tamizadores' : 'Certified ASTM E11 / ISO 3310 Test Sieves (5" to #635 / 20 µm) & Shakers'}</option>
-            </select>
-          </div>
-          <div class="form-group" style="margin-top: 0.55rem;">
-            <label for="wb-ctrl-spec"><strong>{isEs ? 'Rango de Gravedad Específica (Ss) o Serie de Mallas:' : 'Ore Specific Gravity (Ss) Range or Sieve Series:'}</strong></label>
-            <select id="wb-ctrl-spec" name="ctrl_spec" class="wb-select">
-              <option value="marcy_12_rings" selected>{isEs ? 'Juego Completo 12 Carátulas (Ss 2.2 a 4.4) + Vaso 1000 cm³ Acero Inoxidable 304' : 'Full 12-Ring Dial Set (Ss 2.2 to 4.4) + 1000 cm³ 304 Stainless Steel Cup'}</option>
-              <option value="batch_100psi">{isEs ? 'Cámara de Presión Batch de Acero Pesado (60 a 100 psi) + Columnas Guía y Drenaje' : 'Heavy-Duty Steel Batch Pressure Barrel (60 to 100 psi) + Twin Guide Rods'}</option>
-              <option value="astm_8in_inox">{isEs ? 'Columna de Tamices 8" en Acero Inoxidable (Corte P80 #40 a #400 / #635) + Tapa y Fondo' : '8" Stainless Steel Sieve Stack (P80 Control #40 to #400 / #635) + Cover & Pan'}</option>
-              <option value="astm_12in_bronce">{isEs ? 'Columna de Tamices 12" en Bronce / Inox + Tamizador Mecánico y Cuarteador' : '12" Brass / Stainless Sieve Stack + Mechanical Sieve Shaker & Splitter'}</option>
-            </select>
-          </div>
-          <div class="form-row" style="margin-top: 0.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.45rem;">
-            <label for="wb-ctrl-solve-mode" style="font-size:0.73rem; font-weight:700; color:#0f172a;">{isEs ? 'Inversión Algebraica Balanza Marcy (3 Vías):' : '3-Way Marcy Algebraic Inversion:'}</label>
-            <select id="wb-ctrl-solve-mode" data-testid="wb-ctrl-solve-mode" class="wb-select font-mono-tech" style="max-width:340px; min-height:32px; padding:0.2rem 0.5rem; font-size:0.74rem;">
-              <option value="cw" selected>{isEs ? 'Modo 1: Dado Ss y %Cw ➔ Calcular ρp (kg/L)' : 'Mode 1: Given Ss & %Cw ➔ Solve ρp (kg/L)'}</option>
-              <option value="rhop">{isEs ? 'Modo 2: Dado Ss y ρp ➔ Calcular %Cw' : 'Mode 2: Given Ss & ρp ➔ Solve %Cw'}</option>
-              <option value="ore_density_rhop">{isEs ? 'Modo 3: Dado ρp y %Cw (Horno) ➔ Despejar Ss Real' : 'Mode 3: Given ρp & Lab %Cw ➔ Solve True Ore Ss'}</option>
-            </select>
-            <button type="button" id="btn-apply-ss-to-circuit" data-testid="btn-apply-ss-to-circuit" class="assist-pill-btn" style="padding:0.22rem 0.6rem; font-size:0.71rem; font-weight:700;">{isEs ? 'Aplicar Ss al Circuito →' : 'Apply Ss to Circuit →'}</button>
-          </div>
-          <div class="form-row" style="margin-top: 0.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 0.5rem;">
-            <div class="form-group"><label for="wb-ctrl-sg"><strong>{isEs ? 'SG Mineral (Ss):' : 'Ore SG (Ss):'}</strong></label><input type="number" id="wb-ctrl-sg" min="2.2" max="4.4" step="0.1" value="2.8" class="wb-input font-mono-tech" /></div>
-            <div class="form-group"><label for="wb-ctrl-cw"><strong>{isEs ? '% Sólidos (Cw):' : 'Solids (% Cw):'}</strong></label><input type="number" id="wb-ctrl-cw" min="10" max="75" step="1" value="45" class="wb-input font-mono-tech" /></div>
-            <div class="form-group"><label for="wb-ctrl-rhop"><strong>{isEs ? 'Densidad ρp (kg/L):' : 'Pulp ρp (kg/L):'}</strong></label><input type="number" id="wb-ctrl-rhop" min="1.05" max="2.40" step="0.005" value="1.406" class="wb-input font-mono-tech" /></div>
-            <div class="form-group"><label for="wb-ctrl-d95"><strong>{isEs ? 'Top d95 Gy (mm):' : 'Gy d95 (mm):'}</strong></label><input type="number" id="wb-ctrl-d95" min="0.04" max="25.0" step="0.01" value="6.5" class="wb-input font-mono-tech" /></div>
-            <div class="form-group"><label for="wb-ctrl-lib"><strong>{isEs ? 'Liberación dl (µm):' : 'Lib. dl (µm):'}</strong></label><input type="number" id="wb-ctrl-lib" min="10" max="1000" step="5" value="100" class="wb-input font-mono-tech" /></div>
-            <div class="form-group"><label for="wb-ctrl-grade"><strong>{isEs ? 'Ley Mineral (aL):' : 'Ore Grade (aL):'}</strong></label><input type="number" id="wb-ctrl-grade" min="0.001" max="0.95" step="0.005" value="0.05" class="wb-input font-mono-tech" /></div>
-            <div class="form-group"><label for="wb-ctrl-air-psi"><strong>{isEs ? 'Presión Batch (psi):' : 'Batch Air (psi):'}</strong></label><select id="wb-ctrl-air-psi" class="wb-select font-mono-tech"><option value="60">60 psi</option><option value="80">80 psi</option><option value="90" selected>90 psi</option><option value="100">100 psi</option></select></div>
-            <div class="form-group"><label for="wb-ctrl-gy-c"><strong>{isEs ? 'Constante Gy C:' : 'Gy Constant C:'}</strong></label><input type="number" id="wb-ctrl-gy-c" min="0.05" max="50" step="0.05" value="1.35" class="wb-input font-mono-tech" /></div>
-            <div class="form-group"><label for="wb-ctrl-gy-err"><strong>{isEs ? 'Error Rel. Gy (s):' : 'Gy Rel. Err (s):'}</strong></label><select id="wb-ctrl-gy-err" class="wb-select font-mono-tech"><option value="0.01">1% (0.01)</option><option value="0.05" selected>5% (0.05)</option><option value="0.10">10% (10%)</option></select></div>
-            <div class="form-group"><label for="wb-ctrl-p80"><strong>{isEs ? 'Corte P80 (µm):' : 'Target P80 (µm):'}</strong></label><input type="number" id="wb-ctrl-p80" min="25" max="2000" step="5" value="150" class="wb-input font-mono-tech" /></div>
-            <div class="form-group"><label for="wb-ctrl-rr-n"><strong>{isEs ? 'Pendiente RR (n):' : 'RR Slope (n):'}</strong></label><input type="number" id="wb-ctrl-rr-n" min="0.50" max="2.50" step="0.05" value="1.15" class="wb-input font-mono-tech" /></div>
-            <div class="form-group"><label for="wb-ctrl-ret-p80"><strong>{isEs ? '% Ret. en P80:' : '% Ret. at P80:'}</strong></label><input type="number" id="wb-ctrl-ret-p80" min="5" max="40" step="1" value="20" class="wb-input font-mono-tech" /></div>
-          </div>
-          <div id="wb-ctrl-live-metrics" class="font-mono-tech" style="margin-top:0.5rem; padding:0.45rem 0.65rem; background:#f0f9ff; border:1px solid #bae6fd; border-radius:6px; font-size:0.71rem; color:#082f49;"></div>
-          <div class="font-mono-tech" style="margin-top:0.4rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(165px, 1fr)); gap:0.35rem; font-size:0.69rem; color:#0f172a;">
-            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Pulpa / Anillo:' : 'Pulp / Ring:'}</strong> <span id="wb-ctrl-res-sm">1.406 kg/L (Ss 2.8)</span></div>
-            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Sesgo Anillo:' : 'Ring Bias:'}</strong> <span id="wb-ctrl-res-bias">±0.0 pts %Cw</span></div>
-            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Muestra Gy / Batch:' : 'Gy / Batch:'}</strong> <span id="wb-ctrl-res-gy">0.25 kg (1 ciclo Batch)</span></div>
-            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Malla Control RR:' : 'RR Control Mesh:'}</strong> <span id="wb-ctrl-res-rr">#100 • n = 1.15</span></div>
-            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Volumen Pulpa Gy:' : 'Gy Wet Pulp Vol:'}</strong> <span id="wb-ctrl-gy-pulp-liters" data-testid="wb-ctrl-gy-pulp-liters">{isEs ? 'Volumen Pulpa Húmeda: 0.39 L (1 ciclo Batch)' : 'Wet Pulp Volume: 0.39 L (1 Batch cycle)'}</span></div>
-            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:0.28rem 0.45rem;"><strong>{isEs ? 'Bastidor ASTM E11:' : 'ASTM E11 Frame:'}</strong> <span id="wb-ctrl-sieve-frame-rec" data-testid="wb-ctrl-sieve-frame-rec">{isEs ? 'Tamizado Húmedo Requerido • Bastidor Acero Inox 304/316' : 'Wet Screening Required • 304/316 Stainless Steel Frame'}</span></div>
-          </div>
-          <div id="wb-ctrl-marcy-rings-strip" data-testid="wb-ctrl-marcy-rings-strip" class="font-mono-tech" style="margin-top:0.35rem; font-size:0.68rem; color:#334155; background:#f8fafc; border:1px solid #e2e8f0; border-radius:4px; padding:0.28rem 0.5rem;">
-            {isEs ? '12 Anillos Marcy (Ss 2.2–4.4): Anillo #4 [Ss 2.8] activo' : '12 Marcy Rings (Ss 2.2–4.4): Ring #4 [Ss 2.8] active'}
-          </div>
-          <div style="margin-top: 0.5rem; overflow-x: auto; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.5rem;">
-            <span class="font-mono-tech" style="display:block; font-size:0.68rem; font-weight:800; color:#475569; margin-bottom:0.35rem;">{isEs ? 'SERIE DE TAMICES ASTM E11 / ROSIN-RAMMLER EN VIVO (7 MALLAS)' : 'LIVE ASTM E11 / ROSIN-RAMMLER SIEVE STACK (7 MESHES)'}</span>
-            <table id="wb-ctrl-sieve-table" style="width:100%; border-collapse:collapse; font-size:0.72rem;">
-              <thead>
-                <tr style="border-bottom:1px solid #cbd5e1; text-align:left;">
-                  <th style="padding:0.22rem 0.35rem;">{isEs ? 'Malla (Tyler)' : 'Mesh (Tyler)'}</th>
-                  <th style="padding:0.22rem 0.35rem;">µm</th>
-                  <th style="padding:0.22rem 0.35rem;">{isEs ? '% Ret. Indiv.' : '% Indiv. Ret.'}</th>
-                  <th style="padding:0.22rem 0.35rem;">{isEs ? '% Ret. Acum.' : '% Cum. Ret.'}</th>
-                  <th style="padding:0.22rem 0.35rem;">{isEs ? '% Pasante' : '% Passing'}</th>
-                  <th style="padding:0.22rem 0.35rem;">{isEs ? 'Masa (g) / Rol' : 'Mass (g) / Role'}</th>
-                </tr>
-              </thead>
-              <tbody id="wb-ctrl-sieve-tbody"></tbody>
-            </table>
-          </div>
-        </div>
+        <ProcessControlIsland locale={lang} mode="embedded" />
 
         <!-- Ficha Física de Pieza Atómica y Ergonomía NIOSH (Readout Reactivo Independiente del Circuito — D1-V41) -->
         <div id="wb-atomic-part-card" data-testid="wb-atomic-part-card" class="atomic-part-spec-card" style="margin-top: 0.65rem; margin-bottom: 0.65rem;">
@@ -355,6 +286,34 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
             <div><small>{isEs ? 'Dureza Certificada:' : 'Certified Hardness:'}</small> <strong id="wb-part-hardness-val">{defaultPartSpecs.hardness}</strong></div>
             <div><small>{isEs ? 'Garantía Dimensional:' : 'Fit Guarantee:'}</small> <strong id="wb-part-fit-val">{isEs ? defaultPartSpecs.fit_guarantee_es : defaultPartSpecs.fit_guarantee_en}</strong></div>
             <div><small>{isEs ? 'Planeación Preventiva en Planta:' : 'Preventive Plant Cycle:'}</small> <strong id="wb-part-reorder-window-val" data-testid="wb-part-reorder-window-val">{isEs ? (defaultPartSpecs.dispatchSlaLabelEs || 'Ciclo sugerido: cada 90 días • Despacho Programado Durango') : (defaultPartSpecs.dispatchSlaLabelEn || 'Suggested cycle: every 90 days • Durango Scheduled Dispatch')}</strong></div>
+          </div>
+          <div class="wb-jrp-embedded-controls smat-inputs-2col" style="margin-top:0.55rem; padding-top:0.55rem; border-top:1px dashed #cbd5e1; font-size:0.75rem;">
+            <label style="display:flex; flex-direction:column; gap:0.2rem; font-weight:700;">
+              <span>{isEs ? 'Vida Desgaste Est. (h):' : 'Predicted Wear Life (h):'}</span>
+              <input type="number" id="wb-jrp-wear-hours" min="720" max="18000" step="120" value="2400" class="wb-input font-mono-tech" />
+            </label>
+            <label style="display:flex; flex-direction:column; gap:0.2rem; font-weight:700;">
+              <span>{isEs ? 'Horas Operación / Día:' : 'Operating Hours / Day:'}</span>
+              <input type="number" id="wb-jrp-daily-hours" min="1" max="24" step="1" value="24" class="wb-input font-mono-tech" />
+            </label>
+            <label style="display:flex; flex-direction:column; gap:0.2rem; font-weight:700;">
+              <span>{isEs ? 'Criticidad Campaña:' : 'Campaign Criticality:'}</span>
+              <select id="wb-jrp-criticality" class="wb-select font-mono-tech">
+                <option value="normal" selected>{isEs ? 'Normal (1.0×)' : 'Normal (1.0×)'}</option>
+                <option value="paro_planta">{isEs ? 'Paro de Línea (0.75×)' : 'Line Shutdown (0.75×)'}</option>
+              </select>
+            </label>
+            <div style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:0.35rem;">
+              <button type="button" class="assist-pill-btn active" data-jrp-crit-btn="normal">1.0×</button>
+              <button type="button" class="assist-pill-btn" data-jrp-crit-btn="paro_planta">0.75×</button>
+            </div>
+          </div>
+          <div class="font-mono-tech" style="display:flex; flex-wrap:wrap; gap:0.65rem; margin-top:0.4rem; font-size:0.72rem; color:#0f172a;">
+            <span>Hito 1: <strong id="jrp-stage-1-days">45 d</strong></span>
+            <span>Hito 2: <strong id="jrp-stage-2-days">90 d</strong></span>
+            <span>Hito 3: <strong id="jrp-stage-3-days">180 d</strong></span>
+            <span>{isEs ? 'Ventana:' : 'Window:'} <strong id="wb-jrp-window-days">90 d</strong></span>
+            <span>Tray: <strong id="qtray-state-version">v3</strong></span>
           </div>
         </div>
         <WizardCircuitCalculators lang={lang} />
@@ -403,6 +362,17 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
                 </button>
               </div>
               <input type="hidden" name="stress_symptom" id="wb-stress-symptom" value="" />
+              <div style="margin-top:0.55rem;">
+                <label for="wb-symptom-select" style="font-size:0.76rem; font-weight:700; display:block; margin-bottom:0.2rem;">{isEs ? 'Selector Directo de Síntoma Operativo:' : 'Direct Operating Symptom Selector:'}</label>
+                <select id="wb-symptom-select" class="wb-select">
+                  <option value="" selected>{isEs ? '— Sin síntoma crítico seleccionado —' : '— No critical symptom selected —'}</option>
+                  <option value="roca_dura">{isEs ? 'Roca dura / Impacto grueso' : 'Hard rock / Coarse impact'}</option>
+                  <option value="acido_quimica">{isEs ? 'Pulpa ácida / Ataque químico' : 'Acid slurry / Chemical attack'}</option>
+                  <option value="arena_fina">{isEs ? 'Arena fina / Alta velocidad' : 'Fine sand / High tip speed'}</option>
+                  <option value="fuga_sello">{isEs ? 'Fuga en sello / Dilución de pulpa' : 'Seal leakage / Pulp dilution'}</option>
+                  <option value="mixta_duda">{isEs ? 'Condición mixta / Ciclón-Flotación' : 'Mixed condition / Cyclone-Flotation'}</option>
+                </select>
+              </div>
             </div>
           </div>
         </details>
@@ -482,7 +452,14 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
                   <div><strong>{isEs ? 'Piezas Lote:' : 'Lot Parts:'}</strong> <span id="wb-mat-parts-list">{(isEs ? defaultMatSpec.partsIncludedEs : defaultMatSpec.partsIncludedEn).join(', ')}</span></div>
                 </div>
                 <div id="wb-mat-duty-desc" style="margin-top:0.25rem; color:#334155;">{isEs ? defaultMatSpec.dutyApplicationEs : defaultMatSpec.dutyApplicationEn}</div>
-                <div id="wb-hybrid-rama-d-breakdown" data-testid="wb-hybrid-rama-d-breakdown" class="hidden" style="display:none; margin-top:0.45rem; padding:0.45rem 0.65rem; background:#ecfdf5; border:1px solid #059669; border-radius:5px; color:#065f46; font-weight:700;"></div>
+                <div id="wb-hybrid-rama-d-breakdown" data-testid="wb-hybrid-rama-d-breakdown" class="hidden" style="display:none; margin-top:0.45rem; padding:0.45rem 0.65rem; background:#ecfdf5; border:1px solid #059669; border-radius:5px; color:#064e3b; font-weight:700;"></div>
+                <div class="font-mono-tech" style="display:flex; flex-wrap:wrap; gap:0.65rem; margin-top:0.45rem; font-size:0.71rem; color:#0f172a;">
+                  <span><strong id="wb-hybrid-verdict">{isEs ? 'Monometálico Cr27 / R55' : 'Monometallic Cr27 / R55'}</strong> (<span id="wb-hybrid-mass-savings">-31.8%</span>)</span>
+                  <span>Serie: <strong id="wb-asm-active-series">6x4</strong></span>
+                  <span>Masa: <strong id="wb-asm-active-weight">492.0 kg</strong></span>
+                  <span>NIOSH: <strong id="wb-asm-active-hoist">{isEs ? 'Izaje Mecánico (>=23 kg)' : 'Hoist Required (>=23 kg)'}</strong></span>
+                  <span>Mat: <strong id="wb-asm-active-material">A05</strong></span>
+                </div>
               </div>
             </div>
 
@@ -701,6 +678,20 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
               <div class="slider-group">
                 <div class="slider-label-row"><span>{isEs ? 'Gravedad Específica del Mineral (Ss):' : 'Ore Specific Gravity (Ss):'}</span><strong class="slider-value pro-tabular-nums" id="val-sg">2.70</strong></div>
                 <input type="range" id="slider-sg" min="2.2" max="4.4" step="0.1" value="2.7" class="wb-slider" data-wb-bind="sg" />
+                <div class="smat-inputs-2col" style="margin-top:0.45rem; gap:0.5rem;">
+                  <label style="font-size:0.72rem; font-weight:700; display:flex; flex-direction:column; gap:0.2rem;">
+                    <span>{isEs ? 'Ss Mineral Exacto:' : 'Exact Ore SG (Ss):'}</span>
+                    <input type="number" id="wb-solids-sg" min="1.5" max="5.5" step="0.1" value="2.7" class="wb-input font-mono-tech" />
+                  </label>
+                  <label style="font-size:0.72rem; font-weight:700; display:flex; flex-direction:column; gap:0.2rem;">
+                    <span>{isEs ? 'Temperatura Pulpa (°C):' : 'Slurry Temp (°C):'}</span>
+                    <input type="number" id="wb-temp-c" min="0" max="140" step="1" value="35" class="wb-input font-mono-tech" />
+                  </label>
+                </div>
+                <label style="display:flex; align-items:center; gap:0.4rem; margin-top:0.35rem; font-size:0.73rem; font-weight:700; cursor:pointer;">
+                  <input type="checkbox" id="wb-strict-blind-check" />
+                  <span>{isEs ? 'Cotejo Estricto Sin Tolerancia de Brida Ciega' : 'Strict Zero-Tolerance Blind Flange Check'}</span>
+                </label>
               </div>
               <div class="slider-group">
                 <div class="slider-label-row"><span>{isEs ? 'Acidez / Alcalinidad de Pulpa (pH):' : 'Slurry Acidity / Alkalinity (pH):'}</span><strong class="slider-value pro-tabular-nums" id="val-ph" data-wb-field="pulpPh">pH 7.0</strong></div>
@@ -709,23 +700,32 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
               <div class="altitude-group" style="margin-top: 0.75rem;">
                 <div class="slider-label-row"><span>{isEs ? 'Altitud Operativa de Mina (msnm):' : 'Mine Operating Altitude (MASL):'}</span><strong class="slider-value pro-tabular-nums" id="val-altitude">2,400 msnm</strong></div>
                 <div class="altitude-chips-grid" id="wb-altitude-selector">
-                  <button type="button" class="alt-chip" data-alt="0"><span>0 m</span><small>{isEs ? 'Costa' : 'Coast'}</small></button>
-                  <button type="button" class="alt-chip" data-alt="1500"><span>1,500 m</span><small>{isEs ? 'Meseta' : 'Plateau'}</small></button>
-                  <button type="button" class="alt-chip active" data-alt="2400"><span>2,400 m</span><small>{isEs ? 'Sierra' : 'Sierra'}</small></button>
+                  <button type="button" class="alt-chip" data-alt="0" data-wb-altitude-btn="0"><span>0 m</span><small>{isEs ? 'Costa' : 'Coast'}</small></button>
+                  <button type="button" class="alt-chip" data-alt="1500" data-wb-altitude-btn="1500"><span>1,500 m</span><small>{isEs ? 'Meseta' : 'Plateau'}</small></button>
+                  <button type="button" class="alt-chip active" data-alt="2400" data-wb-altitude-btn="2400"><span>2,400 m</span><small>{isEs ? 'Sierra' : 'Sierra'}</small></button>
+                </div>
+                <div style="margin-top:0.4rem;">
+                  <label for="wb-altitude-input" style="font-size:0.72rem; font-weight:700; display:block; margin-bottom:0.2rem;">{isEs ? 'Altitud Continua Libre (0 – 5,000 msnm):' : 'Free Continuous Altitude (0 – 5,000 MASL):'}</label>
+                  <input type="number" id="wb-altitude-input" min="0" max="5000" step="50" value="2400" class="wb-input font-mono-tech" />
                 </div>
                 <small class="altitude-npsh-hint" id="altitude-npsh-hint">{isEs ? 'Patm = 7.66 mca. Margen NPSHa ajustado para prevenir cavitación en altura (Sierra Madre).' : 'Patm = 7.66 mca. Adjusted NPSHa margin to prevent altitude cavitation.'}</small>
                 <div id="wb-altitude-live-strip" data-testid="wb-altitude-live-strip" class="font-mono-tech" style="margin-top:0.25rem; font-size:0.71rem; color:#0c4a6e; font-weight:700;">Patm = {defaultAltData.pAtmHeadMca.toFixed(2)} mca | -ΔNPSHa = {defaultAltData.deltaNpshLossM.toFixed(2)} m | IEC 60034-1 = {defaultAltData.motorDeratingFactor.toFixed(3)} | K_motor,alt = {defaultSimMetrics.combinedMotorAltitudeMultiplier}x</div>
+                <div class="font-mono-tech" style="display:flex; flex-wrap:wrap; gap:0.6rem; margin-top:0.25rem; font-size:0.71rem; color:#0f172a;">
+                  <span>Patm: <strong id="metric-patm">{defaultAltData.pAtmHeadMca.toFixed(2)} mca</strong></span>
+                  <span>IEC: <strong id="metric-iec-derating">{defaultAltData.motorDeratingFactor.toFixed(3)}</strong></span>
+                  <span>Penalty: <strong id="metric-motor-penalty-pct">+13.6%</strong></span>
+                </div>
               </div>
             </div>
 
             <div class="sim-output-box">
-              <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'Velocidad Crítica (Vc / F_L):' : 'Critical Velocity (Vc / F_L):'}</span><strong class="sim-metric-val pro-tabular-nums"><span id="metric-vc" data-wb-field="criticalSettlingVelocityMs">{defaultSimMetrics.results.criticalSettlingVelocityMs} m/s</span> (F_L <span id="metric-fl" data-wb-field="durandFactorFL">{defaultSimMetrics.results.durandFactorFL}</span>)</strong></div>
-              <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'Velocidad Real vs 1.25 Vc:' : 'Actual vs 1.25 Vc:'}</span><strong class="sim-metric-val pro-tabular-nums" id="metric-v-actual">{defaultSimMetrics.results.actualPipeVelocityMs} / <span id="metric-v-rec" data-wb-field="recommendedPipeVelocityMs">{defaultSimMetrics.results.recommendedPipeVelocityMs} m/s</span></strong></div>
-              <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'Densidad Pulpa (Sm / Cv):' : 'Slurry Density (Sm / Cv):'}</span><strong class="sim-metric-val pro-tabular-nums" id="metric-sm-cv">{defaultSimMetrics.results.slurrySpecificGravity.toFixed(2)} kg/L (<span id="metric-cv" data-wb-field="solidsVolumetricPercent">{defaultSimMetrics.results.solidsVolumetricPercent}%</span> Cv)</strong></div>
+              <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'Velocidad Crítica (Vc / F_L):' : 'Critical Velocity (Vc / F_L):'}</span><strong class="sim-metric-val pro-tabular-nums"><span id="metric-vc" data-wb-field="criticalSettlingVelocityMs">{defaultSimMetrics.results.criticalSettlingVelocityMs} m/s</span> (F_L <span id="metric-durand-fl" data-wb-field="durandFactorFL"><span id="metric-fl">{defaultSimMetrics.results.durandFactorFL}</span></span>)</strong></div>
+              <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'Velocidad Real vs 1.25 Vc:' : 'Actual vs 1.25 Vc:'}</span><strong class="sim-metric-val pro-tabular-nums" id="metric-v-actual"><span id="metric-vact">{defaultSimMetrics.results.actualPipeVelocityMs}</span> / <span id="metric-v-rec" data-wb-field="recommendedPipeVelocityMs">{defaultSimMetrics.results.recommendedPipeVelocityMs} m/s</span></strong></div>
+              <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'Densidad Pulpa (Sm / Cv):' : 'Slurry Density (Sm / Cv):'}</span><strong class="sim-metric-val pro-tabular-nums" id="metric-sm-cv"><span id="metric-sm">{defaultSimMetrics.results.slurrySpecificGravity.toFixed(2)}</span> kg/L (<span id="metric-cv" data-wb-field="solidsVolumetricPercent">{defaultSimMetrics.results.solidsVolumetricPercent}%</span> Cv)</strong></div>
               <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'Derating Cave (HR / ER):' : 'Cave Derating (HR / ER):'}</span><strong class="sim-metric-val pro-tabular-nums" id="metric-derating-hr">HR {defaultSimMetrics.results.headDeratingFactorHr.toFixed(2)} • ER <span id="metric-derating-er">{defaultSimMetrics.results.effDeratingFactorEr.toFixed(2)}</span></strong></div>
               <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'Pérdida NPSHa Altitud:' : 'Altitude NPSHa Loss:'}</span><strong class="sim-metric-val pro-tabular-nums" id="metric-delta-npsh">-{defaultAltData.deltaNpshLossM.toFixed(2)} m (Patm {defaultAltData.pAtmHeadMca.toFixed(2)} mca)</strong></div>
               <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'Material Recomendado:' : 'Recommended Alloy:'}</span><strong class="sim-metric-val highlight" id="metric-material">High Chrome A05 (>650 HB)</strong></div>
-              <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'Vida Útil Estimada:' : 'Estimated Life:'}</span><strong class="sim-metric-val pro-tabular-nums" id="metric-life">~{defaultSimMetrics.results.estimatedImpellerLifeHours} h ({defaultSimMetrics.results.wearLifeRatio}×)</strong></div>
+              <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'Vida Útil Estimada:' : 'Estimated Life:'}</span><strong class="sim-metric-val pro-tabular-nums" id="metric-life">~{defaultSimMetrics.results.estimatedImpellerLifeHours} h (<span id="metric-wear-ratio">{defaultSimMetrics.results.wearLifeRatio}×</span>)</strong></div>
               <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'Cinemática (u₂ / L₁₀ₕ):' : 'Kinematics (u₂ / L₁₀ₕ):'}</span><strong class="sim-metric-val pro-tabular-nums" id="metric-drive-u2" data-testid="metric-drive-u2">{defaultKinematics.tipSpeedMs} m/s • <span id="metric-drive-l10h">{defaultKinematics.bearingL10Hours.toLocaleString()} h</span></strong></div>
               <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'RPM Bomba (n₂) / Carga Radial (F_r):' : 'Pump Speed (n₂) / Radial Load (F_r):'}</span><strong class="sim-metric-val pro-tabular-nums"><span id="metric-drive-rpm">{defaultKinematics.pumpRpm} RPM</span> • <span id="metric-drive-fr">{defaultKinematics.beltRadialLoadKn} kN</span></strong></div>
               <div class="sim-metric"><span class="sim-metric-label">{isEs ? 'Inmunidad de Sumidero (Arreglo):' : 'Sump Flood Immunity:'}</span><strong class="sim-metric-val pro-tabular-nums" id="metric-drive-flood">{isEs ? defaultKinematics.sumpFloodImmunity : defaultKinematics.sumpFloodImmunityEn}</strong></div>
@@ -737,9 +737,9 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
                 <strong class="slider-value pro-tabular-nums" id="wb-val-clearance">{defaultClearanceEval.frontClearanceMm.toFixed(2)} mm (Δη_v = -{defaultClearanceEval.volumetricEffLossPct}%)</strong>
               </div>
               <input type="range" id="wb-clearance-slider" data-testid="wb-clearance-slider" min="0.20" max="4.00" step="0.05" value="0.75" class="wb-slider" />
-              <div class="clearance-kinematics-meta"><span id="metric-clearance-loss">{isEs ? defaultClearanceEval.wearRatioImpact554 : defaultClearanceEval.wearRatioImpact554En}</span> • <span>{isEs ? 'Pérdida margen Vc:' : 'Vc margin loss:'} <strong id="wb-clearance-vel-loss" data-testid="wb-clearance-vel-loss">-{defaultClearanceEval.pipeVelocityMarginLossPct ?? 1.2}%</strong></span></div>
+              <div class="clearance-kinematics-meta"><span id="metric-clearance-loss">{isEs ? defaultClearanceEval.wearRatioImpact554 : defaultClearanceEval.wearRatioImpact554En}</span> • <span>{isEs ? 'Pérdida vol.:' : 'Vol. loss:'} <strong id="trib-vol-loss-out">-{defaultClearanceEval.volumetricEffLossPct}%</strong></span> • <span>{isEs ? 'Pérdida margen Vc:' : 'Vc margin loss:'} <strong id="wb-clearance-vel-loss" data-testid="wb-clearance-vel-loss"><span id="trib-pipe-loss-out">-{defaultClearanceEval.pipeVelocityMarginLossPct ?? 1.2}%</span></strong></span></div>
               <div class="clearance-kinematics-meta" style="margin-top:0.25rem; font-size:0.72rem; color:#0c4a6e;"><span id="metric-structural-reason">{isEs ? defaultClearanceEval.structuralReasonEs : defaultClearanceEval.structuralReasonEn}</span></div>
-              <div id="wb-clearance-ng-ns-spalling" data-testid="wb-clearance-ng-ns-spalling" class="clearance-kinematics-meta font-mono-tech" style="margin-top:0.2rem; font-size:0.71rem; color:#065f46; font-weight:700;">{isEs ? 'Secuencia Ensamble: Ng=0 interferencias • Ns=0 subensambles inestables • Banda óptima 0.5–1.0 mm • Sin riesgo de spalling Cr27%' : 'Assembly Sequence: Ng=0 interferences • Ns=0 unstable subassemblies • Optimal band 0.5–1.0 mm • Zero Cr27% spalling risk'}</div>
+              <div id="wb-clearance-ng-ns-spalling" data-testid="wb-clearance-ng-ns-spalling" class="clearance-kinematics-meta font-mono-tech" style="margin-top:0.2rem; font-size:0.71rem; color:#064e3b; font-weight:700;">{isEs ? 'Secuencia Ensamble: Ng=0 interferencias • Ns=0 subensambles inestables • Banda óptima 0.5–1.0 mm • Sin riesgo de spalling Cr27%' : 'Assembly Sequence: Ng=0 interferences • Ns=0 unstable subassemblies • Optimal band 0.5–1.0 mm • Zero Cr27% spalling risk'}</div>
 
               <div class="form-row" style="margin-top:0.65rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.55rem;">
                 <div>
@@ -775,8 +775,8 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
 
               <div class="form-row" style="margin-top:0.55rem; display:grid; grid-template-columns:1fr; gap:0.4rem;">
                 <div>
-                  <label for="wb-assembly-sequence-test" style="font-size:0.72rem; font-weight:700;">{isEs ? 'Validador de Secuencia de Montaje (Estaciones 01–05):' : 'Assembly Sequence Validator (Stations 01–05):'}</label>
-                  <select id="wb-assembly-sequence-test" class="wb-select" style="min-height:34px; padding:0.25rem 0.5rem; font-size:0.75rem;">
+                  <label for="wb-assembly-sequence" style="font-size:0.72rem; font-weight:700;">{isEs ? 'Validador de Secuencia de Montaje (Estaciones 01–05):' : 'Assembly Sequence Validator (Stations 01–05):'}</label>
+                  <select id="wb-assembly-sequence" class="wb-select" style="min-height:34px; padding:0.25rem 0.5rem; font-size:0.75rem;">
                     <option value="canonical" selected>{isEs ? 'Canónica: EST-01 ➔ EST-02 ➔ EST-03 ➔ EST-04 ➔ EST-05 (Sin colisión)' : 'Canonical: EST-01 ➔ EST-02 ➔ EST-03 ➔ EST-04 ➔ EST-05 (Zero collision)'}</option>
                     <option value="impeller_before_rear_liner">{isEs ? 'Simular Error A: Impulsor (EST-03) antes de Sello/FPL (EST-02)' : 'Simulate Error A: Impeller (EST-03) before Seal/FPL (EST-02)'}</option>
                     <option value="cover_before_throatbush">{isEs ? 'Simular Error B: Tapa Succión (EST-05) sin Throatbush (EST-04)' : 'Simulate Error B: Cover Plate (EST-05) without Throatbush (EST-04)'}</option>
@@ -888,10 +888,29 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
             </select>
           </div>
 
+          <div class="form-row" style="margin-top: 0.65rem;">
+            <div class="form-group col-half">
+              <label for="wb-erp-quantity"><strong>{isEs ? 'Cantidad de Lotes / Piezas:' : 'Lot / Unit Quantity:'}</strong></label>
+              <input type="number" id="wb-erp-quantity" min="1" max="500" step="1" value="1" class="wb-input font-mono-tech" />
+            </div>
+            <div class="form-group col-half">
+              <label for="wb-erp-logistics-mode"><strong>{isEs ? 'Origen de Despacho ERP:' : 'ERP Dispatch Origin:'}</strong></label>
+              <select id="wb-erp-logistics-mode" class="wb-select">
+                <option value="Durango" selected>{isEs ? 'Durango — Almacén Central' : 'Durango — Central Warehouse'}</option>
+                <option value="Consolidado">{isEs ? 'Fletera Consolidada' : 'Consolidated Carrier'}</option>
+                <option value="Directo">{isEs ? 'Flete Directo a Unidad Minera' : 'Direct Mine Site Freight'}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="wb-erp-destination"><strong>{isEs ? 'Ciudad o Unidad Minera Destino (ERP):' : 'Destination City or Mine Site (ERP):'}</strong></label>
+            <input type="text" id="wb-erp-destination" class="wb-input" value="Durango" placeholder={isEs ? 'Ej. Fresnillo, Zac. / Durango' : 'e.g. Durango / Sonora Mine'} />
+          </div>
+
           <div class="form-group" style="margin-top: 0.65rem; padding: 0.6rem 0.75rem; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px;">
             <label style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.82rem; cursor: pointer;">
               <input type="checkbox" id="wb-g5-advance-confirm" name="g5_advance_confirm" data-g5-advance-confirm checked style="margin-top: 0.2rem;" />
-              <span><strong>{isEs ? 'Confirmación Candado G5 (Partidas [SE FABRICA]):' : 'Gate G5 Confirmation ([MADE TO ORDER] Items):'}</strong> {isEs ? 'Enterado de condición comercial 50% anticipo para orden de fundición/maquinado y 50% contra aviso de embarque con reporte fotográfico dimensional.' : 'Acknowledged 50% advance payment terms for scheduled casting/machining and 50% upon ready-to-ship notice with dimensional photo report.'}</span>
+              <span><strong>{isEs ? 'Condición Comercial G5 (Partidas [SE FABRICA]):' : 'Gate G5 Commercial Terms ([MADE TO ORDER] Items):'}</strong> {isEs ? 'Enterado de condición comercial 50% anticipo para orden de fundición/maquinado y 50% contra aviso de embarque con reporte fotográfico dimensional.' : 'Acknowledged 50% advance payment terms for scheduled casting/machining and 50% upon ready-to-ship notice with dimensional photo report.'}</span>
             </label>
           </div>
 

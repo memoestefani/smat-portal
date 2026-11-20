@@ -4,10 +4,10 @@
  */
 import {
   DEFAULT_SMAT_LEAD_WEBHOOK_URL,
-  resolveAtomicPartCode,
-  getAtomicPartSpecs,
   formatNioshErgonomicStatus,
-  generateSmatPartCode
+  generateSmatPartCode,
+  getAtomicPartSpecs,
+  resolveAtomicPartCode
 } from './districtProfilesAndSkuCatalog.js';
 
 /**
@@ -20,7 +20,7 @@ export function formatSapTsv(data = {}) {
   const date = data.date || new Date().toISOString().split('T')[0];
   const partName = (data.part_name || data.role || 'Impulsor de Proceso').replace(/[\t\n\r]/g, ' ');
   const smatCode = (data.smat_code || generateSmatPartCode(data)).replace(/[\t\n\r]/g, ' ');
-  const qty = data.quantity || 1;
+  const qty = Math.max(1, Math.round(Number(data.quantity ?? data.cantidad ?? 1)));
   const alloy = (data.metrics?.recommended_alloy || 'Dureza Metalúrgica Certificada').replace(/[\t\n\r]/g, ' ');
   const dest = (data.destination || 'Retiro en Almacén Central Durango').replace(/[\t\n\r]/g, ' ');
   const requester = (data.contact_name || data.name || 'Ingeniería').replace(/[\t\n\r]/g, ' ');
@@ -238,6 +238,7 @@ export function parseSmatPartCode(code = '', lang = 'es') {
     size,
     frame,
     alloyOrType: token3,
+    cleaned: clean,
     role: role_id,
     role_id,
     ui_role,
@@ -275,11 +276,11 @@ export function formatSapPlaintextImpl(data = {}) {
   const partName = data.part_name || data.role || 'Impulsor de 5 álabes High Chrome 27% (A05) >650 HB';
   const smatCode = data.smat_code || generateSmatPartCode(data);
   const atomicCode = data.atomic_code || '';
-  const clientRef = data.client_reference || '';
+  const clientRef = data.client_reference || data.placa_ref || data.ref_cliente || '';
   const pulpProfile = data.pulp_profile || '';
   const dimDia = data.dim_outer_dia || '';
   const dimBore = data.dim_shaft_bore || '';
-  const partQty = data.quantity || 1;
+  const partQty = Math.max(1, Math.round(Number(data.quantity ?? data.cantidad ?? 1)));
   const metrics = data.metrics || {};
   const tco = data.tco || {};
   const isCustom = data.is_custom || false;
@@ -439,9 +440,10 @@ export function formatMailtoUrlImpl(data = {}) {
   const partName = data.part_name || data.role || 'Refaccionamiento Minero';
   const smatCode = data.smat_code || generateSmatPartCode(data);
   const targetEmail = data.target_email || data.email_address || 'ventas@smatminerals.com';
+  const safeEmail = String(targetEmail).trim().replace(/[\r\n\s?&#]/g, '');
   const subject = `[Requisición ${folio}] [${smatCode}] ${company} - ${partName}`;
   const body = formatSapPlaintextImpl(data);
-  return `mailto:${encodeURIComponent(targetEmail)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  return `mailto:${safeEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 export function formatWhatsappUrlImpl(data = {}) {
@@ -520,11 +522,27 @@ export function formatWhatsappUrlImpl(data = {}) {
   if (data.details) {
     lines.push(`*Detalles:* ${data.details}`);
   }
-  if (data.client_reference) {
-    lines.push(`*Ref. Cliente:* ${data.client_reference}`);
+  const qtyWa = Math.max(1, Math.round(Number(data.quantity ?? data.cantidad ?? 1)));
+  lines.push(`*Cantidad:* ${qtyWa} pza(s)`);
+  const refCliWa = data.client_reference || data.placa_ref || data.ref_cliente || '';
+  if (refCliWa) {
+    lines.push(`*Ref. Cliente:* ${refCliWa}`);
   }
-  if (data.destination) {
-    lines.push(`*Destino:* ${data.destination}`);
+  const destWa = data.delivery_destination || data.destination || data.destino || '';
+  if (destWa) {
+    lines.push(`*Destino:* ${destWa}`);
+  }
+  const logisticsWa = data.logistics_mode || data.logistics || '';
+  if (logisticsWa) {
+    lines.push(`*Logística:* ${logisticsWa}`);
+  }
+  const canalWa = data.canal_preferido || data.channel_preference || data.channel_pref || '';
+  if (canalWa) {
+    lines.push(`*Canal Preferido:* ${canalWa}`);
+  }
+  const misionWa = data.mision || data.mission || data.mission_type || '';
+  if (misionWa) {
+    lines.push(`*Misión:* ${misionWa}`);
   }
   lines.push(``);
   lines.push(`*Instrucción de Almacén Durango:* Favor de adjuntar fotografía de la pieza con un flexómetro de referencia para cotejo 1:1.`);
@@ -596,9 +614,15 @@ export function buildCanonicalEngineeringSnapshotImpl(d = {}) {
   const rhopVal = d.rhop ?? d.oreDensitySg ?? met.sm ?? met.pulpDensityKgL;
   const gateClass = d.gate_classification || gate.classification || 'PRIORITY_MINING_PLANT';
   const trustBoundaryId = d.trust_boundary_id || gate.activeTrustBoundaryId || '';
+  const resolvedMision = String(d.mision || d.mission || d.mission_type || (d.isOpex === false ? 'equipos' : 'refacciones')).trim();
+  const resolvedQty = Math.max(1, Math.round(Number(d.quantity ?? d.cantidad ?? 1)));
+  const resolvedPlacaRef = String(d.client_reference || d.placa_ref || d.ref_cliente || '').trim();
+  const resolvedLogistics = String(d.logistics_mode || d.logistics || 'retiro').trim();
+  const resolvedCanalPref = String(d.canal_preferido || d.channel_preference || d.channel_pref || 'whatsapp').trim();
+  const resolvedDest = String(d.delivery_destination || d.destination || d.destino || 'Retiro en Almacén Central Durango').trim();
   return {
     folio: d.folio || 'SMAT-2026-RFQ',
-    urgencia: d.isOpex === false ? 'proyecto' : 'paro',
+    urgencia: (resolvedMision === 'equipos' || d.isOpex === false) ? 'proyecto' : 'paro',
     puerta_interna: resolveInternalBudgetCategory(d),
     nombre: d.name || d.contact_name || d.nombre || '',
     empresa: d.company || d.company_name || d.empresa || '',
@@ -607,7 +631,13 @@ export function buildCanonicalEngineeringSnapshotImpl(d = {}) {
     equipo: d.part_name || d.role || d.equipo || '',
     codigo: d.smat_code || d.codigo || generateSmatPartCode(d),
     pieza: d.atomic_code || d.pieza || d.part_slug || '',
-    ref_cliente: d.client_reference || d.ref_cliente || '',
+    ref_cliente: resolvedPlacaRef,
+    cantidad: resolvedQty,
+    placa_ref: resolvedPlacaRef,
+    logistics_mode: resolvedLogistics,
+    canal_preferido: resolvedCanalPref,
+    mision: resolvedMision,
+    delivery_destination: resolvedDest,
     medidas: measures,
     perfil_pulpa: d.pulp_profile || d.perfil_pulpa || '',
     hidraulica: hydraulicsStr,
@@ -689,7 +719,7 @@ export function buildAcuseUrlParams(d = {}) {
   };
   const optionalKeys = [
     'circuito', 'notas_especiales',
-    'pieza', 'material', 'transmision', 'estacion', 'peso_kg',
+    'pieza', 'material', 'transmision', 'estacion', 'peso_kg', 'cantidad', 'placa_ref', 'logistics_mode', 'canal_preferido', 'mision', 'delivery_destination',
     'claro_mm', 'delta_eta_v', 'pipe_vel_loss_pct', 'u2_ms', 'n2_rpm',
     'fr_kn', 'inmunidad_sumidero', 'razon_estructural', 'l10h', 'metrologia',
     'ref_cliente', 'medidas', 'perfil_pulpa', 'hidraulica', 'tco',
@@ -782,6 +812,12 @@ export function buildLeadWebhookPayload(d = {}, channelOrigin = 'web_quote_wizar
     especificacion_tecnica: snap.detalles,
     destino: snap.destino || 'Durango',
     modalidad_logistica: snap.destino || 'Durango',
+    cantidad: snap.cantidad,
+    placa_ref: snap.placa_ref,
+    logistics_mode: snap.logistics_mode,
+    canal_preferido: snap.canal_preferido,
+    mision: snap.mision,
+    delivery_destination: snap.delivery_destination,
     canal: channelOrigin,
     website: honeypotVal
   };

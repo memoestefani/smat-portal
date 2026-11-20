@@ -1,0 +1,782 @@
+/* Selector de Circuito de Planta (Decisión 8-C: Arquitectura Multi-Equipo) */
+.circuit-selector-group {
+  margin-top: 1rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--smat-border-light, #e2e8f0);
+}
+.circuit-selector-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #1e293b;
+  display: block;
+  margin-bottom: 0.45rem;
+}
+.circuit-pills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.4rem;
+}
+@media (max-width: 640px) {
+  .circuit-pills-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.circuit-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 42px;
+  padding: 0.55rem 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  border-radius: var(--smat-radius-sm, 4px);
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  font-family: var(--smat-font-mono, monospace);
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  text-transform: uppercase;
+  user-select: none;
+}
+.circuit-pill:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+.circuit-pill.active {
+  background: var(--smat-navy-deep, #051B2E);
+  color: #ffffff;
+  border-color: var(--smat-blue-royal, #0D78C6);
+  box-shadow: 0 1px 4px rgba(5, 27, 46, 0.25), inset 0 0 0 1px var(--smat-blue-royal, #0D78C6);
+}
+.circuit-context-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.65rem;
+  background: var(--smat-blue-vortex-bg, #F0F9FF);
+  border-left: 3px solid var(--smat-blue-royal, #0D78C6);
+  border-radius: 2px;
+  font-size: 0.72rem;
+  color: var(--smat-navy-deep, #051B2E);
+  margin-bottom: 0.85rem;
+}
+.circuit-context-banner .context-tag {
+  font-weight: 800;
+  color: #075985;
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+.flot-chips-grid, .filt-chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+
+/* Contenedor Guiado para Pieza Desgastada (Decisión 6-C / GOLD-188) */
+.worn-piece-details {
+  background: #f8fafc;
+  border: 1px solid var(--smat-border-light, #cbd5e1);
+  border-radius: var(--smat-radius-sm);
+  padding: 0.5rem 0.75rem;
+  transition: border-color 0.15s;
+}
+.worn-piece-details[open] {
+  border-style: solid;
+  border-color: #94a3b8;
+  background: #ffffff;
+}
+.worn-piece-summary {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #334155;
+  user-select: none;
+}
+.worn-piece-summary:hover {
+  color: var(--smat-copper-accent, #c25e00);
+}
+.worn-arrow {
+  font-size: 0.7rem;
+  color: #334155;
+  transition: transform 0.2s;
+}
+.worn-piece-details[open] .worn-arrow {
+  transform: rotate(180deg);
+}
+.worn-piece-body {
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid #f1f5f9;
+}
+.worn-hint-text {
+  font-size: 0.7rem;
+  color: #334155;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+
+/* Micro-Anclaje Fiduciario TCO vs Paro de Planta (Decisión 5-C / GOLD-187) */
+.tco-downtime-anchor-card {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-left: 3px solid #ea580c;
+  border-radius: var(--smat-radius-sm, 4px);
+  padding: 0.6rem 0.8rem;
+  margin-top: 0.75rem;
+}
+.tco-anchor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+.anchor-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #9a3412;
+  letter-spacing: 0.05em;
+}
+.anchor-stat {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #9a3412;
+}
+.anchor-desc {
+  font-size: 0.7rem;
+  color: #7c2d12;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.live-pipe-meta-box {
+  margin-top: 0.4rem;
+  padding: 0.4rem 0.55rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--smat-radius-sm);
+}
+.live-recirc-warning-dossier {
+  margin-top: 0.35rem;
+  padding: 0.35rem 0.5rem;
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  border-radius: var(--smat-radius-sm);
+}
+.recirc-warn-tag {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #92400e;
+  font-family: var(--smat-font-mono);
+}
+.recirc-warn-text {
+  font-size: 0.68rem;
+  color: #92400e;
+  margin: 0.15rem 0 0;
+}
+
+/* TCO Alloy Wear Comparison (Decisión 3-A) */
+.tco-alloy-row {
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--smat-border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.tco-alloy-toggle-wrap {
+  display: flex;
+  gap: 0.4rem;
+}
+.tco-alloy-btn {
+  flex: 1;
+  padding: 0.35rem 0.5rem;
+  background: #f8fafc;
+  border: 1px solid var(--smat-border-light);
+  border-radius: var(--smat-radius-sm);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tco-alloy-btn:hover {
+  border-color: var(--smat-copper-accent);
+}
+.tco-alloy-btn.active {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+.tco-savings-note {
+  font-size: 0.72rem;
+  color: #065f46;
+  background: #ecfdf5;
+  border: 1px solid #10b981;
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--smat-radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Sticky Mini-Dossier Bar (Decisión 2-C) */
+.mini-dossier-bar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #090d16;
+  color: #ffffff;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid #334155;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
+  z-index: 990;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (max-width: 1024px) {
+  .mini-dossier-bar {
+    display: flex;
+  }
+}
+
+.assist-pills-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.5rem 0 0.75rem;
+  padding: 0.45rem 0.6rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+
+.assist-pills-label {
+  font-size: 0.66rem;
+  font-weight: 800;
+  color: #334155;
+  margin-right: 0.25rem;
+}
+
+.assist-pill-btn {
+  padding: 0.35rem 0.65rem;
+  min-height: 40px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: var(--smat-font-mono, monospace);
+  color: #1e293b;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.assist-pill-btn:hover {
+  border-color: var(--smat-copper-accent, #c25e00);
+  color: #9a4a00;
+}
+
+.assist-pill-btn.active {
+  background: var(--smat-navy-deep, #051B2E);
+  color: #ffffff;
+  border-color: var(--smat-blue-royal, #0D78C6);
+}
+
+.sim-quick-summary-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.55rem;
+  padding: 0.45rem 0.65rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+
+.quick-metric-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  padding: 0.15rem 0.45rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  color: #0f172a;
+}
+
+.quick-metric-chip small {
+  color: #334155;
+  font-weight: 700;
+}
+
+.quick-metric-highlight {
+  background: #fff7ed;
+  border-color: #fed7aa;
+  color: #9a3412;
+}
+
+.sim-rationale-banner {
+  margin-top: 0.6rem;
+  padding: 0.55rem 0.75rem;
+  background: #f8fafc;
+  border-left: 3px solid var(--smat-copper-accent, #c25e00);
+  border-radius: 4px;
+  font-size: 0.76rem;
+  color: #1e293b;
+  line-height: 1.4;
+}
+
+.mini-folio {
+  font-family: var(--smat-font-mono);
+  font-weight: 700;
+  color: #fb923c;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+
+.mini-alloy-badge {
+  font-size: 0.7rem;
+  background: #065f46;
+  color: #ecfdf5;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--smat-radius-sm);
+}
+
+.btn-open-drawer {
+  padding: 0.5rem 0.85rem;
+  background: #7c2d12;
+  color: #ffffff;
+  border: 1px solid #9a3412;
+  border-radius: var(--smat-radius-sm);
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* Bottom Sheet Modal (Decisión 2-C) */
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.drawer-sheet {
+  background: #ffffff;
+  width: 100%;
+  max-width: 680px;
+  max-height: 85vh;
+  border-radius: 16px 16px 0 0;
+  overflow-y: auto;
+  padding: 1.25rem;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.drawer-handle-bar {
+  display: flex;
+  justify-content: center;
+  padding: 0.25rem 0 0.75rem;
+}
+
+.drawer-handle-pill {
+  width: 48px;
+  height: 4px;
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+
+/* Offline Network Pill (Decisión 7-C) */
+.offline-network-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #090d16;
+  color: #fbbf24;
+  border: 1px solid var(--smat-solar-accent, #7c2d12);
+  border-radius: var(--smat-radius-sm, 4px);
+  padding: 0.4rem 0.75rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  font-family: var(--smat-font-mono, monospace);
+}
+
+.offline-dot {
+  width: 7px;
+  height: 7px;
+  background: #f59e0b;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+/* Botón Cotejo Dimensional (Decisión 6-C) */
+.btn-pill-cotejo {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.btn-pill-cotejo:hover {
+  background: #f1f5f9;
+  border-color: var(--smat-copper-accent, #c25e00);
+  color: #9a4a00;
+}
+
+/* Modal Ficha Cotejo Dimensional ANSI 1:1 */
+.cotejo-modal-card {
+  background: #ffffff;
+  border-radius: var(--smat-radius-md, 8px);
+  max-width: 640px;
+  width: 90%;
+  padding: 1.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.cotejo-modal-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--smat-text-primary);
+  margin: 0.35rem 0 0.2rem;
+}
+
+.iso-title-block {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--smat-radius-sm);
+  padding: 0.6rem 0.8rem;
+  margin: 1rem 0;
+  font-size: 0.75rem;
+  font-family: var(--smat-font-mono, monospace);
+}
+
+.iso-cell {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.cotejo-drawing-wrap {
+  border: 1px solid #cbd5e1;
+  border-radius: var(--smat-radius-sm);
+  background: #ffffff;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.cotejo-specs-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  margin-bottom: 1.25rem;
+}
+
+.cotejo-spec-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.cotejo-spec-row span {
+  color: #334155;
+}
+
+.cotejo-spec-row strong {
+  color: #0f172a;
+  text-align: right;
+}
+
+.cotejo-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1rem;
+}
+
+.mech-diagnostics-inline-box {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: var(--smat-bg-subtle, #f8fafc);
+  border: 1px solid var(--smat-border-medium, #cbd5e1);
+  border-radius: 6px;
+}
+
+.mech-diag-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+.mech-diag-mini-item {
+  background: var(--smat-bg-surface, #ffffff);
+  border: 1px solid var(--smat-border-light, #e2e8f0);
+  border-radius: 5px;
+  padding: 7px 9px;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.unit-pulp-profile-badge {
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: rgba(217, 119, 6, 0.08);
+  border-left: 3px solid var(--smat-solar-accent, #7c2d12);
+  border-radius: 4px;
+  font-size: 0.78rem;
+  color: var(--smat-text-primary, #1e293b);
+  font-weight: 600;
+}
+
+.role-criteria-inline-bar {
+  margin: 0.75rem 0 1rem;
+  padding: 0.65rem 0.85rem;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 3px solid var(--smat-solar-accent, #7c2d12);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: #1e293b;
+}
+
+.criteria-inline-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: baseline;
+}
+
+.criteria-inline-tag {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #9a3412;
+}
+
+.criteria-tag-risk {
+  color: #065f46;
+}
+
+.atomic-part-spec-card {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-left: 3px solid #082f49;
+  border-radius: 6px;
+  font-size: 0.78rem;
+}
+
+.atomic-part-spec-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.atomic-part-spec-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #082f49;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  padding: 0.12rem 0.45rem;
+  border-radius: 4px;
+}
+
+.atomic-part-niosh-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #78350f;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  padding: 0.12rem 0.45rem;
+  border-radius: 4px;
+}
+
+.atomic-part-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.4rem;
+  color: #1e293b;
+}
+
+.metrology-bridge-card {
+  margin: 0.75rem 0;
+  padding: 0.75rem 0.9rem;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-left: 3px solid #082f49;
+  border-radius: 6px;
+}
+
+.metrology-bridge-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.metrology-bridge-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #082f49;
+}
+
+.metrology-apply-btn {
+  background: #082f49;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.metrology-bridge-text {
+  margin: 0;
+  font-family: var(--smat-font-mono, monospace);
+  font-size: 0.76rem;
+  color: #082f49;
+  font-weight: 700;
+}
+
+.clearance-kinematics-inline-card {
+  margin-top: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+
+.clearance-kinematics-meta {
+  margin-top: 0.35rem;
+  font-size: 0.76rem;
+  color: #334155;
+  font-weight: 600;
+}
+
+.rubber-u2-lock-banner {
+  margin-top: 0.6rem;
+  padding: 0.65rem 0.8rem;
+  background: #fef2f2;
+  border: 1.5px solid #dc2626;
+  border-radius: 6px;
+  color: #7f1d1d;
+  font-size: 0.76rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.switch-cr27-btn {
+  align-self: flex-start;
+  background: #7f1d1d;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.wb-step1-more-drawer {
+  margin-top: 0.85rem;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 0.65rem 0.85rem;
+}
+
+.wb-step1-more-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 48px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #0f172a;
+  list-style: none;
+}
+
+.wb-step1-more-summary::-webkit-details-marker {
+  display: none;
+}
+
+.wb-step1-more-arrow {
+  font-family: var(--smat-font-mono);
+  color: #9a4a00;
+  font-weight: 800;
+}
+
+/* Contrato Ergonómico Fitts >= 48x48 px para todas las Gavetas <summary> y Controles del Workbench (D3-V45) */
+.wb-progressive-summary,
+.durand-summary,
+.custom-equip-summary,
+.smat-decoder-summary,
+.worn-piece-summary,
+.wb-step1-more-summary,
+summary.control-card-header,
+.circuit-pill,
+.circuit-tab-btn,
+.user-chip-reset,
+.erp-justification-summary-btn {
+  min-height: 48px !important;
+  min-width: 48px !important;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.hidden { display: none !important; }

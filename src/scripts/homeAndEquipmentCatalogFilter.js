@@ -1,11 +1,6 @@
 /**
- * Home 7-Avenue Catalog Drawer Filter, Drop-In Verifier & Process Equipment SSOT Search/Tray Controller
- * [ARB-SMAT-55] — SLICE-V47-01 (D2-V47, D3-V47)
- *
- * Architectural Cohesion: LCOM4 = 1, boundary cut d(C) = 0.
- * - Eliminates the duplicated 61-LOC inline <script> blocks in index.astro and en/index.astro (DEB-V47-03).
- * - Implements 7-Avenue quotient-set filtering (C_19 / ~avenue) with automatic empty-group hiding.
- * - Implements multi-field boolean lexical search and 1-click Quote Tray binding for /equipos/ and /en/process-equipment/.
+ * Faceted 7-Avenue Catalog Filter, Drop-In Verifier & Process Equipment Search/Tray Controller
+ * [ARB-SMAT-55] & V5.0 Faceted Catalog (D4-V50, SLICE-V50-14)
  */
 
 import { verifyDropInEquivalence } from './dropInEquivalenceGuard.js';
@@ -15,7 +10,7 @@ import { bindDropInEquivalenceVerifier } from './catalogDropInAndJrpProjector.js
 /**
  * Evaluates whether a canonical SKU card matches the active family filter chip.
  *
- * @param {string} skuId - Canonical SKU ID (e.g. 'SMAT-ULTRAMET-4X3')
+ * @param {string} skuId - Canonical SKU ID (e.g. 'SMAT-PUMP-IMP-AH')
  * @param {string} vertical - Primary vertical key ('bombeo', 'clasificacion', 'flotacion', 'filtracion', 'control')
  * @param {string} filterId - Active chip filter ID ('all', 'control', 'tamices', 'bombeo', 'sello_potencia', 'clasificacion', 'filtracion', 'flotacion')
  * @returns {boolean}
@@ -35,7 +30,7 @@ export function matchesFamilyFilter(skuId = '', vertical = '', filterId = 'all')
  * Evaluates multi-token boolean AND lexical matching against a pre-indexed SKU search blob.
  *
  * @param {string} searchBlob - Concatenated searchable attributes (ID, title, codes, series, avenue, vertical)
- * @param {string} rawQuery - Raw user query from #equipos-sku-search
+ * @param {string} rawQuery - Raw user query from #equipos-sku-search or #catalog-facet-search
  * @returns {boolean}
  */
 export function matchesEquipmentSearchQuery(searchBlob = '', rawQuery = '') {
@@ -50,25 +45,34 @@ export function matchesEquipmentSearchQuery(searchBlob = '', rawQuery = '') {
 }
 
 /**
- * Applies a family filter ID across all SKU cards and 7-Avenue groups inside a container.
- * Automatically hides any [data-home-avenue-group] whose child SKU cards are all hidden.
+ * Applies faceted family + avenue filters across all canonical SKU cards (19/19)
+ * and updates visible counts without cloning cards (`DEB-V50-02`).
  *
  * @param {ParentNode} root - Document or container root
- * @param {string} filterId - Active family filter chip ID
+ * @param {string} [filterId='all']
+ * @param {string} [avenueFilter='all']
+ * @param {string} [rawQuery='']
  * @returns {{ visibleCards: number, visibleGroups: number }}
  */
-export function applyHomeAvenueCatalogFilter(root, filterId = 'all') {
+export function applyHomeAvenueCatalogFilter(root, filterId = 'all', avenueFilter = 'all', rawQuery = '') {
   if (!root || typeof root.querySelectorAll !== 'function') {
     return { visibleCards: 0, visibleGroups: 0 };
   }
 
-  const cards = root.querySelectorAll('[data-sku-family]');
+  const cards = root.querySelectorAll('[data-sku-family], [data-catalog-sku-id]');
   let visibleCards = 0;
 
   cards.forEach((card) => {
-    const vertical = card.getAttribute('data-sku-family') || '';
-    const skuId = card.getAttribute('data-sku-id') || '';
-    const isMatch = matchesFamilyFilter(skuId, vertical, filterId);
+    const vertical = card.getAttribute('data-sku-family') || card.getAttribute('data-vertical') || '';
+    const skuId = card.getAttribute('data-catalog-sku-id') || card.getAttribute('data-sku-id') || '';
+    const facetAvenues = (card.getAttribute('data-facet-avenues') || card.getAttribute('data-primary-avenue') || '').split(',').map((s) => s.trim()).filter(Boolean);
+    const searchBlob = card.getAttribute('data-search-blob') || card.textContent || skuId;
+
+    const matchFamily = matchesFamilyFilter(skuId, vertical, filterId);
+    const matchAvenue = !avenueFilter || avenueFilter === 'all' || facetAvenues.includes(avenueFilter);
+    const matchQuery = matchesEquipmentSearchQuery(searchBlob, rawQuery);
+    const isMatch = matchFamily && matchAvenue && matchQuery;
+
     if (card.style) {
       card.style.display = isMatch ? '' : 'none';
     }
@@ -76,11 +80,16 @@ export function applyHomeAvenueCatalogFilter(root, filterId = 'all') {
     if (isMatch) visibleCards += 1;
   });
 
-  const avenueGroups = root.querySelectorAll('[data-home-avenue-group]');
+  const countOut = root.querySelector('#catalog-visible-sku-count');
+  if (countOut) {
+    countOut.textContent = String(visibleCards);
+  }
+
+  const avenueGroups = root.querySelectorAll('[data-home-avenue-group], [data-catalog-avenue-section]');
   let visibleGroups = 0;
 
   avenueGroups.forEach((group) => {
-    const groupCards = group.querySelectorAll('[data-sku-family]');
+    const groupCards = group.querySelectorAll('[data-sku-family], [data-catalog-sku-id]');
     let hasVisibleCard = false;
     groupCards.forEach((card) => {
       const hidden =
@@ -101,8 +110,7 @@ export function applyHomeAvenueCatalogFilter(root, filterId = 'all') {
 }
 
 /**
- * Binds the 8 family filter chips inside #home-quick-catalog-drawer and the OEM Drop-In Verifier
- * on / and /en/.
+ * Binds faceted avenue/family filters, search input, and Drop-In Verifier without legacy drawers (`DEB-V50-01`).
  *
  * @param {ParentNode} [root]
  * @param {'es'|'en'} [lang='es']
@@ -114,34 +122,51 @@ export function bindHomeCatalogDrawerAndDropIn(
   if (!root || typeof root.querySelectorAll !== 'function') return;
 
   const chips = root.querySelectorAll('[data-family-chip]');
-  const drawer =
-    typeof root.getElementById === 'function'
-      ? root.getElementById('home-quick-catalog-drawer')
-      : root.querySelector('#home-quick-catalog-drawer');
+  const avenueBtns = root.querySelectorAll('[data-facet-avenue-btn]');
+  const facetSearch = root.querySelector('#catalog-facet-search');
+  let activeFamily = 'all';
+  let activeAvenue = 'all';
+
+  const refresh = () => {
+    applyHomeAvenueCatalogFilter(root, activeFamily, activeAvenue, facetSearch?.value || '');
+  };
 
   chips.forEach((chip) => {
     if (chip.dataset && chip.dataset.homeChipBound === 'true') return;
     if (chip.dataset) chip.dataset.homeChipBound = 'true';
 
     chip.addEventListener('click', () => {
-      const filterId = chip.getAttribute('data-family-chip') || 'all';
+      activeFamily = chip.getAttribute('data-family-chip') || 'all';
       chips.forEach((c) => {
         const active = c === chip;
         c.setAttribute('aria-pressed', active ? 'true' : 'false');
-        if (c.classList) {
-          c.classList.toggle('part-chip--highlight', active);
-        }
+        if (c.classList) c.classList.toggle('part-chip--highlight', active);
       });
-
-      applyHomeAvenueCatalogFilter(root, filterId);
-
-      if (drawer && typeof drawer.open === 'boolean' && !drawer.open) {
-        drawer.open = true;
-      }
+      refresh();
     });
   });
 
-  // Delegate Drop-In Equivalence Verifier (ES & EN) to modular projector (DEB-V48-05)
+  avenueBtns.forEach((btn) => {
+    if (btn.dataset && btn.dataset.avenueBound === 'true') return;
+    if (btn.dataset) btn.dataset.avenueBound = 'true';
+
+    btn.addEventListener('click', () => {
+      activeAvenue = btn.getAttribute('data-facet-avenue-btn') || 'all';
+      avenueBtns.forEach((b) => {
+        const active = b === btn;
+        b.setAttribute('aria-pressed', active ? 'true' : 'false');
+        if (b.classList) b.classList.toggle('is-active', active);
+      });
+      refresh();
+    });
+  });
+
+  if (facetSearch && (!facetSearch.dataset || facetSearch.dataset.facetSearchBound !== 'true')) {
+    if (facetSearch.dataset) facetSearch.dataset.facetSearchBound = 'true';
+    facetSearch.addEventListener('input', refresh);
+  }
+
+  // Delegate Drop-In Equivalence Verifier (ES & EN) to modular projector
   bindDropInEquivalenceVerifier(root, lang);
 }
 
@@ -186,9 +211,12 @@ export function bindEquipmentCatalogSearchAndTray(
         const trayBtn = isEn
           ? `<button type="button" class="btn btn-primary" style="min-height:48px;padding:0.4rem 0.85rem;font-size:0.8rem;" data-add-tray-sku="${dropinRes.canonicalSkuId}" data-tray-part-code="${dropinRes.atomicCode || dropinRes.canonicalSkuId}" data-tray-title="${dropinRes.titleEn}" data-tray-material="${dropinRes.alloyCode}" data-tray-circuit="equipos">+ Add Matched Part to Tray</button>`
           : `<button type="button" class="btn btn-primary" style="min-height:48px;padding:0.4rem 0.85rem;font-size:0.8rem;" data-add-tray-sku="${dropinRes.canonicalSkuId}" data-tray-part-code="${dropinRes.atomicCode || dropinRes.canonicalSkuId}" data-tray-title="${dropinRes.titleEs}" data-tray-material="${dropinRes.alloyCode}" data-tray-circuit="equipos">+ Sumar Match a Bandeja</button>`;
+        const satNote = dropinRes.satTuple
+          ? ` | SAT ${dropinRes.satTuple.clave_prod_serv || '40151700'}/${dropinRes.satTuple.clave_unidad || 'H87'}`
+          : '';
         dropinBanner.innerHTML = isEn
-          ? `✅ <strong>Dimensional Drop-In Equivalent Found:</strong> <code>${dropinRes.canonicalSkuId}</code> (${dropinRes.titleEn}) · Alloy <strong>${dropinRes.alloyCode}</strong> · ${dropinRes.geometricTripletMm.label_en} · <a href="/en/products/${dropinRes.slugEn}/" style="color:#0c4a6e;font-weight:800;text-decoration:underline;">Open Sheet →</a> ${trayBtn}`
-          : `✅ <strong>Equivalencia Dimensional Drop-In Detectada:</strong> <code>${dropinRes.canonicalSkuId}</code> (${dropinRes.titleEs}) · Aleación <strong>${dropinRes.alloyCode}</strong> · ${dropinRes.geometricTripletMm.label_es} · <a href="/productos/${dropinRes.slugEs}/" style="color:#0c4a6e;font-weight:800;text-decoration:underline;">Abrir Ficha →</a> ${trayBtn}`;
+          ? `<span class="smat-badge-solar">MATCH</span> <strong>Dimensional Drop-In Equivalent Found:</strong> <code>${dropinRes.canonicalSkuId}</code> (${dropinRes.titleEn}) · Alloy <strong>${dropinRes.alloyCode}</strong> · ${dropinRes.geometricTripletMm.label_en}${satNote} · <a href="/en/products/${dropinRes.slugEn}/" class="smat-dropin-link">Open Sheet →</a> ${trayBtn}`
+          : `<span class="smat-badge-solar">MATCH</span> <strong>Equivalencia Dimensional Drop-In Detectada:</strong> <code>${dropinRes.canonicalSkuId}</code> (${dropinRes.titleEs}) · Aleación <strong>${dropinRes.alloyCode}</strong> · ${dropinRes.geometricTripletMm.label_es}${satNote} · <a href="/productos/${dropinRes.slugEs}/" class="smat-dropin-link">Abrir Ficha →</a> ${trayBtn}`;
         bindAtomicPartTrayButtons(dropinBanner);
       } else if (dropinBanner.style) {
         dropinBanner.style.display = 'none';
@@ -232,8 +260,8 @@ export function bindEquipmentCatalogSearchAndTray(
     if (countEl) {
       countEl.textContent =
         lang === 'en'
-          ? `Showing ${visiblePills} of ${totalPills} canonical SSOT SKUs across 7 Avenues`
-          : `Mostrando ${visiblePills} de ${totalPills} SKUs canónicos SSOT en las 7 Avenidas`;
+          ? `Showing ${visiblePills} of ${totalPills} catalog SKUs across 7 Avenues`
+          : `Mostrando ${visiblePills} de ${totalPills} equipos y refacciones en 7 Avenidas`;
     }
 
     return { visiblePills, totalPills };

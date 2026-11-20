@@ -242,7 +242,7 @@ export function validatePlantLeadInput(params = {}) {
     activeTrustBoundaryReasonEs = claroMm < 0.35
       ? `Claro axial δ=${claroMm.toFixed(2)} mm inferior al umbral de dilatación térmica (0.35 mm): riesgo inminente de amarre frontal contra placa de succión.`
       : `Velocidad periférica u₂=${tipSpeedMs.toFixed(1)} m/s excede el límite endotérmico seguro del revestimiento seleccionado.`;
-  } else if (!hasPartCodeOrDims && Boolean(params.strictBlindCheck)) {
+  } else if (!hasPartCodeOrDims && Boolean(params.strictBlindCheck ?? params.strict_blind_check)) {
     activeTrustBoundaryId = 'bound-blind-quote';
     activeTrustBoundaryTitleEs = 'Límite Técnico (bound-blind-quote): Cotización a Ciegas Sin Datos Mínimos';
     activeTrustBoundaryReasonEs = 'Para garantizar intercambiabilidad 1:1 sin retrabajos en paro de planta, indique serie de bomba, código de pieza o medidas básicas con flexómetro.';
@@ -264,7 +264,8 @@ export function validatePlantLeadInput(params = {}) {
     badgeLabelEn = 'VERIFIED MINING PLANT • PLAUSIBLE PARAMETERS (PRIORITY SLA)';
     slaCommitmentEs = 'Atención Prioritaria Paro de Planta • Garantía de Ajuste Dimensional Drop-In 1:1 y Trazabilidad de Lote en Durango';
   }
-  return { plausible, classification, badgeLabelEs, badgeLabelEn, slaCommitmentEs, activeTrustBoundaryId, activeTrustBoundaryTitleEs, activeTrustBoundaryReasonEs, warnings };
+  const strictBlindCheck = Boolean(params.strictBlindCheck ?? params.strict_blind_check);
+  return { plausible, classification, badgeLabelEs, badgeLabelEn, slaCommitmentEs, activeTrustBoundaryId, activeTrustBoundaryTitleEs, activeTrustBoundaryReasonEs, warnings, tempC, strictBlindCheck };
 }
 export function calculateThreeCupMarcyCycloneBalance({ feedSg = 1.35, underflowSg = 1.82, overflowSg = 1.15, solidsSg = 2.7, apexDiameterMm = 50, vortexDiameterMm = 100, feedPressureKpa = 95, cycloneDiameterMm = 380 } = {}) {
   const safeSolidsSg = Math.max(1.8, Math.min(5.5, Number(solidsSg) || 2.7));

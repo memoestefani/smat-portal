@@ -434,4 +434,222 @@ details > summary {
   display: none !important;
 }
 
+/* =========================================================================
+   SMAT V5.0 — Clases Utilitarias Compartidas de Islas Canónicas (DEB-V50-08)
+   ========================================================================= */
+.smat-island-card {
+  background: var(--smat-surface-card, #ffffff);
+  border: 1.5px solid var(--smat-solar-border, #cbd5e1);
+  border-radius: 12px;
+  padding: 1.15rem;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+}
+.smat-panel-soft {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+}
+.smat-meter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+.smat-warn-solar {
+  color: var(--smat-solar-accent, #7c2d12);
+  font-weight: 700;
+}
+.smat-dropin-link {
+  color: var(--smat-solar-accent, #7c2d12);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.smat-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+.smat-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0.9rem;
+}
+.smat-badge-solar {
+  display: inline-block;
+  padding: 0.22rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+}
+.smat-badge-emerald {
+  display: inline-block;
+  padding: 0.22rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--smat-solar-emerald-bg, #ecfdf5);
+  color: var(--smat-solar-emerald-ink, #064e3b);
+  border: 1px solid var(--smat-solar-emerald-border, #059669);
+}
+.smat-kicker {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--smat-solar-accent, #7c2d12);
+  margin-bottom: 0.25rem;
+}
+.smat-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+.smat-flex-between {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+.smat-mono-val {
+  font-family: var(--smat-font-mono, monospace);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: #0f172a;
+}
+.smat-search-input {
+  flex: 1 1 260px;
+  min-height: 48px;
+  padding: 0.55rem 0.85rem;
+  border: 1.5px solid #64748b;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #0f172a;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+.smat-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 48px;
+  padding: 0.6rem 1.15rem;
+  border-radius: 8px;
+  background: #0c4a6e;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.86rem;
+  text-decoration: none;
+  border: 1.5px solid #0c4a6e;
+  cursor: pointer;
+}
+.smat-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 48px;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 0.84rem;
+  text-decoration: none;
+  border: 1.5px solid #94a3b8;
+  cursor: pointer;
+}
+.smat-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+.smat-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  border: 1px solid #94a3b8;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.smat-chip.is-active,
+.smat-chip.part-chip--highlight {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+}
+.smat-result-box {
+  margin-top: 0.7rem;
+  padding: 0.75rem 0.95rem;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  font-size: 0.84rem;
+  color: #0f172a;
+}
+.smat-hidden-init {
+  display: none;
+}
+.smat-mb-md {
+  margin-bottom: 1.25rem;
+}
+.smat-mt-sm {
+  margin-top: 0.65rem;
+}
+.smat-inline-svg-icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+.smat-field-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.25rem;
+}
+.smat-input-control {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.5rem 0.7rem;
+  border: 1.5px solid #64748b;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: #0f172a;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+.smat-readout-box {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-left: 4px solid #0c4a6e;
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+}
+.smat-readout-kpi {
+  font-family: var(--smat-font-mono, monospace);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
 

@@ -360,6 +360,7 @@ export function evaluateHydrocycloneCutPoint(params = {}) {
   const screen = calculateUrethaneScreenPartitionWeibull({
     apertureMm: params.apertureMm ?? 0.5,
     reliefAngleDeg: params.reliefAngleDeg ?? 4.0,
+    vibrationG: params.vibrationG ?? 4.5,
     sharpnessAlpha: params.sharpnessAlpha ?? 4.4,
     feedParticleUm: d50cVal * 2.2
   });
@@ -400,28 +401,52 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
     setInputVal('#wb-flot-d32', savedCtx.flotation.d32Mm);
     setInputVal('#wb-flot-rpm', savedCtx.flotation.rotorRpm);
     setInputVal('#wb-flot-rotor-dia', savedCtx.flotation.rotorDiaM);
+    setInputVal('#wb-flot-dia', savedCtx.flotation.rotorDiaM);
+    setInputVal('#wb-flot-p', savedCtx.flotation.floatabilityP);
+    setInputVal('#wb-flot-rf', savedCtx.flotation.frothRecoveryRf);
   }
   if (savedCtx.filtration) {
+    setInputVal('#wb-filt-width', savedCtx.filtration.plateWidthMm);
+    setInputVal('#wb-filt-pressure', savedCtx.filtration.feedPressureBar);
     setInputVal('#wb-filt-pressure-bar', savedCtx.filtration.feedPressureBar);
+    setInputVal('#wb-filt-clogged', savedCtx.filtration.cloggedPortsCount);
     setInputVal('#wb-filt-clogged-ports', savedCtx.filtration.cloggedPortsCount);
+    setInputVal('#wb-filt-thickness', savedCtx.filtration.plateThicknessMm);
     setInputVal('#wb-filt-thickness-mm', savedCtx.filtration.plateThicknessMm);
+    setInputVal('#wb-filt-moisture', savedCtx.filtration.cakeMoistureTargetPct);
     setInputVal('#wb-filt-moisture-pct', savedCtx.filtration.cakeMoistureTargetPct);
   }
   if (savedCtx.classification) {
     setInputVal('#wb-cyc-sg-feed', savedCtx.classification.feedSg);
     setInputVal('#wb-cyc-sg-uf', savedCtx.classification.underflowSg);
     setInputVal('#wb-cyc-sg-of', savedCtx.classification.overflowSg);
+    setInputVal('#wb-cyc-solids-sg', savedCtx.classification.solidsSg);
+    setInputVal('#wb-cyc-apex-mm', savedCtx.classification.apexDiameterMm);
+    setInputVal('#wb-cyc-vortex-mm', savedCtx.classification.vortexDiameterMm);
     setInputVal('#wb-cyc-pressure-kpa', savedCtx.classification.feedPressureKpa);
     setInputVal('#wb-scr-aperture-mm', savedCtx.classification.apertureMm);
+    setInputVal('#wb-scr-relief-deg', savedCtx.classification.reliefAngleDeg);
+    setInputVal('#wb-scr-vibration-g', savedCtx.classification.vibrationG);
+    setInputVal('#wb-scr-alpha', savedCtx.classification.sharpnessAlpha);
   }
 
+  const numInput = (sel, fallback) => {
+    const v = wizardRoot.querySelector(sel)?.value;
+    const n = Number(v);
+    return (v !== undefined && v !== '' && Number.isFinite(n)) ? n : fallback;
+  };
+
   const recomputeAllCircuitPanels = () => {
-    // A. Flotación Gorain + Zwietering
+    // A. Flotación Gorain + Zwietering (incluye P y Rf Sobol)
     const flotRes = evaluateFlotationCellHydrodynamics({
-      jgCmS: Number(wizardRoot.querySelector('#wb-flot-jg')?.value ?? 1.5),
-      d32Mm: Number(wizardRoot.querySelector('#wb-flot-d32')?.value ?? 1.6),
-      rotorRpm: Number(wizardRoot.querySelector('#wb-flot-rpm')?.value ?? 215),
-      rotorDiaM: Number(wizardRoot.querySelector('#wb-flot-rotor-dia')?.value ?? 0.61)
+      jgCmS: numInput('#wb-flot-jg', 1.5),
+      d32Mm: numInput('#wb-flot-d32', 1.6),
+      rotorRpm: numInput('#wb-flot-rpm', 215),
+      rotorDiaM: numInput('#wb-flot-dia, #wb-flot-rotor-dia', 0.61),
+      floatabilityP: numInput('#wb-flot-p', 0.0045),
+      frothRecoveryRf: numInput('#wb-flot-rf', 0.78),
+      d80Microns: numInput('#wb-flot-d80', 150),
+      solidsCwPct: numInput('#wb-flot-cw', 35)
     });
     const elFlotSb = wizardRoot.querySelector('#wb-flot-res-sb');
     const elFlotK = wizardRoot.querySelector('#wb-flot-res-k');
@@ -433,13 +458,13 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
     if (elFlotVtip) elFlotVtip.textContent = `${flotRes.tipSpeedMS} m/s`;
 
     // B. Filtración Timoshenko + Darcy-Ruth
-    const capSelectVal = Number(wizardRoot.querySelector('#wb-filt-capacity')?.value ?? 1500);
+    const capSelectVal = numInput('#wb-filt-width, #wb-filt-capacity', 1500);
     const filtRes = calculateFilterPressCycleCapacity({
       plateWidthMm: capSelectVal || 1500,
-      feedPressureBar: Number(wizardRoot.querySelector('#wb-filt-pressure-bar')?.value ?? 12),
-      cloggedPortsCount: Number(wizardRoot.querySelector('#wb-filt-clogged-ports')?.value ?? 0),
-      plateThicknessMm: Number(wizardRoot.querySelector('#wb-filt-thickness-mm')?.value ?? 65),
-      cakeMoistureTargetPct: Number(wizardRoot.querySelector('#wb-filt-moisture-pct')?.value ?? 14)
+      feedPressureBar: numInput('#wb-filt-pressure, #wb-filt-pressure-bar', 12),
+      cloggedPortsCount: numInput('#wb-filt-clogged, #wb-filt-clogged-ports', 0),
+      plateThicknessMm: numInput('#wb-filt-thickness, #wb-filt-thickness-mm', 65),
+      cakeMoistureTargetPct: numInput('#wb-filt-moisture, #wb-filt-moisture-pct', 14)
     });
     const elFiltStress = wizardRoot.querySelector('#wb-filt-res-stress');
     const elFiltFs = wizardRoot.querySelector('#wb-filt-res-fs');
@@ -450,42 +475,44 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
     if (elFiltCycles) elFiltCycles.textContent = `${filtRes.cyclesPerDay} ciclos/d (${filtRes.dryTonnesPerDay} t/d)`;
     if (elFiltStatus) {
       elFiltStatus.textContent = filtRes.isPlateCrackingRisk
-        ? isEs
-          ? 'Alerta Puertos Obstruidos'
-          : 'Clogged Ports Alert'
+        ? (isEs ? 'Alerta Puertos Obstruidos' : 'Clogged Ports Alert')
         : !filtRes.nom141Compliant
-          ? isEs
-            ? `Alerta NOM-141 (${filtRes.cakeMoistureTargetPct}% > 16%)`
-            : `NOM-141 Alert (${filtRes.cakeMoistureTargetPct}% > 16%)`
-          : isEs
-            ? 'NOM-141 Segura'
-            : 'NOM-141 Safe';
+          ? (isEs ? `Alerta NOM-141 (${filtRes.cakeMoistureTargetPct}% > 16%)` : `NOM-141 Alert (${filtRes.cakeMoistureTargetPct}% > 16%)`)
+          : (isEs ? 'NOM-141 Segura' : 'NOM-141 Safe');
     }
 
-    // Proyección de campos secundarios de Flotación y Filtración (V4.1 LCOM4=1)
+    // Proyección completa de Flotación y Filtración
     projectFlotationAndFiltrationTelemetry(wizardRoot, { flotRes, filtRes, isEs });
 
-    // C. Clasificación 3 Vasos Marcy + Plitt + Weibull
+    // C. Clasificación 3 Vasos Marcy + Plitt + Weibull (10 parámetros completos + cvUnderflow)
     const cycSerieStr = String(wizardRoot.querySelector('#wb-cyc-series')?.value || '380');
     const cycRes = evaluateHydrocycloneCutPoint({
-      feedSg: Number(wizardRoot.querySelector('#wb-cyc-sg-feed')?.value ?? 1.35),
-      underflowSg: Number(wizardRoot.querySelector('#wb-cyc-sg-uf')?.value ?? 1.82),
-      overflowSg: Number(wizardRoot.querySelector('#wb-cyc-sg-of')?.value ?? 1.15),
-      feedPressureKpa: Number(wizardRoot.querySelector('#wb-cyc-pressure-kpa')?.value ?? 95),
+      feedSg: numInput('#wb-cyc-sg-feed', 1.35),
+      underflowSg: numInput('#wb-cyc-sg-uf', 1.82),
+      overflowSg: numInput('#wb-cyc-sg-of', 1.15),
+      solidsSg: numInput('#wb-cyc-solids-sg', 2.7),
+      apexDiameterMm: numInput('#wb-cyc-apex-mm', 50),
+      vortexDiameterMm: numInput('#wb-cyc-vortex-mm', 100),
+      feedPressureKpa: numInput('#wb-cyc-pressure-kpa', 95),
       cycloneDiameterMm: Number(cycSerieStr) || 380,
-      apertureMm: Number(wizardRoot.querySelector('#wb-scr-aperture-mm')?.value ?? 0.5)
+      apertureMm: numInput('#wb-scr-aperture-mm', 0.5),
+      reliefAngleDeg: numInput('#wb-scr-relief-deg', 4.0),
+      vibrationG: numInput('#wb-scr-vibration-g', 4.5),
+      sharpnessAlpha: numInput('#wb-scr-alpha', 4.4)
     });
     const elCycCc = wizardRoot.querySelector('#wb-cyc-res-cc');
     const elCycD50 = wizardRoot.querySelector('#wb-cyc-res-d50');
     const elCycRoping = wizardRoot.querySelector('#wb-cyc-res-roping');
     const elScrWeibull = wizardRoot.querySelector('#wb-scr-res-weibull');
+    const elCycCvu = wizardRoot.querySelector('#wb-cyc-res-cvu');
     if (elCycCc) elCycCc.textContent = `${cycRes.circulatingLoadPct}% (Rm ${cycRes.massRecoveryUnderflowPct}%)`;
     if (elCycD50) elCycD50.textContent = `${cycRes.cutPointD50cUm} µm`;
+    if (elCycCvu && cycRes.cvUnderflow !== undefined) elCycCvu.textContent = `${Number(cycRes.cvUnderflow).toFixed(2)}`;
     if (elCycRoping) elCycRoping.textContent = isEs ? cycRes.ropingStatusEs : cycRes.ropingStatusEn;
     if (elScrWeibull) elScrWeibull.textContent = `α = ${cycRes.sharpnessAlpha} (${cycRes.screenWeibull.recommendedSkuId})`;
 
-    // Proyección de Cw/Cv de los 3 Vasos Marcy, du/do y aceleración G de zaranda (V4.1)
-    projectClassificationAndScreenTelemetry(wizardRoot, { cycRes, isEs });
+    // Proyección corregida (firma directa cycRes + isEs)
+    projectClassificationAndScreenTelemetry(wizardRoot, cycRes, isEs);
 
     // D. Tren Motriz y Bastidor Contextual + Rama D Híbrida + Secuencia de Ensamble
     const pipeSeries = String(wizardRoot.querySelector('#wb-pipe-size')?.value || '6x4');
@@ -543,19 +570,21 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
 
     projectPumpDriveAndHybridTelemetry(wizardRoot, {
       driveEval,
-      frameSelect,
+      frameEval: frameSelect,
       hybridEval,
-      clearanceEval,
-      assemblySeq,
+      interferenceEval: clearanceEval,
+      seqEval: assemblySeq,
       isEs
     });
 
     const updatedSnapshot = saveEngineeringContextSnapshot({
       flotation: {
-        jgCmS: flotRes.superficialGasVelocityCmS || Number(wizardRoot.querySelector('#wb-flot-jg')?.value ?? 1.5),
-        d32Mm: flotRes.sauterBubbleDiaMm || Number(wizardRoot.querySelector('#wb-flot-d32')?.value ?? 1.6),
+        jgCmS: flotRes.superficialGasVelocityCmS || numInput('#wb-flot-jg', 1.5),
+        d32Mm: flotRes.sauterBubbleDiaMm || numInput('#wb-flot-d32', 1.6),
         rotorRpm: flotRes.rotorRpm,
         rotorDiaM: flotRes.rotorDiaM,
+        floatabilityP: flotRes.floatabilityP,
+        frothRecoveryRf: flotRes.frothRecoveryRf,
         sbInverseSeconds: flotRes.sbInverseSeconds,
         tipSpeedMS: flotRes.tipSpeedMS,
         rateConstantMin: flotRes.rateConstantMin,
@@ -591,7 +620,14 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
         feedSg: cycRes.feedSg,
         underflowSg: cycRes.underflowSg,
         overflowSg: cycRes.overflowSg,
+        solidsSg: cycRes.solidsSg ?? numInput('#wb-cyc-solids-sg', 2.7),
+        apexDiameterMm: cycRes.apexDiameterMm ?? numInput('#wb-cyc-apex-mm', 50),
+        vortexDiameterMm: cycRes.vortexDiameterMm ?? numInput('#wb-cyc-vortex-mm', 100),
+        cvUnderflow: cycRes.cvUnderflow,
         feedPressureKpa: cycRes.feedPressureKpa,
+        apertureMm: numInput('#wb-scr-aperture-mm', 0.5),
+        reliefAngleDeg: cycRes.screenWeibull?.reliefAngleDeg ?? numInput('#wb-scr-relief-deg', 4.0),
+        vibrationG: cycRes.screenWeibull?.vibrationG ?? numInput('#wb-scr-vibration-g', 4.5),
         circulatingLoadPct: cycRes.circulatingLoadPct,
         cwFeedPct: cycRes.cwFeedPct,
         cwUnderflowPct: cycRes.cwUnderflowPct,
@@ -639,7 +675,9 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
     return updatedSnapshot;
   };
 
-  const circuitInputs = wizardRoot.querySelectorAll('[data-wb-circuit-calc-input]');
+  const circuitInputs = wizardRoot.querySelectorAll(
+    '[data-wb-circuit-calc-input], #wb-flot-p, #wb-flot-rf, #wb-cyc-solids-sg, #wb-cyc-apex-mm, #wb-cyc-vortex-mm, #wb-scr-relief-deg, #wb-scr-vibration-g, #wb-scr-alpha, #wb-assembly-sequence'
+  );
   circuitInputs.forEach((inp) => {
     if (inp.getAttribute('data-calc-bound') === '1') return;
     inp.setAttribute('data-calc-bound', '1');

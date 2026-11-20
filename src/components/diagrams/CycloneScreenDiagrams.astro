@@ -1,0 +1,114 @@
+---
+interface Props {
+  diagram: string;
+  isEs: boolean;
+  xrayWearStyle: string;
+  uid: string;
+}
+const { diagram, isEs, xrayWearStyle, uid } = Astro.props;
+---
+
+    {diagram === 'cyclone-apex-vortex' && (
+      <svg viewBox="0 0 680 250" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="250" fill="#f8fafc" />
+        <!-- Vortex Finder Superior -->
+        <rect x="130" y="18" width="60" height="58" fill="#fef3c7" stroke="#92400e" stroke-width="2.2" />
+        <!-- Cuerpo Cilíndrico y Cono -->
+        <polygon points="80,40 240,40 240,100 184,210 136,210 80,100" fill="none" stroke="#0284c7" stroke-width="2.4" />
+        <!-- Boquilla Apex Inferior (Zona Roja de Roping/Abrasión) -->
+        <polygon points="136,180 184,180 174,232 146,232" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="286" y="48" fill="#dc2626">{isEs ? '1. BOQUILLA APEX (Du • CERÁMICA SiC / CR27)' : '1. APEX SPIGOT (Du • SiC CERAMIC / CR27)'}</text>
+          <text x="286" y="68" font-size="9" fill="#475569">{isEs ? '• Controla C_v,u: previene acordonamiento (Roping >= 56%)' : '• Controls C_v,u: prevents roping discharge (>= 56%)'}</text>
+          <text x="286" y="106" fill="#7c2d12">{isEs ? '2. BUSCADOR DE VÓRTICE (VORTEX FINDER Do)' : '2. VORTEX FINDER OVERFLOW SLEEVE (Do)'}</text>
+          <text x="286" y="126" font-size="9" fill="#475569">{isEs ? '• Define corte Plitt d50c y evita cortocircuito de gruesos' : '• Sets Plitt d50c cut size and stops coarse short-circuit'}</text>
+          <text x="286" y="164" fill="#0284c7">{isEs ? '3. CONO SECCIONAL REVESTIDO (HULE R55 / PU / SiC)' : '3. LINED CONE SECTIONS (R55 RUBBER / PU / SiC)'}</text>
+          <text x="286" y="184" font-size="9" fill="#475569">{isEs ? '• Balance 3 Vasos Marcy sin báscula ni flujómetro' : '• 3-Cup Marcy mass balance with zero scale or flowmeter'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'pinch-knife-valve' && (
+      <svg viewBox="0 0 680 240" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="240" fill="#f8fafc" />
+        <rect x="56" y="64" width="190" height="112" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.2" />
+        <path d="M 64 88 Q 151 118 238 88 L 238 152 Q 151 122 64 152 Z" fill="#fee2e2" stroke="#dc2626" stroke-width="2.2" />
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="280" y="66" fill="#dc2626">{isEs ? '1. MANGA ELASTOMÉRICA / COMPUERTA INOX (PASO 100%)' : '1. ELASTOMER SLEEVE / SS316 KNIFE GATE (FULL BORE)'}</text>
+          <text x="280" y="86" font-size="9" fill="#475569">{isEs ? '• Cierre hermético sobre sólidos gruesos sin incrustación' : '• Drop-tight shutoff over coarse solids without scaling'}</text>
+          <text x="280" y="126" fill="#0284c7">{isEs ? '2. BRIDAS ANSI B16.5 CLASE 150 CARA A CARA ESTÁNDAR' : '2. ANSI B16.5 CLASS 150 STANDARD FACE-TO-FACE FLANGES'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'cyclone_d6_d20' && (
+      <svg viewBox="0 0 680 250" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="250" fill="#f8fafc" />
+        <!-- 5 Zonas Hidrociclón D6-D20 -->
+        <rect x="78" y="28" width="164" height="36" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.2" />
+        <rect x="130" y="14" width="60" height="62" fill="#fef3c7" stroke="#92400e" stroke-width="2.2" />
+        <rect x="86" y="64" width="148" height="44" fill="#f1f5f9" stroke="#0284c7" stroke-width="2" />
+        <polygon points="86,108 234,108 206,158 114,158" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" />
+        <polygon points="114,158 206,158 182,198 138,198" fill="#fef3c7" stroke="#92400e" stroke-width="2.2" />
+        <polygon points="138,198 182,198 172,236 148,236" fill="#f1f5f9" stroke="#0f172a" stroke-width="2.2" />
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <polygon points="138,198 182,198 172,236 148,236" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
+        </g>
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="272" y="46" fill="#dc2626">{isEs ? '1. ZONA 5 • BOQUILLA ÁPEX SiC (C_v,u <= 0.52 • ANTI-ROPING)' : '1. ZONE 5 • SiC APEX SPIGOT (C_v,u <= 0.52 • ANTI-ROPING)'}</text>
+          <text x="272" y="66" font-size="9" fill="#475569">{isEs ? '• Carburo de Silicio Sinterizado (2200 HV): mantiene relación du/do' : '• Sintered Silicon Carbide (2200 HV): locks du/do ratio'}</text>
+          <text x="272" y="104" fill="#7c2d12">{isEs ? '2. ZONAS 1 Y 4 • VORTEX FINDER Do Y CONO INFERIOR PU' : '2. ZONES 1 & 4 • VORTEX FINDER Do & LOWER PU CONE'}</text>
+          <text x="272" y="124" font-size="9" fill="#475569">{isEs ? '• Escalón inter-cono delta_r <= 0.76 mm (1 tarjeta ISO/IEC 7810)' : '• Inter-cone step delta_r <= 0.76 mm (1 ISO/IEC 7810 card)'}</text>
+          <text x="272" y="162" fill="#0284c7">{isEs ? '3. ZONAS 2 Y 3 • CABEZAL INVOLUTA Y CILINDRO (D6 / D10 / D15 / D20)' : '3. ZONES 2 & 3 • INVOLUTE FEED HEAD & CYLINDER (D6–D20)'}</text>
+          <text x="272" y="182" font-size="9" fill="#475569">{isEs ? '• Corte Plitt d50c calibrado con Báscula de 3 Vasos Marcy' : '• Plitt d50c cut calibrated via 3-Cup Marcy mass balance'}</text>
+        </g>
+      </svg>
+    )}
+
+    {diagram === 'coupled_pump_cyclone' && (
+      <svg viewBox="0 0 680 250" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="250" fill="#f8fafc" />
+        <!-- Bomba de Lodos (Izquierda) -->
+        <rect x="38" y="118" width="96" height="86" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
+        <circle cx="86" cy="161" r="24" fill="#fef3c7" stroke="#92400e" stroke-width="2.2" />
+        <!-- Tubería de alimentación acoplada Delta P -->
+        <path d="M 114 118 L 114 48 L 212 48" fill="none" stroke="#0284c7" stroke-width="5" />
+        <!-- Hidrociclón (Centro) -->
+        <polygon points="186,36 254,36 254,88 232,192 208,192 186,88" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.2" />
+        <polygon points="208,192 232,192 226,228 214,228" fill="#f1f5f9" stroke="#0f172a" stroke-width="2.2" />
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <polygon points="208,192 232,192 226,228 214,228" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
+        </g>
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="284" y="48" fill="#dc2626">{isEs ? '1. PAR ACOPLADO BOMBA + CICLÓN (4x3+D10 | 6x4+D15 | 8x6+D20)' : '1. MARRIED PUMP + CYCLONE PAIR (4x3+D10 | 6x4+D15 | 8x6+D20)'}</text>
+          <text x="284" y="68" font-size="9" fill="#475569">{isEs ? '• Restablece Delta P (8–15 psi) y corte d50c en 1 sola parada' : '• Restores Delta P (8–15 psi) and d50c cut in a single shutdown'}</text>
+          <text x="284" y="106" fill="#7c2d12">{isEs ? '2. LOTE HÚMEDO 5:5:4 + CLARO AXIAL 0.76 MM (1 TARJETA ISO)' : '2. 5:5:4 WET-END LOT + 0.76 MM AXIAL GAP (1 ISO CARD)'}</text>
+          <text x="284" y="126" font-size="9" fill="#475569">{isEs ? '• Impulsor E4147 + Voluta D3110 + Cuello E4083 + Ápex SiC' : '• E4147 Impeller + D3110 Volute + E4083 Throatbush + SiC Apex'}</text>
+          <text x="284" y="164" fill="#0284c7">{isEs ? '3. CERO CORTOCIRCUITO HIDRÁULICO EN MOLIENDA-CLASIFICACIÓN' : '3. ZERO HYDRAULIC SHORT-CIRCUIT IN GRINDING-CLASSIFICATION'}</text>
+        </g>
+      </svg>
+    )}
+
+    {(diagram === 'urethane_screen_th48' || diagram === 'urethane_screen_panel_305') && (
+      <svg viewBox="0 0 680 240" class="cad-svg" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="240" fill="#f8fafc" />
+        <!-- Panel modular y corte de ranura cónica -->
+        <rect x="44" y="34" width="196" height="172" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.2" />
+        <!-- Ranuras cónicas de alivio 3-5 grados -->
+        <polygon points="72,62 96,62 106,174 62,174" fill="#f1f5f9" stroke="#0f172a" stroke-width="2" />
+        <polygon points="130,62 154,62 164,174 120,174" fill="#f1f5f9" stroke="#0f172a" stroke-width="2" />
+        <g data-layer="xray-wear" style={xrayWearStyle}>
+          <polygon points="72,62 96,62 106,174 62,174" fill="#fee2e2" stroke="#dc2626" stroke-width="2.2" />
+          <polygon points="130,62 154,62 164,174 120,174" fill="#fee2e2" stroke="#dc2626" stroke-width="2.2" />
+        </g>
+        <rect x="184" y="62" width="38" height="112" rx="4" fill="#fef3c7" stroke="#92400e" stroke-width="2" />
+        <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
+          <text x="268" y="54" fill="#dc2626">{isEs ? '1. RANURA CON ALIVIO CÓNICO 3°–5° (ANTI-CEGAMIENTO NEAR-SIZE)' : '1. 3°–5° TAPERED RELIEF SLOT (ANTI-BLINDING NEAR-SIZE)'}</text>
+          <text x="268" y="74" font-size="9" fill="#475569">{isEs ? '• Nitidez de partición Weibull alpha >= 4.2 en poliuretano 85 Shore A' : '• Weibull partition sharpness alpha >= 4.2 in 85 Shore A urethane'}</text>
+          <text x="268" y="114" fill="#7c2d12">{isEs ? '2. FIJACIÓN PIN Y CAMISA (1\'X1\' • 305X305 MM) Y TENSADO TH48-30' : '2. PIN & SLEEVE FASTENING (1\'X1\' • 305X305 MM) & TH48-30 DECK'}</text>
+          <text x="268" y="134" font-size="9" fill="#475569">{isEs ? '• Abertura calibrada desde 0.15 mm hasta 0.76 mm (1 tarjeta ISO 7810)' : '• Calibrated slot from 0.15 mm to 0.76 mm (1 ISO 7810 card)'}</text>
+          <text x="268" y="172" fill="#0284c7">{isEs ? '3. ALMA DE ARAMIDA / ACERO ENCAPSULADO CERO ELONGACIÓN' : '3. ZERO-STRETCH ARAMID CORD / ENCAPSULATED STEEL CORE'}</text>
+        </g>
+      </svg>
+    )}
+

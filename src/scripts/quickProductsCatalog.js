@@ -43,6 +43,7 @@ export const CANONICAL_V32_DIAGRAM_KINDS = Object.freeze([
   'cyclone_d6_d20',
   'coupled_pump_cyclone',
   'urethane_screen_th48',
+  'urethane_screen_panel_305',
   'filter_press',
   'filter_plate_shifter',
   'flotation_cell'
@@ -330,15 +331,13 @@ export function getQuickProductsByAvenue() {
     grouped[key] = [];
   }
   for (const sku of getQuickProductsCatalog()) {
-    const primaryKey = grouped[sku.avenue] ? sku.avenue : 'avenida_1_bombeo';
-    grouped[primaryKey].push(sku);
-    if (Array.isArray(sku.secondary_avenues)) {
-      for (const secKey of sku.secondary_avenues) {
-        if (grouped[secKey] && !grouped[secKey].some((item) => item.id === sku.id)) {
-          grouped[secKey].push(sku);
-        }
-      }
-    }
+    const rawPrimary = sku.primary_avenue || sku.avenue || 'avenida_1_bombeo';
+    const primaryKey = grouped[rawPrimary] ? rawPrimary : 'avenida_1_bombeo';
+    grouped[primaryKey].push({
+      ...sku,
+      primary_avenue: primaryKey,
+      facet_avenues: [primaryKey, ...(Array.isArray(sku.secondary_avenues) ? sku.secondary_avenues : [])].filter(Boolean)
+    });
   }
   return grouped;
 }

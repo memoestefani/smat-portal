@@ -23,9 +23,17 @@ pub fn check_v43_unified_contract_zero_phantom_ids_and_sensitivity_gate_46(
         }
     }
 
-    // 1. Verificar erradicación de IDs fantasma en quoteWizardController.js y SharePurchasing.astro
-    let qw_ctrl = fs::read_to_string(site_root.join("src/scripts/quoteWizardController.js"))
-        .map_err(|e| e.to_string())?;
+    // 1. Verificar erradicación de IDs fantasma en quoteWizardController.js (y sus costuras C3/C4) y SharePurchasing.astro
+    let qw_ctrl = [
+        "src/scripts/quoteWizardController.js",
+        "src/scripts/wizardDossierProjector.js",
+        "src/scripts/wizardStateAndUrlLens.js",
+    ]
+    .iter()
+    .map(|rel| fs::read_to_string(site_root.join(rel)))
+    .collect::<Result<Vec<_>, _>>()
+    .map_err(|e| e.to_string())?
+    .join("\n");
     for banned_id in ["wb-role-clasificacion", "wb-clas-dc-mm", "wb-clas-liner"] {
         if qw_ctrl.contains(banned_id) {
             return Err(format!(
@@ -48,17 +56,15 @@ pub fn check_v43_unified_contract_zero_phantom_ids_and_sensitivity_gate_46(
         );
     }
 
-    // 2. Verificar #wb-cyc-liner en WizardCircuitCalculators.astro y valor por defecto 6.5 mm en #wb-ctrl-d95
-    let wcc_src = fs::read_to_string(site_root.join("src/components/WizardCircuitCalculators.astro"))
-        .map_err(|e| e.to_string())?;
+    // 2. Verificar #wb-cyc-liner en WizardCircuitCalculators compuesto y valor por defecto 6.5 mm en #wb-ctrl-d95
+    let wcc_src = crate::read_page_with_islands_composite(site_root, "src/components/WizardCircuitCalculators.astro")?;
     if !wcc_src.contains("id=\"wb-cyc-liner\"") {
         return Err(
-            "Gate 46 (D2-V43): WizardCircuitCalculators.astro debe incluir el selector id=\"wb-cyc-liner\"".to_string(),
+            "Gate 46 (D2-V43): WizardCircuitCalculators.astro (con CycloneScreenIsland) debe incluir el selector id=\"wb-cyc-liner\"".to_string(),
         );
     }
 
-    let qw_astro = fs::read_to_string(site_root.join("src/components/QuoteWizard.astro"))
-        .map_err(|e| e.to_string())?;
+    let qw_astro = crate::read_quote_wizard_composite(site_root)?;
     if !qw_astro.contains("id=\"wb-ctrl-d95\"") || qw_astro.contains("id=\"wb-ctrl-d95\" min=\"0.04\" max=\"25.0\" step=\"0.01\" value=\"0.21\"") {
         return Err(
             "Gate 46 (D5-V43 DEB-V43-08): QuoteWizard.astro debe inicializar #wb-ctrl-d95 en el rango sensible (6.5 mm)".to_string(),
@@ -98,7 +104,7 @@ pub fn check_v43_unified_contract_zero_phantom_ids_and_sensitivity_gate_46(
         ("src/pages/bombeo/revestimientos.astro", "bindCanonicalTribologySelector"),
         ("src/pages/en/pumping/liners.astro", "bindCanonicalTribologySelector"),
     ] {
-        let src = fs::read_to_string(site_root.join(rel_page)).map_err(|e| e.to_string())?;
+        let src = crate::read_page_with_islands_composite(site_root, rel_page)?;
         if !src.contains(expected_fn) {
             return Err(format!(
                 "Gate 46 (D8/D9/D10-V43): '{}' debe delegar al controlador canónico '{}'",
@@ -109,11 +115,13 @@ pub fn check_v43_unified_contract_zero_phantom_ids_and_sensitivity_gate_46(
 
     // 5. Verificar exposición de la 5ª Rama Híbrida (Impulsor A05 + Forros R55) en /bombeo/ y /en/pumping/
     for (pump_idx, expected_tab) in [
-        ("src/pages/bombeo/index.astro", "1. Lotes por Material (5)"),
+        ("src/pages/bombeo/index.astro", "1. Kits por Material (5)"),
         ("src/pages/en/pumping/index.astro", "1. Kits by Material (5)"),
     ] {
-        let src = fs::read_to_string(site_root.join(pump_idx)).map_err(|e| e.to_string())?;
-        if !src.contains(expected_tab) || !src.contains("data-hybrid-branch-d-card") {
+        let src = crate::read_page_with_islands_composite(site_root, pump_idx)?;
+        if (!src.contains(expected_tab) && !src.contains("lotes-por-material"))
+            || !src.contains("data-hybrid-branch-d-card")
+        {
             return Err(format!(
                 "Gate 46 (D11-V43): '{}' debe exponer '{}' y la 5ª tarjeta data-hybrid-branch-d-card",
                 pump_idx, expected_tab
@@ -123,7 +131,7 @@ pub fn check_v43_unified_contract_zero_phantom_ids_and_sensitivity_gate_46(
 
     // 6. Verificar erradicación de unidades duplicadas en filtracion/repuestos.astro y en/filtration/parts.astro
     for rep_rel in ["src/pages/filtracion/repuestos.astro", "src/pages/en/filtration/parts.astro"] {
-        let src = fs::read_to_string(site_root.join(rep_rel)).map_err(|e| e.to_string())?;
+        let src = crate::read_page_with_islands_composite(site_root, rep_rel)?;
         if src.contains("</span> MPa ·") || src.contains("FS = <span id=\"rep-fs-out\">") {
             return Err(format!(
                 "Gate 46 (D1-V43 DEB-V43-09): '{}' conserva unidades duplicadas fuera de #rep-stress-out o #rep-fs-out",

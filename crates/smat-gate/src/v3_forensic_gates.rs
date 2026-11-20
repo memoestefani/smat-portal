@@ -56,8 +56,7 @@ pub fn verify_quick_checkout_and_cad_bijection(site_root: &Path) -> Result<(), S
         }
     }
 
-    let diag_src = fs::read_to_string(site_root.join("src/components/TechnicalDiagrams.astro"))
-        .map_err(|e| e.to_string())?;
+    let diag_src = crate::read_technical_diagrams_composite(site_root)?;
     if !diag_src.contains("data-layer=\"xray-wear\"") || !diag_src.contains("0.76") {
         return Err("TechnicalDiagrams.astro carece de data-layer=\"xray-wear\" o referencia ISO/IEC 7810 (0.76 mm)".to_string());
     }
@@ -102,10 +101,8 @@ pub fn verify_sla_verifiability_and_lcom4_seam(site_root: &Path) -> Result<(), S
         }
     }
 
-    let flot_es = fs::read_to_string(site_root.join("src/pages/flotacion/index.astro"))
-        .map_err(|e| e.to_string())?;
-    let filt_es = fs::read_to_string(site_root.join("src/pages/filtracion/index.astro"))
-        .map_err(|e| e.to_string())?;
+    let flot_es = crate::read_page_with_islands_composite(site_root, "src/pages/flotacion/index.astro")?;
+    let filt_es = crate::read_page_with_islands_composite(site_root, "src/pages/filtracion/index.astro")?;
     if !flot_es.contains("id=\"flotation-dropin-matrix\"") {
         return Err("flotacion/index.astro carece de #flotation-dropin-matrix (D8)".to_string());
     }
@@ -129,7 +126,7 @@ pub fn verify_prd_v3_forensic_closure_gate_30(site_root: &Path) -> Result<(), St
         "src/components/QuickOrderTray.astro",
         "src/components/CycloneAndScreenReport.astro",
         "tools/build_product_images.mjs",
-        "tests/prd_v3_forensic_closure.test.mjs",
+        "tests/v50_canonical_islands_and_non_vacuous_witness.test.mjs",
     ] {
         if !site_root.join(rel).exists() {
             return Err(format!(
@@ -231,7 +228,7 @@ pub fn verify_prd_v3_forensic_closure_gate_30(site_root: &Path) -> Result<(), St
         "src/pages/en/flotation/cells.astro",
         "src/pages/filtracion/repuestos.astro",
     ] {
-        let content = fs::read_to_string(site_root.join(check_rel)).map_err(|e| e.to_string())?;
+        let content = crate::read_page_with_islands_composite(site_root, check_rel)?;
         if content.contains("Banco Durango")
             || content.contains("Balanceo Dinámico en Banco de Pruebas")
         {
@@ -274,7 +271,7 @@ pub fn verify_total_orphan_closure_and_epistemic_arbitrage_gate_31(
         "src/scripts/districtProfilesAndSkuCatalog.js",
         "src/pages/cumplimiento.astro",
         "src/pages/en/compliance.astro",
-        "tests/smat_v3_total_closure.test.mjs",
+        "tests/v50_engine_schema_and_xdsm_dag.test.mjs",
     ] {
         if !site_root.join(rel).exists() {
             return Err(format!(
@@ -366,16 +363,14 @@ pub fn verify_total_orphan_closure_and_epistemic_arbitrage_gate_31(
         );
     }
 
-    let celdas_src = fs::read_to_string(site_root.join("src/pages/flotacion/celdas.astro"))
-        .map_err(|e| e.to_string())?;
+    let celdas_src = crate::read_page_with_islands_composite(site_root, "src/pages/flotacion/celdas.astro")?;
     if !celdas_src.contains("data-cell-dropin-matrix=\"gorain-1997\"") {
         return Err(
             "D5=5-C++: flotacion/celdas.astro carece de data-cell-dropin-matrix=gorain-1997"
                 .to_string(),
         );
     }
-    let rep_src = fs::read_to_string(site_root.join("src/pages/filtracion/repuestos.astro"))
-        .map_err(|e| e.to_string())?;
+    let rep_src = crate::read_page_with_islands_composite(site_root, "src/pages/filtracion/repuestos.astro")?;
     if !rep_src.contains("data-plate-flexure-panel=\"timoshenko-g5\"") {
         return Err(
             "D5=5-C++: filtracion/repuestos.astro carece de data-plate-flexure-panel=timoshenko-g5"
@@ -392,7 +387,7 @@ pub fn verify_total_orphan_closure_and_epistemic_arbitrage_gate_31(
         "src/pages/en/filtration/index.astro",
         "src/pages/en/filtration/parts.astro",
     ] {
-        let s = fs::read_to_string(site_root.join(solar_rel)).map_err(|e| e.to_string())?;
+        let s = crate::read_page_with_islands_composite(site_root, solar_rel)?;
         if s.to_lowercase().contains("#090d16") {
             return Err(format!(
                 "D6=6-C++ (DEB-V31-03): {} aun contiene token oscuro #090d16",
@@ -428,11 +423,11 @@ pub fn verify_total_orphan_closure_and_epistemic_arbitrage_gate_31(
 /// 32. Gate D10=10-C+ (Cierre Definitivo de los 7 Hallazgos Críticos y Purga de Debris v3.2):
 pub fn verify_seven_findings_and_v32_closure_gate_32(site_root: &Path) -> Result<(), String> {
     if !site_root
-        .join("tests/smat_v32_seven_findings_closure.test.mjs")
+        .join("tests/v50_canonical_islands_and_non_vacuous_witness.test.mjs")
         .exists()
     {
         return Err(
-            "Falta suite de pruebas tests/smat_v32_seven_findings_closure.test.mjs (Gate 32)"
+            "Falta suite de pruebas tests/v50_canonical_islands_and_non_vacuous_witness.test.mjs (Gate 32 / V5.0)"
                 .to_string(),
         );
     }
@@ -681,7 +676,7 @@ pub fn verify_seven_findings_and_v32_closure_gate_32(site_root: &Path) -> Result
         "src/pages/flotacion/celdas.astro",
         "src/pages/en/flotation/cells.astro",
     ] {
-        let s = fs::read_to_string(site_root.join(celdas_rel)).map_err(|e| e.to_string())?;
+        let s = crate::read_page_with_islands_composite(site_root, celdas_rel)?;
         if s.contains("badge-capex") || s.contains("[CAPEX:") || !s.contains("badge-opex") {
             return Err(format!(
                 "Hallazgo 7 (DEB-V32-11): {} contiene badge-capex o carece de badge-opex",
@@ -698,7 +693,7 @@ pub fn verify_seven_findings_and_v32_closure_gate_32(site_root: &Path) -> Result
         "src/pages/acuse.astro",
         "src/pages/en/thank-you.astro",
     ] {
-        let s = fs::read_to_string(site_root.join(nav_rel)).map_err(|e| e.to_string())?;
+        let s = crate::read_page_with_islands_composite(site_root, nav_rel)?;
         if skid_word_re.is_match(&s) {
             return Err(format!(
                 "Hallazgo 7 (DEB-V32-12): {} aun contiene la palabra prohibida 'Skid/Skids'",
@@ -706,8 +701,7 @@ pub fn verify_seven_findings_and_v32_closure_gate_32(site_root: &Path) -> Result
             ));
         }
     }
-    let idx_es =
-        fs::read_to_string(site_root.join("src/pages/index.astro")).map_err(|e| e.to_string())?;
+    let idx_es = crate::read_page_with_islands_composite(site_root, "src/pages/index.astro")?;
     if !idx_es.contains("Puerta 1 • Bombeo de Lodos y Refacciones")
         || !idx_es.contains("Puerta 2 • Clasificación y Cribado Fino")
         || !idx_es.contains("Puerta 3 • Flotación, Filtración y Lab")
@@ -716,11 +710,11 @@ pub fn verify_seven_findings_and_v32_closure_gate_32(site_root: &Path) -> Result
     }
 
     if !site_root
-        .join("tests/smat_v33_full_prd_parity.test.mjs")
+        .join("tests/v50_canonical_islands_and_non_vacuous_witness.test.mjs")
         .exists()
     {
         return Err(
-            "Falta suite de pruebas tests/smat_v33_full_prd_parity.test.mjs (Cierre v3.3)"
+            "Falta suite de pruebas tests/v50_canonical_islands_and_non_vacuous_witness.test.mjs (Cierre v3.3/V5.0)"
                 .to_string(),
         );
     }
@@ -740,10 +734,10 @@ pub fn verify_seven_findings_and_v32_closure_gate_32(site_root: &Path) -> Result
         }
     }
     for home_rel in ["src/pages/index.astro", "src/pages/en/index.astro"] {
-        let home_src = fs::read_to_string(site_root.join(home_rel)).map_err(|e| e.to_string())?;
-        if !home_src.contains("data-family-chip=") || !home_src.contains("<ProductQuickCard") {
+        let home_src = crate::read_page_with_islands_composite(site_root, home_rel)?;
+        if home_src.contains("home-quick-catalog-drawer") {
             return Err(format!(
-                "v3.3 (D4-V33): {} carece de chips de 8 familias o <ProductQuickCard /> en Home",
+                "V5.0 (DEB-V50-01): {} no debe montar #home-quick-catalog-drawer en Portada",
                 home_rel
             ));
         }
@@ -754,10 +748,16 @@ pub fn verify_seven_findings_and_v32_closure_gate_32(site_root: &Path) -> Result
             ));
         }
     }
-    let xray_style_count = diag_src.matches("style={xrayWearStyle}").count();
+    let cat_island = fs::read_to_string(site_root.join("src/components/islands/CatalogFacetedIsland.astro"))
+        .map_err(|e| e.to_string())?;
+    if !cat_island.contains("data-family-chip=") {
+        return Err("CatalogFacetedIsland.astro carece de chips data-family-chip=".to_string());
+    }
+    let diag_composite = crate::read_technical_diagrams_composite(site_root)?;
+    let xray_style_count = diag_composite.matches("style={xrayWearStyle}").count();
     if xray_style_count < 15 {
         return Err(format!(
-            "v3.3 (D5-V33): TechnicalDiagrams.astro debe aplicar style={{xrayWearStyle}} en los 15 diagramas (encontrados: {})",
+            "v3.3 (D5-V33): TechnicalDiagrams compuesto debe aplicar style={{xrayWearStyle}} en los 15 diagramas (encontrados: {})",
             xray_style_count
         ));
     }

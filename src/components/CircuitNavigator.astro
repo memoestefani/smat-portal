@@ -22,7 +22,7 @@ const resolvedDefaultCircuit = defaultCircuit || (
       : 'bombeo_ciclones'
 );
 
-// Mapa unificado de criterios metalúrgicos y variables de pulpa por role_id (absorbe DualHubView.astro)
+// Mapa unificado de criterios metalúrgicos y variables de pulpa por role_id
 const roleDecisionMap = new Map<string, any>();
 for (const vert of rolesData.verticals || []) {
   for (const item of [...(vert.capex || []), ...(vert.opex || [])]) {

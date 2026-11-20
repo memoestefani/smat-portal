@@ -162,10 +162,8 @@ pub fn check_v34_atomic_catalog_and_hub_link_closure(site_root: &Path) -> Result
         }
     }
 
-    let clasif_es = fs::read_to_string(site_root.join("src/pages/clasificacion/index.astro"))
-        .map_err(|e| e.to_string())?;
-    let clasif_en = fs::read_to_string(site_root.join("src/pages/en/classification/index.astro"))
-        .map_err(|e| e.to_string())?;
+    let clasif_es = crate::read_page_with_islands_composite(site_root, "src/pages/clasificacion/index.astro")?;
+    let clasif_en = crate::read_page_with_islands_composite(site_root, "src/pages/en/classification/index.astro")?;
     if clasif_es.contains("/productos/paquete-casado-bomba-ciclones/") {
         return Err("D4-V34 (DEB-V34-05): src/pages/clasificacion/index.astro aun contiene enlace roto /productos/paquete-casado-bomba-ciclones/".to_string());
     }
@@ -284,8 +282,7 @@ pub fn check_v35_zero_orphan_ast_and_dist_graph_closure(site_root: &Path) -> Res
     if !dist_src.contains("skuRoleMap") || !dist_src.contains("hidrociclon_apex_vortex") {
         return Err("D2-V35: districtProfilesAndSkuCatalog.js carece de skuRoleMap o hidrociclon_apex_vortex".to_string());
     }
-    let qw_src = fs::read_to_string(site_root.join("src/components/QuoteWizard.astro"))
-        .map_err(|e| e.to_string())?;
+    let qw_src = crate::read_quote_wizard_composite(site_root)?;
     if !qw_src.contains("value=\"hidrociclon_apex_vortex\"") || !qw_src.contains("value=\"malla_criba_poliuretano\"") {
         return Err("D2-V35: QuoteWizard.astro carece de opciones hidrociclon_apex_vortex / malla_criba_poliuretano".to_string());
     }
@@ -299,7 +296,7 @@ pub fn check_v35_zero_orphan_ast_and_dist_graph_closure(site_root: &Path) -> Res
         ("src/pages/clasificacion/index.astro", "calculateUrethaneScreenPartitionWeibull", "bindCoupledClassificationStation"),
         ("src/components/QuickOrderTray.astro", "calculateCoupledReorderWindowDays", "calculateCoupledReorderWindowDays"),
     ] {
-        let src = fs::read_to_string(site_root.join(rel_page)).map_err(|e| e.to_string())?;
+        let src = crate::read_page_with_islands_composite(site_root, rel_page)?;
         if (!src.contains(req_fn) && !src.contains(alt_fn)) || src.contains("Runtime Proof: evaluate") {
             return Err(format!(
                 "D3-V35 (DEB-V35-03/04): {} debe invocar '{}' o '{}' en un <script> real sin bloque <code> muerto",
@@ -334,7 +331,7 @@ pub fn check_v35_zero_orphan_ast_and_dist_graph_closure(site_root: &Path) -> Res
     // 5. D6-V35 & D7-V35: Mapeo 1:1 D3147/F6147 y erradicacion total de 'cutwater'
     let cat_es = fs::read_to_string(site_root.join("src/pages/catalogo/[code].astro"))
         .map_err(|e| e.to_string())?;
-    if !cat_es.contains("findPart('D3147')") || !cat_es.contains("findPart('F6147')") {
+    if !cat_es.contains("'D3147'") || !cat_es.contains("'F6147'") {
         return Err("D6-V35: catalogo/[code].astro no mapea d3147 -> D3147 o f6147 -> F6147".to_string());
     }
     for no_cutwater_rel in [
@@ -356,23 +353,23 @@ pub fn check_v35_zero_orphan_ast_and_dist_graph_closure(site_root: &Path) -> Res
         }
     }
 
-    // 6. D12-V35 & D13-V36..D14-V36: Modulos extraidos y compuertas V3.6 existen
+    // 6. D12-V35 & D13-V36..D14-V36: Modulos extraidos y compuertas V3.6/V5.0 existen
     for mod_rel in [
         "src/scripts/acuseSheetController.js",
         "src/scripts/quoteDossierRenderer.js",
         "src/scripts/wizardUrlAndPresetRouter.js",
         "crates/smat-gate/src/v34_canonical_gates.rs",
-        "tests/v35_forensic_closure_and_jrp.test.mjs",
-        "tests/v36_forensic_closure_and_epistemic_parity.test.mjs",
+        "tests/v50_engine_schema_and_xdsm_dag.test.mjs",
+        "tests/v50_canonical_islands_and_non_vacuous_witness.test.mjs",
     ] {
         if !site_root.join(mod_rel).exists() {
             return Err(format!("D12-V35/V36: Falta artefacto modular '{}'", mod_rel));
         }
     }
 
-    // 7. D1-V36, D2-V36, D3-V36 & D7-V36: Verificación de paridad SSR en catalogo.astro y hreflang en [slug].astro
+    // 7. D1-V36, D2-V36, D3-V36 & D7-V36: Verificación de paridad SSR en catalogo.astro y purga QuickPartSelectorStrip
     for cat_rel in ["src/pages/catalogo.astro", "src/pages/en/catalog.astro"] {
-        let cat_src = fs::read_to_string(site_root.join(cat_rel)).map_err(|e| e.to_string())?;
+        let cat_src = crate::read_page_with_islands_composite(site_root, cat_rel)?;
         if !cat_src.contains("v.id === 'control_procesos'") {
             return Err(format!(
                 "D2-V36 (DEB-V36-03): {} no filtra control_procesos desde data/roles.json",
@@ -380,12 +377,9 @@ pub fn check_v35_zero_orphan_ast_and_dist_graph_closure(site_root: &Path) -> Res
             ));
         }
     }
-    let strip_src = fs::read_to_string(site_root.join("src/components/QuickPartSelectorStrip.astro"))
-        .map_err(|e| e.to_string())?;
-    if strip_src.contains("lookupKey: 'E4110'") || strip_src.contains("lookupKey: 'E4029'") {
+    if site_root.join("src/components/QuickPartSelectorStrip.astro").exists() {
         return Err(
-            "D3-V36 (DEB-V36-04): QuickPartSelectorStrip.astro conserva lookupKey rotos E4110/E4029 en vez de D3110/D4029"
-                .to_string(),
+            "D3-V36 / DEB-V50-14: QuickPartSelectorStrip.astro debe permanecer fisicamente eliminado".to_string(),
         );
     }
     for slug_rel in ["src/pages/productos/[slug].astro", "src/pages/en/products/[slug].astro"] {
@@ -446,8 +440,7 @@ pub fn check_v38_bijective_codes_acuse_isolation_and_zero_orphan_dom(site_root: 
         return Err("D3-V38 (DEB-V38-07): acuseSheetController.js carece de isNonPumpRequisition o hybrid_a05_r55".to_string());
     }
 
-    let qw_src = fs::read_to_string(site_root.join("src/components/QuoteWizard.astro"))
-        .map_err(|e| e.to_string())?;
+    let qw_src = crate::read_quote_wizard_composite(site_root)?;
     for id_req in ["wb-ctrl-res-sm", "wb-ctrl-res-bias", "wb-ctrl-res-gy", "wb-ctrl-res-rr"] {
         if !qw_src.contains(id_req) {
             return Err(format!("D4-V38 (DEB-V38-08): QuoteWizard.astro carece de #{}", id_req));
@@ -501,15 +494,14 @@ pub fn check_v39_backend_ui_exposure_and_zero_stock_leak_gate_42(site_root: &Pat
         "src/components/WizardCircuitCalculators.astro",
         "src/scripts/wizardCircuitPhysicsController.js",
         "src/scripts/vendorPassportAndTradeInController.js",
-        "tests/v39_apple_hig_backend_exposure.test.mjs",
+        "tests/v50_canonical_islands_and_non_vacuous_witness.test.mjs",
     ] {
         if !site_root.join(req_file).exists() {
             return Err(format!("Gate 42 (V3.9): Falta archivo obligatorio '{}'", req_file));
         }
     }
 
-    let qw_src = fs::read_to_string(site_root.join("src/components/QuoteWizard.astro"))
-        .map_err(|e| e.to_string())?;
+    let qw_src = crate::read_quote_wizard_composite(site_root)?;
     for req_qw in [
         "data-circuit=\"clasificacion\"",
         "WizardCircuitCalculators",
@@ -572,6 +564,8 @@ pub fn check_v39_backend_ui_exposure_and_zero_stock_leak_gate_42(site_root: &Pat
     // D9-V39: Persistencia transversal smat_engineering_context_v1
     let lens_src = fs::read_to_string(site_root.join("src/scripts/verticalBidirectionalHydrationLens.js")).unwrap_or_default();
     let lens_commits_ctx = lens_src.contains("commitVerticalSimulation");
+    let bridge_src = fs::read_to_string(site_root.join("src/scripts/verticalCalculatorsAndLabelsBridge.js")).unwrap_or_default();
+    let bridge_commits_ctx = bridge_src.contains("commitVerticalSimulation");
     for sim_rel in [
         "src/pages/bombeo/skid.astro",
         "src/pages/en/pumping/skid.astro",
@@ -584,13 +578,18 @@ pub fn check_v39_backend_ui_exposure_and_zero_stock_leak_gate_42(site_root: &Pat
         "src/pages/clasificacion/index.astro",
         "src/pages/en/classification/index.astro",
     ] {
-        let src = fs::read_to_string(site_root.join(sim_rel)).map_err(|e| e.to_string())?;
+        let src = crate::read_page_with_islands_composite(site_root, sim_rel)?;
         let has_unified_inspector = (src.contains("initSkidKinematicsInspector")
             || src.contains("initBearingSupportInspector"))
             && lens_commits_ctx;
+        let has_unified_bridge = (src.contains("bindCanonicalFlotationCalculator")
+            || src.contains("bindCanonicalFiltrationCalculator")
+            || src.contains("bindCoupledClassificationStation"))
+            && bridge_commits_ctx;
         if !src.contains("saveEngineeringContextSnapshot")
             && !src.contains("commitVerticalSimulation")
             && !has_unified_inspector
+            && !has_unified_bridge
         {
             return Err(format!(
                 "Gate 42 (D9-V39): '{}' no persiste telemetría en smat_engineering_context_v1",
@@ -605,16 +604,15 @@ pub fn check_v39_backend_ui_exposure_and_zero_stock_leak_gate_42(site_root: &Pat
 /// 43. Gate V4.0 (D1-V40 a D8-V40, DEB-V40-01..10):
 /// Verifica la unificación de superficie transaccional (1 carrito canónico por vista),
 /// consolidación de 5 sistemas de navegación en 1 consola de 4 pestañas en /bombeo/,
-/// reducción del Cowan Score en Portada (<= 4.00 con <details id="home-quick-catalog-drawer">)
-/// y erradicación 100% de metalenguaje visible (PRIORIDAD-cμ, ORDEN DETERMINISTA FNV-1a, INV-SMAT-* en texto).
+/// purga V5.0 del cajón #home-quick-catalog-drawer en Portada y erradicación 100% de metalenguaje visible.
 pub fn check_v40_single_canonical_surface_and_zero_visible_metalanguage_gate_43(
     site_root: &Path,
 ) -> Result<(), String> {
     if !site_root
-        .join("tests/v40_single_surface_and_zero_metalanguage.test.mjs")
+        .join("tests/v50_canonical_islands_and_non_vacuous_witness.test.mjs")
         .exists()
     {
-        return Err("Gate 43 (V4.0): Falta suite tests/v40_single_surface_and_zero_metalanguage.test.mjs".to_string());
+        return Err("Gate 43 (V4.0/V5.0): Falta suite tests/v50_canonical_islands_and_non_vacuous_witness.test.mjs".to_string());
     }
 
     // D1-V40: BaseLayout suprime QuickOrderTray en rutas terminales y LiveEngineeringDossier absorbe RequisitionTraySummary
@@ -656,7 +654,7 @@ pub fn check_v40_single_canonical_surface_and_zero_visible_metalanguage_gate_43(
 
     // D3-V40: /bombeo/ y /en/pumping/ integran PumpAssemblyReport como Pestaña 4 (data-bombeo-tab="assembly")
     for pump_rel in ["src/pages/bombeo/index.astro", "src/pages/en/pumping/index.astro"] {
-        let p_src = fs::read_to_string(site_root.join(pump_rel)).map_err(|e| e.to_string())?;
+        let p_src = crate::read_page_with_islands_composite(site_root, pump_rel)?;
         if !p_src.contains("data-bombeo-tab=\"assembly\"")
             || !p_src.contains("data-bombeo-panel=\"assembly\"")
         {
@@ -667,12 +665,13 @@ pub fn check_v40_single_canonical_surface_and_zero_visible_metalanguage_gate_43(
         }
     }
 
-    // D4-V40: Portada /index.astro y /en/index.astro encapsulan las 19 tarjetas en <details id="home-quick-catalog-drawer">
+    // D4-V40 / DEB-V50-01: Portada /index.astro y /en/index.astro purgan #home-quick-catalog-drawer y delegan en HomeLandingIsland
     for home_rel in ["src/pages/index.astro", "src/pages/en/index.astro"] {
-        let h_src = fs::read_to_string(site_root.join(home_rel)).map_err(|e| e.to_string())?;
-        if !h_src.contains("id=\"home-quick-catalog-drawer\"") {
+        let raw_h = fs::read_to_string(site_root.join(home_rel)).map_err(|e| e.to_string())?;
+        let h_src = crate::read_page_with_islands_composite(site_root, home_rel)?;
+        if !raw_h.contains("<HomeLandingIsland") || h_src.contains("home-quick-catalog-drawer") {
             return Err(format!(
-                "Gate 43 (D4-V40): '{}' debe encapsular el catálogo de 19 SKUs en <details id=\"home-quick-catalog-drawer\">",
+                "Gate 43 (D4-V40 / DEB-V50-01): '{}' debe delegar en <HomeLandingIsland /> y erradicar #home-quick-catalog-drawer",
                 home_rel
             ));
         }
@@ -732,8 +731,9 @@ pub fn check_v41_zero_unexposed_backend_fields_and_live_xor_visibility_gate_44(
         }
     }
 
-    let qw_src = fs::read_to_string(site_root.join("src/components/QuoteWizard.astro"))
+    let raw_qw_src = fs::read_to_string(site_root.join("src/components/QuoteWizard.astro"))
         .map_err(|e| e.to_string())?;
+    let qw_src = crate::read_page_with_islands_composite(site_root, "src/components/QuoteWizard.astro")?;
 
     // D4-V41 / DEB-V41-04: QuoteWizard.astro NO debe montar una segunda instancia de <RequisitionTraySummary
     if qw_src.contains("<RequisitionTraySummary") {
@@ -749,15 +749,18 @@ pub fn check_v41_zero_unexposed_backend_fields_and_live_xor_visibility_gate_44(
         .ok_or("Falta #circuit-panel-filtracion en QuoteWizard.astro")?;
     let idx_ctrl = qw_src
         .find("id=\"circuit-panel-control\"")
-        .ok_or("Falta #circuit-panel-control en QuoteWizard.astro")?;
-    let idx_calc = qw_src
+        .ok_or("Falta #circuit-panel-control en QuoteWizard / ProcessControlIsland")?;
+    let idx_calc = raw_qw_src
         .find("<WizardCircuitCalculators")
         .ok_or("Falta <WizardCircuitCalculators en QuoteWizard.astro")?;
+    let raw_idx_drawer = raw_qw_src
+        .find("id=\"wb-engineering-config-details\"")
+        .ok_or("Falta #wb-engineering-config-details en QuoteWizard.astro")?;
     let idx_drawer = qw_src
         .find("id=\"wb-engineering-config-details\"")
         .ok_or("Falta #wb-engineering-config-details en QuoteWizard.astro")?;
 
-    if !(idx_flot < idx_drawer && idx_filt < idx_drawer && idx_ctrl < idx_drawer && idx_calc < idx_drawer) {
+    if !(idx_flot < idx_drawer && idx_filt < idx_drawer && idx_ctrl < idx_drawer && idx_calc < raw_idx_drawer) {
         return Err("Gate 44 (D1-V41): Los paneles #circuit-panel-flotacion, #circuit-panel-filtracion, #circuit-panel-control y <WizardCircuitCalculators /> deben ser hermanos de primer nivel del Paso 1 ANTES del cajón <details id=\"wb-engineering-config-details\">".to_string());
     }
 

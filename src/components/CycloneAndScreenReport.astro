@@ -88,10 +88,10 @@ const cycloneModels = [
         </h2>
       </div>
       <a
-        href={isEs ? '/productos/paquete-casado-bomba-lodos-hidrociclon/' : '/en/products/married-slurry-pump-hydrocyclone-package/'}
+        href={isEs ? '/productos/paquete-casado-bomba-hidrociclon/' : '/en/products/coupled-pump-hydrocyclone-package/'}
         class="smat-csr-primary-link"
       >
-        {isEs ? '🔗 Ver Paquete Casado Bomba + Hidrociclón →' : '🔗 View Married Pump + Cyclone Package →'}
+        {isEs ? 'Ver Paquete Casado Bomba + Hidrociclón →' : 'View Married Pump + Cyclone Package →'}
       </a>
     </div>
 
@@ -178,13 +178,13 @@ const cycloneModels = [
       </div>
       <div class="smat-csr-btn-group">
         <a
-          href={isEs ? '/productos/mallas-finas-uretano-th48-30/' : '/en/products/fine-urethane-screens-th48-30/'}
+          href={isEs ? '/productos/mallas-finas-uretano-th48-30/' : '/en/products/high-frequency-urethane-screens-th48-30/'}
           class="smat-csr-primary-link"
         >
           {isEs ? 'Ficha TH48-30 (SMAT-SCR-TH48-30) →' : 'TH48-30 Sheet (SMAT-SCR-TH48-30) →'}
         </a>
         <a
-          href={isEs ? '/productos/modulos-poliuretano-1x1-pin-camisa/' : '/en/products/polyurethane-modular-panels-1x1/'}
+          href={isEs ? '/productos/modulos-poliuretano-1x1-pin-camisa/' : '/en/products/modular-polyurethane-screen-panels-1x1/'}
           class="smat-csr-secondary-link"
         >
           {isEs ? 'Módulos 1\'x1\' (SMAT-SCR-MOD-1X1) →' : '1\'x1\' Modules (SMAT-SCR-MOD-1X1) →'}
@@ -225,17 +225,17 @@ const cycloneModels = [
       </div>
     </div>
 
-    <div style="margin-top: 1rem; padding: 0.85rem; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: center; justify-content: space-between; font-size: 0.8rem;">
-      <div style="color: #0f172a; font-weight: 700;">
+    <div class="smat-csr-coupling-footer">
+      <div class="smat-csr-coupling-note">
         {isEs
-          ? '🔗 La simulación acoplada en vivo (Corte Plitt d50c ↔ Partición Weibull TH48-30) se controla directamente en la Estación Superior de Circuito Cerrado.'
-          : '🔗 Live coupled simulation (Plitt Cut d50c ↔ TH48-30 Weibull Partition) is controlled directly in the Top Closed-Circuit Station.'}
+          ? 'La simulación acoplada en vivo (Corte Plitt d50c ↔ Partición Weibull TH48-30) se controla en la Estación Superior de Circuito Cerrado.'
+          : 'Live coupled simulation (Plitt Cut d50c ↔ TH48-30 Weibull Partition) is controlled directly in the Top Closed-Circuit Station.'}
       </div>
-      <div style="display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center;">
-        <a href="#stage-2" style="font-family: var(--font-mono, monospace); font-weight: 800; color: #065f46; text-decoration: underline;">
+      <div class="smat-csr-btn-group">
+        <a href="#stage-2" class="smat-csr-jump-link">
           {isEs ? '↑ Ir a Estación Acoplada 3 Vasos + Criba Weibull' : '↑ Jump to Coupled 3-Cup + Weibull Screen Station'}
         </a>
-        <a href={isEs ? '/productos/mallas-finas-uretano-th48-30/' : '/en/products/fine-urethane-screens-th48-30/'} style="font-family: var(--font-mono, monospace); font-weight: 800; color: #0c4a6e; text-decoration: underline;">
+        <a href={isEs ? '/productos/mallas-finas-uretano-th48-30/' : '/en/products/high-frequency-urethane-screens-th48-30/'} class="smat-csr-secondary-link">
           {isEs ? 'Abrir Ficha SMAT-SCR-TH48-30 →' : 'Open Spec Sheet SMAT-SCR-TH48-30 →'}
         </a>
       </div>
@@ -508,5 +508,28 @@ const cycloneModels = [
     margin: 0;
     color: var(--smat-solar-muted, #334155);
     line-height: 1.5;
+  }
+  .smat-csr-coupling-footer {
+    margin-top: 1rem;
+    padding: 0.85rem;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+  }
+  .smat-csr-coupling-note {
+    color: #0f172a;
+    font-weight: 700;
+  }
+  .smat-csr-jump-link {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-weight: 800;
+    color: #064e3b;
+    text-decoration: underline;
   }
 </style>

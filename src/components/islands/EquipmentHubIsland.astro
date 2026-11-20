@@ -1,0 +1,535 @@
+---
+/**
+ * EquipmentHubIsland.astro
+ * ---------------------------------------------------------------------------
+ * Isla Canónica Bilingüe para /equipos/ y /en/process-equipment/ (D2-V50, D4-V50, DEB-V50-05).
+ * Centraliza los 5 bloques de Equipos de Proceso, buscador instantáneo Drop-In
+ * (#equipos-sku-search + #equipos-dropin-match-banner), cajones 1-clic con
+ * avenidas reales (AV-01, AV-02/AV-03/AV-6A, AV-04, AV-05, AV-05-LAB) y zero inline styles.
+ */
+import TechnicalDiagrams from '../TechnicalDiagrams.astro';
+import CircuitNavigator from '../CircuitNavigator.astro';
+import CaseCards from '../CaseCards.astro';
+import SharePurchasing from '../SharePurchasing.astro';
+import { getQuickProductsCatalog, AVENUE_METADATA } from '../../scripts/quickProductsCatalog.js';
+
+interface Props {
+  locale?: 'es' | 'en';
+}
+
+const { locale = 'es' } = Astro.props;
+const isEs = locale === 'es';
+const lang = locale;
+
+const allQuickSkus: any[] = getQuickProductsCatalog() as any[];
+const avenueCount = Object.keys(AVENUE_METADATA).length;
+const skusByVertical: Record<string, any[]> = {
+  flotacion: allQuickSkus.filter((s) => s.vertical === 'flotacion'),
+  filtracion: allQuickSkus.filter((s) => s.vertical === 'filtracion'),
+  bombeo: allQuickSkus.filter((s) => s.vertical === 'bombeo'),
+  clasificacion: allQuickSkus.filter((s) => s.vertical === 'clasificacion'),
+  control: allQuickSkus.filter((s) => s.vertical === 'control'),
+};
+
+const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
+const catalogBase = isEs ? '/catalogo/' : '/en/catalog/';
+const pumpingPath = isEs ? '/bombeo/' : '/en/pumping/';
+const classificationPath = isEs ? '/clasificacion/' : '/en/classification/';
+const flotationPath = isEs ? '/flotacion/' : '/en/flotation/';
+const filtrationPath = isEs ? '/filtracion/' : '/en/filtration/';
+const controlPath = isEs ? '/control-de-procesos/' : '/en/process-control/';
+const productsBase = isEs ? '/productos/' : '/en/products/';
+
+const renderSkuHref = (sku: any) => `${productsBase}${isEs ? sku.slug_es : sku.slug_en}/`;
+const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
+---
+
+<section class="page-hero">
+  <div class="container">
+    <span class="badge badge-copper">
+      {isEs ? 'PUERTA 1 • PROYECTOS, AMPLIACIONES Y CIRCUITOS' : 'DOOR 1 • CAPITAL PROJECTS, EXPANSIONS & CIRCUITS'}
+    </span>
+    <h1>{isEs ? 'Equipos de Proceso' : 'Process Equipment'}</h1>
+    <p class="hero-lead">
+      {isEs
+        ? 'Ingeniería y suministro de equipos principales para molienda, concentración por flotación y desaguado de jales: Mecanismos para Celdas de Flotación y Acondicionadores (50 a 300 ft³), Filtros Prensa (800 a 1500 mm, hasta 16 bar) y Bombas Horizontales y Verticales para Lodos en Paquete.'
+        : 'Engineering and supply of core process equipment for grinding, flotation concentration, and tailings dewatering circuits: Flotation Cell Mechanisms & Conditioners (50 to 300 ft³), Recessed-Chamber Filter Presses (800 to 1500 mm, up to 16 bar), and Complete Slurry Pump Packages.'}
+    </p>
+    <div class="hero-cta-row">
+      <a href={`${quoteBase}?circuito=flotacion&equipo=celda_flotacion&serie=100ft#rfq`} class="btn btn-primary">
+        {isEs ? 'Cotizar Equipo de Proceso →' : 'Quote Process Equipment →'}
+      </a>
+      <a href={pumpingPath} class="btn btn-outline">
+        {isEs ? 'Ir a Bombas para Lodos y Spare Parts →' : 'Go to Slurry Pumps & Spare Parts →'}
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="stage-diagnostic">
+  <div class="container">
+    <div id="stratum1-equipos-search" data-stratum-1-instrument class="equipos-toolbar">
+      <div class="toolbar-search-col">
+        <label for="equipos-sku-search" class="search-label">
+          {isEs
+            ? `BUSCADOR RÁPIDO DEL CATÁLOGO (${allQuickSkus.length} SKUS EN ${avenueCount} AVENIDAS • + BANDEJA 1-CLIC)`
+            : `INSTANT CATALOG SEARCH (${allQuickSkus.length} SKUS ACROSS ${avenueCount} AVENUES • 1-CLICK + TRAY)`}
+        </label>
+        <input
+          id="equipos-sku-search"
+          type="search"
+          placeholder={isEs
+            ? 'Filtrar por SKU (SMAT-PUMP-IMP-AH), código (E4147, D075C21), serie (800-1500, D6-D20, Marcy)...'
+            : 'Filter by SKU (SMAT-PUMP-IMP-AH), code (E4147, D075C21), series (800-1500, D6-D20, Marcy)...'}
+          class="equipos-search-input"
+        />
+        <div id="equipos-dropin-match-banner" class="dropin-match-banner smat-hidden-init"></div>
+      </div>
+      <div class="toolbar-meta-col">
+        <span data-equipos-search-count class="search-count-pill">
+          {isEs
+            ? `Mostrando ${allQuickSkus.length} de ${allQuickSkus.length} equipos y refacciones en ${avenueCount} Avenidas`
+            : `Showing ${allQuickSkus.length} of ${allQuickSkus.length} catalog SKUs across ${avenueCount} Avenues`}
+        </span>
+        <a href={catalogBase} class="matrix-link-solar">
+          {isEs
+            ? `Ver Matriz Maestra de ${avenueCount} Avenidas (${allQuickSkus.length} SKUs) →`
+            : `Open Master ${avenueCount}-Avenue Matrix (${allQuickSkus.length} SKUs) →`}
+        </a>
+      </div>
+    </div>
+
+    <div class="process-equipment-grid">
+      <article class="card equipment-block" data-equipment-block="flotacion" data-equipment-block-blob="flotacion flotation celdas cells mecanismos mechanisms acondicionadores 18sp av-04">
+        <div class="equipment-block-header">
+          <span class="badge badge-copper">
+            {isEs ? 'CIRCUITO DE CONCENTRACIÓN • 50 A 300 FT³ • AV-04' : 'CONCENTRATION CIRCUIT • 50 TO 300 FT³ • AV-04'}
+          </span>
+          <h2>{isEs ? 'Mecanismos para Celdas de Flotación y Acondicionadores' : 'Flotation Cell Mechanisms & Pulp Conditioners'}</h2>
+          <p class="eq-lead-desc">
+            {isEs
+              ? 'Cabezales motrices, flechas concéntricas de acero aleado, tubos de aire (standpipes), difusores estatores, impulsores rotores y acondicionadores de pulpa de alta intensidad para bancos Rougher, Cleaner y Scavenger.'
+              : 'Complete drive heads, concentric alloy steel shafts, standpipes, stator diffusers, rotor impellers, and high-intensity pulp conditioners for Rougher, Cleaner, and Scavenger flotation banks.'}
+          </p>
+        </div>
+        <TechnicalDiagrams diagram="flotation" lang={lang} />
+        <div class="specs-strip">
+          <div><strong>{isEs ? 'Capacidades:' : 'Cell Capacities:'}</strong> 50 ft³, 100 ft³, 160 ft³ &amp; 300 ft³</div>
+          <div><strong>{isEs ? 'Aireación:' : 'Aeration:'}</strong> {isEs ? 'Auto-aspirada o aire forzado a baja presión' : 'Self-aspirated or low-pressure forced air'}</div>
+          <div><strong>{isEs ? 'Elastómeros:' : 'Wear Elastomers:'}</strong> {isEs ? 'Hule natural antiabrasivo y Poliuretano moldeado' : 'Abrasion-resistant natural rubber & molded Polyurethane'}</div>
+        </div>
+        <details class="eq-drawer" data-equipment-ssot-drawer>
+          <summary class="eq-drawer-summary">
+            <span>
+              {isEs
+                ? `▾ SKUs de Flotación (${skusByVertical.flotacion.length} SKU • AV-04)`
+                : `▾ Flotation SKUs (${skusByVertical.flotacion.length} SKU • AV-04)`}
+            </span>
+            <span class="eq-drawer-badge">{isEs ? '+ BANDEJA DIRECTA ▾' : '+ DIRECT TRAY ▾'}</span>
+          </summary>
+          <div class="eq-drawer-skus">
+            {skusByVertical.flotacion.map((sku) => (
+              <div
+                class="eq-sku-pill"
+                data-equipos-sku-pill={sku.id}
+                data-equipos-search-blob={`${sku.id} ${sku.title_es} ${sku.title_en} ${(sku.atomic_codes || []).join(' ')} ${sku.avenueCode} ${sku.vertical}`}
+              >
+                <div>
+                  <a href={renderSkuHref(sku)} class="eq-sku-link">{sku.id} — {renderSkuTitle(sku)}</a>
+                  <div class="eq-sku-meta">{sku.avenueCode} · {sku.mass_kg} kg · {isEs ? 'Reorden' : 'Reorder'} {sku.reorder_window_days}d</div>
+                </div>
+                <button type="button" class="btn btn-outline btn-avenue-tray eq-tray-btn" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={renderSkuTitle(sku)}>
+                  {isEs ? '+ Bandeja' : '+ Tray'}
+                </button>
+              </div>
+            ))}
+          </div>
+        </details>
+        <div class="equipment-actions">
+          <a href={flotationPath} class="btn btn-outline">{isEs ? 'Ver Línea de Flotación' : 'View Flotation Line'}</a>
+          <a href={`${flotationPath}${isEs ? 'celdas/' : 'cells/'}`} class="btn btn-outline">{isEs ? 'Mecanismos 50-300 ft³' : 'Mechanisms 50-300 ft³'}</a>
+          <a href={`${flotationPath}${isEs ? 'mecanismos/' : 'mechanisms/'}`} class="btn btn-outline">{isEs ? 'Rotores y Estatores' : 'Rotors & Stators'}</a>
+          <a href={`${quoteBase}?circuito=flotacion&equipo=celda_flotacion&serie=100ft#rfq`} class="btn btn-primary">
+            {isEs ? 'Cotizar Mecanismo o Celda →' : 'Quote Mechanism or Cell →'}
+          </a>
+        </div>
+      </article>
+
+      <article class="card equipment-block" data-equipment-block="filtracion" data-equipment-block-blob="filtracion filtration filtros prensa filter press lonas cloths placas plates shifter 800 1500 av-05">
+        <div class="equipment-block-header">
+          <span class="badge badge-copper">
+            {isEs ? 'FILTRACIÓN DE CONCENTRADOS Y JALES SECOS • 800 A 1500 MM • AV-05' : 'CONCENTRATE & DRY TAILINGS DEWATERING • 800 TO 1500 MM • AV-05'}
+          </span>
+          <h2>{isEs ? 'Filtros Prensa de Cámara Empotrada (Hasta 16 bar)' : 'Recessed-Chamber Filter Presses (Up to 16 bar)'}</h2>
+          <p class="eq-lead-desc">
+            {isEs
+              ? 'Filtros prensa completos con bastidor de acero estructural, cierre electrohidráulico automático, placas de polipropileno virgen copolímero y telas filtrantes para recuperación de agua y apilamiento en seco (Dry Stacking).'
+              : 'Complete filter presses with structural steel frame, automated electro-hydraulic closure, virgin copolymer polypropylene plates, and filter cloths for process water recovery and dry stacking.'}
+          </p>
+        </div>
+        <TechnicalDiagrams diagram="filter" lang={lang} />
+        <div class="specs-strip">
+          <div><strong>{isEs ? 'Formatos de Placa:' : 'Plate Sizes:'}</strong> 800×800 mm, 1000×1000 mm, 1200×1200 mm &amp; 1500×1500 mm</div>
+          <div><strong>{isEs ? 'Presión:' : 'Pressure:'}</strong> {isEs ? 'Hasta 16 bar con soplado de torta' : 'Up to 16 bar with air cake blowdown'}</div>
+          <div><strong>{isEs ? 'Humedad Residual:' : 'Residual Moisture:'}</strong> 10% – 14%</div>
+        </div>
+        <details class="eq-drawer" data-equipment-ssot-drawer>
+          <summary class="eq-drawer-summary">
+            <span>
+              {isEs
+                ? `▾ SKUs de Filtración (${skusByVertical.filtracion.length} SKUs • AV-05)`
+                : `▾ Filtration SKUs (${skusByVertical.filtracion.length} SKUs • AV-05)`}
+            </span>
+            <span class="eq-drawer-badge">{isEs ? '+ BANDEJA DIRECTA ▾' : '+ DIRECT TRAY ▾'}</span>
+          </summary>
+          <div class="eq-drawer-skus">
+            {skusByVertical.filtracion.map((sku) => (
+              <div
+                class="eq-sku-pill"
+                data-equipos-sku-pill={sku.id}
+                data-equipos-search-blob={`${sku.id} ${sku.title_es} ${sku.title_en} ${(sku.atomic_codes || []).join(' ')} ${sku.avenueCode} ${sku.vertical}`}
+              >
+                <div>
+                  <a href={renderSkuHref(sku)} class="eq-sku-link">{sku.id} — {renderSkuTitle(sku)}</a>
+                  <div class="eq-sku-meta">{sku.avenueCode} · {sku.mass_kg} kg · {isEs ? 'Reorden' : 'Reorder'} {sku.reorder_window_days}d</div>
+                </div>
+                <button type="button" class="btn btn-outline btn-avenue-tray eq-tray-btn" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={renderSkuTitle(sku)}>
+                  {isEs ? '+ Bandeja' : '+ Tray'}
+                </button>
+              </div>
+            ))}
+          </div>
+        </details>
+        <div class="equipment-actions">
+          <a href={filtrationPath} class="btn btn-outline">{isEs ? 'Ver Línea de Filtración' : 'View Filtration Line'}</a>
+          <a href={`${filtrationPath}${isEs ? 'prensa/' : 'press/'}`} class="btn btn-outline">{isEs ? 'Filtros Prensa 800-1500 mm' : 'Filter Presses 800-1500 mm'}</a>
+          <a href={`${filtrationPath}${isEs ? 'repuestos/' : 'parts/'}`} class="btn btn-outline">{isEs ? 'Placas y Telas Filtrantes' : 'Plates & Filter Cloths'}</a>
+          <a href={`${quoteBase}?circuito=filtracion&equipo=filtro_prensa&serie=1200#rfq`} class="btn btn-primary">
+            {isEs ? 'Cotizar Filtro Prensa →' : 'Quote Filter Press →'}
+          </a>
+        </div>
+      </article>
+
+      <article class="card equipment-block" data-equipment-block="bombeo" data-equipment-block-blob="bombeo pumping bombas lodos slurry pumps wet end impulsor impeller forros expeller cartucho 005m av-01">
+        <div class="equipment-block-header">
+          <span class="badge badge-copper">
+            {isEs ? 'BOMBEO DE PULPA EN PROYECTO • 1.5X1" A 14X12" • AV-01' : 'PROJECT SLURRY PUMPING • 1.5X1" TO 14X12" • AV-01'}
+          </span>
+          <h2>{isEs ? 'Bombas Horizontales y Verticales para Lodos (Paquete Completo)' : 'Horizontal & Vertical Slurry Pumps (Complete Package)'}</h2>
+          <p class="eq-lead-desc">
+            {isEs
+              ? 'Bombas centrífugas completas sobre base estructural con conjunto motriz Bearing Assembly / Housing, transmisión por poleas y bandas, guarda de seguridad y extremo húmedo configurado en Alto Cromo (≥650 HB), Hule o Poliuretano.'
+              : 'Complete centrifugal slurry pumps on structural skid base with Bearing Assembly / Housing, V-belt drive guard, and wet-end configured in High Chrome (≥650 HB), Rubber, or Polyurethane.'}
+          </p>
+        </div>
+        <TechnicalDiagrams diagram="pump" lang={lang} />
+        <TechnicalDiagrams diagram="drive_arrangements" lang={lang} compact={true} />
+        <div class="specs-strip">
+          <div><strong>{isEs ? 'Descarga:' : 'Discharge:'}</strong> 1.5x1" – 14x12"</div>
+          <div><strong>{isEs ? 'Arreglos:' : 'Arrangements:'}</strong> CV, ZVZ, CRZ &amp; DC</div>
+          <div><strong>{isEs ? 'Sellado:' : 'Sealing:'}</strong> {isEs ? 'Expulsor seco y prensaestopa' : 'Dry expeller & packed gland'}</div>
+          <div>
+            <strong>{isEs ? 'Refaccionamiento:' : 'Spares:'}</strong>{' '}
+            <a href={pumpingPath}>{isEs ? 'Bombas para Lodos y Spare Parts' : 'Slurry Pumps & Spare Parts'}</a>
+          </div>
+        </div>
+        <details class="eq-drawer" data-equipment-ssot-drawer>
+          <summary class="eq-drawer-summary">
+            <span>
+              {isEs
+                ? `▾ SKUs de Bombeo y Sello Seco (${skusByVertical.bombeo.length} SKUs • AV-01)`
+                : `▾ Slurry Pumping & Dry Seal SKUs (${skusByVertical.bombeo.length} SKUs • AV-01)`}
+            </span>
+            <span class="eq-drawer-badge">{isEs ? '+ BANDEJA DIRECTA ▾' : '+ DIRECT TRAY ▾'}</span>
+          </summary>
+          <div class="eq-drawer-skus">
+            {skusByVertical.bombeo.map((sku) => (
+              <div
+                class="eq-sku-pill"
+                data-equipos-sku-pill={sku.id}
+                data-equipos-search-blob={`${sku.id} ${sku.title_es} ${sku.title_en} ${(sku.atomic_codes || []).join(' ')} ${sku.avenueCode} ${sku.vertical}`}
+              >
+                <div>
+                  <a href={renderSkuHref(sku)} class="eq-sku-link">{sku.id} — {renderSkuTitle(sku)}</a>
+                  <div class="eq-sku-meta">{sku.avenueCode} · {sku.mass_kg} kg · {isEs ? 'Reorden' : 'Reorder'} {sku.reorder_window_days}d · {(sku.atomic_codes || []).slice(0, 4).join(', ')}</div>
+                </div>
+                <button type="button" class="btn btn-outline btn-avenue-tray eq-tray-btn" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={renderSkuTitle(sku)}>
+                  {isEs ? '+ Bandeja' : '+ Tray'}
+                </button>
+              </div>
+            ))}
+          </div>
+        </details>
+        <div class="equipment-actions">
+          <a href={`${pumpingPath}${isEs ? 'skid/#arreglos-transmision' : 'skid/#drive-arrangements'}`} class="btn btn-outline">
+            {isEs ? 'Ver Arreglos CV / ZVZ / CRZ / DC' : 'View CV / ZVZ / CRZ / DC Arrangements'}
+          </a>
+          <a href={`${pumpingPath}#${isEs ? 'como-se-arma-una-bomba' : 'how-a-slurry-pump-is-assembled'}`} class="btn btn-outline">
+            {isEs ? 'Ver Reporte de Armado y Despiece' : 'View Assembly & Exploded BOM'}
+          </a>
+          <a href={`${quoteBase}?circuito=bombeo&equipo=skid_bomba&serie=6x4&transmision=CV#rfq`} class="btn btn-primary">
+            {isEs ? 'Cotizar Motobomba Arreglo CV →' : 'Quote CV Drive Pump Skid →'}
+          </a>
+        </div>
+      </article>
+
+      <article class="card equipment-block" data-equipment-block="clasificacion" data-equipment-block-blob="clasificacion classification hidrociclones hydrocyclones apex vortex finder mallas screens th48 d6 d20 av-02 av-03 av-6a">
+        <div class="equipment-block-header">
+          <span class="badge badge-copper">
+            {isEs ? 'CLASIFICACIÓN Y CRIBADO • PLITT d50c • AV-02 / AV-03 / AV-6A' : 'CLASSIFICATION & SCREENING • PLITT d50c • AV-02 / AV-03 / AV-6A'}
+          </span>
+          <h2>{isEs ? 'Hidrociclones de Clasificación, Boquillas Apex y Mallas de Uretano' : 'Classification Hydrocyclones, Apex Nozzles & Urethane Screens'}</h2>
+          <p class="eq-lead-desc">
+            {isEs
+              ? 'Baterías de hidrociclones y consumibles de corte granulométrico (Apex en SiC y Cr27, Vortex Finder y mallas TH48-30 / 1x1) calibrados por balance metalúrgico de 3 Vasos Marcy para eliminar el acordonamiento (roping).'
+              : 'Hydrocyclone clusters and precision wear liners (SiC & Cr27 Apex/Spigot, Vortex Finder, TH48-30 & 1x1 urethane panels) tuned via 3-Cup Marcy balance to eliminate roping.'}
+          </p>
+        </div>
+        <TechnicalDiagrams diagram="cyclone-apex-vortex" lang={lang} />
+        <div class="specs-strip">
+          <div><strong>{isEs ? 'Metalurgia de Corte:' : 'Cut-Point Alloys:'}</strong> SiC, Alto Cromo 27% Cr &amp; Poliuretano U01</div>
+          <div><strong>{isEs ? 'Control:' : 'Control:'}</strong> Du/Do &amp; Plitt d<sub>50c</sub></div>
+          <div><strong>{isEs ? 'Diagnóstico:' : 'Diagnostics:'}</strong> C<sub>v,u</sub> ≥ 56% &amp; spray geometry</div>
+        </div>
+        <details class="eq-drawer" data-equipment-ssot-drawer>
+          <summary class="eq-drawer-summary">
+            <span>
+              {isEs
+                ? `▾ SKUs de Clasificación y Tamizado (${skusByVertical.clasificacion.length} SKUs • AV-02 / AV-03 / AV-6A)`
+                : `▾ Classification & Screening SKUs (${skusByVertical.clasificacion.length} SKUs • AV-02 / AV-03 / AV-6A)`}
+            </span>
+            <span class="eq-drawer-badge">{isEs ? '+ BANDEJA DIRECTA ▾' : '+ DIRECT TRAY ▾'}</span>
+          </summary>
+          <div class="eq-drawer-skus">
+            {skusByVertical.clasificacion.map((sku) => (
+              <div
+                class="eq-sku-pill"
+                data-equipos-sku-pill={sku.id}
+                data-equipos-search-blob={`${sku.id} ${sku.title_es} ${sku.title_en} ${(sku.atomic_codes || []).join(' ')} ${sku.avenueCode} ${sku.vertical}`}
+              >
+                <div>
+                  <a href={renderSkuHref(sku)} class="eq-sku-link">{sku.id} — {renderSkuTitle(sku)}</a>
+                  <div class="eq-sku-meta">{sku.avenueCode} · {sku.mass_kg} kg · {isEs ? 'Reorden' : 'Reorder'} {sku.reorder_window_days}d</div>
+                </div>
+                <button type="button" class="btn btn-outline btn-avenue-tray eq-tray-btn" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={renderSkuTitle(sku)}>
+                  {isEs ? '+ Bandeja' : '+ Tray'}
+                </button>
+              </div>
+            ))}
+          </div>
+        </details>
+        <div class="equipment-actions">
+          <a href={classificationPath} class="btn btn-outline">{isEs ? 'Abrir Simulador 3 Vasos Marcy' : 'Open 3-Cup Marcy Simulator'}</a>
+          <a href={`${productsBase}${isEs ? 'hidrociclon-completo-y-boquillas-d6-d20/' : 'hydrocyclone-assembly-and-spigots-d6-d20/'}`} class="btn btn-outline">SMAT-CYC-D6-D20</a>
+          <a href={`${productsBase}${isEs ? 'paquete-casado-bomba-hidrociclon/' : 'coupled-pump-hydrocyclone-package/'}`} class="btn btn-outline">SMAT-COUPLED-PUMP-CYC</a>
+          <a href={`${quoteBase}?circuito=clasificacion&equipo=hidrociclon&sku=SMAT-CYC-D6-D20#rfq`} class="btn btn-primary">
+            {isEs ? 'Cotizar Hidrociclón / Apex →' : 'Quote Hydrocyclone / Apex →'}
+          </a>
+        </div>
+      </article>
+
+      <article class="card equipment-block" data-equipment-block="control" data-equipment-block-blob="control metrology marcy balanza scale filtro batch filter tamices astm e11 rotap pulverizador av-05-lab">
+        <div class="equipment-block-header">
+          <span class="badge badge-copper">
+            {isEs ? 'METROLOGÍA DE PULPA Y CONMINUCIÓN LAB • AV-05-LAB' : 'PULP METROLOGY & LAB COMMINUTION • AV-05-LAB'}
+          </span>
+          <h2>{isEs ? 'Balanzas Marcy, Filtros Prensa Batch de Laboratorio y Tamices ASTM E11' : 'Marcy Scales, Batch Lab Filter Presses & ASTM E11 Sieves'}</h2>
+          <p class="eq-lead-desc">
+            {isEs
+              ? 'Instrumentación metalúrgica de turno para auditoría de densidad de pulpa (% sólidos), filtrado de muestras a 100 PSI y perfil granulométrico P80 (Mallas 4 a 400).'
+              : 'Shift metallurgical instrumentation for pulp density (% solids) audits, 100 PSI batch sample dewatering, and P80 particle-size distribution (4 to 400 Mesh).'}
+          </p>
+        </div>
+        <details class="eq-drawer" data-equipment-ssot-drawer>
+          <summary class="eq-drawer-summary">
+            <span>
+              {isEs
+                ? `▾ SKUs de Metrología y Laboratorio (${skusByVertical.control.length} SKUs • AV-05-LAB)`
+                : `▾ Metrology & Lab SKUs (${skusByVertical.control.length} SKUs • AV-05-LAB)`}
+            </span>
+            <span class="eq-drawer-badge">{isEs ? '+ BANDEJA DIRECTA ▾' : '+ DIRECT TRAY ▾'}</span>
+          </summary>
+          <div class="eq-drawer-skus">
+            {skusByVertical.control.map((sku) => (
+              <div
+                class="eq-sku-pill"
+                data-equipos-sku-pill={sku.id}
+                data-equipos-search-blob={`${sku.id} ${sku.title_es} ${sku.title_en} ${(sku.atomic_codes || []).join(' ')} ${sku.avenueCode} ${sku.vertical}`}
+              >
+                <div>
+                  <a href={renderSkuHref(sku)} class="eq-sku-link">{sku.id} — {renderSkuTitle(sku)}</a>
+                  <div class="eq-sku-meta">{sku.avenueCode} · {sku.mass_kg} kg · {isEs ? 'Reorden' : 'Reorder'} {sku.reorder_window_days}d</div>
+                </div>
+                <button type="button" class="btn btn-outline btn-avenue-tray eq-tray-btn" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={renderSkuTitle(sku)}>
+                  {isEs ? '+ Bandeja' : '+ Tray'}
+                </button>
+              </div>
+            ))}
+          </div>
+        </details>
+        <div class="equipment-actions">
+          <a href={controlPath} class="btn btn-outline">{isEs ? 'Ver Línea de Control y Laboratorio' : 'View Process Control & Lab Line'}</a>
+          <a href={`${catalogBase}#avenue-avenida_5_laboratorio`} class="btn btn-outline">{isEs ? 'Ver Avenida AV-05-LAB' : 'Open Avenue AV-05-LAB'}</a>
+        </div>
+      </article>
+    </div>
+
+    <SharePurchasing
+      roleTitle={isEs ? 'Equipos de Proceso para Planta Concentradora (Flotación / Filtración / Bombeo)' : 'Process Equipment for Concentrator Plant (Flotation / Filtration / Pumping)'}
+      specs={isEs ? 'Mecanismos de Flotación 50-300 ft³, Filtros Prensa 800-1500 mm (16 bar) y Bombas de Proyecto 1.5x1 a 14x12' : 'Flotation Mechanisms 50-300 ft³, Filter Presses 800-1500 mm (16 bar), and Project Slurry Pumps 1.5x1 to 14x12'}
+      metallurgy={isEs ? 'Acero Estructural / Alto Cromo A05 (≥650 HB) / Polipropileno Copolímero / Elastómeros' : 'Structural Steel / High Chrome A05 (≥650 HB) / Copolymer Polypropylene / Elastomers'}
+      series={isEs ? 'Línea de Proyectos de Planta SMAT' : 'SMAT Capital Projects Line'}
+      roleId="celda_flotacion"
+      circuit="flotacion"
+      lang={lang}
+    />
+  </div>
+</section>
+
+<section id="stage-2">
+  <CaseCards lang={lang} />
+
+  <details class="equipos-circuit-appendix" id="equipos-circuit-appendix">
+    <summary class="equipos-circuit-appendix__summary container">
+      <span>{isEs ? 'Diagrama P&ID de Circuito y Reglas Metalúrgicas por Rol' : 'P&ID Circuit Diagram & Metallurgical Rules by Role'}</span>
+      <span class="equipos-circuit-appendix__badge">{isEs ? 'EXPANDIR ANEXO P&ID ▾' : 'EXPAND P&ID APPENDIX ▾'}</span>
+    </summary>
+    <div class="equipos-circuit-appendix__body">
+      <CircuitNavigator lang={lang} />
+    </div>
+  </details>
+</section>
+
+<script>
+  import { bindEquipmentCatalogSearchAndTray } from '../../scripts/homeAndEquipmentCatalogFilter.js';
+
+  function initEquipmentHubIsland() {
+    const lang = document.documentElement.lang === 'en' ? 'en' : 'es';
+    bindEquipmentCatalogSearchAndTray(document, lang);
+  }
+
+  initEquipmentHubIsland();
+  document.addEventListener('astro:page-load', initEquipmentHubIsland);
+</script>
+
+<style>
+  .page-hero {
+    background-color: #ffffff;
+    color: var(--smat-text-primary);
+    padding: 3rem 0;
+    border-bottom: 2px solid var(--smat-solar-accent, #7c2d12);
+  }
+  .page-hero h1 { color: var(--smat-text-primary); margin-top: 0.65rem; }
+  .hero-lead { font-size: 1.04rem; max-width: 780px; color: var(--smat-text-secondary); }
+  .hero-cta-row { display: flex; gap: 0.85rem; flex-wrap: wrap; margin-top: 1.25rem; }
+  .equipos-toolbar {
+    background: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 0.9rem 1.15rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .toolbar-search-col { flex: 1 1 300px; }
+  .toolbar-meta-col { display: flex; flex-direction: column; align-items: flex-end; gap: 0.35rem; }
+  .search-label {
+    display: block;
+    font-family: var(--smat-font-mono);
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: #7c2d12;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .equipos-search-input {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.55rem 0.85rem;
+    border: 1.5px solid #94a3b8;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    background: #ffffff;
+    color: #0f172a;
+    box-sizing: border-box;
+  }
+  .dropin-match-banner {
+    margin-top: 0.65rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    background: #ecfdf5;
+    border: 1px solid #10b981;
+    font-size: 0.84rem;
+    color: #064e3b;
+  }
+  .search-count-pill {
+    font-family: var(--smat-font-mono);
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #0f172a;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+  }
+  .matrix-link-solar { font-family: var(--smat-font-mono); font-size: 0.75rem; font-weight: 700; color: #7c2d12; text-decoration: underline; }
+  .process-equipment-grid { display: flex; flex-direction: column; gap: 2.25rem; }
+  .equipment-block { padding: 2rem; border: 1px solid var(--smat-border-strong); background: #ffffff; }
+  .equipment-block-header h2 { margin: 0.5rem 0 0.65rem; color: var(--smat-text-primary); }
+  .eq-lead-desc { color: var(--smat-text-secondary); }
+  .specs-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.85rem;
+    background: var(--smat-bg-canvas);
+    border: 1px solid var(--smat-border-light);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    font-size: 0.88rem;
+    color: var(--smat-text-secondary);
+  }
+  .eq-drawer { border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.5rem 0.85rem; background: #f8fafc; }
+  .eq-drawer-summary {
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 0.86rem;
+    color: #0f172a;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .eq-drawer-badge { font-family: var(--smat-font-mono); font-size: 0.72rem; color: #7c2d12; }
+  .eq-drawer-skus { display: grid; gap: 0.6rem; margin-top: 0.65rem; }
+  .eq-sku-pill {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.55rem 0.75rem;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+  }
+  .eq-sku-link { font-weight: 800; color: #0f172a; text-decoration: underline; font-size: 0.86rem; }
+  .eq-sku-meta { font-family: var(--smat-font-mono); font-size: 0.74rem; color: #334155; }
+  .eq-tray-btn { min-height: 48px; padding: 0.35rem 0.75rem; font-size: 0.78rem; }
+  .equipment-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+  .equipos-circuit-appendix { border-top: 1px solid var(--smat-border-strong); background-color: #f8fafc; }
+  .equipos-circuit-appendix__summary { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1rem; cursor: pointer; font-weight: 800; color: var(--smat-text-primary); list-style: none; }
+  .equipos-circuit-appendix__summary::-webkit-details-marker { display: none; }
+  .equipos-circuit-appendix__badge { background-color: #f0f9ff; color: #082f49; border: 1px solid #bae6fd; font-family: var(--smat-font-mono); font-size: 0.76rem; padding: 0.35rem 0.75rem; border-radius: 9999px; }
+  @media (max-width: 768px) {
+    .page-hero { padding: 0.6rem 0; }
+    .page-hero h1 { font-size: 1.3rem; margin: 0.2rem 0; }
+    .hero-lead { font-size: 0.82rem; line-height: 1.25; margin: 0.2rem 0; }
+    .equipment-block { padding: 0.9rem; }
+    .toolbar-meta-col { align-items: flex-start; }
+  }
+</style>

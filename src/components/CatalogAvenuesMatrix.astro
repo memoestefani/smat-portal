@@ -2,10 +2,10 @@
 /**
  * CatalogAvenuesMatrix.astro
  * ---------------------------------------------------------------------------
- * Proyección SSOT de los 19 SKUs Canónicos agrupados en las 7 Avenidas
- * Industriales (`getQuickProductsByAvenue()` + `AVENUE_METADATA`) y los
- * Kits Tribológicos Preconfigurados (`WET_END_MATERIAL_KITS`) para
- * `/catalogo/` y `/en/catalog/` (`D8-V45`, LCOM4 = 1).
+ * Proyección única (19/19 sin duplicación) de los SKUs canónicos agrupados
+ * exclusivamente por `primary_avenue` en las 7 Avenidas Industriales
+ * (`getQuickProductsByAvenue()` + `AVENUE_METADATA`) y los Kits Tribológicos
+ * Preconfigurados (`WET_END_MATERIAL_KITS`) para `/catalogo/` y `/en/catalog/`.
  */
 import {
   AVENUE_METADATA,
@@ -32,7 +32,7 @@ const hybridKit = (WET_END_MATERIAL_KITS as any).hybrid_a05_r55;
   <div class="avenues-section-header">
     <div>
       <span class="avenues-eyebrow">
-        {isEs ? 'ÍNDICE MAESTRO SSOT • 19 SKUS CANÓNICOS EN 7 AVENIDAS OPERATIVAS' : 'SSOT MASTER INDEX • 19 CANONICAL SKUS ACROSS 7 OPERATIONAL AVENUES'}
+        {isEs ? 'CATÁLOGO MAESTRO CERTIFICADO • 19 SKUS CANÓNICOS EN 7 AVENIDAS OPERATIVAS' : 'CERTIFIED MASTER CATALOG • 19 CANONICAL SKUS ACROSS 7 OPERATIONAL AVENUES'}
       </span>
       <h2 class="avenues-title">
         {isEs
@@ -41,8 +41,8 @@ const hybridKit = (WET_END_MATERIAL_KITS as any).hybrid_a05_r55;
       </h2>
       <p class="avenues-subtitle">
         {isEs
-          ? 'Cada partida incluye verificación geométrica 1:1 (A, B, C), par acoplado de reabastecimiento JRP (s, S), tupla fiscal SAT CFDI 4.0 y adición directa a su Bandeja Multiparte.'
-          : 'Every line item includes 1:1 geometric verification (A, B, C), coupled JRP (s, S) replenishment pairing, SAT CFDI 4.0 tax tuple, and 1-click addition to your Multi-Part Requisition Tray.'}
+          ? 'Cada partida incluye verificación geométrica 1:1 (A, B, C), par acoplado de reabastecimiento, tupla fiscal SAT CFDI 4.0 y adición directa a su Bandeja Multiparte.'
+          : 'Every line item includes 1:1 geometric verification (A, B, C), coupled replenishment pairing, SAT CFDI 4.0 tax tuple, and 1-click addition to your Multi-Part Requisition Tray.'}
       </p>
     </div>
     {hybridKit && (
@@ -59,7 +59,14 @@ const hybridKit = (WET_END_MATERIAL_KITS as any).hybrid_a05_r55;
       const skus = quickByAvenueMap[avKey] || [];
       if (!meta || skus.length === 0) return null;
       return (
-        <div class="avenue-group-card" data-avenue-id={meta.id} data-avenue-code={meta.code}>
+        <div
+          class="avenue-group-card"
+          id={`avenue-${avKey}`}
+          data-catalog-avenue-section={avKey}
+          data-home-avenue-group={meta.id}
+          data-avenue-id={meta.id}
+          data-avenue-code={meta.code}
+        >
           <div class="avenue-group-header">
             <span class="avenue-code-pill">{meta.code} • {meta.gateLock}</span>
             <h3 class="avenue-group-title">{isEs ? meta.labelEs : meta.labelEn}</h3>
@@ -69,6 +76,24 @@ const hybridKit = (WET_END_MATERIAL_KITS as any).hybrid_a05_r55;
             {skus.map((sku) => {
               const skuId = sku.id || sku.sku_id;
               const reg = stockRegimeMap[sku.stock_regime] || STOCK_REGIME_LABELS.hay;
+              const sat = sku.sat_tuple || { clave_prod_serv: '40151510', clave_unidad: 'H87', uso_cfdi: 'G03' };
+              const facetAvenues = Array.isArray(sku.facet_avenues) && sku.facet_avenues.length > 0
+                ? sku.facet_avenues
+                : [sku.primary_avenue || avKey];
+              const searchBlob = [
+                skuId,
+                sku.title_es,
+                sku.title_en,
+                sku.vertical,
+                avKey,
+                meta.code,
+                meta.labelEs,
+                meta.labelEn,
+                sat.clave_prod_serv,
+                ...(Array.isArray(sku.atomic_codes) ? sku.atomic_codes : []),
+              ]
+                .filter(Boolean)
+                .join(' ');
               const prodHref = isEs
                 ? `/productos/${sku.slug_es}/`
                 : `/en/products/${sku.slug_en}/`;
@@ -76,14 +101,26 @@ const hybridKit = (WET_END_MATERIAL_KITS as any).hybrid_a05_r55;
                 ? `/cotizar/?circuito=${encodeURIComponent(sku.vertical || 'bombeo')}&sku=${encodeURIComponent(skuId)}#rfq`
                 : `/en/quote/?circuito=${encodeURIComponent(sku.vertical || 'bombeo')}&sku=${encodeURIComponent(skuId)}#rfq`;
               return (
-                <article class="avenue-sku-item" data-catalog-sku-id={skuId}>
+                <article
+                  class="avenue-sku-item"
+                  data-catalog-sku-id={skuId}
+                  data-sku-id={skuId}
+                  data-sku-family={sku.vertical || 'bombeo'}
+                  data-vertical={sku.vertical || 'bombeo'}
+                  data-primary-avenue={sku.primary_avenue || avKey}
+                  data-facet-avenues={facetAvenues.join(',')}
+                  data-search-blob={searchBlob}
+                >
                   <div class="avenue-sku-top">
                     <code class="avenue-sku-code">{skuId}</code>
                     <span class="avenue-sku-regime">{isEs ? reg.badgeEs : reg.badgeEn}</span>
                   </div>
                   <strong class="avenue-sku-name">{isEs ? sku.title_es : sku.title_en}</strong>
                   <p class="avenue-sku-meta">
-                    {sku.mass_kg} kg • {isEs ? 'Reorden JRP' : 'JRP Window'}: {sku.reorder_window_days}d • {isEs ? 'Par Casado' : 'Coupled'}: <code>{sku.coupled_pair_sku}</code>
+                    {sku.mass_kg} kg • {isEs ? 'Reorden' : 'Reorder'}: {sku.reorder_window_days}d • {isEs ? 'Par Casado' : 'Coupled'}: <code>{sku.coupled_pair_sku}</code>
+                  </p>
+                  <p class="avenue-sku-meta">
+                    SAT CFDI 4.0: <code>{sat.clave_prod_serv || '40151510'}</code> / <code>{sat.clave_unidad || 'H87'}</code> · {sat.uso_cfdi || 'G03'}
                   </p>
                   <div class="avenue-sku-actions no-print">
                     <a href={prodHref} class="btn-avenue-link">
@@ -140,7 +177,7 @@ const hybridKit = (WET_END_MATERIAL_KITS as any).hybrid_a05_r55;
           criticalityMode: 'PARO_DE_LINEA',
         });
         const isEn = document.documentElement.lang === 'en';
-        btn.textContent = isEn ? '✓ In Tray' : '✓ En Bandeja';
+        btn.textContent = isEn ? 'In Tray' : 'En Bandeja';
       });
     });
   }
