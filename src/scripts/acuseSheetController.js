@@ -18,7 +18,7 @@ import {
   bindVendorPassportDownloadButtons,
 } from './vendorPassportAndTradeInController.js';
 
-export function computeFnv1aOrderHash(seedStr = '') {
+function computeFnv1aOrderHash(seedStr = '') {
   let h = 0x811c9dc5;
   const str = String(seedStr || 'SMAT-DEFAULT');
   for (let i = 0; i < str.length; i++) {
@@ -60,7 +60,7 @@ export function enrichTrayItemsPreservingMetadata(rawItems = [], existingItems =
   });
 }
 
-export function isNonPumpDomain(circuit = '', skuId = '', code = '') {
+function isNonPumpDomain(circuit = '', skuId = '', code = '') {
   const c = String(circuit || '').toLowerCase();
   const s = String(skuId || '').toUpperCase();
   const k = String(code || '').toUpperCase();
@@ -171,16 +171,16 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
               });
               return `
             <tr>
-              <td style="font-family:monospace;font-weight:700;">${it.id}<br/><small>${it.material || 'STD'}</small></td>
-              <td><strong>${isEn ? it.nameEn : it.nameEs}</strong><br/><small style="font-family:monospace;color:#475569;">${it.satLine}</small></td>
-              <td style="text-align:center;font-weight:700;">${it.qty}</td>
-              <td style="font-family:monospace;font-size:0.75rem;">${it.coupledPairSku} (${isEn ? 'Cycle' : 'Ciclo'}: T10=${itemJrp.t10InspectionDays}d / T50=${itemJrp.t50ReorderTriggerDays}d / T80=${itemJrp.t80CriticalChangeoutDays}d · Buffer ${itemJrp.leadTimeBufferDays}d · Sev ${itemJrp.wearSeverityFactor}× · ${itemJrp.wearAcceleratedLifeHours}h · ${isEn ? itemJrp.dispatchModeLabelEn : itemJrp.dispatchModeLabelEs} · ${checkoutMeta.lane})</td>
+              <td class="acuse-cell-sku">${it.id}<br/><small>${it.material || 'STD'}</small></td>
+              <td><strong>${isEn ? it.nameEn : it.nameEs}</strong><br/><small class="acuse-cell-sat">${it.satLine}</small></td>
+              <td class="acuse-cell-qty">${it.qty}</td>
+              <td class="acuse-cell-jrp">${it.coupledPairSku} (${isEn ? 'Cycle' : 'Ciclo'}: T10=${itemJrp.t10InspectionDays}d / T50=${itemJrp.t50ReorderTriggerDays}d / T80=${itemJrp.t80CriticalChangeoutDays}d · Buffer ${itemJrp.leadTimeBufferDays}d · Sev ${itemJrp.wearSeverityFactor}× · ${itemJrp.wearAcceleratedLifeHours}h · ${isEn ? itemJrp.dispatchModeLabelEn : itemJrp.dispatchModeLabelEs} · ${checkoutMeta.lane})</td>
             </tr>`;
             }
           )
           .join('');
       } else {
-        trayTbody.innerHTML = `<tr><td colspan="4" style="color:#64748b;font-size:0.82rem;">${
+        trayTbody.innerHTML = `<tr><td colspan="4" class="acuse-empty-row">${
           isEn
             ? `Single-component technical specification (${jrpWindow.policySummaryEn})`
             : `Especificación técnica de componente individual (${jrpWindow.policySummaryEs})`
@@ -199,7 +199,7 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
     if ((isReorderOnly && !hasPumpItem) || isNonPumpRequisition) {
       ['row-field-hydraulics', 'row-field-material-drive', 'row-field-clearance-kinematics'].forEach((rowId) => {
         const tr = document.getElementById(rowId);
-        if (tr) tr.style.display = 'none';
+        if (tr) tr.classList.add('hidden');
       });
     }
 
@@ -309,7 +309,64 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
       elUrgency.textContent = urgencia === 'paro'
         ? (isEn ? 'PRIORITY: PLANT SHUTDOWN' : 'PRIORIDAD: [PARO DE PLANTA]')
         : (isEn ? 'PRIORITY: SCHEDULED PROJECT' : 'PRIORIDAD: [PROYECTO / PROGRAMADO]');
-      if (urgencia === 'paro') elUrgency.style.color = '#ef4444';
+      elUrgency.classList.toggle('is-urgency-paro', urgencia === 'paro');
+    }
+
+    let webhookStatus = null;
+    try {
+      const rawStatus = sessionStorage.getItem('smat_last_rfq_dispatch_status');
+      if (rawStatus) webhookStatus = JSON.parse(rawStatus);
+    } catch (_e) { }
+    const webhookQueryOverride = urlParams.get('webhook');
+    const isWebhookBlocked =
+      webhookQueryOverride === 'blocked' ||
+      Boolean(webhookStatus && (webhookStatus.blocked || webhookStatus.status === 'blocked' || webhookStatus.status === 'honeypot_blocked'));
+    const webhookBanner = document.getElementById('acuse-webhook-status');
+    if (webhookBanner) {
+      webhookBanner.setAttribute('data-webhook-state', isWebhookBlocked ? 'blocked' : 'sent');
+      webhookBanner.classList.toggle('is-webhook-blocked', isWebhookBlocked);
+      webhookBanner.classList.toggle('is-webhook-sent', !isWebhookBlocked);
+      webhookBanner.textContent = isWebhookBlocked
+        ? (isEn
+          ? 'Webhook Status: BLOCKED (Antispam / Endpoint guard triggered — Technical requisition preserved locally)'
+          : 'Estado Webhook: BLOCKED (Filtro antispam o endpoint inactivo — Ficha resguardada localmente)')
+        : (isEn
+          ? 'Webhook Status: SENT (Durango Central Engineering Inbox Notified)'
+          : 'Estado Webhook: SENT (Requisición notificada al Almacén Central Durango)');
+    }
+
+    const fullPayloadPre = document.getElementById('acuse-full-payload-pre');
+    if (fullPayloadPre) {
+      const detailPayload = {
+        folio,
+        urgencia,
+        gate_classification: gateClassVal,
+        trust_boundary_id: trustBoundaryId,
+        webhook_status: isWebhookBlocked ? 'blocked' : 'sent',
+        memoria_hidraulica: hidraulica,
+        estacion_despiece: estacion,
+        cedula_metrologia: metrologia,
+        tco_resumen: fullTcoAndProfile,
+        material_wet_end: material,
+        arreglo_transmision: transmision,
+        rama_sellado: sealBranch,
+        peso_pieza_kg: pesoKg || '0',
+        claro_axial_mm: claroMm,
+        ancho_impulsor_b2_mm: b2Mm,
+        capacidad_rodamiento_c_kn: capCKn,
+        velocidad_punta_u2_ms: u2Ms,
+        rpm_bomba_n2: n2Rpm,
+        carga_radial_fr_kn: frKn,
+        vida_rodamiento_l10h: l10h,
+        derating_eficiencia_er: erVal,
+        vida_estimada_impulsor_h: impLifeVal,
+        perdida_npsh_altitud_m: deltaNpshVal,
+        derating_motor_iec: motorDeratingVal,
+        multiplicador_motor_altitud: kMotorAltVal,
+        perdida_margen_vc_pct: pipeVelLossVal,
+        tray_items: trayState.items || []
+      };
+      fullPayloadPre.textContent = JSON.stringify(detailPayload, null, 2);
     }
 
     const setText = (id, val) => {

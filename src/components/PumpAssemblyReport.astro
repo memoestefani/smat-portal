@@ -340,9 +340,9 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
         <h3 class="station-card__title">{st.title}</h3>
         <p class="station-card__desc">{st.sub}</p>
         {Array.isArray(st.parts) && st.parts.length > 0 && (
-          <ul class="station-card__parts" style="margin: 0.35rem 0 0.5rem 1rem; padding: 0; font-size: 0.75rem; color: #334155;">
+          <ul class="station-card__parts smat-bom-list">
             {st.parts.map((partItem) => (
-              <li style="margin-bottom: 0.15rem;">{partItem}</li>
+              <li class="smat-bom-part-item">{partItem}</li>
             ))}
           </ul>
         )}
@@ -361,27 +361,26 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
           <div
             data-core-tradein-widget="DAM005"
             data-lang={isEs ? 'es' : 'en'}
-            class="no-print"
-            style="width:100%; margin-top:0.65rem; padding:0.7rem; border-radius:8px; background:#ecfdf5; border:1px solid #10b981; font-size:0.74rem; color:#064e3b;"
+            class="no-print smat-bom-tradein-card"
           >
-            <div style="font-family:var(--smat-font-mono, monospace); font-weight:800; color:#065f46; margin-bottom:0.3rem;">
-              {isEs ? '♻️ CANJE NÚCLEO DAM005 (-22% / -12% REMANUFACTURA H7)' : '♻️ DAM005 CORE TRADE-IN (-22% / -12% H7 REMANUFACTURING)'}
+            <div class="smat-bom-tradein-title">
+              {isEs ? 'CANJE NÚCLEO DAM005 (-22% / -12% REMANUFACTURA H7)' : 'DAM005 CORE TRADE-IN (-22% / -12% H7 REMANUFACTURING)'}
             </div>
-            <div style="display:flex; flex-direction:column; gap:0.35rem; margin-bottom:0.35rem;">
-              <select data-tradein-condition data-core-tradein-condition style="padding:0.3rem; border:1px solid #059669; border-radius:6px; background:#ffffff; color:#1c1917; font-size:0.72rem;">
+            <div class="smat-bom-tradein-col">
+              <select data-tradein-condition data-core-tradein-condition class="smat-bom-tradein-select">
                 <option value="h7_intact" selected>{isEs ? 'Carcasa Intacta Sin Fisuras (-22% • 0.78x)' : 'Intact Crack-Free Housing (-22% • 0.78x)'}</option>
                 <option value="minor_bearing_seizure">{isEs ? 'Alojamiento Recuperable (-12% • 0.88x)' : 'Recoverable Bore (-12% • 0.88x)'}</option>
                 <option value="cracked_housing">{isEs ? 'Carcasa Fisurada/Soldada (0% • 1.00x)' : 'Cracked/Welded Housing (0% • 1.00x)'}</option>
               </select>
-              <label style="display:flex; align-items:center; gap:0.35rem; font-weight:700;">
+              <label class="smat-bom-tradein-check">
                 <input type="checkbox" data-tradein-not-welded data-core-tradein-toggle checked />
                 <span>{isEs ? 'Alojamiento H7 Sin Soldadura (ISO IT6)' : 'Unwelded H7 Bore (ISO IT6)'}</span>
               </label>
             </div>
-            <div data-tradein-result data-core-tradein-badge style="font-family:var(--smat-font-mono, monospace); font-weight:800; color:#065f46;">
+            <div data-tradein-result data-core-tradein-badge class="smat-bom-tradein-res">
               {isEs ? 'Activo: -22% Crédito Núcleo Usado (Factor 0.78x)' : 'Active: -22% Core Trade-In Credit (Factor 0.78x)'}
             </div>
-            <div data-tradein-co2 data-core-tradein-note style="font-size:0.7rem; color:#047857; margin-top:0.15rem;">
+            <div data-tradein-co2 data-core-tradein-note class="smat-bom-tradein-co2">
               {isEs ? 'Retorno Durango, Dgo. CP 34166 (35 kg CO₂e ahorrados)' : 'Durango Warehouse Return CP 34166 (35 kg CO₂e saved)'}
             </div>
           </div>
@@ -454,7 +453,7 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
             {isEs ? 'Auditoria de Secuencia de Montaje (Estaciones 01–05):' : 'Assembly Sequence Audit (Stations 01–05):'}
           </span>
           <select data-clearance-seq-select aria-label={isEs ? 'Secuencia de montaje de 5 estaciones' : '5-station assembly sequence'}>
-            <option value="canonical" selected>{isEs ? 'Canónica: EST-01 ➔ EST-02 ➔ EST-03 ➔ EST-04 ➔ EST-05' : 'Canonical: EST-01 ➔ EST-02 ➔ EST-03 ➔ EST-04 ➔ EST-05'}</option>
+            <option value="canonical" selected>{isEs ? 'Canónica: EST-01 → EST-02 → EST-03 → EST-04 → EST-05' : 'Canonical: EST-01 → EST-02 → EST-03 → EST-04 → EST-05'}</option>
             <option value="impeller_before_rear_liner">{isEs ? 'Error típico A: Roscar Impulsor (EST-03) antes de Sello/FPL (EST-02)' : 'Typical Error A: Thread Impeller (EST-03) before Seal/FPL (EST-02)'}</option>
             <option value="cover_before_throatbush">{isEs ? 'Error típico B: Cerrar Tapa Succión (EST-05) sin Throatbush (EST-04)' : 'Typical Error B: Close Cover Plate (EST-05) without Throatbush (EST-04)'}</option>
           </select>
@@ -545,7 +544,7 @@ const bomItems = PUMP_554_BOM_14_PARTS.map((item) => {
                 <td class="bom-col-name"><strong>{row.name}</strong></td>
                 <td class="bom-col-mass">
                   <strong>{row.weightKg} kg</strong>
-                  <span class="bom-niosh-tag" style="display:block;font-size:0.72rem;opacity:0.86;">
+                  <span class="bom-niosh-tag smat-bom-niosh-tag">
                     {row.nioshBadge}
                   </span>
                 </td>

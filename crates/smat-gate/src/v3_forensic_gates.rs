@@ -754,10 +754,11 @@ pub fn verify_seven_findings_and_v32_closure_gate_32(site_root: &Path) -> Result
         return Err("CatalogFacetedIsland.astro carece de chips data-family-chip=".to_string());
     }
     let diag_composite = crate::read_technical_diagrams_composite(site_root)?;
-    let xray_style_count = diag_composite.matches("style={xrayWearStyle}").count();
+    let xray_style_count = diag_composite.matches("class={xrayWearClass}").count()
+        + diag_composite.matches("style={xrayWearStyle}").count();
     if xray_style_count < 15 {
         return Err(format!(
-            "v3.3 (D5-V33): TechnicalDiagrams compuesto debe aplicar style={{xrayWearStyle}} en los 15 diagramas (encontrados: {})",
+            "v3.3 (D5-V33): TechnicalDiagrams compuesto debe aplicar clase/estilo X-Ray en los 15 diagramas (encontrados: {})",
             xray_style_count
         ));
     }

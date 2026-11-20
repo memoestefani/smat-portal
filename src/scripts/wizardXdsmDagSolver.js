@@ -20,7 +20,6 @@ import {
 import {
   calculateDriveAndBearingKinematics,
   calculateDriveKinematics,
-  calculateMarcyScale,
   DRIVE_ARRANGEMENTS,
   evaluateHybridWetEndConfiguration,
   evaluatePumpAssemblySequence,
@@ -49,6 +48,7 @@ import {
 } from './slurryEngine.js';
 import {
   calculateGyMinimumSampleMass,
+  calculateMarcyScaleReading,
   recommendAstmSieveSeries,
   selectOptimalMaterial,
   WET_END_MATERIAL_MATRIX
@@ -62,6 +62,62 @@ export const XDSM_DISCIPLINE_ORDER = Object.freeze([
   '5_circuit_submodels',
   '6_metrology_lab',
   '7_plausibility_and_erp_export'
+]);
+
+/**
+ * Manifiesto Topológico Explícito del Grafo MDAO/XDSM (Martins & Lambe 2013).
+ * Registra dependencias exactas `consumes` -> `produces` entre las 7 disciplinas.
+ */
+export const XDSM_DISCIPLINE_GRAPH = Object.freeze([
+  {
+    step: 1,
+    id: '1_pumping_hydraulics',
+    domain: 'pumping',
+    consumes: ['flowM3H', 'solidsWeightPercent', 'particleSizeD80Microns', 'solidsSpecificGravity', 'pipeSeries', 'altitudeM', 'pH', 'stressSymptom'],
+    produces: ['slurryEval.results', 'altitudeEval', 'sensitivity.sobolDominantDriver']
+  },
+  {
+    step: 2,
+    id: '2_seal_drive_kinematics',
+    domain: 'sealDrive',
+    consumes: ['dischargeHeadM', 'suctionHeadM', 'expellerDiaMm', 'pumpRpm', 'slurrySg', 'arrangementCode', 'motorRpm', 'driverPulleyMm', 'drivenPulleyMm', 'motorPowerKw', 'slurryEval.results.slurrySpecificGravity'],
+    produces: ['driveEval', 'frameEval', 'sealBalanceEval', 'derivedTorqueNm']
+  },
+  {
+    step: 3,
+    id: '3_tribology_hybrid_assembly',
+    domain: 'tribology',
+    consumes: ['tribologyMaterial', 'frontClearanceMm', 'particleSizeD80Microns', 'pulpPh', 'driveEval.tipSpeedMs', 'derivedTorqueNm', 'assemblySequence', 'attemptedStationOrder'],
+    produces: ['optimalMaterial', 'hybridEval', 'interferenceEval', 'assemblySeqEval']
+  },
+  {
+    step: 4,
+    id: '4_jrp_wear_coupling',
+    domain: 'jrp',
+    consumes: ['slurryEval.results.estimatedImpellerLifeHours', 'predictedWearHours', 'operatingHoursPerDay', 'criticalityMode', 'coreReturnEnabled', 'urgency', 'trayItems', 'driveEval.tipSpeedMs'],
+    produces: ['reorderEval', 'tradeInEval', 'cmuDescriptor']
+  },
+  {
+    step: 5,
+    id: '5_circuit_submodels',
+    domain: 'flotation+filtration+cycloneScreen',
+    consumes: ['jgCmS', 'd32Mm', 'rotorDiaM', 'rotorRpm', 'floatabilityP', 'frothRecoveryRf', 'plateWidthMm', 'feedPressureBar', 'cloggedPortsCount', 'plateThicknessMm', 'cakeMoistureTargetPct', 'feedSg', 'underflowSg', 'overflowSg', 'apertureMm'],
+    produces: ['flotationEval', 'filtrationEval', 'cycloneScreenEval']
+  },
+  {
+    step: 6,
+    id: '6_metrology_lab',
+    domain: 'metrology',
+    consumes: ['marcyMode', 'solidsSpecificGravity', 'measuredSpGr', 'solidsWeightPercent', 'topSizeMm', 'liberationSizeMicrons', 'oreGradeDecimal', 'samplingConstantC', 'targetRelativeStdError', 'targetP80Microns', 'rosinRammlerSlopeN', 'retainedPercentAtP80'],
+    produces: ['marcyEval', 'gyEval', 'sieveEval']
+  },
+  {
+    step: 7,
+    id: '7_plausibility_and_erp_export',
+    domain: 'erpExport',
+    consumes: ['slurryEval', 'tribology', 'assemblySeqEval', 'reorderEval', 'cmuDescriptor', 'quantity', 'placa_ref', 'logistics_mode', 'delivery_destination'],
+    produces: ['leadValidation', 'parsedPart', 'erpBundle']
+  }
 ]);
 
 /**
@@ -145,6 +201,12 @@ export function solveXdsmMultidisciplinaryDag(rawState = {}) {
     solidsWeightPercent: tribIn.solidsWeightPercent,
     pipeSeries
   });
+  const derivedTorqueNm = Number(((sealIn.motorPowerKw * 9549.2966) / Math.max(100, driveEval.pumpRpm)).toFixed(1));
+  const impellerTorqueNm = Number(s.impellerTorqueNm ?? tribIn.impellerTorqueNm ?? derivedTorqueNm);
+  const attemptedStationOrder = Array.isArray(s.attemptedStationOrder)
+    ? s.attemptedStationOrder
+    : (Array.isArray(tribIn.attemptedStationOrder) && tribIn.attemptedStationOrder.length ? tribIn.attemptedStationOrder : undefined);
+
   const interferenceEval = evaluateWetEndAssemblyInterference({
     wetEndBranch: wetBranch,
     sealBranch: sealBalanceEval.recommendedSealBranch || 'expeller_dry',
@@ -154,20 +216,25 @@ export function solveXdsmMultidisciplinaryDag(rawState = {}) {
     sequencePreset: tribIn.assemblySequence
   });
   const assemblySeqEval = evaluatePumpAssemblySequence({
+    wetEndBranch: wetBranch,
     frontClearanceMm: tribIn.frontClearanceMm,
-    impellerTorqueNm: 450,
+    impellerTorqueNm,
     d80Microns: tribIn.particleSizeD80Microns,
     impellerTipSpeedMs: driveEval.tipSpeedMs,
     pipeSeries,
-    sequencePreset: tribIn.assemblySequence
+    sequencePreset: tribIn.assemblySequence,
+    attemptedStationOrder
   });
 
   // 4. Acoplamiento automático Desgaste predicho -> Ventana Armónica JRP (s, S)
   const jrpCheck = validateSchemaPayload('jrp', s);
   const jrpIn = jrpCheck.normalized;
+  const trayItems = Array.isArray(jrpIn.trayItems) && jrpIn.trayItems.length
+    ? jrpIn.trayItems
+    : (Array.isArray(s.trayItems) ? s.trayItems : []);
   const coupledWearHours = Number(s.predictedWearHours) || simRes.estimatedImpellerLifeHours || jrpIn.predictedWearHours;
   const reorderEval = calculateCoupledReorderWindowDays({
-    sg: simRes.slurrySpecificGravity || 1.45,
+    sg: simRes.slurrySpecificGravity,
     d50Um: pumpIn.particleSizeD80Microns,
     tipSpeedMs: driveEval.tipSpeedMs,
     predictedWearHours: coupledWearHours,
@@ -176,7 +243,7 @@ export function solveXdsmMultidisciplinaryDag(rawState = {}) {
     materialKey: matKey
   });
   const tradeInEval = evaluateBearingCartridgeCoreTradeIn(
-    { items: Array.isArray(jrpIn.trayItems) ? jrpIn.trayItems : [], coreReturnEnabled: jrpIn.coreReturnEnabled },
+    { items: trayItems, coreReturnEnabled: jrpIn.coreReturnEnabled },
     jrpIn.coreReturnEnabled
   );
 
@@ -237,27 +304,37 @@ export function solveXdsmMultidisciplinaryDag(rawState = {}) {
 
   // 6. Metrología de Laboratorio (Marcy 3 modos + Pierre Gy + ASTM E11)
   const metIn = validateSchemaPayload('metrology', s).normalized;
-  const marcyEval = calculateMarcyScale({
+  const marcyEval = calculateMarcyScaleReading({
     solidsSpecificGravity: metIn.solidsSpecificGravity,
-    solidsWeightPercent: pumpIn.solidsWeightPercent,
+    solidsWeightPercent: metIn.solidsWeightPercent ?? pumpIn.solidsWeightPercent,
     pulpDensityKgL: metIn.measuredSpGr,
-    solveFor: metIn.marcyMode === 'cw_pct' ? 'sm' : metIn.marcyMode
+    solveFor: metIn.marcyMode === 'cw_pct' || metIn.marcyMode === 'cw' ? 'sm' : metIn.marcyMode
   });
   const gyEval = calculateGyMinimumSampleMass({
     topSizeD95Mm: metIn.topSizeMm,
-    liberationSizeMicrons: Number(s.liberationSizeMicrons) || 100,
-    oreGradeDecimal: Number(s.oreGradeDecimal) || 0.02,
-    samplingConstantC: metIn.liberationFactorBeta * metIn.mineralogicalFactorM * 0.16,
-    solidsSpecificGravity: metIn.solidsSpecificGravity,
+    liberationSizeMicrons: metIn.liberationSizeMicrons ?? (Number(s.liberationSizeMicrons) || 100),
+    oreGradeDecimal: metIn.oreGradeDecimal ?? (Number(s.oreGradeDecimal) || 0.05),
+    samplingConstantC: metIn.samplingConstantC ?? (metIn.liberationFactorBeta || 0.5) * (metIn.mineralogicalFactorM || 20) * 0.16,
+    targetRelativeStdError: metIn.targetRelativeStdError ?? 0.05,
+    airPressurePsi: metIn.airPressurePsi ?? 90,
+    solidsSpecificGravity: marcyEval.solidsSpecificGravity ?? metIn.solidsSpecificGravity,
     solidsWeightPercent: marcyEval.solidsWeightPercent
   });
-  const sieveEval = recommendAstmSieveSeries({
+  const sieveEvalRaw = recommendAstmSieveSeries({
     targetP80Microns: metIn.targetP80Microns,
     topSizeD95Mm: metIn.topSizeMm,
-    drySampleMassGrams: Math.max(200, Math.round(gyEval.minDrySampleGrams))
+    rosinRammlerSlopeN: metIn.rosinRammlerSlopeN,
+    retainedPercentAtP80: metIn.retainedPercentAtP80,
+    drySampleMassGrams: Math.max(250, Math.round(gyEval.minDrySampleGrams))
   });
+  const sieveEval = {
+    ...sieveEvalRaw,
+    rosinRammlerY: Array.isArray(sieveEvalRaw.sieveStack) && sieveEvalRaw.sieveStack[0]
+      ? sieveEvalRaw.sieveStack[0].rosinRammlerY
+      : sieveEvalRaw.rosinRammlerYPrime
+  };
 
-  // 7. Compuerta de Plausibilidad Física y Proyección ERP sin pérdidas
+  // 7. Compuerta de Plausibilidad Física, Sensibilidad Sobol en vivo y Proyección ERP
   const erpIn = validateSchemaPayload('erpExport', s).normalized;
   const leadValidation = validatePlantLeadInput({
     company: s.company || '',
@@ -274,11 +351,37 @@ export function solveXdsmMultidisciplinaryDag(rawState = {}) {
     smat_code: s.smat_code || 'SMAT-PUMP-6X4-WETKIT'
   });
   const parsedPart = parseSmatPartCode(s.smat_code || 'SMAT-PUMP-6X4-WETKIT', 'es');
+  const trayTotalEstimateMxn = trayItems.reduce((acc, it) => acc + Math.max(0, Number(it?.unitPriceMxn || it?.priceMxn || 0)) * Math.max(1, Number(it?.qty || 1)), 0);
   const cmuDescriptor = computeCmuPriorityDescriptor({
-    urgency: s.urgency || 'programado',
+    urgency: jrpIn.urgency || s.urgency || (jrpIn.criticalityMode === 'paro_planta' ? 'paro_de_linea' : 'programado'),
     criticalityMode: jrpIn.criticalityMode,
-    totalMassKg: assemblySeqEval.selectedPartSpec?.[0]?.activeWeightKg || 68
+    items: trayItems,
+    estimatedTotalMxn: s.estimatedTotalMxn ?? (trayTotalEstimateMxn > 0 ? trayTotalEstimateMxn : (jrpIn.criticalityMode === 'paro_planta' ? 18500 : 85000)),
+    stockRegime: s.stockRegime || 'hay'
   });
+
+  const sensitivity = computeSobolFirstOrderIndices(
+    (v) => calculateSlurryMetrics({
+      flowM3H: v.flowM3H,
+      solidsWeightPercent: v.solidsWeightPercent,
+      particleSizeD80Microns: v.particleSizeD80Microns,
+      altitudeM: v.altitudeM,
+      solidsSpecificGravity: pumpIn.solidsSpecificGravity,
+      pipeSeries
+    }).results.estimatedImpellerLifeHours,
+    [
+      { name: 'flowM3H', min: 50, max: 1200 },
+      { name: 'solidsWeightPercent', min: 15, max: 68 },
+      { name: 'particleSizeD80Microns', min: 38, max: 600 },
+      { name: 'altitudeM', min: 0, max: 4500 }
+    ],
+    16
+  );
+  const topSobol = sensitivity.ranked[0] || { name: 'solidsWeightPercent', si: 0 };
+  const sobolDominantDriver = `${topSobol.name} (S₁=${topSobol.si.toFixed(2)})`;
+  if (slurryEval.results) {
+    slurryEval.results.sobolDominantDriver = sobolDominantDriver;
+  }
 
   const erpSnapshot = {
     folio: erpIn.folio || 'SMAT-2026-8810',
@@ -295,9 +398,11 @@ export function solveXdsmMultidisciplinaryDag(rawState = {}) {
   };
 
   return {
+    disciplineGraph: XDSM_DISCIPLINE_GRAPH,
     disciplineOrder: XDSM_DISCIPLINE_ORDER,
     arrangementCount,
     driveKinematicsAliasReady: typeof calculateDriveKinematics === 'function',
+    derivedTorqueNm,
     altitudeEval: altData,
     slurryEval,
     driveEval,
@@ -318,6 +423,11 @@ export function solveXdsmMultidisciplinaryDag(rawState = {}) {
     leadValidation,
     parsedPart,
     cmuDescriptor,
+    sensitivity: {
+      ...sensitivity,
+      sobolDominantDriver,
+      sobolDominantSi: topSobol.si
+    },
     erpBundle: {
       sapTsv: formatSapTsv(erpSnapshot),
       acuseParams: buildAcuseUrlParams(erpSnapshot).toString(),
@@ -339,7 +449,7 @@ export function computeSobolFirstOrderIndices(modelFn, paramSpecs = [], nSamples
   if (typeof modelFn !== 'function' || !Array.isArray(paramSpecs) || paramSpecs.length === 0) {
     return { totalVariance: 0, indices: {}, ranked: [] };
   }
-  const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43];
+  const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71];
   const halton = (idx, base) => {
     let f = 1;
     let r = 0;
@@ -352,13 +462,13 @@ export function computeSobolFirstOrderIndices(modelFn, paramSpecs = [], nSamples
     return r;
   };
   const d = paramSpecs.length;
-  const sampleMatrix = (offset) => {
+  const sampleMatrix = (primeOffset) => {
     const rows = [];
     for (let i = 1; i <= nSamples; i += 1) {
       const vec = {};
       for (let j = 0; j < d; j += 1) {
         const spec = paramSpecs[j];
-        const u = halton(i + offset, primes[j % primes.length]);
+        const u = halton(i + 17, primes[(j + primeOffset) % primes.length]);
         vec[spec.name] = spec.min + u * (spec.max - spec.min);
       }
       rows.push(vec);
@@ -366,12 +476,13 @@ export function computeSobolFirstOrderIndices(modelFn, paramSpecs = [], nSamples
     return rows;
   };
 
-  const matA = sampleMatrix(5);
-  const matB = sampleMatrix(5 + nSamples * 3);
+  const matA = sampleMatrix(0);
+  const matB = sampleMatrix(d);
   const yA = matA.map((v) => Number(modelFn(v)));
   const yB = matB.map((v) => Number(modelFn(v)));
   const allY = yA.concat(yB);
   const meanY = allY.reduce((a, b) => a + b, 0) / allY.length;
+  const meanB = yB.reduce((a, b) => a + b, 0) / yB.length;
   const variance = allY.reduce((acc, val) => acc + Math.pow(val - meanY, 2), 0) / Math.max(1, allY.length - 1);
 
   const indices = {};
@@ -382,7 +493,7 @@ export function computeSobolFirstOrderIndices(modelFn, paramSpecs = [], nSamples
     for (let i = 0; i < nSamples; i += 1) {
       const hybrid = { ...matA[i], [key]: matB[i][key] };
       const yAb = Number(modelFn(hybrid));
-      saltelliSum += yB[i] * (yAb - yA[i]);
+      saltelliSum += (yB[i] - meanB) * (yAb - yA[i]);
     }
     const siRaw = variance > 1e-12 ? Math.max(0, Math.min(1, saltelliSum / (nSamples * variance))) : 0;
     const si = Number(siRaw.toFixed(4));

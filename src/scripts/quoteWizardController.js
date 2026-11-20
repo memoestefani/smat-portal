@@ -2,19 +2,16 @@
 /**
  * quoteWizardController.js
  * ---------------------------------------------------------------------------
- * Fachada Orquestadora XDSM del Quote Wizard (`/cotizar/` y `/en/quote/`).
- * Adelgazada de 3,314 LOC a < 450 LOC en V5.0 (`D3-V50` / `SLICE-V50-08`),
- * componiendo las 4 costuras LCOM4 limpias:
- *   - `wizardXdsmDagSolver.js` (C2 pura, Zero-DOM, 7 disciplinas + Sobol)
- *   - `wizardDossierProjector.js` (C3, Two-Sort DOM sin innerHTML)
- *   - `wizardStateAndUrlLens.js` (C4, Lente GetPut/PutGet única)
- *   - `wizardEventBindings.js` (C1, Listeners declarativos EngineSchema)
+ * Fachada Orquestadora XDSM Única del Quote Wizard (`/cotizar/` y `/en/quote/`).
+ * Ejecuta exclusivamente `readAllCanonicalInputs` + `solveXdsmMultidisciplinaryDag`
+ * una sola vez por ciclo reactivo (`D1-V51` / `D2-V51`), sin fallbacks ni recálculos en sombra.
  */
 
 import { evaluatePumpAssemblySequence } from '../scripts/pumpAssemblyAndDriveEngine.js';
 import { DOSSIER_FORMATTERS_BY_FIELD, formatDossierCircuitPhysicsRow, formatDossierMetrologyBadge, formatDossierSimulationBanner } from '../scripts/quoteDossierRenderer.js';
-import { calculateAltitudeCorrection, calculateSlurryMetrics, MECHANICAL_DIAGNOSTICS, PIPE_SERIES_DIAMETER_MM, resolvePipeDiameterMm } from '../scripts/slurryEngine.js';
-import { calculateGyMinimumSampleMass, calculateMarcyScaleReading, recommendAstmSieveSeries, selectOptimalMaterial } from '../scripts/tribologyAndCompatibilityEngine.js';
+import { readAllCanonicalInputs, projectDomainOutputs } from '../scripts/schemaRuntimeBinder.js';
+import { getTrayState } from '../scripts/requisitionTrayBus.js';
+import { MECHANICAL_DIAGNOSTICS, PIPE_SERIES_DIAMETER_MM, resolvePipeDiameterMm } from '../scripts/slurryEngine.js';
 import { applyCircuitStatechartXOR, CIRCUIT_XOR_VIEW_SPEC, getCircuitXorViewProjection } from '../scripts/wizardCircuitXorStatechart.js';
 import { projectLiveDossierSummary, switchDossierTabView } from '../scripts/wizardDossierProjector.js';
 import { bindAllWizardEventListeners, collectWizardDomRefs } from '../scripts/wizardEventBindings.js';
@@ -139,7 +136,7 @@ export function computeWizardViewState(state = {}, urlParams = {}) {
 }
 
 /**
- * Inicializa la consola del Quote Wizard conectando los 4 módulos XDSM/DOM.
+ * Inicializa la consola del Quote Wizard conectando los módulos XDSM/DOM sobre `schemaRuntimeBinder`.
  */
 export function initQuoteWizardController() {
   if (typeof document === 'undefined') return;
@@ -180,19 +177,26 @@ export function initQuoteWizardController() {
     currentClearanceEval: {},
     currentKinematics: {},
     currentMetrology: null,
-    lastAltitudeEval: null
+    lastAltitudeEval: null,
+    lastDagSnapshot: null
   };
 
   function runSlurryCalculation() {
-    const Q = Number(dom.sliderFlow?.value) || 180;
-    const Cw = Number(dom.sliderSolids?.value) || 45;
-    const d80 = Number(dom.sliderD80?.value) || 180;
-    const downtimeHours = Number(dom.sliderDowntime?.value) || 4;
-    const Ss = Number(dom.sliderSg?.value) || 2.7;
-    const pHVal = dom.sliderPh ? (Number(dom.sliderPh.value) || 7.0) : 7.0;
-    const pipeSeriesVal = dom.selectPipeSize?.value || '6x4';
+    const canonicalInputs = readAllCanonicalInputs(doc);
+    const Q = canonicalInputs.flowM3H;
+    const Cw = canonicalInputs.solidsWeightPercent;
+    const d80 = canonicalInputs.particleSizeD80Microns;
+    const Ss = canonicalInputs.solidsSpecificGravity;
+    const pHVal = canonicalInputs.pH;
+    const pipeSeriesVal = canonicalInputs.pipeSeries;
     const D_mm = resolvePipeDiameterMm(pipeSeriesVal);
-    const stressSymVal = dom.inputStressSymptom?.value || '';
+    const downtimeHours = Number(dom.sliderDowntime?.value) || 4;
+    const trayState = getTrayState();
+
+    const altitudeM = Number.isFinite(Number(dom.altNumericInput?.value))
+      ? Number(dom.altNumericInput.value)
+      : (state.selectedAltitude || canonicalInputs.altitudeM);
+    state.selectedAltitude = altitudeM;
 
     if (dom.valFlow) dom.valFlow.textContent = `${Q} m³/h`;
     if (dom.valSolids) dom.valSolids.textContent = `${Cw}%`;
@@ -202,53 +206,56 @@ export function initQuoteWizardController() {
     if (dom.valPipeMm) dom.valPipeMm.textContent = `${pipeSeriesVal} (${D_mm} mm)`;
     if (dom.valDowntime) dom.valDowntime.textContent = `${downtimeHours} hrs`;
 
-    const simOut = calculateSlurryMetrics({
-      flowM3H: Q,
-      solidsWeightPercent: Cw,
-      particleSizeD80Microns: d80,
-      solidsSpecificGravity: Ss,
-      pipeDiameterMm: D_mm,
-      pipeSeries: pipeSeriesVal,
-      altitudeM: state.selectedAltitude,
-      pH: pHVal,
-      stressSymptom: stressSymVal
+    const dagSnapshot = solveXdsmMultidisciplinaryDag({
+      ...canonicalInputs,
+      altitudeM,
+      circuit: state.currentCircuit,
+      urgency: state.isOpex ? 'paro_de_linea' : 'programado',
+      criticalityMode: canonicalInputs.criticalityMode || (state.isOpex ? 'paro_planta' : 'normal'),
+      trayItems: Array.isArray(trayState.items) ? trayState.items : [],
+      stockRegime: state.isOpex ? 'hay' : 'se_fabrica',
+      estimatedTotalMxn: state.isOpex ? 18500 : 85000,
+      folio: currentFolio
     });
+    state.lastDagSnapshot = dagSnapshot;
+
+    const simOut = dagSnapshot.slurryEval || {};
     const res = simOut.results || {};
-    const alt = calculateAltitudeCorrection(state.selectedAltitude);
+    const alt = dagSnapshot.altitudeEval || {};
+    const matOpt = dagSnapshot.optimalMaterial || {};
     state.lastAltitudeEval = { ...alt, combinedMotorAltitudeMultiplier: simOut.combinedMotorAltitudeMultiplier };
 
-    const dagSnapshot = solveXdsmMultidisciplinaryDag({
-      flowM3H: Q,
-      solidsWeightPercent: Cw,
-      particleSizeD80Microns: d80,
-      solidsSpecificGravity: Ss,
-      pipeSeries: pipeSeriesVal,
-      altitudeM: state.selectedAltitude,
-      pH: pHVal,
-      stressSymptom: stressSymVal,
-      predictedWearHours: Number(doc.getElementById('wb-jrp-wear-hours')?.value ?? res.estimatedImpellerLifeHours ?? 2160),
-      operatingHoursPerDay: Number(doc.getElementById('wb-jrp-daily-hours')?.value ?? 24),
-      criticalityMode: String(doc.getElementById('wb-jrp-criticality')?.value || (state.isOpex ? 'paro_planta' : 'normal'))
-    });
+    const Vc = Number(res.criticalVelocityMs ?? res.criticalSettlingVelocityMs);
+    const V_actual = Number(res.actualVelocityMs ?? res.actualPipeVelocityMs);
+    const Vrec = Number(res.recommendedPipeVelocityMs);
+    const Sm = Number(res.slurrySpecificGravity);
+    const Cv = Number(res.solidsVolumetricPercent);
+    const hrFactor = Number(res.headDeratingFactorHr);
+    const erFactor = Number(res.effDeratingFactorEr);
+    const wearRatio = Number(res.wearLifeRatio);
+    const lifeHrs = Number(res.estimatedImpellerLifeHours);
 
-    const Vc = Number(res.criticalVelocityMs ?? 2.35);
-    const V_actual = Number(res.actualVelocityMs ?? 2.95);
-    const Vrec = Number(res.recommendedPipeVelocityMs ?? (Vc * 1.18));
-    const Sm = Number(res.slurrySpecificGravity ?? 1.40);
-    const Cv = Number(res.solidsVolumetricPercent ?? 23.3);
-    const hrFactor = Number(res.headDeratingFactorHr ?? 0.88);
-    const wearRatio = Number(res.wearLifeRatio ?? 3.8);
-    const lifeHrs = Number(res.estimatedImpellerLifeHours ?? 1850);
-    const matOpt = selectOptimalMaterial(d80, Cw, pHVal);
+    const locale = isEs ? 'es' : 'en';
+    projectDomainOutputs(doc, 'pumping', {
+      ...res,
+      criticalVelocityMs: Vc,
+      actualPipeVelocityMs: V_actual,
+      combinedMotorAltitudeMultiplier: simOut.combinedMotorAltitudeMultiplier,
+      motorSizingPenaltyPct: simOut.motorSizingPenaltyPct,
+      activeTrustBoundaryId: dagSnapshot.leadValidation?.activeTrustBoundaryId || '',
+      sobolDominantDriver: dagSnapshot.sensitivity?.sobolDominantDriver || ''
+    }, locale);
 
-    if (dom.metricVc) dom.metricVc.textContent = `${Vc.toFixed(2)} m/s`;
-    if (dom.metricMaterial) dom.metricMaterial.textContent = isEs ? matOpt.nameEs : matOpt.nameEn;
-    if (dom.metricLife) dom.metricLife.textContent = `~${lifeHrs} h (${wearRatio.toFixed(1)}×)`;
+    if (dom.metricMaterial) dom.metricMaterial.textContent = isEs ? (res.materialNameEs || matOpt.nameEs) : (res.materialNameEn || matOpt.nameEn);
+    if (dom.metricLife && dom.metricLife.children?.length === 0) {
+      dom.metricLife.textContent = `~${lifeHrs} h (${wearRatio.toFixed(1)}×)`;
+    }
     if (dom.altitudeNpshHint) {
       dom.altitudeNpshHint.textContent = isEs
-        ? `Altitud ${state.selectedAltitude} msnm · Patm=${alt.pAtmHeadMca.toFixed(2)} mca · -ΔNPSHa=${alt.deltaNpshLossM.toFixed(2)} m · IEC=${alt.motorDeratingFactor.toFixed(3)}`
-        : `Altitude ${state.selectedAltitude} MASL · Patm=${alt.pAtmHeadMca.toFixed(2)} mwc · -ΔNPSHa=${alt.deltaNpshLossM.toFixed(2)} m · IEC=${alt.motorDeratingFactor.toFixed(3)}`;
+        ? `Altitud ${altitudeM} msnm · Patm=${alt.pAtmHeadMca.toFixed(2)} mca · -ΔNPSHa=${alt.deltaNpshLossM.toFixed(2)} m · IEC=${alt.motorDeratingFactor.toFixed(3)}`
+        : `Altitude ${altitudeM} MASL · Patm=${alt.pAtmHeadMca.toFixed(2)} mwc · -ΔNPSHa=${alt.deltaNpshLossM.toFixed(2)} m · IEC=${alt.motorDeratingFactor.toFixed(3)}`;
     }
+
     const elQuickVc = doc.getElementById('quick-vc');
     const elQuickSm = doc.getElementById('quick-sm-cv');
     const elQuickHr = doc.getElementById('quick-hr-derating');
@@ -263,28 +270,28 @@ export function initQuoteWizardController() {
     if (dom.liveTableVc) dom.liveTableVc.textContent = `${Vc.toFixed(2)} m/s (Real: ${V_actual.toFixed(2)} m/s)`;
 
     if (state.currentCircuit === 'control_procesos') {
-      const ctrlSg = Number(dom.ctrlSgInput?.value) || Ss;
-      const ctrlCw = Number(dom.ctrlCwInput?.value) || Cw;
-      const ctrlP80 = Number(dom.ctrlP80Input?.value) || d80;
-      const marcy = calculateMarcyScaleReading({ solidsSpecificGravity: ctrlSg, solidsWeightPercent: ctrlCw });
-      const gy = calculateGyMinimumSampleMass({ topSizeD95Mm: Math.max(0.2, Number(dom.ctrlD95Input?.value) || ctrlP80 / 100), solidsWeightPercent: ctrlCw });
-      const sieves = recommendAstmSieveSeries({ targetP80Microns: ctrlP80, screeningMode: 'wet' });
+      const marcy = dagSnapshot.marcyEval || {};
+      const gy = dagSnapshot.gyEval || {};
+      const sieves = dagSnapshot.sieveEval || {};
       const setId = (id, t) => { const n = doc.getElementById(id); if (n) n.textContent = t; };
-      setId('wb-ctrl-res-sm', `${marcy.pulpDensityKgL.toFixed(3)} kg/L`);
+      setId('wb-ctrl-res-sm', `${Number(marcy.pulpDensityKgL).toFixed(3)} kg/L`);
       setId('wb-ctrl-res-bias', `±${Number(marcy.wrongRingBiasPoints || 0).toFixed(1)} pts %Cw`);
-      setId('wb-ctrl-res-gy', `${gy.minDrySampleKg.toFixed(2)} kg`);
-      setId('wb-ctrl-res-rr', `${sieves.primaryControlMesh} · n=${sieves.rosinRammlerSlopeN.toFixed(2)}`);
+      setId('wb-ctrl-res-gy', `${Number(gy.minDrySampleKg).toFixed(2)} kg`);
+      setId('wb-ctrl-res-rr', `${sieves.primaryControlMesh} · n=${Number(sieves.rosinRammlerSlopeN).toFixed(2)}`);
       state.currentMetrology = {
-        cw: ctrlCw,
-        solidsPctCw: ctrlCw,
+        cw: marcy.solidsWeightPercent,
+        solidsPctCw: marcy.solidsWeightPercent,
         sm: marcy.pulpDensityKgL,
-        specificGravity: ctrlSg,
+        specificGravity: marcy.solidsSpecificGravity,
         recommendedRingSg: marcy.recommendedRingSg,
-        p80: ctrlP80,
+        p80: canonicalInputs.targetP80Microns,
         primaryControlMesh: sieves.primaryControlMesh,
         rosinRammlerSlopeN: sieves.rosinRammlerSlopeN,
+        rosinRammlerY: sieves.rosinRammlerY,
+        recommendedContainerEs: marcy.recommendedContainerEs,
+        recommendedContainerEn: marcy.recommendedContainerEn,
         dryMassKg: gy.minDrySampleKg,
-        summary: `Ss=${ctrlSg} | Cw=${ctrlCw}% | Sm=${marcy.pulpDensityKgL.toFixed(3)} kg/L | M_min=${gy.minDrySampleKg} kg | P80=${ctrlP80} µm`
+        summary: `Ss=${marcy.solidsSpecificGravity} | Cw=${marcy.solidsWeightPercent}% | Sm=${Number(marcy.pulpDensityKgL).toFixed(3)} kg/L | M_min=${gy.minDrySampleKg} kg | P80=${canonicalInputs.targetP80Microns} µm`
       };
     }
 
@@ -307,13 +314,14 @@ export function initQuoteWizardController() {
       critical_velocity_ms: Vc.toFixed(2),
       line_velocity_ms: V_actual.toFixed(2),
       safe_velocity_ms: Vrec.toFixed(2),
-      durand_fl: Number(res.durandFactorFL ?? 1.08).toFixed(2),
+      durand_fl: Number(res.durandFactorFL).toFixed(2),
       head_ratio: hrFactor.toFixed(2),
-      eff_ratio_er: Number(res.effDeratingFactorEr ?? 0.84).toFixed(2),
+      eff_ratio_er: erFactor.toFixed(2),
       impeller_life_h: lifeHrs,
       wear_life_ratio: wearRatio.toFixed(1),
-      altitude_msnm: state.selectedAltitude,
+      altitude_msnm: altitudeM,
       recommended_alloy: res.recommendedMaterial || matOpt.nameEs,
+      sobolDominantDriver: dagSnapshot.sensitivity?.sobolDominantDriver || '',
       xdsmDisciplines: dagSnapshot.disciplineOrder.length
     };
     state.currentTcoMetrics = {

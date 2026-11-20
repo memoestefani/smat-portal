@@ -92,6 +92,16 @@ pub fn check_v50_canonical_islands_and_two_sort_gate_51(site_root: &Path) -> Res
         ui_markup.push_str(&s);
         ui_markup.push('\n');
     }
+    let cores_dir = site_root.join("src/components/cores");
+    if cores_dir.is_dir() {
+        for entry in fs::read_dir(&cores_dir).map_err(|e| e.to_string())?.filter_map(|e| e.ok()) {
+            let p = entry.path();
+            if p.extension().and_then(|s| s.to_str()) == Some("astro") {
+                ui_markup.push_str(&fs::read_to_string(&p).map_err(|e| e.to_string())?);
+                ui_markup.push('\n');
+            }
+        }
+    }
     let islands_dir = site_root.join("src/components/islands");
     let mut island_count = 0usize;
     for entry in fs::read_dir(&islands_dir).map_err(|e| e.to_string())?.filter_map(|e| e.ok()) {

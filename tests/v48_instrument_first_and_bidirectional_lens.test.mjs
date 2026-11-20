@@ -452,10 +452,18 @@ test('D7-V48 / D8-V48 / D6-V48 / D9-V48: JRP Paro de Planta, Drop-In Verifier, M
 function readPageWithIslandsComposite(rel) {
   let src = fs.readFileSync(path.join(SITE_ROOT, rel), 'utf8');
   const islandDir = path.join(SITE_ROOT, 'src/components/islands');
-  src = src.replace(/<([A-Z][A-Za-z0-9]*Island)\b[^>]*\/>/g, (_m, islandName) => {
-    const islandPath = path.join(islandDir, `${islandName}.astro`);
-    return fs.existsSync(islandPath) ? fs.readFileSync(islandPath, 'utf8') : '';
-  });
+  const coreDir = path.join(SITE_ROOT, 'src/components/cores');
+  for (let depth = 0; depth < 3; depth += 1) {
+    let changed = false;
+    src = src.replace(/<([A-Z][A-Za-z0-9]*(?:Island|Core))\b[^>]*\/>/g, (_m, compName) => {
+      const targetDir = compName.endsWith('Core') ? coreDir : islandDir;
+      const compPath = path.join(targetDir, `${compName}.astro`);
+      if (!fs.existsSync(compPath)) return '';
+      changed = true;
+      return fs.readFileSync(compPath, 'utf8');
+    });
+    if (!changed) break;
+  }
   return src;
 }
 

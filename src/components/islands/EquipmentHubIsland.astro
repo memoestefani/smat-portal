@@ -11,6 +11,7 @@ import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import CircuitNavigator from '../CircuitNavigator.astro';
 import CaseCards from '../CaseCards.astro';
 import SharePurchasing from '../SharePurchasing.astro';
+import DropInVerifierCore from '../cores/DropInVerifierCore.astro';
 import { getQuickProductsCatalog, AVENUE_METADATA } from '../../scripts/quickProductsCatalog.js';
 
 interface Props {
@@ -97,6 +98,10 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
             : `Open Master ${avenueCount}-Avenue Matrix (${allQuickSkus.length} SKUs) →`}
         </a>
       </div>
+    </div>
+
+    <div class="smat-mb-md">
+      <DropInVerifierCore lang={lang} variant="equipment" />
     </div>
 
     <div class="process-equipment-grid">
@@ -402,10 +407,12 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
 
 <script>
   import { bindEquipmentCatalogSearchAndTray } from '../../scripts/homeAndEquipmentCatalogFilter.js';
+  import { bindDropInEquivalenceVerifier } from '../../scripts/catalogDropInAndJrpProjector.js';
 
   function initEquipmentHubIsland() {
     const lang = document.documentElement.lang === 'en' ? 'en' : 'es';
     bindEquipmentCatalogSearchAndTray(document, lang);
+    bindDropInEquivalenceVerifier(document, lang);
   }
 
   initEquipmentHubIsland();

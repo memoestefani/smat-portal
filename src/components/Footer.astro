@@ -86,7 +86,7 @@ const isEs = lang === 'es';
       <!-- Columna 4: Instalaciones Durango, Despacho y Protocolos -->
       <div class="footer-col">
         <h4 class="col-heading">{isEs ? 'Almacén & Protocolo' : 'Warehouse & Protocol'}</h4>
-        <ul class="footer-links" style="margin-bottom: 1rem;">
+        <ul class="footer-links smat-footer-links-spaced">
           <li><a href={isEs ? '/catalogo/' : '/en/catalog/'}><strong>{isEs ? 'Catálogo Digital (PDF / Móvil)' : 'Digital Catalog (PDF / Mobile)'}</strong></a></li>
           <li><a href={isEs ? '/garantia/' : '/en/warranty/'}>{isEs ? 'Garantía de Ajuste Dimensional 1:1' : '1:1 Dimensional Fit Warranty'}</a></li>
           <li><a href={isEs ? '/nosotros/' : '/en/about/'}>{isEs ? 'Almacén Central y Capacidad de Ensamble' : 'Central Warehouse & Assembly Rig'}</a></li>
@@ -96,7 +96,7 @@ const isEs = lang === 'es';
         <div class="logistics-card">
           <div class="logistics-badge-title">
             <span class="truck-icon">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle;"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><circle cx="7" cy="18" r="2"/><path d="M15 18H9"/><circle cx="17" cy="18" r="2"/><path d="M19 18h2a1 1 0 0 0 1-1v-5l-3-4h-5v10z"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="smat-svg-inline"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><circle cx="7" cy="18" r="2"/><path d="M15 18H9"/><circle cx="17" cy="18" r="2"/><path d="M19 18h2a1 1 0 0 0 1-1v-5l-3-4h-5v10z"/></svg>
             </span>
             <strong>{isEs ? 'Acceso a Maniobras' : 'Heavy Truck Loading'}</strong>
           </div>
@@ -114,11 +114,17 @@ const isEs = lang === 'es';
         © {new Date().getFullYear()} SMAT Minerals. {isEs ? 'Todos los derechos reservados.' : 'All rights reserved.'}
       </p>
       <div class="legal-links">
+        <span id="smat-offline-status" data-pwa-offline-indicator class="smat-pwa-status" role="status">
+          {isEs ? 'Soporte Offline en Planta (SW)' : 'Plant Offline Support (SW)'}
+        </span>
+        <span>•</span>
         <a href={isEs ? '/aviso/' : '/en/privacy/'}>{isEs ? 'Aviso de Privacidad' : 'Privacy Notice'}</a>
         <span>•</span>
         <a href={isEs ? '/contacto/' : '/en/contact/'}>{isEs ? 'Contacto Directo' : 'Direct Contact'}</a>
         <span>•</span>
         <a href={isEs ? '/garantia/' : '/en/warranty/'}>{isEs ? 'Garantía de Planta' : 'Facility Warranty'}</a>
+        <span>•</span>
+        <a href="/admin/" rel="nofollow" class="smat-footer-admin-link">{isEs ? 'Administración CMS' : 'CMS Admin'}</a>
       </div>
     </div>
   </div>

@@ -40,16 +40,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <span class="badge-sla" id="dossier-order-code" data-hash-algo="fnv1a">ATENCIÓN PRIORITARIA • COTEJO EN ALMACÉN DURANGO</span>
         </div>
 
+        <div id="acuse-webhook-status" data-webhook-state="sent" class="acuse-webhook-banner is-webhook-sent">
+          Estado Webhook: SENT (Requisición notificada al Almacén Central Durango)
+        </div>
+
         <!-- Tabla de Datos del Solicitante -->
         <div class="sheet-section">
           <h3 class="section-title">1. DATOS DEL SOLICITANTE Y UNIDAD MINERA</h3>
           <table class="sheet-table">
             <tbody>
               <tr>
-                <th style="width: 25%;">Solicitante / Cargo:</th>
-                <td style="width: 35%;" id="field-name">No especificado</td>
-                <th style="width: 20%;">Mina / Empresa:</th>
-                <td style="width: 20%;" id="field-company">No especificado</td>
+                <th class="acuse-th-25">Solicitante / Cargo:</th>
+                <td class="acuse-td-35" id="field-name">No especificado</td>
+                <th class="acuse-th-20">Mina / Empresa:</th>
+                <td class="acuse-td-20" id="field-company">No especificado</td>
               </tr>
               <tr>
                 <th>Teléfono / WhatsApp:</th>
@@ -71,10 +75,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <table class="sheet-table">
             <tbody>
               <tr>
-                <th style="width: 25%;">Línea / Componente:</th>
-                <td style="width: 35%;" id="field-role" class="highlight-spec">Equipo en evaluación</td>
-                <th style="width: 20%;">Código SMAT / Pieza:</th>
-                <td style="width: 20%; font-family: monospace; font-weight: 700;" id="field-code">Por asignar en revisión</td>
+                <th class="acuse-th-25">Línea / Componente:</th>
+                <td class="acuse-td-35 highlight-spec" id="field-role">Equipo en evaluación</td>
+                <th class="acuse-th-20">Código SMAT / Pieza:</th>
+                <td class="acuse-td-20 acuse-mono-bold" id="field-code">Por asignar en revisión</td>
               </tr>
               <tr>
                 <th>Referencia Interna / Tag:</th>
@@ -122,21 +126,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <table class="sheet-table">
             <thead>
               <tr>
-                <th style="width: 22%;">SKU / Aleación</th>
-                <th style="width: 44%;">Descripción Técnica y Tupla Fiscal SAT / TIGIE</th>
-                <th style="width: 10%;">Cant.</th>
-                <th style="width: 24%;">Par Casado y Ciclo de Reorden</th>
+                <th class="acuse-th-22">SKU / Aleación</th>
+                <th class="acuse-th-44">Descripción Técnica y Tupla Fiscal SAT / TIGIE</th>
+                <th class="acuse-th-10">Cant.</th>
+                <th class="acuse-th-24">Par Casado y Ciclo de Reorden</th>
               </tr>
             </thead>
             <tbody id="acuse-multi-item-tray-tbody">
               <tr>
-                <td colspan="4" style="color: #64748b; font-size: 0.82rem;">Cargando partidas de requisición y tuplas SAT CFDI 4.0...</td>
+                <td colspan="4" class="acuse-empty-row">Cargando partidas de requisición y tuplas SAT CFDI 4.0...</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <!-- Protocolo Técnico y Cláusula de Almacén Durango (Decisiones 1-C, 2-C y 6-C) -->
+        <!-- Protocolo Técnico y Cláusula de Almacén Durango -->
         <div class="sheet-section terms-section">
           <h3 class="section-title">3. PROTOCOLO TÉCNICO Y CONTROL DE CALIDAD EN ALMACÉN CENTRAL</h3>
           <p class="terms-text">
@@ -145,7 +149,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="coyote-seal-notice facility-guarantee-notice" id="vendor-passport-section">
             <strong>Cláusula de Validez de Almacén Central y Pasaporte de Proveedor B2B:</strong> Esta propuesta técnica y su respaldo operativo son válidos para componentes inspeccionados y despachados en Almacén Central SMAT Durango (Incoterms EXW / DAP Durango • UNSPSC 40151500 / 20121500 / 40161500 / 41111500 • Certificación de Colada ASTM A532 Cr27 HRC &ge; 58). Equipos y paquetes acoplados completos se configuran bajo pedido según variables de pulpa del cliente; refacciones de desgaste comunes en rotación continua de inventario.
           </div>
-          <pre id="sap-plaintext-block" data-hash-algo="fnv1a" style="margin: 1rem 0 0; padding: 0.85rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace; font-size: 0.76rem; color: #0f172a; overflow-x: auto; white-space: pre-wrap;">FOLIO: SMAT-2026-RFQ | FOLIO DE VERIFICACIÓN TÉCNICA</pre>
+          <pre id="sap-plaintext-block" data-hash-algo="fnv1a" class="acuse-sap-pre">FOLIO: SMAT-2026-RFQ | FOLIO DE VERIFICACIÓN TÉCNICA</pre>
+          <details class="acuse-payload-details" id="acuse-full-payload-details">
+            <summary class="acuse-payload-summary">
+              Ver payload técnico completo transmitido (19 campos: hidráulica, metrología, cinemática y estación)
+            </summary>
+            <pre id="acuse-full-payload-pre" class="acuse-sap-pre"></pre>
+          </details>
           <div class="signatures-row">
             <div class="sig-block">
               <span class="sig-line"></span>
@@ -162,7 +172,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <!-- Barra de Acciones en Pantalla (Oculta al Imprimir) -->
       <div class="screen-actions no-print">
         <button type="button" class="btn btn-primary btn-print" id="print-btn" onclick="window.print()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="acuse-btn-svg"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
           Imprimir / Guardar en PDF (SAP / Coupa)
         </button>
         <button type="button" class="btn btn-secondary" id="copy-sap-acuse-btn">
@@ -184,7 +194,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           Volver al Inicio
         </a>
         <a href="https://wa.me/526183670664" class="btn btn-emergency" target="_blank" rel="noopener noreferrer">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin-right:4px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="acuse-btn-svg"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           Seguimiento Inmediato por WhatsApp
         </a>
       </div>
@@ -462,6 +472,97 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .section-title {
       margin-bottom: 0.35rem;
     }
+  }
+
+  .acuse-webhook-banner {
+    margin: 0.75rem 0 1rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 6px;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  .is-webhook-sent {
+    background: #ecfdf5;
+    border: 1px solid #059669;
+    color: #064e3b;
+  }
+  .is-webhook-blocked {
+    background: #fef2f2;
+    border: 1px solid #dc2626;
+    color: #7f1d1d;
+  }
+  .is-urgency-paro {
+    color: #b91c1c;
+    font-weight: 800;
+  }
+  .acuse-th-25 { width: 25%; }
+  .acuse-td-35 { width: 35%; }
+  .acuse-th-20 { width: 20%; }
+  .acuse-td-20 { width: 20%; }
+  .acuse-th-22 { width: 22%; }
+  .acuse-th-44 { width: 44%; }
+  .acuse-th-10 { width: 10%; }
+  .acuse-th-24 { width: 24%; }
+  .acuse-mono-bold {
+    font-family: monospace;
+    font-weight: 700;
+  }
+  .acuse-sap-pre {
+    margin: 1rem 0 0;
+    padding: 0.85rem;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 0.76rem;
+    color: #0f172a;
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+  .acuse-payload-details {
+    margin-top: 0.85rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 0.6rem 0.85rem;
+    background: #ffffff;
+  }
+  .acuse-payload-summary {
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: #0f172a;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .acuse-btn-svg {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+  :global(.acuse-cell-sku) {
+    font-family: monospace;
+    font-weight: 700;
+  }
+  :global(.acuse-cell-sat) {
+    font-family: monospace;
+    color: #475569;
+  }
+  :global(.acuse-cell-qty) {
+    text-align: center;
+    font-weight: 700;
+  }
+  :global(.acuse-cell-jrp) {
+    font-family: monospace;
+    font-size: 0.75rem;
+  }
+  :global(.acuse-empty-row) {
+    color: #64748b;
+    font-size: 0.82rem;
+  }
+  :global(.hidden) {
+    display: none;
   }
 
   /* ESTILOS DE IMPRESIÓN ESTRICTOS PARA ERP (SAP/COUPA) */

@@ -40,16 +40,20 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <span class="badge-sla" id="dossier-order-code" data-hash-algo="fnv1a">PRIORITY DISPATCH • DURANGO WAREHOUSE FIT CHECK</span>
         </div>
 
+        <div id="acuse-webhook-status" data-webhook-state="sent" class="acuse-webhook-banner is-webhook-sent">
+          Webhook Status: SENT (Requisition Dispatched to Durango Engineering)
+        </div>
+
         <!-- Applicant & Mine Unit Information Table -->
         <div class="sheet-section">
           <h3 class="section-title">1. APPLICANT & MINING FACILITY DETAILS</h3>
           <table class="sheet-table">
             <tbody>
               <tr>
-                <th style="width: 25%;">Applicant Name / Role:</th>
-                <td style="width: 35%;" id="field-name">Not specified</td>
-                <th style="width: 20%;">Mine / Company:</th>
-                <td style="width: 20%;" id="field-company">Not specified</td>
+                <th class="acuse-th-25">Applicant Name / Role:</th>
+                <td class="acuse-td-35" id="field-name">Not specified</td>
+                <th class="acuse-th-20">Mine / Company:</th>
+                <td class="acuse-td-20" id="field-company">Not specified</td>
               </tr>
               <tr>
                 <th>Phone / WhatsApp:</th>
@@ -71,10 +75,10 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <table class="sheet-table">
             <tbody>
               <tr>
-                <th style="width: 25%;">Line / Component:</th>
-                <td style="width: 35%;" id="field-role" class="highlight-spec">Equipment under review</td>
-                <th style="width: 20%;">SMAT / Part Code:</th>
-                <td style="width: 20%; font-family: monospace; font-weight: 700;" id="field-code">To be assigned on review</td>
+                <th class="acuse-th-25">Line / Component:</th>
+                <td class="acuse-td-35 highlight-spec" id="field-role">Equipment under review</td>
+                <th class="acuse-th-20">SMAT / Part Code:</th>
+                <td class="acuse-td-20 acuse-mono-bold" id="field-code">To be assigned on review</td>
               </tr>
               <tr>
                 <th>Internal Reference / Tag:</th>
@@ -122,21 +126,21 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <table class="sheet-table">
             <thead>
               <tr>
-                <th style="width: 22%;">SKU / Alloy</th>
-                <th style="width: 44%;">Technical Description & SAT / TIGIE Tax Tuple</th>
-                <th style="width: 10%;">Qty</th>
-                <th style="width: 24%;">Matched Pair & Reorder Cycle</th>
+                <th class="acuse-th-22">SKU / Alloy</th>
+                <th class="acuse-th-44">Technical Description & SAT / TIGIE Tax Tuple</th>
+                <th class="acuse-th-10">Qty</th>
+                <th class="acuse-th-24">Matched Pair & Reorder Cycle</th>
               </tr>
             </thead>
             <tbody id="acuse-multi-item-tray-tbody">
               <tr>
-                <td colspan="4" style="color: #64748b; font-size: 0.82rem;">Loading requisition line items and SAT CFDI 4.0 tuples...</td>
+                <td colspan="4" class="acuse-empty-row">Loading requisition line items and SAT CFDI 4.0 tuples...</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <!-- Technical Protocol & Durango Central Warehouse Verification (Decisions 1-C, 2-C and 6-C) -->
+        <!-- Technical Protocol & Durango Central Warehouse Verification -->
         <div class="sheet-section terms-section">
           <h3 class="section-title">3. TECHNICAL PROTOCOL & QUALITY CONTROL AT CENTRAL WAREHOUSE</h3>
           <p class="terms-text">
@@ -145,7 +149,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <div class="coyote-seal-notice facility-guarantee-notice" id="vendor-passport-section">
             <strong>Central Warehouse Validity &amp; B2B Vendor Passport Clause:</strong> This technical proposal and operational backing are valid for components inspected and dispatched from Durango Central Warehouse (Incoterms EXW / DAP Durango • UNSPSC 40151500 / 20121500 / 40161500 / 41111500 • ASTM A532 Cr27 Melt Cert HRC &ge; 58). Complete equipment and coupled packages are built-to-order based on customer slurry variables; common wear parts maintain continuous inventory rotation.
           </div>
-          <pre id="sap-plaintext-block" data-hash-algo="fnv1a" style="margin: 1rem 0 0; padding: 0.85rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace; font-size: 0.76rem; color: #0f172a; overflow-x: auto; white-space: pre-wrap;">FOLIO: SMAT-2026-RFQ | TECHNICAL VERIFICATION FOLIO</pre>
+          <pre id="sap-plaintext-block" data-hash-algo="fnv1a" class="acuse-sap-pre">FOLIO: SMAT-2026-RFQ | TECHNICAL VERIFICATION FOLIO</pre>
+          <details class="acuse-payload-details" id="acuse-full-payload-details">
+            <summary class="acuse-payload-summary">
+              View complete transmitted technical payload (19 fields: hydraulics, metrology, kinematics &amp; station)
+            </summary>
+            <pre id="acuse-full-payload-pre" class="acuse-sap-pre"></pre>
+          </details>
           <div class="signatures-row">
             <div class="sig-block">
               <span class="sig-line"></span>
@@ -460,6 +470,92 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     .section-title {
       margin-bottom: 0.35rem;
     }
+  }
+
+  .acuse-webhook-banner {
+    margin: 0.75rem 0 1rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 6px;
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  .is-webhook-sent {
+    background: #ecfdf5;
+    border: 1px solid #059669;
+    color: #064e3b;
+  }
+  .is-webhook-blocked {
+    background: #fef2f2;
+    border: 1px solid #dc2626;
+    color: #7f1d1d;
+  }
+  .is-urgency-paro {
+    color: #b91c1c;
+    font-weight: 800;
+  }
+  .acuse-th-25 { width: 25%; }
+  .acuse-td-35 { width: 35%; }
+  .acuse-th-20 { width: 20%; }
+  .acuse-td-20 { width: 20%; }
+  .acuse-th-22 { width: 22%; }
+  .acuse-th-44 { width: 44%; }
+  .acuse-th-10 { width: 10%; }
+  .acuse-th-24 { width: 24%; }
+  .acuse-mono-bold {
+    font-family: monospace;
+    font-weight: 700;
+  }
+  .acuse-sap-pre {
+    margin: 1rem 0 0;
+    padding: 0.85rem;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 0.76rem;
+    color: #0f172a;
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+  .acuse-payload-details {
+    margin-top: 0.85rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 0.6rem 0.85rem;
+    background: #ffffff;
+  }
+  .acuse-payload-summary {
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: #0f172a;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  :global(.acuse-cell-sku) {
+    font-family: monospace;
+    font-weight: 700;
+  }
+  :global(.acuse-cell-sat) {
+    font-family: monospace;
+    color: #475569;
+  }
+  :global(.acuse-cell-qty) {
+    text-align: center;
+    font-weight: 700;
+  }
+  :global(.acuse-cell-jrp) {
+    font-family: monospace;
+    font-size: 0.75rem;
+  }
+  :global(.acuse-empty-row) {
+    color: #64748b;
+    font-size: 0.82rem;
+  }
+  :global(.hidden) {
+    display: none;
   }
 
   /* MEDIA PRINT STYLES FOR ERP (SAP/COUPA) */

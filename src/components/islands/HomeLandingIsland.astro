@@ -8,6 +8,7 @@
  */
 import TrustMatrix from '../TrustMatrix.astro';
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
+import DropInVerifierCore from '../cores/DropInVerifierCore.astro';
 import {
   getQuickProductsCatalog,
   getQuickProductsByAvenue,
@@ -309,30 +310,8 @@ const productsPath = isEs ? '/productos/' : '/en/products/';
       </div>
     </div>
 
-    <div id="workbench" class="dropin-verifier-solar smat-mb-md" data-dropin-verifier>
-      <div class="dropin-copy">
-        <strong class="smat-kicker">
-          {isEs ? 'VERIFICADOR DE EQUIVALENCIA GEOMÉTRICA DROP-IN (ISO 2768-m)' : 'DROP-IN GEOMETRIC EQUIVALENCE VERIFIER (ISO 2768-m)'}
-        </strong>
-        <p class="dropin-helper-text">
-          {isEs
-            ? 'Ingresa el código fundido en tu pieza actual (ej. E4147A05, D075C21, E4083, TH48-30, SMAT-PUMP-IMP-AH):'
-            : 'Enter the casting code on your current wear part (e.g. E4147A05, D075C21, E4083, TH48-30, SMAT-PUMP-IMP-AH):'}
-        </p>
-      </div>
-      <div class="smat-cta-row dropin-input-row">
-        <input
-          type="text"
-          data-dropin-input
-          placeholder={isEs ? 'Ej. E4147A05 o D075C21' : 'e.g. E4147A05 or D075C21'}
-          aria-label={isEs ? 'Código de parte para verificar equivalencia Drop-In' : 'Part code to check Drop-In fit'}
-          class="smat-search-input"
-        />
-        <button type="button" data-dropin-btn class="smat-btn-primary">
-          {isEs ? 'Verificar Tripleta (A,B,C) →' : 'Verify Triplet (A,B,C) →'}
-        </button>
-      </div>
-      <p data-dropin-result class="dropin-result-banner smat-hidden-init"></p>
+    <div id="workbench" class="dropin-verifier-solar smat-mb-md">
+      <DropInVerifierCore lang={lang} variant="home" />
     </div>
 
     <div id="home-avenues-directory" class="avenues-dir-grid" aria-label={isEs ? 'Directorio de 7 Avenidas Industriales' : '7 Industrial Avenues Directory'}>

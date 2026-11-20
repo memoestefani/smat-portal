@@ -176,7 +176,7 @@ const _auditValuationRef = (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (audi
   </div>
 
   <!-- Contenedor Visual de Relación de Aspecto Fija 4:3 (CLS = 0) -->
-  <div class="smat-qcard-stage" style="aspect-ratio: 4 / 3;">
+  <div class="smat-qcard-stage smat-qcard-stage-ratio">
     <!-- Panel 1: Plano CAD -->
     <div data-qcard-panel="cad" class="smat-qcard-panel">
       <div class="smat-qcard-diagram-wrap">
@@ -199,7 +199,7 @@ const _auditValuationRef = (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (audi
 
     <!-- Panel 3: Rayos X de Desgaste Sincronizado 5:5:4 (reutiliza el SVG único de Panel 1 activando [data-layer="xray-wear"]) -->
     <div data-qcard-panel="xray" class="smat-qcard-panel hidden" hidden>
-      <div class="smat-qcard-xray-legend" data-xray-overlay-legend={sku.id} data-diagram-id={sku.diagram_id} style="padding: 0.45rem 0.75rem; background: #fffbeb; border-top: 1px solid #fde68a; font-family: var(--font-mono, monospace); font-size: 0.72rem; color: #7c2d12;">
+      <div class="smat-qcard-xray-legend smat-qcard-xray-legend-box" data-xray-overlay-legend={sku.id} data-diagram-id={sku.diagram_id}>
         {isEs
           ? `Mapa térmico de erosión 5:5:4 activo sobre plano: ${formatDiagramHumanTitle(sku.diagram_id, 'es')} (${triplet.tolerance_std || 'ISO 2768-m'})`
           : `Active 5:5:4 erosion thermal overlay on blueprint: ${formatDiagramHumanTitle(sku.diagram_id, 'en')} (${triplet.tolerance_std || 'ISO 2768-m'})`}

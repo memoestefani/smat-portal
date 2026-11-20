@@ -1,7 +1,7 @@
 import atomicPartsJson from '../../data/atomic_parts.json' with { type: 'json' };
 import miningGroupsJson from '../../data/mining_groups.json' with { type: 'json' };
 import { WET_END_MATERIAL_MATRIX } from './tribologyAndCompatibilityEngine.js';
-import { DEFAULT_SMAT_LEAD_WEBHOOK_URL, ATOMIC_PARTS_CATALOG, resolveAtomicPartCode, getAtomicPartSpecs, formatNioshErgonomicStatus, parseUrlContextParams, generateSmatPartCode, formatSapTsv, parseSmatPartCode , formatSapPlaintextImpl, formatMailtoUrlImpl, formatWhatsappUrlImpl, buildCanonicalEngineeringSnapshotImpl, buildAcuseUrlParams, resolveInternalBudgetCategory, buildLeadWebhookPayload, dispatchLeadWebhook } from './districtProfilesAndSkuCatalog.js';
+import { parseUrlContextParams, formatSapPlaintextImpl, formatMailtoUrlImpl, formatWhatsappUrlImpl, buildCanonicalEngineeringSnapshotImpl, dispatchLeadWebhook } from './districtProfilesAndSkuCatalog.js';
 export const ATOMIC_PARTS_SSOT_COUNT = Array.isArray(atomicPartsJson) ? atomicPartsJson.length : 13;
 export * from './districtProfilesAndSkuCatalog.js';
 export const SMAT_WORKBENCH_EVENT = 'smat:workbench_update';
@@ -368,7 +368,8 @@ export function buildWizardUrl(opts = {}) {
   const isMechanicalBearingOnly =
     pieza === 'cartucho_rodamientos' ||
     equipo === 'kit_rodamientos' ||
-    opts.omitWetMaterial === true;
+    opts.omitWetMaterial === true ||
+    ['clasificacion', 'flotacion', 'filtracion', 'control_procesos'].includes(String(circuito).toLowerCase());
   if (circuito) params.set('circuito', String(circuito));
   if (equipo) params.set('equipo', String(equipo));
   if (pieza) params.set('pieza', String(pieza));

@@ -277,8 +277,11 @@ pub fn check_v35_zero_orphan_ast_and_dist_graph_closure(site_root: &Path) -> Res
     }
 
     // 2. D2-V35: Puente Plano 1 <-> Plano 2 (?sku=SMAT-*, ?mat=, hidrociclon_apex_vortex)
-    let dist_src = fs::read_to_string(site_root.join("src/scripts/districtProfilesAndSkuCatalog.js"))
-        .map_err(|e| e.to_string())?;
+    let dist_src = format!(
+        "{}\n{}",
+        fs::read_to_string(site_root.join("src/scripts/districtProfilesAndSkuCatalog.js")).map_err(|e| e.to_string())?,
+        fs::read_to_string(site_root.join("src/scripts/urlContextAndPartCodeParser.js")).map_err(|e| e.to_string())?
+    );
     if !dist_src.contains("skuRoleMap") || !dist_src.contains("hidrociclon_apex_vortex") {
         return Err("D2-V35: districtProfilesAndSkuCatalog.js carece de skuRoleMap o hidrociclon_apex_vortex".to_string());
     }
@@ -422,8 +425,13 @@ pub fn check_v35_zero_orphan_ast_and_dist_graph_closure(site_root: &Path) -> Res
 /// 4 indicadores metrológicos #wb-ctrl-res-{sm,bias,gy,rr} en QuoteWizard.astro, #live-custom-box en Dossier,
 /// 5 atributos [data-wb-field], 0 selectores muertos en quoteWizardController.js y coherencia 6x4 en alias.
 pub fn check_v38_bijective_codes_acuse_isolation_and_zero_orphan_dom(site_root: &Path) -> Result<(), String> {
-    let dist_catalog = fs::read_to_string(site_root.join("src/scripts/districtProfilesAndSkuCatalog.js"))
-        .map_err(|e| e.to_string())?;
+    let dist_catalog = format!(
+        "{}\n{}",
+        fs::read_to_string(site_root.join("src/scripts/districtProfilesAndSkuCatalog.js"))
+            .map_err(|e| e.to_string())?,
+        fs::read_to_string(site_root.join("src/scripts/urlContextAndPartCodeParser.js"))
+            .map_err(|e| e.to_string())?
+    );
     if !dist_catalog.contains("replace(/PRENSAESTOPA/g, 'ESTOPERA')") || !dist_catalog.contains("astm_8in_inox") {
         return Err("D1/D2-V38 (DEB-V38-01/06): districtProfilesAndSkuCatalog.js carece de blindaje PRENSAESTOPA o astm_8in_inox".to_string());
     }
@@ -619,7 +627,8 @@ pub fn check_v40_single_canonical_surface_and_zero_visible_metalanguage_gate_43(
     let base_layout = fs::read_to_string(site_root.join("src/layouts/BaseLayout.astro"))
         .map_err(|e| e.to_string())?;
     if !base_layout.contains("isTransactionTerminal")
-        || !base_layout.contains("{!isTransactionTerminal && <QuickOrderTray")
+        || !base_layout.contains("{!isTransactionTerminal")
+        || !base_layout.contains("<QuickOrderTray")
     {
         return Err("Gate 43 (D1-V40): BaseLayout.astro debe suprimir <QuickOrderTray /> en rutas terminales (!isTransactionTerminal)".to_string());
     }

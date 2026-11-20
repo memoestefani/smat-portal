@@ -2,10 +2,10 @@
 interface Props {
   diagram: string;
   isEs: boolean;
-  xrayWearStyle: string;
+  xrayWearClass: string;
   uid: string;
 }
-const { diagram, isEs, xrayWearStyle, uid } = Astro.props;
+const { diagram, isEs, xrayWearClass, uid } = Astro.props;
 ---
 
     {diagram === 'flotation' && (
@@ -34,7 +34,7 @@ const { diagram, isEs, xrayWearStyle, uid } = Astro.props;
           <text x="448" y="225" fill="#c25e00">{isEs ? '4. ROTOR - ESTATOR / IMPULSOR' : '4. ROTOR - STATOR / IMPELLER'}</text>
           <text x="55" y="225">{isEs ? 'CELDAS Y ACONDICIONADORES' : 'CELLS & CONDITIONERS'}</text>
         </g>
-        <g data-layer="xray-wear" style={xrayWearStyle}>
+        <g data-layer="xray-wear" class={xrayWearClass}>
           <rect x="278" y="200" width="8" height="40" fill="#dc2626" opacity="0.85" />
           <rect x="394" y="200" width="8" height="40" fill="#dc2626" opacity="0.85" />
           <text x="35" y="45" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">{isEs ? 'RAYOS X • CLARO RADIAL Dr/Ds (Sb ≥ 55 s⁻¹)' : 'X-RAY • Dr/Ds RADIAL GAP (Sb ≥ 55 s⁻¹)'}</text>
@@ -76,7 +76,7 @@ const { diagram, isEs, xrayWearStyle, uid } = Astro.props;
           <text x="455" y="42" fill="#c25e00">{isEs ? 'CIERRE HIDRÁULICO' : 'HYDRAULIC CLOSURE'}</text>
           <text x="135" y="226">{isEs ? 'POLIPROPILENO VIRGEN COPOLÍMERO + FIELTRO AGUJADO' : 'VIRGIN COPOLYMER POLYPROPYLENE + NEEDLE FELT'}</text>
         </g>
-        <g data-layer="xray-wear" style={xrayWearStyle}>
+        <g data-layer="xray-wear" class={xrayWearClass}>
           <line x1="125" y1="130" x2="395" y2="130" stroke="#dc2626" stroke-width="3" stroke-dasharray="5 3" />
           <text x="405" y="226" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">{isEs ? 'RAYOS X • CUELLO CENTRAL ΔP ≤ 3.5 BAR (TIMOSHENKO)' : 'X-RAY • CENTER PORT ΔP ≤ 3.5 BAR (TIMOSHENKO)'}</text>
         </g>
@@ -125,7 +125,7 @@ const { diagram, isEs, xrayWearStyle, uid } = Astro.props;
         <!-- Carro corre-placas y gatillo indexador -->
         <rect x="96" y="78" width="104" height="64" rx="6" fill="#fef3c7" stroke="#92400e" stroke-width="2.2" />
         <polygon points="126,78 164,44 172,78" fill="#f1f5f9" stroke="#0f172a" stroke-width="2.2" />
-        <g data-layer="xray-wear" style={xrayWearStyle}>
+        <g data-layer="xray-wear" class={xrayWearClass}>
           <polygon points="126,78 164,44 172,78" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
         </g>
         <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">

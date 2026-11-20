@@ -216,7 +216,7 @@ const isTransactionTerminal = /^\/(cotizar|en\/quote|acuse|en\/thank-you)(\/|$)/
     <slot name="footer">
       <Footer lang={lang} />
     </slot>
-    {!isTransactionTerminal && <QuickOrderTray lang={lang} />}
+    {!isTransactionTerminal && !/^\/(aviso|contacto|nosotros|en\/legal|en\/contact|en\/about|en\/privacy)(\/|$)/.test(canonicalPath) && <QuickOrderTray lang={lang} />}
     <WhatsAppButton lang={lang} />
 
     <!-- Script de Registro de Eventos Analíticos de SMAT -->
@@ -233,13 +233,31 @@ const isTransactionTerminal = /^\/(cotizar|en\/quote|acuse|en\/thank-you)(\/|$)/
       };
     </script>
 
-    <!-- Registro Soberano de Service Worker Offline-First (Decisión 7-C / GOLD-180) -->
+    <!-- Registro Soberano de Service Worker Offline-First y Badge de Disponibilidad -->
     <script is:inline>
-      if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js').catch(function() {});
-        });
-      }
+      (function() {
+        var isEn = document.documentElement.lang === 'en';
+        function syncOfflineBadge(ready) {
+          var badge = document.getElementById('smat-offline-status');
+          if (!badge) return;
+          var isOffline = navigator.onLine === false;
+          badge.classList.toggle('is-offline', isOffline);
+          if (isOffline) {
+            badge.textContent = isEn ? 'PWA Offline Mode Active' : 'Modo Offline en Planta Activo';
+          } else if (ready) {
+            badge.textContent = isEn ? 'Offline Plant Ready (SW)' : 'Listo Offline en Planta (SW)';
+          }
+        }
+        window.addEventListener('online', function() { syncOfflineBadge(true); });
+        window.addEventListener('offline', function() { syncOfflineBadge(true); });
+        if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+          window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js').then(function() {
+              syncOfflineBadge(true);
+            }).catch(function() {});
+          });
+        }
+      })();
     </script>
   </body>
 </html>

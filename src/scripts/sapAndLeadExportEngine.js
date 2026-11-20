@@ -826,18 +826,44 @@ export function buildLeadWebhookPayload(d = {}, channelOrigin = 'web_quote_wizar
 export function dispatchLeadWebhook(d = {}, channelOrigin = 'web_quote_wizard', webhookUrl = '') {
   const honeypotVal = d.website || d.website_honeypot || '';
   if (honeypotVal && String(honeypotVal).trim().length > 0) {
+    const blockedStatus = {
+      status: 'blocked',
+      reason: 'honeypot_blocked',
+      blocked: true,
+      dispatched: false,
+      sent: false,
+      channel: channelOrigin,
+      timestamp: new Date().toISOString()
+    };
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      try {
+        window.sessionStorage.setItem('smat_last_rfq_dispatch_status', JSON.stringify(blockedStatus));
+      } catch (_e) { }
+    }
     return { status: 'honeypot_blocked', blocked: true, dispatched: false, sent: false };
   }
   const payload = buildLeadWebhookPayload(d, channelOrigin);
-  if (typeof window !== 'undefined' && window.sessionStorage) {
-    try {
-      window.sessionStorage.setItem('smat_last_rfq_payload', JSON.stringify(payload));
-    } catch (_e) { }
-  }
   const resolvedEndpoint =
     webhookUrl ||
     (typeof window !== 'undefined' && window.SMAT_LEAD_WEBHOOK_URL) ||
     DEFAULT_SMAT_LEAD_WEBHOOK_URL;
+  const sentStatus = {
+    status: resolvedEndpoint ? 'sent' : 'blocked',
+    reason: resolvedEndpoint ? 'webhook_dispatched' : 'missing_endpoint',
+    blocked: !resolvedEndpoint,
+    dispatched: true,
+    sent: Boolean(resolvedEndpoint),
+    channel: channelOrigin,
+    endpoint: resolvedEndpoint,
+    folio: payload.folio,
+    timestamp: new Date().toISOString()
+  };
+  if (typeof window !== 'undefined' && window.sessionStorage) {
+    try {
+      window.sessionStorage.setItem('smat_last_rfq_payload', JSON.stringify(payload));
+      window.sessionStorage.setItem('smat_last_rfq_dispatch_status', JSON.stringify(sentStatus));
+    } catch (_e) { }
+  }
   if (resolvedEndpoint && typeof fetch === 'function') {
     try {
       fetch(resolvedEndpoint, {

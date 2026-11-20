@@ -8,6 +8,7 @@
  */
 
 import { listAllEngineSchemas } from './engineSchemaRegistry.js';
+import { bindDomainSchemaRoot } from './schemaRuntimeBinder.js';
 import { SLURRY_PRESETS } from './slurryEngine.js';
 import {
   DEFAULT_SMAT_LEAD_WEBHOOK_URL,
@@ -197,37 +198,19 @@ export function collectWizardDomRefs(doc) {
     tempCInput: byId('wb-temp-c'),
     strictBlindCheck: byId('wb-strict-blind-check'),
     erpQuantity: byId('wb-erp-quantity'),
-    erpLogistics: byId('wb-erp-logistics-mode'),
     erpDestination: byId('wb-erp-destination')
   };
 }
 
 /**
- * Enlaza automáticamente cada selector declarado en `ENGINE_SCHEMA_REGISTRY`.
+ * Enlaza automáticamente cada selector declarado en `ENGINE_SCHEMA_REGISTRY` vía `schemaRuntimeBinder`.
  */
 export function bindSchemaInputsAutomatically(doc, onChanged) {
   if (!doc || typeof onChanged !== 'function') return 0;
-  let boundCount = 0;
-  for (const schema of listAllEngineSchemas()) {
-    for (const inp of schema.inputsSchema) {
-      const selectors = [inp.domBinding, ...(inp.aliasBindings || [])].filter(Boolean);
-      for (const sel of selectors) {
-        const nodes = doc.querySelectorAll?.(sel) || [];
-        nodes.forEach((node) => {
-          if (node.dataset?.schemaBound === '1') return;
-          if (node.dataset) node.dataset.schemaBound = '1';
-          const handler = () => {
-            if (node.dataset) node.dataset.userTouched = 'true';
-            onChanged(inp.field, schema.id, node);
-          };
-          node.addEventListener('input', handler);
-          node.addEventListener('change', handler);
-          boundCount += 1;
-        });
-      }
-    }
-  }
-  return boundCount;
+  const domainIds = listAllEngineSchemas().map((s) => s.id);
+  return bindDomainSchemaRoot(doc, domainIds, ({ field, domainId, node }) => {
+    onChanged(field, domainId, node);
+  });
 }
 
 /**

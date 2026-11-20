@@ -56,6 +56,22 @@ function createMockRoot() {
   };
 }
 
+function expandCoreTags(markup) {
+  const coreDir = path.join(SITE_ROOT, 'src/components/cores');
+  let out = markup;
+  for (let depth = 0; depth < 3; depth += 1) {
+    let changed = false;
+    out = out.replace(/<([A-Z][A-Za-z0-9]*Core)\b[^>]*\/>/g, (_m, coreName) => {
+      const p = path.join(coreDir, `${coreName}.astro`);
+      if (!fs.existsSync(p)) return '';
+      changed = true;
+      return fs.readFileSync(p, 'utf8');
+    });
+    if (!changed) break;
+  }
+  return out;
+}
+
 function readQuoteWizardComposite() {
   let qwSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/QuoteWizard.astro'), 'utf8');
   const wccSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/WizardCircuitCalculators.astro'), 'utf8');
@@ -67,7 +83,7 @@ function readQuoteWizardComposite() {
   const expandedCalculators = `${wccSrc}\n${cycSrc}\n${flotSrc}\n${filtSrc}\n${sealSrc}`;
   qwSrc = qwSrc.replace(/<ProcessControlIsland\b[^>]*\/>/, ctrlSrc);
   qwSrc = qwSrc.replace(/<WizardCircuitCalculators\b[^>]*\/>/, expandedCalculators);
-  return qwSrc;
+  return expandCoreTags(qwSrc);
 }
 
 test('D1-V41 & DEB-V41-01..02: QuoteWizard.astro decouples <WizardCircuitCalculators /> and promotes all 4 non-pumping panels out of #circuit-panel-bombeo and <details>', () => {

@@ -209,8 +209,8 @@ export function bindEquipmentCatalogSearchAndTray(
         if (dropinBanner.style) dropinBanner.style.display = 'block';
         const isEn = lang === 'en';
         const trayBtn = isEn
-          ? `<button type="button" class="btn btn-primary" style="min-height:48px;padding:0.4rem 0.85rem;font-size:0.8rem;" data-add-tray-sku="${dropinRes.canonicalSkuId}" data-tray-part-code="${dropinRes.atomicCode || dropinRes.canonicalSkuId}" data-tray-title="${dropinRes.titleEn}" data-tray-material="${dropinRes.alloyCode}" data-tray-circuit="equipos">+ Add Matched Part to Tray</button>`
-          : `<button type="button" class="btn btn-primary" style="min-height:48px;padding:0.4rem 0.85rem;font-size:0.8rem;" data-add-tray-sku="${dropinRes.canonicalSkuId}" data-tray-part-code="${dropinRes.atomicCode || dropinRes.canonicalSkuId}" data-tray-title="${dropinRes.titleEs}" data-tray-material="${dropinRes.alloyCode}" data-tray-circuit="equipos">+ Sumar Match a Bandeja</button>`;
+          ? `<button type="button" class="btn btn-primary smat-dropin-tray-btn" data-add-tray-sku="${dropinRes.canonicalSkuId}" data-tray-part-code="${dropinRes.atomicCode || dropinRes.canonicalSkuId}" data-tray-title="${dropinRes.titleEn}" data-tray-material="${dropinRes.alloyCode}" data-tray-circuit="equipos">+ Add Matched Part to Tray</button>`
+          : `<button type="button" class="btn btn-primary smat-dropin-tray-btn" data-add-tray-sku="${dropinRes.canonicalSkuId}" data-tray-part-code="${dropinRes.atomicCode || dropinRes.canonicalSkuId}" data-tray-title="${dropinRes.titleEs}" data-tray-material="${dropinRes.alloyCode}" data-tray-circuit="equipos">+ Sumar Match a Bandeja</button>`;
         const satNote = dropinRes.satTuple
           ? ` | SAT ${dropinRes.satTuple.clave_prod_serv || '40151700'}/${dropinRes.satTuple.clave_unidad || 'H87'}`
           : '';

@@ -330,7 +330,7 @@ export function recommendAstmSieveSeries(params = {}) {
     primaryApertureMicrons: primaryControlSieve.apertureMicrons,
     sieveStack: selectedSieves,
     recommendedSeries: selectedSieves.slice(0, 6),
-    sieveStackSummary: selectedSieves.map((s) => `${s.mesh} (${s.apertureMicrons} µm)`).join(' ➔ '),
+    sieveStackSummary: selectedSieves.map((s) => `${s.mesh} (${s.apertureMicrons} µm)`).join(' → '),
     rosinRammlerYPrime,
     rosinRammlerSlopeN,
     retainedPercentAtP80: retainedR,

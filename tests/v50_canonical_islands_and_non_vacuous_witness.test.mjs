@@ -120,6 +120,7 @@ test('V50-T1 Biyección Estructural Two-Sort: 100% de domBindings (11 dominios) 
     path.join(SITE_ROOT, 'src/components/SharePurchasing.astro'),
     path.join(SITE_ROOT, 'src/components/QuickOrderTray.astro'),
     ...walkFiles(path.join(SITE_ROOT, 'src/components/islands'), ['.astro']),
+    ...walkFiles(path.join(SITE_ROOT, 'src/components/cores'), ['.astro']),
   ];
   const combinedUiMarkup = canonicalUiFiles.map((p) => fs.readFileSync(p, 'utf8')).join('\n');
 
@@ -183,15 +184,20 @@ test('V50-T2 Paridad Islas Canónicas, Wrappers Bilingües y Estrato-1 Above-the
     'CycloneScreenIsland.astro',
     'ProcessControlIsland.astro',
   ];
+  const coreDir = path.join(SITE_ROOT, 'src/components/cores');
   for (const islandFile of calculatorIslands) {
-    const src = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands', islandFile), 'utf8');
-    const standaloneSrc = src.includes('data-island-standalone') ? src.slice(src.indexOf('data-island-standalone')) : src;
-    const idxStratum1 = standaloneSrc.includes('smat-stratum1-display')
-      ? standaloneSrc.indexOf('smat-stratum1-display')
-      : standaloneSrc.indexOf('data-stratum-1-instrument');
-    const idxInputs = standaloneSrc.includes('smat-inputs-2col')
-      ? standaloneSrc.indexOf('smat-inputs-2col')
-      : standaloneSrc.indexOf('metrology-inputs-grid');
+    const rawSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands', islandFile), 'utf8');
+    assert.equal(/\bisEmbedded\b/.test(rawSrc), false, `${islandFile} no debe conservar bifurcación {isEmbedded}`);
+    const expandedSrc = rawSrc.replace(/<([A-Z][A-Za-z0-9]*Core)\b[^>]*\/>/g, (_m, coreName) => {
+      const p = path.join(coreDir, `${coreName}.astro`);
+      return fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '';
+    });
+    const idxStratum1 = expandedSrc.includes('smat-stratum1-display')
+      ? expandedSrc.indexOf('smat-stratum1-display')
+      : expandedSrc.indexOf('data-stratum-1-instrument');
+    const idxInputs = expandedSrc.includes('smat-inputs-2col')
+      ? expandedSrc.indexOf('smat-inputs-2col')
+      : expandedSrc.indexOf('metrology-inputs-grid');
     assert.ok(idxStratum1 !== -1, `${islandFile} debe declarar .smat-stratum1-display o data-stratum-1-instrument`);
     assert.ok(idxInputs !== -1, `${islandFile} debe declarar .smat-inputs-2col o .metrology-inputs-grid`);
     assert.ok(idxStratum1 < idxInputs, `${islandFile}: Estrato 1 debe renderizarse ANTES de los inputs`);
@@ -216,7 +222,7 @@ test('V50-T3 Cero Debris Arqueológico, Cero Metalenguaje, Cero #b45309/#d97706 
       assert.equal(pat.re.test(content), false, `Debris prohibido (${pat.label}) detectado en ${rel}`);
     }
 
-    if (filePath.endsWith('.astro') && (rel.includes('components\\islands') || rel.endsWith('QuoteWizard.astro'))) {
+    if (filePath.endsWith('.astro') && (rel.includes('components\\islands') || rel.includes('components/islands') || rel.includes('components\\cores') || rel.includes('components/cores') || rel.endsWith('QuoteWizard.astro'))) {
       const visibleTemplate = content.replace(/^---[\s\S]*?---/, '').split('<script')[0].replace(/<!--[\s\S]*?-->/g, '');
       const visibleProse = visibleTemplate.replace(/<[^>]+>/g, ' ').replace(/\{[^}]*\}/g, ' ');
       for (const jargon of ['SSOT', 'CONSOLA 4-TAB XOR', 'CANDADO G1', 'CANDADO G4', 'CANDADO G5', 'v_tip', 'T₀/2', 'FNV-1a']) {

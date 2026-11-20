@@ -2,10 +2,13 @@
 /**
  * ProcessControlIsland.astro
  * ---------------------------------------------------------------------------
- * Isla Canónica Bilingüe Única de Control de Procesos (Balanza Marcy 3-Vías,
- * Masa Mínima de Muestra Pierre Gy / Filtro Lab y Serie √2 ASTM E11 / Rosin-Rammler).
- * Soporta `mode: 'standalone' | 'embedded'` y expone `sieveNumber` + `drySampleMassGrams`.
+ * Isla Canónica Bilingüe Única de Control de Procesos (`D5-V51` / `SLICE-V51-12`):
+ *   - Cero bifurcaciones duales `{mode}`.
+ *   - Monta `<MetrologyLabCore />` único compartido entre `/control-de-procesos/` y `/cotizar/`.
+ *   - Conserva envoltorio hero + fichas técnicas + `TechnicalDiagrams` + `CircuitNavigator` + `SharePurchasing`
+ *     cuando `mode === 'standalone'`.
  */
+import MetrologyLabCore from '../cores/MetrologyLabCore.astro';
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import CircuitNavigator from '../CircuitNavigator.astro';
 import SharePurchasing from '../SharePurchasing.astro';
@@ -19,7 +22,7 @@ interface Props {
 const { locale = 'es', mode = 'standalone' } = Astro.props;
 const isEs = locale === 'es';
 const lang = locale;
-const isEmbedded = mode === 'embedded';
+const showVerticalShell = mode === 'standalone';
 
 const ctrlVertical = rolesData.verticals.find((v) => v.id === 'control_procesos');
 const marcyRole = ctrlVertical?.capex?.find((r) => r.role_id === 'balanza_marcy');
@@ -31,120 +34,7 @@ const classifHref = isEs ? '/clasificacion/#marcy-3cup-cyclone-calculator' : '/e
 const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pulp-density-scale/';
 ---
 
-{isEmbedded ? (
-  <div id="circuit-panel-control" class="circuit-panel hidden embedded-ctrl-panel">
-    <div class="form-group smat-mb-md">
-      <label class="smat-field-label" for="wb-role-ctrl">
-        {isEs ? 'Instrumento o Paquete de Control Requerido:' : 'Required Process Control Instrument or Package:'}
-      </label>
-      <select id="wb-role-ctrl" name="role_id_ctrl" class="smat-input-control wb-select">
-        <option value="balanza_marcy" selected>{isEs ? 'Balanza de Densidad de Pulpa (Tipo Marcy) — Vaso 1000 cm³ + 12 Anillos' : 'Pulp Density & % Solids Scale (Marcy Type) — 1000 cm³ Cup + 12 Rings'}</option>
-        <option value="filtro_batch_lab">{isEs ? 'Filtro de Presión Batch de Laboratorio (60–100 psi)' : 'Laboratory Batch Pressure Filter (60–100 psi)'}</option>
-        <option value="tamices_laboratorio">{isEs ? 'Tamices Certificados ASTM E11 / ISO 3310 y Tamizadores' : 'Certified ASTM E11 / ISO 3310 Test Sieves & Shakers'}</option>
-      </select>
-    </div>
-
-    <div class="form-group smat-mb-md">
-      <label class="smat-field-label" for="wb-ctrl-spec">
-        {isEs ? 'Rango de Gravedad Específica (Ss) o Serie de Mallas:' : 'Ore Specific Gravity (Ss) Range or Sieve Series:'}
-      </label>
-      <select id="wb-ctrl-spec" name="ctrl_spec" class="smat-input-control wb-select">
-        <option value="marcy_12_rings" selected>{isEs ? 'Juego Completo 12 Carátulas (Ss 2.2–4.4) + Vaso Inox 304' : 'Full 12-Ring Dial Set (Ss 2.2–4.4) + 304 Stainless Cup'}</option>
-        <option value="batch_100psi">{isEs ? 'Cámara de Presión Batch (60–100 psi) + Columnas Guía' : 'Heavy-Duty Steel Batch Pressure Barrel (60–100 psi)'}</option>
-        <option value="astm_8in_inox">{isEs ? 'Columna Tamices 8" Inox (P80 #40–#400/#635) + Tapa' : '8" Stainless Steel Sieve Stack (#40–#400/#635) + Cover'}</option>
-        <option value="astm_12in_bronce">{isEs ? 'Columna Tamices 12" Bronce/Inox + Tamizador Mecánico' : '12" Brass/Inox Sieve Stack + Mechanical Shaker'}</option>
-      </select>
-    </div>
-
-    <div class="smat-flex-between smat-mb-md">
-      <div class="ctrl-mode-group">
-        <label class="smat-field-label" for="wb-ctrl-solve-mode">
-          {isEs ? 'Inversión Algebraica Balanza Marcy (3 Vías):' : '3-Way Marcy Algebraic Inversion:'}
-        </label>
-        <select id="wb-ctrl-solve-mode" data-testid="wb-ctrl-solve-mode" class="smat-input-control wb-select font-mono-tech">
-          <option value="cw" selected>{isEs ? 'Modo 1: Ss y %Cw → Calcular ρp (kg/L)' : 'Mode 1: Ss & %Cw → Solve ρp (kg/L)'}</option>
-          <option value="rhop">{isEs ? 'Modo 2: Ss y ρp → Calcular %Cw' : 'Mode 2: Ss & ρp → Solve %Cw'}</option>
-          <option value="ore_density_rhop">{isEs ? 'Modo 3: ρp y %Cw → Despejar Ss Real' : 'Mode 3: ρp & %Cw → Solve True Ss'}</option>
-        </select>
-      </div>
-      <button type="button" id="btn-apply-ss-to-circuit" data-testid="btn-apply-ss-to-circuit" class="smat-btn-secondary">
-        {isEs ? 'Aplicar Ss al Circuito →' : 'Apply Ss to Circuit →'}
-      </button>
-    </div>
-
-    <div class="smat-inputs-2col smat-panel-soft">
-      <div class="form-group"><label class="smat-field-label" for="wb-ctrl-sg">{isEs ? 'SG Mineral (Ss):' : 'Ore SG (Ss):'}</label><input type="number" id="wb-ctrl-sg" min="2.2" max="4.4" step="0.1" value="2.8" class="smat-input-control wb-input font-mono-tech" /></div>
-      <div class="form-group"><label class="smat-field-label" for="wb-ctrl-cw">{isEs ? '% Sólidos (Cw):' : 'Solids (% Cw):'}</label><input type="number" id="wb-ctrl-cw" min="10" max="75" step="1" value="45" class="smat-input-control wb-input font-mono-tech" /></div>
-      <div class="form-group"><label class="smat-field-label" for="wb-ctrl-rhop">{isEs ? 'Densidad ρp (kg/L):' : 'Pulp ρp (kg/L):'}</label><input type="number" id="wb-ctrl-rhop" min="1.05" max="2.40" step="0.005" value="1.406" class="smat-input-control wb-input font-mono-tech" /></div>
-      <div class="form-group"><label class="smat-field-label" for="wb-ctrl-d95">{isEs ? 'Top d95 Gy (mm):' : 'Gy d95 (mm):'}</label><input type="number" id="wb-ctrl-d95" min="0.04" max="25.0" step="0.01" value="6.5" class="smat-input-control wb-input font-mono-tech" /></div>
-      <div class="form-group"><label class="smat-field-label" for="wb-ctrl-lib">{isEs ? 'Liberación dl (µm):' : 'Lib. dl (µm):'}</label><input type="number" id="wb-ctrl-lib" min="10" max="1000" step="5" value="100" class="smat-input-control wb-input font-mono-tech" /></div>
-      <div class="form-group"><label class="smat-field-label" for="wb-ctrl-grade">{isEs ? 'Ley Mineral (aL):' : 'Ore Grade (aL):'}</label><input type="number" id="wb-ctrl-grade" min="0.001" max="0.95" step="0.005" value="0.05" class="smat-input-control wb-input font-mono-tech" /></div>
-      <div class="form-group"><label class="smat-field-label" for="wb-ctrl-air-psi">{isEs ? 'Presión Batch (psi):' : 'Batch Air (psi):'}</label><select id="wb-ctrl-air-psi" class="smat-input-control wb-select font-mono-tech"><option value="60">60 psi</option><option value="80">80 psi</option><option value="90" selected>90 psi</option><option value="100">100 psi</option></select></div>
-      <div class="form-group"><label class="smat-field-label" for="wb-ctrl-gy-c">{isEs ? 'Constante Gy c:' : 'Gy Constant c:'}</label><input type="number" id="wb-ctrl-gy-c" min="0.05" max="50" step="0.05" value="1.35" class="smat-input-control wb-input font-mono-tech" /></div>
-      <div class="form-group"><label class="smat-field-label" for="wb-ctrl-gy-err">{isEs ? 'Error Rel. Gy (s):' : 'Gy Rel. Err (s):'}</label><select id="wb-ctrl-gy-err" class="smat-input-control wb-select font-mono-tech"><option value="0.01">1% (0.01)</option><option value="0.05" selected>5% (0.05)</option><option value="0.10">10% (0.10)</option></select></div>
-      <div class="form-group"><label class="smat-field-label" for="wb-ctrl-p80">{isEs ? 'Corte P80 (µm):' : 'Target P80 (µm):'}</label><input type="number" id="wb-ctrl-p80" min="25" max="2000" step="5" value="150" class="smat-input-control wb-input font-mono-tech" /></div>
-      <div class="form-group"><label class="smat-field-label" for="wb-ctrl-rr-n">{isEs ? 'Pendiente RR (n):' : 'RR Slope (n):'}</label><input type="number" id="wb-ctrl-rr-n" min="0.50" max="2.50" step="0.05" value="1.15" class="smat-input-control wb-input font-mono-tech" /></div>
-      <div class="form-group"><label class="smat-field-label" for="wb-ctrl-ret-p80">{isEs ? '% Ret. en P80:' : '% Ret. at P80:'}</label><input type="number" id="wb-ctrl-ret-p80" min="5" max="40" step="1" value="20" class="smat-input-control wb-input font-mono-tech" /></div>
-    </div>
-
-    <details class="smat-mt-sm smat-panel-soft">
-      <summary class="smat-field-label">
-        {isEs
-          ? 'Parámetros Estequiométricos y Metrología Avanzada (Anillo Marcy, Gy β/m y Masa Retenida)'
-          : 'Advanced Stoichiometry & Metrology Inputs (Marcy Ring, Gy β/m & Retained Mass)'}
-      </summary>
-      <div class="smat-inputs-2col smat-mt-sm">
-        <div class="form-group"><label class="smat-field-label" for="wb-ctrl-ring">{isEs ? 'Anillo Marcy (Ss):' : 'Marcy Ring (Ss):'}</label><select id="wb-ctrl-ring" class="smat-input-control wb-select font-mono-tech"><option value="2.5">2.5</option><option value="2.6">2.6</option><option value="2.7" selected>2.7</option><option value="2.8">2.8</option><option value="3.0">3.0</option><option value="3.2">3.2</option></select></div>
-        <div class="form-group"><label class="smat-field-label" for="wb-ctrl-marcy-mode">{isEs ? 'Modo Ecuación Marcy:' : 'Marcy Equation Mode:'}</label><select id="wb-ctrl-marcy-mode" class="smat-input-control wb-select font-mono-tech"><option value="cw_pct" selected>%Cw</option><option value="slurry_sg">SG_m</option><option value="solids_sg">Ss</option></select></div>
-        <div class="form-group"><label class="smat-field-label" for="wb-ctrl-density">{isEs ? 'Densidad Medida (SG_m):' : 'Measured SG (SG_m):'}</label><input type="number" id="wb-ctrl-density" min="1.0" max="4.5" step="0.01" value="1.45" class="smat-input-control wb-input font-mono-tech" /></div>
-        <div class="form-group"><label class="smat-field-label" for="wb-ctrl-ss">{isEs ? 'Gravedad Sólidos (Ss):' : 'Solids SG (Ss):'}</label><input type="number" id="wb-ctrl-ss" min="1.8" max="5.5" step="0.1" value="2.7" class="smat-input-control wb-input font-mono-tech" /></div>
-        <div class="form-group"><label class="smat-field-label" for="wb-ctrl-topsize">{isEs ? 'Tamaño Máximo d95 (mm):' : 'Top Size d95 (mm):'}</label><input type="number" id="wb-ctrl-topsize" min="0.05" max="150" step="0.1" value="12.7" class="smat-input-control wb-input font-mono-tech" /></div>
-        <div class="form-group"><label class="smat-field-label" for="wb-ctrl-gy-beta">{isEs ? 'Factor Liberación Gy (β):' : 'Gy Liberation Factor (β):'}</label><input type="number" id="wb-ctrl-gy-beta" min="0.1" max="2.0" step="0.05" value="0.5" class="smat-input-control wb-input font-mono-tech" /></div>
-        <div class="form-group"><label class="smat-field-label" for="wb-ctrl-gy-m">{isEs ? 'Factor Mineralógico Gy (m):' : 'Gy Mineralogical Factor (m):'}</label><input type="number" id="wb-ctrl-gy-m" min="0.5" max="50.0" step="0.5" value="20.0" class="smat-input-control wb-input font-mono-tech" /></div>
-        <div class="form-group"><label class="smat-field-label" for="wb-ctrl-mass-retained">{isEs ? 'Masa Retenida Tamiz (g):' : 'Retained Sieve Mass (g):'}</label><input type="number" id="wb-ctrl-mass-retained" min="1" max="5000" step="5" value="180" class="smat-input-control wb-input font-mono-tech" /></div>
-      </div>
-    </details>
-
-    <div id="wb-ctrl-live-metrics" class="embedded-ctrl-metrics font-mono-tech smat-mt-sm"></div>
-
-    <div class="embedded-ctrl-res font-mono-tech smat-mt-sm">
-      <div class="embedded-res-cell"><strong>{isEs ? 'Pulpa / Anillo:' : 'Pulp / Ring:'}</strong> <span id="wb-ctrl-res-sm">1.406 kg/L (Ss 2.8)</span></div>
-      <div class="embedded-res-cell"><strong>{isEs ? '% Sólidos Calc.:' : 'Calc % Solids:'}</strong> <span id="wb-ctrl-res-cw">45.0%</span></div>
-      <div class="embedded-res-cell"><strong>{isEs ? 'Sesgo Anillo:' : 'Ring Bias:'}</strong> <span id="wb-ctrl-res-bias">±0.0 pts %Cw</span></div>
-      <div class="embedded-res-cell"><strong>{isEs ? 'Muestra Gy / Batch:' : 'Gy / Batch:'}</strong> <span id="wb-ctrl-res-gy">0.25 kg (1 ciclo Batch)</span></div>
-      <div class="embedded-res-cell"><strong>{isEs ? 'Malla Control RR:' : 'RR Control Mesh:'}</strong> <span id="wb-ctrl-res-rr">#100 • n = 1.15</span></div>
-      <div class="embedded-res-cell"><strong>{isEs ? 'Número de Tamiz:' : 'Sieve Number:'}</strong> <span id="wb-ctrl-res-sieve">#100</span></div>
-      <div class="embedded-res-cell"><strong>{isEs ? 'Masa Seca ASTM:' : 'ASTM Dry Mass:'}</strong> <span id="wb-ctrl-res-drysample">250 g</span></div>
-      <div class="embedded-res-cell"><strong>{isEs ? 'Polipasto:' : 'Hoist Lift:'}</strong> <span id="wb-ctrl-res-hoist">{isEs ? 'No requerido' : 'Not required'}</span></div>
-      <div class="embedded-res-cell"><strong>{isEs ? 'Manejo 2 Personas:' : '2-Person Assist:'}</strong> <span id="wb-ctrl-res-two-person">{isEs ? 'Estándar' : 'Standard'}</span></div>
-      <div class="embedded-res-cell"><strong>{isEs ? 'Volumen Pulpa Gy:' : 'Gy Wet Pulp Vol:'}</strong> <span id="wb-ctrl-gy-pulp-liters" data-testid="wb-ctrl-gy-pulp-liters">{isEs ? 'Volumen Pulpa Húmeda: 0.39 L' : 'Wet Pulp Volume: 0.39 L'}</span></div>
-      <div class="embedded-res-cell"><strong>{isEs ? 'Bastidor ASTM E11:' : 'ASTM E11 Frame:'}</strong> <span id="wb-ctrl-sieve-frame-rec" data-testid="wb-ctrl-sieve-frame-rec">{isEs ? 'Acero Inox 304/316' : '304/316 Stainless Steel'}</span></div>
-    </div>
-
-    <div id="wb-ctrl-marcy-rings-strip" data-testid="wb-ctrl-marcy-rings-strip" class="rings-strip font-mono-tech smat-mt-sm">
-      {isEs ? '12 Anillos Marcy (Ss 2.2–4.4): Anillo #4 [Ss 2.8] activo' : '12 Marcy Rings (Ss 2.2–4.4): Ring #4 [Ss 2.8] active'}
-    </div>
-
-    <div class="sieve-table-shell smat-mt-sm">
-      <span class="sieve-table-kicker">
-        {isEs ? 'SERIE DE TAMICES ASTM E11 / ROSIN-RAMMLER EN VIVO (7 MALLAS)' : 'LIVE ASTM E11 / ROSIN-RAMMLER SIEVE STACK (7 MESHES)'}
-      </span>
-      <table id="wb-ctrl-sieve-table" class="embedded-sieve-table">
-        <thead>
-          <tr>
-            <th>{isEs ? 'Malla (Tyler)' : 'Mesh (Tyler)'}</th>
-            <th>µm</th>
-            <th>{isEs ? '% Ret. Indiv.' : '% Indiv. Ret.'}</th>
-            <th>{isEs ? '% Ret. Acum.' : '% Cum. Ret.'}</th>
-            <th>{isEs ? '% Pasante' : '% Passing'}</th>
-            <th>{isEs ? 'Masa (g) / Rol' : 'Mass (g) / Role'}</th>
-          </tr>
-        </thead>
-        <tbody id="wb-ctrl-sieve-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-) : (
+{showVerticalShell && (
   <div class="ctrl-standalone-wrap" data-island-standalone="metrology">
     <section class="page-hero smat-compact-hero">
       <div class="container">
@@ -187,283 +77,79 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
             </p>
           </div>
 
-          <div class="metrology-stations-stack">
-            <details class="metrology-station-accordion" data-station-accordion="1" open>
-              <summary class="metrology-station-summary">
-                <span>
-                  <strong>{isEs ? '1. Balanza Marcy:' : '1. Marcy Scale:'}</strong>{' '}
-                  {isEs ? 'Gravedad Específica del Mineral Seco (Ss) y % Sólidos (Cw)' : 'Dry Ore Specific Gravity (Ss) & Solids % (Cw)'}
-                </span>
-                <span class="metrology-station-tag">{isEs ? 'ESTACIÓN 01 • ACTIVA' : 'STATION 01 • ACTIVE'}</span>
-              </summary>
-              <div class="metrology-inputs-grid">
-                <label class="metrology-field">
-                  <span>{isEs ? 'Modo de Inversión de 3 Vías (Marcy):' : '3-Way Marcy Inversion Mode:'}</span>
-                  <select id="met-marcy-mode">
-                    <option value="cw" selected>{isEs ? '1. Dadas Ss + %Cw → Calcular ρp (kg/L)' : '1. Given Ss + %Cw → Solve ρp (kg/L)'}</option>
-                    <option value="rhop">{isEs ? '2. Dadas Ss + ρp → Calcular %Cw' : '2. Given Ss + ρp → Solve %Cw'}</option>
-                    <option value="ore_density_rhop">{isEs ? '3. Dadas ρp + %Cw → Inferir Ss Real' : '3. Given ρp + %Cw → Solve True Ss'}</option>
-                  </select>
-                </label>
-                <label class="metrology-field">
-                  <span>{isEs ? 'Gravedad Específica Mineral Seco (Ss):' : 'Dry Ore Specific Gravity (Ss):'}</span>
-                  <input type="number" id="met-sg-input" min="2.2" max="4.4" step="0.05" value="2.8" />
-                </label>
-                <label class="metrology-field">
-                  <span>{isEs ? 'Porcentaje Sólidos Peso (Cw %):' : 'Solids by Weight (Cw %):'}</span>
-                  <input type="number" id="met-cw-input" min="5" max="80" step="1" value="50" />
-                </label>
-                <label class="metrology-field">
-                  <span>{isEs ? 'Densidad Pulpa (ρp kg/L):' : 'Pulp Density (ρp kg/L):'}</span>
-                  <input type="number" id="met-rhop-input" min="1.05" max="2.60" step="0.005" value="1.474" />
-                </label>
-              </div>
-              <div class="metrology-result-box">
-                <span class="met-res-label">
-                  {isEs ? 'Lectura Vaso Marcy (1000 cm³) y Auditoría de Anillo' : 'Marcy Cup Reading (1000 cm³) & Ring Bias Audit'}
-                </span>
-                <strong id="met-res-marcy-main" class="met-res-value">1474 g netos • ρp = 1.474 kg/L</strong>
-                <small id="met-res-marcy-sub">{isEs ? 'Anillo recomendado: SG 2.8 (Rango 2.2 a 4.4)' : 'Recommended dial ring: SG 2.8 (Range 2.2–4.4)'}</small>
-                <small id="met-res-marcy-bias" class="met-bias-line">
-                  {isEs
-                    ? 'Sólidos secos en vaso: 737 g • Cw aparente: 50.0% (Sesgo ΔC_bias = 0.0 pts) • Vaso Acero Inox 304 (1000 cm³)'
-                    : 'Dry solids in cup: 737 g • Apparent Cw: 50.0% (Bias ΔC_bias = 0.0 pts) • 304 Stainless Cup (1000 cm³)'}
-                </small>
-                <div class="smat-chip-row smat-mt-sm">
-                  <span class="smat-badge-solar" data-met-defuse-water-ml>{isEs ? 'Agua: 526 mL' : 'Water: 526 mL'}</span>
-                  <span class="smat-badge-solar" data-met-defuse-cv-pct>Cv: 26.3%</span>
-                  <span class="smat-badge-solar" data-met-defuse-cup-mass>{isEs ? 'Vaso: 1474 g' : 'Cup: 1474 g'}</span>
-                  <span class="smat-badge-solar" data-met-defuse-dry-solids>{isEs ? 'Sólidos secos: 737 g' : 'Dry solids: 737 g'}</span>
-                </div>
-                <div data-marcy-rings-list class="smat-chip-row smat-mt-sm"></div>
-                <div class="smat-cta-row">
-                  <button type="button" id="met-apply-ss-btn" class="btn btn-outline">
-                    {isEs ? 'Sincronizar Ss y Cw Calibrados al Circuito →' : 'Sync Calibrated Ss & Cw to Circuit →'}
-                  </button>
-                  <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-MARCY-1000" data-tray-circuit="control_procesos">
-                    {isEs ? '+ Bandeja (Kit Marcy)' : '+ Tray (Marcy Kit)'}
-                  </button>
-                </div>
-              </div>
-            </details>
-
-            <details class="metrology-station-accordion" data-station-accordion="2">
-              <summary class="metrology-station-summary">
-                <span>
-                  <strong>{isEs ? '2. Filtro Prensa Lab + Pierre Gy:' : '2. Lab Batch Filter + Pierre Gy:'}</strong>{' '}
-                  {isEs ? 'Masa Mínima de Muestra (Ms) y Ciclos Batch (60–100 psi)' : 'Minimum Sample Mass (Ms) & Batch Cycles (60–100 psi)'}
-                </span>
-                <span class="metrology-station-tag">{isEs ? 'ESTACIÓN 02 ▾' : 'STATION 02 ▾'}</span>
-              </summary>
-              <div class="metrology-inputs-grid">
-                <label class="metrology-field">
-                  <span>{isEs ? 'Presión Neumática Batch (psi):' : 'Pneumatic Batch Pressure (psi):'}</span>
-                  <select id="met-gy-pressure-select">
-                    <option value="70">{isEs ? '60–80 psi (Concentrados)' : '60–80 psi (Concentrates)'}</option>
-                    <option value="90" selected>{isEs ? '80–100 psi (Finos / Lamas)' : '80–100 psi (Fines / Slimes)'}</option>
-                  </select>
-                </label>
-                <label class="metrology-field">
-                  <span>{isEs ? 'Tamaño Máximo d95 (mm):' : 'Top Particle Size d95 (mm):'}</span>
-                  <input type="number" id="met-gy-d95-input" min="0.04" max="25.0" step="0.01" value="0.105" />
-                </label>
-                <label class="metrology-field">
-                  <span>{isEs ? 'Liberación Mineral dl (µm):' : 'Liberation Size dl (µm):'}</span>
-                  <input type="number" id="met-gy-lib-input" min="10" max="1000" step="5" value="100" />
-                </label>
-                <label class="metrology-field">
-                  <span>{isEs ? 'Ley Mineral Decimal (aL):' : 'Decimal Ore Grade (aL):'}</span>
-                  <input type="number" id="met-gy-grade-input" min="0.001" max="0.80" step="0.005" value="0.05" />
-                </label>
-                <label class="metrology-field">
-                  <span>{isEs ? 'Constante Mineral Pierre Gy c (g/cm³):' : 'Pierre Gy Mineral Factor c (g/cm³):'}</span>
-                  <input type="number" id="met-gy-c-input" min="0.5" max="15.0" step="0.1" value="4.0" />
-                </label>
-                <label class="metrology-field">
-                  <span>{isEs ? 'Error Estándar Relativo (s_FSE):' : 'Target Relative Std Error (s_FSE):'}</span>
-                  <select id="met-gy-error-select">
-                    <option value="0.01">{isEs ? '±1.0% (Balance Conciliado)' : '±1.0% (Metallurgical Accounting)'}</option>
-                    <option value="0.025">{isEs ? '±2.5% (Control Molienda)' : '±2.5% (Grinding Control)'}</option>
-                    <option value="0.05" selected>{isEs ? '±5.0% (Muestreo Turno)' : '±5.0% (Shift Audit)'}</option>
-                  </select>
-                </label>
-              </div>
-              <div class="metrology-result-box">
-                <span class="met-res-label">{isEs ? 'Masa Mínima de Muestra (Pierre Gy) y Ciclos Filtro Lab' : 'Minimum Sample Mass (Pierre Gy) & Batch Filter Cycles'}</span>
-                <strong id="met-res-gy-main" class="met-res-value">{isEs ? '250 g secos (Tamizado en Húmedo + Seco)' : '250 g dry (Wet + Dry Sieving)'}</strong>
-                <small id="met-res-gy-sub">{isEs ? 'Factor forma f = 0.50, granulometría g = 0.25' : 'Shape factor f = 0.50, size distribution g = 0.25'}</small>
-                <div class="smat-chip-row smat-mt-sm">
-                  <span class="smat-badge-solar" data-met-defuse-gy-beta>β: 1.00</span>
-                  <span class="smat-badge-solar" data-met-defuse-gy-m>{isEs ? 'Masa min: 0.250 kg' : 'Min mass: 0.250 kg'}</span>
-                  <span class="smat-badge-solar" data-met-defuse-gy-pulp>{isEs ? 'Pulpa: 0.34 L' : 'Pulp: 0.34 L'}</span>
-                  <span class="smat-badge-solar" data-met-defuse-gy-minutes>{isEs ? 'Ciclo: 12 min' : 'Cycle: 12 min'}</span>
-                  <span class="smat-badge-solar" data-met-defuse-gy-moisture>{isEs ? 'Humedad: ~11.0%' : 'Moisture: ~11.0%'}</span>
-                  <span class="smat-badge-emerald" data-met-defuse-gy-status>OK</span>
-                </div>
-                <div class="smat-cta-row">
-                  <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-FILTRO-BATCH" data-tray-circuit="control_procesos">
-                    {isEs ? '+ Bandeja (Filtro Prensa Batch Lab)' : '+ Tray (Batch Pressure Filter)'}
-                  </button>
-                </div>
-              </div>
-            </details>
-
-            <details class="metrology-station-accordion" data-station-accordion="3">
-              <summary class="metrology-station-summary">
-                <span>
-                  <strong>{isEs ? '3. Tamices ASTM E11:' : '3. ASTM E11 Sieves:'}</strong>{' '}
-                  {isEs ? 'Corte P80 Objetivo, Serie √2 y Linealización Rosin-Rammler (y\')' : 'Target P80 Cut, √2 Series & Rosin-Rammler Linearization (y\')'}
-                </span>
-                <span class="metrology-station-tag">{isEs ? 'ESTACIÓN 03 ▾' : 'STATION 03 ▾'}</span>
-              </summary>
-              <div class="metrology-inputs-grid">
-                <label class="metrology-field">
-                  <span>{isEs ? 'Corte P80 Objetivo (µm):' : 'Target P80 Grind Cut (µm):'}</span>
-                  <input type="number" id="met-p80-input" min="25" max="2000" step="5" value="75" />
-                </label>
-                <label class="metrology-field">
-                  <span>{isEs ? 'Módulo Uniformidad Rosin-Rammler (n):' : 'Rosin-Rammler Slope (n):'}</span>
-                  <input type="number" id="met-rr-n-input" min="0.60" max="2.20" step="0.05" value="1.25" />
-                </label>
-                <label class="metrology-field">
-                  <span>{isEs ? 'Material y Diámetro de Marco:' : 'Sieve Frame Material & Ø:'}</span>
-                  <select id="met-frame-select">
-                    <option value='Acero Inoxidable 8" (Altura Completa)'>{isEs ? 'Acero Inoxidable 8" (Altura Completa)' : 'Stainless Steel 8" (Full Height)'}</option>
-                    <option value='Acero Inoxidable 8" (Media Altura)'>{isEs ? 'Acero Inoxidable 8" (Media Altura)' : 'Stainless Steel 8" (Half Height)'}</option>
-                    <option value='Bronce y Acero Inox 8"'>{isEs ? 'Bronce / Acero Inox 8"' : 'Brass / Stainless Steel 8"'}</option>
-                    <option value='Acero Inoxidable 12"'>{isEs ? 'Acero Inoxidable 12"' : 'Stainless Steel 12"'}</option>
-                  </select>
-                </label>
-                <label class="metrology-field">
-                  <span>{isEs ? 'Régimen de Tamizado:' : 'Screening Mode:'}</span>
-                  <select id="met-screening-mode">
-                    <option value="auto" selected>{isEs ? 'Automático (Húmedo ≤150 µm / Seco >150 µm)' : 'Auto (Wet ≤150 µm / Dry >150 µm)'}</option>
-                    <option value="wet">{isEs ? 'Tamizado Húmedo + Seco (Deslamado #400)' : 'Wet + Dry Sieving (#400 Wash)'}</option>
-                    <option value="dry">{isEs ? 'Tamizado en Seco (Ro-Tap)' : 'Dry Sieving (Ro-Tap)'}</option>
-                  </select>
-                </label>
-              </div>
-              <div class="metrology-result-box">
-                <span class="met-res-label">{isEs ? 'Batería Recomendada ASTM E11 (Serie √2 + Rosin-Rammler)' : 'Recommended ASTM E11 Stack (√2 Series + Rosin-Rammler)'}</span>
-                <strong id="met-res-sieves-main" class="met-res-value">#70, #100, #140, #200, #270, #325, #400</strong>
-                <small id="met-res-sieves-sub">{isEs ? 'Incluye Tapa y Cazuela • y\' = -0.1555 (n = 1.25)' : 'Includes Cover & Pan • y\' = -0.1555 (n = 1.25)'}</small>
-                <div class="smat-chip-row smat-mt-sm">
-                  <span class="smat-badge-solar" data-met-defuse-d63>d63.2: 52 µm</span>
-                  <span class="smat-badge-solar" data-met-defuse-cum-mass>{isEs ? 'Ret. Acum.: 100%' : 'Cum. Ret.: 100%'}</span>
-                  <span class="smat-badge-solar" data-met-defuse-frame-mat>{isEs ? 'Marco: Acero Inox' : 'Frame: Stainless Steel'}</span>
-                  <span class="smat-badge-solar" id="met-res-sieve-number" data-met-sieve-number>{isEs ? 'Tamiz Control: #200' : 'Control Mesh: #200'}</span>
-                  <span class="smat-badge-solar" id="met-res-dry-sample-mass" data-met-dry-sample-mass>{isEs ? 'Masa Seca ASTM: 250 g' : 'ASTM Dry Mass: 250 g'}</span>
-                </div>
-                <div class="table-scroll smat-mt-sm">
-                  <table id="met-sieve-stack-table" class="metrology-sieve-table">
-                    <thead>
-                      <tr>
-                        <th>{isEs ? 'Malla ASTM (Tyler)' : 'ASTM Mesh (Tyler)'}</th>
-                        <th>{isEs ? 'Abertura (µm)' : 'Aperture (µm)'}</th>
-                        <th>{isEs ? '% Ret. Indiv.' : '% Indiv. Ret.'}</th>
-                        <th>{isEs ? '% Ret. Acum.' : '% Cum. Ret.'}</th>
-                        <th>{isEs ? '% Pasante Acum.' : '% Cum. Passing'}</th>
-                        <th>{isEs ? 'Masa Ret. (g) / Rol' : 'Mass Ret. (g) / Role'}</th>
-                      </tr>
-                    </thead>
-                    <tbody id="met-sieve-stack-tbody"></tbody>
-                  </table>
-                </div>
-                <div class="smat-cta-row">
-                  <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-TAMIZ-E11" data-tray-circuit="control_procesos">
-                    {isEs ? '+ Bandeja (Batería Tamices ASTM E11)' : '+ Tray (ASTM E11 Sieve Stack)'}
-                  </button>
-                </div>
-              </div>
-            </details>
-          </div>
+          <MetrologyLabCore locale={locale} showRoleSelectors={false} panelClass="metrology-core-standalone" />
 
           <div class="met-calc-footer">
-            <span id="met-summary-code" class="met-summary-code">
-              {isEs ? 'Especificación lista para cotizador:' : 'Quote-ready specification:'} <strong>SMAT-CTRL-MARCY-1000 / SMAT-CTRL-SIEVE-ASTM</strong>
-            </span>
-            <div class="smat-cta-row">
-              <a id="met-cyclone-3cup-cta" href={classifHref} class="btn btn-outline">
-                {isEs ? 'Balance Hidrociclón 3 Vasos Marcy →' : '3-Cup Marcy Cyclone Balance →'}
-              </a>
-              <a id="met-sku19-cta" href={marcySkuHref} class="btn btn-outline">
-                SMAT-LAB-MARCY-1000 →
-              </a>
-              <a id="met-pump-precal-cta" href={`${quoteBase}?circuito=bombeo&flow=220&solids=50&d80=75&sg=2.8#rfq`} class="btn btn-outline">
-                {isEs ? 'Pre-calibrar Bomba con esta Pulpa →' : 'Pre-Size Pump with This Slurry →'}
-              </a>
-              <a id="met-quote-cta" href={`${quoteBase}?circuito=control_procesos&equipo=balanza_marcy#rfq`} class="btn btn-primary">
-                {isEs ? 'Enviar Cédula al Cotizador →' : 'Send Spec Sheet to Quote →'}
-              </a>
-            </div>
+            <a id="met-quote-cta" href={`${quoteBase}?circuito=control_procesos&equipo=balanza_marcy#rfq`} class="btn btn-primary">
+              {isEs ? 'Cotizar con esta Calibración Metrológica →' : 'Quote With This Metrology Calibration →'}
+            </a>
+            <a id="met-pump-precal-cta" href={`${quoteBase}?circuito=bombeo#rfq`} class="btn btn-outline">
+              {isEs ? 'Pre-calibrar Bomba con esta Densidad →' : 'Pre-Size Slurry Pump with This Density →'}
+            </a>
+            <a href={classifHref} class="btn btn-outline">
+              {isEs ? 'Ver Balance 3 Vasos en Clasificación →' : 'View 3-Cup Cyclone Balance →'}
+            </a>
           </div>
         </div>
 
-        <div class="metrology-segmented-bar" role="tablist" aria-label={isEs ? 'Estaciones del Banco Metrológico' : 'Metrology Bench Stations'}>
-          <button type="button" role="tab" aria-selected="true" class="metrology-seg-btn is-active" data-met-station-tab="1">
-            {isEs ? '1. Balanza Marcy' : '1. Marcy Scale'}
+        <div class="metrology-segmented-bar" role="tablist" aria-label={isEs ? 'Equipos de laboratorio metalúrgico' : 'Metallurgical lab equipment'}>
+          <button type="button" class="metrology-seg-btn is-active" data-met-station-tab="1" aria-selected="true">
+            {isEs ? '1. Balanza Marcy (Ss / %Cw)' : '1. Marcy Scale (Ss / %Cw)'}
           </button>
-          <button type="button" role="tab" aria-selected="false" class="metrology-seg-btn" data-met-station-tab="2">
-            {isEs ? '2. Filtro Prensa Lab + Pierre Gy' : '2. Lab Filter + Pierre Gy'}
+          <button type="button" class="metrology-seg-btn" data-met-station-tab="2" aria-selected="false">
+            {isEs ? '2. Filtro Batch Lab (60–100 psi)' : '2. Lab Batch Filter (60–100 psi)'}
           </button>
-          <button type="button" role="tab" aria-selected="false" class="metrology-seg-btn" data-met-station-tab="3">
-            {isEs ? '3. Tamices ASTM E11' : '3. ASTM E11 Sieves'}
+          <button type="button" class="metrology-seg-btn" data-met-station-tab="3" aria-selected="false">
+            {isEs ? '3. Tamices ASTM E11 / √2' : '3. ASTM E11 Sieves / √2'}
           </button>
         </div>
 
         <div class="control-equipment-grid">
           <article id={isEs ? 'balanza-marcy' : 'marcy-scale'} class="card control-block" data-instrument-card="1">
             <div class="control-block-header">
-              <span class="badge badge-copper">{isEs ? 'DENSIDAD DE PULPA Y % DE SÓLIDOS • VASO 1000 CM³' : 'PULP DENSITY & % SOLIDS • 1000 CM³ CUP'}</span>
-              <h2>{isEs ? 'Balanza de Densidad de Pulpa y % de Sólidos (Tipo Marcy)' : 'Pulp Density & % Solids Hanging Scale (Marcy Type)'}</h2>
+              <span class="badge badge-copper">{isEs ? 'DENSIDAD DE PULPA • 12 ANILLOS' : 'PULP DENSITY • 12 DIAL RINGS'}</span>
+              <h2>{isEs ? 'Balanza Marcy de Densidad de Pulpa y % de Sólidos' : 'Marcy Pulp Density & % Solids Scale'}</h2>
               <p class="block-lead">
                 {isEs
-                  ? 'Balanza colgante de lectura directa en planta para peso neto, gravedad específica de pulpa (kg/L) y porcentaje de sólidos en peso (%Cw).'
-                  : 'Direct-reading plant floor hanging scale for net pulp weight, slurry SG (kg/L), and percent solids (%Cw) without manual tables.'}
+                  ? 'Medición gravimétrica en planta concentradora con vaso de 1000 cm³ y carátulas intercambiables calibradas según gravedad específica del mineral (Ss 2.2 a 4.4).'
+                  : 'Gravimetric concentrator measurement with 1000 cm³ cup and interchangeable dial rings calibrated to ore specific gravity (Ss 2.2–4.4).'}
               </p>
             </div>
             <TechnicalDiagrams diagram="marcy" lang={lang} />
             <div class="specs-strip">
-              <div><strong>{isEs ? 'Recipiente:' : 'Cup:'}</strong> 1000 cm³ Acero Inoxidable 304 / Acrílico</div>
-              <div><strong>{isEs ? '12 Anillos:' : '12 Dials:'}</strong> SG 2.2 – SG 4.4</div>
+              <div><strong>{isEs ? 'Capacidad:' : 'Cup Volume:'}</strong> 1000 cm³ (Acero Inox 304 / Acrílico)</div>
+              <div><strong>{isEs ? 'Anillos:' : 'Dials:'}</strong> 12 Carátulas (Ss 2.2 a 4.4)</div>
               {marcyRole?.decision_criteria && (
-                <div>
-                  <strong>{isEs ? 'Regla:' : 'Rule:'}</strong>{' '}
-                  {isEs ? marcyRole.decision_criteria.metallurgy_rule_es : marcyRole.decision_criteria.metallurgy_rule_en}
-                </div>
+                <div><strong>{isEs ? 'Regla:' : 'Rule:'}</strong> {isEs ? marcyRole.decision_criteria.metallurgy_rule_es : marcyRole.decision_criteria.metallurgy_rule_en}</div>
               )}
             </div>
             <div class="control-actions">
-              <a href={`${quoteBase}?circuito=control_procesos&equipo=balanza_marcy#rfq`} class="btn btn-primary">{isEs ? 'Cotizar Balanza Marcy →' : 'Quote Marcy Scale →'}</a>
+              <a href={marcySkuHref} class="btn btn-primary">{isEs ? 'Ver Ficha SKU Balanza Marcy →' : 'View Marcy Scale SKU →'}</a>
               <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-MARCY-1000" data-tray-circuit="control_procesos">{isEs ? '+ Bandeja' : '+ Tray'}</button>
-              <a href="#metrology-calculator" class="btn btn-outline" data-open-station="1">{isEs ? 'Simular Carátula Marcy' : 'Simulate Marcy Dial'}</a>
             </div>
           </article>
 
           <article id={isEs ? 'filtro-batch' : 'batch-filter'} class="card control-block ctrl-hidden-tab" data-instrument-card="2">
             <div class="control-block-header">
-              <span class="badge badge-copper">{isEs ? 'PRUEBAS METALÚRGICAS DE DESAGUADO • 60 A 100 PSI' : 'METALLURGICAL DEWATERING TESTS • 60 TO 100 PSI'}</span>
-              <h2>{isEs ? 'Filtro de Presión Batch de Laboratorio SMAT' : 'SMAT Laboratory Batch Pressure Filter'}</h2>
+              <span class="badge badge-copper">{isEs ? 'MUESTREO PIERRE GY • 60–100 PSI' : 'PIERRE GY SAMPLING • 60–100 PSI'}</span>
+              <h2>{isEs ? 'Filtro de Presión Batch de Laboratorio' : 'Laboratory Batch Pressure Filter'}</h2>
               <p class="block-lead">
                 {isEs
-                  ? 'Unidad vertical de filtración neumática para secado rápido de muestras, determinación de humedad de torta y curvas de filtrado antes de escalar a prensa industrial.'
-                  : 'Vertical pneumatic pressure filtration vessel for rapid concentrate dewatering, residual cake moisture testing, and sizing curves before plant press scale-up.'}
+                  ? 'Desaguado neumático rápido de muestras metalúrgicas para control de humedad y preparación hacia batería de tamizado ASTM E11.'
+                  : 'Fast pneumatic dewatering of metallurgical samples for residual cake moisture testing and ASTM E11 sieve preparation.'}
               </p>
             </div>
             <TechnicalDiagrams diagram="batch_filter" lang={lang} />
             <div class="specs-strip">
-              <div><strong>{isEs ? 'Operación Neumática:' : 'Pneumatic Pressure:'}</strong> 60 – 100 psi ({batchRole?.flow_range})</div>
+              <div><strong>{isEs ? 'Presión:' : 'Pressure:'}</strong> 60–100 psi neumáticos</div>
+              <div><strong>{isEs ? 'Criterio:' : 'Basis:'}</strong> Teoría de Muestreo Pierre Gy</div>
               {batchRole?.decision_criteria && (
-                <div>
-                  <strong>{isEs ? 'Regla:' : 'Rule:'}</strong>{' '}
-                  {isEs ? batchRole.decision_criteria.metallurgy_rule_es : batchRole.decision_criteria.metallurgy_rule_en}
-                </div>
+                <div><strong>{isEs ? 'Regla:' : 'Rule:'}</strong> {isEs ? batchRole.decision_criteria.metallurgy_rule_es : batchRole.decision_criteria.metallurgy_rule_en}</div>
               )}
             </div>
             <div class="control-actions">
-              <a href={`${quoteBase}?circuito=control_procesos&equipo=filtro_batch_lab#rfq`} class="btn btn-primary">{isEs ? 'Cotizar Filtro Batch Lab →' : 'Quote Batch Lab Filter →'}</a>
+              <a href={`${quoteBase}?circuito=control_procesos&equipo=filtro_batch_lab#rfq`} class="btn btn-primary">{isEs ? 'Cotizar Filtro Batch →' : 'Quote Batch Filter →'}</a>
               <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-FILTRO-BATCH" data-tray-circuit="control_procesos">{isEs ? '+ Bandeja' : '+ Tray'}</button>
-              <a href="#metrology-calculator" class="btn btn-outline" data-open-station="2">{isEs ? 'Simular Ciclos Pierre Gy' : 'Simulate Pierre Gy Cycles'}</a>
             </div>
           </article>
 
@@ -482,16 +168,12 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
               <div><strong>{isEs ? 'Aberturas:' : 'Aperture Range:'}</strong> 5" (125 mm) – #635 (20 µm) √2</div>
               <div><strong>{isEs ? 'Marcos:' : 'Frames:'}</strong> 8" / 12" Acero Inox 304/316 o Bronce</div>
               {tamizRole?.decision_criteria && (
-                <div>
-                  <strong>{isEs ? 'Regla:' : 'Rule:'}</strong>{' '}
-                  {isEs ? tamizRole.decision_criteria.metallurgy_rule_es : tamizRole.decision_criteria.metallurgy_rule_en}
-                </div>
+                <div><strong>{isEs ? 'Regla:' : 'Rule:'}</strong> {isEs ? tamizRole.decision_criteria.metallurgy_rule_es : tamizRole.decision_criteria.metallurgy_rule_en}</div>
               )}
             </div>
             <div class="control-actions">
               <a href={`${quoteBase}?circuito=control_procesos&equipo=tamices_laboratorio#rfq`} class="btn btn-primary">{isEs ? 'Cotizar Tamices ASTM →' : 'Quote ASTM Sieves →'}</a>
               <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-TAMIZ-E11" data-tray-circuit="control_procesos">{isEs ? '+ Bandeja' : '+ Tray'}</button>
-              <a href="#metrology-calculator" class="btn btn-outline" data-open-station="3">{isEs ? 'Calcular Serie √2 y Rosin-Rammler' : 'Calculate √2 Series & Rosin-Rammler'}</a>
             </div>
           </article>
         </div>
@@ -534,15 +216,15 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
   </div>
 )}
 
+{!showVerticalShell && (
+  <MetrologyLabCore locale={locale} showRoleSelectors={true} panelClass="circuit-panel hidden embedded-ctrl-panel" />
+)}
+
 <script>
-  import {
-    calculateMarcyScaleReading,
-    calculateGyMinimumSampleMass,
-    recommendAstmSieveSeries,
-    MARCY_STANDARD_RINGS,
-    ASTM_E11_SIEVE_TABLE,
-  } from '../../scripts/slurryEngine.js';
+  import { MARCY_STANDARD_RINGS } from '../../scripts/slurryEngine.js';
   import { saveWorkbenchState, loadWorkbenchState } from '../../scripts/workbenchBus.js';
+  import { bindDomainSchemaRoot, projectDomainOutputs, readAllCanonicalInputs } from '../../scripts/schemaRuntimeBinder.js';
+  import { solveXdsmMultidisciplinaryDag } from '../../scripts/wizardXdsmDagSolver.js';
   import { saveEngineeringContextSnapshot } from '../../scripts/wizardCircuitPhysicsController.js';
   import { projectProcessControlMetrologyInvariants } from '../../scripts/catalogDropInAndJrpProjector.js';
   import {
@@ -558,12 +240,13 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
       tr.className = isPrimary ? 'sieve-row sieve-row--primary' : 'sieve-row';
 
       const cells = [
-        `${s.mesh || s.sieveNumber || ''} (${s.tylerEquivalent || ''})${isPrimary ? ' • P80' : ''}`,
-        `${s.apertureMicrons} µm`,
-        `${Number(s.retainedIndividualPct || 0).toFixed(1)}%`,
-        `${Number(s.cumulativeRetainedPct ?? (100 - Number(s.cumulativePassingPct || 0))).toFixed(1)}%`,
-        `${Number(s.cumulativePassingPct || 0).toFixed(1)}%`,
-        `${Number(s.estimatedMassRetainedGrams ?? 0).toFixed(1)} g${s.roleEs ? ` • ${s.roleEs}` : ''}`,
+        `${s.mesh}${isPrimary ? ' *' : ''}`,
+        `${s.apertureMicrons}`,
+        `${s.retainedIndividualPct}%`,
+        `${s.cumulativeRetainedPct}%`,
+        `${s.cumulativePassingPct}%`,
+        `${s.rosinRammlerY ?? '—'}`,
+        `${s.estimatedMassRetainedGrams} g (${isPrimary ? 'P80' : 'Stack'})`,
       ];
       cells.forEach((txt) => {
         const td = document.createElement('td');
@@ -575,200 +258,96 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
     tbody.replaceChildren(...trNodes);
   }
 
-  function updateMetrologyCalculator(root: HTMLElement, lang: 'es' | 'en', evt?: Event) {
+  function updateMetrologyViaDag(root: HTMLElement, lang: 'es' | 'en', isUserEvent = false) {
     const isEn = lang === 'en';
-    const sgEl = root.querySelector('#met-sg-input') as HTMLInputElement | null;
-    const cwEl = root.querySelector('#met-cw-input') as HTMLInputElement | null;
-    const rhopEl = root.querySelector('#met-rhop-input') as HTMLInputElement | null;
-    const marcyModeEl = root.querySelector('#met-marcy-mode') as HTMLSelectElement | null;
-    const p80El = root.querySelector('#met-p80-input') as HTMLInputElement | null;
-    const rrNEl = root.querySelector('#met-rr-n-input') as HTMLInputElement | null;
-    const frameEl = root.querySelector('#met-frame-select') as HTMLSelectElement | null;
-    const pressureEl = root.querySelector('#met-gy-pressure-select') as HTMLSelectElement | null;
-    const d95El = root.querySelector('#met-gy-d95-input') as HTMLInputElement | null;
-    const libEl = root.querySelector('#met-gy-lib-input') as HTMLInputElement | null;
-    const gradeEl = root.querySelector('#met-gy-grade-input') as HTMLInputElement | null;
-    const gyCEl = root.querySelector('#met-gy-c-input') as HTMLInputElement | null;
-    const gyErrEl = root.querySelector('#met-gy-error-select') as HTMLSelectElement | null;
-    const modeEl = root.querySelector('#met-screening-mode') as HTMLSelectElement | null;
-    const sieveTbody = root.querySelector('#met-sieve-stack-tbody') as HTMLElement | null;
-
-    if (!sgEl || !cwEl || !p80El || !frameEl) return;
-
-    const targetId = (evt && (evt.target as HTMLElement)?.id) || '';
-    const marcySolveMode = marcyModeEl ? marcyModeEl.value : 'cw';
-    const rawSg = parseFloat(sgEl.value) || 2.8;
-    const rawCw = parseFloat(cwEl.value) || 50;
-    const rawRhop = rhopEl ? (parseFloat(rhopEl.value) || 1.474) : 1.474;
-
-    let marcy = calculateMarcyScaleReading({
-      solidsSpecificGravity: rawSg,
-      solidsWeightPercent: rawCw,
-      pulpDensityKgL: rawRhop,
-      solveFor: marcySolveMode,
+    const canonical = readAllCanonicalInputs(root);
+    const dag = solveXdsmMultidisciplinaryDag({
+      ...canonical,
+      circuit: 'control_procesos'
     });
-    if (marcySolveMode === 'ore_density_rhop') {
-      marcy = calculateMarcyScaleReading({
-        solidsSpecificGravity: rawSg,
-        solidsWeightPercent: rawCw,
-        pulpDensityKgL: rawRhop,
-        solveFor: 'ore_density_rhop',
-      });
-      if (document.activeElement !== sgEl) {
-        sgEl.value = marcy.oreDensitySg.toFixed(2);
-      }
-    } else if (marcySolveMode === 'rhop' || targetId === 'met-rhop-input') {
-      marcy = calculateMarcyScaleReading({
-        solidsSpecificGravity: rawSg,
-        pulpDensityKgL: rawRhop,
-        solveFor: 'rhop',
-      });
-      if (document.activeElement !== cwEl) {
-        cwEl.value = String(Math.round(marcy.solidsWeightPercent));
-      }
-    } else if (rhopEl && document.activeElement !== rhopEl) {
-      rhopEl.value = marcy.pulpDensityKgL.toFixed(3);
+    const marcy = dag.marcyEval || {};
+    const gy = dag.gyEval || {};
+    const sieveStack = dag.sieveEval || {};
+
+    projectDomainOutputs(root, 'metrology', {
+      marcyDensityKgL: marcy.pulpDensityKgL,
+      cwPct: marcy.solidsWeightPercent,
+      wrongRingBiasPoints: marcy.wrongRingBiasPoints,
+      minimumSampleMassKg: gy.minDrySampleKg,
+      sieveNumber: sieveStack.primaryControlMesh,
+      drySampleMassGrams: sieveStack.drySampleMassGrams,
+      hoistRequired: Number(gy.minDrySampleKg) >= 23,
+      twoPersonAssistRequired: Number(gy.minDrySampleKg) >= 15 && Number(gy.minDrySampleKg) < 23,
+      rosinRammlerUniformityN: sieveStack.rosinRammlerSlopeN,
+      rosinRammlerY: sieveStack.rosinRammlerY,
+      recommendedContainerEs: isEn ? marcy.recommendedContainerEn : marcy.recommendedContainerEs
+    }, lang);
+
+    const liveBanner = root.querySelector('#wb-ctrl-live-metrics');
+    if (liveBanner) {
+      liveBanner.textContent = isEn
+        ? `Marcy Ss=${marcy.solidsSpecificGravity} · Cw=${marcy.solidsWeightPercent}% · ρp=${marcy.pulpDensityKgL} kg/L | Pierre Gy Ms=${gy.minDrySampleKg} kg (${gy.batchFilterCycles} cycle(s) @ ${gy.recommendedAirPressurePsi}) | Control Mesh ${sieveStack.primaryControlMesh} (n=${sieveStack.rosinRammlerSlopeN}, y'=${sieveStack.rosinRammlerY})`
+        : `Marcy Ss=${marcy.solidsSpecificGravity} · Cw=${marcy.solidsWeightPercent}% · ρp=${marcy.pulpDensityKgL} kg/L | Pierre Gy Ms=${gy.minDrySampleKg} kg (${gy.batchFilterCycles} ciclo(s) @ ${gy.recommendedAirPressurePsi}) | Tamiz Control ${sieveStack.primaryControlMesh} (n=${sieveStack.rosinRammlerSlopeN}, y'=${sieveStack.rosinRammlerY})`;
+    }
+    const pulpEl = root.querySelector('#wb-ctrl-gy-pulp-liters');
+    if (pulpEl) pulpEl.textContent = `${gy.wetPulpVolumeLiters ?? gy.requiredPulpLiters ?? 0.39} L`;
+    const frameEl = root.querySelector('#wb-ctrl-sieve-frame-rec');
+    if (frameEl) frameEl.textContent = isEn ? (sieveStack.recommendedFrameMaterialEn || '') : (sieveStack.recommendedFrameMaterialEs || '');
+
+    const ringStrip = root.querySelector('#wb-ctrl-marcy-rings-strip');
+    if (ringStrip) {
+      const ringsSummary = MARCY_STANDARD_RINGS.map((r: any, idx: number) => {
+        const sgVal = Number(typeof r === 'object' && r !== null ? (r.oreSg ?? r.sg) : r);
+        const mark = Math.abs(sgVal - Number(marcy.recommendedRingSg)) < 0.06 ? '*' : '';
+        return `${mark}R${idx + 1}:${sgVal.toFixed(1)}`;
+      }).join(' · ');
+      ringStrip.textContent = isEn ? `12 Marcy Dials (SG 2.2–4.4): ${ringsSummary}` : `12 Carátulas Marcy (SG 2.2–4.4): ${ringsSummary}`;
     }
 
-    const sg = marcy.oreDensitySg;
-    const cw = marcy.solidsWeightPercent;
-    const p80 = parseFloat(p80El.value) || 75;
-    const frame = frameEl.value;
-
-    if (targetId === 'met-p80-input' && d95El) {
-      d95El.value = ((p80 * 1.4) / 1000).toFixed(3);
-    }
-
-    const topSizeD95Mm = d95El ? (parseFloat(d95El.value) || (p80 * 1.4) / 1000) : (p80 * 1.4) / 1000;
-    const liberationSizeMicrons = libEl ? (parseFloat(libEl.value) || 100) : 100;
-    const oreGradeDecimal = gradeEl ? (parseFloat(gradeEl.value) || 0.05) : 0.05;
-    const samplingConstantC = gyCEl && targetId === 'met-gy-c-input' ? (parseFloat(gyCEl.value) || undefined) : undefined;
-    const targetRelativeStdError = gyErrEl ? (parseFloat(gyErrEl.value) || 0.05) : 0.05;
-    const airPressurePsi = pressureEl ? (parseFloat(pressureEl.value) || 90) : 90;
-    const frameDiameterInches = frame.includes('12"') ? 12 : 8;
-    const screeningMode = modeEl ? modeEl.value : 'auto';
-    const rosinRammlerSlopeN = rrNEl && rrNEl.value ? parseFloat(rrNEl.value) : undefined;
-
-    const gy = calculateGyMinimumSampleMass({
-      topSizeD95Mm,
-      liberationSizeMicrons,
-      oreGradeDecimal,
-      samplingConstantC,
-      targetRelativeStdError,
-      solidsWeightPercent: cw,
-      solidsSpecificGravity: sg,
-      airPressurePsi,
-    });
-    if (gyCEl && targetId !== 'met-gy-c-input' && document.activeElement !== gyCEl) {
-      gyCEl.value = String(gy.samplingConstantC);
-    }
-
-    const sieveStack = recommendAstmSieveSeries({
-      targetP80Microns: p80,
-      frameDiameterInches,
-      screeningMode,
-      rosinRammlerSlopeN,
-      drySampleMassGrams: gy.minDrySampleGrams,
-    });
-
-    const marcyMain = root.querySelector('#met-res-marcy-main');
-    const marcySub = root.querySelector('#met-res-marcy-sub');
-    const marcyBias = root.querySelector('#met-res-marcy-bias');
-    const gyMain = root.querySelector('#met-res-gy-main');
-    const gySub = root.querySelector('#met-res-gy-sub');
-    const sievesMain = root.querySelector('#met-res-sieves-main');
-    const sievesSub = root.querySelector('#met-res-sieves-sub');
-    const sieveNumBadge = root.querySelector('#met-res-sieve-number');
-    const drySampleBadge = root.querySelector('#met-res-dry-sample-mass');
-    const quoteCta = root.querySelector('#met-quote-cta') as HTMLAnchorElement | null;
-    const pumpPrecalCta = root.querySelector('#met-pump-precal-cta') as HTMLAnchorElement | null;
-
-    if (marcyMain) {
-      marcyMain.textContent = isEn
-        ? `${marcy.cupNetMassGrams} g net • ρp = ${marcy.pulpDensityKgL.toFixed(3)} kg/L`
-        : `${marcy.cupNetMassGrams} g netos • ρp = ${marcy.pulpDensityKgL.toFixed(3)} kg/L`;
-    }
-    if (marcySub) {
-      const ringIdx = MARCY_STANDARD_RINGS.findIndex((r: any) => Math.abs(Number(r?.oreSg ?? r) - Number(marcy.recommendedRingSg)) < 0.06);
-      const ringNum = ringIdx >= 0 ? ringIdx + 1 : 4;
-      marcySub.textContent = isEn
-        ? `Active Marcy ring: #${ringNum} SG ${marcy.recommendedRingSg.toFixed(1)} (of ${MARCY_STANDARD_RINGS.length} dials • Cv = ${marcy.solidsVolumePercent}%)`
-        : `Anillo Marcy activo: #${ringNum} SG ${marcy.recommendedRingSg.toFixed(1)} (de ${MARCY_STANDARD_RINGS.length} anillos • Cv = ${marcy.solidsVolumePercent}%)`;
-    }
-    if (marcyBias) {
-      marcyBias.textContent = isEn
-        ? `Dry solids in cup: ${marcy.drySolidsMassGramsInCup} g • Ring Cw: ${marcy.ringApparentCw}% (ΔC_bias = ${marcy.wrongRingBiasPoints} pts)`
-        : `Sólidos secos en vaso: ${marcy.drySolidsMassGramsInCup} g • Cw aparente: ${marcy.ringApparentCw}% (ΔC_bias = ${marcy.wrongRingBiasPoints} pts)`;
-    }
-    if (gyMain) {
-      const wetLiters = gy.wetPulpVolumeLiters ?? gy.slurrySampleLiters;
-      const wetLabel = sieveStack.screeningMode === 'wet'
-        ? (isEn ? 'Wet + Dry Sieving' : 'Tamizado Húmedo + Seco')
-        : (isEn ? 'Dry Sieving' : 'Tamizado en Seco');
-      gyMain.textContent = `${gy.minDrySampleGrams} g (${wetLabel}) • ${wetLiters} L`;
-    }
-    if (gySub) {
-      gySub.textContent = isEn
-        ? `Pierre Gy mass: ${gy.theoreticalGyGrams} g (d95=${gy.topSizeD95Mm} mm, c=${gy.samplingConstantC}) • ${gy.batchFilterCycles} batch cycle(s) @ ${gy.recommendedAirPressurePsi} (${gy.estimatedCycleMinutes} min, ~${gy.residualCakeMoisturePct}% moisture)`
-        : `Masa Pierre Gy: ${gy.theoreticalGyGrams} g (d95=${gy.topSizeD95Mm} mm, c=${gy.samplingConstantC}) • ${gy.batchFilterCycles} ciclo(s) a ${gy.recommendedAirPressurePsi} (${gy.estimatedCycleMinutes} min, humedad ~${gy.residualCakeMoisturePct}%)`;
-    }
-    if (sievesMain) {
-      sievesMain.textContent = `${sieveStack.sieveStackSummary} (${ASTM_E11_SIEVE_TABLE.length} ASTM E11)`;
-    }
-    if (sievesSub) {
-      sievesSub.textContent = isEn
-        ? `Control cut: ${sieveStack.primaryControlMesh} (${sieveStack.primaryApertureMicrons} µm) • y'=${sieveStack.rosinRammlerYPrime} (n=${sieveStack.rosinRammlerSlopeN})`
-        : `Corte central: ${sieveStack.primaryControlMesh} (${sieveStack.primaryApertureMicrons} µm) • y'=${sieveStack.rosinRammlerYPrime} (n=${sieveStack.rosinRammlerSlopeN})`;
-    }
-    if (sieveNumBadge) {
-      const firstSieveNum = sieveStack.sieveStack?.[0]?.sieveNumber || sieveStack.primaryControlMesh;
-      sieveNumBadge.textContent = isEn
-        ? `Control Mesh: ${sieveStack.primaryControlMesh} (${firstSieveNum})`
-        : `Tamiz Control: ${sieveStack.primaryControlMesh} (${firstSieveNum})`;
-    }
-    if (drySampleBadge) {
-      drySampleBadge.textContent = isEn
-        ? `ASTM Dry Mass: ${sieveStack.drySampleMassGrams} g`
-        : `Masa Seca ASTM: ${sieveStack.drySampleMassGrams} g`;
-    }
+    const sieveTbody = root.querySelector('#wb-ctrl-sieve-tbody') as HTMLElement | null;
     if (sieveTbody && Array.isArray(sieveStack.sieveStack)) {
       renderSieveStackRowsSafe(sieveTbody, sieveStack.sieveStack);
     }
 
-    const metrologiaStr = `Marcy SG=${marcy.recommendedRingSg.toFixed(1)} (${cw}% Cw, ρp=${marcy.pulpDensityKgL.toFixed(3)} kg/L) | Gy=${gy.minDrySampleKg} kg | ASTM P80=${p80} µm (${sieveStack.primaryControlMesh}, n=${sieveStack.rosinRammlerSlopeN})`;
+    const metrologiaStr = `Marcy SG=${Number(marcy.recommendedRingSg || 2.8).toFixed(1)} (${marcy.solidsWeightPercent}% Cw, ρp=${Number(marcy.pulpDensityKgL || 1.4).toFixed(3)} kg/L) | Gy=${gy.minDrySampleKg} kg | ASTM P80=${canonical.targetP80Microns} µm (${sieveStack.primaryControlMesh}, n=${sieveStack.rosinRammlerSlopeN})`;
     projectProcessControlMetrologyInvariants(document, lang, { marcy, gy, sieveStack });
 
     const quotePrefix = isEn ? '/en/quote/' : '/cotizar/';
+    const quoteCta = root.querySelector('#met-quote-cta') as HTMLAnchorElement | null;
+    const pumpPrecalCta = root.querySelector('#met-pump-precal-cta') as HTMLAnchorElement | null;
     if (quoteCta) {
-      quoteCta.href = `${quotePrefix}?circuito=control_procesos&equipo=balanza_marcy&sg=${sg}&cw=${cw}&rhop=${marcy.pulpDensityKgL}&p80=${p80}&d95=${gy.topSizeD95Mm}&lib_um=${gy.liberationSizeMicrons}&grade=${gy.oreGradeDecimal}&air_psi=${gy.airPressurePsi}&gy_c=${gy.samplingConstantC}&gy_err=${gy.targetRelativeStdError}&rr_n=${sieveStack.rosinRammlerSlopeN}&ret_p80=${sieveStack.retainedPercentAtP80}&gy_kg=${gy.minDrySampleKg}&metrologia=${encodeURIComponent(metrologiaStr)}#rfq`;
+      quoteCta.href = `${quotePrefix}?circuito=control_procesos&equipo=balanza_marcy&sg=${marcy.solidsSpecificGravity}&cw=${marcy.solidsWeightPercent}&rhop=${marcy.pulpDensityKgL}&p80=${canonical.targetP80Microns}&d95=${canonical.topSizeMm}&gy_kg=${gy.minDrySampleKg}&metrologia=${encodeURIComponent(metrologiaStr)}#rfq`;
     }
     if (pumpPrecalCta) {
-      pumpPrecalCta.href = `${quotePrefix}?circuito=bombeo&flow=220&solids=${cw}&d80=${p80}&sg=${sg}&rhop=${marcy.pulpDensityKgL}&metrologia=${encodeURIComponent(metrologiaStr)}#rfq`;
+      pumpPrecalCta.href = `${quotePrefix}?circuito=bombeo&flow=220&solids=${marcy.solidsWeightPercent}&d80=${canonical.targetP80Microns}&sg=${marcy.solidsSpecificGravity}&rhop=${marcy.pulpDensityKgL}&metrologia=${encodeURIComponent(metrologiaStr)}#rfq`;
     }
 
-    if (!evt) return;
+    if (!isUserEvent) return;
     const prev = loadWorkbenchState() || {};
     saveWorkbenchState({
       ...prev,
       rhop: marcy.pulpDensityKgL,
       metrologia: metrologiaStr,
       metrology: {
-        specificGravity: sg,
-        solidsPctCw: cw,
+        specificGravity: marcy.solidsSpecificGravity,
+        solidsPctCw: marcy.solidsWeightPercent,
         pulpDensityKgL: marcy.pulpDensityKgL,
-        targetP80Microns: p80,
+        targetP80Microns: canonical.targetP80Microns,
         primaryControlMesh: sieveStack.primaryControlMesh,
         drySampleMassGrams: sieveStack.drySampleMassGrams,
       },
     });
     saveEngineeringContextSnapshot('control_procesos', {
-      specificGravity: sg,
-      solidsPctCw: cw,
+      specificGravity: marcy.solidsSpecificGravity,
+      solidsPctCw: marcy.solidsWeightPercent,
       pulpDensityKgL: marcy.pulpDensityKgL,
       recommendedRingSg: marcy.recommendedRingSg,
-      wetPulpVolumeLiters: gy.wetPulpVolumeLiters ?? gy.slurrySampleLiters,
+      wetPulpVolumeLiters: gy.wetPulpVolumeLiters ?? gy.requiredPulpLiters,
       wetScreeningRequired: sieveStack.wetScreeningRequired,
-      summary: metrologiaStr,
+      minDrySampleKg: gy.minDrySampleKg,
+      targetP80Microns: canonical.targetP80Microns,
+      rosinRammlerSlopeN: sieveStack.rosinRammlerSlopeN,
+      rosinRammlerY: sieveStack.rosinRammlerY,
     });
   }
 
@@ -782,7 +361,6 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
 
     const stationTabs = Array.from(standaloneRoot.querySelectorAll('[data-met-station-tab]'));
     const instrumentCards = Array.from(standaloneRoot.querySelectorAll('[data-instrument-card]'));
-    const accordions = Array.from(standaloneRoot.querySelectorAll('[data-station-accordion]'));
 
     const activateStation = (stationId: string) => {
       stationTabs.forEach((tab) => {
@@ -792,17 +370,7 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
       });
       instrumentCards.forEach((card) => {
         const isMatch = card.getAttribute('data-instrument-card') === stationId;
-        (card as HTMLElement).style.display = isMatch ? 'block' : 'none';
-      });
-      accordions.forEach((acc) => {
-        const isMatch = acc.getAttribute('data-station-accordion') === stationId;
-        (acc as HTMLDetailsElement).open = isMatch;
-        const tag = acc.querySelector('.metrology-station-tag');
-        if (tag) {
-          tag.textContent = isEn
-            ? (isMatch ? `STATION 0${stationId} • ACTIVE` : `STATION 0${stationId} ▾`)
-            : (isMatch ? `ESTACIÓN 0${stationId} • ACTIVA` : `ESTACIÓN 0${stationId} ▾`);
-        }
+        card.classList.toggle('ctrl-hidden-tab', !isMatch);
       });
     };
 
@@ -810,61 +378,42 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
       calcRoot.dataset.smatCtrlInit = '1';
       const unified = loadUnifiedEngineeringAndWorkbenchState();
       if (unified?.hasPersistedState && unified.persistedFields) {
-        const sgInput = standaloneRoot.querySelector('#met-sg-input') as HTMLInputElement | null;
-        const cwInput = standaloneRoot.querySelector('#met-cw-input') as HTMLInputElement | null;
-        const p80Input = standaloneRoot.querySelector('#met-p80-input') as HTMLInputElement | null;
+        const sgInput = standaloneRoot.querySelector('#wb-ctrl-sg') as HTMLInputElement | null;
+        const cwInput = standaloneRoot.querySelector('#wb-ctrl-cw') as HTMLInputElement | null;
+        const p80Input = standaloneRoot.querySelector('#wb-ctrl-p80') as HTMLInputElement | null;
         const fSg = Number(unified.persistedFields.sg);
         if (sgInput && Number.isFinite(fSg) && fSg >= 2.2 && fSg <= 4.5) sgInput.value = String(fSg);
         const fCw = Number(unified.persistedFields.cw);
-        if (cwInput && Number.isFinite(fCw) && fCw >= 5 && fCw <= 80) cwInput.value = String(fCw);
+        if (cwInput && Number.isFinite(fCw) && fCw >= 10 && fCw <= 75) cwInput.value = String(fCw);
         const fP80 = Number(unified.persistedFields.d80Um);
         if (p80Input && Number.isFinite(fP80) && fP80 >= 25 && fP80 <= 2000) p80Input.value = String(fP80);
       }
-      bindAtomicPartTrayButtons(standaloneRoot);
 
+      bindAtomicPartTrayButtons(standaloneRoot);
       stationTabs.forEach((tab) => {
         tab.addEventListener('click', () => activateStation(tab.getAttribute('data-met-station-tab') || '1'));
       });
-      standaloneRoot.querySelectorAll('[data-open-station]').forEach((btn) => {
-        btn.addEventListener('click', () => activateStation(btn.getAttribute('data-open-station') || '1'));
-      });
-      accordions.forEach((acc) => {
-        acc.addEventListener('toggle', () => {
-          if ((acc as HTMLDetailsElement).open) activateStation(acc.getAttribute('data-station-accordion') || '1');
-        });
-      });
+      bindDomainSchemaRoot(standaloneRoot, ['metrology'], () => updateMetrologyViaDag(standaloneRoot, lang, true));
 
-      [
-        '#met-marcy-mode', '#met-sg-input', '#met-cw-input', '#met-rhop-input',
-        '#met-gy-pressure-select', '#met-gy-d95-input', '#met-gy-lib-input', '#met-gy-grade-input',
-        '#met-gy-c-input', '#met-gy-error-select', '#met-p80-input', '#met-rr-n-input',
-        '#met-frame-select', '#met-screening-mode',
-      ].forEach((sel) => {
-        const el = standaloneRoot.querySelector(sel);
-        if (el) {
-          el.addEventListener('input', (e) => updateMetrologyCalculator(standaloneRoot, lang, e));
-          el.addEventListener('change', (e) => updateMetrologyCalculator(standaloneRoot, lang, e));
-        }
-      });
-
-      const applySsBtn = standaloneRoot.querySelector('#met-apply-ss-btn');
-      if (applySsBtn) {
-        applySsBtn.addEventListener('click', (e) => {
-          updateMetrologyCalculator(standaloneRoot, lang, e);
-          const sgEl = standaloneRoot.querySelector('#met-sg-input') as HTMLInputElement | null;
-          const cwEl = standaloneRoot.querySelector('#met-cw-input') as HTMLInputElement | null;
-          const sg = sgEl ? (parseFloat(sgEl.value) || 2.8) : 2.8;
-          const cw = cwEl ? (parseFloat(cwEl.value) || 50) : 50;
-          const prev = loadWorkbenchState() || {};
-          saveWorkbenchState({ ...prev, sg, cw, solidsSg: sg, solidsPct: cw });
-          applySsBtn.textContent = isEn
-            ? `Ss = ${sg.toFixed(2)} & Cw = ${cw.toFixed(0)}% synced`
-            : `Ss = ${sg.toFixed(2)} y Cw = ${cw.toFixed(0)}% sincronizados`;
+      const applyBtn = standaloneRoot.querySelector('#btn-apply-ss-to-circuit');
+      applyBtn?.addEventListener('click', () => {
+        updateMetrologyViaDag(standaloneRoot, lang, true);
+        const inputs = readAllCanonicalInputs(standaloneRoot);
+        const prev = loadWorkbenchState() || {};
+        saveWorkbenchState({
+          ...prev,
+          sg: inputs.solidsSpecificGravity,
+          cw: inputs.solidsWeightPercent,
+          solidsSg: inputs.solidsSpecificGravity,
+          solidsPct: inputs.solidsWeightPercent
         });
-      }
+        applyBtn.textContent = isEn
+          ? `Ss = ${Number(inputs.solidsSpecificGravity).toFixed(2)} & Cw = ${Number(inputs.solidsWeightPercent).toFixed(0)}% synced`
+          : `Ss = ${Number(inputs.solidsSpecificGravity).toFixed(2)} y Cw = ${Number(inputs.solidsWeightPercent).toFixed(0)}% sincronizados`;
+      });
     }
 
-    updateMetrologyCalculator(standaloneRoot, lang);
+    updateMetrologyViaDag(standaloneRoot, lang, false);
   }
 
   initProcessControlIsland();
@@ -873,19 +422,17 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
 
 <style>
   .met-calc-sub { color: var(--smat-text-secondary); margin: 0; }
-  .met-bias-line { color: #082f49; font-weight: 700; }
   .ctrl-hidden-tab { display: none; }
   .block-lead { color: var(--smat-text-secondary); }
   .table-scroll { overflow-x: auto; }
-  .metrology-sieve-table, .embedded-sieve-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
-  .metrology-sieve-table th, .metrology-sieve-table td, .embedded-sieve-table th, .embedded-sieve-table td {
+  .embedded-sieve-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .embedded-sieve-table th, .embedded-sieve-table td {
     padding: 0.35rem 0.5rem;
     border-bottom: 1px solid #cbd5e1;
     text-align: left;
   }
   .sieve-row--primary { background: #f0f9ff; font-weight: 800; }
   .met-calc-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--smat-border-light); }
-  .met-summary-code { font-family: var(--smat-font-mono); font-size: 0.84rem; color: var(--smat-text-secondary); }
   .metrology-segmented-bar { display: inline-flex; flex-wrap: wrap; gap: 0.4rem; background: #e2e8f0; padding: 0.35rem; border-radius: 10px; border: 1px solid var(--smat-border-strong); margin-bottom: 1.1rem; }
   .metrology-seg-btn { border: none; background: transparent; color: #0f172a; font-weight: 800; font-size: 0.88rem; padding: 0.6rem 1.15rem; border-radius: 7px; cursor: pointer; }
   .metrology-seg-btn.is-active { background: #0f172a; color: #ffffff; }
@@ -896,16 +443,6 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
   .control-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
   .metrology-calc-card { padding: clamp(0.75rem, 2vw, 1.5rem); background: #ffffff; border: 2px solid var(--smat-solar-accent, #7c2d12); }
   .metrology-calc-header h2 { margin: 0.5rem 0; color: var(--smat-text-primary); }
-  .metrology-stations-stack { display: flex; flex-direction: column; gap: 0.85rem; margin: 1.25rem 0; }
-  .metrology-station-accordion { border: 1px solid var(--smat-border-strong); border-radius: 8px; background: var(--smat-bg-canvas); padding: 0.75rem 1rem; }
-  .metrology-station-summary { display: flex; justify-content: space-between; align-items: center; min-height: 48px; padding: 0.35rem 0; cursor: pointer; font-size: 0.9rem; color: var(--smat-text-primary); list-style: none; }
-  .metrology-station-tag { font-family: var(--smat-font-mono); font-size: 0.7rem; font-weight: 800; color: #082f49; background: #e0f2fe; padding: 0.15rem 0.5rem; border-radius: 4px; }
-  .metrology-inputs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin: 1.25rem 0; }
-  .metrology-field { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.85rem; font-weight: 600; color: var(--smat-text-primary); }
-  .metrology-field input, .metrology-field select { min-height: 48px; box-sizing: border-box; padding: 0.6rem 0.75rem; border: 1px solid var(--smat-border-strong); border-radius: 6px; font-family: var(--smat-font-mono); font-size: 0.9rem; background: #ffffff; color: var(--smat-text-primary); }
-  .metrology-result-box { background: var(--smat-bg-canvas); border: 1px solid var(--smat-border-strong); border-left: 4px solid var(--smat-solar-accent, #7c2d12); border-radius: 8px; padding: 1rem 1.15rem; display: flex; flex-direction: column; gap: 0.25rem; }
-  .met-res-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--smat-text-secondary); font-family: var(--smat-font-mono); }
-  .met-res-value { font-size: 1rem; color: var(--smat-text-primary); font-family: var(--smat-font-mono); }
   .metrology-circuit-drawer { border: 1px solid var(--smat-border-strong); border-radius: 10px; background: var(--smat-bg-canvas); padding: 0.9rem 1.25rem; }
   .metrology-circuit-drawer-summary { display: flex; justify-content: space-between; align-items: center; min-height: 48px; padding: 0.35rem 0; gap: 0.75rem; cursor: pointer; font-size: 0.88rem; color: var(--smat-text-primary); list-style: none; }
   .stage2-compact { padding-top: 0; }

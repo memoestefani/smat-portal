@@ -5,11 +5,11 @@
  * el Pasaporte de Alta de Proveedor (vCard .vcf + JSON UNSPSC/ASTM) y el enlace de Reorden (s, S).
  */
 
-import { computeSelectionOrderCodeHash } from './slurryEngine.js';
-import { workbenchStateLens, loadWorkbenchSession, saveWorkbenchSession } from './workbenchBus.js';
 import { resolveCanonicalSkuId } from './quickProductsCatalog.js';
+import { computeSelectionOrderCodeHash } from './slurryEngine.js';
+import { loadWorkbenchSession, saveWorkbenchSession, workbenchStateLens } from './workbenchBus.js';
 
-export const SMAT_TRAY_STORAGE_KEY = 'smat_requisition_tray_v3';
+const SMAT_TRAY_STORAGE_KEY = 'smat_requisition_tray_v3';
 export const SMAT_TRAY_UPDATE_EVENT = 'smat:tray-updated';
 
 const DEFAULT_TRAY_STATE = Object.freeze({
@@ -26,7 +26,7 @@ const DEFAULT_TRAY_STATE = Object.freeze({
  * @param {any} rawItem
  * @returns {any}
  */
-export function normalizeTrayItem(rawItem = {}) {
+function normalizeTrayItem(rawItem = {}) {
   const rawId = String(rawItem.skuId || rawItem.code || rawItem.id || 'SMAT-PUMP-IMP-AH').trim().toUpperCase();
   const id = String(resolveCanonicalSkuId(rawId) || rawId).trim().toUpperCase();
   const qty = Math.max(1, Math.min(999, Math.round(Number(rawItem.qty) || 1)));
@@ -385,8 +385,8 @@ export function computeCmuPriorityDescriptor(params = {}) {
   const checkoutLane = isPettyCash ? 'CAJA_CHICA_CFDI40' : 'ORDEN_COMPRA_SAP';
 
   if (urgency === 'emergency' || urgency === 'paro_de_linea') {
-    const labelEs = '🚨 P1 · PARO DE LÍNEA (Atención Ingeniería < 15 min)';
-    const labelEn = '🚨 P1 · LINE DOWNTIME (Engineering SLA < 15 min)';
+    const labelEs = 'P1 · PARO DE LÍNEA (Atención Ingeniería < 15 min)';
+    const labelEn = 'P1 · LINE DOWNTIME (Engineering SLA < 15 min)';
     return {
       priorityCode: 'P1-PARO-PLANTA',
       cmuScore: 98.5,
@@ -403,8 +403,8 @@ export function computeCmuPriorityDescriptor(params = {}) {
   }
 
   if (stockRegime === 'se_fabrica') {
-    const labelEs = '🔵 P3 · FABRICACIÓN BAJO PLANO (50% Anticipo + OC)';
-    const labelEn = '🔵 P3 · CUSTOM FABRICATION (50% Advance + PO)';
+    const labelEs = 'P3 · FABRICACIÓN BAJO PLANO (50% Anticipo + OC)';
+    const labelEn = 'P3 · CUSTOM FABRICATION (50% Advance + PO)';
     return {
       priorityCode: 'P3-PROYECTO-50%-ANTICIPO',
       cmuScore: 62.0,
@@ -421,8 +421,8 @@ export function computeCmuPriorityDescriptor(params = {}) {
   }
 
   if (isPettyCash && stockRegime === 'hay') {
-    const labelEs = '⚡ P1 · CAJA CHICA (< 25,000 MXN · CFDI 4.0 Hoy)';
-    const labelEn = '⚡ P1 · PETTY CASH (< 25,000 MXN · CFDI 4.0 Today)';
+    const labelEs = 'P1 · CAJA CHICA (< 25,000 MXN · CFDI 4.0 Hoy)';
+    const labelEn = 'P1 · PETTY CASH (< 25,000 MXN · CFDI 4.0 Today)';
     return {
       priorityCode: 'P1-CAJA-CHICA-HAY',
       cmuScore: 91.0,
@@ -438,8 +438,8 @@ export function computeCmuPriorityDescriptor(params = {}) {
     };
   }
 
-  const labelEs = '🟡 P2 · REPOSICIÓN PROGRAMADA / ORDEN DE COMPRA';
-  const labelEn = '🟡 P2 · SCHEDULED REPLENISHMENT / PURCHASE ORDER';
+  const labelEs = 'P2 · REPOSICIÓN PROGRAMADA / ORDEN DE COMPRA';
+  const labelEn = 'P2 · SCHEDULED REPLENISHMENT / PURCHASE ORDER';
   return {
     priorityCode: 'P2-REPOSICION-LOTE',
     cmuScore: 76.0,

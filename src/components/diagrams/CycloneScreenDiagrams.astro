@@ -2,10 +2,10 @@
 interface Props {
   diagram: string;
   isEs: boolean;
-  xrayWearStyle: string;
-  uid: string;
+  xrayWearClass: string;
+  uid?: string;
 }
-const { diagram, isEs, xrayWearStyle, uid } = Astro.props;
+const { diagram, isEs, xrayWearClass } = Astro.props;
 ---
 
     {diagram === 'cyclone-apex-vortex' && (
@@ -51,7 +51,7 @@ const { diagram, isEs, xrayWearStyle, uid } = Astro.props;
         <polygon points="86,108 234,108 206,158 114,158" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" />
         <polygon points="114,158 206,158 182,198 138,198" fill="#fef3c7" stroke="#92400e" stroke-width="2.2" />
         <polygon points="138,198 182,198 172,236 148,236" fill="#f1f5f9" stroke="#0f172a" stroke-width="2.2" />
-        <g data-layer="xray-wear" style={xrayWearStyle}>
+        <g data-layer="xray-wear" class={xrayWearClass}>
           <polygon points="138,198 182,198 172,236 148,236" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
         </g>
         <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
@@ -76,7 +76,7 @@ const { diagram, isEs, xrayWearStyle, uid } = Astro.props;
         <!-- Hidrociclón (Centro) -->
         <polygon points="186,36 254,36 254,88 232,192 208,192 186,88" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.2" />
         <polygon points="208,192 232,192 226,228 214,228" fill="#f1f5f9" stroke="#0f172a" stroke-width="2.2" />
-        <g data-layer="xray-wear" style={xrayWearStyle}>
+        <g data-layer="xray-wear" class={xrayWearClass}>
           <polygon points="208,192 232,192 226,228 214,228" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
         </g>
         <g font-family="SF Mono, monospace" font-size="10" font-weight="700" fill="#0f172a">
@@ -97,7 +97,7 @@ const { diagram, isEs, xrayWearStyle, uid } = Astro.props;
         <!-- Ranuras cónicas de alivio 3-5 grados -->
         <polygon points="72,62 96,62 106,174 62,174" fill="#f1f5f9" stroke="#0f172a" stroke-width="2" />
         <polygon points="130,62 154,62 164,174 120,174" fill="#f1f5f9" stroke="#0f172a" stroke-width="2" />
-        <g data-layer="xray-wear" style={xrayWearStyle}>
+        <g data-layer="xray-wear" class={xrayWearClass}>
           <polygon points="72,62 96,62 106,174 62,174" fill="#fee2e2" stroke="#dc2626" stroke-width="2.2" />
           <polygon points="130,62 154,62 164,174 120,174" fill="#fee2e2" stroke="#dc2626" stroke-width="2.2" />
         </g>

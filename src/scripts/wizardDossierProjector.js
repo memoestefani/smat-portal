@@ -8,34 +8,17 @@
  * (UNREAD RETURNS) y acoplamiento JRP (predictedWearHours, operatingHoursPerDay, criticalityMode).
  */
 
-import { ENGINE_SCHEMA_REGISTRY } from './engineSchemaRegistry.js';
-import {
-  calculateDriveAndBearingKinematics,
-  evaluateHybridWetEndConfiguration,
-  evaluatePumpAssemblySequence,
-  evaluateWetEndAssemblyInterference,
-  selectBearingFrameByPowerAndRpm
-} from './pumpAssemblyAndDriveEngine.js';
+import { projectDomainOutputs, readAllCanonicalInputs, verifyVplDomScopeContainment } from './schemaRuntimeBinder.js';
+import { solveXdsmMultidisciplinaryDag } from './wizardXdsmDagSolver.js';
 import {
   formatDossierCircuitPhysicsRow,
   formatDossierMetrologyBadge,
   formatDossierSimulationBanner
 } from './quoteDossierRenderer.js';
 import {
-  calculateCoupledReorderWindowDays,
   computeCmuPriorityDescriptor,
-  evaluateBearingCartridgeCoreTradeIn,
   getTrayState
 } from './requisitionTrayBus.js';
-import {
-  validatePlantLeadInput
-} from './slurryEngine.js';
-import {
-  calculateGyMinimumSampleMass,
-  calculateMarcyScaleReading,
-  recommendAstmSieveSeries,
-  selectOptimalMaterial
-} from './tribologyAndCompatibilityEngine.js';
 import {
   buildSapAnexo22ComplianceSummary
 } from './vendorPassportAndTradeInController.js';
@@ -315,7 +298,8 @@ export function projectLiveDossierSummary(ctx = {}) {
     dom.livePriorityTag.textContent = isOpex
       ? (isEs ? 'REFACCIONES / PARO DE PLANTA' : 'WEAR SPARES / SHUTDOWN')
       : (isEs ? 'EQUIPOS COMPLETOS / CIRCUITO' : 'COMPLETE CIRCUIT EQUIPMENT');
-    dom.livePriorityTag.style.color = isOpex ? '#991b1b' : '#075985';
+    dom.livePriorityTag.classList?.toggle('is-priority-opex', isOpex);
+    dom.livePriorityTag.classList?.toggle('is-priority-capex', !isOpex);
   }
 
   const nameVal = dom.inputName?.value.trim() || (isEs ? 'Ing. Residente / Solicitante' : 'Lead Process Engineer');
@@ -489,19 +473,35 @@ export function projectLiveDossierSummary(ctx = {}) {
       ? 'hibrido_a05_r55'
       : (matCodeVal === 'hule_natural' ? 'rubber' : (matCodeVal === 'poliuretano' ? 'polyurethane' : (matCodeVal === 'ceramica_sic' ? 'ceramic_sic' : 'metal')));
 
-    updatedClearance = evaluateWetEndAssemblyInterference({
-      wetEndBranch: branchKey,
-      sealBranch: sealBranchVal,
+    const canonInputs = readAllCanonicalInputs(doc, {
+      solidsSpecificGravity: Number(dom.sliderSg?.value) || 2.7,
+      flowM3H: Number(dom.sliderFlow?.value) || 180,
+      solidsWeightPercent: solidsVal,
+      particleSizeD80Microns: d80Val,
+      pH: phVal,
+      pipeSeries: activePipeForSpecs,
+      altitudeM: altVal,
+      tribologyMaterial: matCodeVal,
       frontClearanceMm: claroMmVal,
       impellerExitWidthMm: b2ValMm,
-      pipeSeries: activePipeForSpecs,
-      sequencePreset: seqPresetVal
+      assemblySequence: seqPresetVal,
+      sealBranch: sealBranchVal,
+      urgency: isOpex ? 'paro_de_linea' : 'programado',
+      criticalityMode: String(doc.getElementById('wb-jrp-criticality')?.value || (isOpex ? 'paro_planta' : 'normal')),
+      trayItems: Array.isArray(getTrayState().items) ? getTrayState().items : [],
+      stockRegime: isOpex ? 'hay' : 'se_fabrica',
+      estimatedTotalMxn: isOpex ? 18500 : 85000,
+      folio: state.currentFolio
     });
+    const dagSnapshot = state.lastDagSnapshot || solveXdsmMultidisciplinaryDag(canonInputs);
+    state.lastDagSnapshot = dagSnapshot;
+    const dagInterf = dagSnapshot.interferenceEval || {};
+    updatedClearance = dagInterf;
 
     const lossPctVal = updatedClearance.volumetricEfficiencyDropPct ?? updatedClearance.volumetricEfficiencyLossPct ?? 1.6;
     const pipeVelLossVal = updatedClearance.pipeVelocityMarginLossPct ?? Number((lossPctVal * 0.75).toFixed(2));
     const setTextId = (id, val) => { const n = doc.getElementById(id); if (n) n.textContent = val; };
-    setTextId('wb-val-clearance', `${updatedClearance.frontClearanceMm.toFixed(2)} mm (Δη_v = -${lossPctVal.toFixed(1)}%)`);
+    setTextId('wb-val-clearance', `${Number(updatedClearance.frontClearanceMm ?? claroMmVal).toFixed(2)} mm (Δη_v = -${lossPctVal.toFixed(1)}%)`);
     setTextId('wb-clearance-vel-loss', `-${Number(pipeVelLossVal).toFixed(1)}%`);
     setTextId('wb-pipe-vel-loss', `${Number(pipeVelLossVal).toFixed(1)}%`);
 
@@ -524,41 +524,23 @@ export function projectLiveDossierSummary(ctx = {}) {
       const seqStatusText = updatedClearance.sequenceValid
         ? (isEs ? 'Secuencia 01–05 válida sin colisión axial' : 'Sequence 01–05 valid with zero axial collision')
         : (isEs ? `BLOQUEO (${updatedClearance.outOfOrderStationId}): ${updatedClearance.collisionDetailsEs}` : `BLOCKED (${updatedClearance.outOfOrderStationId}): ${updatedClearance.collisionDetailsEn}`);
-      dom.metricAssemblyMassSeq.textContent = `${isEs ? 'Masa total de rama: ' : 'Total branch mass: '}${updatedClearance.totalAssemblyMassKg.toFixed(1)} kg (${updatedClearance.nioshHoistPartsCount}${isEs ? ' izajes NIOSH ≥23 kg) • ' : ' NIOSH hoists ≥23 kg) • '}${seqStatusText}`;
-      dom.metricAssemblyMassSeq.style.color = updatedClearance.sequenceValid ? '#0f172a' : '#dc2626';
+      dom.metricAssemblyMassSeq.textContent = `${isEs ? 'Masa total de rama: ' : 'Total branch mass: '}${Number(updatedClearance.totalAssemblyMassKg ?? 0).toFixed(1)} kg (${updatedClearance.nioshHoistPartsCount ?? 0}${isEs ? ' izajes NIOSH ≥23 kg) • ' : ' NIOSH hoists ≥23 kg) • '}${seqStatusText}`;
+      dom.metricAssemblyMassSeq.classList?.toggle('is-seq-valid', Boolean(updatedClearance.sequenceValid));
+      dom.metricAssemblyMassSeq.classList?.toggle('is-seq-blocked', !updatedClearance.sequenceValid);
     }
 
     const savedKin = wbState.kinematics || {};
     const liveDriverMm = dom.wbDriverPulley ? (Number(dom.wbDriverPulley.value) || 220) : (savedKin.driverPulleyMm || 220);
     const liveDrivenMm = dom.wbDrivenPulley ? (Number(dom.wbDrivenPulley.value) || 340) : (savedKin.drivenPulleyMm || 340);
-    const liveMotorRpm = dom.wbMotorRpm ? (Number(dom.wbMotorRpm.value) || 1775) : (savedKin.motorRpm || 1775);
-    const liveShaftKw = dom.wbShaftPower ? (Number(dom.wbShaftPower.value) || 55) : (savedKin.shaftPowerKw || 55);
-    const liveBearingCkN = dom.wbBearingC ? (Number(dom.wbBearingC.value) || 145) : (savedKin.dynamicCapacityCkN || wbState.cap_c_kn || 145);
 
     if (dom.wbDriverPulley) dom.wbDriverPulley.disabled = arrCodeVal === 'DC';
     if (dom.wbDrivenPulley) dom.wbDrivenPulley.disabled = arrCodeVal === 'DC';
     if (dom.wbValDriverPulley) dom.wbValDriverPulley.textContent = arrCodeVal === 'DC' ? '1:1' : `${liveDriverMm} mm`;
     if (dom.wbValDrivenPulley) dom.wbValDrivenPulley.textContent = arrCodeVal === 'DC' ? '1:1' : `${liveDrivenMm} mm`;
 
-    updatedKinematics = calculateDriveAndBearingKinematics({
-      arrangement: arrCodeVal,
-      arrangementCode: arrCodeVal,
-      motorRpm: liveMotorRpm,
-      driverPulleyMm: liveDriverMm,
-      drivenPulleyMm: liveDrivenMm,
-      shaftPowerKw: liveShaftKw,
-      dynamicCapacityCkN: liveBearingCkN,
-      impellerDiameterMm: updatedPartSpecs.impeller_diameter_mm || 380,
-      wetEndMaterial: matCodeVal
-    });
-    const frameEval = selectBearingFrameByPowerAndRpm(liveShaftKw, updatedKinematics.pumpRpm, activePipeForSpecs);
-    const hybridEval = evaluateHybridWetEndConfiguration({
-      d80Microns: d80Val,
-      tipSpeedMs: updatedKinematics.tipSpeedMs,
-      pulpPh: phVal,
-      solidsWeightPercent: solidsVal,
-      pipeSeries: activePipeForSpecs
-    });
+    updatedKinematics = dagSnapshot.driveEval || {};
+    const frameEval = dagSnapshot.frameEval || {};
+    const hybridEval = dagSnapshot.hybridEval || {};
 
     const l10hNum = Number(updatedKinematics.bearingL10Hours ?? updatedKinematics.estimatedL10hHours ?? 28500);
     const arrDisplay = updatedKinematics.arrangement || updatedKinematics.arrangementCode || arrCodeVal;
@@ -566,11 +548,11 @@ export function projectLiveDossierSummary(ctx = {}) {
     const elMetricL10h = doc.getElementById('metric-drive-l10h');
     if (elMetricL10h) {
       elMetricL10h.textContent = `${l10hNum.toLocaleString('en-US')} h`;
-    } else if (elMetricU2) {
-      elMetricU2.textContent = `${updatedKinematics.tipSpeedMs.toFixed(1)} m/s (${arrDisplay}) • ${l10hNum.toLocaleString('en-US')} h`;
+    } else if (elMetricU2 && elMetricU2.children?.length === 0) {
+      elMetricU2.textContent = `${Number(updatedKinematics.tipSpeedMs || 21.5).toFixed(1)} m/s (${arrDisplay}) • ${l10hNum.toLocaleString('en-US')} h`;
     }
-    if (dom.elMetricDriveRpm) dom.elMetricDriveRpm.textContent = `${updatedKinematics.pumpRpm} RPM (i = ${Number(updatedKinematics.transmissionRatio || 1).toFixed(2)})`;
-    if (dom.elMetricDriveFr) dom.elMetricDriveFr.textContent = `${Number(updatedKinematics.beltRadialLoadKn || 0).toFixed(2)} kN (P = ${Number(updatedKinematics.equivalentDynamicLoadPkN || 0).toFixed(2)} kN)`;
+    if (dom.elMetricDriveRpm) dom.elMetricDriveRpm.textContent = `${updatedKinematics.pumpRpm} RPM (i = ${Number(updatedKinematics.transmissionRatio || updatedKinematics.reductionRatio || 1).toFixed(2)})`;
+    if (dom.elMetricDriveFr) dom.elMetricDriveFr.textContent = `${Number(updatedKinematics.beltRadialLoadKn || 0).toFixed(2)} kN (P = ${Number(updatedKinematics.equivalentDynamicLoadPkN || updatedKinematics.equivalentLoadPkN || 0).toFixed(2)} kN)`;
     if (dom.elMetricDriveFlood) dom.elMetricDriveFlood.textContent = updatedKinematics.sumpFloodImmunity || 'HIGH';
 
     const matHumanMap = {
@@ -587,7 +569,7 @@ export function projectLiveDossierSummary(ctx = {}) {
       tipSpeedMs: updatedKinematics.tipSpeedMs,
       beltRadialLoadKn: updatedKinematics.beltRadialLoadKn,
       l10hNum,
-      frontClearanceMm: updatedClearance.frontClearanceMm,
+      frontClearanceMm: Number(updatedClearance.frontClearanceMm ?? claroMmVal),
       lossPctVal,
       pipeVelLossVal,
       collShort
@@ -599,66 +581,81 @@ export function projectLiveDossierSummary(ctx = {}) {
     }
 
     const hm = state.currentHydraulicMetrics || {};
-    const tempCVal = Number(doc.getElementById('wb-temp-c')?.value ?? 35);
-    const strictBlind = Boolean(doc.getElementById('wb-strict-blind-check')?.checked);
-    const gateOut = validatePlantLeadInput({
-      company: compVal,
-      cwPct: hm.solids_cw,
-      d80Microns: hm.d80_um,
-      flowM3h: hm.flow_m3h,
-      pulpPh: hm.pulp_ph,
-      altitudeM: altVal,
-      wetMaterial: matCodeVal,
-      frontClearanceMm: updatedClearance.frontClearanceMm,
-      tipSpeedMs: updatedKinematics.tipSpeedMs,
-      smat_code: spec.smatCode,
-      tempC: tempCVal,
-      strictBlindCheck: strictBlind
-    });
-    const liveAssemblySeq = evaluatePumpAssemblySequence({
-      frontClearanceMm: updatedClearance.frontClearanceMm,
-      impellerTorqueNm: 450,
-      d80Microns: hm.d80_um || 180,
-      sequencePreset: seqPresetVal
-    });
-
+    const gateOut = dagSnapshot.leadValidation || {};
+    const liveAssemblySeq = dagSnapshot.assemblySeqEval || {};
     const jrpWearInput = Number(doc.getElementById('wb-jrp-wear-hours')?.value ?? hm.impeller_life_h ?? 2160);
     const jrpDailyHours = Number(doc.getElementById('wb-jrp-daily-hours')?.value ?? 24);
     const jrpCrit = String(doc.getElementById('wb-jrp-criticality')?.value || (isOpex ? 'paro_planta' : 'normal'));
-    const liveReorderEval = calculateCoupledReorderWindowDays({
-      solidsVolumetricPct: hm.solids_cv || 22,
-      d80Microns: hm.d80_um || 180,
-      tipSpeedMs: updatedKinematics.tipSpeedMs || 21.5,
-      materialKey: matCodeVal,
-      predictedWearHours: jrpWearInput,
-      operatingHoursPerDay: jrpDailyHours,
-      criticalityMode: jrpCrit
-    });
+    const liveReorderEval = dagSnapshot.reorderEval || {};
     const trayStateNow = getTrayState();
-    const coreEnabled = Boolean(doc.getElementById('wb-core-tradein-toggle')?.checked ?? trayStateNow.coreReturnEnabled);
-    const tradeInNow = evaluateBearingCartridgeCoreTradeIn(trayStateNow, coreEnabled);
-    const cmuNow = computeCmuPriorityDescriptor(isOpex ? 'PARO_DE_LINEA' : 'STOCK_SS', trayStateNow.items || []);
+    const tradeInNow = dagSnapshot.tradeInEval || {};
+    const cmuNow = dagSnapshot.cmuDescriptor && dagSnapshot.cmuDescriptor.priorityCode
+      ? dagSnapshot.cmuDescriptor
+      : computeCmuPriorityDescriptor({
+          urgency: isOpex ? 'paro_de_linea' : 'programado',
+          criticalityMode: isOpex ? 'PARO_DE_LINEA' : 'STOCK_SS',
+          items: trayStateNow.items || [],
+          estimatedTotalMxn: isOpex ? 18500 : 85000,
+          stockRegime: isOpex ? 'hay' : 'se_fabrica'
+        });
 
-    const cwInit = Number(dom.sliderSolids?.value) || 45;
-    const p80Init = Number(dom.sliderD80?.value) || 150;
-    const defaultMarcy = calculateMarcyScaleReading({ solidsSpecificGravity: 2.8, solidsWeightPercent: cwInit });
-    const defaultGy = calculateGyMinimumSampleMass({ topSizeD95Mm: Math.max(0.2, p80Init / 100), solidsWeightPercent: cwInit });
-    const defaultSieves = recommendAstmSieveSeries({ targetP80Microns: p80Init, screeningMode: 'wet' });
+    const dagMarcy = dagSnapshot.marcyEval || {};
+    const dagGy = dagSnapshot.gyEval || {};
+    const dagSieves = dagSnapshot.sieveEval || {};
 
     if (wbState.metrology && (wbState.metrology.cw !== undefined || wbState.metrology.summary)) {
       updatedMetrology = { ...wbState.metrology, ...(updatedMetrology || {}) };
-    } else if (state.currentCircuit === 'control_procesos' && (!updatedMetrology || updatedMetrology.cw === undefined)) {
-      const initSummary = `Ss=${defaultMarcy.solidsSpecificGravity} | Cw=${cwInit}% | Sm=${defaultMarcy.pulpDensityKgL} kg/L | M_min=${defaultGy.minDrySampleKg} kg | P80=${p80Init} µm`;
+    } else if (!updatedMetrology || updatedMetrology.cw === undefined) {
+      const mSummary = `Ss=${dagMarcy.solidsSpecificGravity} | Cw=${dagMarcy.solidsWeightPercent}% | Sm=${dagMarcy.pulpDensityKgL} kg/L | M_min=${dagGy.minDrySampleKg} kg | P80=${dagSieves.targetP80Microns} µm`;
       updatedMetrology = {
-        cw: cwInit,
-        solidsPctCw: cwInit,
-        sm: defaultMarcy.pulpDensityKgL,
-        p80: p80Init,
-        dryMassKg: defaultGy.minDrySampleKg,
-        summary: initSummary,
-        raw: initSummary
+        cw: dagMarcy.solidsWeightPercent,
+        solidsPctCw: dagMarcy.solidsWeightPercent,
+        sm: dagMarcy.pulpDensityKgL,
+        p80: dagSieves.targetP80Microns,
+        rosinRammlerY: dagSieves.rosinRammlerY,
+        recommendedContainerEs: dagMarcy.recommendedContainerEs,
+        recommendedContainerEn: dagMarcy.recommendedContainerEn,
+        dryMassKg: dagGy.minDrySampleKg,
+        summary: mSummary,
+        raw: mSummary
       };
     }
+
+    const locale = isEs ? 'es' : 'en';
+    projectDomainOutputs(container, 'tribology', {
+      recommendedMaterial: dagSnapshot.optimalMaterial?.code || matCodeVal,
+      hybridRecommended: Boolean(hybridEval.hybridRecommended),
+      hybridMassSavingsPct: Number(hybridEval.massSavingsPct ?? 0),
+      activeSeries: updatedClearance.activeSeries ?? updatedClearance.selectedPartSpec?.series ?? activePipeForSpecs,
+      activeWeightKg: Number(updatedClearance.activeWeightKg ?? updatedClearance.totalAssemblyMassKg ?? 0),
+      activeNioshHoistRequired: Boolean(updatedClearance.activeNioshHoistRequired ?? (Number(updatedClearance.totalAssemblyMassKg) >= 23)),
+      activeMaterialCode: updatedClearance.activeMaterialCode ?? hybridEval.impellerMaterialCode ?? 'A05',
+      volumetricLossPct: Number(lossPctVal),
+      pipeVelocityMarginLossPct: Number(pipeVelLossVal),
+      statusMessage: collShort
+    }, locale);
+    projectDomainOutputs(container, 'sealDrive', {
+      ...(dagSnapshot.sealBalanceEval || {}),
+      ...updatedKinematics
+    }, locale);
+    projectDomainOutputs(container, 'metrology', {
+      marcyDensityKgL: dagMarcy.pulpDensityKgL,
+      cwPct: dagMarcy.solidsWeightPercent,
+      wrongRingBiasPoints: dagMarcy.wrongRingBiasPoints,
+      minimumSampleMassKg: dagGy.minDrySampleKg,
+      sieveNumber: dagSieves.primaryControlMesh,
+      drySampleMassGrams: dagSieves.drySampleMassGrams,
+      hoistRequired: Number(dagGy.minDrySampleKg) >= 23,
+      twoPersonAssistRequired: Number(dagGy.minDrySampleKg) >= 15 && Number(dagGy.minDrySampleKg) < 23,
+      rosinRammlerUniformityN: dagSieves.rosinRammlerSlopeN,
+      rosinRammlerY: dagSieves.rosinRammlerY,
+      recommendedContainerEs: isEs ? dagMarcy.recommendedContainerEs : dagMarcy.recommendedContainerEn
+    }, locale);
+    projectDomainOutputs(container, 'jrp', {
+      ...liveReorderEval,
+      eligible: Boolean(tradeInNow.eligible ?? true),
+      version: trayStateNow.version ?? tradeInNow.version ?? 3
+    }, locale);
 
     projectPumpDriveAndHybridTelemetry(container, {
       driveEval: updatedKinematics,
@@ -669,27 +666,28 @@ export function projectLiveDossierSummary(ctx = {}) {
       isEs
     });
     projectMetrologyAndReorderTelemetry(container, {
-      gyEval: defaultGy,
-      sieveEval: defaultSieves,
-      marcyEval: defaultMarcy,
+      gyEval: dagGy,
+      sieveEval: dagSieves,
+      marcyEval: dagMarcy,
       reorderEval: liveReorderEval,
       tradeInEval: tradeInNow,
       trayState: trayStateNow,
       cmuEval: cmuNow,
       isEs
     });
-    const optMat = selectOptimalMaterial(d80Val, solidsVal, phVal);
+    const optMat = dagSnapshot.optimalMaterial || {};
     projectHydraulicAltitudeAndLeadValidation(container, {
-      simMetrics: { results: hm, combinedMotorAltitudeMultiplier: state.lastAltitudeEval?.combinedMotorAltitudeMultiplier ?? 1.0 },
-      altData: state.lastAltitudeEval || {},
+      simMetrics: dagSnapshot.slurryEval || { results: hm, combinedMotorAltitudeMultiplier: state.lastAltitudeEval?.combinedMotorAltitudeMultiplier ?? 1.0 },
+      altData: dagSnapshot.altitudeEval || state.lastAltitudeEval || {},
       optMat,
       leadValid: gateOut,
+      sobolDriver: dagSnapshot.sensitivity?.sobolDominantDriver,
       anexo22Summary: buildSapAnexo22ComplianceSummary({
         circuit: state.currentCircuit,
         smatCode: spec.smatCode,
         stockRegime: isOpex ? 'hay' : 'se_fabrica',
         estimatedMxn: isOpex ? 18500 : 85000,
-        lang: isEs ? 'es' : 'en'
+        lang: locale
       }),
       isEs
     });
@@ -700,7 +698,8 @@ export function projectLiveDossierSummary(ctx = {}) {
     const elTrustReason = doc.getElementById('trust-boundary-reason');
     if (elGateBadge) {
       elGateBadge.textContent = isEs ? gateOut.badgeLabelEs : gateOut.badgeLabelEn;
-      elGateBadge.style.background = gateOut.plausible ? '#065f46' : '#991b1b';
+      elGateBadge.classList?.toggle('is-gate-valid', Boolean(gateOut.plausible));
+      elGateBadge.classList?.toggle('is-gate-blocked', !gateOut.plausible);
     }
     if (elTrustAlert) {
       if (gateOut.activeTrustBoundaryId) {
@@ -756,7 +755,7 @@ export function projectLiveDossierSummary(ctx = {}) {
       ph: dom.sliderPh?.value,
       seal_branch: sealBranchVal,
       b2_mm: b2ValMm,
-      cap_c_kn: liveBearingCkN,
+      cap_c_kn: Number(updatedKinematics.dynamicCapacityCkN ?? 145),
       predictedWearHours: jrpWearInput,
       operatingHoursPerDay: jrpDailyHours,
       criticalityMode: jrpCrit,
@@ -787,10 +786,10 @@ export function projectLiveDossierSummary(ctx = {}) {
     // Fallback seguro de proyección sin abortar ciclo UI
   }
 
-  // Referencia explícita al contrato de esquema para auditores Two-Sort
-  const _schemaBoundCount = Object.keys(ENGINE_SCHEMA_REGISTRY).length;
+  const scopeReport = verifyVplDomScopeContainment(container);
   return {
-    schemaCount: _schemaBoundCount,
+    schemaCount: scopeReport.checkedCount,
+    scopeContainmentValid: scopeReport.valid,
     smatCode: spec.smatCode,
     roleVal: spec.roleVal,
     currentPartSpecs: updatedPartSpecs,

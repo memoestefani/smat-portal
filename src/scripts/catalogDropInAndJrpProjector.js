@@ -36,17 +36,33 @@ export function bindDropInEquivalenceVerifier(
     const input = verifierBox.querySelector('[data-dropin-input], [data-dropin-input-en]');
     const btn = verifierBox.querySelector('[data-dropin-btn], [data-dropin-btn-en]');
     const resultEl = verifierBox.querySelector('[data-dropin-result], [data-dropin-result-en]');
+    const rootEl = verifierBox.querySelector('[data-dropin-root]');
+    const alloyEl = verifierBox.querySelector('[data-dropin-alloy]');
+    const satEl = verifierBox.querySelector('[data-dropin-sat]');
 
     const runCheck = () => {
       const code = input && typeof input.value === 'string' ? input.value : '';
       const res = verifyDropInEquivalence(code);
+      if (rootEl) {
+        rootEl.textContent = res.normalizedRoot
+          ? `${res.normalizedRoot} · #${res.fnv1aHash || '00000000'}`
+          : '—';
+      }
+      if (alloyEl && res.alloyCode) {
+        alloyEl.textContent = res.alloyCode;
+      }
+      if (satEl && res.satTuple) {
+        satEl.textContent = `SAT ${res.satTuple.clave_prod_serv || '40151700'}/${res.satTuple.clave_unidad || 'H87'}`;
+      }
       if (!resultEl) return res;
       if (resultEl.style) resultEl.style.display = 'block';
+      resultEl.hidden = false;
+      if (resultEl.classList) resultEl.classList.remove('smat-hidden-init');
 
       if (res.matched && res.geometricTripletMm) {
         const trayBtnHtml = isEn
-          ? `<button type="button" class="btn btn-outline" style="margin-left:0.5rem;padding:0.28rem 0.65rem;font-size:0.76rem;min-height:48px;" data-add-tray-sku="${res.canonicalSkuId}" data-tray-part-code="${res.atomicCode || res.canonicalSkuId}" data-tray-title="${res.titleEn}" data-tray-material="${res.alloyCode}" data-tray-circuit="catalogo">+ Add to Tray</button>`
-          : `<button type="button" class="btn btn-outline" style="margin-left:0.5rem;padding:0.28rem 0.65rem;font-size:0.76rem;min-height:48px;" data-add-tray-sku="${res.canonicalSkuId}" data-tray-part-code="${res.atomicCode || res.canonicalSkuId}" data-tray-title="${res.titleEs}" data-tray-material="${res.alloyCode}" data-tray-circuit="catalogo">+ Bandeja</button>`;
+          ? `<button type="button" class="btn btn-outline smat-dropin-tray-btn" data-add-tray-sku="${res.canonicalSkuId}" data-tray-part-code="${res.atomicCode || res.canonicalSkuId}" data-tray-title="${res.titleEn}" data-tray-material="${res.alloyCode}" data-tray-circuit="catalogo">+ Add to Tray</button>`
+          : `<button type="button" class="btn btn-outline smat-dropin-tray-btn" data-add-tray-sku="${res.canonicalSkuId}" data-tray-part-code="${res.atomicCode || res.canonicalSkuId}" data-tray-title="${res.titleEs}" data-tray-material="${res.alloyCode}" data-tray-circuit="catalogo">+ Bandeja</button>`;
         const satBadge = res.satTuple
           ? ` | SAT ${res.satTuple.clave_prod_serv || '40151700'}/${res.satTuple.clave_unidad || 'H87'}${res.satTuple.fraccion_arancelaria ? ` · TIGIE ${res.satTuple.fraccion_arancelaria}` : ''}`
           : '';
@@ -117,6 +133,7 @@ export function initHarmonicJrpWindowAndPairCard(
     const impellerEl = card.querySelector('[data-jrp-impeller-day]');
     const voluteEl = card.querySelector('[data-jrp-volute-day]');
     const windowEl = card.querySelector('[data-jrp-window-days]');
+    const rawLifeEl = card.querySelector('[data-jrp-raw-life-days], #wb-jrp-raw-life-days');
     const severityEl = card.querySelector('[data-jrp-severity]');
     const telemetryBadgeEl = card.querySelector('[data-jrp-telemetry-badge]');
     const summaryEl = card.querySelector('[data-jrp-policy-summary]');
@@ -144,6 +161,9 @@ export function initHarmonicJrpWindowAndPairCard(
           ? `${jrp.recommendedWindowDays} d window`
           : `${jrp.recommendedWindowDays} d ventana`;
       }
+      if (rawLifeEl) {
+        rawLifeEl.textContent = `${jrp.rawLifeDays || jrp.baseCycleDays || 100} d`;
+      }
       if (severityEl) severityEl.textContent = `${jrp.severityFactor}× (${jrp.criticalityFactor}×)`;
       if (telemetryBadgeEl) {
         telemetryBadgeEl.textContent = isEn
@@ -158,9 +178,10 @@ export function initHarmonicJrpWindowAndPairCard(
         const mode = b.getAttribute('data-jrp-criticality-toggle');
         const isActive = mode === activeCrit;
         b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-        if (b.style) {
-          b.style.background = isActive ? '#0c4a6e' : '#ffffff';
-          b.style.color = isActive ? '#ffffff' : '#0f172a';
+        if (b.classList) {
+          b.classList.toggle('is-active', isActive);
+          b.classList.toggle('is-selected', isActive);
+          b.classList.toggle('active', isActive);
         }
       });
       return jrp;
@@ -212,7 +233,7 @@ export function initHarmonicJrpWindowAndPairCard(
             qty: 1,
             source: 'jrp_coupled_pair',
           });
-          pairBtn.textContent = isEn ? '✓ Synchronized Pair Added' : '✓ Par Casado Agregado';
+          pairBtn.textContent = isEn ? 'Synchronized Pair Added' : 'Par Casado Agregado';
         });
       }
     }
@@ -247,7 +268,7 @@ export function projectProcessControlMetrologyInvariants(
       if (ringsContainer.dataset) ringsContainer.dataset.ringsRendered = '1';
       ringsContainer.innerHTML = MARCY_STANDARD_RINGS.map((r) => {
         const sgVal = Number(r?.oreSg ?? r).toFixed(1);
-        return `<button type="button" class="marcy-ring-chip" data-marcy-ring-sg="${sgVal}" style="min-height:48px;min-width:56px;padding:0.25rem 0.55rem;border:1px solid #cbd5e1;border-radius:6px;background:#ffffff;color:#0f172a;font-family:var(--smat-font-mono);font-size:0.75rem;font-weight:700;cursor:pointer;">SG ${sgVal}</button>`;
+        return `<button type="button" class="marcy-ring-chip" data-marcy-ring-sg="${sgVal}">SG ${sgVal}</button>`;
       }).join('');
 
       const sgInput = root.querySelector('#met-sg-input');
@@ -266,10 +287,8 @@ export function projectProcessControlMetrologyInvariants(
       const val = Number(chip.getAttribute('data-marcy-ring-sg'));
       const isMatch = Math.abs(val - activeRing) < 0.06;
       chip.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
-      if (chip.style) {
-        chip.style.background = isMatch ? '#0c4a6e' : '#ffffff';
-        chip.style.color = isMatch ? '#ffffff' : '#0f172a';
-        chip.style.borderColor = isMatch ? '#0c4a6e' : '#cbd5e1';
+      if (chip.classList) {
+        chip.classList.toggle('is-active', isMatch);
       }
     });
   }

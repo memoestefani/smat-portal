@@ -137,8 +137,13 @@ pub fn check_v44_scalar_purity_zero_duplication_and_xor_contiguity_gate_47(
         }
     }
 
-    let qw_astro = fs::read_to_string(site_root.join("src/components/QuoteWizard.astro"))
-        .map_err(|e| e.to_string())?;
+    let qw_astro = format!(
+        "{}\n{}",
+        fs::read_to_string(site_root.join("src/components/QuoteWizard.astro"))
+            .map_err(|e| e.to_string())?,
+        fs::read_to_string(site_root.join("src/components/cores/PumpingHydraulicsCore.astro"))
+            .map_err(|e| e.to_string())?
+    );
     for req_anchor in [
         "id=\"wb-engineering-config-summary-text\"",
         "id=\"wb-step2-durand-controls-wrap\"",

@@ -1,0 +1,296 @@
+---
+/**
+ * JrpReorderCore.astro
+ * ---------------------------------------------------------------------------
+ * Primitiva Compartida Única para Ventana Preventiva JRP por Estación + Core Trade-In DAM005
+ * (`SLICE-V51-24`, `D7-V51`, `ENGINE_SCHEMA_REGISTRY.jrp`).
+ * Montada en `AtomicPartIsland.astro`, `QuoteWizard.astro`, `productos/[slug].astro` y `en/products/[slug].astro`.
+ */
+interface Props {
+  lang?: 'es' | 'en';
+  mode?: 'atomic' | 'slug' | 'wizard' | 'tradein';
+  skuId?: string;
+  partCode?: string;
+  title?: string;
+  series?: string;
+  material?: string;
+  circuit?: string;
+  coupledSkuId?: string;
+  coupledTitle?: string;
+  reorderDays?: number;
+  traySource?: string;
+  showJrpCard?: boolean;
+  showTradeIn?: boolean;
+  showPrimaryTrayBtn?: boolean;
+  showPairBtn?: boolean;
+}
+
+const {
+  lang = 'es',
+  mode = 'atomic',
+  skuId = 'SMAT-PUMP-IMP-AH',
+  partCode = 'E4147',
+  title = 'Impulsor para Bomba de Lodos',
+  series = '6x4',
+  material = 'A05',
+  circuit = 'bombeo',
+  coupledSkuId = 'SMAT-PUMP-TB-083',
+  coupledTitle,
+  reorderDays = 90,
+  traySource = 'jrp_core',
+  showJrpCard = mode !== 'tradein',
+  showTradeIn = false,
+  showPrimaryTrayBtn = mode !== 'wizard',
+  showPairBtn = mode !== 'wizard',
+} = Astro.props;
+
+const isEs = lang === 'es';
+const resolvedCoupledTitle =
+  coupledTitle ||
+  (isEs ? 'Throatbush Emparejado 1:1 (Cuello de Succión)' : '1:1 Matched Throatbush (Suction Liner)');
+const cardRootAttr = showJrpCard ? 'jrp' : undefined;
+---
+
+{showJrpCard && (
+  <div
+    data-domain-root={cardRootAttr}
+    data-jrp-window-card
+    data-jrp-criticality="normal"
+    data-jrp-mode={mode}
+    class="smat-jrp-core"
+  >
+    <div class="smat-jrp-head">
+      <span class="font-mono-tech smat-jrp-title">
+        {isEs
+          ? 'VENTANA PREVENTIVA DE REEMPLAZO POR ESTACIÓN (3 HITOS)'
+          : 'STATION-COUPLED PREVENTIVE REPLACEMENT WINDOW (3 MILESTONES)'}
+      </span>
+      <span class="font-mono-tech smat-jrp-tele" data-jrp-telemetry-badge>
+        {isEs ? 'Pulpa Sesión SG 1.45 • d50 280 µm' : 'Session Pulp SG 1.45 • d50 280 µm'}
+      </span>
+    </div>
+
+    <div class="smat-stratum1-display">
+      <div class="smat-jrp-grid">
+        <div class="smat-jrp-milestone">
+          <span class="smat-jrp-lbl">{isEs ? 'CAMISA / MANGA (HITO 1)' : 'SHAFT SLEEVE (STAGE 1)'}</span>
+          <strong
+            id="jrp-stage-1-days"
+            data-jrp-sleeve-day
+            data-schema-output="jrp.sleeveInspectionDay"
+            class="smat-jrp-val"
+          >
+            {isEs ? `Día ${Math.round(reorderDays * 0.5)}` : `Day ${Math.round(reorderDays * 0.5)}`}
+          </strong>
+        </div>
+        <div class="smat-jrp-milestone">
+          <span class="smat-jrp-lbl">{isEs ? 'IMPULSOR + THROAT (HITO 2)' : 'IMPELLER + THROAT (STAGE 2)'}</span>
+          <strong
+            id="jrp-stage-2-days"
+            data-jrp-impeller-day
+            data-schema-output="jrp.impellerThroatbushSwapDay"
+            class="smat-jrp-val"
+          >
+            {isEs ? `Día ${reorderDays}` : `Day ${reorderDays}`}
+          </strong>
+        </div>
+        <div class="smat-jrp-milestone">
+          <span class="smat-jrp-lbl">{isEs ? 'VOLUTA + LINER (HITO 3)' : 'VOLUTE + LINER (STAGE 3)'}</span>
+          <strong
+            id="jrp-stage-3-days"
+            data-jrp-volute-day
+            data-schema-output="jrp.voluteLinerOverhaulDay"
+            class="smat-jrp-val"
+          >
+            {isEs ? `Día ${reorderDays * 2}` : `Day ${reorderDays * 2}`}
+          </strong>
+        </div>
+      </div>
+
+      <div class="smat-jrp-window-bar font-mono-tech">
+        <span>{isEs ? 'Ventana recomendada de orden:' : 'Recommended reorder window:'}</span>
+        <strong
+          id="wb-jrp-window-days"
+          data-jrp-window-days
+          data-schema-output="jrp.reorderWindowDays"
+          class="smat-jrp-window-val"
+        >
+          {isEs ? `${reorderDays} d ventana` : `${reorderDays} d window`}
+        </strong>
+        <span>
+          {isEs ? 'Vida base:' : 'Raw life:'}{' '}
+          <strong id="wb-jrp-raw-life-days" data-jrp-raw-life-days data-schema-output="jrp.rawLifeDays">
+            100 d
+          </strong>
+        </span>
+        <span class="smat-jrp-sev" data-jrp-severity>1.00× (1.00×)</span>
+        <span>
+          Tray: <strong id="qtray-state-version" data-schema-output="jrp.version">v3</strong>
+        </span>
+      </div>
+    </div>
+
+    <div class="smat-inputs-2col smat-jrp-controls">
+      <div class="smat-jrp-crit-row">
+        <span class="smat-jrp-crit-lbl">{isEs ? 'Régimen Operativo:' : 'Criticality Mode:'}</span>
+        <button
+          type="button"
+          data-jrp-criticality-toggle="normal"
+          data-jrp-crit-btn="normal"
+          aria-pressed="true"
+          class="smat-jrp-crit-btn is-selected is-active assist-pill-btn active"
+        >
+          Normal (1.0×)
+        </button>
+        <button
+          type="button"
+          data-jrp-criticality-toggle="paro_planta"
+          data-jrp-crit-btn="paro_planta"
+          aria-pressed="false"
+          class="smat-jrp-crit-btn assist-pill-btn"
+        >
+          {isEs ? 'Paro Planta (0.75×)' : 'Plant Shutdown (0.75×)'}
+        </button>
+      </div>
+
+      <label class="smat-jrp-field">
+        <span>{isEs ? 'Vida estimada de desgaste (h):' : 'Predicted wear life (h):'}</span>
+        <input
+          type="number"
+          id="wb-jrp-wear-hours"
+          data-schema-input="jrp.predictedWearHours"
+          min="720"
+          max="18000"
+          step="120"
+          value="2400"
+          class="smat-atomic-input wb-input font-mono-tech"
+        />
+      </label>
+
+      <label class="smat-jrp-field">
+        <span>{isEs ? 'Horas de operación / día:' : 'Operating hours / day:'}</span>
+        <input
+          type="number"
+          id="wb-jrp-daily-hours"
+          data-schema-input="jrp.operatingHoursPerDay"
+          min="1"
+          max="24"
+          step="1"
+          value="24"
+          class="smat-atomic-input wb-input font-mono-tech"
+        />
+      </label>
+
+      <label class="smat-jrp-field">
+        <span>{isEs ? 'Criticidad del circuito:' : 'Circuit criticality:'}</span>
+        <select
+          id="wb-jrp-criticality"
+          data-schema-input="jrp.criticalityMode"
+          class="smat-atomic-input wb-select font-mono-tech"
+        >
+          <option value="normal" selected>{isEs ? 'Normal (1.0×)' : 'Normal (1.0×)'}</option>
+          <option value="paro_planta">{isEs ? 'Paro de Línea / Planta (0.75×)' : 'Plant Shutdown Critical (0.75×)'}</option>
+        </select>
+      </label>
+    </div>
+
+    {(showPrimaryTrayBtn || showPairBtn) && (
+      <div class="smat-jrp-footer">
+        <span data-jrp-policy-summary class="smat-jrp-sum">
+          {isEs
+            ? 'Reemplazo casado por campaña para minimizar paros no programados.'
+            : 'Harmonic coupled campaign replacement to minimize unplanned downtime.'}
+        </span>
+        <div class="smat-jrp-actions">
+          {showPrimaryTrayBtn && (
+            <button
+              type="button"
+              class="btn btn-outline smat-jrp-btn"
+              data-add-tray-sku={skuId}
+              data-tray-part-code={partCode}
+              data-tray-title={title}
+              data-tray-series={series}
+              data-tray-material={material}
+              data-tray-circuit={circuit}
+              data-tray-source={traySource}
+            >
+              {isEs ? `+ Bandeja (${mode === 'slug' ? skuId : partCode})` : `+ Add ${mode === 'slug' ? skuId : partCode} to Tray`}
+            </button>
+          )}
+          {showPairBtn && (
+            <button
+              type="button"
+              class="btn btn-primary smat-jrp-btn"
+              data-add-coupled-pair-btn
+              data-pair-primary-sku={skuId}
+              data-pair-primary-title={title}
+              data-pair-secondary-sku={coupledSkuId}
+              data-pair-secondary-title={resolvedCoupledTitle}
+              data-pair-series={series}
+              data-pair-material={material}
+            >
+              {isEs ? '+ Agregar Par Casado a Bandeja' : '+ Add Coupled Pair to Tray'}
+            </button>
+          )}
+        </div>
+      </div>
+    )}
+  </div>
+)}
+
+{showTradeIn && (
+  <div data-core-tradein-widget={skuId === 'DAM005' ? 'DAM005' : skuId} data-lang={lang} class="smat-tradein-card smat-atomic-tradein-box">
+    <div class="smat-tradein-title smat-atomic-tradein-title">
+      {isEs
+        ? 'PROGRAMA DE INTERCAMBIO DE CASCO DAM005 (-22% CORE TRADE-IN)'
+        : 'DAM005 CORE TRADE-IN PROGRAM (-22% CREDIT)'}
+    </div>
+    <div class="smat-tradein-grid smat-atomic-tradein-grid">
+      <label class="smat-tradein-field smat-atomic-tradein-lbl">
+        <span>{isEs ? 'Estado de Carcasa Usada' : 'Used Housing Condition'}</span>
+        <select
+          data-tradein-condition
+          data-core-tradein-condition
+          class="smat-tradein-select smat-atomic-tradein-sel"
+        >
+          <option value="h7_intact" selected>
+            {isEs ? 'Carcasa Íntegra Sin Fisuras (-22% • 0.78x)' : 'Intact Crack-Free Housing (-22% • 0.78x)'}
+          </option>
+          <option value="minor_bearing_seizure">
+            {isEs ? 'Rodamiento Amarrado / Pista Recuperable (-12% • 0.88x)' : 'Bearing Seizure / Recoverable Bore (-12% • 0.88x)'}
+          </option>
+          <option value="cracked_housing">
+            {isEs ? 'Carcasa Fracturada o Soldada (0% • 1.00x)' : 'Cracked or Welded Housing (0% • 1.00x)'}
+          </option>
+        </select>
+      </label>
+      <label class="smat-tradein-check smat-atomic-tradein-chk">
+        <input
+          type="checkbox"
+          id="wb-core-tradein-toggle"
+          data-schema-input="jrp.coreReturnEnabled"
+          data-tradein-not-welded
+          data-core-tradein-toggle
+          checked
+        />
+        <span>{isEs ? 'Alojamiento H7 sin soldadura (ISO IT6)' : 'Unwelded H7 Bearing Bore (ISO IT6)'}</span>
+      </label>
+    </div>
+    <div
+      id="wb-core-tradein-eligible"
+      data-tradein-result
+      data-core-tradein-badge
+      data-schema-output="jrp.coreTradeInEligible"
+      class="smat-tradein-result smat-atomic-tradein-res"
+    >
+      {isEs
+        ? 'Activo: -22% Crédito Core Trade-In (Factor 0.78x • RMA-CORE-DAM005-INTACT)'
+        : 'Active: -22% Core Trade-In Credit (Factor 0.78x • RMA-CORE-DAM005-INTACT)'}
+    </div>
+    <div data-tradein-co2 data-core-tradein-note class="smat-tradein-co2 smat-atomic-tradein-note">
+      {isEs
+        ? 'Recepción física en Almacén Central: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (35 kg CO₂e evitados)'
+        : 'Physical return at Central Warehouse: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (35 kg CO₂e saved)'}
+    </div>
+  </div>
+)}

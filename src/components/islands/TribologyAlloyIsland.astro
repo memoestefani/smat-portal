@@ -1,5 +1,13 @@
 ---
-// src/components/islands/TribologyAlloyIsland.astro — Isla Canónica Única de Tribología y Lotes Húmedos (SLICE-V50-28..29)
+/**
+ * TribologyAlloyIsland.astro
+ * ---------------------------------------------------------------------------
+ * Isla Canónica Bilingüe Única de Tribología y Lotes Húmedos (`D4-V51` / `SLICE-V51-19`):
+ * - Cero bifurcaciones duales `{mode}`.
+ * - Monta `<TribologyAlloyCore />` único compartido entre `/bombeo/impulsor/`,
+ *   `/bombeo/revestimientos/` y `/cotizar/`.
+ */
+import TribologyAlloyCore from '../cores/TribologyAlloyCore.astro';
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import SharePurchasing from '../SharePurchasing.astro';
 import { getAtomicPartSpecs } from '../../scripts/workbenchBus.js';
@@ -15,7 +23,7 @@ interface Props {
 const { locale = 'es', variant = 'impeller', mode = 'standalone' } = Astro.props;
 const isEs = locale === 'es';
 const isLiners = variant === 'liners';
-const isStandalone = mode === 'standalone';
+const showVerticalShell = mode === 'standalone';
 const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
 
 const allRoles = (rolesData.verticals || []).flatMap((v) => [...(v.capex || []), ...(v.opex || [])]);
@@ -37,11 +45,9 @@ const wetMaterials = [
 
 const simId = isLiners ? 'stratum1-liners-sim' : 'stratum1-impeller-sim';
 const testId = isLiners ? 'liners-material-matrix' : 'impeller-material-matrix';
-const defaultD80 = isLiners ? '250' : '450';
-const defaultU2 = isLiners ? '21.5' : '22.5';
 ---
 
-{isStandalone && (
+{showVerticalShell && (
   <div data-island-standalone="tribology" data-tribology-variant={variant} data-lang={locale}>
     <section class="page-hero smat-compact-hero">
       <div class="container">
@@ -75,125 +81,13 @@ const defaultU2 = isLiners ? '21.5' : '22.5';
     <section class="section smat-stage-compact">
       <div class="container">
         <div id={simId} data-testid={testId} data-stratum-1-instrument>
-          <div class="card smat-trib-sim-card">
-            <span class="badge badge-copper">
-              {isLiners
-                ? (isEs ? 'SIMULADOR EN VIVO · CARCASA MONOLÍTICA VS BIPARTIDA & RAMA D HÍBRIDA' : 'LIVE SIMULATOR · MONOLITHIC VS SPLIT CASING & HYBRID BRANCH D')
-                : (isEs ? 'SIMULADOR TRIBOLÓGICO EN VIVO · FINNIE-HUTCHINGS & TENACIDAD K_Ic' : 'LIVE TRIBOLOGY SIMULATOR · FINNIE-HUTCHINGS & K_Ic TOUGHNESS')}
-            </span>
-            <h2 class="smat-trib-sim-title">
-              {isLiners
-                ? (isEs ? 'Evaluador de Forros FPL/CPL, Voluta Monolítica, Claro Axial δ y Partición Angular Finnie-Hutchings' : 'FPL/CPL Split Liners, Monolithic Volute, Axial Clearance δ & Finnie-Hutchings Verifier')
-                : (isEs ? 'Verificador de Velocidad Periférica u₂, Desconchamiento (Spalling SiC), Claro δ y Masa NIOSH' : 'Tip Speed u₂, Brittle Spalling (SiC), Clearance δ & NIOSH Rigging Verifier')}
-            </h2>
-
-            <div class="smat-stratum1-display">
-              <div id="trib-status-out" class="smat-trib-status-box">
-                {isLiners
-                  ? (isEs
-                    ? 'Tenacidad OK · Serie 6x4 · Partición Angular Finnie-Hutchings: Impulsor Cerrado Alto Cromo (A05) + Forros Bipartidos FPL/CPL en Hule Natural R55.'
-                    : 'Toughness OK · Series 6x4 · Finnie-Hutchings Angular Partition: 27% High Chrome Closed Impeller (A05) + Split R55 Natural Rubber Liners (FPL/CPL).')
-                  : (isEs
-                    ? 'Tenacidad OK · Serie 6x4 · Sin riesgo de desconchamiento frágil (Spalling) en régimen cinemático actual.'
-                    : 'Toughness OK · Series 6x4 · No brittle spalling risk under current kinematic regime.')}
-              </div>
-              <div class="smat-trib-kpi-grid">
-                <div class="smat-trib-kpi-card">
-                  <strong>{isLiners ? (isEs ? 'Configuración Activa:' : 'Active Configuration:') : (isEs ? 'Material Recomendado:' : 'Recommended Material:')}</strong>{' '}
-                  <span id="trib-mat-out">
-                    {isLiners
-                      ? (isEs ? 'Rama D Híbrida: Impulsor A05 + Forros R55' : 'Hybrid Branch D: A05 Impeller + R55 Liners')
-                      : (isEs ? 'Alto Cromo 27% (A05)' : '27% High Chrome (A05)')}
-                  </span>
-                </div>
-                <div class="smat-trib-kpi-card">
-                  <strong>{isEs ? 'Tenacidad K_Ic:' : 'Toughness K_Ic:'}</strong>{' '}
-                  <span id="trib-kic-out">18.5 MPa·√m</span>
-                </div>
-                <div class="smat-trib-kpi-card">
-                  <strong>{isEs ? 'Masa e Izaje NIOSH:' : 'NIOSH Mass & Rigging:'}</strong>{' '}
-                  <span id="trib-arch-out">{isLiners ? '418 kg · 5 NIOSH ≥ 23 kg' : '492 kg · 6 NIOSH ≥ 23 kg'}</span>
-                </div>
-                <div class="smat-trib-kpi-card">
-                  <strong>{isEs ? 'Pérdida Volumétrica Δην:' : 'Volumetric Loss Δην:'}</strong>{' '}
-                  <span id="trib-vol-loss-out">-1.6%</span>
-                </div>
-                <div class="smat-trib-kpi-card">
-                  <strong>{isEs ? 'Margen Tubería:' : 'Pipe Margin Loss:'}</strong>{' '}
-                  <span id="trib-pipe-loss-out">-1.2%</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="smat-inputs-2col smat-trib-inputs-box">
-              <label class="smat-trib-field">
-                <span>{isEs ? 'Granulometría d₈₀ (µm):' : 'Particle Size d₈₀ (µm):'}</span>
-                <input type="number" id="trib-d80-um" min="20" max="6000" step="25" value={defaultD80} class="smat-trib-ctrl" />
-              </label>
-              <label class="smat-trib-field">
-                <span>{isEs ? 'Velocidad Punta u₂ (m/s):' : 'Tip Speed u₂ (m/s):'}</span>
-                <input type="number" id="trib-u2-ms" min="10" max="36" step="0.5" value={defaultU2} class="smat-trib-ctrl" />
-              </label>
-              <label class="smat-trib-field">
-                <span>{isEs ? 'pH de Pulpa:' : 'Slurry pH:'}</span>
-                <input type="number" id="trib-ph" min="1.0" max="13.5" step="0.5" value="7.5" class="smat-trib-ctrl" />
-              </label>
-              <label class="smat-trib-field">
-                <span>{isEs ? 'Claro Axial Frontal δ (mm):' : 'Front Axial Clearance δ (mm):'}</span>
-                <input type="number" id="trib-clearance-mm" min="0.2" max="6.0" step="0.1" value="0.75" class="smat-trib-ctrl" />
-              </label>
-              <label class="smat-trib-field">
-                <span>{isLiners ? (isEs ? 'Arquitectura Lote 5-5-4:' : '5-5-4 Lot Architecture:') : (isEs ? 'Rama de Material:' : 'Material Branch:')}</span>
-                <select id="trib-mat-select" class="smat-trib-ctrl">
-                  <option value="hybrid_a05_r55" selected={isLiners}>
-                    {isEs ? 'Rama D Híbrida (Impulsor A05 + Forros R55)' : 'Hybrid Branch D (A05 Impeller + R55 Liners)'}
-                  </option>
-                  <option value="auto" selected={!isLiners}>Auto (Finnie-Hutchings)</option>
-                  <option value="alto_cromo_cr27">{isEs ? 'Alto Cromo 27% Cr (A05)' : '27% High Chrome (A05)'}</option>
-                  <option value="hule_natural">{isEs ? 'Hule Natural (R55)' : 'Natural Rubber (R55)'}</option>
-                  <option value="poliuretano">{isEs ? 'Poliuretano (U01)' : 'Polyurethane (U01)'}</option>
-                  <option value="ceramica_sic">{isEs ? 'Cerámica SiC' : 'SiC Ceramic'}</option>
-                </select>
-              </label>
-              <label class="smat-trib-field">
-                <span>{isEs ? 'Serie de Bomba:' : 'Pump Series:'}</span>
-                <select id="trib-series" class="smat-trib-ctrl">
-                  <option value="3x2">3x2 / 4x3</option>
-                  <option value="6x4" selected>6x4</option>
-                  <option value="8x6">8x6 / 10x8</option>
-                </select>
-              </label>
-            </div>
-
-            <div class="smat-trib-actions">
-              <a
-                href={isLiners
-                  ? `${quoteBase}?circuito=bombeo&equipo=kit_wet_end&pieza=voluta_liners&estacion=S3#rfq`
-                  : `${quoteBase}?circuito=bombeo&equipo=solo_impulsor&pieza=impulsor_5_alabes&estacion=S3#rfq`}
-                class="btn btn-primary smat-trib-btn-tall"
-              >
-                {isLiners
-                  ? (isEs ? 'Cotizar Lote Húmedo Calibrado →' : 'Quote Calibrated Wet-End Lot →')
-                  : (isEs ? 'Cotizar Impulsor Calibrado →' : 'Quote Calibrated Impeller →')}
-              </a>
-              <button
-                type="button"
-                class="btn btn-outline btn-avenue-tray smat-trib-btn-tall"
-                data-vertical-tray-btn
-                data-add-tray-sku={isLiners ? 'SMAT-PUMP-TB-083' : 'SMAT-PUMP-IMP-147'}
-                data-tray-part-code={isLiners ? 'E4083' : '147/083'}
-                data-tray-title={isLiners
-                  ? (isEs ? 'Lote Revestimientos + Throatbush 5-5-4' : 'Calibrated Wet-End Lot & Throatbush 5-5-4')
-                  : (isEs ? 'Impulsor 5 Álabes Calibrado' : 'Calibrated 5-Vane Impeller')}
-                data-tray-series="6x4"
-                data-tray-material={isLiners ? 'hybrid_a05_r55' : 'alto_cromo_cr27'}
-                data-tray-circuit="bombeo"
-                data-tray-source={isLiners ? 'liners_stratum1_calc' : 'impeller_stratum1_calc'}
-              >
-                {isEs ? '+ Sumar SKU Calibrado a Bandeja' : '+ Add Calibrated SKU to Tray'}
-              </button>
-            </div>
-          </div>
+          <TribologyAlloyCore
+            locale={locale}
+            variant={variant}
+            embeddedInWizard={false}
+            showVerticalActions={true}
+            panelClass="trib-core-standalone"
+          />
 
           <h3 class="smat-trib-mat-heading">
             {isLiners
@@ -483,33 +377,70 @@ const defaultU2 = isLiners ? '21.5' : '22.5';
         />
       </div>
     </section>
-
-    <script>
-      import { bindCanonicalTribologySelector } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
-      import { bindAtomicPartTrayButtons } from '../../scripts/verticalStateAndCtaSyncBridge.js';
-
-      function initTribologyStandalone() {
-        const root = document.querySelector('[data-island-standalone="tribology"]');
-        if (!root) return;
-        const el = root as HTMLElement;
-        if (el.dataset.tribologyBound === 'true') return;
-        el.dataset.tribologyBound = 'true';
-        const lang = el.dataset.lang === 'en' ? 'en' : 'es';
-        bindCanonicalTribologySelector(root, lang);
-        bindAtomicPartTrayButtons(root);
-      }
-
-      initTribologyStandalone();
-      document.addEventListener('astro:page-load', initTribologyStandalone);
-    </script>
   </div>
 )}
 
-{!isStandalone && (
-  <div id="tribology-embedded-summary" data-island-embedded="tribology">
-    <span class="badge badge-copper">{isEs ? 'Módulo Tribológico Integrado' : 'Integrated Tribology Module'}</span>
-  </div>
+{!showVerticalShell && (
+  <TribologyAlloyCore
+    locale={locale}
+    variant={variant}
+    embeddedInWizard={true}
+    showVerticalActions={false}
+    panelClass="trib-core-embedded"
+  />
 )}
+
+<script>
+  import { bindCanonicalTribologySelector } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
+  import { bindAtomicPartTrayButtons } from '../../scripts/verticalStateAndCtaSyncBridge.js';
+  import {
+    bindDomainSchemaRoot,
+    projectDomainOutputs,
+    readAllCanonicalInputs
+  } from '../../scripts/schemaRuntimeBinder.js';
+  import { solveXdsmMultidisciplinaryDag } from '../../scripts/wizardXdsmDagSolver.js';
+
+  function runTribologyCoreDag(root: HTMLElement, lang: 'es' | 'en') {
+    const inputs = readAllCanonicalInputs(root);
+    const dag = solveXdsmMultidisciplinaryDag(inputs);
+    const trib = dag.tribologyEval || {};
+    const asm = dag.assemblyEval || {};
+    const hyb = dag.hybridEval || {};
+    projectDomainOutputs(
+      root,
+      'tribology',
+      {
+        recommendedMaterial: trib.recommendedMaterial || inputs.tribologyMaterial,
+        hybridRecommended: hyb.hybridRecommended ? (lang === 'en' ? 'Hybrid A05+R55 Recommended' : 'Rama D Híbrida A05+R55') : (lang === 'en' ? 'Monometallic A05/R55' : 'Monometálico Cr27/R55'),
+        hybridMassSavingsPct: hyb.massSavingsPct ?? 31.8,
+        activeSeries: asm.pipeSeries || inputs.pipeSeries || '6x4',
+        activeWeightKg: asm.totalAssemblyMassKg ?? 492,
+        activeNioshHoistRequired: asm.nioshHoistPartsCount ? `${asm.nioshHoistPartsCount} NIOSH >= 23 kg` : 'NIOSH',
+        activeMaterialCode: asm.activeMaterialCode || 'A05',
+        volumetricLossPct: asm.volumetricEfficiencyDropPct ?? 1.6,
+        pipeVelocityMarginLossPct: asm.pipeVelocityMarginLossPct ?? 1.2,
+        statusMessage: lang === 'en' ? (asm.structuralReasonEn || 'Toughness OK') : (asm.structuralReasonEs || 'Tenacidad OK')
+      },
+      lang
+    );
+  }
+
+  function initTribologyStandalone() {
+    document.querySelectorAll('[data-island-standalone="tribology"]').forEach((root) => {
+      const el = root as HTMLElement;
+      if (el.dataset.tribologyBound === 'true') return;
+      el.dataset.tribologyBound = 'true';
+      const lang: 'es' | 'en' = el.dataset.lang === 'en' ? 'en' : 'es';
+      bindCanonicalTribologySelector(root, lang);
+      bindAtomicPartTrayButtons(root);
+      bindDomainSchemaRoot(root, ['tribology'], () => runTribologyCoreDag(el, lang));
+      runTribologyCoreDag(el, lang);
+    });
+  }
+
+  initTribologyStandalone();
+  document.addEventListener('astro:page-load', initTribologyStandalone);
+</script>
 
 <style>
   .back-link {
@@ -523,69 +454,6 @@ const defaultU2 = isLiners ? '21.5' : '22.5';
   }
   .smat-trib-badge-wrap {
     margin-top: 0.3rem;
-  }
-  .smat-trib-sim-card {
-    background: #f8fafc;
-    border: 1.5px solid #cbd5e1;
-    padding: clamp(0.7rem, 1.4vw, 1.1rem);
-    margin-bottom: 1rem;
-  }
-  .smat-trib-sim-title {
-    margin: 0.3rem 0 0.45rem;
-    font-size: clamp(0.98rem, 1.4vw, 1.12rem);
-  }
-  .smat-trib-status-box {
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
-    background: #ecfdf5;
-    border: 1px solid #059669;
-    color: #064e3b;
-    font-family: var(--smat-font-mono);
-    font-size: 0.79rem;
-    font-weight: 700;
-  }
-  .smat-trib-kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 0.45rem;
-    font-family: var(--smat-font-mono);
-    font-size: 0.78rem;
-  }
-  .smat-trib-kpi-card {
-    background: #ffffff;
-    padding: 0.45rem 0.65rem;
-    border-radius: 6px;
-    border: 1px solid #cbd5e1;
-  }
-  .smat-trib-inputs-box {
-    margin-bottom: 0.65rem;
-    padding: 0.6rem;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 0.8rem;
-  }
-  .smat-trib-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    font-weight: 600;
-  }
-  .smat-trib-ctrl {
-    padding: 0.35rem;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-  }
-  .smat-trib-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-    align-items: center;
-  }
-  .smat-trib-btn-tall {
-    min-height: 48px;
-    display: inline-flex;
-    align-items: center;
   }
   .smat-trib-mat-heading {
     margin-top: 1.25rem;
@@ -730,5 +598,10 @@ const defaultU2 = isLiners ? '21.5' : '22.5';
     font-size: 0.85rem;
     color: #334155;
     margin: 0.5rem 0;
+  }
+  .smat-trib-btn-tall {
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
   }
 </style>

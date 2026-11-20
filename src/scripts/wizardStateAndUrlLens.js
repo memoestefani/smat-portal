@@ -207,7 +207,7 @@ export function hydrateSessionIntoWizardDom(doc, dom = {}, state = {}, callbacks
       [s.criticalityMode, 'wb-jrp-criticality'],
       [s.tempC, 'wb-temp-c'],
       [s.quantity, 'wb-erp-quantity'],
-      [s.logistics_mode, 'wb-erp-logistics-mode'],
+      [(s.logistics_mode && !s.destination) ? s.logistics_mode : '', 'wb-destination'],
       [s.delivery_destination, 'wb-erp-destination'],
       [s.floatabilityP, 'wb-flot-p'],
       [s.frothRecoveryRf, 'wb-flot-rf']
@@ -294,7 +294,7 @@ export function collectWizardPayloadData(doc, dom = {}, state = {}) {
   const pkgItems = Array.from(doc.querySelectorAll('input[name="pkg_item"]:checked')).map((c) => c.value);
 
   const qtyVal = Math.max(1, Math.round(Number(doc.getElementById('wb-erp-quantity')?.value ?? 1)));
-  const logisticsMode = String(doc.getElementById('wb-erp-logistics-mode')?.value || 'retiro');
+  const logisticsMode = String(doc.getElementById('wb-destination')?.value || 'retiro');
   const tempCVal = Number(doc.getElementById('wb-temp-c')?.value ?? 35);
   const strictBlindCheck = Boolean(doc.getElementById('wb-strict-blind-check')?.checked);
   const misionVal = state.isOpex ? 'refacciones' : 'equipos';

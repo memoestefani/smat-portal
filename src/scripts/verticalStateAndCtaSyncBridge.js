@@ -16,7 +16,6 @@
 import {
   SMAT_ENGINEERING_CONTEXT_KEY,
   loadEngineeringContextSnapshot,
-  mergeEngineeringContext,
   saveEngineeringContextSnapshot,
 } from './wizardCircuitPhysicsController.js';
 import {
@@ -632,7 +631,7 @@ export function bindAtomicPartTrayButtons(root = typeof document !== 'undefined'
           source,
         });
 
-        btn.textContent = isEn ? '✓ In Tray' : '✓ En Bandeja';
+        btn.textContent = isEn ? 'In Tray' : 'En Bandeja';
         if (typeof setTimeout === 'function') {
           setTimeout(() => {
             btn.textContent = originalLabel || (isEn ? '+ Tray' : '+ Bandeja');

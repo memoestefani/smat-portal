@@ -1,5 +1,6 @@
 ---
-// src/components/islands/PumpingHubIsland.astro — Isla Canónica Única de Bombeo y Lotes 5-5-4 (SLICE-V50-27)
+// src/components/islands/PumpingHubIsland.astro — Isla Canónica Única de Bombeo y Lotes 5-5-4 (SLICE-V51-18)
+import PumpingHydraulicsCore from '../cores/PumpingHydraulicsCore.astro';
 import CircuitNavigator from '../CircuitNavigator.astro';
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import SharePurchasing from '../SharePurchasing.astro';
@@ -14,6 +15,7 @@ interface Props {
 
 const { locale = 'es', mode = 'standalone' } = Astro.props;
 const isEs = locale === 'es';
+const showVerticalShell = mode === 'standalone';
 const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
 
 const kits = [
@@ -231,273 +233,422 @@ const tcoRows = [
 ];
 ---
 
-<div data-island-standalone="pumping" data-island-mode={mode}>
-  <section class="page-hero">
-    <div class="container">
-      <span class="badge badge-copper">
-        {isEs ? 'PUERTA 2 • OPERACIÓN DE PLANTA, MANTENIMIENTO Y REFACCIONES' : 'DOOR 2 • PLANT OPERATIONS, MAINTENANCE & SPARES'}
-      </span>
-      <h1>{isEs ? 'Bombas para Lodos y Refacciones' : 'Slurry Pumps & Spare Parts'}</h1>
-      <p class="smat-bombeo-hero-lead">
-        {isEs
-          ? <>Selección directa en 1 clic de partes de desgaste en lotes balanceados <strong>5-5-4</strong> (<strong>Alto Cromo ≥650 HB, Hule Natural y Poliuretano</strong>), cartuchos completos <strong>Bearing Assembly</strong> y nuestro reporte de 5 estaciones de armado.</>
-          : <>Direct 1-click selection of wet-end wear parts in balanced <strong>5-5-4</strong> lots (<strong>High Chrome ≥650 HB, Natural Rubber, and Polyurethane</strong>), complete <strong>Bearing Assembly</strong> cartridges, and our 5-station pump assembly report.</>}
-      </p>
-    </div>
-  </section>
+<div data-island-standalone="pumping" data-island-mode={mode} data-lang={locale}>
+  {showVerticalShell && (
+    <section class="page-hero">
+      <div class="container">
+        <span class="badge badge-copper">
+          {isEs ? 'PUERTA 2 • OPERACIÓN DE PLANTA, MANTENIMIENTO Y REFACCIONES' : 'DOOR 2 • PLANT OPERATIONS, MAINTENANCE & SPARES'}
+        </span>
+        <h1>{isEs ? 'Bombas para Lodos y Refacciones' : 'Slurry Pumps & Spare Parts'}</h1>
+        <p class="smat-bombeo-hero-lead">
+          {isEs
+            ? <>Selección directa en 1 clic de partes de desgaste en lotes balanceados <strong>5-5-4</strong> (<strong>Alto Cromo ≥650 HB, Hule Natural y Poliuretano</strong>), cartuchos completos <strong>Bearing Assembly</strong> y simulador hidráulico en vivo.</>
+            : <>Direct 1-click selection of wet-end wear parts in balanced <strong>5-5-4</strong> lots (<strong>High Chrome ≥650 HB, Natural Rubber, and Polyurethane</strong>), complete <strong>Bearing Assembly</strong> cartridges, and live slurry hydraulic simulator.</>}
+        </p>
+      </div>
+    </section>
+  )}
 
   <section class="section smat-bombeo-main" id="bombeo-main-section">
     <div class="container">
-      <TechnicalDiagrams diagram="pump" lang={locale} />
+      {showVerticalShell && <TechnicalDiagrams diagram="pump" lang={locale} />}
 
-      <div class="bombeo-catalog-tabs" id="bombeo-catalog-tabs" data-canonical-single-console="true">
-        <div class="bombeo-tabs-header">
-          <div>
-            <span class="section-eyebrow">
-              {isEs ? 'CATÁLOGO DE BOMBEO Y PARTES HÚMEDAS' : 'PUMPING & WET-END WEAR SPARES CATALOG'}
-            </span>
-            <h2 class="smat-bombeo-console-heading">
-              {isEs
-                ? 'Selección de bomba, partes húmedas y armado'
-                : 'Slurry pump, wet-end lots & assembly'}
-            </h2>
-          </div>
-          <div
-            class="bombeo-tab-switcher"
-            role="tablist"
-            aria-label={isEs
-              ? 'Selector de Kits por Material, Subconjuntos, Fichas Part Number o Armado 01-05'
-              : 'Material Kits, Sub-assemblies, Universal Part Sheets or 01-05 Assembly Selector'}
-          >
-            <button type="button" role="tab" aria-selected="true" class="bombeo-tab-btn is-active" data-bombeo-tab="kits">
-              {isEs ? '1. Kits por Material (5)' : '1. Kits by Material (5)'}
-            </button>
-            <button type="button" role="tab" aria-selected="false" class="bombeo-tab-btn" data-bombeo-tab="systems">
-              {isEs ? '2. Subconjuntos y Bombas (5)' : '2. Sub-Assemblies & Pumps (5)'}
-            </button>
-            <button type="button" role="tab" aria-selected="false" class="bombeo-tab-btn" data-bombeo-tab="atomic">
-              {isEs ? '3. Fichas Part Number Universal (13)' : '3. Universal Part Number Sheets (13)'}
-            </button>
-            <button type="button" role="tab" aria-selected="false" class="bombeo-tab-btn" data-bombeo-tab="assembly">
-              {isEs ? '4. Armado Wet-End 01–05' : '4. Wet-End Assembly 01–05'}
-            </button>
-          </div>
+      <div class="card smat-bombeo-sim-card" id="pumping-hydraulics-stratum1" data-stratum-1-instrument>
+        <div class="smat-bombeo-sim-header">
+          <span class="badge badge-copper">
+            {isEs ? 'INSTRUMENTO EN VIVO • HIDRÁULICA DE PULPA Y ALTITUD' : 'LIVE INSTRUMENT • SLURRY HYDRAULICS & ALTITUDE'}
+          </span>
+          <h2>
+            {isEs
+              ? 'Verificador de Transporte Hidráulico, Derating Cave y Altitud'
+              : 'Slurry Hydraulic Transport, Cave Derating & Altitude Verifier'}
+          </h2>
         </div>
 
-        <div
-          class="bombeo-tab-panel is-active material-kits-showcase"
-          id={isEs ? 'lotes-por-material' : 'kits-by-material'}
-          data-bombeo-panel="kits"
-        >
-          <span id={isEs ? 'kits-by-material' : 'lotes-por-material'} aria-hidden="true"></span>
-          <p class="smat-bombeo-panel-lead">
-            {isEs
-              ? 'Compare la geometría física de cada lote húmedo: voluta monolítica en Alto Cromo Cr27% o compuesto Cerámico SiC frente a revestimientos divididos en dos mitades (FPL + CPL) en Hule Natural vulcanizado o Poliuretano colado.'
-              : 'Compare the physical geometry of each wet-end kit: 1-piece monolithic High Chrome Cr27% or SiC Ceramic composite volute vs. split two-half liners (FPL + CPL) in vulcanized Natural Rubber or cast Polyurethane.'}
-          </p>
-          <TechnicalDiagrams diagram="material_kit_grid" lang={locale} />
+        <PumpingHydraulicsCore
+          locale={locale}
+          showPipeAndSymptom={true}
+          showTcoBlock={false}
+          panelClass="pumping-core-standalone"
+        />
 
-          <div class="grid-3-atomic smat-bombeo-grid-gap">
-            {kits.map((kit) => (
-              <article class="card atomic-silo-card" data-hybrid-branch-d-card={kit.isHybrid ? 'true' : undefined}>
-                <span class="badge badge-copper smat-bombeo-card-badge">
-                  {isEs ? kit.badgeEs : kit.badgeEn}
+        <div class="smat-bombeo-sim-actions">
+          <a id="pumping-island-quote-cta" href={`${quoteBase}?circuito=bombeo#rfq`} class="btn btn-primary">
+            {isEs ? 'Cotizar con esta Calibración Hidráulica →' : 'Quote With This Hydraulic Calibration →'}
+          </a>
+        </div>
+      </div>
+
+      {showVerticalShell && (
+        <>
+          <div class="bombeo-catalog-tabs" id="bombeo-catalog-tabs" data-canonical-single-console="true">
+            <div class="bombeo-tabs-header">
+              <div>
+                <span class="section-eyebrow">
+                  {isEs ? 'CATÁLOGO DE BOMBEO Y PARTES HÚMEDAS' : 'PUMPING & WET-END WEAR SPARES CATALOG'}
                 </span>
-                <strong class="smat-bombeo-card-title">{isEs ? kit.titleEs : kit.titleEn}</strong>
-                <p class="smat-bombeo-card-copy">
-                  <strong>{isEs ? 'Incluye:' : 'Kit parts:'}</strong> {isEs ? kit.partsEs : kit.partsEn}<br />
-                  <strong>{isEs ? 'Envolvente de operación:' : 'Operating envelope:'}</strong> {isEs ? kit.envEs : kit.envEn}
-                </p>
-                <div class="smat-bombeo-card-actions">
-                  <a href={kit.href} class="btn btn-primary smat-bombeo-cta-flex">
-                    {isEs ? kit.ctaEs : kit.ctaEn}
-                  </a>
-                  <button
-                    type="button"
-                    class="btn btn-outline btn-avenue-tray smat-bombeo-tray-btn"
-                    data-add-tray-sku={kit.sku}
-                    data-tray-part-code={kit.code}
-                    data-tray-title={isEs ? kit.trayTitleEs : kit.trayTitleEn}
-                    data-tray-series="5-5-4"
-                    data-tray-material={kit.material}
-                    data-tray-circuit="bombeo"
-                    data-tray-source="bombeo_tab1_kit"
-                  >
-                    {isEs ? '+ Bandeja' : '+ Tray'}
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <div class="bombeo-tab-panel" data-bombeo-panel="systems">
-          <div class="grid-2 smat-bombeo-grid-gap">
-            {systems.map((sys) => (
-              <div class="card">
-                <strong class="smat-bombeo-card-title">{isEs ? sys.titleEs : sys.titleEn}</strong>
-                <p>{isEs ? sys.descEs : sys.descEn}</p>
-                <p class="smat-bombeo-sys-meta">
-                  <strong>{isEs ? sys.metaLabelEs : sys.metaLabelEn}</strong> {isEs ? sys.metaEs : sys.metaEn}
-                </p>
-                <div class="smat-bombeo-sys-actions">
-                  <a href={sys.specHref} class="btn btn-outline">{isEs ? sys.specCtaEs : sys.specCtaEn}</a>
-                  <a href={sys.quoteHref} class="btn btn-primary">{isEs ? 'Cotizar →' : 'Quote →'}</a>
-                </div>
+                <h2 class="smat-bombeo-console-heading">
+                  {isEs
+                    ? 'Selección de bomba, partes húmedas y armado'
+                    : 'Slurry pump, wet-end lots & assembly'}
+                </h2>
               </div>
-            ))}
-          </div>
-        </div>
-
-        <div class="bombeo-tab-panel atomic-silo-block" data-bombeo-panel="atomic">
-          <h3 class="smat-bombeo-atomic-heading">
-            {isEs
-              ? 'Fichas de Part Number Universal (Contacto Húmedo y Sellado)'
-              : 'Universal Part Number Spare Parts Sheets (Wet-End & Sealing)'}
-          </h3>
-          <p class="smat-bombeo-atomic-lead">
-            {isEs
-              ? 'Consulte especificaciones metalúrgicas individuales para impulsores cerrados, platos de succión y anillos expulsores con masa verificada (Waters-NIOSH 1993 RWL_eje = 11.1 kg y umbral de polipasto ≥23 kg) en nuestro Almacén Central Durango.'
-              : 'Review individual metallurgical specifications for closed impellers, suction throatbushes, and expeller rings with verified mass (Waters-NIOSH 1993 RWL_shaft = 11.1 kg and Hoist ≥23 kg threshold) at our Durango Central Warehouse.'}
-          </p>
-          <div class="grid-3-atomic">
-            {atomicParts.map((part) => {
-              const specs = getAtomicPartSpecs(part.part_number);
-              const niosh = formatNioshErgonomicStatus(specs, locale);
-              const quoteHref = buildWizardUrl({
-                lang: locale,
-                circuit: 'bombeo',
-                role: specs.role,
-                code: part.part_number,
-                series: specs.series || '6x4',
-                station: specs.station_code,
-                material: part.part_number === 'DAM005' ? undefined : 'alto_cromo_cr27',
-                weightKg: specs.weight_kg,
-                arrangement: 'CV',
-              });
-              const partCatalogHref = isEs ? `/catalogo/${part.code}/` : `/en/catalog/${part.code}/`;
-              return (
-                <div class="card atomic-silo-card" data-atomic-code={part.part_number} data-niosh-tier={niosh.tier} data-niosh-tone={niosh.cssTone}>
-                  <div class="smat-bombeo-atomic-head">
-                    <span class="badge badge-copper">{part.part_number}</span>
-                    <span class="smat-bombeo-atomic-frame">
-                      {isEs ? `Marco ${part.frame}` : `Frame ${part.frame}`} • {specs.station_number}
-                    </span>
-                  </div>
-                  <strong class="smat-bombeo-card-title">{isEs ? part.name_es : part.name_en}</strong>
-                  <p class="smat-bombeo-atomic-sub">{isEs ? part.type_es : part.type_en} • {part.hardness}</p>
-                  <div class="atomic-niosh-meta smat-bombeo-niosh-box">
-                    <strong>{isEs ? `Masa: ${specs.weight_kg} kg` : `Mass: ${specs.weight_kg} kg`}</strong> • {isEs ? niosh.badgeEs : niosh.badgeEn} • RWL={niosh.rwlShaftKg} kg (LI={niosh.liftingIndexShaft})
-                  </div>
-                  <div class="smat-bombeo-card-actions">
-                    <a href={partCatalogHref} class="btn btn-outline smat-bombeo-mini-btn">
-                      {isEs ? `Ver Ficha ${part.part_number}` : `View Sheet ${part.part_number}`}
-                    </a>
-                    <button
-                      type="button"
-                      class="btn btn-outline btn-avenue-tray smat-bombeo-mini-tray"
-                      data-add-tray-sku={part.part_number === 'DAM005' ? 'SMAT-PUMP-BRG-005M' : `SMAT-PUMP-${part.part_number}`}
-                      data-tray-part-code={part.part_number}
-                      data-tray-title={isEs ? part.name_es : part.name_en}
-                      data-tray-series={part.frame}
-                      data-tray-material={part.part_number === 'DAM005' ? 'GGG40' : 'A05'}
-                      data-tray-circuit="bombeo"
-                      data-tray-source="bombeo_atomic_sheet"
-                    >
-                      {isEs ? '+ Bandeja' : '+ Tray'}
-                    </button>
-                    <a href={quoteHref} class="btn btn-primary smat-bombeo-mini-btn">{isEs ? 'Cotizar →' : 'Quote →'}</a>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div class="bombeo-tab-panel" data-bombeo-panel="assembly">
-          <PumpAssemblyReport lang={locale} />
-          <details class="bombeo-circuit-drawer" id="bombeo-circuit-drawer">
-            <summary class="bombeo-circuit-drawer__summary">
-              <span>
-                {isEs
-                  ? 'Ver Mapa P&ID del Circuito de Molienda y Reglas Metalúrgicas por Rol'
-                  : 'View Grinding Circuit P&ID Map & Metallurgical Rules by Role'}
-              </span>
-              <span class="bombeo-circuit-drawer__badge">
-                {isEs ? 'APÉNDICE P&ID ▾' : 'P&ID APPENDIX ▾'}
-              </span>
-            </summary>
-            <div class="bombeo-circuit-drawer__body">
-              <CircuitNavigator currentCircuit="molienda" lang={locale} />
+              <div
+                class="bombeo-tab-switcher"
+                role="tablist"
+                aria-label={isEs
+                  ? 'Selector de Kits por Material, Subconjuntos, Fichas Part Number o Armado 01-05'
+                  : 'Material Kits, Sub-assemblies, Universal Part Sheets or 01-05 Assembly Selector'}
+              >
+                <button type="button" role="tab" aria-selected="true" class="bombeo-tab-btn is-active" data-bombeo-tab="kits">
+                  {isEs ? '1. Kits por Material (5)' : '1. Kits by Material (5)'}
+                </button>
+                <button type="button" role="tab" aria-selected="false" class="bombeo-tab-btn" data-bombeo-tab="systems">
+                  {isEs ? '2. Subconjuntos y Bombas (5)' : '2. Sub-Assemblies & Pumps (5)'}
+                </button>
+                <button type="button" role="tab" aria-selected="false" class="bombeo-tab-btn" data-bombeo-tab="atomic">
+                  {isEs ? '3. Fichas Part Number Universal (13)' : '3. Universal Part Number Sheets (13)'}
+                </button>
+                <button type="button" role="tab" aria-selected="false" class="bombeo-tab-btn" data-bombeo-tab="assembly">
+                  {isEs ? '4. Armado Wet-End 01–05' : '4. Wet-End Assembly 01–05'}
+                </button>
+              </div>
             </div>
-          </details>
+
+            <div
+              class="bombeo-tab-panel is-active material-kits-showcase"
+              id={isEs ? 'lotes-por-material' : 'kits-by-material'}
+              data-bombeo-panel="kits"
+            >
+              <span id={isEs ? 'kits-by-material' : 'lotes-por-material'} aria-hidden="true"></span>
+              <p class="smat-bombeo-panel-lead">
+                {isEs
+                  ? 'Compare la geometría física de cada lote húmedo: voluta monolítica en Alto Cromo Cr27% o compuesto Cerámico SiC frente a revestimientos divididos en dos mitades (FPL + CPL) en Hule Natural vulcanizado o Poliuretano colado.'
+                  : 'Compare the physical geometry of each wet-end kit: 1-piece monolithic High Chrome Cr27% or SiC Ceramic composite volute vs. split two-half liners (FPL + CPL) in vulcanized Natural Rubber or cast Polyurethane.'}
+              </p>
+              <TechnicalDiagrams diagram="material_kit_grid" lang={locale} />
+
+              <div class="grid-3-atomic smat-bombeo-grid-gap">
+                {kits.map((kit) => (
+                  <article class="card atomic-silo-card" data-hybrid-branch-d-card={kit.isHybrid ? 'true' : undefined}>
+                    <span class="badge badge-copper smat-bombeo-card-badge">
+                      {isEs ? kit.badgeEs : kit.badgeEn}
+                    </span>
+                    <strong class="smat-bombeo-card-title">{isEs ? kit.titleEs : kit.titleEn}</strong>
+                    <p class="smat-bombeo-card-copy">
+                      <strong>{isEs ? 'Incluye:' : 'Kit parts:'}</strong> {isEs ? kit.partsEs : kit.partsEn}<br />
+                      <strong>{isEs ? 'Envolvente de operación:' : 'Operating envelope:'}</strong> {isEs ? kit.envEs : kit.envEn}
+                    </p>
+                    <div class="smat-bombeo-card-actions">
+                      <a href={kit.href} class="btn btn-primary smat-bombeo-cta-flex">
+                        {isEs ? kit.ctaEs : kit.ctaEn}
+                      </a>
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-avenue-tray smat-bombeo-tray-btn"
+                        data-add-tray-sku={kit.sku}
+                        data-tray-part-code={kit.code}
+                        data-tray-title={isEs ? kit.trayTitleEs : kit.trayTitleEn}
+                        data-tray-series="5-5-4"
+                        data-tray-material={kit.material}
+                        data-tray-circuit="bombeo"
+                        data-tray-source="bombeo_tab1_kit"
+                      >
+                        {isEs ? '+ Bandeja' : '+ Tray'}
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            <div class="bombeo-tab-panel" data-bombeo-panel="systems">
+              <div class="grid-2 smat-bombeo-grid-gap">
+                {systems.map((sys) => (
+                  <div class="card">
+                    <strong class="smat-bombeo-card-title">{isEs ? sys.titleEs : sys.titleEn}</strong>
+                    <p>{isEs ? sys.descEs : sys.descEn}</p>
+                    <p class="smat-bombeo-sys-meta">
+                      <strong>{isEs ? sys.metaLabelEs : sys.metaLabelEn}</strong> {isEs ? sys.metaEs : sys.metaEn}
+                    </p>
+                    <div class="smat-bombeo-sys-actions">
+                      <a href={sys.specHref} class="btn btn-outline">{isEs ? sys.specCtaEs : sys.specCtaEn}</a>
+                      <a href={sys.quoteHref} class="btn btn-primary">{isEs ? 'Cotizar →' : 'Quote →'}</a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div class="bombeo-tab-panel atomic-silo-block" data-bombeo-panel="atomic">
+              <h3 class="smat-bombeo-atomic-heading">
+                {isEs
+                  ? 'Fichas de Part Number Universal (Contacto Húmedo y Sellado)'
+                  : 'Universal Part Number Spare Parts Sheets (Wet-End & Sealing)'}
+              </h3>
+              <p class="smat-bombeo-atomic-lead">
+                {isEs
+                  ? 'Consulte especificaciones metalúrgicas individuales para impulsores cerrados, platos de succión y anillos expulsores con masa verificada (Waters-NIOSH 1993 RWL_eje = 11.1 kg y umbral de polipasto ≥23 kg) en nuestro Almacén Central Durango.'
+                  : 'Review individual metallurgical specifications for closed impellers, suction throatbushes, and expeller rings with verified mass (Waters-NIOSH 1993 RWL_shaft = 11.1 kg and Hoist ≥23 kg threshold) at our Durango Central Warehouse.'}
+              </p>
+              <div class="grid-3-atomic">
+                {atomicParts.map((part) => {
+                  const specs = getAtomicPartSpecs(part.part_number);
+                  const niosh = formatNioshErgonomicStatus(specs, locale);
+                  const quoteHref = buildWizardUrl({
+                    lang: locale,
+                    circuit: 'bombeo',
+                    role: specs.role,
+                    code: part.part_number,
+                    series: specs.series || '6x4',
+                    station: specs.station_code,
+                    material: part.part_number === 'DAM005' ? undefined : 'alto_cromo_cr27',
+                    weightKg: specs.weight_kg,
+                    arrangement: 'CV',
+                  });
+                  const partCatalogHref = isEs ? `/catalogo/${part.code}/` : `/en/catalog/${part.code}/`;
+                  return (
+                    <div class="card atomic-silo-card" data-atomic-code={part.part_number} data-niosh-tier={niosh.tier} data-niosh-tone={niosh.cssTone}>
+                      <div class="smat-bombeo-atomic-head">
+                        <span class="badge badge-copper">{part.part_number}</span>
+                        <span class="smat-bombeo-atomic-frame">
+                          {isEs ? `Marco ${part.frame}` : `Frame ${part.frame}`} • {specs.station_number}
+                        </span>
+                      </div>
+                      <strong class="smat-bombeo-card-title">{isEs ? part.name_es : part.name_en}</strong>
+                      <p class="smat-bombeo-atomic-sub">{isEs ? part.type_es : part.type_en} • {part.hardness}</p>
+                      <div class="atomic-niosh-meta smat-bombeo-niosh-box">
+                        <strong>{isEs ? `Masa: ${specs.weight_kg} kg` : `Mass: ${specs.weight_kg} kg`}</strong> • {isEs ? niosh.badgeEs : niosh.badgeEn} • RWL={niosh.rwlShaftKg} kg (LI={niosh.liftingIndexShaft})
+                      </div>
+                      <div class="smat-bombeo-card-actions">
+                        <a href={partCatalogHref} class="btn btn-outline smat-bombeo-mini-btn">
+                          {isEs ? `Ver Ficha ${part.part_number}` : `View Sheet ${part.part_number}`}
+                        </a>
+                        <button
+                          type="button"
+                          class="btn btn-outline btn-avenue-tray smat-bombeo-mini-tray"
+                          data-add-tray-sku={part.part_number === 'DAM005' ? 'SMAT-PUMP-BRG-005M' : `SMAT-PUMP-${part.part_number}`}
+                          data-tray-part-code={part.part_number}
+                          data-tray-title={isEs ? part.name_es : part.name_en}
+                          data-tray-series={part.frame}
+                          data-tray-material={part.part_number === 'DAM005' ? 'GGG40' : 'A05'}
+                          data-tray-circuit="bombeo"
+                          data-tray-source="bombeo_atomic_sheet"
+                        >
+                          {isEs ? '+ Bandeja' : '+ Tray'}
+                        </button>
+                        <a href={quoteHref} class="btn btn-primary smat-bombeo-mini-btn">{isEs ? 'Cotizar →' : 'Quote →'}</a>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div class="bombeo-tab-panel" data-bombeo-panel="assembly">
+              <PumpAssemblyReport lang={locale} />
+              <details class="bombeo-circuit-drawer" id="bombeo-circuit-drawer">
+                <summary class="bombeo-circuit-drawer__summary">
+                  <span>
+                    {isEs
+                      ? 'Ver Mapa P&ID del Circuito de Molienda y Reglas Metalúrgicas por Rol'
+                      : 'View Grinding Circuit P&ID Map & Metallurgical Rules by Role'}
+                  </span>
+                  <span class="bombeo-circuit-drawer__badge">
+                    {isEs ? 'APÉNDICE P&ID ▾' : 'P&ID APPENDIX ▾'}
+                  </span>
+                </summary>
+                <div class="bombeo-circuit-drawer__body">
+                  <CircuitNavigator currentCircuit="molienda" lang={locale} />
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <SharePurchasing
+            roleTitle={isEs ? 'Bombas para Lodos y Lote de Refacciones Húmedas (5-5-4)' : 'Slurry Pumps & Wet-End Spare Parts Lot (5-5-4)'}
+            specs={isEs
+              ? 'Lote balanceado de 5 Impulsores + 5 Platos de Succión + 4 Volutas y cartucho Bearing Assembly / Housing'
+              : 'Balanced lot of 5 Impellers + 5 Throatbushes + 4 Volute Liners and Bearing Assembly / Housing'}
+            metallurgy={isEs
+              ? 'Alto Cromo 27% A05 (≥650 HB), Hule Natural Antiabrasivo y Poliuretano'
+              : 'High Chrome 27% A05 (≥650 HB), Abrasion-Resistant Natural Rubber, and Polyurethane'}
+            series={isEs ? '1.5x1 a 14x12' : '1.5x1 to 14x12'}
+            roleId="kit_wet_end"
+            circuit="bombeo"
+            lang={locale}
+          />
+        </>
+      )}
+    </div>
+  </section>
+
+  {showVerticalShell && (
+    <section class="tco-matrix-section" aria-label={isEs ? 'Abastecimiento por Lote Húmedo' : 'Wet-End Lot Procurement'}>
+      <div class="container">
+        <div class="tco-matrix-header">
+          <span class="section-eyebrow">
+            {isEs ? 'PLANEACIÓN DE MANTENIMIENTO EN PLANTA' : 'PLANT MAINTENANCE PLANNING'}
+          </span>
+          <h2>{isEs ? 'Compra por Lote Húmedo vs. Pieza Suelta de Emergencia' : 'Wet-End Lot Procurement vs. Single-Piece Purchasing'}</h2>
+          <p>
+            {isEs
+              ? <>Para bombas centrífugas de lodos, las plantas concentradoras programan lotes balanceados acoplados a su tasa real de desgaste (por ejemplo: <strong>5 impulsores, 5 platos de succión y 4 volutas</strong>) junto con un cartucho <strong>Bearing Assembly / Housing</strong> de respaldo.</>
+              : <>For slurry pumps, concentrator plants order balanced wet-end lots matched to component wear rates (for example: <strong>5 impellers, 5 throatbushes, and 4 volute liners</strong>) alongside a complete spare <strong>Bearing Assembly / Housing</strong>.</>}
+          </p>
+        </div>
+
+        <div class="tco-table-wrapper">
+          <table class="tco-comparison-matrix">
+            <thead>
+              <tr>
+                <th>{isEs ? 'Métrica Operativa' : 'Operational Metric'}</th>
+                <th>{isEs ? 'Importación OEM Extranjera' : 'Overseas OEM Import'}</th>
+                <th>{isEs ? 'Compra Reactiva Pieza Suelta' : 'Reactive Single-Part Buying'}</th>
+                <th class="col-smat-highlight">{isEs ? 'Suministro SMAT por Lote Húmedo' : 'SMAT Wet-End Lot Supply'}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tcoRows.map((row) => (
+                <tr>
+                  <td><strong>{isEs ? row.metricEs : row.metricEn}</strong></td>
+                  <td>{isEs ? row.oemEs : row.oemEn}</td>
+                  <td>{isEs ? row.reactiveEs : row.reactiveEn}</td>
+                  <td class="col-smat-val">{isEs ? row.smatEs : row.smatEn}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
-
-      <SharePurchasing
-        roleTitle={isEs ? 'Bombas para Lodos y Lote de Refacciones Húmedas (5-5-4)' : 'Slurry Pumps & Wet-End Spare Parts Lot (5-5-4)'}
-        specs={isEs
-          ? 'Lote balanceado de 5 Impulsores + 5 Platos de Succión + 4 Volutas y cartucho Bearing Assembly / Housing'
-          : 'Balanced lot of 5 Impellers + 5 Throatbushes + 4 Volute Liners and Bearing Assembly / Housing'}
-        metallurgy={isEs
-          ? 'Alto Cromo 27% A05 (≥650 HB), Hule Natural Antiabrasivo y Poliuretano'
-          : 'High Chrome 27% A05 (≥650 HB), Abrasion-Resistant Natural Rubber, and Polyurethane'}
-        series={isEs ? '1.5x1 a 14x12' : '1.5x1 to 14x12'}
-        roleId="kit_wet_end"
-        circuit="bombeo"
-        lang={locale}
-      />
-    </div>
-  </section>
-
-  <section class="tco-matrix-section" aria-label={isEs ? 'Abastecimiento por Lote Húmedo' : 'Wet-End Lot Procurement'}>
-    <div class="container">
-      <div class="tco-matrix-header">
-        <span class="section-eyebrow">
-          {isEs ? 'PLANEACIÓN DE MANTENIMIENTO EN PLANTA' : 'PLANT MAINTENANCE PLANNING'}
-        </span>
-        <h2>{isEs ? 'Compra por Lote Húmedo vs. Pieza Suelta de Emergencia' : 'Wet-End Lot Procurement vs. Single-Piece Purchasing'}</h2>
-        <p>
-          {isEs
-            ? <>Para bombas centrífugas de lodos, las plantas concentradoras programan lotes balanceados acoplados a su tasa real de desgaste (por ejemplo: <strong>5 impulsores, 5 platos de succión y 4 volutas</strong>) junto con un cartucho <strong>Bearing Assembly / Housing</strong> de respaldo.</>
-            : <>For slurry pumps, concentrator plants order balanced wet-end lots matched to component wear rates (for example: <strong>5 impellers, 5 throatbushes, and 4 volute liners</strong>) alongside a complete spare <strong>Bearing Assembly / Housing</strong>.</>}
-        </p>
-      </div>
-
-      <div class="tco-table-wrapper">
-        <table class="tco-comparison-matrix">
-          <thead>
-            <tr>
-              <th>{isEs ? 'Métrica Operativa' : 'Operational Metric'}</th>
-              <th>{isEs ? 'Importación OEM Extranjera' : 'Overseas OEM Import'}</th>
-              <th>{isEs ? 'Compra Reactiva Pieza Suelta' : 'Reactive Single-Part Buying'}</th>
-              <th class="col-smat-highlight">{isEs ? 'Suministro SMAT por Lote Húmedo' : 'SMAT Wet-End Lot Supply'}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tcoRows.map((row) => (
-              <tr>
-                <td><strong>{isEs ? row.metricEs : row.metricEn}</strong></td>
-                <td>{isEs ? row.oemEs : row.oemEn}</td>
-                <td>{isEs ? row.reactiveEs : row.reactiveEn}</td>
-                <td class="col-smat-val">{isEs ? row.smatEs : row.smatEn}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
+    </section>
+  )}
 
   <script>
     import { bindAtomicPartTrayButtons } from '../../scripts/verticalStateAndCtaSyncBridge.js';
+    import {
+      bindDomainSchemaRoot,
+      projectDomainOutputs,
+      readAllCanonicalInputs
+    } from '../../scripts/schemaRuntimeBinder.js';
+    import { solveXdsmMultidisciplinaryDag } from '../../scripts/wizardXdsmDagSolver.js';
+    import { projectHydraulicAltitudeAndLeadValidation } from '../../scripts/wizardLivePhysicsProjector.js';
+
+    function runPumpingCoreDag(root: HTMLElement, isEs: boolean) {
+      const inputs = readAllCanonicalInputs(root);
+      const dag = solveXdsmMultidisciplinaryDag(inputs);
+      const res = dag.slurryEval?.results || {};
+      const alt = dag.altitudeEval || {};
+      const outPayload = {
+        ...res,
+        ...alt,
+        criticalVelocityMs: res.criticalSettlingVelocityMs,
+        combinedMotorAltitudeMultiplier: dag.slurryEval?.combinedMotorAltitudeMultiplier ?? alt.combinedMotorAltitudeMultiplier,
+        motorSizingPenaltyPct: dag.slurryEval?.motorSizingPenaltyPct ?? alt.motorSizingPenaltyPct,
+        sobolDominantDriver: dag.sensitivity?.sobolDominantDriver || (isEs ? 'Caudal de Pulpa Q' : 'Slurry Flow Rate Q'),
+        activeTrustBoundaryId: res.activeTrustBoundaryId || 'NONE'
+      };
+      projectDomainOutputs(root, 'pumping', outPayload, isEs ? 'es' : 'en');
+      projectHydraulicAltitudeAndLeadValidation(root, {
+        simMetrics: dag.slurryEval,
+        altData: alt,
+        sobolDriver: outPayload.sobolDominantDriver,
+        isEs
+      });
+      const valFlow = root.querySelector('#val-flow');
+      if (valFlow) valFlow.textContent = `${Math.round(Number(inputs.flowM3H))} m³/h`;
+      const valSolids = root.querySelector('#val-solids');
+      if (valSolids) valSolids.textContent = `${Math.round(Number(inputs.solidsWeightPercent))}%`;
+      const valD80 = root.querySelector('#val-d80');
+      if (valD80) valD80.textContent = `${Math.round(Number(inputs.particleSizeD80Microns))} µm`;
+      const valSg = root.querySelector('#val-sg');
+      if (valSg) valSg.textContent = Number(inputs.solidsSpecificGravity).toFixed(2);
+      const valPh = root.querySelector('#val-ph');
+      if (valPh) valPh.textContent = `pH ${Number(inputs.pH).toFixed(1)}`;
+      const valAlt = root.querySelector('#val-altitude');
+      if (valAlt) valAlt.textContent = `${Math.round(Number(inputs.altitudeM)).toLocaleString('en-US')} ${isEs ? 'msnm' : 'MASL'}`;
+
+      const cta = root.querySelector('#pumping-island-quote-cta') as HTMLAnchorElement | null;
+      if (cta) {
+        const base = isEs ? '/cotizar/' : '/en/quote/';
+        cta.href = `${base}?circuito=bombeo&serie=${encodeURIComponent(String(inputs.pipeSeries || '6x4'))}&flow=${Math.round(Number(inputs.flowM3H))}&solids=${Math.round(Number(inputs.solidsWeightPercent))}&d80=${Math.round(Number(inputs.particleSizeD80Microns))}&sg=${Number(inputs.solidsSpecificGravity).toFixed(2)}&alt=${Math.round(Number(inputs.altitudeM))}#rfq`;
+      }
+    }
 
     function initBombeoCatalogTabs() {
-      const root = document.querySelector('[data-island-standalone="pumping"]');
+      const root = document.querySelector('[data-island-standalone="pumping"]') as HTMLElement | null;
       if (!root) return;
+      const isEs = root.dataset.lang !== 'en';
       bindAtomicPartTrayButtons(root);
-      if ((root as HTMLElement).dataset.bombeoTabsBound === 'true') return;
-      (root as HTMLElement).dataset.bombeoTabsBound = 'true';
+
+      const pumpingRoot = root.querySelector('[data-domain-root="pumping"]') as HTMLElement | null;
+      if (pumpingRoot && pumpingRoot.dataset.pumpingCoreBound !== '1') {
+        pumpingRoot.dataset.pumpingCoreBound = '1';
+        bindDomainSchemaRoot(pumpingRoot, ['pumping'], () => runPumpingCoreDag(root, isEs));
+
+        const stressInput = pumpingRoot.querySelector('#wb-stress-symptom') as HTMLInputElement | null;
+        pumpingRoot.querySelectorAll('.stress-chip').forEach((chip) => {
+          chip.addEventListener('click', () => {
+            const val = chip.getAttribute('data-symptom') || 'roca_dura';
+            if (stressInput) {
+              stressInput.value = val;
+              stressInput.dataset.userTouched = 'true';
+            }
+            pumpingRoot.querySelectorAll('.stress-chip').forEach((c) => {
+              const on = c === chip;
+              c.classList.toggle('active', on);
+              c.setAttribute('aria-pressed', on ? 'true' : 'false');
+            });
+            runPumpingCoreDag(root, isEs);
+          });
+        });
+
+        pumpingRoot.querySelectorAll('[data-wb-altitude-btn]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const altVal = btn.getAttribute('data-wb-altitude-btn') || btn.getAttribute('data-alt') || '2400';
+            const altInput = pumpingRoot.querySelector('#wb-altitude-input') as HTMLInputElement | null;
+            if (altInput) {
+              altInput.value = altVal;
+              altInput.dataset.userTouched = 'true';
+            }
+            pumpingRoot.querySelectorAll('[data-wb-altitude-btn]').forEach((b) => {
+              b.classList.toggle('active', b === btn);
+            });
+            runPumpingCoreDag(root, isEs);
+          });
+        });
+
+        let presets: Record<string, any> = {};
+        try {
+          presets = JSON.parse(pumpingRoot.getAttribute('data-presets') || '{}');
+        } catch (_e) { }
+        pumpingRoot.querySelectorAll('.preset-chip[data-preset]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const key = btn.getAttribute('data-preset') || '';
+            const p = presets[key];
+            if (!p) return;
+            const setInput = (sel: string, val: any) => {
+              const el = pumpingRoot.querySelector(sel) as HTMLInputElement | null;
+              if (el && val !== undefined) {
+                el.value = String(val);
+                el.dataset.userTouched = 'true';
+              }
+            };
+            setInput('#slider-flow', p.flowM3H);
+            setInput('#slider-solids', p.solidsWeightPercent);
+            setInput('#slider-d80', p.particleSizeD80Microns);
+            setInput('#slider-sg', p.solidsSpecificGravity);
+            pumpingRoot.querySelectorAll('.preset-chip').forEach((b) => b.classList.toggle('active', b === btn));
+            runPumpingCoreDag(root, isEs);
+          });
+        });
+
+        runPumpingCoreDag(root, isEs);
+      }
+
+      if (root.dataset.bombeoTabsBound === 'true') return;
+      root.dataset.bombeoTabsBound = 'true';
 
       const tabBtns = root.querySelectorAll('[data-bombeo-tab]');
       const tabPanels = root.querySelectorAll('[data-bombeo-panel]');
@@ -549,6 +700,23 @@ const tcoRows = [
     font-size: 1.04rem;
     max-width: 760px;
     color: var(--smat-text-secondary);
+  }
+  .smat-bombeo-sim-card {
+    margin-top: 1.5rem;
+    padding: clamp(0.85rem, 1.8vw, 1.35rem);
+    background: #ffffff;
+    border: 2px solid var(--smat-solar-accent, #7c2d12);
+  }
+  .smat-bombeo-sim-header h2 {
+    margin: 0.45rem 0 0.75rem;
+    font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+    color: var(--smat-text-primary);
+  }
+  .smat-bombeo-sim-actions {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
   }
   .bombeo-catalog-tabs {
     margin-top: 2.25rem;

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import ProductQuickCard from '../../../components/ProductQuickCard.astro';
+import JrpReorderCore from '../../../components/cores/JrpReorderCore.astro';
 import { getAllStaticProductRouteEntries, getQuickProductBySlugOrAlias } from '../../../scripts/quickProductsCatalog.js';
 import '../../../styles/productSlugSolar.css';
 
@@ -127,61 +128,24 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
       </p>
 
       <!-- Stratum 1: 3-Milestone Preventive Replacement Card + Synchronized Coupled Pair -->
-      <div id="stratum1-slug-card" data-jrp-window-card data-jrp-criticality="normal" data-stratum-1-instrument style="margin:0.5rem 0 0.75rem 0; padding:0.9rem 1rem; background:#f8fafc; border:1.5px solid #cbd5e1; border-left:4px solid #0c4a6e; border-radius:8px;">
-        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
-          <span style="font-family:var(--smat-font-mono, monospace); font-size:0.74rem; font-weight:800; color:#0c4a6e;">STATION-COUPLED PREVENTIVE REPLACEMENT WINDOW (3 MILESTONES)</span>
-          <span data-jrp-telemetry-badge style="font-family:var(--smat-font-mono, monospace); font-size:0.74rem; font-weight:700; color:#334155;">Session Pulp SG 1.45 • d50 280 µm</span>
-        </div>
-        <div style="display:flex; flex-wrap:wrap; gap:0.45rem; align-items:center; margin-bottom:0.6rem;">
-          <span style="font-size:0.78rem; font-weight:700; color:#1e293b;">Criticality Mode:</span>
-          <button type="button" data-jrp-criticality-toggle="normal" aria-pressed="true" style="padding:0.35rem 0.75rem; border:1px solid #0c4a6e; border-radius:6px; background:#0c4a6e; color:#ffffff; font-size:0.76rem; font-weight:700; cursor:pointer; min-height:48px;">Normal (1.0×)</button>
-          <button type="button" data-jrp-criticality-toggle="paro_planta" aria-pressed="false" style="padding:0.35rem 0.75rem; border:1px solid #94a3b8; border-radius:6px; background:#ffffff; color:#0f172a; font-size:0.76rem; font-weight:700; cursor:pointer; min-height:48px;">Plant Shutdown (0.75×)</button>
-          <span data-jrp-window-days style="margin-left:auto; font-family:var(--smat-font-mono, monospace); font-size:0.78rem; font-weight:800; color:#064e3b;">90 d window</span>
-          <span data-jrp-severity style="font-family:var(--smat-font-mono, monospace); font-size:0.75rem; color:#334155;">1.00× (1.00×)</span>
-        </div>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.55rem; margin-bottom:0.6rem;">
-          <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:0.5rem 0.65rem;">
-            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">SHAFT SLEEVE (STAGE 1)</span>
-            <strong data-jrp-sleeve-day style="font-size:0.95rem; color:#0f172a;">Day 90</strong>
-          </div>
-          <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:0.5rem 0.65rem;">
-            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">IMPELLER + THROAT (STAGE 2)</span>
-            <strong data-jrp-impeller-day style="font-size:0.95rem; color:#0f172a;">Day 150</strong>
-          </div>
-          <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:0.5rem 0.65rem;">
-            <span style="font-size:0.68rem; font-weight:800; color:#334155; display:block;">VOLUTE + LINER (STAGE 3)</span>
-            <strong data-jrp-volute-day style="font-size:0.95rem; color:#0f172a;">Day 180</strong>
-          </div>
-        </div>
-        <div style="display:flex; flex-wrap:wrap; gap:0.6rem; align-items:center; justify-content:space-between;">
-          <span data-jrp-policy-summary style="font-size:0.78rem; color:#334155;">Harmonic coupled replacement to minimize unplanned downtime.</span>
-          <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
-            <button
-              type="button"
-              class="btn btn-outline"
-              data-add-tray-sku={sku.id}
-              data-tray-part-code={sku.atomic_codes?.[0] || sku.id}
-              data-tray-title={sku.title_en}
-              data-tray-series={(sku as any).series || '6x4'}
-              data-tray-material={sku.default_material || 'A05'}
-              data-tray-circuit={sku.vertical || 'bombeo'}
-              data-tray-source="product_slug_stratum1"
-              style="min-height:48px; padding:0.45rem 0.85rem; font-size:0.8rem;"
-            >+ Add {sku.id} to Tray</button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-add-coupled-pair-btn
-              data-pair-primary-sku={sku.id}
-              data-pair-primary-title={sku.title_en}
-              data-pair-secondary-sku={sku.coupled_pair_sku || 'SMAT-PUMP-TB-083'}
-              data-pair-secondary-title={coupledSku ? coupledSku.title_en : (sku.coupled_pair_sku || 'SMAT-PUMP-TB-083')}
-              data-pair-series={(sku as any).series || '6x4'}
-              data-pair-material={sku.default_material || 'A05'}
-              style="min-height:48px; padding:0.45rem 0.85rem; font-size:0.8rem;"
-            >+ Add Coupled Pair to Tray</button>
-          </div>
-        </div>
+      <div id="stratum1-slug-card" data-stratum-1-instrument class="smat-jrp-slug-host">
+        <JrpReorderCore
+          lang="en"
+          mode="slug"
+          skuId={sku.id}
+          partCode={sku.atomic_codes?.[0] || sku.id}
+          title={sku.title_en}
+          series={(sku as any).series || '6x4'}
+          material={sku.default_material || 'A05'}
+          circuit={sku.vertical || 'bombeo'}
+          coupledSkuId={sku.coupled_pair_sku || 'SMAT-PUMP-TB-083'}
+          coupledTitle={coupledSku ? coupledSku.title_en : (sku.coupled_pair_sku || 'SMAT-PUMP-TB-083')}
+          reorderDays={Number(sku.reorder_window_days) || 90}
+          traySource="product_slug_stratum1"
+          showTradeIn={false}
+          showPrimaryTrayBtn={true}
+          showPairBtn={true}
+        />
       </div>
 
       <div class="smat-slug-kpi-grid">
@@ -276,7 +240,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
 
         <div>
           {hasAtomicPumpCodes && (
-            <div style="margin-bottom: 0.75rem;">
+            <div class="smat-slug-atomic-wrap">
               <h3 class="smat-slug-aside-h3">2A. Linked Atomic Part Codes (13-Part Pump BOM)</h3>
               <div class="smat-slug-chip-row">
                 {sku.atomic_codes.map((code: string) => (
@@ -295,7 +259,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
             <div>
               <strong>Recommended Coupled SKU:</strong>{' '}
               {coupledSku ? (
-                <a href={`/en/products/${coupledSku.slug_en}/`} class="smat-slug-atomic-link" style="display:inline-block; padding:0.1rem 0.45rem;">
+                <a href={`/en/products/${coupledSku.slug_en}/`} class="smat-slug-atomic-link smat-slug-atomic-link--inline">
                   {sku.coupled_pair_sku} — {coupledSku.title_en} →
                 </a>
               ) : (
@@ -306,7 +270,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
               <strong>Preventive Reorder Cycle:</strong> <span>Every {sku.reorder_window_days} operating days (Lot #{sku.kit_id || 1})</span>
             </div>
             {coupledSku && (
-              <div style="margin-top: 0.45rem;">
+              <div class="smat-slug-coupled-cta-wrap">
                 <button
                   type="button"
                   data-quick-tray-add={coupledSku.id}
@@ -316,8 +280,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
                   data-sku-material={coupledSku.default_material || 'A05'}
                   data-sku-regime={coupledSku.stock_regime || 'hay'}
                   data-sku-mass={String(coupledSku.mass_kg || 15)}
-                  class="smat-slug-atomic-link"
-                  style="cursor:pointer; font-weight:700; width:100%; justify-content:center; padding:0.35rem 0.6rem;"
+                  class="smat-slug-atomic-link smat-slug-coupled-btn"
                 >
                   + Add Synchronized Coupled Pair ({coupledSku.id}) to Tray
                 </button>
@@ -359,34 +322,13 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
         </div>
 
         {(sku.id === 'SMAT-PUMP-BRG-005M' || (Array.isArray(sku.atomic_codes) && sku.atomic_codes.includes('DAM005'))) && (
-          <div
-            data-core-tradein-widget={sku.id}
-            style="padding: 0.9rem; border-radius: 12px; background: #ecfdf5; border: 1px solid #10b981; font-size: 0.78rem; color: #064e3b;"
-          >
-            <div style="font-family: var(--font-mono, monospace); font-weight: 800; color: #064e3b; margin-bottom: 0.4rem;">
-              DAM005 CORE TRADE-IN PROGRAM (-22% CREDIT)
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.45rem;">
-              <label style="display: flex; flex-direction: column; gap: 0.2rem; font-weight: 700;">
-                <span>Used Housing Condition</span>
-                <select data-tradein-condition data-core-tradein-condition style="padding: 0.35rem 0.45rem; border: 1px solid #059669; border-radius: 6px; background: #ffffff; color: #0f172a; font-size: 0.75rem;">
-                  <option value="h7_intact" selected>Intact Crack-Free Housing (-22% • 0.78x)</option>
-                  <option value="minor_bearing_seizure">Bearing Seizure / Recoverable Bore (-12% • 0.88x)</option>
-                  <option value="cracked_housing">Cracked or Welded Housing (0% • 1.00x)</option>
-                </select>
-              </label>
-              <label style="display: flex; align-items: center; gap: 0.35rem; font-weight: 700; padding-top: 1rem;">
-                <input type="checkbox" data-tradein-not-welded data-core-tradein-toggle checked />
-                <span>Unwelded H7 Bearing Bore (ISO IT6)</span>
-              </label>
-            </div>
-            <div data-tradein-result data-core-tradein-badge style="font-family: var(--font-mono, monospace); font-weight: 800; color: #064e3b;">
-              Active: -22% Core Trade-In Credit (Factor 0.78x • RMA-CORE-DAM005-INTACT)
-            </div>
-            <div data-tradein-co2 data-core-tradein-note style="font-size: 0.72rem; color: #064e3b; margin-top: 0.2rem;">
-              Physical return at Central Warehouse: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (35 kg CO₂e saved)
-            </div>
-          </div>
+          <JrpReorderCore
+            lang="en"
+            mode="tradein"
+            skuId={sku.id}
+            showJrpCard={false}
+            showTradeIn={true}
+          />
         )}
 
         <div class="smat-slug-cta-stack">

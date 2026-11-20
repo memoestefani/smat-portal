@@ -1,0 +1,290 @@
+---
+/**
+ * SealDriveBearingCore.astro
+ * ---------------------------------------------------------------------------
+ * Núcleo Único Compartido de Sellado Centrífugo `02A/02B`, Tren Motriz V-Belt
+ * y Vida Modificada de Rodamientos ISO 281 (`D3-V51` / `SLICE-V51-16`).
+ * Expone las 10 entradas y 10 salidas de `ENGINE_SCHEMA_REGISTRY.sealDrive` sin ramificaciones condicionales
+ * ni amputaciones entre `/bombeo/{sello,skid,soporte}/` y `/cotizar/`.
+ */
+interface Props {
+  locale?: 'es' | 'en';
+  initialTab?: 'seal' | 'skid' | 'bearing';
+  showVerticalActions?: boolean;
+}
+
+const { locale = 'es', initialTab = 'skid', showVerticalActions = false } = Astro.props;
+const isEs = locale === 'es';
+const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
+---
+
+<div id="wb-drive-and-tradein-contextual-card" data-domain-root="sealDrive" data-sdb-initial-tab={initialTab} class="wb-ctx-card">
+  <div class="wb-ctx-head smat-flex-between">
+    <span id="wb-drive-frame-badge" class="badge badge-copper">
+      {isEs ? 'Estación 01–02 • Sellado 02A/02B, V-Belt & ISO 281 L₁₀ₘₕ' : 'Station 01–02 • 02A/02B Seal, V-Belt & ISO 281 L₁₀ₘₕ'}
+    </span>
+    <span data-sdb-hybrid-breakdown class="font-mono-tech smat-sdb-embed-meta">
+      {isEs ? 'Rama D Híbrida: A05 + R55' : 'Hybrid Branch D: A05 + R55'}
+    </span>
+  </div>
+
+  <!-- Navegación progresiva entre sub-estaciones (todas permanecen en DOM sin pérdida) -->
+  <div class="sdb-subtabs smat-mt-sm" role="tablist" aria-label={isEs ? 'Sub-estaciones mecánicas' : 'Mechanical sub-stations'}>
+    <button type="button" class={`sdb-tab-btn ${initialTab === 'seal' ? 'is-active' : ''}`} data-sdb-tab="seal" aria-selected={initialTab === 'seal' ? 'true' : 'false'}>
+      {isEs ? 'Sellado 02A/02B (Expeller)' : 'Sealing 02A/02B (Expeller)'}
+    </button>
+    <button type="button" class={`sdb-tab-btn ${initialTab === 'skid' ? 'is-active' : ''}`} data-sdb-tab="skid" aria-selected={initialTab === 'skid' ? 'true' : 'false'}>
+      {isEs ? 'Tren Motriz V-Belt' : 'V-Belt Kinematics'}
+    </button>
+    <button type="button" class={`sdb-tab-btn ${initialTab === 'bearing' ? 'is-active' : ''}`} data-sdb-tab="bearing" aria-selected={initialTab === 'bearing' ? 'true' : 'false'}>
+      {isEs ? 'Soporte ISO 281 & Trade-In' : 'ISO 281 Bearing & Trade-In'}
+    </button>
+  </div>
+
+  <!-- Sub-estación A: Sellado Centrífugo 02A vs Prensaestopas 02B -->
+  <div class={`sdb-panel ${initialTab === 'seal' ? '' : 'hidden'}`} data-sdb-panel="seal">
+    <div id="seal-status-out" class="smat-sdb-status-ok smat-mt-sm">
+      {isEs
+        ? 'Rama 02A Viable (Sellado Seco Expeller • 0 L/min agua • Hs/Hd = 11.4%): Margen centrífugo positivo.'
+        : 'Branch 02A Viable (Dry Expeller Seal • 0 L/min gland water • Hs/Hd = 11.4%): Positive centrifugal margin.'}
+    </div>
+    <div class="smat-stratum1-display smat-sdb-kpi-grid smat-mt-sm">
+      <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Contrapresión Expeller:' : 'Expeller Pressure:'}</strong> <span id="seal-pexp-out" data-schema-output="sealDrive.expellerCounterPressureKpa">118.4 kPa</span></div>
+      <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Presión Caja Estopas:' : 'Stuffing Box Pressure:'}</strong> <span data-schema-output="sealDrive.stuffingBoxResidualKpa"><span id="seal-pbox-out">88.8 kPa</span></span></div>
+      <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Agua de Sello Req.:' : 'Flush Water Req.:'}</strong> <span id="seal-pwater-out" data-schema-output="sealDrive.requiredGlandWaterPressureKpa">0 kPa</span></div>
+      <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Rama Recomendada:' : 'Recommended Branch:'}</strong> <span id="seal-branch-out" data-schema-output="sealDrive.recommendedStationCode">02A</span></div>
+    </div>
+    <div class="smat-inputs-2col smat-sdb-inputs-box smat-mt-sm">
+      <label class="smat-sdb-field">
+        <span>{isEs ? 'Carga Total TDH Hd (m):' : 'Total Head TDH Hd (m):'}</span>
+        <input type="number" id="seal-hd-m" data-schema-input="sealDrive.dischargeHeadM" min="5" max="110" step="1" value="28" class="smat-sdb-ctrl" />
+      </label>
+      <label class="smat-sdb-field">
+        <span>{isEs ? 'Carga Succión Hs (m):' : 'Suction Head Hs (m):'}</span>
+        <input type="number" id="seal-hs-m" data-schema-input="sealDrive.suctionHeadM" min="0" max="25" step="0.5" value="3.2" class="smat-sdb-ctrl" />
+      </label>
+      <label class="smat-sdb-field">
+        <span>Ø Expeller (mm):</span>
+        <input type="number" id="seal-exp-dia" data-schema-input="sealDrive.expellerDiaMm" min="140" max="520" step="10" value="280" class="smat-sdb-ctrl" />
+      </label>
+      <label class="smat-sdb-field">
+        <span>{isEs ? 'Velocidad Bomba (RPM):' : 'Pump Speed (RPM):'}</span>
+        <input type="number" id="seal-rpm" data-schema-input="sealDrive.pumpRpm" min="400" max="2200" step="25" value="1150" class="smat-sdb-ctrl" />
+      </label>
+      <label class="smat-sdb-field">
+        <span>{isEs ? 'Densidad Pulpa (SG_m):' : 'Slurry Density (SG_m):'}</span>
+        <input type="number" id="seal-sg" data-schema-input="sealDrive.slurrySg" min="1.05" max="2.30" step="0.02" value="1.38" class="smat-sdb-ctrl" />
+      </label>
+    </div>
+    {showVerticalActions && (
+      <div class="smat-sdb-actions">
+        <a href={`${quoteBase}?circuito=bombeo&equipo=kit_sellado&pieza=expeller_sello&seal_branch=expeller_dry&estacion=S2#rfq`} class="btn btn-primary smat-sdb-btn-tall">
+          {isEs ? 'Cotizar Sellado Calibrado →' : 'Quote Calibrated Sealing →'}
+        </a>
+        <button
+          type="button"
+          class="btn btn-outline btn-avenue-tray smat-sdb-btn-tall"
+          data-vertical-tray-btn
+          data-add-tray-sku="SMAT-SEAL-EXPELLER"
+          data-tray-part-code="E4028"
+          data-tray-title={isEs ? 'Sistema Sellado Expeller Calibrado (02A)' : 'Calibrated Expeller Seal System (02A)'}
+          data-tray-series="02A"
+          data-tray-material="A05"
+          data-tray-circuit="bombeo"
+          data-tray-source="seal_stratum1_calc"
+        >
+          {isEs ? '+ Sumar SKU a Bandeja' : '+ Add SKU to Tray'}
+        </button>
+      </div>
+    )}
+  </div>
+
+  <!-- Sub-estación B: Cinemática de Bandas V-Belt y Velocidad Periférica u₂ -->
+  <div class={`sdb-panel ${initialTab === 'skid' ? '' : 'hidden'}`} data-sdb-panel="skid">
+    <div class="skid-kinematics-calibrator__metrics smat-mt-sm">
+      <div class="kin-metric-card">
+        <span class="kin-metric-card__kicker">{isEs ? 'VELOCIDAD EN EJE BOMBA' : 'PUMP SHAFT SPEED'}</span>
+        <strong id="wb-kin-pump-rpm" class="kin-metric-card__val" data-kin-rpm data-kin-pump-rpm data-schema-output="sealDrive.pumpRpm">1001 RPM</strong>
+        <span class="kin-metric-card__sub" data-kin-ratio>{isEs ? 'Motor 1775 RPM • Relación 0.65×' : 'Motor 1775 RPM • Ratio 0.65×'}</span>
+      </div>
+      <div class="kin-metric-card">
+        <span class="kin-metric-card__kicker">{isEs ? 'VELOCIDAD PERIFÉRICA (u₂)' : 'PERIPHERAL TIP SPEED (u₂)'}</span>
+        <strong id="wb-kin-u2" class="kin-metric-card__val" data-kin-u2 data-schema-output="sealDrive.tipSpeedMs">19.9 m/s</strong>
+        <span class="kin-metric-card__sub" data-kin-u2-status>{isEs ? 'Dentro de límite elástico R55/A05' : 'Within R55/A05 elastic envelope'}</span>
+        <div class="kin-metric-card__sub smat-sdb-hybrid-note" data-kin-hybrid-note></div>
+      </div>
+      <div class="kin-metric-card">
+        <span class="kin-metric-card__kicker">{isEs ? 'CARGA RADIAL BANDAS (Fᵣ)' : 'RADIAL BELT LOAD (Fᵣ)'}</span>
+        <strong id="wb-kin-fr" class="kin-metric-card__val" data-kin-fr data-bear-fr data-schema-output="sealDrive.beltRadialLoadKn">6.71 kN</strong>
+        <span class="kin-metric-card__sub" data-kin-fr-sub data-kin-load-p>{isEs ? 'Evaluado en arreglo motriz activo' : 'Evaluated on active drive train'}</span>
+      </div>
+      <div class="kin-metric-card">
+        <span class="kin-metric-card__kicker">{isEs ? 'VIDA BASE ISO 281 (L₁₀ₕ)' : 'ISO 281 BASE LIFE (L₁₀ₕ)'}</span>
+        <strong id="wb-kin-l10h" class="kin-metric-card__val" data-kin-l10h data-bear-l10h data-schema-output="sealDrive.bearingL10Hours">42,800 h</strong>
+        <span class="kin-metric-card__sub" data-kin-l10mh>{isEs ? 'Cartucho DAM005 lubricado por baño' : 'DAM005 bath-lubricated cartridge'}</span>
+      </div>
+    </div>
+
+    <div class="smat-inputs-2col skid-kinematics-calibrator__controls">
+      <label class="kin-field">
+        <span>{isEs ? 'Arreglo de Transmisión:' : 'Drive Arrangement:'}</span>
+        <select id="wb-drive-arrangement" data-kin-arrangement data-bear-arr data-schema-input="sealDrive.arrangementCode" data-wb-circuit-calc-input>
+          <option value="CV" selected>{isEs ? 'CV — Motor Superior (Overhead)' : 'CV — Overhead Piggyback Motor'}</option>
+          <option value="ZVZ">{isEs ? 'ZVZ — Motor Trasero Elevado' : 'ZVZ — Elevated Rear Motor'}</option>
+          <option value="CRZ">{isEs ? 'CRZ — Motor Lateral en Base' : 'CRZ — Side-by-Side Base Motor'}</option>
+          <option value="DC">{isEs ? 'DC — Acoplamiento Directo (Fr = 0 kN)' : 'DC — Direct Inline Coupling (Fr = 0 kN)'}</option>
+        </select>
+      </label>
+      <label class="kin-field">
+        <span>{isEs ? 'Velocidad Motor Eléctrico (RPM):' : 'Electric Motor Speed (RPM):'}</span>
+        <select id="wb-motor-rpm" data-kin-motor-rpm data-schema-input="sealDrive.motorRpm" data-wb-circuit-calc-input>
+          <option value="1775" selected>{isEs ? '1775 RPM (4 Polos • 60 Hz)' : '1775 RPM (4-Pole • 60 Hz)'}</option>
+          <option value="1480">{isEs ? '1480 RPM (4 Polos • 50 Hz / VFD)' : '1480 RPM (4-Pole • 50 Hz / VFD)'}</option>
+          <option value="1180">{isEs ? '1180 RPM (6 Polos • 60 Hz)' : '1180 RPM (6-Pole • 60 Hz)'}</option>
+        </select>
+      </label>
+      <label class="kin-field">
+        <span>{isEs ? 'Polea Motriz Motor (mm):' : 'Driver Sheave (mm):'} <strong id="wb-val-driver-pulley" data-kin-driver-val>220 mm</strong></span>
+        <input type="range" id="wb-driver-pulley" min="120" max="380" step="10" value="220" data-kin-driver data-kin-driver-mm="true" data-schema-input="sealDrive.driverPulleyMm" data-wb-circuit-calc-input />
+      </label>
+      <label class="kin-field">
+        <span>{isEs ? 'Polea Conducida Bomba (mm):' : 'Driven Sheave (mm):'} <strong id="wb-val-driven-pulley" data-kin-driven-val>340 mm</strong></span>
+        <input type="range" id="wb-driven-pulley" min="160" max="560" step="10" value="340" data-kin-driven data-kin-driven-mm="true" data-schema-input="sealDrive.drivenPulleyMm" data-wb-circuit-calc-input />
+      </label>
+      <label class="kin-field">
+        <span>{isEs ? 'Potencia en Flecha (kW):' : 'Shaft Power (kW):'} <strong data-kin-power-val data-bear-kw-lbl>55 kW</strong></span>
+        <input type="range" id="wb-shaft-power" min="15" max="315" step="5" value="55" data-kin-power data-kin-power-kw="true" data-bear-kw data-bear-power-kw="true" data-schema-input="sealDrive.motorPowerKw" data-wb-circuit-calc-input />
+      </label>
+      <label class="kin-field">
+        <span>{isEs ? 'Diámetro Impulsor ØD₂ (mm):' : 'Impeller Diameter ØD₂ (mm):'}</span>
+        <select data-kin-impeller>
+          <option value="270">270 mm — Serie 3x2 / 4x3</option>
+          <option value="380" selected>380 mm — Serie 6x4</option>
+          <option value="510">510 mm — Serie 8x6</option>
+          <option value="640">640 mm — Serie 10x8</option>
+        </select>
+      </label>
+      <label class="kin-field">
+        <span>{isEs ? 'Capacidad Dinámica C (kN):' : 'Dynamic Bearing Capacity C (kN):'}</span>
+        <input type="number" min="60" max="450" step="5" value="145" data-kin-capacity-c data-bear-c class="smat-sdb-ctrl" />
+      </label>
+    </div>
+
+    {showVerticalActions && (
+      <div class="smat-sdb-actions">
+        <a
+          href={`${quoteBase}?circuito=bombeo&equipo=skid_bomba&transmision=CV&material=alto_cromo_cr27&u2_ms=19.92&l10h=42800#rfq`}
+          class="btn btn-primary smat-sdb-btn-tall"
+          data-kin-cta
+          data-quote-base={quoteBase}
+        >
+          {isEs ? 'Cotizar Bomba con esta Cinemática →' : 'Quote Pump with This Kinematics →'}
+        </a>
+        <button
+          type="button"
+          class="btn btn-outline btn-avenue-tray smat-sdb-btn-tall"
+          data-vertical-tray-btn
+          data-add-tray-sku="SMAT-PUMP-DRIVE-SKID"
+          data-tray-part-code="CV-6x4"
+          data-tray-title={isEs ? 'Tren Motriz Bomba CV (6x4, 55 kW)' : 'Motor-Pump Skid CV (6x4, 55 kW)'}
+          data-tray-series="6x4"
+          data-tray-material="alto_cromo_cr27"
+          data-tray-circuit="bombeo"
+          data-tray-source="skid_stratum1_calc"
+        >
+          {isEs ? '+ Bandeja Tren Motriz' : '+ Add Drive Assembly to Tray'}
+        </button>
+      </div>
+    )}
+  </div>
+
+  <!-- Sub-estación C: Vida Modificada ISO 281 L₁₀ₘₕ & Core Trade-In DAM005 -->
+  <div class={`sdb-panel ${initialTab === 'bearing' ? '' : 'hidden'}`} data-sdb-panel="bearing">
+    <div class="smat-sdb-kpi-grid smat-mt-sm">
+      <div class="smat-sdb-bear-ok">
+        <span class="font-mono-tech smat-sdb-kicker-ok">{isEs ? 'VIDA LABERINTO SMAT L₁₀ₘₕ' : 'SMAT LABYRINTH LIFE L₁₀ₘₕ'}</span>
+        <div id="wb-bear-l10mh-lab" class="smat-sdb-val-ok" data-bear-l10mh-lab data-schema-output="sealDrive.l10mhLabyrinthHours">53,500 h</div>
+        <div class="smat-sdb-sub-ok">a_ISO = 1.25×</div>
+      </div>
+      <div class="smat-sdb-bear-warn">
+        <span class="font-mono-tech smat-sdb-kicker-warn">{isEs ? 'FIELTRO CONTAMINADO L₁₀ₘₕ' : 'CONTAMINATED FELT L₁₀ₘₕ'}</span>
+        <div id="wb-bear-l10mh-contam" class="smat-sdb-val-warn" data-bear-l10mh-cont data-bear-l10mh-contam data-schema-output="sealDrive.l10mhContaminatedHours">9,416 h</div>
+        <div class="smat-sdb-sub-warn">a_ISO = 0.22×</div>
+      </div>
+      <div class="smat-sdb-bear-info">
+        <span class="font-mono-tech smat-sdb-kicker-info">{isEs ? 'BASTIDOR RECOMENDADO' : 'RECOMMENDED FRAME'}</span>
+        <div class="smat-sdb-val-info" data-bear-frame-spec>{isEs ? 'Bastidor Serie D (DAM005)' : 'Frame Series D (DAM005)'}</div>
+        <div class="smat-sdb-sub-info" data-bear-frame-limits>P_max = 110 kW • n_max = 1400 RPM</div>
+      </div>
+    </div>
+
+    <div data-core-tradein-widget="DAM005" data-lang={locale} class="smat-sdb-tradein-box smat-mt-sm">
+      <div class="smat-sdb-tradein-title">
+        {isEs
+          ? 'CANJE POR REPARABILIDAD DE NÚCLEO DAM005 (-22% / -12% REMANUFACTURA H7)'
+          : 'SMAT DAM005 CORE TRADE-IN PROGRAM (-22% / -12% H7 REMANUFACTURING)'}
+      </div>
+      <div class="smat-sdb-tradein-grid">
+        <label class="smat-sdb-tradein-lbl">
+          <span>{isEs ? 'Estado de Carcasa Usada' : 'Used Housing Condition'}</span>
+          <select data-tradein-condition data-core-tradein-condition class="smat-sdb-tradein-sel">
+            <option value="h7_intact" selected>{isEs ? 'Carcasa Intacta Sin Fisuras (-22%)' : 'Intact Crack-Free Housing (-22%)'}</option>
+            <option value="minor_bearing_seizure">{isEs ? 'Alojamiento Recuperable (-12%)' : 'Recoverable Bore (-12%)'}</option>
+            <option value="cracked_housing">{isEs ? 'Carcasa Fisurada (0%)' : 'Cracked Housing (0%)'}</option>
+          </select>
+        </label>
+        <label class="smat-sdb-tradein-chk">
+          <input type="checkbox" id="wb-core-tradein-toggle" data-tradein-not-welded data-core-tradein-toggle />
+          <span>{isEs ? 'Canje Núcleo DAM005 H7 Sin Soldadura (-22%)' : 'DAM005 Core Trade-In H7 Unwelded (-22%)'}</span>
+        </label>
+      </div>
+      <div id="wb-core-tradein-eligible" data-tradein-result data-core-tradein-badge class="smat-sdb-tradein-res">
+        {isEs ? 'Casco DAM005 Elegible (-22%/-12%)' : 'DAM005 Core Eligible (-22%/-12%)'}
+      </div>
+    </div>
+
+    {showVerticalActions && (
+      <div class="smat-sdb-actions smat-mt-sm">
+        <a href={`${quoteBase}?circuito=bombeo&equipo=kit_rodamientos&pieza=bearing_assembly&estacion=S1#rfq`} class="btn btn-primary smat-sdb-btn-tall" data-bear-cta>
+          {isEs ? 'Cotizar Bearing Assembly Calibrado →' : 'Quote Calibrated Bearing Assembly →'}
+        </a>
+      </div>
+    )}
+  </div>
+
+  <!-- Resumen transversal persistente para /cotizar/ y seguimiento Dossier -->
+  <div class="smat-sdb-summary-strip smat-mt-sm">
+    <p id="wb-drive-contextual-metrics" class="smat-sdb-embed-line">
+      {isEs ? 'Arreglo CV • n₂ = 1001 RPM • u₂ = 19.9 m/s • L₁₀ₕ = 42,800 h' : 'CV Arrangement • n₂ = 1001 RPM • u₂ = 19.9 m/s • L₁₀ₕ = 42,800 h'}
+    </p>
+    <p id="wb-drive-frame-specs" class="smat-sdb-embed-line">
+      {isEs ? 'Flecha Ø65 mm • Capacidad C ≥ 195 kN • a_ISO Laberinto 1.25×' : 'Shaft Ø65 mm • Capacity C ≥ 195 kN • a_ISO Labyrinth 1.25×'}
+    </p>
+  </div>
+</div>
+
+<script>
+  function bindSealDriveTabs() {
+    document.querySelectorAll('[data-domain-root="sealDrive"]').forEach((root) => {
+      if ((root as HTMLElement).dataset.sdbTabsBound === '1') return;
+      (root as HTMLElement).dataset.sdbTabsBound = '1';
+      const tabs = Array.from(root.querySelectorAll('[data-sdb-tab]'));
+      const panels = Array.from(root.querySelectorAll('[data-sdb-panel]'));
+      tabs.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-sdb-tab');
+          tabs.forEach((t) => {
+            const on = t.getAttribute('data-sdb-tab') === target;
+            t.classList.toggle('is-active', on);
+            t.setAttribute('aria-selected', on ? 'true' : 'false');
+          });
+          panels.forEach((p) => {
+            p.classList.toggle('hidden', p.getAttribute('data-sdb-panel') !== target);
+          });
+        });
+      });
+    });
+  }
+  bindSealDriveTabs();
+  document.addEventListener('astro:page-load', bindSealDriveTabs);
+</script>

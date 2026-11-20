@@ -8,6 +8,7 @@
  */
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import CatalogAvenuesMatrix from '../CatalogAvenuesMatrix.astro';
+import DropInVerifierCore from '../cores/DropInVerifierCore.astro';
 import atomicParts from '../../../data/atomic_parts.json';
 import rolesData from '../../../data/roles.json';
 import { PIPE_SERIES_DIAMETER_MM, PIPE_DIAMETERS_MM, WET_END_MATERIAL_MATRIX } from '../../scripts/slurryEngine.js';
@@ -38,6 +39,12 @@ const totalCatalogSkusCount = Object.values(quickByAvenue).reduce(
   (sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0),
   0,
 );
+const bombeoVertical = rolesData.verticals.find((v) => v.id === 'bombeo');
+const bombeoPowerRange = bombeoVertical?.capex?.[0]?.power_range || '30 HP a 250 HP';
+const flotationVertical = rolesData.verticals.find((v) => v.id === 'flotacion');
+const flotationPowerRange = flotationVertical?.capex?.[0]?.power_range || '15 HP a 60 HP';
+const filtrationVertical = rolesData.verticals.find((v) => v.id === 'filtracion');
+const filtrationPowerRange = filtrationVertical?.capex?.[0]?.power_range || '16 bar';
 const controlVertical = rolesData.verticals.find((v) => v.id === 'control_procesos' || v.id === 'balanzas_marcy');
 const controlProcessItems = controlVertical ? [...(controlVertical.capex || []), ...(controlVertical.opex || [])] : [];
 const enrichedAtomicParts = atomicParts.map((part) => {
@@ -300,28 +307,23 @@ const familyChips = [
           </span>
         </div>
       </div>
+
+      <details class="smat-ssot-audit-panel font-mono-tech">
+        <summary>
+          {isEs
+            ? `Auditoría de Trazabilidad (${catalogIntegrity.skuCount} SKUs • ${catalogIntegrity.coveredAtomicPartCount}/${catalogIntegrity.atomicPartCount} Piezas • ${diagramSurjectivity.coveredCount}/${diagramSurjectivity.totalKinds} CAD)`
+            : `Traceability Audit (${catalogIntegrity.skuCount} SKUs • ${catalogIntegrity.coveredAtomicPartCount}/${catalogIntegrity.atomicPartCount} Parts • ${diagramSurjectivity.coveredCount}/${diagramSurjectivity.totalKinds} CAD)`}
+        </summary>
+        <p class="smat-ssot-audit-meta">
+          {isEs
+            ? `Cobertura atómica completa: ${catalogIntegrity.coveredAtomicPartCount}/${catalogIntegrity.atomicPartCount} piezas (${bombeoPowerRange} en bombeo) • Diagramas cubiertos: ${diagramSurjectivity.coveredCount} de ${diagramSurjectivity.totalKinds} tipos base (${diagramSurjectivity.v32TotalKinds} V3.2).`
+            : `Complete atomic coverage: ${catalogIntegrity.coveredAtomicPartCount}/${catalogIntegrity.atomicPartCount} parts (${bombeoPowerRange} pumping range) • Diagrams covered: ${diagramSurjectivity.coveredCount} of ${diagramSurjectivity.totalKinds} base kinds (${diagramSurjectivity.v32TotalKinds} V3.2).`}
+        </p>
+      </details>
     </div>
 
     <div class="smat-inputs-2col">
-      <div>
-        <label class="smat-field-label" for="catalog-dropin-input-field">
-          {isEs ? 'Código de Plano / Equivalencia 1:1' : 'Drawing Code / 1:1 Drop-In Query'}
-        </label>
-        <div class="smat-cta-row compact-row">
-          <input
-            id="catalog-dropin-input-field"
-            type="text"
-            data-dropin-input
-            placeholder={isEs
-              ? 'Código o SKU (ej. E4147, D3147, DAM005, SMAT-PUMP-IMP-AH)...'
-              : 'Code or SKU (e.g. E4147, D3147, DAM005, SMAT-PUMP-IMP-AH)...'}
-            class="smat-search-input"
-          />
-          <button type="button" class="smat-btn-primary" data-dropin-btn>
-            {isEs ? 'Verificar Equivalencia →' : 'Verify Fit →'}
-          </button>
-        </div>
-      </div>
+      <DropInVerifierCore lang={lang} variant="catalog" attachVerifierAttr={false} />
 
       <div>
         <label class="smat-field-label" for="catalog-facet-search">
@@ -338,8 +340,6 @@ const familyChips = [
       </div>
     </div>
 
-    <div data-dropin-result class="smat-result-box smat-hidden-init"></div>
-
     <div class="faceted-filters-block">
       <div class="smat-chip-row smat-mt-sm" role="group" aria-label={isEs ? 'Filtro por Familia' : 'Filter by Family'}>
         {familyChips.map((chip, idx) => (
@@ -354,19 +354,24 @@ const familyChips = [
         ))}
       </div>
 
-      <div class="smat-chip-row smat-mt-sm" role="group" aria-label={isEs ? 'Filtro por Avenida Industrial' : 'Filter by Industrial Avenue'}>
-        <button type="button" class="smat-chip is-active" data-facet-avenue-btn="all" aria-pressed="true">
-          {isEs ? '7 Avenidas (Todas)' : 'All 7 Avenues'}
-        </button>
-        {avenueKeys.map((avKey) => {
-          const meta = avenueMetaMap[avKey];
-          return (
-            <button type="button" class="smat-chip" data-facet-avenue-btn={avKey} aria-pressed="false">
-              {meta.code} · {isEs ? meta.labelEs.split('(')[0].trim() : meta.labelEn.split('(')[0].trim()}
-            </button>
-          );
-        })}
-      </div>
+      <details class="smat-avenue-disclosure smat-mt-sm">
+        <summary class="smat-chip smat-avenue-disclosure-summary">
+          {isEs ? 'Filtrar por Avenida Industrial (7 Avenidas)' : 'Filter by Industrial Avenue (7 Avenues)'}
+        </summary>
+        <div class="smat-chip-row smat-mt-sm" role="group" aria-label={isEs ? 'Filtro por Avenida Industrial' : 'Filter by Industrial Avenue'}>
+          <button type="button" class="smat-chip is-active" data-facet-avenue-btn="all" aria-pressed="true">
+            {isEs ? '7 Avenidas (Todas)' : 'All 7 Avenues'}
+          </button>
+          {avenueKeys.map((avKey) => {
+            const meta = avenueMetaMap[avKey];
+            return (
+              <button type="button" class="smat-chip" data-facet-avenue-btn={avKey} aria-pressed="false">
+                {meta.code} · {isEs ? meta.labelEs.split('(')[0].trim() : meta.labelEn.split('(')[0].trim()}
+              </button>
+            );
+          })}
+        </div>
+      </details>
     </div>
   </section>
 
@@ -740,7 +745,7 @@ const familyChips = [
             : 'Complete vertical drive units (bearing pedestal, V-belt pulley, concentric air tube & alloy shaft) for Rougher, Cleaner & Scavenger cells plus agitator conditioners.'}
         </p>
         <ul class="card-specs">
-          <li><strong>{isEs ? 'Volúmenes de Celda:' : 'Cell Volumes:'}</strong> 50 ft³ (1.4 m³), 100 ft³ (2.8 m³), 200 ft³ (5.6 m³), 300 ft³ (8.5 m³).</li>
+          <li><strong>{isEs ? 'Volúmenes de Celda:' : 'Cell Volumes:'}</strong> 50 ft³ (1.4 m³), 100 ft³ (2.8 m³), 200 ft³ (5.6 m³), 300 ft³ (8.5 m³) • <strong>{flotationPowerRange}</strong>.</li>
           <li><strong>{isEs ? 'Acondicionadores:' : 'Conditioners:'}</strong> {isEs ? 'Circulación axial con difusor central y propela recubierta.' : 'Axial pulp circulation mechanisms with draft tube and coated propeller.'}</li>
           <li><strong>{isEs ? 'Aireación:' : 'Aeration:'}</strong> {isEs ? 'Auto-aspiración concéntrica o soplado a baja presión.' : 'Self-aspirating concentric column or low-pressure blower feed.'}</li>
           <li><strong>{isEs ? 'Montaje:' : 'Mounting:'}</strong> {isEs ? 'Sustitución directa sobre puente estructural existente.' : 'Direct retrofit on existing structural cell bridges.'}</li>
@@ -807,7 +812,7 @@ const familyChips = [
         </p>
         <ul class="card-specs">
           <li><strong>{isEs ? 'Dimensiones:' : 'Plate Sizes:'}</strong> 800 × 800 mm, 1000 × 1000 mm, 1250 × 1250 mm, 1500 × 1500 mm.</li>
-          <li><strong>{isEs ? 'Presión de Filtrado:' : 'Feed Pressure:'}</strong> {isEs ? 'Alimentación de pulpa hasta 16 bar.' : 'Slurry feed up to 16 bar.'}</li>
+          <li><strong>{isEs ? 'Presión de Filtrado:' : 'Feed Pressure:'}</strong> {filtrationPowerRange}</li>
           <li><strong>{isEs ? 'Cierre Hidráulico:' : 'Hydraulic Closure:'}</strong> {isEs ? 'Cilindro doble efecto (hasta 350 bar) con unidad HPU.' : 'Double-acting hydraulic cylinder (up to 350 bar) with HPU.'}</li>
           <li><strong>{isEs ? 'Operación:' : 'Operation:'}</strong> {isEs ? 'Cabezal móvil, vigas laterales reforzadas y desplazador automático.' : 'Automated plate shifter, moving follower & side beams.'}</li>
         </ul>
@@ -1275,6 +1280,7 @@ const familyChips = [
     .header-meta-block { text-align: left; }
     .catalog-edition-pill, .brand-location, .header-meta-block, .catalog-intro-banner { display: none; }
   }
+  .pump-svg-scheme .is-dim-active { fill: #1d4ed8; }
   @media print {
     .no-print { display: none !important; }
     body { background: #ffffff !important; color: #000000 !important; font-size: 10pt; }
@@ -1317,16 +1323,16 @@ const familyChips = [
       var data = seriesDims[seriesKey];
       row.addEventListener('mouseenter', function() {
         if (!data) return;
-        if (dimA) { dimA.textContent = data.a; dimA.style.fill = '#1d4ed8'; }
-        if (dimB) { dimB.textContent = data.b; dimB.style.fill = '#1d4ed8'; }
-        if (dimC) { dimC.textContent = data.c; dimC.style.fill = '#1d4ed8'; }
-        if (dimD) { dimD.textContent = data.d; dimD.style.fill = '#1d4ed8'; }
+        if (dimA) { dimA.textContent = data.a; dimA.classList.add('is-dim-active'); }
+        if (dimB) { dimB.textContent = data.b; dimB.classList.add('is-dim-active'); }
+        if (dimC) { dimC.textContent = data.c; dimC.classList.add('is-dim-active'); }
+        if (dimD) { dimD.textContent = data.d; dimD.classList.add('is-dim-active'); }
       });
       row.addEventListener('mouseleave', function() {
-        if (dimA) { dimA.textContent = defaultA; dimA.style.fill = '#0f172a'; }
-        if (dimB) { dimB.textContent = defaultB; dimB.style.fill = '#0f172a'; }
-        if (dimC) { dimC.textContent = defaultC; dimC.style.fill = '#7c2d12'; }
-        if (dimD) { dimD.textContent = defaultD; dimD.style.fill = '#1d4ed8'; }
+        if (dimA) { dimA.textContent = defaultA; dimA.classList.remove('is-dim-active'); }
+        if (dimB) { dimB.textContent = defaultB; dimB.classList.remove('is-dim-active'); }
+        if (dimC) { dimC.textContent = defaultC; dimC.classList.remove('is-dim-active'); }
+        if (dimD) { dimD.textContent = defaultD; dimD.classList.remove('is-dim-active'); }
       });
     });
   })();
@@ -1337,9 +1343,12 @@ const familyChips = [
   import { bindHomeCatalogDrawerAndDropIn } from '../../scripts/homeAndEquipmentCatalogFilter.js';
   import { bindDropInEquivalenceVerifier } from '../../scripts/catalogDropInAndJrpProjector.js';
   import { bindVendorPassportDownloadButtons } from '../../scripts/vendorPassportAndTradeInController.js';
+  import { getDomainLabel } from '../../scripts/i18nDomainLabels.js';
 
   function initCatalogIslandInstruments() {
     const lang = document.documentElement.lang === 'en' ? 'en' : 'es';
+    const rootEl = document.querySelector('.catalog-page-container');
+    if (rootEl) rootEl.setAttribute('data-domain-title', getDomainLabel('catalogFacet', 'title', lang));
     bindAtomicPartTrayButtons(document);
     bindHomeCatalogDrawerAndDropIn(document, lang);
     bindDropInEquivalenceVerifier(document, lang);

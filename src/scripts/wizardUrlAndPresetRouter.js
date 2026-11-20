@@ -226,7 +226,7 @@ export function resolveCanonicalRoleFromUrlParam(rawRole = '', rawPieza = '', ra
  * @param {Object|URLSearchParams|string} [input={}]
  */
 export function parseMarcyThreeCupUrlParams(input = {}) {
-  let getParam = (k) => null;
+  let getParam = (_k) => null;
   if (typeof input === 'string') {
     const q = input.includes('?') ? input.split('?')[1].split('#')[0] : input.replace(/^[#?]/, '');
     const sp = new URLSearchParams(q);

@@ -7,16 +7,16 @@ interface Props {
 
 const { variant = 'light', height = 36, className = '' } = Astro.props;
 const logoSrc = variant === 'dark' ? '/images/logo-smat-dark.webp' : '/images/logo-smat.webp';
+const sizeKey = height === 44 ? '44' : height === 32 ? '32' : height === 28 ? '28' : '36';
 ---
 
-<div class={`smat-logo-wrap ${variant} ${className}`} style={`height: ${height}px; display: inline-flex; align-items: center;`}>
+<div class={`smat-logo-wrap smat-logo-wrap--${sizeKey} ${variant} ${className}`}>
   <img 
     src={logoSrc} 
     alt="SMAT Minerals" 
     width="511" 
     height="155"
-    class={`smat-brand-img ${variant}`}
-    style={`height: ${height}px; width: auto; object-fit: contain; display: block;`}
+    class={`smat-brand-img smat-logo-img smat-logo-img--${sizeKey} ${variant}`}
     loading="eager"
     decoding="async"
   />

@@ -196,8 +196,8 @@ export function evaluatePumpAssemblySequence(params = {}) {
       }
     }
     if (outOfOrderStationId) {
-      collisionDetailsEs.push(`Estación fuera de secuencia axial (${outOfOrderStationId}): debe respetarse la precedencia EST-01 ➔ EST-02 ➔ EST-03 ➔ EST-04 ➔ EST-05.`);
-      collisionDetailsEn.push(`Out-of-order axial station (${outOfOrderStationId}): must follow EST-01 ➔ EST-02 ➔ EST-03 ➔ EST-04 ➔ EST-05 precedence.`);
+      collisionDetailsEs.push(`Estación fuera de secuencia axial (${outOfOrderStationId}): debe respetarse la precedencia EST-01 → EST-02 → EST-03 → EST-04 → EST-05.`);
+      collisionDetailsEn.push(`Out-of-order axial station (${outOfOrderStationId}): must follow EST-01 → EST-02 → EST-03 → EST-04 → EST-05 precedence.`);
     }
   } else if (typeof opts.sequencePreset === 'string' && opts.sequencePreset !== 'canonical') {
     if (opts.sequencePreset === 'impeller_before_rear_liner') {

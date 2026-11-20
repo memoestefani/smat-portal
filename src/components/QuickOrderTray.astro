@@ -22,7 +22,7 @@ const isEs = lang === 'es';
     aria-expanded="false"
     aria-controls="smat-qtray-drawer"
   >
-    <span>🛒 {isEs ? 'Bandeja de Requisición' : 'Requisition Tray'}</span>
+    <span>{isEs ? 'Bandeja de Requisición' : 'Requisition Tray'}</span>
     <span
       id="smat-qtray-count"
       class="smat-qtray-count-pill"
@@ -43,7 +43,7 @@ const isEs = lang === 'es';
           {isEs ? 'Bandeja Rápida de Requisición B2B' : 'Fast B2B Requisition Tray'}
         </div>
         <div id="smat-qtray-priority-badge" class="smat-qtray-priority">
-          {isEs ? '⚡ P1 · CAJA CHICA (< 25,000 MXN) / OC SAP' : '⚡ P1 · PETTY CASH (< 25,000 MXN) / SAP PO'}
+          {isEs ? 'P1 · CAJA CHICA (< 25,000 MXN) / OC SAP' : 'P1 · PETTY CASH (< 25,000 MXN) / SAP PO'}
         </div>
       </div>
       <button
@@ -52,7 +52,7 @@ const isEs = lang === 'es';
         class="smat-qtray-close-btn"
         aria-label={isEs ? 'Cerrar bandeja' : 'Close tray'}
       >
-        ✕
+        ×
       </button>
     </div>
 
@@ -63,14 +63,14 @@ const isEs = lang === 'es';
         data-qtray-lane="CAJA_CHICA_CFDI40"
         class="qtray-lane-btn is-active"
       >
-        {isEs ? '⚡ < 25k MXN Caja Chica' : '⚡ < 25k MXN Petty Cash'}
+        {isEs ? '< 25k MXN Caja Chica' : '< 25k MXN Petty Cash'}
       </button>
       <button
         type="button"
         data-qtray-lane="ORDEN_COMPRA_SAP"
         class="qtray-lane-btn"
       >
-        {isEs ? '🏢 > 25k MXN OC SAP' : '🏢 > 25k MXN SAP PO'}
+        {isEs ? '> 25k MXN OC SAP' : '> 25k MXN SAP PO'}
       </button>
     </div>
 
@@ -86,7 +86,7 @@ const isEs = lang === 'es';
     <!-- Ventana de Reorden Preventivo 5:5:4 -->
     <div class="smat-qtray-reorder-box" data-smat-invariant="INV-SMAT-SCI-03">
       <div class="smat-qtray-reorder-title">
-        {isEs ? '⏱️ Ciclo Preventivo de Reorden 5:5:4:' : '⏱️ Preventive 5:5:4 Reorder Cycle:'}
+        {isEs ? 'Ciclo Preventivo de Reorden 5:5:4:' : 'Preventive 5:5:4 Reorder Cycle:'}
       </div>
       <div id="smat-qtray-reorder-policy">
         {isEs
@@ -105,7 +105,7 @@ const isEs = lang === 'es';
           class="smat-qtray-checkbox"
         />
         <span>
-          <strong>{isEs ? '♻️ Intercambio de Casco DAM005 (-22% Core Trade-In)' : '♻️ DAM005 Bearing Cartridge Core Trade-In (-22%)'}</strong>
+          <strong>{isEs ? 'Intercambio de Casco DAM005 (-22% Core Trade-In)' : 'DAM005 Bearing Cartridge Core Trade-In (-22%)'}</strong>
           <span id="smat-qtray-core-badge" class="smat-qtray-tradein-note">
             {isEs
               ? 'Bonificación -22% al entregar tambor GGG40 en tolerancia H7 en Almacén Durango'
@@ -115,8 +115,8 @@ const isEs = lang === 'es';
       </label>
     </div>
 
-    <!-- Confirmación Interactiva Candado G5 (50% Anticipo / 50% Contra Aviso de Embarque para 🔵 SE FABRICA · D10-V36) -->
-    <div class="smat-qtray-tradein-box" style="margin-top: 0.45rem; background: #eff6ff; border-color: #bfdbfe;">
+    <!-- Confirmación Interactiva Candado G5 (50% Anticipo / 50% Contra Aviso de Embarque para SE FABRICA · D10-V36) -->
+    <div class="smat-qtray-tradein-box smat-qtray-info-note">
       <label class="smat-qtray-tradein-label">
         <input
           type="checkbox"
@@ -126,11 +126,11 @@ const isEs = lang === 'es';
           checked
         />
         <span>
-          <strong>{isEs ? '🔵 Candado G5 (50% Anticipo / 50% Contra Aviso de Embarque)' : '🔵 Gate G5 (50% Advance / 50% Upon Ready-to-Ship Notice)'}</strong>
+          <strong>{isEs ? 'Candado G5 (50% Anticipo / 50% Contra Aviso de Embarque)' : 'Gate G5 (50% Advance / 50% Upon Ready-to-Ship Notice)'}</strong>
           <span id="smat-qtray-g5-badge" class="smat-qtray-tradein-note">
             {isEs
-              ? 'Aplicable a partidas bajo fabricación programada (🔵 SE FABRICA / Placas 16 bar / Mecanismos)'
-              : 'Applies to scheduled manufacturing items (🔵 MADE TO ORDER / 16 bar Plates / Mechanisms)'}
+              ? 'Aplicable a partidas bajo fabricación programada (SE FABRICA / Placas 16 bar / Mecanismos)'
+              : 'Applies to scheduled manufacturing items (MADE TO ORDER / 16 bar Plates / Mechanisms)'}
           </span>
         </span>
       </label>
@@ -145,7 +145,7 @@ const isEs = lang === 'es';
         rel="noopener noreferrer"
         class="smat-qtray-wa-btn"
       >
-        {isEs ? '🚀 Enviar Requisición Prioritaria (WhatsApp / Correo)' : '🚀 Dispatch Priority Requisition (WhatsApp / Email)'}
+        {isEs ? 'Enviar Requisición Prioritaria (WhatsApp / Correo)' : 'Dispatch Priority Requisition (WhatsApp / Email)'}
       </a>
       <a
         id="smat-qtray-pdf-link"
@@ -153,7 +153,7 @@ const isEs = lang === 'es';
         href={isEs ? '/acuse/?reorder=1&tray=SMAT-PUMP-IMP-AH:1:PARO_DE_LINEA' : '/en/thank-you/?reorder=1&tray=SMAT-PUMP-IMP-AH:1:PARO_DE_LINEA'}
         class="smat-qtray-pdf-btn"
       >
-        {isEs ? '📄 Emitir Hoja PDF / Folio SAP' : '📄 Issue PDF Sheet / SAP Folio'}
+        {isEs ? 'Emitir Hoja PDF / Folio SAP' : 'Issue PDF Sheet / SAP Folio'}
       </a>
     </div>
   </div>
@@ -256,7 +256,7 @@ const isEs = lang === 'es';
                 <div class="smat-qtray-item-controls">
                   <button type="button" data-qtray-qty-delta="-1" data-qtray-item-id="${item.id}" data-qtray-current-qty="${item.qty}" class="smat-qtray-qty-btn" aria-label="Disminuir cantidad">−</button>
                   <button type="button" data-qtray-qty-delta="1" data-qtray-item-id="${item.id}" data-qtray-current-qty="${item.qty}" class="smat-qtray-qty-btn" aria-label="Aumentar cantidad">+</button>
-                  <button type="button" data-qtray-remove="${item.id}" class="smat-qtray-remove-btn">✕</button>
+                  <button type="button" data-qtray-remove="${item.id}" class="smat-qtray-remove-btn">×</button>
                 </div>
               </li>`
             )

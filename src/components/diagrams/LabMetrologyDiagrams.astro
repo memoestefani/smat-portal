@@ -2,10 +2,10 @@
 interface Props {
   diagram: string;
   isEs: boolean;
-  xrayWearStyle: string;
+  xrayWearClass: string;
   uid: string;
 }
-const { diagram, isEs, xrayWearStyle, uid } = Astro.props;
+const { diagram, isEs, xrayWearClass, uid } = Astro.props;
 ---
 
     {diagram === 'marcy' && (
@@ -39,7 +39,7 @@ const { diagram, isEs, xrayWearStyle, uid } = Astro.props;
           <text x="325" y="185">{isEs ? '2. VASO CALIBRADO (1000 cm³)' : '2. CALIBRATED CUP (1000 cm³)'}</text>
           <text x="340" y="205" fill="#475569">{isEs ? '• ACERO INOXIDABLE / ACRÍLICO CON REBOSE' : '• STAINLESS STEEL / ACRYLIC WITH OVERFLOW'}</text>
         </g>
-        <g data-layer="xray-wear" style={xrayWearStyle}>
+        <g data-layer="xray-wear" class={xrayWearClass}>
           <line x1="200" y1="184" x2="280" y2="184" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="4 2" />
           <text x="325" y="140" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">{isEs ? 'RAYOS X • ENRASE 1000.0 ± 0.5 CM³ Y RESORTE CALIBRADO' : 'X-RAY • 1000.0 ± 0.5 CM³ OVERFLOW WEIR & CALIBRATED SPRING'}</text>
         </g>
@@ -82,7 +82,7 @@ const { diagram, isEs, xrayWearStyle, uid } = Astro.props;
           <text x="338" y="172" fill="#7c2d12">{isEs ? '4. PLATO POROSO + PAPEL / TELA FILTRANTE' : '4. DRAINAGE PLATE + FILTER PAPER / CLOTH'}</text>
           <text x="338" y="212" fill="#475569">{isEs ? '5. BASTIDOR CON BARRAS GUÍA Y DRENAJE INFERIOR' : '5. TWIN GUIDE ROD FRAME & FILTRATE PORT'}</text>
         </g>
-        <g data-layer="xray-wear" style={xrayWearStyle}>
+        <g data-layer="xray-wear" class={xrayWearClass}>
           <rect x="174" y="82" width="112" height="4" fill="#dc2626" opacity="0.85" />
           <rect x="174" y="180" width="112" height="4" fill="#dc2626" opacity="0.85" />
           <text x="338" y="148" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">{isEs ? 'RAYOS X • SELLO ANULAR O-RING 1.52 MM (100 PSI)' : 'X-RAY • 1.52 MM O-RING SEAL GASKET (100 PSI)'}</text>
@@ -124,7 +124,7 @@ const { diagram, isEs, xrayWearStyle, uid } = Astro.props;
           <text x="330" y="170">{isEs ? '5. MALLAS ULTRA-FINAS HASTA #635 (20 MICRONES)' : '5. ULTRA-FINE MESHES DOWN TO #635 (20 MICRONS)'}</text>
           <text x="330" y="206" fill="#475569">{isEs ? '6. CAZUELA COLECTORA + TAMIZADOR MECÁNICO' : '6. RECEIVER PAN + MECHANICAL SIEVE SHAKER'}</text>
         </g>
-        <g data-layer="xray-wear" style={xrayWearStyle}>
+        <g data-layer="xray-wear" class={xrayWearClass}>
           <rect x="138" y="114" width="164" height="34" fill="none" stroke="#dc2626" stroke-width="3" />
           <text x="330" y="236" font-family="SF Mono, monospace" font-size="9.5" font-weight="800" fill="#dc2626">{isEs ? 'RAYOS X • TENSIÓN ÓPTICA ASTM E11 (#200 = 75 µM)' : 'X-RAY • ASTM E11 OPTICAL TENSION (#200 = 75 µM)'}</text>
         </g>
@@ -136,7 +136,7 @@ const { diagram, isEs, xrayWearStyle, uid } = Astro.props;
         <rect width="680" height="240" fill="#f8fafc" />
         <!-- Disco de pulverizador Cr27 -->
         <circle cx="108" cy="120" r="64" fill="#f1f5f9" stroke="#0f172a" stroke-width="2.2" />
-        <g data-layer="xray-wear" style={xrayWearStyle}>
+        <g data-layer="xray-wear" class={xrayWearClass}>
           <circle cx="108" cy="120" r="64" fill="#fee2e2" stroke="#dc2626" stroke-width="2.4" />
         </g>
         <circle cx="108" cy="120" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="2" />

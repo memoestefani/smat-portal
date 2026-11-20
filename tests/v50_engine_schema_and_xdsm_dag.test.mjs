@@ -6,9 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 import {
   TWO_SORT_PARTITION_VERSION,
-  ENGINE_SCHEMA_REGISTRY,
   listAllEngineSchemas,
-  getEngineSchema,
   listAllDeclaredDomIds,
   validateSchemaPayload,
   verifyConceptRegistryCoverage
@@ -51,7 +49,7 @@ const __dirname = path.dirname(__filename);
 const SITE_ROOT = path.resolve(__dirname, '..');
 
 test('D1-V50 Two-Sort Partition: engineSchemaRegistry.js contiene 0 HTML/eval y cubre los 11 dominios', () => {
-  assert.equal(TWO_SORT_PARTITION_VERSION, '5.0.0');
+  assert.equal(TWO_SORT_PARTITION_VERSION, '5.1.0');
   const regSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/engineSchemaRegistry.js'), 'utf8');
   assert.equal(regSrc.includes('innerHTML'), false, 'No debe contener innerHTML (Two-Sort Sigma_Markup perp Sigma_Script)');
   assert.equal(/\beval\s*\(/.test(regSrc), false, 'No debe contener eval');

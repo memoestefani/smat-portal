@@ -24,7 +24,14 @@ function setNodeTextAndAttrs(root, selector, text, attrs = {}) {
   const el = root.querySelector(selector);
   if (!el) return null;
   if (text !== undefined && text !== null) {
-    el.textContent = String(text);
+    if (el.children && el.children.length > 0) {
+      const leafSpan = el.querySelector?.('[data-schema-leaf]');
+      if (leafSpan) leafSpan.textContent = String(text);
+      else if (el.firstChild && el.firstChild.nodeType === 3) el.firstChild.textContent = `${String(text)} `;
+      else el.setAttribute?.('data-schema-display', String(text));
+    } else {
+      el.textContent = String(text);
+    }
   }
   for (const [k, v] of Object.entries(attrs)) {
     if (v !== undefined && v !== null && typeof el.setAttribute === 'function') {
@@ -126,9 +133,9 @@ export function projectPumpDriveAndHybridTelemetry(wizardRoot, payload = {}) {
     'data-hybrid-recommended': hybRec,
     'data-smat-invariant': hybridEval.invariantId || 'INV-SMAT-SCI-05'
   });
-  if (hybEl && hybEl.style) {
+  if (hybEl && hybEl.classList) {
     hybEl.classList.remove('hidden');
-    hybEl.style.display = 'block';
+    hybEl.classList.add('is-visible-block');
   }
 
   // Secuencia de Montaje e Interferencia Axial (evaluateWetEndAssemblyInterference / evaluatePumpAssemblySequence)
@@ -361,6 +368,15 @@ export function projectMetrologyAndReorderTelemetry(wizardRoot, payload = {}) {
   setNodeTextAndAttrs(wizardRoot, '#wb-ctrl-res-hoist', hoistReq ? (isEs ? 'Requiere polipasto (>=23 kg)' : 'Hoist Required (>=23 kg)') : (isEs ? 'Manual seguro' : 'Safe Manual'));
   setNodeTextAndAttrs(wizardRoot, '#wb-ctrl-res-two-person', twoPersonReq ? (isEs ? 'Asistencia 2 operadores' : 'Two-Person Assist') : (isEs ? '1 operador' : 'Single Operator'));
   setNodeTextAndAttrs(wizardRoot, '#wb-ctrl-res-rr', `n=${sieveEval.rosinRammlerUniformityN ?? sieveEval.rosinRammlerSlopeN ?? 1.08}`);
+  const firstSieve = Array.isArray(sieveEval.sieveStack) ? sieveEval.sieveStack[0] : null;
+  const rrYVal = sieveEval.rosinRammlerY ?? firstSieve?.rosinRammlerY ?? sieveEval.rosinRammlerYPrime;
+  if (rrYVal !== undefined) {
+    setNodeTextAndAttrs(wizardRoot, '#wb-ctrl-res-rry', `y=${Number(rrYVal).toFixed(4)}`);
+  }
+  const recContainer = isEs ? marcyEval.recommendedContainerEs : marcyEval.recommendedContainerEn;
+  if (recContainer) {
+    setNodeTextAndAttrs(wizardRoot, '#wb-ctrl-res-container', recContainer);
+  }
 
   setNodeTextAndAttrs(
     wizardRoot,
@@ -421,6 +437,9 @@ export function projectMetrologyAndReorderTelemetry(wizardRoot, payload = {}) {
     setNodeTextAndAttrs(wizardRoot, '#jrp-stage-2-days', `${dImp} d`);
     setNodeTextAndAttrs(wizardRoot, '#jrp-stage-3-days', `${dVol} d`);
     setNodeTextAndAttrs(wizardRoot, '#wb-jrp-window-days', `${reorderEval.reorderWindowDays ?? reorderEval.recommendedWindowDays} d`);
+    if (reorderEval.rawLifeDays !== undefined) {
+      setNodeTextAndAttrs(wizardRoot, '#wb-jrp-raw-life-days', `${reorderEval.rawLifeDays} d`);
+    }
   }
 
   setNodeTextAndAttrs(
@@ -456,26 +475,67 @@ export function projectHydraulicAltitudeAndLeadValidation(wizardRoot, payload = 
   const isEs = payload.isEs !== undefined ? payload.isEs : true;
 
   const results = simMetrics.results || simMetrics;
-  const baroKpa = altData.barometricPressureKpa ?? results.altitudeCorrection?.barometricPressureKpa ?? 75.6;
-  const altTier = altData.altitudeTier || results.altitudeTier || 'HIGH_SIERRA';
-  const altTierTxt = altData.altitudeTierText || results.altitudeTierText || (isEs ? 'Alta Montaña (Sierra Madre > 2,000 msnm)' : 'High Mountain (> 2,000 MASL)');
-  const npshWarn = Boolean(altData.npshSafeMarginWarning ?? results.npshSafeMarginWarning ?? true);
-  const kMotorAlt = simMetrics.combinedMotorAltitudeMultiplier ?? altData.combinedMotorAltitudeMultiplier ?? 1.326;
-  const patmVal = Number(altData.pAtmHeadMca ?? 10.33);
-  const deltaNpshVal = Number(altData.deltaNpshLossM ?? 0);
-  const motorDeratVal = Number(altData.motorDeratingFactor ?? 1.0);
-  const penaltyPct = Number(altData.motorSizingPenaltyPct ?? Math.round((1 / Math.max(0.5, motorDeratVal) - 1) * 1000) / 10);
+  const baroKpa = altData.barometricPressureKpa ?? results.altitudeCorrection?.barometricPressureKpa ?? 101.32;
+  const altTier = altData.altitudeTier || results.altitudeTier || 'sea_level';
+  const altTierTxt = altData.altitudeTierText || results.altitudeTierText || '';
+  const npshWarn = Boolean(altData.npshSafeMarginWarning ?? results.npshSafeMarginWarning ?? false);
+  const kMotorAlt = Number(simMetrics.combinedMotorAltitudeMultiplier ?? results.combinedMotorAltitudeMultiplier ?? altData.combinedMotorAltitudeMultiplier ?? 1.0);
+  const patmVal = Number(altData.pAtmHeadMca ?? results.pAtmHeadMca ?? 10.33);
+  const deltaNpshVal = Number(altData.deltaNpshLossM ?? results.deltaNpshLossM ?? 0);
+  const motorDeratVal = Number(altData.motorDeratingFactor ?? results.motorDeratingFactor ?? 1.0);
+  const penaltyPct = Number(simMetrics.motorSizingPenaltyPct ?? results.motorSizingPenaltyPct ?? altData.motorSizingPenaltyPct ?? Math.round((1 / Math.max(0.5, motorDeratVal) - 1) * 1000) / 10);
 
   setNodeTextAndAttrs(wizardRoot, '#metric-patm', `${patmVal.toFixed(2)} mca`);
-  setNodeTextAndAttrs(wizardRoot, '#metric-delta-npsh', `${deltaNpshVal.toFixed(2)} m`);
+  setNodeTextAndAttrs(wizardRoot, '#metric-patm-mca', `${patmVal.toFixed(2)} mca`);
+  setNodeTextAndAttrs(wizardRoot, '#metric-delta-npsh', `-${deltaNpshVal.toFixed(2)} m`);
+  setNodeTextAndAttrs(wizardRoot, '#dossier-metric-delta-npsh', `-${deltaNpshVal.toFixed(2)} m NPSHa`);
   setNodeTextAndAttrs(wizardRoot, '#metric-iec-derating', `${motorDeratVal.toFixed(3)}`);
-  setNodeTextAndAttrs(wizardRoot, '#metric-k-motor-alt', `${Number(kMotorAlt).toFixed(3)}x`);
+  setNodeTextAndAttrs(wizardRoot, '#metric-motor-iec', `${motorDeratVal.toFixed(3)}`);
+  setNodeTextAndAttrs(wizardRoot, '#metric-k-motor-alt', `${kMotorAlt.toFixed(3)}x`);
   setNodeTextAndAttrs(wizardRoot, '#metric-motor-penalty-pct', `+${penaltyPct.toFixed(1)}%`);
+
+  const smVal = results.slurrySpecificGravity ?? results.slurry_sg;
+  const cvVal = results.solidsVolumetricPercent ?? results.solids_cv;
+  const hrVal = results.headDeratingFactorHr ?? results.head_ratio;
+  const erVal = results.effDeratingFactorEr ?? results.eff_ratio_er;
+  const lifeVal = results.estimatedImpellerLifeHours ?? results.impeller_life_h;
+  const wearMult = results.wearLifeRatio ?? results.wear_life_ratio ?? optMat.wearMultiplierVsCr27;
+  const flVal = results.durandFactorFL ?? results.durand_fl;
+  const vRecVal = results.recommendedPipeVelocityMs ?? results.safe_velocity_ms;
+  const vCritRaw = results.criticalSettlingVelocityMs ?? results.criticalVelocityMs ?? results.critical_velocity_ms;
+  const vActRaw = results.actualPipeVelocityMs ?? results.actualVelocityMs ?? results.line_velocity_ms;
+
+  if (smVal !== undefined) setNodeTextAndAttrs(wizardRoot, '#metric-sm', `${Number(smVal).toFixed(2)}`);
+  if (cvVal !== undefined) setNodeTextAndAttrs(wizardRoot, '#metric-cv', `${Number(cvVal).toFixed(1)}%`);
+  if (vCritRaw !== undefined) setNodeTextAndAttrs(wizardRoot, '#metric-vc', `${Number(vCritRaw).toFixed(2)} m/s`);
+  if (vActRaw !== undefined) setNodeTextAndAttrs(wizardRoot, '#metric-vact', `${Number(vActRaw).toFixed(2)}`);
+  if (vRecVal !== undefined) setNodeTextAndAttrs(wizardRoot, '#metric-v-rec', `${Number(vRecVal).toFixed(2)} m/s`);
+  if (flVal !== undefined) setNodeTextAndAttrs(wizardRoot, '#metric-fl', `${Number(flVal).toFixed(2)}`);
+  if (hrVal !== undefined) {
+    setNodeTextAndAttrs(wizardRoot, '#metric-hr', `${Number(hrVal).toFixed(3)}`);
+    setNodeTextAndAttrs(wizardRoot, '#metric-derating-hr', `HR ${Number(hrVal).toFixed(2)}`);
+  }
+  if (erVal !== undefined) {
+    setNodeTextAndAttrs(wizardRoot, '#metric-er', `${Number(erVal).toFixed(3)}`);
+    setNodeTextAndAttrs(wizardRoot, '#metric-derating-er', `${Number(erVal).toFixed(2)}`);
+  }
+  if (lifeVal !== undefined) {
+    const lifeFormatted = Number(lifeVal).toLocaleString('en-US');
+    const multLabel = wearMult !== undefined ? ` (${Number(wearMult).toFixed(1)}× vs FG)` : '';
+    setNodeTextAndAttrs(wizardRoot, '#metric-wear-hours', `${lifeFormatted} h${multLabel}`);
+  }
+  if (wearMult !== undefined) {
+    setNodeTextAndAttrs(wizardRoot, '#metric-wear-ratio', `${Number(wearMult).toFixed(1)}×`);
+  }
+  const sobolDriver = payload.sobolDriver || results.sobolDominantDriver;
+  if (sobolDriver) {
+    setNodeTextAndAttrs(wizardRoot, '#metric-sobol-driver', String(sobolDriver));
+  }
 
   setNodeTextAndAttrs(
     wizardRoot,
     '#wb-altitude-live-strip',
-    `Patm = ${(altData.pAtmHeadMca ?? 7.66).toFixed(2)} mca (${baroKpa} kPa) | -ΔNPSHa = ${(altData.deltaNpshLossM ?? 2.67).toFixed(2)} m | IEC 60034-1 = ${(altData.motorDeratingFactor ?? 0.91).toFixed(3)} | K_motor,alt = ${kMotorAlt}x | ${altTierTxt}`,
+    `Patm = ${patmVal.toFixed(2)} mca (${baroKpa} kPa) | -ΔNPSHa = ${deltaNpshVal.toFixed(2)} m | IEC 60034-1 = ${motorDeratVal.toFixed(3)} | K_motor,alt = ${kMotorAlt.toFixed(3)}x | ${altTierTxt}`,
     {
       'data-altitude-tier': altTier,
       'data-baro-kpa': baroKpa,
@@ -483,23 +543,23 @@ export function projectHydraulicAltitudeAndLeadValidation(wizardRoot, payload = 
     }
   );
 
-  const flowCondTxt = results.flowConditionText || results.flowCondition || 'SAFE_HOMOGENEOUS';
-  const vCrit = results.criticalVelocityMS ?? results.criticalVelocityMs ?? 2.85;
-  const vAct = results.actualVelocityMS ?? 3.42;
+  const flowCondTxt = results.flowConditionText || results.flowCondition || '';
+  const vCritStr = vCritRaw !== undefined ? Number(vCritRaw).toFixed(2) : '—';
+  const vActStr = vActRaw !== undefined ? Number(vActRaw).toFixed(2) : '—';
   const matName = isEs
-    ? results.materialNameEs || optMat.nameEs || results.recommendedMaterial
-    : results.materialNameEn || optMat.nameEn || results.recommendedMaterial;
+    ? results.materialNameEs || optMat.nameEs || results.recommendedMaterial || results.recommended_alloy
+    : results.materialNameEn || optMat.nameEn || results.recommendedMaterial || results.recommended_alloy;
   const matReason = isEs
     ? results.materialReasonEs || optMat.rationaleEs || results.rationaleEs
     : results.materialReasonEn || optMat.rationaleEn || results.rationaleEn;
-  const wearMult = optMat.wearMultiplierVsCr27 ?? results.wearLifeRatio ?? 1.0;
+  const wearMultLabel = wearMult ?? 1.0;
   const isAcid = Boolean(optMat.isCorrosiveAcidic ?? false);
 
   if (matReason) {
     setNodeTextAndAttrs(
       wizardRoot,
       '#metric-rationale',
-      `${matName ? `[${matName} • ${wearMult}×] ` : ''}${matReason} (${flowCondTxt} • v=${vAct}/${vCrit} m/s${isAcid ? (isEs ? ' • Régimen Ácido' : ' • Acidic Regime') : ''})`
+      `${matName ? `[${matName} • ${wearMultLabel}×] ` : ''}${matReason} (${flowCondTxt ? `${flowCondTxt} • ` : ''}v=${vActStr}/${vCritStr} m/s${isAcid ? (isEs ? ' • Régimen Ácido' : ' • Acidic Regime') : ''})`
     );
   }
 

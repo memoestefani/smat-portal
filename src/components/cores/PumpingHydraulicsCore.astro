@@ -1,0 +1,512 @@
+---
+/**
+ * PumpingHydraulicsCore.astro
+ * ---------------------------------------------------------------------------
+ * Núcleo Único Compartido de Hidráulica de Pulpa, Altitud y Sobol (`D4-V51` / `SLICE-V51-18`):
+ * - Cero ramificaciones condicionales duales, cero estilos inline, cero emojis.
+ * - Expone las 10 entradas y 17 salidas canónicas de `ENGINE_SCHEMA_REGISTRY.pumping`
+ *   para `/bombeo/`, `/en/pumping/`, `/cotizar/` y `/en/quote/`.
+ * - Sin controles de formulario duplicados heredados.
+ */
+import {
+  SLURRY_PRESETS,
+  MECHANICAL_DIAGNOSTICS,
+  calculateSlurryMetrics,
+  calculateAltitudeCorrection,
+} from '../../scripts/slurryEngine.js';
+
+interface Props {
+  locale?: 'es' | 'en';
+  showPipeAndSymptom?: boolean;
+  showTcoBlock?: boolean;
+  panelClass?: string;
+}
+
+const {
+  locale = 'es',
+  showPipeAndSymptom = true,
+  showTcoBlock = true,
+  panelClass = '',
+} = Astro.props;
+
+const isEs = locale === 'es';
+const mechDiagnosticsList = Object.values(MECHANICAL_DIAGNOSTICS);
+const defaultSimMetrics = calculateSlurryMetrics({
+  flowM3H: 180,
+  solidsWeightPercent: 45,
+  particleSizeD80Microns: 180,
+  altitudeM: 2400,
+});
+const defaultAltData = calculateAltitudeCorrection(2400);
+---
+
+<div
+  id="wb-step2-durand-controls-wrap"
+  data-domain-root="pumping"
+  data-schema-version="5.1.0"
+  data-presets={JSON.stringify(SLURRY_PRESETS)}
+  class={`smat-core-shell smat-pumping-core ${panelClass}`.trim()}
+>
+  <div class="sim-quick-summary-bar" id="sim-quick-summary-bar" aria-live="polite">
+    <span class="quick-metric-chip">
+      <small>Vc:</small>
+      <strong id="quick-vc" class="pro-tabular-nums">{defaultSimMetrics.results.criticalSettlingVelocityMs} m/s</strong>
+    </span>
+    <span class="quick-metric-chip">
+      <small>Sm/Cv:</small>
+      <strong id="quick-sm-cv" class="pro-tabular-nums">
+        {defaultSimMetrics.results.slurrySpecificGravity.toFixed(2)} kg/L ({defaultSimMetrics.results.solidsVolumetricPercent}% Cv)
+      </strong>
+    </span>
+    <span class="quick-metric-chip">
+      <small>HR/IEC:</small>
+      <strong id="quick-hr-derating" class="pro-tabular-nums">
+        HR {defaultSimMetrics.results.headDeratingFactorHr.toFixed(2)} • Motor {(defaultAltData.motorDeratingFactor * 100).toFixed(0)}%
+      </strong>
+    </span>
+    <span class="quick-metric-chip quick-metric-highlight">
+      <small>{isEs ? 'Sugerencia:' : 'Dictated:'}</small>
+      <strong id="quick-alloy-ratio" class="pro-tabular-nums">
+        {defaultSimMetrics.results.recommendedMaterial} ({defaultSimMetrics.results.wearLifeRatio}×)
+      </strong>
+    </span>
+  </div>
+
+  <!-- Presets operativos frecuentes (Nivel 1) -->
+  <div class="presets-section">
+    <span class="presets-label">{isEs ? 'PRESETS DE OPERACIÓN FRECUENTE:' : 'COMMON MINING PRESETS:'}</span>
+    <div class="preset-chips-grid">
+      <button type="button" class="preset-chip active" data-preset="sag_primary">
+        <span class="p-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </span>
+        <div class="p-text">
+          <strong>{isEs ? 'Molienda SAG' : 'SAG Grinding'}</strong>
+          <small>{isEs ? '28% Sólidos • A05' : '28% Solids • A05'}</small>
+        </div>
+      </button>
+      <button type="button" class="preset-chip" data-preset="flotation_rougher">
+        <span class="p-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2v7.31L4.65 18.5A2 2 0 0 0 6.36 21h11.28a2 2 0 0 0 1.71-2.5L14 9.31V2"/><line x1="8.5" x2="15.5" y1="2" y2="2"/></svg>
+        </span>
+        <div class="p-text">
+          <strong>{isEs ? 'Flotación Rougher' : 'Rougher Flotation'}</strong>
+          <small>{isEs ? '18% Sólidos • Caucho' : '18% Solids • Rubber'}</small>
+        </div>
+      </button>
+      <button type="button" class="preset-chip" data-preset="tailings_thickened">
+        <span class="p-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
+        </span>
+        <div class="p-text">
+          <strong>{isEs ? 'Jales Espesados' : 'Thickened Tailings'}</strong>
+          <small>{isEs ? '55% Sólidos • A05' : '55% Solids • A05'}</small>
+        </div>
+      </button>
+      <button type="button" class="preset-chip" data-preset="emergency_6x4">
+        <span class="p-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+        </span>
+        <div class="p-text">
+          <strong>{isEs ? 'Kit Paro Crítico 6x4' : 'Critical Spares 6x4'}</strong>
+          <small>{isEs ? '32% Sólidos • Despacho Programado' : '32% Solids • Scheduled Dispatch'}</small>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Nivel 1 Visible: Variables Primarias de Sobol -->
+  <div class="sliders-wrap">
+    {showPipeAndSymptom && (
+      <div class="slider-group">
+        <label class="smat-field-label" for="wb-pipe-size">
+          {isEs ? 'Diámetro de Tubería de la Línea:' : 'Process Line Pipe Diameter:'}
+        </label>
+        <select
+          id="wb-pipe-size"
+          name="pipe_size"
+          class="wb-select"
+          data-wb-bind="pipe_size"
+          data-schema-input="pumping.pipeSeries"
+        >
+          <option value="1.5x1">{isEs ? 'Serie 1.5"x1" (D=40 mm — Muestreo / Espuma)' : '1.5"x1" Series (D=40 mm — Sampling / Froth)'}</option>
+          <option value="2x1.5">{isEs ? 'Serie 2"x1.5" (D=50 mm — Reactivos / Lab)' : '2"x1.5" Series (D=50 mm — Reagents / Lab)'}</option>
+          <option value="3x2">{isEs ? 'Serie 3"x2" (D=80 mm — Flotación / Concentrados)' : '3"x2" Series (D=80 mm — Flotation / Concentrates)'}</option>
+          <option value="4x3">{isEs ? 'Serie 4"x3" (D=100 mm — Remolienda)' : '4"x3" Series (D=100 mm — Regrind)'}</option>
+          <option value="6x4" selected>{isEs ? 'Serie 6"x4" (D=150 mm — Línea Principal)' : '6"x4" Series (D=150 mm — Main Header)'}</option>
+          <option value="8x6">{isEs ? 'Serie 8"x6" (D=200 mm — Gran Capacidad / Relaves)' : '8"x6" Series (D=200 mm — High Capacity / Tailings)'}</option>
+          <option value="10x8">{isEs ? 'Serie 10"x8" (D=250 mm — Alto Caudal / Ciclones)' : '10"x8" Series (D=250 mm — High Flow / Cyclones)'}</option>
+          <option value="12x10">{isEs ? 'Serie 12"x10" (D=300 mm — Descarga Molino SAG)' : '12"x10" Series (D=300 mm — SAG Mill Discharge)'}</option>
+          <option value="14x12">{isEs ? 'Serie 14"x12" (D=350 mm — Mega-Concentradora)' : '14"x12" Series (D=350 mm — Mega-Concentrator)'}</option>
+        </select>
+      </div>
+    )}
+
+    <div class="slider-group">
+      <div class="slider-label-row">
+        <span>{isEs ? 'Caudal de Pulpa (Q):' : 'Slurry Flow Rate (Q):'}</span>
+        <strong class="slider-value pro-tabular-nums" id="val-flow">180 m³/h</strong>
+      </div>
+      <input
+        type="range"
+        id="slider-flow"
+        data-schema-input="pumping.flowM3H"
+        min="10"
+        max="3000"
+        step="10"
+        value="180"
+        class="wb-slider"
+      />
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-label-row">
+        <span>{isEs ? 'Concentración de Sólidos (% Cp):' : 'Solids Concentration (% Cp):'}</span>
+        <strong class="slider-value pro-tabular-nums" id="val-solids">45%</strong>
+      </div>
+      <input
+        type="range"
+        id="slider-solids"
+        data-schema-input="pumping.solidsWeightPercent"
+        min="5"
+        max="75"
+        step="1"
+        value="45"
+        class="wb-slider"
+      />
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-label-row">
+        <span>{isEs ? 'Tamaño de Partícula (d80):' : 'Particle Size (d80):'}</span>
+        <strong class="slider-value pro-tabular-nums" id="val-d80">180 µm</strong>
+      </div>
+      <input
+        type="range"
+        id="slider-d80"
+        data-schema-input="pumping.particleSizeD80Microns"
+        min="20"
+        max="2000"
+        step="5"
+        value="180"
+        class="wb-slider"
+      />
+    </div>
+
+    <div class="altitude-group smat-mt-sm">
+      <div class="slider-label-row">
+        <span>{isEs ? 'Altitud Operativa de Mina (msnm):' : 'Mine Operating Altitude (MASL):'}</span>
+        <strong class="slider-value pro-tabular-nums" id="val-altitude">2,400 msnm</strong>
+      </div>
+      <div class="altitude-chips-grid" id="wb-altitude-selector">
+        <button type="button" class="alt-chip" data-alt="0" data-wb-altitude-btn="0">
+          <span>0 m</span><small>{isEs ? 'Costa' : 'Coast'}</small>
+        </button>
+        <button type="button" class="alt-chip" data-alt="1500" data-wb-altitude-btn="1500">
+          <span>1,500 m</span><small>{isEs ? 'Meseta' : 'Plateau'}</small>
+        </button>
+        <button type="button" class="alt-chip active" data-alt="2400" data-wb-altitude-btn="2400">
+          <span>2,400 m</span><small>{isEs ? 'Sierra' : 'Sierra'}</small>
+        </button>
+      </div>
+      <div class="smat-mt-sm">
+        <label for="wb-altitude-input" class="smat-field-label">
+          {isEs ? 'Altitud Continua Libre (0 – 5,000 msnm):' : 'Free Continuous Altitude (0 – 5,000 MASL):'}
+        </label>
+        <input
+          type="number"
+          id="wb-altitude-input"
+          data-schema-input="pumping.altitudeM"
+          min="0"
+          max="5000"
+          step="50"
+          value="2400"
+          class="wb-input font-mono-tech"
+        />
+      </div>
+      <small class="altitude-npsh-hint" id="altitude-npsh-hint">
+        {isEs
+          ? 'Patm = 7.66 mca. Margen NPSHa ajustado para prevenir cavitación en altura (Sierra Madre).'
+          : 'Patm = 7.66 mca. Adjusted NPSHa margin to prevent altitude cavitation.'}
+      </small>
+      <div id="wb-altitude-live-strip" data-testid="wb-altitude-live-strip" class="font-mono-tech smat-altitude-strip">
+        Patm = {defaultAltData.pAtmHeadMca.toFixed(2)} mca | -ΔNPSHa = {defaultAltData.deltaNpshLossM.toFixed(2)} m | IEC 60034-1 = {defaultAltData.motorDeratingFactor.toFixed(3)} | K_motor,alt = {defaultSimMetrics.combinedMotorAltitudeMultiplier}x
+      </div>
+      <div class="font-mono-tech smat-altitude-metrics-row">
+        <span>Patm: <strong id="metric-patm" data-schema-output="pumping.pAtmHeadMca">{defaultAltData.pAtmHeadMca.toFixed(2)} mca</strong></span>
+        <span>IEC: <strong id="metric-iec-derating" data-schema-output="pumping.motorDeratingFactor">{defaultAltData.motorDeratingFactor.toFixed(3)}</strong></span>
+        <span>K_alt: <strong id="metric-patm-kmotor-inline" data-schema-output="pumping.combinedMotorAltitudeMultiplier">{defaultSimMetrics.combinedMotorAltitudeMultiplier}x</strong></span>
+        <span>Penalty: <strong id="metric-motor-penalty-pct" data-schema-output="pumping.motorSizingPenaltyPct">+{defaultSimMetrics.motorSizingPenaltyPct ?? 13.6}%</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nivel 2 Acordeón: Gravedad Específica, pH, Temperatura, Brida Ciega y Síntoma -->
+  <details class="wb-progressive-drawer smat-mt-sm" id="pumping-tier2-params">
+    <summary class="wb-progressive-summary">
+      <span>{isEs ? 'Calibración Secundaria de Pulpa: Gravedad Ss, pH, Temperatura y Brida' : 'Secondary Slurry Calibration: Ore SG (Ss), pH, Temp & Flange Check'}</span>
+      <span class="wb-step1-more-arrow">▾</span>
+    </summary>
+    <div class="wb-progressive-body">
+      <div class="slider-group">
+        <div class="slider-label-row">
+          <span>{isEs ? 'Gravedad Específica del Mineral (Ss):' : 'Ore Specific Gravity (Ss):'}</span>
+          <strong class="slider-value pro-tabular-nums" id="val-sg">2.70</strong>
+        </div>
+        <input
+          type="range"
+          id="slider-sg"
+          min="1.5"
+          max="5.5"
+          step="0.1"
+          value="2.7"
+          class="wb-slider"
+          data-wb-bind="sg"
+          data-schema-input="pumping.solidsSpecificGravity"
+        />
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-label-row">
+          <span>{isEs ? 'Acidez / Alcalinidad de Pulpa (pH):' : 'Slurry Acidity / Alkalinity (pH):'}</span>
+          <strong class="slider-value pro-tabular-nums" id="val-ph" data-wb-field="pulpPh">pH 7.5</strong>
+        </div>
+        <input
+          type="range"
+          id="slider-ph"
+          min="1.0"
+          max="14.0"
+          step="0.5"
+          value="7.5"
+          class="wb-slider"
+          data-wb-bind="ph"
+          data-schema-input="pumping.pH"
+        />
+      </div>
+
+      <div class="smat-inputs-2col smat-mt-sm">
+        <div class="form-group">
+          <label for="wb-temp-c" class="smat-field-label">
+            {isEs ? 'Temperatura Pulpa (°C):' : 'Slurry Temp (°C):'}
+          </label>
+          <input
+            type="number"
+            id="wb-temp-c"
+            data-schema-input="pumping.tempC"
+            min="0"
+            max="140"
+            step="1"
+            value="35"
+            class="wb-input font-mono-tech"
+          />
+        </div>
+        <label class="smat-checkbox-inline-row">
+          <input type="checkbox" id="wb-strict-blind-check" data-schema-input="pumping.strictBlindCheck" />
+          <span>{isEs ? 'Cotejo Estricto Sin Tolerancia de Brida Ciega' : 'Strict Zero-Tolerance Blind Flange Check'}</span>
+        </label>
+      </div>
+
+      {showPipeAndSymptom && (
+        <div class="form-group smat-mt-sm">
+          <span class="smat-field-label" id="core-stress-chips-label">
+            {isEs ? 'Condición de Operación / Síntoma de Desgaste:' : 'Operating Condition / Field Wear Symptom:'}
+          </span>
+          <div class="stress-chips-grid" role="group" aria-labelledby="core-stress-chips-label">
+            <button type="button" class="stress-chip chip-ghost" data-symptom="roca_dura" data-confirmed="false" aria-pressed="false">
+              [ {isEs ? 'ROCA DURA' : 'HARD ROCK'} ]
+            </button>
+            <button type="button" class="stress-chip" data-symptom="acido_quimica" data-confirmed="false" aria-pressed="false">
+              [ {isEs ? 'ÁCIDO / QUÍMICA' : 'ACID SLURRY'} ]
+            </button>
+            <button type="button" class="stress-chip" data-symptom="arena_fina" data-confirmed="false" aria-pressed="false">
+              [ {isEs ? 'ARENA FINA' : 'FINE SAND'} ]
+            </button>
+            <button type="button" class="stress-chip" data-symptom="fuga_sello" data-confirmed="false" aria-pressed="false">
+              [ {isEs ? 'FUGA EN SELLO' : 'SEAL LEAKAGE'} ]
+            </button>
+            <button type="button" class="stress-chip" data-symptom="mixta_duda" data-confirmed="false" aria-pressed="false">
+              [ {isEs ? 'PULPA MIXTA' : 'MIXED PULP'} ]
+            </button>
+          </div>
+          <input
+            type="hidden"
+            name="stress_symptom"
+            id="wb-stress-symptom"
+            data-schema-input="pumping.stressSymptom"
+            value="roca_dura"
+          />
+        </div>
+      )}
+    </div>
+  </details>
+
+  <!-- Caja de Salidas Hidráulicas Canónicas (Nodos Hojas Separados ISO 80000-1) -->
+  <div class="sim-output-box">
+    <div class="sim-metric">
+      <span class="sim-metric-label">{isEs ? 'Velocidad Crítica (Vc / F_L):' : 'Critical Velocity (Vc / F_L):'}</span>
+      <strong class="sim-metric-val pro-tabular-nums">
+        <span id="metric-vc" data-wb-field="criticalSettlingVelocityMs" data-schema-output="pumping.criticalVelocityMs">
+          {defaultSimMetrics.results.criticalSettlingVelocityMs} m/s
+        </span>
+        {' '}(F_L{' '}
+        <span id="metric-fl" data-wb-field="durandFactorFL" data-schema-output="pumping.durandFactorFL">
+          {defaultSimMetrics.results.durandFactorFL}
+        </span>)
+      </strong>
+    </div>
+    <div class="sim-metric">
+      <span class="sim-metric-label">{isEs ? 'Velocidad Real vs 1.25 Vc:' : 'Actual vs 1.25 Vc:'}</span>
+      <strong class="sim-metric-val pro-tabular-nums" id="metric-v-actual">
+        <span id="metric-vact" data-schema-output="pumping.actualPipeVelocityMs">
+          {defaultSimMetrics.results.actualPipeVelocityMs}
+        </span>
+        {' '}/{' '}
+        <span id="metric-v-rec" data-wb-field="recommendedPipeVelocityMs" data-schema-output="pumping.recommendedPipeVelocityMs">
+          {defaultSimMetrics.results.recommendedPipeVelocityMs} m/s
+        </span>
+      </strong>
+    </div>
+    <div class="sim-metric">
+      <span class="sim-metric-label">{isEs ? 'Densidad Pulpa (Sm / Cv):' : 'Slurry Density (Sm / Cv):'}</span>
+      <strong class="sim-metric-val pro-tabular-nums" id="metric-sm-cv">
+        <span id="metric-sm" data-schema-output="pumping.slurrySpecificGravity">
+          {defaultSimMetrics.results.slurrySpecificGravity.toFixed(2)}
+        </span>{' '}
+        kg/L (<span id="metric-cv" data-wb-field="solidsVolumetricPercent" data-schema-output="pumping.solidsVolumetricPercent">
+          {defaultSimMetrics.results.solidsVolumetricPercent}%
+        </span> Cv)
+      </strong>
+    </div>
+    <div class="sim-metric">
+      <span class="sim-metric-label">{isEs ? 'Derating Cave (HR / ER):' : 'Cave Derating (HR / ER):'}</span>
+      <strong class="sim-metric-val pro-tabular-nums">
+        <span id="metric-derating-hr" data-schema-output="pumping.headDeratingFactorHr">
+          HR {defaultSimMetrics.results.headDeratingFactorHr.toFixed(2)}
+        </span>
+        {' '}• ER{' '}
+        <span id="metric-derating-er" data-schema-output="pumping.effDeratingFactorEr">
+          {defaultSimMetrics.results.effDeratingFactorEr.toFixed(2)}
+        </span>
+      </strong>
+    </div>
+    <div class="sim-metric">
+      <span class="sim-metric-label">{isEs ? 'Pérdida NPSHa Altitud:' : 'Altitude NPSHa Loss:'}</span>
+      <strong class="sim-metric-val pro-tabular-nums" id="metric-delta-npsh" data-schema-output="pumping.deltaNpshLossM">
+        -{defaultAltData.deltaNpshLossM.toFixed(2)} m
+      </strong>
+    </div>
+    <div class="sim-metric">
+      <span class="sim-metric-label">{isEs ? 'Material Recomendado:' : 'Recommended Alloy:'}</span>
+      <strong class="sim-metric-val highlight" id="metric-material">High Chrome A05 (&gt;650 HB)</strong>
+    </div>
+    <div class="sim-metric">
+      <span class="sim-metric-label">{isEs ? 'Vida Útil Estimada:' : 'Estimated Life:'}</span>
+      <strong class="sim-metric-val pro-tabular-nums">
+        <span id="metric-life" data-schema-output="pumping.estimatedImpellerLifeHours">
+          ~{defaultSimMetrics.results.estimatedImpellerLifeHours} h
+        </span>
+        {' '}(<span id="metric-wear-ratio" data-schema-output="pumping.wearLifeRatio">
+          {defaultSimMetrics.results.wearLifeRatio}×
+        </span>)
+      </strong>
+    </div>
+    <div class="sim-metric">
+      <span class="sim-metric-label">{isEs ? 'Factor Sobol Dominante (S₁):' : 'Dominant Sobol Driver (S₁):'}</span>
+      <strong class="sim-metric-val pro-tabular-nums" id="metric-sobol-driver" data-schema-output="pumping.sobolDominantDriver">
+        {isEs ? 'Caudal de Pulpa Q' : 'Slurry Flow Rate Q'}
+      </strong>
+    </div>
+    <div class="sim-metric">
+      <span class="sim-metric-label">{isEs ? 'Límite Físico Activo:' : 'Active Trust Boundary:'}</span>
+      <strong class="sim-metric-val pro-tabular-nums" data-schema-output="pumping.activeTrustBoundaryId">NONE</strong>
+    </div>
+  </div>
+
+  <div class="sim-rationale-banner" id="metric-rationale">
+    {isEs ? defaultSimMetrics.results.rationaleEs : defaultSimMetrics.results.rationaleEn}
+  </div>
+
+  <div class="flow-regime-bar-wrap">
+    <span class="regime-label">
+      {isEs ? 'Semáforo de Transporte Hidráulico (Durand):' : 'Hydraulic Transport Regime (Durand):'}
+    </span>
+    <div class="regime-status-bar" id="regime-status-bar">
+      <span class="regime-pill safe" id="regime-pill">
+        <span class="pulsing-dot pulsing-dot-green"></span>
+        {isEs ? 'Régimen Seguro / Flujo Homogéneo (V > 1.25 Vc)' : 'Safe Regime / Homogeneous Flow (V > 1.25 Vc)'}
+      </span>
+      <small class="regime-detail" id="regime-detail">
+        {isEs
+          ? `Velocidad recomendada: >${defaultSimMetrics.results.recommendedPipeVelocityMs} m/s (Patm ${(defaultAltData as any).pAtmHeadMca} mca)`
+          : `Recommended velocity: >${defaultSimMetrics.results.recommendedPipeVelocityMs} m/s (Patm ${(defaultAltData as any).pAtmHeadMca} mca)`}
+      </small>
+    </div>
+  </div>
+
+  {showTcoBlock && (
+    <>
+      <div class="mech-diagnostics-inline-box" id="mech-diagnostics-inline">
+        <span class="regime-label">
+          {isEs ? 'Guía Rápida de Síntomas Mecánicos y Correctivos:' : 'Quick Mechanical Symptom & Action Guide:'}
+        </span>
+        <div class="mech-diag-mini-grid">
+          {mechDiagnosticsList.map((diag) => (
+            <div class="mech-diag-mini-item" data-diag-id={diag.id} data-diag-role={diag.recommendedRole}>
+              <strong>{isEs ? diag.symptomEs : diag.symptomEn}</strong>
+              <small>{isEs ? diag.actionEs : diag.actionEn}</small>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="tco-integrated-card" id="tco-accordion">
+        <div class="tco-integrated-header">
+          <span class="tco-integrated-badge font-mono-tech">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="smat-inline-svg-icon"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
+            {isEs ? 'ANÁLISIS DE COSTO DE PARO Y AHORRO EN TURNO' : 'SHUTDOWN COST & SHIFT SAVINGS ANALYSIS'}
+          </span>
+          <h4 class="tco-integrated-title">
+            {isEs ? 'Horas de Molienda Protegidas vs Paro No Programado' : 'Protected Milling Hours vs Unscheduled Shutdown'}
+          </h4>
+        </div>
+        <div class="tco-body">
+          <div class="form-group">
+            <div class="slider-label-row">
+              <span>{isEs ? 'Horas Estimadas de Paro Evitadas con Stock Local:' : 'Estimated Downtime Hours Prevented with Local Stock:'}</span>
+              <strong class="slider-value pro-tabular-nums" id="val-downtime">4 hrs</strong>
+            </div>
+            <input type="range" id="slider-downtime" min="1" max="24" step="1" value="4" class="wb-slider" />
+          </div>
+          <div class="tco-output-box">
+            <div class="tco-metric-row">
+              <span>{isEs ? 'Mineral / Sólidos en Riesgo por Paro:' : 'Ore / Solids at Risk per Downtime Event:'}</span>
+              <strong class="tco-metric-val pro-tabular-nums" id="tco-tonnage-val">~475 ton</strong>
+            </div>
+            <div class="tco-alloy-row">
+              <span class="tco-alloy-label">
+                {isEs ? 'Comparativa de Frecuencia de Mantenimiento:' : 'Maintenance Frequency Comparison:'}
+              </span>
+              <div class="tco-alloy-toggle-wrap" id="tco-alloy-toggle">
+                <button type="button" class="tco-alloy-btn active" id="tco-alloy-a05" data-alloy="A05">High Chrome A05 (&gt;650 HB)</button>
+                <button type="button" class="tco-alloy-btn" id="tco-alloy-std" data-alloy="STD">{isEs ? 'Fundición Convencional' : 'Standard Iron'}</button>
+              </div>
+              <div class="tco-savings-note" id="tco-savings-box">
+                <span id="tco-savings-val">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="smat-inline-svg-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  {isEs
+                    ? 'Aleación A05 (>650 HB) proyecta ~2,400 hrs de vida útil, evitando hasta ~7 paros al año frente a fundición estándar.'
+                    : 'A05 Alloy (>650 HB) projects ~2,400 hrs wear life, avoiding up to ~7 unscheduled shutdowns/yr vs standard iron.'}
+                </span>
+              </div>
+            </div>
+            <small class="tco-note">
+              {isEs
+                ? 'Cálculo de caudal y concentración de sólidos. Contar con refaccionamiento verificado en Durango evita paros de línea y pérdidas en molienda.'
+                : 'Slurry flow and solids concentration calculation. Having verified spares in Durango prevents line shutdowns and milling losses.'}
+            </small>
+          </div>
+        </div>
+      </div>
+    </>
+  )}
+</div>

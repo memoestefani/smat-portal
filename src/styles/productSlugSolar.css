@@ -609,3 +609,244 @@
     margin-bottom: 0.45rem;
   }
 }
+
+/* ==========================================================================
+   V5.1 Shared JrpReorderCore + Slug Coupled Pair & Core Trade-In Classes
+   ========================================================================== */
+.smat-jrp-slug-host {
+  margin: 0.5rem 0 0.75rem;
+}
+
+.smat-jrp-core {
+  margin: 0.5rem 0 0.75rem;
+  padding: 0.9rem 1rem;
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-left: 4px solid #0c4a6e;
+  border-radius: 8px;
+}
+
+.smat-jrp-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.smat-jrp-title {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #0c4a6e;
+}
+
+.smat-jrp-tele {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.smat-jrp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.55rem;
+  margin-bottom: 0.6rem;
+}
+
+.smat-jrp-milestone {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0.5rem 0.65rem;
+}
+
+.smat-jrp-lbl {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #334155;
+}
+
+.smat-jrp-val {
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.smat-jrp-window-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.76rem;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.smat-jrp-window-val {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #064e3b;
+}
+
+.smat-jrp-sev {
+  font-size: 0.75rem;
+  color: #334155;
+}
+
+.smat-jrp-controls {
+  margin-top: 0.45rem;
+  gap: 0.55rem;
+}
+
+.smat-jrp-crit-row {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.smat-jrp-crit-lbl {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.smat-jrp-crit-btn {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #94a3b8;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 48px;
+}
+
+.smat-jrp-crit-btn.is-active,
+.smat-jrp-crit-btn.is-selected {
+  border-color: #0c4a6e;
+  background: #0c4a6e;
+  color: #ffffff;
+}
+
+.smat-jrp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.smat-jrp-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.65rem;
+}
+
+.smat-jrp-sum {
+  font-size: 0.78rem;
+  color: #334155;
+}
+
+.smat-jrp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.smat-jrp-btn {
+  min-height: 48px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.8rem;
+}
+
+.smat-slug-atomic-wrap {
+  margin-bottom: 0.75rem;
+}
+
+.smat-slug-atomic-link--inline {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+}
+
+.smat-slug-coupled-cta-wrap {
+  margin-top: 0.45rem;
+}
+
+.smat-slug-coupled-btn {
+  cursor: pointer;
+  font-weight: 700;
+  width: 100%;
+  justify-content: center;
+  padding: 0.35rem 0.6rem;
+  min-height: 48px;
+}
+
+.smat-tradein-card {
+  padding: 0.9rem;
+  border-radius: 12px;
+  background: #ecfdf5;
+  border: 1px solid #10b981;
+  font-size: 0.78rem;
+  color: #064e3b;
+}
+
+.smat-tradein-title {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-weight: 800;
+  color: #064e3b;
+  margin-bottom: 0.4rem;
+}
+
+.smat-tradein-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.smat-tradein-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-weight: 700;
+}
+
+.smat-tradein-select {
+  padding: 0.35rem 0.45rem;
+  border: 1px solid #059669;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 0.75rem;
+  min-height: 48px;
+}
+
+.smat-tradein-check {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 700;
+  padding-top: 1rem;
+}
+
+.smat-tradein-result {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-weight: 800;
+  color: #064e3b;
+}
+
+.smat-tradein-co2 {
+  font-size: 0.72rem;
+  color: #064e3b;
+  margin-top: 0.2rem;
+}

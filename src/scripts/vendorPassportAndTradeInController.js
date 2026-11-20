@@ -184,7 +184,7 @@ export function buildSapAnexo22ComplianceSummary(params = {}) {
  * @param {any} [companyMeta={}]
  * @returns {{ filename: string, mimeType: string, content: string }}
  */
-export function triggerVendorPassportDownload(kind = 'json', companyMeta = {}) {
+function triggerVendorPassportDownload(kind = 'json', companyMeta = {}) {
   const isVcf = kind === 'vcf';
   const content = isVcf
     ? buildSmatVendorVcardString(companyMeta)
@@ -203,7 +203,7 @@ export function triggerVendorPassportDownload(kind = 'json', companyMeta = {}) {
       const a = document.createElement('a');
       a.href = url;
       a.download = filename;
-      a.style.display = 'none';
+      a.hidden = true;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -254,8 +254,8 @@ export function bindVendorPassportDownloadButtons(
       const res = triggerVendorPassportDownload('vcf');
       if (statusEl) {
         statusEl.textContent = isEn
-          ? `✓ ${res.filename} downloaded (RFC 6350 vCard 4.0)`
-          : `✓ ${res.filename} descargado (RFC 6350 vCard 4.0)`;
+          ? `${res.filename} downloaded (RFC 6350 vCard 4.0)`
+          : `${res.filename} descargado (RFC 6350 vCard 4.0)`;
         statusEl.classList.remove('hidden');
       }
     });

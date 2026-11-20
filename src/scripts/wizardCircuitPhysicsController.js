@@ -21,12 +21,11 @@ import {
   calculateUrethaneScreenPartitionWeibull
 } from './mechanicalAndSeparationEngine.js';
 import {
-  calculateDriveAndBearingKinematics,
-  selectBearingFrameByPowerAndRpm,
-  evaluateHybridWetEndConfiguration,
-  evaluateWetEndAssemblyInterference,
-  evaluatePumpAssemblySequence
-} from './pumpAssemblyAndDriveEngine.js';
+  bindDomainSchemaRoot,
+  projectDomainOutputs,
+  readAllCanonicalInputs
+} from './schemaRuntimeBinder.js';
+import { solveXdsmMultidisciplinaryDag } from './wizardXdsmDagSolver.js';
 import {
   projectPumpDriveAndHybridTelemetry,
   projectClassificationAndScreenTelemetry,
@@ -437,17 +436,99 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
   };
 
   const recomputeAllCircuitPanels = () => {
-    // A. Flotación Gorain + Zwietering (incluye P y Rf Sobol)
-    const flotRes = evaluateFlotationCellHydrodynamics({
-      jgCmS: numInput('#wb-flot-jg', 1.5),
-      d32Mm: numInput('#wb-flot-d32', 1.6),
-      rotorRpm: numInput('#wb-flot-rpm', 215),
-      rotorDiaM: numInput('#wb-flot-dia, #wb-flot-rotor-dia', 0.61),
-      floatabilityP: numInput('#wb-flot-p', 0.0045),
-      frothRecoveryRf: numInput('#wb-flot-rf', 0.78),
-      d80Microns: numInput('#wb-flot-d80', 150),
-      solidsCwPct: numInput('#wb-flot-cw', 35)
+    const canonical = readAllCanonicalInputs(wizardRoot, {
+      jgCmS: numInput('#wb-flot-jg, [data-schema-input="flotation.jgCmS"]', 1.5),
+      d32Mm: numInput('#wb-flot-d32, [data-schema-input="flotation.d32Mm"]', 1.6),
+      rotorRpm: numInput('#wb-flot-rpm, [data-schema-input="flotation.rotorRpm"]', 215),
+      rotorDiaM: numInput('#wb-flot-dia, #wb-flot-rotor-dia, [data-schema-input="flotation.rotorDiaM"]', 0.61),
+      floatabilityP: numInput('#wb-flot-p, [data-schema-input="flotation.floatabilityP"]', 0.0045),
+      frothRecoveryRf: numInput('#wb-flot-rf, [data-schema-input="flotation.frothRecoveryRf"]', 0.78),
+      d80Microns: numInput('#wb-flot-d80, #slider-d80', 180),
+      solidsWeightPercent: numInput('#wb-flot-cw, #slider-solids', 45),
+      plateWidthMm: numInput('#filt-plate-width, #wb-filt-width, #wb-filt-capacity', 1200),
+      feedPressureBar: numInput('#wb-filt-pressure, #wb-filt-pressure-bar', 12),
+      cloggedPortsCount: numInput('#wb-filt-clogged, #wb-filt-clogged-ports', 0),
+      plateThicknessMm: numInput('#wb-filt-thickness, #wb-filt-thickness-mm', 65),
+      cakeMoistureTargetPct: numInput('#filt-cake-moisture, #wb-filt-moisture, #wb-filt-moisture-pct', 14),
+      feedSg: numInput('#wb-cyc-sg-feed, #cyc-feed-sg', 1.35),
+      underflowSg: numInput('#wb-cyc-sg-uf, #cyc-underflow-sg', 1.82),
+      overflowSg: numInput('#wb-cyc-sg-of, #cyc-overflow-sg', 1.15),
+      solidsSg: numInput('#wb-cyc-solids-sg, #cyc-solids-sg', 2.7),
+      apexDiameterMm: numInput('#wb-cyc-apex-mm, #cyc-apex-mm', 50),
+      vortexDiameterMm: numInput('#wb-cyc-vortex-mm, #cyc-vortex-mm', 100),
+      feedPressureKpa: numInput('#wb-cyc-pressure-kpa, #cyc-pressure-kpa', 95),
+      cycloneDiameterMm: Number(wizardRoot.querySelector('#wb-cyc-series')?.value || 380),
+      apertureMm: numInput('#csr-aperture-mm, #wb-scr-aperture-mm', 0.5),
+      reliefAngleDeg: numInput('#csr-relief-deg, #wb-scr-relief-deg', 4.0),
+      vibrationG: numInput('#wb-scr-vibration-g, #csr-vibration-g', 4.5),
+      sharpnessAlpha: numInput('#wb-scr-alpha, #csr-alpha-select', 4.4),
+      pipeSeries: String(wizardRoot.querySelector('#wb-pipe-size')?.value || '6x4'),
+      arrangementCode: String(wizardRoot.querySelector('#wb-drive-arrangement')?.value || 'CV'),
+      motorRpm: numInput('#wb-motor-rpm', 1775),
+      driverPulleyMm: numInput('#wb-driver-pulley', 220),
+      drivenPulleyMm: numInput('#wb-driven-pulley', 340),
+      motorPowerKw: numInput('#wb-shaft-power', 55),
+      frontClearanceMm: numInput('#wb-clearance-slider, #wb-throatbush-clearance', 0.75),
+      assemblySequence: String(wizardRoot.querySelector('#wb-assembly-sequence')?.value || 'canonical'),
+      pH: numInput('#slider-ph', 7.5)
     });
+
+    const dag = solveXdsmMultidisciplinaryDag(canonical);
+    const flotRes = {
+      ...evaluateFlotationCellHydrodynamics({
+        jgCmS: canonical.jgCmS,
+        d32Mm: canonical.d32Mm,
+        rotorRpm: canonical.rotorRpm,
+        rotorDiaM: canonical.rotorDiaM,
+        floatabilityP: canonical.floatabilityP,
+        frothRecoveryRf: canonical.frothRecoveryRf,
+        d80Microns: canonical.d80Microns,
+        solidsCwPct: canonical.solidsWeightPercent
+      }),
+      ...(dag.flotationEval || {})
+    };
+    const filtRes = {
+      ...calculateFilterPressCycleCapacity(canonical),
+      ...(dag.filtrationEval || {})
+    };
+    const cycBase = dag.cycloneScreenEval || {};
+    const cycRes = {
+      ...cycBase,
+      ...evaluateHydrocycloneCutPoint({
+        feedSg: canonical.feedSg,
+        underflowSg: canonical.underflowSg,
+        overflowSg: canonical.overflowSg,
+        solidsSg: canonical.solidsSg,
+        apexDiameterMm: canonical.apexDiameterMm,
+        vortexDiameterMm: canonical.vortexDiameterMm,
+        feedPressureKpa: canonical.feedPressureKpa,
+        cycloneDiameterMm: canonical.cycloneDiameterMm,
+        apertureMm: canonical.apertureMm,
+        reliefAngleDeg: canonical.reliefAngleDeg,
+        vibrationG: canonical.vibrationG,
+        sharpnessAlpha: canonical.sharpnessAlpha
+      }),
+      cvUnderflow: cycBase.cvUnderflow,
+      screenWeibull: cycBase.screenWeibull
+    };
+    const driveEval = dag.driveEval || {};
+    const frameSelect = dag.frameEval || {};
+    const hybridEval = dag.hybridEval || {};
+    const clearanceEval = dag.interferenceEval || {};
+    const assemblySeq = dag.assemblySeqEval || {};
+    const locale = isEs ? 'es' : 'en';
+
+    projectDomainOutputs(wizardRoot, 'flotation', flotRes, locale);
+    projectDomainOutputs(wizardRoot, 'filtration', filtRes, locale);
+    projectDomainOutputs(wizardRoot, 'cycloneScreen', {
+      ...cycRes,
+      ...(cycRes.screenWeibull || {})
+    }, locale);
+    projectDomainOutputs(wizardRoot, 'sealDrive', {
+      ...(dag.sealBalanceEval || {}),
+      ...driveEval
+    }, locale);
+
     const elFlotSb = wizardRoot.querySelector('#wb-flot-res-sb');
     const elFlotK = wizardRoot.querySelector('#wb-flot-res-k');
     const elFlotNjs = wizardRoot.querySelector('#wb-flot-res-njs');
@@ -457,15 +538,6 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
     if (elFlotNjs) elFlotNjs.textContent = `${flotRes.zwieteringNjsRpm} RPM`;
     if (elFlotVtip) elFlotVtip.textContent = `${flotRes.tipSpeedMS} m/s`;
 
-    // B. Filtración Timoshenko + Darcy-Ruth
-    const capSelectVal = numInput('#wb-filt-width, #wb-filt-capacity', 1500);
-    const filtRes = calculateFilterPressCycleCapacity({
-      plateWidthMm: capSelectVal || 1500,
-      feedPressureBar: numInput('#wb-filt-pressure, #wb-filt-pressure-bar', 12),
-      cloggedPortsCount: numInput('#wb-filt-clogged, #wb-filt-clogged-ports', 0),
-      plateThicknessMm: numInput('#wb-filt-thickness, #wb-filt-thickness-mm', 65),
-      cakeMoistureTargetPct: numInput('#wb-filt-moisture, #wb-filt-moisture-pct', 14)
-    });
     const elFiltStress = wizardRoot.querySelector('#wb-filt-res-stress');
     const elFiltFs = wizardRoot.querySelector('#wb-filt-res-fs');
     const elFiltCycles = wizardRoot.querySelector('#wb-filt-res-cycles');
@@ -481,25 +553,8 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
           : (isEs ? 'NOM-141 Segura' : 'NOM-141 Safe');
     }
 
-    // Proyección completa de Flotación y Filtración
     projectFlotationAndFiltrationTelemetry(wizardRoot, { flotRes, filtRes, isEs });
 
-    // C. Clasificación 3 Vasos Marcy + Plitt + Weibull (10 parámetros completos + cvUnderflow)
-    const cycSerieStr = String(wizardRoot.querySelector('#wb-cyc-series')?.value || '380');
-    const cycRes = evaluateHydrocycloneCutPoint({
-      feedSg: numInput('#wb-cyc-sg-feed', 1.35),
-      underflowSg: numInput('#wb-cyc-sg-uf', 1.82),
-      overflowSg: numInput('#wb-cyc-sg-of', 1.15),
-      solidsSg: numInput('#wb-cyc-solids-sg', 2.7),
-      apexDiameterMm: numInput('#wb-cyc-apex-mm', 50),
-      vortexDiameterMm: numInput('#wb-cyc-vortex-mm', 100),
-      feedPressureKpa: numInput('#wb-cyc-pressure-kpa', 95),
-      cycloneDiameterMm: Number(cycSerieStr) || 380,
-      apertureMm: numInput('#wb-scr-aperture-mm', 0.5),
-      reliefAngleDeg: numInput('#wb-scr-relief-deg', 4.0),
-      vibrationG: numInput('#wb-scr-vibration-g', 4.5),
-      sharpnessAlpha: numInput('#wb-scr-alpha', 4.4)
-    });
     const elCycCc = wizardRoot.querySelector('#wb-cyc-res-cc');
     const elCycD50 = wizardRoot.querySelector('#wb-cyc-res-d50');
     const elCycRoping = wizardRoot.querySelector('#wb-cyc-res-roping');
@@ -509,53 +564,9 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
     if (elCycD50) elCycD50.textContent = `${cycRes.cutPointD50cUm} µm`;
     if (elCycCvu && cycRes.cvUnderflow !== undefined) elCycCvu.textContent = `${Number(cycRes.cvUnderflow).toFixed(2)}`;
     if (elCycRoping) elCycRoping.textContent = isEs ? cycRes.ropingStatusEs : cycRes.ropingStatusEn;
-    if (elScrWeibull) elScrWeibull.textContent = `α = ${cycRes.sharpnessAlpha} (${cycRes.screenWeibull.recommendedSkuId})`;
+    if (elScrWeibull) elScrWeibull.textContent = `α = ${cycRes.sharpnessAlpha} (${cycRes.screenWeibull?.recommendedSkuId || 'SMAT-SCR-TH48-30'})`;
 
-    // Proyección corregida (firma directa cycRes + isEs)
     projectClassificationAndScreenTelemetry(wizardRoot, cycRes, isEs);
-
-    // D. Tren Motriz y Bastidor Contextual + Rama D Híbrida + Secuencia de Ensamble
-    const pipeSeries = String(wizardRoot.querySelector('#wb-pipe-size')?.value || '6x4');
-    const arrCode = String(wizardRoot.querySelector('#wb-drive-arrangement')?.value || 'CV');
-    const motorRpm = Number(wizardRoot.querySelector('#wb-motor-rpm')?.value ?? 1775);
-    const driverPulleyMm = Number(wizardRoot.querySelector('#wb-driver-pulley')?.value ?? 220);
-    const drivenPulleyMm = Number(wizardRoot.querySelector('#wb-driven-pulley')?.value ?? 340);
-    const motorPowerKw = Number(wizardRoot.querySelector('#wb-shaft-power')?.value ?? 55);
-    const clearanceMm = Number(wizardRoot.querySelector('#wb-clearance-slider, #wb-throatbush-clearance')?.value ?? 0.8);
-    const d80Val = Number(wizardRoot.querySelector('#slider-d80')?.value ?? 180);
-    const seqPreset = String(wizardRoot.querySelector('#wb-assembly-sequence')?.value || 'canonical');
-
-    const driveEval = calculateDriveAndBearingKinematics({
-      arrangementCode: arrCode,
-      motorRpm,
-      driverPulleyMm,
-      drivenPulleyMm,
-      motorPowerKw,
-      pipeSeries
-    });
-    const frameSelect = selectBearingFrameByPowerAndRpm(motorPowerKw, driveEval.pumpRpm, pipeSeries);
-    const hybridEval = evaluateHybridWetEndConfiguration({
-      d80Microns: d80Val,
-      tipSpeedMs: driveEval.tipSpeedMs,
-      pulpPh: Number(wizardRoot.querySelector('#slider-ph')?.value ?? 7.5),
-      solidsWeightPercent: Number(wizardRoot.querySelector('#slider-solids')?.value ?? 45),
-      pipeSeries
-    });
-    const clearanceEval = evaluateWetEndAssemblyInterference({
-      frontClearanceMm: clearanceMm,
-      d80Microns: d80Val,
-      impellerTipSpeedMs: driveEval.tipSpeedMs,
-      pipeSeries,
-      sequencePreset: seqPreset
-    });
-    const assemblySeq = evaluatePumpAssemblySequence({
-      frontClearanceMm: clearanceMm,
-      impellerTorqueNm: 450,
-      d80Microns: d80Val,
-      impellerTipSpeedMs: driveEval.tipSpeedMs,
-      pipeSeries,
-      sequencePreset: seqPreset
-    });
 
     const elFrameBadge = wizardRoot.querySelector('#wb-drive-frame-badge');
     const elDriveSummary = wizardRoot.querySelector('#wb-drive-contextual-metrics');
@@ -675,11 +686,17 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
     return updatedSnapshot;
   };
 
+  bindDomainSchemaRoot(
+    wizardRoot,
+    ['flotation', 'filtration', 'cycloneScreen', 'sealDrive', 'tribology', 'metrology'],
+    recomputeAllCircuitPanels
+  );
+
   const circuitInputs = wizardRoot.querySelectorAll(
-    '[data-wb-circuit-calc-input], #wb-flot-p, #wb-flot-rf, #wb-cyc-solids-sg, #wb-cyc-apex-mm, #wb-cyc-vortex-mm, #wb-scr-relief-deg, #wb-scr-vibration-g, #wb-scr-alpha, #wb-assembly-sequence'
+    '[data-wb-circuit-calc-input], #filt-plate-width, #filt-cake-moisture, #csr-aperture-mm, #csr-relief-deg, #wb-flot-p, #wb-flot-rf, #wb-cyc-solids-sg, #wb-cyc-apex-mm, #wb-cyc-vortex-mm, #wb-scr-vibration-g, #wb-scr-alpha, #wb-assembly-sequence'
   );
   circuitInputs.forEach((inp) => {
-    if (inp.getAttribute('data-calc-bound') === '1') return;
+    if (inp.getAttribute('data-calc-bound') === '1' || inp.dataset?.schemaBound === '1') return;
     inp.setAttribute('data-calc-bound', '1');
     inp.addEventListener('input', recomputeAllCircuitPanels);
     inp.addEventListener('change', recomputeAllCircuitPanels);

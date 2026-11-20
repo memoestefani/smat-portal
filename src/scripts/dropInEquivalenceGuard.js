@@ -14,7 +14,7 @@ const ALLOY_SUFFIX_REGEX = /(A05|A49|A51|R55|R26|R33|C21|U01|S01|SIC|PU|CR27|HVO
 /**
  * Calcula el hash FNV-1a de 32 bits en formato hexadecimal de 8 caracteres para una raíz normalizada.
  */
-export function fnv1a32DropInHash(normalizedRoot) {
+function fnv1a32DropInHash(normalizedRoot) {
   const input = `smat_dropin_v3:${String(normalizedRoot || '').toUpperCase().trim()}`;
   let hash = 0x811c9dc5;
   for (let i = 0; i < input.length; i += 1) {
@@ -28,7 +28,7 @@ export function fnv1a32DropInHash(normalizedRoot) {
  * Índice estático FNV-1a (32-bit hex) -> Descriptor SKU SMAT.
  * Ninguna raíz alfanumérica de catálogo tercero aparece en texto plano.
  */
-export const FNV1A_HASH_TO_SKU_INDEX = Object.freeze({
+const FNV1A_HASH_TO_SKU_INDEX = Object.freeze({
   '4a405f7c': { canonicalSkuId: 'SMAT-PUMP-IMP-AH', defaultAlloy: 'A05' },
   '94fbebd4': { canonicalSkuId: 'SMAT-PUMP-IMP-AH', defaultAlloy: 'A05' },
   'a15f61b7': { canonicalSkuId: 'SMAT-PUMP-IMP-AH', defaultAlloy: 'A05' },

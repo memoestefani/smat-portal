@@ -1,0 +1,189 @@
+---
+/**
+ * MetrologyLabCore.astro
+ * ---------------------------------------------------------------------------
+ * Núcleo Único Compartido de Metrología de Laboratorio (`D5-V51` / `SLICE-V51-12`):
+ *   - Nivel 1 visible: Balanza Marcy 3-Vías (Ss, %Cw, ρp) + Vaso recomendado (Es/En) + 12 Anillos
+ *   - Nivel 2 acordeón: Filtro Batch Pierre Gy (β, m via d95/lib/grade/c/err) + Tamices √2 ASTM E11 / Rosin-Rammler y
+ *   - Cero placebos (controles placebo metrológicos heredados eliminados) y cero estilos inline.
+ */
+interface Props {
+  locale?: 'es' | 'en';
+  showRoleSelectors?: boolean;
+  panelClass?: string;
+}
+
+const { locale = 'es', showRoleSelectors = true, panelClass = '' } = Astro.props;
+const isEs = locale === 'es';
+---
+
+<div id="circuit-panel-control" data-domain-root="metrology" class={`smat-core-shell ${panelClass}`.trim()}>
+  <!-- Estrato 1 Display-First + salidas metrológicas acopladas -->
+  <div id="wb-ctrl-live-metrics" class="embedded-ctrl-metrics font-mono-tech smat-mb-sm">
+    {isEs ? 'Laboratorio en vivo sincronizado con el modelo hidráulico' : 'Live laboratory synchronized with hydraulic process model'}
+  </div>
+
+  <div class="embedded-ctrl-res smat-stratum1-display font-mono-tech smat-mb-sm">
+    <div class="embedded-res-cell"><strong>{isEs ? 'Pulpa / Anillo:' : 'Pulp / Ring:'}</strong> <span id="wb-ctrl-res-sm" data-schema-output="metrology.marcyDensityKgL">1.406 kg/L</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? '% Sólidos Calc.:' : 'Calc % Solids:'}</strong> <span id="wb-ctrl-res-cw" data-schema-output="metrology.cwPct">45.0%</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Sesgo Anillo 2.6:' : 'Ring 2.6 Bias:'}</strong> <span id="wb-ctrl-res-bias" data-schema-output="metrology.wrongRingBiasPoints">±0.0 pts</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Muestra Mínima:' : 'Min Sample Mass:'}</strong> <span id="wb-ctrl-res-gy" data-met-defuse-gy-beta="1" data-schema-output="metrology.minimumSampleMassKg">0.25 kg</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Tamiz Control:' : 'Control Mesh:'}</strong> <span id="wb-ctrl-res-sieve" data-schema-output="metrology.sieveNumber">#100</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Masa Seca ASTM:' : 'ASTM Dry Mass:'}</strong> <span id="wb-ctrl-res-drysample" data-schema-output="metrology.drySampleMassGrams">250 g</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Polipasto (≥23 kg):' : 'Hoist (≥23 kg):'}</strong> <span id="wb-ctrl-res-hoist" data-schema-output="metrology.hoistRequired">{isEs ? 'No' : 'No'}</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? '2 Operadores:' : '2 Operators:'}</strong> <span id="wb-ctrl-res-two-person" data-schema-output="metrology.twoPersonAssistRequired">{isEs ? 'No' : 'No'}</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Pendiente RR (n):' : 'RR Slope (n):'}</strong> <span id="wb-ctrl-res-rr" data-met-defuse-d63="1" data-schema-output="metrology.rosinRammlerUniformityN">1.15</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Linealización y\':' : 'Linearized y\':' }</strong> <span id="wb-ctrl-res-rry" data-schema-output="metrology.rosinRammlerY">-0.1555</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Volumen Pulpa:' : 'Wet Pulp Vol:'}</strong> <span id="wb-ctrl-gy-pulp-liters" data-testid="wb-ctrl-gy-pulp-liters">{isEs ? '0.39 L' : '0.39 L'}</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Vaso Marcy Rec.:' : 'Rec. Marcy Cup:'}</strong> <span id="wb-ctrl-res-container" data-schema-output="metrology.recommendedContainerEs">{isEs ? 'Vaso 1000 cm³ Acero Inox 304' : '1000 cm³ 304 Stainless Cup'}</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Bastidor ASTM:' : 'ASTM Frame:'}</strong> <span id="wb-ctrl-sieve-frame-rec" data-testid="wb-ctrl-sieve-frame-rec">{isEs ? 'Acero Inox 304/316' : '304/316 Stainless Steel'}</span></div>
+  </div>
+
+  <div id="wb-ctrl-marcy-rings-strip" data-testid="wb-ctrl-marcy-rings-strip" data-marcy-rings-list="2.2..4.4" class="rings-strip font-mono-tech smat-mb-md">
+    {isEs ? '12 Carátulas Marcy (SG 2.2–4.4): Anillo SG 2.8 activo' : '12 Marcy Dials (SG 2.2–4.4): SG 2.8 Ring active'}
+  </div>
+
+  {showRoleSelectors && (
+    <div class="smat-inputs-2col smat-mb-md">
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-role-ctrl">
+          {isEs ? 'Instrumento o Paquete de Control:' : 'Process Control Instrument or Package:'}
+        </label>
+        <select id="wb-role-ctrl" name="role_id_ctrl" class="smat-input-control wb-select">
+          <option value="balanza_marcy" selected>{isEs ? 'Balanza Marcy (Vaso 1000 cm³ + 12 Anillos)' : 'Marcy Pulp Scale (1000 cm³ Cup + 12 Rings)'}</option>
+          <option value="filtro_batch_lab">{isEs ? 'Filtro de Presión Batch Lab (60–100 psi)' : 'Lab Batch Pressure Filter (60–100 psi)'}</option>
+          <option value="tamices_laboratorio">{isEs ? 'Tamices Certificados ASTM E11 / ISO 3310' : 'Certified ASTM E11 / ISO 3310 Test Sieves'}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-ctrl-spec">
+          {isEs ? 'Configuración de Laboratorio:' : 'Laboratory Specification:'}
+        </label>
+        <select id="wb-ctrl-spec" name="ctrl_spec" class="smat-input-control wb-select">
+          <option value="marcy_12_rings" selected>{isEs ? 'Juego 12 Carátulas (Ss 2.2–4.4) + Vaso Inox 304' : '12-Ring Dial Set (Ss 2.2–4.4) + 304 Stainless Cup'}</option>
+          <option value="batch_100psi">{isEs ? 'Cámara Presión Batch (60–100 psi)' : 'Batch Pressure Barrel (60–100 psi)'}</option>
+          <option value="astm_8in_inox">{isEs ? 'Columna Tamices 8" Inox (P80 #40–#635)' : '8" Stainless Sieve Stack (#40–#635)'}</option>
+          <option value="astm_12in_bronce">{isEs ? 'Columna Tamices 12" Bronce/Inox' : '12" Brass/Inox Sieve Stack'}</option>
+        </select>
+      </div>
+    </div>
+  )}
+
+  <div class="smat-flex-between smat-mb-md">
+    <div class="ctrl-mode-group">
+      <label class="smat-field-label" for="wb-ctrl-solve-mode">
+        {isEs ? 'Modo Ecuación de Densidad Marcy (3 Vías):' : 'Marcy 3-Way Pulp Density Mode:'}
+      </label>
+      <select
+        id="wb-ctrl-solve-mode"
+        data-testid="wb-ctrl-solve-mode"
+        data-schema-input="metrology.marcyMode"
+        class="smat-input-control wb-select font-mono-tech"
+      >
+        <option value="cw" selected>{isEs ? '1. Dadas Ss y %Cw → Calcular ρp (kg/L)' : '1. Given Ss & %Cw → Solve ρp (kg/L)'}</option>
+        <option value="rhop">{isEs ? '2. Dadas Ss y ρp → Calcular %Cw' : '2. Given Ss & ρp → Solve %Cw'}</option>
+        <option value="ore_density_rhop">{isEs ? '3. Dadas ρp y %Cw → Despejar Ss Real' : '3. Given ρp & %Cw → Solve True Ss'}</option>
+      </select>
+    </div>
+    <button
+      type="button"
+      id="btn-apply-ss-to-circuit"
+      data-testid="btn-apply-ss-to-circuit"
+      class="smat-btn-secondary"
+    >
+      {isEs ? 'Aplicar Ss y Cw al Circuito →' : 'Apply Ss & Cw to Circuit →'}
+    </button>
+  </div>
+
+  <!-- Nivel 1: Entradas primarias Balanza Marcy -->
+  <div class="smat-inputs-2col smat-panel-soft">
+    <div class="form-group">
+      <label class="smat-field-label" for="wb-ctrl-sg">{isEs ? 'Gravedad Sólidos (Ss):' : 'Dry Ore SG (Ss):'}</label>
+      <input type="number" id="wb-ctrl-sg" data-schema-input="metrology.solidsSpecificGravity" min="2.2" max="4.4" step="0.05" value="2.8" class="smat-input-control wb-input font-mono-tech" />
+    </div>
+    <div class="form-group">
+      <label class="smat-field-label" for="wb-ctrl-cw">{isEs ? '% Sólidos en Peso (Cw):' : 'Solids by Weight (% Cw):'}</label>
+      <input type="number" id="wb-ctrl-cw" data-schema-input="metrology.solidsWeightPercent" min="10" max="75" step="1" value="45" class="smat-input-control wb-input font-mono-tech" />
+    </div>
+    <div class="form-group">
+      <label class="smat-field-label" for="wb-ctrl-rhop">{isEs ? 'Densidad de Pulpa (ρp kg/L):' : 'Pulp Density (ρp kg/L):'}</label>
+      <input type="number" id="wb-ctrl-rhop" data-schema-input="metrology.measuredSpGr" min="1.05" max="2.40" step="0.005" value="1.406" class="smat-input-control wb-input font-mono-tech" />
+    </div>
+    <div class="form-group">
+      <label class="smat-field-label" for="wb-ctrl-p80">{isEs ? 'Corte Granulométrico P80 (µm):' : 'Target P80 Grind Cut (µm):'}</label>
+      <input type="number" id="wb-ctrl-p80" data-schema-input="metrology.targetP80Microns" min="25" max="2000" step="5" value="150" class="smat-input-control wb-input font-mono-tech" />
+    </div>
+  </div>
+
+  <!-- Nivel 2: Parámetros avanzados Pierre Gy & ASTM E11 -->
+  <details class="smat-mt-sm smat-panel-soft" id="metrology-advanced-accordion">
+    <summary class="smat-field-label">
+      {isEs
+        ? 'Ajuste Avanzado: Muestreo Pierre Gy, Filtro Batch (60–100 psi) y Curva Rosin-Rammler'
+        : 'Advanced Calibration: Representative Sampling (Pierre Gy), Batch Filter & Rosin-Rammler'}
+    </summary>
+    <div class="smat-inputs-2col smat-mt-sm">
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-ctrl-d95">{isEs ? 'Tamaño Máximo d95 (mm):' : 'Top Particle Size d95 (mm):'}</label>
+        <input type="number" id="wb-ctrl-d95" data-schema-input="metrology.topSizeMm" min="0.04" max="25.0" step="0.05" value="6.5" class="smat-input-control wb-input font-mono-tech" />
+      </div>
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-ctrl-lib">{isEs ? 'Tamaño de Liberación dl (µm):' : 'Liberation Size dl (µm):'}</label>
+        <input type="number" id="wb-ctrl-lib" data-schema-input="metrology.liberationSizeMicrons" min="10" max="1000" step="5" value="100" class="smat-input-control wb-input font-mono-tech" />
+      </div>
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-ctrl-grade">{isEs ? 'Ley Mineral Decimal (aL):' : 'Ore Grade Fraction (aL):'}</label>
+        <input type="number" id="wb-ctrl-grade" data-schema-input="metrology.oreGradeDecimal" min="0.001" max="0.95" step="0.005" value="0.05" class="smat-input-control wb-input font-mono-tech" />
+      </div>
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-ctrl-air-psi">{isEs ? 'Presión Filtro Batch (psi):' : 'Batch Filter Pressure (psi):'}</label>
+        <select id="wb-ctrl-air-psi" data-schema-input="metrology.airPressurePsi" class="smat-input-control wb-select font-mono-tech">
+          <option value="60">60 psi</option>
+          <option value="80">80 psi</option>
+          <option value="90" selected>90 psi</option>
+          <option value="100">100 psi</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-ctrl-gy-c">{isEs ? 'Constante Mineralógica c:' : 'Mineral Sampling Constant c:'}</label>
+        <input type="number" id="wb-ctrl-gy-c" data-schema-input="metrology.samplingConstantC" min="0.05" max="50" step="0.05" value="1.35" class="smat-input-control wb-input font-mono-tech" />
+      </div>
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-ctrl-gy-err">{isEs ? 'Tolerancia Error Muestreo (s):' : 'Sampling Std Error (s):'}</label>
+        <select id="wb-ctrl-gy-err" data-schema-input="metrology.targetRelativeStdError" class="smat-input-control wb-select font-mono-tech">
+          <option value="0.01">1% (0.01)</option>
+          <option value="0.05" selected>5% (0.05)</option>
+          <option value="0.10">10% (0.10)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-ctrl-rr-n">{isEs ? 'Uniformidad Rosin-Rammler (n):' : 'Rosin-Rammler Slope (n):'}</label>
+        <input type="number" id="wb-ctrl-rr-n" data-schema-input="metrology.rosinRammlerSlopeN" min="0.50" max="2.50" step="0.05" value="1.15" class="smat-input-control wb-input font-mono-tech" />
+      </div>
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-ctrl-ret-p80">{isEs ? '% Retenido en P80:' : '% Retained at P80:'}</label>
+        <input type="number" id="wb-ctrl-ret-p80" data-schema-input="metrology.retainedPercentAtP80" min="5" max="40" step="1" value="20" class="smat-input-control wb-input font-mono-tech" />
+      </div>
+    </div>
+  </details>
+
+  <div class="sieve-table-shell smat-mt-sm">
+    <span class="sieve-table-kicker">
+      {isEs ? 'SERIE DE TAMICES ASTM E11 / ROSIN-RAMMLER (7 MALLAS + Y\')' : 'LIVE ASTM E11 / ROSIN-RAMMLER SIEVE STACK (7 MESHES + Y\')'}
+    </span>
+    <table id="wb-ctrl-sieve-table" class="embedded-sieve-table">
+      <thead>
+        <tr>
+          <th>{isEs ? 'Malla (Tyler)' : 'Mesh (Tyler)'}</th>
+          <th>µm</th>
+          <th>{isEs ? '% Ret. Indiv.' : '% Indiv. Ret.'}</th>
+          <th>{isEs ? '% Ret. Acum.' : '% Cum. Ret.'}</th>
+          <th>{isEs ? '% Pasante' : '% Passing'}</th>
+          <th>y&apos; (RR)</th>
+          <th>{isEs ? 'Masa (g) / Rol' : 'Mass (g) / Role'}</th>
+        </tr>
+      </thead>
+      <tbody id="wb-ctrl-sieve-tbody"></tbody>
+    </table>
+  </div>
+</div>

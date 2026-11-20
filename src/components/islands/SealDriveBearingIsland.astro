@@ -1,5 +1,12 @@
 ---
-// src/components/islands/SealDriveBearingIsland.astro — Isla Canónica Unificada de Sellado, Tren Motriz y Soporte ISO 281 (SLICE-V50-30..32)
+/**
+ * SealDriveBearingIsland.astro
+ * ---------------------------------------------------------------------------
+ * Isla Canónica Unificada de Sellado 02A/02B, Tren Motriz V-Belt y Soporte ISO 281
+ * (`D3-V51` / `SLICE-V51-16`): Cero bifurcaciones duales, monta `<SealDriveBearingCore />`
+ * exponiendo las 3 sub-estaciones de forma idéntica en rutas verticales y `/cotizar/`.
+ */
+import SealDriveBearingCore from '../cores/SealDriveBearingCore.astro';
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import SharePurchasing from '../SharePurchasing.astro';
 import { getAtomicPartSpecs } from '../../scripts/workbenchBus.js';
@@ -14,7 +21,7 @@ interface Props {
 
 const { locale = 'es', variant = 'seal', mode = 'standalone' } = Astro.props;
 const isEs = locale === 'es';
-const isStandalone = mode === 'standalone';
+const showVerticalShell = mode === 'standalone';
 const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
 
 const allRoles = (rolesData.verticals || []).flatMap((v) => [...(v.capex || []), ...(v.opex || [])]);
@@ -24,9 +31,12 @@ const dc = roleObj?.decision_criteria;
 
 const sealParts = variant === 'seal' ? [getAtomicPartSpecs('DAM028'), getAtomicPartSpecs('EAM028')].filter(Boolean) : [];
 const driveArrangements = variant === 'skid' ? Object.values(DRIVE_ARRANGEMENT_CATALOG) : [];
+const stratumSimId = variant === 'seal'
+  ? 'stratum1-seal-sim'
+  : (variant === 'skid' ? 'stratum1-skid-sim' : 'stratum1-bearing-inspector');
 ---
 
-{isStandalone && (
+{showVerticalShell && (
   <div data-island-standalone="sealDrive" data-variant={variant} data-lang={locale}>
     <section class="page-hero smat-compact-hero">
       <div class="container">
@@ -52,98 +62,40 @@ const driveArrangements = variant === 'skid' ? Object.values(DRIVE_ARRANGEMENT_C
         <p class="smat-hero-sub">
           {variant === 'seal'
             ? (isEs
-              ? 'Calibración en vivo de contrapresión Expeller (02A Seco) vs Agua de Prensaestopas (02B Húmedo) sin sello mecánico.'
-              : 'Live sealing pressure calibration: Dry Expeller (02A Zero Flush Water) vs Flushed Stuffing Box (02B) — no mechanical seals.')
+              ? 'Calibración en vivo de contrapresión Expeller (02A Seco) vs Agua de Prensaestopas (02B Húmedo), cinemática V-Belt y vida ISO 281 L₁₀ₘₕ.'
+              : 'Live sealing pressure calibration (02A Dry Expeller vs 02B Flushed Stuffing Box), V-Belt kinematics and ISO 281 L₁₀ₘₕ bearing life.')
             : variant === 'skid'
               ? (isEs
-                ? 'Calibre poleas V-Belt, velocidad periférica (u₂ ≤ 24.5 m/s en Hule R55 vs A05) y vida ISO 281 L₁₀h antes de cotizar su bomba o skid.'
-                : 'Calibrate V-Belt sheave ratio, peripheral tip speed (u₂ ≤ 24.5 m/s Rubber R55 vs A05), and ISO 281 L₁₀h life before requesting your skid quote.')
+                ? 'Calibre poleas V-Belt, velocidad periférica u₂, sellado centrífugo y vida ISO 281 L₁₀ₘₕ en un solo instrumento.'
+                : 'Calibrate V-Belt sheave ratio, peripheral tip speed u₂, centrifugal sealing and ISO 281 L₁₀ₘₕ life in one unified instrument.')
               : (isEs
-                ? 'Calibración en vivo de vida modificada ISO 281 L₁₀ₘₕ, bastidor recomendado e intercambio Core Trade-In DAM005 (-22% / -12%).'
-                : 'Live ISO 281 L₁₀ₘₕ bearing life calibration, recommended frame sizing, and DAM005 Core Trade-In exchange (-22% / -12%).')}
+                ? 'Calibración en vivo de vida modificada ISO 281 L₁₀ₘₕ, bastidor recomendado, sellado e intercambio Core Trade-In DAM005 (-22% / -12%).'
+                : 'Live ISO 281 L₁₀ₘₕ bearing life calibration, frame sizing, sealing and DAM005 Core Trade-In exchange (-22% / -12%).')}
         </p>
       </div>
     </section>
 
     <section class="section smat-stage-compact" id={variant === 'skid' ? 'skid-main-section' : undefined}>
       <div class="container">
-        {variant === 'seal' && (
-          <div class="card smat-sdb-sim-card" id="stratum1-seal-sim" data-seal-branch-comparator data-stratum-1-instrument>
-            <div class="smat-sdb-sim-head">
-              <span class="badge badge-copper">{isEs ? 'BIFURCACIÓN DE SELLADO ESTACIÓN 02' : 'STATION 02 SEALING BIFURCATION'}</span>
-              <span class="font-mono-tech smat-sdb-formula">ΔP_exp = ½·ρ_m·k_ω²·ω²·(R_exp² - R_h²) &gt; P_s + ΔP_back</span>
-            </div>
-            <h2 class="smat-sdb-sim-title">
-              {isEs
-                ? 'Calculadora en Vivo: Contrapresión de Expeller (02A Seco) vs Agua de Prensaestopas (02B Húmedo)'
-                : 'Live Calculator: Expeller Counter-Pressure (02A Dry) vs Stuffing Box Flush Water (02B Wet)'}
-            </h2>
+        <div
+          class="card smat-sdb-sim-card"
+          id={stratumSimId}
+          data-stratum-1-instrument
+          data-seal-branch-comparator={variant === 'seal' ? '1' : undefined}
+          data-skid-kinematics={variant === 'skid' ? '1' : undefined}
+          data-bearing-inspector={variant === 'bearing' ? '1' : undefined}
+        >
+          <SealDriveBearingCore locale={locale} initialTab={variant} showVerticalActions={true} />
 
-            <div class="smat-stratum1-display">
-              <div id="seal-status-out" class="smat-sdb-status-ok">
-                {isEs
-                  ? 'Rama 02A Viable (Sellado Seco Expeller • 0 L/min agua • Hs/Hd = 11.4%): Margen centrífugo positivo.'
-                  : 'Branch 02A Viable (Dry Expeller Seal • 0 L/min gland water • Hs/Hd = 11.4%): Positive centrifugal margin.'}
-              </div>
-              <div class="smat-sdb-kpi-grid">
-                <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Contrapresión Expeller:' : 'Expeller Pressure:'}</strong> <span id="seal-pexp-out">118.4 kPa</span></div>
-                <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Presión Caja Estopas:' : 'Stuffing Box Pressure:'}</strong> <span id="seal-pbox-out">88.8 kPa</span></div>
-                <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Agua de Sello Req.:' : 'Flush Water Req.:'}</strong> <span id="seal-pwater-out">{isEs ? '0 L/min (Seco 02A)' : '0 L/min (Dry 02A)'}</span></div>
-                <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Rama Recomendada:' : 'Recommended Branch:'}</strong> <span id="seal-branch-out">{isEs ? '02A · Expeller Centrífugo Seco' : '02A · Dry Expeller Seal'}</span></div>
-              </div>
-            </div>
-
-            <div class="smat-inputs-2col smat-sdb-inputs-box">
-              <label class="smat-sdb-field">
-                <span>{isEs ? 'Carga Total TDH (m):' : 'Total Head TDH (m):'}</span>
-                <input type="number" id="seal-hd-m" min="5" max="110" step="1" value="28" class="smat-sdb-ctrl" />
-              </label>
-              <label class="smat-sdb-field">
-                <span>{isEs ? 'Carga Succión Hs (m):' : 'Suction Head Hs (m):'}</span>
-                <input type="number" id="seal-hs-m" min="0" max="25" step="0.5" value="3.2" class="smat-sdb-ctrl" />
-              </label>
-              <label class="smat-sdb-field">
-                <span>Ø Expeller (mm):</span>
-                <input type="number" id="seal-exp-dia" min="140" max="520" step="10" value="280" class="smat-sdb-ctrl" />
-              </label>
-              <label class="smat-sdb-field">
-                <span>{isEs ? 'Velocidad Bomba (RPM):' : 'Pump Speed (RPM):'}</span>
-                <input type="number" id="seal-rpm" min="400" max="2200" step="25" value="1150" class="smat-sdb-ctrl" />
-              </label>
-              <label class="smat-sdb-field">
-                <span>{isEs ? 'Densidad Pulpa (SG_m):' : 'Slurry Density (SG_m):'}</span>
-                <input type="number" id="seal-sg" min="1.05" max="2.20" step="0.02" value="1.38" class="smat-sdb-ctrl" />
-              </label>
-            </div>
-
-            <div class="smat-sdb-actions">
-              <a href={`${quoteBase}?circuito=bombeo&equipo=kit_sellado&pieza=expeller_sello&seal_branch=expeller_dry&estacion=S2#rfq`} class="btn btn-primary smat-sdb-btn-tall">
-                {isEs ? 'Cotizar Sellado Calibrado →' : 'Quote Calibrated Sealing →'}
-              </a>
-              <button
-                type="button"
-                class="btn btn-outline btn-avenue-tray smat-sdb-btn-tall"
-                data-vertical-tray-btn
-                data-add-tray-sku="SMAT-SEAL-EXPELLER"
-                data-tray-part-code="E4028"
-                data-tray-title={isEs ? 'Sistema Sellado Expeller Calibrado (02A)' : 'Calibrated Expeller Seal System (02A)'}
-                data-tray-series="02A"
-                data-tray-material="A05"
-                data-tray-circuit="bombeo"
-                data-tray-source="seal_stratum1_calc"
-              >
-                {isEs ? '+ Sumar SKU Calibrado a Bandeja' : '+ Add Calibrated SKU to Tray'}
-              </button>
-            </div>
-
+          {variant === 'seal' && (
             <div class="grid-2 smat-sdb-branch-grid">
               <div class="smat-sdb-branch-card">
                 <span class="font-mono-tech smat-sdb-branch-ok">{isEs ? '[ESTACIÓN 02A — SELLADO SECO EXPELLER]' : '[STATION 02A — DRY EXPELLER SEAL]'}</span>
                 <strong class="smat-sdb-card-title">{isEs ? 'Expulsor Centrífugo Seco (Cero Agua de Sello)' : 'Dry Centrifugal Expeller (Zero Gland Water)'}</strong>
                 <p class="smat-sdb-branch-copy">
                   {isEs
-                    ? 'Recomendado cuando la presión de succión P_s ≤ 18% de la carga total H y velocidad fija o VFD ≥ 70% RPM nominal. Evita diluir el %Cw hacia hidrociclones y flotación.'
-                    : 'Recommended when suction head P_s ≤ 18% of total head H and fixed speed or VFD ≥ 70% nominal RPM. Prevents %Cw dilution feeding hydrocyclones and flotation.'}
+                    ? 'Recomendado cuando P_s ≤ 18% de carga total H y velocidad fija o VFD ≥ 70%. Evita diluir el %Cw hacia hidrociclones y flotación.'
+                    : 'Recommended when suction head P_s ≤ 18% of total head H and speed ≥ 70%. Prevents %Cw dilution feeding hydrocyclones and flotation.'}
                 </p>
                 <a href={`${quoteBase}?circuito=bombeo&equipo=kit_sellado&seal_branch=expeller_dry&estacion=S2#rfq`} data-card-fixed-params="seal_branch" class="btn btn-primary smat-sdb-branch-cta">
                   {isEs ? 'Configurar Estación 02A (Seco) →' : 'Configure Station 02A (Dry) →'}
@@ -151,301 +103,19 @@ const driveArrangements = variant === 'skid' ? Object.values(DRIVE_ARRANGEMENT_C
               </div>
               <div class="smat-sdb-branch-card">
                 <span class="font-mono-tech smat-sdb-branch-wet">{isEs ? '[ESTACIÓN 02B — PRENSAESTOPAS HÚMEDO]' : '[STATION 02B — FLUSHED GLAND PACKING]'}</span>
-                <strong class="smat-sdb-card-title">{isEs ? 'Prensaestopa Húmedo (Flushing con Anillo Linterna)' : 'Wet Packed Stuffing Box (Lantern Ring Flushing)'}</strong>
+                <strong class="smat-sdb-card-title">{isEs ? 'Prensaestopa Húmedo (Anillo Linterna)' : 'Wet Packed Stuffing Box (Lantern Ring)'}</strong>
                 <p class="smat-sdb-branch-copy">
                   {isEs
-                    ? 'Requerido en bombas en serie (etapa 2+), carga positiva de succión P_s > 18% H o variador de frecuencia VFD a baja velocidad donde cae ω² del expulsor.'
-                    : 'Required in multi-stage pumps (stage 2+), high suction head P_s > 18% H, or low-speed VFD service where ω² expeller head drops.'}
+                    ? 'Requerido en bombas en serie (etapa 2+), carga positiva de succión P_s > 18% H o VFD a baja velocidad.'
+                    : 'Required in multi-stage pumps (stage 2+), high suction head P_s > 18% H, or low-speed VFD service.'}
                 </p>
                 <a href={`${quoteBase}?circuito=bombeo&equipo=kit_sellado&seal_branch=gland_water&estacion=S2#rfq`} data-card-fixed-params="seal_branch" class="btn btn-outline smat-sdb-branch-cta">
                   {isEs ? 'Configurar Estación 02B (Húmedo) →' : 'Configure Station 02B (Wet) →'}
                 </a>
               </div>
             </div>
-          </div>
-        )}
-
-        {variant === 'skid' && (
-          <details class="skid-kinematics-calibrator" id="stratum1-skid-sim" data-skid-kinematics open data-stratum-1-instrument>
-            <summary class="skid-kinematics-calibrator__summary">
-              <span class="skid-kinematics-calibrator__badge">{isEs ? 'SIMULADOR CINEMÁTICO ISO 281' : 'ISO 281 KINEMATICS SIMULATOR'}</span>
-              <span class="skid-kinematics-calibrator__title">
-                {isEs
-                  ? 'Relación de Poleas V-Belt, Velocidad Periférica u₂, Material Húmedo (A05 / R55 / U01 / SiC / Híbrido) y Vida L₁₀h'
-                  : 'V-Belt Sheave Ratio, Tip Speed u₂, Wet-End Metallurgy (A05 / R55 / U01 / SiC / Hybrid) & Bearing Life L₁₀h'}
-              </span>
-              <span class="skid-kinematics-calibrator__hint">{isEs ? 'Instrumento activo ▾' : 'Active instrument ▾'}</span>
-            </summary>
-
-            <div class="skid-kinematics-calibrator__body">
-              <div class="smat-stratum1-display">
-                <div class="skid-kinematics-calibrator__metrics">
-                  <div class="kin-metric-card">
-                    <span class="kin-metric-card__kicker">{isEs ? 'VELOCIDAD EN EJE BOMBA' : 'PUMP SHAFT SPEED'}</span>
-                    <strong id="wb-kin-pump-rpm" class="kin-metric-card__val" data-kin-rpm data-kin-pump-rpm>1001 RPM</strong>
-                    <span class="kin-metric-card__sub" data-kin-ratio>{isEs ? 'Motor 1780 RPM • Relación 0.56×' : 'Motor 1780 RPM • Ratio 0.56×'}</span>
-                  </div>
-                  <div class="kin-metric-card">
-                    <span class="kin-metric-card__kicker">{isEs ? 'VELOCIDAD PERIFÉRICA (u₂)' : 'PERIPHERAL TIP SPEED (u₂)'}</span>
-                    <strong id="wb-kin-u2" class="kin-metric-card__val" data-kin-u2>19.92 m/s</strong>
-                    <span class="kin-metric-card__sub" data-kin-u2-status>{isEs ? 'Dentro de límite elástico de Hule y A05' : 'Within Rubber & A05 elastic envelope'}</span>
-                    <div class="kin-metric-card__sub smat-sdb-hybrid-note" data-kin-hybrid-note></div>
-                  </div>
-                  <div class="kin-metric-card">
-                    <span class="kin-metric-card__kicker">{isEs ? 'CARGA RADIAL BANDAS (Fᵣ)' : 'RADIAL BELT LOAD (Fᵣ)'}</span>
-                    <strong id="wb-kin-fr" class="kin-metric-card__val" data-kin-fr>6.71 kN</strong>
-                    <span class="kin-metric-card__sub" data-kin-fr-sub data-kin-load-p>{isEs ? 'Carga eq. P = 14.37 kN • Huella 1.00×' : 'Eq. load P = 14.37 kN • Footprint 1.00×'}</span>
-                  </div>
-                  <div class="kin-metric-card">
-                    <span class="kin-metric-card__kicker">{isEs ? 'VIDA ISO 281 (L₁₀h / L₁₀ₘₕ LABERINTO)' : 'ISO 281 BEARING LIFE (L₁₀h / LABYRINTH)'}</span>
-                    <strong id="wb-kin-l10h" class="kin-metric-card__val" data-kin-l10h>42,800 h</strong>
-                    <span class="kin-metric-card__sub" data-kin-l10mh>{isEs ? 'L₁₀ₘₕ Laberinto: 53,500 h vs Fieltro: 9,416 h' : 'L₁₀ₘₕ Labyrinth: 53,500 h vs Felt: 9,416 h'}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="smat-inputs-2col skid-kinematics-calibrator__controls">
-                <label class="kin-field">
-                  <span>{isEs ? 'Arreglo de Transmisión:' : 'Drive Arrangement:'}</span>
-                  <select id="wb-drive-arrangement" data-kin-arrangement>
-                    <option value="CV" selected>{isEs ? 'CV — Motor Superior (Overhead)' : 'CV — Overhead Piggyback Motor'}</option>
-                    <option value="ZVZ">{isEs ? 'ZVZ — Motor Trasero Elevado' : 'ZVZ — Elevated Rear Motor'}</option>
-                    <option value="CRZ">{isEs ? 'CRZ — Motor Lateral en Base' : 'CRZ — Side-by-Side Base Motor'}</option>
-                    <option value="DC">{isEs ? 'DC — Acoplamiento Directo (Fr = 0 kN)' : 'DC — Direct Inline Coupling (Fr = 0 kN)'}</option>
-                  </select>
-                </label>
-                <label class="kin-field">
-                  <span>{isEs ? 'Velocidad Motor Eléctrico (RPM):' : 'Electric Motor Speed (RPM):'}</span>
-                  <select id="wb-motor-rpm" data-kin-motor-rpm>
-                    <option value="1780" selected>{isEs ? '1780 RPM (4 Polos • 60 Hz)' : '1780 RPM (4-Pole • 60 Hz)'}</option>
-                    <option value="1480">{isEs ? '1480 RPM (4 Polos • 50 Hz / VFD)' : '1480 RPM (4-Pole • 50 Hz / VFD)'}</option>
-                    <option value="1180">{isEs ? '1180 RPM (6 Polos • 60 Hz)' : '1180 RPM (6-Pole • 60 Hz)'}</option>
-                  </select>
-                </label>
-                <label class="kin-field">
-                  <span>{isEs ? 'Polea Motriz Motor (mm):' : 'Driver Motor Sheave (mm):'} <strong data-kin-driver-val>180 mm</strong></span>
-                  <input type="range" id="wb-driver-pulley" min="120" max="380" step="10" value="180" data-kin-driver data-kin-driver-mm="true" />
-                </label>
-                <label class="kin-field">
-                  <span>{isEs ? 'Polea Conducida Bomba (mm):' : 'Driven Pump Sheave (mm):'} <strong data-kin-driven-val>320 mm</strong></span>
-                  <input type="range" id="wb-driven-pulley" min="160" max="560" step="10" value="320" data-kin-driven data-kin-driven-mm="true" />
-                </label>
-                <label class="kin-field">
-                  <span>{isEs ? 'Potencia en Flecha (kW):' : 'Shaft Power (kW):'} <strong data-kin-power-val>45 kW (60 HP)</strong></span>
-                  <input type="range" id="wb-shaft-power" min="15" max="315" step="5" value="45" data-kin-power data-kin-power-kw="true" />
-                </label>
-                <label class="kin-field">
-                  <span>{isEs ? 'Diámetro Impulsor ØD₂:' : 'Impeller Diameter ØD₂:'}</span>
-                  <select data-kin-impeller>
-                    <option value="270">{isEs ? '270 mm — Serie 3x2 / 4x3 (D3147)' : '270 mm — 3x2 / 4x3 Series (D3147)'}</option>
-                    <option value="380" selected>{isEs ? '380 mm — Serie 6x4 (E4147)' : '380 mm — 6x4 Series (E4147)'}</option>
-                    <option value="510">{isEs ? '510 mm — Serie 8x6 (F6147)' : '510 mm — 8x6 Series (F6147)'}</option>
-                    <option value="640">{isEs ? '640 mm — Serie 10x8 (G8147)' : '640 mm — 10x8 Series (G8147)'}</option>
-                  </select>
-                </label>
-                <label class="kin-field">
-                  <span>{isEs ? 'Material en Contacto Húmedo (5/5):' : 'Wet-End Material (5/5):'}</span>
-                  <select data-kin-material>
-                    <option value="alto_cromo_cr27" selected>{isEs ? 'Alto Cromo 27% A05 (u₂ máx 32.0 m/s)' : '27% High Chrome A05 (u₂ max 32.0 m/s)'}</option>
-                    <option value="hule_natural">{isEs ? 'Hule Natural R55 (u₂ máx 24.5 m/s)' : 'Natural Rubber R55 (u₂ max 24.5 m/s)'}</option>
-                    <option value="poliuretano">{isEs ? 'Poliuretano U01 (u₂ máx 26.0 m/s)' : 'Polyurethane U01 (u₂ max 26.0 m/s)'}</option>
-                    <option value="ceramica_sic">{isEs ? 'Cerámica Carburo Silicio SiC (u₂ máx 28.0 m/s)' : 'Silicon Carbide SiC (u₂ max 28.0 m/s)'}</option>
-                    <option value="hybrid_a05_r55">{isEs ? 'Rama D Híbrida (A05 + R55 • u₂ máx 24.5 m/s)' : 'Hybrid Branch D (A05 + R55 • u₂ max 24.5 m/s)'}</option>
-                  </select>
-                </label>
-                <label class="kin-field">
-                  <span>{isEs ? 'Capacidad Dinámica Rodamiento C (kN):' : 'Dynamic Bearing Capacity C (kN):'}</span>
-                  <input type="number" min="60" max="450" step="5" value="145" data-kin-capacity-c />
-                </label>
-              </div>
-
-              <div class="smat-sdb-actions">
-                <a
-                  href={`${quoteBase}?circuito=bombeo&equipo=skid_bomba&transmision=CV&material=alto_cromo_cr27&u2_ms=19.92&l10h=42800#rfq`}
-                  class="btn btn-primary smat-sdb-btn-tall"
-                  data-kin-cta
-                  data-quote-base={quoteBase}
-                >
-                  {isEs ? 'Cotizar Bomba con esta Cinemática →' : 'Quote Pump with This Kinematics →'}
-                </a>
-                <button
-                  type="button"
-                  class="btn btn-outline btn-avenue-tray smat-sdb-btn-tall"
-                  data-vertical-tray-btn
-                  data-add-tray-sku="SMAT-PUMP-DRIVE-SKID"
-                  data-tray-part-code="CV-6x4"
-                  data-tray-title={isEs ? 'Tren Motriz Bomba CV (6x4, 45 kW)' : 'Motor-Pump Skid CV (6x4, 45 kW)'}
-                  data-tray-series="6x4"
-                  data-tray-material="alto_cromo_cr27"
-                  data-tray-circuit="bombeo"
-                  data-tray-source="skid_stratum1_calc"
-                >
-                  {isEs ? '+ Bandeja Tren Motriz' : '+ Add Drive Assembly to Tray'}
-                </button>
-              </div>
-
-              <div data-core-tradein-widget="DAM005" data-lang={locale} class="smat-sdb-tradein-box">
-                <div class="smat-sdb-tradein-title">
-                  {isEs
-                    ? 'CANJE POR REPARABILIDAD DE NÚCLEO DAM005 (-22% / -12% REMANUFACTURA H7)'
-                    : 'SMAT DAM005 CORE TRADE-IN PROGRAM (-22% / -12% H7 REMANUFACTURING)'}
-                </div>
-                <div class="smat-sdb-tradein-grid">
-                  <label class="smat-sdb-tradein-lbl">
-                    <span>{isEs ? 'Estado de Carcasa Usada' : 'Used Housing Condition'}</span>
-                    <select data-tradein-condition data-core-tradein-condition class="smat-sdb-tradein-sel">
-                      <option value="h7_intact" selected>{isEs ? 'Carcasa Intacta Sin Fisuras (-22% • 0.78x)' : 'Intact Crack-Free Housing (-22% • 0.78x)'}</option>
-                      <option value="minor_bearing_seizure">{isEs ? 'Roce de Rodamiento / Alojamiento Recuperable (-12% • 0.88x)' : 'Bearing Seizure / Recoverable Bore (-12% • 0.88x)'}</option>
-                      <option value="cracked_housing">{isEs ? 'Carcasa Fisurada o Soldada (0% • 1.00x)' : 'Cracked or Welded Housing (0% • 1.00x)'}</option>
-                    </select>
-                  </label>
-                  <label class="smat-sdb-tradein-chk">
-                    <input type="checkbox" data-tradein-not-welded data-core-tradein-toggle checked />
-                    <span>{isEs ? 'Alojamiento H7 Sin Soldadura (ISO IT6)' : 'Unwelded H7 Bearing Bore (ISO IT6)'}</span>
-                  </label>
-                </div>
-                <div data-tradein-result data-core-tradein-badge class="smat-sdb-tradein-res">
-                  {isEs ? 'Activo: -22% Crédito por Núcleo Usado (Factor 0.78x • RMA-CORE-DAM005-INTACT)' : 'Active: -22% Core Trade-In Credit (Factor 0.78x • RMA-CORE-DAM005-INTACT)'}
-                </div>
-                <div data-tradein-co2 data-core-tradein-note class="smat-sdb-tradein-note">
-                  {isEs
-                    ? 'Retorno en Almacén Central: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (35 kg CO₂e ahorrados)'
-                    : 'Physical return at Central Warehouse: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (35 kg CO₂e saved)'}
-                </div>
-              </div>
-
-              <div class="skid-kinematics-calibrator__alert" data-kin-rubber-alert>
-                <div>
-                  <strong>{isEs ? 'ALERTA DE VELOCIDAD PERIFÉRICA:' : 'PERIPHERAL TIP SPEED ALERT:'}</strong>{' '}
-                  {isEs
-                    ? 'La velocidad periférica supera 24.5 m/s en Hule Natural (R55), provocando delaminación térmica por histéresis viscoelástica.'
-                    : 'Peripheral tip speed exceeds 24.5 m/s in Natural Rubber (R55), causing viscoelastic hysteresis blistering.'}
-                </div>
-                <button type="button" class="btn btn-primary" data-kin-switch-a05>
-                  {isEs ? 'Cambiar a Alto Cromo A05 (≥650 HB)' : 'Switch to High Chrome A05 (≥650 HB)'}
-                </button>
-              </div>
-            </div>
-          </details>
-        )}
-
-        {variant === 'bearing' && (
-          <div class="card smat-sdb-sim-card" id="stratum1-bearing-inspector" data-bearing-inspector data-stratum-1-instrument>
-            <div class="smat-sdb-sim-head">
-              <span class="badge badge-copper">{isEs ? 'MEMORIA ISO 281:2007 (p = 10/3)' : 'ISO 281:2007 RATING (p = 10/3)'}</span>
-              <span class="font-mono-tech smat-sdb-formula">L₁₀ₘₕ = a_ISO(e_c·C_u/P, κ) · (C/P)^(10/3)</span>
-            </div>
-            <h2 class="smat-sdb-sim-title">
-              {isEs
-                ? 'Inspector de Vida Modificada L₁₀ₘₕ (Sello Laberinto vs Fieltro Contaminado) y Carga Radial Fᵣ'
-                : 'Modified Bearing Life L₁₀ₘₕ Inspector (Labyrinth Seal vs Contaminated Felt) & Radial Belt Load Fᵣ'}
-            </h2>
-
-            <div class="smat-stratum1-display">
-              <div class="smat-sdb-kpi-grid">
-                <div class="smat-sdb-bear-ok">
-                  <span class="font-mono-tech smat-sdb-kicker-ok">{isEs ? 'VIDA MODIFICADA SELLO LABERINTO SMAT' : 'MODIFIED LIFE SMAT LABYRINTH SEAL'}</span>
-                  <div id="wb-bear-l10mh-lab" class="smat-sdb-val-ok" data-bear-l10mh-lab>52,438 h (a_ISO = 1.25×)</div>
-                  <div id="wb-kin-l10h" class="smat-sdb-sub-ok" data-bear-l10h>{isEs ? 'Base ISO 281 L₁₀h = 41,950 h (e_c ≥ 0.6)' : 'ISO 281 Base L₁₀h = 41,950 h (e_c ≥ 0.6)'}</div>
-                </div>
-                <div class="smat-sdb-bear-neu">
-                  <span class="font-mono-tech smat-sdb-kicker-neu">{isEs ? 'CARGA RADIAL BANDAS (Fᵣ) Y P_eq' : 'RADIAL BELT LOAD (Fᵣ) & P_eq'}</span>
-                  <div id="wb-kin-fr" class="smat-sdb-val-neu" data-bear-fr>6.71 kN (P = 14.81 kN)</div>
-                  <div class="smat-sdb-sub-neu" data-bear-rpm>n₂ = 1001 RPM • u₂ = 19.92 m/s</div>
-                </div>
-                <div class="smat-sdb-bear-warn">
-                  <span class="font-mono-tech smat-sdb-kicker-warn">{isEs ? 'RIESGO RETENES DE FIELTRO CONTAMINADOS' : 'CONTAMINATED FELT SEAL RISK'}</span>
-                  <div id="wb-bear-l10mh-contam" class="smat-sdb-val-warn" data-bear-l10mh-cont data-bear-l10mh-contam>9,229 h (a_ISO = 0.22×)</div>
-                  <div class="smat-sdb-sub-warn">{isEs ? 'Ingresión de sílice (e_c ≤ 0.1) reduce vida -82%' : 'Silica ingress (e_c ≤ 0.1) cuts life by -82%'}</div>
-                </div>
-                <div class="smat-sdb-bear-info">
-                  <span class="font-mono-tech smat-sdb-kicker-info">{isEs ? 'BASTIDOR RECOMENDADO (P_max / n_max / Ø EJE)' : 'RECOMMENDED FRAME (P_max / n_max / SHAFT Ø)'}</span>
-                  <div class="smat-sdb-val-info" data-bear-frame-spec>{isEs ? 'Bastidor Serie D (DAM005 • Ø Eje 75 mm)' : 'Frame Series D (DAM005 • Shaft Ø 75 mm)'}</div>
-                  <div class="smat-sdb-sub-info" data-bear-frame-limits>P_max = 110 kW • n_max = 1400 RPM • C_din = 215 kN</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="smat-inputs-2col smat-sdb-inputs-box">
-              <label class="smat-sdb-field">
-                <span>{isEs ? 'Arreglo Motriz (Transmisión):' : 'Drive Arrangement:'}</span>
-                <select id="wb-drive-arrangement" data-bear-arr data-kin-arrangement class="smat-sdb-ctrl">
-                  <option value="CV" selected>{isEs ? 'CV — Motor Superior (Overhead)' : 'CV — Overhead Motor'}</option>
-                  <option value="ZVZ">{isEs ? 'ZVZ — Motor Trasero Elevado' : 'ZVZ — Elevated Rear Motor'}</option>
-                  <option value="CRZ">{isEs ? 'CRZ — Motor Lateral en Base' : 'CRZ — Side-by-Side Base Motor'}</option>
-                  <option value="DC">{isEs ? 'DC — Acoplamiento Directo (Fᵣ = 0 kN)' : 'DC — Direct Inline Coupling (Fᵣ = 0 kN)'}</option>
-                </select>
-              </label>
-              <label class="smat-sdb-field">
-                <span>{isEs ? 'Capacidad Dinámica C (kN):' : 'Dynamic Capacity C (kN):'}</span>
-                <select data-bear-c class="smat-sdb-ctrl">
-                  <option value="95">{isEs ? '95 kN — Serie 3x2" / 4x3"' : '95 kN — 3x2" / 4x3" Series'}</option>
-                  <option value="195" selected>{isEs ? '195 kN — Serie 6x4"' : '195 kN — 6x4" Series'}</option>
-                  <option value="285">{isEs ? '285 kN — Serie 8x6"' : '285 kN — 8x6" Series'}</option>
-                  <option value="390">{isEs ? '390 kN — Serie 10x8" / 12x10"' : '390 kN — 10x8" / 12x10" Series'}</option>
-                </select>
-              </label>
-              <label class="smat-sdb-field">
-                <span>{isEs ? 'Potencia en Eje P (kW):' : 'Shaft Power P (kW):'} <strong data-bear-kw-lbl>45 kW</strong></span>
-                <input type="range" id="wb-shaft-power" min="15" max="250" step="5" value="45" data-bear-kw data-bear-power-kw="true" />
-              </label>
-            </div>
-
-            <div class="smat-sdb-actions">
-              <a
-                href={`${quoteBase}?circuito=bombeo&equipo=kit_rodamientos&pieza=bearing_assembly&estacion=S1&transmision=CV&cap_c_kn=195&l10h=41950#rfq`}
-                class="btn btn-primary smat-sdb-btn-tall"
-                data-bear-cta
-              >
-                {isEs ? 'Cotizar Bearing Assembly Calibrado →' : 'Quote Calibrated Bearing Assembly →'}
-              </a>
-              <button
-                type="button"
-                class="btn btn-outline btn-avenue-tray smat-sdb-btn-tall"
-                data-vertical-tray-btn
-                data-add-tray-sku="SMAT-PUMP-BRG-005M"
-                data-tray-part-code="DAM005"
-                data-tray-title={isEs ? 'Cartucho Rodamientos Completo (DAM005)' : 'Complete Bearing Assembly Cartridge (DAM005)'}
-                data-tray-series="CV"
-                data-tray-material="GGG40"
-                data-tray-circuit="bombeo"
-                data-tray-source="bearing_stratum1_calc"
-              >
-                {isEs ? '+ Sumar SKU Calibrado a Bandeja' : '+ Add Calibrated SKU to Tray'}
-              </button>
-            </div>
-
-            <div data-core-tradein-widget="DAM005" data-lang={locale} class="smat-sdb-tradein-box">
-              <div class="smat-sdb-tradein-title">
-                {isEs
-                  ? 'PROGRAMA SMAT CORE TRADE-IN DAM005 (-22% / -12% REMANUFACTURA H7)'
-                  : 'SMAT DAM005 CORE TRADE-IN PROGRAM (-22% / -12% H7 REMANUFACTURING)'}
-              </div>
-              <div class="smat-sdb-tradein-grid">
-                <label class="smat-sdb-tradein-lbl">
-                  <span>{isEs ? 'Estado de Carcasa Usada' : 'Used Housing Condition'}</span>
-                  <select data-tradein-condition data-core-tradein-condition class="smat-sdb-tradein-sel">
-                    <option value="h7_intact" selected>{isEs ? 'Carcasa Íntegra Sin Fisuras (-22% • 0.78x)' : 'Intact Crack-Free Housing (-22% • 0.78x)'}</option>
-                    <option value="minor_bearing_seizure">{isEs ? 'Rodamiento Amarrado / Pista Recuperable (-12% • 0.88x)' : 'Bearing Seizure / Recoverable Bore (-12% • 0.88x)'}</option>
-                    <option value="cracked_housing">{isEs ? 'Carcasa Fracturada o Soldada (0% • 1.00x)' : 'Cracked or Welded Housing (0% • 1.00x)'}</option>
-                  </select>
-                </label>
-                <label class="smat-sdb-tradein-chk">
-                  <input type="checkbox" data-tradein-not-welded data-core-tradein-toggle checked />
-                  <span>{isEs ? 'Alojamiento H7 sin soldadura (ISO IT6)' : 'Unwelded H7 Bearing Bore (ISO IT6)'}</span>
-                </label>
-              </div>
-              <div data-tradein-result data-core-tradein-badge class="smat-sdb-tradein-res">
-                {isEs ? 'Activo: -22% Crédito Core Trade-In (Factor 0.78x • RMA-CORE-DAM005-INTACT)' : 'Active: -22% Core Trade-In Credit (Factor 0.78x • RMA-CORE-DAM005-INTACT)'}
-              </div>
-              <div data-tradein-co2 data-core-tradein-note class="smat-sdb-tradein-note">
-                {isEs
-                  ? 'Recepción física en Almacén Central: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (35 kg CO₂e evitados)'
-                  : 'Physical return at Central Warehouse: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (35 kg CO₂e saved)'}
-              </div>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
 
         <TechnicalDiagrams diagram={variant === 'seal' ? 'expeller' : variant === 'skid' ? 'pump' : 'bearing'} lang={locale} />
 
@@ -456,53 +126,21 @@ const driveArrangements = variant === 'skid' ? Object.values(DRIVE_ARRANGEMENT_C
                 <h2>{isEs ? 'Por Qué Empleamos Expulsor y Prensaestopa (Sin Sello Mecánico)' : 'Why We Use Centrifugal Expellers & Stuffing Boxes (No Mechanical Seals)'}</h2>
                 <p>
                   {isEs
-                    ? 'En el bombeo de lodos minerales con reactivos corrosivos y sólidos en suspensión, los sellos mecánicos de caras planas se fracturan o se atascan rápidamente. Nuestras bombas para lodos utilizan un expulsor centrífugo combinado con anillo expulsor y prensaestopa de empaquetadura trenzada, permitiendo operar en seco sin inyectar agua externa que diluya la pulpa.'
-                    : 'In mineral slurry pumping with corrosive reagents and abrasive suspended solids, delicate flat-face mechanical seals rapidly fracture or seize. Our slurry pumps use a centrifugal expeller paired with an expeller ring and braided-packing stuffing box, operating dry without external gland water that would dilute the process slurry.'}
+                    ? 'En el bombeo de lodos minerales con sólidos abrasivos, los sellos mecánicos de caras planas se fracturan rápidamente. Nuestras bombas emplean expulsor centrífugo en seco o prensaestopa trenzado con camisa protegida.'
+                    : 'In abrasive mineral slurry service, flat-face mechanical seals fail prematurely. Our pumps rely on dry centrifugal expellers or braided stuffing boxes over hardened sleeves.'}
                 </p>
                 <h3 class="smat-sdb-table-heading">{isEs ? 'Componentes del Conjunto de Sellado' : 'Sealing Assembly Components'}</h3>
                 <div class="table-wrapper">
                   <table>
                     <tbody>
-                      <tr>
-                        <th>{isEs ? 'Expulsor Centrífugo' : 'Centrifugal Expeller'}</th>
-                        <td>{isEs ? 'Alto Cromo o Hule; genera un anillo de presión negativa que repele el lodo del eje' : 'High Chrome or Rubber; generates a dynamic pressure ring that repels slurry from the shaft'}</td>
-                      </tr>
-                      <tr>
-                        <th>{isEs ? 'Anillo Expulsor y Prensaestopa' : 'Expeller Ring & Stuffing Box'}</th>
-                        <td>{isEs ? 'Fundición de alta resistencia con cámara para empaquetadura y anillo linterna' : 'Heavy-duty casting housing the braided packing and lantern ring'}</td>
-                      </tr>
-                      <tr>
-                        <th>{isEs ? 'Camisa de Flecha' : 'Shaft Sleeve'}</th>
-                        <td>{isEs ? 'Acero inoxidable endurecido para proteger la flecha del Bearing Assembly' : 'Hardened stainless steel sleeve protecting the Bearing Assembly shaft'}</td>
-                      </tr>
-                      <tr>
-                        <th>{isEs ? 'Empaquetadura' : 'Braided Packing'}</th>
-                        <td>{isEs ? 'Fibra sintética con PTFE y grafito para cierre secundario en paro' : 'PTFE and graphite synthetic packing for static shutdown sealing'}</td>
-                      </tr>
+                      <tr><th>{isEs ? 'Expulsor Centrífugo' : 'Centrifugal Expeller'}</th><td>{isEs ? 'Alto Cromo o Hule; genera contrapresión dinámica' : 'High Chrome or Rubber; generates dynamic counter-pressure'}</td></tr>
+                      <tr><th>{isEs ? 'Anillo y Prensaestopa' : 'Expeller Ring & Stuffing Box'}</th><td>{isEs ? 'Cámara para empaquetadura y anillo linterna' : 'Heavy casting housing packing & lantern ring'}</td></tr>
+                      <tr><th>{isEs ? 'Camisa de Flecha' : 'Shaft Sleeve'}</th><td>{isEs ? 'Acero inoxidable endurecido / recubrimiento HVOF' : 'Hardened stainless steel / HVOF sleeve'}</td></tr>
                     </tbody>
                   </table>
                 </div>
               </div>
               <div>
-                <div class="card smat-sdb-side-card">
-                  <h3>{isEs ? 'Cero Dilución de Pulpa' : 'Zero Slurry Dilution'}</h3>
-                  <p>
-                    {isEs
-                      ? 'El sellado por expulsor centrífugo evita introducir agua de sello al circuito, manteniendo estable la densidad de pulpa hacia los hidrociclones y las celdas de flotación.'
-                      : 'Centrifugal expeller sealing eliminates external gland water injection, preserving pulp density stability feeding hydrocyclones and flotation banks.'}
-                  </p>
-                  <div class="smat-sdb-side-actions">
-                    <a href={`${quoteBase}?circuito=bombeo&equipo=kit_sellado&pieza=expeller_sello&seal_branch=expeller_dry&estacion=S2#rfq`} class="btn btn-primary smat-sdb-full-btn">
-                      {isEs ? 'Cotizar Expulsor Centrífugo (Est. 02A Seco) →' : 'Quote Centrifugal Expeller (St. 02A Dry) →'}
-                    </a>
-                    <a href={`${quoteBase}?circuito=bombeo&equipo=kit_sellado&pieza=expeller_sello&seal_branch=gland_water&estacion=S2#rfq`} class="btn btn-outline smat-sdb-full-btn">
-                      {isEs ? 'Cotizar Prensaestopa Húmedo (Est. 02B) →' : 'Quote Wet Gland Packing (St. 02B) →'}
-                    </a>
-                    <a href={isEs ? '/bombeo/#como-se-arma-una-bomba' : '/en/pumping/#how-a-slurry-pump-is-assembled'} class="btn btn-outline smat-sdb-full-btn">
-                      {isEs ? 'Ver Estación 2 en Reporte de Armado →' : 'View Station 2 in Assembly Report →'}
-                    </a>
-                  </div>
-                </div>
                 {dc && (
                   <div class="card smat-sdb-criteria-card" data-testid="role-decision-criteria">
                     <span class="font-mono-tech smat-sdb-criteria-eyebrow">
@@ -517,29 +155,19 @@ const driveArrangements = variant === 'skid' ? Object.values(DRIVE_ARRANGEMENT_C
             </div>
 
             <div class="smat-sdb-diagram-gap" data-testid="seal-atomic-parts">
-              <h2>
-                {isEs
-                  ? 'Refacciones Atómicas de Sellado Verificadas en Almacén Durango (DAM028 / EAM028)'
-                  : 'Verified Atomic Sealing Spares at Durango Warehouse (DAM028 / EAM028)'}
-              </h2>
+              <h2>{isEs ? 'Refacciones Atómicas de Sellado (DAM028 / EAM028)' : 'Atomic Sealing Spares (DAM028 / EAM028)'}</h2>
               <div class="grid-2 smat-sdb-atomic-grid">
                 {sealParts.map((sp) => (
                   <div class="card smat-sdb-atomic-card">
                     <div class="smat-sdb-atomic-head">
                       <span class="badge badge-copper">{sp.part_number} ({sp.smat_code})</span>
-                      <span class="font-mono-tech smat-sdb-atomic-mass">{sp.weight_kg} kg • {sp.niosh_handling_mode} (LI={sp.niosh_lifting_index_shaft})</span>
+                      <span class="font-mono-tech smat-sdb-atomic-mass">{sp.weight_kg} kg • {sp.niosh_handling_mode}</span>
                     </div>
                     <strong class="smat-sdb-card-title">{isEs ? sp.name_es : sp.name_en}</strong>
                     <p class="smat-sdb-atomic-copy">{isEs ? sp.summary_es : sp.summary_en}</p>
-                    <div class="font-mono-tech smat-sdb-atomic-meta">
-                      {isEs ? 'Serie' : 'Series'} {sp.pipe_size.toUpperCase()} ({sp.frame}) • {isEs ? 'Espesor' : 'Wall'} {sp.wall_thickness_mm} mm • {isEs ? 'Estación' : 'Station'} 0{sp.station_number} ({sp.assembly_order_note})
-                    </div>
                     <div class="smat-sdb-atomic-actions">
                       <a href={isEs ? `/catalogo/${sp.code}/` : `/en/catalog/${sp.code}/`} class="btn btn-outline">
-                        {isEs ? `Ver Ficha ${sp.part_number} →` : `View ${sp.part_number} Sheet →`}
-                      </a>
-                      <a href={`${quoteBase}?codigo=${sp.part_number}&circuito=bombeo&equipo=kit_sellado&serie=${sp.pipe_size}&peso_kg=${sp.weight_kg}&estacion=S${sp.station_number}#rfq`} class="btn btn-primary">
-                        {isEs ? `Cotizar ${sp.part_number} →` : `Quote ${sp.part_number} →`}
+                        {isEs ? `Ver Ficha ${sp.part_number} →` : `View ${sp.part_number} →`}
                       </a>
                       <button
                         type="button"
@@ -563,172 +191,49 @@ const driveArrangements = variant === 'skid' ? Object.values(DRIVE_ARRANGEMENT_C
         )}
 
         {variant === 'skid' && (
-          <>
-            <div class="grid-2 smat-sdb-two-col">
-              <article>
-                <h2>{isEs ? 'Configuración de la Bomba para Lodos' : 'Slurry Pump Configuration'}</h2>
-                <p>
-                  {isEs
-                    ? 'Diseñadas para operar con pulpas de alta densidad y sólidos abrasivos o corrosivos. Cada bomba integra carcasa bipartida, piezas en contacto húmedo intercambiables (impulsor, cuello, voluta y plato), sistema de sellado centrífugo por expulsor y prensaestopa (sin sello mecánico) y conjunto motriz Bearing Assembly / Housing completo.'
-                    : 'Engineered for high-density slurries with abrasive or corrosive solids. Each pump integrates a split outer casing, interchangeable wet-end wear parts (impeller, throatbush, volute liner, and frame plate liner insert), centrifugal expeller and stuffing box sealing (no mechanical seal), and a complete Bearing Assembly / Housing unit.'}
-                </p>
-                <h3 class="smat-sdb-table-heading">{isEs ? 'Especificaciones Técnicas' : 'Technical Specifications'}</h3>
-                <div class="table-wrapper">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <th>{isEs ? 'Tamaños Disponibles' : 'Available Sizes'}</th>
-                        <td>1.5x1", 2x1.5", 3x2", 4x3", 6x4", 8x6", 10x8", 12x10", 14x12"</td>
-                      </tr>
-                      <tr>
-                        <th>{isEs ? 'Materiales en Contacto Húmedo' : 'Wet-End Materials'}</th>
-                        <td>{isEs ? 'Alto Cromo 27% (A05 ≥650 HB), Hule Natural (R55), Poliuretano (U01) y Carburo de Silicio Sinterizado (SiC ≥2200 HV)' : '27% High Chrome (A05 ≥650 HB), Natural Rubber (R55), Polyurethane (U01), and Sintered Silicon Carbide (SiC ≥2200 HV)'}</td>
-                      </tr>
-                      <tr>
-                        <th>{isEs ? 'Conjunto de Rodamientos' : 'Bearing Unit'}</th>
-                        <td>{isEs ? 'Bearing Assembly / Housing completo con ajuste axial externo (L₁₀ₘₕ = 1.25× L₁₀h con sello laberinto vs 0.22× contaminado)' : 'Complete Bearing Assembly / Housing with external axial adjustment (L₁₀ₘₕ = 1.25× L₁₀h with labyrinth seal vs 0.22× contaminated)'}</td>
-                      </tr>
-                      <tr>
-                        <th>{isEs ? 'Sistema de Sellado' : 'Shaft Sealing'}</th>
-                        <td>{isEs ? 'Expulsor centrífugo en seco y prensaestopa (no emplea sello mecánico)' : 'Dry centrifugal expeller and stuffing box (no mechanical seals)'}</td>
-                      </tr>
-                      <tr>
-                        <th>{isEs ? 'Transmisión' : 'Drive Arrangement'}</th>
-                        <td>{isEs ? 'Acoplamiento por poleas y bandas en V o acoplamiento directo' : 'V-belt and pulley drive or direct coupling'}</td>
-                      </tr>
-                    </tbody>
-                  </table>
+          <div id={isEs ? 'arreglos-transmision' : 'drive-arrangements'} class="smat-sdb-diagram-gap">
+            <span id={isEs ? 'drive-arrangements' : 'arreglos-transmision'} aria-hidden="true"></span>
+            <h2>{isEs ? 'Arreglos de Transmisión y Montaje (CV / ZVZ / CRZ / DC)' : 'Base Frame Drive Arrangements (CV / ZVZ / CRZ / DC)'}</h2>
+            <TechnicalDiagrams diagram="drive_arrangements" lang={locale} />
+            <div class="grid-2 smat-sdb-arr-grid" data-drive-links="transmision=CV transmision=ZVZ transmision=CRZ transmision=DC">
+              {driveArrangements.map((arr) => (
+                <div class="card">
+                  <h3>{isEs ? arr.nameEs : arr.nameEn}</h3>
+                  <p>{isEs ? arr.descriptionEs : arr.descriptionEn}</p>
+                  <small class="smat-sdb-flood-meta" data-kin-flood>
+                    {isEs ? 'Huella:' : 'Footprint:'} {arr.footprintFactor.toFixed(2)}× • {Boolean(arr.sumpFloodImmunity) ? (isEs ? 'Motor Elevado' : 'Elevated Motor') : (isEs ? 'Nivel de base' : 'Baseplate level')}
+                  </small>
+                  <a href={`${quoteBase}?equipo=skid_bomba&transmision=${arr.code}#rfq`} class="btn btn-primary" data-card-fixed-params="transmision">
+                    {isEs ? `Cotizar Arreglo ${arr.code} →` : `Quote ${arr.code} Arrangement →`}
+                  </a>
                 </div>
-              </article>
-              <div>
-                <div class="card smat-sdb-side-card">
-                  <h3>{isEs ? 'Aplicaciones en Planta' : 'Plant Applications'}</h3>
-                  <ul>
-                    <li><strong>{isEs ? 'Descarga de Molino y Ciclones:' : 'Mill Discharge & Cyclone Feed:'}</strong> {isEs ? 'Revestimiento e impulsor en Alto Cromo para impacto severo de roca gruesa.' : 'High Chrome impeller and liners for coarse rock impact.'}</li>
-                    <li><strong>{isEs ? 'Flotación y Remolienda:' : 'Flotation & Regrind:'}</strong> {isEs ? 'Revestimientos en Hule o Poliuretano para pulpas finas y reactivos corrosivos.' : 'Rubber or Polyurethane liners for fine particles and corrosive reagents.'}</li>
-                    <li><strong>{isEs ? 'Envío de Jales y Espesadores:' : 'Tailings & Thickener Underflow:'}</strong> {isEs ? 'Operación continua en serie o etapa simple con alta carga estática.' : 'Continuous single-stage or series pumping.'}</li>
-                  </ul>
-                  <div class="smat-sdb-side-actions">
-                    <a href={`${quoteBase}?equipo=skid_bomba#rfq`} class="btn btn-primary smat-sdb-full-btn">
-                      {isEs ? 'Cotizar Bomba para Lodos →' : 'Quote Slurry Pump →'}
-                    </a>
-                    <a href={isEs ? '/bombeo/#como-se-arma-una-bomba' : '/en/pumping/#how-a-slurry-pump-is-assembled'} class="btn btn-outline smat-sdb-full-btn">
-                      {isEs ? 'Ver Reporte de Armado (14 Piezas) →' : 'View Pump Assembly Report (14 Parts) →'}
-                    </a>
-                  </div>
-                </div>
-                {dc && (
-                  <div class="card smat-sdb-criteria-card" data-testid="role-decision-criteria">
-                    <span class="font-mono-tech smat-sdb-criteria-eyebrow">
-                      {isEs ? '[CRITERIO DE DECISIÓN E INGENIERÍA]' : '[ENGINEERING DECISION CRITERIA]'}
-                    </span>
-                    <p class="smat-sdb-criteria-line"><strong>{isEs ? 'Regla Metalúrgica:' : 'Metallurgical Rule:'}</strong> {isEs ? dc.metallurgy_rule_es : dc.metallurgy_rule_en}</p>
-                    <p class="smat-sdb-criteria-line"><strong>{isEs ? 'Variables Críticas:' : 'Critical Variables:'}</strong> {isEs ? dc.required_slurry_vars_es : dc.required_slurry_vars_en}</p>
-                    <p class="smat-sdb-criteria-risk"><strong>{isEs ? 'Riesgo Evitado:' : 'Avoided Risk:'}</strong> {isEs ? dc.risk_avoided_es : dc.risk_avoided_en}</p>
-                  </div>
-                )}
+              ))}
+            </div>
+            {dc && (
+              <div class="card smat-sdb-criteria-card" data-testid="role-decision-criteria">
+                <span class="font-mono-tech smat-sdb-criteria-eyebrow">{isEs ? '[CRITERIO DE DECISIÓN E INGENIERÍA]' : '[ENGINEERING DECISION CRITERIA]'}</span>
+                <p class="smat-sdb-criteria-line"><strong>{isEs ? 'Regla Metalúrgica:' : 'Metallurgical Rule:'}</strong> {isEs ? dc.metallurgy_rule_es : dc.metallurgy_rule_en}</p>
+                <p class="smat-sdb-criteria-line"><strong>{isEs ? 'Variables Críticas:' : 'Critical Variables:'}</strong> {isEs ? dc.required_slurry_vars_es : dc.required_slurry_vars_en}</p>
+                <p class="smat-sdb-criteria-risk"><strong>{isEs ? 'Riesgo Evitado:' : 'Avoided Risk:'}</strong> {isEs ? dc.risk_avoided_es : dc.risk_avoided_en}</p>
               </div>
-            </div>
-
-            <div id={isEs ? 'arreglos-transmision' : 'drive-arrangements'} class="smat-sdb-diagram-gap">
-              <span id={isEs ? 'drive-arrangements' : 'arreglos-transmision'} aria-hidden="true"></span>
-              <h2>{isEs ? 'Arreglos de Transmisión y Montaje en Base Estructural (CV / ZVZ / CRZ / DC)' : 'Base Frame Drive & Mounting Arrangements (CV / ZVZ / CRZ / DC)'}</h2>
-              <p class="smat-sdb-arr-lead">
-                {isEs
-                  ? 'Seleccione el arreglo motriz según el espacio disponible en planta y la vida nominal L₁₀h (ISO 281) del Bearing Assembly:'
-                  : 'Select the drive arrangement matched to your plant floor footprint and target ISO 281 L₁₀h Bearing Assembly life:'}
-              </p>
-              <TechnicalDiagrams diagram="drive_arrangements" lang={locale} />
-
-              <div class="grid-2 smat-sdb-arr-grid" data-drive-links="transmision=CV transmision=ZVZ transmision=CRZ transmision=DC">
-                {driveArrangements.map((arr) => (
-                  <div class="card">
-                    <h3>{isEs ? arr.nameEs : arr.nameEn}</h3>
-                    <p>{isEs ? arr.descriptionEs : arr.descriptionEn}</p>
-                    <small class="smat-sdb-flood-meta" data-kin-flood>
-                      {isEs ? 'Huella:' : 'Footprint:'} {arr.footprintFactor.toFixed(2)}× • {isEs ? 'Inundación:' : 'Sump Flood:'}{' '}
-                      {Boolean(arr.sumpFloodImmunity)
-                        ? (isEs ? 'Motor Elevado (Inmune a salpicadura)' : 'Elevated Motor (Splash Immune)')
-                        : (isEs ? 'Nivel de base / Requiere drenaje' : 'Baseplate level / Sump drainage')}
-                    </small>
-                    <a href={`${quoteBase}?equipo=skid_bomba&transmision=${arr.code}#rfq`} class="btn btn-primary" data-card-fixed-params="transmision">
-                      {isEs ? `Cotizar Bomba Arreglo ${arr.code} →` : `Quote ${arr.code} Arrangement Pump →`}
-                    </a>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div class="smat-sdb-diagram-gap">
-              <h2>
-                {isEs
-                  ? 'Geometría de Succión, Throatbush y Calibración de Claro Axial (δ = 0.5–1.0 mm)'
-                  : 'Suction Geometry, Throatbush & Front Axial Clearance Calibration (δ = 0.5–1.0 mm)'}
-              </h2>
-              <TechnicalDiagrams diagram="suction_throatbush" lang={locale} />
-            </div>
-          </>
+            )}
+          </div>
         )}
 
         {variant === 'bearing' && (
           <div class="grid-2 smat-sdb-two-col">
             <div>
-              <h2>{isEs ? 'Un Equipo Completo Listo para Montaje' : 'A Complete Unit Ready for Installation'}</h2>
+              <h2>{isEs ? 'Cartucho Completo Listo para Montaje Drop-In' : 'Complete Cartridge Unit Ready for Drop-In Mounting'}</h2>
               <p>
                 {isEs
-                  ? 'El Bearing Assembly / Housing se suministra como una unidad completa y cerrada: incluye el cuerpo cilíndrico (housing), la flecha maquinada con rosca para el impulsor, los rodamientos de rodillos cónicos en arreglo espalda con espalda, las tapas de retén (end covers) y los sellos laberinto en ambos extremos.'
-                  : 'The Bearing Assembly / Housing is supplied as a complete, pre-assembled unit: it includes the cylindrical cast housing, precision-machined shaft with impeller thread, back-to-back tapered roller bearings, end covers, and labyrinth seals at both ends.'}
+                  ? 'El Bearing Assembly / Housing integra cuerpo cilíndrico nodular, flecha maquinada SAE 4140, doble hilera de rodamientos cónicos y sellos laberinto.'
+                  : 'The Bearing Assembly / Housing combines a ductile iron barrel, SAE 4140 shaft, back-to-back tapered rollers, and labyrinth seals.'}
               </p>
-              <h3 class="smat-sdb-table-heading">{isEs ? 'Componentes del Bearing Assembly / Housing' : 'Bearing Assembly / Housing Components'}</h3>
-              <div class="table-wrapper">
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>{isEs ? 'Presentación' : 'Configuration'}</th>
-                      <td>{isEs ? 'Cartucho completo ensamblado (Bearing Assembly / Housing)' : 'Complete assembled cartridge (Bearing Assembly / Housing)'}</td>
-                    </tr>
-                    <tr>
-                      <th>{isEs ? 'Carcasa (Housing)' : 'Housing'}</th>
-                      <td>{isEs ? 'Fundición nodular con orejas de izaje y orejeta inferior para tornillo de ajuste axial' : 'Ductile iron cylindrical barrel with lifting lugs and bottom axial adjustment lug'}</td>
-                    </tr>
-                    <tr>
-                      <th>{isEs ? 'Flecha (Shaft)' : 'Shaft'}</th>
-                      <td>{isEs ? 'Acero aleado de alta resistencia con rosca de precisión lado impulsor y cuñero lado transmisión' : 'High-tensile alloy steel with precision impeller thread and drive-end keyway'}</td>
-                    </tr>
-                    <tr>
-                      <th>{isEs ? 'Rodamientos' : 'Bearings'}</th>
-                      <td>{isEs ? 'Doble hilera de rodamientos de rodillos cónicos de servicio pesado' : 'Heavy-duty double-row tapered roller bearings'}</td>
-                    </tr>
-                    <tr>
-                      <th>{isEs ? 'Sellos de Protección' : 'Sealing Protection'}</th>
-                      <td>{isEs ? 'Sellos laberinto y anillos de pistón en ambos extremos para impedir entrada de lodo o agua' : 'Labyrinth seals and piston rings at both ends to prevent slurry and moisture ingress'}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
             </div>
             <div>
-              <div class="card smat-sdb-side-card">
-                <h3>{isEs ? 'Reemplazo Completo y Ajuste Axial' : 'Drop-In Replacement & Axial Adjustment'}</h3>
-                <p>
-                  {isEs
-                    ? 'Contar con un Bearing Assembly / Housing completo en almacén permite intercambiar todo el conjunto motriz en minutos durante un mantenimiento programado, y ajustar la holgura entre el impulsor y el cuello mediante el tornillo regulador inferior.'
-                    : 'Keeping a complete Bearing Assembly / Housing in plant inventory allows maintenance crews to swap the entire drive end in minutes during a scheduled shutdown and adjust front impeller-to-throatbush clearance using the bottom adjusting screw.'}
-                </p>
-                <div class="smat-sdb-side-actions">
-                  <a href={`${quoteBase}?circuito=bombeo&equipo=kit_rodamientos&pieza=bearing_assembly&estacion=S1#rfq`} class="btn btn-primary smat-sdb-full-btn">
-                    {isEs ? 'Cotizar Bearing Assembly / Housing →' : 'Quote Bearing Assembly / Housing →'}
-                  </a>
-                  <a href={isEs ? '/bombeo/#como-se-arma-una-bomba' : '/en/pumping/#how-a-slurry-pump-is-assembled'} class="btn btn-outline smat-sdb-full-btn">
-                    {isEs ? 'Ver Estación 1 y Ajuste Axial (δ) →' : 'View Station 1 & Axial Adjustment (δ) →'}
-                  </a>
-                </div>
-              </div>
               {dc && (
                 <div class="card smat-sdb-criteria-card" data-testid="role-decision-criteria">
-                  <span class="font-mono-tech smat-sdb-criteria-eyebrow">
-                    {isEs ? '[CRITERIO DE DECISIÓN E INGENIERÍA — ESTACIÓN 01]' : '[ENGINEERING DECISION CRITERIA — STATION 01]'}
-                  </span>
+                  <span class="font-mono-tech smat-sdb-criteria-eyebrow">{isEs ? '[CRITERIO DE DECISIÓN E INGENIERÍA — ESTACIÓN 01]' : '[ENGINEERING DECISION CRITERIA — STATION 01]'}</span>
                   <p class="smat-sdb-criteria-line"><strong>{isEs ? 'Regla Metalúrgica:' : 'Metallurgical Rule:'}</strong> {isEs ? dc.metallurgy_rule_es : dc.metallurgy_rule_en}</p>
                   <p class="smat-sdb-criteria-line"><strong>{isEs ? 'Variables Críticas:' : 'Critical Variables:'}</strong> {isEs ? dc.required_slurry_vars_es : dc.required_slurry_vars_en}</p>
                   <p class="smat-sdb-criteria-risk"><strong>{isEs ? 'Riesgo Evitado:' : 'Avoided Risk:'}</strong> {isEs ? dc.risk_avoided_es : dc.risk_avoided_en}</p>
@@ -740,23 +245,23 @@ const driveArrangements = variant === 'skid' ? Object.values(DRIVE_ARRANGEMENT_C
 
         <SharePurchasing
           roleTitle={variant === 'seal'
-            ? (isEs ? 'Expulsor Centrífugo, Anillo Expulsor y Prensaestopa' : 'Centrifugal Expeller, Expeller Ring & Stuffing Box')
+            ? (isEs ? 'Expulsor Centrífugo y Prensaestopa' : 'Centrifugal Expeller & Stuffing Box')
             : variant === 'skid'
               ? (isEs ? 'Bomba Centrífuga Horizontal para Lodos' : 'Horizontal Centrifugal Slurry Pump')
               : (isEs ? 'Bearing Assembly / Housing Completo' : 'Complete Bearing Assembly / Housing')}
           series={variant === 'bearing'
-            ? (isEs ? 'Series 4x3 a 10x8 (Succión × Descarga)' : '4x3 to 10x8 Series (Suction × Discharge)')
-            : (isEs ? '1.5x1 a 14x12 (4x3, 6x4, 8x6, 10x8)' : '1.5x1 to 14x12 (4x3, 6x4, 8x6, 10x8)')}
+            ? (isEs ? 'Series 4x3 a 10x8' : '4x3 to 10x8 Series')
+            : (isEs ? '1.5x1 a 14x12' : '1.5x1 to 14x12 Series')}
           metallurgy={variant === 'seal'
-            ? (isEs ? 'Alto Cromo 27% (A05), Acero Inoxidable Endurecido y Empaquetadura PTFE/Grafito' : 'High Chrome 27% (A05), Hardened Stainless Steel & PTFE/Graphite Packing')
+            ? (isEs ? 'Alto Cromo 27% (A05) y Acero Inoxidable' : '27% High Chrome (A05) & Stainless Steel')
             : variant === 'skid'
-              ? (isEs ? 'Contacto Húmedo en Alto Cromo 27% (A05), Hule y Poliuretano' : 'Wet-End Parts in High Chrome 27% (A05), Rubber & Polyurethane')
-              : (isEs ? 'Carcasa en Fundición Nodular, Flecha de Acero Aleado y Rodamientos Cónicos' : 'Ductile Iron Housing, High-Tensile Alloy Shaft & Tapered Roller Bearings')}
+              ? (isEs ? 'Alto Cromo 27% (A05), Hule R55 y Poliuretano U01' : 'High Chrome A05, R55 Rubber & U01 Polyurethane')
+              : (isEs ? 'Fundición Nodular, Flecha SAE 4140 y Rodamientos Cónicos' : 'Ductile Iron Housing, SAE 4140 Shaft & Tapered Bearings')}
           specs={variant === 'seal'
-            ? (isEs ? 'Conjunto de sellado centrífugo en seco y prensaestopa sin sello mecánico para evitar dilución de pulpa.' : 'Dry centrifugal expeller and braided-packing stuffing box assembly (no mechanical seals) for zero slurry dilution.')
+            ? (isEs ? 'Sellado centrífugo en seco y prensaestopa sin sello mecánico.' : 'Dry centrifugal expeller and braided-packing stuffing box (no mechanical seals).')
             : variant === 'skid'
-              ? (isEs ? 'Bomba horizontal de servicio pesado con Bearing Assembly / Housing completo y sellado centrífugo por expulsor y prensaestopa.' : 'Heavy-duty horizontal slurry pump with complete Bearing Assembly / Housing and dry centrifugal expeller sealing.')
-              : (isEs ? 'Cartucho cilíndrico completo ensamblado con flecha maquinada, rodamientos de rodillos cónicos y sellos laberinto.' : 'Complete pre-assembled cylindrical cartridge with precision shaft, back-to-back tapered roller bearings, and labyrinth seals.')}
+              ? (isEs ? 'Bomba horizontal pesada con Bearing Assembly completo y expulsor centrífugo.' : 'Heavy-duty horizontal slurry pump with complete Bearing Assembly and dry expeller.')
+              : (isEs ? 'Cartucho cilíndrico ensamblado con flecha y sellos laberinto ISO 281.' : 'Pre-assembled cartridge with machined shaft and ISO 281 labyrinth seals.')}
           roleId={variant === 'seal' ? 'kit_sellado' : variant === 'skid' ? 'skid_bomba' : 'kit_rodamientos'}
           circuit="bombeo"
           lang={locale}
@@ -768,22 +273,24 @@ const driveArrangements = variant === 'skid' ? Object.values(DRIVE_ARRANGEMENT_C
       import { bindCanonicalSealBalanceCalculator } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
       import { bindAtomicPartTrayButtons } from '../../scripts/verticalStateAndCtaSyncBridge.js';
       import { initSkidKinematicsInspector, initBearingSupportInspector } from '../../scripts/verticalBidirectionalHydrationLens.js';
+      import { bindDomainSchemaRoot, projectDomainOutputs, readAllCanonicalInputs } from '../../scripts/schemaRuntimeBinder.js';
+      import { solveXdsmMultidisciplinaryDag } from '../../scripts/wizardXdsmDagSolver.js';
 
       function initSealDriveStandalone() {
-        const root = document.querySelector('[data-island-standalone="sealDrive"]');
+        const root = document.querySelector('[data-island-standalone="sealDrive"]') as HTMLElement | null;
         if (!root) return;
-        const el = root as HTMLElement;
-        const variant = el.dataset.variant || 'seal';
-        const lang = el.dataset.lang === 'en' ? 'en' : 'es';
-        if (variant === 'seal') {
-          if (el.dataset.sealBound === 'true') return;
-          el.dataset.sealBound = 'true';
+        const lang = root.dataset.lang === 'en' ? 'en' : 'es';
+        if (root.dataset.sdbAllBound !== '1') {
+          root.dataset.sdbAllBound = '1';
           bindCanonicalSealBalanceCalculator(root, lang);
-          bindAtomicPartTrayButtons(root);
-        } else if (variant === 'skid') {
           initSkidKinematicsInspector(root, lang);
-        } else {
           initBearingSupportInspector(root, lang);
+          bindAtomicPartTrayButtons(root);
+          bindDomainSchemaRoot(root, ['sealDrive'], () => {
+            const inputs = readAllCanonicalInputs(root);
+            const dag = solveXdsmMultidisciplinaryDag(inputs);
+            projectDomainOutputs(root, 'sealDrive', { ...(dag.sealBalanceEval || {}), ...(dag.driveEval || {}) }, lang);
+          });
         }
       }
 
@@ -793,510 +300,66 @@ const driveArrangements = variant === 'skid' ? Object.values(DRIVE_ARRANGEMENT_C
   </div>
 )}
 
-{!isStandalone && (
-  <div id="wb-drive-and-tradein-contextual-card" data-island-embedded="sealDrive" class="wb-ctx-card">
-    <div class="wb-ctx-head">
-      <span id="wb-drive-frame-badge" class="badge badge-copper">
-        {isEs ? 'Bastidor FRAME-D (DAM005 • Ø Flecha 65 mm • P_máx 110 kW)' : 'FRAME-D (DAM005 • Shaft Ø 65 mm • P_max 110 kW)'}
-      </span>
-      <span data-sdb-hybrid-breakdown class="font-mono-tech smat-sdb-embed-meta">
-        {isEs ? 'Rama D Híbrida: A05 + R55' : 'Hybrid Branch D: A05 + R55'}
-      </span>
-    </div>
-    <p id="wb-drive-contextual-metrics" class="smat-sdb-embed-line">
-      {isEs ? 'Arreglo CV • n₂ = 1001 RPM • u₂ = 19.92 m/s • L₁₀ₕ = 42,800 h' : 'CV Arrangement • n₂ = 1001 RPM • u₂ = 19.92 m/s • L₁₀ₕ = 42,800 h'}
-    </p>
-    <p id="wb-drive-frame-specs" class="smat-sdb-embed-line">
-      {isEs ? 'Flecha Ø65 mm • Capacidad C ≥ 195 kN • a_ISO Laberinto 1.25×' : 'Shaft Ø65 mm • Capacity C ≥ 195 kN • a_ISO Labyrinth 1.25×'}
-    </p>
-    <p data-sdb-clearance-spalling class="smat-sdb-embed-line">
-      {isEs ? 'Banda δ: 0.50–1.00 mm • Ng=0, Ns=0 • Secuencia S1→S2→S3→S4→S5' : 'Band δ: 0.50–1.00 mm • Ng=0, Ns=0 • Sequence S1→S2→S3→S4→S5'}
-    </p>
-    <div data-core-tradein-widget="DAM005" data-lang={locale} class="smat-sdb-tradein-box">
-      <label class="smat-sdb-tradein-chk">
-        <input type="checkbox" id="wb-core-tradein-toggle" data-tradein-not-welded data-core-tradein-toggle />
-        <span>{isEs ? 'Canje Núcleo DAM005 H7 Sin Soldadura (-22%)' : 'DAM005 Core Trade-In H7 Unwelded (-22%)'}</span>
-      </label>
-      <span id="wb-core-tradein-eligible" data-tradein-result class="smat-sdb-tradein-res">
-        {isEs ? 'Casco DAM005 Elegible (-22%/-12%)' : 'DAM005 Core Eligible (-22%/-12%)'}
-      </span>
-    </div>
-  </div>
+{!showVerticalShell && (
+  <SealDriveBearingCore locale={locale} initialTab="skid" showVerticalActions={false} />
 )}
 
 <style>
-  .back-link {
-    color: #7c2d12;
-    font-size: 0.88rem;
-    font-weight: 700;
-    text-decoration: none;
-  }
-  .back-link:hover {
-    text-decoration: underline;
-  }
-  .smat-sdb-badge-wrap {
-    margin-top: 0.3rem;
-  }
-  .smat-sdb-sim-card {
-    margin-bottom: 1.5rem;
-    background: #f8fafc;
-    border: 1.5px solid #cbd5e1;
-    padding: clamp(0.7rem, 1.4vw, 1.1rem);
-  }
-  .smat-sdb-sim-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    margin-bottom: 0.45rem;
-  }
-  .smat-sdb-formula {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #0c4a6e;
-  }
-  .smat-sdb-sim-title {
-    margin: 0 0 0.45rem;
-    font-size: clamp(0.98rem, 1.4vw, 1.12rem);
-  }
-  .smat-sdb-status-ok {
-    padding: 0.55rem 0.75rem;
-    border-radius: 6px;
-    background: #ecfdf5;
-    border: 1px solid #059669;
-    color: #064e3b;
-    font-family: var(--smat-font-mono);
-    font-size: 0.79rem;
-    font-weight: 700;
-  }
-  .smat-sdb-kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 0.45rem;
-    font-family: var(--smat-font-mono);
-    font-size: 0.78rem;
-  }
-  .smat-sdb-kpi-card {
-    background: #ffffff;
-    padding: 0.45rem 0.65rem;
-    border-radius: 6px;
-    border: 1px solid #cbd5e1;
-  }
-  .smat-sdb-inputs-box {
-    margin: 0.5rem 0 0.65rem;
-    padding: 0.6rem;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 0.8rem;
-  }
-  .smat-sdb-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    font-weight: 700;
-  }
-  .smat-sdb-ctrl {
-    padding: 0.35rem;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-  }
-  .smat-sdb-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-    align-items: center;
-    margin-bottom: 0.85rem;
-  }
-  .smat-sdb-btn-tall {
-    min-height: 48px;
-    display: inline-flex;
-    align-items: center;
-  }
-  .smat-sdb-branch-grid {
-    margin-top: 0.75rem;
-  }
-  .smat-sdb-branch-card {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-  }
-  .smat-sdb-branch-ok {
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: #064e3b;
-  }
-  .smat-sdb-branch-wet {
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: #0c4a6e;
-  }
-  .smat-sdb-card-title {
-    display: block;
-    margin: 0.35rem 0;
-    font-size: 0.98rem;
-    font-weight: 800;
-    color: var(--smat-text-primary);
-  }
-  .smat-sdb-branch-copy {
-    font-size: 0.85rem;
-    color: #334155;
-  }
-  .smat-sdb-branch-cta {
-    margin-top: 0.5rem;
-  }
-  .skid-kinematics-calibrator {
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    border: 1.5px solid #cbd5e1;
-    border-radius: 10px;
-    background: #f8fafc;
-    overflow: hidden;
-  }
-  .skid-kinematics-calibrator__summary {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.65rem;
-    padding: 0.85rem 1.1rem;
-    cursor: pointer;
-    list-style: none;
-  }
-  .skid-kinematics-calibrator__badge {
-    background: #0c4a6e;
-    color: #ffffff;
-    font-family: var(--smat-font-mono, monospace);
-    font-size: 0.68rem;
-    font-weight: 800;
-    padding: 0.18rem 0.5rem;
-    border-radius: 4px;
-  }
-  .skid-kinematics-calibrator__title {
-    font-size: 0.92rem;
-    font-weight: 800;
-    color: #1c1917;
-    flex: 1;
-  }
-  .skid-kinematics-calibrator__hint {
-    font-family: var(--smat-font-mono, monospace);
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: #082f49;
-  }
-  .skid-kinematics-calibrator__body {
-    padding: 1.1rem;
-    background: #ffffff;
-    border-top: 1px solid #e2e8f0;
-  }
-  .skid-kinematics-calibrator__metrics {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.75rem;
-    margin-bottom: 0.85rem;
-  }
-  .skid-kinematics-calibrator__controls {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.85rem;
-    margin-bottom: 1rem;
-  }
-  .kin-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #1c1917;
-  }
-  .kin-metric-card {
-    background: #f8fafc;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    padding: 0.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-  .kin-metric-card__kicker {
-    font-family: var(--smat-font-mono, monospace);
-    font-size: 0.66rem;
-    font-weight: 800;
-    color: #334155;
-  }
-  .kin-metric-card__val {
-    font-size: 1rem;
-    font-weight: 800;
-    color: #1c1917;
-  }
-  .kin-metric-card__sub {
-    font-size: 0.74rem;
-    color: #334155;
-  }
-  .smat-sdb-hybrid-note {
-    margin-top: 0.25rem;
-    font-weight: 700;
-    color: #0c4a6e;
-  }
-  .skid-kinematics-calibrator__alert {
-    display: none;
-    margin-top: 0.9rem;
-    padding: 0.85rem 1rem;
-    border-radius: 8px;
-    background: #fef2f2;
-    border: 1.5px solid #dc2626;
-    color: #991b1b;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    font-size: 0.82rem;
-  }
-  .smat-sdb-bear-ok {
-    background: #ecfdf5;
-    border: 1px solid #059669;
-    border-radius: 8px;
-    padding: 0.5rem 0.65rem;
-  }
-  .smat-sdb-bear-neu {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    padding: 0.5rem 0.65rem;
-  }
-  .smat-sdb-bear-warn {
-    background: #fef2f2;
-    border: 1px solid #dc2626;
-    border-radius: 8px;
-    padding: 0.5rem 0.65rem;
-  }
-  .smat-sdb-bear-info {
-    background: #f0f9ff;
-    border: 1px solid #0284c7;
-    border-radius: 8px;
-    padding: 0.5rem 0.65rem;
-  }
-  .smat-sdb-kicker-ok,
-  .smat-sdb-val-ok,
-  .smat-sdb-sub-ok {
-    color: #064e3b;
-  }
-  .smat-sdb-kicker-neu,
-  .smat-sdb-sub-neu {
-    color: #334155;
-  }
-  .smat-sdb-val-neu {
-    color: var(--smat-text-primary);
-  }
-  .smat-sdb-kicker-warn,
-  .smat-sdb-val-warn,
-  .smat-sdb-sub-warn {
-    color: #991b1b;
-  }
-  .smat-sdb-kicker-info,
-  .smat-sdb-sub-info {
-    color: #0c4a6e;
-  }
-  .smat-sdb-val-info {
-    color: #082f49;
-    font-size: 0.92rem;
-    font-weight: 800;
-  }
-  .smat-sdb-kicker-ok,
-  .smat-sdb-kicker-neu,
-  .smat-sdb-kicker-warn,
-  .smat-sdb-kicker-info {
-    font-size: 0.68rem;
-    font-weight: 800;
-  }
-  .smat-sdb-val-ok,
-  .smat-sdb-val-neu,
-  .smat-sdb-val-warn {
-    font-size: 1.05rem;
-    font-weight: 800;
-  }
-  .smat-sdb-sub-ok,
-  .smat-sdb-sub-neu,
-  .smat-sdb-sub-warn,
-  .smat-sdb-sub-info {
-    font-size: 0.74rem;
-  }
-  .smat-sdb-tradein-box {
-    width: 100%;
-    margin-top: 0.75rem;
-    padding: 0.85rem;
-    border-radius: 8px;
-    background: #ecfdf5;
-    border: 1px solid #10b981;
-    font-size: 0.78rem;
-    color: #064e3b;
-  }
-  .smat-sdb-tradein-title {
-    font-family: var(--smat-font-mono);
-    font-weight: 800;
-    color: #064e3b;
-    margin-bottom: 0.35rem;
-  }
-  .smat-sdb-tradein-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.5rem;
-    margin-bottom: 0.4rem;
-  }
-  .smat-sdb-tradein-lbl {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    font-weight: 700;
-  }
-  .smat-sdb-tradein-sel {
-    padding: 0.35rem 0.45rem;
-    border: 1px solid #059669;
-    border-radius: 6px;
-    background: #ffffff;
-    color: #1c1917;
-    font-size: 0.75rem;
-  }
-  .smat-sdb-tradein-chk {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-weight: 700;
-    padding-top: 0.5rem;
-  }
-  .smat-sdb-tradein-res {
-    font-family: var(--smat-font-mono);
-    font-weight: 800;
-    color: #064e3b;
-  }
-  .smat-sdb-tradein-note {
-    font-size: 0.72rem;
-    color: #064e3b;
-    margin-top: 0.2rem;
-  }
-  .smat-sdb-two-col {
-    margin-top: 1.75rem;
-  }
-  .smat-sdb-table-heading {
-    margin-top: 1.75rem;
-  }
-  .smat-sdb-side-card {
-    background-color: #f8fafc;
-  }
-  .smat-sdb-side-actions {
-    margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--smat-border-light);
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-  .smat-sdb-full-btn {
-    width: 100%;
-    text-align: center;
-  }
-  .smat-sdb-criteria-card {
-    margin-top: 1rem;
-    background: #f8fafc;
-    border-left: 4px solid #7c2d12;
-    padding: 1rem;
-  }
-  .smat-sdb-criteria-eyebrow {
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: #7c2d12;
-    display: block;
-    margin-bottom: 0.35rem;
-  }
-  .smat-sdb-criteria-line {
-    font-size: 0.84rem;
-    margin-bottom: 0.4rem;
-  }
-  .smat-sdb-criteria-risk {
-    font-size: 0.84rem;
-    margin: 0;
-    color: #991b1b;
-  }
-  .smat-sdb-diagram-gap {
-    margin-top: 2rem;
-  }
-  .smat-sdb-atomic-grid {
-    margin-top: 1rem;
-  }
-  .smat-sdb-atomic-card {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    display: flex;
-    flex-direction: column;
-  }
-  .smat-sdb-atomic-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .smat-sdb-atomic-mass {
-    font-size: 0.74rem;
-    font-weight: 700;
-    color: var(--smat-text-primary);
-  }
-  .smat-sdb-atomic-copy {
-    font-size: 0.86rem;
-    color: #334155;
-  }
-  .smat-sdb-atomic-meta {
-    font-size: 0.75rem;
-    color: #334155;
-    margin-bottom: 0.85rem;
-  }
-  .smat-sdb-atomic-actions {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-top: auto;
-  }
-  .smat-sdb-arr-lead {
-    color: var(--smat-text-secondary);
-    max-width: 760px;
-  }
-  .smat-sdb-arr-grid {
-    margin-top: 1rem;
-  }
-  .smat-sdb-flood-meta {
-    display: block;
-    margin-bottom: 0.65rem;
-    font-family: var(--smat-font-mono);
-    font-size: 0.74rem;
-    color: #082f49;
-    font-weight: 700;
-  }
-  .wb-ctx-card {
-    background: #f8fafc;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    padding: 0.85rem;
-    margin-top: 0.85rem;
-  }
-  .wb-ctx-head {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 0.4rem;
-    margin-bottom: 0.45rem;
-  }
-  .smat-sdb-embed-meta {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #0c4a6e;
-  }
-  .smat-sdb-embed-line {
-    font-family: var(--smat-font-mono);
-    font-size: 0.76rem;
-    color: #1e293b;
-    margin: 0.25rem 0;
-  }
+  .back-link { color: #7c2d12; font-size: 0.88rem; font-weight: 700; text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
+  .smat-sdb-badge-wrap { margin-top: 0.3rem; }
+  .smat-sdb-sim-card { margin-bottom: 1.5rem; background: #f8fafc; border: 1.5px solid #cbd5e1; padding: clamp(0.7rem, 1.4vw, 1.1rem); }
+  .sdb-subtabs { display: flex; flex-wrap: wrap; gap: 0.4rem; border-bottom: 1px solid #cbd5e1; padding-bottom: 0.5rem; }
+  .sdb-tab-btn { border: 1px solid #cbd5e1; background: #ffffff; color: #0f172a; font-weight: 700; font-size: 0.78rem; padding: 0.45rem 0.8rem; border-radius: 6px; cursor: pointer; min-height: 44px; }
+  .sdb-tab-btn.is-active { background: #0f172a; color: #ffffff; border-color: #0f172a; }
+  .smat-sdb-status-ok { padding: 0.55rem 0.75rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #059669; color: #064e3b; font-family: var(--smat-font-mono); font-size: 0.79rem; font-weight: 700; }
+  .smat-sdb-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.45rem; font-family: var(--smat-font-mono); font-size: 0.78rem; }
+  .smat-sdb-kpi-card { background: #ffffff; padding: 0.45rem 0.65rem; border-radius: 6px; border: 1px solid #cbd5e1; }
+  .smat-sdb-inputs-box { margin: 0.5rem 0 0.65rem; padding: 0.6rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.8rem; }
+  .smat-sdb-field { display: flex; flex-direction: column; gap: 0.2rem; font-weight: 700; }
+  .smat-sdb-ctrl { padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px; }
+  .smat-sdb-actions { display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center; margin-bottom: 0.85rem; }
+  .smat-sdb-btn-tall { min-height: 48px; display: inline-flex; align-items: center; }
+  .smat-sdb-branch-grid { margin-top: 0.75rem; }
+  .smat-sdb-branch-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; }
+  .smat-sdb-branch-ok { font-size: 0.72rem; font-weight: 800; color: #064e3b; }
+  .smat-sdb-branch-wet { font-size: 0.72rem; font-weight: 800; color: #0c4a6e; }
+  .smat-sdb-card-title { display: block; margin: 0.35rem 0; font-size: 0.98rem; font-weight: 800; color: var(--smat-text-primary); }
+  .smat-sdb-branch-copy { font-size: 0.85rem; color: #334155; }
+  .smat-sdb-branch-cta { margin-top: 0.5rem; }
+  .skid-kinematics-calibrator__metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.6rem; margin-bottom: 0.75rem; }
+  .skid-kinematics-calibrator__controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.75rem; margin-bottom: 0.85rem; }
+  .kin-field { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.78rem; font-weight: 700; color: #1c1917; }
+  .kin-metric-card { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.65rem; display: flex; flex-direction: column; gap: 0.2rem; }
+  .kin-metric-card__kicker { font-family: var(--smat-font-mono, monospace); font-size: 0.66rem; font-weight: 800; color: #334155; }
+  .kin-metric-card__val { font-size: 0.98rem; font-weight: 800; color: #1c1917; }
+  .kin-metric-card__sub { font-size: 0.72rem; color: #334155; }
+  .smat-sdb-bear-ok { background: #ecfdf5; border: 1px solid #059669; border-radius: 8px; padding: 0.5rem 0.65rem; }
+  .smat-sdb-bear-warn { background: #fef2f2; border: 1px solid #dc2626; border-radius: 8px; padding: 0.5rem 0.65rem; }
+  .smat-sdb-bear-info { background: #f0f9ff; border: 1px solid #0284c7; border-radius: 8px; padding: 0.5rem 0.65rem; }
+  .smat-sdb-tradein-box { width: 100%; margin-top: 0.75rem; padding: 0.75rem; border-radius: 8px; background: #ecfdf5; border: 1px solid #10b981; font-size: 0.78rem; color: #064e3b; }
+  .smat-sdb-tradein-title { font-family: var(--smat-font-mono); font-weight: 800; margin-bottom: 0.35rem; }
+  .smat-sdb-tradein-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-bottom: 0.4rem; }
+  .smat-sdb-tradein-lbl { display: flex; flex-direction: column; gap: 0.2rem; font-weight: 700; }
+  .smat-sdb-tradein-sel { padding: 0.35rem; border: 1px solid #059669; border-radius: 6px; background: #ffffff; color: #1c1917; font-size: 0.75rem; }
+  .smat-sdb-tradein-chk { display: flex; align-items: center; gap: 0.35rem; font-weight: 700; padding-top: 0.4rem; }
+  .smat-sdb-tradein-res { font-family: var(--smat-font-mono); font-weight: 800; color: #064e3b; }
+  .wb-ctx-card { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.85rem; margin-top: 0.75rem; }
+  .smat-sdb-embed-meta { font-size: 0.75rem; font-weight: 700; color: #0c4a6e; }
+  .smat-sdb-embed-line { font-family: var(--smat-font-mono); font-size: 0.76rem; color: #1e293b; margin: 0.2rem 0; }
+  .smat-sdb-two-col { margin-top: 1.75rem; }
+  .smat-sdb-table-heading { margin-top: 1.75rem; }
+  .smat-sdb-criteria-card { margin-top: 1rem; background: #f8fafc; border-left: 4px solid #7c2d12; padding: 1rem; }
+  .smat-sdb-criteria-eyebrow { font-size: 0.72rem; font-weight: 800; color: #7c2d12; display: block; margin-bottom: 0.35rem; }
+  .smat-sdb-criteria-line { font-size: 0.84rem; margin-bottom: 0.4rem; }
+  .smat-sdb-criteria-risk { font-size: 0.84rem; margin: 0; color: #991b1b; }
+  .smat-sdb-diagram-gap { margin-top: 2rem; }
+  .smat-sdb-atomic-grid { margin-top: 1rem; }
+  .smat-sdb-atomic-card { background: #ffffff; border: 1px solid #cbd5e1; display: flex; flex-direction: column; }
+  .smat-sdb-atomic-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+  .smat-sdb-atomic-mass { font-size: 0.74rem; font-weight: 700; color: var(--smat-text-primary); }
+  .smat-sdb-atomic-copy { font-size: 0.86rem; color: #334155; }
+  .smat-sdb-atomic-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: auto; }
+  .smat-sdb-arr-grid { margin-top: 1rem; }
+  .smat-sdb-flood-meta { display: block; margin-bottom: 0.65rem; font-family: var(--smat-font-mono); font-size: 0.74rem; color: #082f49; font-weight: 700; }
 </style>

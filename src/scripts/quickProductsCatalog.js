@@ -11,7 +11,7 @@
 import atomicPartsCatalog from '../../data/atomic_parts.json' with { type: 'json' };
 import quickCheckoutCatalog from '../../data/quick_checkout_Catalog.json' with { type: 'json' };
 
-export const CANONICAL_DIAGRAM_KINDS = Object.freeze([
+const CANONICAL_DIAGRAM_KINDS = Object.freeze([
   'impulsor',
   'revestimientos',
   'throatbush',
@@ -30,7 +30,7 @@ export const CANONICAL_DIAGRAM_KINDS = Object.freeze([
   'filter-press-plate-cloth'
 ]);
 
-export const CANONICAL_V32_DIAGRAM_KINDS = Object.freeze([
+const CANONICAL_V32_DIAGRAM_KINDS = Object.freeze([
   'marcy_scale',
   'astm_sieves',
   'lab_comminution_pan',
@@ -104,28 +104,28 @@ export const AVENUE_METADATA = Object.freeze({
 export const STOCK_REGIME_LABELS = Object.freeze({
   hay: {
     code: 'hay',
-    badgeEs: '🟢 HAY EN STOCK DURANGO (24–72 h)',
-    badgeEn: '🟢 IN DURANGO STOCK (24–72 h)',
+    badgeEs: '[EN STOCK] DURANGO (24–72 h)',
+    badgeEn: '[IN STOCK] DURANGO (24–72 h)',
     leadTimeDaysRange: [1, 3],
     advancePaymentRequiredPct: 0
   },
   se_pide: {
     code: 'se_pide',
-    badgeEs: '🟡 SE PIDE / LOTE PROGRAMADO (2–4 sem)',
-    badgeEn: '🟡 SCHEDULED BATCH ORDER (2–4 wks)',
+    badgeEs: '[PROGRAMADO] LOTE SE PIDE (2–4 sem)',
+    badgeEn: '[SCHEDULED] BATCH ORDER (2–4 wks)',
     leadTimeDaysRange: [14, 28],
     advancePaymentRequiredPct: 30
   },
   se_fabrica: {
     code: 'se_fabrica',
-    badgeEs: '🔵 SE FABRICA BAJO PLANO (50% ANTICIPO)',
-    badgeEn: '🔵 CUSTOM MANUFACTURED (50% ADVANCE)',
+    badgeEs: '[BAJO PLANO] SE FABRICA (50% ANTICIPO)',
+    badgeEn: '[MADE TO ORDER] CUSTOM FAB (50% ADVANCE)',
     leadTimeDaysRange: [28, 45],
     advancePaymentRequiredPct: 50
   }
 });
 
-export const MATERIAL_DISPLAY_LABELS = Object.freeze({
+const MATERIAL_DISPLAY_LABELS = Object.freeze({
   A05: {
     es: 'Alto Cromo 27% Cr (ASTM A532 III-A · ≥650 HB)',
     en: '27% High-Chrome Iron (ASTM A532 III-A · ≥650 HB)'
@@ -156,7 +156,7 @@ export const MATERIAL_DISPLAY_LABELS = Object.freeze({
  * Mapa biyectivo de compatibilidad entre IDs legados (SKU-QC-01..19 e intermedios)
  * y los 19 IDs canónicos SMAT-* de prd_smatminerals_web_v3.md §6.1 (ARB-SMAT-41).
  */
-export const LEGACY_QC_TO_CANONICAL_SKU = Object.freeze({
+const LEGACY_QC_TO_CANONICAL_SKU = Object.freeze({
   'SKU-QC-01': 'SMAT-PUMP-IMP-AH',
   'SKU-QC-02': 'SMAT-LAB-VASO-1000',
   'SKU-QC-03': 'SMAT-LAB-TAMIZ-E11',
@@ -247,7 +247,7 @@ export function getQuickProductsCatalog() {
   });
 }
 
-export const LEGACY_SLUG_TO_CANONICAL_SKU = Object.freeze({
+const LEGACY_SLUG_TO_CANONICAL_SKU = Object.freeze({
   'hidrociclon-d20-vortex-apex-ceramico-sic': 'SMAT-CYC-D6-D20',
   'panel-criba-poliuretano-modular-305x305': 'SMAT-SCR-MOD-1X1',
   'balanza-densidad-pulpa-marcy-1000ml': 'SMAT-LAB-MARCY-1000',

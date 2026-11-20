@@ -35,7 +35,7 @@ const DIAGRAM_ALIAS_MAP: Record<string, string> = {
 };
 const diagram = (DIAGRAM_ALIAS_MAP[rawDiagram] || rawDiagram) as DiagramKind;
 const isEs = lang === 'es';
-const xrayWearStyle = showXrayOverlay ? '' : 'display: none;';
+const xrayWearClass = showXrayOverlay ? 'smat-xray-visible' : 'smat-xray-hidden';
 const TITLES: Record<string, [string, string]> = {
   pump: ['ESQUEMA DE CORTE • BOMBA PARA LODOS', 'CROSS-SECTION • SLURRY PUMP'],
   impeller: ['DIAGRAMA AXIAL Y FRONTAL • IMPULSOR 5 ÁLABES', 'AXIAL & FRONT DIAGRAM • 5-VANE IMPELLER'],
@@ -71,10 +71,10 @@ const activeTitle = (TITLES[diagram] || TITLES.pump)[isEs ? 0 : 1];
     <span class="tech-diagram-scale" data-iso7810-scale="0.76mm">{isEs ? 'CAD 1:1 • REF. TARJETA ISO 7810 (0.76 MM)' : 'CAD 1:1 • ISO 7810 CARD REF (0.76 MM)'}</span>
   </div>
   <div class="tech-diagram-canvas">
-    <PumpDiagrams diagram={diagram} isEs={isEs} xrayWearStyle={xrayWearStyle} uid={uid} />
-    <CycloneScreenDiagrams diagram={diagram} isEs={isEs} xrayWearStyle={xrayWearStyle} uid={uid} />
-    <FlotationFiltrationDiagrams diagram={diagram} isEs={isEs} xrayWearStyle={xrayWearStyle} uid={uid} />
-    <LabMetrologyDiagrams diagram={diagram} isEs={isEs} xrayWearStyle={xrayWearStyle} uid={uid} />
+    <PumpDiagrams diagram={diagram} isEs={isEs} xrayWearClass={xrayWearClass} uid={uid} />
+    <CycloneScreenDiagrams diagram={diagram} isEs={isEs} xrayWearClass={xrayWearClass} uid={uid} />
+    <FlotationFiltrationDiagrams diagram={diagram} isEs={isEs} xrayWearClass={xrayWearClass} uid={uid} />
+    <LabMetrologyDiagrams diagram={diagram} isEs={isEs} xrayWearClass={xrayWearClass} uid={uid} />
   </div>
   {showXrayOverlay && (
     <figcaption class="tech-diagram-xray-bar" data-layer="xray-wear">
