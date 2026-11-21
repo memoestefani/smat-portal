@@ -1,25 +1,25 @@
-import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { verifyDropInEquivalence } from '../src/scripts/dropInEquivalenceGuard.js';
 import {
   TWO_SORT_PARTITION_VERSION,
-  listAllEngineSchemas,
-  listAllDeclaredDomIds
+  listAllDeclaredDomIds,
+  listAllEngineSchemas
 } from '../src/scripts/engineSchemaRegistry.js';
 import {
-  readAllCanonicalInputs,
-  projectDomainOutputs,
   bindDomainSchemaRoot,
+  projectDomainOutputs,
+  readAllCanonicalInputs,
   verifyVplDomScopeContainment
 } from '../src/scripts/schemaRuntimeBinder.js';
 import {
-  solveXdsmMultidisciplinaryDag,
-  computeSobolFirstOrderIndices
+  computeSobolFirstOrderIndices,
+  solveXdsmMultidisciplinaryDag
 } from '../src/scripts/wizardXdsmDagSolver.js';
-import { verifyDropInEquivalence } from '../src/scripts/dropInEquivalenceGuard.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -296,15 +296,15 @@ test('V51-T1 DOM Real en dist/ & Cero Bifurcaciones {isEmbedded}: 11 Dominios Bi
   const equiposHtml = hasDist
     ? fs.readFileSync(distEquipos, 'utf8')
     : [
-        fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/EquipmentHubIsland.astro'), 'utf8'),
-        fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/DropInVerifierCore.astro'), 'utf8'),
-      ].join('\n');
+      fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/EquipmentHubIsland.astro'), 'utf8'),
+      fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/DropInVerifierCore.astro'), 'utf8'),
+    ].join('\n');
   const impulsorHtml = hasDist
     ? fs.readFileSync(distImpulsor, 'utf8')
     : [
-        fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/TribologyAlloyIsland.astro'), 'utf8'),
-        fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/TribologyAlloyCore.astro'), 'utf8'),
-      ].join('\n');
+      fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/TribologyAlloyIsland.astro'), 'utf8'),
+      fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/TribologyAlloyCore.astro'), 'utf8'),
+    ].join('\n');
   const fullCorpus = `${cotizarHtml}\n${catalogHtml}\n${equiposHtml}\n${impulsorHtml}`;
 
   const declared = listAllDeclaredDomIds();
