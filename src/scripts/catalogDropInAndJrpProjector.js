@@ -311,7 +311,11 @@ export function projectProcessControlMetrologyInvariants(
   if (gy) {
     const setTxt = (sel, txt) => {
       const el = root.querySelector(sel);
-      if (el) el.textContent = String(txt);
+      if (!el) return;
+      const isSchemaBound = typeof el.hasAttribute === 'function'
+        ? el.hasAttribute('data-schema-output')
+        : Boolean(el?.attrs && 'data-schema-output' in el.attrs);
+      if (!isSchemaBound) el.textContent = String(txt);
     };
     setTxt('[data-met-defuse-gy-beta]', `β = ${gy.liberationFactorBeta}`);
     setTxt('[data-met-defuse-gy-m]', `m = ${gy.mineralogicalFactorM}`);
@@ -329,7 +333,11 @@ export function projectProcessControlMetrologyInvariants(
     const frameMat = firstSieve?.frameMaterial || sieveStack.recommendedFrameMaterialEs || (isEn ? '304/316 SS' : 'Acero Inox 304/316');
     const setTxt = (sel, txt) => {
       const el = root.querySelector(sel);
-      if (el) el.textContent = String(txt);
+      if (!el) return;
+      const isSchemaBound = typeof el.hasAttribute === 'function'
+        ? el.hasAttribute('data-schema-output')
+        : Boolean(el?.attrs && 'data-schema-output' in el.attrs);
+      if (!isSchemaBound) el.textContent = String(txt);
     };
     setTxt('[data-met-defuse-d63]', `${sieveStack.characteristicSizeD63Microns} µm`);
     setTxt('[data-met-defuse-cum-mass]', `${totalCumMass.toFixed(1)} g`);

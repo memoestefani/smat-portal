@@ -36,7 +36,7 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
       <span class="badge badge-copper"><span class="live-dot"></span>{isEs ? 'CONSOLA DE INGENIERÍA Y ALMACÉN DURANGO' : 'DURANGO ENGINEERING & CENTRAL WAREHOUSE'}</span>
       <span class="badge badge-emerald">{isEs ? 'ATENCIÓN AL CLIENTE: LUN-VIE 08:00 A 18:00 CST' : 'CUSTOMER SERVICE: MON-FRI 08:00 TO 18:00 CST'}</span>
     </div>
-    <h2 class="workbench-title">{isEs ? 'Solicitar Cotización de Equipos y Refacciones' : 'Request a Quotation for Equipment & Spares'}</h2>
+    <h1 class="workbench-title">{isEs ? 'Solicitar Cotización de Equipos y Refacciones' : 'Request a Quotation for Equipment & Spares'}</h1>
     <p class="workbench-subtitle">
       {isEs
         ? 'Seleccione las piezas, lotes de contacto húmedo (impulsores, cuellos y volutas), balanzas o equipos que requiere cotizar.'
@@ -70,38 +70,13 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
         <div class="circuit-selector-group qw-gap-bottom" id="wb-step1-xor-circuit-bar">
           <label id="circuit-selector-label" class="circuit-selector-label"><strong>{isEs ? 'Circuito de Proceso en Planta:' : 'Plant Mineral Processing Circuit:'}</strong></label>
           <div class="circuit-pills-grid" role="group" aria-labelledby="circuit-selector-label">
-            <button type="button" class="circuit-pill active" data-circuit="bombeo" aria-pressed="true">[ {isEs ? 'BOMBEO DE PULPA' : 'SLURRY PUMPING'} ]</button>
-            <button type="button" class="circuit-pill" data-circuit="clasificacion" aria-pressed="false">[ {isEs ? 'CLASIFICACIÓN / CICLONES' : 'CLASSIFICATION / CYCLONES'} ]</button>
-            <button type="button" class="circuit-pill" data-circuit="flotacion" aria-pressed="false">[ {isEs ? 'FLOTACIÓN DE MINERALES' : 'MINERAL FLOTATION'} ]</button>
-            <button type="button" class="circuit-pill" data-circuit="filtracion" aria-pressed="false">[ {isEs ? 'FILTRACIÓN / JALES SECOS' : 'FILTRATION / DRY TAILINGS'} ]</button>
-            <button type="button" class="circuit-pill" data-circuit="control_procesos" aria-pressed="false">[ {isEs ? 'CONTROL DE PROCESOS' : 'PROCESS CONTROL'} ]</button>
+            <button type="button" class="circuit-pill active" data-circuit="bombeo" aria-pressed="true">{isEs ? 'Bombeo de Pulpa' : 'Slurry Pumping'}</button>
+            <button type="button" class="circuit-pill" data-circuit="clasificacion" aria-pressed="false">{isEs ? 'Clasificación / Ciclones' : 'Classification / Cyclones'}</button>
+            <button type="button" class="circuit-pill" data-circuit="flotacion" aria-pressed="false">{isEs ? 'Flotación de Minerales' : 'Mineral Flotation'}</button>
+            <button type="button" class="circuit-pill" data-circuit="filtracion" aria-pressed="false">{isEs ? 'Filtración / Jales Secos' : 'Filtration / Dry Tailings'}</button>
+            <button type="button" class="circuit-pill" data-circuit="control_procesos" aria-pressed="false">{isEs ? 'Control de Procesos' : 'Process Control'}</button>
           </div>
           <input type="hidden" name="process_circuit" id="wb-process-circuit" value="bombeo" />
-        </div>
-
-        <!-- Barra de Auto-Calibración por Unidad Minera -->
-        <div id="wb-mining-preset-bar" class="mining-preset-step1-bar qw-preset-bar">
-          <div class="qw-preset-grid">
-            <div>
-              <label for="wb-mining-group-select" class="qw-mini-label">{isEs ? 'Grupo Minero / Operador (Opcional):' : 'Mining Group / Operator (Optional):'}</label>
-              <select id="wb-mining-group-select" class="wb-select qw-compact-select">
-                <option value="">{isEs ? `— Seleccionar grupo (${miningGroupsData.total_groups}) —` : `— Select group (${miningGroupsData.total_groups}) —`}</option>
-                {miningGroupsData.groups.map((grp) => (<option value={grp.id}>{grp.name}</option>))}
-              </select>
-            </div>
-            <div>
-              <label for="wb-mining-unit-select" class="qw-mini-label">{isEs ? 'Unidad Minera y Perfil de Pulpa (44 minas):' : 'Mining Unit & Pulp Profile (44 mines):'}</label>
-              <select id="wb-mining-unit-select" class="wb-select qw-compact-select">
-                <option value="">{isEs ? '— Pre-cargar perfil de pulpa —' : '— Load mine slurry profile —'}</option>
-                {miningGroupsData.groups.flatMap((grp) => (grp.units || []).map((u) => (<option value={`${grp.id}::${u.name}`} data-group-id={grp.id} data-group-name={grp.name} data-unit-name={u.name} data-pulp-profile={u.pulp_profile || ''}>{grp.name} — {u.name}</option>)))}
-              </select>
-            </div>
-          </div>
-          <div class="qw-preset-footer">
-            <div id="wb-step1-pulp-profile-badge" class="unit-pulp-profile-badge hidden qw-pulp-badge"></div>
-            <button type="button" id="btn-apply-mining-preset" data-testid="btn-apply-mining-preset" class="assist-pill-btn qw-preset-btn">{isEs ? 'Pre-calibrar Pulpa del Distrito →' : 'Pre-calibrate District Slurry →'}</button>
-          </div>
-          <div id="wb-mining-preset-telemetry" data-mining-preset-telemetry class="qw-mining-telemetry hidden"></div>
         </div>
 
         <div id="circuit-panel-bombeo" class="circuit-panel">
@@ -163,16 +138,6 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
               <option value="300ft">{isEs ? 'Celda 300 ft³ (8.5 m³ — Gran Capacidad)' : '300 ft³ Cell (8.5 m³ — High Capacity)'}</option>
             </select>
           </div>
-          <div class="form-group qw-top-gap">
-            <label id="flot-chips-label"><strong>{isEs ? 'Condición de Operación en Celda:' : 'Cell Operating Condition:'}</strong></label>
-            <div class="flot-chips-grid" role="group" aria-labelledby="flot-chips-label">
-              <button type="button" class="flot-chip chip-ghost" data-flot-cond="sulfuros_alta_agitacion" data-confirmed="false" aria-pressed="false">[ {isEs ? 'SULFUROS Y ALTA AGITACIÓN' : 'SULFIDES & HIGH SHEAR'} ]</button>
-              <button type="button" class="flot-chip" data-flot-cond="reactivos_ph_extremo" data-confirmed="false" aria-pressed="false">[ {isEs ? 'REACTIVOS / PH EXTREMO' : 'REAGENTS / EXTREME PH'} ]</button>
-              <button type="button" class="flot-chip" data-flot-cond="espumado_intenso" data-confirmed="false" aria-pressed="false">[ {isEs ? 'ESPUMADO INTENSO' : 'INTENSE FROTH'} ]</button>
-              <button type="button" class="flot-chip" data-flot-cond="vibracion_flecha" data-confirmed="false" aria-pressed="false">[ {isEs ? 'VIBRACIÓN EN FLECHA' : 'SHAFT VIBRATION'} ]</button>
-            </div>
-            <input type="hidden" name="flot_condition" id="wb-flot-condition" value="" />
-          </div>
         </div>
 
         <div id="circuit-panel-filtracion" class="circuit-panel hidden qw-top-gap">
@@ -195,21 +160,9 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
               <option value="2000">{isEs ? 'Placas 2000 x 2000 mm (Mega-Filtración)' : '2000 x 2000 mm Plates (Mega-Filtration)'}</option>
             </select>
           </div>
-          <div class="form-group qw-top-gap">
-            <label id="filt-chips-label"><strong>{isEs ? 'Objetivo Operativo:' : 'Filtration Target:'}</strong></label>
-            <div class="filt-chips-grid" role="group" aria-labelledby="filt-chips-label">
-              <button type="button" class="filt-chip chip-ghost" data-filt-cond="jales_secos" data-confirmed="false" aria-pressed="false">[ {isEs ? 'JALES SECOS (<15% HUMEDAD)' : 'DRY STACK (<15% MOISTURE)'} ]</button>
-              <button type="button" class="filt-chip" data-filt-cond="recuperacion_agua" data-confirmed="false" aria-pressed="false">[ {isEs ? 'RECUPERACIÓN DE AGUA' : 'WATER RECOVERY'} ]</button>
-              <button type="button" class="filt-chip" data-filt-cond="colmatacion_telas" data-confirmed="false" aria-pressed="false">[ {isEs ? 'COLMATACIÓN / TELAS' : 'BLINDING / CLOTHS'} ]</button>
-              <button type="button" class="filt-chip" data-filt-cond="alta_presion_16bar" data-confirmed="false" aria-pressed="false">[ {isEs ? 'ALTA PRESIÓN (16 BAR)' : 'HIGH PRESSURE (16 BAR)'} ]</button>
-            </div>
-            <input type="hidden" name="filt_condition" id="wb-filt-condition" value="" />
-          </div>
         </div>
 
-        <ProcessControlIsland locale={lang} mode="embedded" />
-
-        <!-- Ficha Física de Pieza Atómica y Reorden JRP -->
+        <!-- Ficha Física de Pieza Atómica -->
         <div id="wb-atomic-part-card" data-testid="wb-atomic-part-card" class="atomic-part-spec-card qw-card-gap">
           <div class="atomic-part-spec-header">
             <span class="atomic-part-spec-tag font-mono-tech" id="wb-part-station-tag">{defaultPartSpecs.station_number} • {defaultPartSpecs.code}</span>
@@ -222,126 +175,160 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
             <div><small>{isEs ? 'Garantía Dimensional:' : 'Fit Guarantee:'}</small> <strong id="wb-part-fit-val">{isEs ? defaultPartSpecs.fit_guarantee_es : defaultPartSpecs.fit_guarantee_en}</strong></div>
             <div><small>{isEs ? 'Planeación Preventiva en Planta:' : 'Preventive Plant Cycle:'}</small> <strong id="wb-part-reorder-window-val" data-testid="wb-part-reorder-window-val">{isEs ? (defaultPartSpecs.dispatchSlaLabelEs || 'Ciclo sugerido: cada 90 días • Despacho Durango') : (defaultPartSpecs.dispatchSlaLabelEn || 'Suggested cycle: every 90 days • Durango Dispatch')}</strong></div>
           </div>
-          <JrpReorderCore
-            lang={lang}
-            mode="wizard"
-            showTradeIn={false}
-            showPrimaryTrayBtn={false}
-            showPairBtn={false}
-          />
         </div>
 
-        <WizardCircuitCalculators lang={lang} />
-
-        <div id="wb-role-criteria-bar" class="role-criteria-inline-bar">
-          <div class="criteria-inline-row"><span class="criteria-inline-tag font-mono-tech">[{isEs ? 'REGLA METALÚRGICA' : 'METALLURGY RULE'}]</span><span id="wb-criteria-rule">{isEs ? rolesCriteriaMap.revestimientos?.rule_es : rolesCriteriaMap.revestimientos?.rule_en}</span></div>
-          <div class="criteria-inline-row"><span class="criteria-inline-tag criteria-tag-risk font-mono-tech">[{isEs ? 'RIESGO EVITADO' : 'AVOIDED RISK'}]</span><span id="wb-criteria-risk">{isEs ? rolesCriteriaMap.revestimientos?.risk_es : rolesCriteriaMap.revestimientos?.risk_en}</span></div>
-          <div class="criteria-inline-row"><span class="criteria-inline-tag font-mono-tech">[{isEs ? 'VARIABLES CRÍTICAS' : 'CRITICAL VARIABLES'}]</span><span id="wb-criteria-vars">{isEs ? rolesCriteriaMap.revestimientos?.vars_es : rolesCriteriaMap.revestimientos?.vars_en}</span> <strong id="wb-criteria-series" class="font-mono-tech qw-series-tag">({rolesCriteriaMap.revestimientos?.series})</strong></div>
-        </div>
-
-        <details class="wb-progressive-drawer" id="wb-symptom-context-details" data-domain-root="pumping">
+        <details class="wb-progressive-drawer smat-mt-sm" id="wb-circuit-calculators-drawer">
           <summary class="wb-progressive-summary">
-            <span>{isEs ? '+ Condición de Operación / Síntoma de Desgaste en Planta (5 condiciones)' : '+ Operating Condition / Field Wear Symptom (5 conditions)'}</span>
-            <span class="wb-step1-more-arrow">▾</span>
+            <span>{isEs ? 'Calibrador físico y condiciones del circuito activo' : 'Active Circuit Physics Calibrator & Operating Conditions'}</span>
+            <span>▾</span>
           </summary>
-          <div class="wb-progressive-body">
-            <div class="form-group">
-              <label id="stress-chips-label"><strong>{isEs ? 'Condición de Operación / Síntoma en Planta:' : 'Operating Condition / Field Wear Symptom:'}</strong></label>
-              <div class="stress-chips-grid" role="group" aria-labelledby="stress-chips-label">
-                <button type="button" class="stress-chip chip-ghost" data-symptom="roca_dura" data-confirmed="false" aria-pressed="false">[ {isEs ? 'ROCA DURA Y GOLPETEO' : 'HARD ROCK & IMPACT'} ]</button>
-                <button type="button" class="stress-chip" data-symptom="acido_quimica" data-confirmed="false" aria-pressed="false">[ {isEs ? 'AGUA ÁCIDA / QUÍMICA' : 'ACID / CHEMICAL SLURRY'} ]</button>
-                <button type="button" class="stress-chip" data-symptom="arena_fina" data-confirmed="false" aria-pressed="false">[ {isEs ? 'ARENA FINA / VELOCIDAD' : 'FINE SAND / HIGH TIP SPEED'} ]</button>
-                <button type="button" class="stress-chip" data-symptom="fuga_sello" data-confirmed="false" aria-pressed="false">[ {isEs ? 'FUGA CONSTANTE EN SELLO' : 'SEAL LEAKAGE'} ]</button>
-                <button type="button" class="stress-chip" data-symptom="mixta_duda" data-confirmed="false" aria-pressed="false">[ {isEs ? 'PULPA MIXTA / COMPLEJA' : 'MIXED COMPLEX PULP'} ]</button>
+          <div class="smat-mt-sm">
+            <details id="wb-mining-preset-details" class="wb-progressive-drawer qw-preset-disclosure">
+              <summary class="wb-progressive-summary"><span>{isEs ? '+ Pre-calibrar Pulpa por Unidad Minera (44 minas)' : '+ Pre-calibrate District Slurry (44 mines)'}</span><span class="wb-step1-more-arrow">▾</span></summary>
+              <div id="wb-mining-preset-bar" class="mining-preset-step1-bar qw-preset-bar">
+                <div class="qw-preset-grid">
+                  <div><label for="wb-mining-group-select" class="qw-mini-label">{isEs ? 'Grupo Minero / Operador (Opcional):' : 'Mining Group / Operator (Optional):'}</label><select id="wb-mining-group-select" class="wb-select qw-compact-select"><option value="">{isEs ? `— Seleccionar grupo (${miningGroupsData.total_groups}) —` : `— Select group (${miningGroupsData.total_groups}) —`}</option>{miningGroupsData.groups.map((grp) => (<option value={grp.id}>{grp.name}</option>))}</select></div>
+                  <div><label for="wb-mining-unit-select" class="qw-mini-label">{isEs ? 'Unidad Minera y Perfil de Pulpa (44 minas):' : 'Mining Unit & Pulp Profile (44 mines):'}</label><select id="wb-mining-unit-select" class="wb-select qw-compact-select"><option value="">{isEs ? '— Pre-cargar perfil de pulpa —' : '— Load mine slurry profile —'}</option>{miningGroupsData.groups.flatMap((grp) => (grp.units || []).map((u) => (<option value={`${grp.id}::${u.name}`} data-group-id={grp.id} data-group-name={grp.name} data-unit-name={u.name} data-pulp-profile={u.pulp_profile || ''}>{grp.name} — {u.name}</option>)))}</select></div>
+                </div>
+                <div class="qw-preset-footer"><div id="wb-step1-pulp-profile-badge" class="unit-pulp-profile-badge hidden qw-pulp-badge"></div><button type="button" id="btn-apply-mining-preset" data-testid="btn-apply-mining-preset" class="assist-pill-btn qw-preset-btn">{isEs ? 'Pre-calibrar Pulpa del Distrito →' : 'Pre-calibrate District Slurry →'}</button></div>
+                <div id="wb-mining-preset-telemetry" data-mining-preset-telemetry class="qw-mining-telemetry hidden"></div>
               </div>
-              <input type="hidden" name="stress_symptom" id="wb-stress-symptom" data-schema-input="pumping.stressSymptom" value="roca_dura" />
-            </div>
-          </div>
-        </details>
-
-        <details class="wb-progressive-drawer" id="wb-engineering-config-details">
-          <summary class="wb-progressive-summary">
-            <span id="wb-engineering-config-summary-text">{isEs ? '+ Alcance (Refacciones / CAPEX), Sellado Est. 02 y Cédula Metrológica' : '+ Scope (Spares / CAPEX), St. 02 Sealing & Metrology Schedule'}</span>
-            <span class="wb-step1-more-arrow">▾</span>
-          </summary>
-          <div class="wb-progressive-body">
-            <div class="intent-selector">
-              <label class="intent-btn selected" id="btn-intent-opex">
-                <input type="radio" name="intent" value="opex_paro" checked />
-                <span class="intent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
-                <div class="intent-info"><strong>{isEs ? 'Refacciones de Desgaste / Paro' : 'Wear Spares / Plant Shutdown'}</strong><small>{isEs ? 'Impulsores A05, volutas, rotores y telas' : 'A05 impellers, volutes, rotors & cloths'}</small></div>
-              </label>
-              <label class="intent-btn" id="btn-intent-capex">
-                <input type="radio" name="intent" value="capex_proyecto" />
-                <span class="intent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
-                <div class="intent-info"><strong>{isEs ? 'Equipos Completos / Circuito' : 'Complete Equipment / Circuit Package'}</strong><small>{isEs ? 'Bombas con motor, celdas o filtros prensa' : 'Pumps with motor, flotation cells or presses'}</small></div>
-              </label>
-            </div>
-            <div id="package-bundle-panel" class="package-bundle-panel hidden">
-              <div class="package-bundle-header"><strong>{isEs ? 'Seleccione las partidas del circuito:' : 'Select required circuit equipment:'}</strong></div>
-              <div class="package-bundle-grid">
-                <label class="package-check-label"><input type="checkbox" name="pkg_item" value="bomba_skid" checked /><span>{isEs ? 'Bomba sobre Base con Motor' : 'Base-Mounted Pump w/ Motor'}</span></label>
-                <label class="package-check-label"><input type="checkbox" name="pkg_item" value="celdas_flotacion" /><span>{isEs ? 'Batería de Celdas de Flotación' : 'Flotation Cell Bank'}</span></label>
-                <label class="package-check-label"><input type="checkbox" name="pkg_item" value="filtro_prensa" /><span>{isEs ? 'Filtro Prensa Jales Secos' : 'Dry Tailings Filter Press'}</span></label>
-                <label class="package-check-label"><input type="checkbox" name="pkg_item" value="refacciones_inicio" /><span>{isEs ? 'Paquete Inicial A05' : 'Initial A05 Spares'}</span></label>
+            </details>
+            <div class="form-group qw-top-gap">
+              <label id="flot-chips-label"><strong>{isEs ? 'Condición de Operación en Celda:' : 'Cell Operating Condition:'}</strong></label>
+              <div class="flot-chips-grid" role="group" aria-labelledby="flot-chips-label">
+                <button type="button" class="flot-chip chip-ghost" data-flot-cond="sulfuros_alta_agitacion" data-confirmed="false" aria-pressed="false">{isEs ? 'Sulfuros y alta agitación' : 'Sulfides & high shear'}</button>
+                <button type="button" class="flot-chip" data-flot-cond="reactivos_ph_extremo" data-confirmed="false" aria-pressed="false">{isEs ? 'Reactivos / pH extremo' : 'Reagents / extreme pH'}</button>
+                <button type="button" class="flot-chip" data-flot-cond="espumado_intenso" data-confirmed="false" aria-pressed="false">{isEs ? 'Espumado intenso' : 'Intense froth'}</button>
+                <button type="button" class="flot-chip" data-flot-cond="vibracion_flecha" data-confirmed="false" aria-pressed="false">{isEs ? 'Vibración en flecha' : 'Shaft vibration'}</button>
               </div>
+              <input type="hidden" name="flot_condition" id="wb-flot-condition" value="" />
             </div>
-            <div id="wb-pump-only-engineering-controls" data-only-circuit="bombeo" class="qw-top-gap">
-              <label for="wb-seal-branch"><strong>{isEs ? 'Rama de Sellado de Eje (Estación 02):' : 'Shaft Sealing Branch (Station 02):'}</strong></label>
-              <select id="wb-seal-branch" name="seal_branch" class="wb-select" data-wb-bind="seal_branch">
-                <option value="expeller_dry" selected>{isEs ? 'Est. 02A — Expulsor Centrífugo Seco (Sin agua de sello)' : 'St. 02A — Dry Centrifugal Expeller (Zero gland water)'}</option>
-                <option value="gland_water">{isEs ? 'Est. 02B — Prensaestopa Húmedo (Anillo Linterna)' : 'St. 02B — Wet Gland Packing (Lantern Ring)'}</option>
-              </select>
+            <div class="form-group qw-top-gap">
+              <label id="filt-chips-label"><strong>{isEs ? 'Objetivo Operativo:' : 'Filtration Target:'}</strong></label>
+              <div class="filt-chips-grid" role="group" aria-labelledby="filt-chips-label">
+                <button type="button" class="filt-chip chip-ghost" data-filt-cond="jales_secos" data-confirmed="false" aria-pressed="false">{isEs ? 'Jales secos (<15% humedad)' : 'Dry stack (<15% moisture)'}</button>
+                <button type="button" class="filt-chip" data-filt-cond="recuperacion_agua" data-confirmed="false" aria-pressed="false">{isEs ? 'Recuperación de agua' : 'Water recovery'}</button>
+                <button type="button" class="filt-chip" data-filt-cond="colmatacion_telas" data-confirmed="false" aria-pressed="false">{isEs ? 'Colmatación / telas' : 'Blinding / cloths'}</button>
+                <button type="button" class="filt-chip" data-filt-cond="alta_presion_16bar" data-confirmed="false" aria-pressed="false">{isEs ? 'Alta presión (16 bar)' : 'High pressure (16 bar)'}</button>
+              </div>
+              <input type="hidden" name="filt_condition" id="wb-filt-condition" value="" />
             </div>
-            <div id="wb-metrology-bridge-card" data-testid="wb-metrology-bridge-card" class="metrology-bridge-card hidden">
-              <div class="metrology-bridge-header">
-                <span class="metrology-bridge-tag font-mono-tech">[{isEs ? 'CÉDULA METROLÓGICA DE LABORATORIO' : 'LAB METROLOGY SCHEDULE'}]</span>
-                <button type="button" id="wb-apply-metrology-btn" class="metrology-apply-btn">{isEs ? 'Pre-calibrar Hidráulica con Cédula →' : 'Pre-calibrate Hydraulics from Lab Spec →'}</button>
+            <ProcessControlIsland locale={lang} mode="embedded" />
+            <WizardCircuitCalculators lang={lang} />
+            <details class="wb-progressive-drawer" id="wb-jrp-planner-drawer">
+              <summary class="wb-progressive-summary">
+                <span>{isEs ? 'Planificador preventivo de reorden (3 etapas)' : 'Preventive reorder planner (3 stages)'}</span>
+                <span class="wb-step1-more-arrow">▾</span>
+              </summary>
+              <JrpReorderCore lang={lang} mode="wizard" showTradeIn={false} showPrimaryTrayBtn={false} showPairBtn={false} />
+            </details>
+            <details class="wb-progressive-drawer" id="wb-symptom-context-details" data-domain-root="pumping">
+              <summary class="wb-progressive-summary">
+                <span>{isEs ? '+ Condición de Operación / Síntoma de Desgaste en Planta (5 condiciones)' : '+ Operating Condition / Field Wear Symptom (5 conditions)'}</span>
+                <span class="wb-step1-more-arrow">▾</span>
+              </summary>
+              <div class="wb-progressive-body">
+                <div class="form-group">
+                  <label id="stress-chips-label"><strong>{isEs ? 'Condición de Operación / Síntoma en Planta:' : 'Operating Condition / Field Wear Symptom:'}</strong></label>
+                  <div class="stress-chips-grid" role="group" aria-labelledby="stress-chips-label">
+                    <button type="button" class="stress-chip chip-ghost" data-symptom="roca_dura" data-confirmed="false" aria-pressed="false">{isEs ? 'Roca dura y golpeteo' : 'Hard rock & impact'}</button>
+                    <button type="button" class="stress-chip" data-symptom="acido_quimica" data-confirmed="false" aria-pressed="false">{isEs ? 'Agua ácida / química' : 'Acid / chemical slurry'}</button>
+                    <button type="button" class="stress-chip" data-symptom="arena_fina" data-confirmed="false" aria-pressed="false">{isEs ? 'Arena fina / velocidad' : 'Fine sand / high speed'}</button>
+                    <button type="button" class="stress-chip" data-symptom="fuga_sello" data-confirmed="false" aria-pressed="false">{isEs ? 'Fuga constante en sello' : 'Seal leakage'}</button>
+                    <button type="button" class="stress-chip" data-symptom="mixta_duda" data-confirmed="false" aria-pressed="false">{isEs ? 'Pulpa mixta / compleja' : 'Mixed complex pulp'}</button>
+                  </div>
+                  <input type="hidden" name="stress_symptom" id="wb-stress-symptom" data-schema-input="pumping.stressSymptom" value="roca_dura" />
+                </div>
               </div>
-              <p id="wb-metrology-bridge-text" class="metrology-bridge-text">Ss=2.80 | Cw=40% | Sm=1.346 kg/L | M_min=201 g | P80=106 µm (#140, n=1.12)</p>
-            </div>
-          </div>
-        </details>
-
-        <div class="wb-step1-secondary-wrap" data-domain-root="erpExport">
-          <details class="wb-progressive-drawer wb-step1-more-drawer" id="wb-smart-paste-details">
-            <summary class="wb-step1-more-summary" id="wb-step1-more-drawer">
-              <span>{isEs ? '+ Tag de Planta, Folio Interno, Flexómetro 1:1 o Código SMAT' : '+ Plant Tag, Internal Folio, 1:1 Tape Measure or SMAT Code'}</span>
-              <span class="wb-step1-more-arrow">▾</span>
-            </summary>
-            <div class="wb-step1-more-body qw-top-gap">
-              <div class="form-group">
-                <label for="wb-details"><strong>{isEs ? 'Tag de Planta / Ubicación de Línea:' : 'Plant Tag / Line Location:'}</strong></label>
-                <input type="text" id="wb-details" name="spec_details" class="wb-input" placeholder={isEs ? 'Ej. Bomba #2 / Tag B-201' : 'e.g. Header Pump #2 / Tag B-201'} />
+            </details>
+            <details class="wb-progressive-drawer" id="wb-engineering-config-details">
+              <summary class="wb-progressive-summary">
+                <span id="wb-engineering-config-summary-text">{isEs ? '+ Alcance (Refacciones / CAPEX), Sellado Est. 02 y Cédula Metrológica' : '+ Scope (Spares / CAPEX), St. 02 Sealing & Metrology Schedule'}</span>
+                <span class="wb-step1-more-arrow">▾</span>
+              </summary>
+              <div class="wb-progressive-body">
+                <div class="intent-selector">
+                  <label class="intent-btn selected" id="btn-intent-opex">
+                    <input type="radio" name="intent" value="opex_paro" checked />
+                    <span class="intent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+                    <div class="intent-info"><strong>{isEs ? 'Refacciones de Desgaste / Paro' : 'Wear Spares / Plant Shutdown'}</strong><small>{isEs ? 'Impulsores A05, volutas, rotores y telas' : 'A05 impellers, volutes, rotors & cloths'}</small></div>
+                  </label>
+                  <label class="intent-btn" id="btn-intent-capex">
+                    <input type="radio" name="intent" value="capex_proyecto" />
+                    <span class="intent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
+                    <div class="intent-info"><strong>{isEs ? 'Equipos Completos / Circuito' : 'Complete Equipment / Circuit Package'}</strong><small>{isEs ? 'Bombas con motor, celdas o filtros prensa' : 'Pumps with motor, flotation cells or presses'}</small></div>
+                  </label>
+                </div>
+                <div id="package-bundle-panel" class="package-bundle-panel hidden">
+                  <div class="package-bundle-header"><strong>{isEs ? 'Seleccione las partidas del circuito:' : 'Select required circuit equipment:'}</strong></div>
+                  <div class="package-bundle-grid">
+                    <label class="package-check-label"><input type="checkbox" name="pkg_item" value="bomba_skid" checked /><span>{isEs ? 'Bomba sobre Base con Motor' : 'Base-Mounted Pump w/ Motor'}</span></label>
+                    <label class="package-check-label"><input type="checkbox" name="pkg_item" value="celdas_flotacion" /><span>{isEs ? 'Batería de Celdas de Flotación' : 'Flotation Cell Bank'}</span></label>
+                    <label class="package-check-label"><input type="checkbox" name="pkg_item" value="filtro_prensa" /><span>{isEs ? 'Filtro Prensa Jales Secos' : 'Dry Tailings Filter Press'}</span></label>
+                    <label class="package-check-label"><input type="checkbox" name="pkg_item" value="refacciones_inicio" /><span>{isEs ? 'Paquete Inicial A05' : 'Initial A05 Spares'}</span></label>
+                  </div>
+                </div>
+                <div id="wb-pump-only-engineering-controls" data-only-circuit="bombeo" class="qw-top-gap">
+                  <label for="wb-seal-branch"><strong>{isEs ? 'Rama de Sellado de Eje (Estación 02):' : 'Shaft Sealing Branch (Station 02):'}</strong></label>
+                  <select id="wb-seal-branch" name="seal_branch" class="wb-select" data-wb-bind="seal_branch">
+                    <option value="expeller_dry" selected>{isEs ? 'Est. 02A — Expulsor Centrífugo Seco (Sin agua de sello)' : 'St. 02A — Dry Centrifugal Expeller (Zero gland water)'}</option>
+                    <option value="gland_water">{isEs ? 'Est. 02B — Prensaestopa Húmedo (Anillo Linterna)' : 'St. 02B — Wet Gland Packing (Lantern Ring)'}</option>
+                  </select>
+                </div>
+                <div id="wb-metrology-bridge-card" data-testid="wb-metrology-bridge-card" class="metrology-bridge-card hidden">
+                  <div class="metrology-bridge-header">
+                    <span class="metrology-bridge-tag font-mono-tech">[{isEs ? 'CÉDULA METROLÓGICA DE LABORATORIO' : 'LAB METROLOGY SCHEDULE'}]</span>
+                    <button type="button" id="wb-apply-metrology-btn" class="metrology-apply-btn">{isEs ? 'Pre-calibrar Hidráulica con Cédula →' : 'Pre-calibrate Hydraulics from Lab Spec →'}</button>
+                  </div>
+                  <p id="wb-metrology-bridge-text" class="metrology-bridge-text">Ss=2.80 | Cw=40% | Sm=1.346 kg/L | M_min=201 g | P80=106 µm (#140, n=1.12)</p>
+                </div>
               </div>
-              <div class="assist-pills-bar" role="group" aria-label={isEs ? 'Herramientas de identificación' : 'Identification tools'}>
-                <span class="assist-pills-label font-mono-tech">{isEs ? 'ASISTENCIA:' : 'ASSIST:'}</span>
-                <button type="button" class="assist-pill-btn" data-assist-target="worn-piece-details" aria-expanded="false">[ {isEs ? 'Flexómetro 1:1' : '1:1 Tape'} ]</button>
-                <button type="button" class="assist-pill-btn" data-assist-target="smat-decoder-details" aria-expanded="false">[ {isEs ? 'Código SMAT' : 'SMAT Code'} ]</button>
-                <button type="button" class="assist-pill-btn" data-assist-target="custom-equip-details" aria-expanded="false">[ {isEs ? 'Equipo Especial' : 'Custom Spec'} ]</button>
-              </div>
-              <details class="worn-piece-details" id="worn-piece-details">
-                <summary class="worn-piece-summary"><span>{isEs ? 'Cotejo 1:1 con Flexómetro o Foto' : '1:1 Tape Measure Check or Photo'}</span><span class="worn-arrow">▾</span></summary>
-                <div class="worn-piece-body">
-                  <div class="photo-upload-row" id="photo-upload-row"><label class="photo-btn"><span>{isEs ? 'Adjuntar foto' : 'Attach photo'}</span><input type="file" id="wb-photo-input" accept="image/*" class="file-input-hidden" /></label><span id="photo-status" class="photo-status-text"></span></div>
-                  <div class="form-row"><div class="form-group col-half"><label for="wb-dim-dia"><strong>{isEs ? 'Ø Exterior (mm):' : 'Outer Ø (mm):'}</strong></label><input type="text" id="wb-dim-dia" name="dim_outer_dia" class="wb-input font-mono-tech" placeholder="370 mm" /></div><div class="form-group col-half"><label for="wb-dim-bore"><strong>{isEs ? 'Barreno (mm):' : 'Shaft Bore (mm):'}</strong></label><input type="text" id="wb-dim-bore" name="dim_shaft_bore" class="wb-input font-mono-tech" placeholder="65 mm" /></div></div>
+            </details>
+            <div class="wb-step1-secondary-wrap" data-domain-root="erpExport">
+              <details class="wb-progressive-drawer wb-step1-more-drawer" id="wb-smart-paste-details">
+                <summary class="wb-step1-more-summary" id="wb-step1-more-drawer">
+                  <span>{isEs ? '+ Tag de Planta, Folio Interno, Flexómetro 1:1 o Código SMAT' : '+ Plant Tag, Internal Folio, 1:1 Tape Measure or SMAT Code'}</span>
+                  <span class="wb-step1-more-arrow">▾</span>
+                </summary>
+                <div class="wb-step1-more-body qw-top-gap">
+                  <div class="form-group"><label for="wb-details"><strong>{isEs ? 'Tag de Planta / Ubicación de Línea:' : 'Plant Tag / Line Location:'}</strong></label><input type="text" id="wb-details" name="spec_details" class="wb-input" placeholder={isEs ? 'Ej. Bomba #2 / Tag B-201' : 'e.g. Header Pump #2 / Tag B-201'} /></div>
+                  <div class="assist-pills-bar" role="group" aria-label={isEs ? 'Herramientas de identificación' : 'Identification tools'}>
+                    <span class="assist-pills-label font-mono-tech">{isEs ? 'ASISTENCIA:' : 'ASSIST:'}</span>
+                    <button type="button" class="assist-pill-btn" data-assist-target="worn-piece-details" aria-expanded="false">{isEs ? 'Flexómetro 1:1' : '1:1 Tape'}</button>
+                    <button type="button" class="assist-pill-btn" data-assist-target="smat-decoder-details" aria-expanded="false">{isEs ? 'Código SMAT' : 'SMAT Code'}</button>
+                    <button type="button" class="assist-pill-btn" data-assist-target="custom-equip-details" aria-expanded="false">{isEs ? 'Equipo Especial' : 'Custom Spec'}</button>
+                  </div>
+                  <details class="worn-piece-details" id="worn-piece-details">
+                    <summary class="worn-piece-summary"><span>{isEs ? 'Cotejo 1:1 con Flexómetro o Foto' : '1:1 Tape Measure Check or Photo'}</span><span class="worn-arrow">▾</span></summary>
+                    <div class="worn-piece-body">
+                      <div class="photo-upload-row" id="photo-upload-row"><label class="photo-btn"><span>{isEs ? 'Adjuntar foto' : 'Attach photo'}</span><input type="file" id="wb-photo-input" accept="image/*" class="file-input-hidden" /></label><span id="photo-status" class="photo-status-text"></span></div>
+                      <div class="form-row"><div class="form-group col-half"><label for="wb-dim-dia"><strong>{isEs ? 'Ø Exterior (mm):' : 'Outer Ø (mm):'}</strong></label><input type="text" id="wb-dim-dia" name="dim_outer_dia" class="wb-input font-mono-tech" placeholder="370 mm" /></div><div class="form-group col-half"><label for="wb-dim-bore"><strong>{isEs ? 'Barreno (mm):' : 'Shaft Bore (mm):'}</strong></label><input type="text" id="wb-dim-bore" name="dim_shaft_bore" class="wb-input font-mono-tech" placeholder="65 mm" /></div></div>
+                    </div>
+                  </details>
+                  <div class="form-group qw-top-gap"><label for="wb-client-ref"><strong>{isEs ? 'Folio de Requisición / Orden de Mantenimiento:' : 'Requisition Folio / Work Order:'}</strong></label><input type="text" id="wb-client-ref" name="client_reference" data-schema-input="erpExport.placa_ref" class="wb-input" placeholder={isEs ? 'Ej. REQ-2026-084' : 'e.g. REQ-2026-084'} /></div>
+                  <details class="smat-decoder-details" id="smat-decoder-details">
+                    <summary class="smat-decoder-summary"><span>{isEs ? 'Cargar Código SMAT Previo' : 'Load Previous SMAT Code'}</span><span class="decoder-arrow">▾</span></summary>
+                    <div class="smat-decoder-bar" id="smat-decoder-bar"><div class="decoder-input-group"><input type="text" id="wb-code-decoder-input" class="decoder-input" placeholder="SMAT-PUMP-6X4-WETKIT" /><button type="button" class="btn-decoder-load" id="wb-code-decode-btn">{isEs ? 'Cargar' : 'Load'}</button></div><small class="decoder-status" id="decoder-status"></small></div>
+                  </details>
+                  <details class="custom-equip-details" id="custom-equip-details">
+                    <summary class="custom-equip-summary"><span>+ {isEs ? 'Equipo fuera de catálogo' : 'Non-catalog custom equipment'}</span><span class="custom-arrow">▾</span></summary>
+                    <div class="custom-equip-body"><div class="form-row"><div class="form-group col-half"><label for="custom-equip-type"><strong>{isEs ? 'Equipo:' : 'Equipment:'}</strong></label><input type="text" id="custom-equip-type" class="wb-input" /></div><div class="form-group col-half"><label for="custom-equip-capacity"><strong>{isEs ? 'Capacidad:' : 'Capacity:'}</strong></label><input type="text" id="custom-equip-capacity" class="wb-input" /></div></div><div class="form-group"><label for="custom-equip-notes"><strong>{isEs ? 'Notas:' : 'Notes:'}</strong></label><textarea id="custom-equip-notes" class="wb-input custom-textarea" rows="2"></textarea></div></div>
+                  </details>
                 </div>
               </details>
-              <div class="form-group qw-top-gap"><label for="wb-client-ref"><strong>{isEs ? 'Folio de Requisición / Orden de Mantenimiento:' : 'Requisition Folio / Work Order:'}</strong></label><input type="text" id="wb-client-ref" name="client_reference" data-schema-input="erpExport.placa_ref" class="wb-input" placeholder={isEs ? 'Ej. REQ-2026-084' : 'e.g. REQ-2026-084'} /></div>
-              <details class="smat-decoder-details" id="smat-decoder-details">
-                <summary class="smat-decoder-summary"><span>{isEs ? 'Cargar Código SMAT Previo' : 'Load Previous SMAT Code'}</span><span class="decoder-arrow">▾</span></summary>
-                <div class="smat-decoder-bar" id="smat-decoder-bar"><div class="decoder-input-group"><input type="text" id="wb-code-decoder-input" class="decoder-input" placeholder="SMAT-PUMP-6X4-WETKIT" /><button type="button" class="btn-decoder-load" id="wb-code-decode-btn">{isEs ? 'Cargar' : 'Load'}</button></div><small class="decoder-status" id="decoder-status"></small></div>
-              </details>
-              <details class="custom-equip-details" id="custom-equip-details">
-                <summary class="custom-equip-summary"><span>+ {isEs ? 'Equipo fuera de catálogo' : 'Non-catalog custom equipment'}</span><span class="custom-arrow">▾</span></summary>
-                <div class="custom-equip-body"><div class="form-row"><div class="form-group col-half"><label for="custom-equip-type"><strong>{isEs ? 'Equipo:' : 'Equipment:'}</strong></label><input type="text" id="custom-equip-type" class="wb-input" /></div><div class="form-group col-half"><label for="custom-equip-capacity"><strong>{isEs ? 'Capacidad:' : 'Capacity:'}</strong></label><input type="text" id="custom-equip-capacity" class="wb-input" /></div></div><div class="form-group"><label for="custom-equip-notes"><strong>{isEs ? 'Notas:' : 'Notes:'}</strong></label><textarea id="custom-equip-notes" class="wb-input custom-textarea" rows="2"></textarea></div></div>
-              </details>
+              <div class="qw-fsm-nav-row">
+                <button type="button" id="btn-open-step2" class="assist-pill-btn qw-fsm-nav-btn" data-target="stage-2" data-fsm-next="stage-2">{isEs ? '02. Calibrar Hidráulica y Tribología ↓' : '02. Calibrate Hydraulics & Tribology ↓'}</button>
+                <button type="button" id="btn-open-step3" class="assist-pill-btn active qw-fsm-nav-btn" data-target="stage-3" data-fsm-next="stage-3">{isEs ? '03. Continuar a Despacho y Folio ↓' : '03. Continue to Dispatch & Folio ↓'}</button>
+              </div>
             </div>
-          </details>
-          <div class="qw-fsm-nav-row">
-            <button type="button" id="btn-open-step2" class="assist-pill-btn qw-fsm-nav-btn" data-target="stage-2" data-fsm-next="stage-2">{isEs ? '02. Calibrar Hidráulica y Tribología ↓' : '02. Calibrate Hydraulics & Tribology ↓'}</button>
-            <button type="button" id="btn-open-step3" class="assist-pill-btn active qw-fsm-nav-btn" data-target="stage-3" data-fsm-next="stage-3">{isEs ? '03. Continuar a Despacho y Folio ↓' : '03. Continue to Dispatch & Folio ↓'}</button>
           </div>
+        </details>
+
+        <div id="wb-role-criteria-bar" class="role-criteria-inline-bar">
+          <div class="criteria-inline-row"><span class="criteria-inline-tag font-mono-tech">{isEs ? 'REGLA METALÚRGICA' : 'METALLURGY RULE'}</span><span id="wb-criteria-rule">{isEs ? rolesCriteriaMap.revestimientos?.rule_es : rolesCriteriaMap.revestimientos?.rule_en}</span></div>
+          <div class="criteria-inline-row"><span class="criteria-inline-tag criteria-tag-risk font-mono-tech">{isEs ? 'RIESGO EVITADO' : 'AVOIDED RISK'}</span><span id="wb-criteria-risk">{isEs ? rolesCriteriaMap.revestimientos?.risk_es : rolesCriteriaMap.revestimientos?.risk_en}</span></div>
+          <div class="criteria-inline-row"><span class="criteria-inline-tag font-mono-tech">{isEs ? 'VARIABLES CRÍTICAS' : 'CRITICAL VARIABLES'}</span><span id="wb-criteria-vars">{isEs ? rolesCriteriaMap.revestimientos?.vars_es : rolesCriteriaMap.revestimientos?.vars_en}</span> <strong id="wb-criteria-series" class="font-mono-tech qw-series-tag">({rolesCriteriaMap.revestimientos?.series})</strong></div>
         </div>
       </section>
 
@@ -445,6 +432,17 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
           </div>
           <input type="text" name="website" id="wb-website" tabindex="-1" autocomplete="off" class="wb-honeypot-field" aria-hidden="true" />
 
+          <div class="qw-step3-submit-wrap">
+            <button
+              type="button"
+              id="wb-submit-outbox-btn"
+              class="btn btn-primary qw-submit-outbox-btn"
+            >
+              {isEs ? 'Enviar Solicitud a Ingeniería Durango' : 'Submit Request to Durango Engineering'}
+            </button>
+            <p id="wb-outbox-status-msg" class="wb-outbox-status font-mono-tech" role="status" aria-live="polite"></p>
+          </div>
+
           <div class="qw-fsm-nav-row">
             <button type="button" id="btn-step3-back-step2" class="assist-pill-btn qw-fsm-nav-btn" data-target="stage-2" data-fsm-prev="stage-2">{isEs ? '← 02. Ajustar Parámetros' : '← 02. Adjust Parameters'}</button>
             <button type="button" id="btn-step3-back-step1" class="assist-pill-btn qw-fsm-nav-btn" data-target="stage-diagnostic" data-fsm-prev="stage-diagnostic">{isEs ? '↺ 01. Cambiar Circuito' : '↺ 01. Change Circuit'}</button>
@@ -460,17 +458,9 @@ const rolesCriteriaJson = JSON.stringify(rolesCriteriaMap);
 <script>
   import { initQuoteWizardController } from '../scripts/quoteWizardController.js';
   import { initMiningPresetTelemetryBridge } from '../scripts/wizardMiningAndCodeDecoder.js';
+  import { initQuoteOutboxController } from '../scripts/quoteOutboxDomBinder.js';
+
   initQuoteWizardController();
   initMiningPresetTelemetryBridge();
-
-  document.querySelectorAll('.qw-fsm-nav-btn[data-target]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const targetId = btn.getAttribute('data-target') || '';
-      const targetEl = targetId ? document.getElementById(targetId) : null;
-      if (!targetEl) return;
-      const detailsEl = targetEl.querySelector('details');
-      if (detailsEl) detailsEl.open = true;
-      targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
+  initQuoteOutboxController();
 </script>

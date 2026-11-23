@@ -181,6 +181,11 @@ pub fn check_v34_qtray_dual_cta_qcard_cmu_and_reorder_hydration(
 ) -> Result<(), String> {
     let qtray = fs::read_to_string(site_root.join("src/components/QuickOrderTray.astro"))
         .map_err(|e| e.to_string())?;
+    let header_src = fs::read_to_string(site_root.join("src/components/Header.astro"))
+        .map_err(|e| e.to_string())?;
+    if !qtray.contains("<dialog") || !qtray.contains("id=\"smat-qtray-drawer\"") || !header_src.contains("id=\"header-qtray-trigger\"") {
+        return Err("SLICE-V53-06: QuickOrderTray.astro debe usar <dialog id=\"smat-qtray-drawer\"> enlazado a #header-qtray-trigger en Header.astro".to_string());
+    }
     for req_tray in [
         "id=\"smat-qtray-pdf-link\"",
         "data-qtray-qty-delta=\"-1\"",
@@ -319,7 +324,7 @@ pub fn check_v35_zero_orphan_ast_and_dist_graph_closure(site_root: &Path) -> Res
         }
     }
     for acuse_rel in ["src/pages/acuse.astro", "src/pages/en/thank-you.astro"] {
-        let acuse_src = fs::read_to_string(site_root.join(acuse_rel)).map_err(|e| e.to_string())?;
+        let acuse_src = crate::read_page_with_islands_composite(site_root, acuse_rel)?;
         if !acuse_src.contains("acuse-multi-item-tray-section")
             || !acuse_src.contains("enrichTrayItemsPreservingMetadata")
             || !acuse_src.contains("34166")
@@ -371,11 +376,13 @@ pub fn check_v35_zero_orphan_ast_and_dist_graph_closure(site_root: &Path) -> Res
     }
 
     // 7. D1-V36, D2-V36, D3-V36 & D7-V36: Verificación de paridad SSR en catalogo.astro y purga QuickPartSelectorStrip
+    let cat_vm_src = fs::read_to_string(site_root.join("src/scripts/catalogFacetedViewModel.js"))
+        .unwrap_or_default();
     for cat_rel in ["src/pages/catalogo.astro", "src/pages/en/catalog.astro"] {
-        let cat_src = crate::read_page_with_islands_composite(site_root, cat_rel)?;
+        let cat_src = format!("{}\n{}", crate::read_page_with_islands_composite(site_root, cat_rel)?, cat_vm_src);
         if !cat_src.contains("v.id === 'control_procesos'") {
             return Err(format!(
-                "D2-V36 (DEB-V36-03): {} no filtra control_procesos desde data/roles.json",
+                "D2-V36 (DEB-V36-03): {} (+ catalogFacetedViewModel.js) no filtra control_procesos desde data/roles.json",
                 cat_rel
             ));
         }

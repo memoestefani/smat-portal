@@ -1,6 +1,7 @@
 ---
 import LogoSmat from './LogoSmat.astro';
 import companyData from '../../data/company.json';
+import { SMAT_SUPPLY_DOORS } from '../scripts/i18nDomainLabels.js';
 
 interface Props {
   lang?: 'es' | 'en';
@@ -12,19 +13,21 @@ const { lang = 'es', currentPath = '/', alternatePath = '/en/' } = Astro.props;
 const isEs = lang === 'es';
 
 const productCategories = isEs ? [
-  { href: '/bombeo/', label: 'Puerta 1: Bombas para Lodos y Spare Parts', sub: 'Impulsores, cuellos, volutas (lote 5-5-4), camisa D075C21 y Bearing Assembly' },
-  { href: '/clasificacion/', label: 'Puerta 2: Hidrociclones y Mallas de Uretano', sub: 'Hidrociclones D6-D20, Paquete Casado Bomba + Ciclón, Mallas TH48-30 y Balance 3 Vasos Marcy' },
-  { href: '/control-de-procesos/', label: 'Puerta 3: Flotación, Filtros Prensa y Control', sub: 'Mecanismos 50-300 ft³, Filtros Prensa 16 bar, Balanzas Marcy y Tamices ASTM E11' },
-  { href: '/equipos/', label: 'Equipos de Proceso y Circuitos Húmedos', sub: 'Mecanismos de flotación 50-300 ft³, filtros prensa, hidrociclones y paquetes acoplados' },
+  { href: SMAT_SUPPLY_DOORS.door1.hrefEs, label: SMAT_SUPPLY_DOORS.door1.labelEs, sub: 'Mecanismos de flotación 50-300 ft³, filtros prensa 16 bar, hidrociclones y paquetes acoplados' },
+  { href: SMAT_SUPPLY_DOORS.door2.hrefEs, label: SMAT_SUPPLY_DOORS.door2.labelEs, sub: 'Impulsores, cuellos, volutas (lote 5-5-4), camisa D075C21 y Bearing Assembly' },
+  { href: SMAT_SUPPLY_DOORS.door3.hrefEs, label: SMAT_SUPPLY_DOORS.door3.labelEs, sub: 'Balanzas Marcy (12 diales), Filtro de Presión Batch (Pierre Gy) y Tamices ASTM E11' },
+  { href: '/clasificacion/', label: 'Hidrociclones D6-D20 y Mallas de Uretano', sub: 'Ápex SiC, Paquete Casado Bomba + Ciclón, Mallas TH48-30 y Balance 3 Vasos Marcy' },
   { href: '/flotacion/', label: 'Mecanismos para Celdas de Flotación y Acondicionadores', sub: 'Mecanismos 50-300 ft³, rotores y estatores Drop-In' },
   { href: '/filtracion/', label: 'Filtros Prensa y Desaguado (NOM-141)', sub: 'Filtros prensa, placas PP, corre-placas y verificador estructural Timoshenko (16 bar)' },
+  { href: '/nosotros/', label: 'Almacén Central Durango y Ensamble', sub: 'Capacidad operativa, inspección dimensional 1:1 y despacho a mina' },
 ] : [
-  { href: '/en/pumping/', label: 'Door 1: Slurry Pumps & Spare Parts', sub: 'Impellers, throatbushes, volutes (5-5-4 lot), D075C21 sleeve & Bearing Assembly' },
-  { href: '/en/classification/', label: 'Door 2: Hydrocyclones & Urethane Screens', sub: 'D6-D20 Hydrocyclones, Married Pump + Cyclone Package, TH48-30 Screens & 3-Cup Marcy Balance' },
-  { href: '/en/process-control/', label: 'Door 3: Flotation, Filter Presses & Control', sub: '50-300 ft³ Flotation Mechanisms, 16-bar Filter Presses, Marcy Scales & ASTM E11 Sieves' },
-  { href: '/en/process-equipment/', label: 'Process Equipment & Wet Circuits', sub: 'Flotation mechanisms 50-300 ft³, filter presses, hydrocyclones & coupled packages' },
+  { href: SMAT_SUPPLY_DOORS.door1.hrefEn, label: SMAT_SUPPLY_DOORS.door1.labelEn, sub: 'Flotation mechanisms 50-300 ft³, 16-bar filter presses, hydrocyclones & coupled packages' },
+  { href: SMAT_SUPPLY_DOORS.door2.hrefEn, label: SMAT_SUPPLY_DOORS.door2.labelEn, sub: 'Impellers, throatbushes, volutes (5-5-4 lot), D075C21 sleeve & Bearing Assembly' },
+  { href: SMAT_SUPPLY_DOORS.door3.hrefEn, label: SMAT_SUPPLY_DOORS.door3.labelEn, sub: 'Marcy Scales (12 dials), Batch Pressure Filter (Pierre Gy) & ASTM E11 Sieves' },
+  { href: '/en/classification/', label: 'D6-D20 Hydrocyclones & Urethane Screens', sub: 'SiC Apex, Married Pump + Cyclone Package, TH48-30 Screens & 3-Cup Marcy Balance' },
   { href: '/en/flotation/', label: 'Flotation Cells & Mechanisms', sub: '50-300 ft³ cells, Drop-In rotors & stators' },
   { href: '/en/filtration/', label: 'Filtration & Tailings (NOM-141)', sub: '16-bar filter presses, PP plates, plate shifters & Timoshenko flexure verifier' },
+  { href: '/en/about/', label: 'Durango Central Warehouse & Assembly', sub: 'Operational capacity, 1:1 dimensional inspection & mine dispatch' },
 ];
 ---
 
@@ -32,7 +35,7 @@ const productCategories = isEs ? [
   <!-- Cabecera Esbelta Unificada (Decisión 2-C / Ahorro de 50px de Altura) -->
   <div class="header-utility-strip">
     <div class="container utility-inner">
-      <div class="utility-badge" title={companyData.logistics.local_pickup_badge}>
+      <div class="utility-badge" title={isEs ? companyData.logistics.local_pickup_badge : companyData.logistics.local_pickup_badge_en}>
         <span class="live-dot"></span>
         <span>{isEs ? 'Almacén Central Durango • Despacho Prioritario a Mina' : 'Durango Central Warehouse • Direct Mine Dispatch'}</span>
       </div>
@@ -50,10 +53,10 @@ const productCategories = isEs ? [
 
     <nav class="desktop-nav" aria-label="Navegación Principal">
       <ul class="nav-list">
-        <!-- Menú Desplegable: Equipos y Refacciones -->
+        <!-- Menú Desplegable: Equipos y las 3 Puertas -->
         <li class="nav-dropdown-item">
-          <a href={isEs ? '/bombeo/' : '/en/pumping/'} class="nav-item has-dropdown">
-            {isEs ? 'Equipos & Refacciones' : 'Equipment & Parts'}
+          <a href={isEs ? '/equipos/' : '/en/process-equipment/'} class="nav-item has-dropdown">
+            {isEs ? 'Equipos' : 'Equipment'}
             <span class="dropdown-arrow">▾</span>
           </a>
           <div class="dropdown-menu">
@@ -66,36 +69,24 @@ const productCategories = isEs ? [
           </div>
         </li>
 
-        <!-- Enlace directo a Hidrociclones y Clasificación -->
-        <li>
-          <a href={isEs ? '/clasificacion/' : '/en/classification/'} class:list={['nav-item', { active: currentPath.includes('clasificacion') || currentPath.includes('classification') }]}>
-            {isEs ? 'Hidrociclones' : 'Hydrocyclones'}
-          </a>
-        </li>
-
-        <!-- Enlace al Catálogo Digital A4/Móvil -->
         <li>
           <a href={isEs ? '/catalogo/' : '/en/catalog/'} class:list={['nav-item', { active: currentPath.includes('catalogo') || currentPath.includes('catalog') }]}>
-            {isEs ? 'Catálogo Digital' : 'Digital Catalog'}
+            {isEs ? 'Catálogo' : 'Catalog'}
           </a>
         </li>
 
-        <!-- Enlaces Rápidos Directos -->
         <li>
           <a href={isEs ? '/diagnostico/' : '/en/diagnostics/'} class:list={['nav-item', { active: currentPath.includes('diagnostico') || currentPath.includes('diagnostics') }]}>
-            {isEs ? 'Diagnóstico de Fallas' : 'Failure Diagnostics'}
+            {isEs ? 'Diagnóstico' : 'Diagnostics'}
           </a>
         </li>
+
         <li>
           <a href={isEs ? '/garantia/' : '/en/warranty/'} class:list={['nav-item', { active: currentPath.includes('garantia') || currentPath.includes('warranty') }]}>
-            {isEs ? 'Garantía & Pruebas' : 'Warranty & Tests'}
+            {isEs ? 'Garantía' : 'Warranty'}
           </a>
         </li>
-        <li>
-          <a href={isEs ? '/nosotros/' : '/en/about/'} class:list={['nav-item', { active: currentPath.includes('nosotros') || currentPath.includes('about') }]}>
-            {isEs ? 'Nosotros' : 'About'}
-          </a>
-        </li>
+
         <li>
           <a href={isEs ? '/contacto/' : '/en/contact/'} class:list={['nav-item', { active: currentPath.includes('contacto') || currentPath.includes('contact') }]}>
             {isEs ? 'Contacto' : 'Contact'}
@@ -126,6 +117,20 @@ const productCategories = isEs ? [
         </a>
       </div>
 
+      <!-- Botón de Bandeja de Requisición B2B (Mueve el disparador al Header sin píldora flotante) -->
+      <button
+        type="button"
+        id="header-qtray-trigger"
+        class="btn btn-sm header-qtray-trigger"
+        aria-haspopup="dialog"
+        aria-controls="smat-qtray-drawer"
+        aria-expanded="false"
+        hidden
+      >
+        <span>{isEs ? 'Bandeja' : 'Tray'}</span>
+        <span id="header-qtray-count" class="header-qtray-count">0</span>
+      </button>
+
       <!-- Botón Rey Renombrado (Decisión 2-C / Sustituye 'Abrir Consola') -->
       <a href={isEs ? "/cotizar/#rfq" : "/en/quote/#rfq"} class="btn btn-primary btn-sm header-rfq-btn">
         {isEs ? 'Cotizar Refacción' : 'Quote Spares'}
@@ -135,18 +140,67 @@ const productCategories = isEs ? [
 </header>
 
 <script>
-  // Manejo de scroll suave si ya está en la página principal con el cotizador montado
-  const headerBtn = document.querySelector('.header-rfq-btn');
-  if (headerBtn) {
-    headerBtn.addEventListener('click', (e) => {
-      const targetEl = document.getElementById('rfq');
-      if (targetEl && (window.location.pathname === '/' || window.location.pathname === '/en/')) {
-        e.preventDefault();
-        targetEl.scrollIntoView({ behavior: 'smooth' });
-        history.replaceState(null, '', '#rfq');
+  function initHeaderInteractions() {
+    const headerBtn = document.querySelector('.header-rfq-btn');
+    if (headerBtn && headerBtn.getAttribute('data-bound') !== '1') {
+      headerBtn.setAttribute('data-bound', '1');
+      headerBtn.addEventListener('click', (e) => {
+        const targetEl = document.getElementById('rfq');
+        if (targetEl && (window.location.pathname === '/' || window.location.pathname === '/en/')) {
+          e.preventDefault();
+          targetEl.scrollIntoView({ behavior: 'smooth' });
+          history.replaceState(null, '', '#rfq');
+        }
+      });
+    }
+
+    const triggerBtn = document.getElementById('header-qtray-trigger');
+    const drawer = document.getElementById('smat-qtray-drawer') as HTMLDialogElement | null;
+    if (triggerBtn && drawer) {
+      triggerBtn.hidden = false;
+      triggerBtn.classList.remove('hidden');
+
+      const syncCount = () => {
+        const badge = document.getElementById('header-qtray-count');
+        const trayCount = document.getElementById('smat-qtray-count');
+        if (badge && trayCount) {
+          badge.textContent = trayCount.textContent || '0';
+          return;
+        }
+        try {
+          const raw = window.localStorage?.getItem('smat_requisition_tray_v3');
+          if (raw && badge) {
+            const parsed = JSON.parse(raw);
+            const items = Array.isArray(parsed?.items) ? parsed.items : [];
+            badge.textContent = String(items.reduce((acc: number, it: any) => acc + (Number(it?.qty) || 1), 0));
+          }
+        } catch {
+          /* ignore */
+        }
+      };
+
+      syncCount();
+      if (triggerBtn.getAttribute('data-bound') !== '1') {
+        triggerBtn.setAttribute('data-bound', '1');
+        triggerBtn.addEventListener('click', () => {
+          const d = document.getElementById('smat-qtray-drawer') as HTMLDialogElement | null;
+          if (!d) return;
+          d.removeAttribute('hidden');
+          d.classList.remove('hidden');
+          if (typeof d.showModal === 'function' && !d.open) {
+            d.showModal();
+          }
+          triggerBtn.setAttribute('aria-expanded', 'true');
+        });
+        window.addEventListener('smat:tray-updated', syncCount);
       }
-    });
+    } else if (triggerBtn) {
+      triggerBtn.hidden = true;
+    }
   }
+
+  initHeaderInteractions();
+  document.addEventListener('astro:page-load', initHeaderInteractions);
 </script>
 
 <style>
@@ -220,15 +274,17 @@ const productCategories = isEs ? [
     display: flex;
     align-items: center;
     justify-content: space-between;
+    max-width: 1380px;
     padding-top: 0.55rem;
     padding-bottom: 0.55rem;
-    gap: 1.25rem;
+    gap: 1rem;
   }
 
   /* Logo Corporativo Vectorial SMAT */
   .brand-logo {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
     text-decoration: none;
     transition: opacity 0.2s ease, transform 0.2s ease;
   }
@@ -246,7 +302,7 @@ const productCategories = isEs ? [
   .nav-list {
     display: flex;
     align-items: center;
-    gap: 1.15rem;
+    gap: 0.95rem;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -257,11 +313,17 @@ const productCategories = isEs ? [
     font-weight: 600;
     color: var(--smat-text-secondary);
     text-decoration: none;
-    padding: 0.35rem 0.2rem;
+    padding: 0.35rem 0.25rem;
     transition: color 0.15s ease;
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .header-actions > *, .header-actions a, .header-actions button {
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .nav-item:hover, .nav-item.active {
@@ -368,6 +430,49 @@ const productCategories = isEs ? [
     background-color: var(--smat-copper-accent, #7c2d12) !important;
     color: #ffffff !important;
     border-color: #5c1f0b !important;
+  }
+
+  .header-qtray-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 48px;
+    min-width: 48px;
+    box-sizing: border-box;
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--smat-radius-sm, 6px);
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #0f172a;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .header-qtray-trigger[hidden] {
+    display: none !important;
+  }
+
+  .header-qtray-trigger:hover {
+    background: #eef2f6;
+    border-color: #94a3b8;
+  }
+
+  .header-qtray-count {
+    display: inline-flex;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.3rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: #7c2d12;
+    color: #ffffff;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.68rem;
+    font-weight: 800;
   }
 
   .header-rfq-btn:hover {

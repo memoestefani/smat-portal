@@ -467,7 +467,7 @@ function readPageWithIslandsComposite(rel) {
   return src;
 }
 
-test('D1-V48 / D5-V48 / DEB-V48-03..05: Estrato 1 Above-the-Fold, paridad bilingüe y cero metalenguaje visible en V4.8', () => {
+test('D1-V48 / D5-V48 / DEB-V48-03..05: Estrato 1 Above-the-Fold, paridad bilingüe y cero metalenguaje visible en V4.8', async () => {
   const stratum1WithDiagram = [
     'src/pages/bombeo/impulsor.astro',
     'src/pages/en/pumping/impeller.astro',
@@ -520,11 +520,16 @@ test('D1-V48 / D5-V48 / DEB-V48-03..05: Estrato 1 Above-the-Fold, paridad biling
     assert.ok(src.includes('data-met-defuse-d63'), `${metRel} debe incluir data-met-defuse-d63`);
   }
 
+  const metCoreSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/MetrologyLabCore.astro'), 'utf8');
+  assert.equal(/data-schema-output="[^"]+"\s+data-met-defuse-/.test(metCoreSrc), false, 'MetrologyLabCore debe mantener escritor único sin colisión data-schema-output + data-met-defuse');
+
+  const catalogVmSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/catalogFacetedViewModel.js'), 'utf8');
   for (const catRel of ['src/pages/catalogo.astro', 'src/pages/en/catalog.astro']) {
     const src = readPageWithIslandsComposite(catRel);
+    const combinedCatalog = `${src}\n${catalogVmSrc}`;
     assert.ok(src.includes('data-dropin-verifier'), `${catRel} debe incluir data-dropin-verifier`);
-    assert.ok(src.includes('ATOMIC_PARTS_SSOT_COUNT'), `${catRel} debe proyectar ATOMIC_PARTS_SSOT_COUNT`);
-    assert.ok(src.includes('PIPE_DIAMETERS_MM'), `${catRel} debe proyectar PIPE_DIAMETERS_MM`);
+    assert.ok(combinedCatalog.includes('CATALOG_ATOMIC_PARTS_COUNT') || combinedCatalog.includes('ATOMIC_PARTS_SSOT_COUNT'), `${catRel} debe proyectar conteo SSOT de piezas atómicas`);
+    assert.ok(combinedCatalog.includes('PIPE_DIAMETERS_MM'), `${catRel} debe proyectar PIPE_DIAMETERS_MM`);
     assert.ok(src.includes('bindDropInEquivalenceVerifier'), `${catRel} debe invocar bindDropInEquivalenceVerifier`);
   }
 
@@ -542,4 +547,17 @@ test('D1-V48 / D5-V48 / DEB-V48-03..05: Estrato 1 Above-the-Fold, paridad biling
 
   const diagSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/DiagnosticsHub.astro'), 'utf8');
   assert.ok(diagSrc.includes('data-tray-circuit="diagnostico"'), 'DiagnosticsHub.astro debe ofrecer + Bandeja con circuito diagnostico');
+
+  const dossierSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/LiveEngineeringDossier.astro'), 'utf8');
+  assert.ok(dossierSrc.includes('id="live-table-sobol-drivers"'), 'LiveEngineeringDossier.astro debe proyectar #live-table-sobol-drivers');
+  const footerSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/Footer.astro'), 'utf8');
+  assert.ok(footerSrc.includes('id="smat-offline-status"'), 'Footer.astro debe montar #smat-offline-status reactivo');
+  assert.ok(footerSrc.includes('id="smat-offline-retry-btn"'), 'Footer.astro debe montar #smat-offline-retry-btn');
+
+  const ctrlPhysMod = await import('../src/scripts/wizardCircuitPhysicsController.js');
+  const pumpCalcMod = await import('../src/scripts/pumpingSealAndTribologyCalculators.js');
+  const bindMod = await import('../src/scripts/wizardEventBindings.js');
+  assert.equal('mergeEngineeringContext' in ctrlPhysMod, false, 'mergeEngineeringContext debe ser privado en wizardCircuitPhysicsController');
+  assert.equal('PUMPING_CALCULATOR_STATE' in pumpCalcMod, false, 'PUMPING_CALCULATOR_STATE debe ser privado en pumpingSealAndTribologyCalculators');
+  assert.equal('bindSchemaInputsAutomatically' in bindMod, false, 'bindSchemaInputsAutomatically debe ser privado en wizardEventBindings');
 });

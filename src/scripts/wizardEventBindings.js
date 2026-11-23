@@ -205,7 +205,7 @@ export function collectWizardDomRefs(doc) {
 /**
  * Enlaza automáticamente cada selector declarado en `ENGINE_SCHEMA_REGISTRY` vía `schemaRuntimeBinder`.
  */
-export function bindSchemaInputsAutomatically(doc, onChanged) {
+function bindSchemaInputsAutomatically(doc, onChanged) {
   if (!doc || typeof onChanged !== 'function') return 0;
   const domainIds = listAllEngineSchemas().map((s) => s.id);
   return bindDomainSchemaRoot(doc, domainIds, ({ field, domainId, node }) => {
@@ -635,24 +635,32 @@ export function bindAllWizardEventListeners(ctx = {}) {
     setTimeout(() => { win.location.href = targetAcuse; }, 350);
   });
 
-  // 11. Drawers móviles (sin innerHTML, clonado DOM seguro), modal cotejo, red y presets mineros
+  // 11. Drawers móviles (traslado del nodo único sin duplicar #id), modal cotejo, red y presets mineros
   const btnOpenDrawer = doc.getElementById('btn-open-drawer');
   const btnCloseDrawer = doc.getElementById('btn-close-drawer');
   const drawerOverlay = doc.getElementById('drawer-overlay');
   const drawerMount = doc.getElementById('drawer-dossier-mount');
   const mainDossierCard = doc.getElementById('main-dossier-card');
   if (btnOpenDrawer && drawerOverlay && drawerMount && mainDossierCard) {
+    const dossierHomeParent = mainDossierCard.parentElement;
+    const dossierHomeAnchor = doc.createComment('smat-dossier-home-anchor');
+    if (dossierHomeParent) {
+      dossierHomeParent.insertBefore(dossierHomeAnchor, mainDossierCard);
+    }
+    const restoreDossierToHome = () => {
+      drawerOverlay.classList.add('hidden');
+      drawerOverlay.setAttribute('hidden', '');
+      if (dossierHomeParent && mainDossierCard.parentElement === drawerMount) {
+        dossierHomeParent.insertBefore(mainDossierCard, dossierHomeAnchor.nextSibling);
+      }
+    };
     btnOpenDrawer.addEventListener('click', () => {
-      drawerMount.replaceChildren(mainDossierCard.cloneNode(true));
+      drawerMount.replaceChildren(mainDossierCard);
       drawerOverlay.classList.remove('hidden');
       drawerOverlay.removeAttribute('hidden');
-      drawerMount.querySelector('#wb-copy-btn')?.addEventListener('click', () => doc.getElementById('wb-copy-btn')?.click());
-      drawerMount.querySelector('#wb-copy-tsv-btn')?.addEventListener('click', () => doc.getElementById('wb-copy-tsv-btn')?.click());
-      drawerMount.querySelector('#wb-pdf-btn')?.addEventListener('click', () => doc.getElementById('wb-pdf-btn')?.click());
-      drawerMount.querySelector('#wb-whatsapp-btn')?.addEventListener('click', () => doc.getElementById('wb-whatsapp-btn')?.click());
     });
-    btnCloseDrawer?.addEventListener('click', () => drawerOverlay.classList.add('hidden'));
-    drawerOverlay.addEventListener('click', (e) => { if (e.target === drawerOverlay) drawerOverlay.classList.add('hidden'); });
+    btnCloseDrawer?.addEventListener('click', restoreDossierToHome);
+    drawerOverlay.addEventListener('click', (e) => { if (e.target === drawerOverlay) restoreDossierToHome(); });
   }
 
   const btnCotejo = doc.getElementById('wb-cotejo-btn');
@@ -741,27 +749,10 @@ export function bindAllWizardEventListeners(ctx = {}) {
 
   if (win) {
     win.addEventListener('keydown', (e) => {
-      const targetTag = e.target?.tagName?.toLowerCase() || '';
-      const isInput = targetTag === 'input' || targetTag === 'textarea' || targetTag === 'select';
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        doc.getElementById('wb-code-decoder-input')?.focus();
-        return;
-      }
-      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'c') {
-        e.preventDefault();
-        btnCopyTsv?.click();
-        return;
-      }
       if (e.key === 'Escape') {
         drawerOverlay?.classList.add('hidden');
         modalCotejo?.classList.add('hidden');
-        return;
       }
-      if (isInput) return;
-      if (e.key === '1') doc.querySelector('.preset-chip[data-preset="sag_primary"]')?.click();
-      else if (e.key === '2') doc.querySelector('.preset-chip[data-preset="flotation_rougher"]')?.click();
-      else if (e.key === '3') doc.querySelector('.preset-chip[data-preset="tailings_thickened"]')?.click();
     });
 
     const offlinePill = doc.getElementById('offline-network-pill');

@@ -13,6 +13,7 @@ import CaseCards from '../CaseCards.astro';
 import SharePurchasing from '../SharePurchasing.astro';
 import DropInVerifierCore from '../cores/DropInVerifierCore.astro';
 import { getQuickProductsCatalog, AVENUE_METADATA } from '../../scripts/quickProductsCatalog.js';
+import { SMAT_SUPPLY_DOORS } from '../../scripts/i18nDomainLabels.js';
 
 interface Props {
   locale?: 'es' | 'en';
@@ -45,23 +46,23 @@ const renderSkuHref = (sku: any) => `${productsBase}${isEs ? sku.slug_es : sku.s
 const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
 ---
 
-<section class="page-hero">
+<section class="page-hero smat-compact-hero">
   <div class="container">
     <span class="badge badge-copper">
-      {isEs ? 'PUERTA 1 • PROYECTOS, AMPLIACIONES Y CIRCUITOS' : 'DOOR 1 • CAPITAL PROJECTS, EXPANSIONS & CIRCUITS'}
+      {isEs ? SMAT_SUPPLY_DOORS.door1.badgeEs : SMAT_SUPPLY_DOORS.door1.badgeEn}
     </span>
     <h1>{isEs ? 'Equipos de Proceso' : 'Process Equipment'}</h1>
     <p class="hero-lead">
       {isEs
-        ? 'Ingeniería y suministro de equipos principales para molienda, concentración por flotación y desaguado de jales: Mecanismos para Celdas de Flotación y Acondicionadores (50 a 300 ft³), Filtros Prensa (800 a 1500 mm, hasta 16 bar) y Bombas Horizontales y Verticales para Lodos en Paquete.'
-        : 'Engineering and supply of core process equipment for grinding, flotation concentration, and tailings dewatering circuits: Flotation Cell Mechanisms & Conditioners (50 to 300 ft³), Recessed-Chamber Filter Presses (800 to 1500 mm, up to 16 bar), and Complete Slurry Pump Packages.'}
+        ? 'Maquinaria completa de planta concentradora: Mecanismos para Celdas de Flotación (50–300 ft³), Filtros Prensa (800–1500 mm, 16 bar), Baterías de Hidrociclones y Motobombas de Proyecto. Para refacciones de desgaste, use los accesos directos a '
+        : 'Complete concentrator plant machinery: Flotation Cell Mechanisms (50–300 ft³), Recessed-Chamber Filter Presses (800–1500 mm, 16 bar), Hydrocyclone Clusters, and Project Pump Packages. For ongoing wear spares, use '}
+      <a href={catalogBase}>{isEs ? 'Catálogo de Refacciones (19 SKUs)' : 'Spares Catalog (19 SKUs)'}</a>
+      {' · '}
+      <a href={pumpingPath}>{isEs ? 'Partes Húmedas de Bombeo' : 'Slurry Pump Wear Spares'}</a>.
     </p>
     <div class="hero-cta-row">
       <a href={`${quoteBase}?circuito=flotacion&equipo=celda_flotacion&serie=100ft#rfq`} class="btn btn-primary">
         {isEs ? 'Cotizar Equipo de Proceso →' : 'Quote Process Equipment →'}
-      </a>
-      <a href={pumpingPath} class="btn btn-outline">
-        {isEs ? 'Ir a Bombas para Lodos y Spare Parts →' : 'Go to Slurry Pumps & Spare Parts →'}
       </a>
     </div>
   </div>
@@ -100,10 +101,21 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
       </div>
     </div>
 
-    <div class="smat-mb-md">
-      <DropInVerifierCore lang={lang} variant="equipment" />
-    </div>
+    <details class="eq-drawer smat-mb-md" id="equipos-dropin-drawer">
+      <summary class="eq-drawer-summary">
+        <span>{isEs ? 'Verificador Drop-In 1:1 por Código de Planta' : '1:1 Drop-In Plant Code Verifier'}</span>
+        <span class="eq-drawer-badge">{isEs ? 'ABRIR VERIFICADOR ▾' : 'OPEN VERIFIER ▾'}</span>
+      </summary>
+      <div class="smat-mt-sm">
+        <DropInVerifierCore lang={lang} variant="equipment" />
+      </div>
+    </details>
 
+    <details class="eq-drawer smat-mt-sm" id="equipos-catalog-blocks-drawer">
+      <summary class="eq-drawer-summary">
+        <span>{isEs ? 'Ver Bloques por Línea de Proceso (Flotación, Filtración, Bombeo, Hidrociclones y Control)' : 'View Process Line Blocks (Flotation, Filtration, Pumping, Hydrocyclones & Control)'}</span>
+        <span class="eq-drawer-badge">{isEs ? 'EXPANDIR LÍNEAS ▾' : 'EXPAND LINES ▾'}</span>
+      </summary>
     <div class="process-equipment-grid">
       <article class="card equipment-block" data-equipment-block="flotacion" data-equipment-block-blob="flotacion flotation celdas cells mecanismos mechanisms acondicionadores 18sp av-04">
         <div class="equipment-block-header">
@@ -148,12 +160,14 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
                 </button>
               </div>
             ))}
+            <div class="equipment-actions">
+              <a href={flotationPath} class="btn btn-outline">{isEs ? 'Ver Línea de Flotación' : 'View Flotation Line'}</a>
+              <a href={`${flotationPath}${isEs ? 'celdas/' : 'cells/'}`} class="btn btn-outline">{isEs ? 'Mecanismos 50-300 ft³' : 'Mechanisms 50-300 ft³'}</a>
+              <a href={`${flotationPath}${isEs ? 'mecanismos/' : 'mechanisms/'}`} class="btn btn-outline">{isEs ? 'Rotores y Estatores' : 'Rotors & Stators'}</a>
+            </div>
           </div>
         </details>
         <div class="equipment-actions">
-          <a href={flotationPath} class="btn btn-outline">{isEs ? 'Ver Línea de Flotación' : 'View Flotation Line'}</a>
-          <a href={`${flotationPath}${isEs ? 'celdas/' : 'cells/'}`} class="btn btn-outline">{isEs ? 'Mecanismos 50-300 ft³' : 'Mechanisms 50-300 ft³'}</a>
-          <a href={`${flotationPath}${isEs ? 'mecanismos/' : 'mechanisms/'}`} class="btn btn-outline">{isEs ? 'Rotores y Estatores' : 'Rotors & Stators'}</a>
           <a href={`${quoteBase}?circuito=flotacion&equipo=celda_flotacion&serie=100ft#rfq`} class="btn btn-primary">
             {isEs ? 'Cotizar Mecanismo o Celda →' : 'Quote Mechanism or Cell →'}
           </a>
@@ -182,8 +196,8 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
           <summary class="eq-drawer-summary">
             <span>
               {isEs
-                ? `▾ SKUs de Filtración (${skusByVertical.filtracion.length} SKUs • AV-05)`
-                : `▾ Filtration SKUs (${skusByVertical.filtracion.length} SKUs • AV-05)`}
+                ? `▾ SKUs de Filtración y Accesos (${skusByVertical.filtracion.length} SKUs • AV-05)`
+                : `▾ Filtration SKUs & Links (${skusByVertical.filtracion.length} SKUs • AV-05)`}
             </span>
             <span class="eq-drawer-badge">{isEs ? '+ BANDEJA DIRECTA ▾' : '+ DIRECT TRAY ▾'}</span>
           </summary>
@@ -203,12 +217,14 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
                 </button>
               </div>
             ))}
+            <div class="equipment-actions">
+              <a href={filtrationPath} class="btn btn-outline">{isEs ? 'Ver Línea de Filtración' : 'View Filtration Line'}</a>
+              <a href={`${filtrationPath}${isEs ? 'prensa/' : 'press/'}`} class="btn btn-outline">{isEs ? 'Filtros Prensa 800-1500 mm' : 'Filter Presses 800-1500 mm'}</a>
+              <a href={`${filtrationPath}${isEs ? 'repuestos/' : 'parts/'}`} class="btn btn-outline">{isEs ? 'Placas y Telas Filtrantes' : 'Plates & Filter Cloths'}</a>
+            </div>
           </div>
         </details>
         <div class="equipment-actions">
-          <a href={filtrationPath} class="btn btn-outline">{isEs ? 'Ver Línea de Filtración' : 'View Filtration Line'}</a>
-          <a href={`${filtrationPath}${isEs ? 'prensa/' : 'press/'}`} class="btn btn-outline">{isEs ? 'Filtros Prensa 800-1500 mm' : 'Filter Presses 800-1500 mm'}</a>
-          <a href={`${filtrationPath}${isEs ? 'repuestos/' : 'parts/'}`} class="btn btn-outline">{isEs ? 'Placas y Telas Filtrantes' : 'Plates & Filter Cloths'}</a>
           <a href={`${quoteBase}?circuito=filtracion&equipo=filtro_prensa&serie=1200#rfq`} class="btn btn-primary">
             {isEs ? 'Cotizar Filtro Prensa →' : 'Quote Filter Press →'}
           </a>
@@ -233,17 +249,13 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
           <div><strong>{isEs ? 'Descarga:' : 'Discharge:'}</strong> 1.5x1" – 14x12"</div>
           <div><strong>{isEs ? 'Arreglos:' : 'Arrangements:'}</strong> CV, ZVZ, CRZ &amp; DC</div>
           <div><strong>{isEs ? 'Sellado:' : 'Sealing:'}</strong> {isEs ? 'Expulsor seco y prensaestopa' : 'Dry expeller & packed gland'}</div>
-          <div>
-            <strong>{isEs ? 'Refaccionamiento:' : 'Spares:'}</strong>{' '}
-            <a href={pumpingPath}>{isEs ? 'Bombas para Lodos y Spare Parts' : 'Slurry Pumps & Spare Parts'}</a>
-          </div>
         </div>
         <details class="eq-drawer" data-equipment-ssot-drawer>
           <summary class="eq-drawer-summary">
             <span>
               {isEs
-                ? `▾ SKUs de Bombeo y Sello Seco (${skusByVertical.bombeo.length} SKUs • AV-01)`
-                : `▾ Slurry Pumping & Dry Seal SKUs (${skusByVertical.bombeo.length} SKUs • AV-01)`}
+                ? `▾ SKUs de Bombeo, Arreglos y Repuestos (${skusByVertical.bombeo.length} SKUs • AV-01)`
+                : `▾ Slurry Pump SKUs, Drives & Wear Spares (${skusByVertical.bombeo.length} SKUs • AV-01)`}
             </span>
             <span class="eq-drawer-badge">{isEs ? '+ BANDEJA DIRECTA ▾' : '+ DIRECT TRAY ▾'}</span>
           </summary>
@@ -263,17 +275,20 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
                 </button>
               </div>
             ))}
+            <div class="equipment-actions">
+              <a href={pumpingPath} class="btn btn-outline">{isEs ? 'Ir a Refacciones de Bombeo (/bombeo/)' : 'Go to Slurry Pump Spares (/en/pumping/)'}</a>
+              <a href={`${pumpingPath}${isEs ? 'skid/#arreglos-transmision' : 'skid/#drive-arrangements'}`} class="btn btn-outline">
+                {isEs ? 'Ver Arreglos CV / ZVZ / CRZ / DC' : 'View CV / ZVZ / CRZ / DC Arrangements'}
+              </a>
+              <a href={`${pumpingPath}#${isEs ? 'como-se-arma-una-bomba' : 'how-a-slurry-pump-is-assembled'}`} class="btn btn-outline">
+                {isEs ? 'Ver Reporte de Armado y Despiece' : 'View Assembly & Exploded BOM'}
+              </a>
+            </div>
           </div>
         </details>
         <div class="equipment-actions">
-          <a href={`${pumpingPath}${isEs ? 'skid/#arreglos-transmision' : 'skid/#drive-arrangements'}`} class="btn btn-outline">
-            {isEs ? 'Ver Arreglos CV / ZVZ / CRZ / DC' : 'View CV / ZVZ / CRZ / DC Arrangements'}
-          </a>
-          <a href={`${pumpingPath}#${isEs ? 'como-se-arma-una-bomba' : 'how-a-slurry-pump-is-assembled'}`} class="btn btn-outline">
-            {isEs ? 'Ver Reporte de Armado y Despiece' : 'View Assembly & Exploded BOM'}
-          </a>
           <a href={`${quoteBase}?circuito=bombeo&equipo=skid_bomba&serie=6x4&transmision=CV#rfq`} class="btn btn-primary">
-            {isEs ? 'Cotizar Motobomba Arreglo CV →' : 'Quote CV Drive Pump Skid →'}
+            {isEs ? 'Cotizar Motobomba Arreglo CV →' : 'Quote CV Drive Pump Package →'}
           </a>
         </div>
       </article>
@@ -300,8 +315,8 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
           <summary class="eq-drawer-summary">
             <span>
               {isEs
-                ? `▾ SKUs de Clasificación y Tamizado (${skusByVertical.clasificacion.length} SKUs • AV-02 / AV-03 / AV-6A)`
-                : `▾ Classification & Screening SKUs (${skusByVertical.clasificacion.length} SKUs • AV-02 / AV-03 / AV-6A)`}
+                ? `▾ SKUs de Clasificación y Simulador (${skusByVertical.clasificacion.length} SKUs • AV-02 / AV-03 / AV-6A)`
+                : `▾ Classification SKUs & Simulator (${skusByVertical.clasificacion.length} SKUs • AV-02 / AV-03 / AV-6A)`}
             </span>
             <span class="eq-drawer-badge">{isEs ? '+ BANDEJA DIRECTA ▾' : '+ DIRECT TRAY ▾'}</span>
           </summary>
@@ -321,12 +336,14 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
                 </button>
               </div>
             ))}
+            <div class="equipment-actions">
+              <a href={classificationPath} class="btn btn-outline">{isEs ? 'Abrir Simulador 3 Vasos Marcy' : 'Open 3-Cup Marcy Simulator'}</a>
+              <a href={`${productsBase}${isEs ? 'hidrociclon-completo-y-boquillas-d6-d20/' : 'hydrocyclone-assembly-and-spigots-d6-d20/'}`} class="btn btn-outline">SMAT-CYC-D6-D20</a>
+              <a href={`${productsBase}${isEs ? 'paquete-casado-bomba-hidrociclon/' : 'coupled-pump-hydrocyclone-package/'}`} class="btn btn-outline">SMAT-COUPLED-PUMP-CYC</a>
+            </div>
           </div>
         </details>
         <div class="equipment-actions">
-          <a href={classificationPath} class="btn btn-outline">{isEs ? 'Abrir Simulador 3 Vasos Marcy' : 'Open 3-Cup Marcy Simulator'}</a>
-          <a href={`${productsBase}${isEs ? 'hidrociclon-completo-y-boquillas-d6-d20/' : 'hydrocyclone-assembly-and-spigots-d6-d20/'}`} class="btn btn-outline">SMAT-CYC-D6-D20</a>
-          <a href={`${productsBase}${isEs ? 'paquete-casado-bomba-hidrociclon/' : 'coupled-pump-hydrocyclone-package/'}`} class="btn btn-outline">SMAT-COUPLED-PUMP-CYC</a>
           <a href={`${quoteBase}?circuito=clasificacion&equipo=hidrociclon&sku=SMAT-CYC-D6-D20#rfq`} class="btn btn-primary">
             {isEs ? 'Cotizar Hidrociclón / Apex →' : 'Quote Hydrocyclone / Apex →'}
           </a>
@@ -370,14 +387,17 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
                 </button>
               </div>
             ))}
+            <div class="equipment-actions">
+              <a href={`${catalogBase}#avenue-avenida_5_laboratorio`} class="btn btn-outline">{isEs ? 'Ver Avenida AV-05-LAB' : 'Open Avenue AV-05-LAB'}</a>
+            </div>
           </div>
         </details>
         <div class="equipment-actions">
           <a href={controlPath} class="btn btn-outline">{isEs ? 'Ver Línea de Control y Laboratorio' : 'View Process Control & Lab Line'}</a>
-          <a href={`${catalogBase}#avenue-avenida_5_laboratorio`} class="btn btn-outline">{isEs ? 'Ver Avenida AV-05-LAB' : 'Open Avenue AV-05-LAB'}</a>
         </div>
       </article>
     </div>
+    </details>
 
     <SharePurchasing
       roleTitle={isEs ? 'Equipos de Proceso para Planta Concentradora (Flotación / Filtración / Bombeo)' : 'Process Equipment for Concentrator Plant (Flotation / Filtration / Pumping)'}
@@ -392,7 +412,15 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
 </section>
 
 <section id="stage-2">
-  <CaseCards lang={lang} />
+  <details class="equipos-circuit-appendix" id="equipos-cases-drawer">
+    <summary class="equipos-circuit-appendix__summary container">
+      <span>{isEs ? 'Casos de Campo en Plantas Mineras (Desempeño Severo)' : 'Mining Plant Field Cases (Severe Service)'}</span>
+      <span class="equipos-circuit-appendix__badge">{isEs ? 'VER CASOS ▾' : 'VIEW CASES ▾'}</span>
+    </summary>
+    <div class="equipos-circuit-appendix__body">
+      <CaseCards lang={lang} />
+    </div>
+  </details>
 
   <details class="equipos-circuit-appendix" id="equipos-circuit-appendix">
     <summary class="equipos-circuit-appendix__summary container">
@@ -413,6 +441,14 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
     const lang = document.documentElement.lang === 'en' ? 'en' : 'es';
     bindEquipmentCatalogSearchAndTray(document, lang);
     bindDropInEquivalenceVerifier(document, lang);
+    const searchEl = document.getElementById('equipos-sku-search') as HTMLInputElement | null;
+    const blocksDrawer = document.getElementById('equipos-catalog-blocks-drawer') as HTMLDetailsElement | null;
+    if (searchEl && blocksDrawer && searchEl.dataset.eqDrawerBound !== '1') {
+      searchEl.dataset.eqDrawerBound = '1';
+      searchEl.addEventListener('input', () => {
+        if (searchEl.value.trim().length > 0) blocksDrawer.open = true;
+      });
+    }
   }
 
   initEquipmentHubIsland();

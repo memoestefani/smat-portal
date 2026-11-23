@@ -100,7 +100,7 @@ export const FILTRATION_CONDITION_ALIAS_MAP = Object.freeze({
   alta_temperatura_acida: 'alta_temperatura_acida'
 });
 
-export const FLOTATION_DOM_CHIP_MAP = Object.freeze({
+const FLOTATION_DOM_CHIP_MAP = Object.freeze({
   sulfuros_alta_agitacion: 'sulfuros_alta_agitacion',
   reactivos_ph_extremo: 'reactivos_ph_extremo',
   espuma_inestable: 'reactivos_ph_extremo',
@@ -115,7 +115,7 @@ export const FLOTATION_DOM_CHIP_MAP = Object.freeze({
   'arena-gruesa-fondo': 'vibracion_flecha'
 });
 
-export const FILTRATION_DOM_CHIP_MAP = Object.freeze({
+const FILTRATION_DOM_CHIP_MAP = Object.freeze({
   jales_secos: 'jales_secos',
   recuperacion_agua: 'recuperacion_agua',
   concentrado_fino: 'recuperacion_agua',

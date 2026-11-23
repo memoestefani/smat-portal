@@ -702,11 +702,25 @@ pub fn verify_seven_findings_and_v32_closure_gate_32(site_root: &Path) -> Result
         }
     }
     let idx_es = crate::read_page_with_islands_composite(site_root, "src/pages/index.astro")?;
-    if !idx_es.contains("Puerta 1 • Bombeo de Lodos y Refacciones")
-        || !idx_es.contains("Puerta 2 • Clasificación y Cribado Fino")
-        || !idx_es.contains("Puerta 3 • Flotación, Filtración y Lab")
+    if !idx_es.contains("SMAT_SUPPLY_DOORS.door1")
+        || !idx_es.contains("SMAT_SUPPLY_DOORS.door2")
+        || !idx_es.contains("SMAT_SUPPLY_DOORS.door3")
     {
-        return Err("Hallazgo 7 (D9=9-C+): src/pages/index.astro carece de las 3 Puertas Canonicas (Puerta 1 Bombeo, Puerta 2 Clasificacion, Puerta 3 Flotacion/Filtracion/Lab)".to_string());
+        return Err("Hallazgo 7 (D9=9-C+): src/pages/index.astro (HomeLandingIsland) debe consumir SMAT_SUPPLY_DOORS.door1..3".to_string());
+    }
+    let labels_js = fs::read_to_string(site_root.join("src/scripts/i18nDomainLabels.js"))
+        .map_err(|e| e.to_string())?;
+    for req_door in [
+        "Puerta 1 • Equipos de Proceso",
+        "Puerta 2 • Bombas para Lodos y Spare Parts",
+        "Puerta 3 • Control de Procesos y Laboratorio",
+    ] {
+        if !labels_js.contains(req_door) {
+            return Err(format!(
+                "Hallazgo 7 (V5.3.1 SSOT): i18nDomainLabels.js carece de '{}'",
+                req_door
+            ));
+        }
     }
 
     if !site_root

@@ -39,11 +39,15 @@ const defaultPlateWidth = variant === 'press' ? '1500' : '1200';
     </div>
   </div>
 
-  <!-- Banner de dictamen estructural y NOM-141 -->
-  <div id="filt-res-summary" class="smat-stratum1-display filt-summary-banner smat-mt-sm">
-    {isEs
-      ? 'Operación estructural segura. Cumple criterio de torta seca NOM-141.'
-      : 'Structurally safe operation. Meets NOM-141 dry cake criteria.'}
+  <!-- Salidas unificadas Estrato 1 (Display-First antes de inputs) -->
+  <div class="embedded-filt-res smat-stratum1-display font-mono-tech smat-mt-sm">
+    <div class="embedded-res-cell"><strong>{isEs ? 'Esfuerzo σ_max:' : 'Bending σ_max:'}</strong> <span id="wb-filt-res-stress" data-testid="wb-filt-res-stress" data-schema-output="filtration.maxBendingStressMpa">3.54 MPa</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Seguridad Placa:' : 'Plate Safety:'}</strong> <span id="wb-filt-res-fs" data-testid="wb-filt-res-fs" data-schema-output="filtration.flexuralSafetyFactor">FS 4.10</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Capacidad Ciclo:' : 'Cycle Capacity:'}</strong> <span id="wb-filt-res-cycles" data-testid="wb-filt-res-cycles" data-schema-output="filtration.cyclesPerDay">36 c/d</span> · <span id="wb-filt-res-tpd" data-testid="wb-filt-res-tpd" data-schema-output="filtration.dryTonnesPerDay">285 t/d</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Dictamen NOM-141:' : 'NOM-141 Ruling:'}</strong> <span id="wb-filt-res-nom141" data-testid="wb-filt-res-nom141" data-schema-output="filtration.nom141Compliant">{isEs ? 'Cumple NOM-141' : 'NOM-141 OK'}</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Desglose Ciclo:' : 'Cycle Timing:'}</strong> <span id="wb-filt-res-cycle-min" data-testid="wb-filt-res-cycle-min">{isEs ? 'Filtrado 18.0 min + Descarga 12 min = 30.0 min' : 'Filtration 18.0 min + Turnaround 12 min = 30.0 min'}</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'ΔP Asimétrica / Fatiga:' : 'Asymmetric ΔP / Fatigue:'}</strong> <span id="wb-filt-res-asym-dp" data-testid="wb-filt-res-asym-dp">ΔP = 0.00 MPa | σ_adm,PP = 14.5 MPa</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Paquete Placa / Tela:' : 'Plate & Cloth Kit:'}</strong> <span id="wb-filt-res-skus" data-testid="wb-filt-res-skus">{isEs ? `Placa PP ${defaultPlateWidth} mm · Lona calandrada 750 g/m²` : `${defaultPlateWidth} mm PP Plate · 750 g/m² Calendered Cloth`}</span></div>
   </div>
 
   <!-- Entradas canónicas únicas (cero bifurcación embedded vs standalone) -->
@@ -67,18 +71,6 @@ const defaultPlateWidth = variant === 'press' ? '1500' : '1200';
       <input type="number" id="wb-filt-pressure" data-schema-input="filtration.feedPressureBar" min="4" max="25" step="1" value={defaultPressureBar} class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
     </div>
     <div class="form-group">
-      <label class="smat-field-label" for="wb-filt-clogged">
-        {isEs ? 'Puertos Obstruidos (0–4):' : 'Clogged Ports (0–4):'}
-      </label>
-      <input type="number" id="wb-filt-clogged" data-schema-input="filtration.cloggedPortsCount" min="0" max="4" step="1" value="0" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
-    </div>
-    <div class="form-group">
-      <label class="smat-field-label" for="wb-filt-thickness">
-        {isEs ? 'Espesor Alma Placa (mm):' : 'Plate Thickness (mm):'}
-      </label>
-      <input type="number" id="wb-filt-thickness" data-schema-input="filtration.plateThicknessMm" min="40" max="120" step="5" value="65" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
-    </div>
-    <div class="form-group">
       <label class="smat-field-label" for="filt-cake-moisture">
         {isEs ? 'Humedad Residual Meta (%):' : 'Target Moisture (%):'}
       </label>
@@ -86,46 +78,70 @@ const defaultPlateWidth = variant === 'press' ? '1500' : '1200';
     </div>
   </div>
 
-  <!-- Salidas unificadas -->
-  <div class="embedded-filt-res font-mono-tech smat-mt-sm">
-    <div class="embedded-res-cell"><strong>{isEs ? 'Esfuerzo σ_max:' : 'Bending σ_max:'}</strong> <span id="wb-filt-res-stress" data-testid="wb-filt-res-stress" data-schema-output="filtration.maxBendingStressMpa">3.54 MPa</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Seguridad Placa:' : 'Plate Safety:'}</strong> <span id="wb-filt-res-fs" data-testid="wb-filt-res-fs" data-schema-output="filtration.flexuralSafetyFactor">FS 4.10</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Capacidad Ciclo:' : 'Cycle Capacity:'}</strong> <span id="wb-filt-res-cycles" data-testid="wb-filt-res-cycles" data-schema-output="filtration.cyclesPerDay">36 c/d</span> · <span id="wb-filt-res-tpd" data-testid="wb-filt-res-tpd" data-schema-output="filtration.dryTonnesPerDay">285 t/d</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Dictamen NOM-141:' : 'NOM-141 Ruling:'}</strong> <span id="wb-filt-res-nom141" data-testid="wb-filt-res-nom141" data-schema-output="filtration.nom141Compliant">{isEs ? 'Cumple NOM-141' : 'NOM-141 OK'}</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Desglose Ciclo:' : 'Cycle Timing:'}</strong> <span id="wb-filt-res-cycle-min" data-testid="wb-filt-res-cycle-min">{isEs ? 'Filtrado 18.0 min + Descarga 12 min = 30.0 min' : 'Filtration 18.0 min + Turnaround 12 min = 30.0 min'}</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'ΔP Asimétrica / Fatiga:' : 'Asymmetric ΔP / Fatigue:'}</strong> <span id="wb-filt-res-asym-dp" data-testid="wb-filt-res-asym-dp">ΔP = 0.00 MPa | σ_adm,PP = 14.5 MPa</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'SKUs Placa y Tela:' : 'Plate & Cloth SKUs:'}</strong> <span id="wb-filt-res-skus" data-testid="wb-filt-res-skus">Placa: SMAT-FILT-CLOTH-PLATE | Tela: SMAT-CL-PP750</span></div>
-  </div>
+  <details class="wb-progressive-drawer smat-mt-sm" id="filt-tier2-params">
+    <summary class="wb-progressive-summary">
+      <span>
+        {isEs
+          ? 'Parámetros estructurales avanzados: Puertos obstruidos y espesor de placa'
+          : 'Advanced Structural Parameters: Clogged Ports & Plate Thickness'}
+      </span>
+      <span>▾</span>
+    </summary>
+    <div class="smat-inputs-2col smat-mt-sm">
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-filt-clogged">
+          {isEs ? 'Puertos Obstruidos (0–4):' : 'Clogged Ports (0–4):'}
+        </label>
+        <input type="number" id="wb-filt-clogged" data-schema-input="filtration.cloggedPortsCount" min="0" max="4" step="1" value="0" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
+      </div>
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-filt-thickness">
+          {isEs ? 'Espesor Alma Placa (mm):' : 'Plate Thickness (mm):'}
+        </label>
+        <input type="number" id="wb-filt-thickness" data-schema-input="filtration.plateThicknessMm" min="40" max="120" step="5" value="65" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
+      </div>
+    </div>
+  </details>
 
   {showVerticalActions && (
-    <div class="smat-cta-row smat-mt-sm">
-      <a
-        href={`${quoteBase}?circuito=filtracion&equipo=${quoteEquipo}&serie=${defaultPlateWidth}&filt_condition=${variant === 'parts' ? 'fuga_chorreo' : 'jales_secos'}#rfq`}
-        data-quote-base={quoteBase}
-        class="btn btn-primary smat-tap-btn"
-      >
-        {isEs ? 'Cotizar Calibrado →' : 'Quote Calibrated Unit →'}
-      </a>
-      <button
-        type="button"
-        class="btn btn-outline btn-avenue-tray smat-tap-btn"
-        data-vertical-tray-btn
-        data-add-tray-sku="SMAT-FILT-CLOTH-PLATE"
-        data-tray-part-code={`PP-${defaultPlateWidth}`}
-        data-tray-title={isEs ? `Placas Polipropileno y Telas ${defaultPlateWidth} mm (16 bar)` : `16 bar PP Plates & Filter Cloths ${defaultPlateWidth} mm`}
-        data-tray-series={defaultPlateWidth}
-        data-tray-material="PP"
-        data-tray-circuit="filtracion"
-        data-tray-source={`filtration_${variant}_stratum1_calc`}
-      >
-        {isEs ? '+ Bandeja Lonas / Placas' : '+ Tray Cloths / Plates'}
-      </button>
-      <a href={`${productsBase}${isEs ? 'lonas-y-placas-filtro-prensa-16bar/' : 'filter-press-cloths-and-pp-plates-16bar/'}`} class="btn btn-outline">
-        SMAT-FILT-CLOTH-PLATE →
-      </a>
-      <a href={`${productsBase}${isEs ? 'mecanismo-plate-shifter-y-cadenas/' : 'filter-press-plate-shifter-and-chains/'}`} class="btn btn-outline">
-        SMAT-FILT-SHIFTER-CHAIN →
-      </a>
-    </div>
+    <>
+      <div class="smat-cta-row smat-mt-sm">
+        <a
+          href={`${quoteBase}?circuito=filtracion&equipo=${quoteEquipo}&serie=${defaultPlateWidth}&filt_condition=${variant === 'parts' ? 'fuga_chorreo' : 'jales_secos'}#rfq`}
+          data-quote-base={quoteBase}
+          class="btn btn-primary smat-tap-btn"
+        >
+          {isEs ? 'Cotizar Calibrado →' : 'Quote Calibrated Unit →'}
+        </a>
+        <button
+          type="button"
+          class="btn btn-outline btn-avenue-tray smat-tap-btn"
+          data-vertical-tray-btn
+          data-add-tray-sku="SMAT-FILT-CLOTH-PLATE"
+          data-tray-part-code={`PP-${defaultPlateWidth}`}
+          data-tray-title={isEs ? `Placas Polipropileno y Telas ${defaultPlateWidth} mm (16 bar)` : `16 bar PP Plates & Filter Cloths ${defaultPlateWidth} mm`}
+          data-tray-series={defaultPlateWidth}
+          data-tray-material="PP"
+          data-tray-circuit="filtracion"
+          data-tray-source={`filtration_${variant}_stratum1_calc`}
+        >
+          {isEs ? '+ Bandeja Lonas / Placas' : '+ Tray Cloths / Plates'}
+        </button>
+      </div>
+      <details class="wb-progressive-drawer smat-mt-sm" id="filt-spares-links-drawer">
+        <summary class="wb-progressive-summary">
+          <span>{isEs ? 'Ver fichas técnicas de placas 16 bar y corre-placas' : 'View 16 bar plates, cloths & plate shifter sheets'}</span>
+          <span>▾</span>
+        </summary>
+        <div class="smat-cta-row smat-mt-sm">
+          <a href={`${productsBase}${isEs ? 'lonas-y-placas-filtro-prensa-16bar/' : 'filter-press-cloths-and-pp-plates-16bar/'}`} class="btn btn-outline">
+            {isEs ? 'Ver Placas y Lonas 16 bar →' : 'View 16 bar Plates & Cloths →'}
+          </a>
+          <a href={`${productsBase}${isEs ? 'mecanismo-plate-shifter-y-cadenas/' : 'filter-press-plate-shifter-and-chains/'}`} class="btn btn-outline">
+            {isEs ? 'Ver Corre-Placas y Cadenas →' : 'View Plate Shifter & Chains →'}
+          </a>
+        </div>
+      </details>
+    </>
   )}
 </div>

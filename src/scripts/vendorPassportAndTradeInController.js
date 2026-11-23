@@ -160,12 +160,8 @@ export function buildSapAnexo22ComplianceSummary(params = {}) {
   const passport = buildSmatVendorPassportPayload(params.companyMeta || {});
 
   const laneLabel = isEs
-    ? dualCheckout.lane === 'CAJA_CHICA_CFDI40'
-      ? 'Carril Ágil Caja Chica CFDI 4.0 (G03) / Orden de Compra'
-      : 'Carril Institucional Orden de Compra SAP / Coupa / Oracle (G03 / I04)'
-    : dualCheckout.lane === 'CAJA_CHICA_CFDI40'
-      ? 'Fast-Track Petty Cash CFDI 4.0 (G03) / Purchase Order'
-      : 'Institutional SAP / Coupa / Oracle Purchase Order Lane (G03 / I04)';
+    ? (dualCheckout.laneLabelEs || 'Compra Directa (CFDI 4.0)')
+    : (dualCheckout.laneLabelEn || 'Direct Purchase (CFDI 4.0)');
 
   return {
     satTigieLine,

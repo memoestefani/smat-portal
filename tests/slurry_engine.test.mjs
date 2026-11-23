@@ -260,6 +260,19 @@ test('12. Cinemática de Transmisión por Poleas (CV / ZVZ / CRZ / DC), Velocida
   assert.ok(highSpeed.tipSpeedMs > 24.5, 'u2 debe superar 24.5 m/s');
   assert.equal(highSpeed.rubberSafeTipSpeed, false, 'Superado 24.5 m/s debe vetar hule por desgarre centrífugo/térmico');
   assert.ok(highSpeed.recommendedWetMaterialByTipSpeed.includes('Alto Cromo'), 'Debe exigir Alto Cromo >= 650 HB');
+
+  // Caso 3: Configuración SSR por defecto de SealDriveBearingCore (1775 RPM, 220/340 mm, 55 kW, 145 kN)
+  const ssrDrive = calculateDriveAndBearingKinematics({
+    arrangement: 'CV',
+    motorRpm: 1775,
+    driverPulleyMm: 220,
+    drivenPulleyMm: 340,
+    impellerDiameterMm: 380,
+    shaftPowerKw: 55,
+    dynamicCapacityCkN: 145
+  });
+  assert.notEqual(ssrDrive.pumpRpm, 1001, 'SSR default (1775 * 220/340) difiere del legacy 1001 RPM');
+  assert.ok(ssrDrive.bearingL10Hours > 0 && ssrDrive.l10mhLabyrinthHours > ssrDrive.bearingL10Hours);
 });
 
 test('13. Consolidación Canónica Sin Debris (MS-01 / Decisión 8-C) e Invariantes Físicos INV-SMAT-SCI-12..14', async () => {

@@ -230,29 +230,39 @@ export function validatePlantLeadInput(params = {}) {
   }
   let activeTrustBoundaryId = null;
   let activeTrustBoundaryTitleEs = '';
+  let activeTrustBoundaryTitleEn = '';
   let activeTrustBoundaryReasonEs = '';
+  let activeTrustBoundaryReasonEn = '';
   const isRubber = materialRaw.includes('hule') || materialRaw.includes('rubber') || materialRaw === 'r55';
   if (isRubber && (ph < 1.5 || tempC > 110 || d80 > 600)) {
     activeTrustBoundaryId = 'bound-ph-temp';
     activeTrustBoundaryTitleEs = 'Límite Técnico (bound-ph-temp): Químicos o Temperatura Extrema en Hule Natural';
+    activeTrustBoundaryTitleEn = 'Technical Limit (bound-ph-temp): Extreme Chemistry or Temperature on Natural Rubber';
     activeTrustBoundaryReasonEs = `Con pH ${ph.toFixed(1)}, T=${tempC}°C o d80=${Math.round(d80)} µm, el hule natural sufre degradación o desgarre prematuro. Se recomienda migrar a Aleación Especial / Alto Cromo A05 o Poliuretano U01.`;
+    activeTrustBoundaryReasonEn = `At pH ${ph.toFixed(1)}, T=${tempC}°C or d80=${Math.round(d80)} µm, natural rubber faces premature tearing or chemical attack. Switch to High Chrome A05 or Polyurethane U01.`;
   } else if (claroMm < 0.35 || (isRubber && tipSpeedMs > 24.5) || tipSpeedMs > 29.5) {
     activeTrustBoundaryId = 'bound-unapproved-mods';
     activeTrustBoundaryTitleEs = 'Límite Técnico (bound-unapproved-mods): Interferencia Mecánica o Sobrecarga Cinemática';
+    activeTrustBoundaryTitleEn = 'Technical Limit (bound-unapproved-mods): Mechanical Clearance or Tip-Speed Overload';
     activeTrustBoundaryReasonEs = claroMm < 0.35
       ? `Claro axial δ=${claroMm.toFixed(2)} mm inferior al umbral de dilatación térmica (0.35 mm): riesgo inminente de amarre frontal contra placa de succión.`
       : `Velocidad periférica u₂=${tipSpeedMs.toFixed(1)} m/s excede el límite endotérmico seguro del revestimiento seleccionado.`;
+    activeTrustBoundaryReasonEn = claroMm < 0.35
+      ? `Axial clearance δ=${claroMm.toFixed(2)} mm is below thermal expansion threshold (0.35 mm): front impeller lock-up risk.`
+      : `Tip speed u₂=${tipSpeedMs.toFixed(1)} m/s exceeds safe thermal limit for selected wet-end lining.`;
   } else if (!hasPartCodeOrDims && Boolean(params.strictBlindCheck ?? params.strict_blind_check)) {
     activeTrustBoundaryId = 'bound-blind-quote';
     activeTrustBoundaryTitleEs = 'Límite Técnico (bound-blind-quote): Cotización a Ciegas Sin Datos Mínimos';
+    activeTrustBoundaryTitleEn = 'Technical Limit (bound-blind-quote): Blind Quote Without Minimum Part Data';
     activeTrustBoundaryReasonEs = 'Para garantizar intercambiabilidad 1:1 sin retrabajos en paro de planta, indique serie de bomba, código de pieza o medidas básicas con flexómetro.';
+    activeTrustBoundaryReasonEn = 'To ensure 1:1 drop-in fit without plant downtime rework, enter pump series, part code, or tape-measure dimensions.';
   }
   const plausible = warnings.length === 0 && activeTrustBoundaryId === null;
   const isIdentifiedPlant = companyRaw.length >= 2 && !companyRaw.toLowerCase().includes('no especificado');
   let classification = 'GENERAL_INQUIRY';
   let badgeLabelEs = 'PARÁMETROS FÍSICAMENTE PLAUSIBLES • REVISIÓN INGENIERÍA';
   let badgeLabelEn = 'PHYSICALLY PLAUSIBLE PARAMETERS • ENGINEERING REVIEW';
-  let slaCommitmentEs = 'SLA Mismo Día Hábil • Validación dimensional 1:1 en Almacén Durango';
+  let slaCommitmentEs = 'Atención Mismo Día Hábil • Validación dimensional 1:1 en Almacén Durango';
   if (!plausible) {
     classification = 'OUT_OF_DOMAIN_WARNING';
     badgeLabelEs = 'ALERTA DE FRONTERA TÉCNICA • REQUIERE AJUSTE DE INGENIERÍA';
@@ -260,12 +270,12 @@ export function validatePlantLeadInput(params = {}) {
     slaCommitmentEs = 'Revisión prioritaria con Ingeniería de Aplicación en Durango antes de despacho';
   } else if (isIdentifiedPlant) {
     classification = 'PRIORITY_MINING_PLANT';
-    badgeLabelEs = 'PLANTA MINERA VERIFICADA • PARÁMETROS PLAUSIBLES (SLA PRIORITARIO)';
-    badgeLabelEn = 'VERIFIED MINING PLANT • PLAUSIBLE PARAMETERS (PRIORITY SLA)';
+    badgeLabelEs = 'PLANTA MINERA VERIFICADA • PARÁMETROS PLAUSIBLES (ATENCIÓN PRIORITARIA)';
+    badgeLabelEn = 'VERIFIED MINING PLANT • PLAUSIBLE PARAMETERS (PRIORITY DESK)';
     slaCommitmentEs = 'Atención Prioritaria Paro de Planta • Garantía de Ajuste Dimensional Drop-In 1:1 y Trazabilidad de Lote en Durango';
   }
   const strictBlindCheck = Boolean(params.strictBlindCheck ?? params.strict_blind_check);
-  return { plausible, classification, badgeLabelEs, badgeLabelEn, slaCommitmentEs, activeTrustBoundaryId, activeTrustBoundaryTitleEs, activeTrustBoundaryReasonEs, warnings, tempC, strictBlindCheck };
+  return { plausible, classification, badgeLabelEs, badgeLabelEn, slaCommitmentEs, activeTrustBoundaryId, activeTrustBoundaryTitleEs, activeTrustBoundaryTitleEn, activeTrustBoundaryReasonEs, activeTrustBoundaryReasonEn, warnings, tempC, strictBlindCheck };
 }
 export function calculateThreeCupMarcyCycloneBalance({ feedSg = 1.35, underflowSg = 1.82, overflowSg = 1.15, solidsSg = 2.7, apexDiameterMm = 50, vortexDiameterMm = 100, feedPressureKpa = 95, cycloneDiameterMm = 380 } = {}) {
   const safeSolidsSg = Math.max(1.8, Math.min(5.5, Number(solidsSg) || 2.7));

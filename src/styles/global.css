@@ -1,5 +1,6 @@
 /* SMAT Minerals - Sistema de Diseño Luminous Executive Editorial */
 @import './tokens.css';
+@import './cores-apple.css';
 
 :root {
   --font-family-sans: var(--smat-font-ui);

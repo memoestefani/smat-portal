@@ -1,0 +1,313 @@
+---
+interface Props {
+  lang?: 'es' | 'en';
+}
+
+const { lang = 'es' } = Astro.props;
+const isEs = lang === 'es';
+---
+
+<section class="ack-main" data-island-standalone="acuseSheet" data-lang={lang}>
+  <div class="container ack-container">
+    <div class="requisition-sheet" id="print-sheet">
+      <div class="sheet-header">
+        <div class="company-brand">
+          <span class="brand-logo-text">SMAT MINERALS</span>
+          <span class="brand-legacy">
+            {isEs ? 'Equipos de Proceso y Refaccionamiento Minero' : 'Mineral Processing Equipment & Critical Spares'}
+          </span>
+          <span class="brand-address">
+            {isEs
+              ? 'Domicilio Fiscal: Mariano Salas #114, Durango, Dgo. CP 34166 • Almacén Central Durango'
+              : 'Fiscal HQ: Mariano Salas #114, Durango, Mexico ZIP 34166 • Durango Central Warehouse'}
+          </span>
+          <span class="brand-contact">
+            {isEs ? 'Tel: (618) 810-4408 / 4428' : 'Phone: +52 (618) 810-4408 / 4428'} • ventas@smatminerals.com • smatminerals.com
+          </span>
+        </div>
+        <div class="folio-box">
+          <span class="folio-label">{isEs ? 'FOLIO DE REQUISICIÓN' : 'REQUISITION FOLIO'}</span>
+          <strong class="folio-value" id="display-folio">SMAT-2026-RFQ</strong>
+          <span class="folio-date" id="display-date">{isEs ? 'Fecha de Emisión' : 'Issue Date'}</span>
+          <span class="folio-status" id="display-urgency">{isEs ? 'ESTATUS: RECIBIDO' : 'STATUS: RECEIVED'}</span>
+        </div>
+      </div>
+
+      <div class="sheet-divider"></div>
+
+      <div class="sheet-title-bar">
+        <h1 class="acuse-sheet-h1" id="dossier-title">
+          {isEs ? 'ACUSE FORMAL DE SOLICITUD DE COTIZACIÓN TÉCNICA' : 'FORMAL ENGINEERING REQUISITION & QUOTATION RECEIPT'}
+        </h1>
+        <span class="badge-sla" id="dossier-order-code" data-hash-algo="fnv1a">
+          {isEs ? 'ATENCIÓN PRIORITARIA • COTEJO EN ALMACÉN DURANGO' : 'PRIORITY DISPATCH • DURANGO WAREHOUSE FIT CHECK'}
+        </span>
+      </div>
+
+      <div id="acuse-webhook-status" data-webhook-state="draft_local" class="acuse-webhook-banner is-webhook-blocked">
+        {isEs
+          ? 'Borrador Local (Sin envío automático) — Use WhatsApp, Correo o PDF A4 abajo para enviar a Durango.'
+          : 'Local Draft (Not Auto-Sent) — Use WhatsApp, Email, or PDF A4 below to dispatch to Durango Warehouse.'}
+      </div>
+
+      <div class="sheet-section">
+        <h2 class="section-title">{isEs ? '1. DATOS DEL SOLICITANTE Y UNIDAD MINERA' : '1. APPLICANT & MINING FACILITY DETAILS'}</h2>
+        <table class="sheet-table">
+          <tbody>
+            <tr>
+              <th class="acuse-th-25">{isEs ? 'Solicitante / Cargo:' : 'Applicant Name / Role:'}</th>
+              <td class="acuse-td-35" id="field-name">{isEs ? 'No especificado' : 'Not specified'}</td>
+              <th class="acuse-th-20">{isEs ? 'Mina / Empresa:' : 'Mine / Company:'}</th>
+              <td class="acuse-td-20" id="field-company">{isEs ? 'No especificado' : 'Not specified'}</td>
+            </tr>
+            <tr>
+              <th>{isEs ? 'Teléfono / WhatsApp:' : 'Phone / WhatsApp:'}</th>
+              <td id="field-phone">{isEs ? 'No especificado' : 'Not specified'}</td>
+              <th>{isEs ? 'Correo Corporativo:' : 'Corporate Email:'}</th>
+              <td id="field-email">{isEs ? 'No especificado' : 'Not specified'}</td>
+            </tr>
+            <tr>
+              <th>{isEs ? 'Destino de Entrega:' : 'Delivery Destination:'}</th>
+              <td colspan="3" id="field-destination">
+                {isEs ? 'Almacén Central Durango / Retiro Coordinado con Folio' : 'Durango Central Warehouse / Folio Scheduled Pickup'}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="sheet-section">
+        <h2 class="section-title">{isEs ? '2. ESPECIFICACIÓN TÉCNICA DEL COMPONENTE / EQUIPO' : '2. COMPONENT / EQUIPMENT SPECIFICATION'}</h2>
+        <table class="sheet-table">
+          <tbody>
+            <tr>
+              <th class="acuse-th-25">{isEs ? 'Línea / Componente:' : 'Line / Component:'}</th>
+              <td class="acuse-td-35 highlight-spec" id="field-role">{isEs ? 'Equipo en evaluación' : 'Equipment under review'}</td>
+              <th class="acuse-th-20">{isEs ? 'Código SMAT / Pieza:' : 'SMAT / Part Code:'}</th>
+              <td class="acuse-td-20 acuse-mono-bold" id="field-code">{isEs ? 'Por asignar en revisión' : 'To be assigned on review'}</td>
+            </tr>
+            <tr>
+              <th>{isEs ? 'Referencia Interna / Tag:' : 'Internal Reference / Tag:'}</th>
+              <td id="field-client-ref">{isEs ? 'Sin referencia de placa declarada' : 'No nameplate reference declared'}</td>
+              <th>{isEs ? 'Medidas de Campo (Flexómetro):' : 'Field Dimensions (Tape Measure):'}</th>
+              <td id="field-dimensions">{isEs ? 'Verificación con patrón 1:1 en almacén' : '1:1 pattern check at Durango warehouse'}</td>
+            </tr>
+            <tr>
+              <th>{isEs ? 'Condiciones y Notas:' : 'Process Slurry Notes:'}</th>
+              <td colspan="3" id="field-details">
+                {isEs ? 'Revisión de parámetros de pulpa según protocolo de ingeniería.' : 'Technical review in accordance with engineering protocols.'}
+              </td>
+            </tr>
+            <tr id="row-field-hydraulics">
+              <th>{isEs ? 'Memoria Hidráulica (Durand):' : 'Hydraulic Memory (Durand):'}</th>
+              <td colspan="3" id="field-hydraulics">
+                {isEs ? 'Cálculo hidráulico sujeto a confirmación de flujo y % de sólidos en planta.' : 'Hydraulic calculation subject to plant flow rate and % solids confirmation.'}
+              </td>
+            </tr>
+            <tr id="row-field-material-drive">
+              <th>{isEs ? 'Metalurgia, Arreglo y Estación:' : 'Metallurgy, Drive & Station:'}</th>
+              <td colspan="3" id="field-material-drive">
+                {isEs ? 'Alto Cromo ASTM A532 Cr27% (>600 HB) • Arreglo ZVZ • Estación S4 (Wet-End)' : 'High Chrome ASTM A532 Cr27% (>600 HB) • ZVZ Drive • Station S4 (Wet-End)'}
+              </td>
+            </tr>
+            <tr id="row-field-clearance-kinematics">
+              <th>{isEs ? 'Claro Axial (δ) y Cinemática:' : 'Axial Clearance (δ) & Kinematics:'}</th>
+              <td colspan="3" id="field-clearance-kinematics">
+                {isEs ? 'δ = 0.75 mm (Óptimo, Δη_v = -0.3%) • u₂ ≤ 24.5 m/s • Vida ISO 281 L₁₀ₕ certificada' : 'δ = 0.75 mm (Optimal, Δη_v = -0.3%) • u₂ ≤ 24.5 m/s • Certified ISO 281 L₁₀ₕ life'}
+              </td>
+            </tr>
+            <tr id="row-field-metrology">
+              <th>{isEs ? 'Memoria Metrológica (Lab):' : 'Metrological Memory (Lab):'}</th>
+              <td colspan="3" id="field-metrology">
+                {isEs ? 'Sin pre-calibración de laboratorio adjunta (Balanza Marcy / Bond / Prensa).' : 'No laboratory pre-calibration attached (Marcy Scale / Bond / Filter Press).'}
+              </td>
+            </tr>
+            <tr>
+              <th>{isEs ? 'Continuidad y Perfil Mineral:' : 'Continuity & Slurry Profile:'}</th>
+              <td colspan="3" id="field-tco">
+                {isEs ? 'Evaluación de continuidad operativa en Almacén Central Durango.' : 'Operational continuity assessment at Durango Central Warehouse.'}
+              </td>
+            </tr>
+            <tr>
+              <th>{isEs ? 'Tipo de Solicitud:' : 'Requisition Type:'}</th>
+              <td id="field-type">{isEs ? 'Refacción de Desgaste / Continuidad Operativa' : 'Wear Spare Part / Operational Continuity'}</td>
+              <th>{isEs ? 'Inspección en Almacén:' : 'Warehouse Inspection:'}</th>
+              <td>{isEs ? 'Almacén Central Durango (Cotejo Dimensional A, B, C · ISO 2768-m)' : 'Durango Central Warehouse (ISO 2768-m Geometric Triplet A, B, C Fit Check)'}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="sheet-section" id="acuse-multi-item-tray-section">
+        <h2 class="section-title">
+          {isEs ? '2B. PARTIDAS DE LA REQUISICIÓN, TUPLA FISCAL SAT CFDI 4.0 Y CICLO DE REORDEN CONJUNTO' : '2B. REQUISITION LINE ITEMS, SAT CFDI 4.0 TAX TUPLE & COUPLED REORDER CYCLE'}
+        </h2>
+        <table class="sheet-table">
+          <thead>
+            <tr>
+              <th class="acuse-th-22">{isEs ? 'SKU / Aleación' : 'SKU / Alloy'}</th>
+              <th class="acuse-th-44">{isEs ? 'Descripción Técnica y Tupla Fiscal SAT / TIGIE' : 'Technical Description & SAT / TIGIE Tax Tuple'}</th>
+              <th class="acuse-th-10">{isEs ? 'Cant.' : 'Qty'}</th>
+              <th class="acuse-th-24">{isEs ? 'Par Casado y Ciclo de Reorden' : 'Matched Pair & Reorder Cycle'}</th>
+            </tr>
+          </thead>
+          <tbody id="acuse-multi-item-tray-tbody">
+            <tr>
+              <td colspan="4" class="acuse-empty-row">
+                {isEs ? 'Cargando partidas de requisición y tuplas SAT CFDI 4.0...' : 'Loading requisition line items and SAT CFDI 4.0 tuples...'}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="sheet-section terms-section">
+        <h2 class="section-title">
+          {isEs ? '3. PROTOCOLO TÉCNICO Y CONTROL DE CALIDAD EN ALMACÉN CENTRAL' : '3. TECHNICAL PROTOCOL & QUALITY CONTROL AT CENTRAL WAREHOUSE'}
+        </h2>
+        <p class="terms-text">
+          {isEs
+            ? 'Este acuse certifica el registro formal de su requerimiento en los sistemas de SMAT Minerals. Todo conjunto rotativo, impulsor y carcasa suministrada cuenta con certificado de colada High Chrome 27% (A05) con dureza garantizada >650 HB (ASTM A532 HRC ≥ 58), cotejo dimensional de tripleta geométrica (A, B, C) bajo ISO 2768-m y atención prioritaria de despacho en instalaciones de SMAT Durango (Domicilio fiscal para facturación: Mariano Salas #114).'
+            : 'This document certifies formal intake of your procurement requisition under the unique institutional folio. All rotating assemblies, impellers, and pump casings supplied by SMAT Minerals include certified High Chrome 27% (A05) melt metallurgy with guaranteed hardness >650 HB (ASTM A532 HRC ≥ 58), ISO 2768-m geometric triplet (A, B, C) dimensional fit verification, and priority dispatch routing at SMAT Durango facilities (Fiscal HQ: Mariano Salas #114).'}
+        </p>
+        <div class="coyote-seal-notice facility-guarantee-notice" id="vendor-passport-section">
+          <strong>{isEs ? 'Cláusula de Validez de Almacén Central y Pasaporte de Proveedor B2B:' : 'Central Warehouse Validity & B2B Vendor Passport Clause:'}</strong>{' '}
+          {isEs
+            ? 'Esta propuesta técnica y su respaldo operativo son válidos para componentes inspeccionados y despachados en Almacén Central SMAT Durango (Incoterms EXW / DAP Durango • UNSPSC 40151500 / 20121500 / 40161500 / 41111500 • Certificación de Colada ASTM A532 Cr27 HRC ≥ 58). Equipos y paquetes acoplados completos se configuran bajo pedido según variables de pulpa del cliente; refacciones de desgaste comunes en rotación continua de inventario.'
+            : 'This technical proposal and operational backing are valid for components inspected and dispatched from Durango Central Warehouse (Incoterms EXW / DAP Durango • UNSPSC 40151500 / 20121500 / 40161500 / 41111500 • ASTM A532 Cr27 Melt Cert HRC ≥ 58). Complete equipment and coupled packages are built-to-order based on customer slurry variables; common wear parts maintain continuous inventory rotation.'}
+        </div>
+        <pre id="sap-plaintext-block" data-hash-algo="fnv1a" class="acuse-sap-pre">
+          {isEs ? 'FOLIO: SMAT-2026-RFQ | FOLIO DE VERIFICACIÓN TÉCNICA' : 'FOLIO: SMAT-2026-RFQ | TECHNICAL VERIFICATION FOLIO'}
+        </pre>
+        <details class="acuse-payload-details" id="acuse-full-payload-details">
+          <summary class="acuse-payload-summary">
+            {isEs
+              ? 'Ver payload técnico completo transmitido (19 campos: hidráulica, metrología, cinemática y estación)'
+              : 'View complete transmitted technical payload (19 fields: hydraulics, metrology, kinematics & station)'}
+          </summary>
+          <pre id="acuse-full-payload-pre" class="acuse-sap-pre"></pre>
+        </details>
+        <div class="signatures-row">
+          <div class="sig-block">
+            <span class="sig-line"></span>
+            <span class="sig-caption">
+              {isEs ? 'Ingeniería y Ventas Técnicas' : 'Application Engineering & Sales'}<br />
+              {isEs ? 'SMAT Minerals México' : 'SMAT Minerals Mexico'}
+            </span>
+          </div>
+          <div class="sig-block">
+            <span class="sig-line"></span>
+            <span class="sig-caption">
+              {isEs ? 'Recepción de Solicitud' : 'Requisition Receipt'}<br />
+              {isEs ? 'Área de Compras / Mantenimiento' : 'Purchasing / Maintenance Dept.'}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen-actions no-print">
+      <button type="button" class="btn btn-primary btn-print" id="print-btn" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="acuse-btn-svg"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+        {isEs ? 'Imprimir / Guardar en PDF (SAP / Coupa)' : 'Print / Save as PDF (SAP / Coupa)'}
+      </button>
+      <button type="button" class="btn btn-secondary" id="copy-sap-acuse-btn">
+        {isEs ? 'Copiar Texto SAP / Ariba' : 'Copy SAP / Ariba Text'}
+      </button>
+      <button type="button" class="btn btn-secondary" id="download-tsv-acuse-btn">
+        {isEs ? 'Descargar TSV / Excel' : 'Download TSV / Excel'}
+      </button>
+      <button type="button" class="btn btn-secondary" id="download-vendor-vcard-btn" data-vendor-passport-btn="vcf" data-download-passport-vcf="1">
+        {isEs ? 'Pasaporte Proveedor (.vcf)' : 'Vendor Passport (.vcf)'}
+      </button>
+      <button type="button" class="btn btn-secondary" id="download-vendor-json-btn" data-vendor-passport-btn="json" data-download-passport-json="1">
+        {isEs ? 'Ficha Alta ERP (.json)' : 'ERP Onboarding (.json)'}
+      </button>
+      <a href={isEs ? '/cotizar/?reorder=1&tray=SMAT-PUMP-IMP-AH:1:PARO_DE_LINEA#rfq' : '/en/quote/?reorder=1&tray=SMAT-PUMP-IMP-AH:1:PARO_DE_LINEA#rfq'} class="btn btn-secondary" id="reorder-ss-link">
+        {isEs ? 'Reorden Preventivo en 1 Clic' : '1-Click Preventive Reorder'}
+      </a>
+      <a href={isEs ? '/' : '/en/'} class="btn btn-secondary">
+        {isEs ? 'Volver al Inicio' : 'Return Home'}
+      </a>
+      <a href="https://wa.me/526183670664" class="btn btn-emergency" target="_blank" rel="noopener noreferrer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="acuse-btn-svg"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        {isEs ? 'Seguimiento Inmediato por WhatsApp' : 'Immediate Follow-up via WhatsApp'}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ack-main { padding: 3rem 1.5rem 5rem; background-color: var(--smat-bg-page); }
+  .ack-container { max-width: 880px; margin: 0 auto; }
+  .requisition-sheet { background: #ffffff; color: #0f172a; border-radius: 8px; padding: 2.5rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  .sheet-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1.5rem; flex-wrap: wrap; }
+  .company-brand { display: flex; flex-direction: column; gap: 0.15rem; }
+  .brand-logo-text { font-size: 1.5rem; font-weight: 900; color: #ea580c; letter-spacing: -0.02em; }
+  .brand-legacy { font-size: 0.85rem; font-weight: 700; color: #475569; }
+  .brand-address, .brand-contact { font-size: 0.75rem; color: #64748b; }
+  .folio-box { text-align: right; display: flex; flex-direction: column; gap: 0.15rem; }
+  .folio-label { font-size: 0.7rem; font-weight: 800; color: #64748b; letter-spacing: 0.05em; }
+  .folio-value { font-size: 1.3rem; font-weight: 900; color: #0f172a; font-family: monospace; }
+  .folio-date { font-size: 0.75rem; color: #64748b; }
+  .folio-status { font-size: 0.75rem; font-weight: 800; color: #047857; margin-top: 0.25rem; }
+  .sheet-divider { height: 2px; background: #e2e8f0; margin: 1.5rem 0; }
+  .sheet-title-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem; }
+  .acuse-sheet-h1 { font-size: 1.1rem; font-weight: 800; color: #0f172a; margin: 0; letter-spacing: -0.01em; }
+  .badge-sla { background: #ffedd5; color: #7c2d12; border: 1px solid #fed7aa; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.72rem; font-weight: 800; }
+  .sheet-section { margin-bottom: 1.5rem; }
+  .section-title { font-size: 0.82rem; font-weight: 800; color: #334155; letter-spacing: 0.04em; border-bottom: 1px solid #cbd5e1; padding-bottom: 0.35rem; margin-bottom: 0.75rem; }
+  .sheet-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .sheet-table th, .sheet-table td { border: 1px solid #e2e8f0; padding: 0.6rem 0.75rem; text-align: left; }
+  .sheet-table th { background-color: #f8fafc; color: #334155; font-weight: 700; }
+  .sheet-table td { color: #0f172a; }
+  .highlight-spec { font-weight: 700; color: #9a3412; }
+  .terms-text { font-size: 0.78rem; color: #475569; line-height: 1.5; margin-bottom: 1.25rem; }
+  .coyote-seal-notice { font-size: 0.74rem; background: #f8fafc; border: 1px solid #cbd5e1; border-left: 3px solid #7c2d12; padding: 0.75rem 1rem; color: #334155; line-height: 1.45; margin-bottom: 2rem; border-radius: 4px; }
+  .signatures-row { display: flex; justify-content: space-around; margin-top: 3rem; }
+  .sig-block { text-align: center; width: 240px; }
+  .sig-line { display: block; border-top: 1px solid #94a3b8; margin-bottom: 0.5rem; }
+  .sig-caption { font-size: 0.75rem; color: #475569; line-height: 1.35; }
+  .screen-actions { display: flex; justify-content: center; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+  .btn-print { background: #0c4a6e; color: #ffffff; font-size: 0.95rem; padding: 0.75rem 1.5rem; }
+  .btn-print:hover { background: #082f49; }
+  .acuse-webhook-banner { margin: 0.75rem 0 1rem; padding: 0.65rem 0.9rem; border-radius: 6px; font-family: var(--smat-font-mono, monospace); font-size: 0.78rem; font-weight: 700; }
+  .is-webhook-sent { background: #ecfdf5; border: 1px solid #059669; color: #064e3b; }
+  .is-webhook-blocked { background: #fef2f2; border: 1px solid #dc2626; color: #7f1d1d; }
+  .is-urgency-paro { color: #b91c1c; font-weight: 800; }
+  .acuse-th-25 { width: 25%; } .acuse-td-35 { width: 35%; } .acuse-th-20 { width: 20%; } .acuse-td-20 { width: 20%; }
+  .acuse-th-22 { width: 22%; } .acuse-th-44 { width: 44%; } .acuse-th-10 { width: 10%; } .acuse-th-24 { width: 24%; }
+  .acuse-mono-bold { font-family: monospace; font-weight: 700; }
+  .acuse-sap-pre { margin: 1rem 0 0; padding: 0.85rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace; font-size: 0.76rem; color: #0f172a; overflow-x: auto; white-space: pre-wrap; }
+  .acuse-payload-details { margin-top: 0.85rem; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.6rem 0.85rem; background: #ffffff; }
+  .acuse-payload-summary { cursor: pointer; font-weight: 700; font-size: 0.8rem; color: #0f172a; min-height: 44px; display: flex; align-items: center; }
+  .acuse-btn-svg { display: inline-block; vertical-align: middle; margin-right: 4px; }
+  :global(.acuse-cell-sku) { font-family: monospace; font-weight: 700; }
+  :global(.acuse-cell-sat) { font-family: monospace; color: #475569; }
+  :global(.acuse-cell-qty) { text-align: center; font-weight: 700; }
+  :global(.acuse-cell-jrp) { font-family: monospace; font-size: 0.75rem; }
+  :global(.acuse-empty-row) { color: #475569; font-size: 0.82rem; }
+  :global(.hidden) { display: none; }
+  @media (max-width: 640px) {
+    .ack-main { padding: 0.65rem 0.5rem 2rem; }
+    .requisition-sheet { padding: 0.85rem; }
+    .sheet-header { gap: 0.5rem; }
+    .brand-logo-text { font-size: 1.15rem; }
+    .brand-address, .brand-contact { display: none; }
+    .folio-box { text-align: left; }
+    .folio-value { font-size: 1rem; }
+    .sheet-divider { margin: 0.5rem 0; }
+    .sheet-title-bar { margin-bottom: 0.5rem; }
+    .acuse-sheet-h1 { font-size: 0.92rem; }
+    .sheet-section { margin-bottom: 0.75rem; }
+    .section-title { margin-bottom: 0.35rem; }
+  }
+  @media print {
+    :global(body) { background: #ffffff !important; color: #000000 !important; margin: 0 !important; padding: 0 !important; }
+    :global(.no-print), :global(header), :global(footer), .screen-actions, :global(#nav-header), :global(#main-footer) { display: none !important; }
+    .ack-main { padding: 0 !important; background: none !important; }
+    .ack-container { max-width: 100% !important; margin: 0 !important; }
+    .requisition-sheet { box-shadow: none !important; padding: 0 !important; border: none !important; border-radius: 0 !important; }
+    @page { margin: 1.5cm; size: letter portrait; }
+  }
+</style>

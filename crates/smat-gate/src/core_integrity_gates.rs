@@ -481,7 +481,15 @@ pub fn verify_40_routes_reachability(site_root: &Path) -> Result<(), String> {
 
     let header_content = fs::read_to_string(&header_path).unwrap_or_default();
     let footer_content = fs::read_to_string(&footer_path).unwrap_or_default();
-    let combined_nav = format!("{}\n{}", header_content, footer_content);
+    let labels_path = site_root.join("src").join("scripts").join("i18nDomainLabels.js");
+    let labels_content = if (header_content.contains("SMAT_SUPPLY_DOORS") || footer_content.contains("SMAT_SUPPLY_DOORS"))
+        && labels_path.exists()
+    {
+        fs::read_to_string(&labels_path).unwrap_or_default()
+    } else {
+        String::new()
+    };
+    let combined_nav = format!("{}\n{}\n{}", header_content, footer_content, labels_content);
 
     let required_routes_es = [
         "/equipos/",

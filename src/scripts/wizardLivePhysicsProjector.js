@@ -11,6 +11,10 @@ import {
   MARCY_STANDARD_RINGS,
   ASTM_E11_SIEVE_TABLE
 } from './tribologyAndCompatibilityEngine.js';
+import {
+  formatCheckoutLaneHuman,
+  formatDischargeRegimeHuman
+} from './i18nDomainLabels.js';
 
 const PROJECTOR_STATE_CACHE = {
   lastUpdatedIso: '',
@@ -234,7 +238,11 @@ export function projectClassificationAndScreenTelemetry(wizardRoot, cycResOrPayl
   setNodeTextAndAttrs(wizardRoot, '#wb-cyc-res-d50', `${cutD50c} µm`);
   setNodeTextAndAttrs(wizardRoot, '#wb-cyc-res-cvu', `${Number(cvU).toFixed(2)}`);
   setNodeTextAndAttrs(wizardRoot, '#wb-cyc-res-dudo', `${duDoRatio}`);
-  setNodeTextAndAttrs(wizardRoot, '#wb-cyc-res-roping', cycRes.dischargeRegime || (umbrellaDilute ? 'UMBRELLA_DILUTE' : 'SEMI_UMBRELLA'));
+  setNodeTextAndAttrs(
+    wizardRoot,
+    '#wb-cyc-res-roping',
+    formatDischargeRegimeHuman(cycRes.dischargeRegime || (umbrellaDilute ? 'UMBRELLA_DILUTE' : 'SEMI_UMBRELLA'), langEs ? 'es' : 'en')
+  );
   setNodeTextAndAttrs(wizardRoot, '#wb-scr-res-oversize', `${scrRes.partitionToOversizePct ?? 91.5}%`);
   setNodeTextAndAttrs(wizardRoot, '#wb-scr-res-dilation', `${scrRes.elasticDilationPct ?? 1.8}%`);
   setNodeTextAndAttrs(wizardRoot, '#wb-scr-res-weibull', `α=${alphaVal}`);
@@ -450,12 +458,13 @@ export function projectMetrologyAndReorderTelemetry(wizardRoot, payload = {}) {
   setNodeTextAndAttrs(wizardRoot, '#qtray-state-version', `v${trayState.version ?? tradeInEval.version ?? 3}`);
 
   if (cmuEval && cmuEval.priorityCode) {
+    const laneHuman = formatCheckoutLaneHuman(cmuEval.checkoutLane || 'ORDEN_COMPRA_SAP', isEs ? 'es' : 'en');
     setNodeTextAndAttrs(
       wizardRoot,
       '#tray-priority-sla-meta',
       isEs
-        ? `Nivel ${cmuEval.priorityCode} (Índice ${cmuEval.cmuScore ?? 100}) • Carril: ${cmuEval.checkoutLane || 'OC_SAP'} • Respuesta SLA: ≤${cmuEval.slaResponseMinutes ?? 45} min • Anticipo G5: ${cmuEval.advancePaymentPct ?? 50}%`
-        : `Tier ${cmuEval.priorityCode} (Score ${cmuEval.cmuScore ?? 100}) • Lane: ${cmuEval.checkoutLane || 'SAP_PO'} • SLA Response: ≤${cmuEval.slaResponseMinutes ?? 45} min • G5 Advance: ${cmuEval.advancePaymentPct ?? 50}%`
+        ? `Nivel ${cmuEval.priorityCode} (Índice ${cmuEval.cmuScore ?? 100}) • Carril: ${laneHuman} • Atención Durango Lun–Vie 8–18h • Anticipo G5: ${cmuEval.advancePaymentPct ?? 50}%`
+        : `Tier ${cmuEval.priorityCode} (Score ${cmuEval.cmuScore ?? 100}) • Lane: ${laneHuman} • Durango Desk Mon–Fri 8–18h • G5 Advance: ${cmuEval.advancePaymentPct ?? 50}%`
     );
   }
 }
@@ -570,7 +579,7 @@ export function projectHydraulicAltitudeAndLeadValidation(wizardRoot, payload = 
     setNodeTextAndAttrs(
       wizardRoot,
       '#sap-live-anexo22-tuple',
-      `${ax.satTigieLine || ''} • ${ax.laneLabel || ''} (${ax.dualCheckout?.requiresAdvancePct ?? ax.requiresAdvancePct ?? 0}% anticipo)`,
+      `${ax.satTigieLine || ''} • ${ax.laneLabel || ''} (${ax.dualCheckout?.requiresAdvancePct ?? ax.requiresAdvancePct ?? 0}% ${isEs ? 'anticipo' : 'deposit'})`,
       {
         'data-hub-location': ax.passport?.industrialHub || ax.hubLocation || 'Durango CP 34166',
         'data-currencies': (meta.currencySupport || ax.currencySupport || ['MXN', 'USD']).join(','),

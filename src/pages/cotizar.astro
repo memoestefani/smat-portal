@@ -12,46 +12,34 @@ import FaqAccordion from '../components/FaqAccordion.astro';
   alternateEsPath="/cotizar/"
   alternateEnPath="/en/quote/"
 >
-  <section class="quote-route-banner no-print">
-    <div class="container">
-      <nav class="doors-breadcrumb" aria-label="Retorno al inicio">
-        <a href="/" class="crumb-home">← Inicio</a>
-      </nav>
-      <div class="quote-route-heading">
-        <span class="route-pill">
-          <span class="live-dot"></span>
-          MESA DE REQUISICIÓN E INGENIERÍA • ALMACÉN CENTRAL DURANGO
-        </span>
-        <h1>Cotizador Técnico y Simulador de Proceso SMAT</h1>
-        <p>
-          Configure su partida de <strong>Equipos de Proceso</strong>, <strong>Bombas para Lodos y Spare Parts</strong> o <strong>Control de Procesos</strong>. Genere su folio oficial imprimible en A4, tabla TSV para SAP o envíe su solicitud directa a ingeniería en Durango.
-        </p>
-      </div>
-    </div>
-  </section>
-
   <div class="quote-workbench-shell" data-canonical-single-entry="quote-wizard">
     <QuoteWizard lang="es" />
   </div>
 
   <div class="container no-print">
-    <div class="quote-extension-links">
-      <a href="/bombeo/" class="extension-card">
-        <span class="ext-badge">P&ID</span>
-        <div>
-          <strong>Mapeo de Circuitos Mineros y Despiece</strong>
-          <small>Consulte las 5 estaciones de armado de bomba, lotes 5-5-4 y arreglos V-Belt.</small>
-        </div>
-      </a>
-      <a href="/diagnostico/" class="extension-card">
-        <span class="ext-badge">DIAGNÓSTICO</span>
-        <div>
-          <strong>Diagnóstico Rápido de Fallas Mecánicas</strong>
-          <small>Identifique cavitación, recirculación o vibración y pre-cargue la pieza exacta.</small>
-        </div>
-      </a>
-    </div>
-    <FaqAccordion lang="es" compact={true} />
+    <details class="wb-progressive-drawer" id="quote-faq-resources-drawer">
+      <summary class="wb-progressive-summary">
+        <span>Guías de diagnóstico, mapeo de circuitos P&amp;ID y Preguntas Frecuentes (5)</span>
+        <span>▾</span>
+      </summary>
+      <div class="quote-extension-links">
+        <a href="/bombeo/" class="extension-card">
+          <span class="ext-badge">P&ID</span>
+          <div>
+            <strong>Mapeo de Circuitos Mineros y Despiece</strong>
+            <small>Consulte las 5 estaciones de armado de bomba, lotes 5-5-4 y arreglos V-Belt.</small>
+          </div>
+        </a>
+        <a href="/diagnostico/" class="extension-card">
+          <span class="ext-badge">DIAGNÓSTICO</span>
+          <div>
+            <strong>Diagnóstico Rápido de Fallas Mecánicas</strong>
+            <small>Identifique cavitación, recirculación o vibración y pre-cargue la pieza exacta.</small>
+          </div>
+        </a>
+      </div>
+      <FaqAccordion lang="es" compact={true} />
+    </details>
   </div>
 </BaseLayout>
 
@@ -93,45 +81,6 @@ import FaqAccordion from '../components/FaqAccordion.astro';
   }
   .crumb-sep {
     color: #64748b;
-  }
-  .route-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-family: var(--smat-font-mono, monospace);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    color: #fdba74;
-    background: rgba(194, 94, 0, 0.18);
-    border: 1px solid rgba(251, 146, 60, 0.35);
-    padding: 0.2rem 0.65rem;
-    border-radius: 999px;
-    margin-bottom: 0.35rem;
-  }
-  .live-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #10b981;
-  }
-  .quote-route-heading h1 {
-    font-family: var(--smat-font-editorial);
-    font-size: clamp(1.35rem, 2.2vw, 1.85rem);
-    font-weight: 800;
-    color: #ffffff;
-    margin: 0 0 0.25rem 0;
-    letter-spacing: -0.02em;
-  }
-  .quote-route-heading p {
-    font-size: 0.88rem;
-    color: #cbd5e1;
-    max-width: 780px;
-    line-height: 1.45;
-    margin: 0;
-  }
-  .quote-route-heading strong {
-    color: #ffffff;
   }
   .quote-workbench-shell {
     background: #ffffff;

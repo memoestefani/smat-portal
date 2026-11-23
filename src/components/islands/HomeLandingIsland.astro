@@ -14,6 +14,7 @@ import {
   getQuickProductsByAvenue,
   AVENUE_METADATA as RAW_AVENUE_METADATA,
 } from '../../scripts/quickProductsCatalog.js';
+import { SMAT_SUPPLY_DOORS } from '../../scripts/i18nDomainLabels.js';
 
 interface Props {
   locale?: 'es' | 'en';
@@ -43,27 +44,27 @@ const productsPath = isEs ? '/productos/' : '/en/products/';
       <span class="live-dot" aria-hidden="true"></span>
       <span>
         {isEs
-          ? 'SMAT MINERALS • ALMACÉN CENTRAL DURANGO • SUMINISTRO PARA PLANTAS DE BENEFICIO'
+          ? 'SMAT MINERALS. Almacén en Durango. Suministro directo para mina.'
           : 'SMAT MINERALS • DURANGO CENTRAL WAREHOUSE • MINERAL PROCESSING SUPPLY'}
       </span>
     </div>
 
     <h1>
-      {isEs ? 'Bombas para Lodos y Refacciones' : 'Slurry Pumps & Wear Spares'}<br />
+      {isEs ? 'Bombas para lodo y repuestos.' : 'Slurry Pumps & Wear Spares'}<br />
       <span class="hero-sub-accent">
         {isEs
-          ? 'Mecanismos de Flotación, Filtros Prensa y Balanzas. Hidrociclones.'
+          ? 'Celdas, filtros prensa, balanzas y ciclones de uso en planta.'
           : 'Flotation Mechanisms, Filter Presses & Pulp Density Scales. Hydrocyclones.'}
       </span>
     </h1>
 
     <div class="hero-actions">
       <a href={`${quotePath}#rfq`} class="btn btn-primary btn-lg">
-        {isEs ? 'Solicitar Cotización' : 'Request Quotation'}
+        {isEs ? 'Pedir cotización' : 'Request Quotation'}
       </a>
       <a href={catalogPath} class="btn btn-outline btn-lg">
         {isEs
-          ? `Catálogo General (${quickCatalog.length} SKUs en ${avenueKeys.length} Avenidas)`
+          ? `Ver catálogo (${quickCatalog.length} SKUs en ${avenueKeys.length} áreas)`
           : `Master Catalog (${quickCatalog.length} SKUs across ${avenueKeys.length} Avenues)`}
       </a>
     </div>
@@ -78,10 +79,10 @@ const productsPath = isEs ? '/productos/' : '/en/products/';
     <div class="showcase-header">
       <span class="section-eyebrow">
         {isEs
-          ? 'SELECCIÓN DIRECTA DE PIEZA Y EQUIPO • DIAGRAMAS CAD RAYOS X'
+          ? 'SELECCIÓN DIRECTA DE PIEZA Y EQUIPO. PLANOS CAD CLAROS.'
           : 'DIRECT PART & EQUIPMENT SELECTION • X-RAY CAD DIAGRAMS'}
       </span>
-      <h2>{isEs ? 'Seleccione su Pieza o Área de Suministro en Planta' : 'Select Your Spare Part or Plant Supply Area'}</h2>
+      <h2>{isEs ? 'Elija su pieza o área de planta.' : 'Select Your Spare Part or Plant Supply Area'}</h2>
     </div>
 
     <div class="showcase-grid">
@@ -89,33 +90,114 @@ const productsPath = isEs ? '/productos/' : '/en/products/';
         <div>
           <div class="showcase-card-top">
             <span class="showcase-tag">
-              {isEs ? 'Puerta 1 • Bombeo de Lodos y Refacciones' : 'Door 1 • Slurry Pumping & Wear Spares'}
+              {isEs ? SMAT_SUPPLY_DOORS.door1.badgeEs : SMAT_SUPPLY_DOORS.door1.badgeEn}
+            </span>
+            <span class="showcase-series">D6–D20 • 50–300 ft³ • 16 bar</span>
+          </div>
+          <h3>{isEs ? 'Equipos de proceso, hidrociclones y flotación' : 'Process Equipment, Hydrocyclones & Flotation'}</h3>
+          <TechnicalDiagrams diagram="cyclone_d6_d20" lang={lang} compact={true} showXrayLegend={false} />
+          <p class="door-concise-summary">
+            {isEs
+              ? "Baterías de hidrociclones D6–D20, mecanismos de flotación 50–300 ft³, filtros prensa 16 bar y mallas TH48-30."
+              : "D6–D20 Hydrocyclones, 50–300 ft³ flotation mechanisms, 16-bar filter presses & TH48-30 urethane screens."}
+          </p>
+          <details class="showcase-quick-drawer">
+            <summary class="showcase-quick-summary">
+              {isEs ? 'Accesos rápidos y sub-circuitos (4) ▾' : 'Quick picks & sub-circuits (4) ▾'}
+            </summary>
+            <div class="part-chip-strip" aria-label={isEs ? 'Selección directa de Equipos de Proceso' : 'Direct Process Equipment selection'}>
+              <a href={classificationPath} class="part-chip part-chip--highlight">
+                {isEs ? 'Hidrociclones D6–D20' : 'D6–D20 Hydrocyclones'}
+              </a>
+              <a
+                href={`${productsPath}${isEs ? 'paquete-casado-bomba-hidrociclon/' : 'coupled-pump-hydrocyclone-package/'}`}
+                class="part-chip part-chip--highlight"
+              >
+                {isEs ? 'Paquete Casado' : 'Married Package'}
+              </a>
+              <a href={`${quotePath}?circuito=flotacion&equipo=celda_flotacion#rfq`} class="part-chip">
+                {isEs ? 'Flotación 18 SP / 24' : '18 SP / 24 Flotation'}
+              </a>
+              <a href={`${quotePath}?circuito=filtracion&equipo=filtro_prensa#rfq`} class="part-chip">
+                {isEs ? 'Filtro Prensa (16 bar)' : 'Filter Press (16 bar)'}
+              </a>
+            </div>
+            <div class="showcase-quick-links-sub">
+              <a href={classificationPath} class="inline-spec-link">
+                {isEs ? 'Balance 3 Vasos (d50c) y TH48-30 →' : '3-Cup Balance (d50c) & TH48-30 →'}
+              </a>
+              <a
+                href={`${productsPath}${isEs ? 'paquete-casado-bomba-hidrociclon/' : 'coupled-pump-hydrocyclone-package/'}`}
+                class="showcase-cta-secondary"
+              >
+                {isEs ? 'Cotizar Paquete Casado' : 'Quote Married Package'}
+              </a>
+            </div>
+          </details>
+        </div>
+        <div>
+          <div class="pro-keyspecs-box">
+            <div class="keyspec-row">
+              <span class="ks-label">{isEs ? 'Cribado Uretano:' : 'Urethane Screens:'}</span>
+              <span class="ks-val">TH48-30 &amp; 1'x1' (Weibull α ≥ 4.2)</span>
+            </div>
+            <div class="keyspec-row">
+              <span class="ks-label">{isEs ? 'Flotación / Filtración:' : 'Flotation / Filtration:'}</span>
+              <span class="ks-val">50–300 ft³ • 800–1500 mm (NOM-141)</span>
+            </div>
+          </div>
+          <div class="showcase-links">
+            <a href={equipmentPath} class="showcase-cta-primary">
+              {isEs ? 'Ver Equipos de Proceso →' : 'View Process Equipment →'}
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <article class="showcase-card">
+        <div>
+          <div class="showcase-card-top">
+            <span class="showcase-tag">
+              {isEs ? SMAT_SUPPLY_DOORS.door2.badgeEs : SMAT_SUPPLY_DOORS.door2.badgeEn}
             </span>
             <span class="showcase-series">
               {isEs ? '1.5x1" a 14x12" • 13 Códigos' : '1.5x1" to 14x12" • 13 Codes'}
             </span>
           </div>
-          <h3>{isEs ? 'Bombas para Lodos y Spare Parts' : 'Slurry Pumps & Spare Parts'}</h3>
-          <TechnicalDiagrams diagram="pump" lang={lang} compact={true} />
+          <h3>{isEs ? 'Bombas para lodos y piezas clave' : 'Slurry Pumps & Spare Parts'}</h3>
+          <TechnicalDiagrams diagram="pump" lang={lang} compact={true} showXrayLegend={false} />
           <p class="door-concise-summary">
             {isEs
-              ? 'Lotes 5-5-4 en Alto Cromo (≥650 HB), Hule, Poliuretano y SiC + Camisa D075C21 y Bearing Assembly.'
+              ? 'Lotes 5-5-4 en Alto Cromo (≥650 HB), hule y SiC. Incluye camisa D075C21 y caja de cojinetes.'
               : '5-5-4 Wet-End Lots in High Chrome (≥650 HB), Rubber, PU & SiC + D075C21 Sleeve & Bearing Assembly.'}
           </p>
-          <div class="part-chip-strip" aria-label={isEs ? 'Selección directa de refacción de bomba' : 'Direct slurry pump spare selection'}>
-            <a href={`${quotePath}?equipo=bombeo_hule_cromo&pieza=lote_554&material=alto_cromo_cr27#rfq`} class="part-chip part-chip--highlight">
-              {isEs ? 'Lote 5-5-4' : '5-5-4 Kit'}
-            </a>
-            <a href={`${catalogPath}d075c21/`} class="part-chip part-chip--highlight">
-              {isEs ? 'Camisa D075C21' : 'Sleeve D075C21'}
-            </a>
-            <a href={`${quotePath}?equipo=sello_expulsor&pieza=expeller_sello#rfq`} class="part-chip">
-              {isEs ? 'Expeller Seco' : 'Dry Expeller'}
-            </a>
-            <a href={`${quotePath}?equipo=soporte_rodamiento&pieza=bearing_assembly#rfq`} class="part-chip">
-              Bearing Assembly
-            </a>
-          </div>
+          <details class="showcase-quick-drawer">
+            <summary class="showcase-quick-summary">
+              {isEs ? 'Accesos rápidos de bombeo (4) ▾' : 'Pumping quick picks (4) ▾'}
+            </summary>
+            <div class="part-chip-strip" aria-label={isEs ? 'Selección directa de refacción de bomba' : 'Direct slurry pump spare selection'}>
+              <a href={`${quotePath}?equipo=bombeo_hule_cromo&pieza=lote_554&material=alto_cromo_cr27#rfq`} class="part-chip part-chip--highlight">
+                {isEs ? 'Lote 5-5-4' : '5-5-4 Kit'}
+              </a>
+              <a href={`${catalogPath}d075c21/`} class="part-chip part-chip--highlight">
+                {isEs ? 'Camisa D075C21' : 'Sleeve D075C21'}
+              </a>
+              <a href={`${quotePath}?equipo=sello_expulsor&pieza=expeller_sello#rfq`} class="part-chip">
+                {isEs ? 'Expeller Seco' : 'Dry Expeller'}
+              </a>
+              <a href={`${quotePath}?equipo=soporte_rodamiento&pieza=bearing_assembly#rfq`} class="part-chip">
+                Bearing Assembly
+              </a>
+            </div>
+            <div class="showcase-quick-links-sub">
+              <a href={`${pumpingPath}#${isEs ? 'como-se-arma-una-bomba' : 'how-a-slurry-pump-is-assembled'}`} class="inline-spec-link">
+                {isEs ? 'Cómo se arma una bomba (14 piezas) →' : 'How a pump is assembled (14 parts) →'}
+              </a>
+              <a href={`${quotePath}?equipo=bombeo_hule_cromo&pieza=lote_554#rfq`} class="showcase-cta-secondary">
+                {isEs ? 'Cotizar Lote 5-5-4' : 'Quote 5-5-4 Lot'}
+              </a>
+            </div>
+          </details>
         </div>
         <div>
           <div class="pro-keyspecs-box">
@@ -131,22 +213,11 @@ const productsPath = isEs ? '/productos/' : '/en/products/';
                 {isEs ? '5 Impulsores + 5 Cuellos + 4 Volutas' : '5 Impellers + 5 Throatbushes + 4 Volutes'}
               </span>
             </div>
-            <div class="keyspec-row">
-              <span class="ks-label">{isEs ? 'Reporte Despiece:' : 'Assembly Report:'}</span>
-              <span class="ks-val">
-                <a href={`${pumpingPath}#${isEs ? 'como-se-arma-una-bomba' : 'how-a-slurry-pump-is-assembled'}`} class="inline-spec-link">
-                  {isEs ? 'Cómo se arma una bomba (14 piezas) →' : 'How a pump is assembled (14 parts) →'}
-                </a>
-              </span>
-            </div>
           </div>
           <div class="showcase-links">
             <a href={pumpingPath} class="showcase-cta-primary">
               {isEs ? 'Ver Piezas y Despiece →' : 'View Parts & Exploded BOM →'}
             </a>
-            <a href={`${quotePath}?equipo=bombeo_hule_cromo&pieza=lote_554#rfq`} class="showcase-cta-secondary">
-              {isEs ? 'Cotizar Lote 5-5-4' : 'Quote 5-5-4 Lot'}
-            </a>
           </div>
         </div>
       </article>
@@ -155,129 +226,68 @@ const productsPath = isEs ? '/productos/' : '/en/products/';
         <div>
           <div class="showcase-card-top">
             <span class="showcase-tag">
-              {isEs ? 'Puerta 2 • Clasificación y Cribado Fino' : 'Door 2 • Classification & Fine Screening'}
+              {isEs ? SMAT_SUPPLY_DOORS.door3.badgeEs : SMAT_SUPPLY_DOORS.door3.badgeEn}
             </span>
-            <span class="showcase-series">D6–D20 • TH48-30 • 1'x1'</span>
+            <span class="showcase-series">SG 2.2–4.4 • ASTM E11 • 100 psi</span>
           </div>
-          <h3>{isEs ? 'Hidrociclones y Mallas de Uretano' : 'Hydrocyclones & Urethane Screens'}</h3>
-          <TechnicalDiagrams diagram="cyclone_d6_d20" lang={lang} compact={true} />
+          <h3>{isEs ? 'Balanza Marcy, tamices y control lab.' : 'Marcy Scale, Sieves & Lab Control'}</h3>
+          <TechnicalDiagrams diagram="marcy_scale" lang={lang} compact={true} showXrayLegend={false} />
           <p class="door-concise-summary">
             {isEs
-              ? "Hidrociclones D6–D20 (Apex SiC y Vortex Finder), Paquete Casado Bomba + Ciclón y Mallas de Uretano TH48-30 / 1'x1'."
-              : "D6–D20 Hydrocyclones (SiC Apex & Vortex Finder), Married Pump + Cyclone Package & TH48-30 / 1'x1' Urethane Screens."}
+              ? 'Báscula de densidad Marcy (12 diales), filtro prensa de laboratorio y juegos certificados ASTM E11 / ISO 3310.'
+              : 'Marcy Pulp Density Scale (12 dials), Lab Batch Pressure Filter & ASTM E11 / ISO 3310 Certified Sieve Stacks.'}
           </p>
-          <div class="part-chip-strip" aria-label={isEs ? 'Selección rápida de Clasificación y Cribado' : 'Quick selection of Classification & Screening'}>
-            <a href={classificationPath} class="part-chip part-chip--highlight">
-              {isEs ? 'Hidrociclones D6–D20' : 'D6–D20 Hydrocyclones'}
-            </a>
-            <a
-              href={`${productsPath}${isEs ? 'paquete-casado-bomba-hidrociclon/' : 'coupled-pump-hydrocyclone-package/'}`}
-              class="part-chip part-chip--highlight"
-            >
-              {isEs ? 'Paquete Casado' : 'Married Package'}
-            </a>
-            <a
-              href={`${productsPath}${isEs ? 'mallas-finas-uretano-th48-30/' : 'high-frequency-urethane-screens-th48-30/'}`}
-              class="part-chip"
-            >
-              {isEs ? 'Mallas TH48-30' : 'TH48-30 Screens'}
-            </a>
-            <a href={`${classificationPath}#marcy-3cup-cyclone-calculator`} class="part-chip">
-              {isEs ? 'Balance 3 Vasos (d50c)' : '3-Cup Balance (d50c)'}
-            </a>
-          </div>
+          <details class="showcase-quick-drawer">
+            <summary class="showcase-quick-summary">
+              {isEs ? 'Accesos rápidos de laboratorio (4) ▾' : 'Lab quick picks (4) ▾'}
+            </summary>
+            <div class="part-chip-strip" aria-label={isEs ? 'Selección directa de Control de Procesos' : 'Direct Process Control selection'}>
+              <a href={`${quotePath}?circuito=control_procesos&equipo=balanza_marcy#rfq`} class="part-chip part-chip--highlight">
+                {isEs ? 'Balanza Marcy 1000 cm³' : 'Marcy Scale 1000 cm³'}
+              </a>
+              <a href={`${quotePath}?circuito=control_procesos&equipo=filtro_batch_lab#rfq`} class="part-chip">
+                {isEs ? 'Filtro Batch 100 psi' : 'Lab Batch Filter 100 psi'}
+              </a>
+              <a href={`${quotePath}?circuito=control_procesos&equipo=tamices_laboratorio#rfq`} class="part-chip">
+                {isEs ? 'Tamices ASTM E11' : 'ASTM E11 Sieves'}
+              </a>
+              <a href={classificationPath} class="part-chip part-chip--highlight">
+                {isEs ? 'Balance 3 Vasos (d50c)' : '3-Cup Balance (d50c)'}
+              </a>
+            </div>
+            <div class="showcase-quick-links-sub">
+              <a href={`${quotePath}?circuito=control_procesos&equipo=balanza_marcy#rfq`} class="showcase-cta-secondary">
+                {isEs ? 'Cotizar Instrumentación' : 'Quote Instrumentation'}
+              </a>
+            </div>
+          </details>
         </div>
         <div>
           <div class="pro-keyspecs-box">
             <div class="keyspec-row">
-              <span class="ks-label">{isEs ? 'Hidrociclones:' : 'Hydrocyclones:'}</span>
+              <span class="ks-label">{isEs ? 'Metrología:' : 'Metrology:'}</span>
               <span class="ks-val">
-                <a href={classificationPath} class="inline-spec-link">
-                  {isEs ? 'Serie D6, D10, D10B, D15 y D20 →' : 'D6, D10, D10B, D15 & D20 Series →'}
-                </a>
+                {isEs ? '12 carátulas Ss 2.2–4.4 • Pierre Gy TOS' : '12 Dials Ss 2.2–4.4 • Pierre Gy TOS'}
               </span>
             </div>
             <div class="keyspec-row">
-              <span class="ks-label">{isEs ? 'Mallas Uretano:' : 'Urethane Screens:'}</span>
-              <span class="ks-val">TH48-30 & 1'x1' (Weibull α ≥ 4.2)</span>
-            </div>
-            <div class="keyspec-row">
-              <span class="ks-label">{isEs ? 'Acople Hidráulico:' : 'Hydraulic Pairing:'}</span>
-              <span class="ks-val">4x3 + D10 • 6x4 + D15 • 8x6 + D20</span>
-            </div>
-          </div>
-          <div class="showcase-links">
-            <a href={classificationPath} class="showcase-cta-primary">
-              {isEs ? 'Ver Hidrociclones y Mallas →' : 'View Hydrocyclones & Screens →'}
-            </a>
-            <a
-              href={`${productsPath}${isEs ? 'paquete-casado-bomba-hidrociclon/' : 'coupled-pump-hydrocyclone-package/'}`}
-              class="showcase-cta-secondary"
-            >
-              {isEs ? 'Cotizar Paquete Casado' : 'Quote Married Package'}
-            </a>
-          </div>
-        </div>
-      </article>
-
-      <article class="showcase-card">
-        <div>
-          <div class="showcase-card-top">
-            <span class="showcase-tag">
-              {isEs ? 'Puerta 3 • Flotación, Filtración y Lab' : 'Door 3 • Flotation, Filtration & Lab'}
-            </span>
-            <span class="showcase-series">50–300 ft³ • 16 bar • SG 2.2–4.4</span>
-          </div>
-          <h3>{isEs ? 'Mecanismos de Flotación, Filtros Prensa y Control' : 'Flotation Mechanisms, Filter Presses & Control'}</h3>
-          <TechnicalDiagrams diagram="flotation" lang={lang} compact={true} />
-          <p class="door-concise-summary">
-            {isEs
-              ? 'Mecanismos Suspendidos (18 SP, 24, 30), Filtros Prensa (800–1500 mm, Lonas y Plate Shifter), Balanza Marcy y Tamices ASTM E11.'
-              : 'Suspended Mechanisms (18 SP, 24, 30), Filter Presses (800–1500 mm, Cloths & Plate Shifter), Marcy Scale & ASTM E11 Sieves.'}
-          </p>
-          <div class="part-chip-strip" aria-label={isEs ? 'Selección rápida de Flotación, Filtración y Lab' : 'Quick selection of Flotation, Filtration & Lab'}>
-            <a href={`${quotePath}?circuito=flotacion&equipo=celda_flotacion#rfq`} class="part-chip part-chip--highlight">
-              {isEs ? 'Flotación 18 SP / 24' : '18 SP / 24 Flotation'}
-            </a>
-            <a href={`${quotePath}?circuito=filtracion&equipo=filtro_prensa#rfq`} class="part-chip">
-              {isEs ? 'Filtro Prensa (16 bar)' : 'Filter Press (16 bar)'}
-            </a>
-            <a href={`${quotePath}?circuito=control_procesos&equipo=balanza_marcy#rfq`} class="part-chip part-chip--highlight">
-              {isEs ? 'Balanza Marcy 1000 cm³' : 'Marcy Scale 1000 cm³'}
-            </a>
-            <a href={equipmentPath} class="part-chip">
-              {isEs ? 'Equipos de Proceso' : 'Process Equipment'}
-            </a>
-          </div>
-        </div>
-        <div>
-          <div class="pro-keyspecs-box">
-            <div class="keyspec-row">
-              <span class="ks-label">{isEs ? 'Flotación Drop-In:' : 'Drop-In Flotation:'}</span>
-              <span class="ks-val">50–300 ft³ • Rougher, Cleaner & Scavenger</span>
-            </div>
-            <div class="keyspec-row">
-              <span class="ks-label">{isEs ? 'Filtros Prensa:' : 'Filter Presses:'}</span>
-              <span class="ks-val">800–1500 mm (16 bar • NOM-141)</span>
-            </div>
-            <div class="keyspec-row">
-              <span class="ks-label">{isEs ? 'Laboratorio:' : 'Laboratory:'}</span>
-              <span class="ks-val">
-                {isEs ? 'Balanza Marcy, ASTM E11 y Filtro Gy' : 'Marcy Scale, ASTM E11 & Gy Batch Filter'}
-              </span>
+              <span class="ks-label">{isEs ? 'Malla Certificada:' : 'Certified Sieves:'}</span>
+              <span class="ks-val">5" a #635 (20 µm) • Serie √2</span>
             </div>
           </div>
           <div class="showcase-links">
             <a href={controlPath} class="showcase-cta-primary">
-              {isEs ? 'Ver Equipos y Laboratorio →' : 'View Equipment & Lab →'}
-            </a>
-            <a href={`${quotePath}?circuito=control_procesos&equipo=balanza_marcy#rfq`} class="showcase-cta-secondary">
-              {isEs ? 'Cotizar Equipo' : 'Quote Equipment'}
+              {isEs ? 'Ver Control y Laboratorio →' : 'View Process Control & Lab →'}
             </a>
           </div>
         </div>
       </article>
     </div>
+    <p class="door-concise-summary smat-mt-sm" data-layer="xray-wear-shared">
+      {isEs
+        ? 'Guía de desgaste en diagramas: Rojo (abrasión crítica y claro axial δ) · Ámbar (sellado y desgaste secundario) · Azul (soporte y ajuste 1:1) · Escala física cotidiana: tarjeta 0.76 mm.'
+        : 'Diagram wear guide: Red (critical abrasion & axial clearance δ) · Amber (sealing & secondary wear) · Blue (structural fit 1:1) · Everyday scale ref: 0.76 mm card.'}
+    </p>
   </div>
 </section>
 
@@ -291,22 +301,14 @@ const productsPath = isEs ? '/productos/' : '/en/products/';
       <div>
         <span class="section-eyebrow">
           {isEs
-            ? 'VERIFICACIÓN DIMENSIONAL 1:1 • NAVEGACIÓN DIRECTA EN 7 AVENIDAS'
+            ? 'ACOPLE 1:1. 7 ÁREAS DE PLANTA.'
             : '1:1 DIMENSIONAL VERIFICATION • DIRECT NAVIGATION ACROSS 7 AVENUES'}
         </span>
         <h2>
           {isEs
-            ? `${quickCatalog.length} Configuraciones de Planta y 13 Fichas Atómicas`
+            ? `${quickCatalog.length} equipos de línea y 13 piezas clave.`
             : `${quickCatalog.length} Plant SKUs & 13 Atomic Part Sheets`}
         </h2>
-      </div>
-      <div class="smat-chip-row">
-        <a href={`${catalogPath}d075c21/`} class="part-chip part-chip--highlight">
-          {isEs ? 'Ver Ficha D075C21 (Camisa de Flecha) →' : 'View D075C21 Sheet (Shaft Sleeve) →'}
-        </a>
-        <a href={classificationPath} class="part-chip part-chip--highlight">
-          {isEs ? 'Abrir Simulador de Hidrociclones →' : 'Open Hydrocyclone Simulator →'}
-        </a>
       </div>
     </div>
 
@@ -314,21 +316,36 @@ const productsPath = isEs ? '/productos/' : '/en/products/';
       <DropInVerifierCore lang={lang} variant="home" />
     </div>
 
-    <div id="home-avenues-directory" class="avenues-dir-grid" aria-label={isEs ? 'Directorio de 7 Avenidas Industriales' : '7 Industrial Avenues Directory'}>
-      {avenueKeys.map((avKey) => {
-        const meta = AVENUE_METADATA[avKey];
-        const list = quickByAvenue[avKey] || [];
-        return (
-          <a href={`${catalogPath}#avenue-${avKey}`} class="avenue-dir-card">
-            <div class="avenue-dir-head">
-              <span class="avenue-dir-code">{meta.code}</span>
-              <span class="avenue-dir-count">{list.length} SKUs</span>
-            </div>
-            <strong class="avenue-dir-label">{isEs ? meta.labelEs.split('(')[0].trim() : meta.labelEn.split('(')[0].trim()}</strong>
-          </a>
-        );
-      })}
-    </div>
+    <details class="home-avenues-disclosure">
+      <summary class="home-avenues-summary">
+        {isEs
+          ? `Explorar 7 avenidas del catálogo (${quickCatalog.length} SKUs) y accesos directos ▾`
+          : `Explore 7 catalog avenues (${quickCatalog.length} SKUs) & quick links ▾`}
+      </summary>
+      <div class="smat-chip-row smat-mt-sm">
+        <a href={`${catalogPath}d075c21/`} class="part-chip part-chip--highlight">
+          {isEs ? 'Ver Ficha D075C21 (Camisa de Flecha) →' : 'View D075C21 Sheet (Shaft Sleeve) →'}
+        </a>
+        <a href={classificationPath} class="part-chip part-chip--highlight">
+          {isEs ? 'Abrir Simulador de Hidrociclones →' : 'Open Hydrocyclone Simulator →'}
+        </a>
+      </div>
+      <div id="home-avenues-directory" class="avenues-dir-grid smat-mt-sm" aria-label={isEs ? 'Directorio de 7 Avenidas Industriales' : '7 Industrial Avenues Directory'}>
+        {avenueKeys.map((avKey) => {
+          const meta = AVENUE_METADATA[avKey];
+          const list = quickByAvenue[avKey] || [];
+          return (
+            <a href={`${catalogPath}#avenue-${avKey}`} class="avenue-dir-card">
+              <div class="avenue-dir-head">
+                <span class="avenue-dir-code">{meta.code}</span>
+                <span class="avenue-dir-count">{list.length} SKUs</span>
+              </div>
+              <strong class="avenue-dir-label">{isEs ? meta.labelEs.split('(')[0].trim() : meta.labelEn.split('(')[0].trim()}</strong>
+            </a>
+          );
+        })}
+      </div>
+    </details>
   </div>
 </section>
 
@@ -465,6 +482,14 @@ const productsPath = isEs ? '/productos/' : '/en/products/';
   .showcase-links { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding-top: 0.85rem; border-top: 1px solid #e2e8f0; }
   .showcase-cta-primary { font-size: 0.85rem; font-weight: 700; color: var(--smat-solar-accent, #7c2d12); text-decoration: none; }
   .showcase-cta-secondary { font-size: 0.8rem; font-weight: 600; color: var(--smat-text-secondary); text-decoration: underline; }
+  .showcase-quick-drawer { margin: 0.65rem 0 0.85rem; border: 1px solid #e2e8f0; border-radius: 6px; background: #ffffff; }
+  .showcase-quick-summary { cursor: pointer; min-height: 48px; display: flex; align-items: center; padding: 0.5rem 0.75rem; font-size: 0.8rem; font-weight: 700; color: #0f172a; list-style: none; }
+  .showcase-quick-drawer[open] .showcase-quick-summary { border-bottom: 1px solid #e2e8f0; }
+  .showcase-quick-drawer .part-chip-strip { padding: 0.5rem 0.75rem 0.35rem; }
+  .showcase-quick-links-sub { display: flex; flex-wrap: wrap; gap: 0.65rem; padding: 0.35rem 0.75rem 0.65rem; font-size: 0.78rem; }
+  .home-avenues-disclosure { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0.35rem 0.9rem 0.85rem; }
+  .home-avenues-summary { cursor: pointer; min-height: 48px; display: flex; align-items: center; font-weight: 700; font-size: 0.9rem; color: #0f172a; }
+  .smat-mt-sm { margin-top: 0.75rem; }
   .quick-sku-home-section {
     padding: 2.25rem 0;
     background-color: var(--smat-bg-canvas, #f8fafc);

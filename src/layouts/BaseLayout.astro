@@ -91,7 +91,17 @@ const isTransactionTerminal = /^\/(cotizar|en\/quote|acuse|en\/thank-you)(\/|$)/
       a,
       button,
       select,
-      input:not([type="hidden"]),
+      summary,
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"],
+      input[type="number"],
+      input[type="search"],
+      input[type="url"],
+      textarea,
+      label:has(> input[type="checkbox"]),
+      label:has(> input[type="radio"]),
+      details > summary,
       .btn,
       .nav-link,
       .lang-btn,
@@ -121,6 +131,21 @@ const isTransactionTerminal = /^\/(cotizar|en\/quote|acuse|en\/thank-you)(\/|$)/
         justify-content: center;
         box-sizing: border-box;
       }
+      label:has(> input[type="checkbox"]),
+      label:has(> input[type="radio"]) {
+        position: relative;
+        min-height: 48px !important;
+        min-width: 48px !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.65rem;
+        cursor: pointer;
+      }
+      p a:not(.btn):not([class*="cta"]) {
+        min-width: 0 !important;
+        display: inline-flex;
+      }
       select,
       input[type="text"],
       input[type="email"],
@@ -130,17 +155,85 @@ const isTransactionTerminal = /^\/(cotizar|en\/quote|acuse|en\/thank-you)(\/|$)/
         padding-top: 10px;
         padding-bottom: 10px;
       }
-      input[type="radio"],
-      input[type="checkbox"] {
-        width: 24px;
-        height: 24px;
-        min-width: 48px !important;
-        min-height: 48px !important;
-        cursor: pointer;
+      label > input[type="radio"],
+      label > input[type="checkbox"] {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        padding: 0 !important;
+        margin: -1px !important;
+        overflow: hidden !important;
+        clip: rect(0px, 0px, 0px, 0px);
+        white-space: nowrap !important;
+        border: 0 !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+      }
+      label:has(> input[type="checkbox"])::before,
+      label:has(> input[type="radio"])::before {
+        content: '';
+        width: 20px;
+        height: 20px;
+        flex: 0 0 20px;
+        border: 2px solid #7c2d12;
+        background: #ffffff;
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1;
+        color: #ffffff;
+      }
+      label:has(> input[type="checkbox"])::before {
+        border-radius: 4px;
+      }
+      label:has(> input[type="checkbox"]:checked)::before {
+        content: '';
+        background: #7c2d12;
+        box-shadow: inset 0 0 0 3px #ffffff;
+      }
+      label:has(> input[type="radio"])::before {
+        border-radius: 50%;
+      }
+      label:has(> input[type="radio"]:checked)::before {
+        background: radial-gradient(circle, #7c2d12 45%, #ffffff 50%);
+      }
+      .segment-btn:has(> input[type="radio"])::before,
+      .intent-btn:has(> input[type="radio"])::before {
+        display: none;
       }
       input[type="range"] {
         min-height: 48px !important;
         cursor: pointer;
+      }
+      .wb-progressive-drawer {
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        background: #f8fafc;
+        padding: 0.35rem 0.85rem 0.75rem;
+      }
+      .wb-progressive-summary {
+        min-height: 48px !important;
+        min-width: 48px !important;
+        width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.84rem;
+        color: #7c2d12;
+        list-style: none;
+      }
+      .wb-progressive-summary::-webkit-details-marker {
+        display: none;
+      }
+      details:not([open]) > :not(summary) {
+        display: none !important;
       }
       @media (max-width: 960px) {
         .desktop-nav { display: none !important; }
@@ -233,27 +326,57 @@ const isTransactionTerminal = /^\/(cotizar|en\/quote|acuse|en\/thank-you)(\/|$)/
       };
     </script>
 
-    <!-- Registro Soberano de Service Worker Offline-First y Badge de Disponibilidad -->
+    <!-- Registro Soberano de Service Worker Offline-First y Badge Reactivo -->
     <script is:inline>
       (function() {
         var isEn = document.documentElement.lang === 'en';
-        function syncOfflineBadge(ready) {
-          var badge = document.getElementById('smat-offline-status');
-          if (!badge) return;
-          var isOffline = navigator.onLine === false;
-          badge.classList.toggle('is-offline', isOffline);
-          if (isOffline) {
-            badge.textContent = isEn ? 'PWA Offline Mode Active' : 'Modo Offline en Planta Activo';
-          } else if (ready) {
-            badge.textContent = isEn ? 'Offline Plant Ready (SW)' : 'Listo Offline en Planta (SW)';
+        function getPendingOutboxCount() {
+          try {
+            var raw = window.localStorage && window.localStorage.getItem('smat_lead_outbox_v1');
+            if (!raw) return 0;
+            var arr = JSON.parse(raw);
+            return Array.isArray(arr) ? arr.filter(function(it) { return it && it.status === 'pending'; }).length : 0;
+          } catch (e) {
+            return 0;
           }
         }
-        window.addEventListener('online', function() { syncOfflineBadge(true); });
-        window.addEventListener('offline', function() { syncOfflineBadge(true); });
+        function syncOfflineBadge() {
+          var badge = document.getElementById('smat-offline-status');
+          var retryBtn = document.getElementById('smat-offline-retry-btn');
+          var sep = document.querySelector('.smat-offline-sep');
+          if (!badge) return;
+          var isOffline = navigator.onLine === false;
+          var pending = getPendingOutboxCount();
+          var visible = isOffline || pending > 0;
+          badge.hidden = !visible;
+          if (retryBtn) retryBtn.hidden = !visible;
+          if (sep) sep.hidden = !visible;
+          badge.classList.toggle('is-offline', isOffline);
+          if (isOffline) {
+            badge.textContent = isEn
+              ? ('Offline Mode Active (' + pending + ' queued)')
+              : ('Sin conexión (EN_COLA_OFFLINE: ' + pending + ')');
+          } else if (pending > 0) {
+            badge.textContent = isEn
+              ? (pending + ' queued request(s) pending')
+              : (pending + ' solicitud(es) pendiente(s) en cola');
+          }
+        }
+        window.addEventListener('online', syncOfflineBadge);
+        window.addEventListener('offline', syncOfflineBadge);
+        window.addEventListener('smat:outbox-updated', syncOfflineBadge);
+        document.addEventListener('click', function(ev) {
+          var target = ev.target;
+          if (target && target.id === 'smat-offline-retry-btn') {
+            window.dispatchEvent(new CustomEvent('smat:outbox-retry'));
+            syncOfflineBadge();
+          }
+        });
+        syncOfflineBadge();
         if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
           window.addEventListener('load', function() {
             navigator.serviceWorker.register('/sw.js').then(function() {
-              syncOfflineBadge(true);
+              syncOfflineBadge();
             }).catch(function() {});
           });
         }

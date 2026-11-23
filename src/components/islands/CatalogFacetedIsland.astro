@@ -2,18 +2,16 @@
 /**
  * CatalogFacetedIsland.astro
  * ---------------------------------------------------------------------------
- * Isla Canónica Bilingüe para /catalogo/ y /en/catalog/ (D2-V50, D4-V50, D7-V50).
- * Expone buscador dimensional 1:1 (Drop-In), descarga directa de Pasaporte de Proveedor,
- * filtro facetado por 7 Avenidas / Familias y proyección única de los 19 SKUs canónicos.
+ * Isla Canónica Bilingüe para /catalogo/ y /en/catalog/ (D2-V50, D4-V50, D7-V50, SLICE-V53-05).
  */
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import CatalogAvenuesMatrix from '../CatalogAvenuesMatrix.astro';
 import DropInVerifierCore from '../cores/DropInVerifierCore.astro';
 import atomicParts from '../../../data/atomic_parts.json';
 import rolesData from '../../../data/roles.json';
-import { PIPE_SERIES_DIAMETER_MM, PIPE_DIAMETERS_MM, WET_END_MATERIAL_MATRIX } from '../../scripts/slurryEngine.js';
-import { ATOMIC_PARTS_SSOT_COUNT, getAtomicPartSpecs, formatNioshErgonomicStatus, buildWizardUrl } from '../../scripts/workbenchBus.js';
-import { AVENUE_METADATA, getQuickProductsByAvenue, verifyCatalogReferentialIntegrity, verifyDiagramSurjectivity } from '../../scripts/quickProductsCatalog.js';
+import { buildWizardUrl } from '../../scripts/workbenchBus.js';
+import { buildCatalogFacetedViewModel } from '../../scripts/catalogFacetedViewModel.js';
+import { formatCatalogPartCodeHuman } from '../../scripts/i18nDomainLabels.js';
 
 interface Props {
   locale?: 'es' | 'en';
@@ -25,185 +23,25 @@ const lang = locale;
 const homeHref = isEs ? '/' : '/en/';
 const quoteBaseHref = isEs ? '/cotizar/#rfq' : '/en/quote/#rfq';
 
-const wetEndMaterialsList = [
-  ...Object.values(WET_END_MATERIAL_MATRIX),
-  ...((WET_END_MATERIAL_MATRIX as any).hybrid_a05_r55 ? [(WET_END_MATERIAL_MATRIX as any).hybrid_a05_r55] : []),
-];
-const quickByAvenue = getQuickProductsByAvenue();
-const avenueMetaMap: Record<string, any> = AVENUE_METADATA as any;
-const avenueKeys = Object.keys(AVENUE_METADATA);
-const catalogIntegrity = verifyCatalogReferentialIntegrity();
-const diagramSurjectivity = verifyDiagramSurjectivity();
-const canonicalSeriesCount = Object.keys(PIPE_DIAMETERS_MM).length;
-const totalCatalogSkusCount = Object.values(quickByAvenue).reduce(
-  (sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0),
-  0,
-);
-const bombeoVertical = rolesData.verticals.find((v) => v.id === 'bombeo');
-const bombeoPowerRange = bombeoVertical?.capex?.[0]?.power_range || '30 HP a 250 HP';
-const flotationVertical = rolesData.verticals.find((v) => v.id === 'flotacion');
-const flotationPowerRange = flotationVertical?.capex?.[0]?.power_range || '15 HP a 60 HP';
-const filtrationVertical = rolesData.verticals.find((v) => v.id === 'filtracion');
-const filtrationPowerRange = filtrationVertical?.capex?.[0]?.power_range || '16 bar';
-const controlVertical = rolesData.verticals.find((v) => v.id === 'control_procesos' || v.id === 'balanzas_marcy');
-const controlProcessItems = controlVertical ? [...(controlVertical.capex || []), ...(controlVertical.opex || [])] : [];
-const enrichedAtomicParts = atomicParts.map((part) => {
-  const spec = getAtomicPartSpecs(part.part_number, '6x4');
-  const niosh = formatNioshErgonomicStatus(spec, lang);
-  const quoteHref = buildWizardUrl({
-    lang,
-    circuit: 'bombeo',
-    role: spec.role,
-    code: part.part_number,
-    series: spec.pipe_size || '6x4',
-    station: spec.station,
-    material: part.part_number === 'DAM005' ? undefined : 'alto_cromo_cr27',
-    weightKg: spec.weight_kg,
-    arrangement: 'CV',
-  });
-  return { ...part, spec, niosh, quoteHref };
-});
-
-const seriesRows = [
-  {
-    key: '1.5x1',
-    label: '1.5x1"',
-    dimsEs: `1.5" (${PIPE_SERIES_DIAMETER_MM['1.5x1']} mm) × 1" (25 mm)`,
-    dimsEn: `1.5" (${PIPE_SERIES_DIAMETER_MM['1.5x1']} mm) × 1" (25 mm)`,
-    flow: '7 – 28 m³/h',
-    head: '8 – 35 m',
-    topSize: '14 mm',
-    power: '5 – 15 HP (3.7-11 kW)',
-    materialsEs: 'Alto Cromo (>650 HB) / Hule / Poliuretano / SiC',
-    materialsEn: 'High Chrome (>650 HB) / Rubber / Polyurethane / SiC',
-    appEs: 'Muestreo metalúrgico, plantas piloto y rebose de espuma.',
-    appEn: 'Metallurgical sampling, pilot plants, and froth overflow.',
-  },
-  {
-    key: '2x1.5',
-    label: '2x1.5"',
-    dimsEs: `2" (${PIPE_SERIES_DIAMETER_MM['2x1.5']} mm) × 1.5" (40 mm)`,
-    dimsEn: `2" (${PIPE_SERIES_DIAMETER_MM['2x1.5']} mm) × 1.5" (40 mm)`,
-    flow: '15 – 55 m³/h',
-    head: '10 – 40 m',
-    topSize: '19 mm',
-    power: '10 – 20 HP (7.5-15 kW)',
-    materialsEs: 'Alto Cromo (>650 HB) / Hule / Poliuretano / SiC',
-    materialsEn: 'High Chrome (>650 HB) / Rubber / Polyurethane / SiC',
-    appEs: 'Dosificación de lechada de cal, reactivos y limpieza cleaner.',
-    appEn: 'Milk-of-lime dosing, reagents, and cleaner circuit duty.',
-  },
-  {
-    key: '3x2',
-    label: '3x2"',
-    dimsEs: `3" (${PIPE_SERIES_DIAMETER_MM['3x2']} mm) × 2" (50 mm)`,
-    dimsEn: `3" (${PIPE_SERIES_DIAMETER_MM['3x2']} mm) × 2" (50 mm)`,
-    flow: '25 – 105 m³/h',
-    head: '12 – 45 m',
-    topSize: '22 mm',
-    power: '15 – 30 HP (11-22 kW)',
-    materialsEs: 'Alto Cromo (>650 HB) / Hule / Poliuretano / SiC',
-    materialsEn: 'High Chrome (>650 HB) / Rubber / Polyurethane / SiC',
-    appEs: 'Transferencia de concentrados finales y sumideros de piso.',
-    appEn: 'Final concentrate transfer and plant floor sump service.',
-  },
-  {
-    key: '4x3',
-    label: '4x3"',
-    dimsEs: `4" (${PIPE_SERIES_DIAMETER_MM['4x3']} mm) × 3" (75 mm)`,
-    dimsEn: `4" (${PIPE_SERIES_DIAMETER_MM['4x3']} mm) × 3" (75 mm)`,
-    flow: '50 – 180 m³/h',
-    head: '10 – 45 m',
-    topSize: '28 mm',
-    power: '30 – 50 HP (22-37 kW)',
-    materialsEs: 'Alto Cromo (>650 HB) / Hule / Poliuretano / SiC',
-    materialsEn: 'High Chrome (>650 HB) / Rubber / Polyurethane / SiC',
-    appEs: 'Alimentación a celdas, sumideros y circuitos de finos.',
-    appEn: 'Flotation cell feed, sumps, and fine slurry circuits.',
-  },
-  {
-    key: '6x4',
-    label: '6x4"',
-    highlight: true,
-    dimsEs: `6" (${PIPE_SERIES_DIAMETER_MM['6x4']} mm) × 4" (100 mm)`,
-    dimsEn: `6" (${PIPE_SERIES_DIAMETER_MM['6x4']} mm) × 4" (100 mm)`,
-    flow: '150 – 450 m³/h',
-    head: '15 – 60 m',
-    topSize: '45 mm',
-    power: '50 – 100 HP (37-75 kW)',
-    materialsEs: 'Alto Cromo (>650 HB) / Hule / Poliuretano / SiC',
-    materialsEn: 'High Chrome (>650 HB) / Rubber / Polyurethane / SiC',
-    appEs: 'Descarga de molinos SAG a batería de hidrociclones.',
-    appEn: 'SAG and ball mill discharge to hydrocyclone cluster.',
-  },
-  {
-    key: '8x6',
-    label: '8x6"',
-    dimsEs: `8" (${PIPE_SERIES_DIAMETER_MM['8x6']} mm) × 6" (150 mm)`,
-    dimsEn: `8" (${PIPE_SERIES_DIAMETER_MM['8x6']} mm) × 6" (150 mm)`,
-    flow: '350 – 900 m³/h',
-    head: '20 – 70 m',
-    topSize: '63 mm',
-    power: '100 – 200 HP (75-150 kW)',
-    materialsEs: 'Alto Cromo (>650 HB) / Hule / SiC',
-    materialsEn: 'High Chrome (>650 HB) / Rubber / SiC',
-    appEs: 'Molienda primaria y bombeo de jales espesados.',
-    appEn: 'Primary grinding circuit and thickened tailings transfer.',
-  },
-  {
-    key: '10x8',
-    label: '10x8"',
-    dimsEs: `10" (${PIPE_SERIES_DIAMETER_MM['10x8']} mm) × 8" (200 mm)`,
-    dimsEn: `10" (${PIPE_SERIES_DIAMETER_MM['10x8']} mm) × 8" (200 mm)`,
-    flow: '700 – 1,200 m³/h',
-    head: '25 – 80 m',
-    topSize: '86 mm',
-    power: '150 – 250 HP (110-185 kW)',
-    materialsEs: 'Alto Cromo (>650 HB) / Hule / SiC',
-    materialsEn: 'High Chrome (>650 HB) / Rubber / SiC',
-    appEs: 'Gran caudal de relaves y concentradoras >1,500 t/d.',
-    appEn: 'High-volume tailings duty and concentrators >1,500 t/d.',
-  },
-  {
-    key: '12x10',
-    label: '12x10"',
-    dimsEs: `12" (${PIPE_SERIES_DIAMETER_MM['12x10']} mm) × 10" (250 mm)`,
-    dimsEn: `12" (${PIPE_SERIES_DIAMETER_MM['12x10']} mm) × 10" (250 mm)`,
-    flow: '1,100 – 2,200 m³/h',
-    head: '25 – 85 m',
-    topSize: '95 mm',
-    power: '250 – 450 HP (185-335 kW)',
-    materialsEs: 'Alto Cromo (>650 HB) / Hule / SiC',
-    materialsEn: 'High Chrome (>650 HB) / Rubber / SiC',
-    appEs: 'Alimentación primaria a hidrociclones y descarga de molinos SAG.',
-    appEn: 'Primary hydrocyclone cluster feed and SAG mill discharge.',
-  },
-  {
-    key: '14x12',
-    label: '14x12"',
-    dimsEs: `14" (${PIPE_SERIES_DIAMETER_MM['14x12']} mm) × 12" (300 mm)`,
-    dimsEn: `14" (${PIPE_SERIES_DIAMETER_MM['14x12']} mm) × 12" (300 mm)`,
-    flow: '1,600 – 3,400 m³/h',
-    head: '25 – 90 m',
-    topSize: '110 mm',
-    power: '400 – 650 HP (300-485 kW)',
-    materialsEs: 'Alto Cromo (>650 HB) / Hule / SiC',
-    materialsEn: 'High Chrome (>650 HB) / Rubber / SiC',
-    appEs: 'Mega-concentradoras y conducción principal de relaves espesados.',
-    appEn: 'Large-scale concentrators and main thickened tailings pipelines.',
-  },
-];
-
-const familyChips = [
-  { id: 'all', labelEs: 'Todas las Líneas (19)', labelEn: 'All Lines (19)' },
-  { id: 'bombeo', labelEs: 'Bombas y Extremo Húmedo', labelEn: 'Pumps & Wet-End' },
-  { id: 'sello_potencia', labelEs: 'Sello Expulsor y Soporte', labelEn: 'Expeller Seal & Bearing' },
-  { id: 'clasificacion', labelEs: 'Hidrociclones y Cribas', labelEn: 'Cyclones & Screens' },
-  { id: 'flotacion', labelEs: 'Flotación', labelEn: 'Flotation' },
-  { id: 'filtracion', labelEs: 'Filtros Prensa', labelEn: 'Filter Presses' },
-  { id: 'control', labelEs: 'Metrología y Balanzas', labelEn: 'Metrology & Scales' },
-  { id: 'tamices', labelEs: 'Tamices ASTM E11 y Ro-Tap', labelEn: 'ASTM E11 Sieves & Ro-Tap' },
-];
+const {
+  atomicPartsCount: ATOMIC_PARTS_SSOT_COUNT,
+  wetEndMaterialsList,
+  quickByAvenue,
+  avenueMetaMap: rawAvenueMetaMap,
+  avenueKeys,
+  catalogIntegrity,
+  diagramSurjectivity,
+  canonicalSeriesCount,
+  totalCatalogSkusCount,
+  bombeoPowerRange,
+  flotationPowerRange,
+  filtrationPowerRange,
+  controlProcessItems,
+  enrichedAtomicParts,
+  seriesRows,
+  familyChips,
+} = buildCatalogFacetedViewModel({ atomicParts, rolesData, locale });
+const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
 ---
 
 <div
@@ -215,15 +53,10 @@ const familyChips = [
   <div class="catalog-action-bar no-print">
     <div class="action-bar-left">
       <a href={homeHref} class="btn-back">{isEs ? '← Volver al Inicio' : '← Back to Home'}</a>
-      <span class="catalog-edition-pill">{isEs ? 'EDICIÓN TÉCNICA V5.0 • 2026' : 'TECHNICAL EDITION V5.0 • 2026'}</span>
+      <span class="catalog-edition-pill">{isEs ? 'Catálogo Técnico de Planta • 2026' : 'Plant Technical Catalog • 2026'}</span>
     </div>
     <div class="action-bar-right">
-      <button
-        type="button"
-        id="catalog-download-passport-btn"
-        data-passport-kind="json"
-        class="btn-action btn-print"
-      >
+      <button type="button" id="catalog-download-passport-btn" data-passport-kind="json" class="btn-action btn-print">
         {isEs ? 'Pasaporte Proveedor CFDI (JSON)' : 'Vendor Passport CFDI (JSON)'}
       </button>
       <button type="button" class="btn-action btn-print" onclick="window.print()">
@@ -242,126 +75,58 @@ const familyChips = [
   <header class="catalog-official-header">
     <div class="header-brand-block">
       <h1 class="brand-title">SMAT MINERALS</h1>
-      <span class="brand-tagline">
-        {isEs
-          ? 'BOMBAS PARA LODOS, CONTACTO HÚMEDO, FLOTACIÓN, FILTROS PRENSA Y BALANZAS'
-          : 'SLURRY PUMPS, WET-END PARTS, FLOTATION, FILTER PRESSES & PULP SCALES'}
-      </span>
-      <span class="brand-location">
-        {isEs
-          ? 'Domicilio Fiscal: Mariano Salas #114, Durango, Dgo. CP 34166 | Almacén Central Durango'
-          : 'Fiscal HQ: Mariano Salas #114, Durango, Mexico. CP 34166 | Durango Central Warehouse'}
-      </span>
+      <span class="brand-tagline">{isEs ? 'BOMBAS PARA LODOS, CONTACTO HÚMEDO, FLOTACIÓN, FILTROS PRENSA Y BALANZAS' : 'SLURRY PUMPS, WET-END PARTS, FLOTATION, FILTER PRESSES & PULP SCALES'}</span>
+      <span class="brand-location">{isEs ? 'Domicilio Fiscal: Mariano Salas #114, Durango, Dgo. CP 34166 | Almacén Central Durango' : 'Fiscal HQ: Mariano Salas #114, Durango, Mexico. CP 34166 | Durango Central Warehouse'}</span>
     </div>
     <div class="header-meta-block">
       <span class="doc-badge">{isEs ? 'CATÁLOGO TÉCNICO CON DIAGRAMAS CAD' : 'TECHNICAL CATALOG WITH CAD DIAGRAMS'}</span>
       <span class="doc-code">{isEs ? 'REF: SMAT-CAT-2026' : 'REF: SMAT-CAT-2026-EN'}</span>
-      <span class="doc-contact">
-        {isEs
-          ? 'Tel: (618) 810-4408 • Guardia: (618) 367-0664 • ventas@smatminerals.com'
-          : 'Phone: +52 (618) 810-4408 • Hotline: +52 (618) 367-0664 • ventas@smatminerals.com'}
-      </span>
+      <span class="doc-contact">{isEs ? 'Tel: (618) 810-4408 • Guardia: (618) 367-0664 • ventas@smatminerals.com' : 'Phone: +52 (618) 810-4408 • Hotline: +52 (618) 367-0664 • ventas@smatminerals.com'}</span>
     </div>
   </header>
 
-  <section
-    id="stratum1-dropin-verifier"
-    class="card no-print smat-island-card smat-mb-md"
-    data-stratum-1-instrument
-    data-dropin-verifier
-  >
+  <section id="stratum1-dropin-verifier" class="card no-print smat-island-card smat-mb-md" data-stratum-1-instrument data-dropin-verifier>
     <div class="smat-stratum1-display">
       <div class="smat-flex-between">
         <div>
-          <span class="smat-kicker">
-            {isEs ? 'HERRAMIENTA DE INGENIERÍA DE COMPATIBILIDAD' : 'DIMENSIONAL COMPATIBILITY INSTRUMENT'}
-          </span>
-          <h2 class="verifier-title">
-            {isEs ? 'Verificador de Equivalencia Dimensional (Drop-In)' : 'Dimensional Drop-In Equivalence Verifier'}
-          </h2>
-          <p class="verifier-sub">
-            {isEs
-              ? 'Valide el intercambio 1:1 de códigos de plano (ej. E4147, D3147, DAM005, SMAT-PUMP-IMP-AH) por brida y geometría sin modificar bancada.'
-              : 'Validate 1:1 plant drawing code fit (e.g., E4147, D3147, DAM005, SMAT-PUMP-IMP-AH) without modifying existing baseplates or piping.'}
-          </p>
+          <span class="smat-kicker">{isEs ? 'HERRAMIENTA DE INGENIERÍA DE COMPATIBILIDAD' : 'DIMENSIONAL COMPATIBILITY INSTRUMENT'}</span>
+          <h2 class="verifier-title">{isEs ? 'Verificador de Equivalencia Dimensional (Drop-In)' : 'Dimensional Drop-In Equivalence Verifier'}</h2>
+          <p class="verifier-sub">{isEs ? 'Valide el intercambio 1:1 de códigos de plano (ej. E4147, D3147, DAM005, SMAT-PUMP-IMP-AH) por brida y geometría sin modificar bancada.' : 'Validate 1:1 plant drawing code fit (e.g., E4147, D3147, DAM005, SMAT-PUMP-IMP-AH) without modifying existing baseplates or piping.'}</p>
         </div>
         <div class="smat-chip-row">
-          <span class="smat-badge-solar">
-            {ATOMIC_PARTS_SSOT_COUNT} {isEs ? 'Piezas Atómicas' : 'Atomic Parts'}
-          </span>
-          <span class="smat-badge-solar">
-            {canonicalSeriesCount} {isEs ? 'Series Hidráulicas' : 'Hydraulic Series'}
-          </span>
-          <span data-ssot-integrity-badge class="smat-badge-emerald">
-            {isEs
-              ? catalogIntegrity.valid ? 'Integridad Referencial: Verificada' : 'Integridad Referencial: Revisar'
-              : catalogIntegrity.valid ? 'Referential Integrity: Verified' : 'Referential Integrity: Review'}
-          </span>
-          <span data-ssot-surjectivity-badge class="smat-badge-emerald">
-            {isEs
-              ? diagramSurjectivity.surjective ? 'Cobertura CAD: 100%' : 'Cobertura CAD: Parcial'
-              : diagramSurjectivity.surjective ? 'CAD Coverage: 100%' : 'CAD Coverage: Partial'}
-          </span>
-          <span class="smat-badge-solar">
-            {isEs ? 'SKUs Visibles:' : 'Visible SKUs:'} <strong id="catalog-visible-sku-count">{totalCatalogSkusCount}</strong>
-          </span>
+          <span class="smat-badge-solar">{ATOMIC_PARTS_SSOT_COUNT} {isEs ? 'Piezas Atómicas' : 'Atomic Parts'}</span>
+          <span class="smat-badge-solar">{canonicalSeriesCount} {isEs ? 'Series Hidráulicas' : 'Hydraulic Series'}</span>
+          <span data-ssot-integrity-badge class="smat-badge-emerald">{isEs ? (catalogIntegrity.valid ? 'Integridad Referencial: Verificada' : 'Integridad Referencial: Revisar') : (catalogIntegrity.valid ? 'Referential Integrity: Verified' : 'Referential Integrity: Review')}</span>
+          <span data-ssot-surjectivity-badge class="smat-badge-emerald">{isEs ? (diagramSurjectivity.surjective ? 'Cobertura CAD: 100%' : 'Cobertura CAD: Parcial') : (diagramSurjectivity.surjective ? 'CAD Coverage: 100%' : 'CAD Coverage: Partial')}</span>
+          <span class="smat-badge-solar">{isEs ? 'SKUs Visibles:' : 'Visible SKUs:'} <strong id="catalog-visible-sku-count">{totalCatalogSkusCount}</strong></span>
         </div>
       </div>
-
       <details class="smat-ssot-audit-panel font-mono-tech">
-        <summary>
-          {isEs
-            ? `Auditoría de Trazabilidad (${catalogIntegrity.skuCount} SKUs • ${catalogIntegrity.coveredAtomicPartCount}/${catalogIntegrity.atomicPartCount} Piezas • ${diagramSurjectivity.coveredCount}/${diagramSurjectivity.totalKinds} CAD)`
-            : `Traceability Audit (${catalogIntegrity.skuCount} SKUs • ${catalogIntegrity.coveredAtomicPartCount}/${catalogIntegrity.atomicPartCount} Parts • ${diagramSurjectivity.coveredCount}/${diagramSurjectivity.totalKinds} CAD)`}
-        </summary>
-        <p class="smat-ssot-audit-meta">
-          {isEs
-            ? `Cobertura atómica completa: ${catalogIntegrity.coveredAtomicPartCount}/${catalogIntegrity.atomicPartCount} piezas (${bombeoPowerRange} en bombeo) • Diagramas cubiertos: ${diagramSurjectivity.coveredCount} de ${diagramSurjectivity.totalKinds} tipos base (${diagramSurjectivity.v32TotalKinds} V3.2).`
-            : `Complete atomic coverage: ${catalogIntegrity.coveredAtomicPartCount}/${catalogIntegrity.atomicPartCount} parts (${bombeoPowerRange} pumping range) • Diagrams covered: ${diagramSurjectivity.coveredCount} of ${diagramSurjectivity.totalKinds} base kinds (${diagramSurjectivity.v32TotalKinds} V3.2).`}
-        </p>
+        <summary>{isEs ? `Auditoría de Trazabilidad (${catalogIntegrity.skuCount} SKUs • ${catalogIntegrity.coveredAtomicPartCount}/${catalogIntegrity.atomicPartCount} Piezas • ${diagramSurjectivity.coveredCount}/${diagramSurjectivity.totalKinds} CAD)` : `Traceability Audit (${catalogIntegrity.skuCount} SKUs • ${catalogIntegrity.coveredAtomicPartCount}/${catalogIntegrity.atomicPartCount} Parts • ${diagramSurjectivity.coveredCount}/${diagramSurjectivity.totalKinds} CAD)`}</summary>
+        <p class="smat-ssot-audit-meta">{isEs ? `Cobertura atómica completa: ${catalogIntegrity.coveredAtomicPartCount}/${catalogIntegrity.atomicPartCount} piezas (${bombeoPowerRange} en bombeo) • Diagramas cubiertos: ${diagramSurjectivity.coveredCount} de ${diagramSurjectivity.totalKinds} tipos base (${diagramSurjectivity.v32TotalKinds} V3.2).` : `Complete atomic coverage: ${catalogIntegrity.coveredAtomicPartCount}/${catalogIntegrity.atomicPartCount} parts (${bombeoPowerRange} pumping range) • Diagrams covered: ${diagramSurjectivity.coveredCount} of ${diagramSurjectivity.totalKinds} base kinds (${diagramSurjectivity.v32TotalKinds} V3.2).`}</p>
       </details>
     </div>
 
     <div class="smat-inputs-2col">
       <DropInVerifierCore lang={lang} variant="catalog" attachVerifierAttr={false} />
-
       <div>
-        <label class="smat-field-label" for="catalog-facet-search">
-          {isEs ? 'Filtro Rápido del Catálogo (19 SKUs en 7 Avenidas)' : 'Instant Catalog Filter (19 SKUs across 7 Avenues)'}
-        </label>
-        <input
-          id="catalog-facet-search"
-          type="search"
-          placeholder={isEs
-            ? 'Filtrar por SKU, aleación, malla ASTM, prensa o marcy...'
-            : 'Filter by SKU, alloy, ASTM sieve, filter press or Marcy...'}
-          class="smat-search-input full-width-input"
-        />
+        <label class="smat-field-label" for="catalog-facet-search">{isEs ? 'Filtro Rápido del Catálogo (19 SKUs en 7 Avenidas)' : 'Instant Catalog Filter (19 SKUs across 7 Avenues)'}</label>
+        <input id="catalog-facet-search" type="search" placeholder={isEs ? 'Filtrar por SKU, aleación, malla ASTM, prensa o marcy...' : 'Filter by SKU, alloy, ASTM sieve, filter press or Marcy...'} class="smat-search-input full-width-input" />
       </div>
     </div>
 
     <div class="faceted-filters-block">
-      <div class="smat-chip-row smat-mt-sm" role="group" aria-label={isEs ? 'Filtro por Familia' : 'Filter by Family'}>
-        {familyChips.map((chip, idx) => (
-          <button
-            type="button"
-            class={`smat-chip ${idx === 0 ? 'part-chip--highlight' : ''}`}
-            data-family-chip={chip.id}
-            aria-pressed={idx === 0 ? 'true' : 'false'}
-          >
-            {isEs ? chip.labelEs : chip.labelEn}
-          </button>
-        ))}
-      </div>
-
-      <details class="smat-avenue-disclosure smat-mt-sm">
-        <summary class="smat-chip smat-avenue-disclosure-summary">
-          {isEs ? 'Filtrar por Avenida Industrial (7 Avenidas)' : 'Filter by Industrial Avenue (7 Avenues)'}
-        </summary>
+      <details class="smat-avenue-disclosure smat-mt-sm" id="catalog-filters-drawer">
+        <summary class="smat-chip smat-avenue-disclosure-summary">{isEs ? 'Filtrar por Circuito o Avenida Industrial (7 Avenidas)' : 'Filter by Circuit or Industrial Avenue (7 Avenues)'}</summary>
+        <div class="smat-chip-row smat-mt-sm" role="group" aria-label={isEs ? 'Filtro por Familia' : 'Filter by Family'}>
+          {familyChips.map((chip, idx) => (
+            <button type="button" class={`smat-chip ${idx === 0 ? 'part-chip--highlight' : ''}`} data-family-chip={chip.id} aria-pressed={idx === 0 ? 'true' : 'false'}>
+              {isEs ? chip.labelEs : chip.labelEn}
+            </button>
+          ))}
+        </div>
         <div class="smat-chip-row smat-mt-sm" role="group" aria-label={isEs ? 'Filtro por Avenida Industrial' : 'Filter by Industrial Avenue'}>
-          <button type="button" class="smat-chip is-active" data-facet-avenue-btn="all" aria-pressed="true">
-            {isEs ? '7 Avenidas (Todas)' : 'All 7 Avenues'}
-          </button>
+          <button type="button" class="smat-chip is-active" data-facet-avenue-btn="all" aria-pressed="true">{isEs ? '7 Avenidas (Todas)' : 'All 7 Avenues'}</button>
           {avenueKeys.map((avKey) => {
             const meta = avenueMetaMap[avKey];
             return (
@@ -380,122 +145,61 @@ const familyChips = [
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
     </div>
     <div class="intro-text">
-      <strong>
-        {isEs
-          ? 'Catálogo Técnico con Diagramas de Despiece para Ingeniería de Planta y Compras Mineras'
-          : 'Technical Catalog with Exploded CAD Diagrams for Plant Engineering & Mining Procurement'}
-      </strong>
-      <p>
-        {isEs
-          ? 'Consulte bombas para lodos (1.5x1" a 14x12"), lotes en contacto húmedo (5 impulsores, 5 cuellos y 4 volutas en Alto Cromo, Hule y Poliuretano), Bearing Assembly / Housing completos, mecanismos de flotación, filtros prensa (800 a 1500 mm) y metrología Marcy.'
-          : 'Browse heavy-duty slurry pumps (1.5x1" to 14x12"), wet-end wear lots (5 impellers, 5 throatbushes & 4 volute liners in High Chrome, Rubber & Polyurethane), complete Bearing Assembly / Housing, flotation mechanisms, filter presses (800 to 1500 mm) & Marcy metrology.'}
-      </p>
+      <strong>{isEs ? 'Catálogo Técnico con Diagramas de Despiece para Ingeniería de Planta y Compras Mineras' : 'Technical Catalog with Exploded CAD Diagrams for Plant Engineering & Mining Procurement'}</strong>
+      <p>{isEs ? 'Consulte bombas para lodos (1.5x1" a 14x12"), lotes en contacto húmedo (5 impulsores, 5 cuellos y 4 volutas en Alto Cromo, Hule y Poliuretano), Bearing Assembly / Housing completos, mecanismos de flotación, filtros prensa (800 a 1500 mm) y metrología Marcy.' : 'Browse heavy-duty slurry pumps (1.5x1" to 14x12"), wet-end wear lots (5 impellers, 5 throatbushes & 4 volute liners in High Chrome, Rubber & Polyurethane), complete Bearing Assembly / Housing, flotation mechanisms, filter presses (800 to 1500 mm) & Marcy metrology.'}</p>
     </div>
   </div>
 
+  <details class="wb-progressive-drawer smat-mb-md" id="catalog-bombeo-drawer">
+    <summary class="wb-progressive-summary">
+      <span>{isEs ? '01 • Bombas para Lodos, Tabla Paramétrica (9 Series), Aleaciones (5), 7 Avenidas (19 SKUs) y 13 Piezas Atómicas' : '01 • Slurry Pumps, Parametric Matrix (9 Frames), Alloys (5), 7 Avenues (19 SKUs) & 13 Atomic Parts'}</span>
+      <span class="wb-step1-more-arrow">▾</span>
+    </summary>
+    <div class="wb-progressive-body">
   <section class="catalog-section" id={isEs ? 'bombeo' : 'pumping'}>
     <div class="section-title-wrap">
       <span class="section-num">01</span>
       <div>
-        <h2>
-          {isEs
-            ? 'Bombas para Lodos y Piezas en Contacto Húmedo (Circuito de Bombeo)'
-            : 'Slurry Pumps & Wet-End Wear Parts (Pumping Circuit)'}
-        </h2>
-        <span class="section-subtitle">
-          {isEs
-            ? 'Bombas horizontales para lodos, lotes 5-5-4 en Alto Cromo, Hule y Poliuretano, y Bearing Assembly / Housing completo'
-            : 'Horizontal centrifugal slurry pumps, balanced 5-5-4 wet-end lots, and pre-assembled Bearing Assembly / Housing units'}
-        </span>
+        <h2>{isEs ? 'Bombas para Lodos y Piezas en Contacto Húmedo (Circuito de Bombeo)' : 'Slurry Pumps & Wet-End Wear Parts (Pumping Circuit)'}</h2>
+        <span class="section-subtitle">{isEs ? 'Bombas horizontales para lodos, lotes 5-5-4 en Alto Cromo, Hule y Poliuretano, y Bearing Assembly / Housing completo' : 'Horizontal centrifugal slurry pumps, balanced 5-5-4 wet-end lots, and pre-assembled Bearing Assembly / Housing units'}</span>
       </div>
     </div>
 
     <div class="catalog-grid-2">
       <article class="catalog-card">
         <div class="card-tag">{isEs ? 'Bombas Horizontales y Conjunto Motriz' : 'Horizontal Slurry Pumps & Drive Train'}</div>
-        <h3>
-          {isEs
-            ? 'Bombas para Lodos (1.5x1" a 14x12") y Bearing Assembly / Housing'
-            : 'Slurry Pumps (1.5x1" to 14x12") & Bearing Assembly / Housing'}
-        </h3>
-        <p class="card-desc">
-          {isEs
-            ? 'Bombas centrífugas horizontales de servicio pesado para descarga de molino, alimentación a ciclones, flotación y jales, junto con Bearing Assembly / Housing completos listos para montaje rápido en campo.'
-            : 'Heavy-duty horizontal slurry pumps engineered for mill discharge, cyclone feed, flotation, and tailings pipelines, plus factory-shimmed Bearing Assembly / Housing modules.'}
-        </p>
+        <h3>{isEs ? 'Bombas para Lodos (1.5x1" a 14x12") y Bearing Assembly / Housing' : 'Slurry Pumps (1.5x1" to 14x12") & Bearing Assembly / Housing'}</h3>
+        <p class="card-desc">{isEs ? 'Bombas centrífugas horizontales de servicio pesado para descarga de molino, alimentación a ciclones, flotación y jales, junto con Bearing Assembly / Housing completos listos para montaje rápido en campo.' : 'Heavy-duty horizontal slurry pumps engineered for mill discharge, cyclone feed, flotation, and tailings pipelines, plus factory-shimmed Bearing Assembly / Housing modules.'}</p>
         <ul class="card-specs">
-          <li>
-            <strong>{isEs ? 'Rango de Bombas:' : 'Pump Series Range:'}</strong>{' '}
-            {isEs ? 'Desde 1.5x1" hasta 14x12" (Series 4x3", 6x4", 8x6", 10x8" con acople 1:1).' : '1.5x1" through 14x12" (4x3", 6x4", 8x6", 10x8" with 1:1 interchangeability).'}
-          </li>
-          <li>
-            <strong>Bearing Assembly / Housing:</strong>{' '}
-            {isEs ? 'Conjunto completo ensamblado (carcasa cilíndrica, flecha de acero aleado, rodamientos cónicos Timken y sellos laberinto).' : 'Complete cartridge assembly with alloy shaft, tapered roller bearings & labyrinth seals.'}
-          </li>
-          <li>
-            <strong>{isEs ? 'Sellado de Flecha:' : 'Shaft Sealing:'}</strong>{' '}
-            {isEs ? 'Expulsor centrífugo en seco y prensaestopa con anillo linterna. No vendemos sello mecánico por alta abrasión.' : 'Dry centrifugal expeller and packed gland with lantern ring. Mechanical seals excluded due to severe abrasion.'}
-          </li>
-          <li>
-            <strong>{isEs ? 'Intercambiabilidad:' : 'Compatibility:'}</strong>{' '}
-            {isEs ? 'Acople dimensional 1:1 con bancadas y bridas ANSI estándar.' : 'Direct 1:1 drop-in mounting onto existing plant baseplates and ANSI flanges.'}
-          </li>
+          <li><strong>{isEs ? 'Rango de Bombas:' : 'Pump Series Range:'}</strong> {isEs ? 'Desde 1.5x1" hasta 14x12" (Series 4x3", 6x4", 8x6", 10x8" con acople 1:1).' : '1.5x1" through 14x12" (4x3", 6x4", 8x6", 10x8" with 1:1 interchangeability).'}</li>
+          <li><strong>Bearing Assembly / Housing:</strong> {isEs ? 'Conjunto completo ensamblado (carcasa cilíndrica, flecha de acero aleado, rodamientos cónicos Timken y sellos laberinto).' : 'Complete cartridge assembly with alloy shaft, tapered roller bearings & labyrinth seals.'}</li>
+          <li><strong>{isEs ? 'Sellado de Flecha:' : 'Shaft Sealing:'}</strong> {isEs ? 'Expulsor centrífugo en seco y prensaestopa con anillo linterna. No vendemos sello mecánico por alta abrasión.' : 'Dry centrifugal expeller and packed gland with lantern ring. Mechanical seals excluded due to severe abrasion.'}</li>
+          <li><strong>{isEs ? 'Intercambiabilidad:' : 'Compatibility:'}</strong> {isEs ? 'Acople dimensional 1:1 con bancadas y bridas ANSI estándar.' : 'Direct 1:1 drop-in mounting onto existing plant baseplates and ANSI flanges.'}</li>
         </ul>
         <div class="card-footer-action no-print smat-cta-row">
-          <a href={isEs ? '/cotizar/?circuito=bombeo&equipo=skid_bomba&serie=6x4#rfq' : '/en/quote/?circuito=bombeo&equipo=skid_bomba&serie=6x4#rfq'} class="btn-card-quote">
-            {isEs ? 'Cotizar Bomba para Lodos →' : 'Quote Slurry Pump →'}
-          </a>
-          <a href={isEs ? '/cotizar/?circuito=bombeo&equipo=soporte&serie=6x4&estacion=S1#rfq' : '/en/quote/?circuito=bombeo&equipo=soporte&serie=6x4&estacion=S1#rfq'} class="btn-card-quote">
-            {isEs ? 'Cotizar Bearing Assembly →' : 'Quote Bearing Assembly →'}
-          </a>
+          <a href={isEs ? '/cotizar/?circuito=bombeo&equipo=skid_bomba&serie=6x4#rfq' : '/en/quote/?circuito=bombeo&equipo=skid_bomba&serie=6x4#rfq'} class="btn-card-quote">{isEs ? 'Cotizar Bomba para Lodos →' : 'Quote Slurry Pump →'}</a>
+          <a href={isEs ? '/cotizar/?circuito=bombeo&equipo=soporte&serie=6x4&estacion=S1#rfq' : '/en/quote/?circuito=bombeo&equipo=soporte&serie=6x4&estacion=S1#rfq'} class="btn-card-quote">{isEs ? 'Cotizar Bearing Assembly →' : 'Quote Bearing Assembly →'}</a>
         </div>
       </article>
 
       <article class="catalog-card">
         <div class="card-tag">{isEs ? 'Suministro por Lote en Contacto Húmedo (5 – 5 – 4)' : 'Wet-End Wear Batch Supply (5 – 5 – 4)'}</div>
-        <h3>
-          {isEs
-            ? 'Impulsores, Cuellos y Volutas (Alto Cromo, Hule y Poliuretano)'
-            : 'Impellers, Throatbushes & Volutes (High Chrome, Rubber & Polyurethane)'}
-        </h3>
-        <p class="card-desc">
-          {isEs
-            ? 'Piezas en contacto húmedo suministradas por lote balanceado según rotación real de desgaste en planta (5 Impulsores + 5 Cuellos + 4 Volutas) para evitar paros por desajuste de holguras.'
-            : 'Balanced wet-end batches proportioned by plant wear rotation (5 Impellers + 5 Throatbushes + 4 Volute Liners) to prevent unplanned downtime.'}
-        </p>
+        <h3>{isEs ? 'Impulsores, Cuellos y Volutas (Alto Cromo, Hule y Poliuretano)' : 'Impellers, Throatbushes & Volutes (High Chrome, Rubber & Polyurethane)'}</h3>
+        <p class="card-desc">{isEs ? 'Piezas en contacto húmedo suministradas por lote balanceado según rotación real de desgaste en planta (5 Impulsores + 5 Cuellos + 4 Volutas) para evitar paros por desajuste de holguras.' : 'Balanced wet-end batches proportioned by plant wear rotation (5 Impellers + 5 Throatbushes + 4 Volute Liners) to prevent unplanned downtime.'}</p>
         <ul class="card-specs">
-          <li>
-            <strong>{isEs ? 'Materiales Disponibles:' : 'Alloys & Elastomers:'}</strong>{' '}
-            {isEs ? 'Aleación de Alto Cromo 27% Cr (ASTM A532 ≥650 HB), Hule natural vulcanizado y Poliuretano minero.' : '27% Cr High Chrome White Iron (ASTM A532 ≥650 HB), Natural Rubber & Mining Polyurethane.'}
-          </li>
-          <li>
-            <strong>{isEs ? 'Impulsores:' : 'Impellers:'}</strong>{' '}
-            {isEs ? 'Cerrados de 5 álabes y paso amplio con expulsores traseros para aliviar presión en prensaestopa.' : '5-vane closed and wide-throat geometries with pump-out vanes.'}
-          </li>
-          <li>
-            <strong>{isEs ? 'Cuellos y Volutas:' : 'Throatbushes & Liners:'}</strong>{' '}
-            {isEs ? 'Cuellos ajustables, volutas y platos posteriores (FPL).' : 'Adjustable suction throatbushes, volute liners & frame plate liner inserts.'}
-          </li>
-          <li>
-            <strong>{isEs ? 'Cotejo en Almacén:' : 'Warehouse QC:'}</strong>{' '}
-            {isEs ? 'Dureza Rockwell/Brinell (≥ 58 HRC / 650 HB) y acople 1:1 verificado en Almacén Central Durango.' : 'Brinell hardness (≥650 HB) & 1:1 dimensional inspection at Durango Central Warehouse.'}
-          </li>
+          <li><strong>{isEs ? 'Materiales Disponibles:' : 'Alloys & Elastomers:'}</strong> {isEs ? 'Aleación de Alto Cromo 27% Cr (ASTM A532 ≥650 HB), Hule natural vulcanizado y Poliuretano minero.' : '27% Cr High Chrome White Iron (ASTM A532 ≥650 HB), Natural Rubber & Mining Polyurethane.'}</li>
+          <li><strong>{isEs ? 'Impulsores:' : 'Impellers:'}</strong> {isEs ? 'Cerrados de 5 álabes y paso amplio con expulsores traseros para aliviar presión en prensaestopa.' : '5-vane closed and wide-throat geometries with pump-out vanes.'}</li>
+          <li><strong>{isEs ? 'Cuellos y Volutas:' : 'Throatbushes & Liners:'}</strong> {isEs ? 'Cuellos ajustables, volutas y platos posteriores (FPL).' : 'Adjustable suction throatbushes, volute liners & frame plate liner inserts.'}</li>
+          <li><strong>{isEs ? 'Cotejo en Almacén:' : 'Warehouse QC:'}</strong> {isEs ? 'Dureza Rockwell/Brinell (≥ 58 HRC / 650 HB) y acople 1:1 verificado en Almacén Central Durango.' : 'Brinell hardness (≥650 HB) & 1:1 dimensional inspection at Durango Central Warehouse.'}</li>
         </ul>
         <div class="card-footer-action no-print smat-cta-row">
-          <a href={isEs ? '/cotizar/?circuito=bombeo&equipo=revestimientos&serie=6x4&estacion=S4#rfq' : '/en/quote/?circuito=bombeo&equipo=revestimientos&serie=6x4&estacion=S4#rfq'} class="btn-card-quote">
-            {isEs ? 'Cotizar Lote Húmedo (5-5-4) →' : 'Quote Wet-End Lot (5-5-4) →'}
-          </a>
-          <a href={isEs ? '/cotizar/?circuito=bombeo&equipo=impulsor&serie=6x4&estacion=S3#rfq' : '/en/quote/?circuito=bombeo&equipo=impulsor&serie=6x4&estacion=S3#rfq'} class="btn-card-quote">
-            {isEs ? 'Cotizar Impulsores →' : 'Quote Impellers →'}
-          </a>
+          <a href={isEs ? '/cotizar/?circuito=bombeo&equipo=revestimientos&serie=6x4&estacion=S4#rfq' : '/en/quote/?circuito=bombeo&equipo=revestimientos&serie=6x4&estacion=S4#rfq'} class="btn-card-quote">{isEs ? 'Cotizar Lote Húmedo (5-5-4) →' : 'Quote Wet-End Lot (5-5-4) →'}</a>
+          <a href={isEs ? '/cotizar/?circuito=bombeo&equipo=impulsor&serie=6x4&estacion=S3#rfq' : '/en/quote/?circuito=bombeo&equipo=impulsor&serie=6x4&estacion=S3#rfq'} class="btn-card-quote">{isEs ? 'Cotizar Impulsores →' : 'Quote Impellers →'}</a>
         </div>
       </article>
     </div>
 
-    <div class="smat-mb-md">
-      <TechnicalDiagrams diagram="pump" lang={lang} />
-    </div>
-
+    <div class="smat-mb-md"><TechnicalDiagrams diagram="pump" lang={lang} /></div>
     <div class="catalog-grid-2">
       <TechnicalDiagrams diagram="liners" lang={lang} compact={true} />
       <TechnicalDiagrams diagram="bearing" lang={lang} compact={true} />
@@ -504,63 +208,34 @@ const familyChips = [
     <div class="catalog-table-wrap" id={isEs ? 'tabla-parametrica' : 'parametric-table'}>
       <div class="table-header-flex">
         <div>
-          <h4 class="table-title">
-            {isEs
-              ? 'Matriz Paramétrica Completa — 9 Series de Bombeo de Pulpa (1.5x1" a 14x12")'
-              : 'Complete Parametric Matrix — 9 Heavy-Duty Slurry Pump Series (1.5x1" to 14x12")'}
-          </h4>
-          <span class="table-subtitle">
-            {isEs
-              ? 'Consolidado dimensional oficial de las 9 series hidráulicas, pasaje de sólidos (Top Size), potencias y caudales'
-              : 'Official dimensional matrix across all 9 hydraulic pump frames, solid top size passage, drive power, and flow capacity'}
-          </span>
+          <h4 class="table-title">{isEs ? 'Matriz Paramétrica Completa — 9 Series de Bombeo de Pulpa (1.5x1" a 14x12")' : 'Complete Parametric Matrix — 9 Heavy-Duty Slurry Pump Series (1.5x1" to 14x12")'}</h4>
+          <span class="table-subtitle">{isEs ? 'Consolidado dimensional oficial de las 9 series hidráulicas, pasaje de sólidos (Top Size), potencias y caudales' : 'Official dimensional matrix across all 9 hydraulic pump frames, solid top size passage, drive power, and flow capacity'}</span>
         </div>
         <span class="matrix-badge">{isEs ? '9 SERIES • NORMA DIMENSIONAL 1:1' : '9 FRAMES • 1:1 DROP-IN STANDARD'}</span>
       </div>
 
       <div class="mounting-diagram-box no-print" id="pump-mounting-diagram">
         <div class="diagram-meta">
-          <span class="diagram-tag">
-            {isEs ? 'CROQUIS ESQUEMÁTICO DE ACOPLE Y ANCLAJE (ESTÁNDAR ANSI 1:1)' : 'SCHEMATIC FOOTPRINT & FLANGE DIAGRAM (ANSI 1:1 STANDARD)'}
-          </span>
-          <small>
-            {isEs
-              ? 'Pase el cursor sobre cualquier fila de la tabla inferior para resaltar las cotas de banco en tiempo real.'
-              : 'Hover over any table row below to highlight baseplate bolt centers and flange sizes in real time.'}
-          </small>
+          <span class="diagram-tag">{isEs ? 'CROQUIS ESQUEMÁTICO DE ACOPLE Y ANCLAJE (ESTÁNDAR ANSI 1:1)' : 'SCHEMATIC FOOTPRINT & FLANGE DIAGRAM (ANSI 1:1 STANDARD)'}</span>
+          <small>{isEs ? 'Pase el cursor sobre cualquier fila de la tabla inferior para resaltar las cotas de banco en tiempo real.' : 'Hover over any table row below to highlight baseplate bolt centers and flange sizes in real time.'}</small>
         </div>
         <div class="diagram-flex">
           <svg class="pump-svg-scheme" viewBox="0 0 340 120" width="100%" height="120" aria-label={isEs ? 'Esquema acotado de bomba de pulpa' : 'Dimensional slurry pump scheme'}>
             <defs>
-              <marker id="dim-arrow-c" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-                <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#7c2d12" />
-              </marker>
-              <marker id="dim-arrow-blue" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-                <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1d4ed8" />
-              </marker>
+              <marker id="dim-arrow-c" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#7c2d12" /></marker>
+              <marker id="dim-arrow-blue" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1d4ed8" /></marker>
             </defs>
             <rect x="50" y="85" width="240" height="20" rx="3" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5" />
-            <circle cx="70" cy="95" r="4" fill="#475569" />
-            <circle cx="270" cy="95" r="4" fill="#475569" />
+            <circle cx="70" cy="95" r="4" fill="#475569" /><circle cx="270" cy="95" r="4" fill="#475569" />
             <line x1="70" y1="112" x2="270" y2="112" stroke="#7c2d12" stroke-width="1.5" stroke-dasharray="3,3" marker-start="url(#dim-arrow-c)" marker-end="url(#dim-arrow-c)" />
-            <text x="170" y="109" font-size="10" font-family="var(--smat-font-mono, monospace)" fill="#7c2d12" text-anchor="middle" font-weight="bold" class="svg-dim-c pro-tabular-nums">
-              {isEs ? 'Cota C: Distancia entre Barrenos' : 'Dim C: Hold-Down Bolt Centers'}
-            </text>
+            <text x="170" y="109" font-size="10" font-family="var(--smat-font-mono, monospace)" fill="#7c2d12" text-anchor="middle" font-weight="bold" class="svg-dim-c pro-tabular-nums">{isEs ? 'Cota C: Distancia entre Barrenos' : 'Dim C: Hold-Down Bolt Centers'}</text>
             <circle cx="120" cy="55" r="32" fill="#cbd5e1" stroke="#475569" stroke-width="1.5" />
-            <rect x="25" y="43" width="15" height="24" rx="2" fill="#94a3b8" stroke="#334155" stroke-width="1.5" />
-            <line x1="40" y1="55" x2="90" y2="55" stroke="#334155" stroke-width="1.5" />
-            <text x="20" y="38" font-size="10" font-family="var(--smat-font-mono, monospace)" fill="#0f172a" font-weight="bold" class="svg-dim-a pro-tabular-nums">
-              {isEs ? 'Ø A (Succión)' : 'Ø A (Suction)'}
-            </text>
-            <rect x="108" y="8" width="24" height="15" rx="2" fill="#94a3b8" stroke="#334155" stroke-width="1.5" />
-            <line x1="120" y1="23" x2="120" y2="55" stroke="#334155" stroke-width="1.5" />
-            <text x="140" y="18" font-size="10" font-family="var(--smat-font-mono, monospace)" fill="#0f172a" font-weight="bold" class="svg-dim-b pro-tabular-nums">
-              {isEs ? 'Ø B (Descarga)' : 'Ø B (Discharge)'}
-            </text>
+            <rect x="25" y="43" width="15" height="24" rx="2" fill="#94a3b8" stroke="#334155" stroke-width="1.5" /><line x1="40" y1="55" x2="90" y2="55" stroke="#334155" stroke-width="1.5" />
+            <text x="20" y="38" font-size="10" font-family="var(--smat-font-mono, monospace)" fill="#0f172a" font-weight="bold" class="svg-dim-a pro-tabular-nums">{isEs ? 'Ø A (Succión)' : 'Ø A (Suction)'}</text>
+            <rect x="108" y="8" width="24" height="15" rx="2" fill="#94a3b8" stroke="#334155" stroke-width="1.5" /><line x1="120" y1="23" x2="120" y2="55" stroke="#334155" stroke-width="1.5" />
+            <text x="140" y="18" font-size="10" font-family="var(--smat-font-mono, monospace)" fill="#0f172a" font-weight="bold" class="svg-dim-b pro-tabular-nums">{isEs ? 'Ø B (Descarga)' : 'Ø B (Discharge)'}</text>
             <line x1="295" y1="55" x2="295" y2="85" stroke="#1d4ed8" stroke-width="1.5" marker-start="url(#dim-arrow-blue)" marker-end="url(#dim-arrow-blue)" />
-            <text x="300" y="73" font-size="10" font-family="var(--smat-font-mono, monospace)" fill="#1d4ed8" font-weight="bold" class="svg-dim-d pro-tabular-nums">
-              {isEs ? 'Cota D' : 'Dim D'}
-            </text>
+            <text x="300" y="73" font-size="10" font-family="var(--smat-font-mono, monospace)" fill="#1d4ed8" font-weight="bold" class="svg-dim-d pro-tabular-nums">{isEs ? 'Cota D' : 'Dim D'}</text>
           </svg>
           <div class="diagram-legend">
             <span class="legend-item"><strong>Ø A:</strong> {isEs ? 'Diámetro nominal de brida de succión (1.5" a 14")' : 'Nominal suction flange diameter (1.5" to 14")'}</span>
@@ -574,36 +249,15 @@ const familyChips = [
       <table class="catalog-table pro-tabular-nums" id="parametric-pumps-table">
         <thead>
           <tr>
-            <th>{isEs ? 'Serie' : 'Series'}</th>
-            <th>{isEs ? 'Succión × Descarga (D Hidráulico)' : 'Suction × Discharge (Dia)'}</th>
-            <th>{isEs ? 'Caudal Operativo' : 'Operating Flow'}</th>
-            <th>{isEs ? 'Carga Dinámica (TDH)' : 'Dynamic Head (TDH)'}</th>
-            <th>{isEs ? 'Top Size (Sólidos máx)' : 'Max Solids (Top Size)'}</th>
-            <th>{isEs ? 'Potencia de Motor' : 'Motor Power'}</th>
-            <th>{isEs ? 'Materiales en Contacto Húmedo' : 'Wet-End Materials'}</th>
-            <th>{isEs ? 'Aplicación en Planta' : 'Plant Duty'}</th>
-            <th class="no-print">{isEs ? 'Acción Rápida' : 'Quick Action'}</th>
+            <th>{isEs ? 'Serie' : 'Series'}</th><th>{isEs ? 'Succión × Descarga (D Hidráulico)' : 'Suction × Discharge (Dia)'}</th><th>{isEs ? 'Caudal Operativo' : 'Operating Flow'}</th><th>{isEs ? 'Carga Dinámica (TDH)' : 'Dynamic Head (TDH)'}</th><th>{isEs ? 'Top Size (Sólidos máx)' : 'Max Solids (Top Size)'}</th><th>{isEs ? 'Potencia de Motor' : 'Motor Power'}</th><th>{isEs ? 'Materiales en Contacto Húmedo' : 'Wet-End Materials'}</th><th>{isEs ? 'Aplicación en Planta' : 'Plant Duty'}</th><th class="no-print">{isEs ? 'Acción Rápida' : 'Quick Action'}</th>
           </tr>
         </thead>
         <tbody>
           {seriesRows.map((row) => (
             <tr class="dim-row" data-dimension="dim-c" data-series={row.key}>
               <td><span class={`series-pill ${row.highlight ? 'highlight' : ''}`}>{row.label}</span></td>
-              <td>{isEs ? row.dimsEs : row.dimsEn}</td>
-              <td>{row.flow}</td>
-              <td>{row.head}</td>
-              <td><strong>{row.topSize}</strong></td>
-              <td>{row.power}</td>
-              <td>{isEs ? row.materialsEs : row.materialsEn}</td>
-              <td>{isEs ? row.appEs : row.appEn}</td>
-              <td class="no-print">
-                <a
-                  href={`${isEs ? '/cotizar/' : '/en/quote/'}?circuito=bombeo&equipo=skid_bomba&serie=${encodeURIComponent(row.key)}#rfq`}
-                  class="btn-table-cta"
-                >
-                  {isEs ? `Cotizar ${row.key} →` : `Quote ${row.key} →`}
-                </a>
-              </td>
+              <td>{isEs ? row.dimsEs : row.dimsEn}</td><td>{row.flow}</td><td>{row.head}</td><td><strong>{row.topSize}</strong></td><td>{row.power}</td><td>{isEs ? row.materialsEs : row.materialsEn}</td><td>{isEs ? row.appEs : row.appEn}</td>
+              <td class="no-print"><a href={`${isEs ? '/cotizar/' : '/en/quote/'}?circuito=bombeo&equipo=skid_bomba&serie=${encodeURIComponent(row.key)}#rfq`} class="btn-table-cta">{isEs ? `Cotizar ${row.key} →` : `Quote ${row.key} →`}</a></td>
             </tr>
           ))}
         </tbody>
@@ -613,36 +267,20 @@ const familyChips = [
     <div class="atomic-parts-catalog-block" id="matriz-aleaciones-ssot">
       <div class="table-header-flex">
         <div>
-          <h4 class="table-title">
-            {isEs
-              ? `Matriz Metalúrgica y Tribológica de Extremo Húmedo (${wetEndMaterialsList.length} Ramas / Aleaciones)`
-              : `Wet-End Metallurgical & Tribological Matrix (${wetEndMaterialsList.length} Alloy Branches)`}
-          </h4>
-          <span class="table-subtitle">
-            {isEs
-              ? 'Selección determinista por dureza Vickers/Brinell, tenacidad a la fractura, límite de velocidad periférica y proporción de lote 5-5-4 (incluye Rama D Híbrida A05+R55)'
-              : 'Deterministic selection by Vickers/Brinell hardness, fracture toughness, tip-speed limit, and 5-5-4 batch ratio (includes Branch D Hybrid A05+R55)'}
-          </span>
+          <h4 class="table-title">{isEs ? `Matriz Metalúrgica y Tribológica de Extremo Húmedo (${wetEndMaterialsList.length} Ramas / Aleaciones)` : `Wet-End Metallurgical & Tribological Matrix (${wetEndMaterialsList.length} Alloy Branches)`}</h4>
+          <span class="table-subtitle">{isEs ? 'Selección determinista por dureza Vickers/Brinell, tenacidad a la fractura, límite de velocidad periférica y proporción de lote 5-5-4 (incluye Rama D Híbrida A05+R55)' : 'Deterministic selection by Vickers/Brinell hardness, fracture toughness, tip-speed limit, and 5-5-4 batch ratio (includes Branch D Hybrid A05+R55)'}</span>
         </div>
         <span class="matrix-badge">{wetEndMaterialsList.length} {isEs ? 'ALEACIONES CERTIFICADAS' : 'CERTIFIED ALLOYS'}</span>
       </div>
       <div class="atomic-parts-grid">
         {wetEndMaterialsList.map((mat) => (
           <div class="atomic-part-card" data-material-key={mat.key}>
-            <div class="atomic-part-top">
-              <span class="series-pill highlight">{mat.code}</span>
-              <span class="atomic-frame-badge">{isEs ? 'Lote' : 'Lot'} {mat.wearRatio554}</span>
-            </div>
+            <div class="atomic-part-top"><span class="series-pill highlight">{mat.code}</span><span class="atomic-frame-badge">{isEs ? 'Lote' : 'Lot'} {mat.wearRatio554}</span></div>
             <strong class="atomic-part-title">{isEs ? mat.nameEs : mat.nameEn}</strong>
             <p class="atomic-part-desc">{mat.hardness} • u₂ ≤ {mat.maxTipSpeedMs} m/s • d₈₀ {mat.d80RangeMicrons} µm • pH {mat.phRange}</p>
             <p class="atomic-part-desc">{isEs ? mat.dutyApplicationEs : mat.dutyApplicationEn}</p>
             <div class="atomic-part-actions no-print">
-              <a
-                href={buildWizardUrl({ lang, circuit: 'bombeo', role: 'kit_wet_end', series: '6x4', station: 'S4', material: mat.key, arrangement: 'CV' })}
-                class="btn-card-quote"
-              >
-                {isEs ? `Cotizar Lote ${mat.code} →` : `Quote Lot ${mat.code} →`}
-              </a>
+              <a href={buildWizardUrl({ lang, circuit: 'bombeo', role: 'kit_wet_end', series: '6x4', station: 'S4', material: mat.key, arrangement: 'CV' })} class="btn-card-quote">{isEs ? `Cotizar Lote ${mat.code} →` : `Quote Lot ${mat.code} →`}</a>
             </div>
           </div>
         ))}
@@ -654,128 +292,74 @@ const familyChips = [
     <div class="atomic-parts-catalog-block" id="fichas-atomicas">
       <div class="table-header-flex">
         <div>
-          <h4 class="table-title">
-            {isEs
-              ? 'Fichas Técnicas por Número de Parte Universal (Impulsores, Cuellos y Anillos Expulsores)'
-              : 'Universal Part Number Technical Sheets (Impellers, Throatbushes & Expeller Rings)'}
-          </h4>
-          <span class="table-subtitle">
-            {isEs
-              ? 'Seleccione el código universal para abrir su especificación metalúrgica individual, masa certificada, ergonomía Waters-NIOSH 1993 y acople 1:1'
-              : 'Select any universal part code to view individual metallurgical specs, verified mass, Waters-NIOSH ergonomics & 1:1 drop-in match'}
-          </span>
+          <h4 class="table-title">{isEs ? 'Fichas Técnicas por Número de Parte Universal (Impulsores, Cuellos y Anillos Expulsores)' : 'Universal Part Number Technical Sheets (Impellers, Throatbushes & Expeller Rings)'}</h4>
+          <span class="table-subtitle">{isEs ? 'Seleccione el código universal para abrir su especificación metalúrgica individual, masa certificada, ergonomía Waters-NIOSH 1993 y acople 1:1' : 'Select any universal part code to view individual metallurgical specs, verified mass, Waters-NIOSH ergonomics & 1:1 drop-in match'}</span>
         </div>
         <span class="matrix-badge">{enrichedAtomicParts.length} {isEs ? 'FICHAS ATÓMICAS' : 'ATOMIC SHEETS'}</span>
       </div>
       <div class="atomic-parts-grid">
         {enrichedAtomicParts.map((part) => (
           <div class="atomic-part-card" data-part-code={part.part_number} data-niosh-tier={part.niosh.tier}>
-            <div class="atomic-part-top">
-              <span class="series-pill highlight">{part.part_number}</span>
-              <span class="atomic-frame-badge">{isEs ? 'Serie' : 'Series'} {part.frame} • {part.spec.station_number}</span>
-            </div>
+            <div class="atomic-part-top"><span class="series-pill highlight">{part.part_number}</span><span class="atomic-frame-badge">{isEs ? 'Serie' : 'Series'} {part.frame} • {part.spec.station_number}</span></div>
             <strong class="atomic-part-title">{isEs ? part.name_es : part.name_en}</strong>
             <p class="atomic-part-desc">{isEs ? part.type_es : part.type_en} • {part.hardness}</p>
-            <p class="atomic-part-desc strong-meta">
-              {isEs ? 'Peso' : 'Weight'}: {part.spec.weight_kg} kg • {isEs ? part.niosh.badgeEs : part.niosh.badgeEn} • ØD₂ {part.spec.impeller_diameter_mm} mm
-            </p>
+            <p class="atomic-part-desc strong-meta">{isEs ? 'Peso' : 'Weight'}: {part.spec.weight_kg} kg • {isEs ? part.niosh.badgeEs : part.niosh.badgeEn} • ØD₂ {part.spec.impeller_diameter_mm} mm</p>
             {(isEs ? part.everyday_equivalence_es : part.everyday_equivalence_en) && (
-              <p class="atomic-part-desc">
-                {isEs ? part.everyday_equivalence_es : part.everyday_equivalence_en}{' '}
-                {Array.isArray(part.kit_ids) && part.kit_ids.length > 0 ? `• Kits: ${part.kit_ids.join(', ')}` : ''}
-              </p>
+              <p class="atomic-part-desc">{isEs ? part.everyday_equivalence_es : part.everyday_equivalence_en} {Array.isArray(part.kit_ids) && part.kit_ids.length > 0 ? `• Kits: ${part.kit_ids.join(', ')}` : ''}</p>
             )}
             <div class="atomic-part-actions no-print">
-              <a href={isEs ? `/catalogo/${part.code}/` : `/en/catalog/${part.code}/`} class="btn-table-cta">
-                {isEs ? `Ver Ficha ${part.part_number} →` : `View Sheet ${part.part_number} →`}
-              </a>
+              <a href={isEs ? `/catalogo/${part.code}/` : `/en/catalog/${part.code}/`} class="btn-table-cta">{isEs ? `Ver Ficha ${part.part_number} →` : `View Sheet ${part.part_number} →`}</a>
               <a href={part.quoteHref} class="btn-card-quote">{isEs ? 'Cotizar →' : 'Quote →'}</a>
-              <button
-                type="button"
-                class="btn-table-cta btn-avenue-tray"
-                data-add-tray-sku={part.spec.smat_code || part.part_number}
-                data-tray-part-code={part.part_number}
-                data-tray-title={isEs ? part.name_es : part.name_en}
-                data-tray-series={part.spec.pipe_size || '6x4'}
-                data-tray-material="A05"
-                data-tray-category="BOMBA_SLURRY"
-                data-tray-source="catalog_fichas_atomicas"
-              >
-                {isEs ? '+ Bandeja' : '+ Tray'}
-              </button>
+              <button type="button" class="btn-table-cta btn-avenue-tray" data-add-tray-sku={part.spec.smat_code || part.part_number} data-tray-part-code={part.part_number} data-tray-title={isEs ? part.name_es : part.name_en} data-tray-series={part.spec.pipe_size || '6x4'} data-tray-material="A05" data-tray-category="BOMBA_SLURRY" data-tray-source="catalog_fichas_atomicas">{isEs ? '+ Bandeja' : '+ Tray'}</button>
             </div>
           </div>
         ))}
       </div>
     </div>
   </section>
+    </div>
+  </details>
 
+  <details class="wb-progressive-drawer smat-mb-md" id="catalog-processes-drawer">
+    <summary class="wb-progressive-summary">
+      <span>{isEs ? '02–04 • Mecanismos de Flotación, Filtros Prensa y Metrología de Control de Procesos' : '02–04 • Flotation Mechanisms, Filter Presses & Process Control Metrology'}</span>
+      <span class="wb-step1-more-arrow">▾</span>
+    </summary>
+    <div class="wb-progressive-body">
   <section class="catalog-section" id={isEs ? 'flotacion' : 'flotation'}>
     <div class="section-title-wrap">
       <span class="section-num">02</span>
       <div>
-        <h2>
-          {isEs
-            ? 'Mecanismos para Celdas de Flotación y Acondicionadores'
-            : 'Flotation Cell Mechanisms & Pulp Conditioners'}
-        </h2>
-        <span class="section-subtitle">
-          {isEs
-            ? 'Cabezales motrices, flechas, tubos de aire, acondicionadores y mecanismos rotor/estator (50 a 300 ft³)'
-            : 'Drive bearing assemblies, shafts, air standpipes, agitator conditioners & rotor/stator wear kits (50 to 300 ft³)'}
-        </span>
+        <h2>{isEs ? 'Mecanismos para Celdas de Flotación y Acondicionadores' : 'Flotation Cell Mechanisms & Pulp Conditioners'}</h2>
+        <span class="section-subtitle">{isEs ? 'Cabezales motrices, flechas, tubos de aire, acondicionadores y mecanismos rotor/estator (50 a 300 ft³)' : 'Drive bearing assemblies, shafts, air standpipes, agitator conditioners & rotor/stator wear kits (50 to 300 ft³)'}</span>
       </div>
     </div>
-
-    <div class="smat-mb-md">
-      <TechnicalDiagrams diagram="flotation" lang={lang} />
-    </div>
-
+    <div class="smat-mb-md"><TechnicalDiagrams diagram="flotation" lang={lang} /></div>
     <div class="catalog-grid-2">
       <div class="catalog-card">
         <div class="card-tag">{isEs ? 'Mecanismos Completos y Acondicionadores' : 'Complete Mechanisms & Conditioners'}</div>
-        <h3>
-          {isEs
-            ? 'Mecanismos para Celdas de Flotación y Tanques Acondicionadores (50 a 300 ft³)'
-            : 'Flotation Cell & Conditioner Tank Mechanisms (50 to 300 ft³)'}
-        </h3>
-        <p class="card-desc">
-          {isEs
-            ? 'Conjuntos motrices completos (cabezal vertical, polea acanalada, tubo de aire concéntrico y flecha de acero aleado) para bancos Rougher, Cleaner y Scavenger, así como acondicionadores de pulpa.'
-            : 'Complete vertical drive units (bearing pedestal, V-belt pulley, concentric air tube & alloy shaft) for Rougher, Cleaner & Scavenger cells plus agitator conditioners.'}
-        </p>
+        <h3>{isEs ? 'Mecanismos para Celdas de Flotación y Tanques Acondicionadores (50 a 300 ft³)' : 'Flotation Cell & Conditioner Tank Mechanisms (50 to 300 ft³)'}</h3>
+        <p class="card-desc">{isEs ? 'Conjuntos motrices completos (cabezal vertical, polea acanalada, tubo de aire concéntrico y flecha de acero aleado) para bancos Rougher, Cleaner y Scavenger, así como acondicionadores de pulpa.' : 'Complete vertical drive units (bearing pedestal, V-belt pulley, concentric air tube & alloy shaft) for Rougher, Cleaner & Scavenger cells plus agitator conditioners.'}</p>
         <ul class="card-specs">
           <li><strong>{isEs ? 'Volúmenes de Celda:' : 'Cell Volumes:'}</strong> 50 ft³ (1.4 m³), 100 ft³ (2.8 m³), 200 ft³ (5.6 m³), 300 ft³ (8.5 m³) • <strong>{flotationPowerRange}</strong>.</li>
           <li><strong>{isEs ? 'Acondicionadores:' : 'Conditioners:'}</strong> {isEs ? 'Circulación axial con difusor central y propela recubierta.' : 'Axial pulp circulation mechanisms with draft tube and coated propeller.'}</li>
           <li><strong>{isEs ? 'Aireación:' : 'Aeration:'}</strong> {isEs ? 'Auto-aspiración concéntrica o soplado a baja presión.' : 'Self-aspirating concentric column or low-pressure blower feed.'}</li>
           <li><strong>{isEs ? 'Montaje:' : 'Mounting:'}</strong> {isEs ? 'Sustitución directa sobre puente estructural existente.' : 'Direct retrofit on existing structural cell bridges.'}</li>
         </ul>
-        <div class="card-footer-action no-print">
-          <a href={isEs ? '/cotizar/?circuito=flotacion&equipo=celda_flotacion&serie=100ft#rfq' : '/en/quote/?circuito=flotacion&equipo=celda_flotacion&serie=100ft#rfq'} class="btn-card-quote">
-            {isEs ? 'Cotizar Mecanismo o Acondicionador →' : 'Quote Mechanism or Conditioner →'}
-          </a>
-        </div>
+        <div class="card-footer-action no-print"><a href={isEs ? '/cotizar/?circuito=flotacion&equipo=celda_flotacion&serie=100ft#rfq' : '/en/quote/?circuito=flotacion&equipo=celda_flotacion&serie=100ft#rfq'} class="btn-card-quote">{isEs ? 'Cotizar Mecanismo o Acondicionador →' : 'Quote Mechanism or Conditioner →'}</a></div>
       </div>
 
       <div class="catalog-card">
         <div class="card-tag">{isEs ? 'Piezas de Desgaste en Hule y Poliuretano' : 'Rubber & Polyurethane Wear Parts'}</div>
         <h3>{isEs ? 'Rotores, Estatores, Propelas y Flechas' : 'Rotors, Stators, Propellers & Shafts'}</h3>
-        <p class="card-desc">
-          {isEs
-            ? 'Impulsores/rotores, difusores/estatores y propelas moldeados sobre alma metálica en hule natural de alta resiliencia o poliuretano minero.'
-            : 'Steel-reinforced elastomers molded in high-resilience natural rubber or mining polyurethane.'}
-        </p>
+        <p class="card-desc">{isEs ? 'Impulsores/rotores, difusores/estatores y propelas moldeados sobre alma metálica en hule natural de alta resiliencia o poliuretano minero.' : 'Steel-reinforced elastomers molded in high-resilience natural rubber or mining polyurethane.'}</p>
         <ul class="card-specs">
           <li><strong>{isEs ? 'Materiales:' : 'Materials:'}</strong> {isEs ? 'Hule natural vulcanizado (60-65 Shore A) y Poliuretano resistente a reactivos.' : 'Vulcanized Natural Rubber (60-65 Shore A) & Reagent-Resistant Polyurethane.'}</li>
           <li><strong>{isEs ? 'Rotores:' : 'Rotors:'}</strong> {isEs ? 'Geometría radial para máximo cizallamiento aire-pulpa.' : 'Radial vane geometry maximizing air-pulp dispersion.'}</li>
           <li><strong>{isEs ? 'Estatores:' : 'Stators:'}</strong> {isEs ? 'Álabes estabilizadores que eliminan vórtices en cama de espuma.' : 'Stabilizer baffles curbing vortex formation.'}</li>
           <li><strong>{isEs ? 'Compatibilidad:' : 'Compatibility:'}</strong> {isEs ? 'Recambio dimensional 1:1 para mecanismos industriales.' : '1:1 dimensional drop-in replacement for industrial flotation banks.'}</li>
         </ul>
-        <div class="card-footer-action no-print">
-          <a href={isEs ? '/cotizar/?circuito=flotacion&equipo=rotor_estator&serie=100ft#rfq' : '/en/quote/?circuito=flotacion&equipo=rotor_estator&serie=100ft#rfq'} class="btn-card-quote">
-            {isEs ? 'Cotizar Rotores y Estatores →' : 'Quote Rotors & Stators →'}
-          </a>
-        </div>
+        <div class="card-footer-action no-print"><a href={isEs ? '/cotizar/?circuito=flotacion&equipo=rotor_estator&serie=100ft#rfq' : '/en/quote/?circuito=flotacion&equipo=rotor_estator&serie=100ft#rfq'} class="btn-card-quote">{isEs ? 'Cotizar Rotores y Estatores →' : 'Quote Rotors & Stators →'}</a></div>
       </div>
     </div>
   </section>
@@ -784,64 +368,36 @@ const familyChips = [
     <div class="section-title-wrap">
       <span class="section-num">03</span>
       <div>
-        <h2>
-          {isEs
-            ? 'Filtros Prensa, Placas Filtrantes y Telas (Concentrados y Jales)'
-            : 'Filter Presses, Polypropylene Plates & Filter Cloths (Dewatering)'}
-        </h2>
-        <span class="section-subtitle">
-          {isEs
-            ? 'Filtros prensa de cámara empotrada (800 a 1500 mm), placas de polipropileno virgen y telas en fieltro agujado'
-            : 'Recessed chamber filter presses (800 to 1500 mm), virgin polypropylene plates & precision laser-cut filter cloths'}
-        </span>
+        <h2>{isEs ? 'Filtros Prensa, Placas Filtrantes y Telas (Concentrados y Jales)' : 'Filter Presses, Polypropylene Plates & Filter Cloths (Dewatering)'}</h2>
+        <span class="section-subtitle">{isEs ? 'Filtros prensa de cámara empotrada (800 a 1500 mm), placas de polipropileno virgen y telas en fieltro agujado' : 'Recessed chamber filter presses (800 to 1500 mm), virgin polypropylene plates & precision laser-cut filter cloths'}</span>
       </div>
     </div>
-
-    <div class="smat-mb-md">
-      <TechnicalDiagrams diagram="filter" lang={lang} />
-    </div>
-
+    <div class="smat-mb-md"><TechnicalDiagrams diagram="filter" lang={lang} /></div>
     <div class="catalog-grid-2">
       <div class="catalog-card">
         <div class="card-tag">{isEs ? 'Filtros Prensa de Placas' : 'Plate & Frame / Recessed Filter Presses'}</div>
         <h3>{isEs ? 'Filtros Prensa Electrohidráulicos (800 mm a 1500 mm)' : 'Electro-Hydraulic Filter Presses (800 mm to 1500 mm)'}</h3>
-        <p class="card-desc">
-          {isEs
-            ? 'Filtros prensa de cámara empotrada para desaguado de concentrados minerales y jales espesados (hasta 16 bar), entregando tortas con baja humedad residual.'
-            : 'Heavy-duty recessed chamber filter presses engineered for mineral concentrates and tailings dewatering up to 16 bar feed pressure.'}
-        </p>
+        <p class="card-desc">{isEs ? 'Filtros prensa de cámara empotrada para desaguado de concentrados minerales y jales espesados (hasta 16 bar), entregando tortas con baja humedad residual.' : 'Heavy-duty recessed chamber filter presses engineered for mineral concentrates and tailings dewatering up to 16 bar feed pressure.'}</p>
         <ul class="card-specs">
           <li><strong>{isEs ? 'Dimensiones:' : 'Plate Sizes:'}</strong> 800 × 800 mm, 1000 × 1000 mm, 1250 × 1250 mm, 1500 × 1500 mm.</li>
           <li><strong>{isEs ? 'Presión de Filtrado:' : 'Feed Pressure:'}</strong> {filtrationPowerRange}</li>
           <li><strong>{isEs ? 'Cierre Hidráulico:' : 'Hydraulic Closure:'}</strong> {isEs ? 'Cilindro doble efecto (hasta 350 bar) con unidad HPU.' : 'Double-acting hydraulic cylinder (up to 350 bar) with HPU.'}</li>
           <li><strong>{isEs ? 'Operación:' : 'Operation:'}</strong> {isEs ? 'Cabezal móvil, vigas laterales reforzadas y desplazador automático.' : 'Automated plate shifter, moving follower & side beams.'}</li>
         </ul>
-        <div class="card-footer-action no-print">
-          <a href={isEs ? '/cotizar/?circuito=filtracion&equipo=filtro_prensa&serie=1500#rfq' : '/en/quote/?circuito=filtracion&equipo=filtro_prensa&serie=1500#rfq'} class="btn-card-quote">
-            {isEs ? 'Cotizar Filtro Prensa →' : 'Quote Filter Press →'}
-          </a>
-        </div>
+        <div class="card-footer-action no-print"><a href={isEs ? '/cotizar/?circuito=filtracion&equipo=filtro_prensa&serie=1500#rfq' : '/en/quote/?circuito=filtracion&equipo=filtro_prensa&serie=1500#rfq'} class="btn-card-quote">{isEs ? 'Cotizar Filtro Prensa →' : 'Quote Filter Press →'}</a></div>
       </div>
 
       <div class="catalog-card">
         <div class="card-tag">{isEs ? 'Placas Filtrantes y Telas' : 'Filter Plates & Cloths'}</div>
         <h3>{isEs ? 'Placas de Polipropileno Virgen y Telas Filtrantes' : 'Virgin Polypropylene Plates & Filter Cloths'}</h3>
-        <p class="card-desc">
-          {isEs
-            ? 'Placas empotradas en polipropileno virgen copolímero y telas en fieltro agujado cortadas por láser con sellado perimetral térmico.'
-            : 'High-density virgin polypropylene chamber plates and laser-cut filter cloths with heat-sealed borders.'}
-        </p>
+        <p class="card-desc">{isEs ? 'Placas empotradas en polipropileno virgen copolímero y telas en fieltro agujado cortadas por láser con sellado perimetral térmico.' : 'High-density virgin polypropylene chamber plates and laser-cut filter cloths with heat-sealed borders.'}</p>
         <ul class="card-specs">
           <li><strong>{isEs ? 'Placas:' : 'Plates:'}</strong> {isEs ? 'Polipropileno virgen de 800 mm a 1500 mm.' : 'Virgin polypropylene plates from 800 mm to 1500 mm.'}</li>
           <li><strong>{isEs ? 'Telas:' : 'Cloths:'}</strong> {isEs ? 'Fieltro agujado y monofilamento calibrado al P80 del mineral.' : 'Needlefelt & monofilament weave matched to P80 particle size.'}</li>
           <li><strong>{isEs ? 'Resistencia Química:' : 'Chemical Duty:'}</strong> {isEs ? 'Inertes frente a reactivos, acidez y alcalinidad.' : 'Inert to flotation reagents, acidic & alkaline pulps.'}</li>
           <li><strong>{isEs ? 'Repuestos:' : 'Spares:'}</strong> {isEs ? 'Sellos hidráulicos, válvulas, bombas y manómetros con diafragma.' : 'Cylinder seals, feed valves, slurry feed pumps & diaphragm gauges.'}</li>
         </ul>
-        <div class="card-footer-action no-print">
-          <a href={isEs ? '/cotizar/?circuito=filtracion&equipo=placas_telas&serie=1500#rfq' : '/en/quote/?circuito=filtracion&equipo=placas_telas&serie=1500#rfq'} class="btn-card-quote">
-            {isEs ? 'Cotizar Placas y Telas →' : 'Quote Plates & Cloths →'}
-          </a>
-        </div>
+        <div class="card-footer-action no-print"><a href={isEs ? '/cotizar/?circuito=filtracion&equipo=placas_telas&serie=1500#rfq' : '/en/quote/?circuito=filtracion&equipo=placas_telas&serie=1500#rfq'} class="btn-card-quote">{isEs ? 'Cotizar Placas y Telas →' : 'Quote Plates & Cloths →'}</a></div>
       </div>
     </div>
   </section>
@@ -850,64 +406,32 @@ const familyChips = [
     <div class="section-title-wrap">
       <span class="section-num">04</span>
       <div>
-        <h2>
-          {isEs
-            ? 'Instrumentación de Control de Procesos: Balanzas Marcy, Filtro Prensa Lab (Pierre Gy) y Tamices ASTM E11'
-            : 'Process Control Instrumentation: Marcy Scales, Lab Batch Filter (Pierre Gy) & ASTM E11 Sieves'}
-        </h2>
-        <span class="section-subtitle">
-          {isEs
-            ? 'Metrología metalúrgica de lectura directa para densidad de pulpa, desaguado neumático (100 PSI) y corte P80'
-            : 'Direct-reading metallurgical instrumentation for pulp density, pneumatic dewatering (100 PSI) & P80 particle sizing'}
-        </span>
+        <h2>{isEs ? 'Instrumentación de Control de Procesos: Balanzas Marcy, Filtro Prensa Lab (Pierre Gy) y Tamices ASTM E11' : 'Process Control Instrumentation: Marcy Scales, Lab Batch Filter (Pierre Gy) & ASTM E11 Sieves'}</h2>
+        <span class="section-subtitle">{isEs ? 'Metrología metalúrgica de lectura directa para densidad de pulpa, desaguado neumático (100 PSI) y corte P80' : 'Direct-reading metallurgical instrumentation for pulp density, pneumatic dewatering (100 PSI) & P80 particle sizing'}</span>
       </div>
     </div>
 
     <div class="catalog-grid-2">
       <div class="catalog-card">
         <div class="card-tag">{isEs ? 'Instrumentación de Control en Planta' : 'Plant Metallurgical Control'}</div>
-        <h3>
-          {isEs
-            ? 'Balanza Colgante de Densidad de Pulpa con Recipiente de 1000 cm³'
-            : 'Direct-Reading Hanging Pulp Density Scale with 1000 cm³ Container'}
-        </h3>
-        <p class="card-desc">
-          {isEs
-            ? 'Balanza mecánica colgante de lectura directa para determinar gravedad específica de pulpa, peso en gramos y % de sólidos sin tablas ni cálculos manuales.'
-            : 'Direct-reading hanging mechanical scale to determine pulp SG, sample grams, and percent solids instantaneously.'}
-        </p>
+        <h3>{isEs ? 'Balanza Colgante de Densidad de Pulpa con Recipiente de 1000 cm³' : 'Direct-Reading Hanging Pulp Density Scale with 1000 cm³ Container'}</h3>
+        <p class="card-desc">{isEs ? 'Balanza mecánica colgante de lectura directa para determinar gravedad específica de pulpa, peso en gramos y % de sólidos sin tablas ni cálculos manuales.' : 'Direct-reading hanging mechanical scale to determine pulp SG, sample grams, and percent solids instantaneously.'}</p>
         <ul class="card-specs">
           <li><strong>{isEs ? 'Recipiente (1000 cm³):' : 'Container (1000 cm³):'}</strong> {isEs ? 'Acero inoxidable o acrílico transparente con orificios de rebose y tapón.' : 'Stainless steel or acrylic with overflow ports and bottom plug.'}</li>
           <li><strong>{isEs ? '12 Carátulas:' : '12 Dials:'}</strong> {isEs ? 'Cubren mineral seco SG 1.2 hasta SG 7.8.' : 'Dry ore SG ranges from 1.2 to 7.8.'}</li>
           <li><strong>{isEs ? 'Ajuste de Tara:' : 'Zero Tare:'}</strong> {isEs ? 'Perilla calibrada a 1000 g con agua limpia.' : 'Top knob zero-calibrated with 1000 g clean water.'}</li>
           <li><strong>{isEs ? 'Aplicación:' : 'Application:'}</strong> {isEs ? 'Descarga de molinos, ciclones, flotación y espesadores.' : 'Mill discharge, hydrocyclones, flotation feed & thickeners.'}</li>
         </ul>
-        <div class="card-footer-action no-print">
-          <a
-            href={`${isEs ? '/cotizar/' : '/en/quote/'}?circuito=control_procesos&equipo=balanza_marcy&serie=Acero%20Inoxidable%208%22#rfq`}
-            class="btn-card-quote"
-          >
-            {isEs ? 'Cotizar Balanza de Pulpa →' : 'Quote Pulp Scale →'}
-          </a>
-        </div>
+        <div class="card-footer-action no-print"><a href={`${isEs ? '/cotizar/' : '/en/quote/'}?circuito=control_procesos&equipo=balanza_marcy&serie=Acero%20Inoxidable%208%22#rfq`} class="btn-card-quote">{isEs ? 'Cotizar Balanza de Pulpa →' : 'Quote Pulp Scale →'}</a></div>
       </div>
-
       <TechnicalDiagrams diagram="marcy" lang={lang} />
     </div>
 
     <div class="atomic-parts-catalog-block" id="instrumentos-control-procesos">
       <div class="table-header-flex">
         <div>
-          <h4 class="table-title">
-            {isEs
-              ? 'Estación Metrológica Completa de Control de Procesos (3 Instrumentos)'
-              : 'Complete Process Control Metrology Station (3 Instruments)'}
-          </h4>
-          <span class="table-subtitle">
-            {isEs
-              ? 'Sincronizados con la estación de Control de Procesos y las leyes de Marcy, Pierre Gy (1979) y Rosin-Rammler ASTM E11'
-              : 'Synchronized with Process Control sizing and Marcy, Pierre Gy (1979) & Rosin-Rammler ASTM E11 laws'}
-          </span>
+          <h4 class="table-title">{isEs ? 'Estación Metrológica Completa de Control de Procesos (3 Instrumentos)' : 'Complete Process Control Metrology Station (3 Instruments)'}</h4>
+          <span class="table-subtitle">{isEs ? 'Sincronizados con la estación de Control de Procesos y las leyes de Marcy, Pierre Gy (1979) y Rosin-Rammler ASTM E11' : 'Synchronized with Process Control sizing and Marcy, Pierre Gy (1979) & Rosin-Rammler ASTM E11 laws'}</span>
         </div>
         <span class="matrix-badge">{isEs ? '3 INSTRUMENTOS LAB' : '3 LAB INSTRUMENTS'}</span>
       </div>
@@ -915,20 +439,14 @@ const familyChips = [
         {controlProcessItems.map((inst) => (
           <div class="atomic-part-card" data-role-id={inst.role_id}>
             <div class="atomic-part-top">
-              <span class="series-pill highlight">{inst.role_id.toUpperCase()}</span>
+              <span class="series-pill highlight">{formatCatalogPartCodeHuman(inst.role_id, lang)}</span>
               <span class="atomic-frame-badge">{inst.series}</span>
             </div>
             <strong class="atomic-part-title">{isEs ? inst.title_es : inst.title_en}</strong>
             <p class="atomic-part-desc">{isEs ? inst.spec_summary_es : inst.spec_summary_en}</p>
-            <p class="atomic-part-desc rule-note">
-              <strong>{isEs ? 'Regla Metrológica:' : 'Metrological Rule:'}</strong>{' '}
-              {isEs ? inst.decision_criteria?.metallurgy_rule_es : inst.decision_criteria?.metallurgy_rule_en}
-            </p>
+            <p class="atomic-part-desc rule-note"><strong>{isEs ? 'Regla Metrológica:' : 'Metrological Rule:'}</strong> {isEs ? inst.decision_criteria?.metallurgy_rule_es : inst.decision_criteria?.metallurgy_rule_en}</p>
             <div class="atomic-part-actions no-print">
-              <a
-                href={buildWizardUrl({ lang, circuit: 'control_procesos', role: inst.role_id, series: inst.series })}
-                class="btn-card-quote"
-              >
+              <a href={buildWizardUrl({ lang, circuit: 'control_procesos', role: inst.role_id, series: inst.series })} class="btn-card-quote">
                 {isEs ? `Cotizar ${(inst.title_es || '').split('(')[0].trim()} →` : `Quote ${(inst.title_en || '').split('(')[0].trim()} →`}
               </a>
             </div>
@@ -937,67 +455,37 @@ const familyChips = [
       </div>
     </div>
   </section>
+    </div>
+  </details>
 
   <section class="catalog-section" id={isEs ? 'logistica' : 'logistics'}>
     <div class="section-title-wrap">
       <span class="section-num">05</span>
       <div>
         <h2>{isEs ? 'Protocolo de Calidad, Almacén Central y Despacho' : 'Quality Protocol, Central Warehouse & Mine Dispatch'}</h2>
-        <span class="section-subtitle">
-          {isEs
-            ? 'Cotejo dimensional en Durango, certificación metalúrgica PMI y modalidades de entrega en mina'
-            : 'Dimensional verification in Durango, metallurgical certification & nationwide mine logistics'}
-        </span>
+        <span class="section-subtitle">{isEs ? 'Cotejo dimensional en Durango, certificación metalúrgica PMI y modalidades de entrega en mina' : 'Dimensional verification in Durango, metallurgical certification & nationwide mine logistics'}</span>
       </div>
     </div>
-
     <div class="trust-charter-grid">
       <div class="trust-box">
-        <span class="t-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
-        </span>
+        <span class="t-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></span>
         <h4>{isEs ? 'Cotejo Dimensional de Tripleta Geométrica (ISO 2768-m)' : 'Geometric Triplet Verification (ISO 2768-m)'}</h4>
-        <p>
-          {isEs
-            ? 'Todo impulsor y componente de desgaste pasa por verificación física de Tripleta Geométrica (A, B, C) y dureza Brinell/Rockwell en nuestro Almacén Central en Durango.'
-            : 'Every wear component undergoes physical Geometric Triplet (A, B, C) inspection and Brinell/Rockwell testing in Durango before dispatch.'}
-        </p>
+        <p>{isEs ? 'Todo impulsor y componente de desgaste pasa por verificación física de Tripleta Geométrica (A, B, C) y dureza Brinell/Rockwell en nuestro Almacén Central en Durango.' : 'Every wear component undergoes physical Geometric Triplet (A, B, C) inspection and Brinell/Rockwell testing in Durango before dispatch.'}</p>
       </div>
-
       <div class="trust-box">
-        <span class="t-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>
-        </span>
+        <span class="t-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg></span>
         <h4>{isEs ? 'Alto Cromo 27% Cr (A05), Hule y Poliuretano' : '27% Cr High Chrome (A05), Rubber & Polyurethane'}</h4>
-        <p>
-          {isEs
-            ? 'Coladas de fundición al 27% Cr (≥650 HB) y elastómeros seleccionados según abrasión, tamaño de partícula y pH.'
-            : '27% Cr white iron heats (≥650 HB) and abrasion elastomers engineered for slurry pH and particle size.'}
-        </p>
+        <p>{isEs ? 'Coladas de fundición al 27% Cr (≥650 HB) y elastómeros seleccionados según abrasión, tamaño de partícula y pH.' : '27% Cr white iron heats (≥650 HB) and abrasion elastomers engineered for slurry pH and particle size.'}</p>
       </div>
-
       <div class="trust-box">
-        <span class="t-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="16" height="13" x="1" y="3" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-        </span>
+        <span class="t-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="16" height="13" x="1" y="3" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
         <h4>{isEs ? '3 Modalidades de Despacho Nacional' : '3 Nationwide Dispatch Modes'}</h4>
-        <p>
-          {isEs
-            ? '1. Retiro directo en Almacén Central Durango. 2. Fletera consolidada nacional (ocurre). 3. Flete dedicado directo a mina o multimodal marítimo.'
-            : '1. Durango Central Warehouse pickup. 2. Consolidated freight terminal. 3. Dedicated direct-to-mine flatbeds.'}
-        </p>
+        <p>{isEs ? '1. Retiro directo en Almacén Central Durango. 2. Fletera consolidada nacional (ocurre). 3. Flete dedicado directo a mina o multimodal marítimo.' : '1. Durango Central Warehouse pickup. 2. Consolidated freight terminal. 3. Dedicated direct-to-mine flatbeds.'}</p>
       </div>
-
       <div class="trust-box">
-        <span class="t-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        </span>
+        <span class="t-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
         <h4>{isEs ? 'Atención Técnica Especializada' : 'Dedicated Plant Engineering Support'}</h4>
-        <p>
-          {isEs
-            ? 'Lunes a Viernes de 08:00 a 18:00 CST. Atención directa para cotizaciones por lote y programación de embarques.'
-            : 'Mon–Fri 08:00–18:00 CST. Direct plant support for batch requisitions and mine dispatch.'}
-        </p>
+        <p>{isEs ? 'Lunes a Viernes de 08:00 a 18:00 CST. Atención directa para cotizaciones por lote y programación de embarques.' : 'Mon–Fri 08:00–18:00 CST. Direct plant support for batch requisitions and mine dispatch.'}</p>
       </div>
     </div>
   </section>
@@ -1005,11 +493,7 @@ const familyChips = [
   <footer class="catalog-official-footer">
     <div class="footer-contacts">
       <strong>{isEs ? 'SMAT MINERALS — Suministro Minero e Ingeniería Hidráulica' : 'SMAT MINERALS — Mining Supply & Hydraulic Engineering'}</strong>
-      <p>
-        {isEs
-          ? 'Domicilio Fiscal: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 | Tel: (618) 810-4408 | ventas@smatminerals.com'
-          : 'Fiscal HQ: Mariano Salas #114, Durango, Mexico CP 34166 | Phone: +52 (618) 810-4408 | ventas@smatminerals.com'}
-      </p>
+      <p>{isEs ? 'Domicilio Fiscal: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 | Tel: (618) 810-4408 | ventas@smatminerals.com' : 'Fiscal HQ: Mariano Salas #114, Durango, Mexico CP 34166 | Phone: +52 (618) 810-4408 | ventas@smatminerals.com'}</p>
     </div>
     <div class="footer-cta no-print">
       <a href={quoteBaseHref} class="btn-footer-rfq">
@@ -1020,280 +504,11 @@ const familyChips = [
   </footer>
 </div>
 
-<style>
-  .catalog-page-container {
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: clamp(0.45rem, 1.3vw, 1.15rem) 1rem 3.5rem;
-    font-family: var(--smat-font-ui);
-    color: var(--smat-text-primary);
-  }
-  .catalog-action-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #ffffff;
-    border: 1px solid var(--smat-border-medium);
-    border-radius: var(--smat-radius-md);
-    padding: 0.45rem 0.85rem;
-    margin-bottom: clamp(0.4rem, 1vw, 0.75rem);
-    box-shadow: var(--smat-shadow-sm);
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-  .action-bar-left,
-  .action-bar-right {
-    display: flex;
-    align-items: center;
-    gap: 0.65rem;
-    flex-wrap: wrap;
-  }
-  .btn-back {
-    color: var(--smat-text-secondary);
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
-  .btn-back:hover { color: var(--smat-solar-accent, #7c2d12); }
-  .catalog-edition-pill {
-    font-size: 0.7rem;
-    font-weight: 800;
-    font-family: var(--smat-font-mono);
-    background: #0f172a;
-    color: #f8fafc;
-    padding: 0.2rem 0.55rem;
-    border-radius: var(--smat-radius-sm);
-  }
-  .btn-action {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.5rem 0.95rem;
-    border-radius: var(--smat-radius-sm);
-    font-size: 0.82rem;
-    font-weight: 700;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s ease;
-  }
-  .btn-print {
-    background: #f1f5f9;
-    border: 1px solid var(--smat-border-medium);
-    color: var(--smat-text-primary);
-  }
-  .btn-rfq {
-    background: var(--smat-solar-accent, #7c2d12);
-    border: 1px solid var(--smat-solar-accent, #7c2d12);
-    color: #ffffff;
-  }
-  .passport-status-line {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #064e3b;
-    min-height: 1.2rem;
-    margin: 0 0 0.5rem;
-  }
-  .catalog-official-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    border-bottom: 2px solid #0f172a;
-    padding-bottom: clamp(0.45rem, 1vw, 0.85rem);
-    margin-bottom: clamp(0.5rem, 1.1vw, 0.9rem);
-    flex-wrap: wrap;
-    gap: 0.45rem 1rem;
-  }
-  .brand-title {
-    font-family: var(--smat-font-editorial);
-    font-size: clamp(1.3rem, 2.5vw, 1.9rem);
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    color: #090d16;
-    margin: 0;
-  }
-  .brand-tagline {
-    display: block;
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: var(--smat-solar-accent, #7c2d12);
-    letter-spacing: 0.08em;
-    margin-top: 0.15rem;
-  }
-  .brand-location {
-    display: block;
-    font-size: 0.75rem;
-    color: var(--smat-text-secondary);
-    margin-top: 0.35rem;
-  }
-  .header-meta-block { text-align: right; }
-  .doc-badge {
-    display: inline-block;
-    font-size: 0.68rem;
-    font-weight: 800;
-    background: #0f172a;
-    color: #ffffff;
-    padding: 0.2rem 0.5rem;
-    border-radius: var(--smat-radius-sm);
-  }
-  .doc-code {
-    display: block;
-    font-family: var(--smat-font-mono);
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--smat-solar-accent, #7c2d12);
-    margin-top: 0.25rem;
-  }
-  .doc-contact {
-    display: block;
-    font-size: 0.75rem;
-    color: var(--smat-text-muted);
-  }
-  .verifier-title {
-    margin: 0.15rem 0 0.2rem;
-    font-size: 1.15rem;
-    color: #0f172a;
-  }
-  .verifier-sub {
-    margin: 0;
-    font-size: 0.86rem;
-    color: #334155;
-  }
-  .compact-row { margin-top: 0; }
-  .full-width-input { width: 100%; }
-  .faceted-filters-block { margin-top: 0.65rem; }
-  .catalog-intro-banner {
-    display: flex;
-    gap: 1rem;
-    background: #f8fafc;
-    border: 1px solid var(--smat-border-light);
-    border-left: 4px solid var(--smat-solar-accent, #7c2d12);
-    border-radius: var(--smat-radius-sm);
-    padding: 1rem 1.25rem;
-    margin-bottom: 2rem;
-  }
-  .intro-text strong { display: block; color: var(--smat-text-primary); font-size: 0.95rem; margin-bottom: 0.25rem; }
-  .intro-text p { margin: 0; color: var(--smat-text-secondary); font-size: 0.85rem; line-height: 1.45; }
-  .catalog-section { margin-bottom: 3rem; page-break-inside: avoid; }
-  .section-title-wrap {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-    margin-bottom: 1.25rem;
-    border-bottom: 1px solid var(--smat-border-light);
-    padding-bottom: 0.5rem;
-  }
-  .section-num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: #0f172a;
-    color: #ffffff;
-    font-family: var(--smat-font-mono);
-    font-size: 0.85rem;
-    font-weight: 800;
-    border-radius: var(--smat-radius-sm);
-  }
-  .section-title-wrap h2 {
-    font-family: var(--smat-font-editorial);
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: var(--smat-text-primary);
-    margin: 0;
-  }
-  .section-subtitle { display: block; font-size: 0.78rem; color: var(--smat-text-secondary); }
-  .catalog-grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
-    margin-bottom: 1.5rem;
-  }
-  .catalog-card {
-    background: #ffffff;
-    border: 1px solid var(--smat-border-light);
-    border-radius: var(--smat-radius-md);
-    padding: 1.25rem;
-    box-shadow: var(--smat-shadow-sm);
-  }
-  .card-tag {
-    display: inline-block;
-    font-size: 0.68rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--smat-solar-accent, #7c2d12);
-    background: #fff7ed;
-    border: 1px solid #fed7aa;
-    padding: 0.15rem 0.45rem;
-    border-radius: var(--smat-radius-sm);
-    margin-bottom: 0.5rem;
-  }
-  .catalog-card h3 { font-family: var(--smat-font-editorial); font-size: 1.1rem; font-weight: 700; color: var(--smat-text-primary); margin: 0 0 0.4rem; }
-  .card-desc { font-size: 0.82rem; color: var(--smat-text-secondary); line-height: 1.45; margin-bottom: 0.75rem; }
-  .card-specs { list-style: none; padding: 0.6rem 0 0; margin: 0 0 1rem; font-size: 0.8rem; color: var(--smat-text-primary); border-top: 1px solid var(--smat-border-light); }
-  .card-specs li { padding: 0.25rem 0; border-bottom: 1px dashed #f1f5f9; }
-  .btn-card-quote { display: inline-block; font-size: 0.78rem; font-weight: 700; color: var(--smat-solar-accent, #7c2d12); text-decoration: none; }
-  .btn-card-quote:hover { text-decoration: underline; }
-  .catalog-table-wrap { background: #ffffff; border: 1px solid var(--smat-border-light); border-radius: var(--smat-radius-md); padding: 1rem 1.25rem; overflow-x: auto; margin-bottom: 1.5rem; }
-  .table-header-flex { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.85rem; flex-wrap: wrap; }
-  .table-title { font-size: 0.95rem; font-weight: 800; color: var(--smat-text-primary); margin: 0 0 0.2rem; }
-  .table-subtitle { display: block; font-size: 0.75rem; color: var(--smat-text-secondary); }
-  .matrix-badge { font-size: 0.65rem; font-weight: 800; font-family: var(--smat-font-mono); background: #0f172a; color: #f8fafc; padding: 0.2rem 0.5rem; border-radius: var(--smat-radius-sm); }
-  .series-pill { display: inline-block; font-family: var(--smat-font-mono); font-weight: 800; font-size: 0.78rem; background: #f1f5f9; color: #0f172a; border: 1px solid var(--smat-border-medium); padding: 0.15rem 0.45rem; border-radius: var(--smat-radius-sm); }
-  .series-pill.highlight { background: #fff7ed; color: var(--smat-solar-accent, #7c2d12); border-color: #fed7aa; }
-  .btn-table-cta { display: inline-flex; align-items: center; min-height: 48px; padding: 0.35rem 0.65rem; font-size: 0.74rem; font-weight: 700; color: var(--smat-solar-accent, #7c2d12); background: #fff7ed; border: 1px solid #fed7aa; border-radius: var(--smat-radius-sm); text-decoration: none; }
-  .mounting-diagram-box { background: #ffffff; border: 1px solid var(--smat-border-light); border-radius: var(--smat-radius-sm); padding: 1rem; margin-bottom: 1.25rem; }
-  .diagram-tag { font-size: 0.72rem; font-family: var(--smat-font-mono); font-weight: 800; color: var(--smat-solar-accent, #7c2d12); }
-  .diagram-meta { margin-bottom: 0.75rem; display: flex; flex-direction: column; gap: 0.2rem; }
-  .diagram-meta small { font-size: 0.76rem; color: var(--smat-text-secondary); }
-  .diagram-flex { display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.25rem; align-items: center; }
-  .pump-svg-scheme { background: #f8fafc; border: 1px solid var(--smat-border-light); border-radius: var(--smat-radius-sm); padding: 0.5rem; }
-  .diagram-legend { display: flex; flex-direction: column; gap: 0.4rem; }
-  .legend-item { font-size: 0.75rem; color: var(--smat-text-secondary); line-height: 1.35; }
-  .legend-item strong { color: var(--smat-text-primary); font-family: var(--smat-font-mono); }
-  .catalog-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
-  .catalog-table th { background: #f8fafc; color: var(--smat-text-secondary); font-weight: 700; text-align: left; padding: 0.55rem 0.65rem; border-bottom: 2px solid var(--smat-border-medium); }
-  .catalog-table td { padding: 0.55rem 0.65rem; border-bottom: 1px solid var(--smat-border-light); color: var(--smat-text-primary); }
-  .atomic-parts-catalog-block { margin-top: 1.5rem; background: #ffffff; border: 1px solid var(--smat-border-light); border-radius: var(--smat-radius-md); padding: 1.25rem; }
-  .atomic-parts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 0.85rem; }
-  .atomic-part-card { background: #f8fafc; border: 1px solid var(--smat-border-light); border-radius: var(--smat-radius-sm); padding: 0.95rem 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
-  .atomic-part-top { display: flex; justify-content: space-between; align-items: center; }
-  .atomic-frame-badge { font-family: var(--smat-font-mono); font-size: 0.72rem; font-weight: 700; color: var(--smat-text-secondary); }
-  .atomic-part-title { font-size: 0.88rem; color: var(--smat-text-primary); line-height: 1.35; }
-  .atomic-part-desc { font-size: 0.76rem; color: var(--smat-text-secondary); margin: 0 0 0.35rem 0; }
-  .strong-meta { font-size: 0.74rem; color: #0f172a; font-weight: 600; }
-  .rule-note { font-size: 0.74rem; color: #0c4a6e; }
-  .atomic-part-actions { display: flex; justify-content: space-between; align-items: center; gap: 0.4rem; flex-wrap: wrap; margin-top: auto; padding-top: 0.45rem; border-top: 1px dashed #e2e8f0; }
-  .trust-charter-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-  .trust-box { background: #ffffff; border: 1px solid var(--smat-border-light); border-radius: var(--smat-radius-sm); padding: 1rem; }
-  .trust-box h4 { font-size: 0.9rem; font-weight: 700; margin: 0.35rem 0 0.25rem; color: var(--smat-text-primary); }
-  .trust-box p { font-size: 0.78rem; color: var(--smat-text-secondary); line-height: 1.4; margin: 0; }
-  .catalog-official-footer { border-top: 2px solid #0f172a; padding-top: 1.25rem; margin-top: 3rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-  .footer-contacts strong { display: block; font-size: 0.85rem; color: var(--smat-text-primary); }
-  .footer-contacts p { margin: 0.2rem 0 0; font-size: 0.75rem; color: var(--smat-text-secondary); }
-  .btn-footer-rfq { display: inline-flex; align-items: center; padding: 0.6rem 1.1rem; background: var(--smat-solar-accent, #7c2d12); color: #ffffff; text-decoration: none; font-size: 0.85rem; font-weight: 700; border-radius: var(--smat-radius-sm); }
-  @media (max-width: 768px) {
-    .catalog-grid-2, .diagram-flex { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 640px) {
-    .trust-charter-grid { grid-template-columns: 1fr; }
-    .header-meta-block { text-align: left; }
-    .catalog-edition-pill, .brand-location, .header-meta-block, .catalog-intro-banner { display: none; }
-  }
-  .pump-svg-scheme .is-dim-active { fill: #1d4ed8; }
-  @media print {
-    .no-print { display: none !important; }
-    body { background: #ffffff !important; color: #000000 !important; font-size: 10pt; }
-    .catalog-page-container { max-width: 100% !important; padding: 0 !important; }
-  }
-</style>
-
 <script is:inline>
   (function() {
     var table = document.getElementById('parametric-pumps-table');
     var svg = document.querySelector('.pump-svg-scheme');
     if (!table || !svg) return;
-
     var rows = table.querySelectorAll('tbody tr');
     var dimA = svg.querySelector('.svg-dim-a');
     var dimB = svg.querySelector('.svg-dim-b');
@@ -1304,7 +519,6 @@ const familyChips = [
     var defaultB = isEn ? 'Ø B (Discharge)' : 'Ø B (Descarga)';
     var defaultC = isEn ? 'Dim C: Hold-Down Bolt Centers' : 'Cota C: Distancia entre Barrenos';
     var defaultD = isEn ? 'Dim D' : 'Cota D';
-
     var seriesDims = {
       '1.5x1"': { a: 'Ø 40 mm (1.5")', b: 'Ø 25 mm (1")', c: 'C: 260 mm', d: 'D: 185 mm' },
       '2x1.5"': { a: 'Ø 50 mm (2")', b: 'Ø 40 mm (1.5")', c: 'C: 310 mm', d: 'D: 210 mm' },
@@ -1316,7 +530,6 @@ const familyChips = [
       '12x10"': { a: 'Ø 300 mm (12")', b: 'Ø 250 mm (10")', c: 'C: 1120 mm', d: 'D: 680 mm' },
       '14x12"': { a: 'Ø 350 mm (14")', b: 'Ø 300 mm (12")', c: 'C: 1280 mm', d: 'D: 790 mm' }
     };
-
     rows.forEach(function(row) {
       var seriesPill = row.querySelector('.series-pill');
       var seriesKey = seriesPill ? seriesPill.textContent.trim() : '';
@@ -1353,8 +566,53 @@ const familyChips = [
     bindHomeCatalogDrawerAndDropIn(document, lang);
     bindDropInEquivalenceVerifier(document, lang);
     bindVendorPassportDownloadButtons(document, lang);
+
+    const openCatalogDrawers = () => {
+      document
+        .querySelectorAll('#catalog-bombeo-drawer, #catalog-processes-drawer, .avenue-group-drawer')
+        .forEach((d) => {
+          (d as HTMLDetailsElement).open = true;
+        });
+    };
+
+    const searchInput = document.getElementById('catalog-facet-search') as HTMLInputElement | null;
+    if (searchInput && searchInput.dataset.drawerAutoBound !== '1') {
+      searchInput.dataset.drawerAutoBound = '1';
+      searchInput.addEventListener('input', () => {
+        if (searchInput.value.trim().length > 0) openCatalogDrawers();
+      });
+    }
+    document.querySelectorAll('[data-family-chip], [data-facet-avenue-btn]').forEach((btn) => {
+      const el = btn as HTMLElement;
+      if (el.dataset.drawerAutoBound === '1') return;
+      el.dataset.drawerAutoBound = '1';
+      el.addEventListener('click', openCatalogDrawers);
+    });
   }
 
   initCatalogIslandInstruments();
   document.addEventListener('astro:page-load', initCatalogIslandInstruments);
 </script>
+
+<style>
+  .wb-progressive-drawer {
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background: #ffffff;
+    padding: 0.5rem 0.9rem;
+  }
+  .wb-progressive-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 48px;
+    font-weight: 700;
+    color: #0f172a;
+    cursor: pointer;
+    list-style: none;
+  }
+  .wb-progressive-body {
+    margin-top: 0.75rem;
+  }
+</style>

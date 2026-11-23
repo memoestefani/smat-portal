@@ -12,6 +12,12 @@
  * 3. Trazabilidad cerrada Pre-RS/Post-RS hacia docs/CONCEPT-REGISTRY.md (18/18 conceptos cubiertos).
  */
 
+import {
+  formatCycloneRegimeHuman,
+  formatMaterialKeyHuman,
+  formatNumericRange
+} from './i18nDomainLabels.js';
+
 export const TWO_SORT_PARTITION_VERSION = '5.1.0';
 
 /**
@@ -210,7 +216,7 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
       { field: 'maxBendingStressMpa', unit: 'MPa', decimals: 2, isoPure: true, domBinding: '#wb-filt-res-stress', schemaKey: 'filtration.maxBendingStressMpa', aliasBindings: ['[data-schema-output="filtration.maxBendingStressMpa"]'] },
       { field: 'flexuralSafetyFactor', unit: 'FS', decimals: 2, isoPure: true, domBinding: '#wb-filt-res-fs', schemaKey: 'filtration.flexuralSafetyFactor', aliasBindings: ['[data-schema-output="filtration.flexuralSafetyFactor"]'] },
       { field: 'cyclesPerDay', unit: 'c/d', decimals: 0, isoPure: true, domBinding: '#wb-filt-res-cycles', schemaKey: 'filtration.cyclesPerDay', aliasBindings: ['[data-schema-output="filtration.cyclesPerDay"]'] },
-      { field: 'dryTonnesPerDay', unit: 't/d', decimals: 0, isoPure: true, domBinding: '#wb-filt-res-tpd', schemaKey: 'filtration.dryTonnesPerDay', aliasBindings: ['[data-schema-output="filtration.dryTonnesPerDay"]', '#filt-res-summary'] },
+      { field: 'dryTonnesPerDay', unit: 't/d', decimals: 0, isoPure: true, domBinding: '#wb-filt-res-tpd', schemaKey: 'filtration.dryTonnesPerDay', aliasBindings: ['[data-schema-output="filtration.dryTonnesPerDay"]'] },
       { field: 'nom141Compliant', unit: 'bool', isoPure: false, domBinding: '#wb-filt-res-nom141', schemaKey: 'filtration.nom141Compliant', aliasBindings: ['[data-schema-output="filtration.nom141Compliant"]'] }
     ],
     allowUnboundReasons: []
@@ -245,7 +251,7 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
       { field: 'dischargeRegime', unit: 'state', isoPure: false, domBinding: '#wb-cyc-res-roping', schemaKey: 'cycloneScreen.dischargeRegime', aliasBindings: ['[data-schema-output="cycloneScreen.dischargeRegime"]'] },
       { field: 'partitionToOversizePct', unit: '%', decimals: 1, isoPure: true, domBinding: '#wb-scr-res-oversize', schemaKey: 'cycloneScreen.partitionToOversizePct', aliasBindings: ['[data-schema-output="cycloneScreen.partitionToOversizePct"]'] },
       { field: 'elasticDilationPct', unit: '%', decimals: 2, isoPure: true, domBinding: '#wb-scr-res-dilation', schemaKey: 'cycloneScreen.elasticDilationPct', aliasBindings: ['[data-schema-output="cycloneScreen.elasticDilationPct"]'] },
-      { field: 'sharpnessAlpha', unit: '-', decimals: 2, isoPure: true, domBinding: '#wb-scr-res-weibull', schemaKey: 'cycloneScreen.sharpnessAlpha', aliasBindings: ['[data-schema-output="cycloneScreen.sharpnessAlpha"]', '#csr-weibull-out'] }
+      { field: 'sharpnessAlpha', unit: '-', decimals: 2, isoPure: true, domBinding: '#wb-scr-res-weibull', schemaKey: 'cycloneScreen.sharpnessAlpha', aliasBindings: ['[data-schema-output="cycloneScreen.sharpnessAlpha"]'] }
     ],
     allowUnboundReasons: []
   },
@@ -399,7 +405,7 @@ export function getEngineSchema(domainId) {
  * @param {string} field
  * @returns {SchemaFieldBinding|SchemaOutputBinding|null}
  */
-export function resolveSchemaFieldSpec(domainId, kind, field) {
+function resolveSchemaFieldSpec(domainId, kind, field) {
   const schema = getEngineSchema(domainId);
   if (!schema || !Array.isArray(schema[kind])) return null;
   return schema[kind].find((entry) => entry.field === field) || null;
@@ -418,6 +424,13 @@ export function formatSchemaOutputValue(domainId, field, value, locale = 'es') {
   if (value === undefined || value === null || value === '') return '—';
   const spec = resolveSchemaFieldSpec(domainId, 'outputsSchema', field);
   const unit = spec?.unit || '';
+  if (Array.isArray(value)) {
+    if (value.length === 2 && value.every((item) => typeof item === 'number' && Number.isFinite(item))) {
+      const cleanUnit = unit && unit !== '-' && unit !== 'frac' ? unit : '';
+      return formatNumericRange(value, cleanUnit, locale);
+    }
+    return value.map((item) => String(item)).join(', ');
+  }
   if (typeof value === 'boolean') {
     if (locale === 'en') return value ? 'Yes' : 'No';
     return value ? 'Sí' : 'No';
@@ -432,7 +445,20 @@ export function formatSchemaOutputValue(domainId, field, value, locale = 'es') {
     if (unit === 'pts') return `±${numStr} pts`;
     return `${numStr} ${unit}`;
   }
-  return String(value);
+  const str = String(value).trim();
+  if (
+    field === 'recommendedMaterial' ||
+    /^(alto_cromo_cr27|alto_cromo_a49|hule_natural|hule_natural_r55|poliuretano|poliuretano_u01|ceramica_sic|hybrid_a05_r55|hibrido_a05_r55)$/i.test(str)
+  ) {
+    return formatMaterialKeyHuman(str, locale);
+  }
+  if (
+    field === 'dischargeRegime' ||
+    /^(SPRAY_OPTIMAL|SEMI_UMBRELLA_OPTIMAL|ROPING_CORDON|SEMI_UMBRELLA|UMBRELLA_DILUTE|UMBRELLA_SPRAY)$/i.test(str)
+  ) {
+    return formatCycloneRegimeHuman(str, locale);
+  }
+  return str;
 }
 
 /**

@@ -120,7 +120,7 @@ const hybridKit = (WET_END_MATERIAL_KITS as any).hybrid_a05_r55;
                     {sku.mass_kg} kg • {isEs ? 'Reorden' : 'Reorder'}: {sku.reorder_window_days}d • {isEs ? 'Par Casado' : 'Coupled'}: <code>{sku.coupled_pair_sku}</code>
                   </p>
                   <p class="avenue-sku-meta">
-                    SAT CFDI 4.0: <code>{sat.clave_prod_serv || '40151510'}</code> / <code>{sat.clave_unidad || 'H87'}</code> · {sat.uso_cfdi || 'G03'}
+                    {isEs ? 'Clave SAT:' : 'SAT Code:'} <code>{sat.clave_prod_serv || '40151510'}</code> · {isEs ? 'Pieza' : 'Unit'} (<code>{sat.clave_unidad || 'H87'}</code>) · {sat.uso_cfdi || 'G03'}
                   </p>
                   <div class="avenue-sku-actions no-print">
                     <a href={prodHref} class="btn-avenue-link">
@@ -245,13 +245,19 @@ const hybridKit = (WET_END_MATERIAL_KITS as any).hybrid_a05_r55;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
-    padding: 1rem;
+    padding: 0.75rem 1rem;
   }
-  .avenue-group-header {
+  .avenue-group-header,
+  .avenue-group-summary {
     display: flex;
     align-items: center;
     gap: 0.65rem;
     flex-wrap: wrap;
+    min-height: 48px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .avenue-group-drawer[open] .avenue-group-summary {
     margin-bottom: 0.75rem;
   }
   .avenue-code-pill {

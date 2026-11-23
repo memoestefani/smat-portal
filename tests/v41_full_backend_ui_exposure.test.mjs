@@ -352,3 +352,18 @@ test('D5-V41 through D9-V41: wizardLivePhysicsProjector.js and physics controlle
   assert.ok(mockRoot.querySelector('#wb-altitude-live-strip').textContent.includes('75.6 kPa'));
   assert.ok(cacheState.ringCount >= 12);
 });
+
+test('SLICE-V53-06: Header #header-qtray-trigger, QuickOrderTray <dialog> modal y etiquetas humanas sin tokens crudos', () => {
+  const headerSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/Header.astro'), 'utf8');
+  const traySrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/QuickOrderTray.astro'), 'utf8');
+  const summarySrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/RequisitionTraySummary.astro'), 'utf8');
+
+  assert.equal(headerSrc.includes('id="header-qtray-trigger"'), true);
+  assert.equal(headerSrc.includes('id="header-qtray-count"'), true);
+  assert.equal(traySrc.includes('<dialog'), true);
+  assert.equal(traySrc.includes('smat-qtray-toggle-btn'), false);
+  assert.equal(traySrc.includes('formatCheckoutLaneHuman'), true);
+  assert.equal(traySrc.includes('cμ=${desc.priorityRankScore}'), false);
+  assert.equal(summarySrc.includes('IMMEDIATE_PICK'), false);
+  assert.equal(summarySrc.includes('Índice cμ ='), false);
+});

@@ -88,32 +88,38 @@ const stratumSimId = variant === 'seal'
           <SealDriveBearingCore locale={locale} initialTab={variant} showVerticalActions={true} />
 
           {variant === 'seal' && (
-            <div class="grid-2 smat-sdb-branch-grid">
-              <div class="smat-sdb-branch-card">
-                <span class="font-mono-tech smat-sdb-branch-ok">{isEs ? '[ESTACIÓN 02A — SELLADO SECO EXPELLER]' : '[STATION 02A — DRY EXPELLER SEAL]'}</span>
-                <strong class="smat-sdb-card-title">{isEs ? 'Expulsor Centrífugo Seco (Cero Agua de Sello)' : 'Dry Centrifugal Expeller (Zero Gland Water)'}</strong>
-                <p class="smat-sdb-branch-copy">
-                  {isEs
-                    ? 'Recomendado cuando P_s ≤ 18% de carga total H y velocidad fija o VFD ≥ 70%. Evita diluir el %Cw hacia hidrociclones y flotación.'
-                    : 'Recommended when suction head P_s ≤ 18% of total head H and speed ≥ 70%. Prevents %Cw dilution feeding hydrocyclones and flotation.'}
-                </p>
-                <a href={`${quoteBase}?circuito=bombeo&equipo=kit_sellado&seal_branch=expeller_dry&estacion=S2#rfq`} data-card-fixed-params="seal_branch" class="btn btn-primary smat-sdb-branch-cta">
-                  {isEs ? 'Configurar Estación 02A (Seco) →' : 'Configure Station 02A (Dry) →'}
-                </a>
+            <details class="wb-progressive-drawer smat-mt-sm" id="seal-branch-comparator-drawer">
+              <summary class="wb-progressive-summary">
+                <span>{isEs ? 'Comparativa Directa Estación 02A (Seco Expeller) vs 02B (Prensaestopa Húmedo)' : 'Side-by-Side Comparison: Station 02A (Dry Expeller) vs 02B (Wet Gland)'}</span>
+                <span class="wb-step1-more-arrow">▾</span>
+              </summary>
+              <div class="grid-2 smat-sdb-branch-grid">
+                <div class="smat-sdb-branch-card">
+                  <span class="font-mono-tech smat-sdb-branch-ok">{isEs ? 'ESTACIÓN 02A — SELLADO SECO EXPELLER' : 'STATION 02A — DRY EXPELLER SEAL'}</span>
+                  <strong class="smat-sdb-card-title">{isEs ? 'Expulsor Centrífugo Seco (Cero Agua de Sello)' : 'Dry Centrifugal Expeller (Zero Gland Water)'}</strong>
+                  <p class="smat-sdb-branch-copy">
+                    {isEs
+                      ? 'Recomendado cuando P_s ≤ 18% de carga total H y velocidad fija o VFD ≥ 70%. Evita diluir el %Cw hacia hidrociclones y flotación.'
+                      : 'Recommended when suction head P_s ≤ 18% of total head H and speed ≥ 70%. Prevents %Cw dilution feeding hydrocyclones and flotation.'}
+                  </p>
+                  <a href={`${quoteBase}?circuito=bombeo&equipo=kit_sellado&seal_branch=expeller_dry&estacion=S2#rfq`} data-card-fixed-params="seal_branch" class="btn btn-primary smat-sdb-branch-cta">
+                    {isEs ? 'Configurar Estación 02A (Seco) →' : 'Configure Station 02A (Dry) →'}
+                  </a>
+                </div>
+                <div class="smat-sdb-branch-card">
+                  <span class="font-mono-tech smat-sdb-branch-wet">{isEs ? 'ESTACIÓN 02B — PRENSAESTOPAS HÚMEDO' : 'STATION 02B — FLUSHED GLAND PACKING'}</span>
+                  <strong class="smat-sdb-card-title">{isEs ? 'Prensaestopa Húmedo (Anillo Linterna)' : 'Wet Packed Stuffing Box (Lantern Ring)'}</strong>
+                  <p class="smat-sdb-branch-copy">
+                    {isEs
+                      ? 'Requerido en bombas en serie (etapa 2+), carga positiva de succión P_s > 18% H o VFD a baja velocidad.'
+                      : 'Required in multi-stage pumps (stage 2+), high suction head P_s > 18% H, or low-speed VFD service.'}
+                  </p>
+                  <a href={`${quoteBase}?circuito=bombeo&equipo=kit_sellado&seal_branch=gland_water&estacion=S2#rfq`} data-card-fixed-params="seal_branch" class="btn btn-outline smat-sdb-branch-cta">
+                    {isEs ? 'Configurar Estación 02B (Húmedo) →' : 'Configure Station 02B (Wet) →'}
+                  </a>
+                </div>
               </div>
-              <div class="smat-sdb-branch-card">
-                <span class="font-mono-tech smat-sdb-branch-wet">{isEs ? '[ESTACIÓN 02B — PRENSAESTOPAS HÚMEDO]' : '[STATION 02B — FLUSHED GLAND PACKING]'}</span>
-                <strong class="smat-sdb-card-title">{isEs ? 'Prensaestopa Húmedo (Anillo Linterna)' : 'Wet Packed Stuffing Box (Lantern Ring)'}</strong>
-                <p class="smat-sdb-branch-copy">
-                  {isEs
-                    ? 'Requerido en bombas en serie (etapa 2+), carga positiva de succión P_s > 18% H o VFD a baja velocidad.'
-                    : 'Required in multi-stage pumps (stage 2+), high suction head P_s > 18% H, or low-speed VFD service.'}
-                </p>
-                <a href={`${quoteBase}?circuito=bombeo&equipo=kit_sellado&seal_branch=gland_water&estacion=S2#rfq`} data-card-fixed-params="seal_branch" class="btn btn-outline smat-sdb-branch-cta">
-                  {isEs ? 'Configurar Estación 02B (Húmedo) →' : 'Configure Station 02B (Wet) →'}
-                </a>
-              </div>
-            </div>
+            </details>
           )}
         </div>
 
@@ -154,8 +160,11 @@ const stratumSimId = variant === 'seal'
               </div>
             </div>
 
-            <div class="smat-sdb-diagram-gap" data-testid="seal-atomic-parts">
-              <h2>{isEs ? 'Refacciones Atómicas de Sellado (DAM028 / EAM028)' : 'Atomic Sealing Spares (DAM028 / EAM028)'}</h2>
+            <details class="wb-progressive-drawer smat-sdb-diagram-gap" data-testid="seal-atomic-parts" id="seal-atomic-parts-drawer">
+              <summary class="wb-progressive-summary">
+                <span>{isEs ? 'Refacciones Atómicas de Sellado (DAM028 / EAM028) y Bandeja' : 'Atomic Sealing Spares (DAM028 / EAM028) & Requisition Tray'}</span>
+                <span class="wb-step1-more-arrow">▾</span>
+              </summary>
               <div class="grid-2 smat-sdb-atomic-grid">
                 {sealParts.map((sp) => (
                   <div class="card smat-sdb-atomic-card">
@@ -186,7 +195,7 @@ const stratumSimId = variant === 'seal'
                   </div>
                 ))}
               </div>
-            </div>
+            </details>
           </>
         )}
 
@@ -195,20 +204,26 @@ const stratumSimId = variant === 'seal'
             <span id={isEs ? 'drive-arrangements' : 'arreglos-transmision'} aria-hidden="true"></span>
             <h2>{isEs ? 'Arreglos de Transmisión y Montaje (CV / ZVZ / CRZ / DC)' : 'Base Frame Drive Arrangements (CV / ZVZ / CRZ / DC)'}</h2>
             <TechnicalDiagrams diagram="drive_arrangements" lang={locale} />
-            <div class="grid-2 smat-sdb-arr-grid" data-drive-links="transmision=CV transmision=ZVZ transmision=CRZ transmision=DC">
-              {driveArrangements.map((arr) => (
-                <div class="card">
-                  <h3>{isEs ? arr.nameEs : arr.nameEn}</h3>
-                  <p>{isEs ? arr.descriptionEs : arr.descriptionEn}</p>
-                  <small class="smat-sdb-flood-meta" data-kin-flood>
-                    {isEs ? 'Huella:' : 'Footprint:'} {arr.footprintFactor.toFixed(2)}× • {Boolean(arr.sumpFloodImmunity) ? (isEs ? 'Motor Elevado' : 'Elevated Motor') : (isEs ? 'Nivel de base' : 'Baseplate level')}
-                  </small>
-                  <a href={`${quoteBase}?equipo=skid_bomba&transmision=${arr.code}#rfq`} class="btn btn-primary" data-card-fixed-params="transmision">
-                    {isEs ? `Cotizar Arreglo ${arr.code} →` : `Quote ${arr.code} Arrangement →`}
-                  </a>
-                </div>
-              ))}
-            </div>
+            <details class="wb-progressive-drawer smat-mt-sm" id="skid-arrangements-drawer">
+              <summary class="wb-progressive-summary">
+                <span>{isEs ? 'Ver los 4 Arreglos de Montaje (CV / ZVZ / CRZ / DC) y Cotizar por Arreglo' : 'View All 4 Mounting Arrangements (CV / ZVZ / CRZ / DC) & Quote Links'}</span>
+                <span class="wb-step1-more-arrow">▾</span>
+              </summary>
+              <div class="grid-2 smat-sdb-arr-grid" data-drive-links="transmision=CV transmision=ZVZ transmision=CRZ transmision=DC">
+                {driveArrangements.map((arr) => (
+                  <div class="card">
+                    <h3>{isEs ? arr.nameEs : arr.nameEn}</h3>
+                    <p>{isEs ? arr.descriptionEs : arr.descriptionEn}</p>
+                    <small class="smat-sdb-flood-meta" data-kin-flood>
+                      {isEs ? 'Huella:' : 'Footprint:'} {arr.footprintFactor.toFixed(2)}× • {Boolean(arr.sumpFloodImmunity) ? (isEs ? 'Motor Elevado' : 'Elevated Motor') : (isEs ? 'Nivel de base' : 'Baseplate level')}
+                    </small>
+                    <a href={`${quoteBase}?equipo=skid_bomba&transmision=${arr.code}#rfq`} class="btn btn-primary" data-card-fixed-params="transmision">
+                      {isEs ? `Cotizar Arreglo ${arr.code} →` : `Quote ${arr.code} Arrangement →`}
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </details>
             {dc && (
               <div class="card smat-sdb-criteria-card" data-testid="role-decision-criteria">
                 <span class="font-mono-tech smat-sdb-criteria-eyebrow">{isEs ? '[CRITERIO DE DECISIÓN E INGENIERÍA]' : '[ENGINEERING DECISION CRITERIA]'}</span>
@@ -301,65 +316,13 @@ const stratumSimId = variant === 'seal'
 )}
 
 {!showVerticalShell && (
-  <SealDriveBearingCore locale={locale} initialTab="skid" showVerticalActions={false} />
+  <details class="wb-progressive-drawer smat-mt-sm" id="wb-drive-and-tradein-drawer">
+    <summary class="wb-progressive-summary">
+      <span>{isEs ? 'Sellado 02A/02B, Tren Motriz V-Belt y Rodamientos ISO 281' : '02A/02B Seal, V-Belt Drive & ISO 281 Bearings'}</span>
+      <span>▾</span>
+    </summary>
+    <div class="smat-mt-sm">
+      <SealDriveBearingCore locale={locale} initialTab="skid" showVerticalActions={false} />
+    </div>
+  </details>
 )}
-
-<style>
-  .back-link { color: #7c2d12; font-size: 0.88rem; font-weight: 700; text-decoration: none; }
-  .back-link:hover { text-decoration: underline; }
-  .smat-sdb-badge-wrap { margin-top: 0.3rem; }
-  .smat-sdb-sim-card { margin-bottom: 1.5rem; background: #f8fafc; border: 1.5px solid #cbd5e1; padding: clamp(0.7rem, 1.4vw, 1.1rem); }
-  .sdb-subtabs { display: flex; flex-wrap: wrap; gap: 0.4rem; border-bottom: 1px solid #cbd5e1; padding-bottom: 0.5rem; }
-  .sdb-tab-btn { border: 1px solid #cbd5e1; background: #ffffff; color: #0f172a; font-weight: 700; font-size: 0.78rem; padding: 0.45rem 0.8rem; border-radius: 6px; cursor: pointer; min-height: 44px; }
-  .sdb-tab-btn.is-active { background: #0f172a; color: #ffffff; border-color: #0f172a; }
-  .smat-sdb-status-ok { padding: 0.55rem 0.75rem; border-radius: 6px; background: #ecfdf5; border: 1px solid #059669; color: #064e3b; font-family: var(--smat-font-mono); font-size: 0.79rem; font-weight: 700; }
-  .smat-sdb-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.45rem; font-family: var(--smat-font-mono); font-size: 0.78rem; }
-  .smat-sdb-kpi-card { background: #ffffff; padding: 0.45rem 0.65rem; border-radius: 6px; border: 1px solid #cbd5e1; }
-  .smat-sdb-inputs-box { margin: 0.5rem 0 0.65rem; padding: 0.6rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.8rem; }
-  .smat-sdb-field { display: flex; flex-direction: column; gap: 0.2rem; font-weight: 700; }
-  .smat-sdb-ctrl { padding: 0.35rem; border: 1px solid #cbd5e1; border-radius: 6px; }
-  .smat-sdb-actions { display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center; margin-bottom: 0.85rem; }
-  .smat-sdb-btn-tall { min-height: 48px; display: inline-flex; align-items: center; }
-  .smat-sdb-branch-grid { margin-top: 0.75rem; }
-  .smat-sdb-branch-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; }
-  .smat-sdb-branch-ok { font-size: 0.72rem; font-weight: 800; color: #064e3b; }
-  .smat-sdb-branch-wet { font-size: 0.72rem; font-weight: 800; color: #0c4a6e; }
-  .smat-sdb-card-title { display: block; margin: 0.35rem 0; font-size: 0.98rem; font-weight: 800; color: var(--smat-text-primary); }
-  .smat-sdb-branch-copy { font-size: 0.85rem; color: #334155; }
-  .smat-sdb-branch-cta { margin-top: 0.5rem; }
-  .skid-kinematics-calibrator__metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.6rem; margin-bottom: 0.75rem; }
-  .skid-kinematics-calibrator__controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.75rem; margin-bottom: 0.85rem; }
-  .kin-field { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.78rem; font-weight: 700; color: #1c1917; }
-  .kin-metric-card { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.65rem; display: flex; flex-direction: column; gap: 0.2rem; }
-  .kin-metric-card__kicker { font-family: var(--smat-font-mono, monospace); font-size: 0.66rem; font-weight: 800; color: #334155; }
-  .kin-metric-card__val { font-size: 0.98rem; font-weight: 800; color: #1c1917; }
-  .kin-metric-card__sub { font-size: 0.72rem; color: #334155; }
-  .smat-sdb-bear-ok { background: #ecfdf5; border: 1px solid #059669; border-radius: 8px; padding: 0.5rem 0.65rem; }
-  .smat-sdb-bear-warn { background: #fef2f2; border: 1px solid #dc2626; border-radius: 8px; padding: 0.5rem 0.65rem; }
-  .smat-sdb-bear-info { background: #f0f9ff; border: 1px solid #0284c7; border-radius: 8px; padding: 0.5rem 0.65rem; }
-  .smat-sdb-tradein-box { width: 100%; margin-top: 0.75rem; padding: 0.75rem; border-radius: 8px; background: #ecfdf5; border: 1px solid #10b981; font-size: 0.78rem; color: #064e3b; }
-  .smat-sdb-tradein-title { font-family: var(--smat-font-mono); font-weight: 800; margin-bottom: 0.35rem; }
-  .smat-sdb-tradein-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-bottom: 0.4rem; }
-  .smat-sdb-tradein-lbl { display: flex; flex-direction: column; gap: 0.2rem; font-weight: 700; }
-  .smat-sdb-tradein-sel { padding: 0.35rem; border: 1px solid #059669; border-radius: 6px; background: #ffffff; color: #1c1917; font-size: 0.75rem; }
-  .smat-sdb-tradein-chk { display: flex; align-items: center; gap: 0.35rem; font-weight: 700; padding-top: 0.4rem; }
-  .smat-sdb-tradein-res { font-family: var(--smat-font-mono); font-weight: 800; color: #064e3b; }
-  .wb-ctx-card { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.85rem; margin-top: 0.75rem; }
-  .smat-sdb-embed-meta { font-size: 0.75rem; font-weight: 700; color: #0c4a6e; }
-  .smat-sdb-embed-line { font-family: var(--smat-font-mono); font-size: 0.76rem; color: #1e293b; margin: 0.2rem 0; }
-  .smat-sdb-two-col { margin-top: 1.75rem; }
-  .smat-sdb-table-heading { margin-top: 1.75rem; }
-  .smat-sdb-criteria-card { margin-top: 1rem; background: #f8fafc; border-left: 4px solid #7c2d12; padding: 1rem; }
-  .smat-sdb-criteria-eyebrow { font-size: 0.72rem; font-weight: 800; color: #7c2d12; display: block; margin-bottom: 0.35rem; }
-  .smat-sdb-criteria-line { font-size: 0.84rem; margin-bottom: 0.4rem; }
-  .smat-sdb-criteria-risk { font-size: 0.84rem; margin: 0; color: #991b1b; }
-  .smat-sdb-diagram-gap { margin-top: 2rem; }
-  .smat-sdb-atomic-grid { margin-top: 1rem; }
-  .smat-sdb-atomic-card { background: #ffffff; border: 1px solid #cbd5e1; display: flex; flex-direction: column; }
-  .smat-sdb-atomic-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
-  .smat-sdb-atomic-mass { font-size: 0.74rem; font-weight: 700; color: var(--smat-text-primary); }
-  .smat-sdb-atomic-copy { font-size: 0.86rem; color: #334155; }
-  .smat-sdb-atomic-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: auto; }
-  .smat-sdb-arr-grid { margin-top: 1rem; }
-  .smat-sdb-flood-meta { display: block; margin-bottom: 0.65rem; font-family: var(--smat-font-mono); font-size: 0.74rem; color: #082f49; font-weight: 700; }
-</style>

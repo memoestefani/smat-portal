@@ -7,6 +7,8 @@
  * Expone las 10 entradas y 10 salidas de `ENGINE_SCHEMA_REGISTRY.sealDrive` sin ramificaciones condicionales
  * ni amputaciones entre `/bombeo/{sello,skid,soporte}/` y `/cotizar/`.
  */
+import { calculateDriveAndBearingKinematics } from '../../scripts/pumpAssemblyAndDriveEngine.js';
+
 interface Props {
   locale?: 'es' | 'en';
   initialTab?: 'seal' | 'skid' | 'bearing';
@@ -16,6 +18,16 @@ interface Props {
 const { locale = 'es', initialTab = 'skid', showVerticalActions = false } = Astro.props;
 const isEs = locale === 'es';
 const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
+
+const defaultKin = calculateDriveAndBearingKinematics({
+  arrangement: 'CV',
+  motorRpm: 1775,
+  driverPulleyMm: 220,
+  drivenPulleyMm: 340,
+  impellerDiameterMm: 380,
+  shaftPowerKw: 55,
+  dynamicCapacityCkN: 145,
+});
 ---
 
 <div id="wb-drive-and-tradein-contextual-card" data-domain-root="sealDrive" data-sdb-initial-tab={initialTab} class="wb-ctx-card">
@@ -63,19 +75,27 @@ const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
         <span>{isEs ? 'Carga Succión Hs (m):' : 'Suction Head Hs (m):'}</span>
         <input type="number" id="seal-hs-m" data-schema-input="sealDrive.suctionHeadM" min="0" max="25" step="0.5" value="3.2" class="smat-sdb-ctrl" />
       </label>
-      <label class="smat-sdb-field">
-        <span>Ø Expeller (mm):</span>
-        <input type="number" id="seal-exp-dia" data-schema-input="sealDrive.expellerDiaMm" min="140" max="520" step="10" value="280" class="smat-sdb-ctrl" />
-      </label>
-      <label class="smat-sdb-field">
-        <span>{isEs ? 'Velocidad Bomba (RPM):' : 'Pump Speed (RPM):'}</span>
-        <input type="number" id="seal-rpm" data-schema-input="sealDrive.pumpRpm" min="400" max="2200" step="25" value="1150" class="smat-sdb-ctrl" />
-      </label>
-      <label class="smat-sdb-field">
-        <span>{isEs ? 'Densidad Pulpa (SG_m):' : 'Slurry Density (SG_m):'}</span>
-        <input type="number" id="seal-sg" data-schema-input="sealDrive.slurrySg" min="1.05" max="2.30" step="0.02" value="1.38" class="smat-sdb-ctrl" />
-      </label>
     </div>
+    <details class="wb-progressive-drawer smat-mt-sm" id="seal-tier2-params">
+      <summary class="wb-progressive-summary">
+        <span>{isEs ? 'Ajuste Avanzado: Ø Expeller, RPM y Densidad de Pulpa (SG)' : 'Advanced Parameters: Expeller Ø, Pump RPM & Slurry SG'}</span>
+        <span class="wb-step1-more-arrow">▾</span>
+      </summary>
+      <div class="wb-progressive-body smat-inputs-2col smat-sdb-inputs-box">
+        <label class="smat-sdb-field">
+          <span>Ø Expeller (mm):</span>
+          <input type="number" id="seal-exp-dia" data-schema-input="sealDrive.expellerDiaMm" min="140" max="520" step="10" value="280" class="smat-sdb-ctrl" />
+        </label>
+        <label class="smat-sdb-field">
+          <span>{isEs ? 'Velocidad Bomba (RPM):' : 'Pump Speed (RPM):'}</span>
+          <input type="number" id="seal-rpm" data-schema-input="sealDrive.pumpRpm" min="400" max="2200" step="25" value="1150" class="smat-sdb-ctrl" />
+        </label>
+        <label class="smat-sdb-field">
+          <span>{isEs ? 'Densidad Pulpa (SG_m):' : 'Slurry Density (SG_m):'}</span>
+          <input type="number" id="seal-sg" data-schema-input="sealDrive.slurrySg" min="1.05" max="2.30" step="0.02" value="1.38" class="smat-sdb-ctrl" />
+        </label>
+      </div>
+    </details>
     {showVerticalActions && (
       <div class="smat-sdb-actions">
         <a href={`${quoteBase}?circuito=bombeo&equipo=kit_sellado&pieza=expeller_sello&seal_branch=expeller_dry&estacion=S2#rfq`} class="btn btn-primary smat-sdb-btn-tall">
@@ -104,24 +124,24 @@ const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
     <div class="skid-kinematics-calibrator__metrics smat-mt-sm">
       <div class="kin-metric-card">
         <span class="kin-metric-card__kicker">{isEs ? 'VELOCIDAD EN EJE BOMBA' : 'PUMP SHAFT SPEED'}</span>
-        <strong id="wb-kin-pump-rpm" class="kin-metric-card__val" data-kin-rpm data-kin-pump-rpm data-schema-output="sealDrive.pumpRpm">1001 RPM</strong>
-        <span class="kin-metric-card__sub" data-kin-ratio>{isEs ? 'Motor 1775 RPM • Relación 0.65×' : 'Motor 1775 RPM • Ratio 0.65×'}</span>
+        <strong id="wb-kin-pump-rpm" class="kin-metric-card__val" data-kin-rpm data-kin-pump-rpm data-schema-output="sealDrive.pumpRpm">{defaultKin.pumpRpm} RPM</strong>
+        <span class="kin-metric-card__sub" data-kin-ratio>{isEs ? `Motor ${defaultKin.motorRpm} RPM • Relación ${defaultKin.speedMultiplier.toFixed(2)}×` : `Motor ${defaultKin.motorRpm} RPM • Ratio ${defaultKin.speedMultiplier.toFixed(2)}×`}</span>
       </div>
       <div class="kin-metric-card">
         <span class="kin-metric-card__kicker">{isEs ? 'VELOCIDAD PERIFÉRICA (u₂)' : 'PERIPHERAL TIP SPEED (u₂)'}</span>
-        <strong id="wb-kin-u2" class="kin-metric-card__val" data-kin-u2 data-schema-output="sealDrive.tipSpeedMs">19.9 m/s</strong>
+        <strong id="wb-kin-u2" class="kin-metric-card__val" data-kin-u2 data-schema-output="sealDrive.tipSpeedMs">{defaultKin.tipSpeedMs.toFixed(1)} m/s</strong>
         <span class="kin-metric-card__sub" data-kin-u2-status>{isEs ? 'Dentro de límite elástico R55/A05' : 'Within R55/A05 elastic envelope'}</span>
         <div class="kin-metric-card__sub smat-sdb-hybrid-note" data-kin-hybrid-note></div>
       </div>
       <div class="kin-metric-card">
         <span class="kin-metric-card__kicker">{isEs ? 'CARGA RADIAL BANDAS (Fᵣ)' : 'RADIAL BELT LOAD (Fᵣ)'}</span>
-        <strong id="wb-kin-fr" class="kin-metric-card__val" data-kin-fr data-bear-fr data-schema-output="sealDrive.beltRadialLoadKn">6.71 kN</strong>
+        <strong id="wb-kin-fr" class="kin-metric-card__val" data-kin-fr data-bear-fr data-schema-output="sealDrive.beltRadialLoadKn">{defaultKin.beltRadialLoadKn.toFixed(2)} kN</strong>
         <span class="kin-metric-card__sub" data-kin-fr-sub data-kin-load-p>{isEs ? 'Evaluado en arreglo motriz activo' : 'Evaluated on active drive train'}</span>
       </div>
       <div class="kin-metric-card">
         <span class="kin-metric-card__kicker">{isEs ? 'VIDA BASE ISO 281 (L₁₀ₕ)' : 'ISO 281 BASE LIFE (L₁₀ₕ)'}</span>
-        <strong id="wb-kin-l10h" class="kin-metric-card__val" data-kin-l10h data-bear-l10h data-schema-output="sealDrive.bearingL10Hours">42,800 h</strong>
-        <span class="kin-metric-card__sub" data-kin-l10mh>{isEs ? 'Cartucho DAM005 lubricado por baño' : 'DAM005 bath-lubricated cartridge'}</span>
+        <strong id="wb-kin-l10h" class="kin-metric-card__val" data-kin-l10h data-bear-l10h data-schema-output="sealDrive.bearingL10Hours">{defaultKin.bearingL10Hours.toLocaleString('en-US')} h</strong>
+        <span class="kin-metric-card__sub" data-kin-l10mh>{isEs ? `Cartucho ${defaultKin.bearingCartridgeCode} lubricado por baño` : `${defaultKin.bearingCartridgeCode} bath-lubricated cartridge`}</span>
       </div>
     </div>
 
@@ -144,36 +164,45 @@ const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
         </select>
       </label>
       <label class="kin-field">
-        <span>{isEs ? 'Polea Motriz Motor (mm):' : 'Driver Sheave (mm):'} <strong id="wb-val-driver-pulley" data-kin-driver-val>220 mm</strong></span>
-        <input type="range" id="wb-driver-pulley" min="120" max="380" step="10" value="220" data-kin-driver data-kin-driver-mm="true" data-schema-input="sealDrive.driverPulleyMm" data-wb-circuit-calc-input />
-      </label>
-      <label class="kin-field">
-        <span>{isEs ? 'Polea Conducida Bomba (mm):' : 'Driven Sheave (mm):'} <strong id="wb-val-driven-pulley" data-kin-driven-val>340 mm</strong></span>
-        <input type="range" id="wb-driven-pulley" min="160" max="560" step="10" value="340" data-kin-driven data-kin-driven-mm="true" data-schema-input="sealDrive.drivenPulleyMm" data-wb-circuit-calc-input />
-      </label>
-      <label class="kin-field">
         <span>{isEs ? 'Potencia en Flecha (kW):' : 'Shaft Power (kW):'} <strong data-kin-power-val data-bear-kw-lbl>55 kW</strong></span>
         <input type="range" id="wb-shaft-power" min="15" max="315" step="5" value="55" data-kin-power data-kin-power-kw="true" data-bear-kw data-bear-power-kw="true" data-schema-input="sealDrive.motorPowerKw" data-wb-circuit-calc-input />
       </label>
-      <label class="kin-field">
-        <span>{isEs ? 'Diámetro Impulsor ØD₂ (mm):' : 'Impeller Diameter ØD₂ (mm):'}</span>
-        <select data-kin-impeller>
-          <option value="270">270 mm — Serie 3x2 / 4x3</option>
-          <option value="380" selected>380 mm — Serie 6x4</option>
-          <option value="510">510 mm — Serie 8x6</option>
-          <option value="640">640 mm — Serie 10x8</option>
-        </select>
-      </label>
-      <label class="kin-field">
-        <span>{isEs ? 'Capacidad Dinámica C (kN):' : 'Dynamic Bearing Capacity C (kN):'}</span>
-        <input type="number" min="60" max="450" step="5" value="145" data-kin-capacity-c data-bear-c class="smat-sdb-ctrl" />
-      </label>
     </div>
+
+    <details class="wb-progressive-drawer smat-mt-sm" id="skid-tier2-params">
+      <summary class="wb-progressive-summary">
+        <span>{isEs ? 'Ajuste Avanzado: Poleas Motriz/Conducida, ØD₂ y Rodamiento C (kN)' : 'Advanced Geometry: Driver/Driven Sheaves, ØD₂ & Bearing Rating C (kN)'}</span>
+        <span class="wb-step1-more-arrow">▾</span>
+      </summary>
+      <div class="wb-progressive-body smat-inputs-2col">
+        <label class="kin-field">
+          <span>{isEs ? 'Polea Motriz Motor (mm):' : 'Driver Sheave (mm):'} <strong id="wb-val-driver-pulley" data-kin-driver-val>220 mm</strong></span>
+          <input type="range" id="wb-driver-pulley" min="120" max="380" step="10" value="220" data-kin-driver data-kin-driver-mm="true" data-schema-input="sealDrive.driverPulleyMm" data-wb-circuit-calc-input />
+        </label>
+        <label class="kin-field">
+          <span>{isEs ? 'Polea Conducida Bomba (mm):' : 'Driven Sheave (mm):'} <strong id="wb-val-driven-pulley" data-kin-driven-val>340 mm</strong></span>
+          <input type="range" id="wb-driven-pulley" min="160" max="560" step="10" value="340" data-kin-driven data-kin-driven-mm="true" data-schema-input="sealDrive.drivenPulleyMm" data-wb-circuit-calc-input />
+        </label>
+        <label class="kin-field">
+          <span>{isEs ? 'Diámetro Impulsor ØD₂ (mm):' : 'Impeller Diameter ØD₂ (mm):'}</span>
+          <select data-kin-impeller>
+            <option value="270">270 mm — Serie 3x2 / 4x3</option>
+            <option value="380" selected>380 mm — Serie 6x4</option>
+            <option value="510">510 mm — Serie 8x6</option>
+            <option value="640">640 mm — Serie 10x8</option>
+          </select>
+        </label>
+        <label class="kin-field">
+          <span>{isEs ? 'Capacidad Dinámica C (kN):' : 'Dynamic Bearing Capacity C (kN):'}</span>
+          <input type="number" min="60" max="450" step="5" value="145" data-kin-capacity-c data-bear-c class="smat-sdb-ctrl" />
+        </label>
+      </div>
+    </details>
 
     {showVerticalActions && (
       <div class="smat-sdb-actions">
         <a
-          href={`${quoteBase}?circuito=bombeo&equipo=skid_bomba&transmision=CV&material=alto_cromo_cr27&u2_ms=19.92&l10h=42800#rfq`}
+          href={`${quoteBase}?circuito=bombeo&equipo=skid_bomba&transmision=CV&material=alto_cromo_cr27&u2_ms=${defaultKin.tipSpeedMs.toFixed(2)}&l10h=${defaultKin.bearingL10Hours}#rfq`}
           class="btn btn-primary smat-sdb-btn-tall"
           data-kin-cta
           data-quote-base={quoteBase}
@@ -203,17 +232,17 @@ const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
     <div class="smat-sdb-kpi-grid smat-mt-sm">
       <div class="smat-sdb-bear-ok">
         <span class="font-mono-tech smat-sdb-kicker-ok">{isEs ? 'VIDA LABERINTO SMAT L₁₀ₘₕ' : 'SMAT LABYRINTH LIFE L₁₀ₘₕ'}</span>
-        <div id="wb-bear-l10mh-lab" class="smat-sdb-val-ok" data-bear-l10mh-lab data-schema-output="sealDrive.l10mhLabyrinthHours">53,500 h</div>
+        <div id="wb-bear-l10mh-lab" class="smat-sdb-val-ok" data-bear-l10mh-lab data-schema-output="sealDrive.l10mhLabyrinthHours">{defaultKin.l10mhLabyrinthHours.toLocaleString('en-US')} h</div>
         <div class="smat-sdb-sub-ok">a_ISO = 1.25×</div>
       </div>
       <div class="smat-sdb-bear-warn">
         <span class="font-mono-tech smat-sdb-kicker-warn">{isEs ? 'FIELTRO CONTAMINADO L₁₀ₘₕ' : 'CONTAMINATED FELT L₁₀ₘₕ'}</span>
-        <div id="wb-bear-l10mh-contam" class="smat-sdb-val-warn" data-bear-l10mh-cont data-bear-l10mh-contam data-schema-output="sealDrive.l10mhContaminatedHours">9,416 h</div>
+        <div id="wb-bear-l10mh-contam" class="smat-sdb-val-warn" data-bear-l10mh-cont data-bear-l10mh-contam data-schema-output="sealDrive.l10mhContaminatedHours">{defaultKin.l10mhContaminatedHours.toLocaleString('en-US')} h</div>
         <div class="smat-sdb-sub-warn">a_ISO = 0.22×</div>
       </div>
       <div class="smat-sdb-bear-info">
         <span class="font-mono-tech smat-sdb-kicker-info">{isEs ? 'BASTIDOR RECOMENDADO' : 'RECOMMENDED FRAME'}</span>
-        <div class="smat-sdb-val-info" data-bear-frame-spec>{isEs ? 'Bastidor Serie D (DAM005)' : 'Frame Series D (DAM005)'}</div>
+        <div class="smat-sdb-val-info" data-bear-frame-spec>{isEs ? `Bastidor Serie D (${defaultKin.bearingCartridgeCode})` : `Frame Series D (${defaultKin.bearingCartridgeCode})`}</div>
         <div class="smat-sdb-sub-info" data-bear-frame-limits>P_max = 110 kW • n_max = 1400 RPM</div>
       </div>
     </div>
@@ -255,7 +284,7 @@ const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
   <!-- Resumen transversal persistente para /cotizar/ y seguimiento Dossier -->
   <div class="smat-sdb-summary-strip smat-mt-sm">
     <p id="wb-drive-contextual-metrics" class="smat-sdb-embed-line">
-      {isEs ? 'Arreglo CV • n₂ = 1001 RPM • u₂ = 19.9 m/s • L₁₀ₕ = 42,800 h' : 'CV Arrangement • n₂ = 1001 RPM • u₂ = 19.9 m/s • L₁₀ₕ = 42,800 h'}
+      {isEs ? `Arreglo CV • n₂ = ${defaultKin.pumpRpm} RPM • u₂ = ${defaultKin.tipSpeedMs.toFixed(1)} m/s • L₁₀ₕ = ${defaultKin.bearingL10Hours.toLocaleString('en-US')} h` : `CV Arrangement • n₂ = ${defaultKin.pumpRpm} RPM • u₂ = ${defaultKin.tipSpeedMs.toFixed(1)} m/s • L₁₀ₕ = ${defaultKin.bearingL10Hours.toLocaleString('en-US')} h`}
     </p>
     <p id="wb-drive-frame-specs" class="smat-sdb-embed-line">
       {isEs ? 'Flecha Ø65 mm • Capacidad C ≥ 195 kN • a_ISO Laberinto 1.25×' : 'Shaft Ø65 mm • Capacity C ≥ 195 kN • a_ISO Labyrinth 1.25×'}

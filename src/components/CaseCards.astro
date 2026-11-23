@@ -72,21 +72,25 @@ const caseRouteMap: Record<string, { circuitPathEs: string; circuitPathEn: strin
                   {item.id === 'caso_flotacion_zacatecas' ? (
                     <a href={isEn ? "/en/flotation/" : "/flotacion/"} class="case-circuit-link">
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="smat-svg-inline--mr4"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                      {isEn ? "View Process Circuit →" : "Ver Circuito P&ID →"}
+                      {isEn ? "View Flotation Circuit →" : "Ver Circuito de Flotación →"}
                     </a>
                   ) : item.id === 'caso_filtracion_chihuahua' ? (
                     <a href={isEn ? "/en/filtration/" : "/filtracion/"} class="case-circuit-link">
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="smat-svg-inline--mr4"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                      {isEn ? "View Process Circuit →" : "Ver Circuito P&ID →"}
+                      {isEn ? "View Filtration Circuit →" : "Ver Circuito de Filtración →"}
                     </a>
                   ) : (
                     <a href={isEn ? "/en/pumping/" : "/bombeo/"} class="case-circuit-link">
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="smat-svg-inline--mr4"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                      {isEn ? "View Process Circuit →" : "Ver Circuito P&ID →"}
+                      {isEn ? "View Pumping Circuit →" : "Ver Circuito de Bombeo →"}
                     </a>
                   )}
                   <a href={simHref} class="case-sim-link">
-                    {isEn ? "Load Case in Simulator →" : "Cargar Caso en Simulador →"}
+                    {item.id === 'caso_flotacion_zacatecas'
+                      ? (isEn ? "Simulate Flotation Case →" : "Simular caso de Flotación →")
+                      : item.id === 'caso_filtracion_chihuahua'
+                        ? (isEn ? "Simulate Filtration Case →" : "Simular caso de Filtración →")
+                        : (isEn ? "Simulate Pumping Case →" : "Simular caso de Bombeo →")}
                   </a>
                 </div>
               );

@@ -6,6 +6,8 @@
  * y Tuplas Fiscales SAT / TIGIE.
  */
 
+import { formatCheckoutLaneHuman } from './i18nDomainLabels.js';
+
 export const SAT_TIGIE_BY_VERTICAL = Object.freeze({
   bombeo: {
     claveProdServ: '40142000',
@@ -63,8 +65,12 @@ export function formatDualCheckoutPayload(params = {}) {
   const stockRegime = String(params.stockRegime || 'hay').toLowerCase();
   const isPettyCash = estimatedMxn <= 25000 && stockRegime === 'hay';
 
+  const lane = isPettyCash ? 'CAJA_CHICA_CFDI40' : 'ORDEN_COMPRA_SAP';
+
   return {
-    lane: isPettyCash ? 'CAJA_CHICA_CFDI40' : 'ORDEN_COMPRA_SAP',
+    lane,
+    laneLabelEs: formatCheckoutLaneHuman(lane, 'es'),
+    laneLabelEn: formatCheckoutLaneHuman(lane, 'en'),
     estimatedMxn,
     stockRegime,
     requiresAdvancePct: stockRegime === 'se_fabrica' ? 50 : stockRegime === 'se_pide' ? 30 : 0,

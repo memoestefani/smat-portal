@@ -14,36 +14,22 @@ const isEs = lang === 'es';
   class="smat-qtray-root"
   aria-label={isEs ? 'Bandeja Rápida de Cotización B2B' : 'Fast B2B Requisition Tray'}
 >
-  <!-- Botón flotante colapsado (Fitts >= 48x48px) -->
-  <button
-    type="button"
-    id="smat-qtray-toggle"
-    class="smat-qtray-toggle-btn"
-    aria-expanded="false"
-    aria-controls="smat-qtray-drawer"
-  >
-    <span>{isEs ? 'Bandeja de Requisición' : 'Requisition Tray'}</span>
-    <span
-      id="smat-qtray-count"
-      class="smat-qtray-count-pill"
-    >
-      0
-    </span>
-  </button>
-
-  <!-- Panel desplegable de Bandeja Dual (< 25,000 MXN Caja Chica vs > 25,000 MXN OC SAP) -->
-  <div
+  <!-- Modal limpio de Bandeja Dual (abierto desde #header-qtray-trigger o botón + Bandeja) -->
+  <dialog
     id="smat-qtray-drawer"
-    class="smat-qtray-drawer hidden"
+    class="smat-qtray-drawer smat-qtray-dialog hidden"
+    aria-labelledby="smat-qtray-modal-title"
+    aria-modal="true"
     hidden
   >
     <div class="smat-qtray-drawer-head">
       <div>
-        <div class="smat-qtray-title">
+        <div id="smat-qtray-modal-title" class="smat-qtray-title">
           {isEs ? 'Bandeja Rápida de Requisición B2B' : 'Fast B2B Requisition Tray'}
+          <span id="smat-qtray-count" class="smat-qtray-count-pill">0</span>
         </div>
         <div id="smat-qtray-priority-badge" class="smat-qtray-priority">
-          {isEs ? 'P1 · CAJA CHICA (< 25,000 MXN) / OC SAP' : 'P1 · PETTY CASH (< 25,000 MXN) / SAP PO'}
+          {isEs ? 'Prioritario · Facturación CFDI 4.0 / Orden de Compra SAP' : 'Priority · Petty Cash / SAP Purchase Order'}
         </div>
       </div>
       <button
@@ -156,7 +142,7 @@ const isEs = lang === 'es';
         {isEs ? 'Emitir Hoja PDF / Folio SAP' : 'Issue PDF Sheet / SAP Folio'}
       </a>
     </div>
-  </div>
+  </dialog>
 </aside>
 
 <script>
@@ -177,17 +163,19 @@ const isEs = lang === 'es';
     SMAT_TRAY_UPDATE_EVENT
   } from '../scripts/requisitionTrayBus.js';
   import { formatDualCheckoutPayload } from '../scripts/workbenchExportFormatters.js';
+  import { formatCheckoutLaneHuman, formatUrgencyBandHuman } from '../scripts/i18nDomainLabels.js';
 
   function initQuickOrderTray() {
     const root = document.getElementById('smat-quick-order-tray');
-    if (!root) return;
+    if (!root || root.getAttribute('data-qtray-bound') === '1') return;
+    root.setAttribute('data-qtray-bound', '1');
     if (typeof window !== 'undefined' && window.location && window.location.search.includes('tray=')) {
       hydrateTrayFromReorderQuery(window.location.search);
     }
-    const isEs = root.getAttribute('data-lang') !== 'en';
-    const toggleBtn = document.getElementById('smat-qtray-toggle');
+    const lang: 'es' | 'en' = root.getAttribute('data-lang') === 'en' ? 'en' : 'es';
+    const isEs = lang === 'es';
     const closeBtn = document.getElementById('smat-qtray-close');
-    const drawer = document.getElementById('smat-qtray-drawer');
+    const drawer = document.getElementById('smat-qtray-drawer') as HTMLDialogElement | null;
     const countEl = document.getElementById('smat-qtray-count');
     const itemsEl = document.getElementById('smat-qtray-items');
     const badgeEl = document.getElementById('smat-qtray-priority-badge');
@@ -198,12 +186,58 @@ const isEs = lang === 'es';
 
     let selectedLane = 'CAJA_CHICA_CFDI40';
 
+    function syncTriggerUi(isHidden: boolean) {
+      const triggerBtn = document.getElementById('header-qtray-trigger');
+      triggerBtn?.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
+    }
+
     function setDrawerHidden(isHidden: boolean) {
       if (!drawer) return;
       drawer.classList.toggle('hidden', isHidden);
-      drawer.hidden = isHidden;
-      toggleBtn?.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
+      if (isHidden) {
+        drawer.setAttribute('hidden', '');
+        if (typeof drawer.close === 'function' && drawer.open) {
+          drawer.close();
+        }
+      } else {
+        drawer.removeAttribute('hidden');
+        if (typeof drawer.showModal === 'function' && !drawer.open) {
+          drawer.showModal();
+        }
+      }
+      syncTriggerUi(isHidden);
     }
+
+    if (drawer && typeof MutationObserver !== 'undefined') {
+      const hiddenObserver = new MutationObserver(() => {
+        const isHiddenNow = drawer.hasAttribute('hidden');
+        if (!isHiddenNow && typeof drawer.showModal === 'function' && !drawer.open) {
+          drawer.classList.remove('hidden');
+          drawer.showModal();
+          syncTriggerUi(false);
+        }
+      });
+      hiddenObserver.observe(drawer, { attributes: true, attributeFilter: ['hidden'] });
+    }
+
+    drawer?.addEventListener('close', () => {
+      drawer.classList.add('hidden');
+      drawer.setAttribute('hidden', '');
+      syncTriggerUi(true);
+    });
+
+    drawer?.addEventListener('click', (ev) => {
+      if (ev.target === drawer) {
+        setDrawerHidden(true);
+      }
+    });
+
+    window.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape' && drawer && (drawer.open || !drawer.hasAttribute('hidden'))) {
+        ev.stopPropagation();
+        setDrawerHidden(true);
+      }
+    });
 
     function renderTray() {
       const state = getTrayState();
@@ -211,11 +245,13 @@ const isEs = lang === 'es';
       if (coreToggle) coreToggle.checked = Boolean(tradeIn.coreReturnEnabled);
       if (coreBadge) {
         coreBadge.textContent = tradeIn.discountPct > 0
-          ? (isEs ? `ACTIVO: -${tradeIn.discountPct}% Core Trade-In (${tradeIn.housingMaterial})` : `ACTIVE: -${tradeIn.discountPct}% Core Trade-In (${tradeIn.housingMaterial})`)
+          ? (isEs ? `ACTIVO: -${tradeIn.discountPct}% Intercambio Casco (${tradeIn.housingMaterial})` : `ACTIVE: -${tradeIn.discountPct}% Core Trade-In (${tradeIn.housingMaterial})`)
           : (isEs ? tradeIn.inspectionGateEs : tradeIn.inspectionGateEn);
       }
       const totalQty = state.items.reduce((acc: number, it: any) => acc + (Number(it.qty) || 1), 0);
       if (countEl) countEl.textContent = String(totalQty);
+      const headerCountEl = document.getElementById('header-qtray-count');
+      if (headerCountEl) headerCountEl.textContent = String(totalQty);
 
       const desc = computeCmuPriorityDescriptor({
         urgency: state.criticalityMode === 'PARO_DE_LINEA' ? 'emergency' : 'normal',
@@ -234,7 +270,9 @@ const isEs = lang === 'es';
         reorderPolicyEl.textContent = `${basePol} (T10=${reorderWindow.t10InspectionDays}d / T50=${reorderWindow.t50ReorderTriggerDays}d / T80=${reorderWindow.t80CriticalChangeoutDays}d • Buffer ${reorderWindow.leadTimeBufferDays}d • Sev=${reorderWindow.wearSeverityFactor}× • Vida=${reorderWindow.wearAcceleratedLifeHours}h • ${dispLbl})`;
       }
       if (badgeEl) {
-        badgeEl.textContent = `${isEs ? desc.labelEs : desc.labelEn} (${desc.checkoutLane} • SLA ≤${desc.slaResponseMinutes} min • cμ=${desc.priorityRankScore} • ${dualLaneMeta.cfdiVersion})`;
+        const urgencyHuman = formatUrgencyBandHuman(state.criticalityMode, lang);
+        const laneHuman = formatCheckoutLaneHuman(desc.checkoutLane, lang);
+        badgeEl.textContent = `${urgencyHuman} • ${laneHuman} • SLA ≤${desc.slaResponseMinutes} min • ${dualLaneMeta.cfdiVersion}`;
       }
 
       if (itemsEl) {
@@ -285,13 +323,14 @@ const isEs = lang === 'es';
       if (waLink) {
         const subject = buildCmuPrioritySubjectLine(state, { cvPct: 48 });
         const summary = state.items.map((i: any) => `${i.id}(x${i.qty} ${i.material})`).join(', ');
-        const coreNote = tradeIn.discountPct > 0 ? ` | Core Trade-In: -${tradeIn.discountPct}%` : '';
+        const coreNote = tradeIn.discountPct > 0 ? ` | Intercambio Casco: -${tradeIn.discountPct}%` : '';
         const g5Toggle = document.getElementById('smat-qtray-g5-advance') as HTMLInputElement | null;
         const g5Confirmed = !g5Toggle || g5Toggle.checked;
         const g5Note = g5Confirmed
-          ? ' | [CONDICIÓN G5 CONFIRMADA: 50% ANTICIPO / 50% CONTRA EMBARQUE]'
-          : ' | [CONDICIÓN G5 POR CONFIRMAR CON COMPRAS]';
-        const msg = `[SMAT-DGO] ${subject} | Carril: ${selectedLane}${coreNote}${g5Note} | Partidas: ${summary || 'Consulta directa'}`;
+          ? ' | [50% ANTICIPO / 50% CONTRA EMBARQUE]'
+          : ' | [CONDICIÓN DE PAGO POR CONFIRMAR CON COMPRAS]';
+        const humanLane = formatCheckoutLaneHuman(selectedLane, 'es');
+        const msg = `[SMAT-DGO] ${subject} | Carril: ${humanLane}${coreNote}${g5Note} | Partidas: ${summary || 'Consulta directa'}`;
         waLink.href = `https://wa.me/526183670664?text=${encodeURIComponent(msg)}`;
       }
 
@@ -314,12 +353,6 @@ const isEs = lang === 'es';
     const g5ToggleEl = document.getElementById('smat-qtray-g5-advance') as HTMLInputElement | null;
     g5ToggleEl?.addEventListener('change', () => {
       renderTray();
-    });
-
-    toggleBtn?.addEventListener('click', () => {
-      if (!drawer) return;
-      const nextHidden = !drawer.classList.contains('hidden');
-      setDrawerHidden(nextHidden);
     });
 
     closeBtn?.addEventListener('click', () => {
@@ -374,33 +407,7 @@ const isEs = lang === 'es';
 
 <style>
   .smat-qtray-root {
-    position: fixed;
-    bottom: 1rem;
-    left: 1rem;
-    z-index: 50;
-    max-width: 28rem;
-  }
-
-  .smat-qtray-toggle-btn {
-    min-height: 48px;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.625rem;
-    padding: 0.625rem 1rem;
-    border-radius: 9999px;
-    border: 2px solid var(--smat-solar-amber-border, #d97706);
-    background: var(--smat-solar-surface, #ffffff);
-    color: var(--smat-solar-ink, #0f172a);
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    font-weight: 700;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
-    cursor: pointer;
-    transition: background 0.15s ease, transform 0.15s ease;
-  }
-
-  .smat-qtray-toggle-btn:hover {
-    background: var(--smat-solar-amber-bg, #fffbeb);
+    display: contents;
   }
 
   .smat-qtray-count-pill {
@@ -410,28 +417,29 @@ const isEs = lang === 'es';
     align-items: center;
     justify-content: center;
     padding: 0 0.375rem;
+    margin-left: 0.4rem;
     border-radius: 9999px;
-    background: #d97706;
+    background: var(--smat-copper-accent, #7c2d12);
     color: #ffffff;
     font-size: 0.6875rem;
     font-weight: 800;
   }
 
-  .smat-qtray-drawer {
-    margin-top: 0.5rem;
-    width: 340px;
-    padding: 1rem;
+  .smat-qtray-dialog {
+    width: min(420px, calc(100vw - 1.5rem));
+    max-width: 420px;
+    margin: auto;
+    padding: 1.15rem;
     border-radius: 16px;
     border: 1px solid var(--smat-solar-border, #cbd5e1);
     background: var(--smat-solar-surface, #ffffff);
     color: var(--smat-solar-ink, #0f172a);
-    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
+    box-shadow: 0 24px 48px rgba(15, 23, 42, 0.24);
   }
 
-  @media (min-width: 640px) {
-    .smat-qtray-drawer {
-      width: 400px;
-    }
+  .smat-qtray-dialog::backdrop {
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px);
   }
 
   .smat-qtray-drawer.hidden,
@@ -594,15 +602,13 @@ const isEs = lang === 'es';
 
   .smat-qtray-tradein-label {
     display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
+    align-items: center;
+    min-height: 48px;
+    gap: 0.65rem;
     cursor: pointer;
   }
 
   .smat-qtray-checkbox {
-    margin-top: 0.125rem;
-    width: 1rem;
-    height: 1rem;
     accent-color: #059669;
   }
 

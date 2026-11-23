@@ -34,7 +34,7 @@ import {
   workbenchStateLens
 } from './workbenchBus.js';
 
-export const CANONICAL_WORKBENCH_STORAGE_KEY = SMAT_WORKBENCH_STATE_KEY;
+const CANONICAL_WORKBENCH_STORAGE_KEY = SMAT_WORKBENCH_STATE_KEY;
 
 /**
  * Purga claves de sesión legadas y migra sin pérdida al store único `SMAT_WORKBENCH_STATE_KEY`.
@@ -105,7 +105,7 @@ export function initProfileFromStorage(doc, dom = {}, onUpdated = null) {
   }
 }
 
-export function saveUserProfileSnapshot(d = {}) {
+function saveUserProfileSnapshot(d = {}) {
   if (typeof localStorage === 'undefined') return;
   try {
     localStorage.setItem('smat_user_profile', JSON.stringify({

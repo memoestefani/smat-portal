@@ -8,6 +8,7 @@
 import { resolveCanonicalSkuId } from './quickProductsCatalog.js';
 import { computeSelectionOrderCodeHash } from './slurryEngine.js';
 import { loadWorkbenchSession, saveWorkbenchSession, workbenchStateLens } from './workbenchBus.js';
+import { formatCheckoutLaneHuman } from './i18nDomainLabels.js';
 
 const SMAT_TRAY_STORAGE_KEY = 'smat_requisition_tray_v3';
 export const SMAT_TRAY_UPDATE_EVENT = 'smat:tray-updated';
@@ -383,6 +384,8 @@ export function computeCmuPriorityDescriptor(params = {}) {
 
   const isPettyCash = estimatedTotalMxn > 0 && estimatedTotalMxn <= 25000;
   const checkoutLane = isPettyCash ? 'CAJA_CHICA_CFDI40' : 'ORDEN_COMPRA_SAP';
+  const checkoutLaneLabelEs = formatCheckoutLaneHuman(checkoutLane, 'es');
+  const checkoutLaneLabelEn = formatCheckoutLaneHuman(checkoutLane, 'en');
 
   if (urgency === 'emergency' || urgency === 'paro_de_linea') {
     const labelEs = 'P1 · PARO DE LÍNEA (Atención Ingeniería < 15 min)';
@@ -392,6 +395,8 @@ export function computeCmuPriorityDescriptor(params = {}) {
       cmuScore: 98.5,
       priorityRankScore: 4800,
       checkoutLane,
+      checkoutLaneLabelEs,
+      checkoutLaneLabelEn,
       stockRegime,
       advancePaymentPct: stockRegime === 'se_fabrica' ? 50 : 0,
       slaResponseMinutes: 15,
@@ -410,6 +415,8 @@ export function computeCmuPriorityDescriptor(params = {}) {
       cmuScore: 62.0,
       priorityRankScore: 3020,
       checkoutLane: 'ORDEN_COMPRA_SAP',
+      checkoutLaneLabelEs: formatCheckoutLaneHuman('ORDEN_COMPRA_SAP', 'es'),
+      checkoutLaneLabelEn: formatCheckoutLaneHuman('ORDEN_COMPRA_SAP', 'en'),
       stockRegime,
       advancePaymentPct: 50,
       slaResponseMinutes: 120,
@@ -428,6 +435,8 @@ export function computeCmuPriorityDescriptor(params = {}) {
       cmuScore: 91.0,
       priorityRankScore: 4435,
       checkoutLane: 'CAJA_CHICA_CFDI40',
+      checkoutLaneLabelEs: formatCheckoutLaneHuman('CAJA_CHICA_CFDI40', 'es'),
+      checkoutLaneLabelEn: formatCheckoutLaneHuman('CAJA_CHICA_CFDI40', 'en'),
       stockRegime,
       advancePaymentPct: 0,
       slaResponseMinutes: 30,
@@ -445,6 +454,8 @@ export function computeCmuPriorityDescriptor(params = {}) {
     cmuScore: 76.0,
     priorityRankScore: 3705,
     checkoutLane,
+    checkoutLaneLabelEs,
+    checkoutLaneLabelEn,
     stockRegime,
     advancePaymentPct: stockRegime === 'se_pide' ? 30 : 0,
     slaResponseMinutes: 60,

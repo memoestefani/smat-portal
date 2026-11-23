@@ -13,6 +13,7 @@ import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import CircuitNavigator from '../CircuitNavigator.astro';
 import SharePurchasing from '../SharePurchasing.astro';
 import rolesData from '../../../data/roles.json';
+import { SMAT_SUPPLY_DOORS } from '../../scripts/i18nDomainLabels.js';
 
 interface Props {
   locale?: 'es' | 'en';
@@ -39,7 +40,7 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
     <section class="page-hero smat-compact-hero">
       <div class="container">
         <span class="badge badge-copper">
-          {isEs ? 'PUERTA 3 • CONTROL METALÚRGICO Y LABORATORIO' : 'DOOR 3 • METALLURGICAL CONTROL & LABORATORY'}
+          {isEs ? SMAT_SUPPLY_DOORS.door3.badgeEs : SMAT_SUPPLY_DOORS.door3.badgeEn}
         </span>
         <h1>{isEs ? 'Control de Procesos' : 'Process Control'}</h1>
         <p class="smat-hero-sub">
@@ -50,9 +51,6 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
         <div class="met-hero-actions smat-cta-row">
           <a href={`${quoteBase}?circuito=control_procesos#rfq`} class="btn btn-primary" data-ctrl-quote-link>
             {isEs ? 'Cotizar Instrumentación de Control →' : 'Quote Process Control Equipment →'}
-          </a>
-          <a href="#metrology-calculator" class="btn btn-outline">
-            {isEs ? 'Calculadora Marcy, Gy y Serie √2 ASTM ↓' : 'Marcy, Gy & ASTM √2 Calculator ↓'}
           </a>
         </div>
       </div>
@@ -83,6 +81,22 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
             <a id="met-quote-cta" href={`${quoteBase}?circuito=control_procesos&equipo=balanza_marcy#rfq`} class="btn btn-primary">
               {isEs ? 'Cotizar con esta Calibración Metrológica →' : 'Quote With This Metrology Calibration →'}
             </a>
+          </div>
+        </div>
+
+        <details class="metrology-circuit-drawer smat-mb-md" id="metrology-equipment-drawer">
+          <summary class="metrology-circuit-drawer-summary">
+            <span>
+              <strong>
+                {isEs
+                  ? 'Fichas de Equipos (Balanza Marcy, Filtro Batch, Tamices ASTM) y Accesos Directos'
+                  : 'Equipment Sheets (Marcy Scale, Batch Filter, ASTM Sieves) & Cross-Circuit Links'}
+              </strong>
+            </span>
+            <span class="badge badge-copper">{isEs ? 'VER FICHAS ▾' : 'VIEW SHEETS ▾'}</span>
+          </summary>
+
+          <div class="met-calc-footer smat-mt-sm">
             <a id="met-pump-precal-cta" href={`${quoteBase}?circuito=bombeo#rfq`} class="btn btn-outline">
               {isEs ? 'Pre-calibrar Bomba con esta Densidad →' : 'Pre-Size Slurry Pump with This Density →'}
             </a>
@@ -90,111 +104,109 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
               {isEs ? 'Ver Balance 3 Vasos en Clasificación →' : 'View 3-Cup Cyclone Balance →'}
             </a>
           </div>
-        </div>
 
-        <div class="metrology-segmented-bar" role="tablist" aria-label={isEs ? 'Equipos de laboratorio metalúrgico' : 'Metallurgical lab equipment'}>
-          <button type="button" class="metrology-seg-btn is-active" data-met-station-tab="1" aria-selected="true">
-            {isEs ? '1. Balanza Marcy (Ss / %Cw)' : '1. Marcy Scale (Ss / %Cw)'}
-          </button>
-          <button type="button" class="metrology-seg-btn" data-met-station-tab="2" aria-selected="false">
-            {isEs ? '2. Filtro Batch Lab (60–100 psi)' : '2. Lab Batch Filter (60–100 psi)'}
-          </button>
-          <button type="button" class="metrology-seg-btn" data-met-station-tab="3" aria-selected="false">
-            {isEs ? '3. Tamices ASTM E11 / √2' : '3. ASTM E11 Sieves / √2'}
-          </button>
-        </div>
+          <div class="metrology-segmented-bar smat-mt-sm" role="tablist" aria-label={isEs ? 'Equipos de laboratorio metalúrgico' : 'Metallurgical lab equipment'}>
+            <button type="button" class="metrology-seg-btn is-active" data-met-station-tab="1" aria-selected="true">
+              {isEs ? '1. Balanza Marcy (Ss / %Cw)' : '1. Marcy Scale (Ss / %Cw)'}
+            </button>
+            <button type="button" class="metrology-seg-btn" data-met-station-tab="2" aria-selected="false">
+              {isEs ? '2. Filtro Batch Lab (60–100 psi)' : '2. Lab Batch Filter (60–100 psi)'}
+            </button>
+            <button type="button" class="metrology-seg-btn" data-met-station-tab="3" aria-selected="false">
+              {isEs ? '3. Tamices ASTM E11 / √2' : '3. ASTM E11 Sieves / √2'}
+            </button>
+          </div>
 
-        <div class="control-equipment-grid">
-          <article id={isEs ? 'balanza-marcy' : 'marcy-scale'} class="card control-block" data-instrument-card="1">
-            <div class="control-block-header">
-              <span class="badge badge-copper">{isEs ? 'DENSIDAD DE PULPA • 12 ANILLOS' : 'PULP DENSITY • 12 DIAL RINGS'}</span>
-              <h2>{isEs ? 'Balanza Marcy de Densidad de Pulpa y % de Sólidos' : 'Marcy Pulp Density & % Solids Scale'}</h2>
-              <p class="block-lead">
-                {isEs
-                  ? 'Medición gravimétrica en planta concentradora con vaso de 1000 cm³ y carátulas intercambiables calibradas según gravedad específica del mineral (Ss 2.2 a 4.4).'
-                  : 'Gravimetric concentrator measurement with 1000 cm³ cup and interchangeable dial rings calibrated to ore specific gravity (Ss 2.2–4.4).'}
-              </p>
-            </div>
-            <TechnicalDiagrams diagram="marcy" lang={lang} />
-            <div class="specs-strip">
-              <div><strong>{isEs ? 'Capacidad:' : 'Cup Volume:'}</strong> 1000 cm³ (Acero Inox 304 / Acrílico)</div>
-              <div><strong>{isEs ? 'Anillos:' : 'Dials:'}</strong> 12 Carátulas (Ss 2.2 a 4.4)</div>
-              {marcyRole?.decision_criteria && (
-                <div><strong>{isEs ? 'Regla:' : 'Rule:'}</strong> {isEs ? marcyRole.decision_criteria.metallurgy_rule_es : marcyRole.decision_criteria.metallurgy_rule_en}</div>
-              )}
-            </div>
-            <div class="control-actions">
-              <a href={marcySkuHref} class="btn btn-primary">{isEs ? 'Ver Ficha SKU Balanza Marcy →' : 'View Marcy Scale SKU →'}</a>
-              <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-MARCY-1000" data-tray-circuit="control_procesos">{isEs ? '+ Bandeja' : '+ Tray'}</button>
-            </div>
-          </article>
+          <div class="control-equipment-grid">
+            <article id={isEs ? 'balanza-marcy' : 'marcy-scale'} class="card control-block" data-instrument-card="1">
+              <div class="control-block-header">
+                <span class="badge badge-copper">{isEs ? 'DENSIDAD DE PULPA • 12 ANILLOS' : 'PULP DENSITY • 12 DIAL RINGS'}</span>
+                <h2>{isEs ? 'Balanza Marcy de Densidad de Pulpa y % de Sólidos' : 'Marcy Pulp Density & % Solids Scale'}</h2>
+                <p class="block-lead">
+                  {isEs
+                    ? 'Medición gravimétrica en planta concentradora con vaso de 1000 cm³ y carátulas intercambiables calibradas según gravedad específica del mineral (Ss 2.2 a 4.4).'
+                    : 'Gravimetric concentrator measurement with 1000 cm³ cup and interchangeable dial rings calibrated to ore specific gravity (Ss 2.2–4.4).'}
+                </p>
+              </div>
+              <TechnicalDiagrams diagram="marcy" lang={lang} />
+              <div class="specs-strip">
+                <div><strong>{isEs ? 'Capacidad:' : 'Cup Volume:'}</strong> 1000 cm³ (Acero Inox 304 / Acrílico)</div>
+                <div><strong>{isEs ? 'Anillos:' : 'Dials:'}</strong> 12 Carátulas (Ss 2.2 a 4.4)</div>
+                {marcyRole?.decision_criteria && (
+                  <div><strong>{isEs ? 'Regla:' : 'Rule:'}</strong> {isEs ? marcyRole.decision_criteria.metallurgy_rule_es : marcyRole.decision_criteria.metallurgy_rule_en}</div>
+                )}
+              </div>
+              <div class="control-actions">
+                <a href={marcySkuHref} class="btn btn-primary">{isEs ? 'Ver Ficha SKU Balanza Marcy →' : 'View Marcy Scale SKU →'}</a>
+                <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-MARCY-1000" data-tray-circuit="control_procesos">{isEs ? '+ Bandeja' : '+ Tray'}</button>
+              </div>
+            </article>
 
-          <article id={isEs ? 'filtro-batch' : 'batch-filter'} class="card control-block ctrl-hidden-tab" data-instrument-card="2">
-            <div class="control-block-header">
-              <span class="badge badge-copper">{isEs ? 'MUESTREO PIERRE GY • 60–100 PSI' : 'PIERRE GY SAMPLING • 60–100 PSI'}</span>
-              <h2>{isEs ? 'Filtro de Presión Batch de Laboratorio' : 'Laboratory Batch Pressure Filter'}</h2>
-              <p class="block-lead">
-                {isEs
-                  ? 'Desaguado neumático rápido de muestras metalúrgicas para control de humedad y preparación hacia batería de tamizado ASTM E11.'
-                  : 'Fast pneumatic dewatering of metallurgical samples for residual cake moisture testing and ASTM E11 sieve preparation.'}
-              </p>
-            </div>
-            <TechnicalDiagrams diagram="batch_filter" lang={lang} />
-            <div class="specs-strip">
-              <div><strong>{isEs ? 'Presión:' : 'Pressure:'}</strong> 60–100 psi neumáticos</div>
-              <div><strong>{isEs ? 'Criterio:' : 'Basis:'}</strong> Teoría de Muestreo Pierre Gy</div>
-              {batchRole?.decision_criteria && (
-                <div><strong>{isEs ? 'Regla:' : 'Rule:'}</strong> {isEs ? batchRole.decision_criteria.metallurgy_rule_es : batchRole.decision_criteria.metallurgy_rule_en}</div>
-              )}
-            </div>
-            <div class="control-actions">
-              <a href={`${quoteBase}?circuito=control_procesos&equipo=filtro_batch_lab#rfq`} class="btn btn-primary">{isEs ? 'Cotizar Filtro Batch →' : 'Quote Batch Filter →'}</a>
-              <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-FILTRO-BATCH" data-tray-circuit="control_procesos">{isEs ? '+ Bandeja' : '+ Tray'}</button>
-            </div>
-          </article>
+            <article id={isEs ? 'filtro-batch' : 'batch-filter'} class="card control-block ctrl-hidden-tab" data-instrument-card="2">
+              <div class="control-block-header">
+                <span class="badge badge-copper">{isEs ? 'MUESTREO PIERRE GY • 60–100 PSI' : 'PIERRE GY SAMPLING • 60–100 PSI'}</span>
+                <h2>{isEs ? 'Filtro de Presión Batch de Laboratorio' : 'Laboratory Batch Pressure Filter'}</h2>
+                <p class="block-lead">
+                  {isEs
+                    ? 'Desaguado neumático rápido de muestras metalúrgicas para control de humedad y preparación hacia batería de tamizado ASTM E11.'
+                    : 'Fast pneumatic dewatering of metallurgical samples for residual cake moisture testing and ASTM E11 sieve preparation.'}
+                </p>
+              </div>
+              <TechnicalDiagrams diagram="batch_filter" lang={lang} />
+              <div class="specs-strip">
+                <div><strong>{isEs ? 'Presión:' : 'Pressure:'}</strong> 60–100 psi neumáticos</div>
+                <div><strong>{isEs ? 'Criterio:' : 'Basis:'}</strong> Teoría de Muestreo Pierre Gy</div>
+                {batchRole?.decision_criteria && (
+                  <div><strong>{isEs ? 'Regla:' : 'Rule:'}</strong> {isEs ? batchRole.decision_criteria.metallurgy_rule_es : batchRole.decision_criteria.metallurgy_rule_en}</div>
+                )}
+              </div>
+              <div class="control-actions">
+                <a href={`${quoteBase}?circuito=control_procesos&equipo=filtro_batch_lab#rfq`} class="btn btn-primary">{isEs ? 'Cotizar Filtro Batch →' : 'Quote Batch Filter →'}</a>
+                <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-FILTRO-BATCH" data-tray-circuit="control_procesos">{isEs ? '+ Bandeja' : '+ Tray'}</button>
+              </div>
+            </article>
 
-          <article id={isEs ? 'tamices-astm' : 'astm-sieves'} class="card control-block ctrl-hidden-tab" data-instrument-card="3">
-            <div class="control-block-header">
-              <span class="badge badge-copper">{isEs ? 'GRANULOMETRÍA P80 • ASTM E11 / ISO 3310' : 'P80 PARTICLE SIZING • ASTM E11 / ISO 3310'}</span>
-              <h2>{isEs ? 'Tamices de Laboratorio Certificados ASTM E11 y Tamizadores' : 'Certified ASTM E11 Test Sieves & Shakers'}</h2>
-              <p class="block-lead">
-                {isEs
-                  ? 'Tamices con malla tejida de precisión y marco embutido en Bronce o Acero Inoxidable (8" y 12") para control granulométrico P80.'
-                  : 'Precision woven-wire test sieves with seamless Bronze or Stainless Steel frames (8" and 12") for tight P80 control.'}
-              </p>
-            </div>
-            <TechnicalDiagrams diagram="sieves" lang={lang} />
-            <div class="specs-strip">
-              <div><strong>{isEs ? 'Aberturas:' : 'Aperture Range:'}</strong> 5" (125 mm) – #635 (20 µm) √2</div>
-              <div><strong>{isEs ? 'Marcos:' : 'Frames:'}</strong> 8" / 12" Acero Inox 304/316 o Bronce</div>
-              {tamizRole?.decision_criteria && (
-                <div><strong>{isEs ? 'Regla:' : 'Rule:'}</strong> {isEs ? tamizRole.decision_criteria.metallurgy_rule_es : tamizRole.decision_criteria.metallurgy_rule_en}</div>
-              )}
-            </div>
-            <div class="control-actions">
-              <a href={`${quoteBase}?circuito=control_procesos&equipo=tamices_laboratorio#rfq`} class="btn btn-primary">{isEs ? 'Cotizar Tamices ASTM →' : 'Quote ASTM Sieves →'}</a>
-              <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-TAMIZ-E11" data-tray-circuit="control_procesos">{isEs ? '+ Bandeja' : '+ Tray'}</button>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
+            <article id={isEs ? 'tamices-astm' : 'astm-sieves'} class="card control-block ctrl-hidden-tab" data-instrument-card="3">
+              <div class="control-block-header">
+                <span class="badge badge-copper">{isEs ? 'GRANULOMETRÍA P80 • ASTM E11 / ISO 3310' : 'P80 PARTICLE SIZING • ASTM E11 / ISO 3310'}</span>
+                <h2>{isEs ? 'Tamices de Laboratorio Certificados ASTM E11 y Tamizadores' : 'Certified ASTM E11 Test Sieves & Shakers'}</h2>
+                <p class="block-lead">
+                  {isEs
+                    ? 'Tamices con malla tejida de precisión y marco embutido en Bronce o Acero Inoxidable (8" y 12") para control granulométrico P80.'
+                    : 'Precision woven-wire test sieves with seamless Bronze or Stainless Steel frames (8" and 12") for tight P80 control.'}
+                </p>
+              </div>
+              <TechnicalDiagrams diagram="sieves" lang={lang} />
+              <div class="specs-strip">
+                <div><strong>{isEs ? 'Aberturas:' : 'Aperture Range:'}</strong> 5" (125 mm) – #635 (20 µm) √2</div>
+                <div><strong>{isEs ? 'Marcos:' : 'Frames:'}</strong> 8" / 12" Acero Inox 304/316 o Bronce</div>
+                {tamizRole?.decision_criteria && (
+                  <div><strong>{isEs ? 'Regla:' : 'Rule:'}</strong> {isEs ? tamizRole.decision_criteria.metallurgy_rule_es : tamizRole.decision_criteria.metallurgy_rule_en}</div>
+                )}
+              </div>
+              <div class="control-actions">
+                <a href={`${quoteBase}?circuito=control_procesos&equipo=tamices_laboratorio#rfq`} class="btn btn-primary">{isEs ? 'Cotizar Tamices ASTM →' : 'Quote ASTM Sieves →'}</a>
+                <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-TAMIZ-E11" data-tray-circuit="control_procesos">{isEs ? '+ Bandeja' : '+ Tray'}</button>
+              </div>
+            </article>
+          </div>
 
-    <section class="section stage2-compact" id="stage-2">
-      <div class="container">
-        <SharePurchasing
-          roleTitle={isEs
-            ? 'Paquete de Instrumentación de Control de Procesos (Balanza Marcy + Filtro Batch + Tamices ASTM E11)'
-            : 'Process Control Instrumentation Package (Marcy Scale + Lab Batch Filter + ASTM E11 Sieves)'}
-          specs={isEs
-            ? 'Balanza Marcy vaso 1000 cm³ (12 anillos SG 2.2-4.4), Filtro Presión Batch 100 psi y Tamices ASTM E11'
-            : 'Marcy Scale 1000 cm³ cup (12 dials SG 2.2-4.4), 100 psi Batch Pressure Filter & ASTM E11 Test Sieves'}
-          metallurgy={isEs ? 'Acero Inoxidable 304 / 316 y Bronce sin costuras' : 'Seamless 304 / 316 Stainless Steel & Brass'}
-          series={isEs ? 'Control Metalúrgico SMAT' : 'SMAT Metallurgical Control Line'}
-          roleId="balanza_marcy"
-          circuit="control_procesos"
-          lang={lang}
-        />
+          <div class="stage2-compact smat-mt-sm" id="stage-2">
+            <SharePurchasing
+              roleTitle={isEs
+                ? 'Paquete de Instrumentación de Control de Procesos (Balanza Marcy + Filtro Batch + Tamices ASTM E11)'
+                : 'Process Control Instrumentation Package (Marcy Scale + Lab Batch Filter + ASTM E11 Sieves)'}
+              specs={isEs
+                ? 'Balanza Marcy vaso 1000 cm³ (12 anillos SG 2.2-4.4), Filtro Presión Batch 100 psi y Tamices ASTM E11'
+                : 'Marcy Scale 1000 cm³ cup (12 dials SG 2.2-4.4), 100 psi Batch Pressure Filter & ASTM E11 Test Sieves'}
+              metallurgy={isEs ? 'Acero Inoxidable 304 / 316 y Bronce sin costuras' : 'Seamless 304 / 316 Stainless Steel & Brass'}
+              series={isEs ? 'Control Metalúrgico SMAT' : 'SMAT Metallurgical Control Line'}
+              roleId="balanza_marcy"
+              circuit="control_procesos"
+              lang={lang}
+            />
+          </div>
+        </details>
       </div>
     </section>
 

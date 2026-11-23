@@ -24,6 +24,8 @@ pub mod v50_canonical_islands_and_two_sort_gate;
 pub use v50_canonical_islands_and_two_sort_gate::*;
 pub mod v51_runtime_schema_and_zero_placebo_gate;
 pub use v51_runtime_schema_and_zero_placebo_gate::*;
+pub mod v53_landmarks_and_zero_orphan_gate;
+pub use v53_landmarks_and_zero_orphan_gate::*;
 
 pub struct GateReport {
     pub name: String,
@@ -208,6 +210,7 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
         make_gate_report("50. Clausura Solar WCAG AAA (>=7.0:1) + APCA (|Lc|>=75), Variables var(--*) Cerradas, Extraccion CSS [slug] (<550 LOC), Display-First Vertical y Tour 27/27 (Gate 48J D1-V481..D5-V481)", check_v481_solar_contrast_token_closure_and_tour27_gate_48j(site_root), "OK: Contraste solar WCAG AAA + APCA >= 75, tokens :root sin huecos, CSS compartido productSlugSolar.css, Estrato 1 Display-First y ergos/tour.toml 27/27."),
         make_gate_report("51. Islas Canonicas Unicas V5.0, Contrato Two-Sort EngineSchema <-> DOM, XDSM DAG Puro, Purga de Debris DEB-V50-01..16 y Biyeccion Static-Hash 19 SKUs (Gate V5.0)", check_v50_canonical_islands_and_two_sort_gate_51(site_root), "OK: 11 dominios Two-Sort 100% biyectivos en DOM, XDSM DAG puro, quoteWizardController <450 LOC, Islas Canonicas ES/EN, 0 debris y SSOT 19 SKUs verificados."),
         make_gate_report("52. Contrato Runtime Ejecutable EngineSchema <-> DOM, 7+2 Cores Unicos sin isEmbedded ni Placebos, Higiene Apple HIG y Cero Fugas ES V5.1 (Gate V5.1)", check_v51_runtime_schema_and_zero_placebo_gate_52(site_root), "OK: 7+2 Cores compartidos, 0 isEmbedded, QuoteWizard <480 LOC, lib.rs <650 LOC, 0 inline styles/emojis/placebos, PWA+/admin/ y 0 fugas ES."),
+        make_gate_report("53. Landmarks Unicos <main>, Etiquetas Humanas, Bandeja Dialog, Outbox Idempotente, Sobol y Cero Exports JS Muertos V5.3 (Gate V5.3)", check_v53_landmarks_and_zero_orphan_gate_53(site_root), "OK: 1 <main>/pagina, 0 tokens crudos visibles, 0 exports JS muertos fuera de allowlist-11, Outbox reactiva y Sobol proyectado."),
     ]
 }
 
@@ -525,5 +528,12 @@ mod tests {
         let root = find_site_root();
         let res = check_v51_runtime_schema_and_zero_placebo_gate_52(&root);
         assert!(res.is_ok(), "Fallo en Gate 52 (V5.1 Contrato Runtime EngineSchema, Cores Unicos y Cero Placebos): {:?}", res.err());
+    }
+
+    #[test]
+    fn test_gate_53_v53_landmarks_and_zero_orphan() {
+        let root = find_site_root();
+        let res = check_v53_landmarks_and_zero_orphan_gate_53(&root);
+        assert!(res.is_ok(), "Fallo en Gate 53 (V5.3 Landmarks <main>, Etiquetas Humanas, Dialog, Outbox, Sobol y Zero Dead Exports): {:?}", res.err());
     }
 }

@@ -119,14 +119,16 @@
 
 .dossier-sla-bar {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: 0.45rem 0.75rem;
   background: #ffffff;
   border-left: 2px solid var(--smat-emergency-red);
   border-top: 1px solid var(--smat-border-light);
   border-right: 1px solid var(--smat-border-light);
   border-bottom: 1px solid var(--smat-border-light);
-  padding: 0.4rem 0.6rem;
+  padding: 0.5rem 0.65rem;
   font-size: 0.72rem;
   margin-bottom: 1rem;
 }

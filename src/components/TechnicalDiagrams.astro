@@ -13,10 +13,11 @@ interface Props {
   lang?: 'es' | 'en';
   compact?: boolean;
   showXrayOverlay?: boolean;
+  showXrayLegend?: boolean;
   instanceId?: string;
 }
 
-const { lang = 'es', compact = false, showXrayOverlay = true, instanceId } = Astro.props;
+const { lang = 'es', compact = false, showXrayOverlay = true, showXrayLegend = true, instanceId } = Astro.props;
 const seq = ((globalThis as any).__smatSvgInstanceSeq = ((globalThis as any).__smatSvgInstanceSeq || 0) + 1);
 const uid = instanceId || `s${seq}`;
 const rawDiagram = (Astro.props.diagram ?? Astro.props.type ?? 'pump') as string;
@@ -68,7 +69,7 @@ const activeTitle = (TITLES[diagram] || TITLES.pump)[isEs ? 0 : 1];
 <figure class={`tech-diagram-frame ${compact ? 'tech-diagram-compact' : ''}`} role="img" data-diagram-id={rawDiagram} data-resolved-diagram={diagram} aria-label={isEs ? `Diagrama técnico: ${rawDiagram}` : `Technical diagram: ${rawDiagram}`}>
   <div class="tech-diagram-header">
     <span class="tech-diagram-code">{activeTitle}</span>
-    <span class="tech-diagram-scale" data-iso7810-scale="0.76mm">{isEs ? 'CAD 1:1 • REF. TARJETA ISO 7810 (0.76 MM)' : 'CAD 1:1 • ISO 7810 CARD REF (0.76 MM)'}</span>
+    <span class="tech-diagram-scale" data-iso7810-scale="0.76mm">{isEs ? 'Escala técnica • Ref. 0.76 mm' : 'Technical scale • 0.76 mm ref.'}</span>
   </div>
   <div class="tech-diagram-canvas">
     <PumpDiagrams diagram={diagram} isEs={isEs} xrayWearClass={xrayWearClass} uid={uid} />
@@ -76,11 +77,11 @@ const activeTitle = (TITLES[diagram] || TITLES.pump)[isEs ? 0 : 1];
     <FlotationFiltrationDiagrams diagram={diagram} isEs={isEs} xrayWearClass={xrayWearClass} uid={uid} />
     <LabMetrologyDiagrams diagram={diagram} isEs={isEs} xrayWearClass={xrayWearClass} uid={uid} />
   </div>
-  {showXrayOverlay && (
+  {showXrayOverlay && showXrayLegend && (
     <figcaption class="tech-diagram-xray-bar" data-layer="xray-wear">
-      <span class="xray-band xray-band--critical"><i class="xray-dot smat-xray-red"></i>{isEs ? 'Rojo (#dc2626): Zona Abrasión Crítica / Claro δ' : 'Red (#dc2626): Critical Wear / δ Gap'}</span>
-      <span class="xray-band xray-band--medium"><i class="xray-dot smat-xray-solar"></i>{isEs ? 'Ámbar (#7c2d12): Desgaste Secundario / Sellado' : 'Amber (#7c2d12): Secondary Wear / Sealing'}</span>
-      <span class="xray-band xray-band--structural"><i class="xray-dot smat-xray-blue"></i>{isEs ? 'Azul (#0284c7): Soporte / Ajuste 1:1' : 'Blue (#0284c7): Support / 1:1 Fit'}</span>
+      <span class="xray-band xray-band--critical"><i class="xray-dot smat-xray-red"></i>{isEs ? 'Rojo: Zona Abrasión Crítica / Claro δ' : 'Red: Critical Wear / δ Gap'}</span>
+      <span class="xray-band xray-band--medium"><i class="xray-dot smat-xray-solar"></i>{isEs ? 'Ámbar: Desgaste Secundario / Sellado' : 'Amber: Secondary Wear / Sealing'}</span>
+      <span class="xray-band xray-band--structural"><i class="xray-dot smat-xray-blue"></i>{isEs ? 'Azul: Soporte / Ajuste 1:1' : 'Blue: Support / 1:1 Fit'}</span>
       <span class="xray-band xray-band--iso">{isEs ? 'Escala cotidiana: 1 Tarjeta ISO/IEC 7810 = 0.76 mm' : 'Everyday scale: 1 ISO/IEC 7810 Card = 0.76 mm'}</span>
     </figcaption>
   )}

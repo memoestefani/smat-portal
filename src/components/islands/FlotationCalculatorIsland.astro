@@ -91,8 +91,12 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
           </div>
 
           {variant === 'hub' ? (
-            <>
-              <div class="grid-2 smat-mb-md">
+            <details class="wb-progressive-drawer smat-mb-md" id="flot-catalog-matrix-drawer">
+              <summary class="wb-progressive-summary">
+                <span>{isEs ? 'Ver líneas de equipo (Celdas 50–300 ft³ / Rotores) y matriz de acople 1:1' : 'View Equipment Lines (50–300 ft³ Cells / Rotors) & 1:1 Compatibility Matrix'}</span>
+                <span>▾</span>
+              </summary>
+              <div class="grid-2 smat-mt-sm smat-mb-md">
                 <div class="card">
                   <h3>{isEs ? 'Mecanismos para Celdas de Flotación y Acondicionadores' : 'Flotation Cell & Conditioner Mechanisms'}</h3>
                   <p>
@@ -185,7 +189,7 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
                   </table>
                 </div>
               </div>
-            </>
+            </details>
           ) : (
             <>
               <h2>{variant === 'cells'
@@ -249,16 +253,22 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
                 </div>
               )}
 
-              <div class="flotation-selector-box" data-testid="flotation-contextual-selector">
-                <span class={`badge ${variant === 'cells' ? 'badge-opex' : 'badge-copper'}`}>{isEs ? 'PRE-SELECCIÓN CONTEXTUAL • PUENTE A COTIZADOR' : 'CONTEXTUAL PRE-SELECTION • QUOTE BRIDGE'}</span>
-                <h3>{isEs ? 'Seleccione Volumen de Celda y Condición Operativa' : 'Select Cell Volume & Duty Regime'}</h3>
-                <div class="smat-cta-row">
-                  <a href={`${quoteBase}?circuito=flotacion&equipo=${quoteEquipo}&serie=50ft&flot_condition=sulfuros_alta_agitacion#rfq`} class="btn btn-outline">50 ft³ • {isEs ? 'Sulfuros' : 'Sulfides'}</a>
-                  <a href={`${quoteBase}?circuito=flotacion&equipo=${quoteEquipo}&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq`} class="btn btn-outline">100 ft³ • {isEs ? 'Sulfuros' : 'Sulfides'}</a>
-                  <a href={`${quoteBase}?circuito=flotacion&equipo=${quoteEquipo}&serie=200ft&flot_condition=reactivos_espuma#rfq`} class="btn btn-outline">200 ft³ • {isEs ? 'Reactivos' : 'Reagents'}</a>
-                  <a href={`${quoteBase}?circuito=flotacion&equipo=${quoteEquipo}&serie=300ft&flot_condition=arena_gruesa_fondo#rfq`} class="btn btn-outline">300 ft³ • {isEs ? 'Arena Gruesa' : 'Coarse Sand'}</a>
+              <details class="wb-progressive-drawer smat-mb-md" id="flot-presets-drawer">
+                <summary class="wb-progressive-summary">
+                  <span>{isEs ? 'Pre-selección por volumen de celda (50 / 100 / 200 / 300 ft³)' : 'Cell volume pre-selection (50 / 100 / 200 / 300 ft³)'}</span>
+                  <span>▾</span>
+                </summary>
+                <div class="flotation-selector-box smat-mt-sm" data-testid="flotation-contextual-selector">
+                  <span class={`badge ${variant === 'cells' ? 'badge-opex' : 'badge-copper'}`}>{isEs ? 'PRE-SELECCIÓN CONTEXTUAL • PUENTE A COTIZADOR' : 'CONTEXTUAL PRE-SELECTION • QUOTE BRIDGE'}</span>
+                  <h3>{isEs ? 'Seleccione Volumen de Celda y Condición Operativa' : 'Select Cell Volume & Duty Regime'}</h3>
+                  <div class="smat-cta-row">
+                    <a href={`${quoteBase}?circuito=flotacion&equipo=${quoteEquipo}&serie=50ft&flot_condition=sulfuros_alta_agitacion#rfq`} class="btn btn-outline">50 ft³ • {isEs ? 'Sulfuros' : 'Sulfides'}</a>
+                    <a href={`${quoteBase}?circuito=flotacion&equipo=${quoteEquipo}&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq`} class="btn btn-outline">100 ft³ • {isEs ? 'Sulfuros' : 'Sulfides'}</a>
+                    <a href={`${quoteBase}?circuito=flotacion&equipo=${quoteEquipo}&serie=200ft&flot_condition=reactivos_espuma#rfq`} class="btn btn-outline">200 ft³ • {isEs ? 'Reactivos' : 'Reagents'}</a>
+                    <a href={`${quoteBase}?circuito=flotacion&equipo=${quoteEquipo}&serie=300ft&flot_condition=arena_gruesa_fondo#rfq`} class="btn btn-outline">300 ft³ • {isEs ? 'Arena Gruesa' : 'Coarse Sand'}</a>
+                  </div>
                 </div>
-              </div>
+              </details>
             </>
           )}
 
@@ -281,7 +291,15 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
     {variant === 'hub' && (
       <section class="section circuit-nav-band">
         <div class="container">
-          <CircuitNavigator lang={lang} defaultCircuit="flotacion_polimetalica" />
+          <details class="wb-progressive-drawer" id="flot-circuit-nav-drawer">
+            <summary class="wb-progressive-summary">
+              <span>{isEs ? 'Diagrama P&ID de Circuito y Reglas Metalúrgicas de Flotación' : 'Flotation Circuit P&ID Diagram & Metallurgical Rules'}</span>
+              <span>▾</span>
+            </summary>
+            <div class="smat-mt-sm">
+              <CircuitNavigator lang={lang} defaultCircuit="flotacion_polimetalica" />
+            </div>
+          </details>
         </div>
       </section>
     )}

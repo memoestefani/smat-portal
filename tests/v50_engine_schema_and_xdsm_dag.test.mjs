@@ -43,6 +43,10 @@ import {
   solveXdsmMultidisciplinaryDag,
   computeSobolFirstOrderIndices
 } from '../src/scripts/wizardXdsmDagSolver.js';
+import {
+  computeOutboxRetryJitterMs,
+  enqueueIdempotentOutboxEntry
+} from '../src/scripts/leadOutboxStateMachine.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -314,4 +318,45 @@ test('SLICE-V50-08B: Dominio B2B puro migrado (URL context, grupos mineros, cód
   assert.ok(plain.includes('Durango'));
   assert.ok(plain.includes('5 pza(s)'));
   assert.ok(plain.includes('TAG-P5'));
+});
+
+test('SLICE-V53-21: Outbox idempotente, Sobol Dossier (live-table-sobol-drivers) y poda de exports muertos', async () => {
+  const j1 = computeOutboxRetryJitterMs(1);
+  const j4 = computeOutboxRetryJitterMs(4);
+  const j9 = computeOutboxRetryJitterMs(9);
+  assert.ok(j1 >= 1000 && j1 < j4 && j9 <= 30450, 'Backoff con jitter determinista acotado');
+
+  const q = enqueueIdempotentOutboxEntry(
+    [{ idempotencyKey: 'F-1', status: 'sending', attempts: 1 }],
+    { idempotencyKey: 'F-1', folio: 'F-1', status: 'pending', attempts: 2 }
+  );
+  assert.equal(q.length, 1);
+  assert.equal(q[0].status, 'pending');
+  assert.equal(q[0].attempts, 2);
+
+  const projectorSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/wizardDossierProjector.js'), 'utf8');
+  assert.ok(projectorSrc.includes('live-table-sobol-drivers'));
+  assert.ok(projectorSrc.includes('computeSobolFirstOrderIndices'));
+
+  const [projMod, xdsmMod, homeMod, wbMod, catMod, bindMod, lensMod, routeMod] = await Promise.all([
+    import('../src/scripts/wizardDossierProjector.js'),
+    import('../src/scripts/wizardXdsmDagSolver.js'),
+    import('../src/scripts/homeAndEquipmentCatalogFilter.js'),
+    import('../src/scripts/workbenchBus.js'),
+    import('../src/scripts/catalogFacetedViewModel.js'),
+    import('../src/scripts/schemaRuntimeBinder.js'),
+    import('../src/scripts/wizardStateAndUrlLens.js'),
+    import('../src/scripts/wizardUrlAndPresetRouter.js')
+  ]);
+  assert.equal('renderWetEndMaterialMatrix' in projMod, false);
+  assert.equal('XDSM_DISCIPLINE_GRAPH' in xdsmMod, false);
+  assert.equal('applyHomeAvenueCatalogFilter' in homeMod, false);
+  assert.equal('DEFAULT_WORKBENCH_STATE_V2' in wbMod, false);
+  assert.equal('normalizeWorkbenchStateV2' in wbMod, false);
+  assert.equal('CATALOG_FAMILY_CHIPS' in catMod, false);
+  assert.equal('readDomainInputs' in bindMod, false);
+  assert.equal('CANONICAL_WORKBENCH_STORAGE_KEY' in lensMod, false);
+  assert.equal('saveUserProfileSnapshot' in lensMod, false);
+  assert.equal('FLOTATION_DOM_CHIP_MAP' in routeMod, false);
+  assert.equal('FILTRATION_DOM_CHIP_MAP' in routeMod, false);
 });

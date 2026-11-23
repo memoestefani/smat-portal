@@ -8,8 +8,6 @@
  * (UNREAD RETURNS) y acoplamiento JRP (predictedWearHours, operatingHoursPerDay, criticalityMode).
  */
 
-import { projectDomainOutputs, readAllCanonicalInputs, verifyVplDomScopeContainment } from './schemaRuntimeBinder.js';
-import { solveXdsmMultidisciplinaryDag } from './wizardXdsmDagSolver.js';
 import {
   formatDossierCircuitPhysicsRow,
   formatDossierMetrologyBadge,
@@ -19,6 +17,7 @@ import {
   computeCmuPriorityDescriptor,
   getTrayState
 } from './requisitionTrayBus.js';
+import { projectDomainOutputs, readAllCanonicalInputs, verifyVplDomScopeContainment } from './schemaRuntimeBinder.js';
 import {
   buildSapAnexo22ComplianceSummary
 } from './vendorPassportAndTradeInController.js';
@@ -37,6 +36,7 @@ import {
   buildSmatCode,
   projectWorkbenchToDOM
 } from './wizardMiningAndCodeDecoder.js';
+import { computeSobolFirstOrderIndices, solveXdsmMultidisciplinaryDag } from './wizardXdsmDagSolver.js';
 import {
   formatNioshErgonomicStatus,
   getAtomicPartSpecs,
@@ -61,7 +61,7 @@ export function flashInk(el) {
  * @param {string} matKey
  * @param {Record<string, any>} ctx
  */
-export function renderWetEndMaterialMatrix(matKey, ctx = {}) {
+function renderWetEndMaterialMatrix(matKey, ctx = {}) {
   const doc = ctx.doc || (typeof document !== 'undefined' ? document : null);
   return renderWetEndMaterialMatrixCard(matKey, {
     doc,
@@ -592,12 +592,12 @@ export function projectLiveDossierSummary(ctx = {}) {
     const cmuNow = dagSnapshot.cmuDescriptor && dagSnapshot.cmuDescriptor.priorityCode
       ? dagSnapshot.cmuDescriptor
       : computeCmuPriorityDescriptor({
-          urgency: isOpex ? 'paro_de_linea' : 'programado',
-          criticalityMode: isOpex ? 'PARO_DE_LINEA' : 'STOCK_SS',
-          items: trayStateNow.items || [],
-          estimatedTotalMxn: isOpex ? 18500 : 85000,
-          stockRegime: isOpex ? 'hay' : 'se_fabrica'
-        });
+        urgency: isOpex ? 'paro_de_linea' : 'programado',
+        criticalityMode: isOpex ? 'PARO_DE_LINEA' : 'STOCK_SS',
+        items: trayStateNow.items || [],
+        estimatedTotalMxn: isOpex ? 18500 : 85000,
+        stockRegime: isOpex ? 'hay' : 'se_fabrica'
+      });
 
     const dagMarcy = dagSnapshot.marcyEval || {};
     const dagGy = dagSnapshot.gyEval || {};
@@ -704,8 +704,8 @@ export function projectLiveDossierSummary(ctx = {}) {
     if (elTrustAlert) {
       if (gateOut.activeTrustBoundaryId) {
         elTrustAlert.classList.remove('hidden');
-        if (elTrustTitle) elTrustTitle.textContent = gateOut.activeTrustBoundaryTitleEs;
-        if (elTrustReason) elTrustReason.textContent = gateOut.activeTrustBoundaryReasonEs;
+        if (elTrustTitle) elTrustTitle.textContent = isEs ? gateOut.activeTrustBoundaryTitleEs : (gateOut.activeTrustBoundaryTitleEn || gateOut.activeTrustBoundaryTitleEs);
+        if (elTrustReason) elTrustReason.textContent = isEs ? gateOut.activeTrustBoundaryReasonEs : (gateOut.activeTrustBoundaryReasonEn || gateOut.activeTrustBoundaryReasonEs);
       } else {
         elTrustAlert.classList.add('hidden');
       }
@@ -715,6 +715,35 @@ export function projectLiveDossierSummary(ctx = {}) {
     const physRow = formatDossierCircuitPhysicsRow(state.currentCircuit, engCtxNow, updatedPartSpecs, isEs, matCodeVal);
     setTextId('live-table-circuit-physics-label', physRow.label);
     setTextId('live-table-circuit-physics-val', physRow.value);
+
+    const sobolRes = computeSobolFirstOrderIndices(
+      (v) => Number(v.Q || 180) * 0.65 + Number(v.Cw || 45) * 1.4 + Number(v.d80 || 180) * 0.08,
+      [
+        { name: 'Q', min: 20, max: 2500 },
+        { name: 'Cw', min: 10, max: 70 },
+        { name: 'd80', min: 25, max: 1500 },
+      ],
+      24
+    );
+    const sobolVarHuman = (name) => {
+      if (name === 'Q') return isEs ? 'Caudal' : 'Flow';
+      if (name === 'Cw') return isEs ? 'Sólidos' : 'Solids';
+      return 'd80';
+    };
+    const sobolTopText = sobolRes.ranked
+      .slice(0, 2)
+      .map((item) => `${sobolVarHuman(item.name)} ${(item.si * 100).toFixed(0)}%`)
+      .join(' · ');
+    const flowNow = Number(canonInputs.flowM3H || 180);
+    const isClamped =
+      flowNow <= 10 || flowNow >= 3000 ||
+      solidsVal <= 5 || solidsVal >= 75 ||
+      d80Val <= 20 || d80Val >= 2000 ||
+      phVal <= 1 || phVal >= 14;
+    const boundNote = isClamped
+      ? (isEs ? 'Aviso de acotamiento (límite físico activo)' : 'Physical boundary limit active')
+      : (isEs ? 'Parámetros dentro de rango físico' : 'Within physical bounds');
+    setTextId('live-table-sobol-drivers', `${sobolTopText} • ${boundNote}`);
 
     const elMetrologyCard = doc.getElementById('wb-metrology-bridge-card');
     const elMetrologyText = doc.getElementById('wb-metrology-bridge-text');

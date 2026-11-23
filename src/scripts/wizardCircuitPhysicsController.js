@@ -197,7 +197,7 @@ function normalizeEngineeringContextInput(circuitOrPartial = {}, maybePayload = 
  * @param {any} [maybePayloadOrBase]
  * @returns {any}
  */
-export function mergeEngineeringContext(circuitOrPartial = {}, maybePayloadOrBase = null) {
+function mergeEngineeringContext(circuitOrPartial = {}, maybePayloadOrBase = null) {
   const isTwoArgSlugCall = typeof circuitOrPartial === 'string';
   const partial = normalizeEngineeringContextInput(
     circuitOrPartial,
@@ -659,7 +659,7 @@ export function bindWizardCircuitCalculators(wizardRoot, onPhysicsUpdate = null)
         driverPulleyMm: driveEval.driverPulleyMm,
         drivenPulleyMm: driveEval.drivenPulleyMm,
         motorPowerKw: driveEval.shaftPowerKw,
-        pipeSeries,
+        pipeSeries: canonical.pipeSeries,
         bearingFrameCode: driveEval.bearingFrameCode,
         bearingCartridgeCode: driveEval.bearingCartridgeCode,
         bearingL10Hours: driveEval.bearingL10Hours,

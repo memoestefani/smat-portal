@@ -1,4 +1,4 @@
-# Guía Canónica de Despliegue ($0/mes) — SMAT Minerals Site v3.1
+# Guía Canónica de Despliegue ($0/mes) — SMAT Minerals Site v5.3
 
 > **Repositorio:** [`memoestefani/smat-portal`](https://github.com/memoestefani/smat-portal) (rama de producción: `main`)  
 > **Dominio:** https://smatminerals.com  
@@ -24,7 +24,7 @@ No hay variables de entorno obligatorias. Única opcional: `PUBLIC_GA_ID`.
 
 ## 2. Invariantes que Bloquean un Despliegue
 
-Un cambio **no se publica** si alguno falla. Las 26 compuertas viven en [`crates/smat-gate`](crates/smat-gate/src/lib.rs) y los 230 tests en [`tests/b2b_functions.test.mjs`](tests/b2b_functions.test.mjs) + [`tests/slurry_engine.test.mjs`](tests/slurry_engine.test.mjs):
+Un cambio **no se publica** si alguno falla. Las **53 compuertas** viven en [`crates/smat-gate`](crates/smat-gate/src/lib.rs) y las **7 suites de pruebas en Node.js** en `tests/*.test.mjs`:
 
 1. **Paridad de catálogo:** `data/roles.json` y `data/roles.copy.json` idénticos byte a byte (ambos versionados en Git).
 2. **Cero fugas comerciales:** sin `$` seguido de cifras ni `margen:` en `data/`, `public/` o `src/`.
@@ -35,7 +35,7 @@ Un cambio **no se publica** si alguno falla. Las 26 compuertas viven en [`crates
 7. **Simetría bilingüe** ES/EN y 40 redirecciones 301 válidas.
 8. **NAP consistente** (Mariano Salas #114, Durango).
 9. **Cabeceras de seguridad** (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`) y vista imprimible del acuse.
-10. **IDs críticos del cotizador** (`rfq`, `live-folio`, `wb-pdf-btn`, `wb-copy-btn`, etc.).
+10. **IDs críticos del cotizador** (`rfq`, `live-folio`, `wb-pdf-btn`, `wb-copy-btn`, `wb-submit-outbox-btn`, etc.).
 
 ### Directivas de Don Manuel (revisión de campo antes de publicar)
 Antes de cada publicación verifica que no reaparezcan:
@@ -51,7 +51,7 @@ Antes de cada publicación verifica que no reaparezcan:
 Desde `c:\Users\52331\Documents\Proyectos\smat\site`:
 
 ```powershell
-# Verificación completa unificada (tipos + 140 tests + 20 compuertas Rust + build estático)
+# Verificación completa unificada (tipos + 7 suites Node.js + 53 compuertas Rust + build estático)
 npm run preflight
 ```
 
@@ -59,9 +59,9 @@ Si deseas ejecutar cada etapa individualmente:
 
 ```powershell
 npx astro check                               # esperado: 0 errors, 0 warnings
-npm test                                      # esperado: 140 pass, 0 fail
-npm run gate                                  # esperado: 20/20 PASS
-npx astro build                               # genera dist/ (52 páginas estáticas)
+npm test                                      # esperado: 7 suites pass, 0 fail
+npm run gate                                  # esperado: 53/53 PASS
+npx astro build                               # genera dist/
 npm run preview                               # revisión visual en http://localhost:4321
 ```
 
@@ -173,4 +173,6 @@ Si algo sale mal tras publicar:
 - **v4.5 (`GOLD-721` / `ARB-SMAT-53` / `Gate 48`):** Bus Isomórfico Glitch-Free `verticalStateAndCtaSyncBridge.js` (`commitVerticalSimulation`, `syncVerticalCtaLinks`, `loadUnifiedEngineeringAndWorkbenchState`) sincronizando `smat_engineering_context_v1` y `smat_workbench_state_v2` sin pérdida (`saveEngineeringContextSnapshot` hace merge sobre `loadEngineeringContextSnapshot()`), hidratación JRP $(s,S)$ dinámica por partida en `/acuse/` (`acuseSheetController.js`), calculadora Gorain $S_b$ + Zwietering $N_{js}$ en `/flotacion/`, componente SSOT `<CatalogAvenuesMatrix />` (7 Avenidas / 19 SKUs + 5ª rama `hybrid_a05_r55`) en `/catalogo/`, botones de descarga del Pasaporte B2B (`.vcf` / `.json`) en `SharePurchasing.astro` y `/acuse/`, sufijo monotónico SSR `uid` en los 13 `<pattern>` de `TechnicalDiagrams.astro` (`INV-ERG-23 = 0` duplicados), pliegue above-the-fold (`INV-ERG-11/12`), ley de Fitts $\ge 48 \times 48\text{ px}$ y contraste solar WCAG AAA $\ge 7.2:1$ sin interpolación gris en `.diag-pill` (`ergos.exe tour` `5/5` Conforme en `tepehuana` y `ingeniero_apple_mac`).
 - **v4.6 (`GOLD-721` / `ARB-SMAT-54` / `Gate 48G`):** Clausura Residual 100% de Persistencia en `/bombeo/soporte/` y `/en/pumping/bearing-assembly/` vía `commitVerticalSimulation('bombeo', ...)`, Lente `Pinned-Key Alignment` (`data-card-fixed-params="material"|"seal_branch"` y `codigo=`) en `syncVerticalCtaLinks`, paridad 5/5 materiales SSOT (`hybrid_a05_r55`) en `/bombeo/{impulsor,revestimientos}/` y `/en/pumping/{impeller,liners}/`, canonicalización de las 9/9 filas de series con `circuito=bombeo` en `/catalogo/` y `/en/catalog/`, botón directo `+ Bandeja` (`[data-add-tray-sku]`, `bindAtomicPartTrayButtons`) en `#fichas-atomicas` y sub-rutas de bombeo, proyección `Def-Use` de `PUMP_554_ASSEMBLY_STATIONS` en `PumpAssemblyReport.astro` (`945 LOC < 950 LOC`) con extracción modular $\text{LCOM}_4 = 1$ ($\partial(C) = 0$) de `pumpAssemblyReportController.js`, pureza escalar ISO 80000-1 desde el HTML SSR en `#seal-pbox-out` y `#trib-kic-out` (`0` paréntesis), `366` tests en Node.js (`22` suites), `41` tests unitarios en Rust y `46/46` compuertas deterministas en `smat-gate` (`SIRA = 100%`).
 - **v4.7 (`GOLD-721` / `ARB-SMAT-55` / `Gate 48H`):** Par Focal Ortogonal (`1 Primario + 1 Secundario`) en `.hero-actions` de `/` y `/en/` (`3.3b`, eliminando los 2 botones redundantes de `/bombeo/#pump-assembly-report` y `/clasificacion/`), partición cociente $\mathcal{C}_{19} / \sim_{\text{avenue}}$ en las 7 Avenidas SSOT (`[data-home-avenue-group]`, `AV-01`..`AV-07`) dentro de `#home-quick-catalog-drawer` (`3.4b-1`) con ocultamiento automático de grupos vacíos mediante el módulo compartido $\text{LCOM}_4 = 1$ ($\partial(C) = 0$) `homeAndEquipmentCatalogFilter.js`, proyección SSOT de los 19 SKUs canónicos con buscador léxico instantáneo `#equipos-sku-search` (`min-height: 48px`) y botón directo `+ Bandeja` (`[data-add-tray-sku]`) en `/equipos/` y `/en/process-equipment/` (`3.4b-2`), `369` tests en Node.js (`22` suites), `41` tests unitarios en Rust y `46/46` compuertas deterministas en `smat-gate` (`SIRA = 100%`).
-- **v5.0 (actual — `GOLD-740` / `ARB-SMAT-58` / `Gate 51`):** Arquitectura de **11 Islas Canónicas Únicas** ES/EN con **18 pares** de rutas wrapper delgadas (`<= 35 LOC` en páginas estáticas), partición estática **Two-Sort `EngineSchema <-> DOM`** (`engineSchemaRegistry.js`, 11 dominios, 0 `innerHTML`/eval), núcleo DAG XDSM puro (`wizardXdsmDagSolver.js` sin acceso al DOM + adelgazamiento modular `quoteWizardController.js` a `394 LOC` y `TechnicalDiagrams.astro` a `100 LOC`), purga física de `QuickPartSelectorStrip.astro` y `#home-quick-catalog-drawer` (`dist/index.html = 59,379 bytes < 90 KB`), eliminación de IDs duplicados y empuje móvil en `/clasificacion/`, consolidación a **6 suites** no-vacuas (`45/45` tests JS sin omisiones), **`Gate 51`** en `smat-gate` (`49/49` compuertas en `--check` y `45/45` unit tests en Rust), paridad `ortho` (`budget-guard` y `surface-guard --strict` con `0` violaciones), `faro` `SIRA = 100%` y gira headless CDP `ergos` `27/27 ✅ Conforme` (`0` hallazgos críticos) tanto en `tepehuana` como en `ingeniero_apple_mac`.
+- **v5.0 (`GOLD-740` / `ARB-SMAT-58` / `Gate 51`):** Arquitectura de **11 Islas Canónicas Únicas** ES/EN con **18 pares** de rutas wrapper delgadas (`<= 35 LOC` en páginas estáticas), partición estática **Two-Sort `EngineSchema <-> DOM`** (`engineSchemaRegistry.js`, 11 dominios, 0 `innerHTML`/eval), núcleo DAG XDSM puro (`wizardXdsmDagSolver.js` sin acceso al DOM + adelgazamiento modular `quoteWizardController.js` a `394 LOC` y `TechnicalDiagrams.astro` a `100 LOC`), purga física de `QuickPartSelectorStrip.astro` y `#home-quick-catalog-drawer` (`dist/index.html = 59,379 bytes < 90 KB`), eliminación de IDs duplicados y empuje móvil en `/clasificacion/`, consolidación a **6 suites** no-vacuas (`45/45` tests JS sin omisiones), **`Gate 51`** en `smat-gate` (`49/49` compuertas en `--check` y `45/45` unit tests en Rust), paridad `ortho` (`budget-guard` y `surface-guard --strict` con `0` violaciones), `faro` `SIRA = 100%` y gira headless CDP `ergos` `27/27 ✅ Conforme` (`0` hallazgos críticos) tanto en `tepehuana` como en `ingeniero_apple_mac`.
+- **v5.3 (Ola C1+C2 — `GOLD-745` / `ARB-SMAT-61` / `Gate 53`):** Clausura integral **Ola C1 + C2**: landmark único `<main>` en el 100% de páginas compiladas (incluyendo `AcuseSheetIsland.astro` y rutas legales/producto), diccionario humano `i18nDomainLabels.js` sin tokens crudos ni `CAPEX`/`OPEX`, bandeja unificada en `<dialog id="smat-qtray-drawer">` con tecla `Escape` y blancos táctiles Fitts `>= 48px`, apertura contextual de parámetros Tier 2 en `PumpingHydraulicsCore.astro`, badge offline reactivo `#smat-offline-status` (`hidden` en reposo), cola local idempotente con jitter acotado (`#wb-submit-outbox-btn` en Paso 3 de `QuoteWizard.astro`), proyección de drivers Sobol $S_1$ en `#live-table-sobol-drivers` con `.mini-dossier-bar` no oclusiva (`position: static`), erradicación de los `12` exports JS muertos fuera de la allowlist de `11` contratos de test, **`Gate 53`** (`53/53` compuertas Rust en `--check`, `47` unit tests Rust, `7` suites Node.js sin fallos) y tour headless CDP `ergos` `27/27 ✅ Conforme`.
+- **v5.3.1 (actual — Ola C3 / `ARB-SMAT-62` / `Gate 53`):** Cierre completo **APL-01..04**: checkboxes Fitts (`20x20 px` dentro de `<label>` `>= 48px`), fuente única `SMAT_SUPPLY_DOORS` en Portada/Navbar/Footer/Islas verticales (`Equipos`, `Bombas`, `Control`), barra de navegación de una sola fila con 5 enlaces concisos, erradicación en DOM vivo de `CAJA_CHICA_CFDI40`, `ROPING_CORDON`, `Tray: v3` y `Driver Sobol:`, `#live-date` dinámico sincronizado con folio, revelación progresiva `Cowan <= 8.50` en catálogo y núcleos/islas de control y tribología, y candados anti-regresión en `Gate 53`.

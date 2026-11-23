@@ -163,6 +163,7 @@ test('V50-T2 Paridad Islas Canónicas, Wrappers Bilingües y Estrato-1 Above-the
     ['src/pages/clasificacion/index.astro', 'src/pages/en/classification/index.astro', 'CycloneScreenIsland'],
     ['src/pages/control-de-procesos/index.astro', 'src/pages/en/process-control/index.astro', 'ProcessControlIsland'],
     ['src/pages/catalogo/[code].astro', 'src/pages/en/catalog/[code].astro', 'AtomicPartIsland'],
+    ['src/pages/acuse.astro', 'src/pages/en/thank-you.astro', 'AcuseSheetIsland'],
   ];
 
   for (const [esRel, enRel, expectedIsland] of wrapperPairs) {
@@ -239,6 +240,15 @@ test('V50-T3 Cero Debris Arqueológico, Cero Metalenguaje, Cero #b45309/#d97706 
   assert.equal(totalSkus, 19, 'El catálogo rápido SSOT debe mantener exactamente 19 SKUs canónicos (zero bloat)');
   const integrity = verifyCatalogReferentialIntegrity();
   assert.equal(integrity.valid, true, 'Integridad referencial del catálogo 19 SKUs debe pasar');
+
+  for (const humanRel of [
+    'src/components/RequisitionTraySummary.astro',
+    'src/components/QuickOrderTray.astro',
+    'src/components/islands/AcuseSheetIsland.astro',
+  ]) {
+    const templateHtml = fs.readFileSync(path.join(SITE_ROOT, humanRel), 'utf8').replace(/^---[\s\S]*?---/, '').split('<script')[0];
+    assert.equal(/\bIMMEDIATE_PICK\b|\bFILTRO_BATCH_LAB\b|Índice cμ =/.test(templateHtml), false, `Token técnico crudo expuesto en ${humanRel}`);
+  }
 });
 
 test('V50-T4 Testigos Activos No-Vacuos (Δx => Δy ≠ 0) en los 11 dominios físicos y DOM reactivo', () => {

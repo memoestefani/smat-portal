@@ -8,7 +8,7 @@ import { evaluatePumpAssemblySequence } from './pumpAssemblyAndDriveEngine.js';
 import { commitVerticalSimulation, bindAtomicPartTrayButtons } from './verticalStateAndCtaSyncBridge.js';
 import { hydrateVerticalInputsFromUnifiedState, syncReactiveTraySkuButton } from './verticalBidirectionalHydrationLens.js';
 
-export const PUMPING_CALCULATOR_STATE = {
+const PUMPING_CALCULATOR_STATE = {
   version: '4.3.0',
   lastSealCalc: null,
   lastTribologyCalc: null,

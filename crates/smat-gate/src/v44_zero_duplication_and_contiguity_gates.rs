@@ -99,7 +99,7 @@ pub fn check_v44_scalar_purity_zero_duplication_and_xor_contiguity_gate_47(
             "id=\"csr-aperture-mm\"",
             "id=\"csr-relief-deg\"",
             "id=\"csr-feed-um\"",
-            "id=\"csr-weibull-out\"",
+            "id=\"wb-scr-res-weibull\"",
             "id=\"csr-rfq-link\"",
         ] {
             if !clas_src.contains(req_id) {

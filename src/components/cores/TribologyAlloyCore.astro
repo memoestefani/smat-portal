@@ -14,6 +14,7 @@ import {
   WET_END_MATERIAL_MATRIX,
   evaluateWetEndAssemblyInterference,
 } from '../../scripts/slurryEngine.js';
+import { formatNumericRange } from '../../scripts/i18nDomainLabels.js';
 
 interface Props {
   locale?: 'es' | 'en';
@@ -86,7 +87,7 @@ const defaultClearanceEval = evaluateWetEndAssemblyInterference({
       </div>
       <div class="smat-trib-kpi-card">
         <strong>{isEs ? 'Masa e Izaje NIOSH:' : 'NIOSH Mass & Rigging:'}</strong>{' '}
-        <span id="trib-arch-out">{isLiners ? '418 kg · 5 NIOSH ≥ 23 kg' : '492 kg · 6 NIOSH ≥ 23 kg'}</span>
+        <span id="trib-arch-out">{defaultClearanceEval.totalAssemblyMassKg} kg · {defaultClearanceEval.nioshHoistPartsCount} NIOSH ≥ 23 kg</span>
       </div>
       <div class="smat-trib-kpi-card">
         <strong>{isEs ? 'Pérdida Volumétrica Δην:' : 'Volumetric Loss Δην:'}</strong>{' '}
@@ -176,53 +177,52 @@ const defaultClearanceEval = evaluateWetEndAssemblyInterference({
         class="smat-trib-ctrl"
       />
     </label>
-
-    <label class="smat-trib-field">
-      <span>{isEs ? 'Velocidad Punta u₂ (m/s):' : 'Tip Speed u₂ (m/s):'}</span>
-      <input
-        type="number"
-        id="trib-u2-ms"
-        data-schema-input="tribology.tipSpeedMs"
-        min="10"
-        max="42"
-        step="0.5"
-        value={defaultU2}
-        class="smat-trib-ctrl"
-      />
-    </label>
-
-    <label class="smat-trib-field">
-      <span>{isEs ? 'pH de Pulpa:' : 'Slurry pH:'}</span>
-      <input
-        type="number"
-        id="trib-ph"
-        data-schema-input="tribology.pulpPh"
-        min="1.0"
-        max="14.0"
-        step="0.5"
-        value="7.5"
-        class="smat-trib-ctrl"
-      />
-    </label>
-
-    <label class="smat-trib-field">
-      <span>{isEs ? 'Serie de Bomba:' : 'Pump Series:'}</span>
-      <select id="trib-series" data-schema-input="tribology.pipeSeries" class="smat-trib-ctrl">
-        <option value="3x2">3x2 / 4x3</option>
-        <option value="6x4" selected>6x4</option>
-        <option value="8x6">8x6 / 10x8</option>
-      </select>
-    </label>
   </div>
 
-  <!-- Nivel 2 Acordeón: Torque del Impulsor (D6-V51), Secuencia Estacional 01–05, %Cw, b₂ y Cap. C -->
+  <!-- Nivel 2 Acordeón: Velocidad u₂, pH, Serie, Torque (D6-V51), Secuencia 01–05, %Cw, b₂ y Cap. C -->
   <details class="wb-progressive-drawer smat-mt-sm" id="tribology-tier2-params">
     <summary class="wb-progressive-summary">
-      <span>{isEs ? 'Secuencia de Armado 01–05, Torque en Flecha (Nm) y Geometría Impulsor' : 'Station 01–05 Assembly Sequence, Impeller Torque (Nm) & Geometry'}</span>
+      <span>{isEs ? 'Velocidad u₂, pH, Serie, Secuencia de Armado 01–05 y Torque (Nm)' : 'Tip Speed u₂, pH, Series, Station 01–05 Sequence & Torque (Nm)'}</span>
       <span class="wb-step1-more-arrow">▾</span>
     </summary>
     <div class="wb-progressive-body">
       <div class="smat-inputs-2col">
+        <label class="smat-trib-field">
+          <span>{isEs ? 'Velocidad Punta u₂ (m/s):' : 'Tip Speed u₂ (m/s):'}</span>
+          <input
+            type="number"
+            id="trib-u2-ms"
+            data-schema-input="tribology.tipSpeedMs"
+            min="10"
+            max="42"
+            step="0.5"
+            value={defaultU2}
+            class="smat-trib-ctrl"
+          />
+        </label>
+
+        <label class="smat-trib-field">
+          <span>{isEs ? 'pH de Pulpa:' : 'Slurry pH:'}</span>
+          <input
+            type="number"
+            id="trib-ph"
+            data-schema-input="tribology.pulpPh"
+            min="1.0"
+            max="14.0"
+            step="0.5"
+            value="7.5"
+            class="smat-trib-ctrl"
+          />
+        </label>
+
+        <label class="smat-trib-field">
+          <span>{isEs ? 'Serie de Bomba:' : 'Pump Series:'}</span>
+          <select id="trib-series" data-schema-input="tribology.pipeSeries" class="smat-trib-ctrl">
+            <option value="3x2">3x2 / 4x3</option>
+            <option value="6x4" selected>6x4</option>
+            <option value="8x6">8x6 / 10x8</option>
+          </select>
+        </label>
         <label class="smat-trib-field">
           <span>{isEs ? 'Validador de Secuencia (Estaciones 01–05):' : 'Assembly Sequence Validator (Stations 01–05):'}</span>
           <select id="wb-assembly-sequence" data-schema-input="tribology.assemblySequence" class="wb-select smat-trib-ctrl">
@@ -311,7 +311,7 @@ const defaultClearanceEval = evaluateWetEndAssemblyInterference({
       </span>
     </div>
     <div class="smat-inputs-2col smat-mat-spec-grid">
-      <div><strong>d₈₀ / pH:</strong> <span id="wb-mat-d80-ph">{defaultMatSpec.d80RangeMicrons} µm • pH {defaultMatSpec.phRange}</span></div>
+      <div><strong>d₈₀ / pH:</strong> <span id="wb-mat-d80-ph">{formatNumericRange(defaultMatSpec.d80RangeMicrons, 'µm', locale)} • pH {formatNumericRange(defaultMatSpec.phRange, '', locale)}</span></div>
       <div><strong>{isEs ? 'Piezas Lote:' : 'Lot Parts:'}</strong> <span id="wb-mat-parts-list">{(isEs ? defaultMatSpec.partsIncludedEs : defaultMatSpec.partsIncludedEn).join(', ')}</span></div>
     </div>
     <div id="wb-mat-duty-desc" class="smat-mat-duty-desc">
@@ -321,7 +321,7 @@ const defaultClearanceEval = evaluateWetEndAssemblyInterference({
     <div class="font-mono-tech smat-trib-active-strip">
       <span><strong id="wb-hybrid-verdict" data-schema-output="tribology.hybridRecommended">{isEs ? 'Monometálico Cr27 / R55' : 'Monometallic Cr27 / R55'}</strong> (<span id="wb-hybrid-mass-savings" data-schema-output="tribology.hybridMassSavingsPct">-31.8%</span>)</span>
       <span>Serie: <strong id="wb-asm-active-series" data-schema-output="tribology.activeSeries">6x4</strong></span>
-      <span>Masa: <strong id="wb-asm-active-weight" data-schema-output="tribology.activeWeightKg">492.0 kg</strong></span>
+      <span>Masa: <strong id="wb-asm-active-weight" data-schema-output="tribology.activeWeightKg">{defaultClearanceEval.totalAssemblyMassKg} kg</strong></span>
       <span>NIOSH: <strong id="wb-asm-active-hoist" data-schema-output="tribology.activeNioshHoistRequired">{isEs ? 'Izaje Mecánico (>=23 kg)' : 'Hoist Required (>=23 kg)'}</strong></span>
       <span>Mat: <strong id="wb-asm-active-material" data-schema-output="tribology.activeMaterialCode">A05</strong></span>
     </div>
@@ -512,5 +512,15 @@ const defaultClearanceEval = evaluateWetEndAssemblyInterference({
     min-height: 48px;
     display: inline-flex;
     align-items: center;
+  }
+  .smat-trib-field {
+    min-width: 0;
+    width: 100%;
+  }
+  .smat-trib-ctrl {
+    min-width: 200px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 </style>

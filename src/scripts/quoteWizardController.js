@@ -146,8 +146,11 @@ export function initQuoteWizardController() {
   if (!dom.container) return;
 
   const isEs = (dom.container.getAttribute('data-lang') || 'es') !== 'en';
-  const currentFolio = `SMAT-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${String(Math.floor(100 + Math.random() * 900))}`;
+  const nowDateIso = new Date().toISOString().slice(0, 10);
+  const currentFolio = `SMAT-${nowDateIso.replace(/-/g, '')}-${String(Math.floor(100 + Math.random() * 900))}`;
   if (dom.liveFolio) dom.liveFolio.textContent = currentFolio;
+  const elLiveDate = doc.getElementById('live-date');
+  if (elLiveDate) elLiveDate.textContent = nowDateIso;
   if (dom.miniFolioText) dom.miniFolioText.textContent = `Folio ${currentFolio}`;
 
   let miningGroups = [];

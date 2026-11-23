@@ -132,7 +132,7 @@ function writeLeafSafeText(node, text) {
  * @param {string} domainId
  * @returns {Record<string, any>}
  */
-export function readDomainInputs(root, domainId) {
+function readDomainInputs(root, domainId) {
   const schema = getEngineSchema(domainId);
   if (!schema) return {};
   const candidateRoots = resolveCandidateRoots(root, domainId);

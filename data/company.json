@@ -49,8 +49,12 @@
   },
   "logistics": {
     "warehouse_hours": "Lunes a Viernes 08:00 a 18:00 (Hora Centro / Durango)",
+    "warehouse_hours_en": "Monday to Friday 08:00 to 18:00 (Central Time / Durango)",
     "local_pickup_badge": "Retiro directo en Almacén Central Durango (Coordinado con folio formal)",
+    "local_pickup_badge_en": "Direct pickup at Durango Central Warehouse (Scheduled with formal folio)",
     "maneuvers_access": "Acceso apto para transporte de carga pesada: camión unitario (rabón), torton y tractocamión con plataforma articulada",
-    "client_inspection_protocol": "Disponibilidad de presenciar cotejo dimensional 1:1 con plantilla maestra y certificación de dureza en presencia del cliente previo a la sujeción de carga"
+    "maneuvers_access_en": "Heavy freight yard access: rigid trucks, tandem haulers, and articulated flatbeds",
+    "client_inspection_protocol": "Disponibilidad de presenciar cotejo dimensional 1:1 con plantilla maestra y certificación de dureza en presencia del cliente previo a la sujeción de carga",
+    "client_inspection_protocol_en": "On-site 1:1 dimensional verification with master template and hardness check prior to cargo tie-down"
   }
 }

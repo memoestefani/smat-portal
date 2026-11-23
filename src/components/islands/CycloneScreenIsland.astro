@@ -10,6 +10,7 @@ import CycloneScreenCore from '../cores/CycloneScreenCore.astro';
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import SharePurchasing from '../SharePurchasing.astro';
 import CycloneAndScreenReport from '../CycloneAndScreenReport.astro';
+import { SMAT_SUPPLY_DOORS } from '../../scripts/i18nDomainLabels.js';
 
 interface Props {
   locale?: 'es' | 'en';
@@ -30,7 +31,7 @@ const productsBase = isEs ? '/productos/' : '/en/products/';
         <div class="smat-flex-between">
           <h1>{isEs ? 'Clasificación por Hidrociclones y Diagnóstico de Roping' : 'Hydrocyclone Classification & Roping Diagnostics'}</h1>
           <span class="cyc-badge" data-smat-decision="D7">
-            {isEs ? 'INGENIERÍA DE CLASIFICACIÓN Y MOLIENDA CERRADA' : 'CLOSED-CIRCUIT MILLING & CLASSIFICATION ENGINEERING'}
+            {isEs ? SMAT_SUPPLY_DOORS.classificationSubEs : SMAT_SUPPLY_DOORS.classificationSubEn}
           </span>
         </div>
         <p class="cyc-lead">
@@ -53,55 +54,60 @@ const productsBase = isEs ? '/productos/' : '/en/products/';
 
       <TechnicalDiagrams diagram="cyclone-apex-vortex" lang={lang} showXrayOverlay={true} />
 
-      <section class="cyc-sku-catalog" aria-label={isEs ? 'Repuestos críticos de hidrociclón' : 'Critical Hydrocyclone Spares'}>
-        <h2>
-          {isEs
-            ? 'Repuestos Críticos de Hidrociclón con Cotejo Dimensional 1:1 en Durango'
-            : 'Critical Hydrocyclone Spares Verified 1:1 in Durango'}
-        </h2>
-        <div class="cyc-sku-cards">
-          <article class="cyc-sku-card">
-            <span class="cyc-sku-code">SMAT-CYC-D6-D20 • UNDERFLOW</span>
-            <h3>{isEs ? 'Boquilla Ápex / Spigot (SiC / Cr27)' : 'Apex Spigot Nozzle (SiC / Cr27)'}</h3>
-            <p>
-              {isEs
-                ? 'Geometría cónica rectificada para conservar descarga semi-paraguas y prevenir acordonamiento (roping).'
-                : 'Precision taper bore preserving semi-umbrella spray angle and preventing roping.'}
-            </p>
-            <a href={`${productsBase}${isEs ? 'hidrociclon-completo-y-boquillas-d6-d20/' : 'hydrocyclone-assembly-and-spigots-d6-d20/'}`}>
-              SMAT-CYC-D6-D20 →
-            </a>
-          </article>
+      <details class="wb-progressive-drawer smat-mt-sm" id="cyc-report-and-spares-drawer">
+        <summary class="tier2-cyc-summary">
+          {isEs ? 'Repuestos Críticos (Ápex / Vortex / Malla TH48-30) y Reporte de Geometría ▾' : 'Critical Spares (Apex / Vortex / TH48-30 Screen) & Geometry Report ▾'}
+        </summary>
+        <section class="cyc-sku-catalog" aria-label={isEs ? 'Repuestos críticos de hidrociclón' : 'Critical Hydrocyclone Spares'}>
+          <h2>
+            {isEs
+              ? 'Repuestos Críticos de Hidrociclón con Cotejo Dimensional 1:1 en Durango'
+              : 'Critical Hydrocyclone Spares Verified 1:1 in Durango'}
+          </h2>
+          <div class="cyc-sku-cards">
+            <article class="cyc-sku-card">
+              <span class="cyc-sku-code">SMAT-CYC-D6-D20 • UNDERFLOW</span>
+              <h3>{isEs ? 'Boquilla Ápex / Spigot (SiC / Cr27)' : 'Apex Spigot Nozzle (SiC / Cr27)'}</h3>
+              <p>
+                {isEs
+                  ? 'Geometría cónica rectificada para conservar descarga semi-paraguas y prevenir acordonamiento (roping).'
+                  : 'Precision taper bore preserving semi-umbrella spray angle and preventing roping.'}
+              </p>
+              <a href={`${productsBase}${isEs ? 'hidrociclon-completo-y-boquillas-d6-d20/' : 'hydrocyclone-assembly-and-spigots-d6-d20/'}`}>
+                SMAT-CYC-D6-D20 →
+              </a>
+            </article>
 
-          <article class="cyc-sku-card">
-            <span class="cyc-sku-code">SMAT-COUPLED-PUMP-CYC • OVERFLOW</span>
-            <h3>{isEs ? 'Paquete Casado Bomba + Hidrociclón' : 'Coupled Slurry Pump + Hydrocyclone Package'}</h3>
-            <p>
-              {isEs
-                ? 'Emparejamiento hidráulico bomba-ciclón con presión estable en nido (10–12 psi) y cero cortocircuito de gruesos.'
-                : 'Matched pump-cluster hydraulic sizing keeping 10–12 psi feed pressure and curbing coarse bypass.'}
-            </p>
-            <a href={`${productsBase}${isEs ? 'paquete-casado-bomba-hidrociclon/' : 'coupled-pump-hydrocyclone-package/'}`}>
-              SMAT-COUPLED-PUMP-CYC →
-            </a>
-          </article>
+            <article class="cyc-sku-card">
+              <span class="cyc-sku-code">SMAT-COUPLED-PUMP-CYC • OVERFLOW</span>
+              <h3>{isEs ? 'Paquete Casado Bomba + Hidrociclón' : 'Coupled Slurry Pump + Hydrocyclone Package'}</h3>
+              <p>
+                {isEs
+                  ? 'Emparejamiento hidráulico bomba-ciclón con presión estable en nido (10–12 psi) y cero cortocircuito de gruesos.'
+                  : 'Matched pump-cluster hydraulic sizing keeping 10–12 psi feed pressure and curbing coarse bypass.'}
+              </p>
+              <a href={`${productsBase}${isEs ? 'paquete-casado-bomba-hidrociclon/' : 'coupled-pump-hydrocyclone-package/'}`}>
+                SMAT-COUPLED-PUMP-CYC →
+              </a>
+            </article>
 
-          <article class="cyc-sku-card">
-            <span class="cyc-sku-code">SMAT-SCR-TH48-30 • SCREENING</span>
-            <h3>{isEs ? 'Mallas Finas de Uretano TH48-30 y Conos' : 'TH48-30 Fine Urethane Screens & Cone Liners'}</h3>
-            <p>
-              {isEs
-                ? 'Aberturas calibradas de alta nitidez (α ≥ 4.2) y ángulo de alivio anti-cegamiento para descarga de molienda.'
-                : 'Sharp partition aperture profiles (α ≥ 4.2) with anti-blinding tapered relief slots.'}
-            </p>
-            <a href={`${productsBase}${isEs ? 'mallas-finas-uretano-th48-30/' : 'high-frequency-urethane-screens-th48-30/'}`}>
-              SMAT-SCR-TH48-30 →
-            </a>
-          </article>
-        </div>
-      </section>
+            <article class="cyc-sku-card">
+              <span class="cyc-sku-code">SMAT-SCR-TH48-30 • SCREENING</span>
+              <h3>{isEs ? 'Mallas Finas de Uretano TH48-30 y Conos' : 'TH48-30 Fine Urethane Screens & Cone Liners'}</h3>
+              <p>
+                {isEs
+                  ? 'Aberturas calibradas de alta nitidez (α ≥ 4.2) y ángulo de alivio anti-cegamiento para descarga de molienda.'
+                  : 'Sharp partition aperture profiles (α ≥ 4.2) with anti-blinding tapered relief slots.'}
+              </p>
+              <a href={`${productsBase}${isEs ? 'mallas-finas-uretano-th48-30/' : 'high-frequency-urethane-screens-th48-30/'}`}>
+                SMAT-SCR-TH48-30 →
+              </a>
+            </article>
+          </div>
+        </section>
 
-      <CycloneAndScreenReport lang={lang} />
+        <CycloneAndScreenReport lang={lang} />
+      </details>
 
       <SharePurchasing
         lang={lang}

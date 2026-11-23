@@ -228,27 +228,19 @@
   gap: 0.35rem;
 }
 
-/* Sticky Mini-Dossier Bar (Decisión 2-C) */
+/* Summary Mini-Dossier Bar (sin posición fixed para evitar oclusión en <main>) */
 .mini-dossier-bar {
   display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: static;
+  margin-top: 0.75rem;
   background: #090d16;
   color: #ffffff;
   padding: 0.75rem 1.25rem;
-  border-top: 1px solid #334155;
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
-  z-index: 990;
+  border: 1px solid #334155;
+  border-radius: var(--smat-radius-md);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14);
   align-items: center;
   justify-content: space-between;
-}
-
-@media (max-width: 1024px) {
-  .mini-dossier-bar {
-    display: flex;
-  }
 }
 
 .assist-pills-bar {

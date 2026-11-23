@@ -12,6 +12,8 @@ import { getQuickProductBySlugOrAlias } from './quickProductsCatalog.js';
 import { calculateCoupledReorderWindowDays } from './requisitionTrayBus.js';
 import { formatSatTigieInvoiceLine, formatDualCheckoutPayload } from './workbenchExportFormatters.js';
 import { loadUnifiedEngineeringAndWorkbenchState } from './verticalStateAndCtaSyncBridge.js';
+import { resolveHonestWebhookStatus } from './leadOutboxStateMachine.js';
+import { formatCheckoutLaneHuman } from './i18nDomainLabels.js';
 import {
   buildSmatVendorVcardString,
   buildSapAnexo22ComplianceSummary,
@@ -174,7 +176,7 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
               <td class="acuse-cell-sku">${it.id}<br/><small>${it.material || 'STD'}</small></td>
               <td><strong>${isEn ? it.nameEn : it.nameEs}</strong><br/><small class="acuse-cell-sat">${it.satLine}</small></td>
               <td class="acuse-cell-qty">${it.qty}</td>
-              <td class="acuse-cell-jrp">${it.coupledPairSku} (${isEn ? 'Cycle' : 'Ciclo'}: T10=${itemJrp.t10InspectionDays}d / T50=${itemJrp.t50ReorderTriggerDays}d / T80=${itemJrp.t80CriticalChangeoutDays}d · Buffer ${itemJrp.leadTimeBufferDays}d · Sev ${itemJrp.wearSeverityFactor}× · ${itemJrp.wearAcceleratedLifeHours}h · ${isEn ? itemJrp.dispatchModeLabelEn : itemJrp.dispatchModeLabelEs} · ${checkoutMeta.lane})</td>
+              <td class="acuse-cell-jrp">${it.coupledPairSku} (${isEn ? 'Cycle' : 'Ciclo'}: T10=${itemJrp.t10InspectionDays}d / T50=${itemJrp.t50ReorderTriggerDays}d / T80=${itemJrp.t80CriticalChangeoutDays}d · Buffer ${itemJrp.leadTimeBufferDays}d · Sev ${itemJrp.wearSeverityFactor}× · ${itemJrp.wearAcceleratedLifeHours}h · ${isEn ? itemJrp.dispatchModeLabelEn : itemJrp.dispatchModeLabelEs} · ${formatCheckoutLaneHuman(checkoutMeta.lane, lang)})</td>
             </tr>`;
             }
           )
@@ -318,22 +320,30 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
       if (rawStatus) webhookStatus = JSON.parse(rawStatus);
     } catch (_e) { }
     const webhookQueryOverride = urlParams.get('webhook');
-    const isWebhookBlocked =
-      webhookQueryOverride === 'blocked' ||
-      Boolean(webhookStatus && (webhookStatus.blocked || webhookStatus.status === 'blocked' || webhookStatus.status === 'honeypot_blocked'));
+    const isOnlineNow = typeof navigator !== 'undefined' ? navigator.onLine !== false : true;
+    const resolvedWebhook = resolveHonestWebhookStatus({
+      endpointUrl: String(webhookStatus?.endpointUrl || ''),
+      webhookFlag: webhookQueryOverride || webhookStatus?.status || (webhookStatus?.blocked ? 'blocked' : ''),
+      httpStatus: Number(webhookStatus?.httpStatus || 0),
+      isOnline: isOnlineNow,
+      isEn,
+    });
     const webhookBanner = document.getElementById('acuse-webhook-status');
     if (webhookBanner) {
-      webhookBanner.setAttribute('data-webhook-state', isWebhookBlocked ? 'blocked' : 'sent');
-      webhookBanner.classList.toggle('is-webhook-blocked', isWebhookBlocked);
-      webhookBanner.classList.toggle('is-webhook-sent', !isWebhookBlocked);
-      webhookBanner.textContent = isWebhookBlocked
-        ? (isEn
-          ? 'Webhook Status: BLOCKED (Antispam / Endpoint guard triggered — Technical requisition preserved locally)'
-          : 'Estado Webhook: BLOCKED (Filtro antispam o endpoint inactivo — Ficha resguardada localmente)')
-        : (isEn
-          ? 'Webhook Status: SENT (Durango Central Engineering Inbox Notified)'
-          : 'Estado Webhook: SENT (Requisición notificada al Almacén Central Durango)');
+      webhookBanner.setAttribute('data-webhook-state', resolvedWebhook.dataAttr);
+      webhookBanner.setAttribute('data-outbox-state', resolvedWebhook.state);
+      webhookBanner.classList.remove('is-webhook-blocked', 'is-webhook-sent');
+      webhookBanner.classList.add(resolvedWebhook.cssClass);
+      webhookBanner.textContent = resolvedWebhook.message;
     }
+
+    const fullTcoAndProfile = [
+      perfilPulpa ? `${isEn ? 'Mineral Profile' : 'Perfil Mineral'}: ${perfilPulpa}` : '',
+      tco ? `${isEn ? 'Operational Impact' : 'Impacto Operativo'}: ${tco}` : '',
+      trayState.coreReturnEnabled
+        ? (isEn ? 'Circular Economy Core Trade-In: -22% on DAM005 Cartridge (H7 Bore Verified)' : 'Economía Circular Core Trade-In: -22% en Cartucho DAM005 (Alojamiento H7 Verificado)')
+        : ''
+    ].filter(Boolean).join(' • ') || (isEn ? 'Operational continuity assessment at Durango Central Warehouse.' : 'Evaluación de continuidad operativa en Almacén Central Durango.');
 
     const fullPayloadPre = document.getElementById('acuse-full-payload-pre');
     if (fullPayloadPre) {
@@ -342,7 +352,8 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
         urgencia,
         gate_classification: gateClassVal,
         trust_boundary_id: trustBoundaryId,
-        webhook_status: isWebhookBlocked ? 'blocked' : 'sent',
+        webhook_status: resolvedWebhook.state,
+        webhook_verified_delivery: resolvedWebhook.verifiedDelivery,
         memoria_hidraulica: hidraulica,
         estacion_despiece: estacion,
         cedula_metrologia: metrologia,
@@ -380,13 +391,6 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
     if (traySummary) {
       setText('dossier-title', isEn ? `FORMAL ENGINEERING REQUISITION & QUOTATION RECEIPT (${traySummary})` : `ACUSE FORMAL DE SOLICITUD DE COTIZACIÓN TÉCNICA (${traySummary})`);
     }
-    const fullTcoAndProfile = [
-      perfilPulpa ? `${isEn ? 'Mineral Profile' : 'Perfil Mineral'}: ${perfilPulpa}` : '',
-      tco ? `${isEn ? 'Operational Impact' : 'Impacto Operativo'}: ${tco}` : '',
-      trayState.coreReturnEnabled
-        ? (isEn ? 'Circular Economy Core Trade-In: -22% on DAM005 Cartridge (H7 Bore Verified)' : 'Economía Circular Core Trade-In: -22% en Cartucho DAM005 (Alojamiento H7 Verificado)')
-        : ''
-    ].filter(Boolean).join(' • ') || (isEn ? 'Operational continuity assessment at Durango Central Warehouse.' : 'Evaluación de continuidad operativa en Almacén Central Durango.');
 
     setText('field-name', nombre);
     setText('field-company', empresa);
@@ -445,7 +449,7 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
       ? trayState.items.map((it) => `LINE_ITEM: ${it.satLine} | QTY=${it.qty} | COUPLED=${it.coupledPairSku} (${it.reorderWindowDays}d)`)
       : [];
     const sapBlockText = [
-      `FOLIO: ${folio} | ORDER_HASH: ${orderHashCode} | GATE: ${gateClassVal} | BOUNDARY: ${trustBoundaryId} | LANE: ${checkoutMeta.lane}`,
+      `FOLIO: ${folio} | ORDER_HASH: ${orderHashCode} | GATE: ${gateClassVal} | BOUNDARY: ${trustBoundaryId} | ${isEn ? 'LANE' : 'CARRIL'}: ${formatCheckoutLaneHuman(checkoutMeta.lane, lang)}`,
       `${isEn ? 'COMPANY' : 'EMPRESA'}: ${empresa} | ${isEn ? 'REQUESTER' : 'SOLICITANTE'}: ${nombre}`,
       `${isEn ? 'EQUIPMENT' : 'EQUIPO'}: ${equipo} (${fullCode})`,
       ...sapTrayLines,

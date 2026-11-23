@@ -68,7 +68,7 @@ export const XDSM_DISCIPLINE_ORDER = Object.freeze([
  * Manifiesto Topológico Explícito del Grafo MDAO/XDSM (Martins & Lambe 2013).
  * Registra dependencias exactas `consumes` -> `produces` entre las 7 disciplinas.
  */
-export const XDSM_DISCIPLINE_GRAPH = Object.freeze([
+const XDSM_DISCIPLINE_GRAPH = Object.freeze([
   {
     step: 1,
     id: '1_pumping_hydraulics',

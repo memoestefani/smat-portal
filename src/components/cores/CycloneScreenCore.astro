@@ -28,61 +28,30 @@ const productsBase = isEs ? '/productos/' : '/en/products/';
   </div>
 
   <div class="embedded-cyc-res smat-stratum1-display font-mono-tech smat-mt-sm">
-    <div class="embedded-res-cell"><strong>{isEs ? 'Carga Circulante:' : 'Circulating Load:'}</strong> <span id="wb-cyc-res-cc" data-testid="wb-cyc-res-cc" data-schema-output="cycloneScreen.circulatingLoadPct">248.5%</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Corte (d50c):' : 'Cut Size (d50c):'}</strong> <span id="wb-cyc-res-d50" data-testid="wb-cyc-res-d50" data-schema-output="cycloneScreen.d50cMicrons">74 µm</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Fracción Ápex Cv,u:' : 'Apex Solids Cv,u:'}</strong> <span id="wb-cyc-res-cvu" data-testid="wb-cyc-res-cvu" data-schema-output="cycloneScreen.cvUnderflow">0.482</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Carga Circulante:' : 'Circulating Load:'}</strong> <span id="wb-cyc-res-cc" data-testid="wb-cyc-res-cc" data-schema-output="cycloneScreen.circulatingLoadPct">259%</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Corte (d50c):' : 'Cut Size (d50c):'}</strong> <span id="wb-cyc-res-d50" data-testid="wb-cyc-res-d50" data-schema-output="cycloneScreen.d50cMicrons">133 µm</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Fracción Ápex Cv,u:' : 'Apex Solids Cv,u:'}</strong> <span id="wb-cyc-res-cvu" data-testid="wb-cyc-res-cvu" data-schema-output="cycloneScreen.cvUnderflow">0.42</span></div>
     <div class="embedded-res-cell"><strong>{isEs ? 'Relación Du/Do:' : 'Du/Do Ratio:'}</strong> <span id="wb-cyc-res-dudo" data-testid="wb-cyc-res-dudo" data-schema-output="cycloneScreen.apexToVortexRatio">0.50</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Régimen Ápex:' : 'Apex Regime:'}</strong> <span id="wb-cyc-res-roping" data-testid="wb-cyc-res-roping" data-schema-output="cycloneScreen.dischargeRegime">{isEs ? 'SEMI_UMBRELLA' : 'SEMI_UMBRELLA'}</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Régimen Ápex:' : 'Apex Regime:'}</strong> <span id="wb-cyc-res-roping" data-testid="wb-cyc-res-roping" data-schema-output="cycloneScreen.dischargeRegime">{isEs ? 'Spray Nominal' : 'Nominal Spray'}</span></div>
     <div class="embedded-res-cell"><strong>{isEs ? 'Partición Criba:' : 'Screen Partition:'}</strong> <span id="wb-scr-res-oversize" data-testid="wb-scr-res-oversize" data-schema-output="cycloneScreen.partitionToOversizePct">91.5%</span></div>
     <div class="embedded-res-cell"><strong>{isEs ? 'Dilatación Elástica:' : 'Elastic Dilation:'}</strong> <span id="wb-scr-res-dilation" data-testid="wb-scr-res-dilation" data-schema-output="cycloneScreen.elasticDilationPct">1.80%</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Weibull / SKU:' : 'Weibull / SKU:'}</strong> <span id="wb-scr-res-weibull" data-testid="wb-scr-res-weibull" data-schema-output="cycloneScreen.sharpnessAlpha">4.40</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Balance 3 Vasos:' : '3-Cup Balance:'}</strong> <span id="wb-cyc-res-cw-cv-3cups" data-testid="wb-cyc-res-cw-cv-3cups">Cw Alim 41.2% | Desc 71.5% | Reb 21.8%</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Nitidez Weibull α:' : 'Weibull α:'}</strong> <span id="wb-scr-res-weibull" data-testid="wb-scr-res-weibull" data-schema-output="cycloneScreen.sharpnessAlpha">4.40</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Balance 3 Vasos:' : '3-Cup Balance:'}</strong> <span id="wb-cyc-res-cw-cv-3cups" data-testid="wb-cyc-res-cw-cv-3cups">Cw Alim 41.2% | Desc 66.5% | Reb 20.7%</span></div>
     <div class="embedded-res-cell"><strong>{isEs ? 'Razón Operativa:' : 'Operating Ratio:'}</strong> <span id="wb-cyc-res-dudo-ratio" data-testid="wb-cyc-res-dudo-ratio">du/do = 0.50</span></div>
     <div class="embedded-res-cell"><strong>{isEs ? 'Dinámica Criba:' : 'Screen Dynamics:'}</strong> <span id="wb-scr-res-vibration-g" data-testid="wb-scr-res-vibration-g">4.5 G • Anti-cegamiento</span></div>
   </div>
 
-  <div id="csr-weibull-out" class="csr-weibull-readout smat-mt-sm">
-    {isEs
-      ? 'Retención Oversize: 3.1% · Dilatación Δa/a: 3.06% (4.5G · α=4.4, Anti-Cegamiento OK) · SKU: SMAT-SCR-TH48-30'
-      : 'Oversize Partition: 3.1% · Dilation Δa/a: 3.06% (4.5G · α=4.4, Anti-Blinding OK) · SKU: SMAT-SCR-TH48-30'}
+  <div class="smat-cta-row smat-mt-sm">
+    <button
+      type="button"
+      id="btn-simulate-roping"
+      class="btn btn-outline smat-tap-btn"
+    >
+      {isEs ? 'Simular Roping (Ápex Cerrado)' : 'Simulate Roping (Choked Apex)'}
+    </button>
   </div>
 
-  <div class="smat-grid-3 smat-mt-sm">
-    <div class="form-group">
-      <label class="smat-field-label" for="wb-role-cyc">
-        {isEs ? 'Equipo o Refacción de Clasificación:' : 'Classification Equipment or Spare:'}
-      </label>
-      <select id="wb-role-cyc" name="role_id_cyc" class="smat-input-control wb-select" data-wb-circuit-calc-input>
-        <option value="hidrociclon_apex_vortex" selected>{isEs ? 'Hidrociclones D6–D20, Ápex SiC y Vortex Finder' : 'D6–D20 Hydrocyclones, SiC Apex & Vortex Finder'}</option>
-        <option value="malla_criba_poliuretano">{isEs ? 'Mallas Uretano TH48-30 y Paneles 1\'x1\'' : 'TH48-30 Urethane Screens & 1\'x1\' Panels'}</option>
-        <option value="kit_wet_end">{isEs ? 'Paquete Casado Bomba + Hidrociclón' : 'Coupled Slurry Pump + Hydrocyclone Package'}</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="smat-field-label" for="wb-cyc-series">
-        {isEs ? 'Serie de Hidrociclón (Dc mm):' : 'Hydrocyclone Series (Dc mm):'}
-      </label>
-      <select id="wb-cyc-series" data-schema-input="cycloneScreen.cycloneDiameterMm" class="smat-input-control wb-select font-mono-tech" data-wb-circuit-calc-input>
-        <option value="150">{isEs ? 'Serie D6 (Dc = 150 mm · 25–45 µm)' : 'D6 Series (Dc = 150 mm · 25–45 µm)'}</option>
-        <option value="250">{isEs ? 'Serie D10 / D10B (Dc = 250 mm · 40–75 µm)' : 'D10 / D10B (Dc = 250 mm · 40–75 µm)'}</option>
-        <option value="380" selected>{isEs ? 'Serie D15 (Dc = 380 mm · 55–110 µm)' : 'D15 Series (Dc = 380 mm · 55–110 µm)'}</option>
-        <option value="500">{isEs ? 'Serie D20 (Dc = 500 mm · 75–150 µm)' : 'D20 Series (Dc = 500 mm · 75–150 µm)'}</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="smat-field-label" for="wb-cyc-liner">
-        {isEs ? 'Metalurgia Ápex / Cono:' : 'Apex / Cone Metallurgy:'}
-      </label>
-      <select id="wb-cyc-liner" name="cyc_liner" class="smat-input-control wb-select font-mono-tech" data-wb-circuit-calc-input>
-        <option value="ceramica_sic" selected>{isEs ? 'Ápex SiC Sinterizado + Cono PU' : 'Sintered SiC Apex + PU Cone'}</option>
-        <option value="hule_r55">{isEs ? 'Forro Hule Natural R55 + Ápex SiC' : 'R55 Natural Rubber + SiC Apex'}</option>
-        <option value="poliuretano">{isEs ? 'Poliuretano 85–90 Shore A' : '85–90 Shore A Polyurethane'}</option>
-        <option value="alto_cromo_a05">{isEs ? 'Alto Cromo 27% Cr (A05)' : '27% High-Chrome Iron (A05)'}</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- Nivel 1: Balance 3 Vasos Marcy + Criba Primaria -->
+  <!-- Nivel 1: Balance 3 Vasos Marcy -->
   <div id="cyc-coupled-screen-station" class="smat-inputs-2col smat-mt-sm">
     <div class="form-group">
       <label class="smat-field-label" for="wb-cyc-sg-feed">{isEs ? '1. Vaso Alimentación (SGf kg/L):' : '1. Cup Feed SG (SGf kg/L):'}</label>
@@ -90,30 +59,64 @@ const productsBase = isEs ? '/productos/' : '/en/products/';
     </div>
     <div class="form-group">
       <label class="smat-field-label" for="wb-cyc-sg-uf">{isEs ? '2. Vaso Ápex Descarga (SGu kg/L):' : '2. Cup Apex Underflow (SGu kg/L):'}</label>
-      <input type="number" id="wb-cyc-sg-uf" data-schema-input="cycloneScreen.underflowSg" min="1.20" max="2.80" step="0.01" value="1.82" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
+      <input type="number" id="wb-cyc-sg-uf" data-schema-input="cycloneScreen.underflowSg" min="1.20" max="2.80" step="0.01" value="1.72" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
     </div>
     <div class="form-group">
       <label class="smat-field-label" for="wb-cyc-sg-of">{isEs ? '3. Vaso Rebalse Vortex (SGo kg/L):' : '3. Cup Overflow SG (SGo kg/L):'}</label>
       <input type="number" id="wb-cyc-sg-of" data-schema-input="cycloneScreen.overflowSg" min="1.01" max="1.90" step="0.01" value="1.15" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
     </div>
-    <div class="form-group">
-      <label class="smat-field-label" for="wb-cyc-pressure-kpa">{isEs ? 'Presión en Nido ΔP (kPa):' : 'Cluster Pressure ΔP (kPa):'}</label>
-      <input type="number" id="wb-cyc-pressure-kpa" data-schema-input="cycloneScreen.feedPressureKpa" min="25" max="250" step="5" value="95" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
-    </div>
-    <div class="form-group">
-      <label class="smat-field-label" for="csr-aperture-mm">{isEs ? 'Abertura Malla Criba (mm):' : 'Screen Aperture a (mm):'}</label>
-      <input type="number" id="csr-aperture-mm" data-schema-input="cycloneScreen.apertureMm" min="0.15" max="12.0" step="0.05" value="0.50" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
-    </div>
   </div>
 
-  <!-- Nivel 2: Geometría Hidrociclón y Criba Weibull Avanzada -->
+  <!-- Nivel 2: Selección de Serie, Metalurgia y Geometría Hidrociclón / Criba Weibull -->
   <details class="tier2-cyc-details smat-mt-sm">
     <summary class="tier2-cyc-summary">
       {isEs
-        ? 'Ajuste Avanzado: Gravedad Ss, Ápex Du, Vortex Do, Alivio θ, Aceleración G y Nitidez α'
-        : 'Advanced Geometry: Solids SG, Apex Du, Vortex Do, Relief Angle θ, Vibration G & Sharpness α'}
+        ? 'Ajuste Avanzado: Serie, Metalurgia, Presión ΔP, Abertura Malla, Ss, Ápex Du y Nitidez α'
+        : 'Advanced Geometry: Series, Alloy, Pressure ΔP, Screen Aperture, Solids SG, Apex Du & Alpha α'}
     </summary>
+    <div class="smat-grid-3 smat-mt-sm">
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-role-cyc">
+          {isEs ? 'Equipo o Refacción de Clasificación:' : 'Classification Equipment or Spare:'}
+        </label>
+        <select id="wb-role-cyc" name="role_id_cyc" class="smat-input-control wb-select" data-wb-circuit-calc-input>
+          <option value="hidrociclon_apex_vortex" selected>{isEs ? 'Hidrociclones D6–D20, Ápex SiC y Vortex Finder' : 'D6–D20 Hydrocyclones, SiC Apex & Vortex Finder'}</option>
+          <option value="malla_criba_poliuretano">{isEs ? 'Mallas Uretano TH48-30 y Paneles 1\'x1\'' : 'TH48-30 Urethane Screens & 1\'x1\' Panels'}</option>
+          <option value="kit_wet_end">{isEs ? 'Paquete Casado Bomba + Hidrociclón' : 'Coupled Slurry Pump + Hydrocyclone Package'}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-cyc-series">
+          {isEs ? 'Serie de Hidrociclón (Dc mm):' : 'Hydrocyclone Series (Dc mm):'}
+        </label>
+        <select id="wb-cyc-series" data-schema-input="cycloneScreen.cycloneDiameterMm" class="smat-input-control wb-select font-mono-tech" data-wb-circuit-calc-input>
+          <option value="150">{isEs ? 'Serie D6 (Dc = 150 mm · 25–45 µm)' : 'D6 Series (Dc = 150 mm · 25–45 µm)'}</option>
+          <option value="250">{isEs ? 'Serie D10 / D10B (Dc = 250 mm · 40–75 µm)' : 'D10 / D10B (Dc = 250 mm · 40–75 µm)'}</option>
+          <option value="380" selected>{isEs ? 'Serie D15 (Dc = 380 mm · 55–110 µm)' : 'D15 Series (Dc = 380 mm · 55–110 µm)'}</option>
+          <option value="500">{isEs ? 'Serie D20 (Dc = 500 mm · 75–150 µm)' : 'D20 Series (Dc = 500 mm · 75–150 µm)'}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-cyc-liner">
+          {isEs ? 'Metalurgia Ápex / Cono:' : 'Apex / Cone Metallurgy:'}
+        </label>
+        <select id="wb-cyc-liner" name="cyc_liner" class="smat-input-control wb-select font-mono-tech" data-wb-circuit-calc-input>
+          <option value="ceramica_sic" selected>{isEs ? 'Ápex SiC Sinterizado + Cono PU' : 'Sintered SiC Apex + PU Cone'}</option>
+          <option value="hule_r55">{isEs ? 'Forro Hule Natural R55 + Ápex SiC' : 'R55 Natural Rubber + SiC Apex'}</option>
+          <option value="poliuretano">{isEs ? 'Poliuretano 85–90 Shore A' : '85–90 Shore A Polyurethane'}</option>
+          <option value="alto_cromo_a05">{isEs ? 'Alto Cromo 27% Cr (A05)' : '27% High-Chrome Iron (A05)'}</option>
+        </select>
+      </div>
+    </div>
     <div class="smat-inputs-2col smat-mt-sm">
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-cyc-pressure-kpa">{isEs ? 'Presión en Nido ΔP (kPa):' : 'Cluster Pressure ΔP (kPa):'}</label>
+        <input type="number" id="wb-cyc-pressure-kpa" data-schema-input="cycloneScreen.feedPressureKpa" min="25" max="250" step="5" value="95" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
+      </div>
+      <div class="form-group">
+        <label class="smat-field-label" for="csr-aperture-mm">{isEs ? 'Abertura Malla Criba (mm):' : 'Screen Aperture a (mm):'}</label>
+        <input type="number" id="csr-aperture-mm" data-schema-input="cycloneScreen.apertureMm" min="0.15" max="12.0" step="0.05" value="0.50" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
+      </div>
       <div class="form-group">
         <label class="smat-field-label" for="wb-cyc-solids-sg">{isEs ? 'Gravedad Sólidos Secos (Ss):' : 'Dry Solids SG (Ss):'}</label>
         <input type="number" id="wb-cyc-solids-sg" data-schema-input="cycloneScreen.solidsSg" min="1.80" max="5.20" step="0.05" value="2.70" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
@@ -146,9 +149,9 @@ const productsBase = isEs ? '/productos/' : '/en/products/';
       <div class="form-group">
         <label class="smat-field-label" for="wb-scr-alpha">{isEs ? 'Nitidez Weibull (α):' : 'Weibull Sharpness (α):'}</label>
         <select id="wb-scr-alpha" data-schema-input="cycloneScreen.sharpnessAlpha" class="smat-input-control wb-select font-mono-tech" data-wb-circuit-calc-input>
-          <option value="3.4">α = 3.4 (Tela Metálica)</option>
-          <option value="4.4" selected>α = 4.4 (Uretano TH48-30)</option>
-          <option value="5.2">α = 5.2 (Alta Nitidez)</option>
+          <option value="3.4">α = 3.40 (Tela Metálica)</option>
+          <option value="4.4" selected>α = 4.40 (Uretano TH48-30)</option>
+          <option value="5.2">α = 5.20 (Alta Nitidez)</option>
         </select>
       </div>
     </div>
@@ -208,3 +211,28 @@ const productsBase = isEs ? '/productos/' : '/en/products/';
     </div>
   )}
 </div>
+
+<script>
+  function bindRopingPresetButtons() {
+    document.querySelectorAll('#btn-simulate-roping').forEach((btn) => {
+      if ((btn as HTMLElement).dataset.ropingBound === '1') return;
+      (btn as HTMLElement).dataset.ropingBound = '1';
+      btn.addEventListener('click', () => {
+        const root = btn.closest('[data-domain-root="cycloneScreen"]');
+        if (!root) return;
+        const setVal = (sel: string, val: string) => {
+          const el = root.querySelector(sel) as HTMLInputElement | null;
+          if (el) el.value = val;
+        };
+        setVal('#wb-cyc-sg-feed', '1.48');
+        setVal('#wb-cyc-sg-uf', '2.08');
+        setVal('#wb-cyc-sg-of', '1.22');
+        setVal('#wb-cyc-apex-mm', '38');
+        const triggerEl = root.querySelector('#wb-cyc-apex-mm') || root.querySelector('#wb-cyc-sg-uf');
+        triggerEl?.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+    });
+  }
+  bindRopingPresetButtons();
+  document.addEventListener('astro:page-load', bindRopingPresetButtons);
+</script>

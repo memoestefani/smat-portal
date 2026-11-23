@@ -154,20 +154,28 @@ pub fn check_v48_instrument_first_bidirectional_lens_and_parity_gate_48i(
         }
     }
 
+    let catalog_vm_src = fs::read_to_string(site_root.join("src/scripts/catalogFacetedViewModel.js"))
+        .unwrap_or_default();
     for cat_rel in ["src/pages/catalogo.astro", "src/pages/en/catalog.astro"] {
         let src = crate::read_page_with_islands_composite(site_root, cat_rel)?;
+        let combined = format!("{}\n{}", src, catalog_vm_src);
         for tok in [
             "data-dropin-verifier",
-            "ATOMIC_PARTS_SSOT_COUNT",
             "PIPE_DIAMETERS_MM",
             "bindDropInEquivalenceVerifier",
         ] {
-            if !src.contains(tok) {
+            if !combined.contains(tok) {
                 return Err(format!(
-                    "Gate 48I (D8-V48): {} debe contener '{}'",
+                    "Gate 48I (D8-V48): {} (+ catalogFacetedViewModel.js) debe contener '{}'",
                     cat_rel, tok
                 ));
             }
+        }
+        if !combined.contains("CATALOG_ATOMIC_PARTS_COUNT") && !combined.contains("ATOMIC_PARTS_SSOT_COUNT") {
+            return Err(format!(
+                "Gate 48I (D8-V48): {} debe proyectar CATALOG_ATOMIC_PARTS_COUNT o ATOMIC_PARTS_SSOT_COUNT",
+                cat_rel
+            ));
         }
     }
 

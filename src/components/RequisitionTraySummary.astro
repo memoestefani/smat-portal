@@ -3,6 +3,7 @@
 // MVP v3.0 (D3, D5): Bandeja de Requisición Multi-Ítem B2B con Regla de Prioridad Generalizada c*mu
 // (Van Mieghem 1995), Conmutador Paro de Línea vs Stock (s,S) y Código de Orden Determinista FNV-1a
 import quickCatalog from '../../data/quick_checkout_Catalog.json';
+import { formatUrgencyBandHuman } from '../scripts/i18nDomainLabels.js';
 
 interface Props {
   lang?: 'es' | 'en';
@@ -10,6 +11,7 @@ interface Props {
 
 const { lang = 'es' } = Astro.props;
 const isEs = lang === 'es';
+const initialUrgencyHuman = formatUrgencyBandHuman('PARO_DE_LINEA', lang);
 ---
 
 <section class="req-tray-card" id="smat-requisition-tray-summary" data-requisition-tray aria-labelledby="req-tray-title">
@@ -35,7 +37,7 @@ const isEs = lang === 'es';
       [SMAT-DGO] [PARO DE LÍNEA | C_v=48% Cr27 | 1 SKUs | Ref: SMAT-7A4F-9C12]
     </code>
     <div id="tray-priority-sla-meta" data-testid="tray-priority-sla-meta" class="font-mono-tech smat-tray-priority-sla-meta">
-      {isEs ? 'Carril: PARO DE LÍNEA (IMMEDIATE_PICK) • SLA Respuesta: ≤ 15 min • Índice cμ = 4800' : 'Lane: LINE-STOP (IMMEDIATE_PICK) • Response SLA: ≤ 15 min • cμ Index = 4800'}
+      {isEs ? `${initialUrgencyHuman} • SLA Respuesta: ≤ 15 min` : `${initialUrgencyHuman} • Response SLA: ≤ 15 min`}
     </div>
   </div>
 
@@ -97,11 +99,13 @@ const isEs = lang === 'es';
     buildCmuPrioritySubjectLine,
     hydrateTrayFromReorderQuery
   } from '../scripts/requisitionTrayBus.js';
+  import { formatCheckoutLaneHuman, formatUrgencyBandHuman } from '../scripts/i18nDomainLabels.js';
 
   function initRequisitionTraySummary() {
     const root = document.querySelector('[data-requisition-tray]') as HTMLElement | null;
     if (!root) return;
     const isEn = document.documentElement.lang === 'en';
+    const lang: 'es' | 'en' = isEn ? 'en' : 'es';
     const tbody = root.querySelector('#tray-items-tbody') as HTMLElement | null;
     const cmuCode = root.querySelector('#tray-cmu-subject-line') as HTMLElement | null;
     const cmuMeta = root.querySelector('#tray-priority-sla-meta') as HTMLElement | null;
@@ -144,9 +148,11 @@ const isEs = lang === 'es';
         cmuCode.textContent = buildCmuPrioritySubjectLine(state, { cvPct: 52, material: 'Cr27' });
       }
       if (cmuMeta) {
+        const urgencyHuman = formatUrgencyBandHuman(state.criticalityMode, lang);
+        const laneHuman = formatCheckoutLaneHuman(desc.checkoutLane, lang);
         cmuMeta.textContent = isEn
-          ? `Lane: ${desc.priorityLabelEn} (${desc.checkoutLane}) • Response SLA: ≤ ${desc.slaResponseMinutes} min • cμ Index = ${desc.priorityRankScore}`
-          : `Carril: ${desc.priorityLabelEs} (${desc.checkoutLane}) • SLA Respuesta: ≤ ${desc.slaResponseMinutes} min • Índice cμ = ${desc.priorityRankScore}`;
+          ? `${urgencyHuman} • ${laneHuman} • Response SLA: ≤ ${desc.slaResponseMinutes} min`
+          : `${urgencyHuman} • ${laneHuman} • SLA Respuesta: ≤ ${desc.slaResponseMinutes} min`;
       }
       if (!tbody) return;
       if (!state.items.length) {

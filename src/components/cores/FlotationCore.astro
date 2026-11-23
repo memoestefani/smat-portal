@@ -30,8 +30,8 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
     <span class="embedded-badge">Drop-In #18 SP / #24 / #30</span>
   </div>
 
-  <!-- Lectura consolidada Estrato 1 (preserva #celdas-gorain-readout exigido por Gate 48) -->
-  <div id="celdas-gorain-readout" class="smat-stratum1-display gorain-readout-banner smat-mt-sm">
+  <!-- Lectura consolidada Estrato 1 (escritor único #wb-flot-res-susp-status sin duplicación #celdas-gorain-readout) -->
+  <div class="smat-stratum1-display gorain-readout-banner smat-mt-sm">
     <span>{isEs ? 'Cinética Activa:' : 'Live Kinetics:'}</span>{' '}
     <span id="wb-flot-res-susp-status" data-testid="wb-flot-res-susp-status">
       {isEs ? 'Gorain ≥ 50 s⁻¹ ÓPTIMO · Zwietering Suspensión Completa' : 'Gorain ≥ 50 s⁻¹ OPTIMAL · Zwietering Full Suspension'}
@@ -62,22 +62,22 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
         <option value="0.76">#30 (Ø 0.76 m · 300 ft³)</option>
       </select>
     </div>
-    <div class="form-group">
-      <label class="smat-field-label" for="wb-flot-rpm">
-        {isEs ? 'Velocidad Rotor (RPM):' : 'Rotor Speed (RPM):'}
-      </label>
-      <input type="number" id="wb-flot-rpm" data-schema-input="flotation.rotorRpm" min="100" max="450" step="5" value="215" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
-    </div>
   </div>
 
-  <!-- Nivel 2 acordeón: Parámetros Cinéticos de Yacimiento P, Rf, d80, Cw -->
+  <!-- Nivel 2 acordeón: RPM y Parámetros Cinéticos de Yacimiento P, Rf, d80, Cw -->
   <details class="tier2-flot-details smat-mt-sm">
     <summary class="tier2-flot-summary">
       {isEs
-        ? 'Parámetros Cinéticos de Yacimiento: Flotabilidad P, Espuma Rf, d80 y %Cw'
-        : 'Ore Kinetic Parameters: Floatability P, Froth Recovery Rf, d80 & %Cw'}
+        ? 'Velocidad RPM y Parámetros Cinéticos de Yacimiento (P, Rf, d80, %Cw)'
+        : 'Rotor RPM & Ore Kinetic Parameters (P, Rf, d80, %Cw)'}
     </summary>
     <div class="smat-inputs-2col smat-mt-sm">
+      <div class="form-group">
+        <label class="smat-field-label" for="wb-flot-rpm">
+          {isEs ? 'Velocidad Rotor (RPM):' : 'Rotor Speed (RPM):'}
+        </label>
+        <input type="number" id="wb-flot-rpm" data-schema-input="flotation.rotorRpm" min="100" max="450" step="5" value="215" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
+      </div>
       <div class="form-group">
         <label class="smat-field-label" for="wb-flot-p">
           {isEs ? 'Flotabilidad Mineral P:' : 'Ore Floatability P:'}
@@ -118,38 +118,45 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
   </div>
 
   {showVerticalActions && (
-    <div class="smat-cta-row smat-mt-sm">
-      <a
-        href={`${quoteBase}?circuito=flotacion&equipo=${quoteEquipo}&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq`}
-        data-quote-base={quoteBase}
-        class="btn btn-primary smat-tap-btn"
-      >
-        {isEs ? 'Cotizar Calibrado →' : 'Quote Calibrated Unit →'}
-      </a>
-      <button
-        type="button"
-        class="btn btn-outline btn-avenue-tray smat-tap-btn"
-        data-vertical-tray-btn
-        data-add-tray-sku={variant === 'cells' ? 'SMAT-FLOT-CELL-100' : 'SMAT-FLOT-MECH-18SP'}
-        data-tray-part-code="Ø0.61m"
-        data-tray-title={isEs ? 'Mecanismo Rotor-Estator Flotación (Ø0.61 m)' : 'Flotation Rotor-Stator Assembly (Ø0.61 m)'}
-        data-tray-series={variant === 'cells' ? '100ft' : '0.61m'}
-        data-tray-material="PU_SHORE90"
-        data-tray-circuit="flotacion"
-        data-tray-source={`flotation_${variant}_stratum1_calc`}
-      >
-        {isEs ? '+ Bandeja Mecanismo 18SP' : '+ Tray 18SP Mechanism'}
-      </button>
+    <>
+      <div class="smat-cta-row smat-mt-sm">
+        <a
+          href={`${quoteBase}?circuito=flotacion&equipo=${quoteEquipo}&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq`}
+          data-quote-base={quoteBase}
+          class="btn btn-primary smat-tap-btn"
+        >
+          {isEs ? 'Cotizar Calibrado →' : 'Quote Calibrated Unit →'}
+        </a>
+        <button
+          type="button"
+          class="btn btn-outline btn-avenue-tray smat-tap-btn"
+          data-vertical-tray-btn
+          data-add-tray-sku={variant === 'cells' ? 'SMAT-FLOT-CELL-100' : 'SMAT-FLOT-MECH-18SP'}
+          data-tray-part-code="Ø0.61m"
+          data-tray-title={isEs ? 'Mecanismo Rotor-Estator Flotación (Ø0.61 m)' : 'Flotation Rotor-Stator Assembly (Ø0.61 m)'}
+          data-tray-series={variant === 'cells' ? '100ft' : '0.61m'}
+          data-tray-material="PU_SHORE90"
+          data-tray-circuit="flotacion"
+          data-tray-source={`flotation_${variant}_stratum1_calc`}
+        >
+          {isEs ? '+ Bandeja Mecanismo 18SP' : '+ Tray 18SP Mechanism'}
+        </button>
+      </div>
       {variant === 'cells' && (
-        <>
-          <a href={`${productsBase}${isEs ? 'mecanismo-suspendido-flotacion-18sp/' : 'suspended-flotation-mechanism-18sp/'}`} class="btn btn-outline">
-            SMAT-FLOT-MECH-18SP →
-          </a>
-          <a href={`${quoteBase}?circuito=flotacion&equipo=rotor_estator&serie=100ft#rfq`} class="btn btn-outline">
-            {isEs ? 'Cotizar Kit Rotor + Estator →' : 'Quote Rotor + Stator Kit →'}
-          </a>
-        </>
+        <details class="tier2-flot-details smat-mt-sm" id="flot-cells-extra-links">
+          <summary class="tier2-flot-summary">
+            {isEs ? 'Accesos rápidos: Ficha 18SP y Kit Rotor + Estator' : 'Quick links: 18SP Sheet & Rotor + Stator Kit'}
+          </summary>
+          <div class="smat-cta-row smat-mt-sm">
+            <a href={`${productsBase}${isEs ? 'mecanismo-suspendido-flotacion-18sp/' : 'suspended-flotation-mechanism-18sp/'}`} class="btn btn-outline">
+              SMAT-FLOT-MECH-18SP →
+            </a>
+            <a href={`${quoteBase}?circuito=flotacion&equipo=rotor_estator&serie=100ft#rfq`} class="btn btn-outline">
+              {isEs ? 'Cotizar Kit Rotor + Estator →' : 'Quote Rotor + Stator Kit →'}
+            </a>
+          </div>
+        </details>
       )}
-    </div>
+    </>
   )}
 </div>

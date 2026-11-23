@@ -6,7 +6,7 @@
  * preservando atribución científica rigurosa en `methodologyNote` para notas y tooltips.
  */
 
-export const DOMAIN_LABELS_I18N = Object.freeze({
+const DOMAIN_LABELS_I18N = Object.freeze({
   pumping: {
     es: {
       title: 'Selección Hidráulica de Bombeo',
@@ -172,4 +172,191 @@ export function buildRolesCriteriaMap(rolesData) {
     }
   }
   return criteriaMap;
+}
+
+/**
+ * Formatea un rango numérico `[min, max]` conforme a ISO 80000-1 sin concatenar arreglos.
+ * @param {number[]|string} range
+ * @param {string} [unit='']
+ * @param {'es'|'en'} [lang='es']
+ * @returns {string}
+ */
+export function formatNumericRange(range, unit = '', lang = 'es') {
+  const isEn = String(lang).toLowerCase() === 'en';
+  const nfLocale = isEn ? 'en-US' : 'es-MX';
+  const suffix = unit ? ` ${unit}` : '';
+  if (Array.isArray(range) && range.length >= 2) {
+    const a = Number(range[0]);
+    const b = Number(range[1]);
+    const fa = Number.isFinite(a) ? a.toLocaleString(nfLocale) : String(range[0]);
+    const fb = Number.isFinite(b) ? b.toLocaleString(nfLocale) : String(range[1]);
+    return `${fa}–${fb}${suffix}`;
+  }
+  return `${String(range ?? '—')}${suffix}`;
+}
+
+const HUMAN_MATERIAL_LABELS = Object.freeze({
+  alto_cromo_cr27: { es: 'Alto Cromo Cr27 (≥650 HB)', en: '27% High Chrome (≥650 HB)' },
+  alto_cromo_a49: { es: 'Alto Cromo Cr28 A49', en: '28% High Chrome A49' },
+  hule_natural: { es: 'Hule Natural R55 (55–65 Shore A)', en: 'Natural Rubber R55 (55–65 Shore A)' },
+  hule_natural_r55: { es: 'Hule Natural R55 (55–65 Shore A)', en: 'Natural Rubber R55 (55–65 Shore A)' },
+  poliuretano: { es: 'Poliuretano Minero U01 (85–95 Shore A)', en: 'Mining Polyurethane U01 (85–95 Shore A)' },
+  poliuretano_u01: { es: 'Poliuretano Minero U01 (85–95 Shore A)', en: 'Mining Polyurethane U01 (85–95 Shore A)' },
+  ceramica_sic: { es: 'Carburo de Silicio Sinterizado SiC', en: 'Sintered Silicon Carbide SiC' },
+  hybrid_a05_r55: { es: 'Híbrido Impulsor A05 + Forros R55', en: 'Hybrid A05 Impeller + R55 Liners' },
+  hibrido_a05_r55: { es: 'Híbrido Impulsor A05 + Forros R55', en: 'Hybrid A05 Impeller + R55 Liners' },
+});
+
+/**
+ * Traduce una clave técnica de aleación o configuración híbrida a etiqueta humana.
+ * @param {string} rawKey
+ * @param {'es'|'en'} [lang='es']
+ * @returns {string}
+ */
+export function formatMaterialKeyHuman(rawKey = '', lang = 'es') {
+  const isEn = String(lang).toLowerCase() === 'en';
+  const k = String(rawKey || '').trim().toLowerCase();
+  const entry = HUMAN_MATERIAL_LABELS[k];
+  if (entry) return isEn ? entry.en : entry.es;
+  return String(rawKey || '').replace(/_/g, ' ').trim();
+}
+
+const HUMAN_CYCLONE_REGIME_LABELS = Object.freeze({
+  SEMI_UMBRELLA_OPTIMAL: { es: 'Descarga Spray Nominal (Aire Estable)', en: 'Nominal Spray Discharge (Stable Core)' },
+  SEMI_UMBRELLA: { es: 'Descarga Spray Nominal (Aire Estable)', en: 'Nominal Spray Discharge (Stable Core)' },
+  ROPING_CORDON: { es: 'Alerta Acordonamiento (Roping en Ápex)', en: 'Roping Alert (Apex Volumetric Choking)' },
+  UMBRELLA_SPRAY: { es: 'Abanico Diluido (Ápex Desgastado)', en: 'Dilute Umbrella Spray (Worn Apex)' },
+});
+
+/**
+ * Traduce códigos de régimen hidrociclónico a etiqueta legible en ES/EN.
+ * @param {string} rawRegime
+ * @param {'es'|'en'} [lang='es']
+ * @returns {string}
+ */
+export function formatCycloneRegimeHuman(rawRegime = '', lang = 'es') {
+  const isEn = String(lang).toLowerCase() === 'en';
+  const k = String(rawRegime || '').trim().toUpperCase();
+  const entry = HUMAN_CYCLONE_REGIME_LABELS[k];
+  if (entry) return isEn ? entry.en : entry.es;
+  return String(rawRegime || '').replace(/_/g, ' ').trim();
+}
+
+const HUMAN_CHECKOUT_LANE_LABELS = Object.freeze({
+  CAJA_CHICA_CFDI40: { es: 'Compra Directa (CFDI 4.0)', en: 'Direct Purchase (CFDI 4.0)' },
+  ORDEN_COMPRA_SAP: { es: 'Orden de Compra ERP/SAP', en: 'ERP/SAP Purchase Order' },
+});
+
+/**
+ * Traduce el carril de pago/facturación interno a texto claro de usuario.
+ * @param {string} rawLane
+ * @param {'es'|'en'} [lang='es']
+ * @returns {string}
+ */
+export function formatCheckoutLaneHuman(rawLane = '', lang = 'es') {
+  const isEn = String(lang).toLowerCase() === 'en';
+  const k = String(rawLane || '').trim().toUpperCase();
+  const entry = HUMAN_CHECKOUT_LANE_LABELS[k];
+  if (entry) return isEn ? entry.en : entry.es;
+  return isEn ? 'Standard Procurement Order' : 'Orden de Suministro Estándar';
+}
+
+const HUMAN_URGENCY_BAND_LABELS = Object.freeze({
+  IMMEDIATE_PICK: { es: 'Surtido Inmediato en Almacén', en: 'Immediate Warehouse Dispatch' },
+  PARO_DE_LINEA: { es: 'Prioridad Alta (Paro de Planta)', en: 'High Priority (Plant Shutdown)' },
+  'P1-PARO-PLANTA': { es: 'Prioridad Alta (Paro de Planta)', en: 'High Priority (Plant Shutdown)' },
+  'P1-CAJA-CHICA-HAY': { es: 'Compra Directa en Existencia (≤ 30 min)', en: 'In-Stock Direct Purchase (≤ 30 min)' },
+  'P2-REPOSICION-LOTE': { es: 'Reposición Programada (≤ 60 min)', en: 'Scheduled Replenishment (≤ 60 min)' },
+  'P3-PROYECTO-50%-ANTICIPO': { es: 'Fabricación Bajo Plano (50% Anticipo)', en: 'Custom Fabrication (50% Advance)' },
+  STOCK_SS: { es: 'Stock Preventivo de Almacén', en: 'Preventive Warehouse Stock' },
+});
+
+/**
+ * Traduce códigos de prioridad o surtido logístico sin exponer fórmulas internas (cμ=).
+ * @param {string} rawUrgency
+ * @param {'es'|'en'} [lang='es']
+ * @returns {string}
+ */
+export function formatUrgencyBandHuman(rawUrgency = '', lang = 'es') {
+  const isEn = String(lang).toLowerCase() === 'en';
+  const k = String(rawUrgency || '').trim().toUpperCase();
+  const entry = HUMAN_URGENCY_BAND_LABELS[k];
+  if (entry) return isEn ? entry.en : entry.es;
+  return String(rawUrgency || '').replace(/_/g, ' ').trim();
+}
+
+const HUMAN_CATALOG_PART_LABELS = Object.freeze({
+  FILTRO_BATCH_LAB: { es: 'Filtro de Presión Batch (Lab)', en: 'Batch Pressure Filter (Lab)' },
+  BALANZA_MARCY: { es: 'Balanza de Densidad Marcy', en: 'Marcy Pulp Density Scale' },
+  TAMICES_ASTM: { es: 'Juego de Tamices ASTM E11', en: 'ASTM E11 Test Sieve Stack' },
+});
+
+/**
+ * Traduce claves internas de rol/instrumento en etiquetas limpias para el catálogo.
+ * @param {string} rawCode
+ * @param {'es'|'en'} [lang='es']
+ * @returns {string}
+ */
+export function formatCatalogPartCodeHuman(rawCode = '', lang = 'es') {
+  const isEn = String(lang).toLowerCase() === 'en';
+  const k = String(rawCode || '').trim().toUpperCase();
+  const entry = HUMAN_CATALOG_PART_LABELS[k];
+  if (entry) return isEn ? entry.en : entry.es;
+  return String(rawCode || '').replace(/_/g, ' ').trim();
+}
+
+/**
+ * Fuente Única de Verdad (SSOT) para la taxonomía de las 3 Puertas de Don Manuel (D2-V53C).
+ */
+export const SMAT_SUPPLY_DOORS = Object.freeze({
+  door1: Object.freeze({
+    id: 'door1',
+    hrefEs: '/equipos/',
+    hrefEn: '/en/process-equipment/',
+    badgeEs: 'Puerta 1 • Equipos de Proceso',
+    badgeEn: 'Door 1 • Process Equipment',
+    labelEs: 'Puerta 1: Equipos de Proceso',
+    labelEn: 'Door 1: Process Equipment',
+  }),
+  door2: Object.freeze({
+    id: 'door2',
+    hrefEs: '/bombeo/',
+    hrefEn: '/en/pumping/',
+    badgeEs: 'Puerta 2 • Bombas para Lodos y Spare Parts',
+    badgeEn: 'Door 2 • Slurry Pumps & Spare Parts',
+    labelEs: 'Puerta 2: Bombas para Lodos y Spare Parts',
+    labelEn: 'Door 2: Slurry Pumps & Spare Parts',
+  }),
+  door3: Object.freeze({
+    id: 'door3',
+    hrefEs: '/control-de-procesos/',
+    hrefEn: '/en/process-control/',
+    badgeEs: 'Puerta 3 • Control de Procesos y Laboratorio',
+    badgeEn: 'Door 3 • Process Control & Laboratory',
+    labelEs: 'Puerta 3: Control de Procesos y Laboratorio',
+    labelEn: 'Door 3: Process Control & Laboratory',
+  }),
+  classificationSubEs: 'Sub-circuito • Puerta 1 · Clasificación e Hidrociclones',
+  classificationSubEn: 'Sub-circuit • Door 1 · Classification & Hydrocyclones',
+});
+
+const HUMAN_DISCHARGE_REGIME_LABELS = Object.freeze({
+  ROPING_CORDON: { es: 'Alerta de Acordonamiento (Roping en Ápex)', en: 'Roping Alert (Apex Volumetric Choking)' },
+  UMBRELLA_DILUTE: { es: 'Descarga Diluida en Paraguas', en: 'Dilute Umbrella Spray Discharge' },
+  SEMI_UMBRELLA: { es: 'Ángulo Semi-Paraguas Estable', en: 'Stable Semi-Umbrella Cone' },
+  SPRAY_NORMAL: { es: 'Descarga Normal en Cono Abierto', en: 'Normal Open-Cone Spray' },
+});
+
+/**
+ * Formatea el régimen de descarga de hidrociclón sin exponer tokens internos.
+ * @param {string} [rawRegime='']
+ * @param {'es'|'en'} [lang='es']
+ * @returns {string}
+ */
+export function formatDischargeRegimeHuman(rawRegime = '', lang = 'es') {
+  const isEn = String(lang).toLowerCase() === 'en';
+  const k = String(rawRegime || '').trim().toUpperCase();
+  const entry = HUMAN_DISCHARGE_REGIME_LABELS[k];
+  if (entry) return isEn ? entry.en : entry.es;
+  return String(rawRegime || '').replace(/_/g, ' ').trim();
 }

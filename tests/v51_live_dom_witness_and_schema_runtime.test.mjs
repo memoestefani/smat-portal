@@ -20,6 +20,14 @@ import {
   computeSobolFirstOrderIndices,
   solveXdsmMultidisciplinaryDag
 } from '../src/scripts/wizardXdsmDagSolver.js';
+import { formatSchemaOutputValue } from '../src/scripts/engineSchemaRegistry.js';
+import {
+  WEBHOOK_OUTBOX_STATES,
+  isPlaceholderWebhookUrl,
+  recoverInterruptedOutboxEntries,
+  resolveHonestWebhookStatus
+} from '../src/scripts/leadOutboxStateMachine.js';
+import { buildCatalogFacetedViewModel } from '../src/scripts/catalogFacetedViewModel.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -445,4 +453,157 @@ test('V51-T4 Cero Fugas ES en dist/en/**/*.html, Cero Placebos y Cero Emojis UI'
       assert.equal(src.includes(placebo), false, `ID placebo '${placebo}' en ${path.relative(SITE_ROOT, srcFile)}`);
     }
   }
+});
+
+test('V52-T1 Zero-Crash Outbox FSM, Escritor Único Metrológico, Formateo Humano y Cero Placebos V5.2', () => {
+  // 1. Outbox FSM honesta (cero SENT placebo sin HTTP 200)
+  const draft = resolveHonestWebhookStatus({ endpointUrl: '', isOnline: true, isEn: false });
+  assert.equal(draft.state, WEBHOOK_OUTBOX_STATES.DRAFT_LOCAL);
+  assert.equal(draft.verifiedDelivery, false);
+  const queued = resolveHonestWebhookStatus({ endpointUrl: '', isOnline: false, isEn: false });
+  assert.equal(queued.state, WEBHOOK_OUTBOX_STATES.QUEUED_OFFLINE);
+  const confirmed = resolveHonestWebhookStatus({ endpointUrl: 'https://hooks.smatminerals.com/intake', httpStatus: 200, isEn: false });
+  assert.equal(confirmed.state, WEBHOOK_OUTBOX_STATES.CONFIRMED_HTTP_200);
+  assert.equal(confirmed.verifiedDelivery, true);
+  const err = resolveHonestWebhookStatus({ endpointUrl: 'https://hooks.smatminerals.com/intake', httpStatus: 503, isEn: true });
+  assert.equal(err.state, WEBHOOK_OUTBOX_STATES.FAILED_HTTP);
+  assert.equal(isPlaceholderWebhookUrl('akfycbzsmatdurangoleadintakewebhook'), true);
+  const recovered = recoverInterruptedOutboxEntries([{ id: 1, status: 'sending' }]);
+  assert.equal(recovered[0].status, 'pending');
+
+  // 2. ViewModel SSR de CatalogFacetedIsland (13 piezas y rango formateado sin concatenación)
+  const rawAtomicParts = JSON.parse(fs.readFileSync(path.join(SITE_ROOT, 'data/atomic_parts.json'), 'utf8'));
+  const vm = buildCatalogFacetedViewModel({ atomicParts: rawAtomicParts, locale: 'es' });
+  assert.equal(vm.enrichedAtomicParts.length, 13);
+  const firstWithD80 = vm.wetEndMaterialsList.find((item) => item.d80RangeMicrons && item.d80RangeMicrons !== '—');
+  assert.ok(firstWithD80, 'Debe existir al menos 1 aleación con rango d80 formateado');
+  assert.equal(firstWithD80.d80RangeMicrons.includes('1506000'), false, 'd80RangeMicrons no debe concatenar [150, 6000]');
+  assert.ok(firstWithD80.d80RangeMicrons.includes('–'), 'd80RangeMicrons debe usar separador en-dash');
+
+  // 3. formatSchemaOutputValue humaniza enums crudos y rangos
+  assert.equal(formatSchemaOutputValue('tribology', 'recommendedMaterial', 'alto_cromo_cr27', 'es'), 'Alto Cromo Cr27 (≥650 HB)');
+  assert.equal(formatSchemaOutputValue('cycloneScreen', 'dischargeRegime', 'ROPING_CORDON', 'en'), 'Roping Alert (Apex Volumetric Choking)');
+  assert.equal(formatSchemaOutputValue('tribology', 'd80RangeMicrons', [150, 6000], 'es'), '150–6,000');
+
+  // 4. Escritor único en MetrologyLabCore, cero /admin/ en Footer, cero unpkg CDN en admin
+  const metCore = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/MetrologyLabCore.astro'), 'utf8');
+  assert.equal(/data-schema-output="[^"]+"\s+data-met-defuse-/.test(metCore), false, 'MetrologyLabCore debe mantener escritor único');
+  const footerSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/Footer.astro'), 'utf8');
+  assert.equal(footerSrc.includes('/admin/'), false, 'Footer no debe exponer enlace público /admin/');
+  const adminHtml = fs.readFileSync(path.join(SITE_ROOT, 'public/admin/index.html'), 'utf8');
+  assert.equal(adminHtml.includes('unpkg.com'), false, 'public/admin/index.html debe operar Zero-Network sin CDN externo');
+
+  // 5. En dist/en/quote: cero fugas ES de company.json o LiveEngineeringDossier
+  const distEnQuote = path.join(SITE_ROOT, 'dist/en/quote/index.html');
+  if (fs.existsSync(distEnQuote)) {
+    const html = fs.readFileSync(distEnQuote, 'utf8');
+    for (const leak of ['Lunes a Viernes', 'Acceso apto', 'Acople Brida', 'Grado G2.5']) {
+      assert.equal(html.includes(leak), false, `dist/en/quote no debe contener fuga ES '${leak}'`);
+    }
+  }
+});
+
+test('V53-T1 Ola C1: Único <main>, Formateo Humano, Zero Hardcodes SSR y <dialog> en Bandeja', async () => {
+  const { formatCheckoutLaneHuman, formatUrgencyBandHuman, formatCatalogPartCodeHuman } = await import(
+    '../src/scripts/i18nDomainLabels.js'
+  );
+
+  // 1. Etiquetas humanas ES/EN sin enums técnicos crudos
+  assert.equal(formatCheckoutLaneHuman('CAJA_CHICA_CFDI40', 'es').includes('CAJA_CHICA'), false);
+  assert.equal(formatUrgencyBandHuman('IMMEDIATE_PICK', 'en').includes('IMMEDIATE_PICK'), false);
+  assert.equal(formatCatalogPartCodeHuman('FILTRO_BATCH_LAB', 'es').includes('FILTRO_BATCH_LAB'), false);
+
+  // 2. Sin <main> anidado en AcuseSheetIsland, AtomicPartIsland y páginas legales/producto
+  for (const rel of [
+    'src/components/islands/AcuseSheetIsland.astro',
+    'src/components/islands/AtomicPartIsland.astro',
+    'src/pages/cumplimiento.astro',
+    'src/pages/garantia.astro',
+    'src/pages/en/compliance.astro',
+    'src/pages/en/warranty.astro',
+    'src/pages/productos/[slug].astro',
+    'src/pages/en/products/[slug].astro',
+  ]) {
+    const content = fs.readFileSync(path.join(SITE_ROOT, rel), 'utf8');
+    assert.equal(/<main\b/i.test(content), false, `${rel} no debe introducir <main> anidado dentro de BaseLayout`);
+  }
+
+  // 3. Separador tipográfico después de #wb-jrp-window-days en fichas [slug]
+  for (const slugRel of ['src/pages/productos/[slug].astro', 'src/pages/en/products/[slug].astro']) {
+    const slugSrc = fs.readFileSync(path.join(SITE_ROOT, slugRel), 'utf8');
+    assert.ok(slugSrc.includes("insertAdjacentText('afterend', ' · ')"), `${slugRel} debe insertar ' · ' tras #wb-jrp-window-days`);
+  }
+
+  // 4. SealDriveBearingCore SSR dinámico (cero 1001 RPM / 42800 hardcoded) & DropInVerifierCore neutro
+  const sdbSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/SealDriveBearingCore.astro'), 'utf8');
+  assert.equal(sdbSrc.includes('calculateDriveAndBearingKinematics'), true);
+  assert.equal(sdbSrc.includes('1001 RPM'), false);
+  assert.equal(sdbSrc.includes('l10h=42800'), false);
+
+  const dropInSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/DropInVerifierCore.astro'), 'utf8');
+  const dropInBadge = dropInSrc.slice(dropInSrc.indexOf('smat-dropin-root-badge'));
+  assert.equal(dropInBadge.includes('>A05<'), false);
+  assert.equal(dropInBadge.includes('>SAT H87<'), false);
+
+  // 5. Consolidación en Cyclone, Filtration y Flotation
+  const cycSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/CycloneScreenCore.astro'), 'utf8');
+  assert.equal(cycSrc.includes('id="btn-simulate-roping"'), true);
+  assert.equal(cycSrc.includes('α = 4.40'), true);
+  assert.equal(cycSrc.includes('id="csr-weibull-out"'), false);
+
+  const filtSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/FiltrationCore.astro'), 'utf8');
+  assert.equal(filtSrc.includes('id="filt-res-summary"'), false);
+  assert.equal((filtSrc.match(/SMAT-FILT-CLOTH-PLATE/g) || []).length <= 1, true);
+
+  const flotSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/FlotationCore.astro'), 'utf8');
+  assert.equal(flotSrc.includes('id="celdas-gorain-readout"'), false);
+});
+
+test('V53-T2 Ola C2: Outbox Paso 3, Nivel 2 Contextual, Offline Reactivo, Dossier No Oclusivo y Sobol S1', () => {
+  const wizardSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/QuoteWizard.astro'), 'utf8');
+  assert.ok(wizardSrc.includes('id="wb-submit-outbox-btn"'));
+  assert.ok(wizardSrc.includes('id="wb-outbox-status-msg"'));
+  assert.ok(wizardSrc.includes('initQuoteOutboxController'));
+  const outboxSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/leadOutboxStateMachine.js'), 'utf8');
+  assert.ok(outboxSrc.includes('enqueueIdempotentOutboxEntry'));
+
+  const pumpCore = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/PumpingHydraulicsCore.astro'), 'utf8');
+  assert.ok(pumpCore.includes('id="pumping-tier2-params"'));
+  assert.ok(pumpCore.includes('is-tier2-contextual-active'));
+
+  const footerSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/Footer.astro'), 'utf8');
+  assert.match(footerSrc, /id="smat-offline-status"[^>]*\bhidden\b/);
+
+  const stickyCss = fs.readFileSync(path.join(SITE_ROOT, 'src/styles/workbench-circuits-sticky.css'), 'utf8');
+  assert.ok(stickyCss.includes('position: static'));
+
+  const dossierSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/LiveEngineeringDossier.astro'), 'utf8');
+  assert.ok(dossierSrc.includes('id="live-table-sobol-drivers"'));
+});
+
+test('V53-T3 Ola C3: SSOT SMAT_SUPPLY_DOORS, Higiene APL-03, Checkboxes Fitts y Drawers Progresivos', async () => {
+  const { SMAT_SUPPLY_DOORS, formatDischargeRegimeHuman } = await import('../src/scripts/i18nDomainLabels.js');
+
+  assert.equal(SMAT_SUPPLY_DOORS.door1.hrefEs, '/equipos/');
+  assert.equal(SMAT_SUPPLY_DOORS.door2.hrefEs, '/bombeo/');
+  assert.equal(SMAT_SUPPLY_DOORS.door3.hrefEs, '/control-de-procesos/');
+  assert.equal(formatDischargeRegimeHuman('ROPING_CORDON', 'es').includes('ROPING_CORDON'), false);
+  assert.equal(formatDischargeRegimeHuman('ROPING_CORDON', 'en').includes('ROPING_CORDON'), false);
+
+  const layoutSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/layouts/BaseLayout.astro'), 'utf8');
+  assert.ok(layoutSrc.includes('label:has(> input[type="checkbox"])'));
+  assert.ok(layoutSrc.includes('clip: rect(0px, 0px, 0px, 0px)'));
+  assert.ok(layoutSrc.includes('width: 20px'));
+
+  const wizardCtrl = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/quoteWizardController.js'), 'utf8');
+  assert.ok(wizardCtrl.includes('nowDateIso'));
+  assert.ok(wizardCtrl.includes('live-date'));
+
+  const tribIsland = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/TribologyAlloyIsland.astro'), 'utf8');
+  assert.ok(tribIsland.includes('id="tribology-material-matrix-drawer"'));
+  assert.ok(tribIsland.includes('id="tribology-spares-and-specs-drawer"'));
+
+  const sdbIsland = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/SealDriveBearingIsland.astro'), 'utf8');
+  assert.ok(sdbIsland.includes('id="seal-branch-comparator-drawer"'));
+  assert.ok(sdbIsland.includes('id="skid-arrangements-drawer"'));
 });

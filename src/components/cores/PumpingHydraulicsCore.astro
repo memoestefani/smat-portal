@@ -72,48 +72,53 @@ const defaultAltData = calculateAltitudeCorrection(2400);
     </span>
   </div>
 
-  <!-- Presets operativos frecuentes (Nivel 1) -->
-  <div class="presets-section">
-    <span class="presets-label">{isEs ? 'PRESETS DE OPERACIÓN FRECUENTE:' : 'COMMON MINING PRESETS:'}</span>
-    <div class="preset-chips-grid">
-      <button type="button" class="preset-chip active" data-preset="sag_primary">
-        <span class="p-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        </span>
-        <div class="p-text">
-          <strong>{isEs ? 'Molienda SAG' : 'SAG Grinding'}</strong>
-          <small>{isEs ? '28% Sólidos • A05' : '28% Solids • A05'}</small>
-        </div>
-      </button>
-      <button type="button" class="preset-chip" data-preset="flotation_rougher">
-        <span class="p-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2v7.31L4.65 18.5A2 2 0 0 0 6.36 21h11.28a2 2 0 0 0 1.71-2.5L14 9.31V2"/><line x1="8.5" x2="15.5" y1="2" y2="2"/></svg>
-        </span>
-        <div class="p-text">
-          <strong>{isEs ? 'Flotación Rougher' : 'Rougher Flotation'}</strong>
-          <small>{isEs ? '18% Sólidos • Caucho' : '18% Solids • Rubber'}</small>
-        </div>
-      </button>
-      <button type="button" class="preset-chip" data-preset="tailings_thickened">
-        <span class="p-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
-        </span>
-        <div class="p-text">
-          <strong>{isEs ? 'Jales Espesados' : 'Thickened Tailings'}</strong>
-          <small>{isEs ? '55% Sólidos • A05' : '55% Solids • A05'}</small>
-        </div>
-      </button>
-      <button type="button" class="preset-chip" data-preset="emergency_6x4">
-        <span class="p-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
-        </span>
-        <div class="p-text">
-          <strong>{isEs ? 'Kit Paro Crítico 6x4' : 'Critical Spares 6x4'}</strong>
-          <small>{isEs ? '32% Sólidos • Despacho Programado' : '32% Solids • Scheduled Dispatch'}</small>
-        </div>
-      </button>
+  <!-- Presets operativos frecuentes (Acordeón colapsado inicial para mantener densidad Cowan óptima) -->
+  <details class="wb-progressive-drawer smat-mb-sm" id="pumping-presets-drawer">
+    <summary class="wb-progressive-summary">
+      <span>{isEs ? 'Presets rápidos de circuito (SAG, Flotación, Relaves, Paro 6x4)' : 'Circuit presets (SAG, Flotation, Tailings, Critical 6x4)'}</span>
+      <span class="wb-step1-more-arrow">▾</span>
+    </summary>
+    <div class="wb-progressive-body">
+      <div class="preset-chips-grid">
+        <button type="button" class="preset-chip active" data-preset="sag_primary">
+          <span class="p-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </span>
+          <div class="p-text">
+            <strong>{isEs ? 'Molienda SAG' : 'SAG Grinding'}</strong>
+            <small>{isEs ? '28% Sólidos • A05' : '28% Solids • A05'}</small>
+          </div>
+        </button>
+        <button type="button" class="preset-chip" data-preset="flotation_rougher">
+          <span class="p-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2v7.31L4.65 18.5A2 2 0 0 0 6.36 21h11.28a2 2 0 0 0 1.71-2.5L14 9.31V2"/><line x1="8.5" x2="15.5" y1="2" y2="2"/></svg>
+          </span>
+          <div class="p-text">
+            <strong>{isEs ? 'Flotación Rougher' : 'Rougher Flotation'}</strong>
+            <small>{isEs ? '18% Sólidos • Caucho' : '18% Solids • Rubber'}</small>
+          </div>
+        </button>
+        <button type="button" class="preset-chip" data-preset="tailings_thickened">
+          <span class="p-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
+          </span>
+          <div class="p-text">
+            <strong>{isEs ? 'Jales Espesados' : 'Thickened Tailings'}</strong>
+            <small>{isEs ? '55% Sólidos • A05' : '55% Solids • A05'}</small>
+          </div>
+        </button>
+        <button type="button" class="preset-chip" data-preset="emergency_6x4">
+          <span class="p-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+          </span>
+          <div class="p-text">
+            <strong>{isEs ? 'Kit Paro Crítico 6x4' : 'Critical Spares 6x4'}</strong>
+            <small>{isEs ? '32% Sólidos • Despacho Programado' : '32% Solids • Scheduled Dispatch'}</small>
+          </div>
+        </button>
+      </div>
     </div>
-  </div>
+  </details>
 
   <!-- Nivel 1 Visible: Variables Primarias de Sobol -->
   <div class="sliders-wrap">
@@ -198,17 +203,6 @@ const defaultAltData = calculateAltitudeCorrection(2400);
         <span>{isEs ? 'Altitud Operativa de Mina (msnm):' : 'Mine Operating Altitude (MASL):'}</span>
         <strong class="slider-value pro-tabular-nums" id="val-altitude">2,400 msnm</strong>
       </div>
-      <div class="altitude-chips-grid" id="wb-altitude-selector">
-        <button type="button" class="alt-chip" data-alt="0" data-wb-altitude-btn="0">
-          <span>0 m</span><small>{isEs ? 'Costa' : 'Coast'}</small>
-        </button>
-        <button type="button" class="alt-chip" data-alt="1500" data-wb-altitude-btn="1500">
-          <span>1,500 m</span><small>{isEs ? 'Meseta' : 'Plateau'}</small>
-        </button>
-        <button type="button" class="alt-chip active" data-alt="2400" data-wb-altitude-btn="2400">
-          <span>2,400 m</span><small>{isEs ? 'Sierra' : 'Sierra'}</small>
-        </button>
-      </div>
       <div class="smat-mt-sm">
         <label for="wb-altitude-input" class="smat-field-label">
           {isEs ? 'Altitud Continua Libre (0 – 5,000 msnm):' : 'Free Continuous Altitude (0 – 5,000 MASL):'}
@@ -241,13 +235,24 @@ const defaultAltData = calculateAltitudeCorrection(2400);
     </div>
   </div>
 
-  <!-- Nivel 2 Acordeón: Gravedad Específica, pH, Temperatura, Brida Ciega y Síntoma -->
+  <!-- Nivel 2 Acordeón: Gravedad Específica, pH, Temperatura, Brida Ciega, Presets Altitud y Síntoma -->
   <details class="wb-progressive-drawer smat-mt-sm" id="pumping-tier2-params">
     <summary class="wb-progressive-summary">
-      <span>{isEs ? 'Calibración Secundaria de Pulpa: Gravedad Ss, pH, Temperatura y Brida' : 'Secondary Slurry Calibration: Ore SG (Ss), pH, Temp & Flange Check'}</span>
+      <span>{isEs ? 'Calibración Secundaria de Pulpa: Gravedad Ss, pH, Temperatura, Altitud y Brida' : 'Secondary Slurry Calibration: Ore SG (Ss), pH, Temp, Altitude & Flange'}</span>
       <span class="wb-step1-more-arrow">▾</span>
     </summary>
     <div class="wb-progressive-body">
+      <div class="altitude-chips-grid smat-mb-sm" id="wb-altitude-selector">
+        <button type="button" class="alt-chip" data-alt="0" data-wb-altitude-btn="0">
+          <span>0 m</span><small>{isEs ? 'Costa' : 'Coast'}</small>
+        </button>
+        <button type="button" class="alt-chip" data-alt="1500" data-wb-altitude-btn="1500">
+          <span>1,500 m</span><small>{isEs ? 'Meseta' : 'Plateau'}</small>
+        </button>
+        <button type="button" class="alt-chip active" data-alt="2400" data-wb-altitude-btn="2400">
+          <span>2,400 m</span><small>{isEs ? 'Sierra' : 'Sierra'}</small>
+        </button>
+      </div>
       <div class="slider-group">
         <div class="slider-label-row">
           <span>{isEs ? 'Gravedad Específica del Mineral (Ss):' : 'Ore Specific Gravity (Ss):'}</span>
@@ -411,9 +416,9 @@ const defaultAltData = calculateAltitudeCorrection(2400);
       </strong>
     </div>
     <div class="sim-metric">
-      <span class="sim-metric-label">{isEs ? 'Factor Sobol Dominante (S₁):' : 'Dominant Sobol Driver (S₁):'}</span>
+      <span class="sim-metric-label">{isEs ? 'Factor Principal de Desgaste:' : 'Primary Wear Driver:'}</span>
       <strong class="sim-metric-val pro-tabular-nums" id="metric-sobol-driver" data-schema-output="pumping.sobolDominantDriver">
-        {isEs ? 'Caudal de Pulpa Q' : 'Slurry Flow Rate Q'}
+        {isEs ? 'Caudal de Pulpa (Q)' : 'Slurry Flow Rate (Q)'}
       </strong>
     </div>
     <div class="sim-metric">
@@ -510,3 +515,40 @@ const defaultAltData = calculateAltitudeCorrection(2400);
     </>
   )}
 </div>
+
+<script>
+  function bindPumpingTier2ContextualReveal() {
+    document.querySelectorAll('[data-domain-root="pumping"]').forEach((root) => {
+      if ((root as HTMLElement).dataset.tier2RevealBound === '1') return;
+      (root as HTMLElement).dataset.tier2RevealBound = '1';
+      const drawer = root.querySelector('#pumping-tier2-params') as HTMLDetailsElement | null;
+      if (!drawer) return;
+      const syncHighlight = () => {
+        const ph = Number((root.querySelector('#slider-ph') as HTMLInputElement | null)?.value || 7.5);
+        const tempC = Number((root.querySelector('#wb-temp-c') as HTMLInputElement | null)?.value || 35);
+        const isSevere = ph < 5.5 || tempC > 60;
+        if (isSevere) drawer.open = true;
+        drawer.classList.toggle('is-tier2-contextual-active', isSevere);
+      };
+      root.querySelectorAll('#slider-ph, #wb-temp-c, #wb-strict-blind-check').forEach((el) => {
+        el.addEventListener('input', syncHighlight);
+        el.addEventListener('change', syncHighlight);
+      });
+      root.querySelectorAll('.stress-chip[data-symptom="acido_quimica"]').forEach((chip) => {
+        chip.addEventListener('click', () => {
+          drawer.open = true;
+          drawer.classList.add('is-tier2-contextual-active');
+        });
+      });
+    });
+  }
+  bindPumpingTier2ContextualReveal();
+  document.addEventListener('astro:page-load', bindPumpingTier2ContextualReveal);
+</script>
+
+<style>
+  .is-tier2-contextual-active {
+    border-color: #7c2d12;
+    background: #fffbeb;
+  }
+</style>

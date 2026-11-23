@@ -90,8 +90,8 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
   alternateEnPath={`/en/products/${sku.slug_en}/`}
   lang="en"
 >
-  <main class="smat-slug-main">
-    <!-- Breadcrumb & language switcher -->
+  <section class="smat-slug-main">
+    <!-- Breadcrumb -->
     <nav class="smat-slug-breadcrumb" aria-label="Breadcrumb">
       <div class="smat-slug-breadcrumb-links">
         <a href="/en/" class="smat-slug-nav-link">Home</a>
@@ -100,10 +100,6 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
         <span>/</span>
         <span class="smat-slug-breadcrumb-current">{sku.id}</span>
       </div>
-      <a href={`/productos/${sku.slug_es}/`} class="smat-slug-lang-switch">
-        <span>ES</span>
-        <span>Ficha en Español →</span>
-      </a>
     </nav>
 
     <!-- Plane 1 Header: < 30s identification -->
@@ -129,23 +125,31 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
 
       <!-- Stratum 1: 3-Milestone Preventive Replacement Card + Synchronized Coupled Pair -->
       <div id="stratum1-slug-card" data-stratum-1-instrument class="smat-jrp-slug-host">
-        <JrpReorderCore
-          lang="en"
-          mode="slug"
-          skuId={sku.id}
-          partCode={sku.atomic_codes?.[0] || sku.id}
-          title={sku.title_en}
-          series={(sku as any).series || '6x4'}
-          material={sku.default_material || 'A05'}
-          circuit={sku.vertical || 'bombeo'}
-          coupledSkuId={sku.coupled_pair_sku || 'SMAT-PUMP-TB-083'}
-          coupledTitle={coupledSku ? coupledSku.title_en : (sku.coupled_pair_sku || 'SMAT-PUMP-TB-083')}
-          reorderDays={Number(sku.reorder_window_days) || 90}
-          traySource="product_slug_stratum1"
-          showTradeIn={false}
-          showPrimaryTrayBtn={true}
-          showPairBtn={true}
-        />
+        <details class="wb-progressive-drawer" id="slug-jrp-drawer">
+          <summary class="wb-progressive-summary">
+            <span>5-5-4 Preventive Reorder Planner &amp; Coupled Pair</span>
+            <span>▾</span>
+          </summary>
+          <div class="smat-mt-sm">
+            <JrpReorderCore
+              lang="en"
+              mode="slug"
+              skuId={sku.id}
+              partCode={sku.atomic_codes?.[0] || sku.id}
+              title={sku.title_en}
+              series={(sku as any).series || '6x4'}
+              material={sku.default_material || 'A05'}
+              circuit={sku.vertical || 'bombeo'}
+              coupledSkuId={sku.coupled_pair_sku || 'SMAT-PUMP-TB-083'}
+              coupledTitle={coupledSku ? coupledSku.title_en : (sku.coupled_pair_sku || 'SMAT-PUMP-TB-083')}
+              reorderDays={Number(sku.reorder_window_days) || 90}
+              traySource="product_slug_stratum1"
+              showTradeIn={false}
+              showPrimaryTrayBtn={true}
+              showPairBtn={true}
+            />
+          </div>
+        </details>
       </div>
 
       <div class="smat-slug-kpi-grid">
@@ -238,56 +242,62 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
           </div>
         </div>
 
-        <div>
-          {hasAtomicPumpCodes && (
-            <div class="smat-slug-atomic-wrap">
-              <h3 class="smat-slug-aside-h3">2A. Linked Atomic Part Codes (13-Part Pump BOM)</h3>
-              <div class="smat-slug-chip-row">
-                {sku.atomic_codes.map((code: string) => (
-                  <a
-                    href={`/en/catalog/${code.toLowerCase()}/`}
-                    class="smat-slug-atomic-link"
-                  >
-                    {code}
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-          <h3 class="smat-slug-aside-h3">2. Circuit Coupling & Preventive Reorder Cycle</h3>
-          <div class="smat-slug-coupled-box" data-coupled-sku={sku.coupled_pair_sku} data-reorder-days={String(sku.reorder_window_days)}>
-            <div>
-              <strong>Recommended Coupled SKU:</strong>{' '}
-              {coupledSku ? (
-                <a href={`/en/products/${coupledSku.slug_en}/`} class="smat-slug-atomic-link smat-slug-atomic-link--inline">
-                  {sku.coupled_pair_sku} — {coupledSku.title_en} →
-                </a>
-              ) : (
-                <span>{sku.coupled_pair_sku}</span>
-              )}
-            </div>
-            <div>
-              <strong>Preventive Reorder Cycle:</strong> <span>Every {sku.reorder_window_days} operating days (Lot #{sku.kit_id || 1})</span>
-            </div>
-            {coupledSku && (
-              <div class="smat-slug-coupled-cta-wrap">
-                <button
-                  type="button"
-                  data-quick-tray-add={coupledSku.id}
-                  data-add-coupled-pair-btn={coupledSku.id}
-                  data-sku-title={coupledSku.title_en}
-                  data-sku-code={coupledSku.atomic_codes?.[0] || coupledSku.id}
-                  data-sku-material={coupledSku.default_material || 'A05'}
-                  data-sku-regime={coupledSku.stock_regime || 'hay'}
-                  data-sku-mass={String(coupledSku.mass_kg || 15)}
-                  class="smat-slug-atomic-link smat-slug-coupled-btn"
-                >
-                  + Add Synchronized Coupled Pair ({coupledSku.id}) to Tray
-                </button>
+        <details class="wb-progressive-drawer" id="slug-coupled-and-codes-drawer">
+          <summary class="wb-progressive-summary">
+            <span>Linked Atomic Codes &amp; Coupled Pair ({sku.coupled_pair_sku})</span>
+            <span>▾</span>
+          </summary>
+          <div class="smat-mt-sm">
+            {hasAtomicPumpCodes && (
+              <div class="smat-slug-atomic-wrap">
+                <h3 class="smat-slug-aside-h3">2A. Linked Atomic Part Codes (13-Part Pump BOM)</h3>
+                <div class="smat-slug-chip-row">
+                  {sku.atomic_codes.map((code: string) => (
+                    <a
+                      href={`/en/catalog/${code.toLowerCase()}/`}
+                      class="smat-slug-atomic-link"
+                    >
+                      {code}
+                    </a>
+                  ))}
+                </div>
               </div>
             )}
+            <h3 class="smat-slug-aside-h3">2. Circuit Coupling & Preventive Reorder Cycle</h3>
+            <div class="smat-slug-coupled-box" data-coupled-sku={sku.coupled_pair_sku} data-reorder-days={String(sku.reorder_window_days)}>
+              <div>
+                <strong>Recommended Coupled SKU:</strong>{' '}
+                {coupledSku ? (
+                  <a href={`/en/products/${coupledSku.slug_en}/`} class="smat-slug-atomic-link smat-slug-atomic-link--inline">
+                    {sku.coupled_pair_sku} — {coupledSku.title_en} →
+                  </a>
+                ) : (
+                  <span>{sku.coupled_pair_sku}</span>
+                )}
+              </div>
+              <div>
+                <strong>Preventive Reorder Cycle:</strong> <span>Every {sku.reorder_window_days} operating days (Lot #{sku.kit_id || 1})</span>
+              </div>
+              {coupledSku && (
+                <div class="smat-slug-coupled-cta-wrap">
+                  <button
+                    type="button"
+                    data-quick-tray-add={coupledSku.id}
+                    data-add-coupled-pair-btn={coupledSku.id}
+                    data-sku-title={coupledSku.title_en}
+                    data-sku-code={coupledSku.atomic_codes?.[0] || coupledSku.id}
+                    data-sku-material={coupledSku.default_material || 'A05'}
+                    data-sku-regime={coupledSku.stock_regime || 'hay'}
+                    data-sku-mass={String(coupledSku.mass_kg || 15)}
+                    class="smat-slug-atomic-link smat-slug-coupled-btn"
+                  >
+                    + Add Synchronized Coupled Pair ({coupledSku.id}) to Tray
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        </details>
 
         <div class="smat-slug-lanes-stack">
           <div class="smat-slug-lane-card smat-slug-lane-card--emerald">
@@ -373,7 +383,7 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
         </div>
       </aside>
     </div>
-  </main>
+  </section>
 </BaseLayout>
 
 <script>
@@ -384,6 +394,11 @@ const telLabels = telemetryLabelsByVerticalEn[sku.vertical] || {
     if (typeof document === 'undefined') return;
     initCoreTradeInWidgets(document, 'en');
     initHarmonicJrpWindowAndPairCard(document, 'en');
+    const winEl = document.getElementById('wb-jrp-window-days');
+    if (winEl && !winEl.dataset.sepAdded) {
+      winEl.dataset.sepAdded = '1';
+      winEl.insertAdjacentText('afterend', ' · ');
+    }
     const chips = document.querySelectorAll('.smat-slug-mat-chip[data-mat-code]');
     const trayBtn = document.querySelector('[data-slug-add-to-tray]');
     const waBtn = document.querySelector('[data-slug-wa-btn]') as HTMLAnchorElement | null;

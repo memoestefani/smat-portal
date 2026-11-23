@@ -15,7 +15,7 @@ import { bindDropInEquivalenceVerifier } from './catalogDropInAndJrpProjector.js
  * @param {string} filterId - Active chip filter ID ('all', 'control', 'tamices', 'bombeo', 'sello_potencia', 'clasificacion', 'filtracion', 'flotacion')
  * @returns {boolean}
  */
-export function matchesFamilyFilter(skuId = '', vertical = '', filterId = 'all') {
+function matchesFamilyFilter(skuId = '', vertical = '', filterId = 'all') {
   if (!filterId || filterId === 'all') return true;
   if (filterId === 'tamices') {
     return skuId === 'SMAT-LAB-TAMIZ-E11' || skuId === 'SMAT-LAB-ROTAP-MECH';
@@ -33,7 +33,7 @@ export function matchesFamilyFilter(skuId = '', vertical = '', filterId = 'all')
  * @param {string} rawQuery - Raw user query from #equipos-sku-search or #catalog-facet-search
  * @returns {boolean}
  */
-export function matchesEquipmentSearchQuery(searchBlob = '', rawQuery = '') {
+function matchesEquipmentSearchQuery(searchBlob = '', rawQuery = '') {
   const tokens = String(rawQuery || '')
     .trim()
     .toLowerCase()
@@ -54,7 +54,7 @@ export function matchesEquipmentSearchQuery(searchBlob = '', rawQuery = '') {
  * @param {string} [rawQuery='']
  * @returns {{ visibleCards: number, visibleGroups: number }}
  */
-export function applyHomeAvenueCatalogFilter(root, filterId = 'all', avenueFilter = 'all', rawQuery = '') {
+function applyHomeAvenueCatalogFilter(root, filterId = 'all', avenueFilter = 'all', rawQuery = '') {
   if (!root || typeof root.querySelectorAll !== 'function') {
     return { visibleCards: 0, visibleGroups: 0 };
   }

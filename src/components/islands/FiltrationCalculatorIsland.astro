@@ -92,43 +92,49 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
           </div>
 
           {variant === 'hub' ? (
-            <div class="grid-2 smat-mb-md">
-              <div class="card">
-                <h3>{isEs ? 'Filtros Prensa Electrohidráulicos' : 'Electro-Hydraulic Filter Presses'}</h3>
-                <p>
-                  {isEs
-                    ? 'Filtros prensa de placas empotradas con cierre electrohidráulico para desaguado de concentrados y jales hasta 16 bar.'
-                    : 'Recessed chamber filter presses with automated hydraulic closure up to 16 bar for concentrates and dry tailings.'}
-                </p>
-                <p class="smat-mono-val">{isEs ? 'Cámara empotrada: 800 mm a 1500 mm • Ciclos 20–40 min' : 'Recessed plates: 800 mm to 1500 mm • 20–40 min cycles'}</p>
-                <div class="smat-cta-row">
-                  <a href={`${filtBase}${isEs ? 'prensa/' : 'press/'}`} class="btn btn-outline">
-                    {isEs ? 'Ficha Técnica' : 'Technical Sheet'}
-                  </a>
-                  <a href={`${quoteBase}?circuito=filtracion&equipo=filtro_prensa&serie=1500&filt_condition=jales_secos#rfq`} class="btn btn-primary">
-                    {isEs ? 'Cotizar →' : 'Quote →'}
-                  </a>
+            <details class="wb-progressive-drawer smat-mb-md" id="filt-sublines-drawer">
+              <summary class="wb-progressive-summary">
+                <span>{isEs ? 'Ver líneas de equipo: Filtros Prensa 800–1500 mm y Placas / Telas' : 'View Equipment Lines: 800–1500 mm Filter Presses & Plates / Cloths'}</span>
+                <span>▾</span>
+              </summary>
+              <div class="grid-2 smat-mt-sm">
+                <div class="card">
+                  <h3>{isEs ? 'Filtros Prensa Electrohidráulicos' : 'Electro-Hydraulic Filter Presses'}</h3>
+                  <p>
+                    {isEs
+                      ? 'Filtros prensa de placas empotradas con cierre electrohidráulico para desaguado de concentrados y jales hasta 16 bar.'
+                      : 'Recessed chamber filter presses with automated hydraulic closure up to 16 bar for concentrates and dry tailings.'}
+                  </p>
+                  <p class="smat-mono-val">{isEs ? 'Cámara empotrada: 800 mm a 1500 mm • Ciclos 20–40 min' : 'Recessed plates: 800 mm to 1500 mm • 20–40 min cycles'}</p>
+                  <div class="smat-cta-row">
+                    <a href={`${filtBase}${isEs ? 'prensa/' : 'press/'}`} class="btn btn-outline">
+                      {isEs ? 'Ficha Técnica' : 'Technical Sheet'}
+                    </a>
+                    <a href={`${quoteBase}?circuito=filtracion&equipo=filtro_prensa&serie=1500&filt_condition=jales_secos#rfq`} class="btn btn-primary">
+                      {isEs ? 'Cotizar →' : 'Quote →'}
+                    </a>
+                  </div>
                 </div>
-              </div>
 
-              <div class="card">
-                <h3>{isEs ? 'Placas Filtrantes, Telas y Repuestos Hidráulicos' : 'Filter Plates, Cloths & Hydraulic Spares'}</h3>
-                <p>
-                  {isEs
-                    ? 'Telas filtrantes cortadas por láser con termosellado perimetral y placas en polipropileno virgen copolímero.'
-                    : 'Laser-cut filter cloths with thermally sealed borders and virgin copolymer polypropylene chamber plates.'}
-                </p>
-                <p class="smat-mono-val">{isEs ? 'Polipropileno Virgen y Fieltro Agujado Calibrado al P80' : 'Virgin Polypropylene & P80-Matched Needlefelt'}</p>
-                <div class="smat-cta-row">
-                  <a href={`${filtBase}${isEs ? 'repuestos/' : 'parts/'}`} data-subroute-link={`${filtBase}${isEs ? 'repuestos/' : 'parts/'}`} class="btn btn-outline">
-                    {isEs ? 'Ficha Técnica' : 'Technical Sheet'}
-                  </a>
-                  <a href={`${quoteBase}?circuito=filtracion&equipo=placas_telas&serie=1500&filt_condition=fuga_chorreo#rfq`} class="btn btn-primary">
-                    {isEs ? 'Cotizar →' : 'Quote →'}
-                  </a>
+                <div class="card">
+                  <h3>{isEs ? 'Placas Filtrantes, Telas y Repuestos Hidráulicos' : 'Filter Plates, Cloths & Hydraulic Spares'}</h3>
+                  <p>
+                    {isEs
+                      ? 'Telas filtrantes cortadas por láser con termosellado perimetral y placas en polipropileno virgen copolímero.'
+                      : 'Laser-cut filter cloths with thermally sealed borders and virgin copolymer polypropylene chamber plates.'}
+                  </p>
+                  <p class="smat-mono-val">{isEs ? 'Polipropileno Virgen y Fieltro Agujado Calibrado al P80' : 'Virgin Polypropylene & P80-Matched Needlefelt'}</p>
+                  <div class="smat-cta-row">
+                    <a href={`${filtBase}${isEs ? 'repuestos/' : 'parts/'}`} data-subroute-link={`${filtBase}${isEs ? 'repuestos/' : 'parts/'}`} class="btn btn-outline">
+                      {isEs ? 'Ficha Técnica' : 'Technical Sheet'}
+                    </a>
+                    <a href={`${quoteBase}?circuito=filtracion&equipo=placas_telas&serie=1500&filt_condition=fuga_chorreo#rfq`} class="btn btn-primary">
+                      {isEs ? 'Cotizar →' : 'Quote →'}
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
+            </details>
           ) : (
             <>
               <h2>
@@ -194,15 +200,21 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
                 </div>
               )}
 
-              <div class="filtration-selector-box" data-testid="filtration-contextual-selector">
-                <span class="badge badge-copper">{isEs ? 'PRE-SELECCIÓN CONTEXTUAL • PUENTE A COTIZADOR' : 'CONTEXTUAL PRE-SELECTION • QUOTE BRIDGE'}</span>
-                <h3>{isEs ? 'Seleccione Dimensión de Placa y Condición' : 'Select Plate Format & Dewatering Duty'}</h3>
-                <div class="smat-cta-row">
-                  <a href={`${quoteBase}?circuito=filtracion&equipo=${quoteEquipo}&serie=800&filt_condition=ciclo_lento#rfq`} class="btn btn-outline">800×800 mm</a>
-                  <a href={`${quoteBase}?circuito=filtracion&equipo=${quoteEquipo}&serie=1200&filt_condition=${variant === 'parts' ? 'fuga_chorreo' : 'jales_secos'}#rfq`} class="btn btn-outline">1200×1200 mm</a>
-                  <a href={`${quoteBase}?circuito=filtracion&equipo=${quoteEquipo}&serie=1500&filt_condition=jales_secos#rfq`} class="btn btn-outline">1500×1500 mm (Dry Stacking)</a>
+              <details class="wb-progressive-drawer smat-mb-md" id="filt-presets-drawer">
+                <summary class="wb-progressive-summary">
+                  <span>{isEs ? 'Pre-selección por tamaño de placa (800 / 1200 / 1500 mm)' : 'Plate format pre-selection (800 / 1200 / 1500 mm)'}</span>
+                  <span>▾</span>
+                </summary>
+                <div class="filtration-selector-box smat-mt-sm" data-testid="filtration-contextual-selector">
+                  <span class="badge badge-copper">{isEs ? 'PRE-SELECCIÓN CONTEXTUAL • PUENTE A COTIZADOR' : 'CONTEXTUAL PRE-SELECTION • QUOTE BRIDGE'}</span>
+                  <h3>{isEs ? 'Seleccione Dimensión de Placa y Condición' : 'Select Plate Format & Dewatering Duty'}</h3>
+                  <div class="smat-cta-row">
+                    <a href={`${quoteBase}?circuito=filtracion&equipo=${quoteEquipo}&serie=800&filt_condition=ciclo_lento#rfq`} class="btn btn-outline">800×800 mm</a>
+                    <a href={`${quoteBase}?circuito=filtracion&equipo=${quoteEquipo}&serie=1200&filt_condition=${variant === 'parts' ? 'fuga_chorreo' : 'jales_secos'}#rfq`} class="btn btn-outline">1200×1200 mm</a>
+                    <a href={`${quoteBase}?circuito=filtracion&equipo=${quoteEquipo}&serie=1500&filt_condition=jales_secos#rfq`} class="btn btn-outline">1500×1500 mm (Dry Stacking)</a>
+                  </div>
                 </div>
-              </div>
+              </details>
             </>
           )}
 
@@ -225,7 +237,15 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
     {variant === 'hub' && (
       <section class="section circuit-nav-band">
         <div class="container">
-          <CircuitNavigator lang={lang} defaultCircuit="jales_filtracion" />
+          <details class="wb-progressive-drawer" id="filt-circuit-nav-drawer">
+            <summary class="wb-progressive-summary">
+              <span>{isEs ? 'Diagrama P&ID de Circuito y Reglas Metalúrgicas de Filtración' : 'Filtration Circuit P&ID Diagram & Metallurgical Rules'}</span>
+              <span>▾</span>
+            </summary>
+            <div class="smat-mt-sm">
+              <CircuitNavigator lang={lang} defaultCircuit="jales_filtracion" />
+            </div>
+          </details>
         </div>
       </section>
     )}
