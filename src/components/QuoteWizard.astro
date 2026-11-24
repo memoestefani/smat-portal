@@ -44,6 +44,11 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
         ? 'Confirme su lista de códigos, revise memorias técnicas adjuntas y despache su solicitud formal hacia Durango.'
         : 'Confirm your SKU list, review attached engineering notes, and dispatch your formal requisition to Durango.'}
     </p>
+    <p class="smat-mt-sm">
+      <a href={isEs ? '/cumplimiento/' : '/en/compliance/'} class="btn btn-outline smat-tap-btn">
+        {isEs ? 'Ver expediente fiscal SAT / CFDI 4.0 y documentación de proveedor →' : 'View SAT / CFDI 4.0 tax compliance & vendor dossier →'}
+      </a>
+    </p>
   </section>
 
   <div class="workbench-split">
@@ -60,7 +65,7 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
           {isEs ? '1. Partidas y Unidad Minera' : '1. Line Items & Mine Site'}
         </button>
         <button type="button" role="tab" aria-selected="false" class="smat-station-tab-btn" data-qw-step-tab="2">
-          {isEs ? '2. Operación JRP y Contacto' : '2. Duty JRP & Contact'}
+          {isEs ? '2. Operación y Contacto' : '2. Duty & Contact'}
         </button>
         <button type="button" role="tab" aria-selected="false" class="smat-station-tab-btn" data-qw-step-tab="3">
           {isEs ? '3. Enviar y Exportar' : '3. Dispatch & Export'}
@@ -105,34 +110,39 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
           </label>
         </div>
 
-        <div class="form-row smat-mt-sm" data-domain-root="jrp">
-          <div class="form-group col-half">
-            <label for="wb-jrp-wear-hours"><strong>{isEs ? 'Vida estimada de campaña (h):' : 'Estimated campaign wear life (h):'}</strong></label>
-            <input type="number" id="wb-jrp-wear-hours" data-schema-input="jrp.predictedWearHours" min="720" max="18000" step="120" value="2400" class="wb-input font-mono-tech" />
+        <details class="wb-progressive-drawer smat-mt-sm" id="qw-preventive-schedule-drawer">
+          <summary class="wb-progressive-summary">
+            <span>{isEs ? 'Opcional: Programar calendario preventivo y reemplazo de casco DAM005 ▾' : 'Optional: Preventive schedule & DAM005 core trade-in ▾'}</span>
+          </summary>
+          <div class="form-row smat-mt-sm" data-domain-root="jrp">
+            <div class="form-group col-half">
+              <label for="wb-jrp-wear-hours"><strong>{isEs ? 'Vida estimada de campaña (h):' : 'Estimated campaign wear life (h):'}</strong></label>
+              <input type="number" id="wb-jrp-wear-hours" data-schema-input="jrp.predictedWearHours" min="720" max="18000" step="120" value="2400" class="wb-input font-mono-tech" />
+            </div>
+            <div class="form-group col-half">
+              <label for="wb-jrp-daily-hours"><strong>{isEs ? 'Horas de operación por día (h/d):' : 'Daily operating hours (h/day):'}</strong></label>
+              <input type="number" id="wb-jrp-daily-hours" name="jrp_daily_hours" min="1" max="24" step="1" value="24" class="wb-input font-mono-tech" />
+            </div>
+            <div class="form-group col-half">
+              <label for="wb-jrp-criticality"><strong>{isEs ? 'Criticidad / Urgencia:' : 'Criticality / Urgency:'}</strong></label>
+              <select id="wb-jrp-criticality" data-schema-input="jrp.criticalityMode" class="wb-select">
+                <option value="normal" selected>{isEs ? 'Programado' : 'Scheduled'}</option>
+                <option value="paro_planta">{isEs ? 'Paro de Planta (Urgente)' : 'Plant Shutdown (Urgent)'}</option>
+              </select>
+            </div>
+            <div class="jrp-schedule-strip font-mono-tech">
+              <span>{isEs ? 'Ventana reorden:' : 'Reorder window:'} <strong id="wb-jrp-window-days" data-schema-output="jrp.reorderWindowDays">90 d</strong></span>
+              <span>Inspección camisa <strong id="jrp-stage-1-days" data-schema-output="jrp.sleeveInspectionDay">90 d</strong></span>
+              <span>Cambio húmedo <strong id="jrp-stage-2-days" data-schema-output="jrp.impellerThroatbushSwapDay">150 d</strong></span>
+              <span>Voluta / forro <strong id="jrp-stage-3-days" data-schema-output="jrp.voluteLinerOverhaulDay">180 d</strong></span>
+              <label class="jrp-tradein-inline-label" for="wb-core-tradein-toggle">
+                <input type="checkbox" id="wb-core-tradein-toggle" data-schema-input="jrp.coreReturnEnabled" />
+                <span>{isEs ? 'Trade-In Casco DAM005:' : 'DAM005 Core Trade-In:'}</span>
+                <strong id="wb-core-tradein-eligible" data-schema-output="jrp.eligible">{isEs ? 'Evaluar' : 'Check'}</strong>
+              </label>
+            </div>
           </div>
-          <div class="form-group col-half">
-            <label for="wb-jrp-daily-hours"><strong>{isEs ? 'Horas de operación por día (h/d):' : 'Daily operating hours (h/day):'}</strong></label>
-            <input type="number" id="wb-jrp-daily-hours" name="jrp_daily_hours" min="1" max="24" step="1" value="24" class="wb-input font-mono-tech" />
-          </div>
-          <div class="form-group col-half">
-            <label for="wb-jrp-criticality"><strong>{isEs ? 'Criticidad / Ventana (s, S):' : 'Criticality / Reorder (s, S):'}</strong></label>
-            <select id="wb-jrp-criticality" data-schema-input="jrp.criticalityMode" class="wb-select">
-              <option value="normal" selected>{isEs ? 'Programado' : 'Scheduled'}</option>
-              <option value="paro_planta">{isEs ? 'Paro de Planta (Urgente)' : 'Plant Shutdown (Urgent)'}</option>
-            </select>
-          </div>
-          <div class="jrp-schedule-strip font-mono-tech">
-            <span>{isEs ? 'Ventana reorden:' : 'Reorder window:'} <strong id="wb-jrp-window-days" data-schema-output="jrp.reorderWindowDays">90 d</strong></span>
-            <span>T10 <strong id="jrp-stage-1-days" data-schema-output="jrp.sleeveInspectionDay">90 d</strong></span>
-            <span>T50 <strong id="jrp-stage-2-days" data-schema-output="jrp.impellerThroatbushSwapDay">150 d</strong></span>
-            <span>T80 <strong id="jrp-stage-3-days" data-schema-output="jrp.voluteLinerOverhaulDay">180 d</strong></span>
-            <label class="jrp-tradein-inline-label" for="wb-core-tradein-toggle">
-              <input type="checkbox" id="wb-core-tradein-toggle" data-schema-input="jrp.coreReturnEnabled" />
-              <span>{isEs ? 'Trade-In Casco DAM005:' : 'DAM005 Core Trade-In:'}</span>
-              <strong id="wb-core-tradein-eligible" data-schema-output="jrp.eligible">{isEs ? 'Evaluar' : 'Check'}</strong>
-            </label>
-          </div>
-        </div>
+        </details>
 
         <div class="form-row smat-mt-sm">
           <div class="form-group col-half">
@@ -179,7 +189,7 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
         <div class="form-group qw-g5-terms">
           <label class="qw-g5-label">
             <input type="checkbox" id="wb-g5-advance-confirm" name="g5_advance_confirm" data-g5-advance-confirm checked />
-            <span><strong>{isEs ? 'Condición G5 (Fabricación):' : 'Made-to-Order Terms:'}</strong> {isEs ? '50% anticipo para fundición y 50% contra aviso de embarque con reporte dimensional.' : '50% advance for casting and 50% upon ready-to-ship notice with dimensional report.'}</span>
+            <span><strong>{isEs ? 'Condición de fabricación bajo plano:' : 'Made-to-Order Terms:'}</strong> {isEs ? '50% anticipo para fundición y 50% contra aviso de embarque con reporte dimensional.' : '50% advance for casting and 50% upon ready-to-ship notice with dimensional report.'}</span>
           </label>
         </div>
 

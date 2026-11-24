@@ -6,9 +6,10 @@ interface Props {
   lang?: 'es' | 'en';
   eager?: boolean;
   compact?: boolean;
+  layout?: 'vertical' | 'horizontal';
 }
 
-const { sku, lang = 'es', eager = false, compact = false } = Astro.props;
+const { sku, lang = 'es', eager = false, compact = false, layout = 'vertical' } = Astro.props;
 const isEs = lang === 'es';
 const title = String(isEs ? sku.title_es : sku.title_en || sku.title_es || sku.id);
 const slug = String(isEs ? sku.slug_es : sku.slug_en || sku.slug_es);
@@ -21,7 +22,7 @@ const massText = sku.mass_kg ? `${sku.mass_kg} kg` : '';
 ---
 
 <article
-  class={`smat-sf-card${compact ? ' is-compact' : ''}`}
+  class={`smat-sf-card${compact ? ' is-compact' : ''}${layout === 'horizontal' ? ' smat-sf-card--horizontal' : ''}`}
   data-ergos-homogeneous-card="1"
   data-sf-sku={sku.id}
   data-sf-vertical={sku.vertical || 'bombeo'}

@@ -52,6 +52,16 @@ const ssrEmptyVm = buildAcuseViewModel({ lifecycleState: 'EMPTY', items: [], loc
           ? 'Vista Previa de Requisición (A4) — Envíe por WhatsApp, Correo o descargue PDF.'
           : 'Requisition Preview (A4) — Dispatch via WhatsApp, Email, or save PDF.'}
       </div>
+      <div class="acuse-webhook-banner is-webhook-draft" data-acuse-empty-guide>
+        <span>
+          {isEs
+            ? '¿Aún no ha armado su lista de refacciones? '
+            : 'Need to assemble your spare parts list first? '}
+        </span>
+        <a href={isEs ? '/cotizar/#rfq' : '/en/quote/#rfq'}>
+          {isEs ? 'Crear nueva requisición en el cotizador →' : 'Start a new requisition in Quote Wizard →'}
+        </a>
+      </div>
 
       <div class="sheet-section">
         <h2 class="section-title">{isEs ? '1. DATOS DEL SOLICITANTE Y UNIDAD MINERA' : '1. APPLICANT & MINING FACILITY DETAILS'}</h2>

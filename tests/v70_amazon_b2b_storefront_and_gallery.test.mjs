@@ -120,3 +120,84 @@ test('V70-03: Layout PDP minmax(7fr, 5fr), miniaturas 48x48, PumpingParametricTa
     assert.equal(home.includes(term), false, `${term} detectado en HomeLandingIsland.astro`);
   }
 });
+
+test('V70-04: Calculated 1-click vertical kits (bindCalculatedKitToTrayButtons) & zero retired links in verticals/llms', async () => {
+  const { bindCalculatedKitToTrayButtons } = await import('../src/scripts/verticalStateAndCtaSyncBridge.js');
+  const { getTrayState, clearTray } = await import('../src/scripts/requisitionTrayBus.js');
+
+  const store = new Map();
+  const storageStub = {
+    getItem: (k) => (store.has(k) ? store.get(k) : null),
+    setItem: (k, v) => { store.set(k, String(v)); },
+    removeItem: (k) => { store.delete(k); },
+  };
+  globalThis.localStorage = storageStub;
+  globalThis.sessionStorage = storageStub;
+  globalThis.window = {
+    location: { origin: 'https://smatminerals.com', pathname: '/filtracion/', search: '' },
+    localStorage: storageStub,
+    sessionStorage: storageStub,
+    dispatchEvent: () => true,
+  };
+  clearTray();
+
+  let clickHandler = null;
+  const mockBtn = {
+    dataset: { addCalculatedKit: 'filtracion', kitBound: '' },
+    textContent: '+ Agregar kit de filtración a cotización',
+    getAttribute: (name) => (name === 'data-add-calculated-kit' ? 'filtracion' : null),
+    addEventListener: (ev, fn) => { if (ev === 'click') clickHandler = fn; },
+  };
+  const mockRoot = {
+    querySelectorAll: (sel) => (sel === '[data-add-calculated-kit]' ? [mockBtn] : []),
+  };
+
+  bindCalculatedKitToTrayButtons(mockRoot, 'es');
+  assert.equal(typeof clickHandler, 'function', 'Debe enlazar handler click a [data-add-calculated-kit]');
+  clickHandler();
+
+  const tray = getTrayState();
+  assert.ok(tray.items.some((it) => it.id === 'SMAT-FILT-CLOTH-PLATE'), 'Kit de filtración debe agregar SMAT-FILT-CLOTH-PLATE');
+  assert.ok(mockBtn.textContent.includes('Kit Calculado Agregado'));
+
+  for (const file of [
+    'src/components/islands/FiltrationCalculatorIsland.astro',
+    'src/components/islands/FlotationCalculatorIsland.astro',
+    'public/llms.txt',
+    'public/llms-full.txt',
+  ]) {
+    const text = fs.readFileSync(path.join(SITE_ROOT, file), 'utf8');
+    for (const dead of ['prensa/', 'repuestos/', 'celdas/', 'mecanismos/', '/equipos/']) {
+      assert.equal(text.includes(dead), false, `Ruta retirada '${dead}' detectada en ${file}`);
+    }
+  }
+});
+
+test('V70-05: Diagnóstico foto+ficha 6/6, /nosotros/ foto arriba del pliegue, RFQ calmo & presupuestos LOC', () => {
+  const diag = JSON.parse(fs.readFileSync(path.join(SITE_ROOT, 'data/diagnostics.json'), 'utf8'));
+  assert.ok(Array.isArray(diag.diagnostics) && diag.diagnostics.length === 6);
+  for (const entry of diag.diagnostics) {
+    assert.ok(entry.recommended_sku_id, `Falta recommended_sku_id en ${entry.id}`);
+    assert.ok(entry.photo_webp && fs.existsSync(path.join(SITE_ROOT, 'public', entry.photo_webp.replace(/^\//, ''))), `Falta WebP ${entry.photo_webp} para ${entry.id}`);
+    assert.equal(entry.title_es.includes('Estación 0'), false, `Title no debe exponer Estación 0X en ${entry.id}`);
+  }
+
+  for (const page of ['src/pages/nosotros.astro', 'src/pages/en/about.astro']) {
+    const src = fs.readFileSync(path.join(SITE_ROOT, page), 'utf8');
+    assert.ok(src.indexOf('/images/almacen/') > 0 && src.indexOf('/images/almacen/') < src.indexOf('briefing-block'), `${page}: galería /images/almacen/ debe ir antes del ensayo .briefing-block`);
+    assert.equal(/\btaller\b/i.test(src), false, `${page} no debe contener palabra 'taller'`);
+    assert.equal(/45-minute/i.test(src), false, `${page} no debe contener '45-minute'`);
+  }
+
+  const dossierSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/LiveEngineeringDossier.astro'), 'utf8');
+  assert.ok(dossierSrc.includes('data-dossier-empty-guide'), 'Falta guía rápida en LiveEngineeringDossier');
+  assert.equal(dossierSrc.includes('BORRADOR (SIN FOLIO)'), false);
+
+  const trayLines = fs.readFileSync(path.join(SITE_ROOT, 'src/components/QuickOrderTray.astro'), 'utf8').split(/\r?\n/);
+  const traySrc = trayLines.join('\n');
+  assert.ok(traySrc.includes('/cotizar/#bom-fastlane'), 'QuickOrderTray debe incluir acceso directo a Pegar lista SAP/Excel');
+  assert.ok(trayLines.length < 410, `QuickOrderTray excede 410 LOC (${trayLines.length})`);
+
+  const qwLines = fs.readFileSync(path.join(SITE_ROOT, 'src/components/QuoteWizard.astro'), 'utf8').split(/\r?\n/);
+  assert.ok(qwLines.length < 480, `QuoteWizard excede 480 LOC (${qwLines.length})`);
+});

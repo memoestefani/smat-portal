@@ -263,7 +263,7 @@ pub fn find_v57_prohibited_copy_in_source(rel_norm: &str, text: &str) -> Option<
     None
 }
 
-/// Audita copy interno / técnico V6.0 prohibido en las vistas orientadas al comprador.
+/// Audita copy interno / técnico V6.0 y V7.0 prohibido en las vistas orientadas al comprador.
 pub fn find_v60_prohibited_commercial_copy(rel_norm: &str, text: &str) -> Option<&'static str> {
     let target_files = [
         "ProductQuickCard.astro",
@@ -272,6 +272,10 @@ pub fn find_v60_prohibited_commercial_copy(rel_norm: &str, text: &str) -> Option
         "CatalogFacetedIsland.astro",
         "contacto.astro",
         "contact.astro",
+        "QuoteWizard.astro",
+        "DiagnosticsHub.astro",
+        "nosotros.astro",
+        "about.astro",
     ];
     if target_files.iter().any(|f| rel_norm.ends_with(f)) {
         for forbidden in [
@@ -280,6 +284,14 @@ pub fn find_v60_prohibited_commercial_copy(rel_norm: &str, text: &str) -> Option
             "Simulador Durand",
             "Durand Simulator",
             "Paso 01: Elige por código",
+            "Puerta 1",
+            "Puerta 2",
+            "Puerta 3",
+            "7 Avenidas",
+            "Catálogo Omnicanal",
+            "Raíz normalizada",
+            "Operación JRP",
+            "Rama D",
         ] {
             if text.contains(forbidden) {
                 return Some(forbidden);
@@ -340,6 +352,18 @@ mod tests {
         assert_eq!(
             find_v60_prohibited_commercial_copy("src/pages/contacto.astro", "Asesoría técnica en selección"),
             None
+        );
+        assert_eq!(
+            find_v60_prohibited_commercial_copy("src/components/HomeLandingIsland.astro", "Puerta 1: Equipos"),
+            Some("Puerta 1")
+        );
+        assert_eq!(
+            find_v60_prohibited_commercial_copy("src/components/QuoteWizard.astro", "2. Operación JRP y Contacto"),
+            Some("Operación JRP")
+        );
+        assert_eq!(
+            find_v60_prohibited_commercial_copy("src/components/islands/CatalogFacetedIsland.astro", "incluye Rama D Híbrida"),
+            Some("Rama D")
         );
     }
 }

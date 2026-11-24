@@ -1,7 +1,9 @@
 # SMAT MINERALS — CANONICAL TECHNICAL REFERENCE (LLMS-FULL.TXT)
 # Entity: SMAT Minerals
 # URL: https://smatminerals.com
-# Version: 2.3
+# Version: 7.0 (Purchase-First Storefront)
+# Canonical Routes (ES/EN): /, /catalogo/, /productos/<slug>/, /catalogo/<code>/, /bombeo/, /filtracion/, /flotacion/, /clasificacion/, /control-de-procesos/, /diagnostico/, /nosotros/, /contacto/, /cumplimiento/, /cotizar/, /acuse/
+# Catalog Topology: 19 SKUs (38 ES/EN PDPs) + 13 Atomic Codes (26 routes) + 57 Multi-Angle WebPs + 579 single-hop 301 redirects in _redirects
 # Fiscal Headquarters: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo., CP 34166, Mexico
 # Central Warehouse: Durango, Dgo., Mexico
 # Telephone: +52 (618) 810-4408 / +52 (618) 810-4428

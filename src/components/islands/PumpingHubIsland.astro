@@ -271,6 +271,11 @@ const tcoRows = [
         </div>
       )}
 
+      <div class="smat-mb-sm">
+        <h2 class="smat-section-title">
+          {isEs ? 'Asistente de Selección Hidráulica y Lotes 5-5-4' : 'Hydraulic Selection & 5-5-4 Lot Assistant'}
+        </h2>
+      </div>
       <div class="smat-station-tabs" id="bombeo-station-tabs" role="tablist" aria-label={isEs ? 'Estaciones de Bombeo de Lodos' : 'Slurry Pump Station Consoles'}>
         <button type="button" role="tab" aria-selected="true" class="smat-station-tab-btn is-active" data-station-tab="hydraulics">
           {isEs ? '1. Hidráulica y Altitud' : '1. Hydraulics & Head'}
@@ -309,6 +314,9 @@ const tcoRows = [
           <a id="pumping-island-quote-cta" href={`${quoteBase}?circuito=bombeo#rfq`} class="btn btn-primary">
             {isEs ? 'Cotizar con esta Calibración Hidráulica →' : 'Quote With This Hydraulic Calibration →'}
           </a>
+          <button type="button" class="btn btn-outline smat-tap-btn" data-add-calculated-kit="bombeo">
+            {isEs ? '+ Agregar kit calculado a cotización' : '+ Add calculated kit to quote'}
+          </button>
         </div>
       </div>
 
@@ -596,7 +604,10 @@ const tcoRows = [
 
   <script>
     import { initPumpingTabRouter, resolvePumpingTabDeepLink } from '../../scripts/pumpingTabRouter.js';
-    import { bindAtomicPartTrayButtons } from '../../scripts/verticalStateAndCtaSyncBridge.js';
+    import {
+      bindAtomicPartTrayButtons,
+      bindCalculatedKitToTrayButtons
+    } from '../../scripts/verticalStateAndCtaSyncBridge.js';
     import { bindCanonicalSealBalanceCalculator, bindCanonicalTribologySelector } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
     import { initBearingSupportInspector, initSkidKinematicsInspector } from '../../scripts/verticalBidirectionalHydrationLens.js';
     import {
@@ -704,6 +715,7 @@ const tcoRows = [
       const isEs = root.dataset.lang !== 'en';
       const lang: 'es' | 'en' = isEs ? 'es' : 'en';
       bindAtomicPartTrayButtons(root);
+      bindCalculatedKitToTrayButtons(root, lang);
 
       const tribPanel = root.querySelector('#pumping-tribology-station') as HTMLElement | null;
       if (tribPanel && tribPanel.dataset.tribologyStationBound !== '1') {

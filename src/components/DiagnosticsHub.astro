@@ -92,7 +92,7 @@ const diagnostics = diagData.diagnostics.map((item) => {
             class="diag-filter-select"
             aria-label={isEs ? 'Filtro de fallas mecánicas por componente' : 'Mechanical failure filter by component'}
           >
-            <option value="all" selected>{isEs ? 'Todas las fallas en planta (10)' : 'All plant failure modes (10)'}</option>
+            <option value="all" selected>{isEs ? `Todas las fallas en planta (${diagnostics.length})` : `All plant failure modes (${diagnostics.length})`}</option>
             <option value="impulsor">{isEs ? 'Impulsor desgastado' : 'Worn impeller'}</option>
             <option value="cavitacion">{isEs ? 'Cavitación / ruido en succión' : 'Cavitation / suction noise'}</option>
             <option value="fuga">{isEs ? 'Fuga en prensaestopa / sello' : 'Packing gland / seal leak'}</option>
@@ -107,16 +107,35 @@ const diagnostics = diagData.diagnostics.map((item) => {
 
     <div class="diagnostics-grid">
       {diagnostics.map((item, idx) => {
-        const primarySkuId = item.recommendedSkusList[0] || 'SMAT-PUMP-IMP-AH';
+        const primarySkuId = (item as any).recommended_sku_id || item.recommendedSkusList[0] || 'SMAT-PUMP-IMP-AH';
         const primarySku = skuLookup.get(primarySkuId);
+        const primaryPhoto = (item as any).photo_webp || primarySku?.photo_webp;
+        const primaryHref = primarySku ? (isEs ? `/productos/${primarySku.slug_es}/` : `/en/products/${primarySku.slug_en}/`) : '';
+        const circuitLabelEs = {
+          'EST-01': 'Cartucho y Flecha',
+          'EST-02': 'Sellado en Eje',
+          'EST-03': 'Extremo Húmedo',
+          'CELDA-FLOT': 'Celda de Flotación',
+          'FILTRO-PRENSA': 'Filtro Prensa 16 bar',
+        };
+        const circuitLabelEn = {
+          'EST-01': 'Bearing & Shaft',
+          'EST-02': 'Shaft Sealing',
+          'EST-03': 'Wet-End Spares',
+          'CELDA-FLOT': 'Flotation Cell',
+          'FILTRO-PRENSA': 'Filter Press 16 bar',
+        };
+        const humanCircuit = isEs
+          ? (circuitLabelEs[item.stationIdLabel as keyof typeof circuitLabelEs] || item.target_role)
+          : (circuitLabelEn[item.stationIdLabel as keyof typeof circuitLabelEn] || item.target_role);
         return (
-        <article class="card diag-card" data-failure-link={item.id} data-tags={`${item.id} ${item.title_es} ${item.title_en} ${item.target_role} ${item.stationNumber} ${formatMaterialHumanLabel(item.recommendedMaterial, lang)}`.toLowerCase()}>
+        <article class="card diag-card" data-failure-link={item.id} data-tags={`${item.id} ${item.title_es} ${item.title_en} ${item.target_role} ${humanCircuit} ${formatMaterialHumanLabel(item.recommendedMaterial, lang)}`.toLowerCase()}>
           <div class="diag-header">
             <span class="pulsing-dot pulsing-dot-amber"></span>
             <h3 class="diag-title">{isEs ? item.title_es : item.title_en}</h3>
           </div>
           <div class="diag-threshold-strip" data-diag-threshold={item.threshold} data-station-id={item.stationIdLabel}>
-            <span class="diag-station-chip">{item.stationNumber} ({item.stationIdLabel})</span>
+            <span class="diag-station-chip">{humanCircuit}</span>
             <span class="diag-threshold-chip">{isEs ? 'Umbral Físico:' : 'Physical Threshold:'} {item.threshold}</span>
             <span class="diag-station-chip" data-diag-material={item.recommendedMaterial}>{isEs ? 'Aleación:' : 'Alloy:'} {formatMaterialHumanLabel(item.recommendedMaterial, lang)}</span>
           </div>
@@ -140,24 +159,29 @@ const diagnostics = diagData.diagnostics.map((item) => {
 
           {primarySku && (
             <div class="smat-diag-buy-strip">
-              <img src={primarySku.photo_webp} alt={primarySku.id} width="96" height="72" loading="lazy" decoding="async" class="smat-diag-thumb" />
+              <img src={primaryPhoto} alt={primarySku.id} width="96" height="72" loading="lazy" decoding="async" class="smat-diag-thumb" />
               <div class="smat-diag-buy-meta">
                 <strong>{primarySku.id}</strong>
                 <span>{isEs ? primarySku.title_es : primarySku.title_en}</span>
               </div>
-              <button
-                type="button"
-                class="btn btn-primary btn-sm"
-                data-quick-tray-add={primarySku.id}
-                data-add-tray-sku={primarySku.id}
-                data-tray-part-code={item.stationIdLabel}
-                data-tray-title={isEs ? primarySku.title_es : primarySku.title_en}
-                data-tray-material={primarySku.default_material || item.recommendedMaterial}
-                data-tray-circuit="diagnostico"
-                data-tray-source="diagnostics_hub"
-              >
-                {isEs ? '+ Agregar' : '+ Add'}
-              </button>
+              <div class="smat-cta-row">
+                <a href={primaryHref} class="btn btn-outline btn-sm">
+                  {isEs ? 'Ver ficha →' : 'View spec →'}
+                </a>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  data-quick-tray-add={primarySku.id}
+                  data-add-tray-sku={primarySku.id}
+                  data-tray-part-code={item.stationIdLabel}
+                  data-tray-title={isEs ? primarySku.title_es : primarySku.title_en}
+                  data-tray-material={primarySku.default_material || item.recommendedMaterial}
+                  data-tray-circuit="diagnostico"
+                  data-tray-source="diagnostics_hub"
+                >
+                  {isEs ? '+ Agregar' : '+ Add'}
+                </button>
+              </div>
             </div>
           )}
 

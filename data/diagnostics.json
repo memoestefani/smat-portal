@@ -12,6 +12,8 @@
       "recommended_action_en": "Axial clearance inspection and metallurgical upgrade to High Chrome 27% (A05) or hybrid A05+R55 wet-end.",
       "target_role": "impulsor",
       "station_id": "EST-03",
+      "recommended_sku_id": "SMAT-PUMP-IMP-AH",
+      "photo_webp": "/images/productos/impulsor-bomba-lodos-serie-ah.webp",
       "recommended_skus": ["SMAT-PUMP-IMP-AH", "SMAT-PUMP-LINERS-AH", "SMAT-PUMP-WETKIT-554"]
     },
     {
@@ -26,6 +28,8 @@
       "recommended_action_en": "Replacement with Drop-In Polyurethane / R55 Elastomer Rotor + Stator Kit (SMAT-FLOT-MECH-18SP).",
       "target_role": "rotor_estator",
       "station_id": "CELDA-FLOT",
+      "recommended_sku_id": "SMAT-FLOT-MECH-18SP",
+      "photo_webp": "/images/productos/mecanismo-suspendido-flotacion-18sp.webp",
       "recommended_skus": ["SMAT-FLOT-MECH-18SP"]
     },
     {
@@ -40,6 +44,8 @@
       "recommended_action_en": "Calibrate axial clearance to 0.76 mm (1 ISO/IEC 7810 card) and install Cr27 A05 / R55 Volute & Liners (SMAT-PUMP-LINERS-AH, SMAT-PUMP-WETKIT-554).",
       "target_role": "revestimientos",
       "station_id": "EST-03",
+      "recommended_sku_id": "SMAT-PUMP-LINERS-AH",
+      "photo_webp": "/images/productos/lainas-succion-y-platos-ah.webp",
       "recommended_skus": ["SMAT-PUMP-LINERS-AH", "SMAT-PUMP-IMP-AH", "SMAT-PUMP-WETKIT-554"]
     },
     {
@@ -54,12 +60,14 @@
       "recommended_action_en": "Supply of Isostatic Pressed Polypropylene Plates and Calendered Monofilament Cloths (SMAT-FILT-CLOTH-PLATE) and Plate Shifter (SMAT-FILT-SHIFTER-CHAIN).",
       "target_role": "placas_telas",
       "station_id": "FILTRO-PRENSA",
+      "recommended_sku_id": "SMAT-FILT-CLOTH-PLATE",
+      "photo_webp": "/images/productos/lonas-y-placas-filtro-prensa-16bar.webp",
       "recommended_skus": ["SMAT-FILT-CLOTH-PLATE", "SMAT-FILT-SHIFTER-CHAIN"]
     },
     {
       "id": "seal_stuffing_box",
-      "title_es": "¿Fuga en Estopero, Dilución de Pulpa y Rayado de Camisa de Flecha (Estación 02)?",
-      "title_en": "Stuffing Box Leakage, Slurry Dilution & Shaft Sleeve Scoring (Station 02)?",
+      "title_es": "¿Fuga en Estopero, Dilución de Pulpa y Rayado de Camisa de Flecha (Sello / Estopero)?",
+      "title_en": "Stuffing Box Leakage, Slurry Dilution & Shaft Sleeve Scoring (Seal / Stuffing Box)?",
       "symptom_es": "Fuga continua de pulpa por el eje, ranurado profundo bajo empaquetadura y exceso de consumo de agua de glándula.",
       "symptom_en": "Continuous slurry leakage along shaft, deep grooving under gland packing, and excessive seal water consumption.",
       "root_cause_es": "Intrusión de sílice fina en camisa estándar (<58 HRC) o presión de succión controlada apta para sello seco (Hs < 0.15 H).",
@@ -68,20 +76,24 @@
       "recommended_action_en": "Install D075C21 WC-10Co-4Cr HVOF Shaft Sleeve (≥68 HRC) and D4028 + D4029 Dry Centrifugal Seal Kit (SMAT-PUMP-EXPELLER-KIT, SMAT-PUMP-BRG-005M).",
       "target_role": "sello",
       "station_id": "EST-02",
+      "recommended_sku_id": "SMAT-PUMP-EXPELLER-KIT",
+      "photo_webp": "/images/productos/kit-sellado-seco-expeller-ah.webp",
       "recommended_skus": ["SMAT-PUMP-EXPELLER-KIT", "SMAT-PUMP-BRG-005M"]
     },
     {
       "id": "bearing_shaft_fatigue",
-      "title_es": "¿Sobrecalentamiento (>85 °C), Contaminación y Fatiga ISO 281 en Cartucho de Rodamientos (Estación 01)?",
-      "title_en": "Overheating (>85 °C), Contamination & ISO 281 Bearing Cartridge Fatigue (Station 01)?",
+      "title_es": "¿Sobrecalentamiento (>85 °C), Contaminación y Fatiga ISO 281 en Cartucho de Rodamientos?",
+      "title_en": "Overheating (>85 °C), Contamination & ISO 281 Bearing Cartridge Fatigue?",
       "symptom_es": "Vibración armónica radial/axial, emulsión de agua con sílice en el aceite del tambor y caída de vida útil L10mh.",
       "symptom_en": "Harmonic radial/axial vibration, silica-water emulsion in bearing housing oil, and premature L10mh fatigue.",
       "root_cause_es": "Ingreso de contaminantes por retenes desgastados (factor ISO 281 a_ISO cae de 1.25 a 0.22) o sobrecarga radial de bandas V.",
       "root_cause_en": "Contaminant ingress through worn felt seals (ISO 281 factor a_ISO drops from 1.25 to 0.22) or excessive V-belt tension.",
-      "recommended_action_es": "Reemplazo Drop-In en 1 ventana por Cartucho Completo DAM005 (SMAT-PUMP-BRG-005M) con Eje SAE 4140, Rodillos Cónicos ISO 281 y Laberinto Purgante (elegible a -22% Core Trade-In).",
+      "recommended_action_es": "Reemplazo Drop-In directo por Cartucho Completo DAM005 (SMAT-PUMP-BRG-005M) con Eje SAE 4140, Rodillos Cónicos ISO 281 y Laberinto Purgante (elegible a -22% Core Trade-In).",
       "recommended_action_en": "Single-window drop-in replacement with DAM005 Complete Bearing Cartridge (SMAT-PUMP-BRG-005M) featuring SAE 4140 Shaft, ISO 281 Tapered Rollers & Purged Labyrinth (eligible for -22% Core Trade-In).",
       "target_role": "soporte",
       "station_id": "EST-01",
+      "recommended_sku_id": "SMAT-PUMP-BRG-005M",
+      "photo_webp": "/images/productos/cartucho-rodamientos-005m.webp",
       "recommended_skus": ["SMAT-PUMP-BRG-005M", "SMAT-PUMP-EXPELLER-KIT", "DAM005"]
     }
   ]

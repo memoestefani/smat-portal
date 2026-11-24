@@ -55,6 +55,22 @@ const inspectionProtocolText = isEs
       </button>
     </div>
 
+    <!-- Guía rápida sin partidas activas -->
+    <div class="dossier-section" data-dossier-empty-guide>
+      <span class="dossier-section-title">{isEs ? 'GUÍA RÁPIDA EN 3 PASOS' : '3-STEP QUICK START GUIDE'}</span>
+      <p class="part-details-text">
+        {isEs
+          ? '1) Agregue partidas o pegue su lista SAP/Excel · 2) Capture solicitante y mina · 3) Envíe a Durango y exporte folio A4 / TSV.'
+          : '1) Add items or paste SAP/Excel list · 2) Enter requester & mine site · 3) Dispatch to Durango and export A4 / TSV.'}
+      </p>
+      <div class="dossier-passport-actions">
+        <button type="button" class="btn btn-outline smat-tap-btn" data-add-tray-sku="SMAT-PUMP-WETKIT-554">{isEs ? '+ Lote 5-5-4' : '+ 5-5-4 Kit'}</button>
+        <button type="button" class="btn btn-outline smat-tap-btn" data-add-tray-sku="SMAT-PUMP-IMP-AH">{isEs ? '+ Impulsor A05' : '+ Impeller A05'}</button>
+        <button type="button" class="btn btn-outline smat-tap-btn" data-add-tray-sku="SMAT-PUMP-BRG-005M">{isEs ? '+ Cartucho DAM005' : '+ DAM005 Cartridge'}</button>
+        <button type="button" class="btn btn-outline smat-tap-btn" data-add-tray-sku="SMAT-FILT-CLOTH-PLATE">{isEs ? '+ Lonas y Placas' : '+ Cloths & Plates'}</button>
+      </div>
+    </div>
+
     <!-- Membrete de la Ficha Técnica -->
     <div class="dossier-header">
       <div class="dossier-brand">
@@ -64,7 +80,7 @@ const inspectionProtocolText = isEs
       </div>
       <div class="dossier-folio-wrap">
         <span class="folio-label">{isEs ? 'FOLIO INSTITUCIONAL' : 'OFFICIAL FOLIO'}</span>
-        <strong class="folio-code" id="live-folio">{isEs ? 'BORRADOR (SIN FOLIO)' : 'DRAFT (UNASSIGNED)'}</strong>
+        <strong class="folio-code" id="live-folio">{isEs ? 'Pendiente de envío' : 'Pending submission'}</strong>
         <span class="smat-part-code-tag" id="live-smat-code">SMAT-PUMP-6X4-WETKIT</span>
         <span class="dossier-date" id="live-date">{new Date().toISOString().slice(0, 10)}</span>
       </div>
@@ -74,9 +90,9 @@ const inspectionProtocolText = isEs
 
     <!-- Estatus de Prioridad y Horario -->
     <div class="dossier-sla-bar" id="dossier-sla-bar">
-      <span class="sla-badge" id="live-priority-tag">{isEs ? 'Borrador sin partidas (P0)' : 'Draft — No Active Items (P0)'}</span>
+      <span class="sla-badge" id="live-priority-tag">{isEs ? 'Sin partidas activas' : 'No active items'}</span>
       <span class="sla-badge" id="live-budget-category-pill">{isEs ? 'Presupuesto: Refacciones y Desgaste' : 'Budget: Operating Wear Spares'}</span>
-      <span class="sla-badge dossier-gate-pill" id="gate-lead-status" data-testid="gate-lead-status">{isEs ? 'BORRADOR EN CAPTURA' : 'DRAFT IN PROGRESS'}</span>
+      <span class="sla-badge dossier-gate-pill" id="gate-lead-status" data-testid="gate-lead-status">{isEs ? 'Listo para requisición' : 'Ready for requisition'}</span>
       <span class="sla-clock" data-emergency-hotline={String(companyData.contact.whatsapp.emergency_hotline)}>Durango: {companyData.contact.phones[0].display} • WhatsApp: {companyData.contact.whatsapp.display} • {isEs ? companyData.logistics.warehouse_hours : companyData.logistics.warehouse_hours_en}</span>
     </div>
     <div>
@@ -143,7 +159,7 @@ const inspectionProtocolText = isEs
             <div class="font-mono-tech dossier-inline-spec-strip">
               <span data-wb-field="actualPipeVelocityMs">3.15 m/s</span> •{' '}
               <span data-wb-field="slurrySpecificGravity">1.40 kg/L</span> •{' '}
-              <span data-wb-field="sealBranch">{isEs ? 'Expulsor Seco (Est. 02A)' : 'Dry Expeller (St. 02A)'}</span> •{' '}
+              <span data-wb-field="sealBranch">{isEs ? 'Expulsor Seco' : 'Dry Expeller'}</span> •{' '}
               b₂ <span data-wb-field="impellerExitWidthMm">48 mm</span> • C <span data-wb-field="dynamicCapacityCkN">145 kN</span> •{' '}
               <span id="dossier-metric-sobol-driver">{isEs ? 'Factor clave: Caudal Q' : 'Primary factor: Flow Q'}</span>
             </div>

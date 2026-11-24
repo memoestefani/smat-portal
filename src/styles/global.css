@@ -1009,6 +1009,30 @@
     align-items: stretch;
   }
 
+  .smat-featured-row-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  .smat-sf-card--horizontal {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 720px) {
+    .smat-sf-card--horizontal {
+      grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+      align-items: stretch;
+    }
+
+    .smat-sf-card--horizontal .smat-sf-media-link {
+      border-bottom: none;
+      border-right: 1px solid #e2e8f0;
+      height: 100%;
+    }
+  }
+
   .smat-sf-card {
     display: flex;
     flex-direction: column;

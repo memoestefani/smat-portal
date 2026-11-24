@@ -82,6 +82,9 @@ const quoteHref = isEs ? '/cotizar/#rfq' : '/en/quote/#rfq';
       <a id="smat-qtray-pdf-link" data-qtray-pdf-btn href={quoteHref} class="smat-qtray-wa-btn">
         {isEs ? 'Ir al cotizador y generar Folio →' : 'Proceed to RFQ & Folio →'}
       </a>
+      <a href={isEs ? '/cotizar/#bom-fastlane' : '/en/quote/#bom-fastlane'} class="smat-qtray-share-btn">
+        {isEs ? 'Pegar lista SAP / Excel' : 'Paste SAP / Excel list'}
+      </a>
       <a
         id="smat-qtray-wa-link"
         href="https://wa.me/526183670664?text=Hola%20SMAT%2C%20solicito%20cotizaci%C3%B3n%20desde%20mi%20bandeja%20web."
@@ -198,18 +201,24 @@ const quoteHref = isEs ? '/cotizar/#rfq' : '/en/quote/#rfq';
             isEs ? 'Tu bandeja está vacía. Agrega refacciones desde el catálogo.' : 'Your quote tray is empty. Add spares from the catalog.'
           }</li>`;
         } else {
-          itemsEl.innerHTML = state.items.map((item: any) => `
+          itemsEl.innerHTML = state.items.map((item: any) => {
+            const regimeTag = item.stockRegime === 'se_fabrica' || item.stockRegime === 'se_pide'
+              ? (isEs ? 'Bajo fabricación' : 'Made to order')
+              : (isEs ? 'Rotación Durango' : 'Durango rotation');
+            return `
             <li class="smat-qtray-item-row">
               <div>
                 <div class="smat-qtray-item-code">${item.id} × ${item.qty}</div>
                 <div class="smat-qtray-item-name">${isEs ? item.nameEs : item.nameEn}</div>
+                <div class="smat-qtray-priority">${regimeTag}</div>
               </div>
               <div class="smat-qtray-item-controls">
                 <button type="button" data-qtray-qty-delta="-1" data-qtray-item-id="${item.id}" data-qtray-current-qty="${item.qty}" class="smat-qtray-qty-btn" aria-label="Disminuir">−</button>
                 <button type="button" data-qtray-qty-delta="1" data-qtray-item-id="${item.id}" data-qtray-current-qty="${item.qty}" class="smat-qtray-qty-btn" aria-label="Aumentar">+</button>
                 <button type="button" data-qtray-remove="${item.id}" class="smat-qtray-remove-btn" aria-label="Eliminar">×</button>
               </div>
-            </li>`).join('');
+            </li>`;
+          }).join('');
 
           itemsEl.querySelectorAll('[data-qtray-qty-delta]').forEach((btn) => {
             btn.addEventListener('click', () => {

@@ -63,6 +63,11 @@ const cycloneSkus = getQuickProductsCatalog().filter((s) =>
         </div>
 
         <CycloneScreenCore locale={locale} showVerticalActions={true} panelClass="cyc-core-standalone" />
+        <div class="cyc-cta-row">
+          <button type="button" class="btn btn-primary smat-tap-btn" data-add-calculated-kit="clasificacion">
+            {isEs ? '+ Agregar kit de clasificación a cotización' : '+ Add classification kit to quote'}
+          </button>
+        </div>
       </section>
 
       <TechnicalDiagrams diagram="cyclone-apex-vortex" lang={lang} showXrayOverlay={true} />
@@ -139,12 +144,14 @@ const cycloneSkus = getQuickProductsCatalog().filter((s) =>
 
 <script>
   import { bindCoupledClassificationStation } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
+  import { bindCalculatedKitToTrayButtons } from '../../scripts/verticalStateAndCtaSyncBridge.js';
 
   function initCycloneScreenIsland() {
     const standaloneRoot = document.querySelector('[data-island-standalone="cycloneScreen"]');
     if (!standaloneRoot) return;
     const lang = document.documentElement.lang === 'en' ? 'en' : 'es';
     bindCoupledClassificationStation(standaloneRoot, lang);
+    bindCalculatedKitToTrayButtons(standaloneRoot, lang);
   }
 
   initCycloneScreenIsland();

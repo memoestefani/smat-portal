@@ -85,9 +85,9 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
     <section class={`section ${variant !== 'hub' ? 'section-spacing smat-stage-compact' : ''}`} id="flotacion-main-section">
       <div class={`container ${variant !== 'hub' ? 'content-container' : ''}`}>
         <div class="smat-mb-md" aria-label={isEs ? 'Mecanismos de flotación en catálogo' : 'Flotation mechanisms in catalog'}>
-          <div class="smat-sf-grid">
+          <div class="smat-featured-row-list">
             {flotationSkus.map((sku) => (
-              <ProductStorefrontCard sku={sku} lang={lang} eager={true} />
+              <ProductStorefrontCard sku={sku} lang={lang} eager={true} layout="horizontal" />
             ))}
           </div>
         </div>
@@ -124,6 +124,11 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
                 </div>
               </div>
             )}
+            <div class="smat-cta-row smat-mt-sm">
+              <button type="button" class="btn btn-primary smat-tap-btn" data-add-calculated-kit="flotacion">
+                {isEs ? '+ Agregar kit de flotación a cotización' : '+ Add flotation kit to quote'}
+              </button>
+            </div>
           </div>
 
           <div class="smat-mb-md">
@@ -146,7 +151,7 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
                   </p>
                   <p class="smat-mono-val">{isEs ? 'Capacidad: 50 ft³ a 300 ft³ • 15 a 60 HP' : 'Capacity: 50 ft³ to 300 ft³ • 15 to 60 HP'}</p>
                   <div class="smat-cta-row">
-                    <a href={`${flotBase}${isEs ? 'celdas/' : 'cells/'}`} data-subroute-link={`${flotBase}${isEs ? 'celdas/' : 'cells/'}`} class="btn btn-outline">
+                    <a href={`${productsBase}${isEs ? 'mecanismo-suspendido-flotacion-18sp/' : 'suspended-flotation-mechanism-18sp/'}`} class="btn btn-outline">
                       {isEs ? 'Ficha Técnica' : 'Technical Sheet'}
                     </a>
                     <a href={`${quoteBase}?circuito=flotacion&equipo=celda_flotacion&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq`} class="btn btn-primary">
@@ -164,8 +169,8 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
                   </p>
                   <p class="smat-mono-val">{isEs ? 'Material: Hule R55 y Poliuretano U01' : 'Material: R55 Rubber & U01 Polyurethane'}</p>
                   <div class="smat-cta-row">
-                    <a href={`${flotBase}${isEs ? 'mecanismos/' : 'mechanisms/'}`} class="btn btn-outline">
-                      {isEs ? 'Ficha Técnica' : 'Technical Sheet'}
+                    <a href={`${quoteBase}?circuito=flotacion&equipo=rotores_estatores&serie=100ft&flot_condition=desgaste_rotores#rfq`} class="btn btn-primary">
+                      {isEs ? 'Cotizar Repuestos →' : 'Quote Spares →'}
                     </a>
                     <a href={`${productsBase}${isEs ? 'mecanismo-suspendido-flotacion-18sp/' : 'suspended-flotation-mechanism-18sp/'}`} class="btn btn-outline">
                       SMAT-FLOT-MECH-18SP →
@@ -348,12 +353,14 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
 
 <script>
   import { bindCanonicalFlotationCalculator } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
+  import { bindCalculatedKitToTrayButtons } from '../../scripts/verticalStateAndCtaSyncBridge.js';
 
   function initFlotationIsland() {
     const standaloneRoot = document.querySelector('[data-island-standalone="flotation"]');
     if (!standaloneRoot) return;
     const lang = document.documentElement.lang === 'en' ? 'en' : 'es';
     bindCanonicalFlotationCalculator(standaloneRoot, lang);
+    bindCalculatedKitToTrayButtons(standaloneRoot, lang);
   }
 
   initFlotationIsland();

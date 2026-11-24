@@ -84,9 +84,9 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
     <section class={`section ${variant !== 'hub' ? 'section-spacing smat-stage-compact' : ''}`} id="filtracion-main-section">
       <div class={`container ${variant !== 'hub' ? 'content-container' : ''}`}>
         <div class="smat-mb-md" aria-label={isEs ? 'Productos de filtración prensa' : 'Filter press products'}>
-          <div class="smat-sf-grid">
+          <div class="smat-featured-row-list">
             {filtrationSkus.map((sku, idx) => (
-              <ProductStorefrontCard sku={sku} lang={lang} eager={idx < 2} />
+              <ProductStorefrontCard sku={sku} lang={lang} eager={idx < 2} layout="horizontal" />
             ))}
           </div>
         </div>
@@ -124,6 +124,11 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
                   </div>
                 </div>
               )}
+              <div class="smat-cta-row smat-mt-sm">
+                <button type="button" class="btn btn-primary smat-tap-btn" data-add-calculated-kit="filtracion">
+                  {isEs ? '+ Agregar kit de filtración a cotización' : '+ Add filtration kit to quote'}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -147,7 +152,7 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
                   </p>
                   <p class="smat-mono-val">{isEs ? 'Cámara empotrada: 800 mm a 1500 mm • Ciclos 20–40 min' : 'Recessed plates: 800 mm to 1500 mm • 20–40 min cycles'}</p>
                   <div class="smat-cta-row">
-                    <a href={`${filtBase}${isEs ? 'prensa/' : 'press/'}`} class="btn btn-outline">
+                    <a href={isEs ? '/productos/lonas-y-placas-filtro-prensa-16bar/' : '/en/products/filter-press-cloths-and-pp-plates-16bar/'} class="btn btn-outline">
                       {isEs ? 'Ficha Técnica' : 'Technical Sheet'}
                     </a>
                     <a href={`${quoteBase}?circuito=filtracion&equipo=filtro_prensa&serie=1500&filt_condition=jales_secos#rfq`} class="btn btn-primary">
@@ -165,7 +170,7 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
                   </p>
                   <p class="smat-mono-val">{isEs ? 'Polipropileno Virgen y Fieltro Agujado Calibrado al P80' : 'Virgin Polypropylene & P80-Matched Needlefelt'}</p>
                   <div class="smat-cta-row">
-                    <a href={`${filtBase}${isEs ? 'repuestos/' : 'parts/'}`} data-subroute-link={`${filtBase}${isEs ? 'repuestos/' : 'parts/'}`} class="btn btn-outline">
+                    <a href={isEs ? '/productos/mecanismo-plate-shifter-y-cadenas/' : '/en/products/filter-press-plate-shifter-and-chains/'} class="btn btn-outline">
                       {isEs ? 'Ficha Técnica' : 'Technical Sheet'}
                     </a>
                     <a href={`${quoteBase}?circuito=filtracion&equipo=placas_telas&serie=1500&filt_condition=fuga_chorreo#rfq`} class="btn btn-primary">
@@ -294,12 +299,14 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
 
 <script>
   import { bindCanonicalFiltrationCalculator } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
+  import { bindCalculatedKitToTrayButtons } from '../../scripts/verticalStateAndCtaSyncBridge.js';
 
   function initFiltrationIsland() {
     const standaloneRoot = document.querySelector('[data-island-standalone="filtration"]');
     if (!standaloneRoot) return;
     const lang = document.documentElement.lang === 'en' ? 'en' : 'es';
     bindCanonicalFiltrationCalculator(standaloneRoot, lang);
+    bindCalculatedKitToTrayButtons(standaloneRoot, lang);
   }
 
   initFiltrationIsland();

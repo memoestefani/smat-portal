@@ -517,3 +517,109 @@ export function bindAtomicPartTrayButtons(root = typeof document !== 'undefined'
 
   return boundCount;
 }
+
+const DEFAULT_CALCULATED_KIT_BY_VERTICAL = {
+  bombeo: [
+    { id: 'SMAT-PUMP-WETKIT-554', code: 'LOTE-554', titleEs: 'Lote Húmedo 5-5-4 Bomba Lodos AH', titleEn: '5-5-4 Slurry Pump Wet-End Lot', defaultMaterial: 'A05' },
+    { id: 'SMAT-PUMP-BRG-005M', code: 'DAM005', titleEs: 'Cartucho de Rodamientos Bearing Assembly', titleEn: 'Bearing Assembly Cartridge 005M', defaultMaterial: 'SAE4140' },
+  ],
+  filtracion: [
+    { id: 'SMAT-FILT-CLOTH-PLATE', code: 'PLACA-PP-16B', titleEs: 'Lonas y Placas de Polipropileno 16 bar', titleEn: '16-Bar Polypropylene Filter Plates & Cloths', defaultMaterial: 'PP' },
+  ],
+  flotacion: [
+    { id: 'SMAT-FLOT-MECH-18SP', code: 'MECH-18SP', titleEs: 'Mecanismo Suspendido de Flotación #18 SP / #24 / #30', titleEn: 'Suspended Flotation Mechanism #18 SP / #24 / #30', defaultMaterial: 'U01' },
+  ],
+  clasificacion: [
+    { id: 'SMAT-CYC-D6-D20', code: 'APEX-SIC', titleEs: 'Hidrociclón Completo y Boquillas Ápex SiC', titleEn: 'Hydrocyclone Assembly & SiC Apex Spigots', defaultMaterial: 'SiC' },
+    { id: 'SMAT-SCR-TH48-30', code: 'TH48-30', titleEs: 'Mallas Finas de Uretano TH48-30', titleEn: 'TH48-30 Fine Urethane Screens', defaultMaterial: 'U01' },
+  ],
+  control: [
+    { id: 'SMAT-LAB-MARCY-1000', code: 'MARCY-1000', titleEs: 'Balanza Marcy de Densidad de Pulpa', titleEn: 'Marcy Pulp Density Scale', defaultMaterial: 'SS304' },
+    { id: 'SMAT-LAB-TAMIZ-E11', code: 'TAMIZ-E11', titleEs: 'Tamices Certificados ASTM E11', titleEn: 'ASTM E11 Certified Test Sieves', defaultMaterial: 'SS304' },
+  ],
+};
+
+/**
+ * Conecta botones `[data-add-calculated-kit]` en las 4 verticales y laboratorio para
+ * agregar el kit o paquete dimensionado directamente a la Bandeja (`requisitionTrayBus`).
+ *
+ * @param {any} [root]
+ * @param {'es'|'en'} [lang='es']
+ * @returns {number}
+ */
+export function bindCalculatedKitToTrayButtons(
+  root = typeof document !== 'undefined' ? document : null,
+  lang = 'es'
+) {
+  if (!root || typeof root.querySelectorAll !== 'function') return 0;
+  const buttons = Array.from(root.querySelectorAll('[data-add-calculated-kit]'));
+  let count = 0;
+
+  for (const btn of buttons) {
+    if (btn.dataset && btn.dataset.kitTrayBound === '1') continue;
+    if (btn.dataset) btn.dataset.kitTrayBound = '1';
+    const originalText = (btn.textContent || '').trim();
+
+    if (typeof btn.addEventListener === 'function') {
+      btn.addEventListener('click', (/** @type {any} */ ev) => {
+        if (ev && typeof ev.preventDefault === 'function') ev.preventDefault();
+        const verticalRaw = String(btn.getAttribute?.('data-add-calculated-kit') || 'bombeo').toLowerCase();
+        const kitKey = verticalRaw === 'control_procesos' ? 'control' : verticalRaw;
+        const isEn =
+          lang === 'en' ||
+          (typeof window !== 'undefined' && window.location && String(window.location.pathname || '').startsWith('/en/'));
+
+        const matEl = root.querySelector?.('#trib-mat-select, #wb-material, [data-kit-material-select]');
+        const activeMaterial = String(matEl?.value || '').trim();
+        const seriesEl = root.querySelector?.('#wb-pipe-size, #pump-series-select, #filt-plate-width, [data-kit-series-select]');
+        const activeSeries = String(seriesEl?.value || '').trim();
+
+        let entries = DEFAULT_CALCULATED_KIT_BY_VERTICAL[kitKey] || DEFAULT_CALCULATED_KIT_BY_VERTICAL.bombeo;
+        const customAttr = btn.getAttribute?.('data-kit-skus');
+        if (customAttr) {
+          try {
+            const parsed = JSON.parse(customAttr);
+            if (Array.isArray(parsed) && parsed.length > 0) entries = parsed;
+          } catch {
+            // fallback deterministic default kit
+          }
+        }
+
+        for (const item of entries) {
+          const title = isEn ? (item.titleEn || item.titleEs || item.id) : (item.titleEs || item.titleEn || item.id);
+          addTrayItem({
+            id: item.id,
+            skuId: item.id,
+            atomicCode: item.code || item.id,
+            code: item.code || item.id,
+            nameEs: item.titleEs || title,
+            nameEn: item.titleEn || title,
+            title,
+            subtitle: activeSeries ? `${item.code || item.id} · ${activeSeries}` : (item.code || item.id),
+            circuit: verticalRaw,
+            category: 'CALCULATED_KIT',
+            partCode: item.code || item.id,
+            material: activeMaterial || item.defaultMaterial || 'A05',
+            series: activeSeries,
+            qty: 1,
+            source: `vertical_calc_${kitKey}`,
+          });
+        }
+
+        if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function' && typeof CustomEvent === 'function') {
+          window.dispatchEvent(new CustomEvent('smat:calculated-kit-added', { detail: { vertical: kitKey, items: entries.map((e) => e.id) } }));
+        }
+
+        btn.textContent = isEn ? 'Calculated Kit Added' : 'Kit Calculado Agregado';
+        if (typeof setTimeout === 'function') {
+          setTimeout(() => {
+            btn.textContent = originalText;
+          }, 1800);
+        }
+      });
+    }
+    count += 1;
+  }
+
+  return count;
+}

@@ -1,4 +1,4 @@
-# Guía Canónica de Despliegue ($0/mes) — SMAT Minerals Site v6.0
+# Guía Canónica de Despliegue ($0/mes) — SMAT Minerals Site v7.0
 
 > **Repositorio:** [`memoestefani/smat-portal`](https://github.com/memoestefani/smat-portal) (rama de producción: `main`)  
 > **Dominio:** https://smatminerals.com  
@@ -13,8 +13,8 @@
 | Servicio | Costo | Función | Evidencia en el repo |
 |---|---|---|---|
 | GitHub | $0 | Repositorio y disparador de despliegue | `origin = github.com/memoestefani/smat-portal` |
-| Cloudflare Pages | $0 | Hosting estático, CDN, certificados, cabeceras y `541` redirecciones 301 | `@astrojs/cloudflare`, `public/_headers`, `data/redirects.csv` → `public/_redirects` |
-| Service Worker PWA | $0 | Modo desconectado en campamento minero | `public/sw.js` (`smat-pwa-v5.5`) |
+| Cloudflare Pages | $0 | Hosting estático, CDN, certificados, cabeceras y `579` redirecciones 301 | `@astrojs/cloudflare`, `public/_headers`, `data/redirects.csv` → `public/_redirects` |
+| Service Worker PWA | $0 | Modo desconectado en campamento minero | `public/sw.js` (`smat-pwa-v7.0`) |
 | Telemetría | $0 | Google Analytics 4 solo si existe `PUBLIC_GA_ID` | `BaseLayout.astro` (sin ID fijo en código) |
 
 No hay variables de entorno obligatorias. Única opcional: `PUBLIC_GA_ID`.
@@ -98,7 +98,7 @@ git push origin main
 
 Archivos que Cloudflare lee automáticamente desde `dist/`:
 - `_headers` → seguridad (`X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`).
-- `_redirects` → `541` redirecciones 301 compiladas desde `data/redirects.csv` hacia URLs canónicas ES/EN.
+- `_redirects` → `579` redirecciones 301 compiladas desde `data/redirects.csv` hacia URLs canónicas ES/EN (rescate 1-hop de las 20 rutas espejo retiradas en V7.0).
 
 ---
 
@@ -106,19 +106,19 @@ Archivos que Cloudflare lee automáticamente desde `dist/`:
 
 ```powershell
 # 1. Cabeceras de seguridad
-curl.exe -s -I https://smatminerals.com | Select-String "x-frame-options|x-content-type-options"
+curl.exe -s -I https://smatminerals.com | Select-String "x-frame-options|x-content-type-options|strict-transport-security|content-security-policy"
 
-# 2. Páginas clave devuelven 200
-foreach ($p in "/", "/cotizar/", "/bombeo/", "/catalogo/", "/equipos/", "/flotacion/", "/filtracion/", "/en/", "/en/quote/", "/en/pumping/", "/en/catalog/") {
+# 2. Páginas clave devuelven 200 (y espejos retirados devuelven 301)
+foreach ($p in "/", "/cotizar/", "/bombeo/", "/catalogo/", "/productos/lote-humedo-554-bomba-ah/", "/catalogo/d075c21/", "/diagnostico/", "/nosotros/", "/flotacion/", "/filtracion/", "/en/", "/en/quote/", "/en/pumping/", "/en/catalog/") {
   "{0} -> {1}" -f $p, (curl.exe -s -o NUL -w "%{http_code}" "https://smatminerals.com$p")
 }
 ```
 
 Revisión manual en producción (2 minutos):
 1. El botón de WhatsApp abre `wa.me/526183670664`.
-2. El cotizador (`/cotizar/#rfq`) carga y genera el folio `SMAT-2026-…`.
-3. En `/bombeo/` operan las estaciones en pestañas únicas (`#bombeo-station-tabs`) sin calculadoras duplicadas en subrutas.
-4. Los diagramas técnicos CAD/blueprint se ven correctamente en móvil y escritorio.
+2. El cotizador (`/cotizar/#rfq`) carga sin alarmismo en estado vacío (`Pendiente de envío` + guía rápida en 3 pasos) y genera el folio `SMAT-2026-…`.
+3. En `/bombeo/`, `/filtracion/`, `/flotacion/`, `/clasificacion/` y `/control-de-procesos/` funcionan las calculadoras y el botón `+ Agregar kit ... a cotización`.
+4. La galería WebP multi-ángulo (57 vistas) y las 5 fotos reales de Almacén Durango en `/nosotros/` cargan correctamente en móvil y escritorio.
 
 ---
 
@@ -166,6 +166,7 @@ Si algo sale mal tras publicar:
   3. **Bandeja de Requisición Multi-Ítem (`requisitionTrayBus.js` + `RequisitionTraySummary.astro`), Regla $c\mu$, Pasaporte de Proveedor SAT CFDI 4.0 (`.vcf` + `.json`) y Reorden $(s, S)$ (`D3`, `D5`):** Factorización modular por costura limpia (`QuoteWizard.astro < 900 LOC`), tira pre-triada `[SMAT-DGO]` en WhatsApp, enlace idempotente `?reorder=1&tray=...` y evidencia física verificable (`ASTM A532 Cr27 >= 58 HRC`, Incoterms `EXW/DAP Durango`) en `/acuse/` y `/en/thank-you/`.
   4. **Nueva Vertical `/clasificacion/` y `/en/classification/` (Báscula Virtual de 3 Vasos Marcy + Corte $d_{50c}$ de Plitt + Alerta de Acordonamiento *Roping*), Matriz *Drop-In* en `/flotacion/` y Verificador Estructural Timoshenko NOM-141 en `/filtracion/` (`D7`, `D8`):** Integración completa de `calculateThreeCupMarcyCycloneBalance` y `evaluateFilterPressPlateDeflection` en `slurryEngine.js` y sincronización de `state.metrology.cycloneCircuit` con `/control-de-procesos/`.
   5. **Gobernanza Determinista (`Gates 28 y 29` en `crates/smat-gate/src/lib.rs`, `tests/mvp_v3_decisions.test.mjs`, `ortho.toml` y `package.json`, `D9`, `D10`):** Orden topológico `preflight` (`astro check && npm test && astro build && npm run gate`) y eliminación total de residuos (`clean_debris.ps1`).
+- **v7.0 (`[ARB-SMAT-70]` — Purchase-First Storefront):** Retiro de 20 páginas espejo y 4 islas redundantes con `579` reglas `301` de 1 salto, galería WebP multi-ángulo de 3 vistas (`19` SKUs = `57` slides `<= 45 KB`, `5` fotos exclusivas `almacen/*.webp`, `13` fotos `partes/*.webp`), PDP unificada `ProductDetailIsland.astro` (`minmax(0, 7fr) minmax(0, 5fr)` + miniaturas `48x48` + selector `-22%` DAM005), vitrina horizontal y kits 1-clic (`bindCalculatedKitToTrayButtons`) en las 5 verticales, evidencia fotográfica Durango sobre el pliegue en `/nosotros/` y `/en/about/`, guía rápida en `LiveEngineeringDossier.astro` + `AcuseSheetIsland.astro`, `smat-pwa-v7.0` y blindaje lexical V7.0 en `smat-gate`.
 - **v3.7 (`GOLD-703` / `ARB-SMAT-45` / `Gate 40`):** Biyección Runtime 4-Circuitos (`getAtomicPartSpecs` con ramas de Flotación, Filtración y Laboratorio), preservación PutGet de rol de kit (`kit_wet_end`, `skid_bomba`), quinta opción de material `hybrid_a05_r55` (Rama D Híbrida Finnie-Hutchings), normalización POSIX a minúsculas `/catalogo/d075c21/` + reglas `301`, deduplicación del 50% de nodos SVG en `ProductQuickCard.astro`, botón `[ + Agregar Par Casado Sincronizado ]` y chips interactivos en `productos/[slug].astro`, extracción $\text{LCOM}_4 = 1$ de `wizardMiningAndCodeDecoder.js` y `wizardUrlAndPresetRouter.js`, `316` tests en Node.js, `32` tests en `smat-gate` y `SIRA = 100%` en `faro.exe verify smat`.
 - **v4.1 (`GOLD-715` / `ARB-SMAT-49` / `Gate 44`):** Desacople Físico y Visibilidad XOR Viva de las 3 Calculadoras Físicas del Paso 01 en `/cotizar/` y `/en/quote/` (`#circuit-panel-clasificacion`, `#wb-flot-gorain-live-box`, `#wb-filt-timoshenko-live-box`), Lente Polimórfica PutGet por Circuito (`mergeWorkbenchLensState`), Core Trade-In de 3 Niveles (`-22%`, `-12%`, `0%` en `DAM005`), instancia única de `<RequisitionTraySummary />` sin IDs duplicados (`#metric-delta-npsh`) y proyección reactiva de >90 propiedades en `wizardLivePhysicsProjector.js` (`LCOM4 = 1`).
 - **v4.2 (`GOLD-716` / `ARB-SMAT-50` / `Gate 45`):** Unificación de Calculadoras Verticales mediante el Puente Canónico `verticalCalculatorsAndLabelsBridge.js` (`LCOM4 = 1`, `bindCanonicalFiltrationCalculator`, `bindCanonicalFlotationCalculator`, `bindCoupledClassificationStation` con acople visual y funcional 3 Vasos Marcy + Criba Weibull `#cyc-screen-coupling-badge`), eliminación física de la `<section>` duplicada de Modos 05 y 06 en `/diagnostico/` y `/en/diagnostics/`, traducción biyectiva del 100% de llaves `snake_case` (`poliuretano_minero`, `alto_cromo_cr27`, `drive_end..axial_calibration` y los 16 `sku.diagram_id`), erradicación de `ROLES.JSON`, `(roles.json)`, ``(`control_procesos`)``, `buildSmatVendorPassportPayload`, `(Statechart XOR)`, `• D7` y `• D8` en los `286` archivos `dist/**/*.html`, clausura del 100% de los campos de retorno en los 26 motores (`0` llaves huérfanas), `346` tests en Node.js (`19` suites) y `37` compuertas deterministas en `smat-gate` (`SIRA = 100%`).

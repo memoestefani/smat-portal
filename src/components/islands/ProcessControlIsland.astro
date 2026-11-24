@@ -82,6 +82,9 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
             <a id="met-quote-cta" href={`${quoteBase}?circuito=control_procesos&equipo=balanza_marcy#rfq`} class="btn btn-primary">
               {isEs ? 'Cotizar con esta Calibración Metrológica →' : 'Quote With This Metrology Calibration →'}
             </a>
+            <button type="button" class="btn btn-outline smat-tap-btn" data-add-calculated-kit="control">
+              {isEs ? '+ Agregar kit de control a cotización' : '+ Add control kit to quote'}
+            </button>
           </div>
         </div>
 
@@ -242,6 +245,7 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
   import { projectProcessControlMetrologyInvariants } from '../../scripts/catalogDropInAndJrpProjector.js';
   import {
     bindAtomicPartTrayButtons,
+    bindCalculatedKitToTrayButtons,
     loadUnifiedEngineeringAndWorkbenchState,
   } from '../../scripts/verticalStateAndCtaSyncBridge.js';
 
@@ -414,6 +418,7 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
       }
 
       bindAtomicPartTrayButtons(standaloneRoot);
+      bindCalculatedKitToTrayButtons(standaloneRoot, lang);
       stationTabs.forEach((tab) => {
         tab.addEventListener('click', () => activateStation(tab.getAttribute('data-met-station-tab') || '1'));
       });
