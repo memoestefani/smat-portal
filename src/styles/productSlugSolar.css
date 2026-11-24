@@ -850,4 +850,90 @@
   color: #064e3b;
   margin-top: 0.2rem;
 }
+
+.smat-slug-pdp-title {
+  font-size: clamp(1.25rem, 2.2vw, 1.7rem);
+  line-height: 1.25;
+  margin-bottom: 0.35rem;
+}
+
+.smat-slug-specs-compact {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  font-size: 0.8rem;
+  color: #1e293b;
+}
+
+.smat-slug-buybox-controls {
+  display: grid;
+  grid-template-columns: 1fr 96px;
+  gap: 0.65rem;
+  align-items: end;
+}
+
+.smat-slug-qty-input {
+  min-height: 48px;
+  text-align: center;
+  font-weight: 800;
+}
+
+.smat-slug-below-fold {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+}
+
+.smat-slug-coupled-card {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.85rem;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+}
+
+.smat-slug-coupled-thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+}
+
+.smat-slug-coupled-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.smat-slug-coupled-link {
+  font-weight: 800;
+  color: #0f172a;
+  text-decoration: none;
+}
+
+.smat-slug-coupled-link:hover {
+  color: #7c2d12;
+  text-decoration: underline;
+}
+
+.smat-slug-coupled-note {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #334155;
+}
+
+@media (max-width: 540px) {
+  .smat-slug-buybox-controls,
+  .smat-slug-coupled-card {
+    grid-template-columns: 1fr;
+  }
+}
 }

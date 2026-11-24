@@ -129,12 +129,14 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
     const isAlert = Boolean(res.isPlateCrackingRisk || !res.nom141Compliant);
     if (sumEl) {
       const baseSummary = isEn ? res.summaryEn : res.summaryEs;
-      const skuTail = skusEl
-        ? `Shifter: ${res.recommendedShifterSkuId}`
-        : (isEn
+      if (skusEl) {
+        sumEl.textContent = `${baseSummary} | ${secondaryBreakdown}`;
+      } else {
+        const skuTail = isEn
           ? `Plate: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Shifter: ${res.recommendedShifterSkuId}`
-          : `Placa/Tela: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Corre-Placas: ${res.recommendedShifterSkuId}`);
-      sumEl.textContent = `${baseSummary} | ${secondaryBreakdown} | ${skuTail}`;
+          : `Placa/Tela: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Corre-Placas: ${res.recommendedShifterSkuId}`;
+        sumEl.textContent = `${baseSummary} | ${secondaryBreakdown} | ${skuTail}`;
+      }
       sumEl.classList?.toggle('is-alert-state', isAlert);
       sumEl.classList?.toggle('is-optimal-state', !isAlert);
     }

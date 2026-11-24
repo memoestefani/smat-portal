@@ -10,7 +10,9 @@ import FiltrationCore from '../cores/FiltrationCore.astro';
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import CircuitNavigator from '../CircuitNavigator.astro';
 import SharePurchasing from '../SharePurchasing.astro';
+import ProductStorefrontCard from '../ProductStorefrontCard.astro';
 import rolesData from '../../../data/roles.json';
+import { getQuickProductsCatalog } from '../../scripts/quickProductsCatalog.js';
 
 interface Props {
   locale?: 'es' | 'en';
@@ -27,6 +29,7 @@ const {
 const isEs = locale === 'es';
 const lang = locale;
 const showVerticalShell = mode === 'standalone';
+const filtrationSkus = getQuickProductsCatalog().filter((s) => s.vertical === 'filtracion');
 
 const filtVertical = rolesData.verticals.find((v) => v.id === 'filtracion');
 const roleIdTarget = variant === 'parts' ? 'repuestos_prensa' : 'prensa_completa';
@@ -80,6 +83,13 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
 
     <section class={`section ${variant !== 'hub' ? 'section-spacing smat-stage-compact' : ''}`} id="filtracion-main-section">
       <div class={`container ${variant !== 'hub' ? 'content-container' : ''}`}>
+        <div class="smat-mb-md" aria-label={isEs ? 'Productos de filtración prensa' : 'Filter press products'}>
+          <div class="smat-sf-grid">
+            {filtrationSkus.map((sku, idx) => (
+              <ProductStorefrontCard sku={sku} lang={lang} eager={idx < 2} />
+            ))}
+          </div>
+        </div>
         <div class={variant !== 'hub' ? 'card detail-card' : ''}>
           <div id="nom141-plate-flexure-verifier" data-smat-calc={variant === 'hub' ? 'filtration' : undefined}>
             <div class="filtration-5family-box" id={stratumId} data-plate-flexure-panel="timoshenko-g5" data-stratum-1-instrument>

@@ -597,10 +597,12 @@ test('V53-T1 Ola C1: Único <main>, Formateo Humano, Zero Hardcodes SSR y <dialo
     assert.equal(/<main\b/i.test(content), false, `${rel} no debe introducir <main> anidado dentro de BaseLayout`);
   }
 
-  // 3. Separador tipográfico después de #wb-jrp-window-days en fichas [slug]
+  // 3. Separador tipográfico después de #wb-jrp-window-days en fichas [slug] / ProductDetailIsland
+  const pdpIslandSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/ProductDetailIsland.astro'), 'utf8');
   for (const slugRel of ['src/pages/productos/[slug].astro', 'src/pages/en/products/[slug].astro']) {
     const slugSrc = fs.readFileSync(path.join(SITE_ROOT, slugRel), 'utf8');
-    assert.ok(slugSrc.includes("insertAdjacentText('afterend', ' · ')"), `${slugRel} debe insertar ' · ' tras #wb-jrp-window-days`);
+    const combinedSlugSrc = `${slugSrc}\n${pdpIslandSrc}`;
+    assert.ok(combinedSlugSrc.includes("insertAdjacentText('afterend', ' · ')"), `${slugRel} / ProductDetailIsland debe insertar ' · ' tras #wb-jrp-window-days`);
   }
 
   // 4. SealDriveBearingCore SSR dinámico (cero 1001 RPM / 42800 hardcoded) & DropInVerifierCore neutro

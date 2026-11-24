@@ -998,6 +998,227 @@
       font-size: 0.76rem;
     }
   }
+
+  /* ==========================================================================
+     V6.0 Storefront Purchase-First Cards & Durango Warehouse Gallery
+     ========================================================================== */
+  .smat-sf-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+    gap: 1.15rem;
+    align-items: stretch;
+  }
+
+  .smat-sf-card {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+  }
+
+  .smat-sf-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    border-color: #92400e;
+  }
+
+  .smat-sf-media-link {
+    display: block;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+
+  .smat-sf-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.25s ease;
+  }
+
+  .smat-sf-card:hover .smat-sf-photo {
+    transform: scale(1.02);
+  }
+
+  .smat-sf-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    padding: 0.9rem 1rem 1rem;
+    gap: 0.42rem;
+  }
+
+  .smat-sf-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+  }
+
+  .smat-sf-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.18rem 0.52rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .smat-sf-badge--hay {
+    background: #ecfdf5;
+    border: 1px solid #059669;
+    color: #064e3b;
+  }
+
+  .smat-sf-badge--pide {
+    background: #eff6ff;
+    border: 1px solid #0284c7;
+    color: #0c4a6e;
+  }
+
+  .smat-sf-badge--fabrica {
+    background: #fffbeb;
+    border: 1px solid #b45309;
+    color: #7c2d12;
+  }
+
+  .smat-sf-mass {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #475569;
+  }
+
+  .smat-sf-sku-code {
+    font-family: var(--smat-font-mono, monospace);
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: #7c2d12;
+  }
+
+  .smat-sf-title {
+    margin: 0;
+    font-size: 0.96rem;
+    line-height: 1.32;
+    font-weight: 800;
+    color: #0f172a;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .smat-sf-title-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .smat-sf-title-link:hover {
+    color: #7c2d12;
+    text-decoration: underline;
+  }
+
+  .smat-sf-compat {
+    margin: 0;
+    font-size: 0.78rem;
+    line-height: 1.38;
+    color: #334155;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .smat-sf-actions {
+    margin-top: auto;
+    padding-top: 0.55rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.45rem;
+    align-items: stretch;
+  }
+
+  .smat-sf-btn-add,
+  .smat-sf-btn-detail {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0.45rem 0.78rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+
+  .smat-sf-btn-add {
+    background: #7c2d12;
+    border: 1px solid #431407;
+    color: #ffffff;
+  }
+
+  .smat-sf-btn-add:hover {
+    background: #431407;
+  }
+
+  .smat-sf-btn-detail {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+    white-space: nowrap;
+  }
+
+  .smat-sf-btn-detail:hover {
+    border-color: #7c2d12;
+    color: #7c2d12;
+    background: #fffbeb;
+  }
+
+  .smat-almacen-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  .smat-almacen-figure {
+    margin: 0;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .smat-almacen-figure img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .smat-almacen-figure figcaption {
+    padding: 0.65rem 0.8rem;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: #334155;
+  }
+
+  @media (max-width: 480px) {
+    .smat-sf-actions {
+      grid-template-columns: 1fr;
+    }
+  }
 }
 
 .hidden,

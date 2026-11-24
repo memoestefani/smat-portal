@@ -7,8 +7,11 @@ const { lang = 'es' } = Astro.props;
 const isEs = lang === 'es';
 
 import diagData from '../../data/diagnostics.json';
+import quickCatalogData from '../../data/quick_checkout_Catalog.json';
 import { MECHANICAL_DIAGNOSTICS } from '../scripts/slurryEngine.js';
 import { formatMaterialHumanLabel } from '../scripts/verticalCalculatorsAndLabelsBridge.js';
+
+const skuLookup = new Map((quickCatalogData as any[]).map((s) => [s.id, s]));
 
 const mechanicalDiagByRole: Record<string, any> = {
   cavitacion_abrasion: MECHANICAL_DIAGNOSTICS.cavitation,
@@ -103,7 +106,10 @@ const diagnostics = diagData.diagnostics.map((item) => {
     </div>
 
     <div class="diagnostics-grid">
-      {diagnostics.map((item, idx) => (
+      {diagnostics.map((item, idx) => {
+        const primarySkuId = item.recommendedSkusList[0] || 'SMAT-PUMP-IMP-AH';
+        const primarySku = skuLookup.get(primarySkuId);
+        return (
         <article class="card diag-card" data-failure-link={item.id} data-tags={`${item.id} ${item.title_es} ${item.title_en} ${item.target_role} ${item.stationNumber} ${formatMaterialHumanLabel(item.recommendedMaterial, lang)}`.toLowerCase()}>
           <div class="diag-header">
             <span class="pulsing-dot pulsing-dot-amber"></span>
@@ -131,6 +137,29 @@ const diagnostics = diagData.diagnostics.map((item) => {
               <p class="field-text highlight">{isEs ? item.recommended_action_es : item.recommended_action_en}</p>
             </div>
           </div>
+
+          {primarySku && (
+            <div class="smat-diag-buy-strip">
+              <img src={primarySku.photo_webp} alt={primarySku.id} width="96" height="72" loading="lazy" decoding="async" class="smat-diag-thumb" />
+              <div class="smat-diag-buy-meta">
+                <strong>{primarySku.id}</strong>
+                <span>{isEs ? primarySku.title_es : primarySku.title_en}</span>
+              </div>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                data-quick-tray-add={primarySku.id}
+                data-add-tray-sku={primarySku.id}
+                data-tray-part-code={item.stationIdLabel}
+                data-tray-title={isEs ? primarySku.title_es : primarySku.title_en}
+                data-tray-material={primarySku.default_material || item.recommendedMaterial}
+                data-tray-circuit="diagnostico"
+                data-tray-source="diagnostics_hub"
+              >
+                {isEs ? '+ Agregar' : '+ Add'}
+              </button>
+            </div>
+          )}
 
           <details class="diag-actions-drawer">
             <summary class="diag-actions-summary">
@@ -191,7 +220,7 @@ const diagnostics = diagData.diagnostics.map((item) => {
             </div>
           </details>
         </article>
-      ))}
+      ); })}
 
       <!-- Tarjeta 5: Falla no listada -->
       <article class="card diag-card unlisted-card" data-tags="otra_falla pulpa severa especial acida">
@@ -544,6 +573,47 @@ const diagnostics = diagData.diagnostics.map((item) => {
     border-radius: var(--smat-radius-sm);
     text-decoration: none;
     transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .smat-diag-buy-strip {
+    display: grid;
+    grid-template-columns: 76px 1fr auto;
+    gap: 0.65rem;
+    align-items: center;
+    padding: 0.6rem 0.7rem;
+    margin-bottom: 0.75rem;
+    border-radius: 10px;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+  }
+
+  .smat-diag-thumb {
+    width: 76px;
+    height: 57px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+  }
+
+  .smat-diag-buy-meta {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.76rem;
+    line-height: 1.25;
+  }
+
+  .smat-diag-buy-meta strong {
+    color: #7c2d12;
+    font-family: var(--smat-font-mono, monospace);
+  }
+
+  .smat-diag-buy-meta span {
+    color: #0f172a;
+    font-weight: 600;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .smat-diag-link {

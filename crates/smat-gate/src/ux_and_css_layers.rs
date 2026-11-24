@@ -17,6 +17,12 @@ pub fn verify_single_main_and_zero_raw_tokens(site_root: &Path) -> Result<(), St
         "(bound-",
         "Driver Sobol",
         "smat_vendor_passport_v1",
+        "Foto Studio 100%",
+        "Simulador Durand",
+        "Catálogo Oficial · SMAT",
+        "AV-01",
+        "AV-02",
+        "Estrato 1",
     ];
     let script_re = Regex::new(r"(?is)<script\b[^>]*>[\s\S]*?</script>").unwrap();
     let style_re = Regex::new(r"(?is)<style\b[^>]*>[\s\S]*?</style>").unwrap();
@@ -87,7 +93,35 @@ pub fn verify_print_pwa_and_core_hygiene(site_root: &Path) -> Result<(), String>
     verify_instrument_shell_input_first(site_root)?;
     verify_v58_instrument_and_mobile_header(site_root)?;
     verify_v59_xray_and_mobile_cols(site_root)?;
+    verify_v60_storefront_photo_first(site_root)?;
 
+    Ok(())
+}
+
+/// Invariante V6.0: Tarjeta de tienda con atributo homogéneo, ProductQuickCard foto-default y ProductDetailIsland sin precios.
+pub fn verify_v60_storefront_photo_first(site_root: &Path) -> Result<(), String> {
+    let sf_card = fs::read_to_string(site_root.join("src/components/ProductStorefrontCard.astro"))
+        .map_err(|e| format!("Falta ProductStorefrontCard.astro V6.0: {}", e))?;
+    if !sf_card.contains("data-ergos-homogeneous-card") {
+        return Err("ProductStorefrontCard.astro debe declarar data-ergos-homogeneous-card".to_string());
+    }
+
+    let qcard = fs::read_to_string(site_root.join("src/components/ProductQuickCard.astro"))
+        .map_err(|e| format!("Error leyendo ProductQuickCard.astro: {}", e))?;
+    verify_v60_qcard_photo_default(&qcard)?;
+
+    let pdp = fs::read_to_string(site_root.join("src/components/islands/ProductDetailIsland.astro"))
+        .map_err(|e| format!("Falta ProductDetailIsland.astro V6.0: {}", e))?;
+    if !pdp.contains("data-slug-add-to-tray") {
+        return Err("ProductDetailIsland.astro debe exponer Buy Box [data-slug-add-to-tray]".to_string());
+    }
+    Ok(())
+}
+
+pub fn verify_v60_qcard_photo_default(qcard_src: &str) -> Result<(), String> {
+    if !qcard_src.contains("data-qcard-tab=\"photo\"") || !qcard_src.contains("aria-selected=\"true\"") {
+        return Err("ProductQuickCard.astro debe iniciar con la pestaña de fotografía real activa (aria-selected=true)".to_string());
+    }
     Ok(())
 }
 
@@ -361,6 +395,7 @@ mod tests {
         verify_css_layers_in_text,
         verify_v58_cores_css_text,
         verify_v59_mobile_cols_css,
+        verify_v60_qcard_photo_default,
     };
 
     #[test]
@@ -406,5 +441,11 @@ mod tests {
     fn enforces_v59_xray_optin_and_mobile_single_col() {
         assert!(verify_v59_mobile_cols_css(".smat-inputs-2col { display: grid; grid-template-columns: minmax(0, 1fr); }").is_ok());
         assert!(verify_v59_mobile_cols_css(".smat-inputs-2col { grid-template-columns: repeat(2, minmax(0, 1fr)); }").is_err());
+    }
+
+    #[test]
+    fn enforces_v60_storefront_card_and_photo_tab_default() {
+        assert!(verify_v60_qcard_photo_default("<button data-qcard-tab=\"photo\" aria-selected=\"true\">Foto</button>").is_ok());
+        assert!(verify_v60_qcard_photo_default("<button data-qcard-tab=\"svg\">Plano</button>").is_err());
     }
 }

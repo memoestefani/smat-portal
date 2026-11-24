@@ -7,9 +7,11 @@ import CircuitNavigator from '../CircuitNavigator.astro';
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import SharePurchasing from '../SharePurchasing.astro';
 import PumpAssemblyReport from '../PumpAssemblyReport.astro';
+import ProductStorefrontCard from '../ProductStorefrontCard.astro';
 import atomicParts from '../../../data/atomic_parts.json';
 import { getAtomicPartSpecs, formatNioshErgonomicStatus, buildWizardUrl } from '../../scripts/workbenchBus.js';
 import { SMAT_SUPPLY_DOORS } from '../../scripts/i18nDomainLabels.js';
+import { getQuickProductsCatalog } from '../../scripts/quickProductsCatalog.js';
 
 interface Props {
   locale?: 'es' | 'en';
@@ -20,6 +22,9 @@ const { locale = 'es', mode = 'standalone' } = Astro.props;
 const isEs = locale === 'es';
 const showVerticalShell = mode === 'standalone';
 const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
+const pumpingSkus = getQuickProductsCatalog().filter((s) =>
+  ['SMAT-PUMP-IMP-AH', 'SMAT-PUMP-WETKIT-554', 'SMAT-PUMP-EXPELLER-KIT', 'SMAT-PUMP-BRG-005M', 'SMAT-PUMP-LINERS-AH', 'SMAT-COUPLED-PUMP-CYC'].includes(s.id)
+);
 
 const kits = [
   {
@@ -255,6 +260,16 @@ const tcoRows = [
 
   <section class="section smat-bombeo-main" id="bombeo-main-section">
     <div class="container">
+      {showVerticalShell && (
+        <div class="smat-mb-md" aria-label={isEs ? 'Refacciones y paquetes de bombeo disponibles' : 'Available slurry pumping spares and packages'}>
+          <div class="smat-sf-grid">
+            {pumpingSkus.map((sku, idx) => (
+              <ProductStorefrontCard sku={sku} lang={locale} eager={idx < 3} />
+            ))}
+          </div>
+        </div>
+      )}
+
       <div class="smat-station-tabs" id="bombeo-station-tabs" role="tablist" aria-label={isEs ? 'Estaciones de Bombeo de Lodos' : 'Slurry Pump Station Consoles'}>
         <button type="button" role="tab" aria-selected="true" class="smat-station-tab-btn is-active" data-station-tab="hydraulics">
           {isEs ? '1. Hidráulica y Altitud' : '1. Hydraulics & Head'}

@@ -152,6 +152,13 @@ pub fn verify_security_headers_nap_and_honest_sla(site_root: &Path) -> Result<()
                         entry.path().display()
                     ));
                 }
+                if let Some(bad_v60) = find_v60_prohibited_commercial_copy(&rel_norm, &text) {
+                    return Err(format!(
+                        "Copy interno V6.0 prohibido '{}' detectado en {}",
+                        bad_v60,
+                        entry.path().display()
+                    ));
+                }
             }
         }
     }
@@ -256,12 +263,39 @@ pub fn find_v57_prohibited_copy_in_source(rel_norm: &str, text: &str) -> Option<
     None
 }
 
+/// Audita copy interno / técnico V6.0 prohibido en las vistas orientadas al comprador.
+pub fn find_v60_prohibited_commercial_copy(rel_norm: &str, text: &str) -> Option<&'static str> {
+    let target_files = [
+        "ProductQuickCard.astro",
+        "ProductDetailIsland.astro",
+        "HomeLandingIsland.astro",
+        "CatalogFacetedIsland.astro",
+        "contacto.astro",
+        "contact.astro",
+    ];
+    if target_files.iter().any(|f| rel_norm.ends_with(f)) {
+        for forbidden in [
+            "Foto Studio 100%",
+            "Catálogo Oficial · SMAT",
+            "Simulador Durand",
+            "Durand Simulator",
+            "Paso 01: Elige por código",
+        ] {
+            if text.contains(forbidden) {
+                return Some(forbidden);
+            }
+        }
+    }
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::{
         find_v57_prohibited_copy_in_source,
         find_v58_en_leak_in_html,
         find_v59_disallowed_storage_write,
+        find_v60_prohibited_commercial_copy,
     };
 
     #[test]
@@ -291,5 +325,21 @@ mod tests {
     fn allows_only_whitelisted_v59_localstorage_keys() {
         assert!(find_v59_disallowed_storage_write("rfqSessionStore.js", "ls.setItem('smat_rfq_session_v3', '{}')").is_ok());
         assert!(find_v59_disallowed_storage_write("workbenchBus.js", "localStorage.setItem('smat_workbench_state_v2', '{}')").is_err());
+    }
+
+    #[test]
+    fn rejects_v60_internal_jargon_in_buyer_views() {
+        assert_eq!(
+            find_v60_prohibited_commercial_copy("src/components/ProductQuickCard.astro", "Foto Studio 100%"),
+            Some("Foto Studio 100%")
+        );
+        assert_eq!(
+            find_v60_prohibited_commercial_copy("src/pages/contacto.astro", "Simulador Durand"),
+            Some("Simulador Durand")
+        );
+        assert_eq!(
+            find_v60_prohibited_commercial_copy("src/pages/contacto.astro", "Asesoría técnica en selección"),
+            None
+        );
     }
 }

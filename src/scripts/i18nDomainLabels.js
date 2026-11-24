@@ -443,3 +443,33 @@ export function formatScientificUnit(value, unit = '', decimals = undefined) {
   if (!str) return cleanUnit || '—';
   return cleanUnit ? `${str} ${cleanUnit}` : str;
 }
+
+/**
+ * Traduce el régimen de inventario en etiqueta comercial legible (cero tokens crudos o precios literales).
+ * @param {string} [stockRegime='hay']
+ * @param {'es'|'en'} [lang='es']
+ * @returns {{ label: string; tone: 'hay' | 'pide' | 'fabrica'; leadTime: string }}
+ */
+export function formatAvailabilityBadgeHuman(stockRegime = 'hay', lang = 'es') {
+  const isEn = String(lang).toLowerCase() === 'en';
+  const key = String(stockRegime || 'hay').trim().toLowerCase();
+  if (key === 'se_pide') {
+    return {
+      label: isEn ? 'Fast Assembly · 5–10 Days' : 'Ensamble rápido · 5–10 días',
+      tone: 'pide',
+      leadTime: isEn ? '5–10 business days' : '5–10 días hábiles',
+    };
+  }
+  if (key === 'se_fabrica') {
+    return {
+      label: isEn ? 'Made to Order' : 'Fabricación bajo plano',
+      tone: 'fabrica',
+      leadTime: isEn ? 'Scheduled under drawing' : 'Programación bajo plano',
+    };
+  }
+  return {
+    label: isEn ? 'Available in Durango · 24–48h Dispatch' : 'Disponible en Durango · Despacho 24–48 h',
+    tone: 'hay',
+    leadTime: isEn ? '24–48h dispatch from Durango' : 'Despacho 24–48 h desde Durango',
+  };
+}

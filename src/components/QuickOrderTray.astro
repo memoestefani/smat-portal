@@ -5,6 +5,7 @@ interface Props {
 
 const { lang = 'es' } = Astro.props;
 const isEs = lang === 'es';
+const quoteHref = isEs ? '/cotizar/#rfq' : '/en/quote/#rfq';
 ---
 
 <aside
@@ -12,9 +13,8 @@ const isEs = lang === 'es';
   data-quick-order-tray
   data-lang={lang}
   class="smat-qtray-root"
-  aria-label={isEs ? 'Bandeja Rápida de Cotización B2B' : 'Fast B2B Requisition Tray'}
+  aria-label={isEs ? 'Bandeja de Cotización SMAT' : 'SMAT Quote Tray'}
 >
-  <!-- Modal limpio de Bandeja Dual (abierto desde #header-qtray-trigger o botón + Bandeja) -->
   <dialog
     id="smat-qtray-drawer"
     class="smat-qtray-drawer smat-qtray-dialog hidden"
@@ -25,128 +25,77 @@ const isEs = lang === 'es';
     <div class="smat-qtray-drawer-head">
       <div>
         <div id="smat-qtray-modal-title" class="smat-qtray-title">
-          {isEs ? 'Bandeja Rápida de Requisición B2B' : 'Fast B2B Requisition Tray'}
+          {isEs ? 'Bandeja de Cotización' : 'Quote Tray'}
           <span id="smat-qtray-count" class="smat-qtray-count-pill">0</span>
         </div>
         <div id="smat-qtray-priority-badge" class="smat-qtray-priority">
-          {isEs ? 'Prioritario · Facturación CFDI 4.0 / Orden de Compra SAP' : 'Priority · Petty Cash / SAP Purchase Order'}
+          {isEs ? 'Compra directa CFDI 4.0 o OC SAP' : 'CFDI 4.0 Direct or SAP PO'}
         </div>
       </div>
-      <button
-        type="button"
-        id="smat-qtray-close"
-        class="smat-qtray-close-btn"
-        aria-label={isEs ? 'Cerrar bandeja' : 'Close tray'}
-      >
-        ×
-      </button>
+      <button type="button" id="smat-qtray-close" class="smat-qtray-close-btn" aria-label={isEs ? 'Cerrar' : 'Close'}>×</button>
     </div>
 
-    <!-- Selector de Carril de Compra -->
     <div class="smat-qtray-lane-grid">
-      <button
-        type="button"
-        data-qtray-lane="CAJA_CHICA_CFDI40"
-        class="qtray-lane-btn is-active"
-      >
-        {isEs ? '< 25k MXN Caja Chica' : '< 25k MXN Petty Cash'}
+      <button type="button" data-qtray-lane="CAJA_CHICA_CFDI40" class="qtray-lane-btn is-active">
+        {isEs ? 'Compra Directa CFDI 4.0' : 'Direct CFDI 4.0'}
       </button>
-      <button
-        type="button"
-        data-qtray-lane="ORDEN_COMPRA_SAP"
-        class="qtray-lane-btn"
-      >
-        {isEs ? '> 25k MXN OC SAP' : '> 25k MXN SAP PO'}
+      <button type="button" data-qtray-lane="ORDEN_COMPRA_SAP" class="qtray-lane-btn">
+        {isEs ? 'Orden de Compra SAP' : 'SAP Purchase Order'}
       </button>
     </div>
 
-    <!-- Lista de Partidas -->
     <ul id="smat-qtray-items" class="smat-qtray-items-list">
       <li class="smat-qtray-empty-item">
         {isEs
-          ? 'Sin SKUs aún. Haz clic en "+ Agregar a Bandeja" en cualquier ficha.'
-          : 'No SKUs yet. Click "+ Add to Quote Tray" on any product card.'}
+          ? 'Tu bandeja está vacía. Agrega refacciones desde el catálogo.'
+          : 'Your quote tray is empty. Add spares from the catalog.'}
       </li>
     </ul>
 
-    <!-- Ventana de Reorden Preventivo 5:5:4 -->
-    <div class="smat-qtray-reorder-box" data-smat-invariant="INV-SMAT-SCI-03">
-      <div class="smat-qtray-reorder-title">
-        {isEs ? 'Ciclo Preventivo de Reorden 5:5:4:' : 'Preventive 5:5:4 Reorder Cycle:'}
-      </div>
-      <div id="smat-qtray-reorder-policy">
-        {isEs
-          ? 'Día 90: Camisa D075C21 · Día 150: Impulsor E4147 · Día 180: Voluta D3110'
-          : 'Day 90: D075C21 Sleeve · Day 150: E4147 Impeller · Day 180: D3110 Volute'}
-      </div>
-    </div>
-
-    <!-- Intercambio de Casco / Core Trade-In (-22% Remanufactura ISO 281) -->
-    <div class="smat-qtray-tradein-box" data-smat-invariant="INV-SMAT-SCI-06">
+    <!-- Condicional: solo visible si hay cartucho de rodamientos DAM005 en la bandeja -->
+    <div id="smat-qtray-tradein-wrap" class="smat-qtray-tradein-box hidden" hidden data-smat-invariant="INV-SMAT-SCI-06">
       <label class="smat-qtray-tradein-label">
-        <input
-          type="checkbox"
-          id="smat-qtray-core-tradein"
-          data-core-tradein-toggle
-          class="smat-qtray-checkbox"
-        />
+        <input type="checkbox" id="smat-qtray-core-tradein" data-core-tradein-toggle class="smat-qtray-checkbox" />
         <span>
-          <strong>{isEs ? 'Intercambio de Casco DAM005 (-22% Core Trade-In)' : 'DAM005 Bearing Cartridge Core Trade-In (-22%)'}</strong>
+          <strong>{isEs ? 'Intercambio de Casco DAM005 (-22%)' : 'DAM005 Core Trade-In (-22%)'}</strong>
           <span id="smat-qtray-core-badge" class="smat-qtray-tradein-note">
-            {isEs
-              ? 'Bonificación -22% al entregar tambor GGG40 en tolerancia H7 en Almacén Durango'
-              : '22% credit when returning crack-free GGG40 barrel in H7 tolerance at Durango Warehouse'}
+            {isEs ? 'Bonificación al retornar tambor en Durango' : 'Credit when returning housing in Durango'}
           </span>
         </span>
       </label>
     </div>
 
-    <!-- Confirmación Interactiva Candado G5 (50% Anticipo / 50% Contra Aviso de Embarque para SE FABRICA · D10-V36) -->
-    <div class="smat-qtray-tradein-box smat-qtray-info-note">
+    <!-- Condicional: solo visible si hay partidas bajo fabricación -->
+    <div id="smat-qtray-g5-wrap" class="smat-qtray-tradein-box hidden" hidden>
       <label class="smat-qtray-tradein-label">
-        <input
-          type="checkbox"
-          id="smat-qtray-g5-advance"
-          data-g5-advance-confirm
-          class="smat-qtray-checkbox"
-          checked
-        />
+        <input type="checkbox" id="smat-qtray-g5-advance" data-g5-advance-confirm class="smat-qtray-checkbox" checked />
         <span>
-          <strong>{isEs ? 'Candado G5 (50% Anticipo / 50% Contra Aviso de Embarque)' : 'Gate G5 (50% Advance / 50% Upon Ready-to-Ship Notice)'}</strong>
+          <strong>{isEs ? 'Programación bajo plano (50% / 50%)' : 'Made-to-Order Terms (50% / 50%)'}</strong>
           <span id="smat-qtray-g5-badge" class="smat-qtray-tradein-note">
-            {isEs
-              ? 'Aplicable a partidas bajo fabricación programada (SE FABRICA / Placas 16 bar / Mecanismos)'
-              : 'Applies to scheduled manufacturing items (MADE TO ORDER / 16 bar Plates / Mechanisms)'}
+            {isEs ? 'Aplica a placas 16 bar, celdas o fabricación especial' : 'Applies to 16-bar plates, cells or custom items'}
           </span>
         </span>
       </label>
     </div>
 
-    <!-- Acciones de Despacho -->
     <div class="smat-qtray-actions">
+      <a id="smat-qtray-pdf-link" data-qtray-pdf-btn href={quoteHref} class="smat-qtray-wa-btn">
+        {isEs ? 'Ir al cotizador y generar Folio →' : 'Proceed to RFQ & Folio →'}
+      </a>
       <a
         id="smat-qtray-wa-link"
-        href="https://wa.me/526183670664?text=Hola%20SMAT%2C%20solicito%20cotizaci%C3%B3n%20prioritaria%20B2B%20%5BSMAT-DGO%5D"
+        href="https://wa.me/526183670664?text=Hola%20SMAT%2C%20solicito%20cotizaci%C3%B3n%20desde%20mi%20bandeja%20web."
         target="_blank"
         rel="noopener noreferrer"
-        class="smat-qtray-wa-btn"
-      >
-        {isEs ? 'Enviar Requisición Prioritaria (WhatsApp / Correo)' : 'Dispatch Priority Requisition (WhatsApp / Email)'}
-      </a>
-      <a
-        id="smat-qtray-pdf-link"
-        data-qtray-pdf-btn
-        href={isEs ? '/acuse/?reorder=1&tray=SMAT-PUMP-IMP-AH:1:PARO_DE_LINEA' : '/en/thank-you/?reorder=1&tray=SMAT-PUMP-IMP-AH:1:PARO_DE_LINEA'}
         class="smat-qtray-pdf-btn"
       >
-        {isEs ? 'Emitir Hoja PDF / Folio SAP' : 'Issue PDF Sheet / SAP Folio'}
+        {isEs ? 'Enviar lista por WhatsApp' : 'Send List via WhatsApp'}
       </a>
-      <button
-        type="button"
-        id="smat-qtray-share-btn"
-        class="smat-qtray-pdf-btn"
-      >
-        {isEs ? 'Copiar enlace a Compras' : 'Copy Link for Purchasing'}
+      <button type="button" id="smat-qtray-share-btn" class="smat-qtray-share-btn">
+        {isEs ? 'Copiar enlace para Compras' : 'Copy Link for Purchasing'}
+      </button>
+      <button type="button" id="smat-qtray-clear-btn" class="smat-qtray-share-btn hidden" hidden>
+        {isEs ? 'Vaciar bandeja' : 'Clear tray'}
       </button>
     </div>
   </dialog>
@@ -163,14 +112,11 @@ const isEs = lang === 'es';
     encodeReorderUrlQuery,
     hydrateTrayFromReorderQuery,
     buildCmuPrioritySubjectLine,
-    computeCmuPriorityDescriptor,
-    calculateCoupledReorderWindowDays,
     evaluateBearingCartridgeCoreTradeIn,
     syncTrayToWorkbenchStateLens,
     SMAT_TRAY_UPDATE_EVENT
   } from '../scripts/requisitionTrayBus.js';
-  import { formatDualCheckoutPayload } from '../scripts/workbenchExportFormatters.js';
-  import { formatCheckoutLaneHuman, formatUrgencyBandHuman } from '../scripts/i18nDomainLabels.js';
+  import { formatCheckoutLaneHuman } from '../scripts/i18nDomainLabels.js';
   import { hydrateRfqSessionFromUrl, buildShareableRfqUrl } from '../scripts/rfqSessionStore.js';
 
   function initQuickOrderTray() {
@@ -178,170 +124,105 @@ const isEs = lang === 'es';
     if (!root || root.getAttribute('data-qtray-bound') === '1') return;
     root.setAttribute('data-qtray-bound', '1');
     if (typeof window !== 'undefined' && window.location) {
-      if (window.location.search.includes('rfq_v3=')) {
-        hydrateRfqSessionFromUrl(window.location.search);
-      } else if (window.location.search.includes('tray=')) {
-        hydrateTrayFromReorderQuery(window.location.search);
-      }
+      if (window.location.search.includes('rfq_v3=')) hydrateRfqSessionFromUrl(window.location.search);
+      else if (window.location.search.includes('tray=')) hydrateTrayFromReorderQuery(window.location.search);
     }
+
     const lang: 'es' | 'en' = root.getAttribute('data-lang') === 'en' ? 'en' : 'es';
     const isEs = lang === 'es';
     const closeBtn = document.getElementById('smat-qtray-close');
     const drawer = document.getElementById('smat-qtray-drawer') as HTMLDialogElement | null;
     const countEl = document.getElementById('smat-qtray-count');
     const itemsEl = document.getElementById('smat-qtray-items');
-    const badgeEl = document.getElementById('smat-qtray-priority-badge');
     const waLink = document.getElementById('smat-qtray-wa-link') as HTMLAnchorElement | null;
     const pdfLink = document.getElementById('smat-qtray-pdf-link') as HTMLAnchorElement | null;
     const shareBtn = document.getElementById('smat-qtray-share-btn') as HTMLButtonElement | null;
+    const clearBtn = document.getElementById('smat-qtray-clear-btn') as HTMLButtonElement | null;
+    const coreWrap = document.getElementById('smat-qtray-tradein-wrap');
     const coreToggle = document.getElementById('smat-qtray-core-tradein') as HTMLInputElement | null;
-    const coreBadge = document.getElementById('smat-qtray-core-badge');
-    shareBtn?.addEventListener('click', async () => {
-      const origin = typeof window !== 'undefined' && window.location ? window.location.origin : 'https://smat.mx';
-      const url = buildShareableRfqUrl({ origin, pathname: isEs ? '/cotizar/' : '/en/quote/' });
-      try {
-        await navigator.clipboard?.writeText(url);
-      } catch {}
-      shareBtn.textContent = isEs ? 'Enlace copiado' : 'Link copied';
-      window.setTimeout(() => {
-        shareBtn.textContent = isEs ? 'Copiar enlace a Compras' : 'Copy Link for Purchasing';
-      }, 2200);
-    });
-
+    const g5Wrap = document.getElementById('smat-qtray-g5-wrap');
+    const g5Toggle = document.getElementById('smat-qtray-g5-advance') as HTMLInputElement | null;
     let selectedLane = 'CAJA_CHICA_CFDI40';
-
-    function syncTriggerUi(isHidden: boolean) {
-      const triggerBtn = document.getElementById('header-qtray-trigger');
-      triggerBtn?.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
-    }
 
     function setDrawerHidden(isHidden: boolean) {
       if (!drawer) return;
       drawer.classList.toggle('hidden', isHidden);
       if (isHidden) {
         drawer.setAttribute('hidden', '');
-        if (typeof drawer.close === 'function' && drawer.open) {
-          drawer.close();
-        }
+        if (typeof drawer.close === 'function' && drawer.open) drawer.close();
       } else {
         drawer.removeAttribute('hidden');
-        if (typeof drawer.showModal === 'function' && !drawer.open) {
-          drawer.showModal();
-        }
+        if (typeof drawer.showModal === 'function' && !drawer.open) drawer.showModal();
       }
-      syncTriggerUi(isHidden);
+      document.getElementById('header-qtray-trigger')?.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
     }
 
-    if (drawer && typeof MutationObserver !== 'undefined') {
-      const hiddenObserver = new MutationObserver(() => {
-        const isHiddenNow = drawer.hasAttribute('hidden');
-        if (!isHiddenNow && typeof drawer.showModal === 'function' && !drawer.open) {
-          drawer.classList.remove('hidden');
-          drawer.showModal();
-          syncTriggerUi(false);
-        }
-      });
-      hiddenObserver.observe(drawer, { attributes: true, attributeFilter: ['hidden'] });
-    }
-
-    drawer?.addEventListener('close', () => {
-      drawer.classList.add('hidden');
-      drawer.setAttribute('hidden', '');
-      syncTriggerUi(true);
+    shareBtn?.addEventListener('click', async () => {
+      const origin = typeof window !== 'undefined' && window.location ? window.location.origin : 'https://smatminerals.com';
+      const url = buildShareableRfqUrl({ origin, pathname: isEs ? '/cotizar/' : '/en/quote/' });
+      try { await navigator.clipboard?.writeText(url); } catch {}
+      shareBtn.textContent = isEs ? 'Enlace copiado' : 'Link copied';
+      window.setTimeout(() => { shareBtn.textContent = isEs ? 'Copiar enlace para Compras' : 'Copy Link for Purchasing'; }, 2200);
     });
 
-    drawer?.addEventListener('click', (ev) => {
-      if (ev.target === drawer) {
-        setDrawerHidden(true);
-      }
-    });
-
+    drawer?.addEventListener('close', () => setDrawerHidden(true));
+    drawer?.addEventListener('click', (ev) => { if (ev.target === drawer) setDrawerHidden(true); });
     window.addEventListener('keydown', (ev) => {
-      if (ev.key === 'Escape' && drawer && (drawer.open || !drawer.hasAttribute('hidden'))) {
-        ev.stopPropagation();
-        setDrawerHidden(true);
-      }
+      if (ev.key === 'Escape' && drawer && (drawer.open || !drawer.hasAttribute('hidden'))) setDrawerHidden(true);
     });
 
     function renderTray() {
       const state = getTrayState();
-      const tradeIn = evaluateBearingCartridgeCoreTradeIn(state, coreToggle ? coreToggle.checked : state.coreReturnEnabled);
-      if (coreToggle) coreToggle.checked = Boolean(tradeIn.coreReturnEnabled);
-      if (coreBadge) {
-        coreBadge.textContent = tradeIn.discountPct > 0
-          ? (isEs ? `ACTIVO: -${tradeIn.discountPct}% Intercambio Casco (${tradeIn.housingMaterial})` : `ACTIVE: -${tradeIn.discountPct}% Core Trade-In (${tradeIn.housingMaterial})`)
-          : (isEs ? tradeIn.inspectionGateEs : tradeIn.inspectionGateEn);
-      }
       const totalQty = state.items.reduce((acc: number, it: any) => acc + (Number(it.qty) || 1), 0);
       if (countEl) countEl.textContent = String(totalQty);
       const headerCountEl = document.getElementById('header-qtray-count');
       if (headerCountEl) headerCountEl.textContent = String(totalQty);
 
-      const desc = computeCmuPriorityDescriptor({
-        urgency: state.criticalityMode === 'PARO_DE_LINEA' ? 'emergency' : 'normal',
-        estimatedTotalMxn: selectedLane === 'CAJA_CHICA_CFDI40' ? 18500 : 65000,
-        stockRegime: 'hay'
-      });
-      const dualLaneMeta = formatDualCheckoutPayload({
-        estimatedMxn: selectedLane === 'CAJA_CHICA_CFDI40' ? 18500 : 65000,
-        stockRegime: 'hay'
-      });
-      const reorderWindow = calculateCoupledReorderWindowDays({ sg: 1.5, d50Um: 120 });
-      const reorderPolicyEl = document.getElementById('smat-qtray-reorder-policy');
-      if (reorderPolicyEl) {
-        const basePol = isEs ? reorderWindow.policySummaryEs : reorderWindow.policySummaryEn;
-        const dispLbl = isEs ? reorderWindow.dispatchModeLabelEs : reorderWindow.dispatchModeLabelEn;
-        reorderPolicyEl.textContent = `${basePol} (T10=${reorderWindow.t10InspectionDays}d / T50=${reorderWindow.t50ReorderTriggerDays}d / T80=${reorderWindow.t80CriticalChangeoutDays}d • Buffer ${reorderWindow.leadTimeBufferDays}d • Sev=${reorderWindow.wearSeverityFactor}× • Vida=${reorderWindow.wearAcceleratedLifeHours}h • ${dispLbl})`;
+      const hasCoreSku = state.items.some((i: any) => String(i.id || '').includes('005M') || String(i.atomicCode || '').includes('DAM005'));
+      if (coreWrap) {
+        coreWrap.classList.toggle('hidden', !hasCoreSku);
+        coreWrap.hidden = !hasCoreSku;
       }
-      if (badgeEl) {
-        const laneHuman = isEs
-          ? (desc.checkoutLaneLabelEs || formatCheckoutLaneHuman(desc.checkoutLane, lang))
-          : (desc.checkoutLaneLabelEn || formatCheckoutLaneHuman(desc.checkoutLane, lang));
-        const prioHuman = isEs
-          ? (desc.priorityLabelEs || formatUrgencyBandHuman(state.criticalityMode, lang))
-          : (desc.priorityLabelEn || formatUrgencyBandHuman(state.criticalityMode, lang));
-        badgeEl.textContent = `${prioHuman} (${desc.priorityRankScore}) • ${laneHuman} • SLA ≤${desc.slaResponseMinutes} min • ${dualLaneMeta.cfdiVersion}`;
+      const hasMtoSku = state.items.some((i: any) => i.stockRegime === 'se_fabrica' || i.stockRegime === 'se_pide' || String(i.id || '').includes('FILT') || String(i.id || '').includes('FLOT'));
+      if (g5Wrap) {
+        g5Wrap.classList.toggle('hidden', !hasMtoSku);
+        g5Wrap.hidden = !hasMtoSku;
       }
+
+      const tradeIn = evaluateBearingCartridgeCoreTradeIn(state, coreToggle ? coreToggle.checked : state.coreReturnEnabled);
+      if (coreToggle) coreToggle.checked = Boolean(tradeIn.coreReturnEnabled);
 
       if (itemsEl) {
         if (!state.items.length) {
           itemsEl.innerHTML = `<li class="smat-qtray-empty-item">${
-            isEs
-              ? 'Sin SKUs aún. Haz clic en "+ Agregar a Bandeja" en cualquier ficha.'
-              : 'No SKUs yet. Click "+ Add to Quote Tray" on any product card.'
+            isEs ? 'Tu bandeja está vacía. Agrega refacciones desde el catálogo.' : 'Your quote tray is empty. Add spares from the catalog.'
           }</li>`;
         } else {
-          itemsEl.innerHTML = state.items
-            .map(
-              (item: any) => `
-              <li class="smat-qtray-item-row">
-                <div>
-                  <div class="smat-qtray-item-code">${item.id} × ${item.qty}</div>
-                  <div class="smat-qtray-item-name">${isEs ? item.nameEs : item.nameEn}</div>
-                </div>
-                <div class="smat-qtray-item-controls">
-                  <button type="button" data-qtray-qty-delta="-1" data-qtray-item-id="${item.id}" data-qtray-current-qty="${item.qty}" class="smat-qtray-qty-btn" aria-label="Disminuir cantidad">−</button>
-                  <button type="button" data-qtray-qty-delta="1" data-qtray-item-id="${item.id}" data-qtray-current-qty="${item.qty}" class="smat-qtray-qty-btn" aria-label="Aumentar cantidad">+</button>
-                  <button type="button" data-qtray-remove="${item.id}" class="smat-qtray-remove-btn">×</button>
-                </div>
-              </li>`
-            )
-            .join('');
+          itemsEl.innerHTML = state.items.map((item: any) => `
+            <li class="smat-qtray-item-row">
+              <div>
+                <div class="smat-qtray-item-code">${item.id} × ${item.qty}</div>
+                <div class="smat-qtray-item-name">${isEs ? item.nameEs : item.nameEn}</div>
+              </div>
+              <div class="smat-qtray-item-controls">
+                <button type="button" data-qtray-qty-delta="-1" data-qtray-item-id="${item.id}" data-qtray-current-qty="${item.qty}" class="smat-qtray-qty-btn" aria-label="Disminuir">−</button>
+                <button type="button" data-qtray-qty-delta="1" data-qtray-item-id="${item.id}" data-qtray-current-qty="${item.qty}" class="smat-qtray-qty-btn" aria-label="Aumentar">+</button>
+                <button type="button" data-qtray-remove="${item.id}" class="smat-qtray-remove-btn" aria-label="Eliminar">×</button>
+              </div>
+            </li>`).join('');
 
           itemsEl.querySelectorAll('[data-qtray-qty-delta]').forEach((btn) => {
             btn.addEventListener('click', () => {
               const id = btn.getAttribute('data-qtray-item-id') || '';
               const delta = Number(btn.getAttribute('data-qtray-qty-delta') || 0);
-              const currentQty = Number(btn.getAttribute('data-qtray-current-qty') || 1);
-              updateTrayItemQty(id, Math.max(0, currentQty + delta));
+              const curr = Number(btn.getAttribute('data-qtray-current-qty') || 1);
+              updateTrayItemQty(id, Math.max(0, curr + delta));
               renderTray();
             });
           });
-
           itemsEl.querySelectorAll('[data-qtray-remove]').forEach((btn) => {
             btn.addEventListener('click', () => {
-              const id = btn.getAttribute('data-qtray-remove') || '';
-              removeTrayItem(id);
+              removeTrayItem(btn.getAttribute('data-qtray-remove') || '');
               renderTray();
             });
           });
@@ -350,76 +231,56 @@ const isEs = lang === 'es';
 
       if (waLink) {
         const subject = buildCmuPrioritySubjectLine(state, { cvPct: 48 });
-        const summary = state.items.map((i: any) => `${i.id}(x${i.qty} ${i.material})`).join(', ');
-        const coreNote = tradeIn.discountPct > 0 ? ` | Intercambio Casco: -${tradeIn.discountPct}%` : '';
-        const g5Toggle = document.getElementById('smat-qtray-g5-advance') as HTMLInputElement | null;
-        const g5Confirmed = !g5Toggle || g5Toggle.checked;
-        const g5Note = g5Confirmed
-          ? ' | [50% ANTICIPO / 50% CONTRA EMBARQUE]'
-          : ' | [CONDICIÓN DE PAGO POR CONFIRMAR CON COMPRAS]';
-        const humanLane = formatCheckoutLaneHuman(selectedLane, 'es');
-        const msg = `[SMAT-DGO] ${subject} | Carril: ${humanLane}${coreNote}${g5Note} | Partidas: ${summary || 'Consulta directa'}`;
+        const summary = state.items.map((i: any) => `${i.id} (x${i.qty} ${i.material})`).join(', ');
+        const msg = `[SMAT-DGO] ${subject} | ${formatCheckoutLaneHuman(selectedLane, lang)} | ${summary || 'Consulta directa'}`;
         waLink.href = `https://wa.me/526183670664?text=${encodeURIComponent(msg)}`;
       }
 
       if (pdfLink) {
-        const reorderQuery = encodeReorderUrlQuery(state);
-        const basePath = isEs ? '/acuse/' : '/en/thank-you/';
-        const g5Toggle = document.getElementById('smat-qtray-g5-advance') as HTMLInputElement | null;
-        const g5Confirmed = !g5Toggle || g5Toggle.checked;
-        pdfLink.href = `${basePath}${reorderQuery}&lane=${encodeURIComponent(selectedLane)}&g5_confirm=${g5Confirmed ? '1' : '0'}`;
+        const basePath = isEs ? '/cotizar/' : '/en/quote/';
+        pdfLink.href = state.items.length
+          ? `${basePath}${encodeReorderUrlQuery(state)}&lane=${encodeURIComponent(selectedLane)}#rfq`
+          : `${basePath}#rfq`;
+      }
+      if (clearBtn) {
+        const empty = state.items.length === 0;
+        clearBtn.classList.toggle('hidden', empty);
+        clearBtn.hidden = empty;
       }
     }
 
+    clearBtn?.addEventListener('click', () => {
+      clearTray();
+      renderTray();
+    });
+
     coreToggle?.addEventListener('change', () => {
-      const st = getTrayState();
-      const updated = saveTrayState({ ...st, coreReturnEnabled: Boolean(coreToggle.checked) });
+      const updated = saveTrayState({ ...getTrayState(), coreReturnEnabled: Boolean(coreToggle.checked) });
       syncTrayToWorkbenchStateLens(updated);
       renderTray();
     });
-
-    const g5ToggleEl = document.getElementById('smat-qtray-g5-advance') as HTMLInputElement | null;
-    g5ToggleEl?.addEventListener('change', () => {
-      renderTray();
-    });
-
-    closeBtn?.addEventListener('click', () => {
-      setDrawerHidden(true);
-    });
-    root.addEventListener('dblclick', (ev) => {
-      if ((ev.target as HTMLElement | null)?.getAttribute('data-qtray-clear') === '1') {
-        clearTray();
-        renderTray();
-      }
-    });
-
+    g5Toggle?.addEventListener('change', renderTray);
+    closeBtn?.addEventListener('click', () => setDrawerHidden(true));
     root.querySelectorAll('[data-qtray-lane]').forEach((btn) => {
       btn.addEventListener('click', () => {
         selectedLane = btn.getAttribute('data-qtray-lane') || 'CAJA_CHICA_CFDI40';
-        root.querySelectorAll('[data-qtray-lane]').forEach((b) => {
-          b.classList.toggle('is-active', b === btn);
-        });
+        root.querySelectorAll('[data-qtray-lane]').forEach((b) => b.classList.toggle('is-active', b === btn));
         renderTray();
       });
     });
 
     document.querySelectorAll('[data-quick-tray-add]').forEach((btn) => {
+      if (btn.getAttribute('data-qtray-btn-bound') === '1') return;
+      btn.setAttribute('data-qtray-btn-bound', '1');
       btn.addEventListener('click', () => {
-        const skuId = btn.getAttribute('data-quick-tray-add') || 'SMAT-PUMP-IMP-AH';
+        const skuId = btn.getAttribute('data-quick-tray-add') || '';
+        if (!skuId) return;
         const title = btn.getAttribute('data-sku-title') || skuId;
         const code = btn.getAttribute('data-sku-code') || skuId;
         const material = btn.getAttribute('data-sku-material') || 'A05';
         const mass = Number(btn.getAttribute('data-sku-mass') || 15);
-        addTrayItem({
-          id: skuId,
-          skuId,
-          atomicCode: code,
-          nameEs: title,
-          nameEn: title,
-          material,
-          unitWeightKg: mass,
-          qty: 1
-        });
+        const qty = Math.max(1, Number(btn.getAttribute('data-sku-qty') || 1));
+        addTrayItem({ id: skuId, skuId, atomicCode: code, nameEs: title, nameEn: title, material, unitWeightKg: mass, qty });
         setDrawerHidden(false);
         renderTray();
       });
@@ -434,284 +295,32 @@ const isEs = lang === 'es';
 </script>
 
 <style>
-  .smat-qtray-root {
-    display: contents;
-  }
-
-  .smat-qtray-count-pill {
-    display: inline-flex;
-    height: 20px;
-    min-width: 20px;
-    align-items: center;
-    justify-content: center;
-    padding: 0 0.375rem;
-    margin-left: 0.4rem;
-    border-radius: 9999px;
-    background: var(--smat-copper-accent, #7c2d12);
-    color: #ffffff;
-    font-size: 0.6875rem;
-    font-weight: 800;
-  }
-
-  .smat-qtray-dialog {
-    width: min(420px, calc(100vw - 1.5rem));
-    max-width: 420px;
-    margin: auto;
-    padding: 1.15rem;
-    border-radius: 16px;
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-    background: var(--smat-solar-surface, #ffffff);
-    color: var(--smat-solar-ink, #0f172a);
-    box-shadow: 0 24px 48px rgba(15, 23, 42, 0.24);
-  }
-
-  .smat-qtray-dialog::backdrop {
-    background: rgba(15, 23, 42, 0.55);
-    backdrop-filter: blur(2px);
-  }
-
-  .smat-qtray-drawer.hidden,
-  .smat-qtray-drawer[hidden] {
-    display: none !important;
-  }
-
-  .smat-qtray-drawer-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 0.625rem;
-    margin-bottom: 0.75rem;
-    border-bottom: 1px solid var(--smat-solar-border, #cbd5e1);
-  }
-
-  .smat-qtray-title {
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: #7c2d12;
-  }
-
-  .smat-qtray-priority {
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    color: #064e3b;
-  }
-
-  .smat-qtray-close-btn {
-    min-height: 48px;
-    min-width: 48px;
-    border-radius: 8px;
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-    background: var(--smat-solar-bg, #f8fafc);
-    color: var(--smat-solar-muted, #334155);
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    cursor: pointer;
-  }
-
-  .smat-qtray-close-btn:hover {
-    color: var(--smat-solar-ink, #0f172a);
-    border-color: #94a3b8;
-  }
-
-  .smat-qtray-lane-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.6875rem;
-  }
-
-  .qtray-lane-btn {
-    min-height: 48px;
-    box-sizing: border-box;
-    padding: 0.5rem 0.625rem;
-    border-radius: 8px;
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-    background: var(--smat-solar-bg, #f8fafc);
-    color: #1e293b;
-    font-family: inherit;
-    font-size: inherit;
-    cursor: pointer;
-  }
-
-  .qtray-lane-btn.is-active {
-    border-color: #047857;
-    background: #ecfdf5;
-    color: #064e3b;
-    font-weight: 700;
-  }
-
-  .smat-qtray-items-list {
-    list-style: none;
-    margin: 0 0 0.75rem 0;
-    padding: 0;
-    max-height: 12rem;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    font-size: 0.75rem;
-  }
-
-  :global(.smat-qtray-empty-item) {
-    padding: 0.5rem 0;
-    text-align: center;
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    color: var(--smat-solar-muted, #334155);
-  }
-
-  :global(.smat-qtray-item-row) {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 8px;
-    background: var(--smat-solar-bg, #f8fafc);
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-  }
-
-  :global(.smat-qtray-item-code) {
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-weight: 700;
-    color: #7c2d12;
-  }
-
-  :global(.smat-qtray-item-name) {
-    font-size: 0.6875rem;
-    color: var(--smat-solar-ink, #0f172a);
-    max-width: 210px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  :global(.smat-qtray-remove-btn) {
-    padding: 0.25rem 0.5rem;
-    border: none;
-    background: transparent;
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    color: #9f1239;
-    cursor: pointer;
-  }
-
-  .smat-qtray-reorder-box {
-    padding: 0.625rem;
-    margin-bottom: 0.75rem;
-    border-radius: 12px;
-    background: var(--smat-solar-bg, #f8fafc);
-    border: 1px solid var(--smat-solar-border, #cbd5e1);
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.6875rem;
-    color: var(--smat-solar-muted, #334155);
-  }
-
-  .smat-qtray-reorder-title {
-    margin-bottom: 0.125rem;
-    font-weight: 700;
-    color: #7c2d12;
-  }
-
-  .smat-qtray-tradein-box {
-    padding: 0.625rem;
-    margin-bottom: 0.75rem;
-    border-radius: 12px;
-    background: var(--smat-solar-emerald-bg, #ecfdf5);
-    border: 1px solid var(--smat-solar-emerald-border, #059669);
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.6875rem;
-    color: var(--smat-solar-ink, #0f172a);
-  }
-
-  .smat-qtray-tradein-label {
-    display: flex;
-    align-items: center;
-    min-height: 48px;
-    gap: 0.65rem;
-    cursor: pointer;
-  }
-
-  .smat-qtray-checkbox {
-    accent-color: #059669;
-  }
-
-  .smat-qtray-tradein-note {
-    display: block;
-    margin-top: 0.125rem;
-    font-size: 0.625rem;
-    color: #064e3b;
-  }
-
-  .smat-qtray-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .smat-qtray-wa-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 48px;
-    box-sizing: border-box;
-    width: 100%;
-    padding: 0.625rem 1rem;
-    border-radius: 12px;
-    background: #7c2d12;
-    color: #ffffff;
-    text-align: center;
-    text-decoration: none;
-    font-size: 0.75rem;
-    font-weight: 700;
-    transition: background-color 0.15s ease;
-  }
-
-  .smat-qtray-wa-btn:hover {
-    background: #9a3412;
-  }
-
-  .smat-qtray-pdf-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 48px;
-    box-sizing: border-box;
-    width: 100%;
-    padding: 0.625rem 1rem;
-    border-radius: 12px;
-    background: #0f172a;
-    color: #ffffff;
-    text-align: center;
-    text-decoration: none;
-    font-size: 0.75rem;
-    font-weight: 700;
-    transition: background-color 0.15s ease;
-  }
-
-  .smat-qtray-pdf-btn:hover {
-    background: #1e293b;
-  }
-
-  .smat-qtray-item-controls {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-
-  .smat-qtray-qty-btn {
-    padding: 0.15rem 0.45rem;
-    border-radius: 4px;
-    border: 1px solid #cbd5e1;
-    background: #ffffff;
-    color: #0f172a;
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 0.75rem;
-    font-weight: 700;
-    cursor: pointer;
-  }
+  .smat-qtray-root { display: contents; }
+  .smat-qtray-count-pill { display: inline-flex; height: 20px; min-width: 20px; align-items: center; justify-content: center; padding: 0 0.375rem; margin-left: 0.4rem; border-radius: 9999px; background: #7c2d12; color: #ffffff; font-size: 0.7rem; font-weight: 800; }
+  .smat-qtray-dialog { width: min(420px, calc(100vw - 1.5rem)); margin: auto; padding: 1.15rem; border-radius: 16px; border: 1px solid #cbd5e1; background: #ffffff; color: #0f172a; box-shadow: 0 24px 48px rgba(15, 23, 42, 0.24); }
+  .smat-qtray-dialog::backdrop { background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(2px); }
+  .smat-qtray-drawer.hidden, .smat-qtray-drawer[hidden] { display: none !important; }
+  .smat-qtray-drawer-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.625rem; margin-bottom: 0.75rem; border-bottom: 1px solid #cbd5e1; }
+  .smat-qtray-title { font-size: 0.9rem; font-weight: 800; color: #7c2d12; }
+  .smat-qtray-priority { font-size: 0.72rem; font-weight: 600; color: #064e3b; }
+  .smat-qtray-close-btn { min-height: 48px; min-width: 48px; border-radius: 8px; border: 1px solid #cbd5e1; background: #f8fafc; color: #0f172a; font-size: 1.1rem; cursor: pointer; }
+  .smat-qtray-lane-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin-bottom: 0.75rem; font-size: 0.74rem; }
+  .qtray-lane-btn { min-height: 48px; padding: 0.45rem 0.6rem; border-radius: 8px; border: 1px solid #cbd5e1; background: #f8fafc; color: #0f172a; font-weight: 700; cursor: pointer; }
+  .qtray-lane-btn.is-active { border-color: #059669; background: #ecfdf5; color: #064e3b; }
+  .smat-qtray-items-list { list-style: none; margin: 0 0 0.75rem 0; padding: 0; max-height: 13rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.78rem; }
+  :global(.smat-qtray-empty-item) { padding: 0.75rem 0; text-align: center; color: #475569; }
+  :global(.smat-qtray-item-row) { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.5rem 0.75rem; border-radius: 8px; background: #f8fafc; border: 1px solid #cbd5e1; }
+  :global(.smat-qtray-item-code) { font-family: var(--smat-font-mono, monospace); font-weight: 700; color: #7c2d12; }
+  :global(.smat-qtray-item-name) { font-size: 0.74rem; color: #0f172a; max-width: 210px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  :global(.smat-qtray-remove-btn) { padding: 0.25rem 0.5rem; border: none; background: transparent; font-size: 0.9rem; color: #9f1239; cursor: pointer; }
+  .smat-qtray-tradein-box { padding: 0.55rem 0.7rem; margin-bottom: 0.65rem; border-radius: 10px; background: #ecfdf5; border: 1px solid #059669; font-size: 0.74rem; }
+  .smat-qtray-tradein-label { display: flex; align-items: center; min-height: 44px; gap: 0.55rem; cursor: pointer; }
+  .smat-qtray-tradein-note { display: block; font-size: 0.68rem; color: #064e3b; }
+  .smat-qtray-actions { display: flex; flex-direction: column; gap: 0.45rem; }
+  .smat-qtray-wa-btn, .smat-qtray-pdf-btn, .smat-qtray-share-btn { display: flex; align-items: center; justify-content: center; min-height: 48px; width: 100%; padding: 0.55rem 0.9rem; border-radius: 10px; text-decoration: none; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+  .smat-qtray-wa-btn { background: #7c2d12; color: #ffffff; border: 1px solid #431407; }
+  .smat-qtray-pdf-btn { background: #065f46; color: #ffffff; border: 1px solid #064e3b; }
+  .smat-qtray-share-btn { background: #f8fafc; color: #0f172a; border: 1px solid #cbd5e1; }
+  .smat-qtray-item-controls { display: inline-flex; align-items: center; gap: 0.25rem; }
+  .smat-qtray-qty-btn { padding: 0.2rem 0.5rem; border-radius: 4px; border: 1px solid #cbd5e1; background: #ffffff; font-weight: 700; cursor: pointer; }
 </style>

@@ -1,4 +1,4 @@
-# Guía Canónica de Despliegue ($0/mes) — SMAT Minerals Site v5.7
+# Guía Canónica de Despliegue ($0/mes) — SMAT Minerals Site v6.0
 
 > **Repositorio:** [`memoestefani/smat-portal`](https://github.com/memoestefani/smat-portal) (rama de producción: `main`)  
 > **Dominio:** https://smatminerals.com  
@@ -13,7 +13,7 @@
 | Servicio | Costo | Función | Evidencia en el repo |
 |---|---|---|---|
 | GitHub | $0 | Repositorio y disparador de despliegue | `origin = github.com/memoestefani/smat-portal` |
-| Cloudflare Pages | $0 | Hosting estático, CDN, certificados, cabeceras y `201` redirecciones 301 | `@astrojs/cloudflare`, `public/_headers`, `data/redirects.csv` → `public/_redirects` |
+| Cloudflare Pages | $0 | Hosting estático, CDN, certificados, cabeceras y `541` redirecciones 301 | `@astrojs/cloudflare`, `public/_headers`, `data/redirects.csv` → `public/_redirects` |
 | Service Worker PWA | $0 | Modo desconectado en campamento minero | `public/sw.js` (`smat-pwa-v5.5`) |
 | Telemetría | $0 | Google Analytics 4 solo si existe `PUBLIC_GA_ID` | `BaseLayout.astro` (sin ID fijo en código) |
 
@@ -23,7 +23,7 @@ No hay variables de entorno obligatorias. Única opcional: `PUBLIC_GA_ID`.
 
 ## 2. Invariantes que Bloquean un Despliegue
 
-Un cambio **no se publica** si alguno falla. Las **11 compuertas comportamentales** (`smat-gate v2.2`) y sus **7 unit tests Rust** viven en [`crates/smat-gate`](crates/smat-gate/src/lib.rs) (`physics_and_schema.rs`, `security_and_leaks.rs`, `seo_and_i18n.rs`, `ux_and_css_layers.rs`) junto con **63 pruebas en Node.js** dentro de `tests/*.test.mjs`:
+Un cambio **no se publica** si alguno falla. Las **11 compuertas comportamentales** (`smat-gate v2.2` + reglas V6.0) y sus **8 unit tests Rust** viven en [`crates/smat-gate`](crates/smat-gate/src/lib.rs) (`physics_and_schema.rs`, `security_and_leaks.rs`, `seo_and_i18n.rs`, `ux_and_css_layers.rs`) junto con **75 pruebas en Node.js** dentro de `tests/*.test.mjs`:
 
 1. **Paridad de catálogo y cero debris:** `data/roles.json`, `data/quick_checkout_Catalog.json` y `data/atomic_parts.json` válidos; `0` archivos `roles.copy.json`, `0` módulos `@ts-nocheck` en `src/scripts/`.
 2. **Cero fugas comerciales:** sin `$` seguido de cifras ni `margen:` en `data/`, `public/` o `src/`.
@@ -31,7 +31,7 @@ Un cambio **no se publica** si alguno falla. Las **11 compuertas comportamentale
 4. **Cero palabras prohibidas:** `taller`, `workshop`.
 5. **Cero promesas falsas ni SLA inflado:** sin `45 min`, `24/7`, `24-48h`, "servicio de emergencia", "2.5x garantizado".
 6. **Cascada CSS `@layer` y accesibilidad DOM:** todas las hojas CSS encapsuladas en `@layer` (salvo `.hidden`/`[hidden]` y `@media print`), `0` `<button>` anidados dentro de `<summary>`, `0` elementos `data-schema-*` ocultos (`hidden`/`sr-only`) y landmark `<main>` único por HTML.
-7. **Simetría bilingüe, cero fugas en `/en/` y `201` redirects 301:** `0` fugas ES ni enums internos crudos (`HOIST_REQUIRED`, `CAJA_CHICA_CFDI40`, `alto_cromo_cr27`, `PARO PROTEGIDO`, `PARO DE LÍNEA`, `USD/hora`) en `dist/en/` ni en snapshots hidratados; redirecciones 301 deterministas de 1 salto desde `data/redirects.csv`.
+7. **Simetría bilingüe, cero fugas en `/en/` y `541` redirects 301:** `0` fugas ES ni enums internos crudos (`HOIST_REQUIRED`, `CAJA_CHICA_CFDI40`, `alto_cromo_cr27`, `PARO PROTEGIDO`, `PARO DE LÍNEA`, `USD/hora`) en `dist/en/` ni en snapshots hidratados; redirecciones 301 deterministas de 1 salto desde `data/redirects.csv` hacia `19` PDP ES/EN + `13` piezas atómicas ES/EN canónicas.
 8. **NAP consistente** (Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166).
 9. **Cabeceras de seguridad** (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`) y vista imprimible del acuse (`A4`).
 10. **IDs críticos del cotizador** (`rfq`, `live-folio`, `wb-pdf-btn`, `wb-copy-btn`, `wb-submit-outbox-btn`, etc.) y payload ligero en `/cotizar/`.
@@ -50,7 +50,7 @@ Antes de cada publicación verifica que no reaparezcan:
 Desde `c:\Users\52331\Documents\Proyectos\smat\site`:
 
 ```powershell
-# Verificación completa unificada (19 WebP + 201 redirects + tsc + astro check + build + 63 pruebas Node + 11 compuertas Rust)
+# Verificación completa unificada (19 WebP + 5 almacén + 541 redirects + tsc + astro check + build + 75 pruebas Node + 11 compuertas Rust)
 npm run preflight
 ```
 
@@ -60,9 +60,9 @@ Si deseas ejecutar cada etapa individualmente (en hosts de 8 GB RAM usar `-j 1` 
 tsc --noEmit                                  # esperado: 0 errors
 npx astro check                               # esperado: 0 errors, 0 warnings
 npx astro build                               # genera dist/
-npm test                                      # esperado: 67/67 PASS
+npm test                                      # esperado: 75/75 PASS
 npm run gate                                  # esperado: 11/11 PASS
-cargo test --manifest-path crates/smat-gate/Cargo.toml -j 1 -- --test-threads=1  # esperado: 9/9 PASS
+cargo test --manifest-path crates/smat-gate/Cargo.toml -j 1 -- --test-threads=1
 npm run preview                               # revisión visual en http://localhost:4321
 ```
 
@@ -98,7 +98,7 @@ git push origin main
 
 Archivos que Cloudflare lee automáticamente desde `dist/`:
 - `_headers` → seguridad (`X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`).
-- `_redirects` → `201` redirecciones 301 compiladas desde `data/redirects.csv` hacia URLs canónicas ES/EN.
+- `_redirects` → `541` redirecciones 301 compiladas desde `data/redirects.csv` hacia URLs canónicas ES/EN.
 
 ---
 
@@ -182,3 +182,5 @@ Si algo sale mal tras publicar:
 - **v5.7 (`[ARB-SMAT-66]`):** Capa tipada `instrumentViewModels.js` + ciclo de vida honesto `EMPTY → DRAFT → VERIFIED` (sin folios ni correos ficticios en reposo), `<InstrumentShell>` *Input-First* en Metrología/Clasificación/Filtración/Flotación/Bombeo, corrección CFDI `I08`, estación `EST-03`, SKU distinto Placa/Tela vs Corre-Placas, Unicode `s⁻¹`/`min⁻¹`, descompresión Cowan Apple *Master-Detail* en `/catalogo/`, `/cotizar/` y `/equipos/`, CTA único en `/bombeo/*`, blindaje `smat-gate` V5.7 y suite `v57_viewmodel_and_instrument_shell.test.mjs`.
 - **v5.8 (`[ARB-SMAT-67]`):** Unificación del Contrato Único Reactivo Backend↔UI (`projectViewModelToDom` con `[data-vm-slot]`, `0` IDs fantasma y guarda `EMPTY` bilingüe ES/EN), Stepper no bloqueante de 3 pasos en `/cotizar/` exponiendo las 52 Unidades Mineras, `#wb-jrp-daily-hours` y exportaciones directas, menú móvil `393 px` con botón explícito `Menú`/`Menu`, `pumpingTabRouter.js` con deep-links `?tab=&sub=&focus=` y 4ª pestaña `Armado 5-5-4` en `/bombeo/`, paridad SSOT (`power_range_es/en`, `assembly_order`, `wet_end_kit_ratio`, `linked_atomic_codes`, `secondary_diagram_id`), suite `tests/v58_reactive_contract_and_empty_state.test.mjs` y endurecimiento `smat-gate`.
 - **v5.9 (actual — `[ARB-SMAT-68]`):** Partición física `ephemeralTelemetry (sessionStorage) ⊥ committedRfq (localStorage)` con máx `3` llaves permitidas, resolución polimórfica Zero-DOM `domainMaterialSpecResolver.js` (erradicando `≥ 650 HB` global y falsos P1/folios con `Tray=0`), exposición exhaustiva de `23+` salidas de ingeniería en `engineSchemaRegistry.js` + `auditSchemaOutputParity()`, consola `/bombeo/` de 2 columnas con veredicto *sticky*, `TechnicalDiagrams.astro` Rayos X Opt-In (`showXrayOverlay = false`), Marcy exacto (`ρₚ = 1.407 kg/L → Cw = 45.0%`), Omnibox 1:1 en `/catalogo/`, Tabs de circuito en `/equipos/`, `.vcf` en `/contacto/`, badge condicional offline en `Header.astro`, `tests/v59_state_isolation_and_backend_parity.test.mjs` y compuertas V5.9 en Rust `smat-gate`.
+
+- **v6.0 (actual — `[ARB-SMAT-69]`):** Tienda Industrial Foto-Primero y Buy Box B2B: pipeline fotográfico multi-fuente WebP (`<= 45 KB`, `dHash64` Hamming `>= 8`, cero overlays SVG/expo) con 19 fotografías de producto + 5 fotografías reales de Almacén Central Durango (`public/images/almacen/`), tarjetas homogéneas `ProductStorefrontCard` (`data-ergos-homogeneous-card="1"`), PDP 2-columnas `ProductDetailIsland` arriba del pliegue, catálogo abierto en una sola fila de filtros humanos, vitrina elevada en Portada y 5 Verticales, poda canónica `19` PDP ES/EN + `13` piezas atómicas ES/EN con `541` redirecciones `301` en `1` salto (`data/redirects.csv` -> `public/_redirects`), pruebas `v60_purchase_first_storefront.test.mjs`, blindaje V6.0 en `smat-gate` y centinelas opt-in `amazon_commerce.toml` + `INV-ERG-33..35` en `ergos` v2.10.

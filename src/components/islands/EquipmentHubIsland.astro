@@ -113,7 +113,7 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
       <article class="card equipment-block" data-equipment-block="flotacion" data-equipment-block-blob="flotacion flotation celdas cells mecanismos mechanisms acondicionadores 18sp av-04">
         <div class="equipment-block-header">
           <span class="badge badge-copper">
-            {isEs ? 'CIRCUITO DE CONCENTRACIÓN • 50 A 300 FT³ • AV-04' : 'CONCENTRATION CIRCUIT • 50 TO 300 FT³ • AV-04'}
+            {isEs ? 'CIRCUITO DE CONCENTRACIÓN • 50 A 300 FT³' : 'CONCENTRATION CIRCUIT • 50 TO 300 FT³'}
           </span>
           <h2>{isEs ? 'Mecanismos para Celdas de Flotación y Acondicionadores' : 'Flotation Cell Mechanisms & Pulp Conditioners'}</h2>
           <p class="eq-lead-desc">
@@ -132,8 +132,8 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
           <summary class="eq-drawer-summary">
             <span>
               {isEs
-                ? `▾ SKUs de Flotación (${skusByVertical.flotacion.length} SKU • AV-04)`
-                : `▾ Flotation SKUs (${skusByVertical.flotacion.length} SKU • AV-04)`}
+                ? `▾ SKUs de Flotación (${skusByVertical.flotacion.length} SKU)`
+                : `▾ Flotation SKUs (${skusByVertical.flotacion.length} SKU)`}
             </span>
             <span class="eq-drawer-badge">{isEs ? '+ BANDEJA DIRECTA ▾' : '+ DIRECT TRAY ▾'}</span>
           </summary>
@@ -146,7 +146,7 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
               >
                 <div>
                   <a href={renderSkuHref(sku)} class="eq-sku-link">{sku.id} — {renderSkuTitle(sku)}</a>
-                  <div class="eq-sku-meta">{sku.avenueCode} · {sku.mass_kg} kg · {isEs ? 'Reorden' : 'Reorder'} {sku.reorder_window_days}d</div>
+                  <div class="eq-sku-meta">{sku.default_material || 'R55'} · {sku.mass_kg} kg · {isEs ? 'Reorden' : 'Reorder'} {sku.reorder_window_days}d</div>
                 </div>
                 <button type="button" class="btn btn-outline btn-avenue-tray eq-tray-btn" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={renderSkuTitle(sku)}>
                   {isEs ? '+ Bandeja' : '+ Tray'}
@@ -180,7 +180,7 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
       <article class="card equipment-block" data-equipment-block="filtracion" data-equipment-block-blob="filtracion filtration filtros prensa filter press lonas cloths placas plates shifter 800 1500 av-05">
         <div class="equipment-block-header">
           <span class="badge badge-copper">
-            {isEs ? 'FILTRACIÓN DE CONCENTRADOS Y JALES SECOS • 800 A 1500 MM • AV-05' : 'CONCENTRATE & DRY TAILINGS DEWATERING • 800 TO 1500 MM • AV-05'}
+            {isEs ? 'FILTRACIÓN DE CONCENTRADOS Y JALES SECOS • 800 A 1500 MM' : 'CONCENTRATE & DRY TAILINGS DEWATERING • 800 TO 1500 MM'}
           </span>
           <h2>{isEs ? 'Filtros Prensa de Cámara Empotrada (Hasta 16 bar)' : 'Recessed-Chamber Filter Presses (Up to 16 bar)'}</h2>
           <p class="eq-lead-desc">
@@ -199,8 +199,8 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
           <summary class="eq-drawer-summary">
             <span>
               {isEs
-                ? `▾ SKUs de Filtración y Accesos (${skusByVertical.filtracion.length} SKUs • AV-05)`
-                : `▾ Filtration SKUs & Links (${skusByVertical.filtracion.length} SKUs • AV-05)`}
+                ? `▾ SKUs de Filtración y Accesos (${skusByVertical.filtracion.length} SKUs)`
+                : `▾ Filtration SKUs & Links (${skusByVertical.filtracion.length} SKUs)`}
             </span>
             <span class="eq-drawer-badge">{isEs ? '+ BANDEJA DIRECTA ▾' : '+ DIRECT TRAY ▾'}</span>
           </summary>
@@ -213,7 +213,7 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
               >
                 <div>
                   <a href={renderSkuHref(sku)} class="eq-sku-link">{sku.id} — {renderSkuTitle(sku)}</a>
-                  <div class="eq-sku-meta">{sku.avenueCode} · {sku.mass_kg} kg · {isEs ? 'Reorden' : 'Reorder'} {sku.reorder_window_days}d</div>
+                  <div class="eq-sku-meta">{sku.default_material || 'PP'} · {sku.mass_kg} kg · {isEs ? 'Reorden' : 'Reorder'} {sku.reorder_window_days}d</div>
                 </div>
                 <button type="button" class="btn btn-outline btn-avenue-tray eq-tray-btn" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={renderSkuTitle(sku)}>
                   {isEs ? '+ Bandeja' : '+ Tray'}
@@ -237,7 +237,7 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
       <article class="card equipment-block" data-equipment-block="bombeo" data-equipment-block-blob="bombeo pumping bombas lodos slurry pumps wet end impulsor impeller forros expeller cartucho 005m av-01">
         <div class="equipment-block-header">
           <span class="badge badge-copper">
-            {isEs ? 'BOMBEO DE PULPA EN PROYECTO • 1.5X1" A 14X12" • AV-01' : 'PROJECT SLURRY PUMPING • 1.5X1" TO 14X12" • AV-01'}
+            {isEs ? 'BOMBEO DE PULPA EN PROYECTO • 1.5X1" A 14X12"' : 'PROJECT SLURRY PUMPING • 1.5X1" TO 14X12"'}
           </span>
           <h2>{isEs ? 'Bombas Horizontales y Verticales para Lodos (Paquete Completo)' : 'Horizontal & Vertical Slurry Pumps (Complete Package)'}</h2>
           <p class="eq-lead-desc">
@@ -257,8 +257,8 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
           <summary class="eq-drawer-summary">
             <span>
               {isEs
-                ? `▾ SKUs de Bombeo, Arreglos y Repuestos (${skusByVertical.bombeo.length} SKUs • AV-01)`
-                : `▾ Slurry Pump SKUs, Drives & Wear Spares (${skusByVertical.bombeo.length} SKUs • AV-01)`}
+                ? `▾ SKUs de Bombeo, Arreglos y Repuestos (${skusByVertical.bombeo.length} SKUs)`
+                : `▾ Slurry Pump SKUs, Drives & Wear Spares (${skusByVertical.bombeo.length} SKUs)`}
             </span>
             <span class="eq-drawer-badge">{isEs ? '+ BANDEJA DIRECTA ▾' : '+ DIRECT TRAY ▾'}</span>
           </summary>
@@ -271,7 +271,7 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
               >
                 <div>
                   <a href={renderSkuHref(sku)} class="eq-sku-link">{sku.id} — {renderSkuTitle(sku)}</a>
-                  <div class="eq-sku-meta">{sku.avenueCode} · {sku.mass_kg} kg · {isEs ? 'Reorden' : 'Reorder'} {sku.reorder_window_days}d · {(sku.atomic_codes || []).slice(0, 4).join(', ')}</div>
+                  <div class="eq-sku-meta">{sku.default_material || 'A05'} · {sku.mass_kg} kg · {isEs ? 'Reorden' : 'Reorder'} {sku.reorder_window_days}d · {(sku.atomic_codes || []).slice(0, 4).join(', ')}</div>
                 </div>
                 <button type="button" class="btn btn-outline btn-avenue-tray eq-tray-btn" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={renderSkuTitle(sku)}>
                   {isEs ? '+ Bandeja' : '+ Tray'}
@@ -299,7 +299,7 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
       <article class="card equipment-block" data-equipment-block="clasificacion" data-equipment-block-blob="clasificacion classification hidrociclones hydrocyclones apex vortex finder mallas screens th48 d6 d20 av-02 av-03 av-6a">
         <div class="equipment-block-header">
           <span class="badge badge-copper">
-            {isEs ? 'CLASIFICACIÓN Y CRIBADO • PLITT d50c • AV-02 / AV-03 / AV-6A' : 'CLASSIFICATION & SCREENING • PLITT d50c • AV-02 / AV-03 / AV-6A'}
+            {isEs ? 'CLASIFICACIÓN Y CRIBADO • PLITT d50c' : 'CLASSIFICATION & SCREENING • PLITT d50c'}
           </span>
           <h2>{isEs ? 'Hidrociclones de Clasificación, Boquillas Apex y Mallas de Uretano' : 'Classification Hydrocyclones, Apex Nozzles & Urethane Screens'}</h2>
           <p class="eq-lead-desc">
@@ -318,8 +318,8 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
           <summary class="eq-drawer-summary">
             <span>
               {isEs
-                ? `▾ SKUs de Clasificación y Simulador (${skusByVertical.clasificacion.length} SKUs • AV-02 / AV-03 / AV-6A)`
-                : `▾ Classification SKUs & Simulator (${skusByVertical.clasificacion.length} SKUs • AV-02 / AV-03 / AV-6A)`}
+                ? `▾ SKUs de Clasificación y Simulador (${skusByVertical.clasificacion.length} SKUs)`
+                : `▾ Classification SKUs & Simulator (${skusByVertical.clasificacion.length} SKUs)`}
             </span>
             <span class="eq-drawer-badge">{isEs ? '+ BANDEJA DIRECTA ▾' : '+ DIRECT TRAY ▾'}</span>
           </summary>
@@ -332,7 +332,7 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
               >
                 <div>
                   <a href={renderSkuHref(sku)} class="eq-sku-link">{sku.id} — {renderSkuTitle(sku)}</a>
-                  <div class="eq-sku-meta">{sku.avenueCode} · {sku.mass_kg} kg · {isEs ? 'Reorden' : 'Reorder'} {sku.reorder_window_days}d</div>
+                  <div class="eq-sku-meta">{sku.default_material || 'SiC'} · {sku.mass_kg} kg · {isEs ? 'Reorden' : 'Reorder'} {sku.reorder_window_days}d</div>
                 </div>
                 <button type="button" class="btn btn-outline btn-avenue-tray eq-tray-btn" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={renderSkuTitle(sku)}>
                   {isEs ? '+ Bandeja' : '+ Tray'}
@@ -356,7 +356,7 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
       <article class="card equipment-block" data-equipment-block="control" data-equipment-block-blob="control metrology marcy balanza scale filtro batch filter tamices astm e11 rotap pulverizador av-05-lab">
         <div class="equipment-block-header">
           <span class="badge badge-copper">
-            {isEs ? 'METROLOGÍA DE PULPA Y CONMINUCIÓN LAB • AV-05-LAB' : 'PULP METROLOGY & LAB COMMINUTION • AV-05-LAB'}
+            {isEs ? 'METROLOGÍA DE PULPA Y CONMINUCIÓN LAB' : 'PULP METROLOGY & LAB COMMINUTION'}
           </span>
           <h2>{isEs ? 'Balanzas Marcy, Filtros Prensa Batch de Laboratorio y Tamices ASTM E11' : 'Marcy Scales, Batch Lab Filter Presses & ASTM E11 Sieves'}</h2>
           <p class="eq-lead-desc">
@@ -369,8 +369,8 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
           <summary class="eq-drawer-summary">
             <span>
               {isEs
-                ? `▾ SKUs de Metrología y Laboratorio (${skusByVertical.control.length} SKUs • AV-05-LAB)`
-                : `▾ Metrology & Lab SKUs (${skusByVertical.control.length} SKUs • AV-05-LAB)`}
+                ? `▾ SKUs de Metrología y Laboratorio (${skusByVertical.control.length} SKUs)`
+                : `▾ Metrology & Lab SKUs (${skusByVertical.control.length} SKUs)`}
             </span>
             <span class="eq-drawer-badge">{isEs ? '+ BANDEJA DIRECTA ▾' : '+ DIRECT TRAY ▾'}</span>
           </summary>
@@ -383,7 +383,7 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
               >
                 <div>
                   <a href={renderSkuHref(sku)} class="eq-sku-link">{sku.id} — {renderSkuTitle(sku)}</a>
-                  <div class="eq-sku-meta">{sku.avenueCode} · {sku.mass_kg} kg · {isEs ? 'Reorden' : 'Reorder'} {sku.reorder_window_days}d</div>
+                  <div class="eq-sku-meta">{sku.default_material || 'A49'} · {sku.mass_kg} kg · {isEs ? 'Reorden' : 'Reorder'} {sku.reorder_window_days}d</div>
                 </div>
                 <button type="button" class="btn btn-outline btn-avenue-tray eq-tray-btn" data-add-tray-sku={sku.id} data-tray-part-code={sku.id} data-tray-title={renderSkuTitle(sku)}>
                   {isEs ? '+ Bandeja' : '+ Tray'}
@@ -391,7 +391,7 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
               </div>
             ))}
             <div class="equipment-actions">
-              <a href={`${catalogBase}#avenue-avenida_5_laboratorio`} class="btn btn-outline">{isEs ? 'Ver Avenida AV-05-LAB' : 'Open Avenue AV-05-LAB'}</a>
+              <a href={`${catalogBase}#cat-filter-row`} class="btn btn-outline">{isEs ? 'Ver catálogo de Laboratorio' : 'Open Lab Catalog'}</a>
             </div>
           </div>
         </details>

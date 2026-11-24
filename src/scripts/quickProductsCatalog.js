@@ -101,7 +101,7 @@ export const AVENUE_METADATA = Object.freeze({
   }
 });
 
-export const STOCK_REGIME_LABELS = Object.freeze({
+const STOCK_REGIME_LABELS = Object.freeze({
   hay: {
     code: 'hay',
     badgeEs: '[EN STOCK] DURANGO (24–72 h)',
@@ -296,16 +296,18 @@ export function getQuickProductBySlugOrAlias(slugOrId) {
 }
 
 /**
- * Devuelve todos los parámetros de rutas estáticas (ES o EN) incluyendo tanto el slug canónico
- * como todos los aliases de la matriz PRD v3.0/v3.2 §6.1, garantizando 0 enlaces huérfanos.
+ * Devuelve los parámetros de rutas estáticas (ES o EN). Por defecto (V6.0 / ARB-SMAT-69)
+ * emite únicamente los 19 slugs canónicos para evitar duplicación SEO y tiempos de build excesivos;
+ * los alias históricos se resuelven vía 301 en 1 salto en public/_redirects.
  */
-export function getAllStaticProductRouteEntries(locale = 'es') {
+export function getAllStaticProductRouteEntries(locale = 'es', options = {}) {
+  const { includeAliases = false } = options;
   const catalog = getQuickProductsCatalog();
   const seen = new Set();
   const entries = [];
   for (const sku of catalog) {
     const primarySlug = locale === 'en' ? sku.slug_en : sku.slug_es;
-    const aliases = locale === 'en' ? (sku.aliases_en || []) : (sku.aliases_es || []);
+    const aliases = includeAliases ? (locale === 'en' ? (sku.aliases_en || []) : (sku.aliases_es || [])) : [];
     const allSlugs = [primarySlug, ...aliases];
     for (const routeSlug of allSlugs) {
       if (!seen.has(routeSlug)) {

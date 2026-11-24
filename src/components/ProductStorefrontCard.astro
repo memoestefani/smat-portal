@@ -1,0 +1,76 @@
+---
+import { formatAvailabilityBadgeHuman } from '../scripts/i18nDomainLabels.js';
+
+interface Props {
+  sku: any;
+  lang?: 'es' | 'en';
+  eager?: boolean;
+  compact?: boolean;
+}
+
+const { sku, lang = 'es', eager = false, compact = false } = Astro.props;
+const isEs = lang === 'es';
+const title = String(isEs ? sku.title_es : sku.title_en || sku.title_es || sku.id);
+const slug = String(isEs ? sku.slug_es : sku.slug_en || sku.slug_es);
+const detailHref = isEs ? `/productos/${slug}/` : `/en/products/${slug}/`;
+const photoSrc = String(sku.photo_webp || `/images/productos/${sku.slug_es}.webp`);
+const compatLine = String(sku.oem_cross_ref || sku.hardness_spec || '');
+const avail = formatAvailabilityBadgeHuman(sku.stock_regime, lang);
+const trayCode = Array.isArray(sku.atomic_codes) && sku.atomic_codes.length > 0 ? sku.atomic_codes[0] : sku.id;
+const massText = sku.mass_kg ? `${sku.mass_kg} kg` : '';
+---
+
+<article
+  class={`smat-sf-card${compact ? ' is-compact' : ''}`}
+  data-ergos-homogeneous-card="1"
+  data-sf-sku={sku.id}
+  data-sf-vertical={sku.vertical || 'bombeo'}
+  data-sf-regime={sku.stock_regime || 'hay'}
+>
+  <a href={detailHref} class="smat-sf-media-link" aria-label={title}>
+    <img
+      src={photoSrc}
+      alt={title}
+      width="640"
+      height="480"
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+      class="smat-sf-photo"
+    />
+  </a>
+
+  <div class="smat-sf-body">
+    <div class="smat-sf-meta-row">
+      <span class={`smat-sf-badge smat-sf-badge--${avail.tone}`}>
+        {avail.label}
+      </span>
+      {massText && <span class="smat-sf-mass">{massText}</span>}
+    </div>
+
+    <div class="smat-sf-sku-code">{sku.id}</div>
+
+    <h3 class="smat-sf-title">
+      <a href={detailHref} class="smat-sf-title-link">{title}</a>
+    </h3>
+
+    {compatLine && <p class="smat-sf-compat">{compatLine}</p>}
+
+    <div class="smat-sf-actions">
+      <button
+        type="button"
+        class="smat-sf-btn-add"
+        data-quick-tray-add={sku.id}
+        data-sku-title={title}
+        data-sku-code={trayCode}
+        data-sku-material={sku.default_material || 'A05'}
+        data-sku-regime={sku.stock_regime || 'hay'}
+        data-sku-mass={String(sku.mass_kg || 15)}
+      >
+        {isEs ? '+ Agregar a cotización' : '+ Add to quote'}
+      </button>
+      <a href={detailHref} class="smat-sf-btn-detail">
+        {isEs ? 'Ver producto →' : 'View product →'}
+      </a>
+    </div>
+  </div>
+</article>

@@ -12,8 +12,10 @@ import MetrologyLabCore from '../cores/MetrologyLabCore.astro';
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import CircuitNavigator from '../CircuitNavigator.astro';
 import SharePurchasing from '../SharePurchasing.astro';
+import ProductStorefrontCard from '../ProductStorefrontCard.astro';
 import rolesData from '../../../data/roles.json';
 import { SMAT_SUPPLY_DOORS } from '../../scripts/i18nDomainLabels.js';
+import { getQuickProductsCatalog } from '../../scripts/quickProductsCatalog.js';
 
 interface Props {
   locale?: 'es' | 'en';
@@ -24,6 +26,7 @@ const { locale = 'es', mode = 'standalone' } = Astro.props;
 const isEs = locale === 'es';
 const lang = locale;
 const showVerticalShell = mode === 'standalone';
+const controlSkus = getQuickProductsCatalog().filter((s) => s.vertical === 'control');
 
 const ctrlVertical = rolesData.verticals.find((v) => v.id === 'control_procesos');
 const marcyRole = ctrlVertical?.capex?.find((r) => r.role_id === 'balanza_marcy');
@@ -53,6 +56,14 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
 
     <section class="section smat-stage-compact" id="stage-diagnostic">
       <div class="container">
+        <div class="smat-mb-md" aria-label={isEs ? 'Instrumentos y laboratorio en stock' : 'In-stock lab instruments'}>
+          <div class="smat-sf-grid">
+            {controlSkus.map((sku, idx) => (
+              <ProductStorefrontCard sku={sku} lang={lang} eager={idx < 3} />
+            ))}
+          </div>
+        </div>
+
         <div id="metrology-calculator" class="card metrology-calc-card smat-mb-md" data-stratum-1-instrument>
           <div class="metrology-calc-header">
             <span class="badge badge-copper">

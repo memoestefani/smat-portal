@@ -4,29 +4,10 @@ import AtomicPartIsland from '../../components/islands/AtomicPartIsland.astro';
 import atomicParts from '../../../data/atomic_parts.json';
 
 export function getStaticPaths() {
-  const byNum = (num: string) => atomicParts.find((p) => p.part_number === num) || atomicParts[0];
-  const r55 = { metallurgy: 'Elastómero Hule Natural Antiabrasivo R55 (55 Shore A)', hardness: '55 ± 5 Shore A (Resiliencia ≥ 70%)' };
-  const extras: Array<[string, string, string, Record<string, string>?]> = [
-    ['d4147a05', 'd4147a05', 'E4147'], ['d4083a05', 'd4083a05', 'E4083'],
-    ['d4110a05', 'd4110a05', 'E4083', { name_es: 'Voluta Monolítica en Alto Cromo Cr27% (6x4" — A05)', name_en: 'Monolithic High-Chrome Volute Liner (6x4" — A05)' }],
-    ['d4041a05', 'd4041a05', 'E4132'], ['d4018r55', 'd4018r55', 'D4018'], ['d4032r55', 'd4032r55', 'E4132'],
-    ['d4028a05', 'd4028a05', 'D4028'], ['d4029a05', 'd4029a05', 'D4029'], ['d005m', 'd005m', 'DAM005'],
-    ['d3147-a05', 'd3147-a05', 'D3147'], ['d3147-r55', 'd3147-r55', 'D3147', r55], ['e4147-a05', 'e4147-a05', 'E4147'],
-    ['e4147-r55', 'e4147-r55', 'E4147', r55], ['f6147-a05', 'f6147-a05', 'F6147'], ['dam028-a05', 'dam028-a05', 'DAM028'],
-    ['eam028-a05', 'eam028-a05', 'EAM028'], ['e4083-a05', 'e4083-a05', 'E4083'], ['e4083-r55', 'e4083-r55', 'E4083', r55],
-    ['impulsor-5-alabes', '5-vane-impeller', 'E4147'], ['cuello-succion', 'suction-throatbush', 'E4083'],
-    ['voluta-revestimiento', 'volute-liner', 'E4083', { name_es: 'Revestimiento de Voluta Bipartida (6x4" — A05)', name_en: 'Split Volute Casing Liner (6x4" — A05)', type_es: 'Revestimiento de Voluta en Contacto Húmedo (Lote 5:5:4)', type_en: 'Wet-End Volute Liner (5:5:4 Lot)' }],
-    ['expulsor-centrifugo', 'centrifugal-expeller', 'EAM028'], ['anillo-expulsor', 'expeller-ring', 'D4029'], ['camisa-flecha', 'shaft-sleeve', 'D075C21'],
-    ['cartucho-rodamientos', 'bearing-assembly-cartridge', 'DAM005', { name_es: 'Cartucho de Rodamientos Completo (Bearing Assembly 6x4")', name_en: 'Complete Bearing Assembly Cartridge (6x4")', type_es: 'Conjunto Motriz Ensamblado (Estación 01)', type_en: 'Complete Assembled Drive Cartridge (Station 01)' }],
-    ['empaque-prensaestopa', 'gland-packing', 'D075C21', { name_es: 'Empaquetadura Trenzada PTFE/Grafito y Prensaestopa (6x4")', name_en: 'Braided PTFE/Graphite Gland Packing & Follower (6x4")', type_es: 'Sellado de Caja de Estopas (Estación 02)', type_en: 'Stuffing Box Gland Seal (Station 02)' }],
-    ['flecha-principal', 'main-shaft', 'DAM005', { name_es: 'Flecha Principal en Acero SAE 4140 Rectificado (6x4")', name_en: 'Precision-Ground SAE 4140 Alloy Main Shaft (6x4")', type_es: 'Eje Motriz de Transmisión (Estación 01)', type_en: 'Main Drive Shaft (Station 01)' }],
-    ['sellos-laberinto', 'labyrinth-seals', 'DAM005', { name_es: 'Sellos de Laberinto Purgantes y Deflectores en Inox (6x4")', name_en: 'Grease-Purged Stainless Labyrinth Seals & Flingers (6x4")', type_es: 'Protección Hermética de Cartucho ISO 281 (Estación 01)', type_en: 'ISO 281 Cartridge Hermetic Protection (Station 01)' }],
-    ['plato-cubierta', 'cover-plate-liner', 'D4018'], ['plato-marco', 'frame-plate-liner', 'E4132'],
-  ];
-  return [
-    ...atomicParts.map((part) => ({ params: { code: part.code }, props: { part, routeSlug: part.code, altEnSlug: part.code } })),
-    ...extras.map(([code, altEnSlug, num, patch]) => ({ params: { code }, props: { part: { ...byNum(num), ...patch }, routeSlug: code, altEnSlug } })),
-  ];
+  return atomicParts.map((part) => ({
+    params: { code: part.code },
+    props: { part, routeSlug: part.code, altEnSlug: part.code },
+  }));
 }
 
 const { part, routeSlug, altEnSlug } = Astro.props;

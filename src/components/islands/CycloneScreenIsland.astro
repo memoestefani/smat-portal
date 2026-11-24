@@ -10,7 +10,9 @@ import CycloneScreenCore from '../cores/CycloneScreenCore.astro';
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import SharePurchasing from '../SharePurchasing.astro';
 import CycloneAndScreenReport from '../CycloneAndScreenReport.astro';
+import ProductStorefrontCard from '../ProductStorefrontCard.astro';
 import { SMAT_SUPPLY_DOORS } from '../../scripts/i18nDomainLabels.js';
+import { getQuickProductsCatalog } from '../../scripts/quickProductsCatalog.js';
 
 interface Props {
   locale?: 'es' | 'en';
@@ -22,6 +24,9 @@ const isEs = locale === 'es';
 const lang = locale;
 const showVerticalShell = mode === 'standalone';
 const productsBase = isEs ? '/productos/' : '/en/products/';
+const cycloneSkus = getQuickProductsCatalog().filter((s) =>
+  ['SMAT-CYC-D6-D20', 'SMAT-COUPLED-PUMP-CYC', 'SMAT-SCR-TH48-30', 'SMAT-SCR-MOD-1X1'].includes(s.id)
+);
 ---
 
 {showVerticalShell && (
@@ -36,10 +41,18 @@ const productsBase = isEs ? '/productos/' : '/en/products/';
         </div>
         <p class="cyc-lead">
           {isEs
-            ? 'Audite su batería de hidrociclones y criba de uretano midiendo únicamente 3 vasos con Balanza Marcy (Alimentación, Ápex y Vortex) sin báscula de banda ni flujómetro.'
-            : 'Audit your hydrocyclone cluster and urethane screen using only 3 Marcy Scale cups (Feed, Underflow Apex, Overflow Vortex) with zero belt scale or flowmeter.'}
+            ? 'Hidrociclones D6–D20, boquillas Ápex SiC y mallas finas de uretano TH48-30 listas para cotización y despacho desde Durango.'
+            : 'D6–D20 hydrocyclones, SiC apex spigots, and TH48-30 urethane screens ready for immediate quoting from Durango.'}
         </p>
       </header>
+
+      <section class="smat-mb-md" aria-label={isEs ? 'Productos de clasificación y cribado' : 'Classification and screening products'}>
+        <div class="smat-sf-grid">
+          {cycloneSkus.map((sku, idx) => (
+            <ProductStorefrontCard sku={sku} lang={lang} eager={idx < 3} />
+          ))}
+        </div>
+      </section>
 
       <section class="cyc-sim-card" id="marcy-3cup-cyclone-calculator" data-stratum-1-instrument aria-labelledby="cyc-sim-heading">
         <div class="cyc-sim-header">

@@ -26,8 +26,6 @@ const {
   atomicPartsCount: ATOMIC_PARTS_SSOT_COUNT,
   wetEndMaterialsList,
   quickByAvenue,
-  avenueMetaMap: rawAvenueMetaMap,
-  avenueKeys,
   catalogIntegrity,
   diagramSurjectivity,
   canonicalSeriesCount,
@@ -38,9 +36,7 @@ const {
   controlProcessItems,
   enrichedAtomicParts,
   seriesRows,
-  familyChips,
 } = buildCatalogFacetedViewModel({ atomicParts, rolesData, locale });
-const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
 ---
 
 <div
@@ -93,8 +89,8 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
     <div class="catalog-omnibox-bar">
       <label class="smat-field-label" for="catalog-facet-search">
         {isEs
-          ? 'Buscador Omnicanal 1:1 (Filtra 19 SKUs en 7 Avenidas o verifica código OEM/plano E4147A05, D075C21, DAM005):'
-          : 'Unified 1:1 Omnibox (Filter 19 SKUs across 7 Avenues or verify drawing/OEM code E4147A05, D075C21, DAM005):'}
+          ? 'Buscar producto, SKU o código de pieza (ej. E4147, D075C21, DAM005, TH48-30, Marcy):'
+          : 'Search product, SKU, or part code (e.g. E4147, D075C21, DAM005, TH48-30, Marcy):'}
       </label>
       <div class="smat-cta-row compact-row dropin-input-row">
         <input
@@ -103,7 +99,7 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
           data-dropin-input
           data-omnibox-dropin
           data-schema-input="catalogFacet.searchQuery"
-          placeholder={isEs ? 'SKU, código de plano (E4147A05, D075C21), aleación o malla ASTM...' : 'SKU, part number (E4147A05, D075C21), alloy or ASTM sieve...'}
+          placeholder={isEs ? 'SKU, código de plano (E4147, D075C21), aleación o malla ASTM...' : 'SKU, part number (E4147, D075C21), alloy or ASTM sieve...'}
           class="smat-search-input full-width-input"
         />
         <button type="button" data-dropin-btn class="smat-btn-primary smat-tap-btn">
@@ -111,43 +107,24 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
         </button>
       </div>
       <div class="smat-dropin-root-badge font-mono-tech smat-mt-sm">
-        <span>{isEs ? 'Raíz normalizada / Sello:' : 'Normalized Root / Digest:'}</span>
+        <span>{isEs ? 'Raíz normalizada:' : 'Normalized Root:'}</span>
         <code data-dropin-root data-schema-output="dropIn.normalizedRoot">—</code>
         <span data-dropin-alloy data-schema-output="dropIn.alloySuffix" class="smat-dropin-meta-pill">—</span>
         <span data-dropin-sat data-schema-output="dropIn.satTuple" class="smat-dropin-meta-pill">—</span>
       </div>
       <div data-dropin-result data-schema-output="dropIn.canonicalSkuId" class="smat-result-box dropin-result-banner smat-hidden-init" hidden></div>
     </div>
-
-    <details class="wb-progressive-drawer smat-mt-sm" id="catalog-filters-drawer">
-      <summary class="wb-progressive-summary">
-        <span>{isEs ? 'Filtrar por Familia (8) y 7 Avenidas Industriales' : 'Filter by Family (8) & 7 Industrial Avenues'}</span>
-        <span>▾</span>
-      </summary>
-      <div class="faceted-filters-block smat-mt-sm" role="region" aria-label={isEs ? 'Filtros por familia y 7 avenidas' : 'Family & 7-avenue filters'}>
-        <div class="smat-chip-row smat-mt-sm" role="group" aria-label={isEs ? 'Filtro por Familia' : 'Filter by Family'}>
-          {familyChips.map((chip, idx) => (
-            <button type="button" class={`smat-chip ${idx === 0 ? 'part-chip--highlight' : ''}`} data-family-chip={chip.id} aria-pressed={idx === 0 ? 'true' : 'false'}>
-              {isEs ? chip.labelEs : chip.labelEn}
-            </button>
-          ))}
-        </div>
-        <div class="smat-chip-row smat-mt-sm" role="group" aria-label={isEs ? 'Filtro por Avenida Industrial (7 Avenidas)' : 'Filter by Industrial Avenue (7 Avenues)'}>
-          <button type="button" class="smat-chip is-active" data-facet-avenue-btn="all" aria-pressed="true">{isEs ? '7 Avenidas (Todas)' : 'All 7 Avenues'}</button>
-          {avenueKeys.map((avKey) => {
-            const meta = avenueMetaMap[avKey];
-            return (
-              <button type="button" class="smat-chip" data-facet-avenue-btn={avKey} aria-pressed="false">
-                {meta.code} · {isEs ? meta.labelEs.split('(')[0].trim() : meta.labelEn.split('(')[0].trim()}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </details>
   </section>
 
-  <section class="smat-mb-md" id="catalog-bombeo-drawer">
+  <!-- Grid Visual Abierto V6.0: 19 SKUs con Foto Real y Botón de Compra Directo -->
+  <CatalogAvenuesMatrix lang={lang} />
+
+  <details class="wb-progressive-drawer smat-mb-md" id="catalog-bombeo-drawer">
+    <summary class="wb-progressive-summary">
+      <span>{isEs ? `Tabla técnica de 9 series de bombas (1.5x1" a 14x12") y especificaciones ▾` : `Technical table of 9 pump frames (1.5x1" to 14x12") & specs ▾`}</span>
+      <span class="wb-step1-more-arrow">▾</span>
+    </summary>
+    <div class="wb-progressive-body">
   <section class="catalog-section" id={isEs ? 'bombeo' : 'pumping'}>
     <div class="section-title-wrap">
       <span class="section-num">01</span>
@@ -254,16 +231,6 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
       </table>
     </div>
 
-    <details class="wb-progressive-drawer smat-mt-sm" id="catalog-avenues-drawer">
-      <summary class="wb-progressive-summary">
-        <span>{isEs ? `Explorar 19 SKUs en 7 Avenidas Industriales (Matriz Master-Detail)` : `Explore 19 SKUs across 7 Industrial Avenues (Master-Detail Matrix)`}</span>
-        <span class="wb-step1-more-arrow">▾</span>
-      </summary>
-      <div class="wb-progressive-body">
-        <CatalogAvenuesMatrix lang={lang} />
-      </div>
-    </details>
-
     <details class="wb-progressive-drawer smat-mt-sm" id="catalog-alloys-and-parts-drawer">
       <summary class="wb-progressive-summary">
         <span>{isEs ? `Explorar ${wetEndMaterialsList.length} Aleaciones Certificadas y ${enrichedAtomicParts.length} Fichas Atómicas` : `Explore ${wetEndMaterialsList.length} Certified Alloys & ${enrichedAtomicParts.length} Atomic Sheets`}</span>
@@ -331,7 +298,8 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
       </div>
     </details>
   </section>
-  </section>
+    </div>
+  </details>
 
   <details class="wb-progressive-drawer smat-mb-md" id="catalog-processes-drawer">
     <summary class="wb-progressive-summary">
@@ -582,7 +550,7 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
 
     const openCatalogDrawers = () => {
       document
-        .querySelectorAll('#catalog-avenues-drawer, #catalog-alloys-and-parts-drawer, #catalog-processes-drawer, .avenue-group-drawer')
+        .querySelectorAll('#catalog-bombeo-drawer, #catalog-alloys-and-parts-drawer, #catalog-processes-drawer')
         .forEach((d) => {
           (d as HTMLDetailsElement).open = true;
         });

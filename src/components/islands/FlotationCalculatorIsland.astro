@@ -10,7 +10,9 @@ import FlotationCore from '../cores/FlotationCore.astro';
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import CircuitNavigator from '../CircuitNavigator.astro';
 import SharePurchasing from '../SharePurchasing.astro';
+import ProductStorefrontCard from '../ProductStorefrontCard.astro';
 import rolesData from '../../../data/roles.json';
+import { getQuickProductsCatalog } from '../../scripts/quickProductsCatalog.js';
 
 interface Props {
   locale?: 'es' | 'en';
@@ -27,6 +29,7 @@ const {
 const isEs = locale === 'es';
 const lang = locale;
 const showVerticalShell = mode === 'standalone';
+const flotationSkus = getQuickProductsCatalog().filter((s) => s.vertical === 'flotacion');
 
 const flotVertical = rolesData.verticals.find((v) => v.id === 'flotacion');
 const roleIdTarget = variant === 'mechanisms' ? 'mecanismos_flotacion' : 'celda_completa';
@@ -81,6 +84,13 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
 
     <section class={`section ${variant !== 'hub' ? 'section-spacing smat-stage-compact' : ''}`} id="flotacion-main-section">
       <div class={`container ${variant !== 'hub' ? 'content-container' : ''}`}>
+        <div class="smat-mb-md" aria-label={isEs ? 'Mecanismos de flotación en catálogo' : 'Flotation mechanisms in catalog'}>
+          <div class="smat-sf-grid">
+            {flotationSkus.map((sku) => (
+              <ProductStorefrontCard sku={sku} lang={lang} eager={true} />
+            ))}
+          </div>
+        </div>
         <div class={variant !== 'hub' ? 'card detail-card' : ''}>
           <div class="flotation-5zone-box" id={stratumId} data-cell-dropin-matrix="gorain-1997" data-stratum-1-instrument>
             {variant === 'hub' ? (

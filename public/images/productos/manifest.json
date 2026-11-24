@@ -1,0 +1,251 @@
+{
+  "schema_version": "v6.0",
+  "generated_at": "2026-11-24T19:11:55.139Z",
+  "width": 640,
+  "height": 480,
+  "max_bytes_limit": 46080,
+  "max_bytes": 45556,
+  "unique_sources": 19,
+  "unique_sha256": 19,
+  "unique_dhash64": 19,
+  "min_hamming_distance": 15,
+  "closest_pair": [
+    "SMAT-LAB-ROTAP-MECH",
+    "SMAT-FLOT-MECH-18SP",
+    15
+  ],
+  "skus": [
+    {
+      "id": "SMAT-LAB-MARCY-1000",
+      "slug": "balanza-marcy",
+      "fileName": "balanza-marcy.webp",
+      "sourceRoot": "memo",
+      "sourceRelPath": "04_fototeca_de_productos/04_piezas_y_stock_almacen/balanza.jpg",
+      "bytes": 21570,
+      "sha256": "1622ebf26c557b706035d8a3504f15a0f9fa35c0563d2bb0c0b84e498d40d599",
+      "dhash64": "d4dcccf0f0f1f8f1"
+    },
+    {
+      "id": "SMAT-LAB-VASO-1000",
+      "slug": "vaso-balanza-marcy-1000ml",
+      "fileName": "vaso-balanza-marcy-1000ml.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "Balanza marcy/vaso onox balanza marcy.jpg",
+      "bytes": 5026,
+      "sha256": "809c065dd0a349fdc385413950ed9efe61fe11d5df74c73c2bb0a3a58f16fd24",
+      "dhash64": "3070717171717030"
+    },
+    {
+      "id": "SMAT-LAB-TAMIZ-E11",
+      "slug": "tamices-certificados-astm-e11",
+      "fileName": "tamices-certificados-astm-e11.webp",
+      "sourceRoot": "memo",
+      "sourceRelPath": "04_fototeca_de_productos/03_tamices_e_instrumental/1I4in.jpg",
+      "bytes": 33944,
+      "sha256": "e73148099e4f96ace05b3f3f1801edab09202b0d03b765f3d91d2b2974d1f550",
+      "dhash64": "69ccccceccdcd8f8"
+    },
+    {
+      "id": "SMAT-LAB-ROTAP-MECH",
+      "slug": "tamizador-mecanico-laboratorio",
+      "fileName": "tamizador-mecanico-laboratorio.webp",
+      "sourceRoot": "memo",
+      "sourceRelPath": "03_renders_web_transparentes/Ro Tap expo.png",
+      "bytes": 20472,
+      "sha256": "222e60ec60d03eae0ae65ef061cb00a5be3ed028e77ef86e8ffe16c61b431bec",
+      "dhash64": "b2b1f1f1b1b4b0b2"
+    },
+    {
+      "id": "SMAT-LAB-PLATO-TENT",
+      "slug": "plato-tentadura-metalurgico",
+      "fileName": "plato-tentadura-metalurgico.webp",
+      "sourceRoot": "memo",
+      "sourceRelPath": "04_fototeca_de_productos/04_piezas_y_stock_almacen/platostentinox.jpg",
+      "bytes": 14198,
+      "sha256": "47fd77db2ce30f2653557b1865719da2f1341a683601aee92af30206e59612ad",
+      "dhash64": "990c3774e8fae664"
+    },
+    {
+      "id": "SMAT-LAB-PULV-DISC",
+      "slug": "pulverizador-discos-laboratorio",
+      "fileName": "pulverizador-discos-laboratorio.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "PULVERIZADOR/UA 2000RS Grinding Plates, chrome alloy.jpg",
+      "bytes": 42652,
+      "sha256": "9548171f19e8ff9d4f761dabecaeed5a048a40a54ea57c5551caed759b832c55",
+      "dhash64": "49d1d47032727a68"
+    },
+    {
+      "id": "SMAT-LAB-FILTRO-BATCH",
+      "slug": "filtro-prensa-batch-laboratorio",
+      "fileName": "filtro-prensa-batch-laboratorio.webp",
+      "sourceRoot": "memo",
+      "sourceRelPath": "04_fototeca_de_productos/04_piezas_y_stock_almacen/Pressure Filter.jpg",
+      "bytes": 23276,
+      "sha256": "b8263b3b85349581e77284fc28160374c0537800c85126651d504f982bdad14a",
+      "dhash64": "311b3e343632738f"
+    },
+    {
+      "id": "SMAT-PUMP-IMP-AH",
+      "slug": "impulsor-bomba-lodos-serie-ah",
+      "fileName": "impulsor-bomba-lodos-serie-ah.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "impulsor/IMG-20210219-WA0044.jpg",
+      "bytes": 22556,
+      "sha256": "5844bad35355e553fea96c616d660addfde8649d664ff38caa45abc2813d5763",
+      "dhash64": "f0ccf0f0e8e0a0cc"
+    },
+    {
+      "id": "SMAT-PUMP-WETKIT-554",
+      "slug": "lote-humedo-554-bomba-ah",
+      "fileName": "lote-humedo-554-bomba-ah.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "volute and troatbush metal/IMG-20210718-WA0028.jpg",
+      "bytes": 33036,
+      "sha256": "434a36845bd89b73d1ec780d846d1fc2956b077c968f521bd980777508d376cc",
+      "dhash64": "603d549c8cce769f"
+    },
+    {
+      "id": "SMAT-PUMP-EXPELLER-KIT",
+      "slug": "kit-sellado-seco-expeller-ah",
+      "fileName": "kit-sellado-seco-expeller-ah.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "EXPELLER RING  BOMBA LODOS AH ALTO CROMO.jpg",
+      "bytes": 31888,
+      "sha256": "46bde59f326aa47868874ba01543e084ed60054e2b1da508f5205294a18a7ff8",
+      "dhash64": "b39b63fb73b3ab6b"
+    },
+    {
+      "id": "SMAT-PUMP-BRG-005M",
+      "slug": "cartucho-rodamientos-005m",
+      "fileName": "cartucho-rodamientos-005m.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "assembly AH Y hh/Bearing Assembly AH.jpg",
+      "bytes": 31778,
+      "sha256": "d57c95be47f50235bd7fef32ee6441b04ab0adf38a4c005832f06ec15f246fb0",
+      "dhash64": "310d591cdcd46645"
+    },
+    {
+      "id": "SMAT-PUMP-LINERS-AH",
+      "slug": "lainas-succion-y-platos-ah",
+      "fileName": "lainas-succion-y-platos-ah.webp",
+      "sourceRoot": "memo",
+      "sourceRelPath": "04_fototeca_de_productos/04_piezas_y_stock_almacen/explosion bomba.jpg",
+      "bytes": 22388,
+      "sha256": "075a86d632bd1e35fd0f3f4c1c684f432da3bf7afce47bec0db66b6ee5585329",
+      "dhash64": "0931498cb491b1e0"
+    },
+    {
+      "id": "SMAT-CYC-D6-D20",
+      "slug": "hidrociclon-completo-y-boquillas-d6-d20",
+      "fileName": "hidrociclon-completo-y-boquillas-d6-d20.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "Hidrociclone/grupo  hidrociclone.jpg",
+      "bytes": 13462,
+      "sha256": "cc46182a337542798dc363d04752c5097dd5d4524f14f9d51fd560f96fa8206d",
+      "dhash64": "716969696969e162"
+    },
+    {
+      "id": "SMAT-COUPLED-PUMP-CYC",
+      "slug": "paquete-casado-bomba-hidrociclon",
+      "fileName": "paquete-casado-bomba-hidrociclon.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "bOMBAS LODOS/bomba 8x6.jpg",
+      "bytes": 23804,
+      "sha256": "c51cc9137318b1d4c43e99a99c5b6bc12b0bcc10a4ac3cc83b191461b2dcbe2a",
+      "dhash64": "9b3c6d5e6c646429"
+    },
+    {
+      "id": "SMAT-SCR-TH48-30",
+      "slug": "mallas-finas-uretano-th48-30",
+      "fileName": "mallas-finas-uretano-th48-30.webp",
+      "sourceRoot": "memo",
+      "sourceRelPath": "03_renders_web_transparentes/poliuretano expo.png",
+      "bytes": 44062,
+      "sha256": "75e2ad2c84d18ea1d48a578e530af5a044627f016ef37a2500c9f03df58501d1",
+      "dhash64": "38fffa7cdcf13949"
+    },
+    {
+      "id": "SMAT-SCR-MOD-1X1",
+      "slug": "modulos-poliuretano-1x1-pin-camisa",
+      "fileName": "modulos-poliuretano-1x1-pin-camisa.webp",
+      "sourceRoot": "memo",
+      "sourceRelPath": "04_fototeca_de_productos/04_piezas_y_stock_almacen/Modulo poliuretano.jpg",
+      "bytes": 22572,
+      "sha256": "ca58bd85d54a7d729a862e42b5d9193ee6f54d2addebb2056616c3f2b8457f26",
+      "dhash64": "4c6d68785096f0e0"
+    },
+    {
+      "id": "SMAT-FILT-CLOTH-PLATE",
+      "slug": "lonas-y-placas-filtro-prensa-16bar",
+      "fileName": "lonas-y-placas-filtro-prensa-16bar.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "Filtro Presion/IMG-20210704-WA0035.jpeg",
+      "bytes": 36904,
+      "sha256": "afab4f1d0faee383f311f29a05f598136d786110ba9bd5a290bdeb18982abfbc",
+      "dhash64": "76b71284783ece73"
+    },
+    {
+      "id": "SMAT-FILT-SHIFTER-CHAIN",
+      "slug": "mecanismo-plate-shifter-y-cadenas",
+      "fileName": "mecanismo-plate-shifter-y-cadenas.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "Filtro Presion/IMG-20210412-WA0045.jpg",
+      "bytes": 45556,
+      "sha256": "424a416906fe5c8d08cbfced65ffa0a895ccb61f4180fde22516f83ed6a781c5",
+      "dhash64": "6ef49085cacc9870"
+    },
+    {
+      "id": "SMAT-FLOT-MECH-18SP",
+      "slug": "mecanismo-suspendido-flotacion-18sp",
+      "fileName": "mecanismo-suspendido-flotacion-18sp.webp",
+      "sourceRoot": "memo",
+      "sourceRelPath": "03_renders_web_transparentes/Tanque Acondicionador expo.png",
+      "bytes": 22586,
+      "sha256": "f86e3ae345e9ee250f6aad0c35e65c623bf740224221ac78f4cb6023da20800c",
+      "dhash64": "99b1b532b1b6b4f4"
+    }
+  ],
+  "almacen_gallery": [
+    {
+      "id": "almacen-bomba-6x4-dah",
+      "fileName": "almacen-bomba-6x4-dah.webp",
+      "src": "/images/almacen/almacen-bomba-6x4-dah.webp",
+      "bytes": 41534,
+      "captionEs": "Bomba centrífuga de lodos 6x4 DAH ensamblada en taller con transmisión por poleas y guarda de seguridad.",
+      "captionEn": "Assembled 6x4 DAH horizontal slurry pump package in shop with belt drive and safety guard."
+    },
+    {
+      "id": "almacen-volutas-cromo-caja",
+      "fileName": "almacen-volutas-cromo-caja.webp",
+      "src": "/images/almacen/almacen-volutas-cromo-caja.webp",
+      "bytes": 33036,
+      "captionEs": "Volutas y platos de succión en Alto Cromo 27% (≥ 650 HB) inspeccionados antes de embarque.",
+      "captionEn": "27% High-Chrome (≥ 650 HB) volute liners and throatbushes crated and verified prior to dispatch."
+    },
+    {
+      "id": "almacen-rodamientos-ah",
+      "fileName": "almacen-rodamientos-ah.webp",
+      "src": "/images/almacen/almacen-rodamientos-ah.webp",
+      "bytes": 31778,
+      "captionEs": "Cartuchos de rodamientos Bearing Assembly armados con eje SAE 4140 y sellos laberinto en patio.",
+      "captionEn": "Pre-assembled Bearing Assembly cartridges with SAE 4140 shafts and labyrinth seals on shop floor."
+    },
+    {
+      "id": "almacen-filtro-prensa-planta",
+      "fileName": "almacen-filtro-prensa-planta.webp",
+      "src": "/images/almacen/almacen-filtro-prensa-planta.webp",
+      "bytes": 42654,
+      "captionEs": "Filtro prensa industrial 16 bar en puesta en marcha con paquete de placas PP y válvulas de filtrado.",
+      "captionEn": "16-bar industrial filter press during plant commissioning with PP plate pack and filtrate valves."
+    },
+    {
+      "id": "almacen-impulsor-cr27",
+      "fileName": "almacen-impulsor-cr27.webp",
+      "src": "/images/almacen/almacen-impulsor-cr27.webp",
+      "bytes": 22556,
+      "captionEs": "Impulsor cerrado de 5 álabes en Alto Cromo 27% listo para despacho inmediato desde Durango.",
+      "captionEn": "Closed 5-vane 27% High-Chrome slurry impeller staged for immediate dispatch from Durango."
+    }
+  ]
+}

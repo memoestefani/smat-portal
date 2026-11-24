@@ -1,5 +1,6 @@
 ---
 import { MINING_GROUPS_CATALOG, MINING_UNITS_COUNT } from '../../scripts/wizardCatalogData.js';
+import { getQuickProductsCatalog } from '../../scripts/quickProductsCatalog.js';
 
 interface Props {
   lang?: 'es' | 'en';
@@ -7,6 +8,9 @@ interface Props {
 
 const { lang = 'es' } = Astro.props;
 const isEs = lang === 'es';
+const quickPicks = ['SMAT-PUMP-IMP-AH', 'SMAT-PUMP-WETKIT-554', 'SMAT-PUMP-BRG-005M', 'SMAT-CYC-D6-D20', 'SMAT-FILT-CLOTH-PLATE', 'SMAT-LAB-MARCY-1000']
+  .map((id) => getQuickProductsCatalog().find((s) => s.id === id))
+  .filter(Boolean);
 const stations = isEs
   ? [
       { href: '/bombeo/', label: 'Bombeo y Sellos' },
@@ -53,6 +57,30 @@ const stations = isEs
   <p id="fastlane-bom-summary" class="fastlane-feedback font-mono-tech hidden" role="status" aria-live="polite"></p>
   <p id="fastlane-bom-feedback" class="fastlane-feedback font-mono-tech hidden" role="status" aria-live="polite"></p>
   <p id="share-purchasing-feedback" class="fastlane-feedback font-mono-tech hidden" role="status" aria-live="polite"></p>
+
+  <div class="fastlane-visual-picker" id="fastlane-visual-picker" aria-label={isEs ? 'Selección rápida de refacciones frecuentes' : 'Quick selection of top spares'}>
+    <span class="qw-mini-label">{isEs ? 'O agregue en 1 clic por foto real:' : 'Or 1-click add by warehouse photo:'}</span>
+    <div class="fastlane-picker-grid">
+      {quickPicks.map((sku: any) => (
+        <button
+          type="button"
+          class="fastlane-pick-chip"
+          data-quick-tray-add={sku.id}
+          data-sku-title={isEs ? sku.title_es : sku.title_en}
+          data-sku-code={sku.atomic_codes?.[0] || sku.id}
+          data-sku-material={sku.default_material || 'A05'}
+          data-sku-regime={sku.stock_regime || 'hay'}
+          data-sku-mass={String(sku.mass_kg || 15)}
+        >
+          <img src={sku.photo_webp} alt={sku.id} width="64" height="48" loading="lazy" decoding="async" />
+          <span class="fastlane-pick-meta">
+            <strong>{sku.id}</strong>
+            <small>{isEs ? '+ Agregar' : '+ Add'}</small>
+          </span>
+        </button>
+      ))}
+    </div>
+  </div>
 
   <div class="smat-mt-sm" id="fastlane-mine-controls">
     <div class="fastlane-mine-grid">
@@ -178,5 +206,53 @@ const stations = isEs
     .fastlane-bom-input-row {
       grid-template-columns: 1fr;
     }
+  }
+  .fastlane-visual-picker {
+    margin-top: 0.75rem;
+    padding-top: 0.65rem;
+    border-top: 1px dashed #cbd5e1;
+  }
+  .fastlane-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+    gap: 0.45rem;
+    margin-top: 0.35rem;
+  }
+  .fastlane-pick-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 48px;
+    padding: 0.3rem 0.5rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    cursor: pointer;
+    text-align: left;
+  }
+  .fastlane-pick-chip:hover {
+    border-color: #7c2d12;
+    background: #fffbeb;
+  }
+  .fastlane-pick-chip img {
+    width: 56px;
+    height: 42px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .fastlane-pick-meta {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.72rem;
+    line-height: 1.2;
+  }
+  .fastlane-pick-meta strong {
+    color: #0f172a;
+    font-family: var(--smat-font-mono, monospace);
+  }
+  .fastlane-pick-meta small {
+    color: #7c2d12;
+    font-weight: 800;
   }
 </style>

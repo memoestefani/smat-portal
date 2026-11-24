@@ -175,5 +175,40 @@ pub fn verify_catalog_mining_groups_and_webp(site_root: &Path) -> Result<(), Str
         }
     }
 
+    // V6.0: 5 fotos reales de Almacen Central Durango y manifiesto SHA/dHash limpio
+    let almacen_dir = site_root.join("public/images/almacen");
+    let mut almacen_webp = 0usize;
+    if almacen_dir.is_dir() {
+        for entry in fs::read_dir(&almacen_dir).map_err(|e| e.to_string())?.flatten() {
+            let name = entry.file_name().to_string_lossy().to_string();
+            if name.ends_with(".webp") {
+                almacen_webp += 1;
+            }
+        }
+    }
+    if almacen_webp < 5 {
+        return Err(format!(
+            "V6.0 requiere >= 5 fotos reales .webp en public/images/almacen (hay {})",
+            almacen_webp
+        ));
+    }
+
+    let manifest_path = site_root.join("public/images/productos/manifest.json");
+    let manifest_raw = fs::read_to_string(&manifest_path)
+        .map_err(|e| format!("Falta manifiesto V6.0 {}: {}", manifest_path.display(), e))?;
+    let manifest_val: serde_json::Value = serde_json::from_str(&manifest_raw)
+        .map_err(|e| format!("Manifiesto V6.0 JSON invalido: {}", e))?;
+    let manifest_skus = manifest_val
+        .get("skus")
+        .and_then(|v| v.as_array())
+        .map(|a| a.len())
+        .unwrap_or(0);
+    if manifest_skus != 19 {
+        return Err(format!(
+            "Manifiesto V6.0 debe registrar 19 SKUs (encontrados: {})",
+            manifest_skus
+        ));
+    }
+
     Ok(())
 }

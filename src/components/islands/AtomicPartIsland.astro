@@ -47,6 +47,24 @@ const nioshModeLabel = isEs
 const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
 const rfqDeepLink = `${quoteBase}?codigo=${part.part_number}&circuito=bombeo&equipo=${fullSpec.role || 'impulsor'}&serie=${fullSpec.pipe_size || '6x4'}&peso_kg=${fullSpec.weight_kg}&estacion=S${fullSpec.station_number}#rfq`;
 const siteUrl = 'https://smatminerals.com';
+
+const ATOMIC_PHOTO_MAP: Record<string, string> = {
+  D3147: '/images/productos/impulsor-bomba-lodos-serie-ah.webp',
+  E4147: '/images/productos/impulsor-bomba-lodos-serie-ah.webp',
+  F6147: '/images/productos/impulsor-bomba-lodos-serie-ah.webp',
+  D3110: '/images/productos/lote-humedo-554-bomba-ah.webp',
+  E4083: '/images/productos/lainas-succion-y-platos-ah.webp',
+  D4018: '/images/productos/lainas-succion-y-platos-ah.webp',
+  E4132: '/images/productos/lainas-succion-y-platos-ah.webp',
+  DAM028: '/images/productos/kit-sellado-seco-expeller-ah.webp',
+  EAM028: '/images/productos/kit-sellado-seco-expeller-ah.webp',
+  D4028: '/images/productos/kit-sellado-seco-expeller-ah.webp',
+  D4029: '/images/productos/kit-sellado-seco-expeller-ah.webp',
+  D075C21: '/images/productos/kit-sellado-seco-expeller-ah.webp',
+  DAM005: '/images/productos/cartucho-rodamientos-005m.webp',
+};
+const realPhotoPath = ATOMIC_PHOTO_MAP[String(part.part_number || '').toUpperCase()] || '/images/productos/lote-humedo-554-bomba-ah.webp';
+
 const waText = encodeURIComponent(
   isEs
     ? `Hola SMAT Minerals, requiero cotización y disponibilidad en Almacén Durango de la refacción ${part.part_number} para Bastidor Estándar (${pipeSizeUpper}).`
@@ -58,7 +76,7 @@ const productSchema = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   name: `${part.part_number} — ${cleanName}`,
-  image: `${siteUrl}/images/og-card.jpg`,
+  image: `${siteUrl}${realPhotoPath}`,
   description: cleanSummary,
   sku: part.part_number,
   mpn: part.part_number,
@@ -99,11 +117,24 @@ const productSchema = {
           <p class="part-subtitle">{cleanName}</p>
         </div>
 
+        <figure class="smat-atomic-hero-photo">
+          <img
+            src={realPhotoPath}
+            alt={`${part.part_number} — ${cleanName}`}
+            width="640"
+            height="480"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </figure>
+
         <div class="spec-body">
           <div id="stratum1-atomic-code-card" data-stratum-1-instrument class="smat-atomic-cta-bar">
             <button
               type="button"
               class="btn btn-primary smat-atomic-cta-btn"
+              data-quick-tray-add={part.part_number === 'DAM005' ? 'SMAT-PUMP-BRG-005M' : `SMAT-PUMP-${part.part_number}`}
               data-add-tray-sku={part.part_number === 'DAM005' ? 'SMAT-PUMP-BRG-005M' : `SMAT-PUMP-${part.part_number}`}
               data-tray-part-code={part.part_number}
               data-tray-title={isEs ? part.name_es : part.name_en}
@@ -111,8 +142,13 @@ const productSchema = {
               data-tray-material={part.part_number === 'DAM005' ? 'GGG40' : 'A05'}
               data-tray-circuit="bombeo"
               data-tray-source="catalog_code_stratum1"
+              data-sku-title={cleanName}
+              data-sku-code={part.part_number}
+              data-sku-material={part.part_number === 'DAM005' ? 'GGG40' : 'A05'}
+              data-sku-regime="hay"
+              data-sku-mass={String(fullSpec.weight_kg || 20)}
             >
-              {isEs ? `+ Agregar ${part.part_number} a Bandeja` : `+ Add ${part.part_number} to Tray`}
+              {isEs ? `+ Agregar ${part.part_number} a cotización` : `+ Add ${part.part_number} to quote`}
             </button>
             <a href={rfqDeepLink} class="btn btn-outline smat-atomic-cta-btn">
               {isEs ? `Cotizar ${part.part_number} →` : `Request Quote ${part.part_number} →`}
