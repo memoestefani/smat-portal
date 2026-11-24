@@ -72,7 +72,7 @@ function createDefaultSession() {
       name: '',
       email: '',
       phone: '',
-      destination: 'Retiro en Almacén Central Durango (Coordinación con Folio)',
+      destination: 'warehouse_durango_pickup',
       clientRef: '',
       details: '',
       circuit: 'bombeo',
@@ -84,7 +84,7 @@ function createDefaultSession() {
       name: '',
       email: '',
       phone: '',
-      destination: 'Retiro en Almacén Central Durango (Coordinación con Folio)',
+      destination: 'warehouse_durango_pickup',
       clientRef: '',
       details: '',
     },
@@ -98,6 +98,34 @@ function createDefaultSession() {
       lastPayload: null,
     },
   };
+}
+
+/**
+ * Deriva el estado explícito del ciclo de vida de sesión (`EMPTY` -> `DRAFT` -> `VERIFIED`)
+ * para evitar folios o alertas P1 sintéticas cuando el usuario no ha capturado datos reales.
+ * @param {Partial<SmatRfqSessionV3>|null} [session=null]
+ * @returns {'EMPTY' | 'DRAFT' | 'VERIFIED'}
+ */
+export function deriveSessionLifecycleState(session = null) {
+  const s = /** @type {Record<string, any>} */ (session || loadRfqSession());
+  const items = Array.isArray(s?.items) ? s.items : [];
+  const snapshots = s?.stationSnapshots && typeof s.stationSnapshots === 'object' ? s.stationSnapshots : {};
+  const hasSnapshots = Object.values(snapshots).some(
+    (snap) => snap && typeof snap === 'object' && Object.keys(snap).length > 0
+  );
+  const contact = s?.contact || {};
+  const plant = s?.plantContext || {};
+  const nameVal = String(contact.name || plant.name || '').trim();
+  const companyVal = String(contact.company || plant.company || plant.miningUnitName || '').trim();
+  const channelVal = String(contact.email || plant.email || contact.phone || plant.phone || '').trim();
+  const hasRequester = Boolean(nameVal && channelVal);
+  if (items.length === 0 && !hasSnapshots && !hasRequester && !companyVal) {
+    return 'EMPTY';
+  }
+  if ((items.length > 0 || hasSnapshots) && hasRequester && Boolean(companyVal)) {
+    return 'VERIFIED';
+  }
+  return 'DRAFT';
 }
 
 /**
@@ -143,13 +171,20 @@ function normalizeSession(raw = {}) {
   const src = raw && typeof raw === 'object' ? raw : {};
   const plant = src.plantContext && typeof src.plantContext === 'object' ? src.plantContext : {};
   const contactSrc = src.contact && typeof src.contact === 'object' ? src.contact : {};
+  const rawDest = String(contactSrc.destination ?? plant.destination ?? base.contact.destination).trim();
+  const normalizedDest =
+    !rawDest ||
+      rawDest.toLowerCase().includes('retiro en almacén central durango') ||
+      rawDest.toLowerCase().includes('durango central warehouse pickup')
+      ? 'warehouse_durango_pickup'
+      : rawDest;
   const mergedContact = {
     ...base.contact,
     company: String(contactSrc.company ?? plant.company ?? base.contact.company),
     name: String(contactSrc.name ?? plant.name ?? base.contact.name),
     email: String(contactSrc.email ?? plant.email ?? base.contact.email),
     phone: String(contactSrc.phone ?? plant.phone ?? base.contact.phone),
-    destination: String(contactSrc.destination ?? plant.destination ?? base.contact.destination),
+    destination: normalizedDest,
     clientRef: String(contactSrc.clientRef ?? plant.clientRef ?? base.contact.clientRef),
     details: String(contactSrc.details ?? plant.details ?? base.contact.details),
   };
@@ -504,7 +539,7 @@ export function clearRfqSession() {
  * @returns {() => void}
  */
 export function subscribeRfqSession(listener) {
-  if (typeof window === 'undefined' || typeof listener !== 'function') return () => {};
+  if (typeof window === 'undefined' || typeof listener !== 'function') return () => { };
   /** @param {any} ev */
   const handler = (ev) => listener(ev?.detail || loadRfqSession());
   window.addEventListener(RFQ_SESSION_UPDATE_EVENT, handler);

@@ -53,6 +53,36 @@ const hybridKit = (WET_END_MATERIAL_KITS as any).hybrid_a05_r55;
     )}
   </div>
 
+  <div class="catalog-master-detail-bar no-print" id="catalog-master-detail-bar" data-master-detail-bar>
+    <div class="master-detail-info">
+      <span class="master-detail-eyebrow">{isEs ? 'SELECCIÓN ACTIVA:' : 'SELECTED ITEM:'}</span>
+      <strong id="catalog-master-selected-label" class="master-detail-title">
+        {isEs ? 'SMAT-PUMP-IMP-AH — Selecciona un código o pieza debajo' : 'SMAT-PUMP-IMP-AH — Select a SKU or part below'}
+      </strong>
+    </div>
+    <div class="master-detail-actions">
+      <button
+        type="button"
+        id="catalog-master-tray-btn"
+        class="btn-avenue-tray"
+        data-add-tray-sku="SMAT-PUMP-IMP-AH"
+        data-sku-title={isEs ? 'Impulsor Estándar AH Alto Cromo 27%' : 'Standard AH High Chrome 27% Impeller'}
+        data-sku-circuit="bombeo"
+        data-sku-material="A05"
+        data-sku-mass="18"
+      >
+        {isEs ? '+ Agregar selección a Bandeja' : '+ Add Selection to Tray'}
+      </button>
+      <a
+        id="catalog-master-sheet-link"
+        href={isEs ? '/productos/impulsor-bomba-lodos/' : '/en/products/slurry-pump-impeller/'}
+        class="btn-avenue-link"
+      >
+        {isEs ? 'Abrir Ficha 1:1 →' : 'Open 1:1 Sheet →'}
+      </a>
+    </div>
+  </div>
+
   <div class="avenues-groups-stack">
     {avenueKeys.map((avKey) => {
       const meta = avenueMetaMap[avKey];
@@ -97,12 +127,10 @@ const hybridKit = (WET_END_MATERIAL_KITS as any).hybrid_a05_r55;
               const prodHref = isEs
                 ? `/productos/${sku.slug_es}/`
                 : `/en/products/${sku.slug_en}/`;
-              const quoteHref = isEs
-                ? `/cotizar/?circuito=${encodeURIComponent(sku.vertical || 'bombeo')}&sku=${encodeURIComponent(skuId)}#rfq`
-                : `/en/quote/?circuito=${encodeURIComponent(sku.vertical || 'bombeo')}&sku=${encodeURIComponent(skuId)}#rfq`;
               return (
                 <article
                   class="avenue-sku-item"
+                  tabindex="0"
                   data-catalog-sku-id={skuId}
                   data-sku-id={skuId}
                   data-sku-family={sku.vertical || 'bombeo'}
@@ -110,37 +138,26 @@ const hybridKit = (WET_END_MATERIAL_KITS as any).hybrid_a05_r55;
                   data-primary-avenue={sku.primary_avenue || avKey}
                   data-facet-avenues={facetAvenues.join(',')}
                   data-search-blob={searchBlob}
+                  data-select-catalog-sku={skuId}
+                  data-sku-title={isEs ? sku.title_es : sku.title_en}
+                  data-sku-circuit={sku.vertical || 'bombeo'}
+                  data-sku-material={sku.default_material || 'A05'}
+                  data-sku-mass={String(sku.mass_kg || 12)}
+                  data-sku-sheet={prodHref}
                 >
                   <div class="avenue-sku-top">
                     <code class="avenue-sku-code">{skuId}</code>
                     <span class="avenue-sku-regime">{isEs ? reg.badgeEs : reg.badgeEn}</span>
                   </div>
-                  <strong class="avenue-sku-name">{isEs ? sku.title_es : sku.title_en}</strong>
+                  <strong class="avenue-sku-name">
+                    <a href={prodHref} class="avenue-sku-sheet-link">{isEs ? sku.title_es : sku.title_en}</a>
+                  </strong>
                   <p class="avenue-sku-meta">
                     {sku.mass_kg} kg • {isEs ? 'Reorden' : 'Reorder'}: {sku.reorder_window_days}d • {isEs ? 'Par Casado' : 'Coupled'}: <code>{sku.coupled_pair_sku}</code>
                   </p>
                   <p class="avenue-sku-meta">
                     {isEs ? 'Clave SAT:' : 'SAT Code:'} <code>{sat.clave_prod_serv || '40151510'}</code> · {isEs ? 'Pieza' : 'Unit'} (<code>{sat.clave_unidad || 'H87'}</code>) · {sat.uso_cfdi || 'G03'}
                   </p>
-                  <div class="avenue-sku-actions no-print">
-                    <a href={prodHref} class="btn-avenue-link">
-                      {isEs ? 'Ficha 1:1' : '1:1 Sheet'}
-                    </a>
-                    <button
-                      type="button"
-                      class="btn-avenue-tray"
-                      data-add-tray-sku={skuId}
-                      data-sku-title={isEs ? sku.title_es : sku.title_en}
-                      data-sku-circuit={sku.vertical || 'bombeo'}
-                      data-sku-material={sku.default_material || 'A05'}
-                      data-sku-mass={String(sku.mass_kg || 12)}
-                    >
-                      {isEs ? '+ Bandeja' : '+ Tray'}
-                    </button>
-                    <a href={quoteHref} class="btn-avenue-quote">
-                      {isEs ? 'Cotizar →' : 'Quote →'}
-                    </a>
-                  </div>
                 </article>
               );
             })}
@@ -155,6 +172,51 @@ const hybridKit = (WET_END_MATERIAL_KITS as any).hybrid_a05_r55;
   import { addTrayItem } from '../scripts/requisitionTrayBus.js';
 
   function bindCatalogAvenuesTrayButtons() {
+    const masterBtn = document.getElementById('catalog-master-tray-btn') as HTMLButtonElement | null;
+    const masterLabel = document.getElementById('catalog-master-selected-label') as HTMLElement | null;
+    const masterLink = document.getElementById('catalog-master-sheet-link') as HTMLAnchorElement | null;
+    const isEn = document.documentElement.lang === 'en';
+
+    const selectCard = (card: HTMLElement) => {
+      document.querySelectorAll('[data-select-catalog-sku].is-selected').forEach((el) => {
+        el.classList.remove('is-selected');
+      });
+      card.classList.add('is-selected');
+      const skuId = card.getAttribute('data-select-catalog-sku') || 'SMAT-PUMP-IMP-AH';
+      const title = card.getAttribute('data-sku-title') || skuId;
+      const circuit = card.getAttribute('data-sku-circuit') || 'bombeo';
+      const material = card.getAttribute('data-sku-material') || 'A05';
+      const mass = card.getAttribute('data-sku-mass') || '12';
+      const sheet = card.getAttribute('data-sku-sheet') || '';
+
+      if (masterLabel) masterLabel.textContent = `${skuId} — ${title}`;
+      if (masterLink && sheet) masterLink.href = sheet;
+      if (masterBtn) {
+        masterBtn.setAttribute('data-add-tray-sku', skuId);
+        masterBtn.setAttribute('data-sku-title', title);
+        masterBtn.setAttribute('data-sku-circuit', circuit);
+        masterBtn.setAttribute('data-sku-material', material);
+        masterBtn.setAttribute('data-sku-mass', mass);
+        masterBtn.textContent = isEn ? `+ Add ${skuId} to Tray` : `+ Agregar ${skuId} a Bandeja`;
+      }
+    };
+
+    document.querySelectorAll<HTMLElement>('[data-select-catalog-sku]').forEach((card) => {
+      if (card.getAttribute('data-select-bound') === '1') return;
+      card.setAttribute('data-select-bound', '1');
+      card.addEventListener('click', (ev) => {
+        if ((ev.target as HTMLElement)?.closest('a')) return;
+        selectCard(card);
+      });
+      card.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          if ((ev.target as HTMLElement)?.closest('a')) return;
+          ev.preventDefault();
+          selectCard(card);
+        }
+      });
+    });
+
     const btns = document.querySelectorAll<HTMLButtonElement>('[data-add-tray-sku]');
     btns.forEach((btn) => {
       if (btn.getAttribute('data-tray-bound') === '1') return;
@@ -176,8 +238,7 @@ const hybridKit = (WET_END_MATERIAL_KITS as any).hybrid_a05_r55;
           qty: 1,
           criticalityMode: 'PARO_DE_LINEA',
         });
-        const isEn = document.documentElement.lang === 'en';
-        btn.textContent = isEn ? 'In Tray' : 'En Bandeja';
+        btn.textContent = isEn ? `Added ${skuId}` : `En Bandeja: ${skuId}`;
       });
     });
   }

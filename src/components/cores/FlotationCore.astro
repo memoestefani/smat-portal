@@ -2,10 +2,10 @@
 /**
  * FlotationCore.astro
  * ---------------------------------------------------------------------------
- * Núcleo Único Compartido de Flotación Hidrodinámica (`D3-V51` / `SLICE-V51-14`):
- * Expone todas las entradas y salidas Gorain (`Sb`, `k`, `P`, `R_f`, `recommendedSkuId`)
- * + Suspensión Zwietering (`N_js`) de manera idéntica en rutas verticales y `/cotizar/`.
+ * Núcleo Único Compartido de Flotación Hidrodinámica (`D3-V51` / `D4-V57`):
+ * `<InstrumentShell>` Input-First con Unicode (`s⁻¹`, `min⁻¹`) y SKU canónico `SMAT-FLOT-MECH-18SP`.
  */
+import InstrumentShell from './InstrumentShell.astro';
 import { evaluateFlotationCellHydrodynamics } from '../../scripts/mechanicalAndSeparationEngine.js';
 
 interface Props {
@@ -31,10 +31,19 @@ const defaultFlotation = evaluateFlotationCellHydrodynamics({
   d80Microns: 110,
   solidsCwPct: 35,
 });
+const canonicalFlotSku = String(defaultFlotation.recommendedSkuId || 'SMAT-FLOT-MECH-18SP');
 ---
 
-<div id="wb-flot-gorain-live-box" data-testid="wb-flot-gorain-live-box" data-domain-root="flotation" class={`smat-core-shell ${panelClass}`.trim()}>
-  <div class="smat-flex-between">
+<InstrumentShell
+  id="wb-flot-gorain-live-box"
+  dataTestId="wb-flot-gorain-live-box"
+  domainRoot="flotation"
+  shellClass={panelClass}
+  locale={locale}
+  detailsSummaryEs="Ver parámetros cinéticos secundarios (P, R_f, SKU, PU vs Hule) y accesos rápidos"
+  detailsSummaryEn="View secondary kinetic metrics (P, R_f, SKU, PU vs Rubber) & quick links"
+>
+  <div slot="header" class="smat-flex-between">
     <strong class="embedded-title">
       {isEs
         ? 'SIMULADOR EN VIVO: AIREACIÓN DE CELDA, FLUJO DE BURBUJA (Sb) Y SUSPENSIÓN (Njs)'
@@ -43,98 +52,106 @@ const defaultFlotation = evaluateFlotationCellHydrodynamics({
     <span class="embedded-badge">Drop-In #18 SP / #24 / #30</span>
   </div>
 
-  <!-- Lectura consolidada Estrato 1 (escritor único #wb-flot-res-susp-status sin duplicación #celdas-gorain-readout) -->
-  <div class="smat-stratum1-display gorain-readout-banner smat-mt-sm">
-    <span>{isEs ? 'Cinética Activa:' : 'Live Kinetics:'}</span>{' '}
-    <span id="wb-flot-res-susp-status" data-testid="wb-flot-res-susp-status">
-      {isEs ? 'Dispersión ≥ 50 s⁻¹ ÓPTIMA · Suspensión Completa' : 'Dispersion ≥ 50 s⁻¹ OPTIMAL · Full Suspension'}
-    </span>
-    <span class="smat-basis-note font-mono-tech">
-      {isEs ? ' · Base de cálculo: cinética de dispersión (Gorain) y suspensión sólida (Zwietering).' : ' · Calculation basis: bubble dispersion (Gorain) & solids suspension (Zwietering).'}
-    </span>
-  </div>
-
-  <!-- Entradas primarias Nivel 1 -->
-  <div class="smat-inputs-2col smat-mt-sm">
-    <div class="form-group">
-      <label class="smat-field-label" for="wb-flot-jg">
-        {isEs ? 'Gas Superficial Jg (cm/s):' : 'Superficial Gas Jg (cm/s):'}
-      </label>
-      <input type="number" id="wb-flot-jg" data-schema-input="flotation.jgCmS" min="0.5" max="3.5" step="0.1" value="1.5" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
-    </div>
-    <div class="form-group">
-      <label class="smat-field-label" for="wb-flot-d32">
-        {isEs ? 'Burbuja Sauter d32 (mm):' : 'Sauter Bubble d32 (mm):'}
-      </label>
-      <input type="number" id="wb-flot-d32" data-schema-input="flotation.d32Mm" min="0.8" max="3.0" step="0.1" value="1.6" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
-    </div>
-    <div class="form-group">
-      <label class="smat-field-label" for="wb-flot-dia">
-        {isEs ? 'Modelo / Ø Rotor Dr (m):' : 'Cell Model / Rotor Ø Dr (m):'}
-      </label>
-      <select id="wb-flot-dia" data-schema-input="flotation.rotorDiaM" class="smat-input-control wb-select font-mono-tech" data-wb-circuit-calc-input>
-        <option value="0.46">#18 SP (Ø 0.46 m · 50 ft³)</option>
-        <option value="0.61" selected>#24 (Ø 0.61 m · 100 ft³)</option>
-        <option value="0.76">#30 (Ø 0.76 m · 300 ft³)</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- Nivel 2 acordeón: RPM y Parámetros Cinéticos de Yacimiento P, Rf, d80, Cw -->
-  <details class="tier2-flot-details smat-mt-sm">
-    <summary class="tier2-flot-summary">
-      {isEs
-        ? 'Velocidad RPM y Parámetros Cinéticos de Yacimiento (P, Rf, d80, %Cw)'
-        : 'Rotor RPM & Ore Kinetic Parameters (P, Rf, d80, %Cw)'}
-    </summary>
+  <!-- Entradas primarias arriba -->
+  <div slot="inputs">
     <div class="smat-inputs-2col smat-mt-sm">
       <div class="form-group">
-        <label class="smat-field-label" for="wb-flot-rpm">
-          {isEs ? 'Velocidad Rotor (RPM):' : 'Rotor Speed (RPM):'}
+        <label class="smat-field-label" for="wb-flot-jg">
+          {isEs ? 'Gas Superficial Jg (cm/s):' : 'Superficial Gas Jg (cm/s):'}
         </label>
-        <input type="number" id="wb-flot-rpm" data-schema-input="flotation.rotorRpm" min="100" max="450" step="5" value="215" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
+        <input type="number" id="wb-flot-jg" data-schema-input="flotation.jgCmS" min="0.5" max="3.5" step="0.1" value="1.5" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
       </div>
       <div class="form-group">
-        <label class="smat-field-label" for="wb-flot-p">
-          {isEs ? 'Flotabilidad Mineral P:' : 'Ore Floatability P:'}
+        <label class="smat-field-label" for="wb-flot-d32">
+          {isEs ? 'Burbuja Sauter d32 (mm):' : 'Sauter Bubble d32 (mm):'}
         </label>
-        <input type="number" id="wb-flot-p" data-schema-input="flotation.floatabilityP" min="0.0005" max="0.020" step="0.0005" value="0.0045" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
+        <input type="number" id="wb-flot-d32" data-schema-input="flotation.d32Mm" min="0.8" max="3.0" step="0.1" value="1.6" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
       </div>
       <div class="form-group">
-        <label class="smat-field-label" for="wb-flot-rf">
-          {isEs ? 'Recuperación en Espuma Rf:' : 'Froth Recovery Rf:'}
+        <label class="smat-field-label" for="wb-flot-dia">
+          {isEs ? 'Modelo / Ø Rotor Dr (m):' : 'Cell Model / Rotor Ø Dr (m):'}
         </label>
-        <input type="number" id="wb-flot-rf" data-schema-input="flotation.frothRecoveryRf" min="0.20" max="1.00" step="0.02" value="0.78" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
-      </div>
-      <div class="form-group">
-        <label class="smat-field-label" for="wb-flot-d80">
-          {isEs ? 'Granulometría d80 (µm):' : 'Grind Size d80 (µm):'}
-        </label>
-        <input type="number" id="wb-flot-d80" data-schema-input="flotation.d80Microns" min="15" max="600" step="5" value="110" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
-      </div>
-      <div class="form-group">
-        <label class="smat-field-label" for="wb-flot-cw">
-          {isEs ? 'Sólidos Pulpa Cw (%):' : 'Pulp Solids Cw (%):'}
-        </label>
-        <input type="number" id="wb-flot-cw" data-schema-input="flotation.solidsWeightPercent" min="10" max="65" step="1" value="35" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
+        <select id="wb-flot-dia" data-schema-input="flotation.rotorDiaM" class="smat-input-control wb-select font-mono-tech" data-wb-circuit-calc-input>
+          <option value="0.46">#18 SP (Ø 0.46 m · 50 ft³)</option>
+          <option value="0.61" selected>#24 (Ø 0.61 m · 100 ft³)</option>
+          <option value="0.76">#30 (Ø 0.76 m · 300 ft³)</option>
+        </select>
       </div>
     </div>
-  </details>
 
-  <!-- Salidas completas unificadas (cálculo SSR isomórfico desde mechanicalAndSeparationEngine) -->
-  <div class="embedded-res-grid font-mono-tech smat-mt-sm">
-    <div class="embedded-res-cell"><strong>{isEs ? 'Flujo Burbuja Sb:' : 'Bubble Flux Sb:'}</strong> <span id="wb-flot-res-sb" data-testid="wb-flot-res-sb" data-schema-output="flotation.sbInverseSeconds">{defaultFlotation.sbInverseSeconds.toFixed(1)} s⁻¹</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Tasa Cinética k:' : 'Kinetic Rate k:'}</strong> <span id="wb-flot-res-k" data-testid="wb-flot-res-k" data-schema-output="flotation.rateConstantMin">{defaultFlotation.rateConstantMin.toFixed(3)} min⁻¹</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Suspensión Njs:' : 'Min Suspension Njs:'}</strong> <span id="wb-flot-res-njs" data-testid="wb-flot-res-njs" data-schema-output="flotation.zwieteringNjsRpm">{defaultFlotation.zwieteringNjsRpm} RPM</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Vel. Periférica u₂:' : 'Tip Speed u₂:'}</strong> <span id="wb-flot-res-vtip" data-testid="wb-flot-res-vtip" data-schema-output="flotation.tipSpeedMS">{defaultFlotation.tipSpeedMS.toFixed(2)} m/s</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Flotabilidad P:' : 'Floatability P:'}</strong> <span id="wb-flot-res-p" data-testid="wb-flot-res-p" data-schema-output="flotation.floatabilityP">{defaultFlotation.floatabilityP}</span></div>
-    <div class="embedded-res-cell"><strong>R_f ({isEs ? 'Espuma' : 'Froth'}):</strong> <span id="wb-flot-res-rf" data-testid="wb-flot-res-rf" data-schema-output="flotation.frothRecoveryRf">{defaultFlotation.frothRecoveryRf}</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'SKU Mecanismo:' : 'Mechanism SKU:'}</strong> <span id="wb-flot-res-sku" data-testid="wb-flot-res-sku" data-schema-output="flotation.recommendedSkuId">{defaultFlotation.recommendedSkuId}</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Vida PU vs Hule:' : 'PU vs Rubber Life:'}</strong> <span id="wb-flot-res-pu-life" data-testid="wb-flot-res-pu-life">{`${defaultFlotation.wearLifeMultiplierPuVsRubber}× · u₂ ${defaultFlotation.tipSpeedWindowOptimal ? (isEs ? 'óptima (5.5–7.5 m/s)' : 'optimal (5.5–7.5 m/s)') : (isEs ? 'ajustar RPM' : 'adjust RPM')}`}</span></div>
+    <details class="tier2-flot-details smat-mt-sm">
+      <summary class="tier2-flot-summary">
+        <span>
+          {isEs
+            ? 'Velocidad RPM y Parámetros Cinéticos de Yacimiento (P, Rf, d80, %Cw)'
+            : 'Rotor RPM & Ore Kinetic Parameters (P, Rf, d80, %Cw)'}
+        </span>
+        <span>▾</span>
+      </summary>
+      <div class="smat-inputs-2col smat-mt-sm">
+        <div class="form-group">
+          <label class="smat-field-label" for="wb-flot-rpm">
+            {isEs ? 'Velocidad Rotor (RPM):' : 'Rotor Speed (RPM):'}
+          </label>
+          <input type="number" id="wb-flot-rpm" data-schema-input="flotation.rotorRpm" min="100" max="450" step="5" value="215" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
+        </div>
+        <div class="form-group">
+          <label class="smat-field-label" for="wb-flot-p">
+            {isEs ? 'Flotabilidad Mineral P:' : 'Ore Floatability P:'}
+          </label>
+          <input type="number" id="wb-flot-p" data-schema-input="flotation.floatabilityP" min="0.0005" max="0.020" step="0.0005" value="0.0045" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
+        </div>
+        <div class="form-group">
+          <label class="smat-field-label" for="wb-flot-rf">
+            {isEs ? 'Recuperación en Espuma Rf:' : 'Froth Recovery Rf:'}
+          </label>
+          <input type="number" id="wb-flot-rf" data-schema-input="flotation.frothRecoveryRf" min="0.20" max="1.00" step="0.02" value="0.78" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
+        </div>
+        <div class="form-group">
+          <label class="smat-field-label" for="wb-flot-d80">
+            {isEs ? 'Granulometría d80 (µm):' : 'Grind Size d80 (µm):'}
+          </label>
+          <input type="number" id="wb-flot-d80" data-schema-input="flotation.d80Microns" min="15" max="600" step="5" value="110" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
+        </div>
+        <div class="form-group">
+          <label class="smat-field-label" for="wb-flot-cw">
+            {isEs ? 'Sólidos Pulpa Cw (%):' : 'Pulp Solids Cw (%):'}
+          </label>
+          <input type="number" id="wb-flot-cw" data-schema-input="flotation.solidsWeightPercent" min="10" max="65" step="1" value="35" class="smat-input-control wb-input font-mono-tech" data-wb-circuit-calc-input />
+        </div>
+      </div>
+    </details>
   </div>
 
-  {showVerticalActions && (
-    <>
+  <!-- Veredicto compacto: Lectura + 4 KPIs Unicode + CTAs -->
+  <div slot="verdict">
+    <div class="smat-stratum1-display gorain-readout-banner smat-mb-sm">
+      <span>{isEs ? 'Cinética Activa:' : 'Live Kinetics:'}</span>{' '}
+      <span id="wb-flot-res-susp-status" data-testid="wb-flot-res-susp-status">
+        {isEs ? 'Dispersión ≥ 50 s⁻¹ ÓPTIMA · Suspensión Completa' : 'Dispersion ≥ 50 s⁻¹ OPTIMAL · Full Suspension'}
+      </span>
+    </div>
+
+    <div class="instrument-kpi-bar font-mono-tech">
+      <div class="instrument-kpi-cell">
+        <strong>{isEs ? 'Flujo Burbuja Sb:' : 'Bubble Flux Sb:'}</strong>
+        <span id="wb-flot-res-sb" data-testid="wb-flot-res-sb" data-schema-output="flotation.sbInverseSeconds">{defaultFlotation.sbInverseSeconds.toFixed(1)} s⁻¹</span>
+      </div>
+      <div class="instrument-kpi-cell">
+        <strong>{isEs ? 'Tasa Cinética k:' : 'Kinetic Rate k:'}</strong>
+        <span id="wb-flot-res-k" data-testid="wb-flot-res-k" data-schema-output="flotation.rateConstantMin">{defaultFlotation.rateConstantMin.toFixed(3)} min⁻¹</span>
+      </div>
+      <div class="instrument-kpi-cell">
+        <strong>{isEs ? 'Suspensión Njs:' : 'Min Suspension Njs:'}</strong>
+        <span id="wb-flot-res-njs" data-testid="wb-flot-res-njs" data-schema-output="flotation.zwieteringNjsRpm">{defaultFlotation.zwieteringNjsRpm} RPM</span>
+      </div>
+      <div class="instrument-kpi-cell">
+        <strong>{isEs ? 'Vel. Periférica u₂:' : 'Tip Speed u₂:'}</strong>
+        <span id="wb-flot-res-vtip" data-testid="wb-flot-res-vtip" data-schema-output="flotation.tipSpeedMS">{defaultFlotation.tipSpeedMS.toFixed(2)} m/s</span>
+      </div>
+    </div>
+
+    {showVerticalActions && (
       <div class="smat-cta-row smat-mt-sm">
         <a
           href={`${quoteBase}?circuito=flotacion&equipo=${quoteEquipo}&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq`}
@@ -147,7 +164,7 @@ const defaultFlotation = evaluateFlotationCellHydrodynamics({
           type="button"
           class="btn btn-outline btn-avenue-tray smat-tap-btn"
           data-vertical-tray-btn
-          data-add-tray-sku={variant === 'cells' ? 'SMAT-FLOT-CELL-100' : 'SMAT-FLOT-MECH-18SP'}
+          data-add-tray-sku={canonicalFlotSku}
           data-tray-part-code="Ø0.61m"
           data-tray-title={isEs ? 'Mecanismo Rotor-Estator Flotación (Ø0.61 m)' : 'Flotation Rotor-Stator Assembly (Ø0.61 m)'}
           data-tray-series={variant === 'cells' ? '100ft' : '0.61m'}
@@ -155,24 +172,31 @@ const defaultFlotation = evaluateFlotationCellHydrodynamics({
           data-tray-circuit="flotacion"
           data-tray-source={`flotation_${variant}_stratum1_calc`}
         >
-          {isEs ? '+ Bandeja Mecanismo 18SP' : '+ Tray 18SP Mechanism'}
+          {isEs ? '+ Bandeja Mecanismo Rotor-Estator' : '+ Tray Rotor-Stator Assembly'}
         </button>
       </div>
-      {variant === 'cells' && (
-        <details class="tier2-flot-details smat-mt-sm" id="flot-cells-extra-links">
-          <summary class="tier2-flot-summary">
-            {isEs ? 'Accesos rápidos: Ficha 18SP y Kit Rotor + Estator' : 'Quick links: 18SP Sheet & Rotor + Stator Kit'}
-          </summary>
-          <div class="smat-cta-row smat-mt-sm">
-            <a href={`${productsBase}${isEs ? 'mecanismo-suspendido-flotacion-18sp/' : 'suspended-flotation-mechanism-18sp/'}`} class="btn btn-outline">
-              SMAT-FLOT-MECH-18SP →
-            </a>
-            <a href={`${quoteBase}?circuito=flotacion&equipo=rotor_estator&serie=100ft#rfq`} class="btn btn-outline">
-              {isEs ? 'Cotizar Kit Rotor + Estator →' : 'Quote Rotor + Stator Kit →'}
-            </a>
-          </div>
-        </details>
-      )}
-    </>
-  )}
-</div>
+    )}
+  </div>
+
+  <div slot="details">
+    <p class="smat-basis-note font-mono-tech smat-mb-sm">
+      {isEs ? 'Base de cálculo: cinética de dispersión (Gorain) y suspensión sólida (Zwietering).' : 'Calculation basis: bubble dispersion (Gorain) & solids suspension (Zwietering).'}
+    </p>
+    <div class="embedded-res-grid font-mono-tech">
+      <div class="embedded-res-cell"><strong>{isEs ? 'Flotabilidad P:' : 'Floatability P:'}</strong> <span id="wb-flot-res-p" data-testid="wb-flot-res-p" data-schema-output="flotation.floatabilityP">{defaultFlotation.floatabilityP}</span></div>
+      <div class="embedded-res-cell"><strong>R_f ({isEs ? 'Espuma' : 'Froth'}):</strong> <span id="wb-flot-res-rf" data-testid="wb-flot-res-rf" data-schema-output="flotation.frothRecoveryRf">{defaultFlotation.frothRecoveryRf}</span></div>
+      <div class="embedded-res-cell"><strong>{isEs ? 'SKU Mecanismo:' : 'Mechanism SKU:'}</strong> <span id="wb-flot-res-sku" data-testid="wb-flot-res-sku" data-schema-output="flotation.recommendedSkuId">{canonicalFlotSku}</span></div>
+      <div class="embedded-res-cell"><strong>{isEs ? 'Vida PU vs Hule:' : 'PU vs Rubber Life:'}</strong> <span id="wb-flot-res-pu-life" data-testid="wb-flot-res-pu-life">{`${defaultFlotation.wearLifeMultiplierPuVsRubber}× · u₂ ${defaultFlotation.tipSpeedWindowOptimal ? (isEs ? 'óptima (5.5–7.5 m/s)' : 'optimal (5.5–7.5 m/s)') : (isEs ? 'ajustar RPM' : 'adjust RPM')}`}</span></div>
+    </div>
+    {showVerticalActions && variant === 'cells' && (
+      <div class="smat-cta-row smat-mt-sm">
+        <a href={`${productsBase}${isEs ? 'mecanismo-suspendido-flotacion-18sp/' : 'suspended-flotation-mechanism-18sp/'}`} class="btn btn-outline smat-tap-btn">
+          SMAT-FLOT-MECH-18SP →
+        </a>
+        <a href={`${quoteBase}?circuito=flotacion&equipo=mecanismo_completo&serie=100ft&flot_condition=sulfuros_alta_agitacion#rfq`} class="btn btn-outline smat-tap-btn">
+          {isEs ? 'Cotizar Rotor + Estator Completo →' : 'Quote Complete Rotor + Stator Kit →'}
+        </a>
+      </div>
+    )}
+  </div>
+</InstrumentShell>

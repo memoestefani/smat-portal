@@ -388,6 +388,165 @@ label:has(> input[type="radio"]),
   .circuit-pills-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.25rem; }
   .circuit-pill { font-size: 0.68rem; line-height: 1.15; white-space: normal; padding: 0.25rem 0.35rem; text-align: center; }
 }
+
+/* SLICE-V57-06: InstrumentShell Input-First & Tokens Unificados (D4-V57, D5-V57) */
+.wb-slider {
+  width: 100%;
+  accent-color: var(--smat-copper-accent, #7c2d12);
+  cursor: pointer;
+}
+
+.smat-instrument-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.smat-instrument-inputs {
+  order: 1;
+}
+
+.smat-instrument-verdict {
+  order: 2;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+}
+
+.instrument-kpi-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.55rem;
+}
+
+.instrument-kpi-cell {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.instrument-kpi-cell strong {
+  display: block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #475569;
+  margin-bottom: 0.15rem;
+}
+
+.instrument-disclosure-summary,
+.tier2-cyc-summary,
+.tier2-flot-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0.6rem 0.85rem;
+  font-weight: 700;
+  font-size: 0.84rem;
+  color: #0c4a6e;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.diagram-scale-pill,
+.smat-scale-badge {
+  white-space: nowrap;
+}
+
+.smat-tap-btn {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avenue-sku-sheet-link,
+.atomic-part-sheet-link {
+  color: #0f172a;
+  text-decoration: none;
+  border-bottom: 1px solid #cbd5e1;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.avenue-sku-sheet-link:hover,
+.atomic-part-sheet-link:hover {
+  color: #7c2d12;
+  border-bottom-color: #7c2d12;
+}
+
+.btn-avenue-tray {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.catalog-master-detail-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+}
+
+.master-detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.master-detail-eyebrow {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #7c2d12;
+  letter-spacing: 0.05em;
+}
+
+.master-detail-title {
+  font-size: 0.9rem;
+  color: #0f172a;
+}
+
+.master-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+[data-select-catalog-sku] {
+  cursor: pointer;
+}
+
+[data-select-catalog-sku].is-selected {
+  border-color: #7c2d12;
+  box-shadow: 0 0 0 2px rgba(124, 45, 18, 0.22);
+}
+
+.catalog-tools-disclosure {
+  position: relative;
+}
+
+.catalog-tools-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.45rem;
+}
 }
 
 @media print {

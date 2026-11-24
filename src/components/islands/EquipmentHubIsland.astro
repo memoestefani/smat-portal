@@ -93,11 +93,7 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
       </div>
     </div>
 
-    <details class="eq-drawer smat-mb-md" id="equipos-catalog-blocks-drawer" open>
-      <summary class="eq-drawer-summary">
-        <span>{isEs ? 'Líneas de Proceso Disponibles (Flotación, Filtración, Bombeo, Hidrociclones y Control)' : 'Process Equipment Lines (Flotation, Filtration, Pumping, Hydrocyclones & Control)'}</span>
-        <span class="eq-drawer-badge">{isEs ? 'CONTRAER / EXPANDIR ▾' : 'TOGGLE LINES ▾'}</span>
-      </summary>
+    <div class="smat-mb-md" id="equipos-catalog-blocks-drawer">
     <div class="process-equipment-grid">
       <article class="card equipment-block" data-equipment-block="flotacion" data-equipment-block-blob="flotacion flotation celdas cells mecanismos mechanisms acondicionadores 18sp av-04">
         <div class="equipment-block-header">
@@ -375,11 +371,11 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
           </div>
         </details>
         <div class="equipment-actions">
-          <a href={controlPath} class="btn btn-outline">{isEs ? 'Ver Línea de Control y Laboratorio' : 'View Process Control & Lab Line'}</a>
+          <a href={controlPath} class="inline-spec-link">{isEs ? 'Ver Línea de Control y Laboratorio →' : 'View Process Control & Lab Line →'}</a>
         </div>
       </article>
     </div>
-    </details>
+    </div>
 
     <details class="eq-drawer smat-mt-sm" id="equipos-dropin-drawer">
       <summary class="eq-drawer-summary">

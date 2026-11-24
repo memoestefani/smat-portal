@@ -11,7 +11,13 @@ pub fn verify_single_main_and_zero_raw_tokens(site_root: &Path) -> Result<(), St
         return Ok(());
     }
 
-    let raw_tokens = ["CAJA_CHICA_CFDI40", "DRAFT_LOCAL", "(bound-", "Driver Sobol"];
+    let raw_tokens = [
+        "CAJA_CHICA_CFDI40",
+        "DRAFT_LOCAL",
+        "(bound-",
+        "Driver Sobol",
+        "smat_vendor_passport_v1",
+    ];
     let script_re = Regex::new(r"(?is)<script\b[^>]*>[\s\S]*?</script>").unwrap();
     let style_re = Regex::new(r"(?is)<style\b[^>]*>[\s\S]*?</style>").unwrap();
     let tag_re = Regex::new(r"<[^>]+>").unwrap();
@@ -78,6 +84,37 @@ pub fn verify_print_pwa_and_core_hygiene(site_root: &Path) -> Result<(), String>
         return Err("AcuseSheetIsland.astro requiere soporte @media print".to_string());
     }
 
+    verify_instrument_shell_input_first(site_root)?;
+
+    Ok(())
+}
+
+/// Invariante V5.7: verifica que `<InstrumentShell>` exista y los 5 núcleos canónicos rendericen `slot="inputs"` antes de `slot="verdict"`.
+pub fn check_input_first_order(astro_text: &str) -> bool {
+    match (astro_text.find("slot=\"inputs\""), astro_text.find("slot=\"verdict\"")) {
+        (Some(inp), Some(ver)) => inp < ver,
+        _ => false,
+    }
+}
+
+pub fn verify_instrument_shell_input_first(site_root: &Path) -> Result<(), String> {
+    let shell_path = site_root.join("src/components/cores/InstrumentShell.astro");
+    if !shell_path.is_file() {
+        return Err("Falta componente canonico src/components/cores/InstrumentShell.astro".to_string());
+    }
+    for rel in [
+        "src/components/cores/MetrologyLabCore.astro",
+        "src/components/cores/CycloneScreenCore.astro",
+        "src/components/cores/FiltrationCore.astro",
+        "src/components/cores/FlotationCore.astro",
+        "src/components/cores/PumpingHydraulicsCore.astro",
+    ] {
+        let p = site_root.join(rel);
+        let text = fs::read_to_string(&p).map_err(|e| format!("Error leyendo {}: {}", rel, e))?;
+        if !check_input_first_order(&text) {
+            return Err(format!("{} debe colocar slot=\"inputs\" antes de slot=\"verdict\" (V5.7 Input-First)", rel));
+        }
+    }
     Ok(())
 }
 
@@ -261,7 +298,7 @@ pub fn verify_css_layers_in_text(css_rel: &str, raw: &str) -> Result<(), String>
 
 #[cfg(test)]
 mod tests {
-    use super::verify_css_layers_in_text;
+    use super::{check_input_first_order, verify_css_layers_in_text};
 
     #[test]
     fn accepts_valid_layered_css_with_print_and_hidden() {
@@ -282,5 +319,13 @@ mod tests {
             .rogue-unlayered { color: red; }
         "#;
         assert!(verify_css_layers_in_text("bad.css", bad).is_err());
+    }
+
+    #[test]
+    fn validates_instrument_shell_input_first_order() {
+        let good = r#"<div slot="inputs"></div><div slot="verdict"></div>"#;
+        let bad = r#"<div slot="verdict"></div><div slot="inputs"></div>"#;
+        assert!(check_input_first_order(good));
+        assert!(!check_input_first_order(bad));
     }
 }

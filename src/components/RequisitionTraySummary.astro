@@ -3,7 +3,6 @@
 // MVP v3.0 (D3, D5): Bandeja de Requisición Multi-Ítem B2B con Regla de Prioridad Generalizada c*mu
 // (Van Mieghem 1995), Conmutador Paro de Línea vs Stock (s,S) y Código de Orden Determinista FNV-1a
 import quickCatalog from '../../data/quick_checkout_Catalog.json';
-import { formatUrgencyBandHuman } from '../scripts/i18nDomainLabels.js';
 
 interface Props {
   lang?: 'es' | 'en';
@@ -11,7 +10,7 @@ interface Props {
 
 const { lang = 'es' } = Astro.props;
 const isEs = lang === 'es';
-const initialUrgencyHuman = formatUrgencyBandHuman('PARO_DE_LINEA', lang);
+const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tray';
 ---
 
 <section class="req-tray-card" id="smat-requisition-tray-summary" data-requisition-tray aria-labelledby="req-tray-title">
@@ -24,7 +23,7 @@ const initialUrgencyHuman = formatUrgencyBandHuman('PARO_DE_LINEA', lang);
         {isEs ? 'Partidas Activas y Enrutamiento Prioritario de Despacho' : 'Active Line Items & Priority Dispatch Routing'}
       </h3>
     </div>
-    <button type="button" class="req-tray-clear-btn" id="tray-clear-btn">
+    <button type="button" class="req-tray-clear-btn hidden" id="tray-clear-btn">
       {isEs ? 'Vaciar Bandeja' : 'Clear Tray'}
     </button>
   </div>
@@ -35,11 +34,11 @@ const initialUrgencyHuman = formatUrgencyBandHuman('PARO_DE_LINEA', lang);
     </span>
     <code id="tray-cmu-subject-line" class="req-tray-cmu-code">
       {isEs
-        ? '[SMAT-DGO] [PARO DE LÍNEA | C_v=48% Cr27 | 1 SKUs | Ref: SMAT-7A4F-9C12]'
-        : '[SMAT-DGO] [LINE-STOP | C_v=48% Cr27 | 1 SKU | Ref: SMAT-7A4F-9C12]'}
+        ? '[SMAT-DGO] [BORRADOR SIN PARTIDAS | 0 SKUs]'
+        : '[SMAT-DGO] [DRAFT NO ITEMS | 0 SKUs]'}
     </code>
     <div id="tray-priority-sla-meta" data-testid="tray-priority-sla-meta" class="font-mono-tech smat-tray-priority-sla-meta">
-      {isEs ? `${initialUrgencyHuman} • SLA Respuesta: ≤ 15 min` : `${initialUrgencyHuman} • Response SLA: ≤ 15 min`}
+      {isEs ? `${initialUrgencyHuman} • Añada SKUs para asignar SLA` : `${initialUrgencyHuman} • Add SKUs to assign SLA`}
     </div>
   </div>
 
@@ -156,6 +155,7 @@ const initialUrgencyHuman = formatUrgencyBandHuman('PARO_DE_LINEA', lang);
     const renderTray = () => {
       const state = getTrayState();
       const desc = computeCmuPriorityDescriptor(state);
+      clearBtn?.classList.toggle('hidden', !state.items.length);
       if (cmuCode) {
         cmuCode.textContent = buildCmuPrioritySubjectLine(state, { cvPct: 52, material: 'Cr27', lang });
       }

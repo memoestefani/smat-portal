@@ -25,7 +25,7 @@ const mechanicalDiagByRole: Record<string, any> = {
     actionEn: 'Replace suspended mechanism with Polyurethane / Natural Rubber rotor-stator',
     recommendedMaterial: 'poliuretano_minero',
     recommendedRole: 'rotor_estator',
-    threshold: 'Claro radial > 12 mm / J_g < 1.1 cm/s',
+    threshold: 'Claro radial > 12 mm / Jg < 1.1 cm/s',
     stationNumber: 'Celda (Rotor/Estator)'
   },
   desgaste_placas_telas: {
@@ -45,15 +45,21 @@ const mechanicalDiagByRole: Record<string, any> = {
 
 const diagnostics = diagData.diagnostics.map((item) => {
   const mech = mechanicalDiagByRole[item.id] || MECHANICAL_DIAGNOSTICS.liner_grooving;
-  const stStr = String(mech.stationNumber || item.station_id || '05');
-  const stationCode = stStr.includes('5') ? '05' : stStr.includes('3') ? '03' : stStr.includes('2') ? '02' : stStr.includes('1') ? '01' : '05';
+  const stationIdVal = String(item.station_id || '');
+  const stStr = String(mech.stationNumber || stationIdVal || '05');
+  const stationCode = stationIdVal.startsWith('EST-0')
+    ? stationIdVal.slice(4)
+    : (stStr.includes('5') ? '05' : stStr.includes('3') ? '03' : stStr.includes('2') ? '02' : stStr.includes('1') ? '01' : '05');
+  const resolvedStationNumber = stationIdVal.startsWith('EST-0')
+    ? `${isEs ? 'Estación' : 'Station'} ${stationCode}`
+    : (typeof mech.stationNumber === 'number' ? `${isEs ? 'Estación' : 'Station'} 0${mech.stationNumber}` : stStr);
   const claroMm = item.id === 'cavitacion_abrasion' ? '2.5' : item.id === 'fuga_sello_rodamientos' ? '2.8' : String(mech.recommendedClearanceMm || '0.75');
   return {
     ...item,
-    stationIdLabel: item.station_id || (typeof mech.stationNumber === 'number' ? `EST-0${mech.stationNumber}` : stStr),
+    stationIdLabel: stationIdVal || (typeof mech.stationNumber === 'number' ? `EST-0${mech.stationNumber}` : stStr),
     recommendedSkusList: Array.isArray(item.recommended_skus) ? item.recommended_skus : [],
     threshold: mech.threshold,
-    stationNumber: typeof mech.stationNumber === 'number' ? `Estación 0${mech.stationNumber}` : stStr,
+    stationNumber: resolvedStationNumber,
     recommendedMaterial: mech.recommendedMaterial,
     stationCode,
     claroMm

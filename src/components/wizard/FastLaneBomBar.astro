@@ -36,9 +36,6 @@ const stations = isEs
           : 'Paste one or more SMAT SKUs or operational references with qty (e.g. SMAT-PUMP-WETKIT-554 2).'}
       </p>
     </div>
-    <button type="button" id="btn-share-purchasing-link" class="assist-pill-btn fastlane-share-btn">
-      {isEs ? 'Copiar enlace para Compras' : 'Copy Link for Purchasing'}
-    </button>
   </div>
 
   <div class="fastlane-bom-input-row">
@@ -53,15 +50,21 @@ const stations = isEs
       {isEs ? 'Agregar Lista a Bandeja' : 'Add List to Tray'}
     </button>
   </div>
+  <p id="fastlane-bom-summary" class="fastlane-feedback font-mono-tech hidden" role="status" aria-live="polite"></p>
   <p id="fastlane-bom-feedback" class="fastlane-feedback font-mono-tech hidden" role="status" aria-live="polite"></p>
   <p id="share-purchasing-feedback" class="fastlane-feedback font-mono-tech hidden" role="status" aria-live="polite"></p>
 
   <details class="wb-progressive-drawer fastlane-mine-drawer smat-mt-sm" id="fastlane-mine-drawer">
     <summary class="wb-progressive-summary">
-      <span>{isEs ? `Unidad Minera y Parámetros de Pulpa (${MINING_UNITS_COUNT} unidades)` : `Mining Unit & Slurry Parameters (${MINING_UNITS_COUNT} sites)`}</span>
+      <span>{isEs ? `Unidad Minera, Compras y Parámetros de Pulpa (${MINING_UNITS_COUNT} unidades)` : `Mining Unit, Purchasing & Slurry Parameters (${MINING_UNITS_COUNT} sites)`}</span>
       <span class="wb-step1-more-arrow">▾</span>
     </summary>
     <div class="wb-progressive-body">
+      <div class="smat-mb-md">
+        <button type="button" id="btn-share-purchasing-link" class="assist-pill-btn fastlane-share-btn">
+          {isEs ? 'Copiar enlace para Compras' : 'Copy Link for Purchasing'}
+        </button>
+      </div>
       <div class="fastlane-mine-grid">
         <div class="form-group">
           <label for="wb-mining-group-select" class="qw-mini-label">
@@ -85,17 +88,16 @@ const stations = isEs
       </div>
       <div id="wb-step1-pulp-profile-badge" class="unit-pulp-profile-badge hidden qw-pulp-badge"></div>
       <div id="wb-mining-preset-telemetry" data-mining-preset-telemetry class="qw-mining-telemetry hidden"></div>
+      <nav class="fastlane-stations-nav" aria-label={isEs ? 'Calculadoras especializadas por estación' : 'Specialized station calculators'}>
+        <span class="fastlane-stations-label">{isEs ? '¿Requiere dimensionar primero?' : 'Need to size a circuit first?'}</span>
+        <div class="fastlane-stations-links">
+          {stations.map((st) => (
+            <a href={st.href} class="fastlane-station-link">{st.label} →</a>
+          ))}
+        </div>
+      </nav>
     </div>
   </details>
-
-  <nav class="fastlane-stations-nav" aria-label={isEs ? 'Calculadoras especializadas por estación' : 'Specialized station calculators'}>
-    <span class="fastlane-stations-label">{isEs ? '¿Requiere dimensionar primero?' : 'Need to size a circuit first?'}</span>
-    <div class="fastlane-stations-links">
-      {stations.map((st) => (
-        <a href={st.href} class="fastlane-station-link">{st.label} →</a>
-      ))}
-    </div>
-  </nav>
 </section>
 
 <style>
@@ -136,7 +138,8 @@ const stations = isEs
   }
   .fastlane-apply-btn,
   .fastlane-share-btn {
-    min-height: 44px;
+    min-height: 48px;
+    min-width: 48px;
     white-space: nowrap;
   }
   .fastlane-feedback {

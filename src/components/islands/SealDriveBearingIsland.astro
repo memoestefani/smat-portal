@@ -26,7 +26,7 @@ const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
 
 const allRoles = (rolesData.verticals || []).flatMap((v) => [...(v.capex || []), ...(v.opex || [])]);
 const roleLookupId = variant === 'seal' ? 'sello' : (variant === 'skid' ? 'skid_bomba' : 'soporte');
-const roleObj = allRoles.find((r) => r.role_id === roleLookupId);
+const roleObj = allRoles.find((r) => r.role_id === roleLookupId) as Record<string, any> | undefined;
 const dc = roleObj?.decision_criteria;
 
 const sealParts = variant === 'seal' ? [getAtomicPartSpecs('DAM028'), getAtomicPartSpecs('EAM028')].filter(Boolean) : [];
@@ -72,11 +72,6 @@ const stratumSimId = variant === 'seal'
                 ? 'Calibración en vivo de vida modificada ISO 281 L₁₀ₘₕ, bastidor recomendado, sellado e intercambio Core Trade-In DAM005 (-22% / -12%).'
                 : 'Live ISO 281 L₁₀ₘₕ bearing life calibration, frame sizing, sealing and DAM005 Core Trade-In exchange (-22% / -12%).')}
         </p>
-        <div class="smat-cta-row smat-mt-sm">
-          <a href={`${isEs ? '/bombeo/' : '/en/pumping/'}?tab=${variant}`} class="btn btn-outline">
-            {isEs ? 'Abrir en Consola Maestra de Bombeo →' : 'Open Unified Pumping Hub →'}
-          </a>
-        </div>
       </div>
     </section>
 
@@ -112,7 +107,7 @@ const stratumSimId = variant === 'seal'
                   {variant === 'seal'
                     ? (isEs ? 'Expulsor 02A (0 agua) vs 02B Prensaestopa' : '02A Dry Expeller vs 02B Flushed Gland')
                     : variant === 'skid'
-                      ? 'CV · ZVZ · CRZ · DC (u₂ ≤ 32 m/s)'
+                      ? `CV · ZVZ · CRZ · DC (${roleObj?.flow_range || '50 a 1,200 m³/h'}) · u₂ ≤ 32 m/s`
                       : 'DAM005 (L₁₀ₘₕ ISO 281 • -22% / -12% Trade-In)'}
                 </strong>
               </div>

@@ -29,6 +29,7 @@ import {
   evaluateFlotationCellHydrodynamics,
 } from './mechanicalAndSeparationEngine.js';
 import { saveStationSnapshot } from './rfqSessionStore.js';
+import { formatScientificUnit } from './i18nDomainLabels.js';
 
 /**
  * Conecta de forma canónica cualquier calculadora de Filtración Prensa (#filt-* o #rep-*).
@@ -120,11 +121,11 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
       asymDpEl.textContent = `ΔP = ${res.deltaPAsymmetricMpa} MPa | σ_adm,PP = ${res.ppFatigueAllowableMpa} MPa`;
     }
     if (skusEl) {
-      const plateSku = res.recommendedRecessedPlateSkuId || 'SMAT-FILT-CLOTH-PLATE';
-      const clothSku = res.recommendedClothSkuId || 'SMAT-CL-PP750';
+      const packSku = res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId || 'SMAT-FILT-CLOTH-PLATE';
+      const shifterSku = res.recommendedShifterSkuId || 'SMAT-FILT-SHIFTER-CHAIN';
       skusEl.textContent = isEn
-        ? `Plate: ${plateSku} | Cloth: ${clothSku}`
-        : `Placa: ${plateSku} | Tela: ${clothSku}`;
+        ? `Plates & Cloth: ${packSku} | Shifter: ${shifterSku}`
+        : `Placas y Tela: ${packSku} | Corre-Placas: ${shifterSku}`;
     }
     const secondaryBreakdown = isEn
       ? `ΔP_asym = ${res.deltaPAsymmetricMpa} MPa · σ_adm = ${res.ppFatigueAllowableMpa} MPa · ${res.cyclesPerDay} cyc/d · ${res.dryTonnesPerDay} t/d (${res.filtrationMinutes}+12=${res.totalCycleMin} min)`
@@ -282,6 +283,10 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es', _options = {
     const sbVal = res.sbInverseSeconds;
     const kVal = rateConstantPerMin;
     const vtipVal = res.tipSpeedMS;
+    const sbOutEl = root.querySelector('#wb-flot-res-sb');
+    const kOutEl = root.querySelector('#wb-flot-res-k');
+    if (sbOutEl) sbOutEl.textContent = formatScientificUnit(sbVal, 's⁻¹', 1);
+    if (kOutEl) kOutEl.textContent = formatScientificUnit(kVal, 'min⁻¹', 3);
     if (puLifeOut) {
       puLifeOut.textContent = isEn
         ? `${res.wearLifeMultiplierPuVsRubber}× · u₂ ${res.tipSpeedWindowOptimal ? 'optimal (5.5–7.5 m/s)' : 'adjust RPM'}`
@@ -289,9 +294,8 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es', _options = {
     }
     if (statusOut) {
       const baseSummary = isEn ? res.summaryEn : res.summaryEs;
-      const suspTag = `N_js=${res.zwieteringNjsRpm} RPM (${res.suspensionSafe ? (isEn ? 'Suspension OK' : 'Suspensión OK') : (isEn ? 'Sanding Risk' : 'Alerta Arenero')})`;
       const tipTag = `${res.tipSpeedWindowOptimal ? (isEn ? 'Optimal Window' : 'Ventana Óptima') : (isEn ? 'Adjust RPM' : 'Ajustar RPM')} · PU ${res.wearLifeMultiplierPuVsRubber}×`;
-      statusOut.textContent = `${baseSummary} · ${suspTag} · ${tipTag}`;
+      statusOut.textContent = `${baseSummary} · ${tipTag}`;
     }
     if (readoutBox) {
       const isOptimal = Boolean(res.gorainCompliant) && Boolean(res.suspensionSafe);

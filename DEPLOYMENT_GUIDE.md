@@ -1,4 +1,4 @@
-# Guía Canónica de Despliegue ($0/mes) — SMAT Minerals Site v5.6
+# Guía Canónica de Despliegue ($0/mes) — SMAT Minerals Site v5.7
 
 > **Repositorio:** [`memoestefani/smat-portal`](https://github.com/memoestefani/smat-portal) (rama de producción: `main`)  
 > **Dominio:** https://smatminerals.com  
@@ -23,7 +23,7 @@ No hay variables de entorno obligatorias. Única opcional: `PUBLIC_GA_ID`.
 
 ## 2. Invariantes que Bloquean un Despliegue
 
-Un cambio **no se publica** si alguno falla. Las **11 compuertas comportamentales** (`smat-gate v2.2`) y sus **5 unit tests Rust** viven en [`crates/smat-gate`](crates/smat-gate/src/lib.rs) (`physics_and_schema.rs`, `security_and_leaks.rs`, `seo_and_i18n.rs`, `ux_and_css_layers.rs`) junto con **60 pruebas en Node.js** dentro de `tests/*.test.mjs`:
+Un cambio **no se publica** si alguno falla. Las **11 compuertas comportamentales** (`smat-gate v2.2`) y sus **7 unit tests Rust** viven en [`crates/smat-gate`](crates/smat-gate/src/lib.rs) (`physics_and_schema.rs`, `security_and_leaks.rs`, `seo_and_i18n.rs`, `ux_and_css_layers.rs`) junto con **63 pruebas en Node.js** dentro de `tests/*.test.mjs`:
 
 1. **Paridad de catálogo y cero debris:** `data/roles.json`, `data/quick_checkout_Catalog.json` y `data/atomic_parts.json` válidos; `0` archivos `roles.copy.json`, `0` módulos `@ts-nocheck` en `src/scripts/`.
 2. **Cero fugas comerciales:** sin `$` seguido de cifras ni `margen:` en `data/`, `public/` o `src/`.
@@ -50,7 +50,7 @@ Antes de cada publicación verifica que no reaparezcan:
 Desde `c:\Users\52331\Documents\Proyectos\smat\site`:
 
 ```powershell
-# Verificación completa unificada (19 WebP + 201 redirects + tsc + astro check + build + 60 pruebas Node + 11 compuertas Rust)
+# Verificación completa unificada (19 WebP + 201 redirects + tsc + astro check + build + 63 pruebas Node + 11 compuertas Rust)
 npm run preflight
 ```
 
@@ -60,9 +60,9 @@ Si deseas ejecutar cada etapa individualmente (en hosts de 8 GB RAM usar `-j 1` 
 tsc --noEmit                                  # esperado: 0 errors
 npx astro check                               # esperado: 0 errors, 0 warnings
 npx astro build                               # genera dist/
-npm test                                      # esperado: 60/60 PASS
+npm test                                      # esperado: 63/63 PASS
 npm run gate                                  # esperado: 11/11 PASS
-cargo test --manifest-path crates/smat-gate/Cargo.toml -j 1 -- --test-threads=1  # esperado: 5/5 PASS
+cargo test --manifest-path crates/smat-gate/Cargo.toml -j 1 -- --test-threads=1  # esperado: 7/7 PASS
 npm run preview                               # revisión visual en http://localhost:4321
 ```
 
@@ -178,4 +178,5 @@ Si algo sale mal tras publicar:
 - **v5.3 (Ola C1+C2 — `GOLD-745` / `ARB-SMAT-61` / `Gate 53`):** Clausura integral **Ola C1 + C2**: landmark único `<main>` en el 100% de páginas compiladas (incluyendo `AcuseSheetIsland.astro` y rutas legales/producto), diccionario humano `i18nDomainLabels.js` sin tokens crudos ni `CAPEX`/`OPEX`, bandeja unificada en `<dialog id="smat-qtray-drawer">` con tecla `Escape` y blancos táctiles Fitts `>= 48px`, apertura contextual de parámetros Tier 2 en `PumpingHydraulicsCore.astro`, badge offline reactivo `#smat-offline-status` (`hidden` en reposo), cola local idempotente con jitter acotado (`#wb-submit-outbox-btn` en Paso 3 de `QuoteWizard.astro`), proyección de drivers Sobol $S_1$ en `#live-table-sobol-drivers` con `.mini-dossier-bar` no oclusiva (`position: static`), erradicación de los `12` exports JS muertos fuera de la allowlist de `11` contratos de test, **`Gate 53`** (`53/53` compuertas Rust en `--check`, `47` unit tests Rust, `7` suites Node.js sin fallos) y tour headless CDP `ergos` `27/27 ✅ Conforme`.
 - **v5.3.1 (Ola C3 / `ARB-SMAT-62` / `Gate 53`):** Cierre completo **APL-01..04**: checkboxes Fitts (`20x20 px` dentro de `<label>` `>= 48px`), fuente única `SMAT_SUPPLY_DOORS` en Portada/Navbar/Footer/Islas verticales (`Equipos`, `Bombas`, `Control`), barra de navegación de una sola fila con 5 enlaces concisos, erradicación en DOM vivo de `CAJA_CHICA_CFDI40`, `ROPING_CORDON`, `Tray: v3` y `Driver Sobol:`, `#live-date` dinámico sincronizado con folio, revelación progresiva `Cowan <= 8.50` en catálogo y núcleos/islas de control y tribología, y candados anti-regresión en `Gate 53`.
 - **v5.5 (`61e7613`):** Arquitectura Task-First para `/cotizar/`, consolidación en 11 compuertas comportamentales (`crates/smat-gate/src/{physics_and_schema,security_and_leaks,seo_and_i18n,ux_and_css_layers}.rs`), purga de debris `/admin`, PWA `smat-pwa-v5.5`, y superficie vertical unificada en Flotación y Filtración.
-- **v5.6 (actual):** Contratos tipados ejecutables (`tsc --noEmit` + `checkJs` con `0` `@ts-nocheck`), almacén único transaccional `rfqSessionStore.js` (`SmatRfqSessionV3`) con aislamiento dimensional (`metrology.oreSolidsSg` vs `cyclone.feedPulpSgKgL`), división pura de puentes verticales (`flotationFiltrationBridge.js`, `cycloneScreenBridge.js`), cascada CSS 100% encapsulada en `@layer` (`ux_and_css_layers.rs` + `0` fallos de contraste en Ergos), superficie única de bombeo en `/bombeo/` (`#bombeo-station-tabs`), revelación progresiva en `FastLaneBomBar`/`RequisitionTraySummary`, purga de `<button>` dentro de `<summary>`, erradicación de fugas post-render en DOM (`SLICE-V56-18`), `60/60` pruebas Node.js, `11/11` compuertas `smat-gate` y `5/5` unit tests en Rust.
+- **v5.6:** Contratos tipados ejecutables (`tsc --noEmit` + `checkJs` con `0` `@ts-nocheck`), almacén único transaccional `rfqSessionStore.js` (`SmatRfqSessionV3`) con aislamiento dimensional (`metrology.oreSolidsSg` vs `cyclone.feedPulpSgKgL`), división pura de puentes verticales (`flotationFiltrationBridge.js`, `cycloneScreenBridge.js`), cascada CSS 100% encapsulada en `@layer` (`ux_and_css_layers.rs` + `0` fallos de contraste en Ergos), superficie única de bombeo en `/bombeo/` (`#bombeo-station-tabs`), revelación progresiva en `FastLaneBomBar`/`RequisitionTraySummary`, purga de `<button>` dentro de `<summary>`, erradicación de fugas post-render en DOM (`SLICE-V56-18`), `60/60` pruebas Node.js, `11/11` compuertas `smat-gate` y `5/5` unit tests en Rust.
+- **v5.7 (actual — `[ARB-SMAT-66]`):** Capa tipada `instrumentViewModels.js` + ciclo de vida honesto `EMPTY → DRAFT → VERIFIED` (sin folios ni correos ficticios en reposo), `<InstrumentShell>` *Input-First* en Metrología/Clasificación/Filtración/Flotación/Bombeo, corrección CFDI `I08`, estación `EST-03`, SKU distinto Placa/Tela vs Corre-Placas, Unicode `s⁻¹`/`min⁻¹`, descompresión Cowan Apple *Master-Detail* en `/catalogo/`, `/cotizar/` y `/equipos/`, CTA único en `/bombeo/*`, blindaje `smat-gate` V5.7 y suite `v57_viewmodel_and_instrument_shell.test.mjs`.

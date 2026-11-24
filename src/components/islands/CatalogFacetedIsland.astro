@@ -33,6 +33,7 @@ const {
   diagramSurjectivity,
   canonicalSeriesCount,
   totalCatalogSkusCount,
+  bombeoPowerRange,
   flotationPowerRange,
   filtrationPowerRange,
   controlProcessItems,
@@ -55,13 +56,18 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
       <span class="catalog-edition-pill">{isEs ? 'Catálogo Técnico de Planta • 2026' : 'Plant Technical Catalog • 2026'}</span>
     </div>
     <div class="action-bar-right">
-      <button type="button" id="catalog-download-passport-btn" data-passport-kind="json" class="btn-action btn-print">
-        {isEs ? 'Pasaporte Proveedor CFDI (JSON)' : 'Vendor Passport CFDI (JSON)'}
-      </button>
-      <button type="button" class="btn-action btn-print" onclick="window.print()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="smat-inline-svg-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-        <span>{isEs ? 'Imprimir / Guardar PDF (A4)' : 'Print / Save PDF (A4)'}</span>
-      </button>
+      <details class="catalog-tools-disclosure">
+        <summary class="smat-chip">{isEs ? 'Pasaporte / PDF (A4) ▾' : 'Passport / PDF (A4) ▾'}</summary>
+        <div class="catalog-tools-menu">
+          <button type="button" id="catalog-download-passport-btn" data-passport-kind="json" class="btn-action btn-print">
+            {isEs ? 'Pasaporte Proveedor CFDI (JSON)' : 'Vendor Passport CFDI (JSON)'}
+          </button>
+          <button type="button" class="btn-action btn-print" onclick="window.print()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="smat-inline-svg-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            <span>{isEs ? 'Imprimir / Guardar PDF (A4)' : 'Print / Save PDF (A4)'}</span>
+          </button>
+        </div>
+      </details>
       <a href={quoteBaseHref} class="btn-action btn-rfq">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="smat-inline-svg-icon"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         <span>{isEs ? 'Cotizar Requisición' : 'Generate Requisition'}</span>
@@ -118,12 +124,7 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
     </div>
   </section>
 
-  <details class="wb-progressive-drawer smat-mb-md" id="catalog-bombeo-drawer" open>
-    <summary class="wb-progressive-summary">
-      <span>{isEs ? '01 • Bombas para Lodos, Tabla Paramétrica (9 Series), Aleaciones (5), 7 Avenidas (19 SKUs) y 13 Piezas Atómicas' : '01 • Slurry Pumps, Parametric Matrix (9 Frames), Alloys (5), 7 Avenues (19 SKUs) & 13 Atomic Parts'}</span>
-      <span class="wb-step1-more-arrow">▾</span>
-    </summary>
-    <div class="wb-progressive-body">
+  <section class="smat-mb-md" id="catalog-bombeo-drawer">
   <section class="catalog-section" id={isEs ? 'bombeo' : 'pumping'}>
     <div class="section-title-wrap">
       <span class="section-num">01</span>
@@ -139,14 +140,13 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
         <h3>{isEs ? 'Bombas para Lodos (1.5x1" a 14x12") y Bearing Assembly / Housing' : 'Slurry Pumps (1.5x1" to 14x12") & Bearing Assembly / Housing'}</h3>
         <p class="card-desc">{isEs ? 'Bombas centrífugas horizontales de servicio pesado para descarga de molino, alimentación a ciclones, flotación y jales, junto con Bearing Assembly / Housing completos listos para montaje rápido en campo.' : 'Heavy-duty horizontal slurry pumps engineered for mill discharge, cyclone feed, flotation, and tailings pipelines, plus factory-shimmed Bearing Assembly / Housing modules.'}</p>
         <ul class="card-specs">
-          <li><strong>{isEs ? 'Rango de Bombas:' : 'Pump Series Range:'}</strong> {isEs ? 'Desde 1.5x1" hasta 14x12" (Series 4x3", 6x4", 8x6", 10x8" con acople 1:1).' : '1.5x1" through 14x12" (4x3", 6x4", 8x6", 10x8" with 1:1 interchangeability).'}</li>
+          <li><strong>{isEs ? 'Rango de Bombas:' : 'Pump Series Range:'}</strong> {isEs ? `Desde 1.5x1" hasta 14x12" (${bombeoPowerRange}; 4x3", 6x4", 8x6", 10x8" con acople 1:1).` : `1.5x1" through 14x12" (${bombeoPowerRange}; 4x3", 6x4", 8x6", 10x8" with 1:1 interchangeability).`}</li>
           <li><strong>Bearing Assembly / Housing:</strong> {isEs ? 'Conjunto completo ensamblado (carcasa cilíndrica, flecha de acero aleado, rodamientos cónicos Timken y sellos laberinto).' : 'Complete cartridge assembly with alloy shaft, tapered roller bearings & labyrinth seals.'}</li>
           <li><strong>{isEs ? 'Sellado de Flecha:' : 'Shaft Sealing:'}</strong> {isEs ? 'Expulsor centrífugo en seco y prensaestopa con anillo linterna. No vendemos sello mecánico por alta abrasión.' : 'Dry centrifugal expeller and packed gland with lantern ring. Mechanical seals excluded due to severe abrasion.'}</li>
           <li><strong>{isEs ? 'Intercambiabilidad:' : 'Compatibility:'}</strong> {isEs ? 'Acople dimensional 1:1 con bancadas y bridas ANSI estándar.' : 'Direct 1:1 drop-in mounting onto existing plant baseplates and ANSI flanges.'}</li>
         </ul>
         <div class="card-footer-action no-print smat-cta-row">
-          <a href={isEs ? '/cotizar/?circuito=bombeo&equipo=skid_bomba&serie=6x4#rfq' : '/en/quote/?circuito=bombeo&equipo=skid_bomba&serie=6x4#rfq'} class="btn-card-quote">{isEs ? 'Cotizar Bomba para Lodos →' : 'Quote Slurry Pump →'}</a>
-          <a href={isEs ? '/cotizar/?circuito=bombeo&equipo=soporte&serie=6x4&estacion=S1#rfq' : '/en/quote/?circuito=bombeo&equipo=soporte&serie=6x4&estacion=S1#rfq'} class="btn-card-quote">{isEs ? 'Cotizar Bearing Assembly →' : 'Quote Bearing Assembly →'}</a>
+          <a href={isEs ? '/cotizar/?circuito=bombeo&equipo=skid_bomba&serie=6x4#rfq' : '/en/quote/?circuito=bombeo&equipo=skid_bomba&serie=6x4#rfq'} class="btn-card-quote">{isEs ? 'Cotizar Bomba / Bearing →' : 'Quote Pump / Bearing →'}</a>
         </div>
       </article>
 
@@ -162,7 +162,6 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
         </ul>
         <div class="card-footer-action no-print smat-cta-row">
           <a href={isEs ? '/cotizar/?circuito=bombeo&equipo=revestimientos&serie=6x4&estacion=S4#rfq' : '/en/quote/?circuito=bombeo&equipo=revestimientos&serie=6x4&estacion=S4#rfq'} class="btn-card-quote">{isEs ? 'Cotizar Lote Húmedo (5-5-4) →' : 'Quote Wet-End Lot (5-5-4) →'}</a>
-          <a href={isEs ? '/cotizar/?circuito=bombeo&equipo=impulsor&serie=6x4&estacion=S3#rfq' : '/en/quote/?circuito=bombeo&equipo=impulsor&serie=6x4&estacion=S3#rfq'} class="btn-card-quote">{isEs ? 'Cotizar Impulsores →' : 'Quote Impellers →'}</a>
         </div>
       </article>
     </div>
@@ -225,13 +224,29 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
             <tr class="dim-row" data-dimension="dim-c" data-series={row.key}>
               <td><span class={`series-pill ${row.highlight ? 'highlight' : ''}`}>{row.label}</span></td>
               <td>{isEs ? row.dimsEs : row.dimsEn}</td><td>{row.flow}</td><td>{row.head}</td><td><strong>{row.topSize}</strong></td><td>{row.power}</td><td>{isEs ? row.materialsEs : row.materialsEn}</td><td>{isEs ? row.appEs : row.appEn}</td>
-              <td class="no-print"><a href={`${isEs ? '/cotizar/' : '/en/quote/'}?circuito=bombeo&equipo=skid_bomba&serie=${encodeURIComponent(row.key)}#rfq`} class="btn-table-cta">{isEs ? `Cotizar ${row.key} →` : `Quote ${row.key} →`}</a></td>
+              <td class="no-print"><span class="series-pill">{row.key}</span></td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
 
+    <details class="wb-progressive-drawer smat-mt-sm" id="catalog-avenues-drawer">
+      <summary class="wb-progressive-summary">
+        <span>{isEs ? `Explorar 19 SKUs en 7 Avenidas Industriales (Matriz Master-Detail)` : `Explore 19 SKUs across 7 Industrial Avenues (Master-Detail Matrix)`}</span>
+        <span class="wb-step1-more-arrow">▾</span>
+      </summary>
+      <div class="wb-progressive-body">
+        <CatalogAvenuesMatrix lang={lang} />
+      </div>
+    </details>
+
+    <details class="wb-progressive-drawer smat-mt-sm" id="catalog-alloys-and-parts-drawer">
+      <summary class="wb-progressive-summary">
+        <span>{isEs ? `Explorar ${wetEndMaterialsList.length} Aleaciones Certificadas y ${enrichedAtomicParts.length} Fichas Atómicas` : `Explore ${wetEndMaterialsList.length} Certified Alloys & ${enrichedAtomicParts.length} Atomic Sheets`}</span>
+        <span class="wb-step1-more-arrow">▾</span>
+      </summary>
+      <div class="wb-progressive-body">
     <div class="atomic-parts-catalog-block" id="matriz-aleaciones-ssot">
       <div class="table-header-flex">
         <div>
@@ -248,45 +263,52 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
             <p class="atomic-part-desc">{mat.hardness} • u₂ ≤ {mat.maxTipSpeedMs} m/s • d₈₀ {mat.d80RangeMicrons} µm • pH {mat.phRange}</p>
             <p class="atomic-part-desc">{isEs ? mat.dutyApplicationEs : mat.dutyApplicationEn}</p>
             <div class="atomic-part-actions no-print">
-              <a href={buildWizardUrl({ lang, circuit: 'bombeo', role: 'kit_wet_end', series: '6x4', station: 'S4', material: mat.key, arrangement: 'CV' })} class="btn-card-quote">{isEs ? `Cotizar Lote ${mat.code} →` : `Quote Lot ${mat.code} →`}</a>
+              <a href={buildWizardUrl({ lang, circuit: 'bombeo', role: 'kit_wet_end', series: '6x4', station: 'S4', material: mat.key, arrangement: 'CV' })} class="inline-spec-link">{isEs ? `Cotizar Lote ${mat.code} →` : `Quote Lot ${mat.code} →`}</a>
             </div>
           </div>
         ))}
       </div>
     </div>
-
-    <CatalogAvenuesMatrix lang={lang} />
 
     <div class="atomic-parts-catalog-block" id="fichas-atomicas">
       <div class="table-header-flex">
         <div>
           <h4 class="table-title">{isEs ? 'Fichas Técnicas por Número de Parte Universal (Impulsores, Cuellos y Anillos Expulsores)' : 'Universal Part Number Technical Sheets (Impellers, Throatbushes & Expeller Rings)'}</h4>
-          <span class="table-subtitle">{isEs ? 'Seleccione el código universal para abrir su especificación metalúrgica individual, masa certificada, ergonomía Waters-NIOSH 1993 y acople 1:1' : 'Select any universal part code to view individual metallurgical specs, verified mass, Waters-NIOSH ergonomics & 1:1 drop-in match'}</span>
+          <span class="table-subtitle">{isEs ? 'Seleccione cualquier código universal para abrir su ficha técnica individual o agregarlo desde la barra superior.' : 'Select any universal part code to view its individual metallurgical sheet or add it from the selection bar above.'}</span>
         </div>
         <span class="matrix-badge">{enrichedAtomicParts.length} {isEs ? 'FICHAS ATÓMICAS' : 'ATOMIC SHEETS'}</span>
       </div>
       <div class="atomic-parts-grid">
         {enrichedAtomicParts.map((part) => (
-          <div class="atomic-part-card" data-part-code={part.part_number} data-niosh-tier={part.niosh.tier}>
+          <div
+            class="atomic-part-card"
+            tabindex="0"
+            data-part-code={part.part_number}
+            data-niosh-tier={part.niosh.tier}
+            data-select-catalog-sku={part.spec.smat_code || part.part_number}
+            data-sku-title={isEs ? part.name_es : part.name_en}
+            data-sku-circuit="bombeo"
+            data-sku-material="A05"
+            data-sku-mass={String(part.spec.weight_kg || 12)}
+            data-sku-sheet={isEs ? `/catalogo/${part.code}/` : `/en/catalog/${part.code}/`}
+          >
             <div class="atomic-part-top"><span class="series-pill highlight">{part.part_number}</span><span class="atomic-frame-badge">{isEs ? 'Serie' : 'Series'} {part.frame} • {part.spec.station_number}</span></div>
-            <strong class="atomic-part-title">{isEs ? part.name_es : part.name_en}</strong>
+            <strong class="atomic-part-title">
+              <a href={isEs ? `/catalogo/${part.code}/` : `/en/catalog/${part.code}/`} class="atomic-part-sheet-link">{isEs ? part.name_es : part.name_en}</a>
+            </strong>
             <p class="atomic-part-desc">{isEs ? part.type_es : part.type_en} • {part.hardness}</p>
             <p class="atomic-part-desc strong-meta">{isEs ? 'Peso' : 'Weight'}: {part.spec.weight_kg} kg • {isEs ? part.niosh.badgeEs : part.niosh.badgeEn} • ØD₂ {part.spec.impeller_diameter_mm} mm</p>
             {(isEs ? part.everyday_equivalence_es : part.everyday_equivalence_en) && (
               <p class="atomic-part-desc">{isEs ? part.everyday_equivalence_es : part.everyday_equivalence_en} {Array.isArray(part.kit_ids) && part.kit_ids.length > 0 ? `• Kits: ${part.kit_ids.join(', ')}` : ''}</p>
             )}
-            <div class="atomic-part-actions no-print">
-              <a href={isEs ? `/catalogo/${part.code}/` : `/en/catalog/${part.code}/`} class="btn-table-cta">{isEs ? `Ver Ficha ${part.part_number} →` : `View Sheet ${part.part_number} →`}</a>
-              <a href={part.quoteHref} class="btn-card-quote">{isEs ? 'Cotizar →' : 'Quote →'}</a>
-              <button type="button" class="btn-table-cta btn-avenue-tray" data-add-tray-sku={part.spec.smat_code || part.part_number} data-tray-part-code={part.part_number} data-tray-title={isEs ? part.name_es : part.name_en} data-tray-series={part.spec.pipe_size || '6x4'} data-tray-material="A05" data-tray-category="BOMBA_SLURRY" data-tray-source="catalog_fichas_atomicas">{isEs ? '+ Bandeja' : '+ Tray'}</button>
-            </div>
           </div>
         ))}
       </div>
     </div>
+      </div>
+    </details>
   </section>
-    </div>
-  </details>
+  </section>
 
   <details class="wb-progressive-drawer smat-mb-md" id="catalog-processes-drawer">
     <summary class="wb-progressive-summary">
@@ -399,7 +421,7 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
       <div class="table-header-flex">
         <div>
           <h4 class="table-title">{isEs ? 'Estación Metrológica Completa de Control de Procesos (3 Instrumentos)' : 'Complete Process Control Metrology Station (3 Instruments)'}</h4>
-          <span class="table-subtitle">{isEs ? 'Sincronizados con la estación de Control de Procesos y las leyes de Marcy, Pierre Gy (1979) y Rosin-Rammler ASTM E11' : 'Synchronized with Process Control sizing and Marcy, Pierre Gy (1979) & Rosin-Rammler ASTM E11 laws'}</span>
+          <span class="table-subtitle">{isEs ? 'Sincronizados con la estación de Control de Procesos (densidad de pulpa, filtro prensa de laboratorio y mallas ASTM E11)' : 'Synchronized with Process Control metrology (pulp density, lab batch filter press & ASTM E11 sieves)'}</span>
         </div>
         <span class="matrix-badge">{isEs ? '3 INSTRUMENTOS LAB' : '3 LAB INSTRUMENTS'}</span>
       </div>
@@ -537,7 +559,7 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
 
     const openCatalogDrawers = () => {
       document
-        .querySelectorAll('#catalog-bombeo-drawer, #catalog-processes-drawer, .avenue-group-drawer')
+        .querySelectorAll('#catalog-avenues-drawer, #catalog-alloys-and-parts-drawer, #catalog-processes-drawer, .avenue-group-drawer')
         .forEach((d) => {
           (d as HTMLDetailsElement).open = true;
         });

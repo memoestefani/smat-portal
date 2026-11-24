@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import QuoteWizard from '../../components/QuoteWizard.astro';
-import FaqAccordion from '../../components/FaqAccordion.astro';
 ---
 
 <BaseLayout
@@ -15,26 +14,6 @@ import FaqAccordion from '../../components/FaqAccordion.astro';
   <div class="quote-workbench-shell" data-canonical-single-entry="quote-wizard">
     <QuoteWizard lang="en" />
   </div>
-
-  <section class="container no-print quote-resources-flat" id="quote-faq-resources-drawer" aria-label="Diagnostics guides and FAQs">
-    <div class="quote-extension-links">
-      <a href="/en/pumping/" class="extension-card">
-        <span class="ext-badge">P&amp;ID</span>
-        <div>
-          <strong>Process Circuit Diagrams &amp; Pump Assembly</strong>
-          <small>Review the 5 pump assembly stations, 5-5-4 wear lots, and V-Belt drive arrangements.</small>
-        </div>
-      </a>
-      <a href="/en/diagnostics/" class="extension-card">
-        <span class="ext-badge">DIAGNOSTICS</span>
-        <div>
-          <strong>Field Failure &amp; Wear Diagnostics</strong>
-          <small>Identify cavitation, internal recirculation, or shaft vibration and pre-load the exact spare part.</small>
-        </div>
-      </a>
-    </div>
-    <FaqAccordion lang="en" compact={true} />
-  </section>
 </BaseLayout>
 
 <style>

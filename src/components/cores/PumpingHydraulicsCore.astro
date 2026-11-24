@@ -8,6 +8,7 @@
  *   para `/bombeo/`, `/en/pumping/`, `/cotizar/` y `/en/quote/`.
  * - Sin controles de formulario duplicados heredados.
  */
+import InstrumentShell from './InstrumentShell.astro';
 import {
   SLURRY_PRESETS,
   MECHANICAL_DIAGNOSTICS,
@@ -40,37 +41,17 @@ const defaultSimMetrics = calculateSlurryMetrics({
 const defaultAltData = calculateAltitudeCorrection(2400);
 ---
 
-<div
+<InstrumentShell
   id="wb-step2-durand-controls-wrap"
-  data-domain-root="pumping"
-  data-schema-version="5.1.0"
-  data-presets={JSON.stringify(SLURRY_PRESETS)}
-  class={`smat-core-shell smat-pumping-core ${panelClass}`.trim()}
+  domainRoot="pumping"
+  dataSchemaVersion="5.1.0"
+  dataPresets={JSON.stringify(SLURRY_PRESETS)}
+  shellClass={`smat-pumping-core ${panelClass}`.trim()}
+  locale={locale}
+  detailsSummaryEs="Ver memoria hidráulica completa (9 variables Durand/IEC), síntomas rápidos y cálculo de paro"
+  detailsSummaryEn="View full hydraulic sheet (9 Durand/IEC metrics), quick symptoms & downtime analysis"
 >
-  <div class="sim-quick-summary-bar" id="sim-quick-summary-bar" aria-live="polite">
-    <span class="quick-metric-chip">
-      <small>Vc:</small>
-      <strong id="quick-vc" class="pro-tabular-nums">{defaultSimMetrics.results.criticalSettlingVelocityMs} m/s</strong>
-    </span>
-    <span class="quick-metric-chip">
-      <small>Sm/Cv:</small>
-      <strong id="quick-sm-cv" class="pro-tabular-nums">
-        {defaultSimMetrics.results.slurrySpecificGravity.toFixed(2)} kg/L ({defaultSimMetrics.results.solidsVolumetricPercent}% Cv)
-      </strong>
-    </span>
-    <span class="quick-metric-chip">
-      <small>HR/IEC:</small>
-      <strong id="quick-hr-derating" class="pro-tabular-nums">
-        HR {defaultSimMetrics.results.headDeratingFactorHr.toFixed(2)} • Motor {(defaultAltData.motorDeratingFactor * 100).toFixed(0)}%
-      </strong>
-    </span>
-    <span class="quick-metric-chip quick-metric-highlight">
-      <small>{isEs ? 'Sugerencia:' : 'Dictated:'}</small>
-      <strong id="quick-alloy-ratio" class="pro-tabular-nums">
-        {defaultSimMetrics.results.recommendedMaterial} ({defaultSimMetrics.results.wearLifeRatio}×)
-      </strong>
-    </span>
-  </div>
+  <div slot="inputs">
 
   <!-- Presets operativos frecuentes (Acordeón colapsado inicial para mantener densidad Cowan óptima) -->
   <details class="wb-progressive-drawer smat-mb-sm" id="pumping-presets-drawer">
@@ -197,42 +178,6 @@ const defaultAltData = calculateAltitudeCorrection(2400);
         class="wb-slider"
       />
     </div>
-
-    <div class="altitude-group smat-mt-sm">
-      <div class="slider-label-row">
-        <span>{isEs ? 'Altitud Operativa de Mina (msnm):' : 'Mine Operating Altitude (MASL):'}</span>
-        <strong class="slider-value pro-tabular-nums" id="val-altitude">2,400 msnm</strong>
-      </div>
-      <div class="smat-mt-sm">
-        <label for="wb-altitude-input" class="smat-field-label">
-          {isEs ? 'Altitud Continua Libre (0 – 5,000 msnm):' : 'Free Continuous Altitude (0 – 5,000 MASL):'}
-        </label>
-        <input
-          type="number"
-          id="wb-altitude-input"
-          data-schema-input="pumping.altitudeM"
-          min="0"
-          max="5000"
-          step="50"
-          value="2400"
-          class="wb-input font-mono-tech"
-        />
-      </div>
-      <small class="altitude-npsh-hint" id="altitude-npsh-hint">
-        {isEs
-          ? 'Patm = 7.66 mca. Margen NPSHa ajustado para prevenir cavitación en altura (Sierra Madre).'
-          : 'Patm = 7.66 mca. Adjusted NPSHa margin to prevent altitude cavitation.'}
-      </small>
-      <div id="wb-altitude-live-strip" data-testid="wb-altitude-live-strip" class="font-mono-tech smat-altitude-strip">
-        Patm = {defaultAltData.pAtmHeadMca.toFixed(2)} mca | -ΔNPSHa = {defaultAltData.deltaNpshLossM.toFixed(2)} m | IEC 60034-1 = {defaultAltData.motorDeratingFactor.toFixed(3)} | K_motor,alt = {defaultSimMetrics.combinedMotorAltitudeMultiplier}x
-      </div>
-      <div class="font-mono-tech smat-altitude-metrics-row">
-        <span>Patm: <strong id="metric-patm" data-schema-output="pumping.pAtmHeadMca">{defaultAltData.pAtmHeadMca.toFixed(2)} mca</strong></span>
-        <span>IEC: <strong id="metric-iec-derating" data-schema-output="pumping.motorDeratingFactor">{defaultAltData.motorDeratingFactor.toFixed(3)}</strong></span>
-        <span>K_alt: <strong id="metric-patm-kmotor-inline" data-schema-output="pumping.combinedMotorAltitudeMultiplier">{defaultSimMetrics.combinedMotorAltitudeMultiplier}x</strong></span>
-        <span>Penalty: <strong id="metric-motor-penalty-pct" data-schema-output="pumping.motorSizingPenaltyPct">+{defaultSimMetrics.motorSizingPenaltyPct ?? 13.6}%</strong></span>
-      </div>
-    </div>
   </div>
 
   <!-- Nivel 2 Acordeón: Gravedad Específica, pH, Temperatura, Brida Ciega, Presets Altitud y Síntoma -->
@@ -242,6 +187,41 @@ const defaultAltData = calculateAltitudeCorrection(2400);
       <span class="wb-step1-more-arrow">▾</span>
     </summary>
     <div class="wb-progressive-body">
+      <div class="altitude-group smat-mb-sm">
+        <div class="slider-label-row">
+          <span>{isEs ? 'Altitud Operativa de Mina (msnm):' : 'Mine Operating Altitude (MASL):'}</span>
+          <strong class="slider-value pro-tabular-nums" id="val-altitude">2,400 msnm</strong>
+        </div>
+        <div class="smat-mt-sm">
+          <label for="wb-altitude-input" class="smat-field-label">
+            {isEs ? 'Altitud Continua Libre (0 – 5,000 msnm):' : 'Free Continuous Altitude (0 – 5,000 MASL):'}
+          </label>
+          <input
+            type="number"
+            id="wb-altitude-input"
+            data-schema-input="pumping.altitudeM"
+            min="0"
+            max="5000"
+            step="50"
+            value="2400"
+            class="wb-input font-mono-tech"
+          />
+        </div>
+        <small class="altitude-npsh-hint" id="altitude-npsh-hint">
+          {isEs
+            ? 'Patm = 7.66 mca. Margen NPSHa ajustado para prevenir cavitación en altura (Sierra Madre).'
+            : 'Patm = 7.66 mca. Adjusted NPSHa margin to prevent altitude cavitation.'}
+        </small>
+        <div id="wb-altitude-live-strip" data-testid="wb-altitude-live-strip" class="font-mono-tech smat-altitude-strip">
+          Patm = {defaultAltData.pAtmHeadMca.toFixed(2)} mca | -ΔNPSHa = {defaultAltData.deltaNpshLossM.toFixed(2)} m | IEC 60034-1 = {defaultAltData.motorDeratingFactor.toFixed(3)} | K_motor,alt = {defaultSimMetrics.combinedMotorAltitudeMultiplier}x
+        </div>
+        <div class="font-mono-tech smat-altitude-metrics-row">
+          <span>Patm: <strong id="metric-patm" data-schema-output="pumping.pAtmHeadMca">{defaultAltData.pAtmHeadMca.toFixed(2)} mca</strong></span>
+          <span>IEC: <strong id="metric-iec-derating" data-schema-output="pumping.motorDeratingFactor">{defaultAltData.motorDeratingFactor.toFixed(3)}</strong></span>
+          <span>K_alt: <strong id="metric-patm-kmotor-inline" data-schema-output="pumping.combinedMotorAltitudeMultiplier">{defaultSimMetrics.combinedMotorAltitudeMultiplier}x</strong></span>
+          <span>Penalty: <strong id="metric-motor-penalty-pct" data-schema-output="pumping.motorSizingPenaltyPct">+{defaultSimMetrics.motorSizingPenaltyPct ?? 13.6}%</strong></span>
+        </div>
+      </div>
       <div class="altitude-chips-grid smat-mb-sm" id="wb-altitude-selector">
         <button type="button" class="alt-chip" data-alt="0" data-wb-altitude-btn="0">
           <span>0 m</span><small>{isEs ? 'Costa' : 'Coast'}</small>
@@ -350,7 +330,59 @@ const defaultAltData = calculateAltitudeCorrection(2400);
       )}
     </div>
   </details>
+  </div>
 
+  <!-- Veredicto compacto arriba del detalle: 4 KPIs + semáforo Durand -->
+  <div slot="verdict">
+    <div class="sim-quick-summary-bar" id="sim-quick-summary-bar" aria-live="polite">
+      <span class="quick-metric-chip">
+        <small>Vc:</small>
+        <strong id="quick-vc" class="pro-tabular-nums">{defaultSimMetrics.results.criticalSettlingVelocityMs} m/s</strong>
+      </span>
+      <span class="quick-metric-chip">
+        <small>Sm/Cv:</small>
+        <strong id="quick-sm-cv" class="pro-tabular-nums">
+          {defaultSimMetrics.results.slurrySpecificGravity.toFixed(2)} kg/L ({defaultSimMetrics.results.solidsVolumetricPercent}% Cv)
+        </strong>
+      </span>
+      <span class="quick-metric-chip">
+        <small>HR/IEC:</small>
+        <strong id="quick-hr-derating" class="pro-tabular-nums">
+          HR {defaultSimMetrics.results.headDeratingFactorHr.toFixed(2)} • Motor {(defaultAltData.motorDeratingFactor * 100).toFixed(0)}%
+        </strong>
+      </span>
+      <span class="quick-metric-chip quick-metric-highlight">
+        <small>{isEs ? 'Sugerencia:' : 'Dictated:'}</small>
+        <strong id="quick-alloy-ratio" class="pro-tabular-nums">
+          {defaultSimMetrics.results.recommendedMaterial} ({defaultSimMetrics.results.wearLifeRatio}×)
+        </strong>
+      </span>
+    </div>
+
+    <div class="sim-rationale-banner smat-mt-sm" id="metric-rationale">
+      {isEs ? defaultSimMetrics.results.rationaleEs : defaultSimMetrics.results.rationaleEn}
+    </div>
+
+    <div class="flow-regime-bar-wrap smat-mt-sm">
+      <span class="regime-label">
+        {isEs ? 'Semáforo de Transporte Hidráulico (Durand):' : 'Hydraulic Transport Regime (Durand):'}
+      </span>
+      <div class="regime-status-bar" id="regime-status-bar">
+        <span class="regime-pill safe" id="regime-pill">
+          <span class="pulsing-dot pulsing-dot-green"></span>
+          {isEs ? 'Régimen Seguro / Flujo Homogéneo (V > 1.25 Vc)' : 'Safe Regime / Homogeneous Flow (V > 1.25 Vc)'}
+        </span>
+        <small class="regime-detail" id="regime-detail">
+          {isEs
+            ? `Velocidad recomendada: >${defaultSimMetrics.results.recommendedPipeVelocityMs} m/s (Patm ${(defaultAltData as any).pAtmHeadMca} mca)`
+            : `Recommended velocity: >${defaultSimMetrics.results.recommendedPipeVelocityMs} m/s (Patm ${(defaultAltData as any).pAtmHeadMca} mca)`}
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detalle técnico desplegable: 9 métricas + síntomas + TCO -->
+  <div slot="details">
   <!-- Caja de Salidas Hidráulicas Canónicas (Nodos Hojas Separados ISO 80000-1) -->
   <div class="sim-output-box">
     <div class="sim-metric">
@@ -433,27 +465,6 @@ const defaultAltData = calculateAltitudeCorrection(2400);
     </div>
   </div>
 
-  <div class="sim-rationale-banner" id="metric-rationale">
-    {isEs ? defaultSimMetrics.results.rationaleEs : defaultSimMetrics.results.rationaleEn}
-  </div>
-
-  <div class="flow-regime-bar-wrap">
-    <span class="regime-label">
-      {isEs ? 'Semáforo de Transporte Hidráulico (Durand):' : 'Hydraulic Transport Regime (Durand):'}
-    </span>
-    <div class="regime-status-bar" id="regime-status-bar">
-      <span class="regime-pill safe" id="regime-pill">
-        <span class="pulsing-dot pulsing-dot-green"></span>
-        {isEs ? 'Régimen Seguro / Flujo Homogéneo (V > 1.25 Vc)' : 'Safe Regime / Homogeneous Flow (V > 1.25 Vc)'}
-      </span>
-      <small class="regime-detail" id="regime-detail">
-        {isEs
-          ? `Velocidad recomendada: >${defaultSimMetrics.results.recommendedPipeVelocityMs} m/s (Patm ${(defaultAltData as any).pAtmHeadMca} mca)`
-          : `Recommended velocity: >${defaultSimMetrics.results.recommendedPipeVelocityMs} m/s (Patm ${(defaultAltData as any).pAtmHeadMca} mca)`}
-      </small>
-    </div>
-  </div>
-
   {showTcoBlock && (
     <>
       <div class="mech-diagnostics-inline-box" id="mech-diagnostics-inline">
@@ -520,7 +531,8 @@ const defaultAltData = calculateAltitudeCorrection(2400);
       </div>
     </>
   )}
-</div>
+  </div>
+</InstrumentShell>
 
 <script>
   function bindPumpingTier2ContextualReveal() {

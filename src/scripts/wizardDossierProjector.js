@@ -8,14 +8,14 @@
  */
 
 import rolesDataJson from '../../data/roles.json' with { type: 'json' };
-import { projectDomainOutputs, verifyVplDomScopeContainment } from './schemaRuntimeBinder.js';
 import {
   buildRolesCriteriaMap,
   formatCatalogPartCodeHuman,
   formatDischargeRegimeHuman,
+  formatLogisticsDestinationHuman,
   formatMaterialKeyHuman,
 } from './i18nDomainLabels.js';
-import { computeSobolFirstOrderIndices } from './wizardXdsmDagSolver.js';
+import { buildDossierPriorityViewModel } from './instrumentViewModels.js';
 import {
   DEFAULT_CLASSIFICATION_CRITERIA_MAP,
   DOSSIER_FORMATTERS_BY_FIELD,
@@ -23,19 +23,21 @@ import {
   formatDossierMetrologyBadge,
   formatDossierSimulationBanner,
 } from './quoteDossierRenderer.js';
-import { FORMATTERS_BY_FIELD, buildSmatCode, projectWorkbenchToDOM } from './wizardMiningAndCodeDecoder.js';
 import { computeWizardViewState } from './quoteWizardController.js';
-import { buildSapAnexo22ComplianceSummary } from './vendorPassportAndTradeInController.js';
 import {
   calculateCoupledReorderWindowDays,
   computeCmuPriorityDescriptor,
   getTrayState,
 } from './requisitionTrayBus.js';
-import { loadEngineeringContextSnapshot, loadRfqSession } from './rfqSessionStore.js';
-import { resolveUrlContextDescriptor } from './wizardUrlAndPresetRouter.js';
-import { QUICK_CHECKOUT_SKU_LIST, findMiningGroupById } from './wizardCatalogData.js';
-import { buildCanonicalEngineeringSnapshot } from './workbenchBus.js';
+import { deriveSessionLifecycleState, loadEngineeringContextSnapshot, loadRfqSession } from './rfqSessionStore.js';
+import { projectDomainOutputs, verifyVplDomScopeContainment } from './schemaRuntimeBinder.js';
 import { calculateSlurryMetrics, validatePlantLeadInput } from './slurryEngine.js';
+import { buildSapAnexo22ComplianceSummary } from './vendorPassportAndTradeInController.js';
+import { QUICK_CHECKOUT_SKU_LIST, findMiningGroupById } from './wizardCatalogData.js';
+import { FORMATTERS_BY_FIELD, buildSmatCode, projectWorkbenchToDOM } from './wizardMiningAndCodeDecoder.js';
+import { resolveUrlContextDescriptor } from './wizardUrlAndPresetRouter.js';
+import { computeSobolFirstOrderIndices } from './wizardXdsmDagSolver.js';
+import { buildCanonicalEngineeringSnapshot } from './workbenchBus.js';
 
 /**
  * Emite un destello visual no intrusivo al mutar un valor técnico proyectado.
@@ -180,36 +182,69 @@ export function projectLiveDossierSummary(ctx = {}) {
   const viewState = computeWizardViewState({ circuit: state.currentCircuit }, state.urlCtx || {});
   const primaryTray = trayStateNow.items?.[0] || null;
   const matchedCatalog = QUICK_CHECKOUT_SKU_LIST.find((s) => s.id === primaryTray?.id);
-  const smatCode =
-    primaryTray?.id ||
-    matchedCatalog?.id ||
-    viewState.smatCode ||
-    buildSmatCode(state.currentCircuit || 'bombeo', urlDesc.canonicalRole || 'kit_wet_end', '6x4', 'A05');
 
   const contactFallback = session.contact || session.plantContext || {};
-  const nameVal = dom.inputName?.value.trim() || contactFallback.name || session.plantContext?.name || (isEs ? 'Ing. Residente / Solicitante' : 'Lead Process Engineer');
+  const capturedName = dom.inputName?.value.trim() || contactFallback.name || session.plantContext?.name || '';
   const miningGrp = findMiningGroupById(dom.selectMiningGroup?.value || session.plantContext?.miningGroupId || '');
-  const compVal = dom.inputCompany?.value.trim() || contactFallback.company || session.plantContext?.company || miningGrp?.name || (isEs ? 'Unidad Minera / Compañía' : 'Mining Operation / Company');
-  const phoneVal = dom.inputPhone?.value.trim() || contactFallback.phone || session.plantContext?.phone || '(618) 810-4408';
-  const emailVal = dom.inputEmail?.value.trim() || contactFallback.email || session.plantContext?.email || (isEs ? 'contacto@minera.com' : 'contact@miningco.com');
-  const destVal = dom.inputDest?.value.trim() || dom.erpDestination?.value.trim() || contactFallback.destination || session.plantContext?.destination || (isEs ? 'Retiro en Almacén Central Durango' : 'Durango Central Warehouse Pickup');
+  const capturedCompany = dom.inputCompany?.value.trim() || contactFallback.company || session.plantContext?.company || miningGrp?.name || '';
+  const capturedPhone = dom.inputPhone?.value.trim() || contactFallback.phone || session.plantContext?.phone || '';
+  const capturedEmail = dom.inputEmail?.value.trim() || contactFallback.email || session.plantContext?.email || '';
+  const hasUrlContext = Boolean(state.urlCtx?.sku || state.urlCtx?.codigo || state.urlCtx?.equipo || state.urlCtx?.circuito);
+  const lifecycleState = deriveSessionLifecycleState({
+    ...session,
+    items: trayStateNow.items || session.items || [],
+    contact: {
+      ...(session.contact || {}),
+      name: capturedName,
+      company: capturedCompany,
+      phone: capturedPhone,
+      email: capturedEmail,
+    },
+  });
+  const isEmptySession = lifecycleState === 'EMPTY' && !hasUrlContext;
+
+  const smatCode = isEmptySession
+    ? (isEs ? 'SMAT-BORRADOR (Sin partidas)' : 'SMAT-DRAFT (No items)')
+    : (primaryTray?.id ||
+      matchedCatalog?.id ||
+      viewState.smatCode ||
+      buildSmatCode(state.currentCircuit || 'bombeo', urlDesc.canonicalRole || 'kit_wet_end', '6x4', 'A05'));
+
+  const nameVal = capturedName || (isEs ? '— Pendiente de captura —' : '— Pending requester —');
+  const compVal = capturedCompany || (isEs ? '— Seleccionar unidad o compañía —' : '— Select site or company —');
+  const contactLine = [capturedPhone, capturedEmail].filter(Boolean).join(' • ') || (isEs ? 'Capturar teléfono o correo en Paso 2' : 'Enter phone or email in Step 2');
+  const rawDestVal = dom.inputDest?.value.trim() || dom.erpDestination?.value.trim() || contactFallback.destination || session.plantContext?.destination || 'warehouse_durango_pickup';
+  const destVal = formatLogisticsDestinationHuman(rawDestVal, isEs ? 'es' : 'en');
   const clientRefVal = dom.inputClientRef?.value.trim() || contactFallback.clientRef || session.plantContext?.clientRef || '';
-  const detailsText = dom.inputDetails?.value.trim() || contactFallback.details || session.plantContext?.details || (isEs ? 'Verificación dimensional de acople 1:1 en Almacén Central Durango.' : '1:1 dimensional check at Durango Central Warehouse.');
+  const detailsText = dom.inputDetails?.value.trim() || contactFallback.details || session.plantContext?.details || (isEs ? 'Pendiente de especificación dimensional en Almacén Central Durango.' : 'Pending 1:1 dimensional specification at Durango Central Warehouse.');
 
   setText('live-requester', nameVal);
   setText('live-company', compVal);
-  setText('live-contact', `${phoneVal} • ${emailVal}`);
+  setText('live-contact', contactLine);
   setText('live-destination', destVal);
   setText('live-smat-code', smatCode);
   setText('sap-live-code', smatCode);
   setText('sap-live-dest', destVal);
 
-  const partLabel = primaryTray
-    ? `${isEs ? primaryTray.nameEs : primaryTray.nameEn} (×${primaryTray.qty})`
-    : formatCatalogPartCodeHuman(smatCode, isEs ? 'es' : 'en');
+  const partLabel = isEmptySession
+    ? (isEs ? 'Sin partidas agregadas todavía (use Lista Rápida o Catálogo)' : 'No items in tray yet (use Quick BOM or Catalog)')
+    : (primaryTray
+      ? `${isEs ? primaryTray.nameEs : primaryTray.nameEn} (×${primaryTray.qty})`
+      : formatCatalogPartCodeHuman(smatCode, isEs ? 'es' : 'en'));
   setText('live-part-name', partLabel);
   setText('live-part-details', detailsText);
   setText('sap-live-part', partLabel);
+
+  const circuitAlloyBadges = {
+    flotacion: isEs ? 'Poliuretano Shore A 85–95 / Hule R55' : 'Mining PU Shore A 85–95 / R55',
+    filtracion: isEs ? 'Polipropileno Virgen 16 bar + Lona Calandrada' : 'Virgin PP 16 bar + Calendered Cloth',
+    clasificacion: isEs ? 'SiC Sinterizado / Poliuretano TH48-30' : 'Sintered SiC / TH48-30 Polyurethane',
+    control_procesos: isEs ? 'Acero Inoxidable 304 / Latón Certificado ASTM E11' : '304 Stainless / ASTM E11 Certified Brass',
+  };
+  const activeCircuitKey = String(primaryTray?.circuit || state.currentCircuit || 'bombeo').toLowerCase();
+  if (circuitAlloyBadges[activeCircuitKey]) {
+    setText('live-alloy-badge', circuitAlloyBadges[activeCircuitKey]);
+  }
 
   if (dom.liveClientRefBox) dom.liveClientRefBox.classList.toggle('hidden', !clientRefVal);
   if (dom.liveClientRefText) dom.liveClientRefText.textContent = clientRefVal;
@@ -219,8 +254,8 @@ export function projectLiveDossierSummary(ctx = {}) {
     criteriaMap[urlDesc.canonicalRole]?.[isEs ? 'rule_es' : 'rule_en'] ||
     DEFAULT_CLASSIFICATION_CRITERIA_MAP[urlDesc.canonicalRole]?.[isEs ? 'rule_es' : 'rule_en'] ||
     (isEs
-      ? 'Intercambiabilidad dimensional 1:1 • Dureza >600 HB • Disponibilidad en Almacén Durango'
-      : '1:1 dimensional fit • Hardness >600 HB • Durango Warehouse availability');
+      ? 'Intercambiabilidad dimensional 1:1 • Dureza >600 HB • Disponibilidad verificable en Almacén Durango'
+      : '1:1 dimensional fit • Hardness >600 HB • Verified availability at Durango Warehouse');
   setText('live-role-criteria', fallbackCriteria);
 
   const cmuNow = computeCmuPriorityDescriptor({
@@ -232,11 +267,13 @@ export function projectLiveDossierSummary(ctx = {}) {
   });
 
   if (dom.livePriorityTag) {
-    dom.livePriorityTag.textContent = isEs
-      ? (cmuNow.priorityLabelEs || 'Prioridad Operativa • Paro de Planta')
-      : (cmuNow.priorityLabelEn || 'Operational Priority • Plant Shutdown');
-    dom.livePriorityTag.classList?.toggle('is-priority-opex', isOpex);
-    dom.livePriorityTag.classList?.toggle('is-priority-capex', !isOpex);
+    dom.livePriorityTag.textContent = isEmptySession
+      ? (isEs ? 'Borrador Técnico • Sin partidas activas' : 'Technical Draft • No active items')
+      : (isEs
+        ? (cmuNow.priorityLabelEs || 'Prioridad Operativa • Paro de Planta')
+        : (cmuNow.priorityLabelEn || 'Operational Priority • Plant Shutdown'));
+    dom.livePriorityTag.classList?.toggle('is-priority-opex', !isEmptySession && isOpex);
+    dom.livePriorityTag.classList?.toggle('is-priority-capex', !isEmptySession && !isOpex);
   }
   const laneLabel = isEs ? (cmuNow.checkoutLaneLabelEs || 'Despacho Programado') : (cmuNow.checkoutLaneLabelEn || 'Scheduled Dispatch');
   setText('live-budget-category-pill', `${isEs ? 'Carril' : 'Lane'}: ${laneLabel}`);
@@ -282,12 +319,13 @@ export function projectLiveDossierSummary(ctx = {}) {
     tempC: 25,
     lang: isEs ? 'es' : 'en',
   });
-  setText('gate-lead-status', isEs ? gateOut.badgeLabelEs : gateOut.badgeLabelEn);
+  const priorityVm = buildDossierPriorityViewModel(cmuNow, hm, gateOut, isEs ? 'es' : 'en');
+  setText('gate-lead-status', `${isEs ? gateOut.badgeLabelEs : gateOut.badgeLabelEn} • ${priorityVm.priorityBadge}`);
 
   const banner = formatDossierSimulationBanner(state.currentCircuit || 'bombeo', isEs, urlDesc.canonicalRole);
   const physRow = formatDossierCircuitPhysicsRow(state.currentCircuit || 'bombeo', engCtx, { clientReorderWindowDays: jrpEval.reorderWindowDays }, isEs);
   setText('live-table-circuit-physics-label', physRow.label);
-  setText('live-table-circuit-physics-val', `${banner.contextPill} • ${physRow.value}`);
+  setText('live-table-circuit-physics-val', `${banner.contextPill} • ${physRow.value} • ${priorityVm.cmuSummary}`);
 
   if (metSnap && Object.keys(metSnap).length > 0) {
     const elRow = doc.getElementById('live-row-metrology');
@@ -331,7 +369,9 @@ export function projectLiveDossierSummary(ctx = {}) {
 
   setText('live-material-reason', isEs ? hm.materialReasonEs : hm.materialReasonEn);
 
-  const folio = doc.getElementById('live-folio')?.textContent?.trim() || 'SMAT-2026-8810';
+  const folio = doc.getElementById('live-folio')?.textContent?.trim() || (isEmptySession ? (isEs ? 'BORRADOR' : 'DRAFT') : 'SMAT-2026-8810');
+  const phoneVal = capturedPhone || '';
+  const emailVal = capturedEmail || '';
   const erpSnapshot = buildCanonicalEngineeringSnapshot({
     folio,
     contact_name: nameVal,

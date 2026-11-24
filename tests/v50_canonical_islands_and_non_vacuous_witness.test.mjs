@@ -216,13 +216,16 @@ test('V50-T2 Paridad Islas Canónicas, Wrappers Bilingües y Estrato-1 Above-the
     }
   }
 
-  const calculatorIslands = [
-    'TribologyAlloyIsland.astro',
-    'SealDriveBearingIsland.astro',
+  const instrumentShellIslands = [
     'FlotationCalculatorIsland.astro',
     'FiltrationCalculatorIsland.astro',
     'CycloneScreenIsland.astro',
     'ProcessControlIsland.astro',
+  ];
+  const calculatorIslands = [
+    'TribologyAlloyIsland.astro',
+    'SealDriveBearingIsland.astro',
+    ...instrumentShellIslands,
   ];
   const coreDir = path.join(SITE_ROOT, 'src/components/cores');
   for (const islandFile of calculatorIslands) {
@@ -232,15 +235,23 @@ test('V50-T2 Paridad Islas Canónicas, Wrappers Bilingües y Estrato-1 Above-the
       const p = path.join(coreDir, `${coreName}.astro`);
       return fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '';
     });
-    const idxStratum1 = expandedSrc.includes('smat-stratum1-display')
-      ? expandedSrc.indexOf('smat-stratum1-display')
-      : expandedSrc.indexOf('data-stratum-1-instrument');
-    const idxInputs = expandedSrc.includes('smat-inputs-2col')
-      ? expandedSrc.indexOf('smat-inputs-2col')
-      : expandedSrc.indexOf('metrology-inputs-grid');
-    assert.ok(idxStratum1 !== -1, `${islandFile} debe declarar .smat-stratum1-display o data-stratum-1-instrument`);
-    assert.ok(idxInputs !== -1, `${islandFile} debe declarar .smat-inputs-2col o .metrology-inputs-grid`);
-    assert.ok(idxStratum1 < idxInputs, `${islandFile}: Estrato 1 debe renderizarse ANTES de los inputs`);
+    if (instrumentShellIslands.includes(islandFile)) {
+      const idxInputsSlot = expandedSrc.indexOf('slot="inputs"');
+      const idxVerdictSlot = expandedSrc.indexOf('slot="verdict"');
+      assert.ok(idxInputsSlot !== -1, `${islandFile} debe montar core Input-First con slot="inputs"`);
+      assert.ok(idxVerdictSlot !== -1, `${islandFile} debe montar core Input-First con slot="verdict"`);
+      assert.ok(idxInputsSlot < idxVerdictSlot, `${islandFile}: inputs debe renderizarse ANTES de verdict (V5.7 Input-First)`);
+    } else {
+      const idxStratum1 = expandedSrc.includes('smat-stratum1-display')
+        ? expandedSrc.indexOf('smat-stratum1-display')
+        : expandedSrc.indexOf('data-stratum-1-instrument');
+      const idxInputs = expandedSrc.includes('smat-inputs-2col')
+        ? expandedSrc.indexOf('smat-inputs-2col')
+        : expandedSrc.indexOf('metrology-inputs-grid');
+      assert.ok(idxStratum1 !== -1, `${islandFile} debe declarar .smat-stratum1-display o data-stratum-1-instrument`);
+      assert.ok(idxInputs !== -1, `${islandFile} debe declarar .smat-inputs-2col o .metrology-inputs-grid`);
+      assert.ok(idxStratum1 < idxInputs, `${islandFile}: foco del instrumento debe preceder inputs en subruta`);
+    }
   }
 });
 

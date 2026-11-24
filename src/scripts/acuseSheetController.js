@@ -13,9 +13,9 @@ import { getQuickProductBySlugOrAlias } from './quickProductsCatalog.js';
 import { calculateCoupledReorderWindowDays } from './requisitionTrayBus.js';
 import { formatSatTigieInvoiceLine, formatDualCheckoutPayload } from './workbenchExportFormatters.js';
 import { loadUnifiedEngineeringAndWorkbenchState } from './verticalStateAndCtaSyncBridge.js';
-import { loadRfqSession, saveRfqSession } from './rfqSessionStore.js';
+import { loadRfqSession, saveRfqSession, deriveSessionLifecycleState } from './rfqSessionStore.js';
 import { resolveHonestWebhookStatus } from './leadOutboxStateMachine.js';
-import { formatCheckoutLaneHuman } from './i18nDomainLabels.js';
+import { formatCheckoutLaneHuman, formatLogisticsDestinationHuman } from './i18nDomainLabels.js';
 import {
   buildSmatVendorVcardString,
   buildSapAnexo22ComplianceSummary,
@@ -224,15 +224,25 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
       });
     }
 
+    const sessionNow = loadRfqSession();
+    const lifecycleState = deriveSessionLifecycleState({
+      ...sessionNow,
+      items: trayState.items || sessionNow.items || [],
+    });
+    const hasUrlRequisition = Boolean(urlParams.get('folio') || urlParams.get('codigo') || urlParams.get('equipo') || urlParams.get('tray'));
+    const isEmptyRequisition = lifecycleState === 'EMPTY' && !hasUrlRequisition;
+
     const defaultRoleTitle = leadItem
       ? (isEn ? leadItem.nameEn : leadItem.nameEs)
-      : (isEn ? 'Critical Slurry Pumping Wear Replacement' : 'Refaccionamiento Crítico de Pulpa / Bombeo');
+      : (isEmptyRequisition
+        ? (isEn ? 'Pending specification (no items in tray)' : 'Pendiente de especificación (bandeja sin partidas)')
+        : (isEn ? 'Critical Slurry Pumping Wear Replacement' : 'Refaccionamiento Crítico de Pulpa / Bombeo'));
 
-    const folio = urlParams.get('folio') || cached.folio || wbV2.folio || 'SMAT-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
-    const nombre = urlParams.get('nombre') || urlParams.get('name') || cached.nombre || cached.name || wbV2.name || (isEn ? 'Plant Engineer / Requisitioner' : 'Ingeniero / Solicitante de Planta');
-    const empresa = urlParams.get('empresa') || urlParams.get('company') || cached.empresa || cached.company || wbV2.company || (isEn ? 'Registered Mining Operation' : 'Operación Minera Registrada');
-    const telefono = urlParams.get('telefono') || urlParams.get('phone') || cached.telefono || cached.phone || wbV2.phone || (isEn ? '+52 (618) 810-4408' : '(618) 810-4408');
-    const correo = urlParams.get('correo') || urlParams.get('email') || cached.correo || cached.email || wbV2.email || 'ventas@smatminerals.com';
+    const folio = urlParams.get('folio') || cached.folio || wbV2.folio || (isEmptyRequisition ? (isEn ? 'SMAT-DRAFT' : 'SMAT-BORRADOR') : ('SMAT-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000)));
+    const nombre = urlParams.get('nombre') || urlParams.get('name') || cached.nombre || cached.name || wbV2.name || sessionNow.contact?.name || (isEn ? '— Pending capture in Quote Wizard —' : '— Pendiente de captura en Cotizador —');
+    const empresa = urlParams.get('empresa') || urlParams.get('company') || cached.empresa || cached.company || wbV2.company || sessionNow.contact?.company || (isEn ? '— Select site or company —' : '— Seleccionar operación minera —');
+    const telefono = urlParams.get('telefono') || urlParams.get('phone') || cached.telefono || cached.phone || wbV2.phone || sessionNow.contact?.phone || (isEn ? 'Pending capture' : 'Pendiente de captura');
+    const correo = urlParams.get('correo') || urlParams.get('email') || cached.correo || cached.email || wbV2.email || sessionNow.contact?.email || '—';
     const equipo = urlParams.get('equipo') || urlParams.get('role') || cached.equipo || wbV2.equipTitle || defaultRoleTitle;
     const pieza = urlParams.get('pieza') || cached.codigo_pieza_atomica || wbV2.atomicPartCode || '';
     const refCliente = urlParams.get('ref_cliente') || cached.referencia_cliente || wbV2.clientRef || (isEn ? 'No internal reference declared' : 'Sin referencia interna declarada');
@@ -267,8 +277,9 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
     const notasEspeciales = urlParams.get('notas_especiales') || cached.custom_notes || wbV2.custom_notes || '';
     const detallesBase = urlParams.get('detalles') || urlParams.get('specs') || cached.especificacion_tecnica || cached.details || wbV2.notes || wbV2.details || (isEn ? 'Technical requisition subject to Durango yard dimensional inspection.' : 'Requisición técnica sujeta a validación dimensional de patio Durango.');
     const detalles = notasEspeciales && !detallesBase.includes(notasEspeciales) ? `${detallesBase} | ${notasEspeciales}` : detallesBase;
-    const destino = urlParams.get('destino') || cached.modalidad_logistica || wbV2.destination || (isEn ? 'Durango Central Warehouse Pickup (Folio Scheduled)' : 'Retiro en Almacén Central Durango (Coordinado con Folio)');
-    const urgencia = urlParams.get('urgencia') || (cached.urgencia && cached.urgencia.includes('PARO') ? 'paro' : (wbV2.urgency === 'PARO_DE_LINEA' ? 'paro' : (wbV2.urgency || 'proyecto')));
+    const rawDestino = urlParams.get('destino') || cached.modalidad_logistica || wbV2.destination || sessionNow.contact?.destination || 'warehouse_durango_pickup';
+    const destino = formatLogisticsDestinationHuman(rawDestino, isEn ? 'en' : 'es');
+    const urgencia = isEmptyRequisition ? 'borrador' : (urlParams.get('urgencia') || (cached.urgencia && cached.urgencia.includes('PARO') ? 'paro' : (wbV2.urgency === 'PARO_DE_LINEA' ? 'paro' : (wbV2.urgency || 'proyecto'))));
     const material = urlParams.get('material') || cached.material_bombeo || wbV2.pump_material || wbV2.selectedMaterial || (leadItem ? leadItem.material : 'alto_cromo_cr27');
     const transmision = urlParams.get('transmision') || urlParams.get('arreglo') || cached.arreglo_transmision || wbV2.drive_arrangement || wbV2.driveArrangement || 'ZVZ';
     const estacion = urlParams.get('estacion') || cached.estacion_armado || wbV2.stationCode || 'S4';
@@ -327,9 +338,11 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
 
     const elUrgency = document.getElementById('display-urgency');
     if (elUrgency) {
-      elUrgency.textContent = urgencia === 'paro'
-        ? (isEn ? 'PRIORITY: PLANT SHUTDOWN' : 'PRIORIDAD: [PARO DE PLANTA]')
-        : (isEn ? 'PRIORITY: SCHEDULED PROJECT' : 'PRIORIDAD: [PROYECTO / PROGRAMADO]');
+      elUrgency.textContent = urgencia === 'borrador'
+        ? (isEn ? 'STATUS: DRAFT (NO ACTIVE ITEMS)' : 'ESTADO: BORRADOR SIN PARTIDAS')
+        : (urgencia === 'paro'
+          ? (isEn ? 'PRIORITY: PLANT SHUTDOWN' : 'PRIORIDAD: [PARO DE PLANTA]')
+          : (isEn ? 'PRIORITY: SCHEDULED PROJECT' : 'PRIORIDAD: [PROYECTO / PROGRAMADO]'));
       elUrgency.classList.toggle('is-urgency-paro', urgencia === 'paro');
     }
 

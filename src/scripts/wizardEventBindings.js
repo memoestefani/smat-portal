@@ -6,6 +6,7 @@
  */
 
 import { parseBomPasteInput } from './bomPasteParser.js';
+import { buildBomPasteViewModel } from './instrumentViewModels.js';
 import {
   MINING_GROUPS_CATALOG,
   QUICK_CHECKOUT_SKU_LIST,
@@ -302,15 +303,40 @@ export function bindAllWizardEventListeners(ctx = {}) {
     actions.updateDossier?.();
   });
 
+  const updateFastLaneBomSummary = () => {
+    const sumBox = dom.doc?.getElementById?.('fastlane-bom-summary');
+    if (!sumBox) return;
+    const rawNow = String(dom.bomInput?.value || '').trim();
+    if (!rawNow) {
+      sumBox.textContent = '';
+      sumBox.classList?.add('hidden');
+      return;
+    }
+    const vm = buildBomPasteViewModel(parseBomPasteInput(rawNow), isEs ? 'es' : 'en');
+    sumBox.textContent = vm.badgeText;
+    if (sumBox.dataset) sumBox.dataset.matchedCount = String(vm.matchedCount);
+    sumBox.classList?.remove('hidden');
+  };
+
+  dom.bomInput?.addEventListener('input', updateFastLaneBomSummary);
+  updateFastLaneBomSummary();
+
   dom.bomApplyBtn?.addEventListener('click', () => {
     const raw = String(dom.bomInput?.value || '').trim();
     if (raw.toUpperCase() === 'CLEAR') {
       clearRfqSession();
       removeSessionItem('');
+      updateFastLaneBomSummary();
       actions.updateDossier?.();
       return;
     }
     const parsed = parseBomPasteInput(raw);
+    const bomVm = buildBomPasteViewModel(parsed, isEs ? 'es' : 'en');
+    const sumBox = dom.doc?.getElementById?.('fastlane-bom-summary');
+    if (sumBox) {
+      sumBox.textContent = bomVm.badgeText;
+      sumBox.classList?.remove('hidden');
+    }
     let addedCount = 0;
     for (const row of parsed.matched || []) {
       const cat = /** @type {Record<string, any> | null} */ (

@@ -13,8 +13,11 @@
 import {
   WET_END_MATERIAL_MATRIX,
   evaluateWetEndAssemblyInterference,
+  selectOptimalMaterial,
 } from '../../scripts/slurryEngine.js';
+import { evaluateHybridWetEndConfiguration, evaluatePumpAssemblySequence } from '../../scripts/pumpAssemblyAndDriveEngine.js';
 import { formatNumericRange } from '../../scripts/i18nDomainLabels.js';
+import { buildTribologyAssemblyViewModel } from '../../scripts/instrumentViewModels.js';
 
 interface Props {
   locale?: 'es' | 'en';
@@ -40,6 +43,13 @@ const defaultClearanceEval = evaluateWetEndAssemblyInterference({
   frontClearanceMm: 0.75,
   impellerExitWidthMm: 48,
 });
+const defaultMatEval = selectOptimalMaterial(Number(defaultD80), 45, 7.5);
+const defaultHybridEval = evaluateHybridWetEndConfiguration({ tipSpeedMs: Number(defaultU2), pipeSeries: '6x4' });
+const defaultSeqEval = evaluatePumpAssemblySequence({ sequencePreset: 'canonical', pipeSeries: '6x4' });
+const defaultTribVm = buildTribologyAssemblyViewModel(
+  { optimalMaterial: defaultMatEval, hybridEval: defaultHybridEval, assemblySeqEval: defaultSeqEval },
+  locale
+);
 ---
 
 <div
@@ -298,6 +308,17 @@ const defaultClearanceEval = evaluateWetEndAssemblyInterference({
       <span>Masa: <strong id="wb-asm-active-weight" data-schema-output="tribology.activeWeightKg">{defaultClearanceEval.totalAssemblyMassKg} kg</strong></span>
       <span>NIOSH: <strong id="wb-asm-active-hoist" data-schema-output="tribology.activeNioshHoistRequired">{isEs ? 'Izaje Mecánico (>=23 kg)' : 'Hoist Required (>=23 kg)'}</strong></span>
       <span>Mat: <strong id="wb-asm-active-material" data-schema-output="tribology.activeMaterialCode">A05</strong></span>
+    </div>
+    <div class="instrument-kpi-bar font-mono-tech smat-mt-sm">
+      {defaultTribVm.primaryKpis.map((kpi) => (
+        <div class="instrument-kpi-cell">
+          <strong>{kpi.label}:</strong>
+          <span>{kpi.value}</span>
+        </div>
+      ))}
+    </div>
+    <div id="wb-trib-collision-verdict" class="smat-trib-spalling-row smat-mt-sm">
+      {defaultTribVm.collisionAlert.text} · {defaultTribVm.headline}
     </div>
   </div>
 

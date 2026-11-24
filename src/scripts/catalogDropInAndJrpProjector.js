@@ -66,10 +66,12 @@ export function bindDropInEquivalenceVerifier(
         const satBadge = res.satTuple
           ? ` | SAT ${res.satTuple.clave_prod_serv || '40151700'}/${res.satTuple.clave_unidad || 'H87'}${res.satTuple.fraccion_arancelaria ? ` · TIGIE ${res.satTuple.fraccion_arancelaria}` : ''}`
           : '';
+        const skuLegacyTag = res.smatSkuId ? ` [Ref: ${res.smatSkuId}]` : '';
+        const isoScaleTag = res.iso7810Scale ? ` · ${res.iso7810Scale}` : '';
         if (isEn) {
-          resultEl.innerHTML = `<span class="smat-badge-solar">DROP-IN MATCH</span> <strong>${res.canonicalSkuId}</strong> (${res.titleEn}) | Alloy: <strong>${res.alloyCode}</strong> | ${res.geometricTripletMm.label_en} (${res.toleranceStd}) | Regime: <strong>${res.regimeBadgeEn}</strong>${satBadge} · <a href="/en/products/${res.slugEn}/" class="smat-dropin-link">Open Sheet →</a> ${trayBtnHtml}`;
+          resultEl.innerHTML = `<span class="smat-badge-solar">DROP-IN MATCH</span> <strong>${res.canonicalSkuId}</strong>${skuLegacyTag} (${res.titleEn}) | Alloy: <strong>${res.alloyCode}</strong> | ${res.geometricTripletMm.label_en} (${res.toleranceStd}${isoScaleTag}) | Regime: <strong>${res.regimeBadgeEn}</strong>${satBadge} · <a href="/en/products/${res.slugEn}/" class="smat-dropin-link">Open Sheet →</a> ${trayBtnHtml}`;
         } else {
-          resultEl.innerHTML = `<span class="smat-badge-solar">MATCH DROP-IN</span> <strong>${res.canonicalSkuId}</strong> (${res.titleEs}) | Aleación: <strong>${res.alloyCode}</strong> | ${res.geometricTripletMm.label_es} (${res.toleranceStd}) | Régimen: <strong>${res.regimeBadgeEs}</strong>${satBadge} · <a href="/productos/${res.slugEs}/" class="smat-dropin-link">Abrir Ficha →</a> ${trayBtnHtml}`;
+          resultEl.innerHTML = `<span class="smat-badge-solar">MATCH DROP-IN</span> <strong>${res.canonicalSkuId}</strong>${skuLegacyTag} (${res.titleEs}) | Aleación: <strong>${res.alloyCode}</strong> | ${res.geometricTripletMm.label_es} (${res.toleranceStd}${isoScaleTag}) | Régimen: <strong>${res.regimeBadgeEs}</strong>${satBadge} · <a href="/productos/${res.slugEs}/" class="smat-dropin-link">Abrir Ficha →</a> ${trayBtnHtml}`;
         }
         bindAtomicPartTrayButtons(resultEl);
       } else {

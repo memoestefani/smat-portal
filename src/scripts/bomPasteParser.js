@@ -1,8 +1,9 @@
+// @ts-check
 /**
  * bomPasteParser.js
  * ---------------------------------------------------------------------------
  * Parser tolerante (BOM UTF-8, TSV Excel/SAP, CSV y texto libre) para el carril
- * Fast-Lane de Reorden B2B SKU / Drop-In en /cotizar/ (D5-V55).
+ * Fast-Lane de Reorden B2B SKU / Drop-In en /cotizar/ (D5-V55 / ERG-SMAT-008/009).
  * Patron inspirado en `sandeshbagmare/columncheck`.
  */
 
@@ -66,31 +67,31 @@ export function parseBomPasteInput(rawText = '') {
     const parsed = parseLineTokens(line);
     if (!parsed || !parsed.codeToken) continue;
 
-    const directSku = getQuickProductBySlugOrAlias(parsed.codeToken);
+    const directSku = /** @type {Record<string, any> | null} */ (getQuickProductBySlugOrAlias(parsed.codeToken));
     if (directSku) {
       matched.push({
         skuId: directSku.id,
         qty: parsed.qty,
         source: 'SKU_CANONICAL',
-        nameEs: directSku.name_es,
-        nameEn: directSku.name_en,
+        nameEs: directSku.name_es || directSku.title_es || directSku.id,
+        nameEn: directSku.name_en || directSku.title_en || directSku.id,
         unitWeightKg: directSku.weight_kg || 12,
-        circuit: directSku.circuit || 'bombeo',
+        circuit: directSku.circuit || directSku.vertical || 'bombeo',
       });
       continue;
     }
 
     const dropIn = verifyDropInEquivalence(parsed.codeToken);
     if (dropIn?.matched && dropIn.recommendedSku) {
-      const linked = getQuickProductBySlugOrAlias(dropIn.recommendedSku);
+      const linked = /** @type {Record<string, any> | null} */ (getQuickProductBySlugOrAlias(dropIn.recommendedSku));
       matched.push({
         skuId: dropIn.recommendedSku,
         qty: parsed.qty,
         source: 'DROP_IN_EQUIVALENCE',
-        nameEs: linked?.name_es || dropIn.partNameEs || dropIn.recommendedSku,
-        nameEn: linked?.name_en || dropIn.partNameEn || dropIn.recommendedSku,
+        nameEs: linked?.name_es || linked?.title_es || dropIn.partNameEs || dropIn.recommendedSku,
+        nameEn: linked?.name_en || linked?.title_en || dropIn.partNameEn || dropIn.recommendedSku,
         unitWeightKg: linked?.weight_kg || 14,
-        circuit: 'bombeo',
+        circuit: linked?.vertical || 'bombeo',
       });
       continue;
     }

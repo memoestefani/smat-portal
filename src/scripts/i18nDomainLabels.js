@@ -366,3 +366,80 @@ export function formatDischargeRegimeHuman(rawRegime = '', lang = 'es') {
   if (entry) return isEn ? entry.en : entry.es;
   return String(rawRegime || '').replace(/_/g, ' ').trim();
 }
+
+const HUMAN_LOGISTICS_DESTINATIONS = Object.freeze({
+  warehouse_durango_pickup: {
+    es: 'Retiro en Almacén Central Durango (Coordinación con Folio)',
+    en: 'Durango Central Warehouse Pickup (Scheduled by Folio)',
+  },
+  retiro_durango: {
+    es: 'Retiro en Almacén Central Durango (Coordinación con Folio)',
+    en: 'Durango Central Warehouse Pickup (Scheduled by Folio)',
+  },
+  mine_site_freight: {
+    es: 'Entrega DAP en Unidad Minera (Coordinación Logística)',
+    en: 'DAP Mine Site Delivery (Logistics Coordination)',
+  },
+  flete_mina: {
+    es: 'Entrega DAP en Unidad Minera (Coordinación Logística)',
+    en: 'DAP Mine Site Delivery (Logistics Coordination)',
+  },
+});
+
+/**
+ * Traduce la clave o cadena legada de destino logístico sin fugar español hacia rutas `/en/`.
+ * @param {string} [rawDestination='']
+ * @param {'es'|'en'} [lang='es']
+ * @returns {string}
+ */
+export function formatLogisticsDestinationHuman(rawDestination = '', lang = 'es') {
+  const isEn = String(lang).toLowerCase() === 'en';
+  const raw = String(rawDestination || '').trim();
+  const low = raw.toLowerCase();
+  if (
+    !raw ||
+    low === 'warehouse_durango_pickup' ||
+    low === 'retiro_durango' ||
+    low.includes('retiro en almacén central durango') ||
+    low.includes('durango central warehouse pickup')
+  ) {
+    return isEn ? HUMAN_LOGISTICS_DESTINATIONS.warehouse_durango_pickup.en : HUMAN_LOGISTICS_DESTINATIONS.warehouse_durango_pickup.es;
+  }
+  if (low === 'mine_site_freight' || low === 'flete_mina' || low.includes('dap unidad minera') || low.includes('dap mine site')) {
+    return isEn ? HUMAN_LOGISTICS_DESTINATIONS.mine_site_freight.en : HUMAN_LOGISTICS_DESTINATIONS.mine_site_freight.es;
+  }
+  return raw;
+}
+
+const UNICODE_UNIT_MAP = Object.freeze({
+  's^-1': 's⁻¹',
+  'min^-1': 'min⁻¹',
+  'm3/h': 'm³/h',
+  'm3/d': 'm³/d',
+  'um': 'µm',
+  'd50c': 'd₅₀c',
+  'd80': 'd₈₀',
+  'u2': 'u₂',
+});
+
+/**
+ * Formatea una magnitud física con unidad tipográfica Unicode normalizada (cero `s^-1` / `min^-1` ASCII).
+ * @param {number|string} value
+ * @param {string} [unit='']
+ * @param {number} [decimals]
+ * @returns {string}
+ */
+export function formatScientificUnit(value, unit = '', decimals = undefined) {
+  const cleanUnit = UNICODE_UNIT_MAP[String(unit || '').trim()] || String(unit || '')
+    .replace(/s\^-1/g, 's⁻¹')
+    .replace(/min\^-1/g, 'min⁻¹')
+    .replace(/m3\/h/g, 'm³/h')
+    .trim();
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    const formatted = typeof decimals === 'number' ? value.toFixed(decimals) : String(value);
+    return cleanUnit ? `${formatted} ${cleanUnit}` : formatted;
+  }
+  const str = String(value ?? '').trim();
+  if (!str) return cleanUnit || '—';
+  return cleanUnit ? `${str} ${cleanUnit}` : str;
+}

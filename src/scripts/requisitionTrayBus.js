@@ -312,7 +312,7 @@ export function buildSmatVendorPassportPayload(companyMeta = {}) {
     rfcStatus,
     cfdiVersion: '4.0',
     satRegimeCode: '601 - General de Ley Personas Morales',
-    defaultCfdiUse: 'G01 (Adquisición de mercancías) / G03 (Gastos en general) / I04 (Equipo de cómputo y accesorios / Maquinaria)',
+    defaultCfdiUse: 'G01 (Adquisición de mercancías) / G03 (Gastos en general) / I08 (Otra maquinaria y equipo)',
     postalCode: '34166',
     currencySupport: ['MXN', 'USD'],
     industrialHub,

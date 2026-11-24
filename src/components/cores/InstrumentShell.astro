@@ -1,0 +1,78 @@
+---
+/**
+ * InstrumentShell.astro
+ * ---------------------------------------------------------------------------
+ * Plantilla Canónica Input-First (`D4-V57`, `ARB-SMAT-66`) para los 5 simuladores:
+ *   1. header  : Contexto operativo limpio y badge de estado
+ *   2. inputs  : Controles primarios (≤ 4 visibles) + acordeón Tier 2
+ *   3. verdict : Barra compacta de 3–4 KPIs decisorios + acciones primarias
+ *   4. details : Memoria de cálculo completa desplegable (<details>)
+ */
+interface Props {
+  id?: string;
+  domainRoot: string;
+  shellClass?: string;
+  dataTestId?: string;
+  dataSchemaVersion?: string;
+  dataPresets?: string;
+  detailsSummaryEs?: string;
+  detailsSummaryEn?: string;
+  locale?: 'es' | 'en';
+  openDetailsByDefault?: boolean;
+}
+
+const {
+  id,
+  domainRoot,
+  shellClass = '',
+  dataTestId,
+  dataSchemaVersion,
+  dataPresets,
+  detailsSummaryEs = 'Ver memoria de cálculo completa y variables técnicas',
+  detailsSummaryEn = 'View full engineering calculation sheet & secondary metrics',
+  locale = 'es',
+  openDetailsByDefault = false,
+} = Astro.props;
+
+const isEs = locale === 'es';
+const hasVerdict = Astro.slots.has('verdict');
+const hasDetails = Astro.slots.has('details');
+---
+
+<div
+  id={id}
+  data-testid={dataTestId}
+  data-domain-root={domainRoot}
+  data-schema-version={dataSchemaVersion}
+  data-presets={dataPresets}
+  data-instrument-shell="v57-input-first"
+  class={`smat-core-shell smat-instrument-shell ${shellClass}`.trim()}
+>
+  {Astro.slots.has('header') && (
+    <div class="smat-instrument-header">
+      <slot name="header" />
+    </div>
+  )}
+
+  <div class="smat-instrument-inputs">
+    <slot name="inputs" />
+  </div>
+
+  {hasVerdict && (
+    <div class="smat-instrument-verdict smat-mt-sm">
+      <slot name="verdict" />
+    </div>
+  )}
+
+  {hasDetails && (
+    <details class="wb-progressive-drawer instrument-memory-drawer smat-mt-sm" open={openDetailsByDefault}>
+      <summary class="wb-progressive-summary instrument-disclosure-summary">
+        <span>{isEs ? detailsSummaryEs : detailsSummaryEn}</span>
+        <span>▾</span>
+      </summary>
+      <div class="instrument-memory-body smat-mt-sm">
+        <slot name="details" />
+      </div>
+    </details>
+  )}
+</div>

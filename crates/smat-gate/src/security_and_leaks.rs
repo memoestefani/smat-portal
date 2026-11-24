@@ -144,9 +144,62 @@ pub fn verify_security_headers_nap_and_honest_sla(site_root: &Path) -> Result<()
                         entry.path().display()
                     ));
                 }
+                let rel_norm = entry.path().to_string_lossy().replace('\\', "/");
+                if let Some(bad_v57) = find_v57_prohibited_copy_in_source(&rel_norm, &text) {
+                    return Err(format!(
+                        "Token V5.7 prohibido '{}' detectado en {}",
+                        bad_v57,
+                        entry.path().display()
+                    ));
+                }
             }
         }
     }
 
     Ok(())
+}
+
+/// Audita cadenas editoriales/tipográficas prohibidas en `src/` bajo SMAT V5.7.
+pub fn find_v57_prohibited_copy_in_source(rel_norm: &str, text: &str) -> Option<&'static str> {
+    if rel_norm.ends_with(".astro") || rel_norm.ends_with(".js") || rel_norm.ends_with(".ts") {
+        for forbidden in [
+            "EN STOCK DURANGO",
+            "Foto Real Cero-OEM",
+            "Zero-OEM Real Photo",
+            "I04 (Equipo de cómputo",
+        ] {
+            if text.contains(forbidden) {
+                return Some(forbidden);
+            }
+        }
+    }
+    if rel_norm.contains("components/cores/") && rel_norm.ends_with(".astro") {
+        for ascii_exp in ["s^-1", "min^-1"] {
+            if text.contains(ascii_exp) {
+                return Some(ascii_exp);
+            }
+        }
+    }
+    None
+}
+
+#[cfg(test)]
+mod tests {
+    use super::find_v57_prohibited_copy_in_source;
+
+    #[test]
+    fn detects_v57_prohibited_copy_and_ascii_exponents() {
+        assert_eq!(
+            find_v57_prohibited_copy_in_source("src/components/ProductQuickCard.astro", "EN STOCK DURANGO (24-72 h)"),
+            Some("EN STOCK DURANGO")
+        );
+        assert_eq!(
+            find_v57_prohibited_copy_in_source("src/components/cores/FlotationCore.astro", "<span>56.3 s^-1</span>"),
+            Some("s^-1")
+        );
+        assert_eq!(
+            find_v57_prohibited_copy_in_source("src/components/cores/FlotationCore.astro", "<span>56.3 s⁻¹</span>"),
+            None
+        );
+    }
 }
