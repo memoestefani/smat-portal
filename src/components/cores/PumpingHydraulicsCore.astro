@@ -53,51 +53,49 @@ const defaultAltData = calculateAltitudeCorrection(2400);
 >
   <div slot="inputs">
 
-  <!-- Presets operativos frecuentes (Acordeón colapsado inicial para mantener densidad Cowan óptima) -->
+  <!-- Presets operativos frecuentes en revelación progresiva (D10-V59 / Cowan <= 8.50) -->
   <details class="wb-progressive-drawer smat-mb-sm" id="pumping-presets-drawer">
     <summary class="wb-progressive-summary">
       <span>{isEs ? 'Presets rápidos de circuito (SAG, Flotación, Relaves, Paro 6x4)' : 'Circuit presets (SAG, Flotation, Tailings, Critical 6x4)'}</span>
       <span class="wb-step1-more-arrow">▾</span>
     </summary>
-    <div class="wb-progressive-body">
-      <div class="preset-chips-grid">
-        <button type="button" class="preset-chip active" data-preset="sag_primary">
-          <span class="p-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          </span>
-          <div class="p-text">
-            <strong>{isEs ? 'Molienda SAG' : 'SAG Grinding'}</strong>
-            <small>{isEs ? '28% Sólidos • A05' : '28% Solids • A05'}</small>
-          </div>
-        </button>
-        <button type="button" class="preset-chip" data-preset="flotation_rougher">
-          <span class="p-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2v7.31L4.65 18.5A2 2 0 0 0 6.36 21h11.28a2 2 0 0 0 1.71-2.5L14 9.31V2"/><line x1="8.5" x2="15.5" y1="2" y2="2"/></svg>
-          </span>
-          <div class="p-text">
-            <strong>{isEs ? 'Flotación Rougher' : 'Rougher Flotation'}</strong>
-            <small>{isEs ? '18% Sólidos • Caucho' : '18% Solids • Rubber'}</small>
-          </div>
-        </button>
-        <button type="button" class="preset-chip" data-preset="tailings_thickened">
-          <span class="p-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
-          </span>
-          <div class="p-text">
-            <strong>{isEs ? 'Jales Espesados' : 'Thickened Tailings'}</strong>
-            <small>{isEs ? '55% Sólidos • A05' : '55% Solids • A05'}</small>
-          </div>
-        </button>
-        <button type="button" class="preset-chip" data-preset="emergency_6x4">
-          <span class="p-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
-          </span>
-          <div class="p-text">
-            <strong>{isEs ? 'Kit Paro Crítico 6x4' : 'Critical Spares 6x4'}</strong>
-            <small>{isEs ? '32% Sólidos • Despacho Programado' : '32% Solids • Scheduled Dispatch'}</small>
-          </div>
-        </button>
-      </div>
+    <div class="preset-chips-grid smat-mt-sm">
+      <button type="button" class="preset-chip active" data-preset="sag_primary">
+        <span class="p-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </span>
+        <div class="p-text">
+          <strong>{isEs ? 'Molienda SAG' : 'SAG Grinding'}</strong>
+          <small>{isEs ? '28% Sólidos • A05' : '28% Solids • A05'}</small>
+        </div>
+      </button>
+      <button type="button" class="preset-chip" data-preset="flotation_rougher">
+        <span class="p-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2v7.31L4.65 18.5A2 2 0 0 0 6.36 21h11.28a2 2 0 0 0 1.71-2.5L14 9.31V2"/><line x1="8.5" x2="15.5" y1="2" y2="2"/></svg>
+        </span>
+        <div class="p-text">
+          <strong>{isEs ? 'Flotación Rougher' : 'Rougher Flotation'}</strong>
+          <small>{isEs ? '18% Sólidos • Caucho' : '18% Solids • Rubber'}</small>
+        </div>
+      </button>
+      <button type="button" class="preset-chip" data-preset="tailings_thickened">
+        <span class="p-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
+        </span>
+        <div class="p-text">
+          <strong>{isEs ? 'Jales Espesados' : 'Thickened Tailings'}</strong>
+          <small>{isEs ? '55% Sólidos • A05' : '55% Solids • A05'}</small>
+        </div>
+      </button>
+      <button type="button" class="preset-chip" data-preset="emergency_6x4">
+        <span class="p-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+        </span>
+        <div class="p-text">
+          <strong>{isEs ? 'Kit Paro Crítico 6x4' : 'Critical Spares 6x4'}</strong>
+          <small>{isEs ? '32% Sólidos • Despacho Programado' : '32% Solids • Scheduled Dispatch'}</small>
+        </div>
+      </button>
     </div>
   </details>
 
@@ -374,9 +372,39 @@ const defaultAltData = calculateAltitudeCorrection(2400);
         </span>
         <small class="regime-detail" id="regime-detail">
           {isEs
-            ? `Velocidad recomendada: >${defaultSimMetrics.results.recommendedPipeVelocityMs} m/s (Patm ${(defaultAltData as any).pAtmHeadMca} mca)`
-            : `Recommended velocity: >${defaultSimMetrics.results.recommendedPipeVelocityMs} m/s (Patm ${(defaultAltData as any).pAtmHeadMca} mca)`}
+            ? `Velocidad recomendada: >${defaultSimMetrics.results.recommendedPipeVelocityMs} m/s (Patm ${(defaultAltData as any).pAtmHeadMca} mca · `
+            : `Recommended velocity: >${defaultSimMetrics.results.recommendedPipeVelocityMs} m/s (Patm ${(defaultAltData as any).pAtmHeadMca} mca · `}
+          <span id="metric-patm-kpa" data-schema-output="pumping.barometricPressureKpa">{(defaultAltData as any).barometricPressureKpa} kPa</span>
+          {' · '}
+          <span id="metric-altitude-tier" data-schema-output="pumping.altitudeTier">
+            {isEs ? 'Meseta Minera' : 'Mining Plateau'}
+          </span>)
         </small>
+      </div>
+      <div
+        id="pumping-npsh-warning-banner"
+        class={`pumping-npsh-warning-banner smat-mt-sm ${(defaultAltData as any).npshSafeMarginWarning ? '' : 'hidden'}`}
+        hidden={!(defaultAltData as any).npshSafeMarginWarning}
+      >
+        <span>
+          {isEs
+            ? 'Alerta NPSHa por altitud (ΔNPSH ≥ 1.5 m): valide sumergencia mínima en cajón de succión.'
+            : 'Altitude NPSHa warning (ΔNPSH ≥ 1.5 m): verify minimum suction sump submergence.'}
+        </span>
+        {' '}(<span id="pumping-npsh-warning-flag" data-schema-output="pumping.npshSafeMarginWarning">{(defaultAltData as any).npshSafeMarginWarning ? (isEs ? 'Sí' : 'Yes') : 'No'}</span>)
+      </div>
+      <div class="pumping-sobol-bar smat-mt-sm">
+        <div class="smat-flex-between font-mono-tech">
+          <strong>{isEs ? 'Sensibilidad Sobol S₁ Dominante:' : 'Dominant Sobol S₁ Sensitivity:'}</strong>
+          <span>
+            <strong id="metric-sobol-si" data-schema-output="pumping.sobolDominantSi">42.0%</strong>
+            {' · '}σ² <span id="metric-sobol-var" data-schema-output="pumping.totalVariance">0</span>
+            {' · '}Int <span id="metric-sobol-res" data-schema-output="pumping.interactionResidual">5.0%</span>
+          </span>
+        </div>
+        <div class="pumping-sobol-track" aria-hidden="true">
+          <div id="pumping-sobol-fill" class="pumping-sobol-fill"></div>
+        </div>
       </div>
     </div>
   </div>

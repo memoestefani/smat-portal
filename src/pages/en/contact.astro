@@ -87,6 +87,9 @@ import companyData from '../../../data/company.json';
             <div class="smat-contact-cta-row">
               <a href="/en/quote/#rfq" class="btn btn-primary">Open Technical Quote Console →</a>
               <a href="/en/quote/?equipo=bombeo_hule_cromo&pieza=lote_554&material=alto_cromo_cr27#rfq" class="btn btn-outline">Quote 5-5-4 Wet-End Kit</a>
+              <button type="button" id="contact-download-vcard-btn" data-download-passport-vcf class="btn btn-outline">
+                Download Corporate Contact (.VCF)
+              </button>
             </div>
           </div>
 
@@ -111,6 +114,12 @@ import companyData from '../../../data/company.json';
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  import { bindVendorPassportDownloadButtons } from '../../scripts/vendorPassportAndTradeInController.js';
+  bindVendorPassportDownloadButtons(document, 'en');
+  document.addEventListener('astro:page-load', () => bindVendorPassportDownloadButtons(document, 'en'));
+</script>
 
 <style>
   .page-hero {

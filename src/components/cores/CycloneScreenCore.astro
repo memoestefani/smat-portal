@@ -223,8 +223,10 @@ const productsBase = isEs ? '/productos/' : '/en/products/';
       <div class="embedded-res-cell"><strong>{isEs ? 'Dilatación Elástica:' : 'Elastic Dilation:'}</strong> <span id="wb-scr-res-dilation" data-testid="wb-scr-res-dilation" data-schema-output="cycloneScreen.elasticDilationPct">1.80%</span></div>
       <div class="embedded-res-cell"><strong>{isEs ? 'Nitidez Weibull α:' : 'Weibull α:'}</strong> <span id="wb-scr-res-weibull" data-testid="wb-scr-res-weibull" data-schema-output="cycloneScreen.sharpnessAlpha">4.40</span></div>
       <div class="embedded-res-cell"><strong>{isEs ? 'Balance 3 Vasos:' : '3-Cup Balance:'}</strong> <span id="wb-cyc-res-cw-cv-3cups" data-testid="wb-cyc-res-cw-cv-3cups">Cw Alim 41.2% | Desc 66.5% | Reb 20.7%</span></div>
+      <div class="embedded-res-cell"><strong>{isEs ? 'Cv Alim / Rebalse:' : 'Feed / OF Cv:'}</strong> <span id="wb-cyc-res-cvfeed" data-schema-output="cycloneScreen.cvFeedPct">19.6%</span> / <span id="wb-cyc-res-cvof" data-schema-output="cycloneScreen.cvOverflowPct">8.8%</span></div>
       <div class="embedded-res-cell"><strong>{isEs ? 'Razón Operativa:' : 'Operating Ratio:'}</strong> <span id="wb-cyc-res-dudo-ratio" data-testid="wb-cyc-res-dudo-ratio">du/do = 0.50</span></div>
       <div class="embedded-res-cell"><strong>{isEs ? 'Dinámica Criba:' : 'Screen Dynamics:'}</strong> <span id="wb-scr-res-vibration-g" data-testid="wb-scr-res-vibration-g">4.5 G • Anti-cegamiento</span></div>
+      <div class="embedded-res-cell"><strong>{isEs ? 'Diagnóstico Ápex/Vortex:' : 'Apex/Vortex Diagnosis:'}</strong> <span id="wb-cyc-res-diag-action" data-schema-output="cycloneScreen.diagnosticActionEs">{isEs ? 'Spray nominal balanceado' : 'Nominal balanced spray'}</span></div>
     </div>
     {showVerticalActions && (
       <div class="smat-cta-row smat-mt-sm">

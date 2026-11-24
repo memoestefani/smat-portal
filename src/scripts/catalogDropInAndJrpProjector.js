@@ -92,6 +92,22 @@ export function bindDropInEquivalenceVerifier(
           runCheck();
         }
       });
+      if (input.hasAttribute?.('data-omnibox-dropin')) {
+        input.addEventListener('input', () => {
+          const val = typeof input.value === 'string' ? input.value.trim() : '';
+          if (val.length >= 4) {
+            runCheck();
+          } else {
+            if (rootEl) rootEl.textContent = '—';
+            if (alloyEl) alloyEl.textContent = '—';
+            if (satEl) satEl.textContent = '—';
+            if (resultEl) {
+              resultEl.hidden = true;
+              if (resultEl.style) resultEl.style.display = 'none';
+            }
+          }
+        });
+      }
     }
     if (typeof window !== 'undefined' && window.location && window.location.search && input) {
       const params = new URLSearchParams(window.location.search);

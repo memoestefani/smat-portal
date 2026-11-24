@@ -9,6 +9,7 @@
  * filas exclusivas de bombas cuando la requisición es de otro circuito.
  */
 
+import { resolveDomainMaterialSpec } from './domainMaterialSpecResolver.js';
 import { formatCheckoutLaneHuman, formatLogisticsDestinationHuman } from './i18nDomainLabels.js';
 import { resolveHonestWebhookStatus } from './leadOutboxStateMachine.js';
 import { getQuickProductBySlugOrAlias } from './quickProductsCatalog.js';
@@ -21,6 +22,64 @@ import {
 } from './vendorPassportAndTradeInController.js';
 import { loadUnifiedEngineeringAndWorkbenchState } from './verticalStateAndCtaSyncBridge.js';
 import { formatDualCheckoutPayload, formatSatTigieInvoiceLine } from './workbenchExportFormatters.js';
+
+/**
+ * Construye ViewModel puro y verificable sin navegador para la hoja formal B2B (/acuse/ y /en/thank-you/).
+ * Garantiza estado EMPTY honesto cuando `items = []` y sin parámetros explícitos de URL.
+ *
+ * @param {{
+ *   lifecycleState?: 'EMPTY'|'DRAFT'|'VERIFIED',
+ *   hasUrlRequisition?: boolean,
+ *   items?: any[],
+ *   circuit?: string,
+ *   material?: string,
+ *   skuId?: string,
+ *   locale?: 'es'|'en',
+ *   folioParam?: string,
+ *   urgencyParam?: string,
+ * }} [input={}]
+ */
+export function buildAcuseViewModel(input = {}) {
+  const isEn = String(input.locale || 'es').toLowerCase() === 'en';
+  const items = Array.isArray(input.items) ? input.items : [];
+  const hasUrlRequisition = Boolean(input.hasUrlRequisition);
+  const lifecycleState = input.lifecycleState || (items.length > 0 ? 'DRAFT' : 'EMPTY');
+  const isEmptyRequisition = lifecycleState === 'EMPTY' && !hasUrlRequisition && items.length === 0;
+  const leadItem = items[0] || null;
+
+  const folio = input.folioParam || (isEmptyRequisition
+    ? (isEn ? 'SMAT-DRAFT' : 'SMAT-BORRADOR')
+    : ('SMAT-' + new Date().getFullYear() + '-REQ'));
+
+  const urgencia = isEmptyRequisition
+    ? 'borrador'
+    : (input.urgencyParam || 'proyecto');
+
+  const matSpec = resolveDomainMaterialSpec({
+    circuit: input.circuit || leadItem?.circuit || 'bombeo',
+    skuId: input.skuId || leadItem?.id || '',
+    materialCode: input.material || leadItem?.material || '',
+    isEmpty: isEmptyRequisition,
+    locale: isEn ? 'en' : 'es',
+  });
+
+  const urgencyHeading = isEmptyRequisition
+    ? (isEn ? 'STATUS: NO REQUISITION ISSUED' : 'ESTADO: BORRADOR SIN REQUISICIÓN')
+    : (urgencia === 'paro'
+      ? (isEn ? 'PRIORITY: PLANT SHUTDOWN' : 'PRIORIDAD: [PARO DE PLANTA]')
+      : (isEn ? 'PRIORITY: SCHEDULED PROJECT' : 'PRIORIDAD: [PROYECTO / PROGRAMADO]'));
+
+  return {
+    isEmptyRequisition,
+    folio,
+    urgencia,
+    urgencyHeading,
+    matSpec,
+    orderCodeLabel: isEmptyRequisition
+      ? (isEn ? 'LOCAL DRAFT • CONFIGURE SPARES IN QUOTE WIZARD' : 'BORRADOR LOCAL • CONFIGURE REFACCIONES EN COTIZADOR')
+      : '',
+  };
+}
 
 function computeFnv1aOrderHash(seedStr = '') {
   let h = 0x811c9dc5;
@@ -115,16 +174,6 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
       items: Array.isArray(rfqSession.items) ? [...rfqSession.items] : [],
       coreReturnEnabled: Boolean(rfqSession.coreReturnEnabled),
     };
-    if (trayState.items.length === 0) {
-      try {
-        const rawTray = localStorage.getItem('smat_requisition_tray_v3');
-        if (rawTray) {
-          const parsedTray = JSON.parse(rawTray) || {};
-          if (Array.isArray(parsedTray.items)) trayState.items = parsedTray.items;
-          if (parsedTray.coreReturnEnabled) trayState.coreReturnEnabled = true;
-        }
-      } catch (_e) { }
-    }
 
     const existingItems = Array.isArray(trayState.items) ? trayState.items : [];
     const trayQueryParam = urlParams.get('tray') || '';
@@ -228,16 +277,29 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
       ...sessionNow,
       items: trayState.items || sessionNow.items || [],
     });
-    const hasUrlRequisition = Boolean(urlParams.get('folio') || urlParams.get('codigo') || urlParams.get('equipo') || urlParams.get('tray'));
-    const isEmptyRequisition = lifecycleState === 'EMPTY' && !hasUrlRequisition;
+    const hasUrlRequisition = Boolean(urlParams.get('folio') || urlParams.get('codigo') || urlParams.get('equipo') || urlParams.get('tray') || urlParams.get('sku'));
+    const acuseVm = buildAcuseViewModel({
+      lifecycleState,
+      hasUrlRequisition,
+      items: trayState.items || [],
+      circuit: activeCircuit || leadItem?.circuit || '',
+      material: urlParams.get('material') || cached.material_bombeo || wbV2.pump_material || wbV2.selectedMaterial || leadItem?.material || '',
+      skuId: urlParams.get('sku') || leadItem?.id || codigo || '',
+      locale: isEn ? 'en' : 'es',
+      folioParam: urlParams.get('folio') || cached.folio || wbV2.folio || '',
+      urgencyParam: urlParams.get('urgencia') || (cached.urgencia && cached.urgencia.includes('PARO') ? 'paro' : (wbV2.urgency === 'PARO_DE_LINEA' ? 'paro' : (wbV2.urgency === 'STOCK_SS' ? 'proyecto' : ''))),
+    });
+    const isEmptyRequisition = acuseVm.isEmptyRequisition;
 
     const defaultRoleTitle = leadItem
       ? (isEn ? leadItem.nameEn : leadItem.nameEs)
       : (isEmptyRequisition
-        ? (isEn ? 'Pending specification (no items in tray)' : 'Pendiente de especificación (bandeja sin partidas)')
+        ? (isEn ? 'No active items yet — Configure spares in Quote Wizard' : 'Sin partidas activas — Seleccione refacciones en el Cotizador')
         : (isEn ? 'Critical Slurry Pumping Wear Replacement' : 'Refaccionamiento Crítico de Pulpa / Bombeo'));
 
-    const folio = urlParams.get('folio') || cached.folio || wbV2.folio || (isEmptyRequisition ? (isEn ? 'SMAT-DRAFT' : 'SMAT-BORRADOR') : ('SMAT-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000)));
+    const folio = isEmptyRequisition
+      ? acuseVm.folio
+      : (urlParams.get('folio') || cached.folio || wbV2.folio || ('SMAT-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000)));
     const nombre = urlParams.get('nombre') || urlParams.get('name') || cached.nombre || cached.name || wbV2.name || sessionNow.contact?.name || (isEn ? '— Pending capture in Quote Wizard —' : '— Pendiente de captura en Cotizador —');
     const empresa = urlParams.get('empresa') || urlParams.get('company') || cached.empresa || cached.company || wbV2.company || sessionNow.contact?.company || (isEn ? '— Select site or company —' : '— Seleccionar operación minera —');
     const telefono = urlParams.get('telefono') || urlParams.get('phone') || cached.telefono || cached.phone || wbV2.phone || sessionNow.contact?.phone || (isEn ? 'Pending capture' : 'Pendiente de captura');
@@ -259,7 +321,7 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
     const motorDeratingVal = urlParams.get('motor_derating_iec') || cached.motor_derating_iec || wbV2.motor_derating_iec || '0.920';
     const kMotorAltVal = urlParams.get('k_motor_alt') || cached.k_motor_alt || wbV2.k_motor_alt || '1.24';
     const pipeVelLossVal = urlParams.get('pipe_vel_loss_pct') || cached.pipe_vel_loss_pct || wbV2.pipe_vel_loss_pct || '0.3';
-    const gateClassVal = urlParams.get('gate_classification') || cached.gate_classification || wbV2.gate_classification || 'STANDARD_PROJECT';
+    const gateClassVal = isEmptyRequisition ? 'DRAFT' : (urlParams.get('gate_classification') || cached.gate_classification || wbV2.gate_classification || 'STANDARD_PROJECT');
     const hidraulicaBase = urlParams.get('hidraulica') || cached.memoria_hidraulica_durand || (isEn ? 'Hydraulic calculation subject to plant flow rate and % solids confirmation.' : 'Cálculo hidráulico sujeto a confirmación de flujo y % de sólidos en planta.');
     const hidraulicaExtras = [
       `pH = ${phVal}`,
@@ -278,8 +340,8 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
     const detalles = notasEspeciales && !detallesBase.includes(notasEspeciales) ? `${detallesBase} | ${notasEspeciales}` : detallesBase;
     const rawDestino = urlParams.get('destino') || cached.modalidad_logistica || wbV2.destination || sessionNow.contact?.destination || 'warehouse_durango_pickup';
     const destino = formatLogisticsDestinationHuman(rawDestino, isEn ? 'en' : 'es');
-    const urgencia = isEmptyRequisition ? 'borrador' : (urlParams.get('urgencia') || (cached.urgencia && cached.urgencia.includes('PARO') ? 'paro' : (wbV2.urgency === 'PARO_DE_LINEA' ? 'paro' : (wbV2.urgency || 'proyecto'))));
-    const material = urlParams.get('material') || cached.material_bombeo || wbV2.pump_material || wbV2.selectedMaterial || (leadItem ? leadItem.material : 'alto_cromo_cr27');
+    const urgencia = acuseVm.urgencia;
+    const material = urlParams.get('material') || cached.material_bombeo || wbV2.pump_material || wbV2.selectedMaterial || (leadItem ? leadItem.material : (isEmptyRequisition ? '' : 'alto_cromo_cr27'));
     const transmision = urlParams.get('transmision') || urlParams.get('arreglo') || cached.arreglo_transmision || wbV2.drive_arrangement || wbV2.driveArrangement || 'ZVZ';
     const estacion = urlParams.get('estacion') || cached.estacion_armado || wbV2.stationCode || 'S4';
     const sealBranch = urlParams.get('seal_branch') || cached.rama_sellado || wbV2.seal_branch || wbV2.sealBranch || 'expeller_dry';
@@ -337,12 +399,8 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
 
     const elUrgency = document.getElementById('display-urgency');
     if (elUrgency) {
-      elUrgency.textContent = urgencia === 'borrador'
-        ? (isEn ? 'STATUS: DRAFT (NO ACTIVE ITEMS)' : 'ESTADO: BORRADOR SIN PARTIDAS')
-        : (urgencia === 'paro'
-          ? (isEn ? 'PRIORITY: PLANT SHUTDOWN' : 'PRIORIDAD: [PARO DE PLANTA]')
-          : (isEn ? 'PRIORITY: SCHEDULED PROJECT' : 'PRIORIDAD: [PROYECTO / PROGRAMADO]'));
-      elUrgency.classList.toggle('is-urgency-paro', urgencia === 'paro');
+      elUrgency.textContent = acuseVm.urgencyHeading;
+      elUrgency.classList.toggle('is-urgency-paro', !isEmptyRequisition && urgencia === 'paro');
     }
 
     const webhookStatus = outboxSnapshot.dispatchStatus || null;
@@ -412,12 +470,12 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
       if (el) el.textContent = val;
     };
 
-    const fullCode = [codigo, pieza ? `[${isEn ? 'Part' : 'Pieza'}: ${pieza}]` : '', traySummary ? `[${isEn ? 'Tray' : 'Bandeja'}: ${traySummary}]` : ''].filter(Boolean).join(' ') || (isEn ? 'SMAT-STD (1:1 Fit)' : 'SMAT-STD (Cotejo 1:1)');
-    const orderHashCode = computeFnv1aOrderHash(`${fullCode}|${material}|${transmision}|${estacion}`);
+    const fullCode = [codigo, pieza ? `[${isEn ? 'Part' : 'Pieza'}: ${pieza}]` : '', traySummary ? `[${isEn ? 'Tray' : 'Bandeja'}: ${traySummary}]` : ''].filter(Boolean).join(' ') || (isEmptyRequisition ? acuseVm.folio : (isEn ? 'SMAT-STD (1:1 Fit)' : 'SMAT-STD (Cotejo 1:1)'));
+    const orderHashCode = isEmptyRequisition ? acuseVm.folio : computeFnv1aOrderHash(`${fullCode}|${material}|${transmision}|${estacion}`);
     setText(
       'dossier-order-code',
       isEmptyRequisition
-        ? (isEn ? 'LOCAL DRAFT • NO ACTIVE ITEMS' : 'BORRADOR LOCAL • SIN PARTIDAS ACTIVAS')
+        ? acuseVm.orderCodeLabel
         : (isEn ? `${orderHashCode} • PRIORITY DISPATCH DURANGO HUB` : `${orderHashCode} • DESPACHO PRIORITARIO ALMACÉN DURANGO`)
     );
     if (traySummary) {
@@ -436,15 +494,17 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
     setText('field-details', detalles);
     setText('field-hydraulics', hidraulica);
 
-    const matLabel = material === 'hybrid_a05_r55' || material === 'hibrido_a05_r55'
-      ? (isEn ? 'Branch D Hybrid Wet-End: Cr27% A05 Impeller + R55 Natural Rubber Liners' : 'Rama D Híbrida de Extremo Húmedo: Impulsor Alto Cromo Cr27% A05 + Forros Hule R55')
-      : (material === 'hule_natural' || material === 'R55'
-        ? (isEn ? 'Anti-Abrasion Natural Rubber R55 (55–65 Shore A)' : 'Hule Natural Antiabrasivo R55 (55–65 Shore A)')
-        : (material === 'poliuretano' || material === 'PU'
-          ? (isEn ? 'Mining Polyurethane U01 (85–95 Shore A)' : 'Poliuretano Grado Minero U01 (85–95 Shore A)')
-          : ((material === 'ceramica_sic' || material === 'carburo_silicio' || material === 'SiC')
-            ? (isEn ? 'Sintered Silicon Carbide SiC (≥2200 HV, Mohs 9.2, K_Ic=4.1 MPa·√m)' : 'Carburo de Silicio Sinterizado SiC (≥2200 HV, Mohs 9.2, K_Ic=4.1 MPa·√m)')
-            : (isEn ? 'High Chrome ASTM A532 Cr27% (>600 HB)' : 'Alto Cromo ASTM A532 Cr27% (>600 HB)'))));
+    const matLabel = isEmptyRequisition
+      ? `${acuseVm.matSpec.badge} (${acuseVm.matSpec.hardnessSpec})`
+      : (material === 'hybrid_a05_r55' || material === 'hibrido_a05_r55'
+        ? (isEn ? 'Branch D Hybrid Wet-End: Cr27% A05 Impeller + R55 Natural Rubber Liners' : 'Rama D Híbrida de Extremo Húmedo: Impulsor Alto Cromo Cr27% A05 + Forros Hule R55')
+        : (material === 'hule_natural' || material === 'R55'
+          ? (isEn ? 'Anti-Abrasion Natural Rubber R55 (55–65 Shore A)' : 'Hule Natural Antiabrasivo R55 (55–65 Shore A)')
+          : (material === 'poliuretano' || material === 'PU'
+            ? (isEn ? 'Mining Polyurethane U01 (85–95 Shore A)' : 'Poliuretano Grado Minero U01 (85–95 Shore A)')
+            : ((material === 'ceramica_sic' || material === 'carburo_silicio' || material === 'SiC')
+              ? (isEn ? 'Sintered Silicon Carbide SiC (≥2200 HV, Mohs 9.2, K_Ic=4.1 MPa·√m)' : 'Carburo de Silicio Sinterizado SiC (≥2200 HV, Mohs 9.2, K_Ic=4.1 MPa·√m)')
+              : `${acuseVm.matSpec.badge} (${acuseVm.matSpec.hardnessSpec})`))));
     const sealLabel = sealBranch === 'gland_water'
       ? (isEn ? 'S5b Flushed Gland Packing' : 'S5b Prensaestopa con Agua')
       : (isEn ? 'S5a Dry Centrifugal Expeller' : 'S5a Expulsor Centrífugo Seco');
@@ -458,9 +518,11 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
     const nioshLabel = pesoKg ? ` • ${isEn ? 'Weight' : 'Peso'}: ${pesoKg} kg (${nioshTier})` : '';
     setText(
       'field-material-drive',
-      isEn
-        ? `${matLabel} • V-Belt Drive: ${transmision} (Sump: ${floodImm}) • Station: ${estacion} (${sealLabel})${nioshLabel}`
-        : `${matLabel} • Arreglo V-Belt: ${transmision} (Sumidero: ${floodImm}) • Estación: ${estacion} (${sealLabel})${nioshLabel}`
+      isEmptyRequisition
+        ? `${matLabel} • ${acuseVm.urgencyHeading}`
+        : (isEn
+          ? `${matLabel} • V-Belt Drive: ${transmision} (Sump: ${floodImm}) • Station: ${estacion} (${sealLabel})${nioshLabel}`
+          : `${matLabel} • Arreglo V-Belt: ${transmision} (Sumidero: ${floodImm}) • Estación: ${estacion} (${sealLabel})${nioshLabel}`)
     );
     setText(
       'field-clearance-kinematics',
@@ -472,28 +534,34 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
     setText('field-tco', fullTcoAndProfile);
     setText(
       'field-type',
-      isEn
-        ? `${urgencia === 'paro' ? 'Emergency Plant Shutdown' : 'Formal Equipment Requisition / Project'} [${gateClassVal}${trustBoundaryId !== 'NONE' ? ' • ' + trustBoundaryId : ''}]`
-        : `${urgencia === 'paro' ? 'Paro Operativo Prioritario' : 'Requisición Formal de Proyecto'} [${gateClassVal}${trustBoundaryId !== 'NONE' ? ' • ' + trustBoundaryId : ''}]`
+      isEmptyRequisition
+        ? (isEn ? 'Technical Draft (Pending Quote Wizard selection)' : 'Borrador Técnico (Pendiente de selección en Cotizador)')
+        : (isEn
+          ? `${urgencia === 'paro' ? 'Emergency Plant Shutdown' : 'Formal Equipment Requisition / Project'} [${gateClassVal}${trustBoundaryId !== 'NONE' ? ' • ' + trustBoundaryId : ''}]`
+          : `${urgencia === 'paro' ? 'Paro Operativo Prioritario' : 'Requisición Formal de Proyecto'} [${gateClassVal}${trustBoundaryId !== 'NONE' ? ' • ' + trustBoundaryId : ''}]`)
     );
 
     const sapTrayLines = Array.isArray(trayState.items) && trayState.items.length > 0
       ? trayState.items.map((it) => `LINE_ITEM: ${it.satLine} | QTY=${it.qty} | COUPLED=${it.coupledPairSku} (${it.reorderWindowDays}d)`)
       : [];
-    const sapBlockText = [
-      `FOLIO: ${folio} | ORDER_HASH: ${orderHashCode} | GATE: ${gateClassVal} | BOUNDARY: ${trustBoundaryId} | ${isEn ? 'LANE' : 'CARRIL'}: ${formatCheckoutLaneHuman(checkoutMeta.lane, uiLang)}`,
-      `${isEn ? 'COMPANY' : 'EMPRESA'}: ${empresa} | ${isEn ? 'REQUESTER' : 'SOLICITANTE'}: ${nombre}`,
-      `${isEn ? 'EQUIPMENT' : 'EQUIPO'}: ${equipo} (${fullCode})`,
-      ...sapTrayLines,
-      ...(isNonPumpRequisition
-        ? []
-        : [
-          `${isEn ? 'METALLURGY & DRIVE' : 'METALURGIA Y ARREGLO'}: ${matLabel} | ${transmision} (${floodImm}) | ${estacion} (${sealLabel})${nioshLabel}`,
-          `${isEn ? 'HYDRAULICS & ALTITUDE' : 'HIDRAULICA Y ALTITUD'}: ${hidraulica}`,
-          `KINEMATICS: delta=${claroMm}mm (b2=${b2Mm}mm, dEtaV=-${deltaEtaV}%, dvPipe=-${pipeVelLossVal}%), n2=${n2Rpm}RPM, u2=${u2Ms}m/s, Fr=${frKn}kN, C=${capCKn}kN, L10h=${l10h}h${structReason ? ' | ' + structReason : ''}`
-        ]),
-      `${isEn ? 'METROLOGY' : 'METROLOGIA'}: ${metrologia}`
-    ].join('\n');
+    const sapBlockText = isEmptyRequisition
+      ? (isEn
+        ? `FOLIO: ${folio} | STATUS: DRAFT (NO ACTIVE LINE ITEMS)\nACTION: Select spares or paste BOM in /en/quote/ before dispatching to Durango Warehouse.`
+        : `FOLIO: ${folio} | ESTADO: BORRADOR SIN PARTIDAS ACTIVAS\nACCIÓN: Seleccione refacciones o pegue lista BOM en /cotizar/ antes de enviar al Almacén Durango.`)
+      : [
+        `FOLIO: ${folio} | ORDER_HASH: ${orderHashCode} | GATE: ${gateClassVal} | BOUNDARY: ${trustBoundaryId} | ${isEn ? 'LANE' : 'CARRIL'}: ${formatCheckoutLaneHuman(checkoutMeta.lane, uiLang)}`,
+        `${isEn ? 'COMPANY' : 'EMPRESA'}: ${empresa} | ${isEn ? 'REQUESTER' : 'SOLICITANTE'}: ${nombre}`,
+        `${isEn ? 'EQUIPMENT' : 'EQUIPO'}: ${equipo} (${fullCode})`,
+        ...sapTrayLines,
+        ...(isNonPumpRequisition
+          ? []
+          : [
+            `${isEn ? 'METALLURGY & DRIVE' : 'METALURGIA Y ARREGLO'}: ${matLabel} | ${transmision} (${floodImm}) | ${estacion} (${sealLabel})${nioshLabel}`,
+            `${isEn ? 'HYDRAULICS & ALTITUDE' : 'HIDRAULICA Y ALTITUD'}: ${hidraulica}`,
+            `KINEMATICS: delta=${claroMm}mm (b2=${b2Mm}mm, dEtaV=-${deltaEtaV}%, dvPipe=-${pipeVelLossVal}%), n2=${n2Rpm}RPM, u2=${u2Ms}m/s, Fr=${frKn}kN, C=${capCKn}kN, L10h=${l10h}h${structReason ? ' | ' + structReason : ''}`
+          ]),
+        `${isEn ? 'METROLOGY' : 'METROLOGIA'}: ${metrologia}`
+      ].join('\n');
     setText('sap-plaintext-block', sapBlockText);
 
     const copySapBtn = document.getElementById('copy-sap-acuse-btn');

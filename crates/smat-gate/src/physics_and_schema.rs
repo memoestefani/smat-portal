@@ -129,7 +129,29 @@ pub fn verify_schema_outbox_pwa_and_zero_dead_exports(site_root: &Path) -> Resul
     }
 
     verify_no_ts_nocheck_or_hidden_schema_text(&scripts_dir, &site_root.join("src/components"))?;
+    verify_v59_schema_parity_tokens(&reg, &fs::read_to_string(scripts_dir.join("schemaRuntimeBinder.js")).unwrap_or_default())?;
 
+    Ok(())
+}
+
+/// Verifica en SMAT V5.9 que EngineSchema cubra salidas de metales 5-5-4, altitud/placa y paridad privada.
+pub fn verify_v59_schema_parity_tokens(registry_js: &str, binder_js: &str) -> Result<(), String> {
+    for req in [
+        "impellerMaterialCode",
+        "linerMaterialCode",
+        "barometricPressureKpa",
+        "recommendedPlateSkuId",
+        "slaCommitmentEs",
+    ] {
+        if !registry_js.contains(req) {
+            return Err(format!("engineSchemaRegistry.js omite salida V5.9 requerida '{}'", req));
+        }
+    }
+    for req in ["auditSchemaOutputParity", "INTERNAL_PRIVATE_OUTPUT_KEYS"] {
+        if !binder_js.contains(req) {
+            return Err(format!("schemaRuntimeBinder.js omite contrato V5.9 '{}'", req));
+        }
+    }
     Ok(())
 }
 
@@ -184,7 +206,7 @@ fn find_hidden_schema_element(astro_text: &str) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
-    use super::{find_hidden_schema_element, has_ts_nocheck_directive};
+    use super::{find_hidden_schema_element, has_ts_nocheck_directive, verify_v59_schema_parity_tokens};
 
     #[test]
     fn rejects_ts_nocheck_and_hidden_schema_dom() {
@@ -193,5 +215,13 @@ mod tests {
         assert!(find_hidden_schema_element(r#"<input type="hidden" data-schema-input="jrp.version" />"#).is_some());
         assert!(find_hidden_schema_element(r#"<span class="sr-only" data-schema-output="jrp.x">1</span>"#).is_some());
         assert!(find_hidden_schema_element(r#"<input type="number" data-schema-input="jrp.predictedWearHours" />"#).is_none());
+    }
+
+    #[test]
+    fn validates_v59_schema_parity_tokens() {
+        let ok_reg = "impellerMaterialCode linerMaterialCode barometricPressureKpa recommendedPlateSkuId slaCommitmentEs";
+        let ok_bind = "auditSchemaOutputParity INTERNAL_PRIVATE_OUTPUT_KEYS";
+        assert!(verify_v59_schema_parity_tokens(ok_reg, ok_bind).is_ok());
+        assert!(verify_v59_schema_parity_tokens("impellerMaterialCode", ok_bind).is_err());
     }
 }

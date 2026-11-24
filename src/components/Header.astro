@@ -130,6 +130,15 @@ const productCategories = isEs ? [
         <span id="header-qtray-count" class="header-qtray-count">0</span>
       </button>
 
+      <a
+        id="header-outbox-pending-badge"
+        href={isEs ? '/cotizar/#stage-3' : '/en/quote/#stage-3'}
+        class="badge badge-copper hidden"
+        hidden
+      >
+        {isEs ? 'Pendiente:' : 'Pending:'} <span id="header-outbox-pending-count">0</span>
+      </a>
+
       <!-- Botón Rey Renombrado (Decisión 2-C / Sustituye 'Abrir Consola') -->
       <a href={isEs ? "/cotizar/#rfq" : "/en/quote/#rfq"} class="btn btn-primary btn-sm header-rfq-btn">
         {isEs ? 'Cotizar Refacción' : 'Quote Spares'}
@@ -172,6 +181,7 @@ const productCategories = isEs ? [
 </header>
 
 <script>
+import { loadRfqSession } from '../scripts/rfqSessionStore.js';
   function initHeaderInteractions() {
     const headerBtn = document.querySelector('.header-rfq-btn');
     if (headerBtn && headerBtn.getAttribute('data-bound') !== '1') {
@@ -186,6 +196,26 @@ const productCategories = isEs ? [
       });
     }
 
+    const syncOutboxBadge = () => {
+      const outBadge = document.getElementById('header-outbox-pending-badge');
+      const outCount = document.getElementById('header-outbox-pending-count');
+      if (!outBadge || !outCount) return;
+      try {
+        const raw = window.localStorage?.getItem('smat_lead_outbox_v1');
+        const list = raw ? JSON.parse(raw) : [];
+        const pending = Array.isArray(list)
+          ? list.filter((it) => it && it.status !== 'SENT' && it.status !== 'DISPATCHED').length
+          : 0;
+        outCount.textContent = String(pending);
+        outBadge.classList.toggle('hidden', pending === 0);
+        outBadge.hidden = pending === 0;
+      } catch {
+        outBadge.classList.add('hidden');
+        outBadge.hidden = true;
+      }
+    };
+    syncOutboxBadge();
+
     const triggerBtn = document.getElementById('header-qtray-trigger');
     if (triggerBtn) {
       triggerBtn.hidden = false;
@@ -196,18 +226,16 @@ const productCategories = isEs ? [
         const trayCount = document.getElementById('smat-qtray-count');
         if (badge && trayCount) {
           badge.textContent = trayCount.textContent || '0';
-          return;
-        }
-        try {
-          const raw = window.localStorage?.getItem('smat_requisition_tray_v3');
-          if (raw && badge) {
-            const parsed = JSON.parse(raw);
-            const items = Array.isArray(parsed?.items) ? parsed.items : [];
-            badge.textContent = String(items.reduce((acc: number, it: any) => acc + (Number(it?.qty) || 1), 0));
+        } else if (badge) {
+          try {
+            const session = loadRfqSession();
+            const items = Array.isArray(session?.items) ? session.items : [];
+            badge.textContent = String(items.reduce((acc, it) => acc + (Number(it?.qty) || 1), 0));
+          } catch {
+            /* ignore */
           }
-        } catch {
-          /* ignore */
         }
+        syncOutboxBadge();
       };
 
       syncCount();

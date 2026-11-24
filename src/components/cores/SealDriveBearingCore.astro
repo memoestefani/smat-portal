@@ -170,6 +170,16 @@ const defaultKin = calculateDriveAndBearingKinematics({
         <strong id="wb-kin-rec-mat-u2-out" class="kin-metric-card__val" data-schema-output="sealDrive.recommendedWetMaterialByTipSpeed">{defaultKin.recommendedWetMaterialByTipSpeed}</strong>
         <span class="kin-metric-card__sub">{isEs ? 'Criterio cinemático de selección' : 'Kinematic alloy envelope'}</span>
       </div>
+      <div class="kin-metric-card">
+        <span class="kin-metric-card__kicker">{isEs ? 'FACTOR SERVICIO BASTIDOR' : 'FRAME SERVICE FACTOR'}</span>
+        <strong id="wb-kin-sf-out" class="kin-metric-card__val" data-schema-output="sealDrive.serviceFactor">1.36×</strong>
+        <span class="kin-metric-card__sub">{isEs ? 'Capacidad mecánica nominal' : 'Mechanical frame margin'}</span>
+      </div>
+      <div class="kin-metric-card">
+        <span class="kin-metric-card__kicker">{isEs ? 'TORQUE EN FLECHA (T)' : 'SHAFT TORQUE (T)'}</span>
+        <strong id="wb-kin-torque-out" class="kin-metric-card__val" data-schema-output="sealDrive.derivedTorqueNm">{Math.round((55 * 9549.2966) / Math.max(100, defaultKin.pumpRpm))} N·m</strong>
+        <span class="kin-metric-card__sub">{isEs ? 'Derivado P / n₂ (9549·kW/RPM)' : 'Derived P / n₂ (9549·kW/RPM)'}</span>
+      </div>
     </div>
 
     <div class="smat-inputs-2col skid-kinematics-calibrator__controls">

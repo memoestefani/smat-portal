@@ -183,6 +183,7 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
     projectDomainOutputs(root, 'cycloneScreen', {
       ...res,
       ...coupledEval,
+      diagnosticActionEs: isEn ? res.diagnosticActionEn : res.diagnosticActionEs,
       partitionToOversizePct: weibullRes.partitionToOversizePct,
       elasticDilationPct: weibullRes.elasticDilationPct,
       sharpnessAlpha: weibullRes.sharpnessAlpha,

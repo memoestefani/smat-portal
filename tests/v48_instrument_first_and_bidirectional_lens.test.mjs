@@ -1,43 +1,43 @@
 // tests/v48_instrument_first_and_bidirectional_lens.test.mjs
 // Suite de verificación V4.8 (ARB-SMAT-56, D1-V48..D10-V48, DEB-V48-01..12, Gate 48I).
 
-import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import {
-  saveEngineeringContextSnapshot,
-  loadEngineeringContextSnapshot
-} from '../src/scripts/rfqSessionStore.js';
-import {
-  commitVerticalSimulation,
-  loadUnifiedEngineeringAndWorkbenchState,
-  bindAtomicPartTrayButtons
-} from '../src/scripts/verticalStateAndCtaSyncBridge.js';
-import {
-  hydrateVerticalInputsFromUnifiedState,
-  syncReactiveTraySkuButton,
-  initBearingSupportInspector,
-  initSkidKinematicsInspector
-} from '../src/scripts/verticalBidirectionalHydrationLens.js';
-import {
-  calculateCoupledReorderWindowDays,
-  getTrayState,
-  clearTray
-} from '../src/scripts/requisitionTrayBus.js';
 import {
   bindDropInEquivalenceVerifier,
   initHarmonicJrpWindowAndPairCard,
   projectProcessControlMetrologyInvariants
 } from '../src/scripts/catalogDropInAndJrpProjector.js';
-import { renderMiningPresetTelemetry } from '../src/scripts/wizardMiningAndCodeDecoder.js';
 import {
-  calculateMarcyScaleReading,
+  calculateCoupledReorderWindowDays,
+  clearTray,
+  getTrayState
+} from '../src/scripts/requisitionTrayBus.js';
+import {
+  loadEngineeringContextSnapshot,
+  saveEngineeringContextSnapshot
+} from '../src/scripts/rfqSessionStore.js';
+import {
   calculateGyMinimumSampleMass,
+  calculateMarcyScaleReading,
   recommendAstmSieveSeries
 } from '../src/scripts/slurryEngine.js';
+import {
+  hydrateVerticalInputsFromUnifiedState,
+  initBearingSupportInspector,
+  initSkidKinematicsInspector,
+  syncReactiveTraySkuButton
+} from '../src/scripts/verticalBidirectionalHydrationLens.js';
+import {
+  bindAtomicPartTrayButtons,
+  commitVerticalSimulation,
+  loadUnifiedEngineeringAndWorkbenchState
+} from '../src/scripts/verticalStateAndCtaSyncBridge.js';
+import { renderMiningPresetTelemetry } from '../src/scripts/wizardMiningAndCodeDecoder.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -61,7 +61,7 @@ function installMockStorage() {
       clear: () => sessionMap.clear()
     },
     dispatchEvent: () => true,
-    addEventListener: () => {}
+    addEventListener: () => { }
   };
   return { localMap, sessionMap };
 }
@@ -136,7 +136,7 @@ class MockNode {
   }
 
   click() {
-    this.dispatchEvent({ type: 'click', target: this, preventDefault: () => {} });
+    this.dispatchEvent({ type: 'click', target: this, preventDefault: () => { } });
   }
 
   get textContent() {
@@ -545,7 +545,8 @@ test('D1-V48 / D5-V48 / DEB-V48-03..05: Estrato 1 Above-the-Fold, paridad biling
 
   for (const eqRel of ['src/pages/equipos/index.astro', 'src/pages/en/process-equipment/index.astro']) {
     const src = readPageWithIslandsComposite(eqRel);
-    assert.ok(src.includes('id="equipos-dropin-match-banner"'), `${eqRel} debe montar #equipos-dropin-match-banner`);
+    assert.ok(src.includes('id="equipos-circuit-select"'), `${eqRel} debe montar selector compacto por circuito (#equipos-circuit-select)`);
+    assert.ok(src.includes('id="equipos-catalog-deep-link"'), `${eqRel} debe enlazar al catálogo omnicanal (#equipos-catalog-deep-link)`);
   }
 
   const wizardSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/QuoteWizard.astro'), 'utf8');

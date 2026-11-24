@@ -11,14 +11,20 @@
  */
 
 import {
+  hasUserInteractedTelemetry,
+  loadEphemeralStationTelemetry,
+  saveEphemeralStationTelemetry,
+} from './ephemeralTelemetryStore.js';
+import { addTrayItem } from './requisitionTrayBus.js';
+import {
   RFQ_SESSION_STORAGE_KEY,
   SMAT_ENGINEERING_CONTEXT_KEY,
+  commitEphemeralTelemetryToRfq,
   loadEngineeringContextSnapshot,
   loadRfqSession,
   saveEngineeringContextSnapshot,
-  saveRfqSession,
+  saveRfqSession
 } from './rfqSessionStore.js';
-import { addTrayItem } from './requisitionTrayBus.js';
 
 /**
  * Mapea una instantánea parcial de una vertical hacia las llaves planas compatibles
@@ -219,24 +225,37 @@ export function syncVerticalCtaLinks(root, vertical = 'bombeo', queryPatch = {})
  *
  * @param {string} [vertical='bombeo']
  * @param {Record<string, any>} [payload={}]
- * @param {{ root?: any, queryPatch?: Record<string, any>, skipStorageWrite?: boolean }} [options={}]
+ * @param {{ root?: any, queryPatch?: Record<string, any>, skipStorageWrite?: boolean, explicitCommit?: boolean, commit?: boolean, userInteracted?: boolean }} [options={}]
  */
 export function commitVerticalSimulation(vertical = 'bombeo', payload = {}, options = {}) {
   const skipWrite = Boolean(options && options.skipStorageWrite);
+  const explicitCommit = Boolean(options && (options.explicitCommit || options.commit));
   let mergedCtx = null;
   /** @type {Record<string, any>} */
   let wbNext = {};
   if (!skipWrite) {
-    mergedCtx = saveEngineeringContextSnapshot(vertical, payload);
-    const sess = loadRfqSession();
-    wbNext = projectVerticalPayloadToWorkbenchPatch(vertical, payload, sess.plantContext || {});
-    saveRfqSession({
-      plantContext: {
-        ...sess.plantContext,
+    if (explicitCommit) {
+      if (hasUserInteractedTelemetry()) {
+        commitEphemeralTelemetryToRfq(vertical);
+      }
+      mergedCtx = saveEngineeringContextSnapshot(vertical, payload, { explicitCommit: true });
+      const sess = loadRfqSession();
+      wbNext = projectVerticalPayloadToWorkbenchPatch(vertical, payload, sess.plantContext || {});
+      saveRfqSession({
+        plantContext: {
+          ...sess.plantContext,
+          circuit: vertical,
+          activeCircuit: vertical,
+        },
+      });
+    } else {
+      const eph = saveEphemeralStationTelemetry(vertical, payload, {
+        userInteracted: Boolean(options?.userInteracted),
         circuit: vertical,
-        activeCircuit: vertical,
-      },
-    });
+      });
+      mergedCtx = eph.stationSnapshots;
+      wbNext = projectVerticalPayloadToWorkbenchPatch(vertical, payload, loadRfqSession().plantContext || {});
+    }
   } else {
     mergedCtx = loadEngineeringContextSnapshot();
     wbNext = loadRfqSession().plantContext || {};
@@ -251,6 +270,7 @@ export function commitVerticalSimulation(vertical = 'bombeo', payload = {}, opti
     workbenchState: wbNext,
     syncedCtaCount: ctaCount,
     skippedStorageWrite: skipWrite,
+    storageLane: skipWrite ? 'none' : (explicitCommit ? 'committed_rfq' : 'ephemeral_session'),
   };
 }
 
@@ -296,7 +316,11 @@ export function loadUnifiedEngineeringAndWorkbenchState(searchStr = '') {
   const urlParams = new URLSearchParams(rawSearch);
 
   const session = loadRfqSession();
-  const engCtx = /** @type {Record<string, any>} */ (session.stationSnapshots || {});
+  const ephemeral = loadEphemeralStationTelemetry();
+  const engCtx = /** @type {Record<string, any>} */ ({
+    ...(ephemeral.stationSnapshots || {}),
+    ...(session.stationSnapshots || {}),
+  });
   const outbox = session.outbox || { dispatchStatus: null, lastPayload: null };
 
   const pc = engCtx.metrology || engCtx.processControl || {};
@@ -306,17 +330,18 @@ export function loadUnifiedEngineeringAndWorkbenchState(searchStr = '') {
   const pump = engCtx.pumping || engCtx.driveAndHybrid || {};
 
   const hasUrlParams = KNOWN_ENGINEERING_URL_PARAMS.some((k) => urlParams.has(k));
-  const hasPersistedStations = Object.keys(engCtx).some(
-    (k) => k !== 'outbox' && engCtx[k] && typeof engCtx[k] === 'object' && Object.keys(engCtx[k]).length > 0
+  const hasCommittedStations = Object.entries(session.stationSnapshots || {}).some(
+    ([k, v]) => k !== 'outbox' && v && typeof v === 'object' && v.passive !== true && Object.keys(v).length > 0
   );
   const hasTypedPersisted = Boolean(
     Object.keys(session.metrology || {}).length > 0 ||
     Object.keys(session.cyclone || {}).length > 0 ||
     Object.keys(session.flotation || {}).length > 0 ||
-    session.items.length > 0
+    session.items.length > 0 ||
+    ephemeral.userInteracted === true
   );
 
-  const hasPersistedState = Boolean(hasUrlParams || hasPersistedStations || hasTypedPersisted);
+  const hasPersistedState = Boolean(hasUrlParams || hasCommittedStations || hasTypedPersisted);
 
   const persistedFields = {
     sg: firstFiniteNumber(

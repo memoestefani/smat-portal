@@ -379,3 +379,88 @@ export function verifyVplDomScopeContainment(root) {
     violations
   };
 }
+
+export const OUTPUT_VISIBILITY_TAXONOMY = Object.freeze({
+  PRIMARY: 'primary',
+  SECONDARY: 'secondary',
+  DIAGNOSTIC: 'diagnostic',
+  TIER1: 'tier1',
+  TIER2: 'tier2',
+  SUMMARY: 'summary',
+  INTERNAL_PRIVATE: 'internal_private'
+});
+
+export const INTERNAL_PRIVATE_OUTPUT_KEYS = Object.freeze([
+  'warehouse_total_mxn',
+  'physical_stock_durango_units',
+  'unit_replacement_value_mxn'
+]);
+
+/**
+ * Audita paridad exhaustiva Motor -> EngineSchema -> DOM para un dominio sin fugar claves privadas.
+ *
+ * @param {string} domainId
+ * @param {Record<string, any>} [computedResult={}]
+ * @param {Document|Element|null} [root=null]
+ * @returns {{ valid: boolean, domainId?: string, missingSchemaFields: string[], unboundDomFields: string[], leakedPrivateKeys: string[], violations: string[] }}
+ */
+export function auditSchemaOutputParity(domainId, computedResult = {}, root = null) {
+  const schema = ENGINE_SCHEMA_REGISTRY[domainId];
+  if (!schema) {
+    return { valid: false, missingSchemaFields: [], unboundDomFields: [], leakedPrivateKeys: [], violations: [`UNKNOWN_DOMAIN:${domainId}`] };
+  }
+  const declaredOutputs = new Map((schema.outputsSchema || []).map((o) => [o.field, o]));
+  const computedKeys = Object.keys(computedResult && typeof computedResult === 'object' ? computedResult : {});
+  /** @type {string[]} */
+  const missingSchemaFields = [];
+  /** @type {string[]} */
+  const leakedPrivateKeys = [];
+  /** @type {string[]} */
+  const unboundDomFields = [];
+  const privateSet = new Set(INTERNAL_PRIVATE_OUTPUT_KEYS);
+
+  for (const key of computedKeys) {
+    if (privateSet.has(key)) {
+      if (root && (typeof root.querySelector === 'function' || typeof root.querySelectorAll === 'function')) {
+        if (queryAllSafe(root, `[data-schema-output$=".${key}"]`).length > 0) {
+          leakedPrivateKeys.push(key);
+        }
+      }
+      continue;
+    }
+    if (!declaredOutputs.has(key)) {
+      missingSchemaFields.push(key);
+    }
+  }
+
+  for (const outDef of schema.outputsSchema || []) {
+    if (privateSet.has(outDef.field)) {
+      leakedPrivateKeys.push(outDef.field);
+      continue;
+    }
+    const vis = outDef.visibility || OUTPUT_VISIBILITY_TAXONOMY.PRIMARY;
+    if (vis === OUTPUT_VISIBILITY_TAXONOMY.INTERNAL_PRIVATE) continue;
+    if (root && (typeof root.querySelector === 'function' || typeof root.querySelectorAll === 'function')) {
+      const target = [
+        `[data-schema-output="${domainId}.${outDef.field}"]`,
+        outDef.domBinding,
+        ...(outDef.aliasBindings || [])
+      ].filter(Boolean).some((sel) => queryAllSafe(root, sel).length > 0);
+      if (!target) unboundDomFields.push(outDef.field);
+    }
+  }
+
+  const violations = [
+    ...missingSchemaFields.map((f) => `UNDECLARED_ENGINE_OUTPUT:${domainId}.${f}`),
+    ...unboundDomFields.map((f) => `UNBOUND_SCHEMA_OUTPUT:${domainId}.${f}`),
+    ...leakedPrivateKeys.map((f) => `PRIVATE_OUTPUT_EXPOSED:${domainId}.${f}`)
+  ];
+  return {
+    valid: violations.length === 0,
+    domainId,
+    missingSchemaFields,
+    unboundDomFields,
+    leakedPrivateKeys,
+    violations
+  };
+}

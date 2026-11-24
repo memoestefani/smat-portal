@@ -546,6 +546,88 @@ label:has(> input[type="radio"]),
   gap: 0.5rem;
   margin-top: 0.45rem;
 }
+
+/* SLICE-V59-06/07: Pumping 2-Col Sticky Verdict + Horizontal Presets + Sobol Bar */
+.pumping-presets-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.pumping-presets-strip__label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.pumping-npsh-warning-banner {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.pumping-sobol-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.78rem;
+}
+
+.pumping-sobol-track {
+  width: 100%;
+  height: 7px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.pumping-sobol-fill {
+  width: 42%;
+  height: 100%;
+  background: #7c2d12;
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
+@media (min-width: 1024px) {
+  .pumping-core-standalone.smat-instrument-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    grid-template-areas:
+      "header header"
+      "inputs verdict"
+      "details details";
+    gap: 0.85rem 1.15rem;
+    align-items: start;
+  }
+
+  .pumping-core-standalone > .smat-instrument-header {
+    grid-area: header;
+  }
+
+  .pumping-core-standalone > .smat-instrument-inputs {
+    grid-area: inputs;
+  }
+
+  .pumping-core-standalone > .smat-instrument-verdict {
+    grid-area: verdict;
+    position: sticky;
+    top: 5.25rem;
+    margin-top: 0;
+  }
+
+  .pumping-core-standalone > .instrument-memory-drawer {
+    grid-area: details;
+  }
+}
 }
 
 @media print {

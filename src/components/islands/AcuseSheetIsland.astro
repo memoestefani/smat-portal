@@ -1,10 +1,13 @@
 ---
+import { buildAcuseViewModel } from '../../scripts/acuseSheetController.js';
+
 interface Props {
   lang?: 'es' | 'en';
 }
 
 const { lang = 'es' } = Astro.props;
 const isEs = lang === 'es';
+const ssrEmptyVm = buildAcuseViewModel({ lifecycleState: 'EMPTY', items: [], locale: lang });
 ---
 
 <section class="ack-main" data-island-standalone="acuseSheet" data-lang={lang}>
@@ -27,9 +30,9 @@ const isEs = lang === 'es';
         </div>
         <div class="folio-box">
           <span class="folio-label">{isEs ? 'FOLIO DE REQUISICIÓN' : 'REQUISITION FOLIO'}</span>
-          <strong class="folio-value" id="display-folio">SMAT-2026-RFQ</strong>
+          <strong class="folio-value" id="display-folio">{ssrEmptyVm.folio}</strong>
           <span class="folio-date" id="display-date">{isEs ? 'Fecha de Emisión' : 'Issue Date'}</span>
-          <span class="folio-status" id="display-urgency">{isEs ? 'ESTATUS: RECIBIDO' : 'STATUS: RECEIVED'}</span>
+          <span class="folio-status" id="display-urgency">{ssrEmptyVm.urgencyHeading}</span>
         </div>
       </div>
 
@@ -40,7 +43,7 @@ const isEs = lang === 'es';
           {isEs ? 'ACUSE FORMAL DE SOLICITUD DE COTIZACIÓN TÉCNICA' : 'FORMAL ENGINEERING REQUISITION & QUOTATION RECEIPT'}
         </h1>
         <span class="badge-sla" id="dossier-order-code" data-hash-algo="fnv1a">
-          {isEs ? 'ATENCIÓN PRIORITARIA • COTEJO EN ALMACÉN DURANGO' : 'PRIORITY DISPATCH • DURANGO WAREHOUSE FIT CHECK'}
+          {ssrEmptyVm.orderCodeLabel}
         </span>
       </div>
 

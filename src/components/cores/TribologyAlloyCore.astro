@@ -308,6 +308,9 @@ const defaultTribVm = buildTribologyAssemblyViewModel(
       <span>Masa: <strong id="wb-asm-active-weight" data-schema-output="tribology.activeWeightKg">{defaultClearanceEval.totalAssemblyMassKg} kg</strong></span>
       <span>NIOSH: <strong id="wb-asm-active-hoist" data-schema-output="tribology.activeNioshHoistRequired">{isEs ? 'Izaje Mecánico (>=23 kg)' : 'Hoist Required (>=23 kg)'}</strong></span>
       <span>Mat: <strong id="wb-asm-active-material" data-schema-output="tribology.activeMaterialCode">A05</strong></span>
+      <span>{isEs ? 'Impulsor:' : 'Impeller:'} <strong id="wb-trib-impeller-mat-code" data-schema-output="tribology.impellerMaterialCode">A05</strong></span>
+      <span>{isEs ? 'Revest.:' : 'Liner:'} <strong id="wb-trib-liner-mat-code" data-schema-output="tribology.linerMaterialCode">A05</strong></span>
+      <span>{isEs ? 'Interferencia:' : 'Interference:'} <strong id="wb-trib-interference-eval" data-schema-output="tribology.interferenceEval">Ng=0 · Ns=0</strong></span>
     </div>
     <div class="instrument-kpi-bar font-mono-tech smat-mt-sm" data-vm-slot="primaryKpis">
       {defaultTribVm.primaryKpis.map((kpi) => (

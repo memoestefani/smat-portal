@@ -172,6 +172,16 @@ export function initPumpAssemblyReport(root = typeof document !== 'undefined' ? 
             : `Secuencia 01–05 válida (Ng=${seqAudit.geometricInterferencesNg}, Ns=${seqAudit.unstableSubassembliesNs}, Banda ${bandStr} mm • ${spallStr})`)
           : (isEnDoc ? `BLOCKED (${res.outOfOrderStationId}): ${res.collisionDetailsEn}` : `BLOQUEO (${res.outOfOrderStationId}): ${res.collisionDetailsEs}`);
       }
+      const impBadgeEl = section.querySelector('[data-assembly-impeller-code]');
+      const linBadgeEl = section.querySelector('[data-assembly-liner-code]');
+      const trqBadgeEl = section.querySelector('[data-assembly-torque-nm]');
+      const intBadgeEl = section.querySelector('[data-assembly-interference]');
+      const activeImp = seqAudit.impellerMaterialCode || (activeMaterialKey === 'hule_natural' ? 'R55' : 'A05');
+      const activeLin = seqAudit.linerMaterialCode || (activeMaterialKey === 'hybrid_a05_r55' ? 'R55' : activeImp);
+      if (impBadgeEl) impBadgeEl.textContent = `Imp: ${activeImp}`;
+      if (linBadgeEl) linBadgeEl.textContent = `${isEnDoc ? 'Liner' : 'Forro'}: ${activeLin}`;
+      if (trqBadgeEl) trqBadgeEl.textContent = `450 N·m`;
+      if (intBadgeEl) intBadgeEl.textContent = `Ng=${seqAudit.geometricInterferencesNg ?? 0}`;
       if (svgValEl) svgValEl.textContent = `${res.frontClearanceMm.toFixed(2)} mm`;
       if (svgBoxEl) {
         const strokeColor = !res.sequenceValid || res.clearanceStatus === 'RUBBING_RISK'

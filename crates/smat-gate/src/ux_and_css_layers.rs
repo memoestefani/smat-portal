@@ -86,8 +86,32 @@ pub fn verify_print_pwa_and_core_hygiene(site_root: &Path) -> Result<(), String>
 
     verify_instrument_shell_input_first(site_root)?;
     verify_v58_instrument_and_mobile_header(site_root)?;
+    verify_v59_xray_and_mobile_cols(site_root)?;
 
     Ok(())
+}
+
+/// Invariante V5.9: TechnicalDiagrams opt-in (`showXrayOverlay = false`) y `.smat-inputs-2col` mobile-first (`1fr`).
+pub fn verify_v59_xray_and_mobile_cols(site_root: &Path) -> Result<(), String> {
+    let diag = fs::read_to_string(site_root.join("src/components/TechnicalDiagrams.astro"))
+        .map_err(|e| format!("Error leyendo TechnicalDiagrams.astro: {}", e))?;
+    if !diag.contains("showXrayOverlay = false") || !diag.contains("data-xray-toggle") {
+        return Err("TechnicalDiagrams.astro debe iniciar con showXrayOverlay = false y botón data-xray-toggle".to_string());
+    }
+    let global_css = fs::read_to_string(site_root.join("src/styles/global.css"))
+        .map_err(|e| format!("Error leyendo global.css: {}", e))?;
+    verify_v59_mobile_cols_css(&global_css)
+}
+
+pub fn verify_v59_mobile_cols_css(global_css: &str) -> Result<(), String> {
+    let block_re = Regex::new(r"(?s)\.smat-inputs-2col\s*\{([^}]*)\}").unwrap();
+    if let Some(cap) = block_re.captures(global_css) {
+        let block = cap.get(1).map(|m| m.as_str()).unwrap_or("");
+        if block.contains("minmax(0, 1fr)") && !block.contains("repeat(2") {
+            return Ok(());
+        }
+    }
+    Err("global.css .smat-inputs-2col debe ser mobile-first (minmax(0, 1fr))".to_string())
 }
 
 /// Invariante V5.8: prohíbe Flexbox `order:` en contenedores `<InstrumentShell>`, prohíbe `uppercase` en `.instrument-kpi-cell`
@@ -332,7 +356,12 @@ pub fn verify_css_layers_in_text(css_rel: &str, raw: &str) -> Result<(), String>
 
 #[cfg(test)]
 mod tests {
-    use super::{check_input_first_order, verify_css_layers_in_text, verify_v58_cores_css_text};
+    use super::{
+        check_input_first_order,
+        verify_css_layers_in_text,
+        verify_v58_cores_css_text,
+        verify_v59_mobile_cols_css,
+    };
 
     #[test]
     fn accepts_valid_layered_css_with_print_and_hidden() {
@@ -371,5 +400,11 @@ mod tests {
         assert!(verify_v58_cores_css_text(good).is_ok());
         assert!(verify_v58_cores_css_text(bad_order).is_err());
         assert!(verify_v58_cores_css_text(bad_case).is_err());
+    }
+
+    #[test]
+    fn enforces_v59_xray_optin_and_mobile_single_col() {
+        assert!(verify_v59_mobile_cols_css(".smat-inputs-2col { display: grid; grid-template-columns: minmax(0, 1fr); }").is_ok());
+        assert!(verify_v59_mobile_cols_css(".smat-inputs-2col { grid-template-columns: repeat(2, minmax(0, 1fr)); }").is_err());
     }
 }

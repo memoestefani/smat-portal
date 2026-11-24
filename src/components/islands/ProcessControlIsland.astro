@@ -45,14 +45,9 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
         <h1>{isEs ? 'Control de Procesos' : 'Process Control'}</h1>
         <p class="smat-hero-sub">
           {isEs
-            ? 'Instrumentación de medición directa para control de molienda, clasificación, flotación y desaguado: Balanzas Marcy, Filtro de Presión Batch Lab (60–100 psi) y Tamices Certificados ASTM E11 / ISO 3310.'
-            : 'Direct-reading metallurgical instrumentation for grinding, classification, flotation & dewatering: Marcy Pulp Density Scales, SMAT Batch Pressure Filters (60–100 psi) & ASTM E11 Test Sieves.'}
+            ? 'Balanzas Marcy, Filtro de Presión Batch Lab (60–100 psi) y Tamices Certificados ASTM E11 / ISO 3310.'
+            : 'Marcy Pulp Density Scales, Batch Pressure Filters (60–100 psi) & ASTM E11 Test Sieves.'}
         </p>
-        <div class="met-hero-actions smat-cta-row">
-          <a href={`${quoteBase}?circuito=control_procesos#rfq`} class="btn btn-primary" data-ctrl-quote-link>
-            {isEs ? 'Cotizar Instrumentación de Control →' : 'Quote Process Control Equipment →'}
-          </a>
-        </div>
       </div>
     </section>
 
@@ -68,11 +63,6 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
                 ? 'Simulador de Carátula Marcy, Filtro Prensa Lab y Serie √2 ASTM E11'
                 : 'Marcy Dial Simulator, Lab Filter Press & ASTM E11 √2 Sieve Stack'}
             </h2>
-            <p class="met-calc-sub">
-              {isEs
-                ? 'Calibre densidad de pulpa (Ss, Cw), masa mínima representativa y ciclos batch o la serie certificada de 7 tamices ASTM E11.'
-                : 'Calibrate pulp density (Ss, Cw), minimum representative sample mass and batch cycles, or the certified 7-sieve ASTM E11 stack.'}
-            </p>
           </div>
 
           <MetrologyLabCore locale={locale} showRoleSelectors={false} panelClass="metrology-core-standalone" />

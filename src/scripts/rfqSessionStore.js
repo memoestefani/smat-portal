@@ -10,10 +10,17 @@
  */
 
 import {
+  EPHEMERAL_TELEMETRY_KEY,
+  clearEphemeralStationTelemetry,
+  loadEphemeralStationTelemetry,
+  saveEphemeralStationTelemetry,
+} from './ephemeralTelemetryStore.js';
+import {
   RFQ_SHARE_QUERY_PARAM,
   decodeRfqSharePayload,
   encodeRfqSharePayload,
 } from './rfqShareCodec.js';
+export { EPHEMERAL_TELEMETRY_KEY };
 
 export const RFQ_SESSION_STORAGE_KEY = 'smat_rfq_session_v3';
 const RFQ_SESSION_MIGRATED_FLAG = 'smat_rfq_session_v3_migrated';
@@ -25,6 +32,18 @@ const LEGACY_KEYS = Object.freeze({
   context: 'smat_engineering_context_v1',
   tray: 'smat_requisition_tray_v3',
 });
+
+const PURGEABLE_LEGACY_LOCAL_KEYS = Object.freeze([
+  'smat_requisition_tray_v3',
+  'smat_workbench_state_v2',
+  'smat_engineering_context_v1',
+  'smat_workbench_draft',
+  'smat_workbench_v1',
+  'smat_workbench_v2',
+  'smat_workbench_session',
+  'smat_catalog_selected',
+  'smat_rfq_session_v3_migrated',
+]);
 
 /**
  * @typedef {Object} RfqSessionItem
@@ -77,7 +96,7 @@ function createDefaultSession() {
       details: '',
       circuit: 'bombeo',
       activeCircuit: 'bombeo',
-      urgency: 'PARO_DE_LINEA',
+      urgency: 'UNSET',
     },
     contact: {
       company: '',
@@ -102,7 +121,7 @@ function createDefaultSession() {
 
 /**
  * Deriva el estado explícito del ciclo de vida de sesión (`EMPTY` -> `DRAFT` -> `VERIFIED`)
- * para evitar folios o alertas P1 sintéticas cuando el usuario no ha capturado datos reales.
+ * ignorando telemetría pasiva y entradas vacías de outbox cuando no existe compromiso real.
  * @param {Partial<SmatRfqSessionV3>|null} [session=null]
  * @returns {'EMPTY' | 'DRAFT' | 'VERIFIED'}
  */
@@ -110,8 +129,8 @@ export function deriveSessionLifecycleState(session = null) {
   const s = /** @type {Record<string, any>} */ (session || loadRfqSession());
   const items = Array.isArray(s?.items) ? s.items : [];
   const snapshots = s?.stationSnapshots && typeof s.stationSnapshots === 'object' ? s.stationSnapshots : {};
-  const hasSnapshots = Object.values(snapshots).some(
-    (snap) => snap && typeof snap === 'object' && Object.keys(snap).length > 0
+  const hasSnapshots = Object.entries(snapshots).some(
+    ([k, snap]) => k !== 'outbox' && snap && typeof snap === 'object' && snap.passive !== true && snap.committed !== false && Object.keys(snap).length > 0
   );
   const contact = s?.contact || {};
   const plant = s?.plantContext || {};
@@ -198,6 +217,15 @@ function normalizeSession(raw = {}) {
 
   const outboxSrc = src.outbox && typeof src.outbox === 'object' ? src.outbox : {};
   const stationOutbox = stationSnapshots.outbox && typeof stationSnapshots.outbox === 'object' ? stationSnapshots.outbox : {};
+  const rawUrgency = String(plant.urgency || '').toUpperCase();
+  const resolvedUrgency =
+    rawUrgency === 'STOCK_SS'
+      ? 'STOCK_SS'
+      : rawUrgency === 'PARO_DE_LINEA'
+        ? 'PARO_DE_LINEA'
+        : items.length > 0
+          ? 'PARO_DE_LINEA'
+          : 'UNSET';
 
   return {
     version: 3,
@@ -208,7 +236,7 @@ function normalizeSession(raw = {}) {
       ...base.plantContext,
       ...plant,
       ...mergedContact,
-      urgency: String(plant.urgency || 'PARO_DE_LINEA').toUpperCase() === 'STOCK_SS' ? 'STOCK_SS' : 'PARO_DE_LINEA',
+      urgency: resolvedUrgency,
     },
     contact: mergedContact,
     items,
@@ -224,7 +252,24 @@ function normalizeSession(raw = {}) {
 }
 
 /**
- * Migración read-once desde llaves legacy hacia `smat_rfq_session_v3`.
+ * @param {Storage | null} ls
+ * @param {Storage | null} ss
+ */
+function purgeLegacyStorageKeys(ls, ss) {
+  for (const key of PURGEABLE_LEGACY_LOCAL_KEYS) {
+    try {
+      ls?.removeItem(key);
+    } catch (_e) { }
+    if (key !== RFQ_SESSION_MIGRATED_FLAG) {
+      try {
+        ss?.removeItem(key);
+      } catch (_e) { }
+    }
+  }
+}
+
+/**
+ * Migración read-once desde llaves legacy hacia `smat_rfq_session_v3` con purga física inmediata.
  * @returns {SmatRfqSessionV3}
  */
 function readLegacyIntoSessionOnce() {
@@ -233,7 +278,8 @@ function readLegacyIntoSessionOnce() {
   const base = createDefaultSession();
   if (!ls && !ss) return base;
   try {
-    if (ls?.getItem(RFQ_SESSION_MIGRATED_FLAG) === '1' || ss?.getItem(RFQ_SESSION_MIGRATED_FLAG) === '1') {
+    if (ss?.getItem(RFQ_SESSION_MIGRATED_FLAG) === '1' || ls?.getItem(RFQ_SESSION_MIGRATED_FLAG) === '1') {
+      purgeLegacyStorageKeys(ls, ss);
       return base;
     }
   } catch (_e) { }
@@ -243,7 +289,7 @@ function readLegacyIntoSessionOnce() {
     const rawTray = ls?.getItem(LEGACY_KEYS.tray);
     if (rawTray) {
       const parsed = JSON.parse(rawTray);
-      if (Array.isArray(parsed?.items)) {
+      if (Array.isArray(parsed?.items) && parsed.items.length > 0) {
         base.items = parsed.items.map((it) => normalizeItem(it)).filter((it) => it !== null);
         base.coreReturnEnabled = Boolean(parsed.coreReturnEnabled);
         migrated = true;
@@ -252,7 +298,7 @@ function readLegacyIntoSessionOnce() {
     const rawCtx = ss?.getItem(LEGACY_KEYS.context) || ls?.getItem(LEGACY_KEYS.context);
     if (rawCtx) {
       const ctx = JSON.parse(rawCtx);
-      if (ctx && typeof ctx === 'object') {
+      if (ctx && typeof ctx === 'object' && Object.keys(ctx).length > 0) {
         base.stationSnapshots = { ...base.stationSnapshots, ...ctx };
         if (ctx.processControl?.specificGravity) {
           base.metrology.oreSolidsSg = Number(ctx.processControl.specificGravity);
@@ -266,7 +312,7 @@ function readLegacyIntoSessionOnce() {
     const rawWb = ls?.getItem(LEGACY_KEYS.workbench);
     if (rawWb) {
       const wb = JSON.parse(rawWb);
-      if (wb && typeof wb === 'object') {
+      if (wb && typeof wb === 'object' && (wb.company || wb.name || wb.email || wb.phone)) {
         base.plantContext = {
           ...base.plantContext,
           company: String(wb.company || ''),
@@ -283,20 +329,23 @@ function readLegacyIntoSessionOnce() {
   } catch (_e) { }
 
   const normalized = migrated ? normalizeSession(base) : base;
-  if (migrated) {
-    const serialized = JSON.stringify(normalized);
-    try {
+  try {
+    const hasLegacy = PURGEABLE_LEGACY_LOCAL_KEYS.some((k) => Boolean(ls?.getItem(k)));
+    if (hasLegacy || migrated) {
+      purgeLegacyStorageKeys(ls, ss);
+      ss?.setItem(RFQ_SESSION_MIGRATED_FLAG, '1');
+    }
+    if (migrated) {
+      const serialized = JSON.stringify(normalized);
       ls?.setItem(RFQ_SESSION_STORAGE_KEY, serialized);
       ss?.setItem(RFQ_SESSION_STORAGE_KEY, serialized);
-      ls?.setItem(RFQ_SESSION_MIGRATED_FLAG, '1');
-      ss?.setItem(RFQ_SESSION_MIGRATED_FLAG, '1');
-    } catch (_e) { }
-  }
+    }
+  } catch (_e) { }
   return normalized;
 }
 
 /**
- * Lee el estado unificado `smat_rfq_session_v3` migrando llaves heredadas una sola vez.
+ * Lee el estado unificado `smat_rfq_session_v3` migrando y purgando llaves heredadas una sola vez.
  * @returns {SmatRfqSessionV3}
  */
 export function loadRfqSession() {
@@ -306,14 +355,17 @@ export function loadRfqSession() {
     if (!store) continue;
     try {
       const raw = store.getItem(RFQ_SESSION_STORAGE_KEY);
-      if (raw) return normalizeSession(JSON.parse(raw));
+      if (raw) {
+        purgeLegacyStorageKeys(ls, ss);
+        return normalizeSession(JSON.parse(raw));
+      }
     } catch (_e) { }
   }
   return readLegacyIntoSessionOnce();
 }
 
 /**
- * Persiste el estado unificado fusionando el complemento existente y notificando suscriptores DOM.
+ * Persiste el estado unificado `smat_rfq_session_v3` (única llave RFQ en `localStorage`).
  * @param {Record<string, any>} [nextSession={}]
  * @returns {SmatRfqSessionV3}
  */
@@ -364,9 +416,10 @@ export function saveRfqSession(nextSession = {}) {
   const ls = getStorageSafe('localStorage');
   const ss = getStorageSafe('sessionStorage');
   try {
+    purgeLegacyStorageKeys(ls, ss);
     ls?.setItem(RFQ_SESSION_STORAGE_KEY, serialized);
     ss?.setItem(RFQ_SESSION_STORAGE_KEY, serialized);
-    ls?.setItem(RFQ_SESSION_MIGRATED_FLAG, '1');
+    ss?.setItem(RFQ_SESSION_MIGRATED_FLAG, '1');
   } catch (_e) { }
   if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function' && typeof CustomEvent === 'function') {
     window.dispatchEvent(new CustomEvent(RFQ_SESSION_UPDATE_EVENT, { detail: normalized }));
@@ -400,13 +453,18 @@ export function isFieldUserDirty(fieldName = '', session = null) {
 }
 
 /**
- * Guarda la memoria tecnica de una estacion respetando campos y unidades aisladas.
+ * Guarda la memoria tecnica de una estacion respetando aislamiento `ephemeralTelemetry ⊥ committedRfq`.
  * @param {string} [stationKey='pumping']
  * @param {Record<string, any>} [snapshot={}]
+ * @param {{ passive?: boolean, committed?: boolean, userInteracted?: boolean }} [opts={}]
  * @returns {SmatRfqSessionV3}
  */
-export function saveStationSnapshot(stationKey = 'pumping', snapshot = {}) {
+export function saveStationSnapshot(stationKey = 'pumping', snapshot = {}, opts = {}) {
   const key = String(stationKey || 'pumping').trim();
+  if (opts && opts.passive === true && key !== 'outbox') {
+    saveEphemeralStationTelemetry(key, snapshot, opts);
+    return loadRfqSession();
+  }
   const current = loadRfqSession();
   const prevStation = current.stationSnapshots[key] || {};
   const snapData = snapshot && typeof snapshot === 'object' ? snapshot : {};
@@ -414,6 +472,8 @@ export function saveStationSnapshot(stationKey = 'pumping', snapshot = {}) {
     [key]: {
       ...prevStation,
       ...snapData,
+      committed: opts.committed !== false,
+      passive: false,
       updatedAtIso: new Date().toISOString(),
     },
   };
@@ -447,6 +507,25 @@ export function saveStationSnapshot(stationKey = 'pumping', snapshot = {}) {
   return saveRfqSession(domainPatch);
 }
 
+/**
+ * Promueve explícitamente telemetría efímera de simuladores a la sesión `committedRfq`.
+ * @param {string} [stationKey='']
+ * @returns {SmatRfqSessionV3}
+ */
+export function commitEphemeralTelemetryToRfq(stationKey = '') {
+  const eph = loadEphemeralStationTelemetry();
+  const entries = stationKey
+    ? [[stationKey, eph.stationSnapshots?.[stationKey]]].filter(([, v]) => v && typeof v === 'object')
+    : Object.entries(eph.stationSnapshots || {});
+  let sess = loadRfqSession();
+  for (const [k, snap] of entries) {
+    if (snap && typeof snap === 'object' && Object.keys(snap).length > 0) {
+      sess = saveStationSnapshot(String(k), snap, { committed: true });
+    }
+  }
+  return sess;
+}
+
 const CIRCUIT_TO_CANONICAL_STATION = Object.freeze({
   bombeo: 'pumping',
   flotacion: 'flotation',
@@ -456,26 +535,48 @@ const CIRCUIT_TO_CANONICAL_STATION = Object.freeze({
 });
 
 /**
- * Compatibilidad directa para islas verticales previas que llamaban a `saveEngineeringContextSnapshot`.
+ * Persiste snapshots verticales en telemetría efímera (`sessionStorage`) salvo compromiso explícito.
  * @param {string | Record<string, any>} [circuitOrPartial={}]
  * @param {Record<string, any> | null} [maybePayload=null]
+ * @param {{ explicitCommit?: boolean, commit?: boolean, userInteracted?: boolean }} [opts={}]
  */
-export function saveEngineeringContextSnapshot(circuitOrPartial = {}, maybePayload = null) {
+export function saveEngineeringContextSnapshot(circuitOrPartial = {}, maybePayload = null, opts = {}) {
+  const explicit = Boolean(opts?.explicitCommit || opts?.commit);
   if (typeof circuitOrPartial === 'string' && maybePayload && typeof maybePayload === 'object') {
     const rawKey = String(circuitOrPartial || '').trim();
     const canonicalKey = CIRCUIT_TO_CANONICAL_STATION[rawKey] || rawKey;
-    const s = saveStationSnapshot(canonicalKey, maybePayload);
-    return s.stationSnapshots;
+    if (explicit) {
+      return saveStationSnapshot(canonicalKey, maybePayload, { committed: true }).stationSnapshots;
+    }
+    saveEphemeralStationTelemetry(canonicalKey, maybePayload, {
+      userInteracted: opts?.userInteracted ?? true,
+      circuit: rawKey,
+    });
+    return loadEngineeringContextSnapshot();
   }
   const partial = circuitOrPartial && typeof circuitOrPartial === 'object' ? circuitOrPartial : {};
-  return saveRfqSession({ stationSnapshots: partial }).stationSnapshots;
+  if (explicit) {
+    return saveRfqSession({ stationSnapshots: partial }).stationSnapshots;
+  }
+  for (const [k, v] of Object.entries(partial)) {
+    if (v && typeof v === 'object') {
+      saveEphemeralStationTelemetry(k, v, { userInteracted: opts?.userInteracted ?? true });
+    }
+  }
+  return loadEngineeringContextSnapshot();
 }
 
 /**
+ * Lee telemetría efímera + snapshots comprometidos sin contaminar `localStorage`.
  * @returns {Record<string, any>}
  */
 export function loadEngineeringContextSnapshot() {
-  return loadRfqSession().stationSnapshots || {};
+  const eph = loadEphemeralStationTelemetry();
+  const sess = loadRfqSession();
+  return {
+    ...(eph.stationSnapshots || {}),
+    ...(sess.stationSnapshots || {}),
+  };
 }
 
 /**
@@ -531,6 +632,7 @@ export function removeSessionItem(skuOrId = '') {
  * @returns {SmatRfqSessionV3}
  */
 export function clearRfqSession() {
+  clearEphemeralStationTelemetry();
   return saveRfqSession({ ...createDefaultSession(), __replaceSession: true });
 }
 

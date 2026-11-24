@@ -232,15 +232,25 @@ export function renderMiningPresetTelemetry(
   const cw = Number(preset.solidsCw ?? preset.solidsPct ?? 48);
   const d80 = Number(preset.d80Microns ?? 180);
   const ph = Number(preset.pulpPh ?? 7.5);
+  const flow = Number(preset.flowM3h ?? preset.presetFlow ?? 180);
 
   if (el) {
     if (el.style) el.style.display = 'block';
     if (typeof el.setAttribute === 'function') {
       el.setAttribute('data-preset-group', String(preset.groupId || ''));
     }
-    el.innerHTML = isEn
+    const headerHtml = isEn
       ? `<strong>${groupName} — ${unitName}</strong>: ${pulpProfile} · Altitude <strong>${alt} masl</strong> · Ss <strong>${sg.toFixed(1)}</strong> · Cw <strong>${cw}%</strong> · d80 <strong>${d80} µm</strong> · <strong>pH ${ph.toFixed(1)}</strong>`
       : `<strong>${groupName} — ${unitName}</strong>: ${pulpProfile} · Altitud <strong>${alt} m s.n.m.</strong> · Ss <strong>${sg.toFixed(1)}</strong> · Cw <strong>${cw}%</strong> · d80 <strong>${d80} µm</strong> · <strong>pH ${ph.toFixed(1)}</strong>`;
+    const stripHtml = `<div class="qw-preset-edit-grid font-mono-tech" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(95px,1fr));gap:0.35rem;margin-top:0.4rem;">`
+      + `<label>Q (m³/h)<input type="number" data-mining-preset-edit="presetFlow" value="${flow}" min="10" max="3000" step="5" class="wb-input" /></label>`
+      + `<label>Cw (%)<input type="number" data-mining-preset-edit="presetCw" value="${cw}" min="10" max="75" step="1" class="wb-input" /></label>`
+      + `<label>d80 (µm)<input type="number" data-mining-preset-edit="presetD80" value="${d80}" min="25" max="2000" step="5" class="wb-input" /></label>`
+      + `<label>Ss<input type="number" data-mining-preset-edit="presetSg" value="${sg.toFixed(2)}" min="1.2" max="5.0" step="0.05" class="wb-input" /></label>`
+      + `<label>pH<input type="number" data-mining-preset-edit="presetPh" value="${ph.toFixed(1)}" min="1.0" max="14.0" step="0.1" class="wb-input" /></label>`
+      + `<label>${isEn ? 'Alt (m)' : 'Alt (msnm)'}<input type="number" data-mining-preset-edit="presetAlt" value="${alt}" min="0" max="5000" step="50" class="wb-input" /></label>`
+      + `</div>`;
+    el.innerHTML = `${headerHtml}${stripHtml}`;
   }
 
   return preset;
@@ -269,11 +279,24 @@ export function initMiningPresetTelemetryBridge(root = typeof document !== 'unde
   };
   const groupSelectEl = root.getElementById('wb-mining-group-select');
   const unitSelectEl = root.getElementById('wb-mining-unit-select');
+  const telemetryBox = root.querySelector('#wb-mining-preset-telemetry, [data-mining-preset-telemetry]');
   const anchorEl = groupSelectEl || unitSelectEl;
   if (anchorEl && anchorEl.dataset?.smatPresetTelemetryInit !== '1') {
     if (anchorEl.dataset) anchorEl.dataset.smatPresetTelemetryInit = '1';
     groupSelectEl?.addEventListener('change', syncFromControls);
     unitSelectEl?.addEventListener('change', syncFromControls);
+  }
+  if (telemetryBox && !telemetryBox.dataset?.smatPresetEditBound) {
+    if (telemetryBox.dataset) telemetryBox.dataset.smatPresetEditBound = '1';
+    telemetryBox.addEventListener('change', (evt) => {
+      const target = /** @type {HTMLInputElement | null} */ (evt?.target);
+      const key = target?.getAttribute?.('data-mining-preset-edit');
+      if (!target || !key || typeof window === 'undefined') return;
+      try {
+        telemetryBox.setAttribute(`data-${key.toLowerCase()}`, String(target.value || ''));
+        window.dispatchEvent(new CustomEvent('smat:mining-preset-edited', { detail: { field: key, value: Number(target.value) } }));
+      } catch (_e) { /* safe SSR guard */ }
+    });
   }
   if (typeof document !== 'undefined' && root === document && document.documentElement?.dataset?.smatPresetPageLoadBound !== '1') {
     if (document.documentElement?.dataset) document.documentElement.dataset.smatPresetPageLoadBound = '1';
@@ -283,3 +306,4 @@ export function initMiningPresetTelemetryBridge(root = typeof document !== 'unde
 }
 
 export { resolveBomPartSpecs } from './pumpAssemblyAndDriveEngine.js';
+

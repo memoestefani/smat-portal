@@ -64,31 +64,46 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
   <div class="container">
     <div id="stratum1-equipos-search" data-stratum-1-instrument class="equipos-toolbar">
       <div class="toolbar-search-col">
-        <label for="equipos-sku-search" class="search-label">
+        <label class="search-label" for="equipos-circuit-select">
           {isEs
-            ? `BUSCADOR DEL CATÁLOGO (${allQuickSkus.length} SKUS • + BANDEJA)`
-            : `CATALOG SEARCH (${allQuickSkus.length} SKUS • 1-CLICK TRAY)`}
+            ? 'ARQUITECTURA DE CIRCUITOS DE PLANTA (SELECCIÓN POR PROCESO)'
+            : 'PLANT PROCESS CIRCUIT ARCHITECTURE (FILTER BY CIRCUIT)'}
         </label>
-        <input
-          id="equipos-sku-search"
-          type="search"
-          placeholder={isEs
-            ? 'Filtrar por SKU (SMAT-PUMP-IMP-AH), código (E4147, D075C21) o serie...'
-            : 'Filter by SKU (SMAT-PUMP-IMP-AH), code (E4147, D075C21) or series...'}
-          class="equipos-search-input"
-        />
-        <div id="equipos-dropin-match-banner" class="dropin-match-banner smat-hidden-init"></div>
+        <select
+          id="equipos-circuit-select"
+          class="wb-select smat-mt-sm"
+          aria-label={isEs ? 'Filtrar equipos por circuito' : 'Filter equipment by circuit'}
+        >
+          <option value="all" data-catalog-avenue="all" selected>
+            {isEs ? 'Todos los Circuitos (5)' : 'All Circuits (5)'}
+          </option>
+          <option value="flotacion" data-catalog-avenue="avenida_4_flotacion_y_valvulas">
+            {isEs ? 'Flotación (Celdas 50–300 ft³)' : 'Flotation (50–300 ft³ Cells)'}
+          </option>
+          <option value="filtracion" data-catalog-avenue="avenida_5_desaguado_y_prensa">
+            {isEs ? 'Filtración (Filtros Prensa 16 bar)' : 'Filtration (16-Bar Filter Presses)'}
+          </option>
+          <option value="bombeo" data-catalog-avenue="avenida_1_bombas_y_desgaste">
+            {isEs ? 'Bombeo (Motobombas y Extremo Húmedo)' : 'Pumping (Slurry Pumps & Wet-End)'}
+          </option>
+          <option value="clasificacion" data-catalog-avenue="avenida_2_hidrociclones_y_mallas">
+            {isEs ? 'Clasificación (Hidrociclones y Mallas)' : 'Classification (Cyclones & Screens)'}
+          </option>
+          <option value="control" data-catalog-avenue="avenida_5_laboratorio">
+            {isEs ? 'Control / Lab (Balanza Marcy y Tamices)' : 'Process Control (Marcy Scale & Sieves)'}
+          </option>
+        </select>
       </div>
       <div class="toolbar-meta-col">
         <span data-equipos-search-count class="search-count-pill">
           {isEs
-            ? `Mostrando ${allQuickSkus.length} de ${allQuickSkus.length} equipos en ${avenueCount} Avenidas`
-            : `Showing ${allQuickSkus.length} of ${allQuickSkus.length} SKUs across ${avenueCount} Avenues`}
+            ? `Mostrando ${allQuickSkus.length} SKUs en ${avenueCount} Avenidas`
+            : `Showing ${allQuickSkus.length} SKUs across ${avenueCount} Avenues`}
         </span>
-        <a href={catalogBase} class="matrix-link-solar">
+        <a id="equipos-catalog-deep-link" href={catalogBase} class="matrix-link-solar" data-catalog-base={catalogBase}>
           {isEs
-            ? `Ver Matriz Maestra (${allQuickSkus.length} SKUs) →`
-            : `Master Matrix (${allQuickSkus.length} SKUs) →`}
+            ? `Abrir Catálogo Omnicanal (${allQuickSkus.length} SKUs) →`
+            : `Open Omnibox Catalog (${allQuickSkus.length} SKUs) →`}
         </a>
       </div>
     </div>
@@ -152,6 +167,16 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
         </div>
       </article>
 
+      <details class="eq-drawer smat-mt-sm" id="equipos-secondary-circuits-drawer">
+        <summary class="eq-drawer-summary">
+          <span>
+            {isEs
+              ? 'Ver 4 Circuitos Adicionales (Filtración 16 bar, Bombeo CV, Hidrociclones y Lab Marcy)'
+              : 'View 4 Additional Circuits (16-Bar Filtration, CV Slurry Pumps, Cyclones & Lab)'}
+          </span>
+          <span class="eq-drawer-badge">{isEs ? '4 CIRCUITOS ▾' : '4 CIRCUITS ▾'}</span>
+        </summary>
+        <div class="process-equipment-grid smat-mt-sm">
       <article class="card equipment-block" data-equipment-block="filtracion" data-equipment-block-blob="filtracion filtration filtros prensa filter press lonas cloths placas plates shifter 800 1500 av-05">
         <div class="equipment-block-header">
           <span class="badge badge-copper">
@@ -374,6 +399,8 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
           <a href={controlPath} class="inline-spec-link">{isEs ? 'Ver Línea de Control y Laboratorio →' : 'View Process Control & Lab Line →'}</a>
         </div>
       </article>
+        </div>
+      </details>
     </div>
     </div>
 
@@ -429,12 +456,30 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
     const lang = document.documentElement.lang === 'en' ? 'en' : 'es';
     bindEquipmentCatalogSearchAndTray(document, lang);
     bindDropInEquivalenceVerifier(document, lang);
-    const searchEl = document.getElementById('equipos-sku-search') as HTMLInputElement | null;
-    const blocksDrawer = document.getElementById('equipos-catalog-blocks-drawer') as HTMLDetailsElement | null;
-    if (searchEl && blocksDrawer && searchEl.dataset.eqDrawerBound !== '1') {
-      searchEl.dataset.eqDrawerBound = '1';
-      searchEl.addEventListener('input', () => {
-        if (searchEl.value.trim().length > 0) blocksDrawer.open = true;
+
+    const circuitSelect = document.getElementById('equipos-circuit-select') as HTMLSelectElement | null;
+    const secDrawer = document.getElementById('equipos-secondary-circuits-drawer') as HTMLDetailsElement | null;
+    const blocks = Array.from(document.querySelectorAll('[data-equipment-block]'));
+    const deepLink = document.getElementById('equipos-catalog-deep-link') as HTMLAnchorElement | null;
+    const catBase = deepLink?.getAttribute('data-catalog-base') || (lang === 'en' ? '/en/catalog/' : '/catalogo/');
+
+    if (circuitSelect && circuitSelect.dataset.eqSelectBound !== '1') {
+      circuitSelect.dataset.eqSelectBound = '1';
+      circuitSelect.addEventListener('change', () => {
+        const selectedOpt = circuitSelect.options[circuitSelect.selectedIndex];
+        const circuit = circuitSelect.value || 'all';
+        const avenue = selectedOpt?.getAttribute('data-catalog-avenue') || 'all';
+        if (secDrawer && circuit !== 'flotacion') secDrawer.open = true;
+        blocks.forEach((blk) => {
+          const el = blk as HTMLElement;
+          const match = circuit === 'all' || el.getAttribute('data-equipment-block') === circuit;
+          el.style.display = match ? '' : 'none';
+          const drawer = el.querySelector('details.eq-drawer') as HTMLDetailsElement | null;
+          if (drawer && circuit !== 'all' && match) drawer.open = true;
+        });
+        if (deepLink) {
+          deepLink.href = avenue === 'all' ? catBase : `${catBase}?avenida=${encodeURIComponent(avenue)}`;
+        }
       });
     }
   }

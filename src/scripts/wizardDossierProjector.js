@@ -8,6 +8,7 @@
  */
 
 import rolesDataJson from '../../data/roles.json' with { type: 'json' };
+import { resolveDomainMaterialSpec } from './domainMaterialSpecResolver.js';
 import {
   buildRolesCriteriaMap,
   formatCatalogPartCodeHuman,
@@ -30,7 +31,12 @@ import {
   getTrayState,
 } from './requisitionTrayBus.js';
 import { deriveSessionLifecycleState, loadEngineeringContextSnapshot, loadRfqSession } from './rfqSessionStore.js';
-import { projectDomainOutputs, verifyVplDomScopeContainment } from './schemaRuntimeBinder.js';
+import {
+  INTERNAL_PRIVATE_OUTPUT_KEYS,
+  OUTPUT_VISIBILITY_TAXONOMY,
+  auditSchemaOutputParity,
+  projectDomainOutputs, verifyVplDomScopeContainment,
+} from './schemaRuntimeBinder.js';
 import { calculateSlurryMetrics, validatePlantLeadInput } from './slurryEngine.js';
 import { buildSapAnexo22ComplianceSummary } from './vendorPassportAndTradeInController.js';
 import { QUICK_CHECKOUT_SKU_LIST, findMiningGroupById } from './wizardCatalogData.js';
@@ -235,22 +241,16 @@ export function projectLiveDossierSummary(ctx = {}) {
   setText('live-part-details', detailsText);
   setText('sap-live-part', partLabel);
 
-  const circuitAlloyBadges = {
-    flotacion: isEs ? 'Poliuretano Shore A 85–95 / Hule R55' : 'Mining PU Shore A 85–95 / R55',
-    filtracion: isEs ? 'Polipropileno Virgen 16 bar + Lona Calandrada' : 'Virgin PP 16 bar + Calendered Cloth',
-    clasificacion: isEs ? 'SiC Sinterizado / Poliuretano TH48-30' : 'Sintered SiC / TH48-30 Polyurethane',
-    control_procesos: isEs ? 'Acero Inoxidable 304 / Latón Certificado ASTM E11' : '304 Stainless / ASTM E11 Certified Brass',
-  };
   const activeCircuitKey = String(primaryTray?.circuit || state.currentCircuit || 'bombeo').toLowerCase();
-  if (circuitAlloyBadges[activeCircuitKey]) {
-    setText('live-alloy-badge', circuitAlloyBadges[activeCircuitKey]);
-  }
-  setText(
-    'dossier-part-hardness',
-    isEmptySession
-      ? (isEs ? 'Por especificar (Borrador)' : 'Pending part selection (Draft)')
-      : (isEs ? '≥ 650 HB (Brinell) / 58-62 HRC' : '≥ 650 HB (Brinell) / 58-62 HRC')
-  );
+  const matSpec = resolveDomainMaterialSpec({
+    circuit: activeCircuitKey,
+    skuId: primaryTray?.id || (isEmptySession ? '' : smatCode),
+    materialCode: primaryTray?.material || state.urlCtx?.material || '',
+    isEmpty: isEmptySession,
+    locale: isEs ? 'es' : 'en',
+  });
+  setText('live-alloy-badge', matSpec.badge);
+  setText('dossier-part-hardness', matSpec.hardnessSpec);
 
   if (dom.liveClientRefBox) dom.liveClientRefBox.classList.toggle('hidden', !clientRefVal);
   if (dom.liveClientRefText) dom.liveClientRefText.textContent = clientRefVal;
@@ -266,7 +266,7 @@ export function projectLiveDossierSummary(ctx = {}) {
 
   const cmuNow = computeCmuPriorityDescriptor({
     urgency: isEmptySession ? '' : (isOpex ? 'paro_de_linea' : 'programado'),
-    criticalityMode: dom.jrpCriticality?.value || (isOpex ? 'PARO_DE_LINEA' : 'STOCK_SS'),
+    criticalityMode: isEmptySession ? 'UNSET' : (dom.jrpCriticality?.value || (isOpex ? 'PARO_DE_LINEA' : 'STOCK_SS')),
     items: trayStateNow.items || [],
     estimatedTotalMxn: isOpex ? 18500 : 85000,
     stockRegime: isOpex ? 'hay' : 'se_fabrica',
@@ -282,7 +282,9 @@ export function projectLiveDossierSummary(ctx = {}) {
     dom.livePriorityTag.classList?.toggle('is-priority-opex', !isEmptySession && isOpex);
     dom.livePriorityTag.classList?.toggle('is-priority-capex', !isEmptySession && !isOpex);
   }
-  const laneLabel = isEs ? (cmuNow.checkoutLaneLabelEs || 'Despacho Programado') : (cmuNow.checkoutLaneLabelEn || 'Scheduled Dispatch');
+  const laneLabel = isEmptySession
+    ? (isEs ? 'Por asignar (Bandeja vacía)' : 'Unassigned (Empty Tray)')
+    : (isEs ? (cmuNow.checkoutLaneLabelEs || 'Despacho Programado') : (cmuNow.checkoutLaneLabelEn || 'Scheduled Dispatch'));
   setText('live-budget-category-pill', `${isEs ? 'Carril' : 'Lane'}: ${laneLabel}`);
 
   const jrpHours = Number(dom.jrpWearInput?.value || 2400);
@@ -365,10 +367,13 @@ export function projectLiveDossierSummary(ctx = {}) {
   const sobolSummary = (sobolRes.ranked || [])
     .map((item) => `${item.name} ${(item.si * 100).toFixed(0)}%`)
     .join(' · ');
+  const domDriver = sobolRes.ranked?.[0] || { name: 'flowM3H', si: 0 };
+  const sobolDominantSiText = `${domDriver.name} (${(Number(domDriver.si || 0) * 100).toFixed(1)}% · σ²=${Number(sobolRes.totalVariance || 0).toFixed(0)} · Int ${(Number(sobolRes.interactionResidual || 0) * 100).toFixed(1)}%)`;
   setText(
     'live-table-sobol-drivers',
     `${sobolSummary} • Cv ${FORMATTERS_BY_FIELD.solidsVolumetricPercent(hm.solidsVolumetricPercent)} • ${DOSSIER_FORMATTERS_BY_FIELD.actualPipeVelocityMs(hm.actualPipeVelocityMs)}`
   );
+  setText('dossier-metric-sobol-driver', `${isEs ? 'Driver Sobol' : 'Sobol Driver'}: ${sobolDominantSiText}`);
 
   const anexo = buildSapAnexo22ComplianceSummary({
     circuit: state.currentCircuit || 'bombeo',
@@ -396,6 +401,16 @@ export function projectLiveDossierSummary(ctx = {}) {
     quantity: Number(dom.erpQuantity?.value || 1),
     logistics_mode: dom.inputDest?.value || 'retiro_durango',
   });
+  const erpDictamen = isEmptySession
+    ? (isEs ? 'En espera de partidas (Borrador)' : 'Awaiting line items (Draft)')
+    : (erpSnapshot.dictamen_estructural || (isEs ? gateOut.badgeLabelEs : gateOut.badgeLabelEn));
+  const erpGate = erpSnapshot.clasificacion_compuerta || priorityVm.priorityCode || (isEs ? 'BORRADOR' : 'DRAFT');
+  const erpSla = isEmptySession
+    ? (isEs ? 'Sin SLA activo hasta capturar partidas' : 'No active SLA until items are added')
+    : (isEs ? (hm.slaCommitmentEs || 'Atención ingeniería Durango') : 'Durango Engineering SLA');
+  setText('dossier-sla-commitment', erpSla);
+  setText('dossier-dual-checkout', laneLabel);
+  setText('dossier-structural-verdict', `${erpDictamen} [${erpGate}]`);
 
   projectAttachedStationSnapshots(doc, session, isEs);
   projectDomainOutputs(container, 'jrp', {
@@ -406,6 +421,12 @@ export function projectLiveDossierSummary(ctx = {}) {
   projectDomainOutputs(container, 'erpExport', erpSnapshot, isEs ? 'es' : 'en');
   projectWorkbenchToDOM(container, { ...hm, smat_code: smatCode });
 
+  const erpParity = auditSchemaOutputParity('erpExport', erpSnapshot, container);
+  const hasLeakedPrivate = INTERNAL_PRIVATE_OUTPUT_KEYS.some((pk) => erpParity.leakedPrivateKeys.includes(pk));
+  container.setAttribute?.(
+    'data-schema-parity',
+    hasLeakedPrivate ? OUTPUT_VISIBILITY_TAXONOMY.INTERNAL_PRIVATE : (erpParity.valid ? OUTPUT_VISIBILITY_TAXONOMY.PRIMARY : 'partial')
+  );
   const scopeReport = verifyVplDomScopeContainment(container);
   return {
     schemaCount: scopeReport.checkedCount,

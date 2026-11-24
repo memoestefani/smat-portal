@@ -325,6 +325,14 @@ export function bindCanonicalTribologySelector(root, lang = 'es') {
         statusOut.style.color = asmEval.spallingRiskDetected ? '#991b1b' : '#064e3b';
       }
     }
+    const impCodeOut = root.querySelector('#wb-trib-impeller-mat-code');
+    const linCodeOut = root.querySelector('#wb-trib-liner-mat-code');
+    const interfOut = root.querySelector('#wb-trib-interference-eval');
+    const impCode = asmEval.impellerMaterialCode || (resolvedMaterialKey === 'hule_natural' ? 'R55' : (resolvedMaterialKey === 'ceramica_sic' ? 'SiC' : 'A05'));
+    const linCode = asmEval.linerMaterialCode || (resolvedMaterialKey === 'hybrid_a05_r55' ? 'R55' : impCode);
+    if (impCodeOut) impCodeOut.textContent = impCode;
+    if (linCodeOut) linCodeOut.textContent = linCode;
+    if (interfOut) interfOut.textContent = `Ng=${asmEval.geometricInterferencesNg ?? 0} · Ns=${asmEval.unstableSubassembliesNs ?? 0}`;
 
     const combined = {
       ...matEval,

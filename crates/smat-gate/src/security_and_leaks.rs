@@ -157,7 +157,46 @@ pub fn verify_security_headers_nap_and_honest_sla(site_root: &Path) -> Result<()
     }
 
     verify_v58_en_dist_leaks(site_root)?;
+    verify_v59_storage_whitelist_and_material_purity(site_root)?;
 
+    Ok(())
+}
+
+/// Invariante V5.9: máximo 3 llaves permitidas en `localStorage.setItem`, sin lecturas legadas ni hardcode >=650 HB en Flotación.
+pub fn verify_v59_storage_whitelist_and_material_purity(site_root: &Path) -> Result<(), String> {
+    let scripts_dir = site_root.join("src/scripts");
+    if scripts_dir.is_dir() {
+        for entry in fs::read_dir(&scripts_dir).map_err(|e| e.to_string())?.flatten() {
+            let p = entry.path();
+            if p.extension().and_then(|s| s.to_str()) == Some("js") {
+                let text = fs::read_to_string(&p).unwrap_or_default();
+                let fname = p.file_name().unwrap_or_default().to_string_lossy();
+                find_v59_disallowed_storage_write(&fname, &text)?;
+            }
+        }
+    }
+    let resolver_path = scripts_dir.join("domainMaterialSpecResolver.js");
+    if !resolver_path.exists() {
+        return Err("Falta domainMaterialSpecResolver.js para aislamiento material por circuito".to_string());
+    }
+    let header_src = fs::read_to_string(site_root.join("src/components/Header.astro")).unwrap_or_default();
+    if header_src.contains("smat_requisition_tray_v3") {
+        return Err("Header.astro no debe conservar lectura legada smat_requisition_tray_v3".to_string());
+    }
+    Ok(())
+}
+
+pub fn find_v59_disallowed_storage_write(fname: &str, js_text: &str) -> Result<(), String> {
+    let re = Regex::new(r#"localStorage\??\.setItem\(\s*['"`]([^'"`]+)['"`]"#).unwrap();
+    let allowed = ["smat_rfq_session_v3", "smat_locale_pref", "smat_lead_outbox_v1"];
+    for cap in re.captures_iter(js_text) {
+        if let Some(m) = cap.get(1) {
+            let key = m.as_str();
+            if !allowed.contains(&key) {
+                return Err(format!("Llave localStorage V5.9 no autorizada '{}' en {}", key, fname));
+            }
+        }
+    }
     Ok(())
 }
 
@@ -219,7 +258,11 @@ pub fn find_v57_prohibited_copy_in_source(rel_norm: &str, text: &str) -> Option<
 
 #[cfg(test)]
 mod tests {
-    use super::{find_v57_prohibited_copy_in_source, find_v58_en_leak_in_html};
+    use super::{
+        find_v57_prohibited_copy_in_source,
+        find_v58_en_leak_in_html,
+        find_v59_disallowed_storage_write,
+    };
 
     #[test]
     fn detects_v57_prohibited_copy_and_ascii_exponents() {
@@ -242,5 +285,11 @@ mod tests {
         assert_eq!(find_v58_en_leak_in_html("<div>30 HP a 250 HP</div>"), Some("30 HP a 250 HP"));
         assert_eq!(find_v58_en_leak_in_html("<span>P1-PARO-PLANTA</span>"), Some("P1-PARO-PLANTA"));
         assert_eq!(find_v58_en_leak_in_html("<span>P1-LINE-STOP • 30 HP to 250 HP</span>"), None);
+    }
+
+    #[test]
+    fn allows_only_whitelisted_v59_localstorage_keys() {
+        assert!(find_v59_disallowed_storage_write("rfqSessionStore.js", "ls.setItem('smat_rfq_session_v3', '{}')").is_ok());
+        assert!(find_v59_disallowed_storage_write("workbenchBus.js", "localStorage.setItem('smat_workbench_state_v2', '{}')").is_err());
     }
 }

@@ -40,6 +40,7 @@ export const TWO_SORT_PARTITION_VERSION = '5.1.0';
  * @property {boolean} isoPure
  * @property {string} domBinding
  * @property {string} schemaKey
+ * @property {'primary'|'secondary'|'diagnostic'|'internal_private'|'tier1'|'tier2'} [visibility]
  * @property {number} [decimals]
  * @property {string[]} [aliasBindings]
  */
@@ -99,7 +100,13 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
       { field: 'combinedMotorAltitudeMultiplier', unit: 'x', decimals: 3, isoPure: true, domBinding: '#metric-k-motor-alt', schemaKey: 'pumping.combinedMotorAltitudeMultiplier', aliasBindings: ['[data-schema-output="pumping.combinedMotorAltitudeMultiplier"]'] },
       { field: 'motorSizingPenaltyPct', unit: '%', decimals: 1, isoPure: true, domBinding: '#metric-motor-penalty-pct', schemaKey: 'pumping.motorSizingPenaltyPct', aliasBindings: ['[data-schema-output="pumping.motorSizingPenaltyPct"]'] },
       { field: 'activeTrustBoundaryId', unit: 'id', isoPure: false, domBinding: '#trust-boundary-alert', schemaKey: 'pumping.activeTrustBoundaryId', aliasBindings: ['[data-schema-output="pumping.activeTrustBoundaryId"]'] },
-      { field: 'sobolDominantDriver', unit: 'text', isoPure: false, domBinding: '#metric-sobol-driver', schemaKey: 'pumping.sobolDominantDriver', aliasBindings: ['[data-schema-output="pumping.sobolDominantDriver"]'] }
+      { field: 'sobolDominantDriver', unit: 'text', isoPure: false, domBinding: '#metric-sobol-driver', schemaKey: 'pumping.sobolDominantDriver', aliasBindings: ['[data-schema-output="pumping.sobolDominantDriver"]'] },
+      { field: 'barometricPressureKpa', unit: 'kPa', decimals: 2, isoPure: true, visibility: 'tier1', domBinding: '#metric-patm-kpa', schemaKey: 'pumping.barometricPressureKpa', aliasBindings: ['[data-schema-output="pumping.barometricPressureKpa"]'] },
+      { field: 'altitudeTier', unit: 'tier', isoPure: false, visibility: 'tier1', domBinding: '#metric-altitude-tier', schemaKey: 'pumping.altitudeTier', aliasBindings: ['[data-schema-output="pumping.altitudeTier"]'] },
+      { field: 'npshSafeMarginWarning', unit: 'bool', isoPure: false, visibility: 'tier1', domBinding: '#pumping-npsh-warning-flag', schemaKey: 'pumping.npshSafeMarginWarning', aliasBindings: ['[data-schema-output="pumping.npshSafeMarginWarning"]'] },
+      { field: 'sobolDominantSi', unit: '%', decimals: 1, isoPure: true, visibility: 'tier1', domBinding: '#metric-sobol-si', schemaKey: 'pumping.sobolDominantSi', aliasBindings: ['[data-schema-output="pumping.sobolDominantSi"]'] },
+      { field: 'totalVariance', unit: '-', decimals: 2, isoPure: true, visibility: 'tier1', domBinding: '#metric-sobol-var', schemaKey: 'pumping.totalVariance', aliasBindings: ['[data-schema-output="pumping.totalVariance"]'] },
+      { field: 'interactionResidual', unit: '%', decimals: 1, isoPure: true, visibility: 'tier1', domBinding: '#metric-sobol-res', schemaKey: 'pumping.interactionResidual', aliasBindings: ['[data-schema-output="pumping.interactionResidual"]'] }
     ],
     allowUnboundReasons: []
   },
@@ -133,6 +140,9 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
       { field: 'activeWeightKg', unit: 'kg', decimals: 1, isoPure: true, domBinding: '#wb-asm-active-weight', schemaKey: 'tribology.activeWeightKg', aliasBindings: ['[data-schema-output="tribology.activeWeightKg"]'] },
       { field: 'activeNioshHoistRequired', unit: 'bool', isoPure: false, domBinding: '#wb-asm-active-hoist', schemaKey: 'tribology.activeNioshHoistRequired', aliasBindings: ['[data-schema-output="tribology.activeNioshHoistRequired"]'] },
       { field: 'activeMaterialCode', unit: 'code', isoPure: false, domBinding: '#wb-asm-active-material', schemaKey: 'tribology.activeMaterialCode', aliasBindings: ['[data-schema-output="tribology.activeMaterialCode"]'] },
+      { field: 'impellerMaterialCode', unit: 'code', isoPure: false, visibility: 'tier1', domBinding: '#wb-trib-impeller-mat-code', schemaKey: 'tribology.impellerMaterialCode', aliasBindings: ['[data-schema-output="tribology.impellerMaterialCode"]'] },
+      { field: 'linerMaterialCode', unit: 'code', isoPure: false, visibility: 'tier1', domBinding: '#wb-trib-liner-mat-code', schemaKey: 'tribology.linerMaterialCode', aliasBindings: ['[data-schema-output="tribology.linerMaterialCode"]'] },
+      { field: 'interferenceEval', unit: 'state', isoPure: false, visibility: 'tier1', domBinding: '#wb-trib-interference-eval', schemaKey: 'tribology.interferenceEval', aliasBindings: ['[data-schema-output="tribology.interferenceEval"]'] },
       { field: 'volumetricLossPct', unit: '%', decimals: 1, isoPure: true, domBinding: '#trib-vol-loss-out', schemaKey: 'tribology.volumetricLossPct', aliasBindings: ['[data-schema-output="tribology.volumetricLossPct"]'] },
       { field: 'pipeVelocityMarginLossPct', unit: '%', decimals: 1, isoPure: true, domBinding: '#trib-pipe-loss-out', schemaKey: 'tribology.pipeVelocityMarginLossPct', aliasBindings: ['[data-schema-output="tribology.pipeVelocityMarginLossPct"]', '#wb-clearance-vel-loss'] },
       { field: 'statusMessage', unit: 'text', isoPure: false, domBinding: '#trib-status-out', schemaKey: 'tribology.statusMessage', aliasBindings: ['[data-schema-output="tribology.statusMessage"]'] }
@@ -182,7 +192,9 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
       { field: 'sumpFloodImmunityEn', unit: 'text', isoPure: false, domBinding: '#wb-kin-flood-out', schemaKey: 'sealDrive.sumpFloodImmunityEn', aliasBindings: ['[data-schema-output="sealDrive.sumpFloodImmunityEn"]'] },
       { field: 'rubberSafeTipSpeed', unit: 'bool', isoPure: false, domBinding: '#wb-kin-rubber-safe-out', schemaKey: 'sealDrive.rubberSafeTipSpeed', aliasBindings: ['[data-schema-output="sealDrive.rubberSafeTipSpeed"]'] },
       { field: 'ceramicSpallingSpeedExceeded', unit: 'bool', isoPure: false, domBinding: '#wb-kin-sic-over-out', schemaKey: 'sealDrive.ceramicSpallingSpeedExceeded', aliasBindings: ['[data-schema-output="sealDrive.ceramicSpallingSpeedExceeded"]'] },
-      { field: 'recommendedWetMaterialByTipSpeed', unit: 'text', isoPure: false, domBinding: '#wb-kin-rec-mat-u2-out', schemaKey: 'sealDrive.recommendedWetMaterialByTipSpeed', aliasBindings: ['[data-schema-output="sealDrive.recommendedWetMaterialByTipSpeed"]'] }
+      { field: 'recommendedWetMaterialByTipSpeed', unit: 'text', isoPure: false, domBinding: '#wb-kin-rec-mat-u2-out', schemaKey: 'sealDrive.recommendedWetMaterialByTipSpeed', aliasBindings: ['[data-schema-output="sealDrive.recommendedWetMaterialByTipSpeed"]'] },
+      { field: 'serviceFactor', unit: '×', decimals: 2, isoPure: true, visibility: 'tier1', domBinding: '#wb-kin-sf-out', schemaKey: 'sealDrive.serviceFactor', aliasBindings: ['[data-schema-output="sealDrive.serviceFactor"]'] },
+      { field: 'derivedTorqueNm', unit: 'N·m', decimals: 1, isoPure: true, visibility: 'tier1', domBinding: '#wb-kin-torque-out', schemaKey: 'sealDrive.derivedTorqueNm', aliasBindings: ['[data-schema-output="sealDrive.derivedTorqueNm"]'] }
     ],
     allowUnboundReasons: []
   },
@@ -239,7 +251,8 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
       { field: 'flexuralSafetyFactor', unit: 'FS', decimals: 2, isoPure: true, domBinding: '#wb-filt-res-fs', schemaKey: 'filtration.flexuralSafetyFactor', aliasBindings: ['[data-schema-output="filtration.flexuralSafetyFactor"]'] },
       { field: 'cyclesPerDay', unit: 'c/d', decimals: 0, isoPure: true, domBinding: '#wb-filt-res-cycles', schemaKey: 'filtration.cyclesPerDay', aliasBindings: ['[data-schema-output="filtration.cyclesPerDay"]'] },
       { field: 'dryTonnesPerDay', unit: 't/d', decimals: 0, isoPure: true, domBinding: '#wb-filt-res-tpd', schemaKey: 'filtration.dryTonnesPerDay', aliasBindings: ['[data-schema-output="filtration.dryTonnesPerDay"]'] },
-      { field: 'nom141Compliant', unit: 'bool', isoPure: false, domBinding: '#wb-filt-res-nom141', schemaKey: 'filtration.nom141Compliant', aliasBindings: ['[data-schema-output="filtration.nom141Compliant"]'] }
+      { field: 'nom141Compliant', unit: 'bool', isoPure: false, domBinding: '#wb-filt-res-nom141', schemaKey: 'filtration.nom141Compliant', aliasBindings: ['[data-schema-output="filtration.nom141Compliant"]'] },
+      { field: 'recommendedPlateSkuId', unit: 'sku', isoPure: false, visibility: 'tier1', domBinding: '#wb-filt-res-plate-sku', schemaKey: 'filtration.recommendedPlateSkuId', aliasBindings: ['[data-schema-output="filtration.recommendedPlateSkuId"]'] }
     ],
     allowUnboundReasons: []
   },
@@ -275,7 +288,10 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
       { field: 'dischargeRegime', unit: 'state', isoPure: false, domBinding: '#wb-cyc-res-roping', schemaKey: 'cycloneScreen.dischargeRegime', aliasBindings: ['[data-schema-output="cycloneScreen.dischargeRegime"]'] },
       { field: 'partitionToOversizePct', unit: '%', decimals: 1, isoPure: true, domBinding: '#wb-scr-res-oversize', schemaKey: 'cycloneScreen.partitionToOversizePct', aliasBindings: ['[data-schema-output="cycloneScreen.partitionToOversizePct"]'] },
       { field: 'elasticDilationPct', unit: '%', decimals: 2, isoPure: true, domBinding: '#wb-scr-res-dilation', schemaKey: 'cycloneScreen.elasticDilationPct', aliasBindings: ['[data-schema-output="cycloneScreen.elasticDilationPct"]'] },
-      { field: 'sharpnessAlpha', unit: '-', decimals: 2, isoPure: true, domBinding: '#wb-scr-res-weibull', schemaKey: 'cycloneScreen.sharpnessAlpha', aliasBindings: ['[data-schema-output="cycloneScreen.sharpnessAlpha"]'] }
+      { field: 'sharpnessAlpha', unit: '-', decimals: 2, isoPure: true, domBinding: '#wb-scr-res-weibull', schemaKey: 'cycloneScreen.sharpnessAlpha', aliasBindings: ['[data-schema-output="cycloneScreen.sharpnessAlpha"]'] },
+      { field: 'cvFeedPct', unit: '%', decimals: 1, isoPure: true, visibility: 'tier2', domBinding: '#wb-cyc-res-cvfeed', schemaKey: 'cycloneScreen.cvFeedPct', aliasBindings: ['[data-schema-output="cycloneScreen.cvFeedPct"]'] },
+      { field: 'cvOverflowPct', unit: '%', decimals: 1, isoPure: true, visibility: 'tier2', domBinding: '#wb-cyc-res-cvof', schemaKey: 'cycloneScreen.cvOverflowPct', aliasBindings: ['[data-schema-output="cycloneScreen.cvOverflowPct"]'] },
+      { field: 'diagnosticActionEs', unit: 'text', isoPure: false, visibility: 'tier2', domBinding: '#wb-cyc-res-diag-action', schemaKey: 'cycloneScreen.diagnosticActionEs', aliasBindings: ['[data-schema-output="cycloneScreen.diagnosticActionEs"]'] }
     ],
     allowUnboundReasons: []
   },
@@ -293,7 +309,7 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
       { field: 'marcyMode', type: 'enum', defaultValue: 'cw', sobolTier: 1, sobolSensitivityScore: 0.24, domBinding: '#wb-ctrl-solve-mode', schemaKey: 'metrology.marcyMode', aliasBindings: ['[data-schema-input="metrology.marcyMode"]'] },
       { field: 'solidsSpecificGravity', type: 'number', min: 2.2, max: 4.4, defaultValue: 2.8, sobolTier: 1, sobolSensitivityScore: 0.27, domBinding: '#wb-ctrl-sg', schemaKey: 'metrology.solidsSpecificGravity', aliasBindings: ['[data-schema-input="metrology.solidsSpecificGravity"]'] },
       { field: 'solidsWeightPercent', type: 'number', min: 10, max: 75, defaultValue: 45, sobolTier: 1, sobolSensitivityScore: 0.41, domBinding: '#wb-ctrl-cw', schemaKey: 'metrology.solidsWeightPercent', aliasBindings: ['[data-schema-input="metrology.solidsWeightPercent"]'] },
-      { field: 'measuredSpGr', type: 'number', min: 1.05, max: 2.4, defaultValue: 1.406, sobolTier: 1, sobolSensitivityScore: 0.44, domBinding: '#wb-ctrl-rhop', schemaKey: 'metrology.measuredSpGr', aliasBindings: ['[data-schema-input="metrology.measuredSpGr"]'] },
+      { field: 'measuredSpGr', type: 'number', min: 1.05, max: 2.4, defaultValue: 1.407, sobolTier: 1, sobolSensitivityScore: 0.44, domBinding: '#wb-ctrl-rhop', schemaKey: 'metrology.measuredSpGr', aliasBindings: ['[data-schema-input="metrology.measuredSpGr"]'] },
       { field: 'topSizeMm', type: 'number', min: 0.04, max: 25.0, defaultValue: 6.5, sobolTier: 1, sobolSensitivityScore: 0.31, domBinding: '#wb-ctrl-d95', schemaKey: 'metrology.topSizeMm', aliasBindings: ['[data-schema-input="metrology.topSizeMm"]'] },
       { field: 'liberationSizeMicrons', type: 'number', min: 10, max: 1000, defaultValue: 100, sobolTier: 2, sobolSensitivityScore: 0.15, domBinding: '#wb-ctrl-lib', schemaKey: 'metrology.liberationSizeMicrons', aliasBindings: ['[data-schema-input="metrology.liberationSizeMicrons"]'] },
       { field: 'oreGradeDecimal', type: 'number', min: 0.001, max: 0.95, defaultValue: 0.05, sobolTier: 2, sobolSensitivityScore: 0.14, domBinding: '#wb-ctrl-grade', schemaKey: 'metrology.oreGradeDecimal', aliasBindings: ['[data-schema-input="metrology.oreGradeDecimal"]'] },
@@ -343,7 +359,7 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     inputsSchema: [
       { field: 'avenueFilter', type: 'enum', defaultValue: 'all', sobolTier: 1, sobolSensitivityScore: 0.40, domBinding: '[data-facet-avenue-btn]', schemaKey: 'catalogFacet.avenueFilter', aliasBindings: ['[data-schema-input="catalogFacet.avenueFilter"]'] },
       { field: 'verticalFilter', type: 'enum', defaultValue: 'all', sobolTier: 1, sobolSensitivityScore: 0.35, domBinding: '[data-family-chip]', schemaKey: 'catalogFacet.verticalFilter', aliasBindings: ['[data-schema-input="catalogFacet.verticalFilter"]'] },
-      { field: 'searchQuery', type: 'string', defaultValue: '', sobolTier: 1, sobolSensitivityScore: 0.45, domBinding: '#equipos-sku-search', schemaKey: 'catalogFacet.searchQuery', aliasBindings: ['[data-schema-input="catalogFacet.searchQuery"]', '#catalog-facet-search'] }
+      { field: 'searchQuery', type: 'string', defaultValue: '', sobolTier: 1, sobolSensitivityScore: 0.45, domBinding: '#catalog-facet-search', schemaKey: 'catalogFacet.searchQuery', aliasBindings: ['[data-schema-input="catalogFacet.searchQuery"]'] }
     ],
     outputsSchema: [
       { field: 'visibleSkuCount', unit: 'count', decimals: 0, isoPure: true, domBinding: '#catalog-visible-sku-count', schemaKey: 'catalogFacet.visibleSkuCount', aliasBindings: ['[data-schema-output="catalogFacet.visibleSkuCount"]'] },
@@ -415,7 +431,11 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     outputsSchema: [
       { field: 'sapTsv', unit: 'tsv', isoPure: false, domBinding: '#wb-copy-tsv-btn', schemaKey: 'erpExport.sapTsv', aliasBindings: ['[data-schema-output="erpExport.sapTsv"]'] },
       { field: 'whatsappUrl', unit: 'url', isoPure: false, domBinding: '#wb-whatsapp-btn', schemaKey: 'erpExport.whatsappUrl', aliasBindings: ['[data-schema-output="erpExport.whatsappUrl"]'] },
-      { field: 'acuseUrlParams', unit: 'url', isoPure: false, domBinding: '#wb-pdf-btn', schemaKey: 'erpExport.acuseUrlParams', aliasBindings: ['[data-schema-output="erpExport.acuseUrlParams"]'] }
+      { field: 'acuseUrlParams', unit: 'url', isoPure: false, domBinding: '#wb-pdf-btn', schemaKey: 'erpExport.acuseUrlParams', aliasBindings: ['[data-schema-output="erpExport.acuseUrlParams"]'] },
+      { field: 'slaCommitmentEs', unit: 'text', isoPure: false, visibility: 'primary', domBinding: '#dossier-sla-commitment', schemaKey: 'erpExport.slaCommitmentEs', aliasBindings: ['[data-schema-output="erpExport.slaCommitmentEs"]'] },
+      { field: 'dualCheckout', unit: 'text', isoPure: false, visibility: 'primary', domBinding: '#dossier-dual-checkout', schemaKey: 'erpExport.dualCheckout', aliasBindings: ['[data-schema-output="erpExport.dualCheckout"]'] },
+      { field: 'dictamen_estructural', unit: 'text', isoPure: false, visibility: 'secondary', domBinding: '#dossier-structural-verdict', schemaKey: 'erpExport.dictamen_estructural', aliasBindings: ['[data-schema-output="erpExport.dictamen_estructural"]'] },
+      { field: 'clasificacion_compuerta', unit: 'code', isoPure: false, visibility: 'secondary', domBinding: '#dossier-gate-classification', schemaKey: 'erpExport.clasificacion_compuerta', aliasBindings: ['[data-schema-output="erpExport.clasificacion_compuerta"]'] }
     ],
     allowUnboundReasons: []
   }

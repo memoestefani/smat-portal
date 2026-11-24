@@ -104,7 +104,7 @@ export function buildMetrologyViewModel(params = {}, lang = 'es') {
   const gy = params.gy || {};
   const astm = params.astm || {};
 
-  const pulpDensitySg = Number(marcy.pulpDensitySg ?? marcy.marcyDensityKgL ?? 1.406);
+  const pulpDensitySg = Number(marcy.pulpDensitySg ?? marcy.marcyDensityKgL ?? 1.407);
   const slurryDensityKgL = Number(marcy.slurryDensityKgL ?? pulpDensitySg);
   const ringApparentCw = Number(marcy.ringApparentCw ?? marcy.cwPct ?? 45);
   const targetRelErr = Number(gy.targetRelativeStdErrorPercent ?? 5.0);

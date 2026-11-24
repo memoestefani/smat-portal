@@ -98,19 +98,11 @@ const defaultMetVm = buildMetrologyViewModel(
           data-schema-input="metrology.marcyMode"
           class="smat-input-control wb-select font-mono-tech"
         >
-          <option value="cw" selected>{isEs ? '1. Dadas Ss y %Cw → Calcular ρp (kg/L)' : '1. Given Ss & %Cw → Solve ρp (kg/L)'}</option>
-          <option value="rhop">{isEs ? '2. Dadas Ss y ρp → Calcular %Cw' : '2. Given Ss & ρp → Solve %Cw'}</option>
-          <option value="ore_density_rhop">{isEs ? '3. Dadas ρp y %Cw → Despejar Ss Real' : '3. Given ρp & %Cw → Solve True Ss'}</option>
+          <option value="cw" selected>{isEs ? '1. Dadas Ss y %Cw → Calcular ρₚ (kg/L)' : '1. Given Ss & %Cw → Solve ρₚ (kg/L)'}</option>
+          <option value="rhop">{isEs ? '2. Dadas Ss y ρₚ → Calcular %Cw' : '2. Given Ss & ρₚ → Solve %Cw'}</option>
+          <option value="ore_density_rhop">{isEs ? '3. Dadas ρₚ y %Cw → Despejar Ss Real' : '3. Given ρₚ & %Cw → Solve True Ss'}</option>
         </select>
       </div>
-      <button
-        type="button"
-        id="btn-apply-ss-to-circuit"
-        data-testid="btn-apply-ss-to-circuit"
-        class="smat-btn-secondary smat-tap-btn"
-      >
-        {isEs ? 'Aplicar Ss y Cw al Circuito →' : 'Apply Ss & Cw to Circuit →'}
-      </button>
     </div>
 
     <div class="smat-inputs-2col smat-panel-soft">
@@ -128,8 +120,8 @@ const defaultMetVm = buildMetrologyViewModel(
       <summary class="smat-field-label instrument-disclosure-summary">
         <span>
           {isEs
-            ? 'Ajuste Avanzado: 12 Carátulas SG, Densidad ρp, Corte P80 y Curva Granulométrica'
-            : 'Advanced Calibration: 12 SG Dials, Pulp ρp, P80 Cut & Particle Size Curve'}
+            ? 'Ajuste Avanzado: 12 Carátulas SG, Densidad ρₚ, Corte P80 y Curva Granulométrica'
+            : 'Advanced Calibration: 12 SG Dials, Pulp ρₚ, P80 Cut & Particle Size Curve'}
         </span>
         <span>▾</span>
       </summary>
@@ -141,8 +133,8 @@ const defaultMetVm = buildMetrologyViewModel(
       </div>
       <div class="smat-inputs-2col smat-mt-sm">
         <div class="form-group">
-          <label class="smat-field-label" for="wb-ctrl-rhop">{isEs ? 'Densidad de Pulpa (ρp kg/L):' : 'Pulp Density (ρp kg/L):'}</label>
-          <input type="number" id="wb-ctrl-rhop" data-schema-input="metrology.measuredSpGr" min="1.05" max="2.40" step="0.005" value="1.406" class="smat-input-control wb-input font-mono-tech" />
+          <label class="smat-field-label" for="wb-ctrl-rhop">{isEs ? 'Densidad de Pulpa (ρₚ kg/L):' : 'Pulp Density (ρₚ kg/L):'}</label>
+          <input type="number" id="wb-ctrl-rhop" data-schema-input="metrology.measuredSpGr" min="1.05" max="2.40" step="0.005" value="1.407" class="smat-input-control wb-input font-mono-tech" />
         </div>
         <div class="form-group">
           <label class="smat-field-label" for="wb-ctrl-p80">{isEs ? 'Corte Granulométrico P80 (µm):' : 'Target P80 Grind Cut (µm):'}</label>
@@ -198,7 +190,7 @@ const defaultMetVm = buildMetrologyViewModel(
     <div class="instrument-kpi-bar font-mono-tech">
       <div class="instrument-kpi-cell">
         <strong>{isEs ? 'Pulpa / Anillo:' : 'Pulp / Ring:'}</strong>
-        <span id="wb-ctrl-res-sm" data-schema-output="metrology.marcyDensityKgL">1.406 kg/L</span>
+        <span id="wb-ctrl-res-sm" data-schema-output="metrology.marcyDensityKgL">1.407 kg/L</span>
       </div>
       <div class="instrument-kpi-cell">
         <strong>{isEs ? '% Sólidos Calc.:' : 'Calc % Solids:'}</strong>
@@ -216,6 +208,16 @@ const defaultMetVm = buildMetrologyViewModel(
     <p id="wb-ctrl-gy-rec" data-vm-slot="gyRecommendation" class="smat-basis-note font-mono-tech smat-mt-sm">
       {defaultMetVm.gyRecommendation}
     </p>
+    <div class="smat-cta-row smat-mt-sm">
+      <button
+        type="button"
+        id="btn-apply-ss-to-circuit"
+        data-testid="btn-apply-ss-to-circuit"
+        class="smat-btn-secondary smat-tap-btn"
+      >
+        {isEs ? 'Aplicar Ss y Cw al Circuito →' : 'Apply Ss & Cw to Circuit →'}
+      </button>
+    </div>
   </div>
 
   <!-- Memoria técnica completa dentro de <details> -->

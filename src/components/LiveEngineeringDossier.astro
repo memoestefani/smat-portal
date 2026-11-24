@@ -437,9 +437,15 @@ const inspectionProtocolText = isEs
               <span>{isEs ? 'Enviar Correo' : 'Send Email'}</span>
             </button>
 
-            <button type="button" class="btn-pill-action" id="btn-share-purchasing-link-dossier">
+            <button type="button" class="btn-pill-action" id="btn-share-purchasing-link">
               <span>{isEs ? 'Copiar enlace a Compras' : 'Copy Link for Purchasing'}</span>
             </button>
+          </div>
+          <div class="dossier-erp-summary-strip font-mono-tech smat-mt-sm">
+            <span>{isEs ? 'Compromiso SLA:' : 'SLA Commitment:'} <strong id="dossier-sla-commitment" data-schema-output="erpExport.slaCommitmentEs">{isEs ? 'Sin SLA activo hasta capturar partidas' : 'No active SLA until items are added'}</strong></span>
+            <span>{isEs ? 'Carril Checkout:' : 'Checkout Lane:'} <strong id="dossier-dual-checkout" data-schema-output="erpExport.dualCheckout">{isEs ? 'Borrador sin partidas (Vacío)' : 'Empty Draft (No Line Items)'}</strong></span>
+            <span>{isEs ? 'Dictamen:' : 'Verdict:'} <strong id="dossier-structural-verdict" data-schema-output="erpExport.dictamen_estructural">{isEs ? 'En espera de partidas' : 'Awaiting line items'}</strong></span>
+            <span>{isEs ? 'Compuerta:' : 'Gate:'} <strong id="dossier-gate-classification" data-schema-output="erpExport.clasificacion_compuerta">P0</strong></span>
           </div>
         </div>
       </details>

@@ -118,6 +118,7 @@ const defaultPlateWidth = variant === 'press' ? '1500' : '1200';
       <div class="instrument-kpi-cell">
         <strong>{isEs ? 'Placas / Tela / Corre-Placas:' : 'Plates / Cloth / Shifter:'}</strong>
         <span id="wb-filt-res-skus" data-testid="wb-filt-res-skus">{isEs ? `Placa PP ${defaultPlateWidth} mm · Lona 750 g/m² · Corre-Placas` : `${defaultPlateWidth} mm PP Plate · 750 g/m² Cloth · Shifter`}</span>
+        {' '}(<span id="wb-filt-res-plate-sku" data-schema-output="filtration.recommendedPlateSkuId">SMAT-FILT-SHIFTER-CHAIN</span>)
       </div>
     </div>
 
@@ -143,6 +144,20 @@ const defaultPlateWidth = variant === 'press' ? '1500' : '1200';
           data-tray-source={`filtration_${variant}_stratum1_calc`}
         >
           {isEs ? '+ Bandeja Lonas / Placas' : '+ Tray Cloths / Plates'}
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline btn-avenue-tray smat-tap-btn"
+          data-vertical-tray-btn
+          data-add-tray-sku="SMAT-FILT-SHIFTER-CHAIN"
+          data-tray-part-code="SHIFTER-PP"
+          data-tray-title={isEs ? `Mecanismo Corre-Placas y Placa ${defaultPlateWidth} mm` : `Plate Shifter Drive & ${defaultPlateWidth} mm Plate Kit`}
+          data-tray-series={defaultPlateWidth}
+          data-tray-material="Cr27"
+          data-tray-circuit="filtracion"
+          data-tray-source={`filtration_${variant}_shifter_calc`}
+        >
+          {isEs ? '+ Bandeja Corre-Placas' : '+ Tray Plate Shifter'}
         </button>
       </div>
     )}

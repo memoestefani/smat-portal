@@ -6,7 +6,6 @@
  */
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import CatalogAvenuesMatrix from '../CatalogAvenuesMatrix.astro';
-import DropInVerifierCore from '../cores/DropInVerifierCore.astro';
 import atomicParts from '../../../data/atomic_parts.json';
 import rolesData from '../../../data/roles.json';
 import { buildWizardUrl } from '../../scripts/workbenchBus.js';
@@ -46,6 +45,7 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
 
 <div
   class="catalog-page-container"
+  data-domain-root="catalogFacet dropIn"
   data-catalog-integrity={catalogIntegrity.valid ? '1' : '0'}
   data-diagram-surjectivity={diagramSurjectivity.surjective ? '1' : '0'}
   data-avenues-count={String(Object.keys(quickByAvenue).length)}
@@ -62,22 +62,21 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
           <button type="button" id="catalog-download-passport-btn" data-passport-kind="json" class="btn-action btn-print">
             {isEs ? 'Pasaporte Proveedor CFDI (JSON)' : 'Vendor Passport CFDI (JSON)'}
           </button>
+          <button type="button" id="catalog-download-vcard-btn" data-download-passport-vcf class="btn-action btn-print">
+            {isEs ? 'Tarjeta Industrial (.VCF RFC 6350)' : 'Industrial Contact (.VCF RFC 6350)'}
+          </button>
           <button type="button" class="btn-action btn-print" onclick="window.print()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="smat-inline-svg-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
             <span>{isEs ? 'Imprimir / Guardar PDF (A4)' : 'Print / Save PDF (A4)'}</span>
           </button>
         </div>
       </details>
-      <a href={quoteBaseHref} class="btn-action btn-rfq">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="smat-inline-svg-icon"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        <span>{isEs ? 'Cotizar Requisición' : 'Generate Requisition'}</span>
-      </a>
     </div>
   </div>
 
   <p id="sap-vendor-passport-status" data-passport-status class="passport-status-line no-print"></p>
 
-  <section id="stratum1-dropin-verifier" class="card no-print smat-island-card smat-mb-md" data-stratum-1-instrument data-dropin-verifier>
+  <section id="stratum1-dropin-verifier" class="card no-print smat-island-card smat-mb-md" data-stratum-1-instrument data-dropin-verifier data-domain-root="dropIn">
     <div class="smat-stratum1-display">
       <div class="smat-flex-between">
         <div>
@@ -91,17 +90,41 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
       </div>
     </div>
 
-    <div class="smat-inputs-2col">
-      <DropInVerifierCore lang={lang} variant="catalog" attachVerifierAttr={false} />
-      <div>
-        <label class="smat-field-label" for="catalog-facet-search">{isEs ? 'Filtro Rápido del Catálogo (19 SKUs en 7 Avenidas)' : 'Instant Catalog Filter (19 SKUs across 7 Avenues)'}</label>
-        <input id="catalog-facet-search" type="search" placeholder={isEs ? 'Filtrar por SKU, aleación, malla ASTM, prensa o marcy...' : 'Filter by SKU, alloy, ASTM sieve, filter press or Marcy...'} class="smat-search-input full-width-input" />
+    <div class="catalog-omnibox-bar">
+      <label class="smat-field-label" for="catalog-facet-search">
+        {isEs
+          ? 'Buscador Omnicanal 1:1 (Filtra 19 SKUs en 7 Avenidas o verifica código OEM/plano E4147A05, D075C21, DAM005):'
+          : 'Unified 1:1 Omnibox (Filter 19 SKUs across 7 Avenues or verify drawing/OEM code E4147A05, D075C21, DAM005):'}
+      </label>
+      <div class="smat-cta-row compact-row dropin-input-row">
+        <input
+          id="catalog-facet-search"
+          type="search"
+          data-dropin-input
+          data-omnibox-dropin
+          data-schema-input="catalogFacet.searchQuery"
+          placeholder={isEs ? 'SKU, código de plano (E4147A05, D075C21), aleación o malla ASTM...' : 'SKU, part number (E4147A05, D075C21), alloy or ASTM sieve...'}
+          class="smat-search-input full-width-input"
+        />
+        <button type="button" data-dropin-btn class="smat-btn-primary smat-tap-btn">
+          {isEs ? 'Verificar 1:1 →' : 'Verify 1:1 Fit →'}
+        </button>
       </div>
+      <div class="smat-dropin-root-badge font-mono-tech smat-mt-sm">
+        <span>{isEs ? 'Raíz normalizada / Sello:' : 'Normalized Root / Digest:'}</span>
+        <code data-dropin-root data-schema-output="dropIn.normalizedRoot">—</code>
+        <span data-dropin-alloy data-schema-output="dropIn.alloySuffix" class="smat-dropin-meta-pill">—</span>
+        <span data-dropin-sat data-schema-output="dropIn.satTuple" class="smat-dropin-meta-pill">—</span>
+      </div>
+      <div data-dropin-result data-schema-output="dropIn.canonicalSkuId" class="smat-result-box dropin-result-banner smat-hidden-init" hidden></div>
     </div>
 
-    <div class="faceted-filters-block">
-      <details class="smat-avenue-disclosure smat-mt-sm" id="catalog-filters-drawer">
-        <summary class="smat-chip smat-avenue-disclosure-summary">{isEs ? 'Filtrar por Circuito o Avenida Industrial (7 Avenidas)' : 'Filter by Circuit or Industrial Avenue (7 Avenues)'}</summary>
+    <details class="wb-progressive-drawer smat-mt-sm" id="catalog-filters-drawer">
+      <summary class="wb-progressive-summary">
+        <span>{isEs ? 'Filtrar por Familia (8) y 7 Avenidas Industriales' : 'Filter by Family (8) & 7 Industrial Avenues'}</span>
+        <span>▾</span>
+      </summary>
+      <div class="faceted-filters-block smat-mt-sm" role="region" aria-label={isEs ? 'Filtros por familia y 7 avenidas' : 'Family & 7-avenue filters'}>
         <div class="smat-chip-row smat-mt-sm" role="group" aria-label={isEs ? 'Filtro por Familia' : 'Filter by Family'}>
           {familyChips.map((chip, idx) => (
             <button type="button" class={`smat-chip ${idx === 0 ? 'part-chip--highlight' : ''}`} data-family-chip={chip.id} aria-pressed={idx === 0 ? 'true' : 'false'}>
@@ -109,7 +132,7 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
             </button>
           ))}
         </div>
-        <div class="smat-chip-row smat-mt-sm" role="group" aria-label={isEs ? 'Filtro por Avenida Industrial' : 'Filter by Industrial Avenue'}>
+        <div class="smat-chip-row smat-mt-sm" role="group" aria-label={isEs ? 'Filtro por Avenida Industrial (7 Avenidas)' : 'Filter by Industrial Avenue (7 Avenues)'}>
           <button type="button" class="smat-chip is-active" data-facet-avenue-btn="all" aria-pressed="true">{isEs ? '7 Avenidas (Todas)' : 'All 7 Avenues'}</button>
           {avenueKeys.map((avKey) => {
             const meta = avenueMetaMap[avKey];
@@ -120,8 +143,8 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
             );
           })}
         </div>
-      </details>
-    </div>
+      </div>
+    </details>
   </section>
 
   <section class="smat-mb-md" id="catalog-bombeo-drawer">
@@ -578,6 +601,13 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
       el.dataset.drawerAutoBound = '1';
       el.addEventListener('click', openCatalogDrawers);
     });
+    const urlAvenue = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('avenida') : null;
+    if (urlAvenue && urlAvenue !== 'all') {
+      const filtersDrawer = document.getElementById('catalog-filters-drawer') as HTMLDetailsElement | null;
+      if (filtersDrawer) filtersDrawer.open = true;
+      const targetAvBtn = document.querySelector(`[data-facet-avenue-btn="${urlAvenue}"]`) as HTMLElement | null;
+      if (targetAvBtn) targetAvBtn.click();
+    }
   }
 
   initCatalogIslandInstruments();

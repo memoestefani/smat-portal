@@ -1,9 +1,15 @@
 import atomicPartsJson from '../../data/atomic_parts.json' with { type: 'json' };
 import miningGroupsJson from '../../data/mining_groups.json' with { type: 'json' };
+import { buildCanonicalEngineeringSnapshotImpl, formatMailtoUrlImpl, formatSapPlaintextImpl, formatWhatsappUrlImpl, parseUrlContextParams } from './districtProfilesAndSkuCatalog.js';
+import { loadEphemeralStationTelemetry, saveEphemeralStationTelemetry } from './ephemeralTelemetryStore.js';
+import { loadRfqSession, saveRfqSession } from './rfqSessionStore.js';
 import { WET_END_MATERIAL_MATRIX } from './tribologyAndCompatibilityEngine.js';
-import { parseUrlContextParams, formatSapPlaintextImpl, formatMailtoUrlImpl, formatWhatsappUrlImpl, buildCanonicalEngineeringSnapshotImpl } from './districtProfilesAndSkuCatalog.js';
 export const ATOMIC_PARTS_SSOT_COUNT = Array.isArray(atomicPartsJson) ? atomicPartsJson.length : 13;
 export * from './districtProfilesAndSkuCatalog.js';
+export { formatDualCheckoutPayload, formatSatTigieInvoiceLine, SAT_TIGIE_BY_VERTICAL } from './workbenchExportFormatters.js';
+export {
+  loadWorkbenchSession as loadWorkbenchState, saveWorkbenchSession as saveWorkbenchState
+};
 export const SMAT_WORKBENCH_EVENT = 'smat:workbench_update';
 const DISTRICT_CALIBRATION_PROFILES = {
   'fresnillo-plc': { altitudeM: 2250, solidsSg: 3.1, solidsCw: 52, d80Microns: 210, pulpPh: 7.8, flowM3h: 220, recommendedPipeSize: '6x4' },
@@ -64,8 +70,14 @@ export function formatSapPlaintext(data = {}) { return formatSapPlaintextImpl(da
 export function formatMailtoUrl(data = {}) { return formatMailtoUrlImpl(data); }
 export function formatWhatsappUrl(data = {}) { return formatWhatsappUrlImpl(data); }
 export function buildCanonicalEngineeringSnapshot(d = {}) { return buildCanonicalEngineeringSnapshotImpl(d); }
-const SMAT_SESSION_KEY = 'smat_workbench_session';
-const SMAT_WORKBENCH_STATE_KEY = 'smat_workbench_state_v2';
+const LEGACY_SESSION_KEYS = Object.freeze([
+  'smat_workbench_session',
+  'smat_workbench_state_v2',
+  'smat_workbench_draft',
+  'smat_workbench_v1',
+  'smat_workbench_v2',
+  'smat_catalog_selected',
+]);
 const DEFAULT_WORKBENCH_STATE_V2 = Object.freeze({ version: 2, circuit: 'bombeo', role: 'kit_wet_end', pipe_size: '6x4', stress_symptom: '', flot_role: 'rotor_estator', flot_capacity: '100ft', flot_condition: '', filt_role: 'placas_telas', filt_capacity: '1500', filt_condition: '', ctrl_role: 'balanza_marcy', ctrl_spec: 'marcy_12_rings', flow: 180, solids: 45, d80: 180, sg: 2.7, ph: 7.0, altitude: 2400, downtime: 4, tcoAlloy: 'A05', isOpex: true, pump_material: 'alto_cromo_cr27', drive_arrangement: 'CV', seal_branch: 'expeller_dry', b2_mm: 48, cap_c_kn: 145, claro_mm: 0.75, driver_pulley_mm: 220, driven_pulley_mm: 340, motor_rpm: 1775, shaft_power_kw: 55, sequence_preset: 'canonical', rhop: 1.402, lib_um: 100, grade: 0.05, rr_n: 1.08, d95: 0.21, p80: 150, gy_kg: 0.25, name: '', company: '', phone: '', email: '', destination: 'warehouse_durango_pickup', details: '', clientRef: '', dim_outer_dia: '', dim_shaft_bore: '', pulpPh: 7.0, sealBranch: 'expeller_dry', impellerExitWidthMm: 48, dynamicCapacityCkN: 145, oreDensitySg: 1.402, cycloneCircuit: Object.freeze({ feedSg: 1.35, underflowSg: 1.72, overflowSg: 1.15, apexMm: 50, vortexMm: 100, d50cMicrons: 133, solidsRecoveryPct: 72.2, ropingRisk: false }) });
 export function normalizeMaterialKey(raw = '') {
   const s = String(raw || '').trim().toLowerCase();
@@ -267,59 +279,42 @@ export const workbenchStateLens = Object.freeze({
   },
   migrateLegacyStorage() {
     if (typeof window === 'undefined') return normalizeWorkbenchStateV2({});
-    let merged = {};
+    const sess = loadRfqSession();
     try {
       if (window.localStorage) {
-        window.localStorage.removeItem('smat_workbench_draft');
-        window.localStorage.removeItem('smat_workbench_v1');
-        const rawLegacyV2 = window.localStorage.getItem('smat_workbench_v2');
-        if (rawLegacyV2) {
-          try {
-            const parsedLegacyV2 = JSON.parse(rawLegacyV2);
-            if (parsedLegacyV2 && typeof parsedLegacyV2 === 'object') {
-              merged = { ...merged, ...parsedLegacyV2 };
-            }
-          } catch (_err) { }
-          window.localStorage.removeItem('smat_workbench_v2');
-        }
-        const rawV2 = window.localStorage.getItem(SMAT_WORKBENCH_STATE_KEY);
-        if (rawV2) merged = { ...merged, ...JSON.parse(rawV2) };
+        for (const k of LEGACY_SESSION_KEYS) window.localStorage.removeItem(k);
       }
       if (window.sessionStorage) {
-        const rawSess = window.sessionStorage.getItem(SMAT_SESSION_KEY);
-        if (rawSess) {
-          if (rawSess.includes('6X4D') || rawSess.includes('A49')) {
-            window.sessionStorage.removeItem(SMAT_SESSION_KEY);
-          } else {
-            merged = { ...merged, ...JSON.parse(rawSess) };
-          }
-        }
-        const rawCat = window.sessionStorage.getItem('smat_catalog_selected');
-        if (rawCat) {
-          const parsedCat = JSON.parse(rawCat);
-          if (parsedCat && parsedCat.serie) merged.pipe_size = parsedCat.serie;
-          window.sessionStorage.removeItem('smat_catalog_selected');
-        }
+        window.sessionStorage.removeItem('smat_catalog_selected');
       }
     } catch (_e) { }
-    const canonical = normalizeWorkbenchStateV2(merged);
-    saveWorkbenchSession(canonical);
-    return canonical;
+    return normalizeWorkbenchStateV2({
+      ...(sess.plantContext || {}),
+      cycloneCircuit: sess.cyclone || {},
+      metrology: sess.metrology || {},
+    });
   }
 });
 export function saveWorkbenchSession(state = {}) {
   if (typeof window === 'undefined') return null;
   try {
     const existing = loadWorkbenchSession() || {};
-    const mergedRaw = { ...existing, ...state };
-    const canonical = normalizeWorkbenchStateV2(mergedRaw);
-    const serialized = JSON.stringify(canonical);
-    if (window.sessionStorage) {
-      window.sessionStorage.setItem(SMAT_SESSION_KEY, serialized);
-      window.sessionStorage.setItem(SMAT_WORKBENCH_STATE_KEY, serialized);
-    }
-    if (window.localStorage) {
-      window.localStorage.setItem(SMAT_WORKBENCH_STATE_KEY, serialized);
+    const canonical = normalizeWorkbenchStateV2({ ...existing, ...state });
+    saveEphemeralStationTelemetry('pumping', canonical, { userInteracted: true, circuit: canonical.circuit });
+    if (canonical.name || canonical.company || canonical.email || canonical.phone) {
+      saveRfqSession({
+        plantContext: {
+          circuit: canonical.circuit,
+          activeCircuit: canonical.circuit,
+          company: canonical.company || '',
+          name: canonical.name || '',
+          email: canonical.email || '',
+          phone: canonical.phone || '',
+          destination: canonical.destination || 'warehouse_durango_pickup',
+          clientRef: canonical.clientRef || '',
+          details: canonical.details || '',
+        },
+      });
     }
     return canonical;
   } catch (_e) {
@@ -329,12 +324,15 @@ export function saveWorkbenchSession(state = {}) {
 export function loadWorkbenchSession() {
   if (typeof window === 'undefined') return null;
   try {
-    const rawSess = window.sessionStorage ? window.sessionStorage.getItem(SMAT_SESSION_KEY) : null;
-    const rawLocal = window.localStorage ? window.localStorage.getItem(SMAT_WORKBENCH_STATE_KEY) : null;
-    if (!rawSess && !rawLocal) return null;
-    const parsedLocal = rawLocal ? JSON.parse(rawLocal) : {};
-    const parsedSess = rawSess ? JSON.parse(rawSess) : {};
-    return normalizeWorkbenchStateV2({ ...parsedLocal, ...parsedSess });
+    const sess = loadRfqSession();
+    const eph = loadEphemeralStationTelemetry();
+    const pEph = eph.stationSnapshots?.pumping || {};
+    return normalizeWorkbenchStateV2({
+      ...pEph,
+      ...(sess.plantContext || {}),
+      metrology: { ...(eph.metrology || {}), ...(sess.metrology || {}) },
+      cycloneCircuit: { ...(eph.cyclone || {}), ...(sess.cyclone || {}) },
+    });
   } catch (_e) {
     return null;
   }
@@ -376,7 +374,4 @@ export function buildWizardUrl(opts = {}) {
   const queryStr = params.toString();
   return `${basePath}${queryStr ? `?${queryStr}` : ''}#rfq`;
 }
-export {
-  loadWorkbenchSession as loadWorkbenchState, saveWorkbenchSession as saveWorkbenchState
-};
-export { SAT_TIGIE_BY_VERTICAL, formatSatTigieInvoiceLine, formatDualCheckoutPayload } from './workbenchExportFormatters.js';
+
