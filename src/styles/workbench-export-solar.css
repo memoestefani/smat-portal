@@ -1,4 +1,5 @@
 /* Export Section — Polaridad Solar AAA (Decisión 4-C / 7-C+) */
+@layer components {
 .export-btn-king {
   width: 100%;
   display: flex;
@@ -64,30 +65,38 @@
 }
 
 .secondary-export-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.secondary-export-row .btn-pill-action {
+  flex: 1 1 9.5rem;
+  min-width: max-content;
+  white-space: nowrap;
 }
 
 @media (max-width: 640px) {
   .secondary-export-row {
-    grid-template-columns: 1fr;
+    flex-direction: column;
   }
 }
 
 .btn-pill-action {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
   min-height: 44px;
-  padding: 0.5rem 0.6rem;
+  padding: 0.5rem 0.75rem;
   background: #f8fafc;
   border: 1px solid #cbd5e1;
   border-radius: var(--smat-radius-sm);
   color: var(--smat-text-primary);
   font-size: 0.75rem;
   font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
   cursor: pointer;
   transition: all 0.15s var(--apple-spring-snappy, cubic-bezier(0.16, 1, 0.3, 1));
 }
@@ -262,6 +271,7 @@
   border-radius: var(--smat-radius-sm);
   transition: outline 0.3s ease;
 }
+}
 
 @media print {
   @page {
@@ -296,6 +306,7 @@
   }
 }
 
+@layer components {
 .tco-body {
   padding: 0.75rem 0.85rem;
   border-top: 1px solid var(--smat-border-light);
@@ -704,4 +715,5 @@
   text-decoration: none;
   border: 1px solid #cbd5e1;
   cursor: pointer;
+}
 }

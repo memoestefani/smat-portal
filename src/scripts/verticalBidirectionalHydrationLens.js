@@ -1,11 +1,10 @@
+// @ts-check
 /**
  * verticalBidirectionalHydrationLens.js
  * ---------------------------------------------------------------------------
- * Lentes Bidireccionales Simétricas (`GetPut` $\prec$ `PutGet`, Foster et al. 2007;
- * Diskin et al. 2011; localthought/devonian) para pre-hidratación anti-amnesia de las
- * 11 calculadoras verticales, sincronización reactiva `[data-vertical-tray-btn]` y
- * controladores unificados ES/EN de Soporte de Rodamientos (`/bombeo/soporte/`)
- * y Tren Motriz (`/bombeo/skid/`) (`LCOM4 = 1`, `D2-V48`, `D3-V48`, `D4-V48`, `D9-V48`).
+ * Lentes Bidireccionales Simétricas (`GetPut` ≺ `PutGet`) para pre-hidratación
+ * anti-amnesia de las calculadoras verticales, sincronización reactiva y
+ * aislamiento dimensional estricto (`metrology.oreSolidsSg` ≠ `cyclone.feedPulpSgKgL`).
  */
 
 import {
@@ -14,6 +13,7 @@ import {
   selectBearingFrameByPowerAndRpm,
 } from './pumpAssemblyAndDriveEngine.js';
 import { initCoreTradeInWidgets } from './vendorPassportAndTradeInController.js';
+import { formatMaterialKeyHuman } from './i18nDomainLabels.js';
 import {
   bindAtomicPartTrayButtons,
   commitVerticalSimulation,
@@ -84,10 +84,10 @@ const VERTICAL_STATION_LENS_DESCRIPTORS = Object.freeze({
     '#flot-cw-input, #celdas-cw-input, #wb-flot-cw': (f) => f.cw,
   },
   classification: {
-    '#cyc-feed-sg, #wb-cyc-sg-feed': (f) => f.sg,
+    '#cyc-feed-sg, #wb-cyc-sg-feed': (f) => f.feedPulpSgKgL,
     '#cyc-underflow-sg, #wb-cyc-sg-uf': (f) => f.underflowSg,
     '#cyc-overflow-sg, #wb-cyc-sg-of': (f) => f.overflowSg,
-    '#cyc-solids-sg, #wb-cyc-solids-sg': (f) => f.solidsSg,
+    '#cyc-solids-sg, #wb-cyc-solids-sg': (f) => f.solidsSg ?? f.oreSolidsSg,
     '#cyc-apex-mm, #wb-cyc-apex-mm': (f) => f.apexMm,
     '#cyc-vortex-mm, #wb-cyc-vortex-mm': (f) => f.vortexMm,
     '#cyc-pressure-kpa, #wb-cyc-pressure-kpa': (f) => f.feedPressureKpa,
@@ -106,7 +106,6 @@ const VERTICAL_STATION_LENS_DESCRIPTORS = Object.freeze({
   },
   jrp: {
     '#wb-jrp-wear-hours': (f) => f.predictedWearHours,
-    '#wb-jrp-daily-hours': (f) => f.operatingHoursPerDay,
     '#wb-jrp-criticality': (f) => f.criticalityMode,
   },
 });
@@ -228,7 +227,7 @@ export function syncReactiveTraySkuButton(root, spec = {}) {
  * Controlador canónico unificado (ES/EN) del Inspector ISO 281:2007 en `/bombeo/soporte/`
  * y `/en/pumping/bearing-assembly/` con pre-hidratación `GetPut` (`D3-V48`, purga `DEB-V48-03`).
  *
- * @param {Document | Element | null} [root]
+ * @param {any} [root]
  * @param {string} [lang]
  */
 export function initBearingSupportInspector(root = typeof document !== 'undefined' ? document : null, lang = 'es') {
@@ -237,12 +236,12 @@ export function initBearingSupportInspector(root = typeof document !== 'undefine
   initCoreTradeInWidgets(root, isEn ? 'en' : 'es');
   bindAtomicPartTrayButtons(root);
 
-  const box = root.querySelector('[data-bearing-inspector]');
+  const box = /** @type {any} */ (root.querySelector('[data-bearing-inspector]'));
   if (!box) return null;
 
-  const arrSel = box.querySelector('[data-bear-arr]');
-  const cSel = box.querySelector('[data-bear-c]');
-  const kwInput = box.querySelector('[data-bear-kw]');
+  const arrSel = /** @type {any} */ (box.querySelector('[data-bear-arr]'));
+  const cSel = /** @type {any} */ (box.querySelector('[data-bear-c]'));
+  const kwInput = /** @type {any} */ (box.querySelector('[data-bear-kw]'));
   const kwLbl = box.querySelector('[data-bear-kw-lbl]');
   const frEl = box.querySelector('[data-bear-fr]');
   const rpmEl = box.querySelector('[data-bear-rpm]');
@@ -328,7 +327,7 @@ export function initBearingSupportInspector(root = typeof document !== 'undefine
  * y `/en/pumping/skid/` con `GetPut`, 5/5 materiales (`hybrid_a05_r55`), `commitVerticalSimulation`,
  * widget Core Trade-In `DAM005` y `+ Bandeja` (`D3-V48`, `D9-V48`, purga `DEB-V48-04`).
  *
- * @param {Document | Element | null} [root]
+ * @param {any} [root]
  * @param {string} [lang]
  */
 export function initSkidKinematicsInspector(root = typeof document !== 'undefined' ? document : null, lang = 'es') {
@@ -337,17 +336,17 @@ export function initSkidKinematicsInspector(root = typeof document !== 'undefine
   initCoreTradeInWidgets(root, isEn ? 'en' : 'es');
   bindAtomicPartTrayButtons(root);
 
-  const panel = root.querySelector('[data-skid-kinematics]');
+  const panel = /** @type {any} */ (root.querySelector('[data-skid-kinematics]'));
   if (!panel) return null;
 
-  const arrSel = panel.querySelector('[data-kin-arrangement]');
-  const motorRpmSel = panel.querySelector('[data-kin-motor-rpm]');
-  const driverInput = panel.querySelector('[data-kin-driver]');
-  const drivenInput = panel.querySelector('[data-kin-driven]');
-  const powerInput = panel.querySelector('[data-kin-power]');
-  const impSel = panel.querySelector('[data-kin-impeller]');
-  const matSel = panel.querySelector('[data-kin-material]');
-  const capCInput = panel.querySelector('[data-kin-capacity-c]');
+  const arrSel = /** @type {any} */ (panel.querySelector('[data-kin-arrangement]'));
+  const motorRpmSel = /** @type {any} */ (panel.querySelector('[data-kin-motor-rpm]'));
+  const driverInput = /** @type {any} */ (panel.querySelector('[data-kin-driver]'));
+  const drivenInput = /** @type {any} */ (panel.querySelector('[data-kin-driven]'));
+  const powerInput = /** @type {any} */ (panel.querySelector('[data-kin-power]'));
+  const impSel = /** @type {any} */ (panel.querySelector('[data-kin-impeller]'));
+  const matSel = /** @type {any} */ (panel.querySelector('[data-kin-material]'));
+  const capCInput = /** @type {any} */ (panel.querySelector('[data-kin-capacity-c]'));
 
   const driverVal = panel.querySelector('[data-kin-driver-val]');
   const drivenVal = panel.querySelector('[data-kin-driven-val]');
@@ -361,9 +360,9 @@ export function initSkidKinematicsInspector(root = typeof document !== 'undefine
   const l10hEl = panel.querySelector('[data-kin-l10h]');
   const l10mhEl = panel.querySelector('[data-kin-l10mh]');
   const hybridNoteEl = panel.querySelector('[data-kin-hybrid-note]');
-  const alertBox = panel.querySelector('[data-kin-rubber-alert]');
+  const alertBox = /** @type {any} */ (panel.querySelector('[data-kin-rubber-alert]'));
   const switchBtn = panel.querySelector('[data-kin-switch-a05]');
-  const ctaEl = panel.querySelector('[data-kin-cta]');
+  const ctaEl = /** @type {any} */ (panel.querySelector('[data-kin-cta]'));
 
   hydrateVerticalInputsFromUnifiedState(panel, 'skid');
 
@@ -404,14 +403,16 @@ export function initSkidKinematicsInspector(root = typeof document !== 'undefine
       ratioEl.textContent = `Motor ${res.motorRpm} RPM • i=${res.reductionRatio.toFixed(2)}:1 (${res.speedMultiplier.toFixed(2)}×) • ${frameEval.frameCode} (Ø${frameEval.shaftDiameterMm} mm, ${frameEval.maxPowerKw} kW)`;
     }
     if (u2El) u2El.textContent = `${res.tipSpeedMs.toFixed(2)} m/s`;
+    const humanWetMat = formatMaterialKeyHuman(String(wetEndMaterial || ''), isEn ? 'en' : 'es');
+    const humanRecU2 = formatMaterialKeyHuman(String(res.recommendedWetMaterialByTipSpeed || ''), isEn ? 'en' : 'es');
     if (u2StatusEl) {
       u2StatusEl.textContent = wetEndMaterial === 'hybrid_a05_r55'
         ? (isEn
           ? `Hybrid A05+R55 (${res.tipSpeedMs <= 24.5 ? 'Within R55 24.5 m/s limit' : 'Exceeds 24.5 m/s'}) • K_Ic=18.5 MPa·√m`
           : `Rama D Híbrida A05+R55 (${res.tipSpeedMs <= 24.5 ? 'Bajo límite R55 24.5 m/s' : 'Excede 24.5 m/s'}) • K_Ic=18.5 MPa·√m`)
         : (res.rubberSafeTipSpeed
-          ? (isEn ? `Safe Hule/PU/A05 (Suggested: ${res.recommendedWetMaterialByTipSpeed})` : `Apto Hule/PU/A05 (Sugerido: ${res.recommendedWetMaterialByTipSpeed})`)
-          : (isEn ? `Exceeds 24.5 m/s: Exclusive ${res.recommendedWetMaterialByTipSpeed}` : `Excede 24.5 m/s: Exclusivo ${res.recommendedWetMaterialByTipSpeed}`));
+          ? (isEn ? `Safe Hule/PU/A05 (Suggested: ${humanRecU2})` : `Apto Hule/PU/A05 (Sugerido: ${humanRecU2})`)
+          : (isEn ? `Exceeds 24.5 m/s: Exclusive ${humanRecU2}` : `Excede 24.5 m/s: Exclusivo ${humanRecU2}`));
     }
     if (frEl) frEl.textContent = `${res.beltRadialLoadKn.toFixed(2)} kN`;
     if (frSubEl) frSubEl.textContent = `P=${res.equivalentLoadPkN.toFixed(2)} kN (C=${res.dynamicCapacityCkN} / C_rec=${frameEval.recommendedDynamicCkN} kN) • ${res.footprintFactor.toFixed(2)}×`;
@@ -431,7 +432,7 @@ export function initSkidKinematicsInspector(root = typeof document !== 'undefine
     if (floodOut) floodOut.textContent = res.sumpFloodImmunityEn || (res.sumpFloodImmunity ? 'Elevated Motor (Splash Immune)' : 'Baseplate Level');
     if (rubSafeOut) rubSafeOut.textContent = res.rubberSafeTipSpeed ? (isEn ? 'Yes (≤24.5 m/s)' : 'Sí (≤24.5 m/s)') : (isEn ? 'No (>24.5 m/s)' : 'No (>24.5 m/s)');
     if (sicOverOut) sicOverOut.textContent = res.ceramicSpallingSpeedExceeded ? (isEn ? 'Exceeded (>28.0 m/s)' : 'Excedido (>28.0 m/s)') : (isEn ? 'Safe (≤28.0 m/s)' : 'Seguro (≤28.0 m/s)');
-    if (recMatU2Out) recMatU2Out.textContent = res.recommendedWetMaterialByTipSpeed || '';
+    if (recMatU2Out) recMatU2Out.textContent = humanRecU2;
     if (alertBox && alertBox.style) {
       alertBox.style.display = (res.rubberThermalLimitExceeded || res.ceramicSpallingSpeedExceeded) ? 'flex' : 'none';
     }
@@ -444,8 +445,8 @@ export function initSkidKinematicsInspector(root = typeof document !== 'undefine
       skuId: 'SMAT-PUMP-DRIVE-SKID',
       partCode: `${res.arrangement}-${pipeSeries}`,
       title: isEn
-        ? `Motor-Pump Skid ${res.arrangement} (${pipeSeries}, ${shaftPowerKw} kW, ${wetEndMaterial})`
-        : `Tren Motriz Bomba ${res.arrangement} (${pipeSeries}, ${shaftPowerKw} kW, ${wetEndMaterial})`,
+        ? `Motor-Pump Skid ${res.arrangement} (${pipeSeries}, ${shaftPowerKw} kW, ${humanWetMat})`
+        : `Tren Motriz Bomba ${res.arrangement} (${pipeSeries}, ${shaftPowerKw} kW, ${humanWetMat})`,
       series: pipeSeries,
       material: wetEndMaterial === 'hybrid_a05_r55' ? 'HYBRID' : wetEndMaterial,
       circuit: 'bombeo',

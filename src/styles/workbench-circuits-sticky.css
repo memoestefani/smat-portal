@@ -1,4 +1,5 @@
 /* Selector de Circuito de Planta (Decisión 8-C: Arquitectura Multi-Equipo) */
+@layer components {
 .circuit-selector-group {
   margin-top: 1rem;
   margin-bottom: 0.85rem;
@@ -769,6 +770,7 @@ summary.control-card-header,
   display: flex;
   align-items: center;
   box-sizing: border-box;
+}
 }
 
 body .hidden { display: none; }

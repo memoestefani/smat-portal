@@ -1,20 +1,37 @@
 ---
 import companyData from '../../data/company.json';
+import { calculateSlurryMetrics } from '../scripts/slurryEngine.js';
 import { formatNioshErgonomicStatus } from '../scripts/workbenchBus.js';
 
 interface Props {
   lang?: 'es' | 'en';
   defaultKinematics: any;
   defaultPartSpecs: any;
+  activeCircuit?: string;
 }
 
 const {
   lang = 'es',
   defaultKinematics,
-  defaultPartSpecs
+  defaultPartSpecs,
+  activeCircuit = 'bombeo',
 } = Astro.props;
 const isEs = lang === 'es';
+const showPumpTable = activeCircuit === 'bombeo' || !activeCircuit;
 const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es' : 'en');
+const defaultSlurryEval = calculateSlurryMetrics({
+  flowM3H: 180,
+  solidsWeightPercent: 45,
+  particleSizeD80Microns: 180,
+  solidsSpecificGravity: 2.7,
+  pipeSeries: '6x4',
+  altitudeM: 2200,
+  pH: 7.0,
+});
+const advancePaymentPct = 50;
+const inspectionProtocolText = isEs
+  ? (companyData.logistics?.client_inspection_protocol || 'Cotejo dimensional 1:1 previo al embarque.')
+  : (companyData.logistics?.client_inspection_protocol_en || 'On-site 1:1 dimensional verification prior to dispatch.');
 ---
 
 <!-- PANEL DERECHO: Live Engineering Dossier A4 (Parnas Slice MS-05) -->
@@ -132,18 +149,25 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
             </div>
           </div>
           <div id="live-recirc-warning-dossier" class="live-recirc-warning-dossier hidden">
-            <span class="recirc-warn-tag">AVISO DE RECIRCULACIÓN</span>
+            <span class="recirc-warn-tag">{isEs ? 'AVISO DE RECIRCULACIÓN' : 'RECIRCULATION NOTICE'}</span>
             <p class="recirc-warn-text">
               {isEs 
                 ? 'Reemplazo de pieza individual. Se aconseja cotejar holgura axial en voluta para mitigar recirculación prematura.' 
                 : 'Single part replacement. Axial clearance verification inside volute recommended to mitigate recirculation.'}
             </p>
           </div>
+          <div class="dossier-backend-telemetry font-mono-tech" id="dossier-backend-telemetry">
+            <div><strong>{isEs ? 'Motivo Metalúrgico:' : 'Alloy Rationale:'}</strong> <span id="live-material-reason">{isEs ? defaultSlurryEval.materialReasonEs : defaultSlurryEval.materialReasonEn}</span></div>
+            <div><strong>{isEs ? 'Bastidor y Rodamiento:' : 'Bearing Frame:'}</strong> <span id="live-bearing-frame-label">{isEs ? defaultKinematics.bearingFrameLabelEs : defaultKinematics.bearingFrameLabelEn}</span></div>
+            <div><strong>{isEs ? 'Riesgo de Colisión Axial:' : 'Axial Collision Check:'}</strong> <span id="live-collision-risk">{isEs ? 'Sin colisión axial S1→S5 dentro de tolerancia.' : 'No axial interference S1→S5 within tolerance.'}</span></div>
+            <div><strong>{isEs ? 'Recomendación Operativa:' : 'Engineering Recommendation:'}</strong> <span id="live-recommendation">{defaultSlurryEval.results?.flowConditionText || (isEs ? 'Operación segura dentro de rango de flujo.' : 'Safe operation within flow envelope.')}</span></div>
+            <div><strong>{isEs ? 'Anticipo Fabricación:' : 'Build Advance Terms:'}</strong> <span id="live-advance-payment-pct">{advancePaymentPct}%</span> • <strong>{isEs ? 'Protocolo Presencial:' : 'Site Witness Protocol:'}</strong> <span id="live-inspection-protocol">{inspectionProtocolText}</span></div>
+          </div>
         </div>
       </div>
 
-      <!-- Memoria de Cálculo Hidráulico Durand -->
-      <div class="dossier-section">
+      <!-- Memoria de Cálculo Hidráulico Durand (contextual por circuito) -->
+      <div class={showPumpTable ? 'dossier-section' : 'dossier-section hidden'} id="live-section-pump-hydraulics">
         <span class="dossier-section-title">{isEs ? '3. CÁLCULO DE FLUJO PARA PREVENIR EMBANCAMIENTO (DURAND-CONDOLIOS)' : '3. SLURRY TRANSPORT AUDIT (DURAND-CONDOLIOS)'}</span>
         <table class="dossier-table">
           <tbody>
@@ -226,8 +250,8 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
       <!-- Micro-Anclaje Fiduciario TCO vs Paro de Planta -->
       <div class="tco-downtime-anchor-card">
         <div class="tco-anchor-header">
-          <span class="anchor-badge font-mono-tech">[TCO / PARO PROTEGIDO]</span>
-          <span class="anchor-stat font-mono-tech">40,000 USD/hora</span>
+          <span class="anchor-badge font-mono-tech">{isEs ? '[TCO / PARO PROTEGIDO]' : '[TCO / PROTECTED UPTIME]'}</span>
+          <span class="anchor-stat font-mono-tech">{isEs ? '40,000 USD/hora' : '40,000 USD/hour'}</span>
         </div>
         <p class="anchor-desc">
           {isEs 
@@ -321,12 +345,14 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
                 : 'Critical wear supply with 1:1 dimensional verification at Durango Central Warehouse to prevent operational downtime.'}
             </p>
           </div>
+          <div class="sap-justification-actions">
+            <button type="button" class="btn-copy-justification" id="btn-copy-justification" title={isEs ? 'Copiar justificación' : 'Copy justification'}>
+              {isEs ? 'Copiar justificación' : 'Copy justification'}
+            </button>
+          </div>
           <details class="erp-justification-drawer" id="erp-justification-drawer">
             <summary class="erp-justification-summary-btn">
               <span>{isEs ? '▾ Ver justificación completa para SAP/ERP' : '▾ View full justification text for SAP/ERP'}</span>
-              <button type="button" class="btn-copy-justification" id="btn-copy-justification" title={isEs ? 'Copiar justificación' : 'Copy justification'}>
-                {isEs ? 'Copiar' : 'Copy'}
-              </button>
             </summary>
             <div class="sap-justification-box">
               <p id="sap-justification-text">
@@ -347,8 +373,8 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
         </div>
         <p class="anchor-desc">
           {isEs
-            ? 'Protección contra detención no programada de línea: 40,000 USD/hora en producción diferida estimada. Suministro garantizado en 24-48h desde Almacén Durango con verificación de concentricidad <0.05 mm.'
-            : 'Protection against unscheduled line shutdown: 40,000 USD/hour in estimated deferred production. 24-48h guaranteed dispatch from Durango warehouse with <0.05 mm runout bench check.'}
+            ? 'Protección contra detención no programada de línea: 40,000 USD/hora en producción diferida estimada. Suministro desde Almacén Central Durango (sujeto a existencias en folio) con verificación de concentricidad <0.05 mm.'
+            : 'Protection against unscheduled line shutdown: 40,000 USD/hour in estimated deferred production. Supplied from Durango Central Warehouse (per folio stock check) with <0.05 mm runout bench check.'}
         </p>
       </div>
     </div>
@@ -364,7 +390,7 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
         </span>
         <div class="king-text">
           <strong>{isEs ? 'Enviar Requisición por WhatsApp a Durango' : 'Send Requisition via WhatsApp to Durango'}</strong>
-          <small>{isEs ? 'Atención técnica de planta en Almacén Central • L-V 08:00 a 18:00 CST • Despacho en 24-48h' : 'Plant technical engineering at Central Warehouse • Mon-Fri 08:00-18:00 CST • 24-48h dispatch'}</small>
+          <small>{isEs ? 'Atención técnica de planta en Almacén Central • L-V 08:00 a 18:00 CST • Retiro o flete coordinado' : 'Plant technical engineering at Central Warehouse • Mon-Fri 08:00-18:00 CST • Scheduled dispatch'}</small>
         </div>
       </button>
 

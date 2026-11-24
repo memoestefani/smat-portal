@@ -55,10 +55,10 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
         <div class="smat-flex-between">
           <h1>
             {variant === 'press'
-              ? (isEs ? 'Filtros Prensa — Simulador Darcy-Ruth & Timoshenko 16 bar' : 'Filter Presses — Darcy-Ruth & Timoshenko 16 bar')
+              ? (isEs ? 'Filtros Prensa — Simulador Hidráulico de Ciclo y Torta 16 bar' : 'Filter Presses — 16-Bar Dewatering Cycle & Cake Simulator')
               : variant === 'parts'
                 ? (isEs ? 'Placas Filtrantes, Telas y Repuestos Hidráulicos' : 'Filter Plates, Cloths & Hydraulic Spares')
-                : (isEs ? 'Filtros Prensa — Flexión Timoshenko & Torta Seca NOM-141' : 'Filter Presses — Timoshenko Flexure & NOM-141 Dry Cake')}
+                : (isEs ? 'Filtros Prensa — Desaguado de Concentrados y Torta Seca NOM-141' : 'Filter Presses — Concentrate Dewatering & NOM-141 Dry Cake')}
           </h1>
           <span class="badge badge-copper">
             {variant === 'parts'

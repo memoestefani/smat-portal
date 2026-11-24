@@ -6,11 +6,11 @@
  * (`D3-V51` / `SLICE-V51-16`): Cero bifurcaciones duales, monta `<SealDriveBearingCore />`
  * exponiendo las 3 sub-estaciones de forma idéntica en rutas verticales y `/cotizar/`.
  */
-import SealDriveBearingCore from '../cores/SealDriveBearingCore.astro';
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import SharePurchasing from '../SharePurchasing.astro';
 import { getAtomicPartSpecs } from '../../scripts/workbenchBus.js';
 import { DRIVE_ARRANGEMENT_CATALOG } from '../../scripts/slurryEngine.js';
+import { formatUrgencyBandHuman } from '../../scripts/i18nDomainLabels.js';
 import rolesData from '../../../data/roles.json';
 
 interface Props {
@@ -72,6 +72,11 @@ const stratumSimId = variant === 'seal'
                 ? 'Calibración en vivo de vida modificada ISO 281 L₁₀ₘₕ, bastidor recomendado, sellado e intercambio Core Trade-In DAM005 (-22% / -12%).'
                 : 'Live ISO 281 L₁₀ₘₕ bearing life calibration, frame sizing, sealing and DAM005 Core Trade-In exchange (-22% / -12%).')}
         </p>
+        <div class="smat-cta-row smat-mt-sm">
+          <a href={`${isEs ? '/bombeo/' : '/en/pumping/'}?tab=${variant}`} class="btn btn-outline">
+            {isEs ? 'Abrir en Consola Maestra de Bombeo →' : 'Open Unified Pumping Hub →'}
+          </a>
+        </div>
       </div>
     </section>
 
@@ -85,7 +90,46 @@ const stratumSimId = variant === 'seal'
           data-skid-kinematics={variant === 'skid' ? '1' : undefined}
           data-bearing-inspector={variant === 'bearing' ? '1' : undefined}
         >
-          <SealDriveBearingCore locale={locale} initialTab={variant} showVerticalActions={true} />
+          <div class="smat-stratum1-display smat-mb-md">
+            <span class="badge badge-copper">
+              {variant === 'seal'
+                ? (isEs ? 'SUBSISTEMA ESTACIÓN 02 • SELLADO SECO EXPELLER VS HÚMEDO' : 'STATION 02 SUBSYSTEM • EXPELLER VS FLUSHED GLAND')
+                : variant === 'skid'
+                  ? (isEs ? 'SUBSISTEMA MOTRIZ • ARREGLOS CV / ZVZ / CRZ / DC' : 'DRIVE TRAIN SUBSYSTEM • CV / ZVZ / CRZ / DC')
+                  : (isEs ? 'SUBSISTEMA ESTACIÓN 01 • BEARING ASSEMBLY ISO 281' : 'STATION 01 SUBSYSTEM • ISO 281 BEARING CARTRIDGE')}
+            </span>
+            <h2>
+              {variant === 'seal'
+                ? (isEs ? 'Selección Focalizada de Sellado de Flecha (02A / 02B)' : 'Focused Shaft Sealing Selection (02A / 02B)')
+                : variant === 'skid'
+                  ? (isEs ? 'Dimensionamiento Motriz por Arreglo y Velocidad u₂' : 'Drive Arrangement & Tip-Speed u₂ Sizing')
+                  : (isEs ? 'Inspección de Cartucho de Rodamientos e Intercambio DAM005' : 'Bearing Cartridge Life & DAM005 Core Trade-In')}
+            </h2>
+            <div class="smat-inputs-2col smat-mt-sm">
+              <div class="smat-readout-box">
+                <span class="smat-field-label">{isEs ? 'Parámetro Primario:' : 'Primary Engineering Parameter:'}</span>
+                <strong class="font-mono-tech">
+                  {variant === 'seal'
+                    ? (isEs ? 'Expulsor 02A (0 agua) vs 02B Prensaestopa' : '02A Dry Expeller vs 02B Flushed Gland')
+                    : variant === 'skid'
+                      ? 'CV · ZVZ · CRZ · DC (u₂ ≤ 32 m/s)'
+                      : 'DAM005 (L₁₀ₘₕ ISO 281 • -22% / -12% Trade-In)'}
+                </strong>
+              </div>
+              <div class="smat-readout-box">
+                <span class="smat-field-label">{isEs ? 'Consola Completa Interactiva:' : 'Unified Interactive Console:'}</span>
+                <strong class="font-mono-tech">{isEs ? '/bombeo/ · Estación Única' : '/en/pumping/ · Unified Hub'}</strong>
+              </div>
+            </div>
+            <div class="smat-cta-row smat-mt-sm">
+              <a href={`${isEs ? '/bombeo/' : '/en/pumping/'}?tab=${variant}`} class="btn btn-primary">
+                {isEs ? 'Abrir Calibrador en Consola de Bombeo →' : 'Open Calibrator in Pumping Hub →'}
+              </a>
+              <a href={`${quoteBase}?circuito=bombeo&equipo=${roleLookupId}#rfq`} class="btn btn-outline">
+                {isEs ? 'Cotizar Directo →' : 'Quote Directly →'}
+              </a>
+            </div>
+          </div>
 
           {variant === 'seal' && (
             <details class="wb-progressive-drawer smat-mt-sm" id="seal-branch-comparator-drawer">
@@ -170,7 +214,7 @@ const stratumSimId = variant === 'seal'
                   <div class="card smat-sdb-atomic-card">
                     <div class="smat-sdb-atomic-head">
                       <span class="badge badge-copper">{sp.part_number} ({sp.smat_code})</span>
-                      <span class="font-mono-tech smat-sdb-atomic-mass">{sp.weight_kg} kg • {sp.niosh_handling_mode}</span>
+                      <span class="font-mono-tech smat-sdb-atomic-mass">{sp.weight_kg} kg • {formatUrgencyBandHuman(sp.niosh_handling_mode, locale)}</span>
                     </div>
                     <strong class="smat-sdb-card-title">{isEs ? sp.name_es : sp.name_en}</strong>
                     <p class="smat-sdb-atomic-copy">{isEs ? sp.summary_es : sp.summary_en}</p>
@@ -285,27 +329,14 @@ const stratumSimId = variant === 'seal'
     </section>
 
     <script>
-      import { bindCanonicalSealBalanceCalculator } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
       import { bindAtomicPartTrayButtons } from '../../scripts/verticalStateAndCtaSyncBridge.js';
-      import { initSkidKinematicsInspector, initBearingSupportInspector } from '../../scripts/verticalBidirectionalHydrationLens.js';
-      import { bindDomainSchemaRoot, projectDomainOutputs, readAllCanonicalInputs } from '../../scripts/schemaRuntimeBinder.js';
-      import { solveXdsmMultidisciplinaryDag } from '../../scripts/wizardXdsmDagSolver.js';
 
       function initSealDriveStandalone() {
         const root = document.querySelector('[data-island-standalone="sealDrive"]') as HTMLElement | null;
         if (!root) return;
-        const lang = root.dataset.lang === 'en' ? 'en' : 'es';
         if (root.dataset.sdbAllBound !== '1') {
           root.dataset.sdbAllBound = '1';
-          bindCanonicalSealBalanceCalculator(root, lang);
-          initSkidKinematicsInspector(root, lang);
-          initBearingSupportInspector(root, lang);
           bindAtomicPartTrayButtons(root);
-          bindDomainSchemaRoot(root, ['sealDrive'], () => {
-            const inputs = readAllCanonicalInputs(root);
-            const dag = solveXdsmMultidisciplinaryDag(inputs);
-            projectDomainOutputs(root, 'sealDrive', { ...(dag.sealBalanceEval || {}), ...(dag.driveEval || {}) }, lang);
-          });
         }
       }
 
@@ -313,16 +344,4 @@ const stratumSimId = variant === 'seal'
       document.addEventListener('astro:page-load', initSealDriveStandalone);
     </script>
   </div>
-)}
-
-{!showVerticalShell && (
-  <details class="wb-progressive-drawer smat-mt-sm" id="wb-drive-and-tradein-drawer">
-    <summary class="wb-progressive-summary">
-      <span>{isEs ? 'Sellado 02A/02B, Tren Motriz V-Belt y Rodamientos ISO 281' : '02A/02B Seal, V-Belt Drive & ISO 281 Bearings'}</span>
-      <span>▾</span>
-    </summary>
-    <div class="smat-mt-sm">
-      <SealDriveBearingCore locale={locale} initialTab="skid" showVerticalActions={false} />
-    </div>
-  </details>
 )}

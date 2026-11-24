@@ -6,6 +6,8 @@
  * Expone todas las entradas y salidas Gorain (`Sb`, `k`, `P`, `R_f`, `recommendedSkuId`)
  * + Suspensión Zwietering (`N_js`) de manera idéntica en rutas verticales y `/cotizar/`.
  */
+import { evaluateFlotationCellHydrodynamics } from '../../scripts/mechanicalAndSeparationEngine.js';
+
 interface Props {
   locale?: 'es' | 'en';
   variant?: 'hub' | 'cells' | 'mechanisms';
@@ -18,6 +20,17 @@ const isEs = locale === 'es';
 const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
 const productsBase = isEs ? '/productos/' : '/en/products/';
 const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacion';
+
+const defaultFlotation = evaluateFlotationCellHydrodynamics({
+  jgCmS: 1.5,
+  d32Mm: 1.6,
+  rotorDiaM: 0.61,
+  rotorRpm: 215,
+  floatabilityP: 0.0045,
+  frothRecoveryRf: 0.78,
+  d80Microns: 110,
+  solidsCwPct: 35,
+});
 ---
 
 <div id="wb-flot-gorain-live-box" data-testid="wb-flot-gorain-live-box" data-domain-root="flotation" class={`smat-core-shell ${panelClass}`.trim()}>
@@ -108,16 +121,16 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
     </div>
   </details>
 
-  <!-- Salidas completas unificadas (incluye P, Rf y SKU recomendado en todas las rutas) -->
+  <!-- Salidas completas unificadas (cálculo SSR isomórfico desde mechanicalAndSeparationEngine) -->
   <div class="embedded-res-grid font-mono-tech smat-mt-sm">
-    <div class="embedded-res-cell"><strong>{isEs ? 'Flujo Burbuja Sb:' : 'Bubble Flux Sb:'}</strong> <span id="wb-flot-res-sb" data-testid="wb-flot-res-sb" data-schema-output="flotation.sbInverseSeconds">56.25 s⁻¹</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Tasa Cinética k:' : 'Kinetic Rate k:'}</strong> <span id="wb-flot-res-k" data-testid="wb-flot-res-k" data-schema-output="flotation.rateConstantMin">0.197 min⁻¹</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Suspensión Njs:' : 'Min Suspension Njs:'}</strong> <span id="wb-flot-res-njs" data-testid="wb-flot-res-njs" data-schema-output="flotation.zwieteringNjsRpm">156 RPM</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Vel. Periférica u₂:' : 'Tip Speed u₂:'}</strong> <span id="wb-flot-res-vtip" data-testid="wb-flot-res-vtip" data-schema-output="flotation.tipSpeedMS">6.87 m/s</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Flotabilidad P:' : 'Floatability P:'}</strong> <span id="wb-flot-res-p" data-testid="wb-flot-res-p" data-schema-output="flotation.floatabilityP">0.0045</span></div>
-    <div class="embedded-res-cell"><strong>R_f ({isEs ? 'Espuma' : 'Froth'}):</strong> <span id="wb-flot-res-rf" data-testid="wb-flot-res-rf" data-schema-output="flotation.frothRecoveryRf">0.78</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'SKU Mecanismo:' : 'Mechanism SKU:'}</strong> <span id="wb-flot-res-sku" data-testid="wb-flot-res-sku" data-schema-output="flotation.recommendedSkuId">SMAT-FLOT-MECH-18SP</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Vida PU vs Hule:' : 'PU vs Rubber Life:'}</strong> <span id="wb-flot-res-pu-life" data-testid="wb-flot-res-pu-life">{isEs ? '2.1× · u₂ óptima' : '2.1× · optimal u₂'}</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Flujo Burbuja Sb:' : 'Bubble Flux Sb:'}</strong> <span id="wb-flot-res-sb" data-testid="wb-flot-res-sb" data-schema-output="flotation.sbInverseSeconds">{defaultFlotation.sbInverseSeconds.toFixed(1)} s⁻¹</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Tasa Cinética k:' : 'Kinetic Rate k:'}</strong> <span id="wb-flot-res-k" data-testid="wb-flot-res-k" data-schema-output="flotation.rateConstantMin">{defaultFlotation.rateConstantMin.toFixed(3)} min⁻¹</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Suspensión Njs:' : 'Min Suspension Njs:'}</strong> <span id="wb-flot-res-njs" data-testid="wb-flot-res-njs" data-schema-output="flotation.zwieteringNjsRpm">{defaultFlotation.zwieteringNjsRpm} RPM</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Vel. Periférica u₂:' : 'Tip Speed u₂:'}</strong> <span id="wb-flot-res-vtip" data-testid="wb-flot-res-vtip" data-schema-output="flotation.tipSpeedMS">{defaultFlotation.tipSpeedMS.toFixed(2)} m/s</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Flotabilidad P:' : 'Floatability P:'}</strong> <span id="wb-flot-res-p" data-testid="wb-flot-res-p" data-schema-output="flotation.floatabilityP">{defaultFlotation.floatabilityP}</span></div>
+    <div class="embedded-res-cell"><strong>R_f ({isEs ? 'Espuma' : 'Froth'}):</strong> <span id="wb-flot-res-rf" data-testid="wb-flot-res-rf" data-schema-output="flotation.frothRecoveryRf">{defaultFlotation.frothRecoveryRf}</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'SKU Mecanismo:' : 'Mechanism SKU:'}</strong> <span id="wb-flot-res-sku" data-testid="wb-flot-res-sku" data-schema-output="flotation.recommendedSkuId">{defaultFlotation.recommendedSkuId}</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Vida PU vs Hule:' : 'PU vs Rubber Life:'}</strong> <span id="wb-flot-res-pu-life" data-testid="wb-flot-res-pu-life">{`${defaultFlotation.wearLifeMultiplierPuVsRubber}× · u₂ ${defaultFlotation.tipSpeedWindowOptimal ? (isEs ? 'óptima (5.5–7.5 m/s)' : 'optimal (5.5–7.5 m/s)') : (isEs ? 'ajustar RPM' : 'adjust RPM')}`}</span></div>
   </div>
 
   {showVerticalActions && (

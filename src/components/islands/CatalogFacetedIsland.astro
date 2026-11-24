@@ -75,14 +75,12 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
     <div class="smat-stratum1-display">
       <div class="smat-flex-between">
         <div>
-          <span class="smat-kicker">{isEs ? 'HERRAMIENTA DE INGENIERÍA DE COMPATIBILIDAD' : 'DIMENSIONAL COMPATIBILITY INSTRUMENT'}</span>
-          <h1 class="verifier-title">{isEs ? 'Verificador de Equivalencia Dimensional (Drop-In)' : 'Dimensional Drop-In Equivalence Verifier'}</h1>
-          <p class="verifier-sub">{isEs ? 'Valide el intercambio 1:1 de códigos de plano (ej. E4147, D3147, DAM005, SMAT-PUMP-IMP-AH) por brida y geometría sin modificar bancada.' : 'Validate 1:1 plant drawing code fit (e.g., E4147, D3147, DAM005, SMAT-PUMP-IMP-AH) without modifying existing baseplates or piping.'}</p>
+          <h1 class="verifier-title">{isEs ? 'Verificador Drop-In 1:1 y Catálogo Técnico' : '1:1 Drop-In Verifier & Technical Catalog'}</h1>
         </div>
         <div class="smat-chip-row">
-          <span class="smat-badge-solar">{ATOMIC_PARTS_SSOT_COUNT} {isEs ? 'Piezas Atómicas' : 'Atomic Parts'}</span>
-          <span class="smat-badge-solar">{canonicalSeriesCount} {isEs ? 'Series Hidráulicas' : 'Hydraulic Series'}</span>
-          <span class="smat-badge-solar">{isEs ? 'SKUs Visibles:' : 'Visible SKUs:'} <strong id="catalog-visible-sku-count">{totalCatalogSkusCount}</strong></span>
+          <span class="smat-badge-solar">{ATOMIC_PARTS_SSOT_COUNT} {isEs ? 'Piezas' : 'Parts'}</span>
+          <span class="smat-badge-solar">{canonicalSeriesCount} {isEs ? 'Series' : 'Frames'}</span>
+          <span class="smat-badge-solar">{isEs ? 'SKUs:' : 'SKUs:'} <strong id="catalog-visible-sku-count">{totalCatalogSkusCount}</strong></span>
         </div>
       </div>
     </div>
@@ -120,17 +118,7 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
     </div>
   </section>
 
-  <div class="catalog-intro-banner no-print">
-    <div class="intro-icon">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
-    </div>
-    <div class="intro-text">
-      <strong>{isEs ? 'Catálogo Técnico con Diagramas de Despiece para Ingeniería de Planta y Compras Mineras' : 'Technical Catalog with Exploded CAD Diagrams for Plant Engineering & Mining Procurement'}</strong>
-      <p>{isEs ? 'Consulte bombas para lodos (1.5x1" a 14x12"), lotes en contacto húmedo (5 impulsores, 5 cuellos y 4 volutas en Alto Cromo, Hule y Poliuretano), Bearing Assembly / Housing completos, mecanismos de flotación, filtros prensa (800 a 1500 mm) y metrología Marcy.' : 'Browse heavy-duty slurry pumps (1.5x1" to 14x12"), wet-end wear lots (5 impellers, 5 throatbushes & 4 volute liners in High Chrome, Rubber & Polyurethane), complete Bearing Assembly / Housing, flotation mechanisms, filter presses (800 to 1500 mm) & Marcy metrology.'}</p>
-    </div>
-  </div>
-
-  <details class="wb-progressive-drawer smat-mb-md" id="catalog-bombeo-drawer">
+  <details class="wb-progressive-drawer smat-mb-md" id="catalog-bombeo-drawer" open>
     <summary class="wb-progressive-summary">
       <span>{isEs ? '01 • Bombas para Lodos, Tabla Paramétrica (9 Series), Aleaciones (5), 7 Avenidas (19 SKUs) y 13 Piezas Atómicas' : '01 • Slurry Pumps, Parametric Matrix (9 Frames), Alloys (5), 7 Avenues (19 SKUs) & 13 Atomic Parts'}</span>
       <span class="wb-step1-more-arrow">▾</span>
@@ -386,7 +374,7 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
     <div class="section-title-wrap">
       <span class="section-num">04</span>
       <div>
-        <h2>{isEs ? 'Instrumentación de Control de Procesos: Balanzas Marcy, Filtro Prensa Lab (Pierre Gy) y Tamices ASTM E11' : 'Process Control Instrumentation: Marcy Scales, Lab Batch Filter (Pierre Gy) & ASTM E11 Sieves'}</h2>
+        <h2>{isEs ? 'Instrumentación de Control de Procesos: Balanzas Marcy, Filtro Prensa Lab y Tamices ASTM E11' : 'Process Control Instrumentation: Marcy Scales, Lab Batch Filter & ASTM E11 Sieves'}</h2>
         <span class="section-subtitle">{isEs ? 'Metrología metalúrgica de lectura directa para densidad de pulpa, desaguado neumático (100 PSI) y corte P80' : 'Direct-reading metallurgical instrumentation for pulp density, pneumatic dewatering (100 PSI) & P80 particle sizing'}</span>
       </div>
     </div>

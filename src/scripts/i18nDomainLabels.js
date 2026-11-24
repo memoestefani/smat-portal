@@ -1,7 +1,8 @@
+// @ts-check
 /**
  * i18nDomainLabels.js
  * ---------------------------------------------------------------------------
- * Diccionario Bilingüe Único ES/EN orientado a ingeniería operativa (`SLICE-V51-28`, `D8-V51`).
+ * Diccionario Bilingüe Único ES/EN orientado a ingeniería operativa (`SLICE-V51-28`, `D8-V51`, `SLICE-V56-14`).
  * Desacopla títulos primarios de interfaz (legibilidad INFLESZ >= 55.0 sin epónimos académicos)
  * preservando atribución científica rigurosa en `methodologyNote` para notas y tooltips.
  */
@@ -264,11 +265,16 @@ export function formatCheckoutLaneHuman(rawLane = '', lang = 'es') {
 const HUMAN_URGENCY_BAND_LABELS = Object.freeze({
   IMMEDIATE_PICK: { es: 'Surtido Inmediato en Almacén', en: 'Immediate Warehouse Dispatch' },
   PARO_DE_LINEA: { es: 'Prioridad Alta (Paro de Planta)', en: 'High Priority (Plant Shutdown)' },
+  PARO_PROTEGIDO: { es: 'Paro Protegido en Planta', en: 'Protected Plant Uptime' },
   'P1-PARO-PLANTA': { es: 'Prioridad Alta (Paro de Planta)', en: 'High Priority (Plant Shutdown)' },
   'P1-CAJA-CHICA-HAY': { es: 'Compra Directa en Existencia (≤ 30 min)', en: 'In-Stock Direct Purchase (≤ 30 min)' },
   'P2-REPOSICION-LOTE': { es: 'Reposición Programada (≤ 60 min)', en: 'Scheduled Replenishment (≤ 60 min)' },
   'P3-PROYECTO-50%-ANTICIPO': { es: 'Fabricación Bajo Plano (50% Anticipo)', en: 'Custom Fabrication (50% Advance)' },
   STOCK_SS: { es: 'Stock Preventivo de Almacén', en: 'Preventive Warehouse Stock' },
+  HOIST_REQUIRED: { es: 'Requiere Polipasto / Grúa (≥ 23 kg)', en: 'Hoist / Crane Mandatory (≥ 23 kg)' },
+  ASSISTED_SHAFT_MOUNT_2P: { es: 'Montaje Asistido 2 Operadores', en: '2-Operator Assisted Shaft Mount' },
+  MANUAL_SAFE: { es: 'Carga Manual Segura (1 Operador)', en: 'Safe Manual Handling (1 Operator)' },
+  MANUAL_1P_SAFE: { es: 'Carga Manual Segura (1 Operador)', en: 'Safe Manual Handling (1 Operator)' },
 });
 
 /**

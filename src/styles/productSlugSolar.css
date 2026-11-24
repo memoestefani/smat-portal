@@ -1,6 +1,6 @@
 /* SMAT Minerals — Hoja Solar Light-First WCAG AAA (>= 7.0:1) & APCA (|Lc| >= 75) para /productos/[slug]/ ES & EN */
 /* Consolidación modular (DEB-V481-02 / D3-V481): reemplaza bloques <style> duplicados de ES y EN */
-
+@layer components {
 .smat-slug-main {
   max-width: 72rem;
   margin: 0 auto;
@@ -849,4 +849,5 @@
   font-size: 0.72rem;
   color: #064e3b;
   margin-top: 0.2rem;
+}
 }

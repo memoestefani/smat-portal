@@ -2,7 +2,7 @@
    SMAT MINERALS — WORKBENCH CSS BARREL V5.0 (`D2-V50` / `SLICE-V50-10`)
    Partición modular cohesiva de 2,495 LOC -> 4 hojas especializadas + clases utilitarias Solar AAA
    ========================================================================= */
-@import './workbench-core.css';
-@import './workbench-dossier.css';
-@import './workbench-export-solar.css';
-@import './workbench-circuits-sticky.css';
+@import './workbench-core.css' layer(components);
+@import './workbench-dossier.css' layer(components);
+@import './workbench-export-solar.css' layer(components);
+@import './workbench-circuits-sticky.css' layer(components);

@@ -278,11 +278,13 @@ test('D2-V48 / DEB-V48-06: commitVerticalSimulation({ skipStorageWrite: true }) 
   assert.equal(hydFilt.hydratedCount, 1);
   assert.equal(filtPress.value, '15');
 
-  const cycSg = new MockNode('input', { id: 'cyc-feed-sg', type: 'number', min: '1', max: '4', value: '1.35' });
-  const hydClas = hydrateVerticalInputsFromUnifiedState(new MockNode('section', {}, [cycSg]), 'classification', '?sg=3.15');
+  const cycSg = new MockNode('input', { id: 'cyc-feed-sg', type: 'number', min: '1', max: '2.5', value: '1.35' });
+  const cycOreSg = new MockNode('input', { id: 'cyc-solids-sg', type: 'number', min: '2.0', max: '5.5', value: '2.65' });
+  const hydClas = hydrateVerticalInputsFromUnifiedState(new MockNode('section', {}, [cycSg, cycOreSg]), 'classification', '?rho_f=1.42&solids_sg=3.15');
   assert.equal(hydClas.hasPersistedState, true);
-  assert.equal(hydClas.hydratedCount, 1);
-  assert.equal(cycSg.value, '3.15');
+  assert.equal(hydClas.hydratedCount, 2);
+  assert.equal(cycSg.value, '1.42');
+  assert.equal(cycOreSg.value, '3.15');
 });
 
 test('D3-V48 / D4-V48: syncReactiveTraySkuButton, initBearingSupportInspector y initSkidKinematicsInspector (5/5 hybrid_a05_r55 + DAM005)', () => {

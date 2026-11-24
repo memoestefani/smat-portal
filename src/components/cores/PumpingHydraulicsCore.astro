@@ -333,13 +333,19 @@ const defaultAltData = calculateAltitudeCorrection(2400);
               [ {isEs ? 'PULPA MIXTA' : 'MIXED PULP'} ]
             </button>
           </div>
-          <input
-            type="hidden"
+          <select
             name="stress_symptom"
             id="wb-stress-symptom"
             data-schema-input="pumping.stressSymptom"
-            value="roca_dura"
-          />
+            aria-labelledby="core-stress-chips-label"
+            class="wb-select smat-input-control smat-mt-sm"
+          >
+            <option value="roca_dura" selected>{isEs ? 'Roca Dura / Desgaste Abrasivo Grueso' : 'Hard Rock / Coarse Abrasive Wear'}</option>
+            <option value="acido_quimica">{isEs ? 'Ácido / Ataque Químico (pH < 4 o Reactivos)' : 'Acidic / Chemical Slurry Attack'}</option>
+            <option value="arena_fina">{isEs ? 'Arena Fina / Alta Concentración de Finos' : 'Fine Sand / High Fines Concentration'}</option>
+            <option value="fuga_sello">{isEs ? 'Fuga en Sello / Presión de Prensaestopa' : 'Seal Leakage / Gland Pressure Issues'}</option>
+            <option value="mixta_duda">{isEs ? 'Pulpa Mixta / Evaluación General' : 'Mixed Slurry / General Evaluation'}</option>
+          </select>
         </div>
       )}
     </div>

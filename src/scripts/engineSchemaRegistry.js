@@ -1,15 +1,14 @@
+// @ts-check
 /**
  * engineSchemaRegistry.js
  * ---------------------------------------------------------------------------
  * Fuente Única de Verdad Ejecutable EngineSchema <-> DOM en Partición de Dos Sorts
- * (Sigma_Markup perp Sigma_Script, Leroy POPL 2009 / Cardelli 1988 / [ARB-SMAT-58, ARB-SMAT-59]).
+ * (Sigma_Markup perp Sigma_Script, Leroy POPL 2009 / Cardelli 1988 / [ARB-SMAT-58..65]).
  *
- * REGLAS INVARIANTES (D1-V51 / D5-V51 / D6-V51):
- * 1. Prohibido emitir HTML, <script> o evaluación dinámica (eval / new Function) en este registro.
- * 2. Cada dominio declara rootSelector `[data-domain-root="<id>"]`, inputsSchema (con schemaKey
- *    `data-schema-input="<domain>.<field>"` + ancla DOM canónica sin placebos) y outputsSchema
- *    (con pureza escalar ISO 80000-1 y `data-schema-output="<domain>.<field>"`).
- * 3. Trazabilidad cerrada Pre-RS/Post-RS hacia docs/CONCEPT-REGISTRY.md (18/18 conceptos cubiertos).
+ * REGLAS INVARIANTES (D3-V56):
+ * 1. Prohibido emitir HTML, <script> o evaluación dinámica en este registro.
+ * 2. Cero selectores apuntando a nodos `hidden`, `sr-only` o `type="hidden"`.
+ * 3. `interactiveRoutes` vs `readonlyRoutes` fieles al DOM real renderizado en cada ruta.
  */
 
 import {
@@ -53,6 +52,8 @@ export const TWO_SORT_PARTITION_VERSION = '5.1.0';
  * @property {string[]} conceptRefs
  * @property {string[]} arbitrageRefs
  * @property {string[]} routes
+ * @property {string[]} interactiveRoutes
+ * @property {string[]} readonlyRoutes
  * @property {SchemaFieldBinding[]} inputsSchema
  * @property {SchemaOutputBinding[]} outputsSchema
  * @property {string[]} allowUnboundReasons
@@ -109,9 +110,9 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     islandComponent: 'TribologyAlloyIsland.astro',
     conceptRefs: ['metallurgy', 'hybrid_a05_r55', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-16', 'ARB-SMAT-44', 'ARB-SMAT-58', 'ARB-SMAT-59'],
-    routes: ['/bombeo/impulsor/', '/en/pumping/impeller/', '/bombeo/revestimientos/', '/en/pumping/liners/'],
-    interactiveRoutes: ['/bombeo/impulsor/', '/en/pumping/impeller/', '/bombeo/revestimientos/', '/en/pumping/liners/'],
-    readonlyRoutes: [],
+    routes: ['/bombeo/', '/en/pumping/', '/bombeo/impulsor/', '/en/pumping/impeller/', '/bombeo/revestimientos/', '/en/pumping/liners/'],
+    interactiveRoutes: ['/bombeo/', '/en/pumping/'],
+    readonlyRoutes: ['/bombeo/impulsor/', '/en/pumping/impeller/', '/bombeo/revestimientos/', '/en/pumping/liners/'],
     inputsSchema: [
       { field: 'tribologyMaterial', type: 'enum', defaultValue: 'alto_cromo_cr27', sobolTier: 1, sobolSensitivityScore: 0.48, domBinding: '#trib-mat-select', schemaKey: 'tribology.tribologyMaterial', aliasBindings: ['[data-schema-input="tribology.tribologyMaterial"]'] },
       { field: 'frontClearanceMm', type: 'number', min: 0.2, max: 6.0, defaultValue: 0.75, sobolTier: 1, sobolSensitivityScore: 0.27, domBinding: '#trib-clearance-mm', schemaKey: 'tribology.frontClearanceMm', aliasBindings: ['[data-schema-input="tribology.frontClearanceMm"]'] },
@@ -145,9 +146,9 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     islandComponent: 'SealDriveBearingIsland.astro',
     conceptRefs: ['atomic_parts_13', 'role_id', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-14', 'ARB-SMAT-15', 'ARB-SMAT-56', 'ARB-SMAT-59'],
-    routes: ['/bombeo/sello/', '/en/pumping/seal/', '/bombeo/skid/', '/en/pumping/skid/', '/bombeo/soporte/', '/en/pumping/bearing-assembly/'],
-    interactiveRoutes: ['/bombeo/sello/', '/en/pumping/seal/', '/bombeo/skid/', '/en/pumping/skid/', '/bombeo/soporte/', '/en/pumping/bearing-assembly/'],
-    readonlyRoutes: [],
+    routes: ['/bombeo/', '/en/pumping/', '/bombeo/sello/', '/en/pumping/seal/', '/bombeo/skid/', '/en/pumping/skid/', '/bombeo/soporte/', '/en/pumping/bearing-assembly/'],
+    interactiveRoutes: ['/bombeo/', '/en/pumping/'],
+    readonlyRoutes: ['/bombeo/sello/', '/en/pumping/seal/', '/bombeo/skid/', '/en/pumping/skid/', '/bombeo/soporte/', '/en/pumping/bearing-assembly/'],
     inputsSchema: [
       { field: 'dischargeHeadM', type: 'number', min: 5, max: 110, defaultValue: 28, sobolTier: 1, sobolSensitivityScore: 0.34, domBinding: '#seal-hd-m', schemaKey: 'sealDrive.dischargeHeadM', aliasBindings: ['[data-schema-input="sealDrive.dischargeHeadM"]'] },
       { field: 'suctionHeadM', type: 'number', min: 0, max: 25, defaultValue: 3.2, sobolTier: 1, sobolSensitivityScore: 0.39, domBinding: '#seal-hs-m', schemaKey: 'sealDrive.suctionHeadM', aliasBindings: ['[data-schema-input="sealDrive.suctionHeadM"]'] },
@@ -193,8 +194,8 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     conceptRefs: ['circuits', 'decision_criteria', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-28', 'ARB-SMAT-30', 'ARB-SMAT-58', 'ARB-SMAT-59'],
     routes: ['/flotacion/', '/en/flotation/', '/flotacion/celdas/', '/en/flotation/cells/', '/flotacion/mecanismos/', '/en/flotation/mechanisms/'],
-    interactiveRoutes: ['/flotacion/', '/en/flotation/', '/flotacion/celdas/', '/en/flotation/cells/', '/flotacion/mecanismos/', '/en/flotation/mechanisms/'],
-    readonlyRoutes: [],
+    interactiveRoutes: ['/flotacion/', '/en/flotation/'],
+    readonlyRoutes: ['/flotacion/celdas/', '/en/flotation/cells/', '/flotacion/mecanismos/', '/en/flotation/mechanisms/'],
     inputsSchema: [
       { field: 'jgCmS', type: 'number', min: 0.5, max: 3.5, defaultValue: 1.5, sobolTier: 1, sobolSensitivityScore: 0.41, domBinding: '#wb-flot-jg', schemaKey: 'flotation.jgCmS', aliasBindings: ['[data-schema-input="flotation.jgCmS"]'] },
       { field: 'd32Mm', type: 'number', min: 0.8, max: 3.0, defaultValue: 1.6, sobolTier: 1, sobolSensitivityScore: 0.36, domBinding: '#wb-flot-d32', schemaKey: 'flotation.d32Mm', aliasBindings: ['[data-schema-input="flotation.d32Mm"]'] },
@@ -224,8 +225,8 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     conceptRefs: ['circuits', 'decision_criteria', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-26', 'ARB-SMAT-51', 'ARB-SMAT-58', 'ARB-SMAT-59'],
     routes: ['/filtracion/', '/en/filtration/', '/filtracion/prensa/', '/en/filtration/press/', '/filtracion/repuestos/', '/en/filtration/parts/'],
-    interactiveRoutes: ['/filtracion/', '/en/filtration/', '/filtracion/prensa/', '/en/filtration/press/', '/filtracion/repuestos/', '/en/filtration/parts/'],
-    readonlyRoutes: [],
+    interactiveRoutes: ['/filtracion/', '/en/filtration/'],
+    readonlyRoutes: ['/filtracion/prensa/', '/en/filtration/press/', '/filtracion/repuestos/', '/en/filtration/parts/'],
     inputsSchema: [
       { field: 'plateWidthMm', type: 'number', min: 630, max: 2000, defaultValue: 1200, sobolTier: 1, sobolSensitivityScore: 0.34, domBinding: '#filt-plate-width', schemaKey: 'filtration.plateWidthMm', aliasBindings: ['[data-schema-input="filtration.plateWidthMm"]'] },
       { field: 'feedPressureBar', type: 'number', min: 4, max: 25, defaultValue: 12, sobolTier: 1, sobolSensitivityScore: 0.28, domBinding: '#wb-filt-pressure', schemaKey: 'filtration.feedPressureBar', aliasBindings: ['[data-schema-input="filtration.feedPressureBar"]'] },
@@ -358,8 +359,8 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     conceptRefs: ['quick_checkout_skus', 'workbench_lens_v2', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-27', 'ARB-SMAT-39', 'ARB-SMAT-58', 'ARB-SMAT-59'],
     routes: ['/', '/en/', '/catalogo/', '/en/catalog/', '/equipos/', '/en/process-equipment/'],
-    interactiveRoutes: ['/catalogo/', '/en/catalog/', '/equipos/', '/en/process-equipment/'],
-    readonlyRoutes: ['/', '/en/'],
+    interactiveRoutes: ['/', '/en/', '/catalogo/', '/en/catalog/', '/equipos/', '/en/process-equipment/'],
+    readonlyRoutes: [],
     inputsSchema: [
       { field: 'rawPartQuery', type: 'string', defaultValue: '', sobolTier: 1, sobolSensitivityScore: 0.90, domBinding: '[data-dropin-input]', schemaKey: 'dropIn.rawPartQuery', aliasBindings: ['[data-schema-input="dropIn.rawPartQuery"]'] }
     ],
@@ -383,20 +384,15 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     readonlyRoutes: ['/catalogo/[code]/', '/en/catalog/[code]/', '/productos/[slug]/', '/en/products/[slug]/', '/acuse/', '/en/thank-you/'],
     inputsSchema: [
       { field: 'predictedWearHours', type: 'number', min: 720, max: 18000, defaultValue: 2400, sobolTier: 1, sobolSensitivityScore: 0.46, domBinding: '#wb-jrp-wear-hours', schemaKey: 'jrp.predictedWearHours', aliasBindings: ['[data-schema-input="jrp.predictedWearHours"]'] },
-      { field: 'operatingHoursPerDay', type: 'number', min: 1, max: 24, defaultValue: 24, sobolTier: 2, sobolSensitivityScore: 0.19, domBinding: '#wb-jrp-daily-hours', schemaKey: 'jrp.operatingHoursPerDay', aliasBindings: ['[data-schema-input="jrp.operatingHoursPerDay"]'] },
       { field: 'criticalityMode', type: 'enum', defaultValue: 'normal', sobolTier: 1, sobolSensitivityScore: 0.35, domBinding: '#wb-jrp-criticality', schemaKey: 'jrp.criticalityMode', aliasBindings: ['[data-schema-input="jrp.criticalityMode"]', '[data-jrp-crit-btn]'] },
-      { field: 'coreReturnEnabled', type: 'boolean', defaultValue: false, sobolTier: 2, sobolSensitivityScore: 0.14, domBinding: '#wb-core-tradein-toggle', schemaKey: 'jrp.coreReturnEnabled', aliasBindings: ['[data-schema-input="jrp.coreReturnEnabled"]'] },
-      { field: 'urgency', type: 'enum', defaultValue: 'programado', sobolTier: 1, sobolSensitivityScore: 0.25, domBinding: '[data-jrp-criticality-toggle]', schemaKey: 'jrp.urgency', aliasBindings: ['[data-schema-input="jrp.urgency"]'] },
-      { field: 'trayItems', type: 'array', defaultValue: [], sobolTier: 2, sobolSensitivityScore: 0.11, domBinding: '[data-quick-order-tray]', schemaKey: 'jrp.trayItems', aliasBindings: ['[data-schema-input="jrp.trayItems"]'] }
+      { field: 'coreReturnEnabled', type: 'boolean', defaultValue: false, sobolTier: 2, sobolSensitivityScore: 0.14, domBinding: '#wb-core-tradein-toggle', schemaKey: 'jrp.coreReturnEnabled', aliasBindings: ['[data-schema-input="jrp.coreReturnEnabled"]'] }
     ],
     outputsSchema: [
       { field: 'sleeveInspectionDay', unit: 'd', decimals: 0, isoPure: true, domBinding: '#jrp-stage-1-days', schemaKey: 'jrp.sleeveInspectionDay', aliasBindings: ['[data-schema-output="jrp.sleeveInspectionDay"]'] },
       { field: 'impellerThroatbushSwapDay', unit: 'd', decimals: 0, isoPure: true, domBinding: '#jrp-stage-2-days', schemaKey: 'jrp.impellerThroatbushSwapDay', aliasBindings: ['[data-schema-output="jrp.impellerThroatbushSwapDay"]'] },
       { field: 'voluteLinerOverhaulDay', unit: 'd', decimals: 0, isoPure: true, domBinding: '#jrp-stage-3-days', schemaKey: 'jrp.voluteLinerOverhaulDay', aliasBindings: ['[data-schema-output="jrp.voluteLinerOverhaulDay"]'] },
       { field: 'reorderWindowDays', unit: 'd', decimals: 0, isoPure: true, domBinding: '#wb-jrp-window-days', schemaKey: 'jrp.reorderWindowDays', aliasBindings: ['[data-schema-output="jrp.reorderWindowDays"]'] },
-      { field: 'rawLifeDays', unit: 'd', decimals: 0, isoPure: true, domBinding: '#wb-jrp-raw-life-days', schemaKey: 'jrp.rawLifeDays', aliasBindings: ['[data-schema-output="jrp.rawLifeDays"]'] },
-      { field: 'eligible', unit: 'bool', isoPure: false, domBinding: '#wb-core-tradein-eligible', schemaKey: 'jrp.eligible', aliasBindings: ['[data-schema-output="jrp.eligible"]'] },
-      { field: 'version', unit: 'int', decimals: 0, isoPure: true, domBinding: '#qtray-state-version', schemaKey: 'jrp.version', aliasBindings: ['[data-schema-output="jrp.version"]'] }
+      { field: 'eligible', unit: 'bool', isoPure: false, domBinding: '#wb-core-tradein-eligible', schemaKey: 'jrp.eligible', aliasBindings: ['[data-schema-output="jrp.eligible"]'] }
     ],
     allowUnboundReasons: []
   },
@@ -466,7 +462,7 @@ function resolveSchemaFieldSpec(domainId, kind, field) {
  */
 export function formatSchemaOutputValue(domainId, field, value, locale = 'es') {
   if (value === undefined || value === null || value === '') return '—';
-  const spec = resolveSchemaFieldSpec(domainId, 'outputsSchema', field);
+  const spec = /** @type {SchemaOutputBinding | null} */ (resolveSchemaFieldSpec(domainId, 'outputsSchema', field));
   const unit = spec?.unit || '';
   if (Array.isArray(value)) {
     if (value.length === 2 && value.every((item) => typeof item === 'number' && Number.isFinite(item))) {
@@ -514,12 +510,18 @@ export function formatSchemaOutputValue(domainId, field, value, locale = 'es') {
   return str;
 }
 
+/**
+ * @param {string} domainId
+ * @param {Record<string, any>} [payload={}]
+ */
 export function validateSchemaPayload(domainId, payload = {}) {
   const schema = getEngineSchema(domainId);
   if (!schema) {
-    return { valid: false, normalized: {}, violations: [`UNKNOWN_DOMAIN:${domainId}`] };
+    return { valid: false, normalized: /** @type {Record<string, any>} */ ({}), violations: [`UNKNOWN_DOMAIN:${domainId}`] };
   }
+  /** @type {Record<string, any>} */
   const normalized = {};
+  /** @type {string[]} */
   const violations = [];
   for (const fieldDef of schema.inputsSchema) {
     const raw = payload && Object.prototype.hasOwnProperty.call(payload, fieldDef.field)

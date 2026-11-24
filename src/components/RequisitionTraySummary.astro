@@ -34,36 +34,46 @@ const initialUrgencyHuman = formatUrgencyBandHuman('PARO_DE_LINEA', lang);
       {isEs ? 'CABECERA DE PRIORIDAD DE DESPACHO DURANGO:' : 'DURANGO DISPATCH PRIORITY HEADER:'}
     </span>
     <code id="tray-cmu-subject-line" class="req-tray-cmu-code">
-      [SMAT-DGO] [PARO DE LÍNEA | C_v=48% Cr27 | 1 SKUs | Ref: SMAT-7A4F-9C12]
+      {isEs
+        ? '[SMAT-DGO] [PARO DE LÍNEA | C_v=48% Cr27 | 1 SKUs | Ref: SMAT-7A4F-9C12]'
+        : '[SMAT-DGO] [LINE-STOP | C_v=48% Cr27 | 1 SKU | Ref: SMAT-7A4F-9C12]'}
     </code>
     <div id="tray-priority-sla-meta" data-testid="tray-priority-sla-meta" class="font-mono-tech smat-tray-priority-sla-meta">
       {isEs ? `${initialUrgencyHuman} • SLA Respuesta: ≤ 15 min` : `${initialUrgencyHuman} • Response SLA: ≤ 15 min`}
     </div>
   </div>
 
-  <div class="req-tray-quickadd">
-    <select id="tray-quick-sku-select" class="req-tray-select" aria-label={isEs ? 'Seleccionar SKU de configuración rápida' : 'Select Quick-Checkout SKU'}>
-      {quickCatalog.map((item) => (
-        <option
-          value={item.id}
-          data-atomic={item.atomic_codes[0] || item.id}
-          data-name-es={item.title_es}
-          data-name-en={item.title_en}
-          data-circuit={item.vertical}
-        >
-          {item.id} — {isEs ? item.title_es : item.title_en}
-        </option>
-      ))}
-    </select>
-    <input type="number" id="tray-quick-qty-input" class="req-tray-qty" min="1" max="999" value="1" aria-label={isEs ? 'Cantidad' : 'Quantity'} />
-    <select id="tray-quick-mode-select" class="req-tray-mode" aria-label={isEs ? 'Modo de criticidad' : 'Criticality mode'}>
-      <option value="PARO_DE_LINEA">{isEs ? 'Paro de Línea (Urgente)' : 'Line-Stop (Urgent)'}</option>
-      <option value="STOCK_SS">{isEs ? 'Reposición Programada de Stock' : 'Scheduled Stock Replenishment'}</option>
-    </select>
-    <button type="button" id="tray-quick-add-btn" class="req-tray-add-btn">
-      {isEs ? '+ Añadir SKU' : '+ Add SKU'}
-    </button>
-  </div>
+  <details class="wb-progressive-drawer req-tray-quickadd-drawer" id="req-tray-quickadd-drawer">
+    <summary class="wb-progressive-summary">
+      <span>{isEs ? '+ Agregar SKUs adicionales a la orden (opcional)' : '+ Add additional SKUs to requisition (optional)'}</span>
+      <span class="wb-step1-more-arrow">▾</span>
+    </summary>
+    <div class="wb-progressive-body">
+      <div class="req-tray-quickadd">
+        <select id="tray-quick-sku-select" class="req-tray-select" aria-label={isEs ? 'Seleccionar SKU de configuración rápida' : 'Select Quick-Checkout SKU'}>
+          {quickCatalog.map((item) => (
+            <option
+              value={item.id}
+              data-atomic={item.atomic_codes[0] || item.id}
+              data-name-es={item.title_es}
+              data-name-en={item.title_en}
+              data-circuit={item.vertical}
+            >
+              {item.id} — {isEs ? item.title_es : item.title_en}
+            </option>
+          ))}
+        </select>
+        <input type="number" id="tray-quick-qty-input" class="req-tray-qty" min="1" max="999" value="1" aria-label={isEs ? 'Cantidad' : 'Quantity'} />
+        <select id="tray-quick-mode-select" class="req-tray-mode" aria-label={isEs ? 'Modo de criticidad' : 'Criticality mode'}>
+          <option value="PARO_DE_LINEA">{isEs ? 'Paro de Línea (Urgente)' : 'Line-Stop (Urgent)'}</option>
+          <option value="STOCK_SS">{isEs ? 'Reposición Programada de Stock' : 'Scheduled Stock Replenishment'}</option>
+        </select>
+        <button type="button" id="tray-quick-add-btn" class="req-tray-add-btn">
+          {isEs ? '+ Añadir SKU' : '+ Add SKU'}
+        </button>
+      </div>
+    </div>
+  </details>
 
   <div class="req-tray-table-wrap">
     <table class="req-tray-table">
@@ -147,7 +157,7 @@ const initialUrgencyHuman = formatUrgencyBandHuman('PARO_DE_LINEA', lang);
       const state = getTrayState();
       const desc = computeCmuPriorityDescriptor(state);
       if (cmuCode) {
-        cmuCode.textContent = buildCmuPrioritySubjectLine(state, { cvPct: 52, material: 'Cr27' });
+        cmuCode.textContent = buildCmuPrioritySubjectLine(state, { cvPct: 52, material: 'Cr27', lang });
       }
       if (cmuMeta) {
         const urgencyHuman = formatUrgencyBandHuman(state.criticalityMode, lang);

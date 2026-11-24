@@ -54,35 +54,27 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
     <h1>{isEs ? 'Equipos de Proceso' : 'Process Equipment'}</h1>
     <p class="hero-lead">
       {isEs
-        ? 'Maquinaria completa de planta concentradora: Mecanismos para Celdas de Flotación (50–300 ft³), Filtros Prensa (800–1500 mm, 16 bar), Baterías de Hidrociclones y Motobombas de Proyecto. Para refacciones de desgaste, use los accesos directos a '
-        : 'Complete concentrator plant machinery: Flotation Cell Mechanisms (50–300 ft³), Recessed-Chamber Filter Presses (800–1500 mm, 16 bar), Hydrocyclone Clusters, and Project Pump Packages. For ongoing wear spares, use '}
-      <a href={catalogBase}>{isEs ? 'Catálogo de Refacciones (19 SKUs)' : 'Spares Catalog (19 SKUs)'}</a>
-      {' · '}
-      <a href={pumpingPath}>{isEs ? 'Partes Húmedas de Bombeo' : 'Slurry Pump Wear Spares'}</a>.
+        ? 'Flotación (50–300 ft³), Filtros Prensa (16 bar), Hidrociclones y Motobombas de Proyecto.'
+        : 'Flotation Mechanisms (50–300 ft³), 16-Bar Filter Presses, Hydrocyclone Clusters & Slurry Pump Packages.'}
     </p>
-    <div class="hero-cta-row">
-      <a href={`${quoteBase}?circuito=flotacion&equipo=celda_flotacion&serie=100ft#rfq`} class="btn btn-primary">
-        {isEs ? 'Cotizar Equipo de Proceso →' : 'Quote Process Equipment →'}
-      </a>
-    </div>
   </div>
 </section>
 
-<section class="section" id="stage-diagnostic">
+<section class="section smat-stage-compact" id="stage-diagnostic">
   <div class="container">
     <div id="stratum1-equipos-search" data-stratum-1-instrument class="equipos-toolbar">
       <div class="toolbar-search-col">
         <label for="equipos-sku-search" class="search-label">
           {isEs
-            ? `BUSCADOR RÁPIDO DEL CATÁLOGO (${allQuickSkus.length} SKUS EN ${avenueCount} AVENIDAS • + BANDEJA 1-CLIC)`
-            : `INSTANT CATALOG SEARCH (${allQuickSkus.length} SKUS ACROSS ${avenueCount} AVENUES • 1-CLICK + TRAY)`}
+            ? `BUSCADOR DEL CATÁLOGO (${allQuickSkus.length} SKUS • + BANDEJA)`
+            : `CATALOG SEARCH (${allQuickSkus.length} SKUS • 1-CLICK TRAY)`}
         </label>
         <input
           id="equipos-sku-search"
           type="search"
           placeholder={isEs
-            ? 'Filtrar por SKU (SMAT-PUMP-IMP-AH), código (E4147, D075C21), serie (800-1500, D6-D20, Marcy)...'
-            : 'Filter by SKU (SMAT-PUMP-IMP-AH), code (E4147, D075C21), series (800-1500, D6-D20, Marcy)...'}
+            ? 'Filtrar por SKU (SMAT-PUMP-IMP-AH), código (E4147, D075C21) o serie...'
+            : 'Filter by SKU (SMAT-PUMP-IMP-AH), code (E4147, D075C21) or series...'}
           class="equipos-search-input"
         />
         <div id="equipos-dropin-match-banner" class="dropin-match-banner smat-hidden-init"></div>
@@ -90,31 +82,21 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
       <div class="toolbar-meta-col">
         <span data-equipos-search-count class="search-count-pill">
           {isEs
-            ? `Mostrando ${allQuickSkus.length} de ${allQuickSkus.length} equipos y refacciones en ${avenueCount} Avenidas`
-            : `Showing ${allQuickSkus.length} of ${allQuickSkus.length} catalog SKUs across ${avenueCount} Avenues`}
+            ? `Mostrando ${allQuickSkus.length} de ${allQuickSkus.length} equipos en ${avenueCount} Avenidas`
+            : `Showing ${allQuickSkus.length} of ${allQuickSkus.length} SKUs across ${avenueCount} Avenues`}
         </span>
         <a href={catalogBase} class="matrix-link-solar">
           {isEs
-            ? `Ver Matriz Maestra de ${avenueCount} Avenidas (${allQuickSkus.length} SKUs) →`
-            : `Open Master ${avenueCount}-Avenue Matrix (${allQuickSkus.length} SKUs) →`}
+            ? `Ver Matriz Maestra (${allQuickSkus.length} SKUs) →`
+            : `Master Matrix (${allQuickSkus.length} SKUs) →`}
         </a>
       </div>
     </div>
 
-    <details class="eq-drawer smat-mb-md" id="equipos-dropin-drawer">
+    <details class="eq-drawer smat-mb-md" id="equipos-catalog-blocks-drawer" open>
       <summary class="eq-drawer-summary">
-        <span>{isEs ? 'Verificador Drop-In 1:1 por Código de Planta' : '1:1 Drop-In Plant Code Verifier'}</span>
-        <span class="eq-drawer-badge">{isEs ? 'ABRIR VERIFICADOR ▾' : 'OPEN VERIFIER ▾'}</span>
-      </summary>
-      <div class="smat-mt-sm">
-        <DropInVerifierCore lang={lang} variant="equipment" />
-      </div>
-    </details>
-
-    <details class="eq-drawer smat-mt-sm" id="equipos-catalog-blocks-drawer">
-      <summary class="eq-drawer-summary">
-        <span>{isEs ? 'Ver Bloques por Línea de Proceso (Flotación, Filtración, Bombeo, Hidrociclones y Control)' : 'View Process Line Blocks (Flotation, Filtration, Pumping, Hydrocyclones & Control)'}</span>
-        <span class="eq-drawer-badge">{isEs ? 'EXPANDIR LÍNEAS ▾' : 'EXPAND LINES ▾'}</span>
+        <span>{isEs ? 'Líneas de Proceso Disponibles (Flotación, Filtración, Bombeo, Hidrociclones y Control)' : 'Process Equipment Lines (Flotation, Filtration, Pumping, Hydrocyclones & Control)'}</span>
+        <span class="eq-drawer-badge">{isEs ? 'CONTRAER / EXPANDIR ▾' : 'TOGGLE LINES ▾'}</span>
       </summary>
     <div class="process-equipment-grid">
       <article class="card equipment-block" data-equipment-block="flotacion" data-equipment-block-blob="flotacion flotation celdas cells mecanismos mechanisms acondicionadores 18sp av-04">
@@ -397,6 +379,16 @@ const renderSkuTitle = (sku: any) => (isEs ? sku.title_es : sku.title_en);
         </div>
       </article>
     </div>
+    </details>
+
+    <details class="eq-drawer smat-mt-sm" id="equipos-dropin-drawer">
+      <summary class="eq-drawer-summary">
+        <span>{isEs ? 'Verificador Drop-In 1:1 por Código de Planta' : '1:1 Drop-In Plant Code Verifier'}</span>
+        <span class="eq-drawer-badge">{isEs ? 'ABRIR VERIFICADOR ▾' : 'OPEN VERIFIER ▾'}</span>
+      </summary>
+      <div class="smat-mt-sm">
+        <DropInVerifierCore lang={lang} variant="equipment" />
+      </div>
     </details>
 
     <SharePurchasing

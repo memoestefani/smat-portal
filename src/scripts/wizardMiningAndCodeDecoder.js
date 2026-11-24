@@ -1,4 +1,4 @@
-// @ts-nocheck
+// @ts-check
 /**
  * wizardMiningAndCodeDecoder.js
  * ---------------------------------------------------------------------------
@@ -51,8 +51,8 @@ function resolveStateFieldPath(stateObj, fieldPath) {
 /**
  * Proyecta declarativamente el estado de ingeniería hacia cualquier nodo con [data-wb-field] o [data-wb-bind]
  * erradicando el acoplamiento manual ad-hoc (Decisión 2-C+).
- * @param {ParentNode} root
- * @param {Object} state
+ * @param {ParentNode | null} root
+ * @param {Record<string, any>} [state={}]
  * @returns {number} Cantidad de nodos actualizados
  */
 export function projectWorkbenchToDOM(root, state = {}) {
@@ -60,7 +60,8 @@ export function projectWorkbenchToDOM(root, state = {}) {
   let updatedCount = 0;
   const activeEl = typeof document !== 'undefined' ? document.activeElement : null;
   const fieldNodes = root.querySelectorAll('[data-wb-field]');
-  fieldNodes.forEach((node) => {
+  fieldNodes.forEach((rawNode) => {
+    const node = /** @type {any} */ (rawNode);
     const fieldKey = (typeof node.getAttribute === 'function' ? node.getAttribute('data-wb-field') : null) || (node.dataset && node.dataset.wbField);
     const rawVal = resolveStateFieldPath(state, fieldKey);
     if (rawVal !== undefined && rawVal !== null) {
@@ -75,7 +76,8 @@ export function projectWorkbenchToDOM(root, state = {}) {
     }
   });
   const bindNodes = root.querySelectorAll('[data-wb-bind]');
-  bindNodes.forEach((node) => {
+  bindNodes.forEach((rawNode) => {
+    const node = /** @type {any} */ (rawNode);
     const bindKey = (typeof node.getAttribute === 'function' ? node.getAttribute('data-wb-bind') : null) || (node.dataset && node.dataset.wbBind);
     const rawVal = resolveStateFieldPath(state, bindKey);
     if (rawVal !== undefined && rawVal !== null && activeEl !== node) {
@@ -88,6 +90,10 @@ export function projectWorkbenchToDOM(root, state = {}) {
 
 /**
  * Genera el código institucional SMAT por circuito, rol y serie (SMAT-PUMP-6X4-WETKIT, etc.)
+ * @param {string} arg1
+ * @param {string} [arg2]
+ * @param {string} [arg3]
+ * @param {string} [_arg4]
  */
 export function buildSmatCode(arg1, arg2, arg3, _arg4) {
   if (arg1 === 'bombeo' || arg1 === 'flotacion' || arg1 === 'filtracion' || arg1 === 'control_procesos' || arg1 === 'clasificacion') {
@@ -106,9 +112,13 @@ export function buildSmatCode(arg1, arg2, arg3, _arg4) {
 
 /**
  * Decodifica un código institucional SMAT o código atómico universal (D3147..DAM005)
+ * @param {string} codeStr
+ * @param {'es' | 'en'} [lang='es']
  */
 export function decodeSmatCode(codeStr, lang = 'es') {
-  const parsed = parseSmatPartCode(codeStr, lang);
+  /** @type {'es' | 'en'} */
+  const safeLang = lang === 'en' ? 'en' : 'es';
+  const parsed = parseSmatPartCode(codeStr, safeLang);
   if (!parsed || !parsed.valid) return null;
   return {
     circuit: parsed.circuit,
@@ -123,6 +133,9 @@ export function decodeSmatCode(codeStr, lang = 'es') {
 
 /**
  * Resuelve los parámetros reológicos pre-calibrados (Cw, d80, Ss, pH, Q, altitud) para una unidad minera
+ * @param {any} groupObj
+ * @param {any} unitObj
+ * @param {number} [currentAltitude=2400]
  */
 export function resolveMiningUnitPulpPreset(groupObj, unitObj, currentAltitude = 2400) {
   if (!groupObj || !unitObj) return null;
@@ -169,6 +182,8 @@ export function resolveMiningUnitPulpPreset(groupObj, unitObj, currentAltitude =
 
 /**
  * Busca el grupo minero correspondiente al dominio de un correo corporativo
+ * @param {string} [email='']
+ * @param {readonly any[]} [miningGroups=[]]
  */
 export function matchMiningGroupByEmailDomain(email = '', miningGroups = []) {
   const clean = String(email || '').trim();
@@ -192,7 +207,7 @@ export function renderMiningPresetTelemetry(
   lang = 'es'
 ) {
   if (!root || typeof root.querySelector !== 'function') return null;
-  const el = root.querySelector('#wb-mining-preset-telemetry, [data-mining-preset-telemetry]');
+  const el = /** @type {HTMLElement | null} */ (root.querySelector('#wb-mining-preset-telemetry, [data-mining-preset-telemetry]'));
   const preset = typeof queryOrPreset === 'string'
     ? resolveMiningDistrictPreset(queryOrPreset)
     : (queryOrPreset && queryOrPreset.matched ? queryOrPreset : null);
@@ -231,11 +246,14 @@ export function renderMiningPresetTelemetry(
   return preset;
 }
 
+/**
+ * @param {any} root
+ */
 export function initMiningPresetTelemetryBridge(root = typeof document !== 'undefined' ? document : null) {
   if (!root || typeof root.getElementById !== 'function') return null;
   const syncFromControls = () => {
-    const groupSelect = root.getElementById('wb-mining-group-select');
-    const unitSelect = root.getElementById('wb-mining-unit-select');
+    const groupSelect = /** @type {HTMLSelectElement | null} */ (root.getElementById('wb-mining-group-select'));
+    const unitSelect = /** @type {HTMLSelectElement | null} */ (root.getElementById('wb-mining-unit-select'));
     const lang = root.documentElement?.lang?.toLowerCase().startsWith('en') ? 'en' : 'es';
     let query = '';
     if (unitSelect && unitSelect.value) {
@@ -249,14 +267,15 @@ export function initMiningPresetTelemetryBridge(root = typeof document !== 'unde
     }
     return renderMiningPresetTelemetry(root, query, lang);
   };
-  const bar = root.getElementById('wb-mining-preset-bar');
-  if (bar && (!bar.dataset || bar.dataset.smatPresetTelemetryInit !== '1')) {
-    if (bar.dataset) bar.dataset.smatPresetTelemetryInit = '1';
-    root.getElementById('wb-mining-group-select')?.addEventListener('change', syncFromControls);
-    root.getElementById('wb-mining-unit-select')?.addEventListener('change', syncFromControls);
-    root.getElementById('btn-apply-mining-preset')?.addEventListener('click', syncFromControls);
+  const groupSelectEl = root.getElementById('wb-mining-group-select');
+  const unitSelectEl = root.getElementById('wb-mining-unit-select');
+  const anchorEl = groupSelectEl || unitSelectEl;
+  if (anchorEl && anchorEl.dataset?.smatPresetTelemetryInit !== '1') {
+    if (anchorEl.dataset) anchorEl.dataset.smatPresetTelemetryInit = '1';
+    groupSelectEl?.addEventListener('change', syncFromControls);
+    unitSelectEl?.addEventListener('change', syncFromControls);
   }
-  if (typeof document !== 'undefined' && root === document && !document.documentElement?.dataset?.smatPresetPageLoadBound) {
+  if (typeof document !== 'undefined' && root === document && document.documentElement?.dataset?.smatPresetPageLoadBound !== '1') {
     if (document.documentElement?.dataset) document.documentElement.dataset.smatPresetPageLoadBound = '1';
     document.addEventListener('astro:page-load', () => initMiningPresetTelemetryBridge(document));
   }

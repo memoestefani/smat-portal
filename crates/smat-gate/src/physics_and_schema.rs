@@ -128,5 +128,70 @@ pub fn verify_schema_outbox_pwa_and_zero_dead_exports(site_root: &Path) -> Resul
         }
     }
 
+    verify_no_ts_nocheck_or_hidden_schema_text(&scripts_dir, &site_root.join("src/components"))?;
+
     Ok(())
+}
+
+/// Verifica 0 `@ts-nocheck` en `src/scripts/*.js` y 0 `data-schema-*` sobre nodos ocultos en Astro.
+pub fn verify_no_ts_nocheck_or_hidden_schema_text(scripts_dir: &Path, components_dir: &Path) -> Result<(), String> {
+    for entry in fs::read_dir(scripts_dir).map_err(|e| e.to_string())?.flatten() {
+        let p = entry.path();
+        if p.extension().and_then(|s| s.to_str()) == Some("js") {
+            let text = fs::read_to_string(&p).unwrap_or_default();
+            if has_ts_nocheck_directive(&text) {
+                return Err(format!("Prohibido @ts-nocheck en {}", p.display()));
+            }
+        }
+    }
+
+    for entry in WalkDir::new(components_dir).into_iter().filter_map(|e| e.ok()) {
+        if entry.file_type().is_file()
+            && entry.path().extension().and_then(|s| s.to_str()) == Some("astro")
+        {
+            let text = fs::read_to_string(entry.path()).unwrap_or_default();
+            if let Some(offending) = find_hidden_schema_element(&text) {
+                return Err(format!(
+                    "Nodo oculto con data-schema-* prohibido en {}: {}",
+                    entry.path().display(),
+                    offending
+                ));
+            }
+        }
+    }
+
+    Ok(())
+}
+
+fn has_ts_nocheck_directive(js_text: &str) -> bool {
+    js_text.contains("@ts-nocheck")
+}
+
+fn find_hidden_schema_element(astro_text: &str) -> Option<String> {
+    let tag_re = Regex::new(r"(?is)<[a-z][a-z0-9-]*\b[^>]*data-schema-(?:input|output)\s*=[^>]*>").unwrap();
+    let hard_hidden_re = Regex::new(r#"(?i)(?:\btype\s*=\s*["']hidden["']|\bsr-only\b)"#).unwrap();
+    let bool_hidden_re = Regex::new(r#"(?i)\bhidden\b(?:\s|>|/|=)"#).unwrap();
+    for cap in tag_re.find_iter(astro_text) {
+        let tag = cap.as_str();
+        if hard_hidden_re.is_match(tag)
+            || (tag.contains("data-schema-input") && bool_hidden_re.is_match(tag))
+        {
+            return Some(tag.chars().take(90).collect());
+        }
+    }
+    None
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{find_hidden_schema_element, has_ts_nocheck_directive};
+
+    #[test]
+    fn rejects_ts_nocheck_and_hidden_schema_dom() {
+        assert!(has_ts_nocheck_directive("// @ts-nocheck\nexport const x = 1;"));
+        assert!(!has_ts_nocheck_directive("// @ts-check\nexport const x = 1;"));
+        assert!(find_hidden_schema_element(r#"<input type="hidden" data-schema-input="jrp.version" />"#).is_some());
+        assert!(find_hidden_schema_element(r#"<span class="sr-only" data-schema-output="jrp.x">1</span>"#).is_some());
+        assert!(find_hidden_schema_element(r#"<input type="number" data-schema-input="jrp.predictedWearHours" />"#).is_none());
+    }
 }

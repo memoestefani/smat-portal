@@ -1,8 +1,9 @@
+// @ts-check
 /**
  * acuseSheetController.js
  * ---------------------------------------------------------------------------
  * Controlador compartido para el Acuse Formal Imprimible B2B (/acuse/ y /en/thank-you/).
- * Extraído por Costura Modular LCOM4 (∂(C) = 0, D5-V35 / D12-V35 / SLICE-V35-12).
+ * Extraído por Costura Modular LCOM4 (∂(C) = 0, D5-V35 / D12-V35 / SLICE-V56-04).
  * Hidrata la bandeja multi-partida sin pérdida de metadatos (PutGet Lens), renderiza
  * las tuplas fiscales SAT CFDI 4.0 + TIGIE + Ventana JRP (s, S) por partida, y oculta
  * filas exclusivas de bombas cuando la requisición es de otro circuito.
@@ -12,6 +13,7 @@ import { getQuickProductBySlugOrAlias } from './quickProductsCatalog.js';
 import { calculateCoupledReorderWindowDays } from './requisitionTrayBus.js';
 import { formatSatTigieInvoiceLine, formatDualCheckoutPayload } from './workbenchExportFormatters.js';
 import { loadUnifiedEngineeringAndWorkbenchState } from './verticalStateAndCtaSyncBridge.js';
+import { loadRfqSession, saveRfqSession } from './rfqSessionStore.js';
 import { resolveHonestWebhookStatus } from './leadOutboxStateMachine.js';
 import { formatCheckoutLaneHuman } from './i18nDomainLabels.js';
 import {
@@ -30,14 +32,18 @@ function computeFnv1aOrderHash(seedStr = '') {
   return 'SMAT-ORD-' + h.toString(16).toUpperCase().padStart(8, '0').slice(0, 6);
 }
 
+/**
+ * @param {any[]} [rawItems=[]]
+ * @param {any[]} [existingItems=[]]
+ */
 export function enrichTrayItemsPreservingMetadata(rawItems = [], existingItems = []) {
   const existingById = new Map(
     (Array.isArray(existingItems) ? existingItems : []).map((it) => [String(it.id || it.skuId || '').toUpperCase(), it])
   );
   return rawItems.map((entry) => {
     const id = String(entry.id || entry.skuId || 'SMAT-PUMP-IMP-AH').trim().toUpperCase();
-    const prev = existingById.get(id) || {};
-    const catalogSku = getQuickProductBySlugOrAlias(id);
+    const prev = /** @type {Record<string, any>} */ (existingById.get(id) || {});
+    const catalogSku = /** @type {Record<string, any> | null} */ (getQuickProductBySlugOrAlias(id));
     const vertical = catalogSku?.vertical || prev.circuit || entry.circuit || 'bombeo';
     const satLine = formatSatTigieInvoiceLine({ skuId: id, vertical });
     const stockRegime = catalogSku?.stock_regime || prev.stockRegime || 'hay';
@@ -83,27 +89,42 @@ function isNonPumpDomain(circuit = '', skuId = '', code = '') {
   return Boolean(c || s || k);
 }
 
+/**
+ * @param {'es' | 'en'} [lang='es']
+ * @param {Record<string, any>} [_options={}]
+ */
 export function initAcuseSheetController(lang = 'es', _options = {}) {
-  const isEn = lang === 'en';
+  /** @type {'es' | 'en'} */
+  const uiLang = lang === 'en' ? 'en' : 'es';
+  const isEn = uiLang === 'en';
 
   function populateSheet() {
     if (typeof window === 'undefined') return;
     const urlParams = new URLSearchParams(window.location.search);
-    let cached = {};
-    let wbV2 = {};
-    let trayState = { items: [], coreReturnEnabled: false };
-    try {
-      const raw = sessionStorage.getItem('smat_last_rfq_payload');
-      if (raw) cached = JSON.parse(raw) || {};
-    } catch (_e) {}
-    try {
-      const rawV2 = localStorage.getItem('smat_workbench_state_v2') || localStorage.getItem('smat_workbench_session');
-      if (rawV2) wbV2 = JSON.parse(rawV2) || {};
-    } catch (_e) {}
-    try {
-      const rawTray = localStorage.getItem('smat_requisition_tray_v3');
-      if (rawTray) trayState = JSON.parse(rawTray) || { items: [], coreReturnEnabled: false };
-    } catch (_e) {}
+    const rfqSession = /** @type {Record<string, any>} */ (loadRfqSession());
+    const outboxSnapshot = /** @type {Record<string, any>} */ (
+      rfqSession.outbox || rfqSession.stationSnapshots?.outbox || {}
+    );
+    const cached = /** @type {Record<string, any>} */ (outboxSnapshot.lastPayload || {});
+    const wbV2 = /** @type {Record<string, any>} */ ({
+      ...(rfqSession.plantContext || {}),
+      ...(rfqSession.contact || {}),
+    });
+    /** @type {{ items: any[], coreReturnEnabled: boolean }} */
+    const trayState = {
+      items: Array.isArray(rfqSession.items) ? [...rfqSession.items] : [],
+      coreReturnEnabled: Boolean(rfqSession.coreReturnEnabled),
+    };
+    if (trayState.items.length === 0) {
+      try {
+        const rawTray = localStorage.getItem('smat_requisition_tray_v3');
+        if (rawTray) {
+          const parsedTray = JSON.parse(rawTray) || {};
+          if (Array.isArray(parsedTray.items)) trayState.items = parsedTray.items;
+          if (parsedTray.coreReturnEnabled) trayState.coreReturnEnabled = true;
+        }
+      } catch (_e) {}
+    }
 
     const existingItems = Array.isArray(trayState.items) ? trayState.items : [];
     const trayQueryParam = urlParams.get('tray') || '';
@@ -124,9 +145,10 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
         });
       if (parsedItems.length > 0) {
         trayState.items = enrichTrayItemsPreservingMetadata(parsedItems, existingItems);
-        try {
-          localStorage.setItem('smat_requisition_tray_v3', JSON.stringify(trayState));
-        } catch (_e) {}
+        saveRfqSession({
+          ...rfqSession,
+          items: trayState.items,
+        });
       }
     } else if (skuQueryParam && existingItems.length === 0) {
       trayState.items = enrichTrayItemsPreservingMetadata(
@@ -143,12 +165,9 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
     if (traySummary) {
       wbV2.traySkuSummary = traySummary;
       wbV2.clientRef = wbV2.clientRef || traySummary;
-      try {
-        localStorage.setItem('smat_workbench_state_v2', JSON.stringify(wbV2));
-      } catch (_e) {}
     }
 
-    const unifiedState = loadUnifiedEngineeringAndWorkbenchState(window.location.search);
+    const unifiedState = /** @type {Record<string, any>} */ (loadUnifiedEngineeringAndWorkbenchState(window.location.search));
     const engCtx = unifiedState.engCtx || {};
     const resolvedSg = unifiedState.sg || 1.5;
     const resolvedD50Um = unifiedState.d50Um || 120;
@@ -176,7 +195,7 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
               <td class="acuse-cell-sku">${it.id}<br/><small>${it.material || 'STD'}</small></td>
               <td><strong>${isEn ? it.nameEn : it.nameEs}</strong><br/><small class="acuse-cell-sat">${it.satLine}</small></td>
               <td class="acuse-cell-qty">${it.qty}</td>
-              <td class="acuse-cell-jrp">${it.coupledPairSku} (${isEn ? 'Cycle' : 'Ciclo'}: T10=${itemJrp.t10InspectionDays}d / T50=${itemJrp.t50ReorderTriggerDays}d / T80=${itemJrp.t80CriticalChangeoutDays}d · Buffer ${itemJrp.leadTimeBufferDays}d · Sev ${itemJrp.wearSeverityFactor}× · ${itemJrp.wearAcceleratedLifeHours}h · ${isEn ? itemJrp.dispatchModeLabelEn : itemJrp.dispatchModeLabelEs} · ${formatCheckoutLaneHuman(checkoutMeta.lane, lang)})</td>
+              <td class="acuse-cell-jrp">${it.coupledPairSku} (${isEn ? 'Cycle' : 'Ciclo'}: T10=${itemJrp.t10InspectionDays}d / T50=${itemJrp.t50ReorderTriggerDays}d / T80=${itemJrp.t80CriticalChangeoutDays}d · Buffer ${itemJrp.leadTimeBufferDays}d · Sev ${itemJrp.wearSeverityFactor}× · ${itemJrp.wearAcceleratedLifeHours}h · ${isEn ? itemJrp.dispatchModeLabelEn : itemJrp.dispatchModeLabelEs} · ${formatCheckoutLaneHuman(checkoutMeta.lane, uiLang)})</td>
             </tr>`;
             }
           )
@@ -210,10 +229,10 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
       : (isEn ? 'Critical Slurry Pumping Wear Replacement' : 'Refaccionamiento Crítico de Pulpa / Bombeo');
 
     const folio = urlParams.get('folio') || cached.folio || wbV2.folio || 'SMAT-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
-    const nombre = urlParams.get('nombre') || urlParams.get('name') || cached.nombre || wbV2.name || (isEn ? 'Plant Engineer / Requisitioner' : 'Ingeniero / Solicitante de Planta');
-    const empresa = urlParams.get('empresa') || urlParams.get('company') || cached.empresa || wbV2.company || (isEn ? 'Registered Mining Operation' : 'Operación Minera Registrada');
-    const telefono = urlParams.get('telefono') || urlParams.get('phone') || cached.telefono || wbV2.phone || (isEn ? '+52 (618) 810-4408' : '(618) 810-4408');
-    const correo = urlParams.get('correo') || urlParams.get('email') || cached.correo || wbV2.email || 'ventas@smatminerals.com';
+    const nombre = urlParams.get('nombre') || urlParams.get('name') || cached.nombre || cached.name || wbV2.name || (isEn ? 'Plant Engineer / Requisitioner' : 'Ingeniero / Solicitante de Planta');
+    const empresa = urlParams.get('empresa') || urlParams.get('company') || cached.empresa || cached.company || wbV2.company || (isEn ? 'Registered Mining Operation' : 'Operación Minera Registrada');
+    const telefono = urlParams.get('telefono') || urlParams.get('phone') || cached.telefono || cached.phone || wbV2.phone || (isEn ? '+52 (618) 810-4408' : '(618) 810-4408');
+    const correo = urlParams.get('correo') || urlParams.get('email') || cached.correo || cached.email || wbV2.email || 'ventas@smatminerals.com';
     const equipo = urlParams.get('equipo') || urlParams.get('role') || cached.equipo || wbV2.equipTitle || defaultRoleTitle;
     const pieza = urlParams.get('pieza') || cached.codigo_pieza_atomica || wbV2.atomicPartCode || '';
     const refCliente = urlParams.get('ref_cliente') || cached.referencia_cliente || wbV2.clientRef || (isEn ? 'No internal reference declared' : 'Sin referencia interna declarada');
@@ -246,10 +265,10 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
     const hidraulica = hidraulicaBase.includes('K_motor,alt') ? hidraulicaBase : `${hidraulicaBase} (${hidraulicaExtras})`;
     const tco = urlParams.get('tco') || cached.proyeccion_tco || '';
     const notasEspeciales = urlParams.get('notas_especiales') || cached.custom_notes || wbV2.custom_notes || '';
-    const detallesBase = urlParams.get('detalles') || urlParams.get('specs') || cached.especificacion_tecnica || wbV2.notes || (isEn ? 'Technical requisition subject to Durango yard dimensional inspection.' : 'Requisición técnica sujeta a validación dimensional de patio Durango.');
+    const detallesBase = urlParams.get('detalles') || urlParams.get('specs') || cached.especificacion_tecnica || cached.details || wbV2.notes || wbV2.details || (isEn ? 'Technical requisition subject to Durango yard dimensional inspection.' : 'Requisición técnica sujeta a validación dimensional de patio Durango.');
     const detalles = notasEspeciales && !detallesBase.includes(notasEspeciales) ? `${detallesBase} | ${notasEspeciales}` : detallesBase;
-    const destino = urlParams.get('destino') || cached.modalidad_logistica || (isEn ? 'Durango Central Warehouse Pickup (Folio Scheduled)' : 'Retiro en Almacén Central Durango (Coordinado con Folio)');
-    const urgencia = urlParams.get('urgencia') || (cached.urgencia && cached.urgencia.includes('PARO') ? 'paro' : (wbV2.urgency || 'proyecto'));
+    const destino = urlParams.get('destino') || cached.modalidad_logistica || wbV2.destination || (isEn ? 'Durango Central Warehouse Pickup (Folio Scheduled)' : 'Retiro en Almacén Central Durango (Coordinado con Folio)');
+    const urgencia = urlParams.get('urgencia') || (cached.urgencia && cached.urgencia.includes('PARO') ? 'paro' : (wbV2.urgency === 'PARO_DE_LINEA' ? 'paro' : (wbV2.urgency || 'proyecto')));
     const material = urlParams.get('material') || cached.material_bombeo || wbV2.pump_material || wbV2.selectedMaterial || (leadItem ? leadItem.material : 'alto_cromo_cr27');
     const transmision = urlParams.get('transmision') || urlParams.get('arreglo') || cached.arreglo_transmision || wbV2.drive_arrangement || wbV2.driveArrangement || 'ZVZ';
     const estacion = urlParams.get('estacion') || cached.estacion_armado || wbV2.stationCode || 'S4';
@@ -314,11 +333,7 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
       elUrgency.classList.toggle('is-urgency-paro', urgencia === 'paro');
     }
 
-    let webhookStatus = null;
-    try {
-      const rawStatus = sessionStorage.getItem('smat_last_rfq_dispatch_status');
-      if (rawStatus) webhookStatus = JSON.parse(rawStatus);
-    } catch (_e) { }
+    const webhookStatus = outboxSnapshot.dispatchStatus || null;
     const webhookQueryOverride = urlParams.get('webhook');
     const isOnlineNow = typeof navigator !== 'undefined' ? navigator.onLine !== false : true;
     const resolvedWebhook = resolveHonestWebhookStatus({
@@ -419,10 +434,10 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
     const wNum = Number(pesoKg) || 0;
     const liShaft = wNum > 0 ? (wNum / 11.1).toFixed(2) : '0.00';
     const nioshTier = wNum >= 23
-      ? (isEn ? `HOIST_REQUIRED: Mandatory Hoist / Crane (≥23 kg NOM-036-1, LI_shaft=${liShaft})` : `HOIST_REQUIRED: Polipasto / Grúa Obligatorio (≥23 kg NOM-036-1, LI_shaft=${liShaft})`)
+      ? (isEn ? `Mandatory Hoist / Crane (≥23 kg NOM-036-1, LI_shaft=${liShaft})` : `Polipasto / Grúa Obligatorio (≥23 kg NOM-036-1, LI_shaft=${liShaft})`)
       : (wNum > 11.1
-        ? (isEn ? `ASSISTED_SHAFT_MOUNT_2P: 2-Tech Assisted Shaft Mount (11.1–23 kg NOM-036-1, RWL_shaft=11.1 kg, LI_shaft=${liShaft})` : `ASSISTED_SHAFT_MOUNT_2P: Montaje Asistido 2 Técnicos (11.1–23 kg NOM-036-1, RWL_shaft=11.1 kg, LI_shaft=${liShaft})`)
-        : (isEn ? `MANUAL_SAFE_1P: Safe 1-Tech Manual Handling (≤11.1 kg NOM-036-1, LI_shaft=${liShaft})` : `MANUAL_SAFE_1P: Manejo Manual Seguro 1 Técnico (≤11.1 kg NOM-036-1, LI_shaft=${liShaft})`));
+        ? (isEn ? `2-Tech Assisted Shaft Mount (11.1–23 kg NOM-036-1, RWL_shaft=11.1 kg, LI_shaft=${liShaft})` : `Montaje Asistido 2 Técnicos (11.1–23 kg NOM-036-1, RWL_shaft=11.1 kg, LI_shaft=${liShaft})`)
+        : (isEn ? `Safe 1-Tech Manual Handling (≤11.1 kg NOM-036-1, LI_shaft=${liShaft})` : `Manejo Manual Seguro 1 Técnico (≤11.1 kg NOM-036-1, LI_shaft=${liShaft})`));
     const nioshLabel = pesoKg ? ` • ${isEn ? 'Weight' : 'Peso'}: ${pesoKg} kg (${nioshTier})` : '';
     setText(
       'field-material-drive',
@@ -449,7 +464,7 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
       ? trayState.items.map((it) => `LINE_ITEM: ${it.satLine} | QTY=${it.qty} | COUPLED=${it.coupledPairSku} (${it.reorderWindowDays}d)`)
       : [];
     const sapBlockText = [
-      `FOLIO: ${folio} | ORDER_HASH: ${orderHashCode} | GATE: ${gateClassVal} | BOUNDARY: ${trustBoundaryId} | ${isEn ? 'LANE' : 'CARRIL'}: ${formatCheckoutLaneHuman(checkoutMeta.lane, lang)}`,
+      `FOLIO: ${folio} | ORDER_HASH: ${orderHashCode} | GATE: ${gateClassVal} | BOUNDARY: ${trustBoundaryId} | ${isEn ? 'LANE' : 'CARRIL'}: ${formatCheckoutLaneHuman(checkoutMeta.lane, uiLang)}`,
       `${isEn ? 'COMPANY' : 'EMPRESA'}: ${empresa} | ${isEn ? 'REQUESTER' : 'SOLICITANTE'}: ${nombre}`,
       `${isEn ? 'EQUIPMENT' : 'EQUIPO'}: ${equipo} (${fullCode})`,
       ...sapTrayLines,
@@ -492,7 +507,7 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
       };
     }
 
-    bindVendorPassportDownloadButtons(document, lang);
+    bindVendorPassportDownloadButtons(document, uiLang);
 
     const vcardBtn = document.getElementById('download-vendor-vcard-btn');
     if (vcardBtn) {
@@ -513,7 +528,13 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
     const jsonBtn = document.getElementById('download-vendor-json-btn');
     if (jsonBtn) {
       jsonBtn.onclick = () => {
-        const anexo22 = buildSapAnexo22ComplianceSummary(lang);
+        const anexo22 = buildSapAnexo22ComplianceSummary({
+          circuit: activeCircuit || 'bombeo',
+          smatCode: codigo || 'SMAT-PUMP-6X4-WETKIT',
+          stockRegime: leadItem?.stockRegime || 'hay',
+          estimatedMxn: selectedLaneParam === 'ORDEN_COMPRA_SAP' ? 65000 : 18500,
+          lang: uiLang,
+        });
         const payload = {
           schema: 'smat.vendor.passport.v3',
           companyName: 'SMAT Minerals S.A. de C.V.',

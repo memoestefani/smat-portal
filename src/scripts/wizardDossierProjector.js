@@ -1,17 +1,19 @@
-// @ts-nocheck
+// @ts-check
 /**
  * wizardDossierProjector.js
  * ---------------------------------------------------------------------------
- * Proyector Puro del Dossier de Ingeniería en Vivo y Checkout B2B (`SLICE-V55-12`).
+ * Proyector Puro del Dossier de Ingeniería en Vivo y Checkout B2B (`SLICE-V56-03`).
  * Opera únicamente sobre dominios de checkout (`jrp`, `erpExport`) y snapshots
  * guardados de estaciones sin cálculos inline acoplados ni `innerHTML`.
  */
 
+import rolesDataJson from '../../data/roles.json' with { type: 'json' };
 import { projectDomainOutputs, verifyVplDomScopeContainment } from './schemaRuntimeBinder.js';
 import {
   buildRolesCriteriaMap,
   formatCatalogPartCodeHuman,
   formatDischargeRegimeHuman,
+  formatMaterialKeyHuman,
 } from './i18nDomainLabels.js';
 import { computeSobolFirstOrderIndices } from './wizardXdsmDagSolver.js';
 import {
@@ -93,6 +95,7 @@ export function projectAttachedStationSnapshots(doc, session = {}, isEs = true) 
     return 0;
   }
 
+  /** @type {Record<string, string>} */
   const labelByKey = {
     pumping: isEs ? 'Bombeo Hidráulico' : 'Hydraulic Pumping',
     sealDrive: isEs ? 'Sellado y Transmisión' : 'Seal & Drive',
@@ -102,14 +105,47 @@ export function projectAttachedStationSnapshots(doc, session = {}, isEs = true) 
     metrology: isEs ? 'Control / Laboratorio' : 'Process Control / Lab',
   };
 
+  const buildHumanSnapshotSummary = (snap) => {
+    const langTag = isEs ? 'es' : 'en';
+    const explicit = isEs ? (snap.summaryEs || snap.summary) : (snap.summaryEn || snap.summary);
+    if (explicit) return String(explicit).trim();
+    /** @type {string[]} */
+    const parts = [];
+    const series = snap.pipeSeries || snap.pipe_size;
+    if (series) parts.push(`${isEs ? 'Serie' : 'Series'} ${series}`);
+    const rawMat = snap.materialKey || snap.wetEndMaterial || snap.pump_material;
+    if (rawMat) parts.push(formatMaterialKeyHuman(String(rawMat), langTag));
+    const flow = snap.flowM3H ?? snap.flow;
+    if (flow !== undefined && Number.isFinite(Number(flow))) parts.push(`${Number(flow)} m³/h`);
+    const solids = snap.solidsPct ?? snap.cvPct;
+    if (solids !== undefined && Number.isFinite(Number(solids))) parts.push(`${Number(solids)}% Cv`);
+    if (snap.tipSpeedMs !== undefined && Number.isFinite(Number(snap.tipSpeedMs))) parts.push(`u₂ ${Number(snap.tipSpeedMs).toFixed(1)} m/s`);
+    if (snap.bearingL10Hours !== undefined && Number.isFinite(Number(snap.bearingL10Hours))) {
+      parts.push(`L₁₀ₕ ${Number(snap.bearingL10Hours).toLocaleString(isEs ? 'es-MX' : 'en-US')} h`);
+    }
+    if (snap.d50cMicrons !== undefined && Number.isFinite(Number(snap.d50cMicrons))) parts.push(`d₅₀c ${Number(snap.d50cMicrons)} µm`);
+    if (snap.solidsRecoveryPct !== undefined && Number.isFinite(Number(snap.solidsRecoveryPct))) {
+      parts.push(`${Number(snap.solidsRecoveryPct).toFixed(1)}% ${isEs ? 'recup.' : 'recovery'}`);
+    }
+    if (snap.cycleTimeMin !== undefined && Number.isFinite(Number(snap.cycleTimeMin))) {
+      parts.push(`${Number(snap.cycleTimeMin).toFixed(1)} ${isEs ? 'min/ciclo' : 'min/cycle'}`);
+    }
+    if (snap.sauterDiameterMm !== undefined && Number.isFinite(Number(snap.sauterDiameterMm))) {
+      parts.push(`d₃₂ ${Number(snap.sauterDiameterMm).toFixed(2)} mm`);
+    }
+    if (snap.recommendedMassKg !== undefined && Number.isFinite(Number(snap.recommendedMassKg))) {
+      parts.push(`${Number(snap.recommendedMassKg).toFixed(2)} kg`);
+    }
+    if (parts.length > 0) return parts.join(' • ');
+    return isEs ? 'Parámetros técnicos adjuntos' : 'Attached engineering parameters';
+  };
+
   const nodes = entries.map(([key, snap]) => {
     const li = doc.createElement('li');
     const regimeTag = key === 'cycloneScreen' && snap.dischargeRegime
       ? ` (${formatDischargeRegimeHuman(snap.dischargeRegime, isEs ? 'es' : 'en')})`
       : '';
-    const summary = isEs
-      ? (snap.summaryEs || snap.summary || JSON.stringify(snap).slice(0, 120))
-      : (snap.summaryEn || snap.summary || JSON.stringify(snap).slice(0, 120));
+    const summary = buildHumanSnapshotSummary(snap);
     li.textContent = `${labelByKey[key] || key}: ${summary}${regimeTag}`;
     return li;
   });
@@ -124,7 +160,7 @@ export function projectAttachedStationSnapshots(doc, session = {}, isEs = true) 
  * @returns {Record<string, any>}
  */
 export function projectLiveDossierSummary(ctx = {}) {
-  const doc = ctx.doc || (typeof document !== 'undefined' ? document : null);
+  const doc = /** @type {Document|null} */ (ctx.doc || (typeof document !== 'undefined' ? document : null));
   const dom = ctx.dom || {};
   const state = ctx.state || {};
   const isEs = Boolean(state.isEs);
@@ -137,9 +173,9 @@ export function projectLiveDossierSummary(ctx = {}) {
 
   if (!doc) return state;
 
-  const session = loadRfqSession();
+  const session = /** @type {Record<string, any>} */ (loadRfqSession());
   const trayStateNow = getTrayState();
-  const engCtx = loadEngineeringContextSnapshot();
+  const engCtx = /** @type {Record<string, any>} */ (loadEngineeringContextSnapshot());
   const urlDesc = resolveUrlContextDescriptor(state.urlCtx || {});
   const viewState = computeWizardViewState({ circuit: state.currentCircuit }, state.urlCtx || {});
   const primaryTray = trayStateNow.items?.[0] || null;
@@ -150,14 +186,15 @@ export function projectLiveDossierSummary(ctx = {}) {
     viewState.smatCode ||
     buildSmatCode(state.currentCircuit || 'bombeo', urlDesc.canonicalRole || 'kit_wet_end', '6x4', 'A05');
 
-  const nameVal = dom.inputName?.value.trim() || session.contact?.name || (isEs ? 'Ing. Residente / Solicitante' : 'Lead Process Engineer');
+  const contactFallback = session.contact || session.plantContext || {};
+  const nameVal = dom.inputName?.value.trim() || contactFallback.name || session.plantContext?.name || (isEs ? 'Ing. Residente / Solicitante' : 'Lead Process Engineer');
   const miningGrp = findMiningGroupById(dom.selectMiningGroup?.value || session.plantContext?.miningGroupId || '');
-  const compVal = dom.inputCompany?.value.trim() || session.contact?.company || miningGrp?.name || (isEs ? 'Unidad Minera / Compañía' : 'Mining Operation / Company');
-  const phoneVal = dom.inputPhone?.value.trim() || session.contact?.phone || '(618) 810-4408';
-  const emailVal = dom.inputEmail?.value.trim() || session.contact?.email || (isEs ? 'contacto@minera.com' : 'contact@miningco.com');
-  const destVal = dom.inputDest?.value.trim() || dom.erpDestination?.value.trim() || session.contact?.destination || (isEs ? 'Retiro en Almacén Central Durango' : 'Durango Central Warehouse Pickup');
-  const clientRefVal = dom.inputClientRef?.value.trim() || session.contact?.clientRef || '';
-  const detailsText = dom.inputDetails?.value.trim() || session.contact?.details || (isEs ? 'Verificación dimensional de acople 1:1 en Almacén Central Durango.' : '1:1 dimensional check at Durango Central Warehouse.');
+  const compVal = dom.inputCompany?.value.trim() || contactFallback.company || session.plantContext?.company || miningGrp?.name || (isEs ? 'Unidad Minera / Compañía' : 'Mining Operation / Company');
+  const phoneVal = dom.inputPhone?.value.trim() || contactFallback.phone || session.plantContext?.phone || '(618) 810-4408';
+  const emailVal = dom.inputEmail?.value.trim() || contactFallback.email || session.plantContext?.email || (isEs ? 'contacto@minera.com' : 'contact@miningco.com');
+  const destVal = dom.inputDest?.value.trim() || dom.erpDestination?.value.trim() || contactFallback.destination || session.plantContext?.destination || (isEs ? 'Retiro en Almacén Central Durango' : 'Durango Central Warehouse Pickup');
+  const clientRefVal = dom.inputClientRef?.value.trim() || contactFallback.clientRef || session.plantContext?.clientRef || '';
+  const detailsText = dom.inputDetails?.value.trim() || contactFallback.details || session.plantContext?.details || (isEs ? 'Verificación dimensional de acople 1:1 en Almacén Central Durango.' : '1:1 dimensional check at Durango Central Warehouse.');
 
   setText('live-requester', nameVal);
   setText('live-company', compVal);
@@ -177,10 +214,10 @@ export function projectLiveDossierSummary(ctx = {}) {
   if (dom.liveClientRefBox) dom.liveClientRefBox.classList.toggle('hidden', !clientRefVal);
   if (dom.liveClientRefText) dom.liveClientRefText.textContent = clientRefVal;
 
-  const criteriaMap = buildRolesCriteriaMap({ verticals: [] });
+  const criteriaMap = /** @type {Record<string, any>} */ (buildRolesCriteriaMap(rolesDataJson));
   const fallbackCriteria =
     criteriaMap[urlDesc.canonicalRole]?.[isEs ? 'rule_es' : 'rule_en'] ||
-    DEFAULT_CLASSIFICATION_CRITERIA_MAP[urlDesc.canonicalRole] ||
+    DEFAULT_CLASSIFICATION_CRITERIA_MAP[urlDesc.canonicalRole]?.[isEs ? 'rule_es' : 'rule_en'] ||
     (isEs
       ? 'Intercambiabilidad dimensional 1:1 • Dureza >600 HB • Disponibilidad en Almacén Durango'
       : '1:1 dimensional fit • Hardness >600 HB • Durango Warehouse availability');
@@ -207,17 +244,39 @@ export function projectLiveDossierSummary(ctx = {}) {
   const jrpHours = Number(dom.jrpWearInput?.value || 2400);
   const jrpDaily = Number(dom.jrpDailyInput?.value || 24);
   const jrpCrit = dom.jrpCriticality?.value || (isOpex ? 'PARO_DE_LINEA' : 'STOCK_SS');
-  const jrpEval = calculateCoupledReorderWindowDays(jrpHours, jrpDaily, jrpCrit, trayStateNow.items || []);
+  const pumpingSnap = session.stationSnapshots?.pumping || engCtx.pumping || {};
+  const metSnap = session.stationSnapshots?.metrology || engCtx.metrology || {};
+  const cycSnap = session.stationSnapshots?.cycloneScreen || engCtx.classification || {};
+  const flowVal = Number(pumpingSnap.flowM3H || engCtx.flowM3H || 180);
+  const cwVal = Number(pumpingSnap.solidsWeightPercent || engCtx.solidsWeightPercent || 45);
+  const d80Val = Number(pumpingSnap.particleSizeD80Microns || engCtx.particleSizeD80Microns || 180);
+  const oreSgVal = Number(metSnap.oreSolidsSg || pumpingSnap.solidsSpecificGravity || 2.7);
+  const pulpSgVal = Number(cycSnap.feedPulpSgKgL || pumpingSnap.slurrySpecificGravity || 1.45);
+  const altVal = Number(session.plantContext?.altitudeM || engCtx.altitudeM || 2200);
+  const pipeSeriesVal = viewState.pipeSize || '6x4';
 
-  const flowVal = Number(engCtx?.flowM3H || 180);
-  const cwVal = Number(engCtx?.solidsWeightPercent || 45);
-  const d80Val = Number(engCtx?.particleSizeD80Microns || 180);
-  const altVal = Number(session.plantContext?.altitudeM || engCtx?.altitudeM || 2200);
-  const hm = calculateSlurryMetrics(flowVal, cwVal, d80Val, 1.4, '6x4', altVal, 7.0);
-  const gateOut = validatePlantLeadInput({
+  const jrpEval = calculateCoupledReorderWindowDays({
+    sg: pulpSgVal,
+    d50Um: d80Val,
+    estimatedWearHours: jrpHours,
+    dailyOperatingHours: jrpDaily,
+    criticalityMode: jrpCrit,
+    stockRegime: isOpex ? 'hay' : 'se_fabrica',
+  });
+
+  const hm = calculateSlurryMetrics({
     flowM3H: flowVal,
     solidsWeightPercent: cwVal,
     particleSizeD80Microns: d80Val,
+    solidsSpecificGravity: oreSgVal,
+    pipeSeries: pipeSeriesVal,
+    altitudeM: altVal,
+    pH: 7.0,
+  });
+  const gateOut = validatePlantLeadInput({
+    flowM3h: flowVal,
+    cwPct: cwVal,
+    d80Microns: d80Val,
     pulpPh: 7.0,
     altitudeM: altVal,
     tempC: 25,
@@ -230,15 +289,21 @@ export function projectLiveDossierSummary(ctx = {}) {
   setText('live-table-circuit-physics-label', physRow.label);
   setText('live-table-circuit-physics-val', `${banner.contextPill} • ${physRow.value}`);
 
-  const metSnap = session.stationSnapshots?.metrology || engCtx?.metrology;
-  if (metSnap) {
+  if (metSnap && Object.keys(metSnap).length > 0) {
     const elRow = doc.getElementById('live-row-metrology');
     if (elRow) elRow.classList.remove('hidden');
     setText('live-table-metrology', formatDossierMetrologyBadge(metSnap, isEs));
   }
 
   const sobolRes = computeSobolFirstOrderIndices(
-    (v) => Number(v.flowM3H || 180) * 0.65 + Number(v.solidsWeightPercent || 45) * 1.4 + Number(v.particleSizeD80Microns || 180) * 0.08 + Number(v.altitudeM || 2200) * 0.02,
+    (v) => calculateSlurryMetrics({
+      flowM3H: v.flowM3H,
+      solidsWeightPercent: v.solidsWeightPercent,
+      particleSizeD80Microns: v.particleSizeD80Microns,
+      solidsSpecificGravity: oreSgVal,
+      pipeSeries: pipeSeriesVal,
+      altitudeM: v.altitudeM,
+    }).estimatedImpellerLifeHours,
     [
       { name: 'flowM3H', min: 50, max: 1200 },
       { name: 'solidsWeightPercent', min: 15, max: 68 },
@@ -250,7 +315,10 @@ export function projectLiveDossierSummary(ctx = {}) {
   const sobolSummary = (sobolRes.ranked || [])
     .map((item) => `${item.name} ${(item.si * 100).toFixed(0)}%`)
     .join(' · ');
-  setText('live-table-sobol-drivers', `${sobolSummary} • Cv ${FORMATTERS_BY_FIELD.solidsVolumetricPercent(hm.solids_cv)} • ${DOSSIER_FORMATTERS_BY_FIELD.actualPipeVelocityMs(hm.line_velocity_ms)}`);
+  setText(
+    'live-table-sobol-drivers',
+    `${sobolSummary} • Cv ${FORMATTERS_BY_FIELD.solidsVolumetricPercent(hm.solidsVolumetricPercent)} • ${DOSSIER_FORMATTERS_BY_FIELD.actualPipeVelocityMs(hm.actualPipeVelocityMs)}`
+  );
 
   const anexo = buildSapAnexo22ComplianceSummary({
     circuit: state.currentCircuit || 'bombeo',
@@ -259,7 +327,9 @@ export function projectLiveDossierSummary(ctx = {}) {
     estimatedMxn: isOpex ? 18500 : 85000,
     lang: isEs ? 'es' : 'en',
   });
-  setText('sap-live-anexo22-tuple', anexo?.tupleText || `SAT 8413.91.01 • ${smatCode}`);
+  setText('sap-live-anexo22-tuple', anexo?.summaryText || anexo?.satTigieLine || `SAT 8413.91.01 • ${smatCode}`);
+
+  setText('live-material-reason', isEs ? hm.materialReasonEs : hm.materialReasonEn);
 
   const folio = doc.getElementById('live-folio')?.textContent?.trim() || 'SMAT-2026-8810';
   const erpSnapshot = buildCanonicalEngineeringSnapshot({
@@ -289,6 +359,9 @@ export function projectLiveDossierSummary(ctx = {}) {
     schemaCount: scopeReport.checkedCount,
     scopeContainmentValid: scopeReport.valid,
     smatCode,
+    slurryMetrics: hm,
+    jrpEval,
+    sobolRes,
     snapshot: erpSnapshot,
   };
 }

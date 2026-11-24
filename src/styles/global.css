@@ -3,6 +3,7 @@
 @import './tokens.css' layer(tokens);
 @import './cores-apple.css' layer(components);
 
+@layer tokens {
 :root {
   --font-family-sans: var(--smat-font-ui);
   --font-family-serif: var(--smat-font-editorial);
@@ -17,7 +18,9 @@
   --shadow-md: var(--smat-shadow-md);
   --shadow-lg: var(--smat-shadow-lg);
 }
+}
 
+@layer reset {
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -46,15 +49,17 @@ main {
   flex: 1;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
 img {
   max-width: 100%;
   height: auto;
   display: block;
+}
+}
+
+@layer base {
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
 /* Tipografía Híbrida: Serif Editorial para Títulos de Peso */
@@ -107,7 +112,9 @@ p {
 .section-pro-spacing {
   padding: var(--smat-space-2xl, 80px) 1rem;
 }
+}
 
+@layer components {
 /* Botones y Componentes Táctiles (Mínimo 48px para ergonomía) */
 .btn {
   display: inline-flex;
@@ -333,7 +340,9 @@ p {
   70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
   100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
+}
 
+@layer tokens {
 /* --- SOLAR LIGHT-FIRST WCAG AAA & HIDDEN INVARIANT (PRD v3.2 / ARB-SMAT-31..32 / D3-V45 / ARB-SMAT-57) --- */
 :root {
   --smat-tap-min: 48px;
@@ -352,7 +361,9 @@ p {
   --smat-solar-emerald-border: #059669;
   --smat-solar-sky-ink: #0c4a6e;
 }
+}
 
+@layer base {
 /* Ritmo Fluido Above-the-Fold + Display-First Estrato 1 (D1-V481 / D2-V481) */
 .smat-compact-hero {
   background-color: #ffffff;
@@ -411,7 +422,9 @@ p {
     overflow: hidden;
   }
 }
+}
 
+@layer components {
 /* Contrato Universal de Ley de Fitts (>= 48x48 px en Desktop y Móvil - D3-V45) */
 details > summary,
 button,
@@ -428,11 +441,6 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
 details > summary {
   display: flex;
   align-items: center;
-}
-
-body .hidden,
-body [hidden] {
-  display: none;
 }
 
 .smat-logo-wrap { display: inline-flex; align-items: center; }
@@ -662,6 +670,87 @@ body [hidden] {
   font-size: 1.05rem;
   font-weight: 800;
   color: #0f172a;
+}
+
+.jrp-schedule-strip {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.45rem 0.65rem;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+
+.jrp-tradein-inline-label {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 700;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.dossier-backend-telemetry {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-left: 3px solid #7c2d12;
+  border-radius: 6px;
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: #0f172a;
+}
+
+.sap-justification-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.45rem;
+}
+
+.dock-support-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0.75rem 0;
+}
+
+.smat-station-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+}
+
+.smat-station-tab-btn {
+  padding: 0.55rem 0.95rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.smat-station-tab-btn.is-active {
+  background: #7c2d12;
+  border-color: #7c2d12;
+  color: #ffffff;
+}
+}
+
+.hidden,
+[hidden],
+body .hidden,
+body [hidden] {
+  display: none;
 }
 
 

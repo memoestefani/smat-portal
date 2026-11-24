@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * leadOutboxStateMachine.js
  * ---------------------------------------------------------------------------
@@ -78,8 +79,8 @@ export function resolveHonestWebhookStatus({
       cssClass: 'is-webhook-blocked',
       verifiedDelivery: false,
       message: isEn
-        ? 'Webhook Status: ERROR_HTTP — Local draft preserved; send directly via WhatsApp or Email to Durango.'
-        : 'Estado Webhook: ERROR_HTTP — Borrador local resguardado; envíe por WhatsApp o correo a Durango.',
+        ? 'Webhook Status: HTTP Error — Local draft preserved; open Requisition Preview (A4) or send via WhatsApp / Email to Durango.'
+        : 'Estado Webhook: Error HTTP — Borrador local resguardado; abra la Vista Previa de Requisición (A4) o envíe por WhatsApp / correo a Durango.',
     };
   }
 
@@ -90,8 +91,8 @@ export function resolveHonestWebhookStatus({
       cssClass: 'is-webhook-sent',
       verifiedDelivery: true,
       message: isEn
-        ? 'Webhook Status: CONFIRMADO_HTTP_200 — Durango Engineering Inbox verified receipt.'
-        : 'Estado Webhook: CONFIRMADO_HTTP_200 — Recepción confirmada por Ingeniería Durango.',
+        ? 'Webhook Status: Confirmed (HTTP 200) — Durango Engineering verified receipt. View Requisition Preview (A4) anytime.'
+        : 'Estado Webhook: Confirmado (HTTP 200) — Recepción verificada por Ingeniería Durango. Consulte su Vista Previa de Requisición (A4).',
     };
   }
 
@@ -102,8 +103,8 @@ export function resolveHonestWebhookStatus({
       cssClass: 'is-webhook-blocked',
       verifiedDelivery: false,
       message: isEn
-        ? 'Webhook Status: EN_COLA_OFFLINE — Stored locally pending connectivity; ready for WhatsApp/PDF export.'
-        : 'Estado Webhook: EN_COLA_OFFLINE — Guardado localmente sin conexión; listo para WhatsApp o PDF.',
+        ? 'Webhook Status: Offline Queue — Saved locally pending connectivity; open Requisition Preview (A4), WhatsApp or PDF.'
+        : 'Estado Webhook: En Cola Offline — Guardado localmente sin conexión; listo para Vista Previa de Requisición (A4), WhatsApp o PDF.',
     };
   }
 
@@ -113,8 +114,8 @@ export function resolveHonestWebhookStatus({
     cssClass: 'is-webhook-draft',
     verifiedDelivery: false,
     message: isEn
-      ? 'Local Draft (Not Auto-Sent) — Use WhatsApp, Email, or PDF A4 below to dispatch to Durango Warehouse.'
-      : 'Borrador Local (Sin envío automático) — Use WhatsApp, Correo o PDF A4 abajo para enviar a Durango.',
+      ? 'Local Draft Saved — Use Requisition Preview (A4), WhatsApp, or Email below to dispatch to Durango Warehouse.'
+      : 'Borrador Local Guardado — Use Vista Previa de Requisición (A4), WhatsApp o Correo abajo para enviar a Durango.',
   };
 }
 

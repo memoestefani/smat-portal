@@ -246,8 +246,12 @@ export function clearTray() {
 export function buildCmuPrioritySubjectLine(trayState = {}, telemetry = {}) {
   const state = getTrayState(trayState);
   const skuCount = Math.max(1, state.items.length);
+  const isEn = String(telemetry?.lang || (typeof document !== 'undefined' ? document.documentElement?.lang : '') || '').toLowerCase() === 'en';
   const isLineStop = state.criticalityMode === 'PARO_DE_LINEA' || state.items.some((i) => i.criticalityMode === 'PARO_DE_LINEA');
-  const modeTag = isLineStop ? 'PARO DE LÍNEA' : 'REPOSICIÓN DE STOCK';
+  const modeTag = isLineStop
+    ? (isEn ? 'LINE-STOP' : 'PARO DE LÍNEA')
+    : (isEn ? 'STOCK REPLENISHMENT' : 'REPOSICIÓN DE STOCK');
+  const skuLabel = skuCount === 1 ? '1 SKU' : `${skuCount} SKUs`;
 
   const cvPct = Math.round(Number(telemetry.cvPct ?? telemetry.solidsVolumetricPercent ?? telemetry.cwPct ?? 48));
   const rawMat = String(telemetry.material || (state.items[0] && state.items[0].material) || 'Cr27').toUpperCase();
@@ -257,13 +261,13 @@ export function buildCmuPrioritySubjectLine(trayState = {}, telemetry = {}) {
   else if (rawMat.includes('PU') || rawMat.includes('U01') || rawMat.includes('POLI')) alloyShort = 'PU-U01';
 
   const orderHash = telemetry.orderHash || computeSelectionOrderCodeHash({
-    mode: modeTag,
+    mode: isLineStop ? 'PARO DE LÍNEA' : 'REPOSICIÓN DE STOCK',
     skus: state.items.map((i) => `${i.id}x${i.qty}`).join(','),
     alloy: alloyShort,
     cv: cvPct
   });
 
-  return `[SMAT-DGO] [${modeTag} | C_v=${cvPct}% ${alloyShort} | ${skuCount} SKUs | Ref: ${orderHash}]`;
+  return `[SMAT-DGO] [${modeTag} | C_v=${cvPct}% ${alloyShort} | ${skuLabel} | Ref: ${orderHash}]`;
 }
 
 /**

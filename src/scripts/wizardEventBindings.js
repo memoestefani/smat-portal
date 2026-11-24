@@ -1,12 +1,17 @@
-// @ts-nocheck
+// @ts-check
 /**
  * wizardEventBindings.js
  * ---------------------------------------------------------------------------
- * Enlaces DOM de Checkout B2B, FastLane BOM Parser y Memos Trans-Ruta (`SLICE-V55-13`).
+ * Enlaces DOM de Checkout B2B, FastLane BOM Parser y Memos Trans-Ruta (`SLICE-V56-02`).
  */
 
 import { parseBomPasteInput } from './bomPasteParser.js';
-import { QUICK_CHECKOUT_SKU_LIST, findMiningGroupById, findMiningUnitByName } from './wizardCatalogData.js';
+import {
+  MINING_GROUPS_CATALOG,
+  QUICK_CHECKOUT_SKU_LIST,
+  findMiningGroupById,
+  findMiningUnitByName,
+} from './wizardCatalogData.js';
 import {
   decodeSmatCode,
   matchMiningGroupByEmailDomain,
@@ -92,6 +97,13 @@ export function collectWizardDomRefs(doc) {
   };
 }
 
+/**
+ * @param {any} doc
+ * @param {Record<string, any>} dom
+ * @param {any} groupObj
+ * @param {string} [selectedUnit='']
+ * @param {boolean} [isEs=true]
+ */
 function hydrateMiningUnitsDropdown(doc, dom, groupObj, selectedUnit = '', isEs = true) {
   if (!doc || !dom.selectMiningUnit) return;
   const placeholder = doc.createElement('option');
@@ -108,9 +120,16 @@ function hydrateMiningUnitsDropdown(doc, dom, groupObj, selectedUnit = '', isEs 
   if (selectedUnit) dom.selectMiningUnit.value = selectedUnit;
 }
 
+/**
+ * @param {any} doc
+ * @param {Record<string, any>} dom
+ * @param {any} session
+ * @param {boolean} isEs
+ */
 function hydrateCheckoutDomFromSession(doc, dom, session, isEs) {
   if (!session) return;
-  const contact = session.contact || {};
+  const contact = { ...(session.plantContext || {}), ...(session.contact || {}) };
+  /** @type {Array<[string, any]>} */
   const map = [
     ['name', dom.inputName],
     ['company', dom.inputCompany],
@@ -135,6 +154,10 @@ function hydrateCheckoutDomFromSession(doc, dom, session, isEs) {
   }
 }
 
+/**
+ * @param {Record<string, any>} dom
+ * @param {string} msg
+ */
 function showToastFeedback(dom, msg) {
   if (!dom.wbToast) return;
   dom.wbToast.textContent = msg;
@@ -142,6 +165,10 @@ function showToastFeedback(dom, msg) {
   setTimeout(() => dom.wbToast?.classList.add('hidden'), 2600);
 }
 
+/**
+ * @param {any} win
+ * @param {string} text
+ */
 function copyTextSafe(win, text) {
   try {
     win?.navigator?.clipboard?.writeText?.(text);
@@ -166,21 +193,29 @@ export function bindAllWizardEventListeners(ctx = {}) {
 
   const persistContact = (dirtyKey = '') => {
     if (dirtyKey) markFieldUserDirty(dirtyKey);
+    const current = /** @type {Record<string, any>} */ (loadRfqSession());
+    const contactPatch = {
+      name: dom.inputName?.value.trim() || '',
+      company: dom.inputCompany?.value.trim() || '',
+      phone: dom.inputPhone?.value.trim() || '',
+      email: dom.inputEmail?.value.trim() || '',
+      destination: dom.erpDestination?.value.trim() || '',
+      clientRef: dom.inputClientRef?.value.trim() || '',
+      details: dom.inputDetails?.value.trim() || '',
+    };
     saveRfqSession({
-      contact: {
-        name: dom.inputName?.value.trim() || '',
-        company: dom.inputCompany?.value.trim() || '',
-        phone: dom.inputPhone?.value.trim() || '',
-        email: dom.inputEmail?.value.trim() || '',
-        destination: dom.erpDestination?.value.trim() || '',
-        clientRef: dom.inputClientRef?.value.trim() || '',
-        details: dom.inputDetails?.value.trim() || '',
+      ...current,
+      plantContext: {
+        ...(current.plantContext || {}),
+        ...contactPatch,
       },
+      contact: contactPatch,
     });
     actions.updateDossier?.();
   };
 
-  [
+  /** @type {Array<[string, any]>} */
+  ([
     ['name', dom.inputName],
     ['company', dom.inputCompany],
     ['phone', dom.inputPhone],
@@ -188,7 +223,7 @@ export function bindAllWizardEventListeners(ctx = {}) {
     ['destination', dom.erpDestination],
     ['clientRef', dom.inputClientRef],
     ['details', dom.inputDetails],
-  ].forEach(([key, el]) => {
+  ]).forEach(([key, el]) => {
     el?.addEventListener('input', () => persistContact(key));
   });
 
@@ -197,9 +232,22 @@ export function bindAllWizardEventListeners(ctx = {}) {
 
   dom.inputEmail?.addEventListener('blur', () => {
     const email = dom.inputEmail?.value.trim() || '';
-    const match = matchMiningGroupByEmailDomain(email, findMiningGroupById('') ? [] : []);
+    const match = /** @type {Record<string, any> | null} */ (matchMiningGroupByEmailDomain(email, MINING_GROUPS_CATALOG));
     if (match?.id && dom.selectMiningGroup && !dom.selectMiningGroup.value) {
       dom.selectMiningGroup.value = match.id;
+      hydrateMiningUnitsDropdown(doc, dom, match, '', isEs);
+      const current = /** @type {Record<string, any>} */ (loadRfqSession());
+      saveRfqSession({
+        ...current,
+        plantContext: {
+          ...(current.plantContext || {}),
+          miningGroupId: match.id,
+          company: (!isFieldUserDirty('company') && match.name) ? match.name : (current.plantContext?.company || ''),
+        },
+      });
+      if (match.name && dom.inputCompany && !isFieldUserDirty('company')) {
+        dom.inputCompany.value = match.name;
+      }
       actions.updateDossier?.();
     }
   });
@@ -214,27 +262,38 @@ export function bindAllWizardEventListeners(ctx = {}) {
   dom.btnCapex?.addEventListener('click', () => setIntent(false));
 
   dom.selectMiningGroup?.addEventListener('change', () => {
-    const grp = findMiningGroupById(dom.selectMiningGroup.value);
+    const grp = /** @type {Record<string, any> | null} */ (findMiningGroupById(dom.selectMiningGroup.value));
     hydrateMiningUnitsDropdown(doc, dom, grp, '', isEs);
     if (grp?.name && dom.inputCompany && !isFieldUserDirty('company')) {
       dom.inputCompany.value = grp.name;
     }
-    saveRfqSession({ plantContext: { miningGroupId: grp?.id || '', miningUnitName: '' } });
+    const current = /** @type {Record<string, any>} */ (loadRfqSession());
+    saveRfqSession({
+      ...current,
+      plantContext: {
+        ...(current.plantContext || {}),
+        miningGroupId: grp?.id || '',
+        miningUnitName: '',
+      },
+    });
     actions.updateDossier?.();
   });
 
   dom.selectMiningUnit?.addEventListener('change', () => {
-    const grp = findMiningGroupById(dom.selectMiningGroup?.value || '');
-    const unit = findMiningUnitByName(grp?.id || '', dom.selectMiningUnit.value);
+    const grp = /** @type {Record<string, any> | null} */ (findMiningGroupById(dom.selectMiningGroup?.value || ''));
+    const unit = /** @type {Record<string, any> | null} */ (findMiningUnitByName(grp?.id || '', dom.selectMiningUnit.value));
     if (!unit) return;
-    const preset = resolveMiningUnitPulpPreset(grp, unit, unit.altitudeM || 2200);
+    const preset = /** @type {Record<string, any> | null} */ (resolveMiningUnitPulpPreset(grp, unit, unit.altitudeM || 2200));
     if (dom.pulpProfileBadge && preset?.summaryEs) {
       dom.pulpProfileBadge.textContent = isEs ? preset.summaryEs : (preset.summaryEn || preset.summaryEs);
       dom.pulpProfileBadge.classList.remove('hidden');
     }
-    if (dom.miningTelemetryBox) renderMiningPresetTelemetry(dom.miningTelemetryBox, preset, isEs);
+    if (dom.miningTelemetryBox) renderMiningPresetTelemetry(dom.miningTelemetryBox, preset, isEs ? 'es' : 'en');
+    const current = /** @type {Record<string, any>} */ (loadRfqSession());
     saveRfqSession({
+      ...current,
       plantContext: {
+        ...(current.plantContext || {}),
         miningGroupId: grp?.id || '',
         miningUnitName: unit.name,
         altitudeM: unit.altitudeM || 2200,
@@ -244,8 +303,8 @@ export function bindAllWizardEventListeners(ctx = {}) {
   });
 
   dom.bomApplyBtn?.addEventListener('click', () => {
-    const raw = dom.bomInput?.value || '';
-    if (raw.trim().toUpperCase() === 'CLEAR') {
+    const raw = String(dom.bomInput?.value || '').trim();
+    if (raw.toUpperCase() === 'CLEAR') {
       clearRfqSession();
       removeSessionItem('');
       actions.updateDossier?.();
@@ -254,16 +313,51 @@ export function bindAllWizardEventListeners(ctx = {}) {
     const parsed = parseBomPasteInput(raw);
     let addedCount = 0;
     for (const row of parsed.matched || []) {
-      const cat = QUICK_CHECKOUT_SKU_LIST.find((s) => s.id === row.sku) || decodeSmatCode(row.sku, isEs ? 'es' : 'en');
+      const cat = /** @type {Record<string, any> | null} */ (
+        QUICK_CHECKOUT_SKU_LIST.find((s) => s.id === row.skuId) ||
+        decodeSmatCode(row.skuId, isEs ? 'es' : 'en')
+      );
+      const nameEs = row.nameEs || cat?.title_es || cat?.role || row.skuId;
+      const nameEn = row.nameEn || cat?.title_en || cat?.role || row.skuId;
+      const circuit = row.circuit || cat?.vertical || cat?.circuit || 'bombeo';
       addTrayItem({
-        id: row.sku,
+        id: row.skuId,
         qty: row.qty,
-        nameEs: cat?.titleEs || cat?.label || row.sku,
-        nameEn: cat?.titleEn || cat?.label || row.sku,
-        circuit: cat?.circuit || 'bombeo',
+        nameEs,
+        nameEn,
+        circuit,
       });
-      upsertSessionItem({ id: row.sku, qty: row.qty, circuit: cat?.circuit || 'bombeo' });
+      upsertSessionItem({
+        id: row.skuId,
+        skuId: row.skuId,
+        atomicCode: row.atomicCode || row.skuId,
+        qty: row.qty,
+        nameEs,
+        nameEn,
+        circuit,
+      });
       addedCount += 1;
+    }
+    if (addedCount === 0 && raw) {
+      const decodedSingle = decodeSmatCode(raw, isEs ? 'es' : 'en');
+      if (decodedSingle) {
+        const singleId = String(decodedSingle.code || raw).toUpperCase();
+        addTrayItem({
+          id: singleId,
+          qty: 1,
+          nameEs: decodedSingle.atomic_label || decodedSingle.role || singleId,
+          nameEn: decodedSingle.atomic_label || decodedSingle.role || singleId,
+          circuit: decodedSingle.circuit || 'bombeo',
+        });
+        upsertSessionItem({
+          id: singleId,
+          skuId: singleId,
+          atomicCode: decodedSingle.atomic_code || singleId,
+          qty: 1,
+          circuit: decodedSingle.circuit || 'bombeo',
+        });
+        addedCount = 1;
+      }
     }
     if (dom.bomFeedback) {
       const missCount = parsed.unmatched?.length || 0;
@@ -310,20 +404,20 @@ export function bindAllWizardEventListeners(ctx = {}) {
   });
 
   doc.getElementById('wb-copy-btn')?.addEventListener('click', () => {
-    copyTextSafe(win, formatSapPlaintext(buildCurrentSnap(), isEs ? 'es' : 'en'));
+    copyTextSafe(win, formatSapPlaintext(buildCurrentSnap()));
     showToastFeedback(dom, isEs ? 'Especificación ERP/SAP copiada.' : 'ERP/SAP spec copied.');
   });
   doc.getElementById('wb-copy-tsv-btn')?.addEventListener('click', () => {
-    copyTextSafe(win, formatSapTsv(buildCurrentSnap(), isEs ? 'es' : 'en'));
+    copyTextSafe(win, formatSapTsv(buildCurrentSnap()));
     showToastFeedback(dom, isEs ? 'Tabla TSV para SAP/Excel copiada.' : 'SAP/Excel TSV table copied.');
   });
   doc.getElementById('wb-whatsapp-btn')?.addEventListener('click', () => {
     const subj = buildCmuPrioritySubjectLine(getTrayState(), { cvPct: 45 });
-    const url = formatWhatsappUrl({ ...buildCurrentSnap(), subject_prefix: subj }, isEs ? 'es' : 'en');
+    const url = formatWhatsappUrl({ ...buildCurrentSnap(), subject_prefix: subj });
     win?.open?.(url, '_blank', 'noopener,noreferrer');
   });
   doc.getElementById('wb-email-btn')?.addEventListener('click', () => {
-    const url = formatMailtoUrl(buildCurrentSnap(), isEs ? 'es' : 'en');
+    const url = formatMailtoUrl(buildCurrentSnap());
     if (win?.location) win.location.href = url;
   });
   doc.getElementById('wb-pdf-btn')?.addEventListener('click', () => {

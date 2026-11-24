@@ -1,3 +1,4 @@
+// @ts-check
 import {
   WEBHOOK_OUTBOX_STATES,
   isPlaceholderWebhookUrl,
@@ -7,11 +8,12 @@ import {
   computeOutboxRetryJitterMs,
 } from './leadOutboxStateMachine.js';
 import { dispatchLeadWebhookAsync } from './leadWebhookTransport.js';
+import { saveStationSnapshot } from './rfqSessionStore.js';
 
 /**
  * Monta la cola outbox idempotente y navegacion FSM del asistente en DOM vivo.
- * @param {Document} [doc]
- * @param {Window} [win]
+ * @param {Document | null} [doc]
+ * @param {Window | null} [win]
  */
 export function initQuoteOutboxController(
   doc = typeof document !== 'undefined' ? document : null,
@@ -34,9 +36,34 @@ export function initQuoteOutboxController(
 
   const resolveEndpointUrl = () => (
     doc.getElementById('rfq')?.getAttribute('data-lead-endpoint') ||
-    win.SMAT_LEAD_WEBHOOK_URL ||
+    /** @type {any} */ (win).SMAT_LEAD_WEBHOOK_URL ||
     ''
   ).trim();
+
+  const readInputValue = (id) => {
+    const el = doc.getElementById(id);
+    return el && 'value' in el ? String(/** @type {HTMLInputElement} */ (el).value || '').trim() : '';
+  };
+
+  /**
+   * @param {Record<string, any>} [payload={}]
+   * @param {any} [resolution=null]
+   * @param {string} [endpointUrl='']
+   * @param {number} [httpStatus=0]
+   */
+  const syncOutboxSnapshot = (payload = {}, resolution = null, endpointUrl = '', httpStatus = 0) => {
+    saveStationSnapshot('outbox', {
+      dispatchStatus: {
+        status: resolution?.state || 'draft',
+        dataAttr: resolution?.dataAttr || 'draft',
+        endpointUrl,
+        httpStatus: Number(httpStatus || 0),
+        blocked: resolution?.dataAttr === 'draft' || resolution?.state === WEBHOOK_OUTBOX_STATES.DRAFT_LOCAL,
+        updatedAtIso: new Date().toISOString(),
+      },
+      lastPayload: payload,
+    });
+  };
 
   const renderOutboxStatus = (attemptCount = 1, httpStatus = 0) => {
     const statusEl = doc.getElementById('wb-outbox-status-msg');
@@ -57,11 +84,11 @@ export function initQuoteOutboxController(
     outboxBtn.setAttribute('data-outbox-bound', '1');
     outboxBtn.addEventListener('click', async () => {
       const folio = (doc.getElementById('live-folio')?.textContent || 'SMAT-2026-8810').trim();
-      const email = doc.getElementById('wb-email')?.value?.trim() || '';
-      const name = doc.getElementById('wb-name')?.value?.trim() || '';
-      const company = doc.getElementById('wb-company')?.value?.trim() || '';
-      const phone = doc.getElementById('wb-phone')?.value?.trim() || '';
-      const details = doc.getElementById('wb-details')?.value?.trim() || '';
+      const email = readInputValue('wb-email');
+      const name = readInputValue('wb-name');
+      const company = readInputValue('wb-company');
+      const phone = readInputValue('wb-phone');
+      const details = readInputValue('wb-details');
       const endpointUrl = resolveEndpointUrl();
       const isOnline = typeof navigator !== 'undefined' ? navigator.onLine !== false : true;
       const canDispatchNow = isOnline && !isPlaceholderWebhookUrl(endpointUrl);
@@ -78,16 +105,14 @@ export function initQuoteOutboxController(
         /* ignore */
       }
 
+      const payload = { folio, name, company, phone, email, details };
       if (!canDispatchNow) {
-        renderOutboxStatus(updated.length, 0);
+        const res = renderOutboxStatus(updated.length, 0);
+        syncOutboxSnapshot(payload, res, endpointUrl, 0);
         return;
       }
 
-      const sendResult = await dispatchLeadWebhookAsync(
-        { folio, name, company, phone, email, details },
-        'web_quote_outbox',
-        endpointUrl
-      );
+      const sendResult = await dispatchLeadWebhookAsync(payload, 'web_quote_outbox', endpointUrl);
       const nextStatus = sendResult.httpStatus === 200 ? 'sent' : 'pending';
       const settled = enqueueIdempotentOutboxEntry(readOutboxQueue(), {
         idempotencyKey: `${folio}:${email || 'anon'}`,
@@ -100,7 +125,8 @@ export function initQuoteOutboxController(
       } catch {
         /* ignore */
       }
-      renderOutboxStatus(settled.length, sendResult.httpStatus);
+      const res = renderOutboxStatus(settled.length, sendResult.httpStatus);
+      syncOutboxSnapshot(payload, res, endpointUrl, sendResult.httpStatus);
     });
 
     const flushPendingOutbox = async () => {
@@ -118,12 +144,10 @@ export function initQuoteOutboxController(
       }
       let currentQueue = q;
       let lastHttp = 0;
+      let lastPayload = {};
       for (const entry of pending) {
-        const res = await dispatchLeadWebhookAsync(
-          { folio: entry.folio, email: entry.email || '' },
-          'web_quote_outbox_retry',
-          endpointUrl
-        );
+        lastPayload = { folio: entry.folio, email: entry.email || '' };
+        const res = await dispatchLeadWebhookAsync(lastPayload, 'web_quote_outbox_retry', endpointUrl);
         lastHttp = res.httpStatus || 0;
         currentQueue = enqueueIdempotentOutboxEntry(currentQueue, {
           ...entry,
@@ -136,7 +160,8 @@ export function initQuoteOutboxController(
       } catch {
         /* ignore */
       }
-      renderOutboxStatus(currentQueue.length, lastHttp);
+      const rendered = renderOutboxStatus(currentQueue.length, lastHttp);
+      syncOutboxSnapshot(lastPayload, rendered, endpointUrl, lastHttp);
     };
 
     win.addEventListener('online', () => {

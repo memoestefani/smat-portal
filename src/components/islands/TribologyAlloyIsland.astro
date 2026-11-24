@@ -7,11 +7,11 @@
  * - Monta `<TribologyAlloyCore />` único compartido entre `/bombeo/impulsor/`,
  *   `/bombeo/revestimientos/` y `/cotizar/`.
  */
-import TribologyAlloyCore from '../cores/TribologyAlloyCore.astro';
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import SharePurchasing from '../SharePurchasing.astro';
 import { getAtomicPartSpecs } from '../../scripts/workbenchBus.js';
 import { WET_END_MATERIAL_MATRIX } from '../../scripts/slurryEngine.js';
+import { formatUrgencyBandHuman } from '../../scripts/i18nDomainLabels.js';
 import rolesData from '../../../data/roles.json';
 
 interface Props {
@@ -75,18 +75,47 @@ const testId = isLiners ? 'liners-material-matrix' : 'impeller-material-matrix';
               ? 'Calibración tribológica en vivo de álabes, velocidad periférica u₂ y selección en A05 / R55 / U01 / SiC / Híbrido Rama D.'
               : 'Live tribological calibration of impeller vane geometry, tip speed u₂, and selection across A05 / R55 / U01 / SiC / Hybrid Branch D.')}
         </p>
+        <div class="smat-cta-row smat-mt-sm">
+          <a href={`${isEs ? '/bombeo/' : '/en/pumping/'}?tab=tribology&variant=${variant}`} class="btn btn-outline">
+            {isEs ? 'Abrir en Consola Maestra de Bombeo →' : 'Open Unified Pumping Hub →'}
+          </a>
+        </div>
       </div>
     </section>
 
     <section class="section smat-stage-compact">
       <div class="container">
         <div id={simId} data-testid={testId} data-stratum-1-instrument>
-          <TribologyAlloyCore
-            locale={locale}
-            variant={variant}
-            showVerticalActions={true}
-            panelClass="trib-core-standalone"
-          />
+          <div class="smat-stratum1-display card smat-mb-md">
+            <span class="badge badge-copper">
+              {isLiners
+                ? (isEs ? 'SUBSISTEMA DE BOMBEO • REVESTIMIENTOS 5-5-4' : 'PUMPING SUBSYSTEM • 5-5-4 WET-END LINERS')
+                : (isEs ? 'SUBSISTEMA DE BOMBEO • IMPULSOR DE PULPA' : 'PUMPING SUBSYSTEM • SLURRY PUMP IMPELLER')}
+            </span>
+            <h2>
+              {isLiners
+                ? (isEs ? 'Selección Focalizada de Volutas y Throatbush (5-5-4)' : 'Focused Volute Liner & Throatbush Selection (5-5-4)')
+                : (isEs ? 'Selección Focalizada de Impulsor por Velocidad Periférica' : 'Focused Impeller Alloy Selection by Tip Speed')}
+            </h2>
+            <div class="smat-inputs-2col smat-mt-sm">
+              <div class="smat-readout-box">
+                <span class="smat-field-label">{isEs ? 'Rango Tribológico Estándar:' : 'Standard Wear Materials:'}</span>
+                <strong class="font-mono-tech">A05 Cr27% / R55 / U01 / SiC / A05+R55</strong>
+              </div>
+              <div class="smat-readout-box">
+                <span class="smat-field-label">{isEs ? 'Claro Frontal de Diseño:' : 'Target Front Clearance:'}</span>
+                <strong class="font-mono-tech">δ = 0.5–1.0 mm (Ref. 0.76 mm ISO 7810)</strong>
+              </div>
+            </div>
+            <div class="smat-cta-row smat-mt-sm">
+              <a href={`${isEs ? '/bombeo/' : '/en/pumping/'}?tab=tribology&variant=${variant}`} class="btn btn-primary">
+                {isEs ? 'Configurar en Consola Única de Bombeo →' : 'Configure in Unified Pumping Hub →'}
+              </a>
+              <a href={`${quoteBase}?circuito=bombeo&equipo=${isLiners ? 'revestimientos' : 'impulsor'}&estacion=S3#rfq`} class="btn btn-outline">
+                {isEs ? 'Cotizar Directo →' : 'Quote Directly →'}
+              </a>
+            </div>
+          </div>
 
           <details class="wb-progressive-drawer smat-mt-sm" id="tribology-material-matrix-drawer">
             <summary class="wb-progressive-summary">
@@ -285,7 +314,7 @@ const testId = isLiners ? 'liners-material-matrix' : 'impeller-material-matrix';
                     ∅D₂ = {ip.impeller_diameter_mm} mm • {isEs ? 'Esfera máx.' : 'Max sphere'} = {ip.max_particle_mm} mm • {isEs ? 'Espesor' : 'Wall'} = {ip.wall_thickness_mm} mm
                   </div>
                   <p class="smat-trib-atomic-note">
-                    <strong>{isEs ? 'Izaje NIOSH:' : 'NIOSH Rigging:'}</strong> {ip.niosh_handling_mode} ({ip.niosh_ergonomic_tier}) • <strong>{isEs ? 'Estación' : 'Station'} 0{ip.station_number}:</strong> {ip.assembly_order_note}
+                    <strong>{isEs ? 'Izaje NIOSH:' : 'NIOSH Rigging:'}</strong> {formatUrgencyBandHuman(ip.niosh_handling_mode, locale)} • <strong>{isEs ? 'Estación' : 'Station'} 0{ip.station_number}:</strong> {ip.assembly_order_note}
                   </p>
                   <div class="smat-trib-atomic-actions">
                     <a href={isEs ? `/catalogo/${ip.code}/` : `/en/catalog/${ip.code}/`} class="btn btn-outline">
@@ -320,7 +349,7 @@ const testId = isLiners ? 'liners-material-matrix' : 'impeller-material-matrix';
             <div class="smat-trib-atomic-head">
               <span class="badge badge-copper">{throatbushPart.part_number} — {isEs ? throatbushPart.name_es : throatbushPart.name_en} ({throatbushPart.smat_code})</span>
               <span class="font-mono-tech smat-trib-atomic-mass">
-                {isEs ? 'Masa' : 'Mass'}: {throatbushPart.weight_kg} kg • {throatbushPart.niosh_handling_mode} (LI={throatbushPart.niosh_lifting_index_shaft}) • {isEs ? 'Espesor' : 'Wall'}: {throatbushPart.wall_thickness_mm} mm
+                {isEs ? 'Masa' : 'Mass'}: {throatbushPart.weight_kg} kg • {formatUrgencyBandHuman(throatbushPart.niosh_handling_mode, locale)} (LI={throatbushPart.niosh_lifting_index_shaft}) • {isEs ? 'Espesor' : 'Wall'}: {throatbushPart.wall_thickness_mm} mm
               </span>
             </div>
             <p class="smat-trib-throatbush-copy">
@@ -399,50 +428,14 @@ const testId = isLiners ? 'liners-material-matrix' : 'impeller-material-matrix';
 )}
 
 <script>
-  import { bindCanonicalTribologySelector } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
   import { bindAtomicPartTrayButtons } from '../../scripts/verticalStateAndCtaSyncBridge.js';
-  import {
-    bindDomainSchemaRoot,
-    projectDomainOutputs,
-    readAllCanonicalInputs
-  } from '../../scripts/schemaRuntimeBinder.js';
-  import { solveXdsmMultidisciplinaryDag } from '../../scripts/wizardXdsmDagSolver.js';
-
-  function runTribologyCoreDag(root: HTMLElement, lang: 'es' | 'en') {
-    const inputs = readAllCanonicalInputs(root);
-    const dag = solveXdsmMultidisciplinaryDag(inputs);
-    const trib = dag.tribologyEval || {};
-    const asm = dag.assemblyEval || {};
-    const hyb = dag.hybridEval || {};
-    projectDomainOutputs(
-      root,
-      'tribology',
-      {
-        recommendedMaterial: trib.recommendedMaterial || inputs.tribologyMaterial,
-        hybridRecommended: hyb.hybridRecommended ? (lang === 'en' ? 'Hybrid A05+R55 Recommended' : 'Rama D Híbrida A05+R55') : (lang === 'en' ? 'Monometallic A05/R55' : 'Monometálico Cr27/R55'),
-        hybridMassSavingsPct: hyb.massSavingsPct ?? 31.8,
-        activeSeries: asm.pipeSeries || inputs.pipeSeries || '6x4',
-        activeWeightKg: asm.totalAssemblyMassKg ?? 492,
-        activeNioshHoistRequired: asm.nioshHoistPartsCount ? `${asm.nioshHoistPartsCount} NIOSH >= 23 kg` : 'NIOSH',
-        activeMaterialCode: asm.activeMaterialCode || 'A05',
-        volumetricLossPct: asm.volumetricEfficiencyDropPct ?? 1.6,
-        pipeVelocityMarginLossPct: asm.pipeVelocityMarginLossPct ?? 1.2,
-        statusMessage: lang === 'en' ? (asm.structuralReasonEn || 'Toughness OK') : (asm.structuralReasonEs || 'Tenacidad OK')
-      },
-      lang
-    );
-  }
 
   function initTribologyStandalone() {
     document.querySelectorAll('[data-island-standalone="tribology"]').forEach((root) => {
       const el = root as HTMLElement;
       if (el.dataset.tribologyBound === 'true') return;
       el.dataset.tribologyBound = 'true';
-      const lang: 'es' | 'en' = el.dataset.lang === 'en' ? 'en' : 'es';
-      bindCanonicalTribologySelector(root, lang);
       bindAtomicPartTrayButtons(root);
-      bindDomainSchemaRoot(root, ['tribology'], () => runTribologyCoreDag(el, lang));
-      runTribologyCoreDag(el, lang);
     });
   }
 

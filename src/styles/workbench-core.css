@@ -1,6 +1,6 @@
 /* SMAT Minerals - Workbench & Live Engineering Dossier Styles (Parnas Slice MS-04) */
 /* Polaridad Solar AAA (Tajo Abierto 50,000 lux - WCAG 2.1 AAA >= 7.0:1) */
-
+@layer components {
 .workbench-container {
   padding: 1.15rem 1.25rem;
   font-family: var(--smat-font-ui);
@@ -253,161 +253,6 @@
   padding-top: 0.75rem;
   margin-top: 0.5rem;
   border-top: 1px solid var(--smat-border-light, #e2e8f0);
-}
-
-/* Durand Accordion Styles (Decisión 3-C) */
-.durand-accordion {
-  border-radius: var(--smat-radius-sm);
-}
-
-.durand-summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  list-style: none;
-  user-select: none;
-  padding: 0.25rem 0;
-}
-
-.durand-summary::-webkit-details-marker {
-  display: none;
-}
-
-.durand-summary-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.accordion-arrow {
-  font-size: 0.8rem;
-  color: var(--smat-copper-accent);
-  transition: transform 0.2s ease;
-}
-
-details[open] .accordion-arrow {
-  transform: rotate(180deg);
-}
-
-.durand-accordion-body {
-  padding-top: 1rem;
-  margin-top: 0.5rem;
-  border-top: 1px solid var(--smat-border-light);
-  animation: deckFadeIn 0.2s ease-out;
-}
-
-/* Presets Section */
-.presets-section {
-  margin-bottom: 1.25rem;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid var(--smat-border-light);
-}
-
-.presets-label {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 800;
-  color: var(--smat-text-secondary);
-  letter-spacing: 0.06em;
-  margin-bottom: 0.6rem;
-}
-
-.preset-chips-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-@media (max-width: 600px) {
-  .preset-chips-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.preset-chip {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 0.75rem;
-  background: #f8fafc;
-  border: 1px solid var(--smat-border-light);
-  border-radius: var(--smat-radius-sm);
-  cursor: pointer;
-  text-align: left;
-  transition: all 0.2s ease;
-}
-
-.preset-chip:hover {
-  background: #ffffff;
-  border-color: var(--smat-copper-accent);
-}
-
-.preset-chip.active {
-  background: #ffffff;
-  border-color: var(--smat-copper-accent);
-  box-shadow: 0 0 0 1px var(--smat-copper-accent);
-}
-
-.p-icon { font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
-.p-text strong { display: block; font-size: 0.82rem; color: var(--smat-text-primary); }
-.p-text small { display: block; font-size: 0.7rem; color: var(--smat-text-secondary); }
-
-/* Custom Equipment Details (Decisión 2-C) */
-.custom-equip-details {
-  margin-top: 0.85rem;
-  border: 1px solid var(--smat-border-light);
-  border-radius: var(--smat-radius-sm);
-  background: #ffffff;
-  transition: all 0.2s ease;
-}
-
-.custom-equip-details[open] {
-  border-color: var(--smat-copper-accent);
-  background: #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-}
-
-.custom-equip-summary {
-  padding: 0.6rem 0.85rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--smat-text-secondary);
-  cursor: pointer;
-  list-style: none;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.custom-equip-summary::-webkit-details-marker {
-  display: none;
-}
-
-.custom-equip-summary:hover {
-  color: var(--smat-copper-accent);
-}
-
-.custom-arrow {
-  font-size: 0.85rem;
-  color: var(--smat-copper-accent);
-  transition: transform 0.2s ease;
-}
-
-.custom-equip-details[open] .custom-arrow {
-  transform: rotate(180deg);
-}
-
-.custom-equip-body {
-  padding: 0.85rem;
-  border-top: 1px solid var(--smat-border-light);
-}
-
-.custom-textarea {
-  min-height: 54px;
-  resize: vertical;
 }
 
 /* Urgencia Selector */
@@ -991,7 +836,6 @@ body .smat-xray-hidden {
   padding: 0.15rem 0.5rem;
 }
 .smat-pwa-status.is-offline { color: #f59e0b; border-color: rgba(245, 158, 11, 0.45); }
-.smat-footer-admin-link { color: #cbd5e1; text-decoration: underline; font-size: 0.76rem; }
 .smat-qtray-info-note { margin-top: 0.45rem; background: #eff6ff; border-color: #bfdbfe; }
 .smat-tray-priority-sla-meta { margin-top: 0.25rem; font-size: 0.71rem; color: #0c4a6e; font-weight: 700; }
 .smat-contact-cta-row { margin-top: 0.85rem; display: flex; flex-wrap: wrap; gap: 0.65rem; }
@@ -1026,4 +870,5 @@ body .smat-xray-hidden {
 .smat-bom-tradein-res { font-family: var(--smat-font-mono, monospace); font-weight: 800; color: #065f46; }
 .smat-bom-tradein-co2 { font-size: 0.7rem; color: #047857; margin-top: 0.15rem; }
 .smat-bom-niosh-tag { display: block; font-size: 0.72rem; opacity: 0.86; }
+}
 

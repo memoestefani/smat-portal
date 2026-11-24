@@ -92,17 +92,17 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
               <option value="paro_planta">{isEs ? 'Paro de Planta (Urgente)' : 'Plant Shutdown (Urgent)'}</option>
             </select>
           </div>
-          <input type="hidden" id="wb-jrp-daily-hours" data-schema-input="jrp.operatingHoursPerDay" value="24" />
-          <input type="checkbox" id="wb-core-tradein-toggle" data-schema-input="jrp.coreReturnEnabled" class="sr-only" aria-label={isEs ? 'Retorno de casco' : 'Core return'} />
-          <span class="hidden" data-jrp-criticality-toggle data-schema-input="jrp.urgency">programado</span>
-          <span class="hidden" data-quick-order-tray data-schema-input="jrp.trayItems"></span>
-          <span id="wb-jrp-window-days" data-schema-output="jrp.reorderWindowDays" class="hidden">90 d</span>
-          <span id="wb-jrp-raw-life-days" data-schema-output="jrp.rawLifeDays" class="hidden">100 d</span>
-          <span id="jrp-stage-1-days" data-schema-output="jrp.sleeveInspectionDay" class="hidden">35 d</span>
-          <span id="jrp-stage-2-days" data-schema-output="jrp.impellerThroatbushSwapDay" class="hidden">75 d</span>
-          <span id="jrp-stage-3-days" data-schema-output="jrp.voluteLinerOverhaulDay" class="hidden">100 d</span>
-          <span id="wb-core-tradein-eligible" data-schema-output="jrp.eligible" class="hidden">No</span>
-          <span id="qtray-state-version" data-schema-output="jrp.version" class="hidden">3</span>
+          <div class="jrp-schedule-strip font-mono-tech">
+            <span>{isEs ? 'Ventana reorden:' : 'Reorder window:'} <strong id="wb-jrp-window-days" data-schema-output="jrp.reorderWindowDays">90 d</strong></span>
+            <span>T10 <strong id="jrp-stage-1-days" data-schema-output="jrp.sleeveInspectionDay">90 d</strong></span>
+            <span>T50 <strong id="jrp-stage-2-days" data-schema-output="jrp.impellerThroatbushSwapDay">150 d</strong></span>
+            <span>T80 <strong id="jrp-stage-3-days" data-schema-output="jrp.voluteLinerOverhaulDay">180 d</strong></span>
+            <label class="jrp-tradein-inline-label" for="wb-core-tradein-toggle">
+              <input type="checkbox" id="wb-core-tradein-toggle" data-schema-input="jrp.coreReturnEnabled" />
+              <span>{isEs ? 'Trade-In Casco DAM005:' : 'DAM005 Core Trade-In:'}</span>
+              <strong id="wb-core-tradein-eligible" data-schema-output="jrp.eligible">{isEs ? 'Evaluar' : 'Check'}</strong>
+            </label>
+          </div>
         </div>
 
         <div class="form-row smat-mt-sm">

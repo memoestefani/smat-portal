@@ -1,6 +1,8 @@
 ---
-// src/components/islands/PumpingHubIsland.astro — Isla Canónica Única de Bombeo y Lotes 5-5-4 (SLICE-V51-18)
+// src/components/islands/PumpingHubIsland.astro — Isla Canónica Única de Bombeo y Lotes 5-5-4 (SLICE-V51-18 / V56-11)
 import PumpingHydraulicsCore from '../cores/PumpingHydraulicsCore.astro';
+import TribologyAlloyCore from '../cores/TribologyAlloyCore.astro';
+import SealDriveBearingCore from '../cores/SealDriveBearingCore.astro';
 import CircuitNavigator from '../CircuitNavigator.astro';
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import SharePurchasing from '../SharePurchasing.astro';
@@ -253,15 +255,27 @@ const tcoRows = [
 
   <section class="section smat-bombeo-main" id="bombeo-main-section">
     <div class="container">
-      <div class="card smat-bombeo-sim-card" id="pumping-hydraulics-stratum1" data-stratum-1-instrument>
+      <div class="smat-station-tabs" id="bombeo-station-tabs" role="tablist" aria-label={isEs ? 'Estaciones de Bombeo de Lodos' : 'Slurry Pump Station Consoles'}>
+        <button type="button" role="tab" aria-selected="true" class="smat-station-tab-btn is-active" data-station-tab="hydraulics">
+          {isEs ? '1. Hidráulica y Altitud' : '1. Hydraulics & Head'}
+        </button>
+        <button type="button" role="tab" aria-selected="false" class="smat-station-tab-btn" data-station-tab="tribology">
+          {isEs ? '2. Impulsor y Revestimientos' : '2. Impeller & Liners'}
+        </button>
+        <button type="button" role="tab" aria-selected="false" class="smat-station-tab-btn" data-station-tab="seals">
+          {isEs ? '3. Sellado, Transmisión y Soporte' : '3. Seal, Drive & Bearings'}
+        </button>
+      </div>
+
+      <div class="card smat-bombeo-sim-card smat-station-panel" id="pumping-hydraulics-stratum1" data-station-panel="hydraulics" data-stratum-1-instrument>
         <div class="smat-bombeo-sim-header">
           <span class="badge badge-copper">
             {isEs ? 'INSTRUMENTO EN VIVO • HIDRÁULICA DE PULPA Y ALTITUD' : 'LIVE INSTRUMENT • SLURRY HYDRAULICS & ALTITUDE'}
           </span>
           <h2>
             {isEs
-              ? 'Verificador de Transporte Hidráulico, Derating Cave y Altitud'
-              : 'Slurry Hydraulic Transport, Cave Derating & Altitude Verifier'}
+              ? 'Verificador de Transporte Hidráulico y Altitud'
+              : 'Slurry Hydraulic Transport & Altitude Verifier'}
           </h2>
         </div>
 
@@ -277,6 +291,23 @@ const tcoRows = [
             {isEs ? 'Cotizar con esta Calibración Hidráulica →' : 'Quote With This Hydraulic Calibration →'}
           </a>
         </div>
+      </div>
+
+      <div class="card smat-bombeo-sim-card smat-station-panel" id="pumping-tribology-station" data-station-panel="tribology" hidden>
+        <TribologyAlloyCore
+          locale={locale}
+          variant="impeller"
+          showVerticalActions={true}
+          panelClass="trib-core-standalone"
+        />
+      </div>
+
+      <div class="card smat-bombeo-sim-card smat-station-panel" id="pumping-seals-station" data-station-panel="seals" hidden>
+        <SealDriveBearingCore
+          locale={locale}
+          initialTab="seal"
+          showVerticalActions={true}
+        />
       </div>
 
       {showVerticalShell && (
@@ -539,12 +570,39 @@ const tcoRows = [
 
   <script>
     import { bindAtomicPartTrayButtons } from '../../scripts/verticalStateAndCtaSyncBridge.js';
+    import { bindCanonicalSealBalanceCalculator, bindCanonicalTribologySelector } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
+    import { initBearingSupportInspector, initSkidKinematicsInspector } from '../../scripts/verticalBidirectionalHydrationLens.js';
     import {
       bindDomainSchemaRoot,
       projectDomainOutputs,
       readAllCanonicalInputs
     } from '../../scripts/schemaRuntimeBinder.js';
     import { solveXdsmMultidisciplinaryDag } from '../../scripts/wizardXdsmDagSolver.js';
+
+    function runTribologyStationDag(tribRoot: HTMLElement, lang: 'es' | 'en') {
+      const inputs = readAllCanonicalInputs(tribRoot);
+      const dag = solveXdsmMultidisciplinaryDag(inputs);
+      const trib = dag.tribologyEval || {};
+      const asm = dag.assemblyEval || {};
+      const hyb = dag.hybridEval || {};
+      projectDomainOutputs(
+        tribRoot,
+        'tribology',
+        {
+          recommendedMaterial: trib.recommendedMaterial || inputs.tribologyMaterial,
+          hybridRecommended: hyb.hybridRecommended ? (lang === 'en' ? 'Hybrid A05+R55 Recommended' : 'Rama D Híbrida A05+R55') : (lang === 'en' ? 'Monometallic A05/R55' : 'Monometálico Cr27/R55'),
+          hybridMassSavingsPct: hyb.massSavingsPct ?? 31.8,
+          activeSeries: asm.pipeSeries || inputs.pipeSeries || '6x4',
+          activeWeightKg: asm.totalAssemblyMassKg ?? 492,
+          activeNioshHoistRequired: asm.nioshHoistPartsCount ? `${asm.nioshHoistPartsCount} NIOSH >= 23 kg` : 'NIOSH',
+          activeMaterialCode: asm.activeMaterialCode || 'A05',
+          volumetricLossPct: asm.volumetricEfficiencyDropPct ?? 1.6,
+          pipeVelocityMarginLossPct: asm.pipeVelocityMarginLossPct ?? 1.2,
+          statusMessage: lang === 'en' ? (asm.structuralReasonEn || 'Toughness OK') : (asm.structuralReasonEs || 'Tenacidad OK')
+        },
+        lang
+      );
+    }
 
     function runPumpingCoreDag(root: HTMLElement, isEs: boolean) {
       const inputs = readAllCanonicalInputs(root);
@@ -592,7 +650,29 @@ const tcoRows = [
       const root = document.querySelector('[data-island-standalone="pumping"]') as HTMLElement | null;
       if (!root) return;
       const isEs = root.dataset.lang !== 'en';
+      const lang: 'es' | 'en' = isEs ? 'es' : 'en';
       bindAtomicPartTrayButtons(root);
+
+      const tribPanel = root.querySelector('#pumping-tribology-station') as HTMLElement | null;
+      if (tribPanel && tribPanel.dataset.tribologyStationBound !== '1') {
+        tribPanel.dataset.tribologyStationBound = '1';
+        bindCanonicalTribologySelector(tribPanel, lang);
+        bindDomainSchemaRoot(tribPanel, ['tribology'], () => runTribologyStationDag(tribPanel, lang));
+        runTribologyStationDag(tribPanel, lang);
+      }
+
+      const sealPanel = root.querySelector('#pumping-seals-station') as HTMLElement | null;
+      if (sealPanel && sealPanel.dataset.sealStationBound !== '1') {
+        sealPanel.dataset.sealStationBound = '1';
+        bindCanonicalSealBalanceCalculator(sealPanel, lang);
+        initSkidKinematicsInspector(sealPanel, lang);
+        initBearingSupportInspector(sealPanel, lang);
+        bindDomainSchemaRoot(sealPanel, ['sealDrive'], () => {
+          const inputs = readAllCanonicalInputs(sealPanel);
+          const dag = solveXdsmMultidisciplinaryDag(inputs);
+          projectDomainOutputs(sealPanel, 'sealDrive', { ...(dag.sealBalanceEval || {}), ...(dag.driveEval || {}) }, lang);
+        });
+      }
 
       const pumpingRoot = root.querySelector('[data-domain-root="pumping"]') as HTMLElement | null;
       if (pumpingRoot && pumpingRoot.dataset.pumpingCoreBound !== '1') {
@@ -662,6 +742,40 @@ const tcoRows = [
       if (root.dataset.bombeoTabsBound === 'true') return;
       root.dataset.bombeoTabsBound = 'true';
 
+      const stationBtns = root.querySelectorAll('[data-station-tab]');
+      const stationPanels = root.querySelectorAll('[data-station-panel]');
+      const activateStation = (rawTarget: string) => {
+        const lower = String(rawTarget || 'hydraulics').toLowerCase();
+        const normalized = ['tribology', 'impeller', 'liners'].includes(lower)
+          ? 'tribology'
+          : ['seal', 'skid', 'bearing', 'seals'].includes(lower)
+            ? 'seals'
+            : 'hydraulics';
+        stationBtns.forEach((b) => {
+          const on = b.getAttribute('data-station-tab') === normalized;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+        stationPanels.forEach((panel) => {
+          const on = panel.getAttribute('data-station-panel') === normalized;
+          if (on) {
+            panel.removeAttribute('hidden');
+          } else {
+            panel.setAttribute('hidden', '');
+          }
+        });
+        if (['seal', 'skid', 'bearing'].includes(lower)) {
+          const subBtn = root.querySelector(`#pumping-seals-station [data-sdb-tab="${lower}"], #pumping-seals-station [data-tab="${lower}"]`) as HTMLElement | null;
+          subBtn?.click();
+        }
+      };
+
+      stationBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          activateStation(btn.getAttribute('data-station-tab') || 'hydraulics');
+        });
+      });
+
       const tabBtns = root.querySelectorAll('[data-bombeo-tab]');
       const tabPanels = root.querySelectorAll('[data-bombeo-panel]');
       const disclosure = document.getElementById('bombeo-catalog-disclosure') as HTMLDetailsElement | null;
@@ -685,6 +799,15 @@ const tcoRows = [
           activateTab(btn.getAttribute('data-bombeo-tab') || 'kits');
         });
       });
+
+      const queryTab = new URLSearchParams(window.location.search).get('tab');
+      if (queryTab) {
+        if (['kits', 'systems', 'atomic', 'assembly'].includes(queryTab)) {
+          activateTab(queryTab, true);
+        } else {
+          activateStation(queryTab);
+        }
+      }
 
       if (['#pump-assembly-report', '#como-se-arma-una-bomba', '#how-a-slurry-pump-is-assembled'].includes(window.location.hash)) {
         activateTab('assembly', true);

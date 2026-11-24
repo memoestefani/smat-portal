@@ -1,5 +1,6 @@
+// @ts-check
 /**
- * SMAT Minerals - Pump 5-5-4 Assembly Sequence, Drive Kinematics & Hybrid Wet-End Engine (SLICE-V34-12)
+ * SMAT Minerals - Pump 5-5-4 Assembly Sequence, Drive Kinematics & Hybrid Wet-End Engine (SLICE-V56-08)
  * Extraído por costura limpia LCOM4 desde tribologyAndCompatibilityEngine.js (D8-V34 / DEB-V34-08).
  */
 import { WET_END_MATERIAL_MATRIX, calculateMarcyScaleReading } from './tribologyAndCompatibilityEngine.js';
@@ -597,6 +598,7 @@ export function calculateDriveAndBearingKinematics(params = {}) {
 }
 
 export const DRIVE_ARRANGEMENTS = DRIVE_ARRANGEMENT_CATALOG;
+/** @deprecated Usar `calculateDriveAndBearingKinematics` (mantenido por compatibilidad XDSM). */
 export const calculateDriveKinematics = calculateDriveAndBearingKinematics;
 
 export function calculateMarcyScale(params = {}) {

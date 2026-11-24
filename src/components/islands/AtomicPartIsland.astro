@@ -34,15 +34,15 @@ const pipeSizeUpper = String(fullSpec.pipe_size || '6x4').toUpperCase();
 
 const nioshModeLabel = isEs
   ? fullSpec.niosh_ergonomic_tier === 'MANUAL_1P_SAFE'
-    ? `Manejo Manual 1 Operador (${fullSpec.niosh_handling_mode} • LI=${fullSpec.niosh_lifting_index_shaft})`
+    ? `Carga Manual Segura 1 Operador (LI=${fullSpec.niosh_lifting_index_shaft})`
     : fullSpec.niosh_ergonomic_tier === 'ASSISTED_SHAFT_MOUNT_2P'
-      ? `Montaje Asistido 2 Operadores en Voladizo (${fullSpec.niosh_handling_mode} • LI=${fullSpec.niosh_lifting_index_shaft} vs RWL=${fullSpec.niosh_rwl_shaft_kg} kg)`
-      : `Polipasto / Grúa Obligatorio (${fullSpec.niosh_handling_mode} • LI=${fullSpec.niosh_lifting_index_shaft} ≥ 23 kg)`
+      ? `Montaje Asistido 2 Operadores en Voladizo (LI=${fullSpec.niosh_lifting_index_shaft} vs RWL=${fullSpec.niosh_rwl_shaft_kg} kg)`
+      : `Polipasto / Grúa Obligatorio (${fullSpec.weight_kg} kg • LI=${fullSpec.niosh_lifting_index_shaft} ≥ 23 kg)`
   : fullSpec.niosh_ergonomic_tier === 'MANUAL_1P_SAFE'
-    ? `1-Operator Manual Safe (${fullSpec.niosh_handling_mode} • LI=${fullSpec.niosh_lifting_index_shaft})`
+    ? `1-Operator Manual Safe (LI=${fullSpec.niosh_lifting_index_shaft})`
     : fullSpec.niosh_ergonomic_tier === 'ASSISTED_SHAFT_MOUNT_2P'
-      ? `2-Person Assisted Shaft Mount (${fullSpec.niosh_handling_mode} • LI=${fullSpec.niosh_lifting_index_shaft} vs RWL=${fullSpec.niosh_rwl_shaft_kg} kg)`
-      : `Hoist / Crane Mandatory (${fullSpec.niosh_handling_mode} • LI=${fullSpec.niosh_lifting_index_shaft} ≥ 23 kg)`;
+      ? `2-Person Assisted Shaft Mount (LI=${fullSpec.niosh_lifting_index_shaft} vs RWL=${fullSpec.niosh_rwl_shaft_kg} kg)`
+      : `Hoist / Crane Mandatory (${fullSpec.weight_kg} kg • LI=${fullSpec.niosh_lifting_index_shaft} ≥ 23 kg)`;
 
 const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
 const rfqDeepLink = `${quoteBase}?codigo=${part.part_number}&circuito=bombeo&equipo=${fullSpec.role || 'impulsor'}&serie=${fullSpec.pipe_size || '6x4'}&peso_kg=${fullSpec.weight_kg}&estacion=S${fullSpec.station_number}#rfq`;
@@ -101,12 +101,9 @@ const productSchema = {
 
         <div class="spec-body">
           <div id="stratum1-atomic-code-card" data-stratum-1-instrument class="smat-atomic-cta-bar">
-            <a href={rfqDeepLink} class="btn btn-primary smat-atomic-cta-btn">
-              {isEs ? `Cotizar ${part.part_number} →` : `Quote ${part.part_number} →`}
-            </a>
             <button
               type="button"
-              class="btn btn-rfq-wizard smat-atomic-cta-btn"
+              class="btn btn-primary smat-atomic-cta-btn"
               data-add-tray-sku={part.part_number === 'DAM005' ? 'SMAT-PUMP-BRG-005M' : `SMAT-PUMP-${part.part_number}`}
               data-tray-part-code={part.part_number}
               data-tray-title={isEs ? part.name_es : part.name_en}
@@ -115,8 +112,11 @@ const productSchema = {
               data-tray-circuit="bombeo"
               data-tray-source="catalog_code_stratum1"
             >
-              {isEs ? `+ Bandeja (${part.part_number})` : `+ Add ${part.part_number} to Tray`}
+              {isEs ? `+ Agregar ${part.part_number} a Bandeja` : `+ Add ${part.part_number} to Tray`}
             </button>
+            <a href={rfqDeepLink} class="btn btn-outline smat-atomic-cta-btn">
+              {isEs ? `Cotizar ${part.part_number} →` : `Request Quote ${part.part_number} →`}
+            </a>
           </div>
 
           <details class="wb-progressive-drawer smat-mt-sm" id="atomic-jrp-drawer">
@@ -279,33 +279,13 @@ const productSchema = {
               : 'Direct consultation with our engineering team in Durango, Mexico for prompt pricing, stock allocation, and direct carrier dispatch to your mine site.'}
           </p>
 
-          <div class="dock-ctas">
-            <a href={waUrl} target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp-king">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-              </svg>
-              <span>{isEs ? 'Consultar Disponibilidad vía WhatsApp' : 'Check Availability via WhatsApp'}</span>
+          <div class="dock-support-links">
+            <a href={waUrl} target="_blank" rel="noopener noreferrer" class="smat-dropin-link">
+              {isEs ? 'Consultar existencias con ingeniería por WhatsApp →' : 'Check Durango stock with engineering via WhatsApp →'}
             </a>
-
-            <a href={rfqDeepLink} class="btn btn-rfq-wizard" data-testid="btn-atomic-rfq">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-              </svg>
-              <span>{isEs ? 'Generar Requisición Formal / Acuse A4' : 'Generate Formal RFQ / A4 Slip'}</span>
+            <a href={rfqDeepLink} class="smat-dropin-link" data-testid="btn-atomic-rfq">
+              {isEs ? 'Abrir generador de Acuse A4 →' : 'Open A4 Requisition Slip →'}
             </a>
-
-            <button
-              type="button"
-              class="btn btn-rfq-wizard"
-              data-add-atomic-to-tray
-              data-atomic-code={part.part_number}
-              data-name-es={part.name_es}
-              data-name-en={part.name_en}
-              data-weight-kg={fullSpec.weight_kg}
-            >
-              <span>{isEs ? `+ Agregar ${part.part_number} a Bandeja B2B` : `+ Add ${part.part_number} to B2B Tray`}</span>
-            </button>
-            <p data-atomic-tray-msg hidden class="smat-atomic-tray-msg"></p>
           </div>
 
           <div class="dock-facts">

@@ -43,7 +43,7 @@ function queryAllSafe(root, selector) {
 function resolveCandidateRoots(root, domainId) {
   if (!root) return [];
   const roots = queryAllSafe(root, `[data-domain-root="${domainId}"]`);
-  if (roots.length > 0) return [roots[0]];
+  if (roots.length > 0) return roots;
   // Compatibilidad con mocks simples o fragmentos que ya actúan como raíz del documento/componente
   return [root];
 }

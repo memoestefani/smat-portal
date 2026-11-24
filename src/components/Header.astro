@@ -117,7 +117,7 @@ const productCategories = isEs ? [
         </a>
       </div>
 
-      <!-- Botón de Bandeja de Requisición B2B (Mueve el disparador al Header sin píldora flotante) -->
+      <!-- Botón de Bandeja de Requisición B2B (Persistente incluso en /cotizar/ y /acuse/ para evitar saltos en nav) -->
       <button
         type="button"
         id="header-qtray-trigger"
@@ -125,7 +125,6 @@ const productCategories = isEs ? [
         aria-haspopup="dialog"
         aria-controls="smat-qtray-drawer"
         aria-expanded="false"
-        hidden
       >
         <span>{isEs ? 'Bandeja' : 'Tray'}</span>
         <span id="header-qtray-count" class="header-qtray-count">0</span>
@@ -155,8 +154,7 @@ const productCategories = isEs ? [
     }
 
     const triggerBtn = document.getElementById('header-qtray-trigger');
-    const drawer = document.getElementById('smat-qtray-drawer') as HTMLDialogElement | null;
-    if (triggerBtn && drawer) {
+    if (triggerBtn) {
       triggerBtn.hidden = false;
       triggerBtn.classList.remove('hidden');
 
@@ -184,18 +182,25 @@ const productCategories = isEs ? [
         triggerBtn.setAttribute('data-bound', '1');
         triggerBtn.addEventListener('click', () => {
           const d = document.getElementById('smat-qtray-drawer') as HTMLDialogElement | null;
-          if (!d) return;
-          d.removeAttribute('hidden');
-          d.classList.remove('hidden');
-          if (typeof d.showModal === 'function' && !d.open) {
-            d.showModal();
+          if (d) {
+            d.removeAttribute('hidden');
+            d.classList.remove('hidden');
+            if (typeof d.showModal === 'function' && !d.open) {
+              d.showModal();
+            }
+            triggerBtn.setAttribute('aria-expanded', 'true');
+            return;
           }
-          triggerBtn.setAttribute('aria-expanded', 'true');
+          const inlineTray = document.getElementById('smat-requisition-tray-summary');
+          if (inlineTray) {
+            inlineTray.scrollIntoView({ behavior: 'smooth' });
+            return;
+          }
+          const isEn = document.documentElement.lang === 'en';
+          window.location.href = isEn ? '/en/quote/#smat-requisition-tray-summary' : '/cotizar/#smat-requisition-tray-summary';
         });
         window.addEventListener('smat:tray-updated', syncCount);
       }
-    } else if (triggerBtn) {
-      triggerBtn.hidden = true;
     }
   }
 
