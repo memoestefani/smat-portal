@@ -1,6 +1,7 @@
 /* SMAT Minerals - Sistema de Diseño Luminous Executive Editorial */
-@import './tokens.css';
-@import './cores-apple.css';
+@layer reset, tokens, base, components, utilities;
+@import './tokens.css' layer(tokens);
+@import './cores-apple.css' layer(components);
 
 :root {
   --font-family-sans: var(--smat-font-ui);
@@ -376,7 +377,7 @@ p {
 }
 
 .smat-stage-compact {
-  padding-top: var(--smat-stage-pad-top, clamp(0.45rem, 1.3vw, 1.05rem)) !important;
+  padding-top: var(--smat-stage-pad-top, clamp(0.45rem, 1.3vw, 1.05rem));
   padding-bottom: clamp(1.5rem, 3vw, 3rem);
 }
 
@@ -385,9 +386,7 @@ p {
 }
 
 .smat-stratum1-display {
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
+  display: block;
   margin: 0.45rem 0 0.65rem;
 }
 
@@ -431,9 +430,21 @@ details > summary {
   align-items: center;
 }
 
-.hidden, [hidden] {
-  display: none !important;
+body .hidden,
+body [hidden] {
+  display: none;
 }
+
+.smat-logo-wrap { display: inline-flex; align-items: center; }
+.smat-logo-wrap--36 { height: 36px; }
+.smat-logo-wrap--44 { height: 44px; }
+.smat-logo-wrap--28 { height: 28px; }
+.smat-logo-wrap--32 { height: 32px; }
+.smat-logo-img { width: auto; object-fit: contain; display: block; }
+.smat-logo-img--36 { height: 36px; }
+.smat-logo-img--44 { height: 44px; }
+.smat-logo-img--28 { height: 28px; }
+.smat-logo-img--32 { height: 32px; }
 
 /* =========================================================================
    SMAT V5.0 — Clases Utilitarias Compartidas de Islas Canónicas (DEB-V50-08)

@@ -66,7 +66,9 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     islandComponent: 'PumpingHubIsland.astro',
     conceptRefs: ['circuits', 'role_id', 'intent', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-17', 'ARB-SMAT-22', 'ARB-SMAT-58', 'ARB-SMAT-59'],
-    routes: ['/bombeo/', '/en/pumping/', '/cotizar/', '/en/quote/'],
+    routes: ['/bombeo/', '/en/pumping/'],
+    interactiveRoutes: ['/bombeo/', '/en/pumping/'],
+    readonlyRoutes: [],
     inputsSchema: [
       { field: 'flowM3H', type: 'number', min: 10, max: 3000, defaultValue: 180, sobolTier: 1, sobolSensitivityScore: 0.42, domBinding: '#slider-flow', schemaKey: 'pumping.flowM3H', aliasBindings: ['[data-schema-input="pumping.flowM3H"]'] },
       { field: 'solidsWeightPercent', type: 'number', min: 5, max: 75, defaultValue: 45, sobolTier: 1, sobolSensitivityScore: 0.24, domBinding: '#slider-solids', schemaKey: 'pumping.solidsWeightPercent', aliasBindings: ['[data-schema-input="pumping.solidsWeightPercent"]'] },
@@ -107,10 +109,12 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     islandComponent: 'TribologyAlloyIsland.astro',
     conceptRefs: ['metallurgy', 'hybrid_a05_r55', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-16', 'ARB-SMAT-44', 'ARB-SMAT-58', 'ARB-SMAT-59'],
-    routes: ['/bombeo/impulsor/', '/en/pumping/impeller/', '/bombeo/revestimientos/', '/en/pumping/liners/', '/cotizar/', '/en/quote/'],
+    routes: ['/bombeo/impulsor/', '/en/pumping/impeller/', '/bombeo/revestimientos/', '/en/pumping/liners/'],
+    interactiveRoutes: ['/bombeo/impulsor/', '/en/pumping/impeller/', '/bombeo/revestimientos/', '/en/pumping/liners/'],
+    readonlyRoutes: [],
     inputsSchema: [
-      { field: 'tribologyMaterial', type: 'enum', defaultValue: 'alto_cromo_cr27', sobolTier: 1, sobolSensitivityScore: 0.48, domBinding: '#trib-mat-select', schemaKey: 'tribology.tribologyMaterial', aliasBindings: ['[data-schema-input="tribology.tribologyMaterial"]', '#wb-pump-material'] },
-      { field: 'frontClearanceMm', type: 'number', min: 0.2, max: 6.0, defaultValue: 0.75, sobolTier: 1, sobolSensitivityScore: 0.27, domBinding: '#trib-clearance-mm', schemaKey: 'tribology.frontClearanceMm', aliasBindings: ['[data-schema-input="tribology.frontClearanceMm"]', '#wb-clearance-slider'] },
+      { field: 'tribologyMaterial', type: 'enum', defaultValue: 'alto_cromo_cr27', sobolTier: 1, sobolSensitivityScore: 0.48, domBinding: '#trib-mat-select', schemaKey: 'tribology.tribologyMaterial', aliasBindings: ['[data-schema-input="tribology.tribologyMaterial"]'] },
+      { field: 'frontClearanceMm', type: 'number', min: 0.2, max: 6.0, defaultValue: 0.75, sobolTier: 1, sobolSensitivityScore: 0.27, domBinding: '#trib-clearance-mm', schemaKey: 'tribology.frontClearanceMm', aliasBindings: ['[data-schema-input="tribology.frontClearanceMm"]'] },
       { field: 'particleSizeD80Microns', type: 'number', min: 10, max: 5000, defaultValue: 240, sobolTier: 1, sobolSensitivityScore: 0.21, domBinding: '#trib-d80-um', schemaKey: 'tribology.particleSizeD80Microns', aliasBindings: ['[data-schema-input="tribology.particleSizeD80Microns"]', '#slider-d80'] },
       { field: 'pulpPh', type: 'number', min: 1.0, max: 14.0, defaultValue: 7.5, sobolTier: 2, sobolSensitivityScore: 0.11, domBinding: '#trib-ph', schemaKey: 'tribology.pulpPh', aliasBindings: ['[data-schema-input="tribology.pulpPh"]', '#slider-ph'] },
       { field: 'tipSpeedMs', type: 'number', min: 5, max: 42, defaultValue: 21.5, sobolTier: 1, sobolSensitivityScore: 0.29, domBinding: '#trib-u2-ms', schemaKey: 'tribology.tipSpeedMs', aliasBindings: ['[data-schema-input="tribology.tipSpeedMs"]'] },
@@ -141,7 +145,9 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     islandComponent: 'SealDriveBearingIsland.astro',
     conceptRefs: ['atomic_parts_13', 'role_id', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-14', 'ARB-SMAT-15', 'ARB-SMAT-56', 'ARB-SMAT-59'],
-    routes: ['/bombeo/sello/', '/en/pumping/seal/', '/bombeo/skid/', '/en/pumping/skid/', '/bombeo/soporte/', '/en/pumping/bearing-assembly/', '/cotizar/', '/en/quote/'],
+    routes: ['/bombeo/sello/', '/en/pumping/seal/', '/bombeo/skid/', '/en/pumping/skid/', '/bombeo/soporte/', '/en/pumping/bearing-assembly/'],
+    interactiveRoutes: ['/bombeo/sello/', '/en/pumping/seal/', '/bombeo/skid/', '/en/pumping/skid/', '/bombeo/soporte/', '/en/pumping/bearing-assembly/'],
+    readonlyRoutes: [],
     inputsSchema: [
       { field: 'dischargeHeadM', type: 'number', min: 5, max: 110, defaultValue: 28, sobolTier: 1, sobolSensitivityScore: 0.34, domBinding: '#seal-hd-m', schemaKey: 'sealDrive.dischargeHeadM', aliasBindings: ['[data-schema-input="sealDrive.dischargeHeadM"]'] },
       { field: 'suctionHeadM', type: 'number', min: 0, max: 25, defaultValue: 3.2, sobolTier: 1, sobolSensitivityScore: 0.39, domBinding: '#seal-hs-m', schemaKey: 'sealDrive.suctionHeadM', aliasBindings: ['[data-schema-input="sealDrive.suctionHeadM"]'] },
@@ -164,7 +170,18 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
       { field: 'beltRadialLoadKn', unit: 'kN', decimals: 2, isoPure: true, domBinding: '#wb-kin-fr', schemaKey: 'sealDrive.beltRadialLoadKn', aliasBindings: ['[data-schema-output="sealDrive.beltRadialLoadKn"]', '[data-kin-fr]', '[data-bear-fr]'] },
       { field: 'bearingL10Hours', unit: 'h', decimals: 0, isoPure: true, domBinding: '#wb-kin-l10h', schemaKey: 'sealDrive.bearingL10Hours', aliasBindings: ['[data-schema-output="sealDrive.bearingL10Hours"]', '[data-kin-l10h]', '[data-bear-l10h]'] },
       { field: 'l10mhLabyrinthHours', unit: 'h', decimals: 0, isoPure: true, domBinding: '#wb-bear-l10mh-lab', schemaKey: 'sealDrive.l10mhLabyrinthHours', aliasBindings: ['[data-schema-output="sealDrive.l10mhLabyrinthHours"]', '[data-bear-l10mh-lab]'] },
-      { field: 'l10mhContaminatedHours', unit: 'h', decimals: 0, isoPure: true, domBinding: '#wb-bear-l10mh-contam', schemaKey: 'sealDrive.l10mhContaminatedHours', aliasBindings: ['[data-schema-output="sealDrive.l10mhContaminatedHours"]', '[data-bear-l10mh-contam]'] }
+      { field: 'l10mhContaminatedHours', unit: 'h', decimals: 0, isoPure: true, domBinding: '#wb-bear-l10mh-contam', schemaKey: 'sealDrive.l10mhContaminatedHours', aliasBindings: ['[data-schema-output="sealDrive.l10mhContaminatedHours"]', '[data-bear-l10mh-contam]'] },
+      { field: 'expellerCounterHeadM', unit: 'm', decimals: 2, isoPure: true, domBinding: '#seal-hexp-out', schemaKey: 'sealDrive.expellerCounterHeadM', aliasBindings: ['[data-schema-output="sealDrive.expellerCounterHeadM"]'] },
+      { field: 'suctionPressureKpa', unit: 'kPa', decimals: 1, isoPure: true, domBinding: '#seal-psuc-out', schemaKey: 'sealDrive.suctionPressureKpa', aliasBindings: ['[data-schema-output="sealDrive.suctionPressureKpa"]'] },
+      { field: 'dischargePressureKpa', unit: 'kPa', decimals: 1, isoPure: true, domBinding: '#seal-pdis-out', schemaKey: 'sealDrive.dischargePressureKpa', aliasBindings: ['[data-schema-output="sealDrive.dischargePressureKpa"]'] },
+      { field: 'netSealMarginKpa', unit: 'kPa', decimals: 1, isoPure: true, domBinding: '#seal-margin-out', schemaKey: 'sealDrive.netSealMarginKpa', aliasBindings: ['[data-schema-output="sealDrive.netSealMarginKpa"]'] },
+      { field: 'suctionToDischargeRatio', unit: '-', decimals: 3, isoPure: true, domBinding: '#seal-hs-hd-out', schemaKey: 'sealDrive.suctionToDischargeRatio', aliasBindings: ['[data-schema-output="sealDrive.suctionToDischargeRatio"]'] },
+      { field: 'requiredGlandWaterPressurePsi', unit: 'psi', decimals: 1, isoPure: true, domBinding: '#seal-pwater-psi-out', schemaKey: 'sealDrive.requiredGlandWaterPressurePsi', aliasBindings: ['[data-schema-output="sealDrive.requiredGlandWaterPressurePsi"]'] },
+      { field: 'expellerViable', unit: 'bool', isoPure: false, domBinding: '#seal-viable-out', schemaKey: 'sealDrive.expellerViable', aliasBindings: ['[data-schema-output="sealDrive.expellerViable"]'] },
+      { field: 'sumpFloodImmunityEn', unit: 'text', isoPure: false, domBinding: '#wb-kin-flood-out', schemaKey: 'sealDrive.sumpFloodImmunityEn', aliasBindings: ['[data-schema-output="sealDrive.sumpFloodImmunityEn"]'] },
+      { field: 'rubberSafeTipSpeed', unit: 'bool', isoPure: false, domBinding: '#wb-kin-rubber-safe-out', schemaKey: 'sealDrive.rubberSafeTipSpeed', aliasBindings: ['[data-schema-output="sealDrive.rubberSafeTipSpeed"]'] },
+      { field: 'ceramicSpallingSpeedExceeded', unit: 'bool', isoPure: false, domBinding: '#wb-kin-sic-over-out', schemaKey: 'sealDrive.ceramicSpallingSpeedExceeded', aliasBindings: ['[data-schema-output="sealDrive.ceramicSpallingSpeedExceeded"]'] },
+      { field: 'recommendedWetMaterialByTipSpeed', unit: 'text', isoPure: false, domBinding: '#wb-kin-rec-mat-u2-out', schemaKey: 'sealDrive.recommendedWetMaterialByTipSpeed', aliasBindings: ['[data-schema-output="sealDrive.recommendedWetMaterialByTipSpeed"]'] }
     ],
     allowUnboundReasons: []
   },
@@ -175,7 +192,9 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     islandComponent: 'FlotationCalculatorIsland.astro',
     conceptRefs: ['circuits', 'decision_criteria', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-28', 'ARB-SMAT-30', 'ARB-SMAT-58', 'ARB-SMAT-59'],
-    routes: ['/flotacion/', '/en/flotation/', '/flotacion/celdas/', '/en/flotation/cells/', '/flotacion/mecanismos/', '/en/flotation/mechanisms/', '/cotizar/', '/en/quote/'],
+    routes: ['/flotacion/', '/en/flotation/', '/flotacion/celdas/', '/en/flotation/cells/', '/flotacion/mecanismos/', '/en/flotation/mechanisms/'],
+    interactiveRoutes: ['/flotacion/', '/en/flotation/', '/flotacion/celdas/', '/en/flotation/cells/', '/flotacion/mecanismos/', '/en/flotation/mechanisms/'],
+    readonlyRoutes: [],
     inputsSchema: [
       { field: 'jgCmS', type: 'number', min: 0.5, max: 3.5, defaultValue: 1.5, sobolTier: 1, sobolSensitivityScore: 0.41, domBinding: '#wb-flot-jg', schemaKey: 'flotation.jgCmS', aliasBindings: ['[data-schema-input="flotation.jgCmS"]'] },
       { field: 'd32Mm', type: 'number', min: 0.8, max: 3.0, defaultValue: 1.6, sobolTier: 1, sobolSensitivityScore: 0.36, domBinding: '#wb-flot-d32', schemaKey: 'flotation.d32Mm', aliasBindings: ['[data-schema-input="flotation.d32Mm"]'] },
@@ -204,7 +223,9 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     islandComponent: 'FiltrationCalculatorIsland.astro',
     conceptRefs: ['circuits', 'decision_criteria', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-26', 'ARB-SMAT-51', 'ARB-SMAT-58', 'ARB-SMAT-59'],
-    routes: ['/filtracion/', '/en/filtration/', '/filtracion/prensa/', '/en/filtration/press/', '/filtracion/repuestos/', '/en/filtration/parts/', '/cotizar/', '/en/quote/'],
+    routes: ['/filtracion/', '/en/filtration/', '/filtracion/prensa/', '/en/filtration/press/', '/filtracion/repuestos/', '/en/filtration/parts/'],
+    interactiveRoutes: ['/filtracion/', '/en/filtration/', '/filtracion/prensa/', '/en/filtration/press/', '/filtracion/repuestos/', '/en/filtration/parts/'],
+    readonlyRoutes: [],
     inputsSchema: [
       { field: 'plateWidthMm', type: 'number', min: 630, max: 2000, defaultValue: 1200, sobolTier: 1, sobolSensitivityScore: 0.34, domBinding: '#filt-plate-width', schemaKey: 'filtration.plateWidthMm', aliasBindings: ['[data-schema-input="filtration.plateWidthMm"]'] },
       { field: 'feedPressureBar', type: 'number', min: 4, max: 25, defaultValue: 12, sobolTier: 1, sobolSensitivityScore: 0.28, domBinding: '#wb-filt-pressure', schemaKey: 'filtration.feedPressureBar', aliasBindings: ['[data-schema-input="filtration.feedPressureBar"]'] },
@@ -228,10 +249,12 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     islandComponent: 'CycloneScreenIsland.astro',
     conceptRefs: ['circuits', 'decision_criteria', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-26', 'ARB-SMAT-30', 'ARB-SMAT-58', 'ARB-SMAT-59'],
-    routes: ['/clasificacion/', '/en/classification/', '/cotizar/', '/en/quote/'],
+    routes: ['/clasificacion/', '/en/classification/'],
+    interactiveRoutes: ['/clasificacion/', '/en/classification/'],
+    readonlyRoutes: [],
     inputsSchema: [
       { field: 'feedSg', type: 'number', min: 1.02, max: 3.5, defaultValue: 1.35, sobolTier: 1, sobolSensitivityScore: 0.26, domBinding: '#wb-cyc-sg-feed', schemaKey: 'cycloneScreen.feedSg', aliasBindings: ['[data-schema-input="cycloneScreen.feedSg"]'] },
-      { field: 'underflowSg', type: 'number', min: 1.15, max: 4.5, defaultValue: 1.82, sobolTier: 1, sobolSensitivityScore: 0.34, domBinding: '#wb-cyc-sg-uf', schemaKey: 'cycloneScreen.underflowSg', aliasBindings: ['[data-schema-input="cycloneScreen.underflowSg"]'] },
+      { field: 'underflowSg', type: 'number', min: 1.15, max: 4.5, defaultValue: 1.72, sobolTier: 1, sobolSensitivityScore: 0.34, domBinding: '#wb-cyc-sg-uf', schemaKey: 'cycloneScreen.underflowSg', aliasBindings: ['[data-schema-input="cycloneScreen.underflowSg"]'] },
       { field: 'overflowSg', type: 'number', min: 1.01, max: 2.5, defaultValue: 1.15, sobolTier: 1, sobolSensitivityScore: 0.19, domBinding: '#wb-cyc-sg-of', schemaKey: 'cycloneScreen.overflowSg', aliasBindings: ['[data-schema-input="cycloneScreen.overflowSg"]'] },
       { field: 'solidsSg', type: 'number', min: 1.8, max: 5.5, defaultValue: 2.7, sobolTier: 2, sobolSensitivityScore: 0.12, domBinding: '#wb-cyc-solids-sg', schemaKey: 'cycloneScreen.solidsSg', aliasBindings: ['[data-schema-input="cycloneScreen.solidsSg"]'] },
       { field: 'apexDiameterMm', type: 'number', min: 12, max: 250, defaultValue: 50, sobolTier: 1, sobolSensitivityScore: 0.24, domBinding: '#wb-cyc-apex-mm', schemaKey: 'cycloneScreen.apexDiameterMm', aliasBindings: ['[data-schema-input="cycloneScreen.apexDiameterMm"]'] },
@@ -262,7 +285,9 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     islandComponent: 'ProcessControlIsland.astro',
     conceptRefs: ['atomic_parts_13', 'decision_criteria', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-11', 'ARB-SMAT-51', 'ARB-SMAT-58', 'ARB-SMAT-59'],
-    routes: ['/control-de-procesos/', '/en/process-control/', '/cotizar/', '/en/quote/'],
+    routes: ['/control-de-procesos/', '/en/process-control/'],
+    interactiveRoutes: ['/control-de-procesos/', '/en/process-control/'],
+    readonlyRoutes: [],
     inputsSchema: [
       { field: 'marcyMode', type: 'enum', defaultValue: 'cw', sobolTier: 1, sobolSensitivityScore: 0.24, domBinding: '#wb-ctrl-solve-mode', schemaKey: 'metrology.marcyMode', aliasBindings: ['[data-schema-input="metrology.marcyMode"]'] },
       { field: 'solidsSpecificGravity', type: 'number', min: 2.2, max: 4.4, defaultValue: 2.8, sobolTier: 1, sobolSensitivityScore: 0.27, domBinding: '#wb-ctrl-sg', schemaKey: 'metrology.solidsSpecificGravity', aliasBindings: ['[data-schema-input="metrology.solidsSpecificGravity"]'] },
@@ -289,7 +314,18 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
       { field: 'twoPersonAssistRequired', unit: 'bool', isoPure: false, domBinding: '#wb-ctrl-res-two-person', schemaKey: 'metrology.twoPersonAssistRequired', aliasBindings: ['[data-schema-output="metrology.twoPersonAssistRequired"]'] },
       { field: 'rosinRammlerUniformityN', unit: '-', decimals: 2, isoPure: true, domBinding: '#wb-ctrl-res-rr', schemaKey: 'metrology.rosinRammlerUniformityN', aliasBindings: ['[data-schema-output="metrology.rosinRammlerUniformityN"]'] },
       { field: 'rosinRammlerY', unit: '-', decimals: 4, isoPure: true, domBinding: '#wb-ctrl-res-rry', schemaKey: 'metrology.rosinRammlerY', aliasBindings: ['[data-schema-output="metrology.rosinRammlerY"]'] },
-      { field: 'recommendedContainerEs', unit: 'text', isoPure: false, domBinding: '#wb-ctrl-res-container', schemaKey: 'metrology.recommendedContainerEs', aliasBindings: ['[data-schema-output="metrology.recommendedContainerEs"]', '[data-schema-output="metrology.recommendedContainerEn"]'] }
+      { field: 'recommendedContainerEs', unit: 'text', isoPure: false, domBinding: '#wb-ctrl-res-container', schemaKey: 'metrology.recommendedContainerEs', aliasBindings: ['[data-schema-output="metrology.recommendedContainerEs"]', '[data-schema-output="metrology.recommendedContainerEn"]'] },
+      { field: 'topSizeD95Mm', unit: 'mm', decimals: 2, isoPure: true, domBinding: '#wb-ctrl-res-topsize', schemaKey: 'metrology.topSizeD95Mm', aliasBindings: ['[data-schema-output="metrology.topSizeD95Mm"]'] },
+      { field: 'theoreticalGyGrams', unit: 'g', decimals: 1, isoPure: true, domBinding: '#wb-ctrl-res-gy-theo', schemaKey: 'metrology.theoreticalGyGrams', aliasBindings: ['[data-schema-output="metrology.theoreticalGyGrams"]'] },
+      { field: 'minDrySampleGrams', unit: 'g', decimals: 0, isoPure: true, domBinding: '#wb-ctrl-res-gy-min-g', schemaKey: 'metrology.minDrySampleGrams', aliasBindings: ['[data-schema-output="metrology.minDrySampleGrams"]'] },
+      { field: 'slurrySampleLiters', unit: 'L', decimals: 2, isoPure: true, domBinding: '#wb-ctrl-gy-pulp-liters', schemaKey: 'metrology.slurrySampleLiters', aliasBindings: ['[data-schema-output="metrology.slurrySampleLiters"]'] },
+      { field: 'estimatedCycleMinutes', unit: 'min', decimals: 0, isoPure: true, domBinding: '#wb-ctrl-res-cycle-min', schemaKey: 'metrology.estimatedCycleMinutes', aliasBindings: ['[data-schema-output="metrology.estimatedCycleMinutes"]'] },
+      { field: 'residualCakeMoisturePct', unit: '%', decimals: 1, isoPure: true, domBinding: '#wb-ctrl-res-cake-moist', schemaKey: 'metrology.residualCakeMoisturePct', aliasBindings: ['[data-schema-output="metrology.residualCakeMoisturePct"]'] },
+      { field: 'screeningMode', unit: 'mode', isoPure: false, domBinding: '#wb-ctrl-res-screen-mode', schemaKey: 'metrology.screeningMode', aliasBindings: ['[data-schema-output="metrology.screeningMode"]'] },
+      { field: 'frameDiameterInches', unit: 'in', decimals: 0, isoPure: true, domBinding: '#wb-ctrl-res-frame-in', schemaKey: 'metrology.frameDiameterInches', aliasBindings: ['[data-schema-output="metrology.frameDiameterInches"]'] },
+      { field: 'sieveTopSizeD95Mm', unit: 'mm', decimals: 2, isoPure: true, domBinding: '#wb-ctrl-res-sieve-d95', schemaKey: 'metrology.sieveTopSizeD95Mm', aliasBindings: ['[data-schema-output="metrology.sieveTopSizeD95Mm"]'] },
+      { field: 'primaryApertureMicrons', unit: 'µm', decimals: 0, isoPure: true, domBinding: '#wb-ctrl-res-primary-um', schemaKey: 'metrology.primaryApertureMicrons', aliasBindings: ['[data-schema-output="metrology.primaryApertureMicrons"]'] },
+      { field: 'sieveStackSummary', unit: 'text', isoPure: false, domBinding: '#wb-ctrl-res-stack-sum', schemaKey: 'metrology.sieveStackSummary', aliasBindings: ['[data-schema-output="metrology.sieveStackSummary"]'] }
     ],
     allowUnboundReasons: []
   },
@@ -301,6 +337,8 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     conceptRefs: ['quick_checkout_skus', 'atomic_parts_13', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-35', 'ARB-SMAT-55', 'ARB-SMAT-58', 'ARB-SMAT-59'],
     routes: ['/', '/en/', '/catalogo/', '/en/catalog/', '/equipos/', '/en/process-equipment/'],
+    interactiveRoutes: ['/catalogo/', '/en/catalog/'],
+    readonlyRoutes: ['/', '/en/', '/equipos/', '/en/process-equipment/'],
     inputsSchema: [
       { field: 'avenueFilter', type: 'enum', defaultValue: 'all', sobolTier: 1, sobolSensitivityScore: 0.40, domBinding: '[data-facet-avenue-btn]', schemaKey: 'catalogFacet.avenueFilter', aliasBindings: ['[data-schema-input="catalogFacet.avenueFilter"]'] },
       { field: 'verticalFilter', type: 'enum', defaultValue: 'all', sobolTier: 1, sobolSensitivityScore: 0.35, domBinding: '[data-family-chip]', schemaKey: 'catalogFacet.verticalFilter', aliasBindings: ['[data-schema-input="catalogFacet.verticalFilter"]'] },
@@ -320,6 +358,8 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     conceptRefs: ['quick_checkout_skus', 'workbench_lens_v2', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-27', 'ARB-SMAT-39', 'ARB-SMAT-58', 'ARB-SMAT-59'],
     routes: ['/', '/en/', '/catalogo/', '/en/catalog/', '/equipos/', '/en/process-equipment/'],
+    interactiveRoutes: ['/catalogo/', '/en/catalog/', '/equipos/', '/en/process-equipment/'],
+    readonlyRoutes: ['/', '/en/'],
     inputsSchema: [
       { field: 'rawPartQuery', type: 'string', defaultValue: '', sobolTier: 1, sobolSensitivityScore: 0.90, domBinding: '[data-dropin-input]', schemaKey: 'dropIn.rawPartQuery', aliasBindings: ['[data-schema-input="dropIn.rawPartQuery"]'] }
     ],
@@ -339,6 +379,8 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     conceptRefs: ['workbench_lens_v2', 'print_receipt', 'atomic_parts_13', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-43', 'ARB-SMAT-56', 'ARB-SMAT-58', 'ARB-SMAT-59'],
     routes: ['/catalogo/[code]/', '/en/catalog/[code]/', '/productos/[slug]/', '/en/products/[slug]/', '/cotizar/', '/en/quote/', '/acuse/', '/en/thank-you/'],
+    interactiveRoutes: ['/cotizar/', '/en/quote/'],
+    readonlyRoutes: ['/catalogo/[code]/', '/en/catalog/[code]/', '/productos/[slug]/', '/en/products/[slug]/', '/acuse/', '/en/thank-you/'],
     inputsSchema: [
       { field: 'predictedWearHours', type: 'number', min: 720, max: 18000, defaultValue: 2400, sobolTier: 1, sobolSensitivityScore: 0.46, domBinding: '#wb-jrp-wear-hours', schemaKey: 'jrp.predictedWearHours', aliasBindings: ['[data-schema-input="jrp.predictedWearHours"]'] },
       { field: 'operatingHoursPerDay', type: 'number', min: 1, max: 24, defaultValue: 24, sobolTier: 2, sobolSensitivityScore: 0.19, domBinding: '#wb-jrp-daily-hours', schemaKey: 'jrp.operatingHoursPerDay', aliasBindings: ['[data-schema-input="jrp.operatingHoursPerDay"]'] },
@@ -366,6 +408,8 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     conceptRefs: ['print_receipt', 'NAP', 'urgency', '301 Mappings', 'locale_pref', 'trust_charter', 'field_cases', 'faqs', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-29', 'ARB-SMAT-53', 'ARB-SMAT-58', 'ARB-SMAT-59'],
     routes: ['/cotizar/', '/en/quote/', '/acuse/', '/en/thank-you/'],
+    interactiveRoutes: ['/cotizar/', '/en/quote/'],
+    readonlyRoutes: ['/acuse/', '/en/thank-you/'],
     inputsSchema: [
       { field: 'quantity', type: 'number', min: 1, max: 500, defaultValue: 1, sobolTier: 1, sobolSensitivityScore: 0.25, domBinding: '#wb-erp-quantity', schemaKey: 'erpExport.quantity', aliasBindings: ['[data-schema-input="erpExport.quantity"]'] },
       { field: 'placa_ref', type: 'string', defaultValue: '', sobolTier: 2, sobolSensitivityScore: 0.10, domBinding: '#wb-client-ref', schemaKey: 'erpExport.placa_ref', aliasBindings: ['[data-schema-input="erpExport.placa_ref"]'] },
@@ -458,47 +502,18 @@ export function formatSchemaOutputValue(domainId, field, value, locale = 'es') {
   ) {
     return formatCycloneRegimeHuman(str, locale);
   }
+  if (
+    field === 'screeningMode' &&
+    /^(wet|dry)$/i.test(str)
+  ) {
+    const isWet = str.toLowerCase() === 'wet';
+    return locale === 'en'
+      ? (isWet ? 'Wet (≤150 µm)' : 'Dry Screening')
+      : (isWet ? 'Húmedo (≤150 µm)' : 'Tamizado Seco');
+  }
   return str;
 }
 
-/**
- * Recolecta todos los selectores #id declarados en inputsSchema y outputsSchema.
- * @returns {{ inputs: string[], outputs: string[] }}
- */
-export function listAllDeclaredDomIds() {
-  const inputs = [];
-  const outputs = [];
-  const collectHashIds = (selector, target) => {
-    if (typeof selector === 'string' && selector.startsWith('#')) {
-      const cleanId = selector.slice(1).split(/[,\s]/)[0].trim();
-      if (cleanId && !target.includes(cleanId)) target.push(cleanId);
-    }
-  };
-  for (const schema of listAllEngineSchemas()) {
-    for (const inp of schema.inputsSchema) {
-      collectHashIds(inp.domBinding, inputs);
-      if (Array.isArray(inp.aliasBindings)) {
-        for (const alias of inp.aliasBindings) collectHashIds(alias, inputs);
-      }
-    }
-    for (const out of schema.outputsSchema) {
-      collectHashIds(out.domBinding, outputs);
-      if (Array.isArray(out.aliasBindings)) {
-        for (const alias of out.aliasBindings) collectHashIds(alias, outputs);
-      }
-    }
-  }
-  return { inputs, outputs };
-}
-
-/**
- * Normaliza y valida una carga útil contra el inputsSchema de un dominio.
- * Garantiza ausencia total de evaluación dinámica y acotación segura de rangos.
- *
- * @param {string} domainId
- * @param {Record<string, any>} [payload={}]
- * @returns {{ valid: boolean, normalized: Record<string, any>, violations: string[] }}
- */
 export function validateSchemaPayload(domainId, payload = {}) {
   const schema = getEngineSchema(domainId);
   if (!schema) {
@@ -538,20 +553,4 @@ export function validateSchemaPayload(domainId, payload = {}) {
     }
   }
   return { valid: violations.length === 0, normalized, violations };
-}
-
-/**
- * Auditoría de trazabilidad Pre-RS/Post-RS: verifica que todo concepto en `CONCEPT-REGISTRY.md`
- * esté cubierto por al menos un dominio de `ENGINE_SCHEMA_REGISTRY`.
- *
- * @param {string[]} registeredConcepts
- * @returns {{ closed: boolean, missingConcepts: string[] }}
- */
-export function verifyConceptRegistryCoverage(registeredConcepts = []) {
-  const covered = new Set();
-  for (const schema of listAllEngineSchemas()) {
-    for (const ref of schema.conceptRefs) covered.add(ref);
-  }
-  const missingConcepts = registeredConcepts.filter((c) => !covered.has(c));
-  return { closed: missingConcepts.length === 0, missingConcepts };
 }

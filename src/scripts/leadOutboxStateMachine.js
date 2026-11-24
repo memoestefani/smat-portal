@@ -110,7 +110,7 @@ export function resolveHonestWebhookStatus({
   return {
     state: WEBHOOK_OUTBOX_STATES.DRAFT_LOCAL,
     dataAttr: 'draft_local',
-    cssClass: 'is-webhook-blocked',
+    cssClass: 'is-webhook-draft',
     verifiedDelivery: false,
     message: isEn
       ? 'Local Draft (Not Auto-Sent) — Use WhatsApp, Email, or PDF A4 below to dispatch to Durango Warehouse.'

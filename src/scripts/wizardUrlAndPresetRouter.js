@@ -5,7 +5,7 @@
  * lentes bidireccionales PutGet (Foster et al. 2007; Barbosa et al. 2010) sin dependencia del DOM.
  */
 
-export const ROLE_ALIAS_MAP = Object.freeze({
+const ROLE_ALIAS_MAP = Object.freeze({
   impulsor: 'solo_impulsor',
   impulsor_bomba: 'solo_impulsor',
   impulsor_5_alabes: 'solo_impulsor',
@@ -76,7 +76,7 @@ export const ROLE_ALIAS_MAP = Object.freeze({
   custom: 'balanza_marcy'
 });
 
-export const FLOTATION_CONDITION_ALIAS_MAP = Object.freeze({
+const FLOTATION_CONDITION_ALIAS_MAP = Object.freeze({
   sulfuros_alta_agitacion: 'sulfuros_alta_agitacion',
   oxidos_particula_gruesa: 'oxidos_particula_gruesa',
   espuma_inestable: 'espuma_inestable',
@@ -88,7 +88,7 @@ export const FLOTATION_CONDITION_ALIAS_MAP = Object.freeze({
   limpieza_selectiva: 'limpieza_selectiva'
 });
 
-export const FILTRATION_CONDITION_ALIAS_MAP = Object.freeze({
+const FILTRATION_CONDITION_ALIAS_MAP = Object.freeze({
   jales_secos: 'jales_secos',
   concentrado_fino: 'concentrado_fino',
   chorro_entre_placas: 'chorro_entre_placas',
@@ -135,7 +135,7 @@ const FILTRATION_DOM_CHIP_MAP = Object.freeze({
  * @param {string} [rawCond='']
  * @returns {string}
  */
-export function resolveFlotationDomChipKey(rawCond = '') {
+function resolveFlotationDomChipKey(rawCond = '') {
   if (!rawCond) return '';
   const clean = String(rawCond).trim().toLowerCase();
   return FLOTATION_DOM_CHIP_MAP[clean] || clean;
@@ -146,7 +146,7 @@ export function resolveFlotationDomChipKey(rawCond = '') {
  * @param {string} [rawCond='']
  * @returns {string}
  */
-export function resolveFiltrationDomChipKey(rawCond = '') {
+function resolveFiltrationDomChipKey(rawCond = '') {
   if (!rawCond) return '';
   const clean = String(rawCond).trim().toLowerCase();
   return FILTRATION_DOM_CHIP_MAP[clean] || clean;
@@ -157,7 +157,7 @@ export function resolveFiltrationDomChipKey(rawCond = '') {
  * @param {string} [rawCond='']
  * @returns {string}
  */
-export function normalizeFlotationConditionKey(rawCond = '') {
+function normalizeFlotationConditionKey(rawCond = '') {
   if (!rawCond) return '';
   const clean = String(rawCond).trim().toLowerCase();
   return FLOTATION_CONDITION_ALIAS_MAP[clean] || clean;
@@ -168,7 +168,7 @@ export function normalizeFlotationConditionKey(rawCond = '') {
  * @param {string} [rawCond='']
  * @returns {string}
  */
-export function normalizeFiltrationConditionKey(rawCond = '') {
+function normalizeFiltrationConditionKey(rawCond = '') {
   if (!rawCond) return '';
   const clean = String(rawCond).trim().toLowerCase();
   return FILTRATION_CONDITION_ALIAS_MAP[clean] || clean;
@@ -181,7 +181,7 @@ export function normalizeFiltrationConditionKey(rawCond = '') {
  * @param {string} [rawCircuit='']
  * @returns {string}
  */
-export function resolveCanonicalRoleFromUrlParam(rawRole = '', rawPieza = '', rawCircuit = '') {
+function resolveCanonicalRoleFromUrlParam(rawRole = '', rawPieza = '', rawCircuit = '') {
   const candidate = String(rawRole || rawPieza || '').trim();
   if (candidate) {
     const lower = candidate.toLowerCase();
@@ -225,7 +225,7 @@ export function resolveCanonicalRoleFromUrlParam(rawRole = '', rawPieza = '', ra
  * Extrae y normaliza la telemetría de la Báscula Marcy de 3 Vasos desde parámetros URL (D5-V36).
  * @param {Object|URLSearchParams|string} [input={}]
  */
-export function parseMarcyThreeCupUrlParams(input = {}) {
+function parseMarcyThreeCupUrlParams(input = {}) {
   let getParam = (_k) => null;
   if (typeof input === 'string') {
     const q = input.includes('?') ? input.split('?')[1].split('#')[0] : input.replace(/^[#?]/, '');

@@ -1,7 +1,7 @@
 import atomicPartsJson from '../../data/atomic_parts.json' with { type: 'json' };
 import miningGroupsJson from '../../data/mining_groups.json' with { type: 'json' };
 import { WET_END_MATERIAL_MATRIX } from './tribologyAndCompatibilityEngine.js';
-import { parseUrlContextParams, formatSapPlaintextImpl, formatMailtoUrlImpl, formatWhatsappUrlImpl, buildCanonicalEngineeringSnapshotImpl, dispatchLeadWebhook } from './districtProfilesAndSkuCatalog.js';
+import { parseUrlContextParams, formatSapPlaintextImpl, formatMailtoUrlImpl, formatWhatsappUrlImpl, buildCanonicalEngineeringSnapshotImpl } from './districtProfilesAndSkuCatalog.js';
 export const ATOMIC_PARTS_SSOT_COUNT = Array.isArray(atomicPartsJson) ? atomicPartsJson.length : 13;
 export * from './districtProfilesAndSkuCatalog.js';
 export const SMAT_WORKBENCH_EVENT = 'smat:workbench_update';
@@ -66,7 +66,7 @@ export function formatWhatsappUrl(data = {}) { return formatWhatsappUrlImpl(data
 export function buildCanonicalEngineeringSnapshot(d = {}) { return buildCanonicalEngineeringSnapshotImpl(d); }
 const SMAT_SESSION_KEY = 'smat_workbench_session';
 export const SMAT_WORKBENCH_STATE_KEY = 'smat_workbench_state_v2';
-const DEFAULT_WORKBENCH_STATE_V2 = Object.freeze({ version: 2, circuit: 'bombeo', role: 'kit_wet_end', pipe_size: '6x4', stress_symptom: '', flot_role: 'rotor_estator', flot_capacity: '100ft', flot_condition: '', filt_role: 'placas_telas', filt_capacity: '1500', filt_condition: '', ctrl_role: 'balanza_marcy', ctrl_spec: 'marcy_12_rings', flow: 180, solids: 45, d80: 180, sg: 2.7, ph: 7.0, altitude: 2400, downtime: 4, tcoAlloy: 'A05', isOpex: true, pump_material: 'alto_cromo_cr27', drive_arrangement: 'CV', seal_branch: 'expeller_dry', b2_mm: 48, cap_c_kn: 145, claro_mm: 0.75, driver_pulley_mm: 220, driven_pulley_mm: 340, motor_rpm: 1775, shaft_power_kw: 55, sequence_preset: 'canonical', rhop: 1.402, lib_um: 100, grade: 0.05, rr_n: 1.08, d95: 0.21, p80: 150, gy_kg: 0.25, name: '', company: '', phone: '', email: '', destination: 'Retiro en Almacén Central Durango (Coordinación con Folio)', details: '', clientRef: '', dim_outer_dia: '', dim_shaft_bore: '', pulpPh: 7.0, sealBranch: 'expeller_dry', impellerExitWidthMm: 48, dynamicCapacityCkN: 145, oreDensitySg: 1.402, cycloneCircuit: Object.freeze({ feedSg: 1.35, underflowSg: 1.82, overflowSg: 1.15, apexMm: 50, vortexMm: 100, d50cMicrons: 74, solidsRecoveryPct: 84.2, ropingRisk: false }) });
+const DEFAULT_WORKBENCH_STATE_V2 = Object.freeze({ version: 2, circuit: 'bombeo', role: 'kit_wet_end', pipe_size: '6x4', stress_symptom: '', flot_role: 'rotor_estator', flot_capacity: '100ft', flot_condition: '', filt_role: 'placas_telas', filt_capacity: '1500', filt_condition: '', ctrl_role: 'balanza_marcy', ctrl_spec: 'marcy_12_rings', flow: 180, solids: 45, d80: 180, sg: 2.7, ph: 7.0, altitude: 2400, downtime: 4, tcoAlloy: 'A05', isOpex: true, pump_material: 'alto_cromo_cr27', drive_arrangement: 'CV', seal_branch: 'expeller_dry', b2_mm: 48, cap_c_kn: 145, claro_mm: 0.75, driver_pulley_mm: 220, driven_pulley_mm: 340, motor_rpm: 1775, shaft_power_kw: 55, sequence_preset: 'canonical', rhop: 1.402, lib_um: 100, grade: 0.05, rr_n: 1.08, d95: 0.21, p80: 150, gy_kg: 0.25, name: '', company: '', phone: '', email: '', destination: 'Retiro en Almacén Central Durango (Coordinación con Folio)', details: '', clientRef: '', dim_outer_dia: '', dim_shaft_bore: '', pulpPh: 7.0, sealBranch: 'expeller_dry', impellerExitWidthMm: 48, dynamicCapacityCkN: 145, oreDensitySg: 1.402, cycloneCircuit: Object.freeze({ feedSg: 1.35, underflowSg: 1.72, overflowSg: 1.15, apexMm: 50, vortexMm: 100, d50cMicrons: 133, solidsRecoveryPct: 72.2, ropingRisk: false }) });
 export function normalizeMaterialKey(raw = '') {
   const s = String(raw || '').trim().toLowerCase();
   if (!s) return 'alto_cromo_cr27';
@@ -339,17 +339,6 @@ export function loadWorkbenchSession() {
     return null;
   }
 }
-export function mergeWorkbenchLensState(incomingPartial = {}, existingState = {}) {
-  const base = normalizeWorkbenchStateV2(existingState || {});
-  if (!incomingPartial || typeof incomingPartial !== 'object') return base;
-  const definedEntries = {};
-  for (const [k, v] of Object.entries(incomingPartial)) {
-    if (v !== undefined && v !== null && v !== '') {
-      definedEntries[k] = v;
-    }
-  }
-  return workbenchStateLens.put(base, definedEntries);
-}
 export function buildWizardUrl(opts = {}) {
   const lang = opts.lang === 'en' ? 'en' : 'es';
   const basePath = lang === 'en' ? '/en/quote/' : '/cotizar/';
@@ -388,6 +377,6 @@ export function buildWizardUrl(opts = {}) {
   return `${basePath}${queryStr ? `?${queryStr}` : ''}#rfq`;
 }
 export {
-  loadWorkbenchSession as loadWorkbenchState, saveWorkbenchSession as saveWorkbenchState, dispatchLeadWebhook as sendLeadToServer
+  loadWorkbenchSession as loadWorkbenchState, saveWorkbenchSession as saveWorkbenchState
 };
 export { SAT_TIGIE_BY_VERTICAL, formatSatTigieInvoiceLine, formatDualCheckoutPayload } from './workbenchExportFormatters.js';

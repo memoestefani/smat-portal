@@ -84,7 +84,6 @@ const testId = isLiners ? 'liners-material-matrix' : 'impeller-material-matrix';
           <TribologyAlloyCore
             locale={locale}
             variant={variant}
-            embeddedInWizard={false}
             showVerticalActions={true}
             panelClass="trib-core-standalone"
           />
@@ -397,16 +396,6 @@ const testId = isLiners ? 'liners-material-matrix' : 'impeller-material-matrix';
       </div>
     </section>
   </div>
-)}
-
-{!showVerticalShell && (
-  <TribologyAlloyCore
-    locale={locale}
-    variant={variant}
-    embeddedInWizard={true}
-    showVerticalActions={false}
-    panelClass="trib-core-embedded"
-  />
 )}
 
 <script>

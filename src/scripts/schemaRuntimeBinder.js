@@ -13,6 +13,7 @@
 
 import {
   ENGINE_SCHEMA_REGISTRY,
+  TWO_SORT_PARTITION_VERSION,
   formatSchemaOutputValue,
   getEngineSchema,
   listAllEngineSchemas,
@@ -42,9 +43,21 @@ function queryAllSafe(root, selector) {
 function resolveCandidateRoots(root, domainId) {
   if (!root) return [];
   const roots = queryAllSafe(root, `[data-domain-root="${domainId}"]`);
-  if (roots.length > 0) return roots;
+  if (roots.length > 0) return [roots[0]];
   // Compatibilidad con mocks simples o fragmentos que ya actúan como raíz del documento/componente
   return [root];
+}
+
+export function getDomainRouteMode(domainId, pathname = '/') {
+  const schema = getEngineSchema(domainId);
+  if (!schema) return 'none';
+  const norm = String(pathname || '/').trim() || '/';
+  const matchRoute = (list) =>
+    Array.isArray(list) && list.some((r) => r === norm || (r.includes('[') && norm.startsWith(r.split('[')[0])));
+  if (matchRoute(schema.interactiveRoutes)) return 'interactive';
+  if (matchRoute(schema.readonlyRoutes)) return 'readonly';
+  if (matchRoute(schema.routes)) return 'interactive';
+  return 'none';
 }
 
 function readSingleNodeValue(node, fieldDef) {
@@ -287,6 +300,7 @@ export function bindDomainSchemaRoot(root, domainIds, onChange) {
     const candidateRoots = resolveCandidateRoots(root, domainId);
 
     for (const scope of candidateRoots) {
+      scope.setAttribute?.('data-schema-version', TWO_SORT_PARTITION_VERSION);
       for (const inp of schema.inputsSchema) {
         const selectors = [
           `[data-schema-input="${domainId}.${inp.field}"]`,

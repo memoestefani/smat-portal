@@ -1,0 +1,175 @@
+---
+import { MINING_GROUPS_CATALOG, MINING_UNITS_COUNT } from '../../scripts/wizardCatalogData.js';
+
+interface Props {
+  lang?: 'es' | 'en';
+}
+
+const { lang = 'es' } = Astro.props;
+const isEs = lang === 'es';
+const stations = isEs
+  ? [
+      { href: '/bombeo/', label: 'Bombeo y Sellos' },
+      { href: '/clasificacion/', label: 'Ciclones y Criba' },
+      { href: '/flotacion/', label: 'Flotación' },
+      { href: '/filtracion/', label: 'Filtración Prensa' },
+      { href: '/control-de-procesos/', label: 'Balanzas y Tamices' },
+    ]
+  : [
+      { href: '/en/pumping/', label: 'Pumping & Seals' },
+      { href: '/en/classification/', label: 'Cyclones & Screens' },
+      { href: '/en/flotation/', label: 'Flotation' },
+      { href: '/en/filtration/', label: 'Filter Press' },
+      { href: '/en/process-control/', label: 'Scales & Sieves' },
+    ];
+---
+
+<section class="fastlane-bom-bar" id="fastlane-bom-bar" aria-labelledby="fastlane-bom-heading">
+  <div class="fastlane-bom-head">
+    <div>
+      <strong id="fastlane-bom-heading" class="fastlane-title">
+        {isEs ? 'Reorden Rápido por SKU o Lista BOM (Pegar desde Excel / SAP)' : 'Quick SKU / BOM Reorder (Paste from Excel / SAP)'}
+      </strong>
+      <p class="fastlane-sub">
+        {isEs
+          ? 'Pegue uno o varios códigos SMAT o equivalencias operativas con cantidad (ej. SMAT-PUMP-WETKIT-554 2).'
+          : 'Paste one or more SMAT SKUs or operational references with qty (e.g. SMAT-PUMP-WETKIT-554 2).'}
+      </p>
+    </div>
+    <button type="button" id="btn-share-purchasing-link" class="assist-pill-btn fastlane-share-btn">
+      {isEs ? 'Copiar enlace para Compras' : 'Copy Link for Purchasing'}
+    </button>
+  </div>
+
+  <div class="fastlane-bom-input-row">
+    <textarea
+      id="fastlane-bom-input"
+      class="wb-input font-mono-tech fastlane-textarea"
+      rows="2"
+      aria-label={isEs ? 'Pegar lista de códigos o SKU' : 'Paste SKU or BOM list'}
+      placeholder={isEs ? 'SMAT-PUMP-WETKIT-554\t2&#10;4x SMAT-CYC-D6-D20' : 'SMAT-PUMP-WETKIT-554\t2&#10;4x SMAT-CYC-D6-D20'}
+    ></textarea>
+    <button type="button" id="fastlane-bom-apply-btn" class="btn btn-primary fastlane-apply-btn">
+      {isEs ? 'Agregar Lista a Bandeja' : 'Add List to Tray'}
+    </button>
+  </div>
+  <p id="fastlane-bom-feedback" class="fastlane-feedback font-mono-tech hidden" role="status" aria-live="polite"></p>
+  <p id="share-purchasing-feedback" class="fastlane-feedback font-mono-tech hidden" role="status" aria-live="polite"></p>
+
+  <div class="fastlane-mine-grid">
+    <div class="form-group">
+      <label for="wb-mining-group-select" class="qw-mini-label">
+        {isEs ? `Grupo Minero (${MINING_GROUPS_CATALOG.length} grupos):` : `Mining Group (${MINING_GROUPS_CATALOG.length} groups):`}
+      </label>
+      <select id="wb-mining-group-select" class="wb-select qw-compact-select">
+        <option value="">{isEs ? `— Seleccionar grupo (${MINING_GROUPS_CATALOG.length}) —` : `— Select group (${MINING_GROUPS_CATALOG.length}) —`}</option>
+        {MINING_GROUPS_CATALOG.map((grp) => (
+          <option value={grp.id}>{grp.name}</option>
+        ))}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="wb-mining-unit-select" class="qw-mini-label">
+        {isEs ? `Unidad Minera (${MINING_UNITS_COUNT} unidades):` : `Mining Unit (${MINING_UNITS_COUNT} units):`}
+      </label>
+      <select id="wb-mining-unit-select" class="wb-select qw-compact-select">
+        <option value="">{isEs ? '— Seleccionar unidad o distrito —' : '— Select site or district —'}</option>
+      </select>
+    </div>
+  </div>
+  <div id="wb-step1-pulp-profile-badge" class="unit-pulp-profile-badge hidden qw-pulp-badge"></div>
+  <div id="wb-mining-preset-telemetry" data-mining-preset-telemetry class="qw-mining-telemetry hidden"></div>
+
+  <nav class="fastlane-stations-nav" aria-label={isEs ? 'Calculadoras especializadas por estación' : 'Specialized station calculators'}>
+    <span class="fastlane-stations-label">{isEs ? '¿Requiere dimensionar primero?' : 'Need to size a circuit first?'}</span>
+    <div class="fastlane-stations-links">
+      {stations.map((st) => (
+        <a href={st.href} class="fastlane-station-link">{st.label} →</a>
+      ))}
+    </div>
+  </nav>
+</section>
+
+<style>
+  .fastlane-bom-bar {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    margin-bottom: 1rem;
+  }
+  .fastlane-bom-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.65rem;
+  }
+  .fastlane-title {
+    display: block;
+    font-size: 0.95rem;
+    color: #0f172a;
+  }
+  .fastlane-sub {
+    margin: 0.2rem 0 0;
+    font-size: 0.8rem;
+    color: #334155;
+  }
+  .fastlane-bom-input-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.6rem;
+    align-items: stretch;
+  }
+  .fastlane-textarea {
+    min-height: 54px;
+    resize: vertical;
+  }
+  .fastlane-apply-btn,
+  .fastlane-share-btn {
+    min-height: 44px;
+    white-space: nowrap;
+  }
+  .fastlane-feedback {
+    margin: 0.45rem 0 0;
+    font-size: 0.78rem;
+    color: #065f46;
+  }
+  .fastlane-mine-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+  .fastlane-stations-nav {
+    margin-top: 0.75rem;
+    padding-top: 0.65rem;
+    border-top: 1px dashed #cbd5e1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .fastlane-stations-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #1e293b;
+  }
+  .fastlane-stations-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+  .fastlane-station-link {
+    font-size: 0.78rem;
+    color: #0c4a6e;
+    text-decoration: underline;
+    padding: 0.2rem 0.35rem;
+  }
+  @media (max-width: 640px) {
+    .fastlane-bom-input-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

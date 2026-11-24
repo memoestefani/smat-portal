@@ -17,7 +17,7 @@ import {
   bindCanonicalSealBalanceCalculator,
   bindCanonicalTribologySelector,
 } from '../src/scripts/verticalCalculatorsAndLabelsBridge.js';
-import { calculateFilterPressCycleCapacity } from '../src/scripts/wizardCircuitPhysicsController.js';
+import { calculateFilterPressCycleCapacity } from '../src/scripts/mechanicalAndSeparationEngine.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -214,6 +214,13 @@ test('D3-V43, D9-V43 & D10-V43: Pump assembly sequence aliases, Centrifugal Seal
     'seal-sg': '1.38',
     'seal-pexp-out': '',
     'seal-pbox-out': '',
+    'seal-hexp-out': '',
+    'seal-psuc-out': '',
+    'seal-pdis-out': '',
+    'seal-margin-out': '',
+    'seal-hs-hd-out': '',
+    'seal-pwater-psi-out': '',
+    'seal-viable-out': '',
     'seal-pwater-out': '',
     'seal-branch-out': '',
     'seal-status-out': '',
@@ -222,10 +229,14 @@ test('D3-V43, D9-V43 & D10-V43: Pump assembly sequence aliases, Centrifugal Seal
   assert.ok(sealBound);
   assert.ok(sealDom.querySelector('#seal-pexp-out').textContent.includes('kPa'));
   assert.ok(sealDom.querySelector('#seal-branch-out').textContent.includes('02A'));
+  assert.ok(sealDom.querySelector('#seal-hexp-out').textContent.includes('m'));
+  assert.ok(sealDom.querySelector('#seal-margin-out').textContent.includes('kPa'));
+  assert.ok(sealDom.querySelector('#seal-hs-hd-out').textContent.includes('≤18%'));
+  assert.ok(sealDom.querySelector('#seal-viable-out').textContent.includes('02A'));
 
   const tribDom = createDomMock({
     'trib-d80-um': '950',
-    'trib-u2-ms': '29.5',
+    'trib-u2-ms': '28.5',
     'trib-ph': '7.0',
     'trib-mat-select': 'ceramica_sic',
     'trib-series': '6x4',
@@ -287,16 +298,18 @@ test('D3-V43, D9-V43 & D10-V43: Pump assembly sequence aliases, Centrifugal Seal
   );
 });
 
-test('D1-V43, D2-V43, D4-V43 & D11-V43: Zero phantom DOM IDs in controllers and 5-branch material showcase in /bombeo/', () => {
+test('D1-V43, D2-V43, D4-V43 & D11-V43: Zero phantom DOM IDs in checkout/verticals and 5-branch material showcase in /bombeo/', () => {
   const qwCtrl = [
     fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/quoteWizardController.js'), 'utf8'),
     fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/wizardDossierProjector.js'), 'utf8'),
-    fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/wizardStateAndUrlLens.js'), 'utf8'),
+    fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/wizardEventBindings.js'), 'utf8'),
+    fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/verticalCalculatorsAndLabelsBridge.js'), 'utf8'),
+    fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/CycloneScreenCore.astro'), 'utf8'),
   ].join('\n');
   assert.equal(qwCtrl.includes('wb-role-clasificacion'), false);
   assert.equal(qwCtrl.includes('wb-clas-dc-mm'), false);
   assert.equal(qwCtrl.includes('wb-clas-liner'), false);
-  assert.ok(qwCtrl.includes("getElementById('wb-cyc-liner')"));
+  assert.ok(qwCtrl.includes('wb-cyc-liner'));
 
   const shareAstro = fs.readFileSync(path.join(SITE_ROOT, 'src/components/SharePurchasing.astro'), 'utf8');
   assert.equal(shareAstro.includes('smat-qtray-toggle-btn'), false);

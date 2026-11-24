@@ -237,7 +237,7 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
   import { saveWorkbenchState, loadWorkbenchState } from '../../scripts/workbenchBus.js';
   import { bindDomainSchemaRoot, projectDomainOutputs, readAllCanonicalInputs } from '../../scripts/schemaRuntimeBinder.js';
   import { solveXdsmMultidisciplinaryDag } from '../../scripts/wizardXdsmDagSolver.js';
-  import { saveEngineeringContextSnapshot } from '../../scripts/wizardCircuitPhysicsController.js';
+  import { saveEngineeringContextSnapshot } from '../../scripts/rfqSessionStore.js';
   import { projectProcessControlMetrologyInvariants } from '../../scripts/catalogDropInAndJrpProjector.js';
   import {
     bindAtomicPartTrayButtons,
@@ -286,8 +286,19 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
       cwPct: marcy.solidsWeightPercent,
       wrongRingBiasPoints: marcy.wrongRingBiasPoints,
       minimumSampleMassKg: gy.minDrySampleKg,
+      topSizeD95Mm: gy.topSizeD95Mm,
+      theoreticalGyGrams: gy.theoreticalGyGrams,
+      minDrySampleGrams: gy.minDrySampleGrams,
+      slurrySampleLiters: gy.slurrySampleLiters ?? gy.requiredPulpLiters,
+      estimatedCycleMinutes: gy.estimatedCycleMinutes,
+      residualCakeMoisturePct: gy.residualCakeMoisturePct,
       sieveNumber: sieveStack.primaryControlMesh,
       drySampleMassGrams: sieveStack.drySampleMassGrams,
+      screeningMode: sieveStack.screeningMode,
+      frameDiameterInches: sieveStack.frameDiameterInches,
+      sieveTopSizeD95Mm: sieveStack.topSizeD95Mm,
+      primaryApertureMicrons: sieveStack.primaryApertureMicrons,
+      sieveStackSummary: sieveStack.sieveStackSummary,
       hoistRequired: Number(gy.minDrySampleKg) >= 23,
       twoPersonAssistRequired: Number(gy.minDrySampleKg) >= 15 && Number(gy.minDrySampleKg) < 23,
       rosinRammlerUniformityN: sieveStack.rosinRammlerSlopeN,

@@ -44,10 +44,10 @@ const isEs = lang === 'es';
         </span>
       </div>
 
-      <div id="acuse-webhook-status" data-webhook-state="draft_local" class="acuse-webhook-banner is-webhook-blocked">
+      <div id="acuse-webhook-status" data-webhook-state="draft_local" class="acuse-webhook-banner is-webhook-preview">
         {isEs
-          ? 'Borrador Local (Sin envío automático) — Use WhatsApp, Correo o PDF A4 abajo para enviar a Durango.'
-          : 'Local Draft (Not Auto-Sent) — Use WhatsApp, Email, or PDF A4 below to dispatch to Durango Warehouse.'}
+          ? 'Vista Previa de Requisición (A4) — Envíe por WhatsApp, Correo o descargue PDF.'
+          : 'Requisition Preview (A4) — Dispatch via WhatsApp, Email, or save PDF.'}
       </div>
 
       <div class="sheet-section">
@@ -272,6 +272,8 @@ const isEs = lang === 'es';
   .btn-print { background: #0c4a6e; color: #ffffff; font-size: 0.95rem; padding: 0.75rem 1.5rem; }
   .btn-print:hover { background: #082f49; }
   .acuse-webhook-banner { margin: 0.75rem 0 1rem; padding: 0.65rem 0.9rem; border-radius: 6px; font-family: var(--smat-font-mono, monospace); font-size: 0.78rem; font-weight: 700; }
+  .is-webhook-preview { background: #eff6ff; border: 1px solid #93c5fd; color: #0c4a6e; }
+  .is-webhook-draft { background: #f8fafc; border: 1px solid #cbd5e1; color: #1e293b; }
   .is-webhook-sent { background: #ecfdf5; border: 1px solid #059669; color: #064e3b; }
   .is-webhook-blocked { background: #fef2f2; border: 1px solid #dc2626; color: #7f1d1d; }
   .is-urgency-paro { color: #b91c1c; font-weight: 800; }

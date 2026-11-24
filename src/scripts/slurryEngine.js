@@ -234,26 +234,26 @@ export function validatePlantLeadInput(params = {}) {
   let activeTrustBoundaryReasonEs = '';
   let activeTrustBoundaryReasonEn = '';
   const isRubber = materialRaw.includes('hule') || materialRaw.includes('rubber') || materialRaw === 'r55';
-  if (isRubber && (ph < 1.5 || tempC > 110 || d80 > 600)) {
+  if (isRubber && (ph < 1.5 || tempC > 70 || d80 > 600)) {
     activeTrustBoundaryId = 'bound-ph-temp';
-    activeTrustBoundaryTitleEs = 'Límite Técnico (bound-ph-temp): Químicos o Temperatura Extrema en Hule Natural';
-    activeTrustBoundaryTitleEn = 'Technical Limit (bound-ph-temp): Extreme Chemistry or Temperature on Natural Rubber';
-    activeTrustBoundaryReasonEs = `Con pH ${ph.toFixed(1)}, T=${tempC}°C o d80=${Math.round(d80)} µm, el hule natural sufre degradación o desgarre prematuro. Se recomienda migrar a Aleación Especial / Alto Cromo A05 o Poliuretano U01.`;
-    activeTrustBoundaryReasonEn = `At pH ${ph.toFixed(1)}, T=${tempC}°C or d80=${Math.round(d80)} µm, natural rubber faces premature tearing or chemical attack. Switch to High Chrome A05 or Polyurethane U01.`;
-  } else if (claroMm < 0.35 || (isRubber && tipSpeedMs > 24.5) || tipSpeedMs > 29.5) {
+    activeTrustBoundaryTitleEs = 'Límite Técnico: Químicos o Temperatura (> 70 °C) en Hule Natural';
+    activeTrustBoundaryTitleEn = 'Technical Limit: Extreme Chemistry or Temperature (> 70 °C) on Natural Rubber';
+    activeTrustBoundaryReasonEs = `Con pH ${ph.toFixed(1)}, T=${tempC}°C o d80=${Math.round(d80)} µm, el hule natural sufre degradación o reversión térmica (> 70 °C). Se recomienda migrar a Aleación Especial / Alto Cromo A05 o Poliuretano U01.`;
+    activeTrustBoundaryReasonEn = `At pH ${ph.toFixed(1)}, T=${tempC}°C or d80=${Math.round(d80)} µm, natural rubber faces premature tearing or thermal reversion (> 70 °C). Switch to High Chrome A05 or Polyurethane U01.`;
+  } else if (claroMm < 0.35 || (isRubber && tipSpeedMs > 24.5) || tipSpeedMs > 28.0) {
     activeTrustBoundaryId = 'bound-unapproved-mods';
-    activeTrustBoundaryTitleEs = 'Límite Técnico (bound-unapproved-mods): Interferencia Mecánica o Sobrecarga Cinemática';
-    activeTrustBoundaryTitleEn = 'Technical Limit (bound-unapproved-mods): Mechanical Clearance or Tip-Speed Overload';
+    activeTrustBoundaryTitleEs = 'Límite Técnico: Interferencia Mecánica o Sobrecarga Cinemática (u₂ > 28.0 m/s)';
+    activeTrustBoundaryTitleEn = 'Technical Limit: Mechanical Clearance or Tip-Speed Overload (u₂ > 28.0 m/s)';
     activeTrustBoundaryReasonEs = claroMm < 0.35
       ? `Claro axial δ=${claroMm.toFixed(2)} mm inferior al umbral de dilatación térmica (0.35 mm): riesgo inminente de amarre frontal contra placa de succión.`
-      : `Velocidad periférica u₂=${tipSpeedMs.toFixed(1)} m/s excede el límite endotérmico seguro del revestimiento seleccionado.`;
+      : `Velocidad periférica u₂=${tipSpeedMs.toFixed(1)} m/s excede el límite térmico/mecánico seguro del revestimiento seleccionado.`;
     activeTrustBoundaryReasonEn = claroMm < 0.35
       ? `Axial clearance δ=${claroMm.toFixed(2)} mm is below thermal expansion threshold (0.35 mm): front impeller lock-up risk.`
-      : `Tip speed u₂=${tipSpeedMs.toFixed(1)} m/s exceeds safe thermal limit for selected wet-end lining.`;
+      : `Tip speed u₂=${tipSpeedMs.toFixed(1)} m/s exceeds safe mechanical/thermal limit for selected wet-end lining.`;
   } else if (!hasPartCodeOrDims && Boolean(params.strictBlindCheck ?? params.strict_blind_check)) {
     activeTrustBoundaryId = 'bound-blind-quote';
-    activeTrustBoundaryTitleEs = 'Límite Técnico (bound-blind-quote): Cotización a Ciegas Sin Datos Mínimos';
-    activeTrustBoundaryTitleEn = 'Technical Limit (bound-blind-quote): Blind Quote Without Minimum Part Data';
+    activeTrustBoundaryTitleEs = 'Límite Técnico: Cotización a Ciegas Sin Datos Mínimos';
+    activeTrustBoundaryTitleEn = 'Technical Limit: Blind Quote Without Minimum Part Data';
     activeTrustBoundaryReasonEs = 'Para garantizar intercambiabilidad 1:1 sin retrabajos en paro de planta, indique serie de bomba, código de pieza o medidas básicas con flexómetro.';
     activeTrustBoundaryReasonEn = 'To ensure 1:1 drop-in fit without plant downtime rework, enter pump series, part code, or tape-measure dimensions.';
   }
@@ -277,11 +277,11 @@ export function validatePlantLeadInput(params = {}) {
   const strictBlindCheck = Boolean(params.strictBlindCheck ?? params.strict_blind_check);
   return { plausible, classification, badgeLabelEs, badgeLabelEn, slaCommitmentEs, activeTrustBoundaryId, activeTrustBoundaryTitleEs, activeTrustBoundaryTitleEn, activeTrustBoundaryReasonEs, activeTrustBoundaryReasonEn, warnings, tempC, strictBlindCheck };
 }
-export function calculateThreeCupMarcyCycloneBalance({ feedSg = 1.35, underflowSg = 1.82, overflowSg = 1.15, solidsSg = 2.7, apexDiameterMm = 50, vortexDiameterMm = 100, feedPressureKpa = 95, cycloneDiameterMm = 380 } = {}) {
+export function calculateThreeCupMarcyCycloneBalance({ feedSg = 1.35, underflowSg = 1.72, overflowSg = 1.15, solidsSg = 2.7, apexDiameterMm = 50, vortexDiameterMm = 100, feedPressureKpa = 95, cycloneDiameterMm = 380 } = {}) {
   const safeSolidsSg = Math.max(1.8, Math.min(5.5, Number(solidsSg) || 2.7));
   const safeFeedSg = Math.max(1.02, Math.min(safeSolidsSg - 0.05, Number(feedSg) || 1.35));
   const safeOverflowSg = Math.max(1.01, Math.min(safeFeedSg - 0.01, Number(overflowSg) || 1.15));
-  const safeUnderflowSg = Math.max(safeFeedSg + 0.02, Math.min(safeSolidsSg - 0.02, Number(underflowSg) || 1.82));
+  const safeUnderflowSg = Math.max(safeFeedSg + 0.02, Math.min(safeSolidsSg - 0.02, Number(underflowSg) || 1.72));
   const safeApexMm = Math.max(12, Math.min(250, Number(apexDiameterMm) || 50));
   const safeVortexMm = Math.max(25, Math.min(400, Number(vortexDiameterMm) || 100));
   const safePressureKpa = Math.max(20, Math.min(350, Number(feedPressureKpa) || 95));

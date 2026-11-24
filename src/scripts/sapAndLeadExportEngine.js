@@ -3,7 +3,6 @@
  * Extraído por costura limpia LCOM4 Parnas (∂(C)=0) desde districtProfilesAndSkuCatalog.js (SLICE-V34-11 · D8-V34).
  */
 import {
-  DEFAULT_SMAT_LEAD_WEBHOOK_URL,
   formatNioshErgonomicStatus,
   generateSmatPartCode,
   getAtomicPartSpecs,
@@ -823,57 +822,4 @@ export function buildLeadWebhookPayload(d = {}, channelOrigin = 'web_quote_wizar
   };
 }
 
-export function dispatchLeadWebhook(d = {}, channelOrigin = 'web_quote_wizard', webhookUrl = '') {
-  const honeypotVal = d.website || d.website_honeypot || '';
-  if (honeypotVal && String(honeypotVal).trim().length > 0) {
-    const blockedStatus = {
-      status: 'blocked',
-      reason: 'honeypot_blocked',
-      blocked: true,
-      dispatched: false,
-      sent: false,
-      channel: channelOrigin,
-      timestamp: new Date().toISOString()
-    };
-    if (typeof window !== 'undefined' && window.sessionStorage) {
-      try {
-        window.sessionStorage.setItem('smat_last_rfq_dispatch_status', JSON.stringify(blockedStatus));
-      } catch (_e) { }
-    }
-    return { status: 'honeypot_blocked', blocked: true, dispatched: false, sent: false };
-  }
-  const payload = buildLeadWebhookPayload(d, channelOrigin);
-  const resolvedEndpoint =
-    webhookUrl ||
-    (typeof window !== 'undefined' && window.SMAT_LEAD_WEBHOOK_URL) ||
-    DEFAULT_SMAT_LEAD_WEBHOOK_URL;
-  const sentStatus = {
-    status: resolvedEndpoint ? 'sent' : 'blocked',
-    reason: resolvedEndpoint ? 'webhook_dispatched' : 'missing_endpoint',
-    blocked: !resolvedEndpoint,
-    dispatched: true,
-    sent: Boolean(resolvedEndpoint),
-    channel: channelOrigin,
-    endpoint: resolvedEndpoint,
-    folio: payload.folio,
-    timestamp: new Date().toISOString()
-  };
-  if (typeof window !== 'undefined' && window.sessionStorage) {
-    try {
-      window.sessionStorage.setItem('smat_last_rfq_payload', JSON.stringify(payload));
-      window.sessionStorage.setItem('smat_last_rfq_dispatch_status', JSON.stringify(sentStatus));
-    } catch (_e) { }
-  }
-  if (resolvedEndpoint && typeof fetch === 'function') {
-    try {
-      fetch(resolvedEndpoint, {
-        method: 'POST',
-        mode: 'no-cors',
-        keepalive: true,
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-      }).catch(() => { });
-    } catch (_e) { }
-  }
-  return { status: 'dispatched', blocked: false, dispatched: true, sent: Boolean(resolvedEndpoint), endpoint: resolvedEndpoint, payload };
-}
+export { dispatchLeadWebhookAsync } from './leadWebhookTransport.js';

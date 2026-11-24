@@ -25,7 +25,7 @@ import {
   verifyDiagramSurjectivity,
 } from './quickProductsCatalog.js';
 
-export const CATALOG_ATOMIC_PARTS_COUNT = Array.isArray(ATOMIC_PARTS_CATALOG)
+const CATALOG_ATOMIC_PARTS_COUNT = Array.isArray(ATOMIC_PARTS_CATALOG)
   ? ATOMIC_PARTS_CATALOG.length
   : 13;
 

@@ -25,6 +25,9 @@ const productsBase = isEs ? '/productos/' : '/en/products/';
     {isEs
       ? 'Circuito Cerrado Ciclón ↔ Criba: Corte d50c = 74 µm → Alimentación Criba d80 = 163 µm'
       : 'Closed Circuit Cyclone ↔ Screen: Cut d50c = 74 µm → Screen Feed d80 = 163 µm'}
+    <span class="smat-basis-note font-mono-tech">
+      {isEs ? ' · Base de cálculo: balance 3 vasos (Marcy), corte hidrociclón (Plitt) y partición de criba (Weibull).' : ' · Calculation basis: 3-cup balance (Marcy), hydrocyclone cut (Plitt) & screen partition (Weibull).'}
+    </span>
   </div>
 
   <div class="embedded-cyc-res smat-stratum1-display font-mono-tech smat-mt-sm">

@@ -9,16 +9,16 @@
  */
 
 import {
-  loadUnifiedEngineeringAndWorkbenchState,
-  commitVerticalSimulation,
-  bindAtomicPartTrayButtons,
-} from './verticalStateAndCtaSyncBridge.js';
-import {
   calculateDriveAndBearingKinematics,
-  selectBearingFrameByPowerAndRpm,
   evaluateHybridWetEndConfiguration,
+  selectBearingFrameByPowerAndRpm,
 } from './pumpAssemblyAndDriveEngine.js';
 import { initCoreTradeInWidgets } from './vendorPassportAndTradeInController.js';
+import {
+  bindAtomicPartTrayButtons,
+  commitVerticalSimulation,
+  loadUnifiedEngineeringAndWorkbenchState,
+} from './verticalStateAndCtaSyncBridge.js';
 
 function mapCanonicalMaterialToTribologyBranch(rawMaterial = '') {
   const m = String(rawMaterial || '').trim().toLowerCase();
@@ -31,7 +31,7 @@ function mapCanonicalMaterialToTribologyBranch(rawMaterial = '') {
   return m;
 }
 
-export const VERTICAL_STATION_LENS_DESCRIPTORS = Object.freeze({
+const VERTICAL_STATION_LENS_DESCRIPTORS = Object.freeze({
   seal: {
     '#seal-hd-m': (f) => f.dischargeHeadM,
     '#seal-hs-m': (f) => f.suctionHeadM,
@@ -424,6 +424,14 @@ export function initSkidKinematicsInspector(root = typeof document !== 'undefine
           : `Rama D Híbrida A05+R55: Ahorro -${hybridEval.massSavingsPct}% masa (-${hybridEval.savedMassKg} kg NIOSH)`)
         : '';
     }
+    const floodOut = panel.querySelector('#wb-kin-flood-out');
+    const rubSafeOut = panel.querySelector('#wb-kin-rubber-safe-out');
+    const sicOverOut = panel.querySelector('#wb-kin-sic-over-out');
+    const recMatU2Out = panel.querySelector('#wb-kin-rec-mat-u2-out');
+    if (floodOut) floodOut.textContent = res.sumpFloodImmunityEn || (res.sumpFloodImmunity ? 'Elevated Motor (Splash Immune)' : 'Baseplate Level');
+    if (rubSafeOut) rubSafeOut.textContent = res.rubberSafeTipSpeed ? (isEn ? 'Yes (≤24.5 m/s)' : 'Sí (≤24.5 m/s)') : (isEn ? 'No (>24.5 m/s)' : 'No (>24.5 m/s)');
+    if (sicOverOut) sicOverOut.textContent = res.ceramicSpallingSpeedExceeded ? (isEn ? 'Exceeded (>28.0 m/s)' : 'Excedido (>28.0 m/s)') : (isEn ? 'Safe (≤28.0 m/s)' : 'Seguro (≤28.0 m/s)');
+    if (recMatU2Out) recMatU2Out.textContent = res.recommendedWetMaterialByTipSpeed || '';
     if (alertBox && alertBox.style) {
       alertBox.style.display = (res.rubberThermalLimitExceeded || res.ceramicSpallingSpeedExceeded) ? 'flex' : 'none';
     }

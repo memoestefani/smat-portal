@@ -11,9 +11,30 @@ import { fileURLToPath } from 'node:url';
 import { verifyDropInEquivalence } from '../src/scripts/dropInEquivalenceGuard.js';
 import {
   ENGINE_SCHEMA_REGISTRY,
-  listAllDeclaredDomIds,
   listAllEngineSchemas,
 } from '../src/scripts/engineSchemaRegistry.js';
+
+function collectDeclaredDomIds() {
+  const inputs = [];
+  const outputs = [];
+  const pushId = (sel, target) => {
+    if (typeof sel === 'string' && sel.startsWith('#')) {
+      const id = sel.slice(1).split(/[,\s]/)[0].trim();
+      if (id && !target.includes(id)) target.push(id);
+    }
+  };
+  for (const s of listAllEngineSchemas()) {
+    for (const inp of s.inputsSchema) {
+      pushId(inp.domBinding, inputs);
+      for (const a of inp.aliasBindings || []) pushId(a, inputs);
+    }
+    for (const out of s.outputsSchema) {
+      pushId(out.domBinding, outputs);
+      for (const a of out.aliasBindings || []) pushId(a, outputs);
+    }
+  }
+  return { inputs, outputs };
+}
 import {
   calculateFlotationGorainKineticRate,
   calculateUrethaneScreenPartitionWeibull,
@@ -46,7 +67,7 @@ import {
 } from '../src/scripts/verticalCalculatorsAndLabelsBridge.js';
 import {
   calculateFilterPressCycleCapacity,
-} from '../src/scripts/wizardCircuitPhysicsController.js';
+} from '../src/scripts/mechanicalAndSeparationEngine.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -99,6 +120,25 @@ function createInteractiveDom(initial = {}) {
   }
   return {
     nodes,
+    querySelectorAll(selector) {
+      const seen = new Set();
+      const matched = [];
+      for (const rawPart of String(selector).split(',')) {
+        const p = rawPart.trim();
+        if (!p) continue;
+        if (p.startsWith('#')) {
+          const hit = nodes.get(p.slice(1));
+          if (hit && !seen.has(hit)) { seen.add(hit); matched.push(hit); }
+        } else {
+          const schemaMatch = p.match(/^\[data-schema-output="([^"]+)"\]$/);
+          if (schemaMatch) {
+            const hit = nodes.get(schemaMatch[1]);
+            if (hit && !seen.has(hit)) { seen.add(hit); matched.push(hit); }
+          }
+        }
+      }
+      return matched;
+    },
     querySelector(selector) {
       const parts = String(selector)
         .split(',')
@@ -114,7 +154,6 @@ function createInteractiveDom(initial = {}) {
 test('V50-T1 Biyección Estructural Two-Sort: 100% de domBindings (11 dominios) existen en el DOM compuesto Astro', () => {
   const canonicalUiFiles = [
     path.join(SITE_ROOT, 'src/components/QuoteWizard.astro'),
-    path.join(SITE_ROOT, 'src/components/WizardCircuitCalculators.astro'),
     path.join(SITE_ROOT, 'src/components/LiveEngineeringDossier.astro'),
     path.join(SITE_ROOT, 'src/components/PumpAssemblyReport.astro'),
     path.join(SITE_ROOT, 'src/components/SharePurchasing.astro'),
@@ -124,7 +163,7 @@ test('V50-T1 Biyección Estructural Two-Sort: 100% de domBindings (11 dominios) 
   ];
   const combinedUiMarkup = canonicalUiFiles.map((p) => fs.readFileSync(p, 'utf8')).join('\n');
 
-  const declared = listAllDeclaredDomIds();
+  const declared = collectDeclaredDomIds();
   const schemas = listAllEngineSchemas();
   assert.equal(schemas.length, 11, 'Deben existir exactamente 11 dominios en ENGINE_SCHEMA_REGISTRY');
 
@@ -331,16 +370,16 @@ test('V50-T4 Testigos Activos No-Vacuos (Δx => Δy ≠ 0) en los 11 dominios f�
     'filt-plate-width': '1500',
     'filt-plate-thickness': '65',
     'filt-cake-moisture': '14',
-    'filt-res-stress': '',
-    'filt-res-fs': '',
+    'wb-filt-res-stress': '',
+    'wb-filt-res-fs': '',
     'filt-res-secondary': '',
     'filt-res-summary': '',
   });
   bindCanonicalFiltrationCalculator(filtDom, 'es');
-  const stress12 = filtDom.querySelector('#filt-res-stress').textContent;
+  const stress12 = filtDom.querySelector('#wb-filt-res-stress').textContent;
   filtDom.querySelector('#filt-pressure-bar').value = '18';
   filtDom.querySelector('#filt-pressure-bar').dispatchEvent('input');
-  assert.notEqual(filtDom.querySelector('#filt-res-stress').textContent, stress12);
+  assert.notEqual(filtDom.querySelector('#wb-filt-res-stress').textContent, stress12);
   const cyc14 = calculateFilterPressCycleCapacity({ feedPressureBar: 12, plateThicknessMm: 65, cakeMoistureTargetPct: 12 });
   const cyc22 = calculateFilterPressCycleCapacity({ feedPressureBar: 12, plateThicknessMm: 65, cakeMoistureTargetPct: 22 });
   assert.notEqual(cyc14.nom141Compliant, cyc22.nom141Compliant);

@@ -115,6 +115,8 @@ const isEs = lang === 'es';
         © {new Date().getFullYear()} SMAT Minerals. {isEs ? 'Todos los derechos reservados.' : 'All rights reserved.'}
       </p>
       <div class="legal-links">
+        <span data-pwa-ready="1" class="smat-pwa-ready-indicator">{isEs ? 'Caché de campo lista' : 'Offline field-ready'}</span>
+        <span>•</span>
         <span id="smat-offline-status" data-pwa-offline-indicator class="smat-pwa-status" role="status" hidden>
           {isEs ? 'Sin conexión (cola local)' : 'Offline (local queue)'}
         </span>

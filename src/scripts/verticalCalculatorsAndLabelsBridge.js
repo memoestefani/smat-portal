@@ -37,7 +37,10 @@ import {
   calculateFilterPressCycleCapacity,
   evaluateFlotationCellHydrodynamics,
   evaluateHydrocycloneCutPoint,
-} from './wizardCircuitPhysicsController.js';
+} from './mechanicalAndSeparationEngine.js';
+import {
+  saveStationSnapshot,
+} from './rfqSessionStore.js';
 import {
   loadWorkbenchSession,
   saveWorkbenchSession,
@@ -244,12 +247,8 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
   const tEl = root.querySelector('[data-schema-input="filtration.plateThicknessMm"], #filt-plate-thickness, #wb-filt-thickness, #wb-filt-thickness-mm');
   const mEl = root.querySelector('[data-schema-input="filtration.cakeMoistureTargetPct"], #filt-cake-moisture, #wb-filt-moisture, #wb-filt-moisture-pct');
 
-  const stressEl = root.querySelector('#filt-res-stress, #wb-filt-res-stress');
-  const fsEl = root.querySelector('#filt-res-fs, #wb-filt-res-fs');
   const secondaryEl = root.querySelector('#filt-res-secondary');
   const sumEl = root.querySelector('#filt-res-summary, #wb-filt-res-status');
-  const cyclesEl = root.querySelector('#wb-filt-res-cycles');
-  const tpdEl = root.querySelector('#wb-filt-res-tpd');
   const nomOutEl = root.querySelector('#wb-filt-res-nom141');
   const cycleMinEl = root.querySelector('#wb-filt-res-cycle-min');
   const asymDpEl = root.querySelector('#wb-filt-res-asym-dp');
@@ -302,10 +301,12 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
     };
 
     projectDomainOutputs(root, 'filtration', res, isEn ? 'en' : 'es');
-    if (stressEl) stressEl.textContent = `${res.maxBendingStressMpa} MPa`;
-    if (fsEl) fsEl.textContent = `FS ${res.flexuralSafetyFactor}`;
-    if (cyclesEl) cyclesEl.textContent = `${res.cyclesPerDay} c/d`;
-    if (tpdEl) tpdEl.textContent = `${res.dryTonnesPerDay} t/d`;
+    saveStationSnapshot('filtration', {
+      feedPressureBar: res.feedPressureBar,
+      maxBendingStressMpa: res.maxBendingStressMpa,
+      cyclesPerDay: res.cyclesPerDay,
+      dryTonnesPerDay: res.dryTonnesPerDay,
+    });
     if (nomOutEl) {
       nomOutEl.textContent = res.nom141Compliant !== false
         ? (isEn ? 'NOM-141 OK' : 'Cumple NOM-141')
@@ -423,13 +424,6 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es', _options = {
   const cwEl = root.querySelector('#flot-cw-input, #celdas-cw-input, #wb-flot-cw');
   const pEl = root.querySelector('#flot-p-input, #celdas-p-input, #wb-flot-p');
   const rfEl = root.querySelector('#flot-rf-input, #celdas-rf-input, #wb-flot-rf');
-  const sbOut = root.querySelector('#flot-sb-out, #celdas-sb-output, #wb-flot-res-sb');
-  const kOut = root.querySelector('#flot-k-out, #celdas-k-output, #wb-flot-res-k');
-  const vtipOut = root.querySelector('#flot-vtip-out, #celdas-vtip-output, #wb-flot-res-vtip');
-  const njsOut = root.querySelector('#flot-njs-out, #celdas-njs-output, #wb-flot-res-njs');
-  const pOut = root.querySelector('#flot-p-out, #celdas-p-output, #wb-flot-res-p');
-  const rfOut = root.querySelector('#flot-rf-out, #celdas-rf-output, #wb-flot-res-rf');
-  const skuOut = root.querySelector('#wb-flot-res-sku');
   const puLifeOut = root.querySelector('#wb-flot-res-pu-life');
   const statusOut = root.querySelector('#flot-status-out, #celdas-status-output, #wb-flot-res-susp-status');
   const readoutBox = root.querySelector('#flot-gorain-readout, #celdas-gorain-readout');
@@ -468,18 +462,15 @@ export function bindCanonicalFlotationCalculator(root, lang = 'es', _options = {
     });
 
     projectDomainOutputs(root, 'flotation', res, isEn ? 'en' : 'es');
+    saveStationSnapshot('flotation', {
+      sbInverseSeconds: res.sbInverseSeconds ?? res.bubbleSurfaceAreaFluxSb,
+      rateConstantMin: res.rateConstantMin ?? res.firstOrderRateConstantKMin,
+      zwieteringNjsRpm: res.zwieteringNjsRpm,
+      tipSpeedMS: res.tipSpeedMS ?? res.impellerTipSpeedMs,
+    });
     const sbVal = res.sbInverseSeconds ?? res.bubbleSurfaceAreaFluxSb;
     const kVal = res.rateConstantMin ?? res.firstOrderRateConstantKMin;
     const vtipVal = res.tipSpeedMS ?? res.impellerTipSpeedMs;
-    const isWb = sbOut?.id === 'wb-flot-res-sb';
-
-    if (sbOut) sbOut.textContent = isWb ? `${sbVal} s⁻¹` : String(sbVal);
-    if (kOut) kOut.textContent = isWb ? `${kVal} min⁻¹` : String(kVal);
-    if (vtipOut) vtipOut.textContent = isWb ? `${vtipVal} m/s` : String(vtipVal);
-    if (njsOut) njsOut.textContent = isWb ? `${res.zwieteringNjsRpm} RPM` : String(res.zwieteringNjsRpm);
-    if (pOut) pOut.textContent = Number(baseGorain.floatabilityP ?? floatabilityP).toFixed(4);
-    if (rfOut) rfOut.textContent = Number(baseGorain.frothRecoveryRf ?? frothRecoveryRf).toFixed(2);
-    if (skuOut) skuOut.textContent = res.recommendedSkuId || 'SMAT-FLOT-MECH-18SP';
     if (puLifeOut) {
       puLifeOut.textContent = isEn
         ? `PU vs Rubber Life: ${res.wearLifeMultiplierPuVsRubber}× · u₂ ${res.tipSpeedWindowOptimal ? 'optimal (5.5–7.5 m/s)' : 'adjust RPM'}`
@@ -574,9 +565,7 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
 
   const regimeEl = root.querySelector('#cyc-res-regime, #wb-cyc-res-roping');
   const recEl = root.querySelector('#cyc-res-recovery');
-  const circEl = root.querySelector('#cyc-res-circload, #wb-cyc-res-cc');
   const cvuEl = root.querySelector('#cyc-res-cvu, #wb-cyc-res-cvu');
-  const d50El = root.querySelector('#cyc-res-d50c, #wb-cyc-res-d50');
   const actionEl = root.querySelector('#cyc-res-action');
   const couplingBadgeEl = root.querySelector('#cyc-screen-coupling-badge');
   const skuLink = root.querySelector('#cyc-recommended-sku-link');
@@ -640,7 +629,7 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
     if (!feedInput || !underInput || !overInput) return null;
     const res = calculateThreeCupMarcyCycloneBalance({
       feedSg: Number(feedInput.value) || 1.35,
-      underflowSg: Number(underInput.value) || 1.82,
+      underflowSg: Number(underInput.value) || 1.72,
       overflowSg: Number(overInput.value) || 1.15,
       solidsSg: solidsInput ? Number(solidsInput.value) || 2.7 : 2.7,
       apexDiameterMm: apexInput ? Number(apexInput.value) || 50 : 50,
@@ -648,16 +637,11 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
       feedPressureKpa: pressInput ? Number(pressInput.value) || 95 : 95,
     });
 
-    if (regimeEl) {
-      regimeEl.textContent = isEn ? res.regimeLabelEn : res.regimeLabelEs;
-      if (typeof regimeEl.setAttribute === 'function') {
-        regimeEl.setAttribute('data-regime', res.dischargeRegime);
-      }
+    if (regimeEl && typeof regimeEl.setAttribute === 'function') {
+      regimeEl.setAttribute('data-regime', res.dischargeRegime);
     }
     if (recEl) recEl.textContent = `${res.solidsRecoveryPct}%`;
-    if (circEl) circEl.textContent = `${res.circulatingLoadPct}%`;
     if (cvuEl) cvuEl.textContent = `${res.cvUnderflowPct}% (du/do=${res.apexToVortexRatio})`;
-    if (d50El) d50El.textContent = `${res.d50cMicrons} µm`;
 
     const coupledD80Um = isInitialMount && hydration.hasPersistedState && hydration.unifiedState?.persistedFields?.feedTopSizeUm
       ? hydration.unifiedState.persistedFields.feedTopSizeUm
@@ -690,6 +674,13 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
       elasticDilationPct: weibullRes.elasticDilationPct,
       sharpnessAlpha: weibullRes.sharpnessAlpha
     }, isEn ? 'en' : 'es');
+    saveStationSnapshot('cycloneScreen', {
+      circulatingLoadPct: res.circulatingLoadPct,
+      d50cMicrons: res.d50cMicrons,
+      cvUnderflow: res.cvUnderflow,
+      dischargeRegime: res.dischargeRegime,
+      recommendedSkuId: res.recommendedSkuId,
+    });
 
     if (skuLink) {
       if (isEn) {

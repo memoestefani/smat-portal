@@ -350,9 +350,9 @@
 
 .btn-open-drawer {
   padding: 0.5rem 0.85rem;
-  background: #7c2d12;
+  background: #082f49;
   color: #ffffff;
-  border: 1px solid #9a3412;
+  border: 1px solid #0c4a6e;
   border-radius: var(--smat-radius-sm);
   font-size: 0.8rem;
   font-weight: 800;
@@ -764,11 +764,11 @@ summary.control-card-header,
 .circuit-tab-btn,
 .user-chip-reset,
 .erp-justification-summary-btn {
-  min-height: 48px !important;
-  min-width: 48px !important;
+  min-height: 48px;
+  min-width: 48px;
   display: flex;
   align-items: center;
   box-sizing: border-box;
 }
 
-.hidden { display: none !important; }
+body .hidden { display: none; }

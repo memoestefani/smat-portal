@@ -36,9 +36,19 @@ const isEs = locale === 'es';
     <div class="embedded-res-cell"><strong>{isEs ? 'Pendiente RR (n):' : 'RR Slope (n):'}</strong> <span id="wb-ctrl-res-rr" data-schema-output="metrology.rosinRammlerUniformityN">1.15</span></div>
     <div class="embedded-res-cell"><strong>{isEs ? 'Corte d₆₃:' : 'Cut d₆₃:'}</strong> <span id="wb-ctrl-res-d63" data-met-defuse-d63="1">119 µm</span></div>
     <div class="embedded-res-cell"><strong>{isEs ? 'Linealización y\':' : 'Linearized y\':' }</strong> <span id="wb-ctrl-res-rry" data-schema-output="metrology.rosinRammlerY">-0.1555</span></div>
-    <div class="embedded-res-cell"><strong>{isEs ? 'Volumen Pulpa:' : 'Wet Pulp Vol:'}</strong> <span id="wb-ctrl-gy-pulp-liters" data-testid="wb-ctrl-gy-pulp-liters">{isEs ? '0.39 L' : '0.39 L'}</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Volumen Pulpa:' : 'Wet Pulp Vol:'}</strong> <span id="wb-ctrl-gy-pulp-liters" data-testid="wb-ctrl-gy-pulp-liters" data-schema-output="metrology.slurrySampleLiters">{isEs ? '0.39 L' : '0.39 L'}</span></div>
     <div class="embedded-res-cell"><strong>{isEs ? 'Vaso Marcy Rec.:' : 'Rec. Marcy Cup:'}</strong> <span id="wb-ctrl-res-container" data-schema-output="metrology.recommendedContainerEs">{isEs ? 'Vaso 1000 cm³ Acero Inox 304' : '1000 cm³ 304 Stainless Cup'}</span></div>
     <div class="embedded-res-cell"><strong>{isEs ? 'Bastidor ASTM:' : 'ASTM Frame:'}</strong> <span id="wb-ctrl-sieve-frame-rec" data-testid="wb-ctrl-sieve-frame-rec">{isEs ? 'Acero Inox 304/316' : '304/316 Stainless Steel'}</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Tope d₉₅ (Gy):' : 'Top Size d₉₅ (Gy):'}</strong> <span id="wb-ctrl-res-topsize" data-schema-output="metrology.topSizeD95Mm">6.50 mm</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Masa Teórica Gy:' : 'Gy Theoretical Mass:'}</strong> <span id="wb-ctrl-res-gy-theo" data-schema-output="metrology.theoreticalGyGrams">220.0 g</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Piso Práctico Lab:' : 'Practical Lab Floor:'}</strong> <span id="wb-ctrl-res-gy-min-g" data-schema-output="metrology.minDrySampleGrams">250 g</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Ciclo Batch (Ref. psi):' : 'Batch Cycle (psi step):'}</strong> <span id="wb-ctrl-res-cycle-min" data-schema-output="metrology.estimatedCycleMinutes">6 min</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Humedad Torta (Ref. psi):' : 'Cake Moisture (psi step):'}</strong> <span id="wb-ctrl-res-cake-moist" data-schema-output="metrology.residualCakeMoisturePct">9.5%</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Modo Tamizado:' : 'Screening Mode:'}</strong> <span id="wb-ctrl-res-screen-mode" data-schema-output="metrology.screeningMode">{isEs ? 'Húmedo (≤150 µm)' : 'Wet (≤150 µm)'}</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Diámetro Aro ASTM:' : 'ASTM Frame Ø:'}</strong> <span id="wb-ctrl-res-frame-in" data-schema-output="metrology.frameDiameterInches">8 in</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'd₉₅ Serie Tamices:' : 'Sieve Top Size d₉₅:'}</strong> <span id="wb-ctrl-res-sieve-d95" data-schema-output="metrology.sieveTopSizeD95Mm">6.50 mm</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Abertura P₈₀:' : 'P₈₀ Aperture:'}</strong> <span id="wb-ctrl-res-primary-um" data-schema-output="metrology.primaryApertureMicrons">150 µm</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Columna ASTM E11:' : 'ASTM E11 Stack:'}</strong> <span id="wb-ctrl-res-stack-sum" data-schema-output="metrology.sieveStackSummary">#70 → #100 → #140 → #200</span></div>
   </div>
 
   {showRoleSelectors && (
@@ -109,9 +119,12 @@ const isEs = locale === 'es';
   <details class="smat-mt-sm smat-panel-soft" id="metrology-advanced-accordion">
     <summary class="smat-field-label">
       {isEs
-        ? 'Ajuste Avanzado: 12 Carátulas SG, Densidad ρp, Corte P80, Pierre Gy y Rosin-Rammler'
-        : 'Advanced Calibration: 12 SG Dials, Pulp ρp, P80 Cut, Pierre Gy & Rosin-Rammler'}
+        ? 'Ajuste Avanzado: 12 Carátulas SG, Densidad ρp, Corte P80 y Curva Granulométrica'
+        : 'Advanced Calibration: 12 SG Dials, Pulp ρp, P80 Cut & Particle Size Curve'}
     </summary>
+    <p class="smat-basis-note font-mono-tech smat-mt-sm">
+      {isEs ? 'Base de cálculo: masa mínima representativa (Pierre Gy), tamices ASTM E11 y distribución Rosin-Rammler.' : 'Calculation basis: minimum sample mass (Pierre Gy), ASTM E11 sieves & Rosin-Rammler curve.'}
+    </p>
     <div id="wb-ctrl-marcy-rings-strip" data-testid="wb-ctrl-marcy-rings-strip" data-marcy-rings-list="2.2..4.4" class="rings-strip font-mono-tech smat-mt-sm">
       {isEs ? '12 Carátulas Marcy (SG 2.2–4.4): Anillo SG 2.8 activo' : '12 Marcy Dials (SG 2.2–4.4): SG 2.8 Ring active'}
     </div>

@@ -19,7 +19,6 @@ import { formatNumericRange } from '../../scripts/i18nDomainLabels.js';
 interface Props {
   locale?: 'es' | 'en';
   variant?: 'impeller' | 'liners';
-  embeddedInWizard?: boolean;
   showVerticalActions?: boolean;
   panelClass?: string;
 }
@@ -27,7 +26,6 @@ interface Props {
 const {
   locale = 'es',
   variant = 'impeller',
-  embeddedInWizard = false,
   showVerticalActions = false,
   panelClass = '',
 } = Astro.props;
@@ -110,25 +108,15 @@ const defaultClearanceEval = evaluateWetEndAssemblyInterference({
   <div class="smat-inputs-2col smat-trib-inputs-box">
     <label class="smat-trib-field">
       <span>{isLiners ? (isEs ? 'Arquitectura Lote 5-5-4:' : '5-5-4 Lot Architecture:') : (isEs ? 'Material en Contacto Húmedo:' : 'Wet-End Wear Material:')}</span>
-      {embeddedInWizard ? (
-        <select id="wb-pump-material" name="pump_material" data-schema-input="tribology.tribologyMaterial" class="wb-select smat-trib-ctrl">
-          <option value="alto_cromo_cr27" selected>{isEs ? 'Alto Cromo Cr27% (ASTM A532 ≥650 HB)' : 'High Chrome Cr27% (ASTM A532 ≥650 HB)'}</option>
-          <option value="hule_natural">{isEs ? 'Hule Natural Antiabrasivo (55–65 Shore A)' : 'Natural Rubber (55–65 Shore A)'}</option>
-          <option value="poliuretano">{isEs ? 'Poliuretano Grado Minero (85–95 Shore A)' : 'Mining Polyurethane (85–95 Shore A)'}</option>
-          <option value="ceramica_sic">{isEs ? 'Carburo de Silicio Sinterizado SiC (≥2200 HV)' : 'Sintered Silicon Carbide SiC (≥2200 HV)'}</option>
-          <option value="hybrid_a05_r55">{isEs ? 'Rama D Híbrida (Impulsor A05 + Forros R55)' : 'Branch D Hybrid (A05 Impeller + R55 Liners)'}</option>
-        </select>
-      ) : (
-        <select id="trib-mat-select" data-schema-input="tribology.tribologyMaterial" class="wb-select smat-trib-ctrl">
-          <option value="hybrid_a05_r55" selected={isLiners}>
-            {isEs ? 'Rama D Híbrida (Impulsor A05 + Forros R55)' : 'Hybrid Branch D (A05 Impeller + R55 Liners)'}
-          </option>
-          <option value="alto_cromo_cr27" selected={!isLiners}>{isEs ? 'Alto Cromo 27% Cr (A05)' : '27% High Chrome (A05)'}</option>
-          <option value="hule_natural">{isEs ? 'Hule Natural (R55)' : 'Natural Rubber (R55)'}</option>
-          <option value="poliuretano">{isEs ? 'Poliuretano (U01)' : 'Polyurethane (U01)'}</option>
-          <option value="ceramica_sic">{isEs ? 'Cerámica SiC' : 'SiC Ceramic'}</option>
-        </select>
-      )}
+      <select id="trib-mat-select" name="pump_material" data-schema-input="tribology.tribologyMaterial" class="wb-select smat-trib-ctrl">
+        <option value="hybrid_a05_r55" selected={isLiners}>
+          {isEs ? 'Rama D Híbrida (Impulsor A05 + Forros R55)' : 'Hybrid Branch D (A05 Impeller + R55 Liners)'}
+        </option>
+        <option value="alto_cromo_cr27" selected={!isLiners}>{isEs ? 'Alto Cromo 27% Cr (ASTM A532 ≥650 HB)' : '27% High Chrome (ASTM A532 ≥650 HB)'}</option>
+        <option value="hule_natural">{isEs ? 'Hule Natural Antiabrasivo (R55 · 55–65 Shore A)' : 'Natural Rubber (R55 · 55–65 Shore A)'}</option>
+        <option value="poliuretano">{isEs ? 'Poliuretano Grado Minero (U01 · 85–95 Shore A)' : 'Mining Polyurethane (U01 · 85–95 Shore A)'}</option>
+        <option value="ceramica_sic">{isEs ? 'Carburo de Silicio Sinterizado SiC (≥2200 HV)' : 'Sintered Silicon Carbide SiC (≥2200 HV)'}</option>
+      </select>
     </label>
 
     <label class="smat-trib-field">
@@ -138,30 +126,16 @@ const defaultClearanceEval = evaluateWetEndAssemblyInterference({
           {defaultClearanceEval.frontClearanceMm.toFixed(2)} mm (Δη_v = -{defaultClearanceEval.volumetricEffLossPct}%)
         </strong>
       </span>
-      {embeddedInWizard ? (
-        <input
-          type="range"
-          id="wb-clearance-slider"
-          data-testid="wb-clearance-slider"
-          data-schema-input="tribology.frontClearanceMm"
-          min="0.20"
-          max="4.00"
-          step="0.05"
-          value="0.75"
-          class="wb-slider"
-        />
-      ) : (
-        <input
-          type="number"
-          id="trib-clearance-mm"
-          data-schema-input="tribology.frontClearanceMm"
-          min="0.2"
-          max="6.0"
-          step="0.1"
-          value="0.75"
-          class="smat-trib-ctrl"
-        />
-      )}
+      <input
+        type="number"
+        id="trib-clearance-mm"
+        data-schema-input="tribology.frontClearanceMm"
+        min="0.2"
+        max="6.0"
+        step="0.1"
+        value="0.75"
+        class="smat-trib-ctrl"
+      />
     </label>
 
     <label class="smat-trib-field">

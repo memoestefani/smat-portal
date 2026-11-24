@@ -4,12 +4,19 @@ import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { buildCatalogFacetedViewModel } from '../src/scripts/catalogFacetedViewModel.js';
 import { verifyDropInEquivalence } from '../src/scripts/dropInEquivalenceGuard.js';
 import {
   TWO_SORT_PARTITION_VERSION,
-  listAllDeclaredDomIds,
+  formatSchemaOutputValue,
   listAllEngineSchemas
 } from '../src/scripts/engineSchemaRegistry.js';
+import {
+  WEBHOOK_OUTBOX_STATES,
+  isPlaceholderWebhookUrl,
+  recoverInterruptedOutboxEntries,
+  resolveHonestWebhookStatus
+} from '../src/scripts/leadOutboxStateMachine.js';
 import {
   bindDomainSchemaRoot,
   projectDomainOutputs,
@@ -20,14 +27,28 @@ import {
   computeSobolFirstOrderIndices,
   solveXdsmMultidisciplinaryDag
 } from '../src/scripts/wizardXdsmDagSolver.js';
-import { formatSchemaOutputValue } from '../src/scripts/engineSchemaRegistry.js';
-import {
-  WEBHOOK_OUTBOX_STATES,
-  isPlaceholderWebhookUrl,
-  recoverInterruptedOutboxEntries,
-  resolveHonestWebhookStatus
-} from '../src/scripts/leadOutboxStateMachine.js';
-import { buildCatalogFacetedViewModel } from '../src/scripts/catalogFacetedViewModel.js';
+
+function listAllDeclaredDomIds() {
+  const inputs = [];
+  const outputs = [];
+  const pushId = (sel, target) => {
+    if (typeof sel === 'string' && sel.startsWith('#')) {
+      const id = sel.slice(1).split(/[,\s]/)[0].trim();
+      if (id && !target.includes(id)) target.push(id);
+    }
+  };
+  for (const s of listAllEngineSchemas()) {
+    for (const inp of s.inputsSchema) {
+      pushId(inp.domBinding, inputs);
+      for (const a of inp.aliasBindings || []) pushId(a, inputs);
+    }
+    for (const out of s.outputsSchema) {
+      pushId(out.domBinding, outputs);
+      for (const a of out.aliasBindings || []) pushId(a, outputs);
+    }
+  }
+  return { inputs, outputs };
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -231,9 +252,10 @@ function loadCompositeQuoteWizardSourceFallback() {
     let out = markup;
     for (let depth = 0; depth < 4; depth += 1) {
       let changed = false;
-      out = out.replace(/<([A-Z][A-Za-z0-9]*(?:Island|Core)|WizardCircuitCalculators|LiveEngineeringDossier)\b[^>]*\/>/g, (_m, comp) => {
+      out = out.replace(/<([A-Z][A-Za-z0-9]*(?:Island|Core|Bar|Tray|Summary)|LiveEngineeringDossier)\b[^>]*\/>/g, (_m, comp) => {
         const candidates = [
           path.join(SITE_ROOT, 'src/components', `${comp}.astro`),
+          path.join(SITE_ROOT, 'src/components/wizard', `${comp}.astro`),
           path.join(SITE_ROOT, 'src/components/islands', `${comp}.astro`),
           path.join(SITE_ROOT, 'src/components/cores', `${comp}.astro`)
         ];
@@ -288,13 +310,25 @@ test('V51-T1 DOM Real en dist/ & Cero Bifurcaciones {isEmbedded}: 11 Dominios Bi
   const distCatalog = path.join(SITE_ROOT, 'dist/catalogo/index.html');
   const distEquipos = path.join(SITE_ROOT, 'dist/equipos/index.html');
   const distImpulsor = path.join(SITE_ROOT, 'dist/bombeo/impulsor/index.html');
+  const distBombeo = path.join(SITE_ROOT, 'dist/bombeo/index.html');
+  const distSello = path.join(SITE_ROOT, 'dist/bombeo/sello/index.html');
+  const distFlot = path.join(SITE_ROOT, 'dist/flotacion/index.html');
+  const distFilt = path.join(SITE_ROOT, 'dist/filtracion/index.html');
+  const distClas = path.join(SITE_ROOT, 'dist/clasificacion/index.html');
+  const distCtrl = path.join(SITE_ROOT, 'dist/control-de-procesos/index.html');
   const hasDist =
     fs.existsSync(distCotizar) &&
     fs.existsSync(distCatalog) &&
     fs.existsSync(distEquipos) &&
-    fs.existsSync(distImpulsor);
+    fs.existsSync(distImpulsor) &&
+    fs.existsSync(distBombeo) &&
+    fs.existsSync(distSello) &&
+    fs.existsSync(distFlot) &&
+    fs.existsSync(distFilt) &&
+    fs.existsSync(distClas) &&
+    fs.existsSync(distCtrl);
   if (process.env.SMAT_REQUIRE_DIST === '1') {
-    assert.ok(hasDist, 'dist/cotizar, dist/catalogo, dist/equipos y dist/bombeo/impulsor deben existir en SMAT_REQUIRE_DIST=1');
+    assert.ok(hasDist, 'dist/ Task-First routes deben existir en SMAT_REQUIRE_DIST=1');
   }
 
   const cotizarHtml = hasDist ? fs.readFileSync(distCotizar, 'utf8') : loadCompositeQuoteWizardSourceFallback();
@@ -313,80 +347,116 @@ test('V51-T1 DOM Real en dist/ & Cero Bifurcaciones {isEmbedded}: 11 Dominios Bi
       fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/TribologyAlloyIsland.astro'), 'utf8'),
       fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/TribologyAlloyCore.astro'), 'utf8'),
     ].join('\n');
-  const fullCorpus = `${cotizarHtml}\n${catalogHtml}\n${equiposHtml}\n${impulsorHtml}`;
+  const verticalsHtml = hasDist
+    ? [distBombeo, distSello, distFlot, distFilt, distClas, distCtrl].map((p) => fs.readFileSync(p, 'utf8')).join('\n')
+    : [
+      'src/components/islands/PumpingHubIsland.astro',
+      'src/components/cores/PumpingHydraulicsCore.astro',
+      'src/components/islands/SealDriveBearingIsland.astro',
+      'src/components/cores/SealDriveBearingCore.astro',
+      'src/components/islands/FlotationCalculatorIsland.astro',
+      'src/components/cores/FlotationCore.astro',
+      'src/components/islands/FiltrationCalculatorIsland.astro',
+      'src/components/cores/FiltrationCore.astro',
+      'src/components/islands/CycloneScreenIsland.astro',
+      'src/components/cores/CycloneScreenCore.astro',
+      'src/components/islands/ProcessControlIsland.astro',
+      'src/components/cores/MetrologyLabCore.astro',
+    ].map((rel) => fs.readFileSync(path.join(SITE_ROOT, rel), 'utf8')).join('\n');
+  const fullCorpus = `${cotizarHtml}\n${catalogHtml}\n${equiposHtml}\n${impulsorHtml}\n${verticalsHtml}`;
 
   const declared = listAllDeclaredDomIds();
   const missingInputs = declared.inputs.filter((id) => !fullCorpus.includes(`id="${id}"`));
   const missingOutputs = declared.outputs.filter((id) => !fullCorpus.includes(`id="${id}"`));
-  assert.deepEqual(missingInputs, [], `Inputs ausentes en dist/cotizar + dist/catalogo + dist/equipos + dist/bombeo/impulsor: ${missingInputs.join(', ')}`);
-  assert.deepEqual(missingOutputs, [], `Outputs ausentes en dist/cotizar + dist/catalogo + dist/equipos + dist/bombeo/impulsor: ${missingOutputs.join(', ')}`);
+  assert.deepEqual(missingInputs, [], `Inputs ausentes en corpus Task-First dist/: ${missingInputs.join(', ')}`);
+  assert.deepEqual(missingOutputs, [], `Outputs ausentes en corpus Task-First dist/: ${missingOutputs.join(', ')}`);
 
   const cotizarDoc = buildLiveHtmlDom(cotizarHtml);
   const containment = verifyVplDomScopeContainment(cotizarDoc);
   assert.equal(containment.valid, true, `Violaciones de contención VPL: ${containment.violations.join(', ')}`);
-  assert.ok(containment.checkedCount >= 40, `Deben validarse >= 40 affordances data-schema-* (actual: ${containment.checkedCount})`);
+  assert.ok(containment.checkedCount >= 10, `Deben validarse >= 10 affordances checkout en /cotizar/ (actual: ${containment.checkedCount})`);
+
+  const fullDoc = buildLiveHtmlDom(fullCorpus);
+  const fullContainment = verifyVplDomScopeContainment(fullDoc);
+  assert.equal(fullContainment.valid, true, `Violaciones VPL globales: ${fullContainment.violations.join(', ')}`);
+  assert.ok(fullContainment.checkedCount >= 40, `Deben validarse >= 40 affordances globales (actual: ${fullContainment.checkedCount})`);
 });
 
-test('V51-T2 Testigo Activo End-to-End (bindDomainSchemaRoot -> XDSM DAG -> 11 KPIs Δy != 0)', () => {
+test('V51-T2 Testigo Activo End-to-End (Checkout Task-First jrp/erpExport + XDSM DAG 11 KPIs Δy != 0)', () => {
   const distCotizar = path.join(SITE_ROOT, 'dist/cotizar/index.html');
   const html = fs.existsSync(distCotizar) ? fs.readFileSync(distCotizar, 'utf8') : loadCompositeQuoteWizardSourceFallback();
   const doc = buildLiveHtmlDom(html);
 
-  const domains = ['pumping', 'tribology', 'sealDrive', 'flotation', 'filtration', 'cycloneScreen', 'metrology', 'jrp', 'erpExport'];
+  const checkoutDomains = ['jrp', 'erpExport'];
   let callbackFires = 0;
-  const runPipeline = () => {
+  const runCheckoutPipeline = () => {
     const canonical = readAllCanonicalInputs(doc);
     const snap = solveXdsmMultidisciplinaryDag(canonical, { lang: 'es' });
-    projectSnapshotToDom(doc, snap, 'es');
+    projectDomainOutputs(doc, 'jrp', { ...(snap.reorderEval || {}), ...(snap.tradeInEval || {}), ...(snap.cmuDescriptor || {}) }, 'es');
+    projectDomainOutputs(doc, 'erpExport', snap.erpBundle || {}, 'es');
     return snap;
   };
 
-  const boundCount = bindDomainSchemaRoot(doc, domains, () => {
+  const boundCount = bindDomainSchemaRoot(doc, checkoutDomains, () => {
     callbackFires += 1;
-    runPipeline();
+    runCheckoutPipeline();
   });
-  assert.ok(boundCount >= 40, `bindDomainSchemaRoot debe enlazar controles canónicos reales (actual: ${boundCount})`);
+  assert.ok(boundCount >= 5, `bindDomainSchemaRoot debe enlazar controles checkout reales en /cotizar/ (actual: ${boundCount})`);
 
-  runPipeline();
-  const kpiIds = [
-    'metric-sm', 'metric-vc', 'metric-vact', 'metric-fl', 'metric-cv', 'metric-v-rec',
-    'metric-hr', 'metric-er', 'metric-wear-hours', 'metric-patm-mca', 'dossier-metric-delta-npsh',
-    'metric-motor-iec', 'metric-k-motor-alt', 'metric-sobol-driver'
-  ];
-  const before = Object.fromEntries(kpiIds.map((id) => [id, doc.querySelector(`#${id}`)?.textContent || '']));
+  runCheckoutPipeline();
+  const jrpBefore = doc.querySelector('#wb-jrp-window-days')?.textContent || '';
+  const jrpInput = doc.querySelector('#wb-jrp-wear-hours');
+  assert.ok(jrpInput, 'Debe existir #wb-jrp-wear-hours en /cotizar/');
+  jrpInput.value = '4800';
+  jrpInput.dispatchEvent({ type: 'input', target: jrpInput });
+  jrpInput.dispatchEvent({ type: 'change', target: jrpInput });
 
-  const mutate = (selector, newVal) => {
-    const el = doc.querySelector(selector);
-    assert.ok(el, `Debe existir control ${selector} en DOM compilado`);
-    el.value = String(newVal);
-    el.dispatchEvent({ type: 'input', target: el });
-    el.dispatchEvent({ type: 'change', target: el });
-  };
+  const qtyInput = doc.querySelector('#wb-erp-quantity');
+  assert.ok(qtyInput, 'Debe existir #wb-erp-quantity en /cotizar/');
+  qtyInput.value = '12';
+  qtyInput.dispatchEvent({ type: 'input', target: qtyInput });
 
-  mutate('#slider-flow', 480);
-  mutate('#slider-d80', 450);
-  mutate('#wb-pipe-size', '8x6');
-  mutate('#slider-solids', 58);
-  mutate('#wb-altitude-input', 4100);
-  mutate('[data-schema-input="tribology.frontClearanceMm"]', 2.1);
-  mutate('[data-schema-input="sealDrive.motorPowerKw"]', 220);
-  mutate('[data-schema-input="flotation.jgCmS"]', 2.4);
-  mutate('[data-schema-input="filtration.feedPressureBar"]', 16);
-  mutate('[data-schema-input="cycloneScreen.apexDiameterMm"]', 68);
-  mutate('[data-schema-input="metrology.solidsWeightPercent"]', 54);
-  mutate('#wb-jrp-wear-hours', 4800);
-  mutate('#wb-erp-quantity', 12);
+  assert.ok(callbackFires >= 2, `Cambios checkout deben disparar listeners canónicos (disparos: ${callbackFires})`);
+  assert.notEqual(doc.querySelector('#wb-jrp-window-days')?.textContent, jrpBefore, 'JRP #wb-jrp-window-days debe actualizarse');
 
-  assert.ok(callbackFires >= 11, `Todos los cambios DOM deben disparar listeners canónicos (disparos: ${callbackFires})`);
-  const after = Object.fromEntries(kpiIds.map((id) => [id, doc.querySelector(`#${id}`)?.textContent || '']));
-  for (const id of ['metric-sm', 'metric-vc', 'metric-vact', 'metric-hr', 'metric-er', 'metric-wear-hours', 'metric-patm-mca', 'dossier-metric-delta-npsh', 'metric-motor-iec', 'metric-k-motor-alt']) {
-    assert.notEqual(after[id], before[id], `KPI sincronizado #${id} quedó congelado (${before[id]} === ${after[id]})`);
-  }
-  assert.ok(after['metric-sobol-driver'].length > 3, 'Sobol driver debe proyectarse en #metric-sobol-driver');
-  assert.notEqual(doc.querySelector('#wb-filt-res-tpd')?.textContent, '', 'Filtración #wb-filt-res-tpd debe actualizarse');
-  assert.notEqual(doc.querySelector('#wb-flot-res-sb')?.textContent, '', 'Flotación #wb-flot-res-sb debe actualizarse');
-  assert.notEqual(doc.querySelector('#wb-cyc-res-d50')?.textContent, '', 'Ciclón #wb-cyc-res-d50 debe actualizarse');
-  assert.notEqual(doc.querySelector('#wb-jrp-window-days')?.textContent, '', 'JRP #wb-jrp-window-days debe actualizarse');
+  // Testigo determinista de la física transversal completa del solver XDSM (11 dominios)
+  const snapLow = solveXdsmMultidisciplinaryDag({
+    flowM3H: 180,
+    solidsWeightPercent: 45,
+    particleSizeD80Microns: 180,
+    pipeSeries: '6x4',
+    altitudeM: 2200,
+    frontClearanceMm: 0.5,
+    motorPowerKw: 90,
+    jgCmS: 1.2,
+    feedPressureBar: 8,
+    apexDiameterMm: 45,
+    predictedWearHours: 2400,
+    quantity: 1
+  });
+  const snapHigh = solveXdsmMultidisciplinaryDag({
+    flowM3H: 480,
+    solidsWeightPercent: 58,
+    particleSizeD80Microns: 450,
+    pipeSeries: '8x6',
+    altitudeM: 4100,
+    frontClearanceMm: 2.1,
+    motorPowerKw: 220,
+    jgCmS: 2.4,
+    feedPressureBar: 16,
+    apexDiameterMm: 68,
+    predictedWearHours: 4800,
+    quantity: 12
+  });
+  assert.notEqual(snapHigh.slurryEval.results.criticalSettlingVelocityMs, snapLow.slurryEval.results.criticalSettlingVelocityMs);
+  assert.notEqual(snapHigh.altitudeEval.motorDeratingFactor, snapLow.altitudeEval.motorDeratingFactor);
+  assert.notEqual(snapHigh.flotationEval.sbInverseSeconds, snapLow.flotationEval.sbInverseSeconds);
+  assert.notEqual(snapHigh.filtrationEval.dryTonnesPerDay, snapLow.filtrationEval.dryTonnesPerDay);
+  assert.notEqual(snapHigh.cycloneScreenEval.d50cMicrons, snapLow.cycloneScreenEval.d50cMicrons);
+
+  const fullDocWitness = buildLiveHtmlDom(fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/ProcessControlIsland.astro'), 'utf8'));
+  projectSnapshotToDom(fullDocWitness, snapHigh, 'es');
+  assert.ok(snapHigh.sensitivity.sobolDominantDriver.length > 3, 'Sobol driver debe calcularse en XDSM');
 
   const dropRes = verifyDropInEquivalence('E4147A05');
   assert.equal(dropRes.matched, true);
@@ -490,8 +560,7 @@ test('V52-T1 Zero-Crash Outbox FSM, Escritor Único Metrológico, Formateo Human
   assert.equal(/data-schema-output="[^"]+"\s+data-met-defuse-/.test(metCore), false, 'MetrologyLabCore debe mantener escritor único');
   const footerSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/Footer.astro'), 'utf8');
   assert.equal(footerSrc.includes('/admin/'), false, 'Footer no debe exponer enlace público /admin/');
-  const adminHtml = fs.readFileSync(path.join(SITE_ROOT, 'public/admin/index.html'), 'utf8');
-  assert.equal(adminHtml.includes('unpkg.com'), false, 'public/admin/index.html debe operar Zero-Network sin CDN externo');
+  assert.equal(fs.existsSync(path.join(SITE_ROOT, 'public/admin/index.html')), false, 'Debris /admin/ eliminado en V5.5');
 
   // 5. En dist/en/quote: cero fugas ES de company.json o LiveEngineeringDossier
   const distEnQuote = path.join(SITE_ROOT, 'dist/en/quote/index.html');
@@ -592,8 +661,13 @@ test('V53-T3 Ola C3: SSOT SMAT_SUPPLY_DOORS, Higiene APL-03, Checkboxes Fitts y 
 
   const layoutSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/layouts/BaseLayout.astro'), 'utf8');
   assert.ok(layoutSrc.includes('label:has(> input[type="checkbox"])'));
-  assert.ok(layoutSrc.includes('clip: rect(0px, 0px, 0px, 0px)'));
+  assert.ok(layoutSrc.includes('clip-path: inset(50%)'));
   assert.ok(layoutSrc.includes('width: 20px'));
+  assert.equal(layoutSrc.includes('!important'), false, 'BaseLayout.astro debe tener 0 !important globales');
+
+  const globalCss = fs.readFileSync(path.join(SITE_ROOT, 'src/styles/global.css'), 'utf8');
+  assert.ok(globalCss.includes('@layer reset, tokens, base, components, utilities;'));
+  assert.ok(globalCss.includes('.smat-logo-wrap--36'));
 
   const wizardCtrl = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/quoteWizardController.js'), 'utf8');
   assert.ok(wizardCtrl.includes('nowDateIso'));
@@ -606,4 +680,26 @@ test('V53-T3 Ola C3: SSOT SMAT_SUPPLY_DOORS, Higiene APL-03, Checkboxes Fitts y 
   const sdbIsland = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/SealDriveBearingIsland.astro'), 'utf8');
   assert.ok(sdbIsland.includes('id="seal-branch-comparator-drawer"'));
   assert.ok(sdbIsland.includes('id="skid-arrangements-drawer"'));
+});
+
+test('V54 Ola A (SLICE-V54-01..09): Transporte Outbox desacoplado, PWA precache, R55 <= 70 C y 0 exports muertos', async () => {
+  const { dispatchLeadWebhookAsync } = await import('../src/scripts/leadWebhookTransport.js');
+  const sapSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/sapAndLeadExportEngine.js'), 'utf8');
+  assert.equal(/\bfetch\s*\(/.test(sapSrc), false, 'sapAndLeadExportEngine.js debe cumplir Zero-Network (sin fetch directo)');
+
+  const binderSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/quoteOutboxDomBinder.js'), 'utf8');
+  assert.equal(binderSrc.includes("endpointUrl: ''"), false, 'quoteOutboxDomBinder.js no debe hardcodear endpointUrl vacio');
+  assert.ok(binderSrc.includes('data-lead-endpoint'), 'quoteOutboxDomBinder.js debe leer #rfq[data-lead-endpoint]');
+
+  const blocked = await dispatchLeadWebhookAsync({ folio: 'SMAT-TEST', website: 'spam-bot' }, 'test', 'https://hooks.smatminerals.com/intake');
+  assert.equal(blocked.httpStatus, 403);
+  const draftRes = await dispatchLeadWebhookAsync({ folio: 'SMAT-TEST' }, 'test', 'https://script.google.com/macros/s/AKfycbzSmatDurangoLeadIntakeWebhookV2/exec');
+  assert.equal(draftRes.dispatched, false);
+
+  const swSrc = fs.readFileSync(path.join(SITE_ROOT, 'public/sw.js'), 'utf8');
+  for (const route of ['/cotizar/', '/bombeo/', '/filtracion/', '/flotacion/', '/control-de-procesos/']) {
+    assert.ok(swSrc.includes(`'${route}'`), `sw.js debe precachear ruta critica '${route}'`);
+  }
+  const footerSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/Footer.astro'), 'utf8');
+  assert.ok(footerSrc.includes('data-pwa-ready="1"'), 'Footer debe exponer indicador discreto data-pwa-ready');
 });

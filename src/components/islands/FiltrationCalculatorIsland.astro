@@ -83,7 +83,37 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
         <div class={variant !== 'hub' ? 'card detail-card' : ''}>
           <div id="nom141-plate-flexure-verifier" data-smat-calc={variant === 'hub' ? 'filtration' : undefined}>
             <div class="filtration-5family-box" id={stratumId} data-plate-flexure-panel="timoshenko-g5" data-stratum-1-instrument>
-              <FiltrationCore locale={locale} variant={variant} showVerticalActions={true} panelClass="filt-core-standalone" />
+              {variant === 'hub' ? (
+                <FiltrationCore locale={locale} variant={variant} showVerticalActions={true} panelClass="filt-core-standalone" />
+              ) : (
+                <div class="smat-core-shell filt-core-standalone">
+                  <div class="smat-flex-between">
+                    <strong class="embedded-filt-title">
+                      {variant === 'parts'
+                        ? (isEs ? 'CONFIGURACIÓN DE PLACAS PP 16 BAR Y LONAS CALANDRADAS' : '16-BAR PP PLATES & CALENDERED CLOTHS APPLICATION')
+                        : (isEs ? 'FILTROS PRENSA 800–2000 MM Y DESAGUADO NOM-141' : 'FILTER PRESSES 800–2000 MM & NOM-141 DEWATERING')}
+                    </strong>
+                    <span class="smat-badge-solar">800–2000 mm • ≤16 bar</span>
+                  </div>
+                  <p class="smat-hero-sub smat-mt-sm">
+                    {variant === 'parts'
+                      ? (isEs
+                          ? 'Reemplazos 1:1 en placas de polipropileno virgen (800–1500 mm), telas selladas por láser y mecanismos corre-placas.'
+                          : '1:1 drop-in virgin PP chamber plates (800–1500 mm), laser-cut sealed cloths, and automatic plate-shifter chains.')
+                      : (isEs
+                          ? 'Equipos de desaguado de jales secos para cumplimiento NOM-141. Para simular esfuerzo de placa y tiempo de ciclo, use el simulador maestro.'
+                          : 'Dry-stack tailings dewatering presses engineered for NOM-141 compliance. Open the master simulator to compute plate stress and cycle time.')}
+                  </p>
+                  <div class="smat-cta-row smat-mt-sm">
+                    <a href={`${filtBase}?variant=${variant}#filtracion-main-section`} class="btn btn-primary smat-tap-btn">
+                      {isEs ? 'Abrir Simulador de Filtración →' : 'Open Filtration Simulator →'}
+                    </a>
+                    <a href={`${quoteBase}?circuito=filtracion&equipo=${quoteEquipo}#rfq`} class="btn btn-outline smat-tap-btn">
+                      {isEs ? 'Cotizar Calibrado →' : 'Quote Calibrated Unit →'}
+                    </a>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -250,10 +280,6 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
       </section>
     )}
   </div>
-)}
-
-{!showVerticalShell && (
-  <FiltrationCore locale={locale} variant={variant} showVerticalActions={false} panelClass="hidden embedded-filt-box" />
 )}
 
 <script>

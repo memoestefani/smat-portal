@@ -1,0 +1,152 @@
+use regex::Regex;
+use std::fs;
+use std::path::Path;
+use walkdir::WalkDir;
+
+/// Invariante 1: Paridad y validez estructural de catalogos SSOT en `data/` sin debris ni interpolacion cruda.
+pub fn verify_catalog_and_ssot_parity(site_root: &Path) -> Result<(), String> {
+    let required_json = [
+        "data/roles.json",
+        "data/company.json",
+        "data/atomic_parts.json",
+        "data/quick_checkout_Catalog.json",
+        "data/mining_groups.json",
+    ];
+    for rel in required_json {
+        let p = site_root.join(rel);
+        if !p.exists() {
+            return Err(format!("Falta archivo SSOT requerido: {}", rel));
+        }
+        let raw = fs::read_to_string(&p).map_err(|e| format!("Error leyendo {}: {}", rel, e))?;
+        let _: serde_json::Value =
+            serde_json::from_str(&raw).map_err(|e| format!("JSON invalido en {}: {}", rel, e))?;
+    }
+
+    if site_root.join("data/roles.copy.json").exists() {
+        return Err("Debris detectado: data/roles.copy.json debe permanecer eliminado".to_string());
+    }
+
+    for rel in [
+        "src/components/Footer.astro",
+        "src/components/LiveEngineeringDossier.astro",
+    ] {
+        let p = site_root.join(rel);
+        if p.exists() {
+            let content = fs::read_to_string(&p).map_err(|e| e.to_string())?;
+            if content.contains("companyData.contact.phones[0]}")
+                || content.contains("companyData.contact.phones[1]}")
+                || content.contains("companyData.contact.emails[0]}")
+                || content.contains("companyData.contact.emails[1]}")
+            {
+                return Err(format!("Interpolacion de objeto crudo [object Object] en {}", rel));
+            }
+        }
+    }
+
+    Ok(())
+}
+
+/// Invariante 2: Escaneo anti-fugas de precios comerciales, margenes, secretos bancarios y placeholders.
+pub fn verify_leak_scanner_and_zero_placeholders(site_root: &Path) -> Result<(), String> {
+    let price_re =
+        Regex::new(r"(\$\s*[0-9]+(\.[0-9]{2})?|\b(USD|MXN)\s*[0-9]+([.,][0-9]+)?)").unwrap();
+    let margin_re = Regex::new(r"(?i)margen\s*[:=]\s*[0-9]+%?").unwrap();
+    let secret_words = ["Cuenta BBVA", "CLABE", "saldo bancario", "factura proveedor"];
+    let bad_placeholders = [
+        "lorem ipsum",
+        "dolor sit amet",
+        "TODO:",
+        "FIXME:",
+        "temp_placeholder",
+        "mockup_image",
+    ];
+
+    for dir in ["data", "public", "src"] {
+        let dir_path = site_root.join(dir);
+        if !dir_path.exists() {
+            continue;
+        }
+        for entry in WalkDir::new(dir_path).into_iter().filter_map(|e| e.ok()) {
+            if !entry.file_type().is_file() {
+                continue;
+            }
+            let ext = entry
+                .path()
+                .extension()
+                .and_then(|s| s.to_str())
+                .unwrap_or("");
+            if !["json", "astro", "ts", "js", "html", "md"].contains(&ext) {
+                continue;
+            }
+            let content = fs::read_to_string(entry.path()).unwrap_or_default();
+            if price_re.is_match(&content) {
+                return Err(format!("Fuga de precio detectada en {}", entry.path().display()));
+            }
+            if margin_re.is_match(&content) {
+                return Err(format!("Fuga de margen detectada en {}", entry.path().display()));
+            }
+            for secret in secret_words {
+                if content.contains(secret) {
+                    return Err(format!("Secreto '{}' detectado en {}", secret, entry.path().display()));
+                }
+            }
+            let lower = content.to_lowercase();
+            for bad in bad_placeholders {
+                if lower.contains(&bad.to_lowercase()) {
+                    return Err(format!(
+                        "Placeholder '{}' detectado en {}",
+                        bad,
+                        entry.path().display()
+                    ));
+                }
+            }
+        }
+    }
+
+    Ok(())
+}
+
+/// Invariante 3: Cabeceras Cloudflare Pages, identidad NAP Durango y cero SLAs falsos.
+pub fn verify_security_headers_nap_and_honest_sla(site_root: &Path) -> Result<(), String> {
+    let headers_path = site_root.join("public/_headers");
+    if !headers_path.exists() {
+        return Err("Falta public/_headers".to_string());
+    }
+    let headers = fs::read_to_string(&headers_path).map_err(|e| e.to_string())?;
+    if !headers.contains("X-Frame-Options: DENY") || !headers.contains("X-Content-Type-Options: nosniff") {
+        return Err("public/_headers debe declarar X-Frame-Options: DENY y nosniff".to_string());
+    }
+
+    let comp_raw = fs::read_to_string(site_root.join("data/company.json")).map_err(|e| e.to_string())?;
+    let comp_val: serde_json::Value = serde_json::from_str(&comp_raw).map_err(|e| e.to_string())?;
+    let street = comp_val["address"]["street"].as_str().unwrap_or("");
+    let city = comp_val["address"]["city"].as_str().unwrap_or("");
+    let phone0 = comp_val["contact"]["phones"][0]["display"].as_str().unwrap_or("");
+    let email0 = comp_val["contact"]["emails"][0]["address"].as_str().unwrap_or("");
+
+    if !street.contains("Mariano Salas")
+        || !city.contains("Durango")
+        || !phone0.contains("618")
+        || !email0.contains("smatminerals.com")
+    {
+        return Err("NAP inconsistente respecto a Mariano Salas #114, Durango (618)".to_string());
+    }
+
+    let false_sla_re = Regex::new(r"(?i)\b45\s*min(utos|utes)?\b").unwrap();
+    for entry in WalkDir::new(site_root.join("src")).into_iter().filter_map(|e| e.ok()) {
+        if entry.file_type().is_file() {
+            let ext = entry.path().extension().and_then(|s| s.to_str()).unwrap_or("");
+            if ["astro", "js", "ts"].contains(&ext) {
+                let text = fs::read_to_string(entry.path()).unwrap_or_default();
+                if false_sla_re.is_match(&text) {
+                    return Err(format!(
+                        "Promesa SLA falsa ('45 min') detectada en {}",
+                        entry.path().display()
+                    ));
+                }
+            }
+        }
+    }
+
+    Ok(())
+}

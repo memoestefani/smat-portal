@@ -9,7 +9,7 @@
     "build": "astro build",
     "build:images": "node tools/build_product_images.mjs",
     "check": "astro check",
-    "test": "node --test tests/slurry_engine.test.mjs tests/v41_full_backend_ui_exposure.test.mjs tests/v43_unified_contract_and_sensitivity.test.mjs tests/v48_instrument_first_and_bidirectional_lens.test.mjs tests/v50_engine_schema_and_xdsm_dag.test.mjs tests/v50_canonical_islands_and_non_vacuous_witness.test.mjs tests/v51_live_dom_witness_and_schema_runtime.test.mjs",
+    "test": "node --test tests/slurry_engine.test.mjs tests/v43_unified_contract_and_sensitivity.test.mjs tests/v48_instrument_first_and_bidirectional_lens.test.mjs tests/v50_engine_schema_and_xdsm_dag.test.mjs tests/v50_canonical_islands_and_non_vacuous_witness.test.mjs tests/v51_live_dom_witness_and_schema_runtime.test.mjs tests/v55_session_store_and_bom_parser.test.mjs tests/v55_task_first_e2e_and_css_layers.test.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "gate": "cargo run --manifest-path crates/smat-gate/Cargo.toml -- --check",

@@ -1,52 +1,71 @@
-import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { verifyDropInEquivalence } from '../src/scripts/dropInEquivalenceGuard.js';
 import {
   TWO_SORT_PARTITION_VERSION,
   listAllEngineSchemas,
-  listAllDeclaredDomIds,
-  validateSchemaPayload,
-  verifyConceptRegistryCoverage
+  validateSchemaPayload
 } from '../src/scripts/engineSchemaRegistry.js';
 import {
-  formatSapTsv,
-  parseSmatPartCode,
-  buildAcuseUrlParams,
-  buildCanonicalEngineeringSnapshotImpl,
-  buildLeadWebhookPayload,
-  formatWhatsappUrlImpl,
-  resolveInternalBudgetCategory
-} from '../src/scripts/sapAndLeadExportEngine.js';
-import {
-  evaluateHybridWetEndConfiguration,
-  DRIVE_ARRANGEMENTS,
-  calculateDriveKinematics,
-  calculateMarcyScale
-} from '../src/scripts/pumpAssemblyAndDriveEngine.js';
-import { normalizePartTokenTwoStage, verifyDropInEquivalence } from '../src/scripts/dropInEquivalenceGuard.js';
-import {
-  calculateSlurryMetrics,
-  calculateAltitudeCorrection,
-  validatePlantLeadInput,
-  calculateThreeCupMarcyCycloneBalance
-} from '../src/scripts/slurryEngine.js';
-import { calculateCoupledReorderWindowDays } from '../src/scripts/requisitionTrayBus.js';
+  computeOutboxRetryJitterMs,
+  enqueueIdempotentOutboxEntry
+} from '../src/scripts/leadOutboxStateMachine.js';
 import {
   calculateFlotationGorainKineticRate,
   calculateUrethaneScreenPartitionWeibull
 } from '../src/scripts/mechanicalAndSeparationEngine.js';
 import {
-  XDSM_DISCIPLINE_ORDER,
-  solveXdsmMultidisciplinaryDag,
-  computeSobolFirstOrderIndices
-} from '../src/scripts/wizardXdsmDagSolver.js';
+  DRIVE_ARRANGEMENTS,
+  calculateDriveKinematics,
+  calculateMarcyScale,
+  evaluateHybridWetEndConfiguration
+} from '../src/scripts/pumpAssemblyAndDriveEngine.js';
+import { calculateCoupledReorderWindowDays } from '../src/scripts/requisitionTrayBus.js';
 import {
-  computeOutboxRetryJitterMs,
-  enqueueIdempotentOutboxEntry
-} from '../src/scripts/leadOutboxStateMachine.js';
+  buildAcuseUrlParams,
+  buildCanonicalEngineeringSnapshotImpl,
+  buildLeadWebhookPayload,
+  formatSapTsv,
+  formatWhatsappUrlImpl,
+  parseSmatPartCode,
+  resolveInternalBudgetCategory
+} from '../src/scripts/sapAndLeadExportEngine.js';
+import {
+  calculateAltitudeCorrection,
+  calculateSlurryMetrics,
+  calculateThreeCupMarcyCycloneBalance,
+  validatePlantLeadInput
+} from '../src/scripts/slurryEngine.js';
+import {
+  computeSobolFirstOrderIndices,
+  solveXdsmMultidisciplinaryDag
+} from '../src/scripts/wizardXdsmDagSolver.js';
+
+function collectDeclaredDomIdsFromSchemas() {
+  const inputs = [];
+  const outputs = [];
+  const pushId = (sel, target) => {
+    if (typeof sel === 'string' && sel.startsWith('#')) {
+      const id = sel.slice(1).split(/[,\s]/)[0].trim();
+      if (id && !target.includes(id)) target.push(id);
+    }
+  };
+  for (const s of listAllEngineSchemas()) {
+    for (const inp of s.inputsSchema) {
+      pushId(inp.domBinding, inputs);
+      for (const a of inp.aliasBindings || []) pushId(a, inputs);
+    }
+    for (const out of s.outputsSchema) {
+      pushId(out.domBinding, outputs);
+      for (const a of out.aliasBindings || []) pushId(a, outputs);
+    }
+  }
+  return { inputs, outputs };
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -67,7 +86,7 @@ test('D1-V50 Two-Sort Partition: engineSchemaRegistry.js contiene 0 HTML/eval y 
     assert.equal(s.allowUnboundReasons.length, 0, `${s.id} no puede tener exenciones huerfanas`);
   }
 
-  const declared = listAllDeclaredDomIds();
+  const declared = collectDeclaredDomIdsFromSchemas();
   assert.ok(declared.inputs.includes('wb-assembly-sequence'), 'Debe declarar #wb-assembly-sequence canónico');
   assert.ok(declared.inputs.includes('wb-altitude-input'), 'Debe declarar input numérico libre de altitud');
   assert.ok(declared.inputs.includes('wb-flot-p') && declared.inputs.includes('wb-flot-rf'), 'Debe declarar P y R_f en Flotación');
@@ -81,8 +100,9 @@ test('D6-V50 Pre/Post-RS Traceability: 100% de los conceptos de CONCEPT-REGISTRY
     'NAP', '301 Mappings', 'locale_pref', 'quick_checkout_skus',
     'atomic_parts_13', 'workbench_lens_v2', 'hybrid_a05_r55'
   ];
-  const res = verifyConceptRegistryCoverage(concepts);
-  assert.equal(res.closed, true, `Conceptos sin dueño en EngineSchema: ${res.missingConcepts.join(', ')}`);
+  const covered = new Set(listAllEngineSchemas().flatMap((s) => s.conceptRefs || []));
+  const missingConcepts = concepts.filter((c) => !covered.has(c));
+  assert.deepEqual(missingConcepts, [], `Conceptos sin dueño en EngineSchema: ${missingConcepts.join(', ')}`);
 });
 
 test('D1-V50 validateSchemaPayload valida rangos físicos sin NaN ni escapes', () => {
@@ -129,7 +149,7 @@ test('D5-V50 Altitud continua [0, 5000] y variables térmicas/ciegas producen di
   assert.ok(andes.deltaNpshLossM > sea.deltaNpshLossM, '3250 msnm debe perder más NPSHa que nivel del mar');
   assert.ok(andes.motorDeratingFactor < sea.motorDeratingFactor, '3250 msnm debe deratear motor IEC');
 
-  const leadFail = validatePlantLeadInput({ wetMaterial: 'R55', tempC: 125, strictBlindCheck: true });
+  const leadFail = validatePlantLeadInput({ wetMaterial: 'R55', tempC: 75, strictBlindCheck: true });
   assert.equal(leadFail.plausible, false);
   assert.equal(leadFail.activeTrustBoundaryId, 'bound-ph-temp');
 
@@ -155,7 +175,6 @@ test('D5-V50 Altitud continua [0, 5000] y variables térmicas/ciegas producen di
 });
 
 test('D3-V50 & D5-V50 XDSM DAG Puro resuelve 7 disciplinas acopladas y Sobol cuantifica S_i > 0 sin DOM', () => {
-  assert.equal(XDSM_DISCIPLINE_ORDER.length, 7);
   const dagSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/wizardXdsmDagSolver.js'), 'utf8');
   assert.equal(/\b(document|window|localStorage|sessionStorage)\b/.test(dagSrc), false, 'DAG puro sin acceso al DOM');
 
@@ -184,6 +203,7 @@ test('D3-V50 & D5-V50 XDSM DAG Puro resuelve 7 disciplinas acopladas y Sobol cua
   assert.ok(outLowWear.erpBundle.sapTsv.includes('TAG-BOMBA-07'));
   assert.ok(outLowWear.erpBundle.sapTsv.includes('3\t'));
   assert.ok(outLowWear.erpBundle.acuseParams.includes('folio='));
+  assert.equal(outLowWear.budgetCategory, 'OPERACION_SPARE_PARTS');
 
   const sobol = computeSobolFirstOrderIndices(
     (v) => calculateSlurryMetrics({
@@ -204,6 +224,7 @@ test('D3-V50 & D5-V50 XDSM DAG Puro resuelve 7 disciplinas acopladas y Sobol cua
   assert.ok(sobol.totalVariance > 0, 'Varianza global Sobol debe ser positiva');
   assert.ok(sobol.ranked.length === 4);
   assert.ok(sobol.ranked[0].si > 0, 'Al menos un parámetro Tier 1 debe dominar S_i > 0');
+  assert.ok(typeof sobol.interactionResidual === 'number' && sobol.interactionResidual >= 0);
 });
 
 test('SLICE-V50-04: Reconciliación 6 exports, parámetros ERP completos y parseo 2 etapas', () => {
@@ -215,15 +236,15 @@ test('SLICE-V50-04: Reconciliación 6 exports, parámetros ERP completos y parse
   const hybrid = evaluateHybridWetEndConfiguration({ d80Microns: 260, tipSpeedMs: 24, solidsWeightPercent: 52 });
   assert.ok(hybrid && typeof hybrid === 'object');
 
-  const leadBadTemp = validatePlantLeadInput({ wetMaterial: 'R55', tempC: 118, strictBlindCheck: true });
+  const leadBadTemp = validatePlantLeadInput({ wetMaterial: 'R55', tempC: 75, strictBlindCheck: true });
   assert.equal(leadBadTemp.plausible, false);
-  assert.equal(leadBadTemp.tempC, 118);
+  assert.equal(leadBadTemp.tempC, 75);
   assert.equal(leadBadTemp.strictBlindCheck, true);
 
-  const norm = normalizePartTokenTwoStage('E4147A05');
-  assert.equal(norm.cleaned, 'E4147A05');
-  assert.equal(norm.baseRoot, 'E4147');
-  assert.equal(norm.alloySuffix, 'A05');
+  const dropRes = verifyDropInEquivalence('E4147A05');
+  assert.equal(dropRes.matched, true);
+  assert.equal(dropRes.atomicCode, 'E4147');
+  assert.equal(dropRes.alloyCode, 'A05');
 
   const erpData = {
     folio: 'SMAT-ERP-50',
@@ -260,32 +281,29 @@ test('SLICE-V50-04: Reconciliación 6 exports, parámetros ERP completos y parse
   assert.ok(resolveInternalBudgetCategory(erpData).length > 0);
 });
 
-test('SLICE-V50-08: Fachada quoteWizardController < 450 LOC, sin -test fantasma y conserva 23 exports', async () => {
+test('SLICE-V50-08: Fachada Task-First quoteWizardController < 200 LOC, sin -test fantasma y desacoplada', async () => {
   const ctrlPath = path.join(SITE_ROOT, 'src/scripts/quoteWizardController.js');
   const ctrlSrc = fs.readFileSync(ctrlPath, 'utf8');
   const lineCount = ctrlSrc.split(/\r?\n/).length;
-  assert.ok(lineCount < 450, `quoteWizardController.js debe ser < 450 LOC, actual: ${lineCount}`);
+  assert.ok(lineCount < 200, `quoteWizardController.js debe ser < 200 LOC, actual: ${lineCount}`);
   assert.equal(ctrlSrc.includes('wb-assembly-sequence-test'), false, 'Cero referencias al ID fantasma -test');
+  for (const retired of [
+    'wizardCircuitPhysicsController',
+    'wizardCircuitXorStatechart',
+    'wizardLivePhysicsProjector',
+    'wizardStateAndUrlLens'
+  ]) {
+    assert.equal(ctrlSrc.includes(retired), false, `quoteWizardController.js no debe importar ${retired}`);
+  }
 
   const ctrlMod = await import('../src/scripts/quoteWizardController.js');
-  const requiredExports = [
-    'CIRCUIT_XOR_VIEW_SPEC', 'getCircuitXorViewProjection', 'DOSSIER_FORMATTERS_BY_FIELD',
-    'formatDossierSimulationBanner', 'formatDossierMetrologyBadge', 'ROLE_ALIAS_MAP',
-    'FLOTATION_CONDITION_ALIAS_MAP', 'FILTRATION_CONDITION_ALIAS_MAP',
-    'normalizeFlotationConditionKey', 'normalizeFiltrationConditionKey',
-    'resolveFlotationDomChipKey', 'resolveFiltrationDomChipKey',
-    'resolveCanonicalRoleFromUrlParam', 'parseMarcyThreeCupUrlParams',
-    'resolveUrlContextDescriptor', 'FORMATTERS_BY_FIELD', 'projectWorkbenchToDOM',
-    'buildSmatCode', 'decodeSmatCode', 'resolveMiningUnitPulpPreset',
-    'matchMiningGroupByEmailDomain', 'computeWizardViewState', 'initQuoteWizardController'
-  ];
-  for (const sym of requiredExports) {
+  for (const sym of ['computeWizardViewState', 'initQuoteWizardController']) {
     assert.ok(sym in ctrlMod, `Export requerido faltante en quoteWizardController.js: ${sym}`);
   }
 
   const vs = ctrlMod.computeWizardViewState({}, '?circuito=flotacion&rol=rotor_estator');
   assert.equal(vs.circuit, 'flotacion');
-  assert.equal(vs.panels.flotacionVisible, true);
+  assert.equal(vs.roleId, 'rotor_estator');
 });
 
 test('SLICE-V50-08B: Dominio B2B puro migrado (URL context, grupos mineros, códigos SMAT, mailto y SAP plaintext)', async () => {
@@ -338,14 +356,13 @@ test('SLICE-V53-21: Outbox idempotente, Sobol Dossier (live-table-sobol-drivers)
   assert.ok(projectorSrc.includes('live-table-sobol-drivers'));
   assert.ok(projectorSrc.includes('computeSobolFirstOrderIndices'));
 
-  const [projMod, xdsmMod, homeMod, wbMod, catMod, bindMod, lensMod, routeMod] = await Promise.all([
+  const [projMod, xdsmMod, homeMod, wbMod, catMod, bindMod, routeMod] = await Promise.all([
     import('../src/scripts/wizardDossierProjector.js'),
     import('../src/scripts/wizardXdsmDagSolver.js'),
     import('../src/scripts/homeAndEquipmentCatalogFilter.js'),
     import('../src/scripts/workbenchBus.js'),
     import('../src/scripts/catalogFacetedViewModel.js'),
     import('../src/scripts/schemaRuntimeBinder.js'),
-    import('../src/scripts/wizardStateAndUrlLens.js'),
     import('../src/scripts/wizardUrlAndPresetRouter.js')
   ]);
   assert.equal('renderWetEndMaterialMatrix' in projMod, false);
@@ -355,8 +372,6 @@ test('SLICE-V53-21: Outbox idempotente, Sobol Dossier (live-table-sobol-drivers)
   assert.equal('normalizeWorkbenchStateV2' in wbMod, false);
   assert.equal('CATALOG_FAMILY_CHIPS' in catMod, false);
   assert.equal('readDomainInputs' in bindMod, false);
-  assert.equal('CANONICAL_WORKBENCH_STORAGE_KEY' in lensMod, false);
-  assert.equal('saveUserProfileSnapshot' in lensMod, false);
   assert.equal('FLOTATION_DOM_CHIP_MAP' in routeMod, false);
   assert.equal('FILTRATION_DOM_CHIP_MAP' in routeMod, false);
 });

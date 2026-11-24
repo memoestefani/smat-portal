@@ -65,6 +65,13 @@ const defaultKin = calculateDriveAndBearingKinematics({
       <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Presión Caja Estopas:' : 'Stuffing Box Pressure:'}</strong> <span data-schema-output="sealDrive.stuffingBoxResidualKpa"><span id="seal-pbox-out">88.8 kPa</span></span></div>
       <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Agua de Sello Req.:' : 'Flush Water Req.:'}</strong> <span id="seal-pwater-out" data-schema-output="sealDrive.requiredGlandWaterPressureKpa">0 kPa</span></div>
       <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Rama Recomendada:' : 'Recommended Branch:'}</strong> <span id="seal-branch-out" data-schema-output="sealDrive.recommendedStationCode">02A</span></div>
+      <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Columna Expeller (H_exp):' : 'Expeller Head (H_exp):'}</strong> <span id="seal-hexp-out" data-schema-output="sealDrive.expellerCounterHeadM">8.75 m</span></div>
+      <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Presión Succión (P_s):' : 'Suction Pressure (P_s):'}</strong> <span id="seal-psuc-out" data-schema-output="sealDrive.suctionPressureKpa">43.3 kPa</span></div>
+      <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Presión Descarga (P_d):' : 'Discharge Pressure (P_d):'}</strong> <span id="seal-pdis-out" data-schema-output="sealDrive.dischargePressureKpa">378.9 kPa</span></div>
+      <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Margen Neto (≥5.0 kPa):' : 'Net Margin (≥5.0 kPa):'}</strong> <span id="seal-margin-out" data-schema-output="sealDrive.netSealMarginKpa">29.6 kPa</span></div>
+      <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Razón Hs/Hd (≤18%):' : 'Hs/Hd Ratio (≤18%):'}</strong> <span id="seal-hs-hd-out" data-schema-output="sealDrive.suctionToDischargeRatio">0.114</span></div>
+      <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Agua de Sello (psi):' : 'Gland Water (psi):'}</strong> <span id="seal-pwater-psi-out" data-schema-output="sealDrive.requiredGlandWaterPressurePsi">23.0 psi</span></div>
+      <div class="smat-sdb-kpi-card"><strong>{isEs ? 'Viabilidad Expeller 02A:' : '02A Expeller Viable:'}</strong> <span id="seal-viable-out" data-schema-output="sealDrive.expellerViable">{isEs ? 'Sí' : 'Yes'}</span></div>
     </div>
     <div class="smat-inputs-2col smat-sdb-inputs-box smat-mt-sm">
       <label class="smat-sdb-field">
@@ -142,6 +149,26 @@ const defaultKin = calculateDriveAndBearingKinematics({
         <span class="kin-metric-card__kicker">{isEs ? 'VIDA BASE ISO 281 (L₁₀ₕ)' : 'ISO 281 BASE LIFE (L₁₀ₕ)'}</span>
         <strong id="wb-kin-l10h" class="kin-metric-card__val" data-kin-l10h data-bear-l10h data-schema-output="sealDrive.bearingL10Hours">{defaultKin.bearingL10Hours.toLocaleString('en-US')} h</strong>
         <span class="kin-metric-card__sub" data-kin-l10mh>{isEs ? `Cartucho ${defaultKin.bearingCartridgeCode} lubricado por baño` : `${defaultKin.bearingCartridgeCode} bath-lubricated cartridge`}</span>
+      </div>
+      <div class="kin-metric-card">
+        <span class="kin-metric-card__kicker">{isEs ? 'INMUNIDAD SUMIDERO' : 'SUMP FLOOD IMMUNITY'}</span>
+        <strong id="wb-kin-flood-out" class="kin-metric-card__val" data-schema-output="sealDrive.sumpFloodImmunityEn">{defaultKin.sumpFloodImmunityEn}</strong>
+        <span class="kin-metric-card__sub">{isEs ? 'Elevación de motor sobre salpicadura' : 'Motor splash-immunity elevation'}</span>
+      </div>
+      <div class="kin-metric-card">
+        <span class="kin-metric-card__kicker">{isEs ? 'APTO HULE R55 (≤24.5 m/s)' : 'RUBBER R55 SAFE (≤24.5 m/s)'}</span>
+        <strong id="wb-kin-rubber-safe-out" class="kin-metric-card__val" data-schema-output="sealDrive.rubberSafeTipSpeed">{defaultKin.rubberSafeTipSpeed ? (isEs ? 'Sí' : 'Yes') : 'No'}</strong>
+        <span class="kin-metric-card__sub">{isEs ? 'Control térmico elastómero' : 'Elastomer thermal envelope'}</span>
+      </div>
+      <div class="kin-metric-card">
+        <span class="kin-metric-card__kicker">{isEs ? 'SOBREVELOCIDAD SiC (>28.0 m/s)' : 'SiC SPEED EXCEEDED (>28.0 m/s)'}</span>
+        <strong id="wb-kin-sic-over-out" class="kin-metric-card__val" data-schema-output="sealDrive.ceramicSpallingSpeedExceeded">{defaultKin.ceramicSpallingSpeedExceeded ? (isEs ? 'Sí' : 'Yes') : 'No'}</strong>
+        <span class="kin-metric-card__sub">{isEs ? 'Límite de astillamiento cerámico' : 'Ceramic spalling tip limit'}</span>
+      </div>
+      <div class="kin-metric-card">
+        <span class="kin-metric-card__kicker">{isEs ? 'MATERIALES APTOS POR u₂' : 'TIP-SPEED SAFE MATERIALS'}</span>
+        <strong id="wb-kin-rec-mat-u2-out" class="kin-metric-card__val" data-schema-output="sealDrive.recommendedWetMaterialByTipSpeed">{defaultKin.recommendedWetMaterialByTipSpeed}</strong>
+        <span class="kin-metric-card__sub">{isEs ? 'Criterio cinemático de selección' : 'Kinematic alloy envelope'}</span>
       </div>
     </div>
 

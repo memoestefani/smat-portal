@@ -83,7 +83,37 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
       <div class={`container ${variant !== 'hub' ? 'content-container' : ''}`}>
         <div class={variant !== 'hub' ? 'card detail-card' : ''}>
           <div class="flotation-5zone-box" id={stratumId} data-cell-dropin-matrix="gorain-1997" data-stratum-1-instrument>
-            <FlotationCore locale={locale} variant={variant} showVerticalActions={true} panelClass="flot-core-standalone" />
+            {variant === 'hub' ? (
+              <FlotationCore locale={locale} variant={variant} showVerticalActions={true} panelClass="flot-core-standalone" />
+            ) : (
+              <div class="smat-core-shell flot-core-standalone">
+                <div class="smat-flex-between">
+                  <strong class="embedded-title">
+                    {variant === 'mechanisms'
+                      ? (isEs ? 'CONFIGURACIÓN DE REPUESTOS ROTOR-ESTATOR (#18 SP A #30)' : 'ROTOR-STATOR SPARES CONFIGURATION (#18 SP TO #30)')
+                      : (isEs ? 'FICHA TÉCNICA DE CELDAS Y MECANISMOS (50–300 FT³)' : 'FLOTATION CELLS & MECHANISMS APPLICATION SHEET (50–300 FT³)')}
+                  </strong>
+                  <span class="embedded-badge">Drop-In #18 SP / #24 / #30</span>
+                </div>
+                <p class="smat-hero-sub smat-mt-sm">
+                  {variant === 'mechanisms'
+                    ? (isEs
+                        ? 'Selección directa de impulsores, estatores y ejes recubiertos en poliuretano Shore 90A o hule R55 con acople 1:1.'
+                        : 'Direct selection of rotors, diffusers, and elastomer-coated shafts in 90A polyurethane or R55 rubber with 1:1 drop-in fit.')
+                    : (isEs
+                        ? 'Celdas y mecanismos suspendidos precalibrados sin obra civil. Para simular parámetros cinéticos (Sb, Njs, k), utilice el simulador maestro.'
+                        : 'Pre-calibrated suspended cells and retrofit mechanisms. For interactive aeration and suspension calculations (Sb, Njs, k), use the master simulator.')}
+                </p>
+                <div class="smat-cta-row smat-mt-sm">
+                  <a href={`${flotBase}?variant=${variant}#flotacion-main-section`} class="btn btn-primary smat-tap-btn">
+                    {isEs ? 'Abrir Simulador de Flotación →' : 'Open Flotation Simulator →'}
+                  </a>
+                  <a href={`${quoteBase}?circuito=flotacion&equipo=${quoteEquipo}&serie=100ft#rfq`} class="btn btn-outline smat-tap-btn">
+                    {isEs ? 'Cotizar Calibrado →' : 'Quote Calibrated Unit →'}
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
 
           <div class="smat-mb-md">
@@ -304,10 +334,6 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
       </section>
     )}
   </div>
-)}
-
-{!showVerticalShell && (
-  <FlotationCore locale={locale} variant={variant} showVerticalActions={false} panelClass="hidden embedded-flot-box" />
 )}
 
 <script>

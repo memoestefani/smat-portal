@@ -36,7 +36,8 @@ import {
   buildAcuseUrlParams,
   buildLeadWebhookPayload,
   formatSapTsv,
-  parseSmatPartCode
+  parseSmatPartCode,
+  resolveInternalBudgetCategory
 } from './sapAndLeadExportEngine.js';
 import {
   calculateAltitudeCorrection,
@@ -54,7 +55,7 @@ import {
   WET_END_MATERIAL_MATRIX
 } from './tribologyAndCompatibilityEngine.js';
 
-export const XDSM_DISCIPLINE_ORDER = Object.freeze([
+const XDSM_DISCIPLINE_ORDER = Object.freeze([
   '1_pumping_hydraulics',
   '2_seal_drive_kinematics',
   '3_tribology_hybrid_assembly',
@@ -396,6 +397,11 @@ export function solveXdsmMultidisciplinaryDag(rawState = {}) {
     alloy: matMeta.code || optimalMaterial.code,
     circuit: s.circuit || 'bombeo'
   };
+  const budgetCategory = resolveInternalBudgetCategory({
+    circuit: erpSnapshot.circuit,
+    role_id: erpSnapshot.role,
+    smat_code: erpSnapshot.smat_code
+  });
 
   return {
     disciplineGraph: XDSM_DISCIPLINE_GRAPH,
@@ -423,12 +429,14 @@ export function solveXdsmMultidisciplinaryDag(rawState = {}) {
     leadValidation,
     parsedPart,
     cmuDescriptor,
+    budgetCategory,
     sensitivity: {
       ...sensitivity,
       sobolDominantDriver,
       sobolDominantSi: topSobol.si
     },
     erpBundle: {
+      budgetCategory,
       sapTsv: formatSapTsv(erpSnapshot),
       acuseParams: buildAcuseUrlParams(erpSnapshot).toString(),
       webhookPayload: buildLeadWebhookPayload(erpSnapshot, 'xdsm_solver')
@@ -443,11 +451,11 @@ export function solveXdsmMultidisciplinaryDag(rawState = {}) {
  * @param {(vec: Record<string, number>) => number} modelFn
  * @param {Array<{ name: string, min: number, max: number }>} paramSpecs
  * @param {number} [nSamples=64]
- * @returns {{ totalVariance: number, indices: Record<string, number>, ranked: Array<{ name: string, si: number }> }}
+ * @returns {{ totalVariance: number, indices: Record<string, number>, ranked: Array<{ name: string, si: number }>, interactionResidual: number }}
  */
 export function computeSobolFirstOrderIndices(modelFn, paramSpecs = [], nSamples = 64) {
   if (typeof modelFn !== 'function' || !Array.isArray(paramSpecs) || paramSpecs.length === 0) {
-    return { totalVariance: 0, indices: {}, ranked: [] };
+    return { totalVariance: 0, indices: {}, ranked: [], interactionResidual: 0 };
   }
   const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71];
   const halton = (idx, base) => {
@@ -501,5 +509,7 @@ export function computeSobolFirstOrderIndices(modelFn, paramSpecs = [], nSamples
     ranked.push({ name: key, si });
   }
   ranked.sort((a, b) => b.si - a.si);
-  return { totalVariance: Number(variance.toFixed(6)), indices, ranked };
+  const sumFirstOrder = ranked.reduce((acc, item) => acc + item.si, 0);
+  const interactionResidual = Number(Math.max(0, 1 - sumFirstOrder).toFixed(4));
+  return { totalVariance: Number(variance.toFixed(6)), indices, ranked, interactionResidual };
 }

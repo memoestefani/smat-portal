@@ -10,14 +10,13 @@ import { fileURLToPath } from 'node:url';
 import {
   saveEngineeringContextSnapshot,
   loadEngineeringContextSnapshot
-} from '../src/scripts/wizardCircuitPhysicsController.js';
+} from '../src/scripts/rfqSessionStore.js';
 import {
   commitVerticalSimulation,
   loadUnifiedEngineeringAndWorkbenchState,
   bindAtomicPartTrayButtons
 } from '../src/scripts/verticalStateAndCtaSyncBridge.js';
 import {
-  VERTICAL_STATION_LENS_DESCRIPTORS,
   hydrateVerticalInputsFromUnifiedState,
   syncReactiveTraySkuButton,
   initBearingSupportInspector,
@@ -273,8 +272,17 @@ test('D2-V48 / DEB-V48-06: commitVerticalSimulation({ skipStorageWrite: true }) 
   assert.equal(sealExp.value, '215');
   assert.equal(sealRpm.value, '1150');
   assert.equal(sealSg.value, '1.48');
-  assert.ok(Object.keys(VERTICAL_STATION_LENS_DESCRIPTORS).includes('filtration'));
-  assert.ok(Object.keys(VERTICAL_STATION_LENS_DESCRIPTORS).includes('classification'));
+  const filtPress = new MockNode('input', { id: 'filt-pressure-bar', type: 'number', min: '2', max: '25', value: '8' });
+  const hydFilt = hydrateVerticalInputsFromUnifiedState(new MockNode('section', {}, [filtPress]), 'filtration', '?press_bar=15');
+  assert.equal(hydFilt.hasPersistedState, true);
+  assert.equal(hydFilt.hydratedCount, 1);
+  assert.equal(filtPress.value, '15');
+
+  const cycSg = new MockNode('input', { id: 'cyc-feed-sg', type: 'number', min: '1', max: '4', value: '1.35' });
+  const hydClas = hydrateVerticalInputsFromUnifiedState(new MockNode('section', {}, [cycSg]), 'classification', '?sg=3.15');
+  assert.equal(hydClas.hasPersistedState, true);
+  assert.equal(hydClas.hydratedCount, 1);
+  assert.equal(cycSg.value, '3.15');
 });
 
 test('D3-V48 / D4-V48: syncReactiveTraySkuButton, initBearingSupportInspector y initSkidKinematicsInspector (5/5 hybrid_a05_r55 + DAM005)', () => {
@@ -539,8 +547,11 @@ test('D1-V48 / D5-V48 / DEB-V48-03..05: Estrato 1 Above-the-Fold, paridad biling
   }
 
   const wizardSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/QuoteWizard.astro'), 'utf8');
-  assert.ok(wizardSrc.includes('id="wb-mining-preset-telemetry"'), 'QuoteWizard.astro debe montar #wb-mining-preset-telemetry');
-  assert.ok(wizardSrc.includes('initMiningPresetTelemetryBridge') || wizardSrc.includes('renderMiningPresetTelemetry'), 'QuoteWizard.astro debe invocar initMiningPresetTelemetryBridge / renderMiningPresetTelemetry');
+  const fastLaneSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/wizard/FastLaneBomBar.astro'), 'utf8');
+  const wizardCtrlSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/quoteWizardController.js'), 'utf8');
+  assert.ok(fastLaneSrc.includes('id="wb-mining-preset-telemetry"'), 'FastLaneBomBar.astro debe montar #wb-mining-preset-telemetry');
+  assert.ok(wizardSrc.includes('<FastLaneBomBar'), 'QuoteWizard.astro debe montar <FastLaneBomBar');
+  assert.ok(wizardCtrlSrc.includes('initMiningPresetTelemetryBridge'), 'quoteWizardController.js debe invocar initMiningPresetTelemetryBridge');
 
   const parSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/PumpAssemblyReport.astro'), 'utf8');
   assert.ok(parSrc.includes('data-core-tradein-widget="DAM005"'), 'PumpAssemblyReport.astro debe montar Core Trade-In DAM005');
@@ -554,10 +565,8 @@ test('D1-V48 / D5-V48 / DEB-V48-03..05: Estrato 1 Above-the-Fold, paridad biling
   assert.ok(footerSrc.includes('id="smat-offline-status"'), 'Footer.astro debe montar #smat-offline-status reactivo');
   assert.ok(footerSrc.includes('id="smat-offline-retry-btn"'), 'Footer.astro debe montar #smat-offline-retry-btn');
 
-  const ctrlPhysMod = await import('../src/scripts/wizardCircuitPhysicsController.js');
   const pumpCalcMod = await import('../src/scripts/pumpingSealAndTribologyCalculators.js');
   const bindMod = await import('../src/scripts/wizardEventBindings.js');
-  assert.equal('mergeEngineeringContext' in ctrlPhysMod, false, 'mergeEngineeringContext debe ser privado en wizardCircuitPhysicsController');
   assert.equal('PUMPING_CALCULATOR_STATE' in pumpCalcMod, false, 'PUMPING_CALCULATOR_STATE debe ser privado en pumpingSealAndTribologyCalculators');
   assert.equal('bindSchemaInputsAutomatically' in bindMod, false, 'bindSchemaInputsAutomatically debe ser privado en wizardEventBindings');
 });

@@ -477,7 +477,8 @@ test('Sección 2.1 (Tests 227-231): Paridad Total Backend — SiC, ISO 281 L10mh
     WET_END_MATERIAL_MATRIX,
     selectOptimalMaterial,
     evaluatePumpAssemblySequence,
-    calculateDriveAndBearingKinematics
+    calculateDriveAndBearingKinematics,
+    validatePlantLeadInput
   } = await import('../src/scripts/slurryEngine.js');
   const {
     getAtomicPartSpecs,
@@ -514,10 +515,32 @@ test('Sección 2.1 (Tests 227-231): Paridad Total Backend — SiC, ISO 281 L10mh
     wetEndBranch: 'ceramica_sic',
     frontClearanceMm: 0.75,
     particleSizeD80Microns: 1100,
-    tipSpeedMs: 29.5
+    tipSpeedMs: 28.5
   });
   assert.equal(sicSpalling.spallingRiskDetected, true);
   assert.ok(sicSpalling.spallingWarningEs.includes('K_Ic = 4.1'));
+
+  // Test 229b (SLICE-V54-03): validatePlantLeadInput veta R55 > 70 C, u2 > 28.0 m/s y omite tokens (bound-*) visibles
+  const rubberThermalAlert = validatePlantLeadInput({
+    wetMaterial: 'hule_natural',
+    tempC: 75,
+    pulpPh: 7.0,
+    d80Microns: 180,
+    cwPct: 45,
+    flowM3h: 180
+  });
+  assert.equal(rubberThermalAlert.plausible, false);
+  assert.equal(rubberThermalAlert.activeTrustBoundaryId, 'bound-ph-temp');
+  assert.equal(rubberThermalAlert.activeTrustBoundaryTitleEs.includes('(bound-'), false);
+
+  const sicTipAlert = validatePlantLeadInput({
+    wetMaterial: 'ceramica_sic',
+    tipSpeedMs: 28.5,
+    frontClearanceMm: 0.75
+  });
+  assert.equal(sicTipAlert.plausible, false);
+  assert.equal(sicTipAlert.activeTrustBoundaryId, 'bound-unapproved-mods');
+  assert.equal(sicTipAlert.activeTrustBoundaryTitleEs.includes('(bound-'), false);
 
   // Test 230: calculateDriveAndBearingKinematics expone ISO 281:2007 L10mh con a_ISO = 1.25 (Laberinto SMAT) vs a_ISO = 0.22 (Fieltro Contaminado)
   const kin = calculateDriveAndBearingKinematics({

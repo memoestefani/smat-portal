@@ -1,7 +1,6 @@
 ---
 import companyData from '../../data/company.json';
 import { formatNioshErgonomicStatus } from '../scripts/workbenchBus.js';
-import RequisitionTraySummary from './RequisitionTraySummary.astro';
 
 interface Props {
   lang?: 'es' | 'en';
@@ -57,15 +56,17 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
     <div class="dossier-divider"></div>
 
     <!-- Estatus de Prioridad y Horario -->
-    <div class="dossier-sla-bar" id="dossier-sla-bar" data-domain-root="pumping">
-      <span class="sla-badge" id="live-priority-tag">{isEs ? '[PARO DE PLANTA / PRIORIDAD]' : '[PLANT SHUTDOWN / PRIORITY]'}</span>
+    <div class="dossier-sla-bar" id="dossier-sla-bar">
+      <span class="sla-badge" id="live-priority-tag">{isEs ? 'Prioridad Operativa • Paro de Planta' : 'Operational Priority • Plant Shutdown'}</span>
+      <span class="sla-badge" id="live-budget-category-pill">{isEs ? 'Presupuesto: Refacciones y Desgaste' : 'Budget: Operating Wear Spares'}</span>
       <span class="sla-badge dossier-gate-pill" id="gate-lead-status" data-testid="gate-lead-status">{isEs ? 'PLANTA MINERA VERIFICADA • PARÁMETROS PLAUSIBLES' : 'VERIFIED MINING PLANT • PLAUSIBLE PARAMETERS'}</span>
       <span class="sla-clock" data-emergency-hotline={String(companyData.contact.whatsapp.emergency_hotline)}>Durango: {companyData.contact.phones[0].display} • WhatsApp: {companyData.contact.whatsapp.display} • {isEs ? companyData.logistics.warehouse_hours : companyData.logistics.warehouse_hours_en}</span>
     </div>
-    <div data-domain-root="pumping">
-      <div id="trust-boundary-alert" data-testid="trust-boundary-alert" data-schema-output="pumping.activeTrustBoundaryId" class="hidden dossier-trust-alert">
+    <div>
+      <div id="trust-boundary-alert" data-testid="trust-boundary-alert" class="hidden dossier-trust-alert">
         <strong id="trust-boundary-title">{isEs ? 'Límite Técnico Detectado' : 'Technical Boundary Alert'}</strong>
         <p id="trust-boundary-reason" class="dossier-trust-reason"></p>
+        <ul id="trust-boundary-warnings" class="dossier-trust-warnings hidden"></ul>
       </div>
     </div>
 
@@ -115,7 +116,7 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
             <span class="ref-label">{isEs ? 'Equipo Especial Fuera de Catálogo:' : 'Custom Engineered Equipment:'}</span>
             <strong id="live-custom-text"></strong>
           </div>
-          <div id="live-pipe-meta-box" class="live-pipe-meta-box" data-domain-root="pumping">
+          <div id="live-pipe-meta-box" class="live-pipe-meta-box">
             <span class="spec-label" id="live-pipe-header">{isEs ? 'Línea de Tubería / Capacidad:' : 'Process Line / Capacity:'}</span>
             <strong id="live-pipe-text" class="font-mono-tech">{isEs ? 'Tubería 6" a 4" (Línea Principal de Proceso)' : '6" to 4" Piping (Main Process Slurry)'}</strong>
             <span class="spec-label dossier-meta-gap" id="live-stress-header">{isEs ? 'Condición de Operación en Planta:' : 'Plant Operating Condition:'}</span>
@@ -123,11 +124,11 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
             <span class="spec-label dossier-meta-gap" id="live-criteria-header">{isEs ? 'Criterios de Aceptación Operativa (Rol):' : 'Role Acceptance Criteria:'}</span>
             <strong id="live-role-criteria" data-testid="live-role-criteria" class="font-mono-tech">{isEs ? 'Intercambiabilidad dimensional 1:1 • Dureza >600 HB • Disponibilidad en Almacén Durango' : '1:1 dimensional fit • Hardness >600 HB • Durango Warehouse availability'}</strong>
             <div class="font-mono-tech dossier-inline-spec-strip">
-              <span data-wb-field="actualPipeVelocityMs" data-schema-output="pumping.actualPipeVelocityMs">3.15 m/s</span> •{' '}
-              <span data-wb-field="slurrySpecificGravity" data-schema-output="pumping.slurrySpecificGravity">1.40 kg/L</span> •{' '}
+              <span data-wb-field="actualPipeVelocityMs">3.15 m/s</span> •{' '}
+              <span data-wb-field="slurrySpecificGravity">1.40 kg/L</span> •{' '}
               <span data-wb-field="sealBranch">{isEs ? 'Expulsor Seco (Est. 02A)' : 'Dry Expeller (St. 02A)'}</span> •{' '}
               b₂ <span data-wb-field="impellerExitWidthMm">48 mm</span> • C <span data-wb-field="dynamicCapacityCkN">145 kN</span> •{' '}
-              <span id="dossier-metric-sobol-driver" data-schema-output="pumping.sobolDominantDriver">{isEs ? 'Factor clave: Caudal Q' : 'Primary factor: Flow Q'}</span>
+              <span id="dossier-metric-sobol-driver">{isEs ? 'Factor clave: Caudal Q' : 'Primary factor: Flow Q'}</span>
             </div>
           </div>
           <div id="live-recirc-warning-dossier" class="live-recirc-warning-dossier hidden">
@@ -160,14 +161,14 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
             </tr>
             <tr>
               <td><strong>{isEs ? 'Abatimiento (HR / ηr) y Vida:' : 'Derating (HR / ηr) & Wear Life:'}</strong></td>
-              <td id="live-table-derating-wear" data-domain-root="pumping">
-                HR = <strong id="metric-hr" data-testid="metric-hr" data-schema-output="pumping.headDeratingFactorHr">0.880</strong> | ηr = <strong id="metric-er" data-testid="metric-er" data-schema-output="pumping.effDeratingFactorEr">0.857</strong> | {isEs ? 'Vida Est.:' : 'Est. Life:'} <strong id="metric-wear-hours" data-testid="metric-wear-hours" data-schema-output="pumping.estimatedImpellerLifeHours">2,400 h (3.8x vs FG)</strong>
+              <td id="live-table-derating-wear">
+                HR = <strong id="metric-hr" data-testid="metric-hr">0.880</strong> | ηr = <strong id="metric-er" data-testid="metric-er">0.857</strong> | {isEs ? 'Vida Est.:' : 'Est. Life:'} <strong id="metric-wear-hours" data-testid="metric-wear-hours">2,400 h (3.8x vs FG)</strong>
               </td>
             </tr>
             <tr>
               <td><strong>{isEs ? 'Altitud y Pinza Térmica IEC:' : 'Altitude & IEC Thermal Pincer:'}</strong></td>
-              <td id="live-table-altitude" data-domain-root="pumping">
-                Patm = <strong id="metric-patm-mca" data-testid="metric-patm-mca" data-schema-output="pumping.pAtmHeadMca">7.89 mca</strong> (<span id="dossier-metric-delta-npsh" data-testid="dossier-metric-delta-npsh" data-schema-output="pumping.deltaNpshLossM">-2.44 m NPSHa</span>) | IEC = <strong id="metric-motor-iec" data-testid="metric-motor-iec" data-schema-output="pumping.motorDeratingFactor">0.880</strong> | K_motor,alt = <strong id="metric-k-motor-alt" data-testid="metric-k-motor-alt" data-schema-output="pumping.combinedMotorAltitudeMultiplier">1.326x</strong>
+              <td id="live-table-altitude">
+                Patm = <strong id="metric-patm-mca" data-testid="metric-patm-mca">7.89 mca</strong> (<span id="dossier-metric-delta-npsh" data-testid="dossier-metric-delta-npsh">-2.44 m NPSHa</span>) | IEC = <strong id="metric-motor-iec" data-testid="metric-motor-iec">0.880</strong> | K_motor,alt = <strong id="metric-k-motor-alt" data-testid="metric-k-motor-alt">1.326x</strong>
               </td>
             </tr>
             <tr>
@@ -176,7 +177,7 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
             </tr>
             <tr>
               <td><strong>{isEs ? 'Claro Axial y Cinemática:' : 'Axial Clearance & Kinematics:'}</strong></td>
-              <td id="live-table-kinematics" data-domain-root="tribology">δ = 0.75 mm (Δη_v = -1.6%, ΔV_pipe = -<span id="wb-pipe-vel-loss" data-testid="wb-pipe-vel-loss" data-schema-output="tribology.pipeVelocityMarginLossPct">1.2%</span>) | {isEs ? 'Arreglo CV' : 'CV Arrangement'} | u₂ = {defaultKinematics.tipSpeedMs} m/s | L₁₀ₕ = {defaultKinematics.bearingL10Hours.toLocaleString()} h | <span id="live-assembly-collision-note" data-testid="live-assembly-collision-note">{isEs ? 'Secuencia S1→S5 libre de colisión axial' : 'S1→S5 sequence collision-free'}</span></td>
+              <td id="live-table-kinematics">δ = 0.75 mm (Δη_v = -1.6%, ΔV_pipe = -<span id="wb-pipe-vel-loss" data-testid="wb-pipe-vel-loss">1.2%</span>) | {isEs ? 'Arreglo CV' : 'CV Arrangement'} | u₂ = {defaultKinematics.tipSpeedMs} m/s | L₁₀ₕ = {defaultKinematics.bearingL10Hours.toLocaleString()} h | <span id="live-assembly-collision-note" data-testid="live-assembly-collision-note">{isEs ? 'Secuencia S1→S5 libre de colisión axial' : 'S1→S5 sequence collision-free'}</span></td>
             </tr>
             <tr>
               <td><strong>{isEs ? 'Ficha Física / NIOSH:' : 'Physical Spec / NIOSH:'}</strong></td>
@@ -367,55 +368,47 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
         </div>
       </button>
 
-      <details class="wb-progressive-drawer dossier-tight-top" id="dossier-tray-and-exports-drawer">
-        <summary class="wb-progressive-summary">
-          <span>{isEs ? 'Bandeja multi-SKU, tabla SAP/TSV, acuse PDF y cotejo ANSI 1:1' : 'Multi-SKU tray, SAP/TSV table, PDF sheet & 1:1 ANSI fit check'}</span>
-          <span>▾</span>
-        </summary>
+      <!-- Barra de Acciones Secundarias en Pastillas (1 clic, sin acordeón) -->
+      <div class="secondary-export-row" id="dossier-actions-row">
+        <button type="button" class="btn-pill-action" id="wb-copy-btn">
+          <span class="pill-icon">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          </span>
+          <span>{isEs ? 'Copiar para ERP / SAP' : 'Copy for ERP / SAP'}</span>
+        </button>
 
-        <!-- Bandeja Canónica Única de Requisición Multi-Ítem B2B -->
-        <div class="dossier-embedded-tray-section" data-dossier-embedded-tray="true">
-          <RequisitionTraySummary lang={lang} />
-        </div>
+        <button type="button" class="btn-pill-action" id="wb-pdf-btn" data-schema-output="erpExport.acuseUrlParams">
+          <span class="pill-icon">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          </span>
+          <span>{isEs ? 'Requisición PDF' : 'PDF Requisition'}</span>
+        </button>
 
-        <!-- Barra de Acciones Secundarias en Pastillas -->
-        <div class="secondary-export-row">
-          <button type="button" class="btn-pill-action" id="wb-copy-btn">
-            <span class="pill-icon">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            </span>
-            <span>{isEs ? 'Copiar para ERP / SAP' : 'Copy for ERP / SAP'}</span>
-          </button>
+        <button type="button" class="btn-pill-action btn-pill-tsv" id="wb-copy-tsv-btn" data-schema-output="erpExport.sapTsv">
+          <span class="pill-icon">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+          </span>
+          <span>{isEs ? 'Tabla TSV (SAP)' : 'TSV Table (SAP)'}</span>
+        </button>
 
-          <button type="button" class="btn-pill-action" id="wb-pdf-btn" data-schema-output="erpExport.acuseUrlParams">
-            <span class="pill-icon">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-            </span>
-            <span>{isEs ? 'Requisición PDF' : 'PDF Requisition'}</span>
-          </button>
+        <button type="button" class="btn-pill-action btn-pill-cotejo" id="wb-cotejo-btn" title={isEs ? 'Descargar Ficha de Cotejo Dimensional ANSI 1:1' : 'Download 1:1 ANSI Dimensional Verification Sheet'}>
+          <span class="pill-icon">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0l12.6 12.6z"/><line x1="14.5" y1="5.5" x2="18.5" y2="9.5"/><line x1="8.5" y1="11.5" x2="11.5" y2="14.5"/></svg>
+          </span>
+          <span>{isEs ? 'Cotejo ANSI 1:1' : 'ANSI 1:1 Fit'}</span>
+        </button>
 
-          <button type="button" class="btn-pill-action btn-pill-tsv" id="wb-copy-tsv-btn" data-schema-output="erpExport.sapTsv">
-            <span class="pill-icon">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
-            </span>
-            <span>{isEs ? 'Tabla TSV (SAP)' : 'TSV Table (SAP)'}</span>
-          </button>
+        <button type="button" class="btn-pill-action" id="wb-email-btn" data-testid="btn-quote-mailto">
+          <span class="pill-icon">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          </span>
+          <span>{isEs ? 'Enviar Correo' : 'Send Email'}</span>
+        </button>
 
-          <button type="button" class="btn-pill-action btn-pill-cotejo" id="wb-cotejo-btn" title={isEs ? 'Descargar Ficha de Cotejo Dimensional ANSI 1:1' : 'Download 1:1 ANSI Dimensional Verification Sheet'}>
-            <span class="pill-icon">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0l12.6 12.6z"/><line x1="14.5" y1="5.5" x2="18.5" y2="9.5"/><line x1="8.5" y1="11.5" x2="11.5" y2="14.5"/></svg>
-            </span>
-            <span>{isEs ? 'Cotejo ANSI 1:1' : 'ANSI 1:1 Fit'}</span>
-          </button>
-
-          <button type="button" class="btn-pill-action" id="wb-email-btn" data-testid="btn-quote-mailto">
-            <span class="pill-icon">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-            </span>
-            <span>{isEs ? 'Enviar Correo' : 'Send Email'}</span>
-          </button>
-        </div>
-      </details>
+        <button type="button" class="btn-pill-action" id="btn-share-purchasing-link-dossier">
+          <span>{isEs ? 'Copiar enlace a Compras' : 'Copy Link for Purchasing'}</span>
+        </button>
+      </div>
 
       <div id="wb-toast" class="wb-toast hidden" role="status" aria-live="polite">
         {isEs ? 'Partidas y folio copiados. Listo para pegar en SAP, Excel o correo.' : 'Spec & folio copied! Ready to paste into SAP, Excel or email.'}
@@ -528,6 +521,7 @@ const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es
 </div>
 
 <style>
+  .folio-code, .smat-part-code-tag { white-space: nowrap; }
   .dossier-inline-svg { display: inline-block; vertical-align: middle; margin-right: 4px; }
   .dossier-gate-pill { background: #065f46; color: #ffffff; padding: 0.15rem 0.45rem; border-radius: 3px; font-size: 0.68rem; }
   .dossier-trust-alert { margin: 0.4rem 0; padding: 0.5rem 0.7rem; background: #fef2f2; border-left: 4px solid #991b1b; border-radius: 4px; font-size: 0.75rem; color: #7f1d1d; }

@@ -9,6 +9,7 @@ import { resolveCanonicalSkuId } from './quickProductsCatalog.js';
 import { computeSelectionOrderCodeHash } from './slurryEngine.js';
 import { loadWorkbenchSession, saveWorkbenchSession, workbenchStateLens } from './workbenchBus.js';
 import { formatCheckoutLaneHuman } from './i18nDomainLabels.js';
+import { loadRfqSession, saveRfqSession } from './rfqSessionStore.js';
 
 const SMAT_TRAY_STORAGE_KEY = 'smat_requisition_tray_v3';
 export const SMAT_TRAY_UPDATE_EVENT = 'smat:tray-updated';
@@ -58,8 +59,17 @@ export function getTrayState(rawOverride = null) {
   let raw = rawOverride;
   if (!raw && typeof window !== 'undefined' && window.localStorage) {
     try {
-      const stored = window.localStorage.getItem(SMAT_TRAY_STORAGE_KEY);
-      if (stored) raw = JSON.parse(stored);
+      const unified = loadRfqSession();
+      if (Array.isArray(unified?.items) && unified.items.length > 0) {
+        raw = {
+          items: unified.items,
+          criticalityMode: unified.plantContext?.urgency || 'PARO_DE_LINEA',
+          updatedAtIso: unified.updatedAtIso,
+        };
+      } else {
+        const stored = window.localStorage.getItem(SMAT_TRAY_STORAGE_KEY);
+        if (stored) raw = JSON.parse(stored);
+      }
     } catch (_e) {
       raw = null;
     }
@@ -88,8 +98,8 @@ export function getTrayState(rawOverride = null) {
 }
 
 /**
- * Persiste el estado de la bandeja en localStorage, sincroniza con smat_workbench_state_v2
- * mediante Lente Simétrica PutGet y emite el evento DOM reactivo.
+ * Persiste el estado de la bandeja en `smat_rfq_session_v3` y retrocompatibilidad
+ * `smat_requisition_tray_v3`, emitiendo el evento DOM reactivo.
  * @param {any} nextState
  * @returns {any}
  */
@@ -100,6 +110,15 @@ export function saveTrayState(nextState = {}) {
       if (window.localStorage) {
         window.localStorage.setItem(SMAT_TRAY_STORAGE_KEY, JSON.stringify(normalized));
       }
+      const unified = loadRfqSession();
+      saveRfqSession({
+        ...unified,
+        items: normalized.items,
+        plantContext: {
+          ...(unified.plantContext || {}),
+          urgency: normalized.criticalityMode,
+        },
+      });
       syncTrayToWorkbenchStateLens(normalized);
       if (typeof window.dispatchEvent === 'function' && typeof CustomEvent === 'function') {
         window.dispatchEvent(new CustomEvent(SMAT_TRAY_UPDATE_EVENT, { detail: normalized }));

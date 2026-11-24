@@ -81,7 +81,7 @@ const FNV1A_HASH_TO_SKU_INDEX = Object.freeze({
  * Etapa 2: Separación de sufijo metalúrgico/elastomérico (A05, R55, C21, SiC, PU, etc.)
  *          preservando raíces compuestas registradas directamente en FNV1A_HASH_TO_SKU_INDEX.
  */
-export function normalizePartTokenTwoStage(rawInput) {
+function normalizePartTokenTwoStage(rawInput) {
   const cleaned = String(rawInput || '')
     .toUpperCase()
     .replace(/[^A-Z0-9]/g, '');

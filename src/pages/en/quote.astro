@@ -16,31 +16,25 @@ import FaqAccordion from '../../components/FaqAccordion.astro';
     <QuoteWizard lang="en" />
   </div>
 
-  <div class="container no-print">
-    <details class="wb-progressive-drawer" id="quote-faq-resources-drawer">
-      <summary class="wb-progressive-summary">
-        <span>Diagnostics guides, P&amp;ID circuit maps &amp; Frequently Asked Questions (5)</span>
-        <span>▾</span>
-      </summary>
-      <div class="quote-extension-links">
-        <a href="/en/pumping/" class="extension-card">
-          <span class="ext-badge">P&ID</span>
-          <div>
-            <strong>Process Circuit Diagrams &amp; Pump Assembly</strong>
-            <small>Review the 5 pump assembly stations, 5-5-4 wear lots, and V-Belt drive arrangements.</small>
-          </div>
-        </a>
-        <a href="/en/diagnostics/" class="extension-card">
-          <span class="ext-badge">DIAGNOSTICS</span>
-          <div>
-            <strong>Field Failure &amp; Wear Diagnostics</strong>
-            <small>Identify cavitation, internal recirculation, or shaft vibration and pre-load the exact spare part.</small>
-          </div>
-        </a>
-      </div>
-      <FaqAccordion lang="en" compact={true} />
-    </details>
-  </div>
+  <section class="container no-print quote-resources-flat" id="quote-faq-resources-drawer" aria-label="Diagnostics guides and FAQs">
+    <div class="quote-extension-links">
+      <a href="/en/pumping/" class="extension-card">
+        <span class="ext-badge">P&amp;ID</span>
+        <div>
+          <strong>Process Circuit Diagrams &amp; Pump Assembly</strong>
+          <small>Review the 5 pump assembly stations, 5-5-4 wear lots, and V-Belt drive arrangements.</small>
+        </div>
+      </a>
+      <a href="/en/diagnostics/" class="extension-card">
+        <span class="ext-badge">DIAGNOSTICS</span>
+        <div>
+          <strong>Field Failure &amp; Wear Diagnostics</strong>
+          <small>Identify cavitation, internal recirculation, or shaft vibration and pre-load the exact spare part.</small>
+        </div>
+      </a>
+    </div>
+    <FaqAccordion lang="en" compact={true} />
+  </section>
 </BaseLayout>
 
 <style>

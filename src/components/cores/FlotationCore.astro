@@ -34,7 +34,10 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
   <div class="smat-stratum1-display gorain-readout-banner smat-mt-sm">
     <span>{isEs ? 'Cinética Activa:' : 'Live Kinetics:'}</span>{' '}
     <span id="wb-flot-res-susp-status" data-testid="wb-flot-res-susp-status">
-      {isEs ? 'Gorain ≥ 50 s⁻¹ ÓPTIMO · Zwietering Suspensión Completa' : 'Gorain ≥ 50 s⁻¹ OPTIMAL · Zwietering Full Suspension'}
+      {isEs ? 'Dispersión ≥ 50 s⁻¹ ÓPTIMA · Suspensión Completa' : 'Dispersion ≥ 50 s⁻¹ OPTIMAL · Full Suspension'}
+    </span>
+    <span class="smat-basis-note font-mono-tech">
+      {isEs ? ' · Base de cálculo: cinética de dispersión (Gorain) y suspensión sólida (Zwietering).' : ' · Calculation basis: bubble dispersion (Gorain) & solids suspension (Zwietering).'}
     </span>
   </div>
 
@@ -111,7 +114,7 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
     <div class="embedded-res-cell"><strong>{isEs ? 'Tasa Cinética k:' : 'Kinetic Rate k:'}</strong> <span id="wb-flot-res-k" data-testid="wb-flot-res-k" data-schema-output="flotation.rateConstantMin">0.197 min⁻¹</span></div>
     <div class="embedded-res-cell"><strong>{isEs ? 'Suspensión Njs:' : 'Min Suspension Njs:'}</strong> <span id="wb-flot-res-njs" data-testid="wb-flot-res-njs" data-schema-output="flotation.zwieteringNjsRpm">156 RPM</span></div>
     <div class="embedded-res-cell"><strong>{isEs ? 'Vel. Periférica u₂:' : 'Tip Speed u₂:'}</strong> <span id="wb-flot-res-vtip" data-testid="wb-flot-res-vtip" data-schema-output="flotation.tipSpeedMS">6.87 m/s</span></div>
-    <div class="embedded-res-cell"><strong>P (Gorain):</strong> <span id="wb-flot-res-p" data-testid="wb-flot-res-p" data-schema-output="flotation.floatabilityP">0.0045</span></div>
+    <div class="embedded-res-cell"><strong>{isEs ? 'Flotabilidad P:' : 'Floatability P:'}</strong> <span id="wb-flot-res-p" data-testid="wb-flot-res-p" data-schema-output="flotation.floatabilityP">0.0045</span></div>
     <div class="embedded-res-cell"><strong>R_f ({isEs ? 'Espuma' : 'Froth'}):</strong> <span id="wb-flot-res-rf" data-testid="wb-flot-res-rf" data-schema-output="flotation.frothRecoveryRf">0.78</span></div>
     <div class="embedded-res-cell"><strong>{isEs ? 'SKU Mecanismo:' : 'Mechanism SKU:'}</strong> <span id="wb-flot-res-sku" data-testid="wb-flot-res-sku" data-schema-output="flotation.recommendedSkuId">SMAT-FLOT-MECH-18SP</span></div>
     <div class="embedded-res-cell"><strong>{isEs ? 'Vida PU vs Hule:' : 'PU vs Rubber Life:'}</strong> <span id="wb-flot-res-pu-life" data-testid="wb-flot-res-pu-life">{isEs ? '2.1× · u₂ óptima' : '2.1× · optimal u₂'}</span></div>

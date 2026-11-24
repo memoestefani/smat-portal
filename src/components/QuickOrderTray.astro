@@ -141,6 +141,13 @@ const isEs = lang === 'es';
       >
         {isEs ? 'Emitir Hoja PDF / Folio SAP' : 'Issue PDF Sheet / SAP Folio'}
       </a>
+      <button
+        type="button"
+        id="smat-qtray-share-btn"
+        class="smat-qtray-pdf-btn"
+      >
+        {isEs ? 'Copiar enlace a Compras' : 'Copy Link for Purchasing'}
+      </button>
     </div>
   </dialog>
 </aside>
@@ -164,13 +171,18 @@ const isEs = lang === 'es';
   } from '../scripts/requisitionTrayBus.js';
   import { formatDualCheckoutPayload } from '../scripts/workbenchExportFormatters.js';
   import { formatCheckoutLaneHuman, formatUrgencyBandHuman } from '../scripts/i18nDomainLabels.js';
+  import { hydrateRfqSessionFromUrl, buildShareableRfqUrl } from '../scripts/rfqSessionStore.js';
 
   function initQuickOrderTray() {
     const root = document.getElementById('smat-quick-order-tray');
     if (!root || root.getAttribute('data-qtray-bound') === '1') return;
     root.setAttribute('data-qtray-bound', '1');
-    if (typeof window !== 'undefined' && window.location && window.location.search.includes('tray=')) {
-      hydrateTrayFromReorderQuery(window.location.search);
+    if (typeof window !== 'undefined' && window.location) {
+      if (window.location.search.includes('rfq_v3=')) {
+        hydrateRfqSessionFromUrl(window.location.search);
+      } else if (window.location.search.includes('tray=')) {
+        hydrateTrayFromReorderQuery(window.location.search);
+      }
     }
     const lang: 'es' | 'en' = root.getAttribute('data-lang') === 'en' ? 'en' : 'es';
     const isEs = lang === 'es';
@@ -181,8 +193,20 @@ const isEs = lang === 'es';
     const badgeEl = document.getElementById('smat-qtray-priority-badge');
     const waLink = document.getElementById('smat-qtray-wa-link') as HTMLAnchorElement | null;
     const pdfLink = document.getElementById('smat-qtray-pdf-link') as HTMLAnchorElement | null;
+    const shareBtn = document.getElementById('smat-qtray-share-btn') as HTMLButtonElement | null;
     const coreToggle = document.getElementById('smat-qtray-core-tradein') as HTMLInputElement | null;
     const coreBadge = document.getElementById('smat-qtray-core-badge');
+    shareBtn?.addEventListener('click', async () => {
+      const origin = typeof window !== 'undefined' && window.location ? window.location.origin : 'https://smat.mx';
+      const url = buildShareableRfqUrl({ origin, pathname: isEs ? '/cotizar/' : '/en/quote/' });
+      try {
+        await navigator.clipboard?.writeText(url);
+      } catch {}
+      shareBtn.textContent = isEs ? 'Enlace copiado' : 'Link copied';
+      window.setTimeout(() => {
+        shareBtn.textContent = isEs ? 'Copiar enlace a Compras' : 'Copy Link for Purchasing';
+      }, 2200);
+    });
 
     let selectedLane = 'CAJA_CHICA_CFDI40';
 
@@ -270,9 +294,13 @@ const isEs = lang === 'es';
         reorderPolicyEl.textContent = `${basePol} (T10=${reorderWindow.t10InspectionDays}d / T50=${reorderWindow.t50ReorderTriggerDays}d / T80=${reorderWindow.t80CriticalChangeoutDays}d • Buffer ${reorderWindow.leadTimeBufferDays}d • Sev=${reorderWindow.wearSeverityFactor}× • Vida=${reorderWindow.wearAcceleratedLifeHours}h • ${dispLbl})`;
       }
       if (badgeEl) {
-        const urgencyHuman = formatUrgencyBandHuman(state.criticalityMode, lang);
-        const laneHuman = formatCheckoutLaneHuman(desc.checkoutLane, lang);
-        badgeEl.textContent = `${urgencyHuman} • ${laneHuman} • SLA ≤${desc.slaResponseMinutes} min • ${dualLaneMeta.cfdiVersion}`;
+        const laneHuman = isEs
+          ? (desc.checkoutLaneLabelEs || formatCheckoutLaneHuman(desc.checkoutLane, lang))
+          : (desc.checkoutLaneLabelEn || formatCheckoutLaneHuman(desc.checkoutLane, lang));
+        const prioHuman = isEs
+          ? (desc.priorityLabelEs || formatUrgencyBandHuman(state.criticalityMode, lang))
+          : (desc.priorityLabelEn || formatUrgencyBandHuman(state.criticalityMode, lang));
+        badgeEl.textContent = `${prioHuman} (${desc.priorityRankScore}) • ${laneHuman} • SLA ≤${desc.slaResponseMinutes} min • ${dualLaneMeta.cfdiVersion}`;
       }
 
       if (itemsEl) {

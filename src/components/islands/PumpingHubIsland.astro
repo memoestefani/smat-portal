@@ -545,7 +545,6 @@ const tcoRows = [
       readAllCanonicalInputs
     } from '../../scripts/schemaRuntimeBinder.js';
     import { solveXdsmMultidisciplinaryDag } from '../../scripts/wizardXdsmDagSolver.js';
-    import { projectHydraulicAltitudeAndLeadValidation } from '../../scripts/wizardLivePhysicsProjector.js';
 
     function runPumpingCoreDag(root: HTMLElement, isEs: boolean) {
       const inputs = readAllCanonicalInputs(root);
@@ -559,15 +558,16 @@ const tcoRows = [
         combinedMotorAltitudeMultiplier: dag.slurryEval?.combinedMotorAltitudeMultiplier ?? alt.combinedMotorAltitudeMultiplier,
         motorSizingPenaltyPct: dag.slurryEval?.motorSizingPenaltyPct ?? alt.motorSizingPenaltyPct,
         sobolDominantDriver: dag.sensitivity?.sobolDominantDriver || (isEs ? 'Caudal de Pulpa Q' : 'Slurry Flow Rate Q'),
-        activeTrustBoundaryId: res.activeTrustBoundaryId || 'NONE'
+        activeTrustBoundaryId: dag.leadValidation?.activeTrustBoundaryId || 'NONE'
       };
       projectDomainOutputs(root, 'pumping', outPayload, isEs ? 'es' : 'en');
-      projectHydraulicAltitudeAndLeadValidation(root, {
-        simMetrics: dag.slurryEval,
-        altData: alt,
-        sobolDriver: outPayload.sobolDominantDriver,
-        isEs
-      });
+      const alertBox = root.querySelector('#trust-boundary-alert');
+      const alertTitle = root.querySelector('#trust-boundary-title');
+      const alertReason = root.querySelector('#trust-boundary-reason');
+      const hasBound = Boolean(dag.leadValidation?.activeTrustBoundaryId && dag.leadValidation.activeTrustBoundaryId !== 'NONE');
+      if (alertBox) alertBox.classList.toggle('hidden', !hasBound);
+      if (hasBound && alertTitle) alertTitle.textContent = isEs ? (dag.leadValidation.activeTrustBoundaryTitleEs || '') : (dag.leadValidation.activeTrustBoundaryTitleEn || '');
+      if (hasBound && alertReason) alertReason.textContent = isEs ? (dag.leadValidation.activeTrustBoundaryReasonEs || '') : (dag.leadValidation.activeTrustBoundaryReasonEn || '');
       const valFlow = root.querySelector('#val-flow');
       if (valFlow) valFlow.textContent = `${Math.round(Number(inputs.flowM3H))} m³/h`;
       const valSolids = root.querySelector('#val-solids');

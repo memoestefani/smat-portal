@@ -7,6 +7,7 @@ import { selectOptimalMaterial, evaluateHybridWetEndConfiguration, WET_END_MATER
 import { evaluatePumpAssemblySequence } from './pumpAssemblyAndDriveEngine.js';
 import { commitVerticalSimulation, bindAtomicPartTrayButtons } from './verticalStateAndCtaSyncBridge.js';
 import { hydrateVerticalInputsFromUnifiedState, syncReactiveTraySkuButton } from './verticalBidirectionalHydrationLens.js';
+import { saveStationSnapshot } from './rfqSessionStore.js';
 
 const PUMPING_CALCULATOR_STATE = {
   version: '4.3.0',
@@ -129,6 +130,20 @@ export function bindCanonicalSealBalanceCalculator(root, lang = 'es') {
 
     if (pexpOut) pexpOut.textContent = `${res.expellerCounterPressureKpa} kPa`;
     if (pboxOut) pboxOut.textContent = `${res.stuffingBoxResidualKpa} kPa`;
+    const hExpOut = root.querySelector('#seal-hexp-out');
+    const pSucOut = root.querySelector('#seal-psuc-out');
+    const pDisOut = root.querySelector('#seal-pdis-out');
+    const marginOut = root.querySelector('#seal-margin-out');
+    const ratioOut = root.querySelector('#seal-hs-hd-out');
+    const psiOut = root.querySelector('#seal-pwater-psi-out');
+    const viableOut = root.querySelector('#seal-viable-out');
+    if (hExpOut) hExpOut.textContent = `${res.expellerCounterHeadM} m`;
+    if (pSucOut) pSucOut.textContent = `${res.suctionPressureKpa} kPa`;
+    if (pDisOut) pDisOut.textContent = `${res.dischargePressureKpa} kPa`;
+    if (marginOut) marginOut.textContent = `${res.netSealMarginKpa} kPa`;
+    if (ratioOut) ratioOut.textContent = `${(res.suctionToDischargeRatio * 100).toFixed(1)}% (≤18%)`;
+    if (psiOut) psiOut.textContent = `${res.requiredGlandWaterPressurePsi} psi`;
+    if (viableOut) viableOut.textContent = res.expellerViable ? (isEn ? 'Yes (02A Dry)' : 'Sí (02A Seco)') : (isEn ? 'No (02B Flush)' : 'No (02B Agua)');
     if (pwaterOut) {
       pwaterOut.textContent = res.expellerViable
         ? (isEn ? '0 L/min (Dry 02A)' : '0 L/min (Seco 02A)')
@@ -170,6 +185,7 @@ export function bindCanonicalSealBalanceCalculator(root, lang = 'es') {
       expellerCounterPressureKpa: res.expellerCounterPressureKpa,
       requiredGlandWaterPressureKpa: res.requiredGlandWaterPressureKpa,
     };
+    saveStationSnapshot('sealDrive', sealPayload);
     commitVerticalSimulation('bombeo', sealPayload, {
       root,
       skipStorageWrite: Boolean(isInitialMount) && !hydration.hasPersistedState,

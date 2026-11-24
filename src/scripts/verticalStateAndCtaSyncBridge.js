@@ -17,7 +17,7 @@ import {
   SMAT_ENGINEERING_CONTEXT_KEY,
   loadEngineeringContextSnapshot,
   saveEngineeringContextSnapshot,
-} from './wizardCircuitPhysicsController.js';
+} from './rfqSessionStore.js';
 import {
   SMAT_WORKBENCH_STATE_KEY,
   loadWorkbenchSession,

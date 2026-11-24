@@ -2,11 +2,21 @@
 // Arquitectura PWA Soberana: Network-First para navegación HTML, Cache-First para estáticos versionados.
 // Purga determinista de versiones previas en evento 'activate'.
 
-const CACHE_NAME = 'smat-pwa-v4.5'; // Purges smat-pwa-v4.4, smat-pwa-v4.3, smat-pwa-v3.2 and smat-pwa-v2.1
+const CACHE_NAME = 'smat-pwa-v5.5'; // Purges smat-pwa-v5.4 and older legacy caches
 
 const PRECACHE_SHELL = [
   '/',
   '/en/',
+  '/cotizar/',
+  '/en/quote/',
+  '/bombeo/',
+  '/en/pumping/',
+  '/filtracion/',
+  '/en/filtration/',
+  '/flotacion/',
+  '/en/flotation/',
+  '/control-de-procesos/',
+  '/en/process-control/',
   '/clasificacion/',
   '/en/classification/',
   '/catalogo/',
@@ -102,4 +112,16 @@ self.addEventListener('fetch', (event) => {
       });
     })
   );
+});
+
+self.addEventListener('message', (event) => {
+  if (event?.data?.type === 'SMAT_FLUSH_OUTBOX') {
+    event.waitUntil(
+      self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+        for (const client of clients) {
+          client.postMessage({ type: 'SMAT_OUTBOX_RETRY' });
+        }
+      })
+    );
+  }
 });

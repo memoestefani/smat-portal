@@ -45,21 +45,21 @@
 
 /* Botón Rey Dominante WhatsApp Técnico — Polaridad Solar AAA >= 7.0:1 (Decisión 8-B / 7-C+) */
 .export-btn-whatsapp {
-  background: var(--smat-whatsapp-surface-aaa, #25D366) !important;
-  border: 1px solid #15803d !important;
-  color: var(--smat-on-whatsapp-aaa, #090D16) !important;
-  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.28) !important;
+  background: var(--smat-whatsapp-surface-aaa, #25D366);
+  border: 1px solid #15803d;
+  color: var(--smat-on-whatsapp-aaa, #090D16);
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.28);
 }
 
 .export-btn-whatsapp .king-icon,
 .export-btn-whatsapp .king-text strong,
 .export-btn-whatsapp .king-text small {
-  color: var(--smat-on-whatsapp-aaa, #090D16) !important;
+  color: var(--smat-on-whatsapp-aaa, #090D16);
 }
 
 .export-btn-whatsapp:hover {
-  background: #4ade80 !important;
-  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.38) !important;
+  background: #4ade80;
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.38);
   transform: translateY(-1px);
 }
 
@@ -585,18 +585,18 @@
 .stress-chip[data-confirmed="false"],
 .flot-chip[data-confirmed="false"],
 .filt-chip[data-confirmed="false"] {
-  border: 1px dashed #64748b !important;
-  background: #ffffff !important;
-  color: var(--smat-text-secondary, #334155) !important;
+  border: 1px dashed #64748b;
+  background: #ffffff;
+  color: var(--smat-text-secondary, #334155);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .stress-chip[data-confirmed="true"],
 .flot-chip[data-confirmed="true"],
 .filt-chip[data-confirmed="true"] {
-  border: 1px solid #0f172a !important;
-  background: #0f172a !important;
-  color: #ffffff !important;
+  border: 1px solid #0f172a;
+  background: #0f172a;
+  color: #ffffff;
 }
 
 

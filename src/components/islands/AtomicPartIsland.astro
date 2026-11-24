@@ -137,7 +137,7 @@ const productSchema = {
               coupledTitle={isEs ? 'Throatbush Emparejado 1:1 (Cuello de Succión)' : '1:1 Matched Throatbush (Suction Liner)'}
               reorderDays={90}
               traySource="catalog_code_stratum1"
-              showTradeIn={false}
+              showTradeIn={String(part.part_number || '').toUpperCase() === 'DAM005'}
             />
           </details>
 
@@ -307,16 +307,6 @@ const productSchema = {
             </button>
             <p data-atomic-tray-msg hidden class="smat-atomic-tray-msg"></p>
           </div>
-
-          {part.part_number === 'DAM005' && (
-            <JrpReorderCore
-              lang={locale}
-              mode="tradein"
-              skuId="DAM005"
-              showJrpCard={false}
-              showTradeIn={true}
-            />
-          )}
 
           <div class="dock-facts">
             <div class="fact-item">

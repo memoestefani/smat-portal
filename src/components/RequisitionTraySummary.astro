@@ -99,9 +99,11 @@ const initialUrgencyHuman = formatUrgencyBandHuman('PARO_DE_LINEA', lang);
     buildCmuPrioritySubjectLine,
     hydrateTrayFromReorderQuery
   } from '../scripts/requisitionTrayBus.js';
+  import { hydrateRfqSessionFromUrl } from '../scripts/rfqSessionStore.js';
   import { formatCheckoutLaneHuman, formatUrgencyBandHuman } from '../scripts/i18nDomainLabels.js';
 
   function initRequisitionTraySummary() {
+    hydrateRfqSessionFromUrl(window.location.search);
     const root = document.querySelector('[data-requisition-tray]') as HTMLElement | null;
     if (!root) return;
     const isEn = document.documentElement.lang === 'en';

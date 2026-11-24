@@ -33,7 +33,6 @@ const {
   diagramSurjectivity,
   canonicalSeriesCount,
   totalCatalogSkusCount,
-  bombeoPowerRange,
   flotationPowerRange,
   filtrationPowerRange,
   controlProcessItems,
@@ -72,39 +71,20 @@ const avenueMetaMap: Record<string, any> = rawAvenueMetaMap as any;
 
   <p id="sap-vendor-passport-status" data-passport-status class="passport-status-line no-print"></p>
 
-  <header class="catalog-official-header">
-    <div class="header-brand-block">
-      <h1 class="brand-title">SMAT MINERALS</h1>
-      <span class="brand-tagline">{isEs ? 'BOMBAS PARA LODOS, CONTACTO HÚMEDO, FLOTACIÓN, FILTROS PRENSA Y BALANZAS' : 'SLURRY PUMPS, WET-END PARTS, FLOTATION, FILTER PRESSES & PULP SCALES'}</span>
-      <span class="brand-location">{isEs ? 'Domicilio Fiscal: Mariano Salas #114, Durango, Dgo. CP 34166 | Almacén Central Durango' : 'Fiscal HQ: Mariano Salas #114, Durango, Mexico. CP 34166 | Durango Central Warehouse'}</span>
-    </div>
-    <div class="header-meta-block">
-      <span class="doc-badge">{isEs ? 'CATÁLOGO TÉCNICO CON DIAGRAMAS CAD' : 'TECHNICAL CATALOG WITH CAD DIAGRAMS'}</span>
-      <span class="doc-code">{isEs ? 'REF: SMAT-CAT-2026' : 'REF: SMAT-CAT-2026-EN'}</span>
-      <span class="doc-contact">{isEs ? 'Tel: (618) 810-4408 • Guardia: (618) 367-0664 • ventas@smatminerals.com' : 'Phone: +52 (618) 810-4408 • Hotline: +52 (618) 367-0664 • ventas@smatminerals.com'}</span>
-    </div>
-  </header>
-
   <section id="stratum1-dropin-verifier" class="card no-print smat-island-card smat-mb-md" data-stratum-1-instrument data-dropin-verifier>
     <div class="smat-stratum1-display">
       <div class="smat-flex-between">
         <div>
           <span class="smat-kicker">{isEs ? 'HERRAMIENTA DE INGENIERÍA DE COMPATIBILIDAD' : 'DIMENSIONAL COMPATIBILITY INSTRUMENT'}</span>
-          <h2 class="verifier-title">{isEs ? 'Verificador de Equivalencia Dimensional (Drop-In)' : 'Dimensional Drop-In Equivalence Verifier'}</h2>
+          <h1 class="verifier-title">{isEs ? 'Verificador de Equivalencia Dimensional (Drop-In)' : 'Dimensional Drop-In Equivalence Verifier'}</h1>
           <p class="verifier-sub">{isEs ? 'Valide el intercambio 1:1 de códigos de plano (ej. E4147, D3147, DAM005, SMAT-PUMP-IMP-AH) por brida y geometría sin modificar bancada.' : 'Validate 1:1 plant drawing code fit (e.g., E4147, D3147, DAM005, SMAT-PUMP-IMP-AH) without modifying existing baseplates or piping.'}</p>
         </div>
         <div class="smat-chip-row">
           <span class="smat-badge-solar">{ATOMIC_PARTS_SSOT_COUNT} {isEs ? 'Piezas Atómicas' : 'Atomic Parts'}</span>
           <span class="smat-badge-solar">{canonicalSeriesCount} {isEs ? 'Series Hidráulicas' : 'Hydraulic Series'}</span>
-          <span data-ssot-integrity-badge class="smat-badge-emerald">{isEs ? (catalogIntegrity.valid ? 'Integridad Referencial: Verificada' : 'Integridad Referencial: Revisar') : (catalogIntegrity.valid ? 'Referential Integrity: Verified' : 'Referential Integrity: Review')}</span>
-          <span data-ssot-surjectivity-badge class="smat-badge-emerald">{isEs ? (diagramSurjectivity.surjective ? 'Cobertura CAD: 100%' : 'Cobertura CAD: Parcial') : (diagramSurjectivity.surjective ? 'CAD Coverage: 100%' : 'CAD Coverage: Partial')}</span>
           <span class="smat-badge-solar">{isEs ? 'SKUs Visibles:' : 'Visible SKUs:'} <strong id="catalog-visible-sku-count">{totalCatalogSkusCount}</strong></span>
         </div>
       </div>
-      <details class="smat-ssot-audit-panel font-mono-tech">
-        <summary>{isEs ? `Auditoría de Trazabilidad (${catalogIntegrity.skuCount} SKUs • ${catalogIntegrity.coveredAtomicPartCount}/${catalogIntegrity.atomicPartCount} Piezas • ${diagramSurjectivity.coveredCount}/${diagramSurjectivity.totalKinds} CAD)` : `Traceability Audit (${catalogIntegrity.skuCount} SKUs • ${catalogIntegrity.coveredAtomicPartCount}/${catalogIntegrity.atomicPartCount} Parts • ${diagramSurjectivity.coveredCount}/${diagramSurjectivity.totalKinds} CAD)`}</summary>
-        <p class="smat-ssot-audit-meta">{isEs ? `Cobertura atómica completa: ${catalogIntegrity.coveredAtomicPartCount}/${catalogIntegrity.atomicPartCount} piezas (${bombeoPowerRange} en bombeo) • Diagramas cubiertos: ${diagramSurjectivity.coveredCount} de ${diagramSurjectivity.totalKinds} tipos base (${diagramSurjectivity.v32TotalKinds} V3.2).` : `Complete atomic coverage: ${catalogIntegrity.coveredAtomicPartCount}/${catalogIntegrity.atomicPartCount} parts (${bombeoPowerRange} pumping range) • Diagrams covered: ${diagramSurjectivity.coveredCount} of ${diagramSurjectivity.totalKinds} base kinds (${diagramSurjectivity.v32TotalKinds} V3.2).`}</p>
-      </details>
     </div>
 
     <div class="smat-inputs-2col">

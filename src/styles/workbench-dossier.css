@@ -78,7 +78,7 @@
   display: block;
 }
 .dossier-pane.hidden-pane {
-  display: none !important;
+  display: none;
 }
 
 .dossier-header {
