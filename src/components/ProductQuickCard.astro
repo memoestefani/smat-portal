@@ -1,5 +1,6 @@
 ---
 import TechnicalDiagrams from './TechnicalDiagrams.astro';
+import atomicPartsCatalog from '../../data/atomic_parts.json';
 import { formatDiagramHumanTitle } from '../scripts/verticalCalculatorsAndLabelsBridge.js';
 
 interface GeometricTriplet {
@@ -31,6 +32,7 @@ interface Props {
     title_es: string;
     title_en: string;
     diagram_id: string;
+    secondary_diagram_id?: string;
     photo_webp?: string;
     default_material: string;
     available_materials?: string[];
@@ -50,6 +52,7 @@ interface Props {
     gate_lock?: string;
     mass_kg: number;
     atomic_codes: string[];
+    linked_atomic_codes?: string[];
     everyday_scale_es: string;
     everyday_scale_en: string;
     geometric_triplet_mm?: GeometricTriplet;
@@ -62,6 +65,15 @@ const { sku, lang = 'es', mode = 'card' } = Astro.props;
 const isMediaOnly = mode === 'media-only';
 const isEs = lang === 'es';
 const photoUrl = sku.photo_webp || `/images/productos/${sku.slug_es}.webp`;
+const atomicSheetMap = new Map(
+  (atomicPartsCatalog as Array<{ part_number?: string; code?: string }>).map((part) => [
+    String(part.part_number || '').toUpperCase(),
+    String(part.code || part.part_number || '').toLowerCase()
+  ])
+);
+const linkedAtomicCodes = Array.isArray(sku.linked_atomic_codes) && sku.linked_atomic_codes.length > 0
+  ? sku.linked_atomic_codes
+  : (Array.isArray(sku.atomic_codes) ? sku.atomic_codes : []);
 const triplet = sku.geometric_triplet_mm || {
   a_id_mm: 100,
   b_od_mm: 400,
@@ -226,6 +238,27 @@ const _auditValuationRef = (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (audi
           <strong>{isEs ? 'Escala cotidiana (0.76 mm):' : 'Everyday scale (0.76 mm):'}</strong>{' '}
           {isEs ? sku.everyday_scale_es : sku.everyday_scale_en}
         </p>
+        {(linkedAtomicCodes.length > 0 || sku.secondary_diagram_id) && (
+          <div class="smat-qcard-fiscal-row" data-qcard-ssot-links={sku.id}>
+            {sku.secondary_diagram_id && (
+              <span class="smat-qcard-lane-pill" data-secondary-diagram-id={sku.secondary_diagram_id}>
+                {isEs ? 'Esquema anexo:' : 'Secondary diagram:'} {formatDiagramHumanTitle(sku.secondary_diagram_id, lang)}
+              </span>
+            )}
+            {linkedAtomicCodes.map((rawCode) => {
+              const norm = String(rawCode || '').trim().toUpperCase();
+              const slug = atomicSheetMap.get(norm);
+              const isExplicitLink = Array.isArray(sku.linked_atomic_codes) && sku.linked_atomic_codes.length > 0;
+              return slug && isExplicitLink ? (
+                <a href={isEs ? `/catalogo/${slug}/` : `/en/catalog/${slug}/`} class="smat-qcard-tolerance-badge">
+                  {isEs ? `Ficha ${norm} →` : `Sheet ${norm} →`}
+                </a>
+              ) : (
+                <span class="smat-qcard-tolerance-badge">{norm}</span>
+              );
+            })}
+          </div>
+        )}
         {!isMediaOnly && (
           <div class="smat-qcard-fiscal-row" data-qcard-fiscal-badge={sku.id}>
             <span class="smat-qcard-fiscal-pill">
@@ -373,29 +406,21 @@ const _auditValuationRef = (auditMeta.dehoratius_audit_badge_es ? 1 : 0) + (audi
             const baseQuotePath = isEn ? '/en/quote/' : '/cotizar/';
             slugWbBtn.href = `${baseQuotePath}?sku=${encodeURIComponent(skuId)}&mat=${encodeURIComponent(selectedMat)}#rfq`;
           }
-          document.querySelectorAll('.smat-slug-mat-chip').forEach((chip) => {
-            const matCode = chip.getAttribute('data-mat-code') || '';
-            chip.classList.toggle('is-default', matCode === selectedMat);
-          });
+          const slugMatSelect = document.querySelector('[data-slug-mat-select]');
+          if (slugMatSelect instanceof HTMLSelectElement) {
+            slugMatSelect.value = selectedMat;
+          }
         });
-        document.querySelectorAll('.smat-slug-mat-chip[data-mat-code]').forEach((chip) => {
-          if (chip.getAttribute('data-chip-bound') === '1') return;
-          chip.setAttribute('data-chip-bound', '1');
-          const activateChip = () => {
-            const code = chip.getAttribute('data-mat-code') || '';
-            if (code) {
-              configSelect.value = code;
+        const slugMatSelect = document.querySelector('[data-slug-mat-select]');
+        if (slugMatSelect instanceof HTMLSelectElement && slugMatSelect.getAttribute('data-slug-select-bound') !== '1') {
+          slugMatSelect.setAttribute('data-slug-select-bound', '1');
+          slugMatSelect.addEventListener('change', () => {
+            if (slugMatSelect.value) {
+              configSelect.value = slugMatSelect.value;
               configSelect.dispatchEvent(new Event('change', { bubbles: true }));
             }
-          };
-          chip.addEventListener('click', activateChip);
-          chip.addEventListener('keydown', (ev) => {
-            if (ev instanceof KeyboardEvent && (ev.key === 'Enter' || ev.key === ' ')) {
-              ev.preventDefault();
-              activateChip();
-            }
           });
-        });
+        }
       }
     });
   }

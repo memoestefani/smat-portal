@@ -117,7 +117,7 @@ const inspectionProtocolText = isEs
         <div class="dossier-part-box">
           <div class="part-header-row">
             <strong class="part-name" id="live-part-name">{isEs ? 'Kit Extremo Húmedo Completo' : 'Complete Wet-End Kit'}</strong>
-            <span class="part-fit-badge" id="dossier-part-hardness" data-testid="dossier-part-hardness">{defaultPartSpecs.hardness || '≥ 650 HB (60–62 HRC)'}</span>
+            <span class="part-fit-badge" id="dossier-part-hardness" data-testid="dossier-part-hardness">{defaultPartSpecs.hardness || (lang === 'en' ? 'Pending part selection (Draft)' : 'Por especificar (Borrador)')}</span>
           </div>
           <p class="part-details-text" id="live-part-details">
             {isEs ? 'Verificación dimensional de acople 1:1 en Almacén Central Durango.' : '1:1 dimensional check at Durango Central Warehouse.'}
@@ -394,7 +394,7 @@ const inspectionProtocolText = isEs
         </div>
       </button>
 
-      <!-- Barra de Acciones Secundarias en Pastillas (desplegable para reducir densidad inicial) -->
+      <!-- Barra de Acciones Secundarias en Pastillas (desplegable para mantener Cowan <= 8.50; Paso 3 expone TSV y Compras directo) -->
       <details class="wb-progressive-drawer smat-mt-sm" id="dossier-secondary-exports-drawer">
         <summary class="wb-progressive-summary">
           <span>{isEs ? 'Exportar SAP TSV, PDF A4, Cotejo 1:1 y Enlace Compras' : 'Export SAP TSV, A4 PDF, 1:1 Fit & Purchasing Link'}</span>

@@ -134,6 +134,39 @@ const productCategories = isEs ? [
       <a href={isEs ? "/cotizar/#rfq" : "/en/quote/#rfq"} class="btn btn-primary btn-sm header-rfq-btn">
         {isEs ? 'Cotizar Refacción' : 'Quote Spares'}
       </a>
+
+      <!-- Menú Móvil Explícito (>= 48 px, ARB-SMAT-67 / D5-V58) -->
+      <details class="header-mobile-menu" id="header-mobile-menu">
+        <summary
+          class="header-mobile-trigger"
+          aria-label={isEs ? 'Abrir menú de navegación' : 'Open navigation menu'}
+        >
+          <span aria-hidden="true">☰</span>
+          <span>{isEs ? 'Menú' : 'Menu'}</span>
+        </summary>
+        <nav class="header-mobile-panel" aria-label={isEs ? 'Menú Móvil' : 'Mobile Menu'}>
+          <a href={isEs ? '/equipos/' : '/en/process-equipment/'} class="mobile-nav-link">{isEs ? 'Equipos' : 'Equipment'}</a>
+          <a href={isEs ? '/catalogo/' : '/en/catalog/'} class="mobile-nav-link">{isEs ? 'Catálogo' : 'Catalog'}</a>
+          <a href={isEs ? '/diagnostico/' : '/en/diagnostics/'} class="mobile-nav-link">{isEs ? 'Diagnóstico' : 'Diagnostics'}</a>
+          <a href={isEs ? '/garantia/' : '/en/warranty/'} class="mobile-nav-link">{isEs ? 'Garantía' : 'Warranty'}</a>
+          <a href={isEs ? '/contacto/' : '/en/contact/'} class="mobile-nav-link">{isEs ? 'Contacto' : 'Contact'}</a>
+          <div class="mobile-nav-footer">
+            <a
+              href={isEs ? alternatePath : currentPath}
+              class="btn btn-outline btn-sm smat-tap-btn"
+              data-lang={isEs ? 'en' : 'es'}
+            >
+              {isEs ? 'Switch to English (EN)' : 'Cambiar a Español (ES)'}
+            </a>
+            <a
+              href={isEs ? '/cotizar/#rfq' : '/en/quote/#rfq'}
+              class="btn btn-primary btn-sm smat-tap-btn mobile-cta-link"
+            >
+              {isEs ? 'Cotizar Refacción →' : 'Quote Spares →'}
+            </a>
+          </div>
+        </nav>
+      </details>
     </div>
   </div>
 </header>
@@ -486,8 +519,25 @@ const productCategories = isEs ? [
   }
 
   @media (max-width: 960px) {
-    .desktop-nav {
+    .desktop-nav,
+    .lang-switch,
+    .header-rfq-btn {
       display: none;
+    }
+    .main-nav {
+      padding: 0.35rem 0;
+    }
+    .main-nav-container {
+      gap: 0.4rem;
+      padding-left: 0.65rem;
+      padding-right: 0.65rem;
+    }
+    .header-actions {
+      gap: 0.35rem;
+      flex-shrink: 0;
+    }
+    .header-qtray-trigger {
+      padding: 0.4rem 0.6rem;
     }
     .utility-badge span:last-child {
       font-size: 0.68rem;
@@ -497,13 +547,6 @@ const productCategories = isEs ? [
   @media (max-width: 640px) {
     .utility-bar {
       display: none;
-    }
-    .main-nav {
-      padding: 0.35rem 0;
-    }
-    .header-rfq-btn {
-      padding: 0.35rem 0.7rem;
-      font-size: 0.76rem;
     }
   }
 </style>

@@ -85,7 +85,41 @@ pub fn verify_print_pwa_and_core_hygiene(site_root: &Path) -> Result<(), String>
     }
 
     verify_instrument_shell_input_first(site_root)?;
+    verify_v58_instrument_and_mobile_header(site_root)?;
 
+    Ok(())
+}
+
+/// Invariante V5.8: prohíbe Flexbox `order:` en contenedores `<InstrumentShell>`, prohíbe `uppercase` en `.instrument-kpi-cell`
+/// y exige control móvil explícito (`header-mobile-menu`) en `Header.astro`.
+pub fn verify_v58_instrument_and_mobile_header(site_root: &Path) -> Result<(), String> {
+    let cores_css = fs::read_to_string(site_root.join("src/styles/cores-apple.css"))
+        .map_err(|e| format!("Error leyendo cores-apple.css: {}", e))?;
+    verify_v58_cores_css_text(&cores_css)?;
+
+    let header = fs::read_to_string(site_root.join("src/components/Header.astro"))
+        .map_err(|e| format!("Error leyendo Header.astro: {}", e))?;
+    if !header.contains("header-mobile-menu") {
+        return Err("Header.astro debe exponer #header-mobile-menu con botón explícito Menú/Menu".to_string());
+    }
+    Ok(())
+}
+
+pub fn verify_v58_cores_css_text(cores_css: &str) -> Result<(), String> {
+    let order_block_re = Regex::new(r"(?s)\.smat-instrument-(inputs|verdict)\s*\{([^}]*)\}").unwrap();
+    for cap in order_block_re.captures_iter(cores_css) {
+        let block = cap.get(2).map(|m| m.as_str()).unwrap_or("");
+        if Regex::new(r"(?i)\border\s*:").unwrap().is_match(block) {
+            return Err("cores-apple.css no debe reordenar .smat-instrument-* mediante CSS order:".to_string());
+        }
+    }
+    let kpi_block_re = Regex::new(r"(?s)\.instrument-kpi-cell[^{]*\{([^}]*)\}").unwrap();
+    for cap in kpi_block_re.captures_iter(cores_css) {
+        let block = cap.get(1).map(|m| m.as_str()).unwrap_or("");
+        if block.contains("text-transform: uppercase") || block.contains("text-transform:uppercase") {
+            return Err("cores-apple.css no debe aplicar text-transform: uppercase en .instrument-kpi-cell (protege σ_max y d₅₀c)".to_string());
+        }
+    }
     Ok(())
 }
 
@@ -298,7 +332,7 @@ pub fn verify_css_layers_in_text(css_rel: &str, raw: &str) -> Result<(), String>
 
 #[cfg(test)]
 mod tests {
-    use super::{check_input_first_order, verify_css_layers_in_text};
+    use super::{check_input_first_order, verify_css_layers_in_text, verify_v58_cores_css_text};
 
     #[test]
     fn accepts_valid_layered_css_with_print_and_hidden() {
@@ -327,5 +361,15 @@ mod tests {
         let bad = r#"<div slot="verdict"></div><div slot="inputs"></div>"#;
         assert!(check_input_first_order(good));
         assert!(!check_input_first_order(bad));
+    }
+
+    #[test]
+    fn rejects_v58_css_order_and_kpi_uppercase() {
+        let good = ".smat-instrument-inputs { display: grid; } .instrument-kpi-cell strong { font-weight: 700; }";
+        let bad_order = ".smat-instrument-inputs { order: 2; }";
+        let bad_case = ".instrument-kpi-cell strong { text-transform: uppercase; }";
+        assert!(verify_v58_cores_css_text(good).is_ok());
+        assert!(verify_v58_cores_css_text(bad_order).is_err());
+        assert!(verify_v58_cores_css_text(bad_case).is_err());
     }
 }

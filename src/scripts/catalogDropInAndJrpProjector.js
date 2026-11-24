@@ -15,6 +15,7 @@ import {
   bindAtomicPartTrayButtons,
 } from './verticalStateAndCtaSyncBridge.js';
 import { MARCY_STANDARD_RINGS } from './tribologyAndCompatibilityEngine.js';
+import { buildMetrologyViewModel, projectViewModelToDom } from './instrumentViewModels.js';
 
 /**
  * Enlaza el verificador dimensional equivalente FNV-1a + triplete geométrico $(A, B, C)$
@@ -273,7 +274,7 @@ export function projectProcessControlMetrologyInvariants(
         return `<button type="button" class="marcy-ring-chip" data-marcy-ring-sg="${sgVal}">SG ${sgVal}</button>`;
       }).join('');
 
-      const sgInput = root.querySelector('#met-sg-input');
+      const sgInput = root.querySelector('#wb-ctrl-sg');
       ringsContainer.querySelectorAll('[data-marcy-ring-sg]').forEach((chip) => {
         if (typeof chip.addEventListener === 'function' && sgInput) {
           chip.addEventListener('click', () => {
@@ -325,6 +326,14 @@ export function projectProcessControlMetrologyInvariants(
     setTxt('[data-met-defuse-gy-minutes]', `${gy.recommendedCycleMinutes} min`);
     setTxt('[data-met-defuse-gy-moisture]', `${gy.estimatedCakeMoisturePct}%`);
     setTxt('[data-met-defuse-gy-status]', String(gy.filterPressStatus || ''));
+  }
+
+  if (marcy || gy || sieveStack) {
+    const metVm = buildMetrologyViewModel(
+      { marcy: marcy || {}, gy: gy || {}, astm: sieveStack || {} },
+      isEn ? 'en' : 'es'
+    );
+    projectViewModelToDom(root, metVm);
   }
 
   if (sieveStack) {

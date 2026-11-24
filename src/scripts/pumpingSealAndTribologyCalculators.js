@@ -8,6 +8,7 @@ import { evaluatePumpAssemblySequence } from './pumpAssemblyAndDriveEngine.js';
 import { commitVerticalSimulation, bindAtomicPartTrayButtons } from './verticalStateAndCtaSyncBridge.js';
 import { hydrateVerticalInputsFromUnifiedState, syncReactiveTraySkuButton } from './verticalBidirectionalHydrationLens.js';
 import { saveStationSnapshot } from './rfqSessionStore.js';
+import { buildTribologyAssemblyViewModel, projectViewModelToDom } from './instrumentViewModels.js';
 
 const PUMPING_CALCULATOR_STATE = {
   version: '4.3.0',
@@ -234,9 +235,9 @@ export function bindCanonicalTribologySelector(root, lang = 'es') {
   const isEn = String(lang).toLowerCase() === 'en';
 
   const d80El = root.querySelector('#trib-d80-um');
-  const vtipEl = root.querySelector('#trib-u2-ms') || root.querySelector('#trib-vtip-ms');
+  const vtipEl = root.querySelector('#trib-u2-ms');
   const phEl = root.querySelector('#trib-ph');
-  const branchEl = root.querySelector('#trib-mat-select') || root.querySelector('#trib-branch');
+  const branchEl = root.querySelector('#trib-mat-select');
   const clearEl = root.querySelector('#trib-clearance-mm');
   const seriesEl = root.querySelector('#trib-series') || root.querySelector('#wb-pipe-size');
 
@@ -341,6 +342,17 @@ export function bindCanonicalTribologySelector(root, lang = 'es') {
     };
     PUMPING_CALCULATOR_STATE.lastTribologyCalc = combined;
     PUMPING_CALCULATOR_STATE.lastUpdatedIso = new Date().toISOString();
+
+    const tribVm = buildTribologyAssemblyViewModel(
+      {
+        optimalMaterial: matEval,
+        hybridEval,
+        assemblySeqEval: asmEval,
+        driveEval: { arrangement: pipeSeries },
+      },
+      isEn ? 'en' : 'es'
+    );
+    projectViewModelToDom(root, tribVm);
 
     syncReactiveTraySkuButton(root, {
       skuId: resolvedMaterialKey === 'hybrid_a05_r55' ? 'SMAT-PUMP-KIT-HYB' : 'SMAT-PUMP-IMP-147',

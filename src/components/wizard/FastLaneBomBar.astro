@@ -54,50 +54,46 @@ const stations = isEs
   <p id="fastlane-bom-feedback" class="fastlane-feedback font-mono-tech hidden" role="status" aria-live="polite"></p>
   <p id="share-purchasing-feedback" class="fastlane-feedback font-mono-tech hidden" role="status" aria-live="polite"></p>
 
-  <details class="wb-progressive-drawer fastlane-mine-drawer smat-mt-sm" id="fastlane-mine-drawer">
-    <summary class="wb-progressive-summary">
-      <span>{isEs ? `Unidad Minera, Compras y Parámetros de Pulpa (${MINING_UNITS_COUNT} unidades)` : `Mining Unit, Purchasing & Slurry Parameters (${MINING_UNITS_COUNT} sites)`}</span>
-      <span class="wb-step1-more-arrow">▾</span>
-    </summary>
-    <div class="wb-progressive-body">
-      <div class="smat-mb-md">
-        <button type="button" id="btn-share-purchasing-link" class="assist-pill-btn fastlane-share-btn">
-          {isEs ? 'Copiar enlace para Compras' : 'Copy Link for Purchasing'}
-        </button>
-      </div>
-      <div class="fastlane-mine-grid">
-        <div class="form-group">
-          <label for="wb-mining-group-select" class="qw-mini-label">
-            {isEs ? `Grupo Minero (${MINING_GROUPS_CATALOG.length} grupos):` : `Mining Group (${MINING_GROUPS_CATALOG.length} groups):`}
-          </label>
-          <select id="wb-mining-group-select" class="wb-select qw-compact-select">
-            <option value="">{isEs ? `— Seleccionar grupo (${MINING_GROUPS_CATALOG.length}) —` : `— Select group (${MINING_GROUPS_CATALOG.length}) —`}</option>
-            {MINING_GROUPS_CATALOG.map((grp) => (
-              <option value={grp.id}>{grp.name}</option>
-            ))}
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="wb-mining-unit-select" class="qw-mini-label">
-            {isEs ? `Unidad Minera (${MINING_UNITS_COUNT} unidades):` : `Mining Unit (${MINING_UNITS_COUNT} units):`}
-          </label>
-          <select id="wb-mining-unit-select" class="wb-select qw-compact-select">
-            <option value="">{isEs ? '— Seleccionar unidad o distrito —' : '— Select site or district —'}</option>
-          </select>
-        </div>
-      </div>
-      <div id="wb-step1-pulp-profile-badge" class="unit-pulp-profile-badge hidden qw-pulp-badge"></div>
-      <div id="wb-mining-preset-telemetry" data-mining-preset-telemetry class="qw-mining-telemetry hidden"></div>
-      <nav class="fastlane-stations-nav" aria-label={isEs ? 'Calculadoras especializadas por estación' : 'Specialized station calculators'}>
-        <span class="fastlane-stations-label">{isEs ? '¿Requiere dimensionar primero?' : 'Need to size a circuit first?'}</span>
-        <div class="fastlane-stations-links">
-          {stations.map((st) => (
-            <a href={st.href} class="fastlane-station-link">{st.label} →</a>
+  <div class="smat-mt-sm" id="fastlane-mine-controls">
+    <div class="fastlane-mine-grid">
+      <div class="form-group">
+        <label for="wb-mining-group-select" class="qw-mini-label">
+          {isEs ? `Grupo Minero (${MINING_GROUPS_CATALOG.length} grupos):` : `Mining Group (${MINING_GROUPS_CATALOG.length} groups):`}
+        </label>
+        <select id="wb-mining-group-select" class="wb-select qw-compact-select">
+          <option value="">{isEs ? `— Seleccionar grupo (${MINING_GROUPS_CATALOG.length}) —` : `— Select group (${MINING_GROUPS_CATALOG.length}) —`}</option>
+          {MINING_GROUPS_CATALOG.map((grp) => (
+            <option value={grp.id}>{grp.name}</option>
           ))}
-        </div>
-      </nav>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="wb-mining-unit-select" class="qw-mini-label">
+          {isEs ? `Unidad Minera (${MINING_UNITS_COUNT} unidades):` : `Mining Unit (${MINING_UNITS_COUNT} units):`}
+        </label>
+        <select id="wb-mining-unit-select" class="wb-select qw-compact-select">
+          <option value="">{isEs ? '— Seleccionar unidad o distrito —' : '— Select site or district —'}</option>
+        </select>
+      </div>
     </div>
-  </details>
+    <div id="wb-step1-pulp-profile-badge" class="unit-pulp-profile-badge hidden qw-pulp-badge"></div>
+    <div id="wb-mining-preset-telemetry" data-mining-preset-telemetry class="qw-mining-telemetry hidden"></div>
+    <details class="wb-progressive-drawer fastlane-mine-drawer smat-mt-sm" id="fastlane-mine-drawer">
+      <summary class="wb-progressive-summary">
+        <span>{isEs ? '¿Requiere dimensionar una estación antes?' : 'Need to size a circuit station first?'}</span>
+        <span class="wb-step1-more-arrow">▾</span>
+      </summary>
+      <div class="wb-progressive-body">
+        <nav class="fastlane-stations-nav" aria-label={isEs ? 'Calculadoras especializadas por estación' : 'Specialized station calculators'}>
+          <div class="fastlane-stations-links">
+            {stations.map((st) => (
+              <a href={st.href} class="fastlane-station-link">{st.label} →</a>
+            ))}
+          </div>
+        </nav>
+      </div>
+    </details>
+  </div>
 </section>
 
 <style>

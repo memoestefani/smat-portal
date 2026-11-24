@@ -156,7 +156,41 @@ pub fn verify_security_headers_nap_and_honest_sla(site_root: &Path) -> Result<()
         }
     }
 
+    verify_v58_en_dist_leaks(site_root)?;
+
     Ok(())
+}
+
+/// Invariante V5.8: bloquea fugas monolingües ES y placeholders en `dist/en/**/*.html`.
+pub fn verify_v58_en_dist_leaks(site_root: &Path) -> Result<(), String> {
+    let dist_en = site_root.join("dist/en");
+    if !dist_en.is_dir() {
+        return Ok(());
+    }
+    for entry in WalkDir::new(&dist_en).into_iter().filter_map(|e| e.ok()) {
+        if entry.file_type().is_file()
+            && entry.path().extension().and_then(|s| s.to_str()) == Some("html")
+        {
+            let html = fs::read_to_string(entry.path()).unwrap_or_default();
+            if let Some(leak) = find_v58_en_leak_in_html(&html) {
+                return Err(format!(
+                    "Fuga V5.8 '{}' detectada en {}",
+                    leak,
+                    entry.path().display()
+                ));
+            }
+        }
+    }
+    Ok(())
+}
+
+pub fn find_v58_en_leak_in_html(html: &str) -> Option<&'static str> {
+    for forbidden in ["30 HP a 250 HP", "15 HP a 60 HP", "P1-PARO-PLANTA", "PARO DE LÍNEA"] {
+        if html.contains(forbidden) {
+            return Some(forbidden);
+        }
+    }
+    None
 }
 
 /// Audita cadenas editoriales/tipográficas prohibidas en `src/` bajo SMAT V5.7.
@@ -185,7 +219,7 @@ pub fn find_v57_prohibited_copy_in_source(rel_norm: &str, text: &str) -> Option<
 
 #[cfg(test)]
 mod tests {
-    use super::find_v57_prohibited_copy_in_source;
+    use super::{find_v57_prohibited_copy_in_source, find_v58_en_leak_in_html};
 
     #[test]
     fn detects_v57_prohibited_copy_and_ascii_exponents() {
@@ -201,5 +235,12 @@ mod tests {
             find_v57_prohibited_copy_in_source("src/components/cores/FlotationCore.astro", "<span>56.3 s⁻¹</span>"),
             None
         );
+    }
+
+    #[test]
+    fn detects_v58_en_monolingual_leaks() {
+        assert_eq!(find_v58_en_leak_in_html("<div>30 HP a 250 HP</div>"), Some("30 HP a 250 HP"));
+        assert_eq!(find_v58_en_leak_in_html("<span>P1-PARO-PLANTA</span>"), Some("P1-PARO-PLANTA"));
+        assert_eq!(find_v58_en_leak_in_html("<span>P1-LINE-STOP • 30 HP to 250 HP</span>"), None);
     }
 }

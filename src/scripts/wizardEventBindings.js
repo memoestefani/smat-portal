@@ -309,12 +309,19 @@ export function bindAllWizardEventListeners(ctx = {}) {
     const rawNow = String(dom.bomInput?.value || '').trim();
     if (!rawNow) {
       sumBox.textContent = '';
+      if (sumBox.dataset) {
+        sumBox.dataset.matchedCount = '0';
+        sumBox.dataset.unmatchedCount = '0';
+      }
       sumBox.classList?.add('hidden');
       return;
     }
     const vm = buildBomPasteViewModel(parseBomPasteInput(rawNow), isEs ? 'es' : 'en');
     sumBox.textContent = vm.badgeText;
-    if (sumBox.dataset) sumBox.dataset.matchedCount = String(vm.matchedCount);
+    if (sumBox.dataset) {
+      sumBox.dataset.matchedCount = String(vm.matchedCount);
+      sumBox.dataset.unmatchedCount = String(vm.unmatchedCount);
+    }
     sumBox.classList?.remove('hidden');
   };
 
@@ -335,6 +342,10 @@ export function bindAllWizardEventListeners(ctx = {}) {
     const sumBox = dom.doc?.getElementById?.('fastlane-bom-summary');
     if (sumBox) {
       sumBox.textContent = bomVm.badgeText;
+      if (sumBox.dataset) {
+        sumBox.dataset.matchedCount = String(bomVm.matchedCount);
+        sumBox.dataset.unmatchedCount = String(bomVm.unmatchedCount);
+      }
       sumBox.classList?.remove('hidden');
     }
     let addedCount = 0;
@@ -396,6 +407,35 @@ export function bindAllWizardEventListeners(ctx = {}) {
     actions.updateDossier?.();
   });
 
+  const setWizardStep = (stepNum) => {
+    const cleanStep = ['1', '2', '3'].includes(String(stepNum)) ? String(stepNum) : '1';
+    doc.querySelectorAll('[data-qw-step-tab]').forEach((tab) => {
+      const on = tab.getAttribute('data-qw-step-tab') === cleanStep;
+      tab.classList?.toggle('is-active', on);
+      tab.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    doc.querySelectorAll('[data-qw-step-section]').forEach((panel) => {
+      const on = panel.getAttribute('data-qw-step-section') === cleanStep;
+      panel.classList?.toggle('hidden', !on);
+      if (on) {
+        panel.removeAttribute('hidden');
+      } else {
+        panel.setAttribute('hidden', '');
+      }
+    });
+  };
+  doc.querySelectorAll?.('[data-qw-step-tab]').forEach((btn) => {
+    btn.addEventListener('click', () => setWizardStep(btn.getAttribute('data-qw-step-tab')));
+  });
+  doc.querySelectorAll?.('[data-qw-next-step], [data-qw-prev-step]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const next = btn.getAttribute('data-qw-next-step') || btn.getAttribute('data-qw-prev-step');
+      if (next) setWizardStep(next);
+    });
+  });
+
+  dom.jrpDailyInput?.addEventListener('input', () => actions.updateDossier?.());
+
   const handleShareClick = () => {
     const url = buildShareableRfqUrl({
       origin: win?.location?.origin || 'https://www.smatminerals.com',
@@ -433,10 +473,12 @@ export function bindAllWizardEventListeners(ctx = {}) {
     copyTextSafe(win, formatSapPlaintext(buildCurrentSnap()));
     showToastFeedback(dom, isEs ? 'Especificación ERP/SAP copiada.' : 'ERP/SAP spec copied.');
   });
-  doc.getElementById('wb-copy-tsv-btn')?.addEventListener('click', () => {
+  const handleCopyTsv = () => {
     copyTextSafe(win, formatSapTsv(buildCurrentSnap()));
     showToastFeedback(dom, isEs ? 'Tabla TSV para SAP/Excel copiada.' : 'SAP/Excel TSV table copied.');
-  });
+  };
+  doc.getElementById('wb-copy-tsv-btn')?.addEventListener('click', handleCopyTsv);
+  doc.getElementById('wb-step3-tsv-btn')?.addEventListener('click', handleCopyTsv);
   doc.getElementById('wb-whatsapp-btn')?.addEventListener('click', () => {
     const subj = buildCmuPrioritySubjectLine(getTrayState(), { cvPct: 45 });
     const url = formatWhatsappUrl({ ...buildCurrentSnap(), subject_prefix: subj });

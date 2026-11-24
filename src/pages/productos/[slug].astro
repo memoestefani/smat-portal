@@ -232,14 +232,14 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
         </div>
 
         <div>
-          <h2 class="smat-slug-aside-h2">1. Aleaciones / Materiales Disponibles</h2>
-          <div class="smat-slug-chip-row">
+          <label for="slug-mat-select" class="smat-slug-aside-h2">1. Aleaciones / Materiales Disponibles</label>
+          <select id="slug-mat-select" data-slug-mat-select class="wb-select font-mono-tech">
             {sku.available_materials.map((mat: string) => (
-              <span role="button" tabindex="0" data-mat-code={mat} class={`smat-slug-mat-chip ${mat === sku.default_material ? 'is-default' : ''}`}>
+              <option value={mat} selected={mat === sku.default_material}>
                 {mat} {mat === sku.default_material ? '(Estándar)' : ''}
-              </span>
+              </option>
             ))}
-          </div>
+          </select>
         </div>
 
         <details class="wb-progressive-drawer" id="slug-coupled-and-codes-drawer">
@@ -400,18 +400,12 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
       winEl.dataset.sepAdded = '1';
       winEl.insertAdjacentText('afterend', ' · ');
     }
-    const chips = document.querySelectorAll('.smat-slug-mat-chip[data-mat-code]');
+    const matSelect = document.querySelector('[data-slug-mat-select]') as HTMLSelectElement | null;
     const trayBtn = document.querySelector('[data-slug-add-to-tray]');
     const waBtn = document.querySelector('[data-slug-wa-btn]') as HTMLAnchorElement | null;
     const wbBtn = document.querySelector('[data-slug-workbench-btn]') as HTMLAnchorElement | null;
-    const activateSlugMatChip = (chip: Element) => {
-      const mat = chip.getAttribute('data-mat-code') || '';
+    const applySlugMat = (mat: string) => {
       if (!mat) return;
-      chips.forEach((c) => {
-        const isCurrent = c === chip;
-        c.classList.toggle('is-default', isCurrent);
-        c.setAttribute('aria-pressed', isCurrent ? 'true' : 'false');
-      });
       if (trayBtn) {
         trayBtn.setAttribute('data-sku-material', mat);
       }
@@ -429,18 +423,10 @@ const telLabels = telemetryLabelsByVertical[sku.vertical] || {
         wbBtn.setAttribute('data-home-workbench', `/?sku=${encodeURIComponent(skuId)}&mat=${encodeURIComponent(mat)}#workbench`);
       }
     };
-    chips.forEach((chip) => {
-      if ((chip as HTMLElement).dataset?.slugChipBound === '1') return;
-      if ((chip as HTMLElement).dataset) (chip as HTMLElement).dataset.slugChipBound = '1';
-      chip.addEventListener('click', () => activateSlugMatChip(chip));
-      chip.addEventListener('keydown', (ev: Event) => {
-        const ke = ev as KeyboardEvent;
-        if (ke.key === 'Enter' || ke.key === ' ') {
-          ke.preventDefault();
-          activateSlugMatChip(chip);
-        }
-      });
-    });
+    if (matSelect && matSelect.dataset?.slugMatBound !== '1') {
+      matSelect.dataset.slugMatBound = '1';
+      matSelect.addEventListener('change', () => applySlugMat(matSelect.value));
+    }
   }
   initSlugSheetEs();
   document.addEventListener('astro:page-load', initSlugSheetEs);

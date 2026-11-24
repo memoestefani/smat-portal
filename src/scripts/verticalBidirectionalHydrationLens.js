@@ -20,14 +20,14 @@ import {
   loadUnifiedEngineeringAndWorkbenchState,
 } from './verticalStateAndCtaSyncBridge.js';
 
-function mapCanonicalMaterialToTribologyBranch(rawMaterial = '') {
+function mapCanonicalMaterialToTribologySelect(rawMaterial = '') {
   const m = String(rawMaterial || '').trim().toLowerCase();
   if (!m) return undefined;
-  if (m === 'hybrid_a05_r55' || m === 'hibrido_a05_r55') return 'hibrido_a05_r55';
+  if (m === 'hybrid_a05_r55' || m === 'hibrido_a05_r55') return 'hybrid_a05_r55';
   if (m === 'ceramica_sic' || m === 'sic') return 'ceramica_sic';
-  if (m === 'hule_natural' || m === 'r55' || m === 'rubber') return 'rubber';
-  if (m === 'poliuretano' || m === 'u01' || m === 'polyurethane') return 'polyurethane';
-  if (m === 'alto_cromo_cr27' || m === 'a05' || m === 'metal') return 'metal';
+  if (m === 'hule_natural' || m === 'r55' || m === 'rubber') return 'hule_natural';
+  if (m === 'poliuretano' || m === 'u01' || m === 'polyurethane') return 'poliuretano';
+  if (m === 'alto_cromo_cr27' || m === 'a05' || m === 'metal') return 'alto_cromo_cr27';
   return m;
 }
 
@@ -41,9 +41,9 @@ const VERTICAL_STATION_LENS_DESCRIPTORS = Object.freeze({
   },
   tribology: {
     '#trib-d80-um': (f) => f.d80Um,
-    '#trib-vtip-ms': (f) => f.tipSpeedMs,
+    '#trib-u2-ms': (f) => f.tipSpeedMs,
     '#trib-ph': (f) => f.pulpPh,
-    '#trib-branch': (f) => mapCanonicalMaterialToTribologyBranch(f.materialKey),
+    '#trib-mat-select': (f) => mapCanonicalMaterialToTribologySelect(f.materialKey),
     '#trib-series': (f) => f.pipeSeries,
   },
   bearing: {

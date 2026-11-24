@@ -43,21 +43,20 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
   const pressInput = /** @type {any} */ (root.querySelector('#wb-cyc-pressure-kpa, #cyc-pressure-kpa'));
 
   const regimeEl = root.querySelector('#cyc-res-regime, #wb-cyc-res-roping');
-  const recEl = root.querySelector('#cyc-res-recovery');
-  const cvuEl = root.querySelector('#cyc-res-cvu, #wb-cyc-res-cvu');
-  const actionEl = root.querySelector('#cyc-res-action');
+  const cvuEl = root.querySelector('#wb-cyc-res-cvu, #cyc-res-cvu');
+  const actionEl = root.querySelector('#wb-cyc-res-cw-cv-3cups');
   const couplingBadgeEl = root.querySelector('#cyc-screen-coupling-badge');
   const skuLink = /** @type {any} */ (root.querySelector('#cyc-recommended-sku-link'));
   const rfqLink = /** @type {any} */ (root.querySelector('#cyc-rfq-link'));
+  const actionTargetSelect = /** @type {any} */ (root.querySelector('#cyc-action-target'));
+  const primaryTrayBtn = /** @type {any} */ (root.querySelector('#cyc-primary-tray-btn'));
 
   const csrApertureInput = /** @type {any} */ (root.querySelector('#csr-aperture-mm, #wb-scr-aperture-mm'));
   const csrReliefInput = /** @type {any} */ (root.querySelector('#csr-relief-deg, #wb-scr-relief-deg'));
   const csrFeedInput = /** @type {any} */ (root.querySelector('#csr-feed-um'));
   const csrVibrationInput = /** @type {any} */ (root.querySelector('#csr-vibration-g, #wb-scr-vibration-g'));
   const csrAlphaInput = /** @type {any} */ (root.querySelector('#csr-alpha-select, #wb-scr-alpha'));
-  const csrWeibullOut = root.querySelector('#csr-weibull-out');
-  const csrRfqLink = /** @type {any} */ (root.querySelector('#csr-rfq-link'));
-  const screenTrayBtn = /** @type {any} */ (root.querySelector('[data-screen-tray-btn]'));
+  const csrWeibullOut = root.querySelector('#wb-scr-res-vibration-g');
 
   const hydration = hydrateVerticalInputsFromUnifiedState(root, 'classification');
 
@@ -87,25 +86,58 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
     });
     if (csrWeibullOut) {
       csrWeibullOut.textContent = isEn
-        ? `Oversize Partition: ${weibullRes.partitionToOversizePct}% · Dilation Δa/a: ${weibullRes.elasticDilationPct}% (${weibullRes.vibrationG}G · α=${weibullRes.sharpnessAlpha}, ${weibullRes.antiBlindingCompliant ? 'Anti-Blinding OK' : 'Review θ'}) · SKU: ${weibullRes.recommendedSkuId}`
-        : `Retención Oversize: ${weibullRes.partitionToOversizePct}% · Dilatación Δa/a: ${weibullRes.elasticDilationPct}% (${weibullRes.vibrationG}G · α=${weibullRes.sharpnessAlpha}, ${weibullRes.antiBlindingCompliant ? 'Anti-Cegamiento OK' : 'Revisar θ'}) · SKU: ${weibullRes.recommendedSkuId}`;
+        ? `${weibullRes.vibrationG} G · Δa/a ${weibullRes.elasticDilationPct}% (${weibullRes.antiBlindingCompliant ? 'Anti-blinding OK' : 'Review θ'})`
+        : `${weibullRes.vibrationG} G · Δa/a ${weibullRes.elasticDilationPct}% (${weibullRes.antiBlindingCompliant ? 'Anti-cegamiento OK' : 'Revisar θ'})`;
     }
-    if (csrRfqLink) {
-      const basePath = isEn ? '/en/quote/' : '/cotizar/';
-      csrRfqLink.href = `${basePath}?circuito=clasificacion&equipo=malla_criba_poliuretano&sku=${encodeURIComponent(weibullRes.recommendedSkuId)}&mat=poliuretano&aperture_mm=${apertureMm}&relief_deg=${reliefAngleDeg}&screen_d80_um=${feedParticleUm}#rfq`;
-    }
-    if (screenTrayBtn) {
-      const setAttr = (name, prop, val) => {
-        if (typeof screenTrayBtn.setAttribute === 'function') screenTrayBtn.setAttribute(name, String(val));
-        if (screenTrayBtn.dataset) screenTrayBtn.dataset[prop] = String(val);
-      };
-      setAttr('data-add-tray-sku', 'addTraySku', weibullRes.recommendedSkuId || 'SMAT-SCR-URETHANE-PANEL');
-      setAttr('data-tray-series', 'traySeries', `${apertureMm}mm`);
-      setAttr('data-tray-material', 'trayMaterial', 'U01');
-      setAttr('data-tray-circuit', 'trayCircuit', 'clasificacion');
-    }
-    return weibullRes;
+    return { weibullRes, apertureMm, reliefAngleDeg, feedParticleUm };
   }
+
+  function applySelectedActionTarget(res, screenPack, coupledD80Um) {
+    const targetMode = String(actionTargetSelect?.value || 'cyclone');
+    const { weibullRes, apertureMm, reliefAngleDeg, feedParticleUm } = screenPack;
+    const basePath = isEn ? '/en/quote/' : '/cotizar/';
+
+    if (targetMode === 'screen') {
+      if (rfqLink) {
+        rfqLink.href = `${basePath}?circuito=clasificacion&equipo=malla_criba_poliuretano&sku=${encodeURIComponent(weibullRes.recommendedSkuId)}&mat=poliuretano&aperture_mm=${apertureMm}&relief_deg=${reliefAngleDeg}&screen_d80_um=${feedParticleUm}#rfq`;
+      }
+      if (primaryTrayBtn) {
+        const setAttr = (name, prop, val) => {
+          if (typeof primaryTrayBtn.setAttribute === 'function') primaryTrayBtn.setAttribute(name, String(val));
+          if (primaryTrayBtn.dataset) primaryTrayBtn.dataset[prop] = String(val);
+        };
+        setAttr('data-add-tray-sku', 'addTraySku', weibullRes.recommendedSkuId || 'SMAT-SCR-TH48-30');
+        setAttr('data-tray-part-code', 'trayPartCode', `${apertureMm}mm`);
+        setAttr('data-tray-title', 'trayTitle', isEn ? `Urethane Screen Panel (${apertureMm} mm)` : `Malla Criba Uretano (${apertureMm} mm)`);
+        setAttr('data-tray-series', 'traySeries', `${apertureMm}mm`);
+        setAttr('data-tray-material', 'trayMaterial', 'U01');
+        setAttr('data-tray-circuit', 'trayCircuit', 'clasificacion');
+      }
+      return;
+    }
+
+    if (rfqLink && res) {
+      const matRec = res.isRopingCritical ? 'ceramica_sic' : 'alto_cromo_cr27';
+      rfqLink.href = `${basePath}?circuito=clasificacion&equipo=hidrociclon_apex_vortex&sku=${encodeURIComponent(res.recommendedSkuId)}&mat=${matRec}&rho_f=${res.feedSg}&rho_u=${res.underflowSg}&rho_o=${res.overflowSg}&rs_pct=${res.solidsRecoveryPct}&cv_u=${res.cvUnderflowPct}&d50c=${res.d50cMicrons}&aperture_mm=${apertureMm}&screen_d80_um=${coupledD80Um}&roping_risk=${res.isRopingCritical ? '1' : '0'}#rfq`;
+    }
+    if (res) {
+      syncReactiveTraySkuButton(root, {
+        skuId: res.recommendedSkuId || 'SMAT-CYC-COUPLED-KIT',
+        partCode: `${res.apexDiameterMm}/${res.vortexDiameterMm}`,
+        title: isEn
+          ? `Hydrocyclone Assembly (${res.d50cMicrons} µm cut, Apex ${res.apexDiameterMm} mm)`
+          : `Hidrociclón Calibrado (Corte d50c ${res.d50cMicrons} µm, Apex ${res.apexDiameterMm} mm)`,
+        series: `Ø${res.apexDiameterMm}/${res.vortexDiameterMm}`,
+        material: res.isRopingCritical ? 'SiC' : 'R55',
+        circuit: 'clasificacion',
+        category: 'HIDROCICLON_CLASIFICACION',
+      });
+    }
+  }
+
+  let latestRes = null;
+  let latestScreenPack = null;
+  let latestCoupledD80 = 163;
 
   function recompute(isInitialMount = false) {
     if (!feedInput || !underInput || !overInput) return null;
@@ -122,13 +154,13 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
     if (regimeEl && typeof regimeEl.setAttribute === 'function') {
       regimeEl.setAttribute('data-regime', res.dischargeRegime);
     }
-    if (recEl) recEl.textContent = `${res.solidsRecoveryPct}%`;
     if (cvuEl) cvuEl.textContent = `${res.cvUnderflowPct}% (du/do=${res.apexToVortexRatio})`;
 
     const coupledD80Um = isInitialMount && hydration.hasPersistedState && hydration.unifiedState?.persistedFields?.feedTopSizeUm
       ? hydration.unifiedState.persistedFields.feedTopSizeUm
       : Math.round(res.d50cMicrons * 2.2);
-    const weibullRes = recomputeScreenWeibull(coupledD80Um);
+    const screenPack = recomputeScreenWeibull(coupledD80Um);
+    const { weibullRes } = screenPack;
 
     if (couplingBadgeEl) {
       couplingBadgeEl.textContent = isEn
@@ -137,10 +169,9 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
     }
 
     if (actionEl) {
-      const threeCupsInfo = isEn
-        ? `3 Cups: Feed Cw ${res.cwFeedPct}% (Cv ${res.cvFeedPct}%) | UF Cw ${res.cwUnderflowPct}% | OF Cw ${res.cwOverflowPct}% (Cv ${res.cvOverflowPct}%) • ${res.isUmbrellaDilute ? 'Dilute Umbrella' : 'Stable Cone'}`
-        : `3 Vasos: Cw Alim ${res.cwFeedPct}% (Cv ${res.cvFeedPct}%) | Cw Desc ${res.cwUnderflowPct}% | Cw Reb ${res.cwOverflowPct}% (Cv ${res.cvOverflowPct}%) • ${res.isUmbrellaDilute ? 'Paraguas Diluido' : 'Paraguas Estable'}`;
-      actionEl.textContent = `${isEn ? res.diagnosticActionEn : res.diagnosticActionEs} [${threeCupsInfo}]`;
+      actionEl.textContent = isEn
+        ? `Feed ${res.cwFeedPct}% | UF ${res.cwUnderflowPct}% | OF ${res.cwOverflowPct}% · Rec. ${res.solidsRecoveryPct}%`
+        : `Alim ${res.cwFeedPct}% | Desc ${res.cwUnderflowPct}% | Reb ${res.cwOverflowPct}% · Rec. ${res.solidsRecoveryPct}%`;
     }
 
     const coupledEval = evaluateHydrocycloneCutPoint({
@@ -181,23 +212,10 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
       }
     }
 
-    if (rfqLink) {
-      const matRec = res.isRopingCritical ? 'ceramica_sic' : 'alto_cromo_cr27';
-      const basePath = isEn ? '/en/quote/' : '/cotizar/';
-      rfqLink.href = `${basePath}?circuito=clasificacion&equipo=hidrociclon_apex_vortex&sku=${encodeURIComponent(res.recommendedSkuId)}&mat=${matRec}&rho_f=${res.feedSg}&rho_u=${res.underflowSg}&rho_o=${res.overflowSg}&rs_pct=${res.solidsRecoveryPct}&cv_u=${res.cvUnderflowPct}&d50c=${res.d50cMicrons}&aperture_mm=${weibullRes.apertureMm}&screen_d80_um=${coupledD80Um}&roping_risk=${res.isRopingCritical ? '1' : '0'}#rfq`;
-    }
-
-    syncReactiveTraySkuButton(root, {
-      skuId: res.recommendedSkuId || 'SMAT-CYC-COUPLED-KIT',
-      partCode: `${res.apexDiameterMm}/${res.vortexDiameterMm}`,
-      title: isEn
-        ? `Hydrocyclone Assembly (${res.d50cMicrons} µm cut, Apex ${res.apexDiameterMm} mm)`
-        : `Hidrociclón Calibrado (Corte d50c ${res.d50cMicrons} µm, Apex ${res.apexDiameterMm} mm)`,
-      series: `Ø${res.apexDiameterMm}/${res.vortexDiameterMm}`,
-      material: res.isRopingCritical ? 'SiC' : 'R55',
-      circuit: 'clasificacion',
-      category: 'HIDROCICLON_CLASIFICACION',
-    });
+    latestRes = res;
+    latestScreenPack = screenPack;
+    latestCoupledD80 = coupledD80Um;
+    applySelectedActionTarget(res, screenPack, coupledD80Um);
 
     const skipWrite = Boolean(isInitialMount) && !hydration.hasPersistedState;
     commitVerticalSimulation('clasificacion', {
@@ -230,7 +248,10 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
   }
 
   function onManualScreenChange() {
-    const weibullRes = recomputeScreenWeibull(null);
+    const screenPack = recomputeScreenWeibull(null);
+    const { weibullRes } = screenPack;
+    latestScreenPack = screenPack;
+    applySelectedActionTarget(latestRes, screenPack, latestCoupledD80);
     commitVerticalSimulation('clasificacion', {
       apertureMm: weibullRes.apertureMm,
       reliefAngleDeg: weibullRes.reliefAngleDeg,
@@ -247,6 +268,12 @@ export function bindCoupledClassificationStation(root, lang = 'es', _options = {
   }
 
   bindAtomicPartTrayButtons(root);
+
+  actionTargetSelect?.addEventListener?.('change', () => {
+    if (latestScreenPack) {
+      applySelectedActionTarget(latestRes, latestScreenPack, latestCoupledD80);
+    }
+  });
 
   [feedInput, underInput, overInput, solidsInput, apexInput, vortexInput, pressInput].forEach((el) => {
     if (el && typeof el.addEventListener === 'function') {

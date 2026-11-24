@@ -173,7 +173,12 @@ const productSchema = {
               <div class="smat-atomic-eng-val" data-testid="spec-station-number">
                 {isEs ? `Estación 0${fullSpec.station_number} (S${fullSpec.station_number})` : `Station 0${fullSpec.station_number} (S${fullSpec.station_number})`}
               </div>
-              <div class="smat-atomic-eng-sub" data-testid="spec-assembly-note">{fullSpec.assembly_order_note}</div>
+              <div class="smat-atomic-eng-sub" data-testid="spec-assembly-note">{part.assembly_order || fullSpec.assembly_order_note}</div>
+              {(part.wet_end_kit_ratio || fullSpec.wet_end_kit_ratio) && (
+                <div class="font-mono-tech smat-atomic-eng-meta" data-testid="spec-wet-end-ratio">
+                  {isEs ? 'Razón de Lote Húmedo:' : 'Wet-End Lot Ratio:'} <strong>{part.wet_end_kit_ratio || fullSpec.wet_end_kit_ratio}</strong>
+                </div>
+              )}
             </div>
           </div>
 

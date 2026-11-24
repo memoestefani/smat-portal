@@ -55,7 +55,19 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
         <span>{isEs ? 'MODO SIN CONEXIÓN • REQUISICIÓN GUARDADA EN MEMORIA LOCAL' : 'OFFLINE MODE • REQUISITION SAVED LOCALLY'}</span>
       </div>
 
-      <section class="control-card" id="stage-diagnostic" data-testid="stage-diagnostic" data-stage="stage-diagnostic" data-wb-step-panel="1">
+      <div class="smat-station-tabs qw-stepper-bar" id="qw-stepper-bar" role="tablist" aria-label={isEs ? 'Pasos de Requisición' : 'Requisition Steps'}>
+        <button type="button" role="tab" aria-selected="true" class="smat-station-tab-btn is-active" data-qw-step-tab="1">
+          {isEs ? '1. Partidas y Unidad Minera' : '1. Line Items & Mine Site'}
+        </button>
+        <button type="button" role="tab" aria-selected="false" class="smat-station-tab-btn" data-qw-step-tab="2">
+          {isEs ? '2. Operación JRP y Contacto' : '2. Duty JRP & Contact'}
+        </button>
+        <button type="button" role="tab" aria-selected="false" class="smat-station-tab-btn" data-qw-step-tab="3">
+          {isEs ? '3. Enviar y Exportar' : '3. Dispatch & Export'}
+        </button>
+      </div>
+
+      <section class="control-card" id="stage-diagnostic" data-testid="stage-diagnostic" data-stage="stage-diagnostic" data-wb-step-panel="1" data-qw-step-section="1">
         <div class="control-card-header">
           <span class="step-num">01</span>
           <h2>{isEs ? 'Partidas, Identificación y Memorias Adjuntas' : 'Line Items, Identification & Attached Notes'}</h2>
@@ -69,109 +81,145 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
           <ul id="attached-station-snapshots-list" class="checkout-snapshots-list font-mono-tech"></ul>
         </div>
 
-        <details class="wb-progressive-drawer smat-mt-sm" id="qw-advanced-jrp-drawer">
-          <summary class="wb-progressive-summary">
-            <span>{isEs ? 'Configuración técnica, empresa, teléfono y envío ERP' : 'Technical setup, company, phone & ERP delivery options'}</span>
-            <span class="wb-step1-more-arrow">▾</span>
-          </summary>
-          <div class="wb-progressive-body">
-            <div class="intent-selector smat-mt-sm">
-              <label class="intent-btn selected" id="btn-intent-opex">
-                <input type="radio" name="intent" value="opex_paro" checked />
-                <div class="intent-info"><strong>{isEs ? 'Refacciones de Desgaste / Paro' : 'Wear Spares / Shutdown'}</strong><small>{isEs ? 'Surtido prioritario de repuestos' : 'Priority spare parts fulfillment'}</small></div>
-              </label>
-              <label class="intent-btn" id="btn-intent-capex">
-                <input type="radio" name="intent" value="capex_proyecto" />
-                <div class="intent-info"><strong>{isEs ? 'Equipos Completos / Proyecto' : 'Complete Equipment / Project'}</strong><small>{isEs ? 'Bombas con motor, celdas o filtros prensa' : 'Pumps with drive, flotation cells or presses'}</small></div>
-              </label>
-            </div>
-
-            <div class="form-row smat-mt-sm" data-domain-root="jrp">
-              <div class="form-group col-half">
-                <label for="wb-jrp-wear-hours"><strong>{isEs ? 'Vida estimada de campaña (h):' : 'Estimated campaign wear life (h):'}</strong></label>
-                <input type="number" id="wb-jrp-wear-hours" data-schema-input="jrp.predictedWearHours" min="720" max="18000" step="120" value="2400" class="wb-input font-mono-tech" />
-              </div>
-              <div class="form-group col-half">
-                <label for="wb-jrp-criticality"><strong>{isEs ? 'Criticidad / Ventana (s, S):' : 'Criticality / Reorder (s, S):'}</strong></label>
-                <select id="wb-jrp-criticality" data-schema-input="jrp.criticalityMode" class="wb-select">
-                  <option value="normal" selected>{isEs ? 'Programado' : 'Scheduled'}</option>
-                  <option value="paro_planta">{isEs ? 'Paro de Planta (Urgente)' : 'Plant Shutdown (Urgent)'}</option>
-                </select>
-              </div>
-              <div class="jrp-schedule-strip font-mono-tech">
-                <span>{isEs ? 'Ventana reorden:' : 'Reorder window:'} <strong id="wb-jrp-window-days" data-schema-output="jrp.reorderWindowDays">90 d</strong></span>
-                <span>T10 <strong id="jrp-stage-1-days" data-schema-output="jrp.sleeveInspectionDay">90 d</strong></span>
-                <span>T50 <strong id="jrp-stage-2-days" data-schema-output="jrp.impellerThroatbushSwapDay">150 d</strong></span>
-                <span>T80 <strong id="jrp-stage-3-days" data-schema-output="jrp.voluteLinerOverhaulDay">180 d</strong></span>
-                <label class="jrp-tradein-inline-label" for="wb-core-tradein-toggle">
-                  <input type="checkbox" id="wb-core-tradein-toggle" data-schema-input="jrp.coreReturnEnabled" />
-                  <span>{isEs ? 'Trade-In Casco DAM005:' : 'DAM005 Core Trade-In:'}</span>
-                  <strong id="wb-core-tradein-eligible" data-schema-output="jrp.eligible">{isEs ? 'Evaluar' : 'Check'}</strong>
-                </label>
-              </div>
-            </div>
-
-            <div class="form-row smat-mt-sm">
-              <div class="form-group col-half">
-                <label for="wb-details"><strong>{isEs ? 'Tag de Planta / Equipo:' : 'Plant Tag / Asset:'}</strong></label>
-                <input type="text" id="wb-details" name="spec_details" class="wb-input" placeholder={isEs ? 'Ej. Bomba #2 / Tag B-201' : 'e.g. Pump #2 / Tag B-201'} />
-              </div>
-              <div class="form-group col-half" data-domain-root="erpExport">
-                <label for="wb-client-ref"><strong>{isEs ? 'Folio Interno / Orden Mantenimiento:' : 'Work Order / Internal Folio:'}</strong></label>
-                <input type="text" id="wb-client-ref" name="client_reference" data-schema-input="erpExport.placa_ref" class="wb-input" placeholder={isEs ? 'Ej. REQ-2026-084' : 'e.g. REQ-2026-084'} />
-              </div>
-            </div>
-
-            <div class="form-row smat-mt-sm">
-              <div class="form-group col-half"><label for="wb-company"><strong>{isEs ? 'Mina o Empresa:' : 'Mine or Company:'}</strong></label><input type="text" id="wb-company" name="company_name" class="wb-input" placeholder={isEs ? 'Ej. Unidad Minera / Compañía' : 'e.g. Mining Operation'} /></div>
-              <div class="form-group col-half"><label for="wb-phone"><strong>{isEs ? 'Teléfono / WhatsApp Directo:' : 'Direct Phone / WhatsApp:'}</strong></label><input type="tel" id="wb-phone" name="phone_number" class="wb-input" placeholder={isEs ? '(618) 810-4408' : '+52 (618) 810-4408'} /></div>
-            </div>
-            <div data-domain-root="erpExport">
-            <div class="form-row">
-              <div class="form-group col-half">
-                <label for="wb-destination"><strong>{isEs ? 'Modalidad de Entrega:' : 'Delivery Mode:'}</strong></label>
-                <select id="wb-destination" name="destination" data-schema-input="erpExport.logistics_mode" class="wb-select">
-                  <option value="Retiro en Almacén Central Durango (Coordinación con Folio)" selected>{isEs ? 'Retiro en Almacén Durango' : 'Durango Warehouse Pickup'}</option>
-                  <option value="Envío por fletera consolidada nacional (Ocurre en destino)">{isEs ? 'Fletera Consolidada Nacional' : 'National Carrier'}</option>
-                  <option value="Flete dedicado directo o enlace multimodal marítimo a penínsulas">{isEs ? 'Flete Directo a Unidad Minera' : 'Direct Site Freight'}</option>
-                </select>
-              </div>
-              <div class="form-group col-half">
-                <label for="wb-erp-quantity"><strong>{isEs ? 'Cantidad Global / Lotes:' : 'Lot / Unit Quantity:'}</strong></label>
-                <input type="number" id="wb-erp-quantity" data-schema-input="erpExport.quantity" min="1" max="500" step="1" value="1" class="wb-input font-mono-tech" />
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="wb-erp-destination"><strong>{isEs ? 'Ciudad o Unidad Destino (ERP):' : 'Destination City or Mine Site (ERP):'}</strong></label>
-              <input type="text" id="wb-erp-destination" data-schema-input="erpExport.delivery_destination" class="wb-input" value="Durango" />
-            </div>
-            </div>
-            <div class="form-group qw-g5-terms">
-              <label class="qw-g5-label">
-                <input type="checkbox" id="wb-g5-advance-confirm" name="g5_advance_confirm" data-g5-advance-confirm checked />
-                <span><strong>{isEs ? 'Condición G5 (Fabricación):' : 'Made-to-Order Terms:'}</strong> {isEs ? '50% anticipo para fundición y 50% contra aviso de embarque con reporte dimensional.' : '50% advance for casting and 50% upon ready-to-ship notice with dimensional report.'}</span>
-              </label>
-            </div>
-          </div>
-        </details>
+        <div class="smat-cta-row smat-mt-sm">
+          <button type="button" class="btn btn-primary" data-qw-next-step="2">
+            {isEs ? 'Siguiente: Operación y Contacto →' : 'Next: Duty & Contact →'}
+          </button>
+        </div>
       </section>
 
-      <section class="control-card contact-card-priority" id="stage-3" data-stage="stage-3" data-wb-step-panel="2" data-domain-root="erpExport">
+      <section class="control-card hidden" id="stage-specs-contact" data-stage="stage-specs-contact" data-wb-step-panel="2" data-qw-step-section="2" hidden>
         <div class="control-card-header">
           <span class="step-num">02</span>
-          <h2>{isEs ? 'Quién Solicita y Envío a Durango' : 'Requester Details & Durango Dispatch'}</h2>
+          <h2>{isEs ? 'Parámetros de Operación, Trade-In y Solicitante' : 'Duty Parameters, Trade-In & Requester Details'}</h2>
         </div>
 
-        <div class="form-row">
+        <div class="intent-selector smat-mt-sm">
+          <label class="intent-btn selected" id="btn-intent-opex">
+            <input type="radio" name="intent" value="opex_paro" checked />
+            <div class="intent-info"><strong>{isEs ? 'Refacciones de Desgaste / Paro' : 'Wear Spares / Shutdown'}</strong><small>{isEs ? 'Surtido prioritario de repuestos' : 'Priority spare parts fulfillment'}</small></div>
+          </label>
+          <label class="intent-btn" id="btn-intent-capex">
+            <input type="radio" name="intent" value="capex_proyecto" />
+            <div class="intent-info"><strong>{isEs ? 'Equipos Completos / Proyecto' : 'Complete Equipment / Project'}</strong><small>{isEs ? 'Bombas con motor, celdas o filtros prensa' : 'Pumps with drive, flotation cells or presses'}</small></div>
+          </label>
+        </div>
+
+        <div class="form-row smat-mt-sm" data-domain-root="jrp">
+          <div class="form-group col-half">
+            <label for="wb-jrp-wear-hours"><strong>{isEs ? 'Vida estimada de campaña (h):' : 'Estimated campaign wear life (h):'}</strong></label>
+            <input type="number" id="wb-jrp-wear-hours" data-schema-input="jrp.predictedWearHours" min="720" max="18000" step="120" value="2400" class="wb-input font-mono-tech" />
+          </div>
+          <div class="form-group col-half">
+            <label for="wb-jrp-daily-hours"><strong>{isEs ? 'Horas de operación por día (h/d):' : 'Daily operating hours (h/day):'}</strong></label>
+            <input type="number" id="wb-jrp-daily-hours" name="jrp_daily_hours" min="1" max="24" step="1" value="24" class="wb-input font-mono-tech" />
+          </div>
+          <div class="form-group col-half">
+            <label for="wb-jrp-criticality"><strong>{isEs ? 'Criticidad / Ventana (s, S):' : 'Criticality / Reorder (s, S):'}</strong></label>
+            <select id="wb-jrp-criticality" data-schema-input="jrp.criticalityMode" class="wb-select">
+              <option value="normal" selected>{isEs ? 'Programado' : 'Scheduled'}</option>
+              <option value="paro_planta">{isEs ? 'Paro de Planta (Urgente)' : 'Plant Shutdown (Urgent)'}</option>
+            </select>
+          </div>
+          <div class="jrp-schedule-strip font-mono-tech">
+            <span>{isEs ? 'Ventana reorden:' : 'Reorder window:'} <strong id="wb-jrp-window-days" data-schema-output="jrp.reorderWindowDays">90 d</strong></span>
+            <span>T10 <strong id="jrp-stage-1-days" data-schema-output="jrp.sleeveInspectionDay">90 d</strong></span>
+            <span>T50 <strong id="jrp-stage-2-days" data-schema-output="jrp.impellerThroatbushSwapDay">150 d</strong></span>
+            <span>T80 <strong id="jrp-stage-3-days" data-schema-output="jrp.voluteLinerOverhaulDay">180 d</strong></span>
+            <label class="jrp-tradein-inline-label" for="wb-core-tradein-toggle">
+              <input type="checkbox" id="wb-core-tradein-toggle" data-schema-input="jrp.coreReturnEnabled" />
+              <span>{isEs ? 'Trade-In Casco DAM005:' : 'DAM005 Core Trade-In:'}</span>
+              <strong id="wb-core-tradein-eligible" data-schema-output="jrp.eligible">{isEs ? 'Evaluar' : 'Check'}</strong>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-row smat-mt-sm">
+          <div class="form-group col-half">
+            <label for="wb-details"><strong>{isEs ? 'Tag de Planta / Equipo:' : 'Plant Tag / Asset:'}</strong></label>
+            <input type="text" id="wb-details" name="spec_details" class="wb-input" placeholder={isEs ? 'Ej. Bomba #2 / Tag B-201' : 'e.g. Pump #2 / Tag B-201'} />
+          </div>
+          <div class="form-group col-half" data-domain-root="erpExport">
+            <label for="wb-client-ref"><strong>{isEs ? 'Folio Interno / Orden Mantenimiento:' : 'Work Order / Internal Folio:'}</strong></label>
+            <input type="text" id="wb-client-ref" name="client_reference" data-schema-input="erpExport.placa_ref" class="wb-input" placeholder={isEs ? 'Ej. REQ-2026-084' : 'e.g. REQ-2026-084'} />
+          </div>
+        </div>
+
+        <div class="form-row smat-mt-sm">
+          <div class="form-group col-half"><label for="wb-company"><strong>{isEs ? 'Mina o Empresa:' : 'Mine or Company:'}</strong></label><input type="text" id="wb-company" name="company_name" class="wb-input" placeholder={isEs ? 'Ej. Unidad Minera / Compañía' : 'e.g. Mining Operation'} /></div>
+          <div class="form-group col-half"><label for="wb-phone"><strong>{isEs ? 'Teléfono / WhatsApp Directo:' : 'Direct Phone / WhatsApp:'}</strong></label><input type="tel" id="wb-phone" name="phone_number" class="wb-input" placeholder={isEs ? '(618) 810-4408' : '+52 (618) 810-4408'} /></div>
+        </div>
+
+        <div class="form-row smat-mt-sm">
           <div class="form-group col-half"><label for="wb-name"><strong>{isEs ? 'Nombre del Solicitante / Ingeniero:' : 'Requester / Engineer Name:'} *</strong></label><input type="text" id="wb-name" name="contact_name" class="wb-input" required placeholder={isEs ? 'Ej. Ing. J. Pérez' : 'e.g. Lead Process Engineer'} /></div>
           <div class="form-group col-half"><label for="wb-email"><strong>{isEs ? 'Correo Corporativo:' : 'Corporate Email:'} *</strong></label><input type="email" id="wb-email" name="email_address" class="wb-input" required placeholder={isEs ? 'compras@unidadminera.com' : 'procurement@miningco.com'} /></div>
         </div>
+
+        <div data-domain-root="erpExport">
+          <div class="form-row">
+            <div class="form-group col-half">
+              <label for="wb-destination"><strong>{isEs ? 'Modalidad de Entrega:' : 'Delivery Mode:'}</strong></label>
+              <select id="wb-destination" name="destination" data-schema-input="erpExport.logistics_mode" class="wb-select">
+                <option value="Retiro en Almacén Central Durango (Coordinación con Folio)" selected>{isEs ? 'Retiro en Almacén Durango' : 'Durango Warehouse Pickup'}</option>
+                <option value="Envío por fletera consolidada nacional (Ocurre en destino)">{isEs ? 'Fletera Consolidada Nacional' : 'National Carrier'}</option>
+                <option value="Flete dedicado directo o enlace multimodal marítimo a penínsulas">{isEs ? 'Flete Directo a Unidad Minera' : 'Direct Site Freight'}</option>
+              </select>
+            </div>
+            <div class="form-group col-half">
+              <label for="wb-erp-quantity"><strong>{isEs ? 'Cantidad Global / Lotes:' : 'Lot / Unit Quantity:'}</strong></label>
+              <input type="number" id="wb-erp-quantity" data-schema-input="erpExport.quantity" min="1" max="500" step="1" value="1" class="wb-input font-mono-tech" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="wb-erp-destination"><strong>{isEs ? 'Ciudad o Unidad Destino (ERP):' : 'Destination City or Mine Site (ERP):'}</strong></label>
+            <input type="text" id="wb-erp-destination" data-schema-input="erpExport.delivery_destination" class="wb-input" value="Durango" />
+          </div>
+        </div>
+
+        <div class="form-group qw-g5-terms">
+          <label class="qw-g5-label">
+            <input type="checkbox" id="wb-g5-advance-confirm" name="g5_advance_confirm" data-g5-advance-confirm checked />
+            <span><strong>{isEs ? 'Condición G5 (Fabricación):' : 'Made-to-Order Terms:'}</strong> {isEs ? '50% anticipo para fundición y 50% contra aviso de embarque con reporte dimensional.' : '50% advance for casting and 50% upon ready-to-ship notice with dimensional report.'}</span>
+          </label>
+        </div>
+
+        <div class="smat-cta-row smat-mt-sm">
+          <button type="button" class="btn btn-outline" data-qw-prev-step="1">
+            {isEs ? '← Anterior: Partidas' : '← Back: Line Items'}
+          </button>
+          <button type="button" class="btn btn-primary" data-qw-next-step="3">
+            {isEs ? 'Siguiente: Enviar y Exportar →' : 'Next: Dispatch & Export →'}
+          </button>
+        </div>
+      </section>
+
+      <section class="control-card contact-card-priority hidden" id="stage-3" data-stage="stage-3" data-wb-step-panel="3" data-qw-step-section="3" data-domain-root="erpExport" hidden>
+        <div class="control-card-header">
+          <span class="step-num">03</span>
+          <h2>{isEs ? 'Despacho Directo a Ingeniería Durango y Exportación SAP' : 'Durango Engineering Dispatch & SAP Export'}</h2>
+        </div>
+
         <input type="text" name="website" id="wb-website" tabindex="-1" autocomplete="off" class="wb-honeypot-field" aria-hidden="true" />
         <div class="qw-step3-submit-wrap">
           <button type="button" id="wb-submit-outbox-btn" class="btn btn-primary qw-submit-outbox-btn">
             {isEs ? 'Enviar Solicitud a Ingeniería Durango' : 'Submit Request to Durango Engineering'}
           </button>
           <p id="wb-outbox-status-msg" class="wb-outbox-status font-mono-tech" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="smat-cta-row smat-mt-sm">
+          <button type="button" id="wb-step3-tsv-btn" class="btn btn-outline">
+            {isEs ? 'Copiar Tabla TSV (SAP / Excel)' : 'Copy TSV Table (SAP / Excel)'}
+          </button>
+          <button type="button" id="btn-share-purchasing-link" class="assist-pill-btn fastlane-share-btn">
+            {isEs ? 'Copiar enlace para Compras' : 'Copy Link for Purchasing'}
+          </button>
+        </div>
+
+        <div class="smat-cta-row smat-mt-sm">
+          <button type="button" class="btn btn-outline" data-qw-prev-step="2">
+            {isEs ? '← Anterior: Operación y Contacto' : '← Back: Duty & Contact'}
+          </button>
         </div>
       </section>
     </div>

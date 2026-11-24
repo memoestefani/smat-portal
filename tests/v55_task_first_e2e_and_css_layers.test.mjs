@@ -102,6 +102,10 @@ test('SLICE-V55-25B: Capas CSS @layer, 0 !important no-print, Superficie Única 
   assert.equal(baseLayout.includes('!important'), false);
   assert.ok(baseLayout.includes('clip-path: inset(50%)'));
 
+  const qwSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/QuoteWizard.astro'), 'utf8');
+  assert.ok(qwSrc.includes('qw-stepper-bar'));
+  assert.ok(qwSrc.includes('wb-jrp-daily-hours'));
+
   const tribCore = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/TribologyAlloyCore.astro'), 'utf8');
   assert.equal(tribCore.includes('embeddedInWizard'), false);
 

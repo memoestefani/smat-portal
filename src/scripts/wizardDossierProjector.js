@@ -245,6 +245,12 @@ export function projectLiveDossierSummary(ctx = {}) {
   if (circuitAlloyBadges[activeCircuitKey]) {
     setText('live-alloy-badge', circuitAlloyBadges[activeCircuitKey]);
   }
+  setText(
+    'dossier-part-hardness',
+    isEmptySession
+      ? (isEs ? 'Por especificar (Borrador)' : 'Pending part selection (Draft)')
+      : (isEs ? '≥ 650 HB (Brinell) / 58-62 HRC' : '≥ 650 HB (Brinell) / 58-62 HRC')
+  );
 
   if (dom.liveClientRefBox) dom.liveClientRefBox.classList.toggle('hidden', !clientRefVal);
   if (dom.liveClientRefText) dom.liveClientRefText.textContent = clientRefVal;
@@ -259,11 +265,12 @@ export function projectLiveDossierSummary(ctx = {}) {
   setText('live-role-criteria', fallbackCriteria);
 
   const cmuNow = computeCmuPriorityDescriptor({
-    urgency: isOpex ? 'paro_de_linea' : 'programado',
+    urgency: isEmptySession ? '' : (isOpex ? 'paro_de_linea' : 'programado'),
     criticalityMode: dom.jrpCriticality?.value || (isOpex ? 'PARO_DE_LINEA' : 'STOCK_SS'),
     items: trayStateNow.items || [],
     estimatedTotalMxn: isOpex ? 18500 : 85000,
     stockRegime: isOpex ? 'hay' : 'se_fabrica',
+    lang: isEs ? 'es' : 'en',
   });
 
   if (dom.livePriorityTag) {
@@ -320,7 +327,12 @@ export function projectLiveDossierSummary(ctx = {}) {
     lang: isEs ? 'es' : 'en',
   });
   const priorityVm = buildDossierPriorityViewModel(cmuNow, hm, gateOut, isEs ? 'es' : 'en');
-  setText('gate-lead-status', `${isEs ? gateOut.badgeLabelEs : gateOut.badgeLabelEn} • ${priorityVm.priorityBadge}`);
+  setText(
+    'gate-lead-status',
+    isEmptySession
+      ? (isEs ? 'BORRADOR EN CAPTURA • SIN PARTIDAS ACTIVAS' : 'DRAFT IN PROGRESS • NO ACTIVE ITEMS')
+      : `${isEs ? gateOut.badgeLabelEs : gateOut.badgeLabelEn} • ${priorityVm.priorityBadge}`
+  );
 
   const banner = formatDossierSimulationBanner(state.currentCircuit || 'bombeo', isEs, urlDesc.canonicalRole);
   const physRow = formatDossierCircuitPhysicsRow(state.currentCircuit || 'bombeo', engCtx, { clientReorderWindowDays: jrpEval.reorderWindowDays }, isEs);

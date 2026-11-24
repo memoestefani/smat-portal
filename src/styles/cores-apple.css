@@ -403,11 +403,10 @@ label:has(> input[type="radio"]),
 }
 
 .smat-instrument-inputs {
-  order: 1;
+  position: relative;
 }
 
 .smat-instrument-verdict {
-  order: 2;
   background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: 10px;
@@ -431,9 +430,9 @@ label:has(> input[type="radio"]),
 
 .instrument-kpi-cell strong {
   display: block;
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   color: #475569;
   margin-bottom: 0.15rem;
 }

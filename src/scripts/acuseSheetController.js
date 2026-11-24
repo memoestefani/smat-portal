@@ -9,18 +9,18 @@
  * filas exclusivas de bombas cuando la requisición es de otro circuito.
  */
 
+import { formatCheckoutLaneHuman, formatLogisticsDestinationHuman } from './i18nDomainLabels.js';
+import { resolveHonestWebhookStatus } from './leadOutboxStateMachine.js';
 import { getQuickProductBySlugOrAlias } from './quickProductsCatalog.js';
 import { calculateCoupledReorderWindowDays } from './requisitionTrayBus.js';
-import { formatSatTigieInvoiceLine, formatDualCheckoutPayload } from './workbenchExportFormatters.js';
-import { loadUnifiedEngineeringAndWorkbenchState } from './verticalStateAndCtaSyncBridge.js';
-import { loadRfqSession, saveRfqSession, deriveSessionLifecycleState } from './rfqSessionStore.js';
-import { resolveHonestWebhookStatus } from './leadOutboxStateMachine.js';
-import { formatCheckoutLaneHuman, formatLogisticsDestinationHuman } from './i18nDomainLabels.js';
+import { deriveSessionLifecycleState, loadRfqSession, saveRfqSession } from './rfqSessionStore.js';
 import {
-  buildSmatVendorVcardString,
-  buildSapAnexo22ComplianceSummary,
   bindVendorPassportDownloadButtons,
+  buildSapAnexo22ComplianceSummary,
+  buildSmatVendorVcardString,
 } from './vendorPassportAndTradeInController.js';
+import { loadUnifiedEngineeringAndWorkbenchState } from './verticalStateAndCtaSyncBridge.js';
+import { formatDualCheckoutPayload, formatSatTigieInvoiceLine } from './workbenchExportFormatters.js';
 
 function computeFnv1aOrderHash(seedStr = '') {
   let h = 0x811c9dc5;
@@ -123,7 +123,7 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
           if (Array.isArray(parsedTray.items)) trayState.items = parsedTray.items;
           if (parsedTray.coreReturnEnabled) trayState.coreReturnEnabled = true;
         }
-      } catch (_e) {}
+      } catch (_e) { }
     }
 
     const existingItems = Array.isArray(trayState.items) ? trayState.items : [];
@@ -201,11 +201,10 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
           )
           .join('');
       } else {
-        trayTbody.innerHTML = `<tr><td colspan="4" class="acuse-empty-row">${
-          isEn
+        trayTbody.innerHTML = `<tr><td colspan="4" class="acuse-empty-row">${isEn
             ? `Single-component technical specification (${jrpWindow.policySummaryEn})`
             : `Especificación técnica de componente individual (${jrpWindow.policySummaryEs})`
-        }</td></tr>`;
+          }</td></tr>`;
       }
     }
 
@@ -415,7 +414,12 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
 
     const fullCode = [codigo, pieza ? `[${isEn ? 'Part' : 'Pieza'}: ${pieza}]` : '', traySummary ? `[${isEn ? 'Tray' : 'Bandeja'}: ${traySummary}]` : ''].filter(Boolean).join(' ') || (isEn ? 'SMAT-STD (1:1 Fit)' : 'SMAT-STD (Cotejo 1:1)');
     const orderHashCode = computeFnv1aOrderHash(`${fullCode}|${material}|${transmision}|${estacion}`);
-    setText('dossier-order-code', isEn ? `${orderHashCode} • PRIORITY DISPATCH DURANGO HUB` : `${orderHashCode} • DESPACHO PRIORITARIO ALMACÉN DURANGO`);
+    setText(
+      'dossier-order-code',
+      isEmptyRequisition
+        ? (isEn ? 'LOCAL DRAFT • NO ACTIVE ITEMS' : 'BORRADOR LOCAL • SIN PARTIDAS ACTIVAS')
+        : (isEn ? `${orderHashCode} • PRIORITY DISPATCH DURANGO HUB` : `${orderHashCode} • DESPACHO PRIORITARIO ALMACÉN DURANGO`)
+    );
     if (traySummary) {
       setText('dossier-title', isEn ? `FORMAL ENGINEERING REQUISITION & QUOTATION RECEIPT (${traySummary})` : `ACUSE FORMAL DE SOLICITUD DE COTIZACIÓN TÉCNICA (${traySummary})`);
     }
@@ -484,10 +488,10 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
       ...(isNonPumpRequisition
         ? []
         : [
-            `${isEn ? 'METALLURGY & DRIVE' : 'METALURGIA Y ARREGLO'}: ${matLabel} | ${transmision} (${floodImm}) | ${estacion} (${sealLabel})${nioshLabel}`,
-            `${isEn ? 'HYDRAULICS & ALTITUDE' : 'HIDRAULICA Y ALTITUD'}: ${hidraulica}`,
-            `KINEMATICS: delta=${claroMm}mm (b2=${b2Mm}mm, dEtaV=-${deltaEtaV}%, dvPipe=-${pipeVelLossVal}%), n2=${n2Rpm}RPM, u2=${u2Ms}m/s, Fr=${frKn}kN, C=${capCKn}kN, L10h=${l10h}h${structReason ? ' | ' + structReason : ''}`
-          ]),
+          `${isEn ? 'METALLURGY & DRIVE' : 'METALURGIA Y ARREGLO'}: ${matLabel} | ${transmision} (${floodImm}) | ${estacion} (${sealLabel})${nioshLabel}`,
+          `${isEn ? 'HYDRAULICS & ALTITUDE' : 'HIDRAULICA Y ALTITUD'}: ${hidraulica}`,
+          `KINEMATICS: delta=${claroMm}mm (b2=${b2Mm}mm, dEtaV=-${deltaEtaV}%, dvPipe=-${pipeVelLossVal}%), n2=${n2Rpm}RPM, u2=${u2Ms}m/s, Fr=${frKn}kN, C=${capCKn}kN, L10h=${l10h}h${structReason ? ' | ' + structReason : ''}`
+        ]),
       `${isEn ? 'METROLOGY' : 'METROLOGIA'}: ${metrologia}`
     ].join('\n');
     setText('sap-plaintext-block', sapBlockText);
@@ -498,7 +502,7 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
         try {
           await navigator.clipboard.writeText(sapBlockText);
           copySapBtn.textContent = isEn ? 'SAP Text Copied' : 'Texto SAP Copiado';
-        } catch (_e) {}
+        } catch (_e) { }
       };
     }
 
@@ -578,7 +582,7 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
           const baseQuote = isEn ? '/en/quote/' : '/cotizar/';
           reorderLink.setAttribute('href', `${baseQuote}?reorder=1&tray=${ser}#rfq`);
         }
-      } catch (_e) {}
+      } catch (_e) { }
     }
   }
 

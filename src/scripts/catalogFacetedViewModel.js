@@ -8,22 +8,22 @@
  */
 
 import {
-  PIPE_SERIES_DIAMETER_MM,
-  PIPE_DIAMETERS_MM,
-  WET_END_MATERIAL_MATRIX,
-} from './slurryEngine.js';
-import {
   ATOMIC_PARTS_CATALOG,
-  getAtomicPartSpecs,
   formatNioshErgonomicStatus,
+  getAtomicPartSpecs,
 } from './districtProfilesAndSkuCatalog.js';
-import { buildWizardUrl } from './workbenchBus.js';
 import {
   AVENUE_METADATA,
   getQuickProductsByAvenue,
   verifyCatalogReferentialIntegrity,
   verifyDiagramSurjectivity,
 } from './quickProductsCatalog.js';
+import {
+  PIPE_DIAMETERS_MM,
+  PIPE_SERIES_DIAMETER_MM,
+  WET_END_MATERIAL_MATRIX,
+} from './slurryEngine.js';
+import { buildWizardUrl } from './workbenchBus.js';
 
 const CATALOG_ATOMIC_PARTS_COUNT = Array.isArray(ATOMIC_PARTS_CATALOG)
   ? ATOMIC_PARTS_CATALOG.length
@@ -88,13 +88,17 @@ export function buildCatalogFacetedViewModel({
     0
   );
 
+  const isEs = lang !== 'en';
   const verticals = Array.isArray(rolesData?.verticals) ? rolesData.verticals : [];
   const bombeoVertical = verticals.find((v) => v.id === 'bombeo');
-  const bombeoPowerRange = bombeoVertical?.capex?.[0]?.power_range || '30 HP a 250 HP';
+  const bombeoPowerRange = (isEs ? bombeoVertical?.capex?.[0]?.power_range_es : bombeoVertical?.capex?.[0]?.power_range_en)
+    || (isEs ? '30 HP a 250 HP' : '30 HP to 250 HP');
   const flotationVertical = verticals.find((v) => v.id === 'flotacion');
-  const flotationPowerRange = flotationVertical?.capex?.[0]?.power_range || '15 HP a 60 HP';
+  const flotationPowerRange = (isEs ? flotationVertical?.capex?.[0]?.power_range_es : flotationVertical?.capex?.[0]?.power_range_en)
+    || (isEs ? '15 HP a 60 HP' : '15 HP to 60 HP');
   const filtrationVertical = verticals.find((v) => v.id === 'filtracion');
-  const filtrationPowerRange = filtrationVertical?.capex?.[0]?.power_range || '16 bar';
+  const filtrationPowerRange = (isEs ? filtrationVertical?.capex?.[0]?.power_range_es : filtrationVertical?.capex?.[0]?.power_range_en)
+    || '16 bar';
   const controlVertical = verticals.find((v) => v.id === 'control_procesos' || v.id === 'balanzas_marcy');
   const controlProcessItems = controlVertical
     ? [...(controlVertical.capex || []), ...(controlVertical.opex || [])]

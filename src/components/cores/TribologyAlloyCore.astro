@@ -309,17 +309,31 @@ const defaultTribVm = buildTribologyAssemblyViewModel(
       <span>NIOSH: <strong id="wb-asm-active-hoist" data-schema-output="tribology.activeNioshHoistRequired">{isEs ? 'Izaje Mecánico (>=23 kg)' : 'Hoist Required (>=23 kg)'}</strong></span>
       <span>Mat: <strong id="wb-asm-active-material" data-schema-output="tribology.activeMaterialCode">A05</strong></span>
     </div>
-    <div class="instrument-kpi-bar font-mono-tech smat-mt-sm">
+    <div class="instrument-kpi-bar font-mono-tech smat-mt-sm" data-vm-slot="primaryKpis">
       {defaultTribVm.primaryKpis.map((kpi) => (
         <div class="instrument-kpi-cell">
           <strong>{kpi.label}:</strong>
-          <span>{kpi.value}</span>
+          <span data-vm-kpi={kpi.key}>{kpi.value}</span>
         </div>
       ))}
     </div>
     <div id="wb-trib-collision-verdict" class="smat-trib-spalling-row smat-mt-sm">
-      {defaultTribVm.collisionAlert.text} · {defaultTribVm.headline}
+      <span data-vm-slot="collisionAlert">{defaultTribVm.collisionAlert.text}</span> · <span data-vm-slot="headline">{defaultTribVm.headline}</span>
     </div>
+    <details class="wb-progressive-drawer smat-mt-sm" id="trib-technical-details-drawer">
+      <summary class="wb-progressive-summary">
+        <span>{isEs ? 'Ver detalle cinemático SiC, carga radial y piezas BOM' : 'View SiC tip limit, radial load & hybrid BOM details'}</span>
+        <span>▾</span>
+      </summary>
+      <div class="embedded-ctrl-res font-mono-tech smat-mt-sm" data-vm-slot="technicalDetails">
+        {defaultTribVm.technicalDetails.map((detail) => (
+          <div class="embedded-res-cell">
+            <strong>{detail.label}</strong>
+            <span>{detail.value}</span>
+          </div>
+        ))}
+      </div>
+    </details>
   </div>
 
   <div class="clearance-kinematics-meta smat-mt-sm">

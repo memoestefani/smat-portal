@@ -47,15 +47,11 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
   const tEl = /** @type {any} */ (root.querySelector('[data-schema-input="filtration.plateThicknessMm"], #filt-plate-thickness, #wb-filt-thickness, #wb-filt-thickness-mm'));
   const mEl = /** @type {any} */ (root.querySelector('[data-schema-input="filtration.cakeMoistureTargetPct"], #filt-cake-moisture, #wb-filt-moisture, #wb-filt-moisture-pct'));
 
-  const secondaryEl = root.querySelector('#filt-res-secondary');
-  const sumEl = root.querySelector('#filt-res-summary, #wb-filt-res-status');
+  const sumEl = root.querySelector('#wb-filt-res-status');
   const nomOutEl = root.querySelector('#wb-filt-res-nom141');
   const cycleMinEl = root.querySelector('#wb-filt-res-cycle-min');
   const asymDpEl = root.querySelector('#wb-filt-res-asym-dp');
   const skusEl = root.querySelector('#wb-filt-res-skus');
-  const readoutBox = root.querySelector('#filt-timoshenko-readout');
-  const shifterBadgeEl = root.querySelector('#filt-shifter-sku-badge');
-  const nom141BadgeEl = root.querySelector('#filt-nom141-badge');
 
   const hydration = hydrateVerticalInputsFromUnifiedState(root, 'filtration');
 
@@ -108,9 +104,9 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
       dryTonnesPerDay: res.dryTonnesPerDay,
     });
     if (nomOutEl) {
-      nomOutEl.textContent = res.nom141Compliant !== false
-        ? (isEn ? 'NOM-141 OK' : 'Cumple NOM-141')
-        : (isEn ? 'NOM-141 Alert' : 'Alerta NOM-141');
+      nomOutEl.textContent = res.nom141MoistureCompliant === false || res.nom141Compliant === false
+        ? (isEn ? `NOM-141 Alert (${cakeMoistureTargetPct}%)` : `Alerta NOM-141 (${cakeMoistureTargetPct}%)`)
+        : (isEn ? 'NOM-141 OK' : 'Cumple NOM-141');
     }
     if (cycleMinEl) {
       cycleMinEl.textContent = isEn
@@ -130,17 +126,6 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
     const secondaryBreakdown = isEn
       ? `ΔP_asym = ${res.deltaPAsymmetricMpa} MPa · σ_adm = ${res.ppFatigueAllowableMpa} MPa · ${res.cyclesPerDay} cyc/d · ${res.dryTonnesPerDay} t/d (${res.filtrationMinutes}+12=${res.totalCycleMin} min)`
       : `ΔP_asim = ${res.deltaPAsymmetricMpa} MPa · σ_adm = ${res.ppFatigueAllowableMpa} MPa · ${res.cyclesPerDay} ciclos/d · ${res.dryTonnesPerDay} t/d (${res.filtrationMinutes}+12=${res.totalCycleMin} min)`;
-    if (secondaryEl) {
-      secondaryEl.textContent = secondaryBreakdown;
-    }
-    if (shifterBadgeEl) {
-      shifterBadgeEl.textContent = res.recommendedShifterSkuId;
-    }
-    if (nom141BadgeEl) {
-      nom141BadgeEl.textContent = res.nom141MoistureCompliant
-        ? (isEn ? `NOM-141 Moisture OK (${cakeMoistureTargetPct}% ≤ 16%)` : `NOM-141 Humedad OK (${cakeMoistureTargetPct}% ≤ 16%)`)
-        : (isEn ? `NOM-141 Alert (${cakeMoistureTargetPct}% > 16%)` : `Alerta NOM-141 (${cakeMoistureTargetPct}% > 16%)`);
-    }
     const isAlert = Boolean(res.isPlateCrackingRisk || !res.nom141Compliant);
     if (sumEl) {
       const baseSummary = isEn ? res.summaryEn : res.summaryEs;
@@ -149,15 +134,9 @@ export function bindCanonicalFiltrationCalculator(root, lang = 'es', _options = 
         : (isEn
           ? `Plate: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Shifter: ${res.recommendedShifterSkuId}`
           : `Placa/Tela: ${res.recommendedRecessedPlateSkuId || res.recommendedClothSkuId} | Corre-Placas: ${res.recommendedShifterSkuId}`);
-      sumEl.textContent = secondaryEl
-        ? `${baseSummary} | ${skuTail}`
-        : `${baseSummary} | ${secondaryBreakdown} | ${skuTail}`;
+      sumEl.textContent = `${baseSummary} | ${secondaryBreakdown} | ${skuTail}`;
       sumEl.classList?.toggle('is-alert-state', isAlert);
       sumEl.classList?.toggle('is-optimal-state', !isAlert);
-    }
-    if (readoutBox) {
-      readoutBox.classList?.toggle('is-alert-state', isAlert);
-      readoutBox.classList?.toggle('is-optimal-state', !isAlert);
     }
 
     syncReactiveTraySkuButton(root, {

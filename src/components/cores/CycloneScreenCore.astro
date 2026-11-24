@@ -177,16 +177,26 @@ const productsBase = isEs ? '/productos/' : '/en/products/';
 
     {showVerticalActions && (
       <div class="cyc-cta-row smat-mt-sm">
+        <div class="form-group smat-cyc-action-select-wrap">
+          <label class="smat-field-label" for="cyc-action-target">
+            {isEs ? 'Equipo a Cotizar / Agregar:' : 'Component to Quote / Add:'}
+          </label>
+          <select id="cyc-action-target" class="smat-input-control wb-select font-mono-tech">
+            <option value="cyclone" selected>{isEs ? 'Hidrociclón Ápex/Vortex (SMAT-CYC-D6-D20)' : 'Hydrocyclone Apex/Vortex (SMAT-CYC-D6-D20)'}</option>
+            <option value="screen">{isEs ? 'Malla Criba Uretano (SMAT-SCR-TH48-30)' : 'Urethane Screen Panel (SMAT-SCR-TH48-30)'}</option>
+          </select>
+        </div>
         <a
-          href={`${productsBase}${isEs ? 'hidrociclon-completo-y-boquillas-d6-d20/' : 'hydrocyclone-assembly-and-spigots-d6-d20/'}`}
-          class="btn-cyc-sku smat-tap-btn"
-          id="cyc-recommended-sku-link"
+          href={`${quoteBase}?circuito=clasificacion&equipo=hidrociclon_apex_vortex&sku=SMAT-CYC-D6-D20#rfq`}
+          class="btn btn-primary smat-tap-btn"
+          id="cyc-rfq-link"
         >
-          {isEs ? 'Configurar Boquilla Ápex (SMAT-CYC-D6-D20) →' : 'Configure Apex Nozzle (SMAT-CYC-D6-D20) →'}
+          {isEs ? 'Cotizar Seleccionado →' : 'Quote Selected →'}
         </a>
         <button
           type="button"
           class="btn btn-outline btn-avenue-tray smat-tap-btn"
+          id="cyc-primary-tray-btn"
           data-vertical-tray-btn
           data-add-tray-sku="SMAT-CYC-D6-D20"
           data-tray-part-code="D6-D20"
@@ -196,36 +206,8 @@ const productsBase = isEs ? '/productos/' : '/en/products/';
           data-tray-circuit="clasificacion"
           data-tray-source="classification_cyclone_stratum1"
         >
-          {isEs ? '+ Bandeja Hidrociclón' : '+ Tray Hydrocyclone'}
+          {isEs ? '+ Agregar a Bandeja' : '+ Add to Tray'}
         </button>
-        <a
-          href={`${quoteBase}?circuito=clasificacion&equipo=hidrociclon_apex_vortex&sku=SMAT-CYC-D6-D20#rfq`}
-          class="btn-cyc-rfq smat-tap-btn"
-          id="cyc-rfq-link"
-        >
-          {isEs ? 'Sincronizar al Cotizador →' : 'Sync to Requisition Quote →'}
-        </a>
-        <button
-          type="button"
-          class="btn btn-outline btn-avenue-tray smat-tap-btn"
-          data-screen-tray-btn
-          data-add-tray-sku="SMAT-SCR-TH48-30"
-          data-tray-part-code="TH48-30"
-          data-tray-title={isEs ? 'Panel Criba Uretano Alta Frecuencia 0.50mm' : 'TH48-30 Fine Urethane Screen Panel 0.50mm'}
-          data-tray-series="0.50mm"
-          data-tray-material="U01"
-          data-tray-circuit="clasificacion"
-          data-tray-source="classification_screen_stratum1"
-        >
-          {isEs ? '+ Bandeja Criba' : '+ Tray Screen'}
-        </button>
-        <a
-          href={`${quoteBase}?circuito=clasificacion&equipo=malla_criba_poliuretano&sku=SMAT-SCR-TH48-30&mat=poliuretano#rfq`}
-          id="csr-rfq-link"
-          class="smat-dropin-link smat-tap-btn"
-        >
-          {isEs ? 'Cotizar Malla TH48-30 →' : 'Quote TH48-30 Screen →'}
-        </a>
       </div>
     )}
   </div>
@@ -244,6 +226,24 @@ const productsBase = isEs ? '/productos/' : '/en/products/';
       <div class="embedded-res-cell"><strong>{isEs ? 'Razón Operativa:' : 'Operating Ratio:'}</strong> <span id="wb-cyc-res-dudo-ratio" data-testid="wb-cyc-res-dudo-ratio">du/do = 0.50</span></div>
       <div class="embedded-res-cell"><strong>{isEs ? 'Dinámica Criba:' : 'Screen Dynamics:'}</strong> <span id="wb-scr-res-vibration-g" data-testid="wb-scr-res-vibration-g">4.5 G • Anti-cegamiento</span></div>
     </div>
+    {showVerticalActions && (
+      <div class="smat-cta-row smat-mt-sm">
+        <a
+          href={`${productsBase}${isEs ? 'hidrociclon-completo-y-boquillas-d6-d20/' : 'hydrocyclone-assembly-and-spigots-d6-d20/'}`}
+          class="btn btn-outline smat-tap-btn"
+          id="cyc-recommended-sku-link"
+        >
+          {isEs ? 'Ver Ficha Hidrociclón (SMAT-CYC-D6-D20) →' : 'View Hydrocyclone SKU (SMAT-CYC-D6-D20) →'}
+        </a>
+        <a
+          href={`${productsBase}${isEs ? 'malla-criba-poliuretano-alta-frecuencia/' : 'urethane-fine-screen-panel-th48-30/'}`}
+          id="csr-recommended-sku-link"
+          class="btn btn-outline smat-tap-btn"
+        >
+          {isEs ? 'Ver Ficha Malla TH48-30 →' : 'View TH48-30 Screen Sheet →'}
+        </a>
+      </div>
+    )}
   </div>
 </InstrumentShell>
 
@@ -265,6 +265,39 @@ const productsBase = isEs ? '/productos/' : '/en/products/';
         setVal('#wb-cyc-apex-mm', '38');
         const triggerEl = root.querySelector('#wb-cyc-apex-mm') || root.querySelector('#wb-cyc-sg-uf');
         triggerEl?.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+    });
+
+    document.querySelectorAll('#cyc-action-target').forEach((sel) => {
+      if ((sel as HTMLElement).dataset.targetBound === '1') return;
+      (sel as HTMLElement).dataset.targetBound = '1';
+      sel.addEventListener('change', () => {
+        const root = sel.closest('[data-domain-root="cycloneScreen"]');
+        if (!root) return;
+        const mode = (sel as HTMLSelectElement).value;
+        const quoteLink = root.querySelector('#cyc-rfq-link') as HTMLAnchorElement | null;
+        const trayBtn = root.querySelector('#cyc-primary-tray-btn') as HTMLElement | null;
+        const isEn = document.documentElement.lang === 'en';
+        const qBase = isEn ? '/en/quote/' : '/cotizar/';
+        if (mode === 'screen') {
+          if (quoteLink) quoteLink.href = `${qBase}?circuito=clasificacion&equipo=malla_criba_poliuretano&sku=SMAT-SCR-TH48-30&mat=poliuretano#rfq`;
+          if (trayBtn) {
+            trayBtn.setAttribute('data-add-tray-sku', 'SMAT-SCR-TH48-30');
+            trayBtn.setAttribute('data-tray-part-code', 'TH48-30');
+            trayBtn.setAttribute('data-tray-title', isEn ? 'TH48-30 Fine Urethane Screen Panel 0.50mm' : 'Panel Criba Uretano Alta Frecuencia 0.50mm');
+            trayBtn.setAttribute('data-tray-series', '0.50mm');
+            trayBtn.setAttribute('data-tray-material', 'U01');
+          }
+        } else {
+          if (quoteLink) quoteLink.href = `${qBase}?circuito=clasificacion&equipo=hidrociclon_apex_vortex&sku=SMAT-CYC-D6-D20#rfq`;
+          if (trayBtn) {
+            trayBtn.setAttribute('data-add-tray-sku', 'SMAT-CYC-D6-D20');
+            trayBtn.setAttribute('data-tray-part-code', 'D6-D20');
+            trayBtn.setAttribute('data-tray-title', isEn ? 'Calibrated Hydrocyclone Assembly (74 µm Cut)' : 'Ensamble Hidrociclón Calibrado (Corte 74 µm)');
+            trayBtn.setAttribute('data-tray-series', '74um');
+            trayBtn.setAttribute('data-tray-material', 'SiC');
+          }
+        }
       });
     });
   }

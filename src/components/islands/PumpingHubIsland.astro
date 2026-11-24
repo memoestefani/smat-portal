@@ -265,6 +265,9 @@ const tcoRows = [
         <button type="button" role="tab" aria-selected="false" class="smat-station-tab-btn" data-station-tab="seals">
           {isEs ? '3. Sellado, Transmisión y Soporte' : '3. Seal, Drive & Bearings'}
         </button>
+        <button type="button" role="tab" aria-selected="false" class="smat-station-tab-btn" data-station-tab="assembly">
+          {isEs ? '4. Armado 5-5-4 (EST-01..05)' : '4. Assembly 5-5-4 (EST-01..05)'}
+        </button>
       </div>
 
       <div class="card smat-bombeo-sim-card smat-station-panel" id="pumping-hydraulics-stratum1" data-station-panel="hydraulics" data-stratum-1-instrument>
@@ -310,6 +313,25 @@ const tcoRows = [
         />
       </div>
 
+      <div class="card smat-bombeo-sim-card smat-station-panel" id="pumping-assembly-station" data-station-panel="assembly" hidden>
+        <PumpAssemblyReport lang={locale} />
+        <details class="bombeo-circuit-drawer smat-mt-sm" id="bombeo-circuit-drawer">
+          <summary class="bombeo-circuit-drawer__summary">
+            <span>
+              {isEs
+                ? 'Ver Mapa P&ID del Circuito de Molienda y Reglas Metalúrgicas por Rol'
+                : 'View Grinding Circuit P&ID Map & Metallurgical Rules by Role'}
+            </span>
+            <span class="bombeo-circuit-drawer__badge">
+              {isEs ? 'APÉNDICE P&ID ▾' : 'P&ID APPENDIX ▾'}
+            </span>
+          </summary>
+          <div class="bombeo-circuit-drawer__body">
+            <CircuitNavigator currentCircuit="molienda" lang={locale} />
+          </div>
+        </details>
+      </div>
+
       {showVerticalShell && (
         <details class="bombeo-circuit-drawer smat-mt-sm" id="bombeo-catalog-disclosure">
           <summary class="bombeo-circuit-drawer__summary">
@@ -351,9 +373,6 @@ const tcoRows = [
                 </button>
                 <button type="button" role="tab" aria-selected="false" class="bombeo-tab-btn" data-bombeo-tab="atomic">
                   {isEs ? '3. Fichas Part Number Universal (13)' : '3. Universal Part Number Sheets (13)'}
-                </button>
-                <button type="button" role="tab" aria-selected="false" class="bombeo-tab-btn" data-bombeo-tab="assembly">
-                  {isEs ? '4. Armado Wet-End 01–05' : '4. Wet-End Assembly 01–05'}
                 </button>
               </div>
             </div>
@@ -487,25 +506,6 @@ const tcoRows = [
                 })}
               </div>
             </div>
-
-            <div class="bombeo-tab-panel" data-bombeo-panel="assembly">
-              <PumpAssemblyReport lang={locale} />
-              <details class="bombeo-circuit-drawer" id="bombeo-circuit-drawer">
-                <summary class="bombeo-circuit-drawer__summary">
-                  <span>
-                    {isEs
-                      ? 'Ver Mapa P&ID del Circuito de Molienda y Reglas Metalúrgicas por Rol'
-                      : 'View Grinding Circuit P&ID Map & Metallurgical Rules by Role'}
-                  </span>
-                  <span class="bombeo-circuit-drawer__badge">
-                    {isEs ? 'APÉNDICE P&ID ▾' : 'P&ID APPENDIX ▾'}
-                  </span>
-                </summary>
-                <div class="bombeo-circuit-drawer__body">
-                  <CircuitNavigator currentCircuit="molienda" lang={locale} />
-                </div>
-              </details>
-            </div>
           </div>
 
           <SharePurchasing
@@ -569,6 +569,7 @@ const tcoRows = [
   )}
 
   <script>
+    import { initPumpingTabRouter, resolvePumpingTabDeepLink } from '../../scripts/pumpingTabRouter.js';
     import { bindAtomicPartTrayButtons } from '../../scripts/verticalStateAndCtaSyncBridge.js';
     import { bindCanonicalSealBalanceCalculator, bindCanonicalTribologySelector } from '../../scripts/verticalCalculatorsAndLabelsBridge.js';
     import { initBearingSupportInspector, initSkidKinematicsInspector } from '../../scripts/verticalBidirectionalHydrationLens.js';
@@ -739,84 +740,8 @@ const tcoRows = [
         runPumpingCoreDag(root, isEs);
       }
 
-      if (root.dataset.bombeoTabsBound === 'true') return;
-      root.dataset.bombeoTabsBound = 'true';
-
-      const stationBtns = root.querySelectorAll('[data-station-tab]');
-      const stationPanels = root.querySelectorAll('[data-station-panel]');
-      const activateStation = (rawTarget: string) => {
-        const lower = String(rawTarget || 'hydraulics').toLowerCase();
-        const normalized = ['tribology', 'impeller', 'liners'].includes(lower)
-          ? 'tribology'
-          : ['seal', 'skid', 'bearing', 'seals'].includes(lower)
-            ? 'seals'
-            : 'hydraulics';
-        stationBtns.forEach((b) => {
-          const on = b.getAttribute('data-station-tab') === normalized;
-          b.classList.toggle('is-active', on);
-          b.setAttribute('aria-selected', on ? 'true' : 'false');
-        });
-        stationPanels.forEach((panel) => {
-          const on = panel.getAttribute('data-station-panel') === normalized;
-          if (on) {
-            panel.removeAttribute('hidden');
-          } else {
-            panel.setAttribute('hidden', '');
-          }
-        });
-        if (['seal', 'skid', 'bearing'].includes(lower)) {
-          const subBtn = root.querySelector(`#pumping-seals-station [data-sdb-tab="${lower}"], #pumping-seals-station [data-tab="${lower}"]`) as HTMLElement | null;
-          subBtn?.click();
-        }
-      };
-
-      stationBtns.forEach((btn) => {
-        btn.addEventListener('click', () => {
-          activateStation(btn.getAttribute('data-station-tab') || 'hydraulics');
-        });
-      });
-
-      const tabBtns = root.querySelectorAll('[data-bombeo-tab]');
-      const tabPanels = root.querySelectorAll('[data-bombeo-panel]');
-      const disclosure = document.getElementById('bombeo-catalog-disclosure') as HTMLDetailsElement | null;
-      const activateTab = (target: string, expandDisclosure = false) => {
-        if (expandDisclosure && disclosure) {
-          disclosure.open = true;
-        }
-        tabBtns.forEach((b) => {
-          const active = b.getAttribute('data-bombeo-tab') === target;
-          b.classList.toggle('is-active', active);
-          b.setAttribute('aria-selected', active ? 'true' : 'false');
-        });
-        tabPanels.forEach((p) => {
-          const active = p.getAttribute('data-bombeo-panel') === target;
-          p.classList.toggle('is-active', active);
-        });
-      };
-
-      tabBtns.forEach((btn) => {
-        btn.addEventListener('click', () => {
-          activateTab(btn.getAttribute('data-bombeo-tab') || 'kits');
-        });
-      });
-
-      const queryTab = new URLSearchParams(window.location.search).get('tab');
-      if (queryTab) {
-        if (['kits', 'systems', 'atomic', 'assembly'].includes(queryTab)) {
-          activateTab(queryTab, true);
-        } else {
-          activateStation(queryTab);
-        }
-      }
-
-      if (['#pump-assembly-report', '#como-se-arma-una-bomba', '#how-a-slurry-pump-is-assembled'].includes(window.location.hash)) {
-        activateTab('assembly', true);
-      }
-      document
-        .querySelectorAll('a[href="#pump-assembly-report"], a[href="#como-se-arma-una-bomba"], a[href="#how-a-slurry-pump-is-assembled"]')
-        .forEach((link) => {
-          link.addEventListener('click', () => activateTab('assembly', true));
-        });
+      const deepLink = typeof window !== 'undefined' ? resolvePumpingTabDeepLink(window.location.search, window.location.hash) : null;
+      initPumpingTabRouter(root, deepLink);
     }
 
     initBombeoCatalogTabs();

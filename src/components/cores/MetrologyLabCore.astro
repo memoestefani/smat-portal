@@ -134,7 +134,7 @@ const defaultMetVm = buildMetrologyViewModel(
         <span>▾</span>
       </summary>
       <p class="smat-basis-note font-mono-tech smat-mt-sm">
-        {isEs ? 'Base de cálculo: masa mínima representativa (Pierre Gy), tamices ASTM E11 y distribución Rosin-Rammler.' : 'Calculation basis: minimum sample mass (Pierre Gy), ASTM E11 sieves & Rosin-Rammler curve.'}
+        {isEs ? 'Base de cálculo: masa mínima representativa, tamices certificados ASTM E11 y distribución granulométrica.' : 'Calculation basis: minimum representative sample mass, certified ASTM E11 sieves & particle size curve.'}
       </p>
       <div id="wb-ctrl-marcy-rings-strip" data-testid="wb-ctrl-marcy-rings-strip" data-marcy-rings-list="2.2..4.4" class="rings-strip font-mono-tech smat-mt-sm">
         {isEs ? '12 Carátulas Marcy (SG 2.2–4.4): Anillo SG 2.8 activo' : '12 Marcy Dials (SG 2.2–4.4): SG 2.8 Ring active'}
@@ -213,8 +213,8 @@ const defaultMetVm = buildMetrologyViewModel(
         <span id="wb-ctrl-res-sieve" data-schema-output="metrology.sieveNumber">#100</span> · <span id="wb-ctrl-res-primary-um" data-schema-output="metrology.primaryApertureMicrons">150 µm</span>
       </div>
     </div>
-    <p id="wb-ctrl-gy-rec" class="smat-basis-note font-mono-tech smat-mt-sm">
-      {defaultMetVm.headline}
+    <p id="wb-ctrl-gy-rec" data-vm-slot="gyRecommendation" class="smat-basis-note font-mono-tech smat-mt-sm">
+      {defaultMetVm.gyRecommendation}
     </p>
   </div>
 
@@ -228,7 +228,7 @@ const defaultMetVm = buildMetrologyViewModel(
       <div class="embedded-res-cell"><strong>{isEs ? '2 Operadores:' : '2 Operators:'}</strong> <span id="wb-ctrl-res-two-person" data-schema-output="metrology.twoPersonAssistRequired">{isEs ? 'No' : 'No'}</span></div>
       <div class="embedded-res-cell"><strong>{isEs ? 'Pendiente Tamaño (n):' : 'Slope Uniformity (n):'}</strong> <span id="wb-ctrl-res-rr" data-schema-output="metrology.rosinRammlerUniformityN">1.15</span></div>
       <div class="embedded-res-cell"><strong>{isEs ? 'Corte d₆₃:' : 'Cut d₆₃:'}</strong> <span id="wb-ctrl-res-d63" data-met-defuse-d63="1">119 µm</span></div>
-      <div class="embedded-res-cell"><strong>{isEs ? 'Linealización y\':' : 'Linearized y\':' }</strong> <span id="wb-ctrl-res-rry" data-schema-output="metrology.rosinRammlerY">-0.1555</span></div>
+      <div class="embedded-res-cell"><strong>{isEs ? 'Índice de Malla:' : 'Mesh Index:'}</strong> <span id="wb-ctrl-res-rry" data-schema-output="metrology.rosinRammlerY">-0.1555</span></div>
       <div class="embedded-res-cell"><strong>{isEs ? 'Volumen Pulpa:' : 'Wet Pulp Vol:'}</strong> <span id="wb-ctrl-gy-pulp-liters" data-testid="wb-ctrl-gy-pulp-liters" data-schema-output="metrology.slurrySampleLiters">0.39 L</span></div>
       <div class="embedded-res-cell"><strong>{isEs ? 'Vaso Marcy Rec.:' : 'Rec. Marcy Cup:'}</strong> <span id="wb-ctrl-res-container" data-schema-output="metrology.recommendedContainerEs">{isEs ? 'Vaso 1000 cm³ Acero Inox 304' : '1000 cm³ 304 Stainless Cup'}</span></div>
       <div class="embedded-res-cell"><strong>{isEs ? 'Bastidor ASTM:' : 'ASTM Frame:'}</strong> <span id="wb-ctrl-sieve-frame-rec" data-testid="wb-ctrl-sieve-frame-rec">{isEs ? 'Acero Inox 304/316' : '304/316 Stainless Steel'}</span></div>
@@ -255,7 +255,7 @@ const defaultMetVm = buildMetrologyViewModel(
             <th>{isEs ? '% Ret. Indiv.' : '% Indiv. Ret.'}</th>
             <th>{isEs ? '% Ret. Acum.' : '% Cum. Ret.'}</th>
             <th>{isEs ? '% Pasante' : '% Passing'}</th>
-            <th>y&apos; (RR)</th>
+            <th>{isEs ? 'Escala Tamaño' : 'Size Scale'}</th>
             <th>{isEs ? 'Masa (g) / Rol' : 'Mass (g) / Role'}</th>
           </tr>
         </thead>

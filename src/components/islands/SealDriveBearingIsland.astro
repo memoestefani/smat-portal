@@ -117,7 +117,7 @@ const stratumSimId = variant === 'seal'
               </div>
             </div>
             <div class="smat-cta-row smat-mt-sm">
-              <a href={`${isEs ? '/bombeo/' : '/en/pumping/'}?tab=${variant}`} class="btn btn-primary">
+              <a href={`${isEs ? '/bombeo/' : '/en/pumping/'}?tab=seals&sub=${variant}`} class="btn btn-primary">
                 {isEs ? 'Abrir Calibrador en Consola de Bombeo →' : 'Open Calibrator in Pumping Hub →'}
               </a>
               <a href={`${quoteBase}?circuito=bombeo&equipo=${roleLookupId}#rfq`} class="btn btn-outline">
@@ -127,11 +127,10 @@ const stratumSimId = variant === 'seal'
           </div>
 
           {variant === 'seal' && (
-            <details class="wb-progressive-drawer smat-mt-sm" id="seal-branch-comparator-drawer">
-              <summary class="wb-progressive-summary">
-                <span>{isEs ? 'Comparativa Directa Estación 02A (Seco Expeller) vs 02B (Prensaestopa Húmedo)' : 'Side-by-Side Comparison: Station 02A (Dry Expeller) vs 02B (Wet Gland)'}</span>
-                <span class="wb-step1-more-arrow">▾</span>
-              </summary>
+            <div class="smat-mt-sm" id="seal-branch-comparator-drawer">
+              <h3 class="smat-sdb-table-heading">
+                {isEs ? 'Comparativa Directa Estación 02A (Seco Expeller) vs 02B (Prensaestopa Húmedo)' : 'Side-by-Side Comparison: Station 02A (Dry Expeller) vs 02B (Wet Gland)'}
+              </h3>
               <div class="grid-2 smat-sdb-branch-grid">
                 <div class="smat-sdb-branch-card">
                   <span class="font-mono-tech smat-sdb-branch-ok">{isEs ? 'ESTACIÓN 02A — SELLADO SECO EXPELLER' : 'STATION 02A — DRY EXPELLER SEAL'}</span>
@@ -158,7 +157,7 @@ const stratumSimId = variant === 'seal'
                   </a>
                 </div>
               </div>
-            </details>
+            </div>
           )}
         </div>
 
@@ -199,11 +198,10 @@ const stratumSimId = variant === 'seal'
               </div>
             </div>
 
-            <details class="wb-progressive-drawer smat-sdb-diagram-gap" data-testid="seal-atomic-parts" id="seal-atomic-parts-drawer">
-              <summary class="wb-progressive-summary">
-                <span>{isEs ? 'Refacciones Atómicas de Sellado (DAM028 / EAM028) y Bandeja' : 'Atomic Sealing Spares (DAM028 / EAM028) & Requisition Tray'}</span>
-                <span class="wb-step1-more-arrow">▾</span>
-              </summary>
+            <div class="smat-sdb-diagram-gap" data-testid="seal-atomic-parts" id="seal-atomic-parts-drawer">
+              <h3 class="smat-sdb-table-heading">
+                {isEs ? 'Refacciones Atómicas de Sellado (DAM028 / EAM028) y Bandeja' : 'Atomic Sealing Spares (DAM028 / EAM028) & Requisition Tray'}
+              </h3>
               <div class="grid-2 smat-sdb-atomic-grid">
                 {sealParts.map((sp) => (
                   <div class="card smat-sdb-atomic-card">
@@ -228,13 +226,13 @@ const stratumSimId = variant === 'seal'
                         data-tray-category="BOMBA_SLURRY"
                         data-tray-source="seal_atomic_card"
                       >
-                        {isEs ? '+ Bandeja' : '+ Tray'}
+                        {isEs ? `+ Bandeja ${sp.part_number}` : `+ Tray ${sp.part_number}`}
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
-            </details>
+            </div>
           </>
         )}
 
@@ -243,11 +241,7 @@ const stratumSimId = variant === 'seal'
             <span id={isEs ? 'drive-arrangements' : 'arreglos-transmision'} aria-hidden="true"></span>
             <h2>{isEs ? 'Arreglos de Transmisión y Montaje (CV / ZVZ / CRZ / DC)' : 'Base Frame Drive Arrangements (CV / ZVZ / CRZ / DC)'}</h2>
             <TechnicalDiagrams diagram="drive_arrangements" lang={locale} />
-            <details class="wb-progressive-drawer smat-mt-sm" id="skid-arrangements-drawer">
-              <summary class="wb-progressive-summary">
-                <span>{isEs ? 'Ver los 4 Arreglos de Montaje (CV / ZVZ / CRZ / DC) y Cotizar por Arreglo' : 'View All 4 Mounting Arrangements (CV / ZVZ / CRZ / DC) & Quote Links'}</span>
-                <span class="wb-step1-more-arrow">▾</span>
-              </summary>
+            <div class="smat-mt-sm" id="skid-arrangements-drawer">
               <div class="grid-2 smat-sdb-arr-grid" data-drive-links="transmision=CV transmision=ZVZ transmision=CRZ transmision=DC">
                 {driveArrangements.map((arr) => (
                   <div class="card">
@@ -262,7 +256,7 @@ const stratumSimId = variant === 'seal'
                   </div>
                 ))}
               </div>
-            </details>
+            </div>
             {dc && (
               <div class="card smat-sdb-criteria-card" data-testid="role-decision-criteria">
                 <span class="font-mono-tech smat-sdb-criteria-eyebrow">{isEs ? '[CRITERIO DE DECISIÓN E INGENIERÍA]' : '[ENGINEERING DECISION CRITERIA]'}</span>

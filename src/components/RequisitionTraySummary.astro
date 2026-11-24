@@ -154,17 +154,23 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
 
     const renderTray = () => {
       const state = getTrayState();
-      const desc = computeCmuPriorityDescriptor(state);
+      const desc = computeCmuPriorityDescriptor({ ...state, lang });
       clearBtn?.classList.toggle('hidden', !state.items.length);
       if (cmuCode) {
         cmuCode.textContent = buildCmuPrioritySubjectLine(state, { cvPct: 52, material: 'Cr27', lang });
       }
       if (cmuMeta) {
-        const urgencyHuman = formatUrgencyBandHuman(state.criticalityMode, lang);
-        const laneHuman = formatCheckoutLaneHuman(desc.checkoutLane, lang);
-        cmuMeta.textContent = isEn
-          ? `${urgencyHuman} • ${laneHuman} • Response SLA: ≤ ${desc.slaResponseMinutes} min`
-          : `${urgencyHuman} • ${laneHuman} • SLA Respuesta: ≤ ${desc.slaResponseMinutes} min`;
+        if (!state.items.length) {
+          cmuMeta.textContent = isEn
+            ? 'Draft — Empty Tray • Add SKUs to assign priority & SLA'
+            : 'Borrador sin partidas • Añada SKUs para asignar prioridad y SLA';
+        } else {
+          const urgencyHuman = formatUrgencyBandHuman(state.criticalityMode, lang);
+          const laneHuman = formatCheckoutLaneHuman(desc.checkoutLane, lang);
+          cmuMeta.textContent = isEn
+            ? `${urgencyHuman} • ${laneHuman} • Response SLA: ≤ ${desc.slaResponseMinutes} min`
+            : `${urgencyHuman} • ${laneHuman} • SLA Respuesta: ≤ ${desc.slaResponseMinutes} min`;
+        }
       }
       if (!tbody) return;
       if (!state.items.length) {

@@ -250,7 +250,7 @@ test('D3-V43, D9-V43 & D10-V43: Pump assembly sequence aliases, Centrifugal Seal
   assert.equal(tribBound.spallingRiskDetected, true);
   assert.ok(tribDom.querySelector('#trib-status-out').textContent.includes('Spalling'));
 
-  // 4. Hero card mode on Filtration (#filt-res-stress + #filt-res-secondary) and Flotation (#celdas-d80-input + #celdas-cw-input)
+  // 4. Hero card mode on Filtration (#filt-res-stress + #wb-filt-res-status) and Flotation (#celdas-d80-input + #celdas-cw-input)
   const filtHeroDom = createDomMock({
     'filt-pressure-bar': '16',
     'filt-clogged-ports': '0',
@@ -259,8 +259,7 @@ test('D3-V43, D9-V43 & D10-V43: Pump assembly sequence aliases, Centrifugal Seal
     'filt-cake-moisture': '14',
     'filt-res-stress': '',
     'filt-res-fs': '',
-    'filt-res-secondary': '',
-    'filt-res-summary': '',
+    'wb-filt-res-status': '',
   });
   bindCanonicalFiltrationCalculator(filtHeroDom, 'es');
   assert.equal(
@@ -269,8 +268,8 @@ test('D3-V43, D9-V43 & D10-V43: Pump assembly sequence aliases, Centrifugal Seal
     'Hero card #filt-res-stress must stay a clean scalar value without parenthetical string-stuffing'
   );
   assert.ok(
-    filtHeroDom.querySelector('#filt-res-secondary').textContent.includes('ΔP_asim'),
-    'Secondary slot #filt-res-secondary must receive the full Darcy-Ruth + Timoshenko breakdown'
+    filtHeroDom.querySelector('#wb-filt-res-status').textContent.includes('ΔP_asim'),
+    'Canonical status slot #wb-filt-res-status must receive the full Darcy-Ruth + Timoshenko breakdown'
   );
 
   const flotFullDom = createDomMock({

@@ -61,6 +61,8 @@ export function buildTribologyAssemblyViewModel(params = {}, lang = 'es') {
     ? String(seq.collisionRiskEn || (isValidAssembly ? 'Canonical EST-01→EST-05 sequence verified (zero clash).' : 'Assembly collision risk detected.'))
     : String(seq.collisionRiskEs || (isValidAssembly ? 'Secuencia canónica EST-01→EST-05 verificada (cero colisión).' : 'Riesgo de colisión de armado detectado.'));
   const canonicalSeqText = Array.isArray(seq.canonicalSequence) ? seq.canonicalSequence.join(' → ') : 'EST-01 → EST-02 → EST-03 → EST-04 → EST-05';
+  const bomTotalCount = Array.isArray(seq.bomParts) ? seq.bomParts.length : 0;
+  const activeBranchPartsCount = Array.isArray(seq.selectedPartSpec) ? seq.selectedPartSpec.length : 0;
   const bearingServiceFactor = Number(drv.bearingServiceFactor ?? 1.5);
   const ceramicSafeTipSpeed = Boolean(drv.ceramicSafeTipSpeed ?? true);
   const arrangementName = isEn ? String(drv.arrangementNameEn || drv.arrangement || 'CV') : String(drv.arrangementNameEs || drv.arrangement || 'CV');
@@ -81,6 +83,7 @@ export function buildTribologyAssemblyViewModel(params = {}, lang = 'es') {
       { key: 'ceramicSafeTipSpeed', label: isEn ? 'SiC Tip Limit (≤28 m/s)' : 'Límite Punta SiC (≤28 m/s)', value: ceramicSafeTipSpeed ? (isEn ? 'Safe' : 'Seguro') : (isEn ? 'Exceeded' : 'Excedido') },
       { key: 'radialBeltLoadKn', label: isEn ? 'Belt Radial Load F_r' : 'Carga Radial Banda F_r', value: `${radialLoadKn.toFixed(2)} kN` },
       { key: 'hybridBomParts', label: isEn ? 'Hybrid BOM Parts' : 'Piezas BOM Híbridas', value: String(hybridPartsCount) },
+      { key: 'assemblyBomSpec', label: isEn ? '5-5-4 Branch BOM' : 'BOM Rama 5-5-4', value: bomTotalCount > 0 ? `${activeBranchPartsCount}/${bomTotalCount}` : '14' },
       { key: 'canonicalSequence', label: isEn ? 'Canonical Order' : 'Orden Canónico', value: canonicalSeqText },
     ],
     collisionAlert: {
@@ -151,4 +154,66 @@ export function buildDossierPriorityViewModel(cmuDescriptor = {}, slurryMetrics 
     priorityBadge: `${priorityCode} · cµ ${cmuScore.toFixed(1)}`,
     cmuSummary: isEn ? `Queue ${priorityCode} (cµ index ${cmuScore.toFixed(1)})` : `Cola ${priorityCode} (índice cµ ${cmuScore.toFixed(1)})`,
   };
+}
+
+/**
+ * Proyecta un ViewModel tipado (`buildTribologyAssemblyViewModel` / `buildMetrologyViewModel` /
+ * `buildBomPasteViewModel`) hacia los slots declarativos `[data-vm-slot]` dentro de `root`.
+ * Garantiza paridad reactiva SSR + cliente sin selectores fantasma (`D1-V58`, `ARB-SMAT-67`).
+ * @param {any} root
+ * @param {Record<string, any>} [vm={}]
+ */
+export function projectViewModelToDom(root, vm = {}) {
+  if (!root || typeof root.querySelectorAll !== 'function' || !vm) return 0;
+  let updated = 0;
+
+  root.querySelectorAll('[data-vm-slot]').forEach((slotEl) => {
+    const key = slotEl.getAttribute?.('data-vm-slot') || '';
+    if (!key) return;
+
+    if (key === 'technicalDetails' && Array.isArray(vm.technicalDetails)) {
+      slotEl.innerHTML = vm.technicalDetails
+        .map((d) => `<div class="embedded-res-cell"><strong>${String(d.label || '')}</strong> <span>${String(d.value ?? '—')}</span></div>`)
+        .join('');
+      updated++;
+      return;
+    }
+
+    if (key === 'primaryKpis' && Array.isArray(vm.primaryKpis)) {
+      const cells = slotEl.querySelectorAll?.('[data-vm-kpi]') || [];
+      if (cells.length > 0) {
+        cells.forEach((cell) => {
+          const kKey = cell.getAttribute?.('data-vm-kpi');
+          const match = vm.primaryKpis.find((item) => item.key === kKey);
+          if (match) {
+            cell.textContent = String(match.value ?? '—');
+            updated++;
+          }
+        });
+      } else {
+        slotEl.innerHTML = vm.primaryKpis
+          .map((item) => `<div class="instrument-kpi-cell"><strong>${String(item.label || '')}</strong><span>${String(item.value ?? '—')}</span></div>`)
+          .join('');
+        updated++;
+      }
+      return;
+    }
+
+    if (key === 'collisionAlert' && vm.collisionAlert) {
+      slotEl.textContent = String(vm.collisionAlert.text || '');
+      if (slotEl.classList) {
+        slotEl.classList.toggle('smat-sdb-status-ok', vm.collisionAlert.isValidAssembly !== false);
+        slotEl.classList.toggle('smat-sdb-bear-warn', vm.collisionAlert.isValidAssembly === false);
+      }
+      updated++;
+      return;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(vm, key) && vm[key] !== undefined && vm[key] !== null) {
+      slotEl.textContent = String(vm[key]);
+      updated++;
+    }
+  });
+
+  return updated;
 }

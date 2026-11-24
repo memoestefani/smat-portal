@@ -144,7 +144,7 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
 
             <article id={isEs ? 'filtro-batch' : 'batch-filter'} class="card control-block ctrl-hidden-tab" data-instrument-card="2">
               <div class="control-block-header">
-                <span class="badge badge-copper">{isEs ? 'MUESTREO PIERRE GY • 60–100 PSI' : 'PIERRE GY SAMPLING • 60–100 PSI'}</span>
+                <span class="badge badge-copper">{isEs ? 'MUESTREO DE LABORATORIO • 60–100 PSI' : 'LAB SAMPLE DEWATERING • 60–100 PSI'}</span>
                 <h2>{isEs ? 'Filtro de Presión Batch de Laboratorio' : 'Laboratory Batch Pressure Filter'}</h2>
                 <p class="block-lead">
                   {isEs
@@ -155,7 +155,7 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
               <TechnicalDiagrams diagram="batch_filter" lang={lang} />
               <div class="specs-strip">
                 <div><strong>{isEs ? 'Presión:' : 'Pressure:'}</strong> 60–100 psi neumáticos</div>
-                <div><strong>{isEs ? 'Criterio:' : 'Basis:'}</strong> Teoría de Muestreo Pierre Gy</div>
+                <div><strong>{isEs ? 'Criterio:' : 'Basis:'}</strong> {isEs ? 'Masa mínima representativa para muestreo confiable' : 'Minimum representative sample mass standard'}</div>
                 {batchRole?.decision_criteria && (
                   <div><strong>{isEs ? 'Regla:' : 'Rule:'}</strong> {isEs ? batchRole.decision_criteria.metallurgy_rule_es : batchRole.decision_criteria.metallurgy_rule_en}</div>
                 )}
@@ -309,8 +309,8 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
     const liveBanner = root.querySelector('#wb-ctrl-live-metrics');
     if (liveBanner) {
       liveBanner.textContent = isEn
-        ? `Marcy Ss=${marcy.solidsSpecificGravity} · Cw=${marcy.solidsWeightPercent}% · ρp=${marcy.pulpDensityKgL} kg/L | Pierre Gy Ms=${gy.minDrySampleKg} kg (${gy.batchFilterCycles} cycle(s) @ ${gy.recommendedAirPressurePsi}) | Control Mesh ${sieveStack.primaryControlMesh} (n=${sieveStack.rosinRammlerSlopeN}, y'=${sieveStack.rosinRammlerY})`
-        : `Marcy Ss=${marcy.solidsSpecificGravity} · Cw=${marcy.solidsWeightPercent}% · ρp=${marcy.pulpDensityKgL} kg/L | Pierre Gy Ms=${gy.minDrySampleKg} kg (${gy.batchFilterCycles} ciclo(s) @ ${gy.recommendedAirPressurePsi}) | Tamiz Control ${sieveStack.primaryControlMesh} (n=${sieveStack.rosinRammlerSlopeN}, y'=${sieveStack.rosinRammlerY})`;
+        ? `Marcy Ss=${marcy.solidsSpecificGravity} · Cw=${marcy.solidsWeightPercent}% · ρp=${marcy.pulpDensityKgL} kg/L | Min. Sample ${gy.minDrySampleKg} kg (${gy.batchFilterCycles} cycle(s) @ ${gy.recommendedAirPressurePsi}) | Control Mesh ${sieveStack.primaryControlMesh} (Uniformity n=${sieveStack.rosinRammlerSlopeN})`
+        : `Marcy Ss=${marcy.solidsSpecificGravity} · Cw=${marcy.solidsWeightPercent}% · ρp=${marcy.pulpDensityKgL} kg/L | Muestra mín. ${gy.minDrySampleKg} kg (${gy.batchFilterCycles} ciclo(s) @ ${gy.recommendedAirPressurePsi}) | Tamiz Control ${sieveStack.primaryControlMesh} (Uniformidad n=${sieveStack.rosinRammlerSlopeN})`;
     }
     const pulpEl = root.querySelector('#wb-ctrl-gy-pulp-liters');
     if (pulpEl) pulpEl.textContent = `${gy.wetPulpVolumeLiters ?? gy.requiredPulpLiters ?? 0.39} L`;

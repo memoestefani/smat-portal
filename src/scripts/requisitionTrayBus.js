@@ -245,8 +245,13 @@ export function clearTray() {
  */
 export function buildCmuPrioritySubjectLine(trayState = {}, telemetry = {}) {
   const state = getTrayState(trayState);
-  const skuCount = Math.max(1, state.items.length);
   const isEn = String(telemetry?.lang || (typeof document !== 'undefined' ? document.documentElement?.lang : '') || '').toLowerCase() === 'en';
+  if (!state.items.length) {
+    return isEn
+      ? '[SMAT-DGO] [DRAFT — NO ACTIVE ITEMS | Add SKUs or paste BOM]'
+      : '[SMAT-DGO] [BORRADOR — SIN PARTIDAS | Agregue SKUs o pegue lista BOM]';
+  }
+  const skuCount = state.items.length;
   const isLineStop = state.criticalityMode === 'PARO_DE_LINEA' || state.items.some((i) => i.criticalityMode === 'PARO_DE_LINEA');
   const modeTag = isLineStop
     ? (isEn ? 'LINE-STOP' : 'PARO DE LÍNEA')
@@ -399,6 +404,28 @@ export function hydrateTrayFromReorderQuery(searchString = '') {
  * @returns {any}
  */
 export function computeCmuPriorityDescriptor(params = {}) {
+  const isEn = String(params.lang || '').toLowerCase() === 'en';
+  if (!params.urgency && Array.isArray(params.items) && params.items.length === 0) {
+    const labelEs = 'Borrador Técnico • Sin partidas activas';
+    const labelEn = 'Technical Draft • No active items';
+    const lane = formatCheckoutLaneHuman('ORDEN_COMPRA_SAP', 'es');
+    const laneEn = formatCheckoutLaneHuman('ORDEN_COMPRA_SAP', 'en');
+    return {
+      priorityCode: isEn ? 'DRAFT' : 'BORRADOR',
+      cmuScore: 0,
+      priorityRankScore: 0,
+      checkoutLane: 'ORDEN_COMPRA_SAP',
+      checkoutLaneLabelEs: lane,
+      checkoutLaneLabelEn: laneEn,
+      stockRegime: 'hay',
+      advancePaymentPct: 0,
+      slaResponseMinutes: 0,
+      labelEs,
+      labelEn,
+      priorityLabelEs: labelEs,
+      priorityLabelEn: labelEn
+    };
+  }
   const hasTrayShape = Array.isArray(params.items) || typeof params.criticalityMode === 'string';
   const rawUrgency = params.urgency || (hasTrayShape && params.criticalityMode === 'PARO_DE_LINEA' ? 'paro_de_linea' : 'normal');
   const urgency = String(rawUrgency).toLowerCase();
@@ -414,7 +441,7 @@ export function computeCmuPriorityDescriptor(params = {}) {
     const labelEs = 'P1 · PARO DE LÍNEA (Atención Ingeniería < 15 min)';
     const labelEn = 'P1 · LINE DOWNTIME (Engineering SLA < 15 min)';
     return {
-      priorityCode: 'P1-PARO-PLANTA',
+      priorityCode: isEn ? 'P1-LINE-STOP' : 'P1-PARO-PLANTA',
       cmuScore: 98.5,
       priorityRankScore: 4800,
       checkoutLane,

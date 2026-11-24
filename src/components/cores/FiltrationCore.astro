@@ -42,9 +42,6 @@ const defaultPlateWidth = variant === 'press' ? '1500' : '1200';
       <span id="filt-nom141-badge" class="smat-badge-emerald">
         {isEs ? 'NOM-141 Humedad OK (14% ≤ 16%)' : 'NOM-141 Moisture OK (14% ≤ 16%)'}
       </span>
-      <span id="filt-shifter-sku-badge" class="smat-badge-solar">
-        SMAT-FILT-SHIFTER-CHAIN
-      </span>
     </div>
   </div>
 
@@ -158,6 +155,7 @@ const defaultPlateWidth = variant === 'press' ? '1500' : '1200';
     <div class="embedded-filt-res smat-stratum1-display font-mono-tech">
       <div class="embedded-res-cell"><strong>{isEs ? 'Desglose Ciclo:' : 'Cycle Timing:'}</strong> <span id="wb-filt-res-cycle-min" data-testid="wb-filt-res-cycle-min">{isEs ? 'Filtrado 18.0 min + Descarga 12 min = 30.0 min' : 'Filtration 18.0 min + Turnaround 12 min = 30.0 min'}</span></div>
       <div class="embedded-res-cell"><strong>{isEs ? 'ΔP Asimétrica / Fatiga:' : 'Asymmetric ΔP / Fatigue:'}</strong> <span id="wb-filt-res-asym-dp" data-testid="wb-filt-res-asym-dp">ΔP = 0.00 MPa | σ_adm,PP = 14.5 MPa</span></div>
+      <div class="embedded-res-cell"><strong>{isEs ? 'Resumen Operativo:' : 'Operating Summary:'}</strong> <span id="wb-filt-res-status" data-testid="wb-filt-res-status">{isEs ? 'Cumple NOM-141 · Ciclo estable Darcy-Ruth / Timoshenko' : 'NOM-141 OK · Stable Darcy-Ruth / Timoshenko cycle'}</span></div>
     </div>
     {showVerticalActions && (
       <div class="smat-cta-row smat-mt-sm">
