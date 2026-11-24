@@ -224,27 +224,44 @@ export function getQuickProductsCatalog() {
     const configOptionsEs = Array.isArray(sku.config_options_es) && sku.config_options_es.length > 0
       ? sku.config_options_es
       : materials.map((mat) => ({
-          value: mat,
-          label: `${mat} — ${(MATERIAL_DISPLAY_LABELS[mat]?.es) || mat} · (${defaultDimEs.split('|')[0].trim()})`
-        }));
+        value: mat,
+        label: `${mat} — ${(MATERIAL_DISPLAY_LABELS[mat]?.es) || mat} · (${defaultDimEs.split('|')[0].trim()})`
+      }));
     const configOptionsEn = Array.isArray(sku.config_options_en) && sku.config_options_en.length > 0
       ? sku.config_options_en
       : materials.map((mat) => ({
-          value: mat,
-          label: `${mat} — ${(MATERIAL_DISPLAY_LABELS[mat]?.en) || mat} · (${defaultDimEn.split('|')[0].trim()})`
-        }));
+        value: mat,
+        label: `${mat} — ${(MATERIAL_DISPLAY_LABELS[mat]?.en) || mat} · (${defaultDimEn.split('|')[0].trim()})`
+      }));
     return {
       ...sku,
       id: sku.id || sku.sku_id,
       sku_id: sku.sku_id || sku.id,
       atomic_codes: resolvedCodes,
       linked_atomic_codes: resolvedCodes,
+      gallery_webp: Array.isArray(sku.gallery_webp) && sku.gallery_webp.length > 0
+        ? sku.gallery_webp
+        : [{ slot: 'primary', src: sku.photo_webp || `/images/productos/${sku.slug_es}.webp`, caption_es: sku.title_es, caption_en: sku.title_en }],
       config_options_es: configOptionsEs,
       config_options_en: configOptionsEn,
       regimeMeta,
       avenueMeta
     };
   });
+}
+
+/**
+ * Dado un código atómico (`d4018` o `D4018`), devuelve el SKU padre canónico de bombeo que lo cubre.
+ */
+export function resolveParentSkuForAtomicCode(codeOrPartNumber) {
+  const upper = String(codeOrPartNumber || '').trim().toUpperCase();
+  if (!upper) return null;
+  const catalog = getQuickProductsCatalog();
+  return (
+    catalog.find((sku) =>
+      (sku.linked_atomic_codes || []).some((code) => String(code).toUpperCase() === upper)
+    ) || catalog[0]
+  );
 }
 
 const LEGACY_SLUG_TO_CANONICAL_SKU = Object.freeze({

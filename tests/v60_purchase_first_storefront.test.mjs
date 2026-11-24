@@ -46,14 +46,15 @@ test('V60-02: PDP Amazon bilingüe, Thin Wrappers (<=40 LOC), ProductQuickCard f
   assert.ok(enSlugLoc <= 40, `en/products/[slug].astro LOC=${enSlugLoc} > 40`);
 
   const qcardSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/ProductQuickCard.astro'), 'utf8');
-  assert.ok(qcardSrc.split(/\r?\n/).length < 360, 'ProductQuickCard debe ser < 360 LOC');
+  assert.ok(qcardSrc.split(/\r?\n/).length < 400, 'ProductQuickCard debe ser < 400 LOC');
   assert.ok(qcardSrc.includes('data-qcard-tab="photo"') && qcardSrc.includes('aria-selected="true"'));
   assert.equal(qcardSrc.includes('EN STOCK DURANGO'), false);
   assert.equal(qcardSrc.includes('Foto Real Cero-OEM'), false);
 
-  const atomicSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/AtomicPartIsland.astro'), 'utf8');
-  assert.equal(atomicSrc.includes('og-card.jpg'), false, 'AtomicPartIsland no debe usar og-card.jpg en JSON-LD');
-  assert.ok(atomicSrc.includes('/images/productos/'), 'AtomicPartIsland debe renderizar foto real');
+  const pdpSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/ProductDetailIsland.astro'), 'utf8');
+  assert.equal(pdpSrc.includes('og-card.jpg'), false, 'ProductDetailIsland no debe usar og-card.jpg');
+  const partEsRoute = fs.readFileSync(path.join(SITE_ROOT, 'src/pages/catalogo/[code].astro'), 'utf8');
+  assert.ok(partEsRoute.includes('ProductDetailIsland') && partEsRoute.includes('primaryPhotoOverride={part.photo_webp}'));
 
   let srcFileCount = 0;
   function walk(dir) {

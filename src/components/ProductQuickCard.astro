@@ -25,6 +25,13 @@ interface ConfigOption {
   label: string;
 }
 
+interface GallerySlideSpec {
+  slot: string;
+  src: string;
+  caption_es?: string;
+  caption_en?: string;
+}
+
 interface Props {
   sku: {
     id: string;
@@ -35,6 +42,7 @@ interface Props {
     diagram_id: string;
     secondary_diagram_id?: string;
     photo_webp?: string;
+    gallery_webp?: GallerySlideSpec[];
     default_material: string;
     available_materials?: string[];
     config_options_es?: ConfigOption[];
@@ -53,12 +61,31 @@ interface Props {
   };
   lang?: 'es' | 'en';
   mode?: 'card' | 'media-only';
+  primaryPhotoOverride?: string;
 }
 
-const { sku, lang = 'es', mode = 'card' } = Astro.props;
+const { sku, lang = 'es', mode = 'card', primaryPhotoOverride = '' } = Astro.props;
 const isMediaOnly = mode === 'media-only';
 const isEs = lang === 'es';
-const photoUrl = sku.photo_webp || `/images/productos/${sku.slug_es}.webp`;
+const photoUrl = primaryPhotoOverride || sku.photo_webp || `/images/productos/${sku.slug_es}.webp`;
+const baseGallery: GallerySlideSpec[] = Array.isArray(sku.gallery_webp) && sku.gallery_webp.length > 0
+  ? sku.gallery_webp
+  : [{ slot: 'primary', src: sku.photo_webp || `/images/productos/${sku.slug_es}.webp`, caption_es: sku.title_es, caption_en: sku.title_en }];
+const mergedSlides: Array<{ tabKey: string; src: string; caption: string }> = [];
+const seenSrc = new Set<string>();
+const addSlide = (src: string, caption: string) => {
+  if (!src || seenSrc.has(src)) return;
+  seenSrc.add(src);
+  const tabKey = mergedSlides.length === 0 ? 'photo' : `photo-${mergedSlides.length}`;
+  mergedSlides.push({ tabKey, src, caption });
+};
+if (primaryPhotoOverride) {
+  addSlide(primaryPhotoOverride, isEs ? `Fotografía real · ${sku.title_es}` : `Real part photo · ${sku.title_en}`);
+}
+for (const g of baseGallery) {
+  addSlide(g.src, String((isEs ? g.caption_es : g.caption_en) || (isEs ? sku.title_es : sku.title_en)));
+}
+const photoSlides = mergedSlides.length > 0 ? mergedSlides : [{ tabKey: 'photo', src: photoUrl, caption: isEs ? sku.title_es : sku.title_en }];
 const atomicSheetMap = new Map(
   (atomicPartsCatalog as Array<{ part_number?: string; code?: string }>).map((part) => [
     String(part.part_number || '').toUpperCase(),
@@ -99,12 +126,12 @@ const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waTe
   data-kit-id={String(sku.kit_id || 1)}
   data-gate-lock={sku.gate_lock || 'G1'}
 >
-  <div class="smat-qcard-stage smat-qcard-stage-ratio">
-    <!-- Panel 1 (Por Defecto V6.0): Fotografía real limpia full-bleed -->
+  <div class="smat-qcard-stage smat-qcard-stage-ratio" data-qcard-media-only={isMediaOnly ? '1' : '0'}>
+    {/* Slide 0 literal por invariante smat-gate V6/V7 + slides multiángulo adicionales */}
     <div data-qcard-panel="photo" class="smat-qcard-panel smat-qcard-panel--photo">
       <img
-        src={photoUrl}
-        alt={skuTitle}
+        src={photoSlides[0].src}
+        alt={photoSlides[0].caption || skuTitle}
         width="640"
         height="480"
         loading={isMediaOnly ? 'eager' : 'lazy'}
@@ -113,15 +140,28 @@ const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waTe
         class="smat-qcard-photo"
       />
     </div>
+    {photoSlides.slice(1).map((slide) => (
+      <div data-qcard-panel={slide.tabKey} class="smat-qcard-panel smat-qcard-panel--photo hidden" hidden>
+        <img
+          src={slide.src}
+          alt={slide.caption || skuTitle}
+          width="640"
+          height="480"
+          loading="lazy"
+          decoding="async"
+          class="smat-qcard-photo"
+        />
+      </div>
+    ))}
 
-    <!-- Panel 2 (Secundario): Diagrama técnico 2D -->
+    <!-- Diagrama técnico 2D -->
     <div data-qcard-panel="cad" class="smat-qcard-panel hidden" hidden>
       <div class="smat-qcard-diagram-wrap">
         <TechnicalDiagrams diagram={sku.diagram_id} lang={lang} showXrayOverlay={false} showXrayLegend={false} />
       </div>
     </div>
 
-    <!-- Panel 3 (Terciario): Escala cotidiana 0.76 mm y desgaste 5:5:4 -->
+    <!-- Escala cotidiana 0.76 mm y desgaste 5:5:4 -->
     <div data-qcard-panel="xray" class="smat-qcard-panel hidden" hidden>
       <div class="smat-qcard-scale-box" data-xray-overlay-legend={sku.id} data-diagram-id={sku.diagram_id}>
         <strong class="smat-qcard-scale-title">
@@ -136,23 +176,78 @@ const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waTe
     </div>
   </div>
 
-  <!-- Pestañas debajo de la galería (estilo Amazon gallery thumbnails) -->
+  <!-- Miniaturas cuadradas 48x48 debajo del visor (Estilo Amazon) -->
   <div class="smat-qcard-header">
-    <div class="smat-qcard-tablist" role="tablist" aria-label={isEs ? 'Vistas del producto' : 'Product views'}>
-      <button type="button" role="tab" aria-selected="true" data-qcard-tab="photo" class="qcard-tab-btn is-active">
-        {isEs ? 'Foto real de almacén' : 'Warehouse Photo'}
+    <div class="smat-qcard-tablist smat-qcard-thumbs-row" role="tablist" aria-label={isEs ? 'Vistas y galería del producto' : 'Product gallery and technical views'}>
+      <button
+        type="button"
+        role="tab"
+        aria-selected="true"
+        data-qcard-tab="photo"
+        aria-label={photoSlides[0].caption || (isEs ? 'Vista principal' : 'Primary view')}
+        title={photoSlides[0].caption}
+        class="qcard-tab-btn qcard-thumb-btn is-active"
+      >
+        <img
+          src={photoSlides[0].src}
+          alt=""
+          width="48"
+          height="48"
+          loading="lazy"
+          decoding="async"
+          class="smat-qcard-thumb-img"
+        />
       </button>
-      <button type="button" role="tab" aria-selected="false" data-qcard-tab="cad" class="qcard-tab-btn">
-        {isEs ? 'Diagrama técnico' : 'Technical Diagram'}
+      {photoSlides.slice(1).map((slide, idx) => (
+        <button
+          type="button"
+          role="tab"
+          aria-selected="false"
+          data-qcard-tab={slide.tabKey}
+          aria-label={slide.caption || (isEs ? `Vista ${idx + 2}` : `View ${idx + 2}`)}
+          title={slide.caption}
+          class="qcard-tab-btn qcard-thumb-btn"
+        >
+          <img
+            src={slide.src}
+            alt=""
+            width="48"
+            height="48"
+            loading="lazy"
+            decoding="async"
+            class="smat-qcard-thumb-img"
+          />
+        </button>
+      ))}
+      <button
+        type="button"
+        role="tab"
+        aria-selected="false"
+        data-qcard-tab="cad"
+        aria-label={isEs ? 'Diagrama técnico' : 'Technical Diagram'}
+        title={isEs ? 'Diagrama técnico 2D' : '2D Technical Diagram'}
+        class="qcard-tab-btn qcard-thumb-btn qcard-thumb-btn--spec"
+      >
+        <span>CAD</span>
       </button>
-      <button type="button" role="tab" aria-selected="false" data-qcard-tab="xray" class="qcard-tab-btn">
-        {isEs ? 'Medidas A-B-C' : 'Dimensions A-B-C'}
+      <button
+        type="button"
+        role="tab"
+        aria-selected="false"
+        data-qcard-tab="xray"
+        aria-label={isEs ? 'Medidas A-B-C' : 'Dimensions A-B-C'}
+        title={isEs ? 'Medidas A-B-C y tolerancia' : 'A-B-C Dimensions & Tolerance'}
+        class="qcard-tab-btn qcard-thumb-btn qcard-thumb-btn--spec"
+      >
+        <span>A·B·C</span>
       </button>
     </div>
 
-    <span class={`smat-sf-badge smat-sf-badge--${avail.tone}`}>
-      {avail.label}
-    </span>
+    {!isMediaOnly && (
+      <span class={`smat-sf-badge smat-sf-badge--${avail.tone}`}>
+        {avail.label}
+      </span>
+    )}
   </div>
 
   <div class="smat-qcard-footer">
@@ -273,9 +368,11 @@ const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waTe
   .smat-qcard-scale-box { padding: 1.25rem; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; font-size: 0.88rem; color: #0f172a; display: grid; gap: 0.5rem; max-width: 92%; }
   .smat-qcard-scale-title { color: #7c2d12; font-size: 0.95rem; }
   .smat-qcard-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.6rem 0.9rem; background: #f8fafc; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
-  .smat-qcard-tablist { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
-  .qcard-tab-btn { min-height: 48px; min-width: 48px; padding: 0.35rem 0.75rem; border-radius: 8px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
-  .qcard-tab-btn.is-active { border-color: #92400e; background: #fef3c7; color: #78350f; }
+  .smat-qcard-thumbs-row { display: flex; flex-wrap: nowrap; align-items: center; gap: 0.45rem; overflow-x: auto; scrollbar-width: thin; }
+  .qcard-tab-btn { width: 52px; height: 52px; min-height: 48px; min-width: 48px; flex: 0 0 auto; padding: 2px; border-radius: 8px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; font-size: 0.68rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+  .qcard-tab-btn.is-active { border: 2px solid #92400e; background: #fef3c7; color: #78350f; }
+  .smat-qcard-thumb-img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; display: block; }
+  @media (max-width: 767px) { .smat-qcard-stage-ratio[data-qcard-media-only="1"] { max-height: 280px; } }
   .smat-qcard-footer { padding: 0.8rem 0.95rem; background: #ffffff; }
   .smat-qcard-footer-row { display: flex; flex-direction: column; gap: 0.7rem; }
   @media (min-width: 768px) { .smat-qcard-footer-row { flex-direction: row; align-items: center; justify-content: space-between; } }

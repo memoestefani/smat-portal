@@ -114,12 +114,12 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
   tribology: {
     id: 'tribology',
     rootSelector: '[data-domain-root="tribology"]',
-    islandComponent: 'TribologyAlloyIsland.astro',
+    islandComponent: 'PumpingHubIsland.astro',
     conceptRefs: ['metallurgy', 'hybrid_a05_r55', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-16', 'ARB-SMAT-44', 'ARB-SMAT-58', 'ARB-SMAT-59'],
-    routes: ['/bombeo/', '/en/pumping/', '/bombeo/impulsor/', '/en/pumping/impeller/', '/bombeo/revestimientos/', '/en/pumping/liners/'],
+    routes: ['/bombeo/', '/en/pumping/'],
     interactiveRoutes: ['/bombeo/', '/en/pumping/'],
-    readonlyRoutes: ['/bombeo/impulsor/', '/en/pumping/impeller/', '/bombeo/revestimientos/', '/en/pumping/liners/'],
+    readonlyRoutes: [],
     inputsSchema: [
       { field: 'tribologyMaterial', type: 'enum', defaultValue: 'alto_cromo_cr27', sobolTier: 1, sobolSensitivityScore: 0.48, domBinding: '#trib-mat-select', schemaKey: 'tribology.tribologyMaterial', aliasBindings: ['[data-schema-input="tribology.tribologyMaterial"]'] },
       { field: 'frontClearanceMm', type: 'number', min: 0.2, max: 6.0, defaultValue: 0.75, sobolTier: 1, sobolSensitivityScore: 0.27, domBinding: '#trib-clearance-mm', schemaKey: 'tribology.frontClearanceMm', aliasBindings: ['[data-schema-input="tribology.frontClearanceMm"]'] },
@@ -153,12 +153,12 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
   sealDrive: {
     id: 'sealDrive',
     rootSelector: '[data-domain-root="sealDrive"]',
-    islandComponent: 'SealDriveBearingIsland.astro',
+    islandComponent: 'PumpingHubIsland.astro',
     conceptRefs: ['atomic_parts_13', 'role_id', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-14', 'ARB-SMAT-15', 'ARB-SMAT-56', 'ARB-SMAT-59'],
-    routes: ['/bombeo/', '/en/pumping/', '/bombeo/sello/', '/en/pumping/seal/', '/bombeo/skid/', '/en/pumping/skid/', '/bombeo/soporte/', '/en/pumping/bearing-assembly/'],
+    routes: ['/bombeo/', '/en/pumping/'],
     interactiveRoutes: ['/bombeo/', '/en/pumping/'],
-    readonlyRoutes: ['/bombeo/sello/', '/en/pumping/seal/', '/bombeo/skid/', '/en/pumping/skid/', '/bombeo/soporte/', '/en/pumping/bearing-assembly/'],
+    readonlyRoutes: [],
     inputsSchema: [
       { field: 'dischargeHeadM', type: 'number', min: 5, max: 110, defaultValue: 28, sobolTier: 1, sobolSensitivityScore: 0.34, domBinding: '#seal-hd-m', schemaKey: 'sealDrive.dischargeHeadM', aliasBindings: ['[data-schema-input="sealDrive.dischargeHeadM"]'] },
       { field: 'suctionHeadM', type: 'number', min: 0, max: 25, defaultValue: 3.2, sobolTier: 1, sobolSensitivityScore: 0.39, domBinding: '#seal-hs-m', schemaKey: 'sealDrive.suctionHeadM', aliasBindings: ['[data-schema-input="sealDrive.suctionHeadM"]'] },
@@ -205,9 +205,9 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     islandComponent: 'FlotationCalculatorIsland.astro',
     conceptRefs: ['circuits', 'decision_criteria', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-28', 'ARB-SMAT-30', 'ARB-SMAT-58', 'ARB-SMAT-59'],
-    routes: ['/flotacion/', '/en/flotation/', '/flotacion/celdas/', '/en/flotation/cells/', '/flotacion/mecanismos/', '/en/flotation/mechanisms/'],
+    routes: ['/flotacion/', '/en/flotation/'],
     interactiveRoutes: ['/flotacion/', '/en/flotation/'],
-    readonlyRoutes: ['/flotacion/celdas/', '/en/flotation/cells/', '/flotacion/mecanismos/', '/en/flotation/mechanisms/'],
+    readonlyRoutes: [],
     inputsSchema: [
       { field: 'jgCmS', type: 'number', min: 0.5, max: 3.5, defaultValue: 1.5, sobolTier: 1, sobolSensitivityScore: 0.41, domBinding: '#wb-flot-jg', schemaKey: 'flotation.jgCmS', aliasBindings: ['[data-schema-input="flotation.jgCmS"]'] },
       { field: 'd32Mm', type: 'number', min: 0.8, max: 3.0, defaultValue: 1.6, sobolTier: 1, sobolSensitivityScore: 0.36, domBinding: '#wb-flot-d32', schemaKey: 'flotation.d32Mm', aliasBindings: ['[data-schema-input="flotation.d32Mm"]'] },
@@ -236,9 +236,9 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     islandComponent: 'FiltrationCalculatorIsland.astro',
     conceptRefs: ['circuits', 'decision_criteria', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-26', 'ARB-SMAT-51', 'ARB-SMAT-58', 'ARB-SMAT-59'],
-    routes: ['/filtracion/', '/en/filtration/', '/filtracion/prensa/', '/en/filtration/press/', '/filtracion/repuestos/', '/en/filtration/parts/'],
+    routes: ['/filtracion/', '/en/filtration/'],
     interactiveRoutes: ['/filtracion/', '/en/filtration/'],
-    readonlyRoutes: ['/filtracion/prensa/', '/en/filtration/press/', '/filtracion/repuestos/', '/en/filtration/parts/'],
+    readonlyRoutes: [],
     inputsSchema: [
       { field: 'plateWidthMm', type: 'number', min: 630, max: 2000, defaultValue: 1200, sobolTier: 1, sobolSensitivityScore: 0.34, domBinding: '#filt-plate-width', schemaKey: 'filtration.plateWidthMm', aliasBindings: ['[data-schema-input="filtration.plateWidthMm"]'] },
       { field: 'feedPressureBar', type: 'number', min: 4, max: 25, defaultValue: 12, sobolTier: 1, sobolSensitivityScore: 0.28, domBinding: '#wb-filt-pressure', schemaKey: 'filtration.feedPressureBar', aliasBindings: ['[data-schema-input="filtration.feedPressureBar"]'] },
@@ -353,9 +353,9 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     islandComponent: 'CatalogFacetedIsland.astro',
     conceptRefs: ['quick_checkout_skus', 'atomic_parts_13', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-35', 'ARB-SMAT-55', 'ARB-SMAT-58', 'ARB-SMAT-59'],
-    routes: ['/', '/en/', '/catalogo/', '/en/catalog/', '/equipos/', '/en/process-equipment/'],
+    routes: ['/', '/en/', '/catalogo/', '/en/catalog/'],
     interactiveRoutes: ['/catalogo/', '/en/catalog/'],
-    readonlyRoutes: ['/', '/en/', '/equipos/', '/en/process-equipment/'],
+    readonlyRoutes: ['/', '/en/'],
     inputsSchema: [
       { field: 'avenueFilter', type: 'enum', defaultValue: 'all', sobolTier: 1, sobolSensitivityScore: 0.40, domBinding: '[data-facet-avenue-btn]', schemaKey: 'catalogFacet.avenueFilter', aliasBindings: ['[data-schema-input="catalogFacet.avenueFilter"]'] },
       { field: 'verticalFilter', type: 'enum', defaultValue: 'all', sobolTier: 1, sobolSensitivityScore: 0.35, domBinding: '[data-family-chip]', schemaKey: 'catalogFacet.verticalFilter', aliasBindings: ['[data-schema-input="catalogFacet.verticalFilter"]'] },
@@ -374,8 +374,8 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     islandComponent: 'CatalogFacetedIsland.astro',
     conceptRefs: ['quick_checkout_skus', 'workbench_lens_v2', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-27', 'ARB-SMAT-39', 'ARB-SMAT-58', 'ARB-SMAT-59'],
-    routes: ['/', '/en/', '/catalogo/', '/en/catalog/', '/equipos/', '/en/process-equipment/'],
-    interactiveRoutes: ['/', '/en/', '/catalogo/', '/en/catalog/', '/equipos/', '/en/process-equipment/'],
+    routes: ['/', '/en/', '/catalogo/', '/en/catalog/'],
+    interactiveRoutes: ['/', '/en/', '/catalogo/', '/en/catalog/'],
     readonlyRoutes: [],
     inputsSchema: [
       { field: 'rawPartQuery', type: 'string', defaultValue: '', sobolTier: 1, sobolSensitivityScore: 0.90, domBinding: '[data-dropin-input]', schemaKey: 'dropIn.rawPartQuery', aliasBindings: ['[data-schema-input="dropIn.rawPartQuery"]'] }
@@ -392,7 +392,7 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
   jrp: {
     id: 'jrp',
     rootSelector: '[data-domain-root="jrp"]',
-    islandComponent: 'AtomicPartIsland.astro',
+    islandComponent: 'ProductDetailIsland.astro',
     conceptRefs: ['workbench_lens_v2', 'print_receipt', 'atomic_parts_13', 'engine_schema_v50', 'engine_schema_v51'],
     arbitrageRefs: ['ARB-SMAT-43', 'ARB-SMAT-56', 'ARB-SMAT-58', 'ARB-SMAT-59'],
     routes: ['/catalogo/[code]/', '/en/catalog/[code]/', '/productos/[slug]/', '/en/products/[slug]/', '/cotizar/', '/en/quote/', '/acuse/', '/en/thank-you/'],

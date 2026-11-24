@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import AtomicPartIsland from '../../components/islands/AtomicPartIsland.astro';
+import ProductDetailIsland from '../../components/islands/ProductDetailIsland.astro';
 import atomicParts from '../../../data/atomic_parts.json';
+import { resolveParentSkuForAtomicCode } from '../../scripts/quickProductsCatalog.js';
 
 export function getStaticPaths() {
   return atomicParts.map((part) => ({
@@ -11,11 +12,18 @@ export function getStaticPaths() {
 }
 
 const { part, routeSlug, altEnSlug } = Astro.props;
+const parentSku = resolveParentSkuForAtomicCode(part.part_number || part.code);
 const canonicalPath = `/catalogo/${routeSlug || part.code}/`;
 const title = `${part.part_number} — ${part.name_es} | SMAT Minerals`;
 const description = `Refacción ${part.part_number}: ${part.type_es} en aleación ${part.metallurgy} (${part.hardness}). Despacho directo desde Almacén Central Durango.`;
 ---
 
 <BaseLayout title={title} description={description} lang="es" canonicalPath={canonicalPath} alternateEsPath={canonicalPath} alternateEnPath={`/en/catalog/${altEnSlug || part.code}/`}>
-  <AtomicPartIsland locale="es" part={part} routeSlug={routeSlug} />
+  <ProductDetailIsland
+    sku={parentSku}
+    lang="es"
+    canonicalSlug={routeSlug}
+    atomicPart={part}
+    primaryPhotoOverride={part.photo_webp}
+  />
 </BaseLayout>

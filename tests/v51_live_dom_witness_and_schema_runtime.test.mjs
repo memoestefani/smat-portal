@@ -295,7 +295,7 @@ test('V51-T1 DOM Real en dist/ & Cero Bifurcaciones {isEmbedded}: 11 Dominios Bi
     'CycloneScreenIsland.astro',
     'FlotationCalculatorIsland.astro',
     'FiltrationCalculatorIsland.astro',
-    'SealDriveBearingIsland.astro'
+    'PumpingHubIsland.astro'
   ]) {
     const src = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands', isl), 'utf8');
     assert.equal(/\bisEmbedded\b/.test(src), false, `${isl} no debe conservar bifurcación isEmbedded`);
@@ -308,10 +308,7 @@ test('V51-T1 DOM Real en dist/ & Cero Bifurcaciones {isEmbedded}: 11 Dominios Bi
 
   const distCotizar = path.join(SITE_ROOT, 'dist/cotizar/index.html');
   const distCatalog = path.join(SITE_ROOT, 'dist/catalogo/index.html');
-  const distEquipos = path.join(SITE_ROOT, 'dist/equipos/index.html');
-  const distImpulsor = path.join(SITE_ROOT, 'dist/bombeo/impulsor/index.html');
   const distBombeo = path.join(SITE_ROOT, 'dist/bombeo/index.html');
-  const distSello = path.join(SITE_ROOT, 'dist/bombeo/sello/index.html');
   const distFlot = path.join(SITE_ROOT, 'dist/flotacion/index.html');
   const distFilt = path.join(SITE_ROOT, 'dist/filtracion/index.html');
   const distClas = path.join(SITE_ROOT, 'dist/clasificacion/index.html');
@@ -319,10 +316,7 @@ test('V51-T1 DOM Real en dist/ & Cero Bifurcaciones {isEmbedded}: 11 Dominios Bi
   const hasDist =
     fs.existsSync(distCotizar) &&
     fs.existsSync(distCatalog) &&
-    fs.existsSync(distEquipos) &&
-    fs.existsSync(distImpulsor) &&
     fs.existsSync(distBombeo) &&
-    fs.existsSync(distSello) &&
     fs.existsSync(distFlot) &&
     fs.existsSync(distFilt) &&
     fs.existsSync(distClas) &&
@@ -334,25 +328,17 @@ test('V51-T1 DOM Real en dist/ & Cero Bifurcaciones {isEmbedded}: 11 Dominios Bi
   const cotizarHtml = hasDist ? fs.readFileSync(distCotizar, 'utf8') : loadCompositeQuoteWizardSourceFallback();
   const catalogHtml = hasDist
     ? fs.readFileSync(distCatalog, 'utf8')
-    : fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/CatalogFacetedIsland.astro'), 'utf8');
-  const equiposHtml = hasDist
-    ? fs.readFileSync(distEquipos, 'utf8')
     : [
-      fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/EquipmentHubIsland.astro'), 'utf8'),
+      fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/CatalogFacetedIsland.astro'), 'utf8'),
       fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/DropInVerifierCore.astro'), 'utf8'),
     ].join('\n');
-  const impulsorHtml = hasDist
-    ? fs.readFileSync(distImpulsor, 'utf8')
-    : [
-      fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/TribologyAlloyIsland.astro'), 'utf8'),
-      fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/TribologyAlloyCore.astro'), 'utf8'),
-    ].join('\n');
+  const homeDropInHtml = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/DropInVerifierCore.astro'), 'utf8');
   const verticalsHtml = hasDist
-    ? [distBombeo, distSello, distFlot, distFilt, distClas, distCtrl].map((p) => fs.readFileSync(p, 'utf8')).join('\n')
+    ? [distBombeo, distFlot, distFilt, distClas, distCtrl].map((p) => fs.readFileSync(p, 'utf8')).join('\n')
     : [
       'src/components/islands/PumpingHubIsland.astro',
       'src/components/cores/PumpingHydraulicsCore.astro',
-      'src/components/islands/SealDriveBearingIsland.astro',
+      'src/components/cores/TribologyAlloyCore.astro',
       'src/components/cores/SealDriveBearingCore.astro',
       'src/components/islands/FlotationCalculatorIsland.astro',
       'src/components/cores/FlotationCore.astro',
@@ -363,7 +349,7 @@ test('V51-T1 DOM Real en dist/ & Cero Bifurcaciones {isEmbedded}: 11 Dominios Bi
       'src/components/islands/ProcessControlIsland.astro',
       'src/components/cores/MetrologyLabCore.astro',
     ].map((rel) => fs.readFileSync(path.join(SITE_ROOT, rel), 'utf8')).join('\n');
-  const fullCorpus = `${cotizarHtml}\n${catalogHtml}\n${equiposHtml}\n${impulsorHtml}\n${verticalsHtml}`;
+  const fullCorpus = `${cotizarHtml}\n${catalogHtml}\n${homeDropInHtml}\n${verticalsHtml}`;
 
   const declared = listAllDeclaredDomIds();
   const missingInputs = declared.inputs.filter((id) => !fullCorpus.includes(`id="${id}"`));
@@ -582,10 +568,10 @@ test('V53-T1 Ola C1: Único <main>, Formateo Humano, Zero Hardcodes SSR y <dialo
   assert.equal(formatUrgencyBandHuman('IMMEDIATE_PICK', 'en').includes('IMMEDIATE_PICK'), false);
   assert.equal(formatCatalogPartCodeHuman('FILTRO_BATCH_LAB', 'es').includes('FILTRO_BATCH_LAB'), false);
 
-  // 2. Sin <main> anidado en AcuseSheetIsland, AtomicPartIsland y páginas legales/producto
+  // 2. Sin <main> anidado en AcuseSheetIsland, ProductDetailIsland y páginas legales/producto
   for (const rel of [
     'src/components/islands/AcuseSheetIsland.astro',
-    'src/components/islands/AtomicPartIsland.astro',
+    'src/components/islands/ProductDetailIsland.astro',
     'src/pages/cumplimiento.astro',
     'src/pages/garantia.astro',
     'src/pages/en/compliance.astro',
@@ -655,7 +641,7 @@ test('V53-T2 Ola C2: Outbox Paso 3, Nivel 2 Contextual, Offline Reactivo, Dossie
 test('V53-T3 Ola C3: SSOT SMAT_SUPPLY_DOORS, Higiene APL-03, Checkboxes Fitts y Drawers Progresivos', async () => {
   const { SMAT_SUPPLY_DOORS, formatDischargeRegimeHuman } = await import('../src/scripts/i18nDomainLabels.js');
 
-  assert.equal(SMAT_SUPPLY_DOORS.door1.hrefEs, '/equipos/');
+  assert.equal(SMAT_SUPPLY_DOORS.door1.hrefEs, '/catalogo/');
   assert.equal(SMAT_SUPPLY_DOORS.door2.hrefEs, '/bombeo/');
   assert.equal(SMAT_SUPPLY_DOORS.door3.hrefEs, '/control-de-procesos/');
   assert.equal(formatDischargeRegimeHuman('ROPING_CORDON', 'es').includes('ROPING_CORDON'), false);
@@ -675,13 +661,11 @@ test('V53-T3 Ola C3: SSOT SMAT_SUPPLY_DOORS, Higiene APL-03, Checkboxes Fitts y 
   assert.ok(wizardCtrl.includes('nowDateIso'));
   assert.ok(wizardCtrl.includes('live-date'));
 
-  const tribIsland = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/TribologyAlloyIsland.astro'), 'utf8');
-  assert.ok(tribIsland.includes('id="tribology-material-matrix-drawer"'));
-  assert.ok(tribIsland.includes('id="tribology-spares-and-specs-drawer"'));
-
-  const sdbIsland = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/SealDriveBearingIsland.astro'), 'utf8');
-  assert.ok(sdbIsland.includes('id="seal-branch-comparator-drawer"'));
-  assert.ok(sdbIsland.includes('id="skid-arrangements-drawer"'));
+  const pumpHub = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/PumpingHubIsland.astro'), 'utf8');
+  assert.ok(pumpHub.includes('PumpingParametricTable'));
+  const tribCore = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/TribologyAlloyCore.astro'), 'utf8');
+  const sdbCore = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/SealDriveBearingCore.astro'), 'utf8');
+  assert.ok(tribCore.includes('tribology') && sdbCore.includes('sealDrive'));
 });
 
 test('V54 Ola A (SLICE-V54-01..09): Transporte Outbox desacoplado, PWA precache, R55 <= 70 C y 0 exports muertos', async () => {

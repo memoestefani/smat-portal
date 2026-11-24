@@ -184,9 +184,10 @@ test('V58-G4: Mobile Menu, 3-Step QuoteWizard Stepper, Pumping Station 4 & SSOT 
   assert.ok(pumpingSrc.includes('pumpingTabRouter.js'));
   assert.ok(pumpingSrc.includes('id="pumping-assembly-station"'));
 
-  const atomicSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/AtomicPartIsland.astro'), 'utf8');
+  const partCodeRouteSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/pages/catalogo/[code].astro'), 'utf8');
+  const atomicJsonRaw = fs.readFileSync(path.join(SITE_ROOT, 'data/atomic_parts.json'), 'utf8');
   const qcardSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/ProductQuickCard.astro'), 'utf8');
-  assert.ok(atomicSrc.includes('assembly_order') && atomicSrc.includes('wet_end_kit_ratio'));
+  assert.ok(partCodeRouteSrc.includes('ProductDetailIsland') && atomicJsonRaw.includes('assembly_order') && atomicJsonRaw.includes('wet_end_kit_ratio'));
   assert.ok(qcardSrc.includes('linked_atomic_codes') && qcardSrc.includes('secondary_diagram_id'));
 
   const distEnQuote = path.join(SITE_ROOT, 'dist/en/quote/index.html');

@@ -1,790 +1,5 @@
 [
   {
-    "id": "SMAT-LAB-MARCY-1000",
-    "sku_id": "SMAT-LAB-MARCY-1000",
-    "legacy_sku_id": "SKU-QC-19",
-    "slug_es": "balanza-marcy",
-    "slug_en": "marcy-pulp-density-scale",
-    "aliases_es": [
-      "bascula-densidad-pulpa-marcy-tamices-astm",
-      "instrumentacion-marcy-tamices-astm-e11"
-    ],
-    "aliases_en": [
-      "marcy-pulp-density-scale-astm-sieve-kit",
-      "marcy-scale-astm-e11-sieves"
-    ],
-    "vertical": "control",
-    "avenue": "avenida_5_laboratorio",
-    "secondary_avenues": [
-      "avenida_2_hidrociclones",
-      "avenida_1_bombeo"
-    ],
-    "stock_regime": "hay",
-    "availability_regime": "stock_durango",
-    "gate_lock": "G3",
-    "title_es": "Balanza de Densidad de Pulpa Tipo Marcy con Vaso de 1000 mL",
-    "title_en": "Marcy-Type Pulp Density Scale with 1000 mL Slurry Cup",
-    "oem_cross_ref": "SMAT-LAB-MARCY-1000 (Carátula 12 Anillos Gravedad Específica 1.2 a 7.8 + Vaso 1000 cm³)",
-    "atomic_codes": [],
-    "linked_atomic_codes": [],
-    "coupled_pair_sku": "SMAT-LAB-VASO-1000",
-    "reorder_window_days": 365,
-    "kit_id": 4,
-    "diagram_id": "marcy_scale",
-    "secondary_diagram_id": "soporte",
-    "photo_webp": "/images/productos/balanza-marcy.webp",
-    "default_material": "A49",
-    "available_materials": [
-      "A49",
-      "A05"
-    ],
-    "config_options_es": [
-      {
-        "value": "A49",
-        "label": "INOX-304 — Vaso Calibrado Acero Inoxidable 304 (1000 cm³) + 12 Anillos SG (2.2 a 4.4)"
-      },
-      {
-        "value": "A05",
-        "label": "KIT-2VASOS — Balanza Marcy + 2 Vasos 1000 cm³ (Inox 304 + Acrílico) para Balance 3 Vasos"
-      }
-    ],
-    "config_options_en": [
-      {
-        "value": "A49",
-        "label": "SS-304 — Calibrated 304 Stainless Steel Cup (1000 cm³) + 12 SG Rings (2.2 to 4.4)"
-      },
-      {
-        "value": "A05",
-        "label": "2-CUP-KIT — Marcy Scale + 2 Cups 1000 cm³ (304 SS + Acrylic) for 3-Cup Cyclone Balance"
-      }
-    ],
-    "mass_kg": 6.5,
-    "hardness_spec": "Carátula sellada + Vaso calibrado 1000 cm³ ±0.5 cm³ en Acero Inoxidable 304/316L",
-    "niosh_mode": "MANUAL_SAFE",
-    "geometric_triplet_mm": {
-      "a_id_mm": 105,
-      "b_od_mm": 254,
-      "c_thickness_mm": 185,
-      "tolerance_std": "ISO 2768-m",
-      "label_es": "A: Ø Vaso 105.0 mm | B: Ø Carátula 254.0 mm | C: Altura Vaso 185.0 mm",
-      "label_en": "A: Cup ID 105.0 mm | B: Dial OD 254.0 mm | C: Cup Height 185.0 mm"
-    },
-    "sat_tuple": {
-      "clave_prod_serv": "41111500",
-      "clave_unidad": "H87",
-      "uso_cfdi": "I04",
-      "fraccion_arancelaria": "9016.00.99.00"
-    },
-    "everyday_scale_es": "Espesor de aguja y carátula calibrada: 0.76 mm (1 tarjeta bancaria ISO/IEC 7810) para lectura directa sin paralaje",
-    "everyday_scale_en": "Calibrated pointer and dial clearance: 0.76 mm (1 ISO/IEC 7810 bank card) for zero-parallax direct reading",
-    "telemetry_hooks": {
-      "marcy_sg_range": [
-        1.05,
-        2.2
-      ],
-      "plitt_d50_um_range": [
-        38,
-        850
-      ],
-      "wear_life_hours_range": [
-        8000,
-        20000
-      ]
-    },
-    "summary_es": "Báscula metalúrgica de suspensión para lectura directa de gravedad específica de pulpa (Sf, Su, So) y porcentaje de sólidos en peso (%Cw) sin tablas externas en circuitos de molienda e hidrociclones.",
-    "summary_en": "Hanging metallurgical pulp scale for direct reading of slurry specific gravity (Sf, Su, So) and percent solids by weight (%Cw) without external charts across grinding and hydrocyclone circuits.",
-    "warehouse_audit": {
-      "physical_audit_date": "2026-11-10",
-      "warehouse_total_mxn": 1646850,
-      "warehouse_total_units": 383,
-      "warehouse_active_sku_count": 35,
-      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
-      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
-      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
-  },
-  {
-    "id": "SMAT-LAB-VASO-1000",
-    "sku_id": "SMAT-LAB-VASO-1000",
-    "legacy_sku_id": "SKU-QC-02",
-    "slug_es": "vaso-balanza-marcy-1000ml",
-    "slug_en": "marcy-scale-cup-1000ml",
-    "aliases_es": [
-      "vaso-marcy-acero-inoxidable-1000ml"
-    ],
-    "aliases_en": [
-      "stainless-steel-marcy-cup-1000ml"
-    ],
-    "vertical": "control",
-    "avenue": "avenida_5_laboratorio",
-    "secondary_avenues": [
-      "avenida_2_hidrociclones"
-    ],
-    "stock_regime": "hay",
-    "availability_regime": "stock_durango",
-    "gate_lock": "G3",
-    "title_es": "Vaso Calibrado de 1000 mL en Acero Inoxidable 304 / Acrílico para Balanza Marcy",
-    "title_en": "1000 mL Calibrated 304 Stainless Steel / Acrylic Cup for Marcy Pulp Scale",
-    "oem_cross_ref": "SMAT-LAB-VASO-1000 (Capacidad Volumétrica 1000 cm³ con Orificios de Rebose)",
-    "atomic_codes": [],
-    "linked_atomic_codes": [],
-    "coupled_pair_sku": "SMAT-LAB-MARCY-1000",
-    "reorder_window_days": 180,
-    "kit_id": 4,
-    "diagram_id": "marcy_scale",
-    "secondary_diagram_id": "clasificacion",
-    "photo_webp": "/images/productos/vaso-balanza-marcy-1000ml.webp",
-    "default_material": "A49",
-    "available_materials": [
-      "A49",
-      "PU"
-    ],
-    "config_options_es": [
-      {
-        "value": "A49",
-        "label": "INOX-304 — Vaso de 1000 mL en Acero Inoxidable 304 con Ranuras de Enrase (Molienda / Ciclones)"
-      },
-      {
-        "value": "PU",
-        "label": "ACRILICO-1000 — Vaso de 1000 mL en Acrílico de Alto Impacto Transparente (Flotación / Espesadores)"
-      }
-    ],
-    "config_options_en": [
-      {
-        "value": "A49",
-        "label": "SS-304 — 1000 mL 304 Stainless Steel Slurry Cup with Overflow Slots (Grinding / Cyclones)"
-      },
-      {
-        "value": "PU",
-        "label": "ACRYLIC-1000 — 1000 mL High-Impact Clear Acrylic Slurry Cup (Flotation / Thickeners)"
-      }
-    ],
-    "mass_kg": 1.2,
-    "hardness_spec": "Acero Inoxidable 304 / 316L con volumen 1000.0 ± 0.5 cm³ y asa de suspensión calibrada",
-    "niosh_mode": "MANUAL_SAFE",
-    "geometric_triplet_mm": {
-      "a_id_mm": 100,
-      "b_od_mm": 104,
-      "c_thickness_mm": 165,
-      "tolerance_std": "ISO 2768-m",
-      "label_es": "A: Ø Interior 100.0 mm | B: Ø Exterior 104.0 mm | C: Altura Rebose 165.0 mm",
-      "label_en": "A: Inner ID 100.0 mm | B: Outer OD 104.0 mm | C: Overflow Height 165.0 mm"
-    },
-    "sat_tuple": {
-      "clave_prod_serv": "41121800",
-      "clave_unidad": "H87",
-      "uso_cfdi": "G03",
-      "fraccion_arancelaria": "9016.00.99.00"
-    },
-    "everyday_scale_es": "Pared de acero inoxidable de 1.52 mm (2 tarjetas bancarias ISO/IEC 7810) resistente a abolladuras en muestreo de planta",
-    "everyday_scale_en": "1.52 mm stainless steel wall (2 ISO/IEC 7810 bank cards) dent-resistant during plant slurry sampling",
-    "telemetry_hooks": {
-      "marcy_sg_range": [
-        1.05,
-        2.2
-      ],
-      "plitt_d50_um_range": [
-        38,
-        850
-      ],
-      "wear_life_hours_range": [
-        4000,
-        9000
-      ]
-    },
-    "summary_es": "Recipiente cilíndrico de 1000 mL exactos con ranuras laterales de enrase para muestreo rápido de alimentación, descarga (underflow) y rebose (overflow) en el balance de 3 vasos de hidrociclones.",
-    "summary_en": "Precision 1000 mL cylindrical slurry cup with side overflow slots for rapid sampling of cyclone feed, underflow, and overflow in 3-cup metallurgical mass balances.",
-    "warehouse_audit": {
-      "physical_audit_date": "2026-11-10",
-      "warehouse_total_mxn": 1646850,
-      "warehouse_total_units": 383,
-      "warehouse_active_sku_count": 35,
-      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
-      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
-      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
-  },
-  {
-    "id": "SMAT-LAB-TAMIZ-E11",
-    "sku_id": "SMAT-LAB-TAMIZ-E11",
-    "legacy_sku_id": "SKU-QC-03",
-    "slug_es": "tamices-certificados-astm-e11",
-    "slug_en": "astm-e11-certified-test-sieves",
-    "aliases_es": [
-      "mallas-tamices-laboratorio-astm-e11"
-    ],
-    "aliases_en": [
-      "laboratory-test-sieves-astm-e11"
-    ],
-    "vertical": "control",
-    "avenue": "avenida_5_laboratorio",
-    "secondary_avenues": [
-      "avenida_3_cribas_mallas"
-    ],
-    "stock_regime": "hay",
-    "availability_regime": "stock_durango",
-    "gate_lock": "G3",
-    "title_es": "Tamices de Prueba Certificados ASTM E11 de 8\" en Acero Inoxidable (#100 a #635)",
-    "title_en": "8\" ASTM E11 Certified Stainless Steel Test Sieves (#100 to #635 Mesh)",
-    "oem_cross_ref": "SMAT-LAB-TAMIZ-E11 (Bastidor 8\" Ø 203.2 mm sin Costuras · Mallas #100, #140, #200, #270, #325, #400, #635)",
-    "atomic_codes": [],
-    "linked_atomic_codes": [],
-    "coupled_pair_sku": "SMAT-LAB-ROTAP-MECH",
-    "reorder_window_days": 120,
-    "kit_id": 4,
-    "diagram_id": "astm_sieves",
-    "secondary_diagram_id": "clasificacion",
-    "photo_webp": "/images/productos/tamices-certificados-astm-e11.webp",
-    "default_material": "A49",
-    "available_materials": [
-      "A49"
-    ],
-    "config_options_es": [
-      {
-        "value": "A49",
-        "label": "ASTM-E11-8IN — Serie Mallas Inox 316L #100 a #400 (Ø 8\" · 203.2 mm) + Tapa y Fondo"
-      },
-      {
-        "value": "MESH-200",
-        "label": "MALLA-200 — Tamiz Individual de Control P80 Malla #200 (75 µm · Acero Inox 316L ASTM E11)"
-      }
-    ],
-    "config_options_en": [
-      {
-        "value": "A49",
-        "label": "ASTM-E11-8IN — 316L Stainless Sieve Stack #100 to #400 (Ø 8\" · 203.2 mm) + Cover & Pan"
-      },
-      {
-        "value": "MESH-200",
-        "label": "MESH-200 — Single P80 Control Test Sieve #200 Mesh (75 µm · 316L SS ASTM E11)"
-      }
-    ],
-    "mass_kg": 0.45,
-    "hardness_spec": "Malla tejida en Acero Inoxidable 316L tensada ópticamente bajo norma ASTM E11 / ISO 3310-1",
-    "niosh_mode": "MANUAL_SAFE",
-    "geometric_triplet_mm": {
-      "a_id_mm": 203.2,
-      "b_od_mm": 210,
-      "c_thickness_mm": 50.8,
-      "tolerance_std": "ISO 2768-m",
-      "label_es": "A: Ø Tamiz 203.2 mm (8\") | B: Ø Aro 210.0 mm | C: Altura 50.8 mm (2\")",
-      "label_en": "A: Sieve ID 203.2 mm (8\") | B: Rim OD 210.0 mm | C: Full Height 50.8 mm (2\")"
-    },
-    "sat_tuple": {
-      "clave_prod_serv": "41104800",
-      "clave_unidad": "H87",
-      "uso_cfdi": "G03",
-      "fraccion_arancelaria": "9027.89.99.00"
-    },
-    "everyday_scale_es": "Abertura Malla #200 (75 µm) = 1/10 del grosor de 1 tarjeta bancaria ISO/IEC 7810 (0.76 mm)",
-    "everyday_scale_en": "Mesh #200 opening (75 µm) = 1/10th the thickness of 1 ISO/IEC 7810 bank card (0.76 mm)",
-    "telemetry_hooks": {
-      "marcy_sg_range": [
-        1.1,
-        2.1
-      ],
-      "plitt_d50_um_range": [
-        20,
-        250
-      ],
-      "wear_life_hours_range": [
-        2000,
-        5000
-      ]
-    },
-    "summary_es": "Serie de tamices granulométricos de 8 pulgadas en acero inoxidable con certificado individual de cumplimiento ASTM E11 para auditoría de molienda P80 y eficiencia de clasificación en hidrociclones.",
-    "summary_en": "8-inch stainless steel test sieve series with individual ASTM E11 compliance certificates for grinding P80 auditing and hydrocyclone classification efficiency verification.",
-    "warehouse_audit": {
-      "physical_audit_date": "2026-11-10",
-      "warehouse_total_mxn": 1646850,
-      "warehouse_total_units": 383,
-      "warehouse_active_sku_count": 35,
-      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
-      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
-      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
-  },
-  {
-    "id": "SMAT-LAB-ROTAP-MECH",
-    "sku_id": "SMAT-LAB-ROTAP-MECH",
-    "legacy_sku_id": "SKU-QC-04",
-    "slug_es": "tamizador-mecanico-laboratorio",
-    "slug_en": "mechanical-sieve-shaker",
-    "aliases_es": [
-      "rotap-tamizador-mecanico-duratap"
-    ],
-    "aliases_en": [
-      "rotap-mechanical-test-sieve-shaker"
-    ],
-    "vertical": "control",
-    "avenue": "avenida_5_laboratorio",
-    "secondary_avenues": [
-      "avenida_3_cribas_mallas"
-    ],
-    "stock_regime": "se_pide",
-    "availability_regime": "fast_assembly",
-    "gate_lock": "G3",
-    "title_es": "Tamizador Mecánico Orbital con Martillo Percutor (Tipo Ro-Tap) para Tamices de 8\"",
-    "title_en": "Orbital Mechanical Sieve Shaker with Tapping Hammer (Ro-Tap Style) for 8\" Sieves",
-    "oem_cross_ref": "SMAT-LAB-ROTAP-MECH (278 Oscilaciones/min + 150 Golpes/min · Capacidad 6 Tamices + Fondo)",
-    "atomic_codes": [],
-    "linked_atomic_codes": [],
-    "coupled_pair_sku": "SMAT-LAB-TAMIZ-E11",
-    "reorder_window_days": 365,
-    "kit_id": 4,
-    "diagram_id": "astm_sieves",
-    "secondary_diagram_id": "soporte",
-    "photo_webp": "/images/productos/tamizador-mecanico-laboratorio.webp",
-    "default_material": "A05",
-    "available_materials": [
-      "A05",
-      "A49"
-    ],
-    "config_options_es": [
-      {
-        "value": "A05",
-        "label": "ROTAP-8IN — Tamizador Orbital con Martillo Percutor para 6 Tamices de 8\" (110V / 220V 60Hz)"
-      },
-      {
-        "value": "A49",
-        "label": "ROTAP-KIT-E11 — Tamizador Orbital + Columna de 6 Tamices ASTM E11 Inox 316L (#100 a #400)"
-      }
-    ],
-    "config_options_en": [
-      {
-        "value": "A05",
-        "label": "ROTAP-8IN — Orbital Sieve Shaker with Tapping Hammer for 6 × 8\" Sieves (110V / 220V 60Hz)"
-      },
-      {
-        "value": "A49",
-        "label": "ROTAP-KIT-E11 — Orbital Sieve Shaker + 6-Sieve ASTM E11 316L SS Stack (#100 to #400)"
-      }
-    ],
-    "mass_kg": 82,
-    "hardness_spec": "Leva y engranaje en acero tratado térmicamente 55 HRC + Amortiguadores de neopreno",
-    "niosh_mode": "HOIST_REQUIRED",
-    "geometric_triplet_mm": {
-      "a_id_mm": 203.2,
-      "b_od_mm": 710,
-      "c_thickness_mm": 640,
-      "tolerance_std": "ISO 2768-m",
-      "label_es": "A: Ø Columna 203.2 mm (8\") | B: Base 710.0 mm | C: Altura 640.0 mm",
-      "label_en": "A: Sieve Stack 203.2 mm (8\") | B: Base 710.0 mm | C: Height 640.0 mm"
-    },
-    "sat_tuple": {
-      "clave_prod_serv": "41104800",
-      "clave_unidad": "H87",
-      "uso_cfdi": "I04",
-      "fraccion_arancelaria": "8474.10.99.00"
-    },
-    "everyday_scale_es": "Holgura libre de caída del martillo percutor: 1.52 mm (2 tarjetas bancarias ISO/IEC 7810) para energía de impacto repetible",
-    "everyday_scale_en": "Hammer tap drop clearance: 1.52 mm (2 ISO/IEC 7810 bank cards) for repeatable tapping impact energy",
-    "telemetry_hooks": {
-      "marcy_sg_range": [
-        1.2,
-        2.0
-      ],
-      "plitt_d50_um_range": [
-        38,
-        500
-      ],
-      "wear_life_hours_range": [
-        10000,
-        25000
-      ]
-    },
-    "summary_es": "Agitador mecánico de laboratorio que combina movimiento circular horizontal con percusión vertical sincronizada para garantizar análisis granulométricos reproducibles según normas ASTM.",
-    "summary_en": "Laboratory mechanical sieve shaker combining horizontal circular motion with synchronized vertical tapping to ensure reproducible particle-size distributions per ASTM standards.",
-    "warehouse_audit": {
-      "physical_audit_date": "2026-11-10",
-      "warehouse_total_mxn": 1646850,
-      "warehouse_total_units": 383,
-      "warehouse_active_sku_count": 35,
-      "availability_tier": "TIER_2_SCHEDULED_PRODUCTION",
-      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
-      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
-  },
-  {
-    "id": "SMAT-LAB-PLATO-TENT",
-    "sku_id": "SMAT-LAB-PLATO-TENT",
-    "legacy_sku_id": "SKU-QC-07",
-    "slug_es": "plato-tentadura-metalurgico",
-    "slug_en": "metallurgical-gold-pan",
-    "aliases_es": [
-      "plato-tentadura"
-    ],
-    "aliases_en": [
-      "concentrate-panning-dish"
-    ],
-    "vertical": "control",
-    "avenue": "avenida_5_laboratorio",
-    "secondary_avenues": [
-      "avenida_4_flotacion_valvulas"
-    ],
-    "stock_regime": "hay",
-    "availability_regime": "stock_durango",
-    "gate_lock": "G3",
-    "title_es": "Plato de Tentadura Metalúrgico con Riflas Desbastadoras para Control en Celdas y Mesas",
-    "title_en": "Metallurgical Panning Dish with Rougher Riffles for Flotation & Gravity Control",
-    "oem_cross_ref": "SMAT-LAB-PLATO-TENT (Polímero Negro/Azul de Alto Contraste con 3 Riflas de Retención)",
-    "atomic_codes": [],
-    "linked_atomic_codes": [],
-    "coupled_pair_sku": "SMAT-LAB-VASO-1000",
-    "reorder_window_days": 180,
-    "kit_id": 2,
-    "diagram_id": "lab_comminution_pan",
-    "secondary_diagram_id": "flotacion",
-    "photo_webp": "/images/productos/plato-tentadura-metalurgico.webp",
-    "default_material": "PU",
-    "available_materials": [
-      "PU",
-      "R55"
-    ],
-    "config_options_es": [
-      {
-        "value": "PU",
-        "label": "POLIMERO-14IN — Plato de Tentadura Negro/Azul Antirreflejo Ø 14\" (355 mm) con 3 Riflas"
-      },
-      {
-        "value": "R55",
-        "label": "HULE- ESTRIADO — Plato de Tentadura en Hule Natural Vulcanizado para Inspección de Sulfuros"
-      }
-    ],
-    "config_options_en": [
-      {
-        "value": "PU",
-        "label": "POLYMER-14IN — Matte Black/Blue Ø 14\" (355 mm) Panning Dish with 3 Rougher Riffles"
-      },
-      {
-        "value": "R55",
-        "label": "RUBBER-RIFFLED — Vulcanized Natural Rubber Panning Dish for Sulfide Tailings Inspection"
-      }
-    ],
-    "mass_kg": 0.38,
-    "hardness_spec": "Polímero de Alto Impacto Resistente a Xantatos y Espumantes con Superficie Mate Antirreflejo",
-    "niosh_mode": "MANUAL_SAFE",
-    "geometric_triplet_mm": {
-      "a_id_mm": 180,
-      "b_od_mm": 355.6,
-      "c_thickness_mm": 76.2,
-      "tolerance_std": "ISO 2768-m",
-      "label_es": "A: Ø Fondo 180.0 mm | B: Ø Superior 355.6 mm (14\") | C: Profundidad 76.2 mm",
-      "label_en": "A: Bottom ID 180.0 mm | B: Top OD 355.6 mm (14\") | C: Depth 76.2 mm"
-    },
-    "sat_tuple": {
-      "clave_prod_serv": "41104800",
-      "clave_unidad": "H87",
-      "uso_cfdi": "G03",
-      "fraccion_arancelaria": "3926.90.99.00"
-    },
-    "everyday_scale_es": "Escalón de rifla concentradora: 1.52 mm (2 tarjetas bancarias ISO/IEC 7810) para retener sulfuros pesados y oro libre",
-    "everyday_scale_en": "Concentrating riffle step: 1.52 mm (2 ISO/IEC 7810 bank cards) to trap heavy sulfides and free gold",
-    "telemetry_hooks": {
-      "marcy_sg_range": [
-        1.15,
-        1.85
-      ],
-      "plitt_d50_um_range": [
-        20,
-        300
-      ],
-      "wear_life_hours_range": [
-        3000,
-        8000
-      ]
-    },
-    "summary_es": "Batea de tentadura de alto contraste óptico utilizada por operadores de flotación y molienda para inspección visual inmediata de colas, arrastre de sulfuros y liberación mineral en banco de celdas.",
-    "summary_en": "High-contrast metallurgical panning dish used by flotation and grinding operators for instant visual inspection of tailings losses, sulfide carryover, and mineral liberation at the cell bank.",
-    "warehouse_audit": {
-      "physical_audit_date": "2026-11-10",
-      "warehouse_total_mxn": 1646850,
-      "warehouse_total_units": 383,
-      "warehouse_active_sku_count": 35,
-      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
-      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
-      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
-  },
-  {
-    "id": "SMAT-LAB-PULV-DISC",
-    "sku_id": "SMAT-LAB-PULV-DISC",
-    "legacy_sku_id": "SKU-QC-15",
-    "slug_es": "pulverizador-discos-laboratorio",
-    "slug_en": "laboratory-disc-pulverizer",
-    "aliases_es": [
-      "pulverizador-mecanico-discos-laboratorio",
-      "discos-molienda-alto-cromo-pulverizador"
-    ],
-    "aliases_en": [
-      "mechanical-lab-disc-pulverizer",
-      "high-chrome-pulverizer-grinding-discs"
-    ],
-    "vertical": "control",
-    "avenue": "avenida_5_laboratorio",
-    "secondary_avenues": [
-      "avenida_3_cribas_mallas"
-    ],
-    "stock_regime": "se_pide",
-    "availability_regime": "fast_assembly",
-    "gate_lock": "G3",
-    "title_es": "Pulverizador de Discos de Laboratorio y Discos de Repuesto en Aleación de Alto Cromo",
-    "title_en": "Laboratory Disc Pulverizer & High-Chrome Replacement Grinding Discs",
-    "oem_cross_ref": "SMAT-LAB-PULV-DISC (Discos Ø 8\" en Alto Cromo A05 para Preparación de Muestras a -200 Mallas)",
-    "atomic_codes": [],
-    "linked_atomic_codes": [],
-    "coupled_pair_sku": "SMAT-LAB-TAMIZ-E11",
-    "reorder_window_days": 150,
-    "kit_id": 4,
-    "diagram_id": "lab_comminution_pan",
-    "secondary_diagram_id": "astm_sieves",
-    "photo_webp": "/images/productos/pulverizador-discos-laboratorio.webp",
-    "default_material": "A05",
-    "available_materials": [
-      "A05",
-      "A49"
-    ],
-    "mass_kg": 115,
-    "hardness_spec": "Discos de molienda fundidos en Alto Cromo ≥ 620 HB (58–60 HRC)",
-    "niosh_mode": "HOIST_REQUIRED",
-    "geometric_triplet_mm": {
-      "a_id_mm": 50.8,
-      "b_od_mm": 203.2,
-      "c_thickness_mm": 28.5,
-      "tolerance_std": "ISO 2768-m",
-      "label_es": "A: Ø Centro 50.8 mm | B: Ø Disco 203.2 mm (8\") | C: Espesor 28.5 mm",
-      "label_en": "A: Bore ID 50.8 mm | B: Disc OD 203.2 mm (8\") | C: Thickness 28.5 mm"
-    },
-    "sat_tuple": {
-      "clave_prod_serv": "41102900",
-      "clave_unidad": "H87",
-      "uso_cfdi": "I04",
-      "fraccion_arancelaria": "8474.20.99.00"
-    },
-    "everyday_scale_es": "Ajuste micrométrico entre discos estacionario y rotatorio: 0.76 mm (1 tarjeta bancaria ISO/IEC 7810) para descarga a malla #200",
-    "everyday_scale_en": "Micrometer gap between stationary and rotating discs: 0.76 mm (1 ISO/IEC 7810 bank card) for #200 mesh discharge",
-    "telemetry_hooks": {
-      "marcy_sg_range": [
-        1.25,
-        2.1
-      ],
-      "plitt_d50_um_range": [
-        45,
-        150
-      ],
-      "wear_life_hours_range": [
-        1800,
-        4200
-      ]
-    },
-    "summary_es": "Pulverizador mecánico de discos y juegos de discos de desgaste en Alto Cromo para conminución rápida de muestras de cabeza, concentrado y jales en el laboratorio químico-metalúrgico.",
-    "summary_en": "Mechanical laboratory disc pulverizer and high-chrome wear disc sets for rapid comminution of head, concentrate, and tailings assay samples.",
-    "warehouse_audit": {
-      "physical_audit_date": "2026-11-10",
-      "warehouse_total_mxn": 1646850,
-      "warehouse_total_units": 383,
-      "warehouse_active_sku_count": 35,
-      "availability_tier": "TIER_2_SCHEDULED_PRODUCTION",
-      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
-      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
-  },
-  {
-    "id": "SMAT-LAB-FILTRO-BATCH",
-    "sku_id": "SMAT-LAB-FILTRO-BATCH",
-    "legacy_sku_id": "SKU-QC-16",
-    "slug_es": "filtro-prensa-batch-laboratorio",
-    "slug_en": "laboratory-batch-pressure-filter",
-    "aliases_es": [
-      "filtro-prensa-laboratorio-neumatico",
-      "filtro-presion-batch-100psi-inox"
-    ],
-    "aliases_en": [
-      "pneumatic-lab-batch-filter-press",
-      "stainless-100psi-batch-pressure-filter"
-    ],
-    "vertical": "control",
-    "avenue": "avenida_5_laboratorio",
-    "secondary_avenues": [
-      "avenida_5_filtracion"
-    ],
-    "stock_regime": "hay",
-    "availability_regime": "stock_durango",
-    "gate_lock": "G5",
-    "title_es": "Filtro a Presión Batch de Laboratorio (100 psi) en Acero Inoxidable con Bastidor de Volteo",
-    "title_en": "Laboratory Batch Pressure Filter (100 psi) in Stainless Steel with Tilting Stand",
-    "oem_cross_ref": "SMAT-LAB-FILTRO-BATCH (Barril Ø 8\" x 10\" a 100 psi con Regulador y Válvula de Alivio)",
-    "atomic_codes": [],
-    "linked_atomic_codes": [],
-    "coupled_pair_sku": "SMAT-LAB-MARCY-1000",
-    "reorder_window_days": 180,
-    "kit_id": 4,
-    "diagram_id": "batch_filter",
-    "secondary_diagram_id": "desaguado",
-    "photo_webp": "/images/productos/filtro-prensa-batch-laboratorio.webp",
-    "default_material": "A49",
-    "available_materials": [
-      "A49",
-      "R55"
-    ],
-    "config_options_es": [
-      {
-        "value": "A49",
-        "label": "INOX-100PSI — Cilindro y Tapa en Acero Inoxidable 304 (Capacidad 8 L · 100 psi) + Regulador"
-      },
-      {
-        "value": "R55",
-        "label": "KIT-SELLOS — Juego de Empaques O-Ring + Lonas Filtrantes Ø 8\" para Filtro Batch 100 psi"
-      }
-    ],
-    "config_options_en": [
-      {
-        "value": "A49",
-        "label": "SS304-100PSI — 304 Stainless Steel Barrel & Lid (8 L Capacity · 100 psi) + Air Regulator"
-      },
-      {
-        "value": "R55",
-        "label": "SEAL-CLOTH-KIT — Replacement O-Ring Gasket Set + Ø 8\" Filter Cloths for 100 psi Batch Filter"
-      }
-    ],
-    "mass_kg": 21.5,
-    "hardness_spec": "Cilindro bridado en Acero Inoxidable 304 probado hidrostáticamente a 150 psi (Operación 100 psi)",
-    "niosh_mode": "ASSISTED_SHAFT_MOUNT_2P",
-    "geometric_triplet_mm": {
-      "a_id_mm": 203.2,
-      "b_od_mm": 245,
-      "c_thickness_mm": 254,
-      "tolerance_std": "ISO 2768-m",
-      "label_es": "A: Ø Cámara 203.2 mm (8\") | B: Ø Brida 245.0 mm | C: Altura Cilindro 254.0 mm",
-      "label_en": "A: Chamber ID 203.2 mm (8\") | B: Flange OD 245.0 mm | C: Barrel Height 254.0 mm"
-    },
-    "sat_tuple": {
-      "clave_prod_serv": "41104900",
-      "clave_unidad": "H87",
-      "uso_cfdi": "I04",
-      "fraccion_arancelaria": "8421.29.99.00"
-    },
-    "everyday_scale_es": "Empaque anular de sellado O-Ring comprimido 1.52 mm (2 tarjetas bancarias ISO/IEC 7810) para estanqueidad neumática a 100 psi",
-    "everyday_scale_en": "O-ring sealing gasket compressed 1.52 mm (2 ISO/IEC 7810 bank cards) for 100 psi pneumatic tightness",
-    "telemetry_hooks": {
-      "marcy_sg_range": [
-        1.15,
-        1.95
-      ],
-      "plitt_d50_um_range": [
-        15,
-        250
-      ],
-      "wear_life_hours_range": [
-        6000,
-        15000
-      ]
-    },
-    "summary_es": "Unidad de filtración neumática por lotes a 100 psi para deshidratación rápida de muestras de pulpa tomadas con vaso Marcy, permitiendo secar y pesar tortas para cálculo exacto de % de sólidos.",
-    "summary_en": "100 psi pneumatic batch filtration unit for rapid dewatering of Marcy cup slurry samples, enabling fast cake drying and weighing for exact percent solids determination.",
-    "warehouse_audit": {
-      "physical_audit_date": "2026-11-10",
-      "warehouse_total_mxn": 1646850,
-      "warehouse_total_units": 383,
-      "warehouse_active_sku_count": 35,
-      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
-      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
-      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
-  },
-  {
-    "id": "SMAT-PUMP-IMP-AH",
-    "sku_id": "SMAT-PUMP-IMP-AH",
-    "legacy_sku_id": "SKU-QC-01",
-    "slug_es": "impulsor-bomba-lodos-serie-ah",
-    "slug_en": "ah-series-slurry-pump-impeller",
-    "aliases_es": [
-      "impulsor-cerrado-5-alabes-cr27",
-      "impulsor-cerrado-5-alabes-a05-r55",
-      "impulsor-5-alabes-alto-cromo-cr27"
-    ],
-    "aliases_en": [
-      "closed-5-vane-impeller-cr27",
-      "closed-5-vane-impeller-a05-r55"
-    ],
-    "vertical": "bombeo",
-    "avenue": "avenida_1_bombeo",
-    "secondary_avenues": [],
-    "stock_regime": "hay",
-    "availability_regime": "stock_durango",
-    "gate_lock": "G1",
-    "title_es": "Impulsor Cerrado de 5 Álabes en Alto Cromo 27% (A05) / Elastómero R55 para Bomba de Lodos",
-    "title_en": "Closed 5-Vane Slurry Pump Impeller in 27% High Chrome (A05) / R55 Elastomer",
-    "oem_cross_ref": "E4147 / D3147 / F6147 (Bastidor Estándar Horizontal 4x3 / 6x4 / 8x6 Drop-In)",
-    "atomic_codes": [
-      "E4147",
-      "D3147",
-      "F6147"
-    ],
-    "linked_atomic_codes": [
-      "E4147",
-      "D3147",
-      "F6147"
-    ],
-    "coupled_pair_sku": "SMAT-PUMP-WETKIT-554",
-    "reorder_window_days": 90,
-    "kit_id": 1,
-    "diagram_id": "impeller_5vane",
-    "secondary_diagram_id": "impulsor",
-    "photo_webp": "/images/productos/impulsor-bomba-lodos-serie-ah.webp",
-    "default_material": "A05",
-    "available_materials": [
-      "A05",
-      "A49",
-      "R55",
-      "SiC"
-    ],
-    "mass_kg": 68,
-    "hardness_spec": "≥ 650 HB (58–62 HRC, ASTM A532 Clase III Tipo A)",
-    "niosh_mode": "HOIST_REQUIRED",
-    "geometric_triplet_mm": {
-      "a_id_mm": 63.5,
-      "b_od_mm": 546,
-      "c_thickness_mm": 124,
-      "tolerance_std": "ISO 2768-m",
-      "label_es": "A: Ø Rosca 63.5 mm | B: Ø Ext. 546.0 mm | C: Ancho 124.0 mm",
-      "label_en": "A: Thread ID 63.5 mm | B: OD 546.0 mm | C: Width 124.0 mm"
-    },
-    "sat_tuple": {
-      "clave_prod_serv": "40151510",
-      "clave_unidad": "H87",
-      "uso_cfdi": "G03",
-      "fraccion_arancelaria": "8413.91.99.00"
-    },
-    "everyday_scale_es": "Claro axial frontal recomendado: 0.76 mm a 1.50 mm (1 a 2 tarjetas bancarias ISO/IEC 7810)",
-    "everyday_scale_en": "Recommended front axial clearance: 0.76 mm to 1.50 mm (1 to 2 ISO/IEC 7810 bank cards)",
-    "telemetry_hooks": {
-      "marcy_sg_range": [
-        1.25,
-        1.85
-      ],
-      "plitt_d50_um_range": [
-        75,
-        450
-      ],
-      "wear_life_hours_range": [
-        1800,
-        4200
-      ]
-    },
-    "summary_es": "Impulsor centrífugo cerrado de 5 álabes con aletas expulsoras traseras para aliviar presión en el estopero y minimizar recirculación abrasiva en descarga de molinos y alimentación a ciclones.",
-    "summary_en": "Closed 5-vane centrifugal slurry impeller with rear pump-out vanes to relieve stuffing box pressure and minimize abrasive recirculation in mill discharge and cyclone feed duty.",
-    "warehouse_audit": {
-      "physical_audit_date": "2026-11-10",
-      "warehouse_total_mxn": 1646850,
-      "warehouse_total_units": 383,
-      "warehouse_active_sku_count": 35,
-      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
-      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
-      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
-  },
-  {
     "id": "SMAT-PUMP-WETKIT-554",
     "sku_id": "SMAT-PUMP-WETKIT-554",
     "legacy_sku_id": "SKU-QC-08",
@@ -881,7 +96,264 @@
       "availability_tier": "TIER_1_IN_PATIO_DURANGO",
       "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
       "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/lote-humedo-554-bomba-ah.webp",
+        "caption_es": "Paquete húmedo 5-5-4 en Alto Cromo 27% listo en almacén",
+        "caption_en": "27% High-Chrome 5-5-4 wet-end lot staged in warehouse"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/lote-humedo-554-bomba-ah-v2.webp",
+        "caption_es": "Vista de voluta y plato de succión A05 mecanizados",
+        "caption_en": "Machined A05 volute liner and throatbush view"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/lote-humedo-554-bomba-ah-v3.webp",
+        "caption_es": "Inserto de plato posterior balanceado en lote 5-5-4",
+        "caption_en": "Balanced frame plate liner insert for 5-5-4 wear lot"
+      }
+    ]
+  },
+  {
+    "id": "SMAT-PUMP-IMP-AH",
+    "sku_id": "SMAT-PUMP-IMP-AH",
+    "legacy_sku_id": "SKU-QC-01",
+    "slug_es": "impulsor-bomba-lodos-serie-ah",
+    "slug_en": "ah-series-slurry-pump-impeller",
+    "aliases_es": [
+      "impulsor-cerrado-5-alabes-cr27",
+      "impulsor-cerrado-5-alabes-a05-r55",
+      "impulsor-5-alabes-alto-cromo-cr27"
+    ],
+    "aliases_en": [
+      "closed-5-vane-impeller-cr27",
+      "closed-5-vane-impeller-a05-r55"
+    ],
+    "vertical": "bombeo",
+    "avenue": "avenida_1_bombeo",
+    "secondary_avenues": [],
+    "stock_regime": "hay",
+    "availability_regime": "stock_durango",
+    "gate_lock": "G1",
+    "title_es": "Impulsor Cerrado de 5 Álabes en Alto Cromo 27% (A05) / Elastómero R55 para Bomba de Lodos",
+    "title_en": "Closed 5-Vane Slurry Pump Impeller in 27% High Chrome (A05) / R55 Elastomer",
+    "oem_cross_ref": "E4147 / D3147 / F6147 (Bastidor Estándar Horizontal 4x3 / 6x4 / 8x6 Drop-In)",
+    "atomic_codes": [
+      "E4147",
+      "D3147",
+      "F6147"
+    ],
+    "linked_atomic_codes": [
+      "E4147",
+      "D3147",
+      "F6147"
+    ],
+    "coupled_pair_sku": "SMAT-PUMP-WETKIT-554",
+    "reorder_window_days": 90,
+    "kit_id": 1,
+    "diagram_id": "impeller_5vane",
+    "secondary_diagram_id": "impulsor",
+    "photo_webp": "/images/productos/impulsor-bomba-lodos-serie-ah.webp",
+    "default_material": "A05",
+    "available_materials": [
+      "A05",
+      "A49",
+      "R55",
+      "SiC"
+    ],
+    "mass_kg": 68,
+    "hardness_spec": "≥ 650 HB (58–62 HRC, ASTM A532 Clase III Tipo A)",
+    "niosh_mode": "HOIST_REQUIRED",
+    "geometric_triplet_mm": {
+      "a_id_mm": 63.5,
+      "b_od_mm": 546,
+      "c_thickness_mm": 124,
+      "tolerance_std": "ISO 2768-m",
+      "label_es": "A: Ø Rosca 63.5 mm | B: Ø Ext. 546.0 mm | C: Ancho 124.0 mm",
+      "label_en": "A: Thread ID 63.5 mm | B: OD 546.0 mm | C: Width 124.0 mm"
+    },
+    "sat_tuple": {
+      "clave_prod_serv": "40151510",
+      "clave_unidad": "H87",
+      "uso_cfdi": "G03",
+      "fraccion_arancelaria": "8413.91.99.00"
+    },
+    "everyday_scale_es": "Claro axial frontal recomendado: 0.76 mm a 1.50 mm (1 a 2 tarjetas bancarias ISO/IEC 7810)",
+    "everyday_scale_en": "Recommended front axial clearance: 0.76 mm to 1.50 mm (1 to 2 ISO/IEC 7810 bank cards)",
+    "telemetry_hooks": {
+      "marcy_sg_range": [
+        1.25,
+        1.85
+      ],
+      "plitt_d50_um_range": [
+        75,
+        450
+      ],
+      "wear_life_hours_range": [
+        1800,
+        4200
+      ]
+    },
+    "summary_es": "Impulsor centrífugo cerrado de 5 álabes con aletas expulsoras traseras para aliviar presión en el estopero y minimizar recirculación abrasiva en descarga de molinos y alimentación a ciclones.",
+    "summary_en": "Closed 5-vane centrifugal slurry impeller with rear pump-out vanes to relieve stuffing box pressure and minimize abrasive recirculation in mill discharge and cyclone feed duty.",
+    "warehouse_audit": {
+      "physical_audit_date": "2026-11-10",
+      "warehouse_total_mxn": 1646850,
+      "warehouse_total_units": 383,
+      "warehouse_active_sku_count": 35,
+      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
+      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
+      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/impulsor-bomba-lodos-serie-ah.webp",
+        "caption_es": "Impulsor cerrado 5 álabes A05 ≥ 650 HB",
+        "caption_en": "Closed 5-vane A05 ≥ 650 HB slurry impeller"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/impulsor-bomba-lodos-serie-ah-v2.webp",
+        "caption_es": "Geometría de ojo y álabes expulsadores posteriores",
+        "caption_en": "Suction eye geometry and rear pump-out vanes"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/impulsor-bomba-lodos-serie-ah-v3.webp",
+        "caption_es": "Opción elastomérica / recubrimiento para pulpa fina",
+        "caption_en": "Elastomer molded option for fine abrasive slurries"
+      }
+    ]
+  },
+  {
+    "id": "SMAT-PUMP-LINERS-AH",
+    "sku_id": "SMAT-PUMP-LINERS-AH",
+    "legacy_sku_id": "SKU-QC-10",
+    "slug_es": "lainas-succion-y-platos-ah",
+    "slug_en": "throatbush-and-frame-plate-liners",
+    "aliases_es": [
+      "voluta-revestimiento-espiral-cr27",
+      "forros-carcasa-voluta-hule-r55",
+      "cuello-succion-throatbush-cr27",
+      "cuello-succion-throatbush-ajustable",
+      "forro-plato-trasero-fpl-elastomero-r55",
+      "plato-succion-frame-plate-liner-insert"
+    ],
+    "aliases_en": [
+      "spiral-volute-liner-cr27",
+      "volute-casing-rubber-liners-r55",
+      "suction-throatbush-cr27",
+      "adjustable-suction-throatbush",
+      "frame-plate-liner-insert-r55-elastomer",
+      "suction-frame-plate-liner-insert"
+    ],
+    "vertical": "bombeo",
+    "avenue": "avenida_1_bombeo",
+    "secondary_avenues": [],
+    "stock_regime": "hay",
+    "availability_regime": "stock_durango",
+    "gate_lock": "G1",
+    "title_es": "Cuello de Succión (Throatbush), Platos de Desgaste (FPL Insert) y Voluta en Cr27 / Hule R55",
+    "title_en": "Suction Throatbush, Frame Plate Liner Inserts (FPL) & Volute Liners in Cr27 / R55 Rubber",
+    "oem_cross_ref": "E4083 / D4018 / E4132 / D3110 (Forros Estáticos de Cámara Húmeda 4x3 y 6x4 Drop-In)",
+    "atomic_codes": [
+      "E4083",
+      "D4018",
+      "E4132",
+      "D3110"
+    ],
+    "linked_atomic_codes": [
+      "E4083",
+      "D4018",
+      "E4132",
+      "D3110"
+    ],
+    "coupled_pair_sku": "SMAT-PUMP-IMP-AH",
+    "reorder_window_days": 90,
+    "kit_id": 2,
+    "diagram_id": "volute_liner",
+    "secondary_diagram_id": "throatbush",
+    "diagram_aliases": [
+      "revestimientos",
+      "back-liner-d4032r55"
+    ],
+    "photo_webp": "/images/productos/lainas-succion-y-platos-ah.webp",
+    "default_material": "A05",
+    "available_materials": [
+      "A05",
+      "R55",
+      "PU",
+      "SiC"
+    ],
+    "mass_kg": 44,
+    "hardness_spec": "Cr27 A05 ≥ 650 HB (58–62 HRC) / Elastómero R55 (55 ± 5 Shore A, Resiliencia ≥ 70%)",
+    "niosh_mode": "HOIST_REQUIRED",
+    "geometric_triplet_mm": {
+      "a_id_mm": 152.4,
+      "b_od_mm": 438,
+      "c_thickness_mm": 88.5,
+      "tolerance_std": "ISO 2768-m",
+      "label_es": "A: Ø Succión 152.4 mm | B: Ø Asiento 438.0 mm | C: Espesor 88.5 mm",
+      "label_en": "A: Suction ID 152.4 mm | B: Seat OD 438.0 mm | C: Depth 88.5 mm"
+    },
+    "sat_tuple": {
+      "clave_prod_serv": "40151725",
+      "clave_unidad": "H87",
+      "uso_cfdi": "G03",
+      "fraccion_arancelaria": "8413.91.99.00"
+    },
+    "everyday_scale_es": "Cara frontal rectificada para ajuste de claro axial de 0.76 mm (1 tarjeta bancaria ISO/IEC 7810)",
+    "everyday_scale_en": "Precision-ground front face for 0.76 mm axial clearance calibration (1 ISO/IEC 7810 bank card)",
+    "telemetry_hooks": {
+      "marcy_sg_range": [
+        1.2,
+        1.85
+      ],
+      "plitt_d50_um_range": [
+        45,
+        420
+      ],
+      "wear_life_hours_range": [
+        2000,
+        4600
+      ]
+    },
+    "summary_es": "Revestimientos estáticos de extremo húmedo (cuello cónico E4083, plato frontal D4018, forro trasero R55 E4132 y voluta espiral D3110) para sellar la recirculación interna hacia el ojo del impulsor.",
+    "summary_en": "Static wet-end wear liners (E4083 conical throatbush, D4018 cover plate liner, E4132 R55 frame plate liner insert, and D3110 spiral volute) to seal internal eye recirculation.",
+    "warehouse_audit": {
+      "physical_audit_date": "2026-11-10",
+      "warehouse_total_mxn": 1646850,
+      "warehouse_total_units": 383,
+      "warehouse_active_sku_count": 35,
+      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
+      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
+      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/lainas-succion-y-platos-ah.webp",
+        "caption_es": "Forros de voluta, plato frontal y posterior Cr27 y R55",
+        "caption_en": "Cr27 and R55 volute, cover plate and frame plate liners"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/lainas-succion-y-platos-ah-v2.webp",
+        "caption_es": "Comparativa de revestimiento metálico A05 vs hule R55",
+        "caption_en": "A05 hard metal vs R55 molded elastomer liner comparison"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/lainas-succion-y-platos-ah-v3.webp",
+        "caption_es": "Revestimiento elastomérico moldeado con insertos",
+        "caption_en": "Molded elastomer cover plate liner with steel inserts"
+      }
+    ]
   },
   {
     "id": "SMAT-PUMP-EXPELLER-KIT",
@@ -989,7 +461,27 @@
       "availability_tier": "TIER_1_IN_PATIO_DURANGO",
       "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
       "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/kit-sellado-seco-expeller-ah.webp",
+        "caption_es": "Kit de sello seco dinámico con anillo y expulsor Cr27",
+        "caption_en": "Dry centrifugal seal kit with Cr27 expeller and ring"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/kit-sellado-seco-expeller-ah-v2.webp",
+        "caption_es": "Cartucho de sellado mecánico y bridas rectificadas",
+        "caption_en": "Precision machined mechanical seal cartridge & collars"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/kit-sellado-seco-expeller-ah-v3.webp",
+        "caption_es": "Álabes centrífugos mecanizados de alto cromo A05",
+        "caption_en": "Machined A05 high-chrome centrifugal expeller vanes"
+      }
+    ]
   },
   {
     "id": "SMAT-PUMP-BRG-005M",
@@ -1074,103 +566,111 @@
       "availability_tier": "TIER_1_IN_PATIO_DURANGO",
       "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
       "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/cartucho-rodamientos-005m.webp",
+        "caption_es": "Cartucho completo de rodamientos con eje SAE 4140",
+        "caption_en": "Complete heavy-duty bearing assembly cartridge with SAE 4140 shaft"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/cartucho-rodamientos-005m-v2.webp",
+        "caption_es": "Montaje en carcasa de hierro dúctil y ajuste axial",
+        "caption_en": "Ductile iron pedestal mounting and axial impeller adjustment"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/cartucho-rodamientos-005m-v3.webp",
+        "caption_es": "Flechas templadas y roscadas de repuesto serie AH",
+        "caption_en": "Hardened replacement alloy shafts for AH series pumps"
+      }
+    ]
   },
   {
-    "id": "SMAT-PUMP-LINERS-AH",
-    "sku_id": "SMAT-PUMP-LINERS-AH",
-    "legacy_sku_id": "SKU-QC-10",
-    "slug_es": "lainas-succion-y-platos-ah",
-    "slug_en": "throatbush-and-frame-plate-liners",
+    "id": "SMAT-COUPLED-PUMP-CYC",
+    "sku_id": "SMAT-COUPLED-PUMP-CYC",
+    "legacy_sku_id": "SKU-QC-12",
+    "slug_es": "paquete-casado-bomba-hidrociclon",
+    "slug_en": "coupled-pump-hydrocyclone-package",
     "aliases_es": [
-      "voluta-revestimiento-espiral-cr27",
-      "forros-carcasa-voluta-hule-r55",
-      "cuello-succion-throatbush-cr27",
-      "cuello-succion-throatbush-ajustable",
-      "forro-plato-trasero-fpl-elastomero-r55",
-      "plato-succion-frame-plate-liner-insert"
+      "paquete-casado-bomba-lodos-hidrociclon"
     ],
     "aliases_en": [
-      "spiral-volute-liner-cr27",
-      "volute-casing-rubber-liners-r55",
-      "suction-throatbush-cr27",
-      "adjustable-suction-throatbush",
-      "frame-plate-liner-insert-r55-elastomer",
-      "suction-frame-plate-liner-insert"
+      "married-slurry-pump-hydrocyclone-package"
     ],
     "vertical": "bombeo",
-    "avenue": "avenida_1_bombeo",
-    "secondary_avenues": [],
-    "stock_regime": "hay",
-    "availability_regime": "stock_durango",
-    "gate_lock": "G1",
-    "title_es": "Cuello de Succión (Throatbush), Platos de Desgaste (FPL Insert) y Voluta en Cr27 / Hule R55",
-    "title_en": "Suction Throatbush, Frame Plate Liner Inserts (FPL) & Volute Liners in Cr27 / R55 Rubber",
-    "oem_cross_ref": "E4083 / D4018 / E4132 / D3110 (Forros Estáticos de Cámara Húmeda 4x3 y 6x4 Drop-In)",
+    "avenue": "avenida_6a_paquete_casado",
+    "secondary_avenues": [
+      "avenida_1_bombeo",
+      "avenida_2_hidrociclones"
+    ],
+    "stock_regime": "se_fabrica",
+    "availability_regime": "make_to_order",
+    "gate_lock": "G2",
+    "title_es": "Paquete Casado Bomba de Lodos + Hidrociclón (4x3+D10, 6x4+D15 y 8x6+D20) Sincronizado 5:5:4",
+    "title_en": "Coupled Slurry Pump + Hydrocyclone Package (4x3+D10, 6x4+D15 & 8x6+D20) 5:5:4 Synchronized",
+    "oem_cross_ref": "SMAT-COUPLED-PUMP-CYC (Lote Húmedo 5:5:4 E4147/D3110/E4083/D4018 + Kit Ápex SiC y Vortex Finder)",
     "atomic_codes": [
+      "E4147",
+      "D3110",
       "E4083",
-      "D4018",
-      "E4132",
-      "D3110"
+      "D4018"
     ],
     "linked_atomic_codes": [
+      "E4147",
+      "D3110",
       "E4083",
-      "D4018",
-      "E4132",
-      "D3110"
+      "D4018"
     ],
-    "coupled_pair_sku": "SMAT-PUMP-IMP-AH",
+    "coupled_pair_sku": "SMAT-LAB-MARCY-1000",
     "reorder_window_days": 90,
-    "kit_id": 2,
-    "diagram_id": "volute_liner",
-    "secondary_diagram_id": "throatbush",
-    "diagram_aliases": [
-      "revestimientos",
-      "back-liner-d4032r55"
-    ],
-    "photo_webp": "/images/productos/lainas-succion-y-platos-ah.webp",
+    "kit_id": 1,
+    "diagram_id": "coupled_pump_cyclone",
+    "secondary_diagram_id": "bombeo",
+    "photo_webp": "/images/productos/paquete-casado-bomba-hidrociclon.webp",
     "default_material": "A05",
     "available_materials": [
       "A05",
-      "R55",
-      "PU",
-      "SiC"
+      "SiC",
+      "R55"
     ],
-    "mass_kg": 44,
-    "hardness_spec": "Cr27 A05 ≥ 650 HB (58–62 HRC) / Elastómero R55 (55 ± 5 Shore A, Resiliencia ≥ 70%)",
+    "mass_kg": 228,
+    "hardness_spec": "Extremo Húmedo Cr27 A05 (≥ 650 HB) + Inserto Ápex Carburo de Silicio (≥ 2200 HV)",
     "niosh_mode": "HOIST_REQUIRED",
     "geometric_triplet_mm": {
       "a_id_mm": 152.4,
-      "b_od_mm": 438,
-      "c_thickness_mm": 88.5,
+      "b_od_mm": 685,
+      "c_thickness_mm": 380,
       "tolerance_std": "ISO 2768-m",
-      "label_es": "A: Ø Succión 152.4 mm | B: Ø Asiento 438.0 mm | C: Espesor 88.5 mm",
-      "label_en": "A: Suction ID 152.4 mm | B: Seat OD 438.0 mm | C: Depth 88.5 mm"
+      "label_es": "A: Ø Succión Bomba 152.4 mm | B: Ø Voluta 685.0 mm | C: Ø Ciclón D15 380.0 mm",
+      "label_en": "A: Pump Suction 152.4 mm | B: Volute OD 685.0 mm | C: D15 Cyclone 380.0 mm"
     },
     "sat_tuple": {
-      "clave_prod_serv": "40151725",
+      "clave_prod_serv": "40151510",
       "clave_unidad": "H87",
       "uso_cfdi": "G03",
-      "fraccion_arancelaria": "8413.91.99.00"
+      "fraccion_arancelaria": "8413.70.99.00"
     },
-    "everyday_scale_es": "Cara frontal rectificada para ajuste de claro axial de 0.76 mm (1 tarjeta bancaria ISO/IEC 7810)",
-    "everyday_scale_en": "Precision-ground front face for 0.76 mm axial clearance calibration (1 ISO/IEC 7810 bank card)",
+    "everyday_scale_es": "Calibración simultánea de claro axial (0.76 mm, 1 tarjeta ISO/IEC 7810) y ápex SiC para sostener ΔP = 8–15 psi",
+    "everyday_scale_en": "Simultaneous axial clearance (0.76 mm, 1 ISO/IEC 7810 card) and SiC apex calibration to sustain ΔP = 8–15 psi",
     "telemetry_hooks": {
       "marcy_sg_range": [
-        1.2,
+        1.35,
         1.85
       ],
       "plitt_d50_um_range": [
         45,
-        420
+        210
       ],
       "wear_life_hours_range": [
-        2000,
-        4600
+        2600,
+        5200
       ]
     },
-    "summary_es": "Revestimientos estáticos de extremo húmedo (cuello cónico E4083, plato frontal D4018, forro trasero R55 E4132 y voluta espiral D3110) para sellar la recirculación interna hacia el ojo del impulsor.",
-    "summary_en": "Static wet-end wear liners (E4083 conical throatbush, D4018 cover plate liner, E4132 R55 frame plate liner insert, and D3110 spiral volute) to seal internal eye recirculation.",
+    "summary_es": "Solución acoplada de molienda-clasificación que restablece en una sola parada la presión de alimentación de la bomba y la geometría de corte d50c del hidrociclón, eliminando el cortocircuito hidráulico.",
+    "summary_en": "Coupled grinding-classification package that restores both slurry pump feed pressure and hydrocyclone d50c cut geometry in a single maintenance window, eliminating hydraulic short-circuiting.",
     "warehouse_audit": {
       "physical_audit_date": "2026-11-10",
       "warehouse_total_mxn": 1646850,
@@ -1179,7 +679,27 @@
       "availability_tier": "TIER_1_IN_PATIO_DURANGO",
       "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
       "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/paquete-casado-bomba-hidrociclon.webp",
+        "caption_es": "Bomba centrífuga de lodos 8x6 armada para batería de ciclones",
+        "caption_en": "8x6 horizontal slurry pump staged for hydrocyclone feed"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/paquete-casado-bomba-hidrociclon-v2.webp",
+        "caption_es": "Descarga bridada ANSI y transmisión acoplada sobre base",
+        "caption_en": "Flanged discharge and coupled drive on structural base"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/paquete-casado-bomba-hidrociclon-v3.webp",
+        "caption_es": "Conjunto completo inspeccionado en patio de Durango",
+        "caption_en": "Inspected heavy-duty slurry pump unit in Durango yard"
+      }
+    ]
   },
   {
     "id": "SMAT-CYC-D6-D20",
@@ -1280,100 +800,27 @@
       "availability_tier": "TIER_1_IN_PATIO_DURANGO",
       "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
       "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
-  },
-  {
-    "id": "SMAT-COUPLED-PUMP-CYC",
-    "sku_id": "SMAT-COUPLED-PUMP-CYC",
-    "legacy_sku_id": "SKU-QC-12",
-    "slug_es": "paquete-casado-bomba-hidrociclon",
-    "slug_en": "coupled-pump-hydrocyclone-package",
-    "aliases_es": [
-      "paquete-casado-bomba-lodos-hidrociclon"
-    ],
-    "aliases_en": [
-      "married-slurry-pump-hydrocyclone-package"
-    ],
-    "vertical": "bombeo",
-    "avenue": "avenida_6a_paquete_casado",
-    "secondary_avenues": [
-      "avenida_1_bombeo",
-      "avenida_2_hidrociclones"
-    ],
-    "stock_regime": "se_fabrica",
-    "availability_regime": "make_to_order",
-    "gate_lock": "G2",
-    "title_es": "Paquete Casado Bomba de Lodos + Hidrociclón (4x3+D10, 6x4+D15 y 8x6+D20) Sincronizado 5:5:4",
-    "title_en": "Coupled Slurry Pump + Hydrocyclone Package (4x3+D10, 6x4+D15 & 8x6+D20) 5:5:4 Synchronized",
-    "oem_cross_ref": "SMAT-COUPLED-PUMP-CYC (Lote Húmedo 5:5:4 E4147/D3110/E4083/D4018 + Kit Ápex SiC y Vortex Finder)",
-    "atomic_codes": [
-      "E4147",
-      "D3110",
-      "E4083",
-      "D4018"
-    ],
-    "linked_atomic_codes": [
-      "E4147",
-      "D3110",
-      "E4083",
-      "D4018"
-    ],
-    "coupled_pair_sku": "SMAT-LAB-MARCY-1000",
-    "reorder_window_days": 90,
-    "kit_id": 1,
-    "diagram_id": "coupled_pump_cyclone",
-    "secondary_diagram_id": "bombeo",
-    "photo_webp": "/images/productos/paquete-casado-bomba-hidrociclon.webp",
-    "default_material": "A05",
-    "available_materials": [
-      "A05",
-      "SiC",
-      "R55"
-    ],
-    "mass_kg": 228,
-    "hardness_spec": "Extremo Húmedo Cr27 A05 (≥ 650 HB) + Inserto Ápex Carburo de Silicio (≥ 2200 HV)",
-    "niosh_mode": "HOIST_REQUIRED",
-    "geometric_triplet_mm": {
-      "a_id_mm": 152.4,
-      "b_od_mm": 685,
-      "c_thickness_mm": 380,
-      "tolerance_std": "ISO 2768-m",
-      "label_es": "A: Ø Succión Bomba 152.4 mm | B: Ø Voluta 685.0 mm | C: Ø Ciclón D15 380.0 mm",
-      "label_en": "A: Pump Suction 152.4 mm | B: Volute OD 685.0 mm | C: D15 Cyclone 380.0 mm"
     },
-    "sat_tuple": {
-      "clave_prod_serv": "40151510",
-      "clave_unidad": "H87",
-      "uso_cfdi": "G03",
-      "fraccion_arancelaria": "8413.70.99.00"
-    },
-    "everyday_scale_es": "Calibración simultánea de claro axial (0.76 mm, 1 tarjeta ISO/IEC 7810) y ápex SiC para sostener ΔP = 8–15 psi",
-    "everyday_scale_en": "Simultaneous axial clearance (0.76 mm, 1 ISO/IEC 7810 card) and SiC apex calibration to sustain ΔP = 8–15 psi",
-    "telemetry_hooks": {
-      "marcy_sg_range": [
-        1.35,
-        1.85
-      ],
-      "plitt_d50_um_range": [
-        45,
-        210
-      ],
-      "wear_life_hours_range": [
-        2600,
-        5200
-      ]
-    },
-    "summary_es": "Solución acoplada de molienda-clasificación que restablece en una sola parada la presión de alimentación de la bomba y la geometría de corte d50c del hidrociclón, eliminando el cortocircuito hidráulico.",
-    "summary_en": "Coupled grinding-classification package that restores both slurry pump feed pressure and hydrocyclone d50c cut geometry in a single maintenance window, eliminating hydraulic short-circuiting.",
-    "warehouse_audit": {
-      "physical_audit_date": "2026-11-10",
-      "warehouse_total_mxn": 1646850,
-      "warehouse_total_units": 383,
-      "warehouse_active_sku_count": 35,
-      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
-      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
-      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/hidrociclon-completo-y-boquillas-d6-d20.webp",
+        "caption_es": "Batería radial de hidrociclones y cabezal distribuidor",
+        "caption_en": "Radial hydrocyclone cluster with distributor manifold"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/hidrociclon-completo-y-boquillas-d6-d20-v2.webp",
+        "caption_es": "Hidrociclones con forro interno reemplazable en campo",
+        "caption_en": "Field-ready hydrocyclones with replaceable wear liners"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/hidrociclon-completo-y-boquillas-d6-d20-v3.webp",
+        "caption_es": "Cuerpo modular con cono superior, medio e inferior y ápex",
+        "caption_en": "Modular cyclone stack with upper/lower cones & apex"
+      }
+    ]
   },
   {
     "id": "SMAT-SCR-TH48-30",
@@ -1452,7 +899,27 @@
       "availability_tier": "TIER_1_IN_PATIO_DURANGO",
       "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
       "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/mallas-finas-uretano-th48-30.webp",
+        "caption_es": "Panel de cribado fino de alta área abierta en poliuretano",
+        "caption_en": "High open-area fine screening panel in abrasion-resistant urethane"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/mallas-finas-uretano-th48-30-v2.webp",
+        "caption_es": "Control de abertura calibrada para corte en malla fina",
+        "caption_en": "Calibrated aperture inspection for fine dewatering cut"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/mallas-finas-uretano-th48-30-v3.webp",
+        "caption_es": "Lote de refacciones y paneles modulares en tarima",
+        "caption_en": "Palletized modular screening panels & inserts in warehouse"
+      }
+    ]
   },
   {
     "id": "SMAT-SCR-MOD-1X1",
@@ -1531,7 +998,27 @@
       "availability_tier": "TIER_1_IN_PATIO_DURANGO",
       "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
       "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/modulos-poliuretano-1x1-pin-camisa.webp",
+        "caption_es": "Módulos 1'×1' de poliuretano con kit pin y camisa",
+        "caption_en": "1'×1' modular polyurethane deck panels with pin & sleeve kit"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/modulos-poliuretano-1x1-pin-camisa-v2.webp",
+        "caption_es": "Detalle de fijación rápida pin-camisa libre de soldadura",
+        "caption_en": "Weld-free pin and sleeve rapid locking fastener detail"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/modulos-poliuretano-1x1-pin-camisa-v3.webp",
+        "caption_es": "Juego de repuestos de fijación para cubiertas modulares",
+        "caption_en": "Replacement deck fastening pin and sleeve hardware set"
+      }
+    ]
   },
   {
     "id": "SMAT-FILT-CLOTH-PLATE",
@@ -1645,7 +1132,27 @@
       "availability_tier": "TIER_2_SCHEDULED_PRODUCTION",
       "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
       "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/lonas-y-placas-filtro-prensa-16bar.webp",
+        "caption_es": "Paquete de placas 16 bar en polipropileno virgen con lonas",
+        "caption_en": "16-bar virgin polypropylene filter plate pack with cloths"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/lonas-y-placas-filtro-prensa-16bar-v2.webp",
+        "caption_es": "Alineación lateral de placas en viga principal",
+        "caption_en": "Side-bar alignment of filter plates on press beam"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/lonas-y-placas-filtro-prensa-16bar-v3.webp",
+        "caption_es": "Cabeza hidráulica de cierre y banco de filtrado",
+        "caption_en": "Hydraulic closing ram and filtrate manifold bank"
+      }
+    ]
   },
   {
     "id": "SMAT-FILT-SHIFTER-CHAIN",
@@ -1725,7 +1232,27 @@
       "availability_tier": "TIER_1_IN_PATIO_DURANGO",
       "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
       "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/mecanismo-plate-shifter-y-cadenas.webp",
+        "caption_es": "Mecanismo corre-placas (Plate Shifter) y cadena arrastre",
+        "caption_en": "Automatic plate shifter carriage and roller chain drive"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/mecanismo-plate-shifter-y-cadenas-v2.webp",
+        "caption_es": "Carro transmisor sobre viga lateral con motorreductor",
+        "caption_en": "Side-beam shifter carriage and geared drive detail"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/mecanismo-plate-shifter-y-cadenas-v3.webp",
+        "caption_es": "Conjunto completo de riel, uñas y tensores de cadena",
+        "caption_en": "Complete shifter rail, pawls and chain tension assembly"
+      }
+    ]
   },
   {
     "id": "SMAT-FLOT-MECH-18SP",
@@ -1819,6 +1346,859 @@
       "availability_tier": "TIER_2_SCHEDULED_PRODUCTION",
       "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
       "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
-    }
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/mecanismo-suspendido-flotacion-18sp.webp",
+        "caption_es": "Celda de flotación con mecanismo suspendido #18 SP / #24 / #30",
+        "caption_en": "Flotation tank cell with suspended #18 SP / #24 / #30 mechanism"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/mecanismo-suspendido-flotacion-18sp-v2.webp",
+        "caption_es": "Corte interno de estator radial, rotor y tubo camisa",
+        "caption_en": "Internal view of radial stator, rotor and standpipe"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/mecanismo-suspendido-flotacion-18sp-v3.webp",
+        "caption_es": "Puente motriz de 15 HP ensamblado en taller",
+        "caption_en": "15 HP drive bridge and standpipe assembled in shop"
+      }
+    ]
+  },
+  {
+    "id": "SMAT-LAB-MARCY-1000",
+    "sku_id": "SMAT-LAB-MARCY-1000",
+    "legacy_sku_id": "SKU-QC-19",
+    "slug_es": "balanza-marcy",
+    "slug_en": "marcy-pulp-density-scale",
+    "aliases_es": [
+      "bascula-densidad-pulpa-marcy-tamices-astm",
+      "instrumentacion-marcy-tamices-astm-e11"
+    ],
+    "aliases_en": [
+      "marcy-pulp-density-scale-astm-sieve-kit",
+      "marcy-scale-astm-e11-sieves"
+    ],
+    "vertical": "control",
+    "avenue": "avenida_5_laboratorio",
+    "secondary_avenues": [
+      "avenida_2_hidrociclones",
+      "avenida_1_bombeo"
+    ],
+    "stock_regime": "hay",
+    "availability_regime": "stock_durango",
+    "gate_lock": "G3",
+    "title_es": "Balanza de Densidad de Pulpa Tipo Marcy con Vaso de 1000 mL",
+    "title_en": "Marcy-Type Pulp Density Scale with 1000 mL Slurry Cup",
+    "oem_cross_ref": "SMAT-LAB-MARCY-1000 (Carátula 12 Anillos Gravedad Específica 1.2 a 7.8 + Vaso 1000 cm³)",
+    "atomic_codes": [],
+    "linked_atomic_codes": [],
+    "coupled_pair_sku": "SMAT-LAB-VASO-1000",
+    "reorder_window_days": 365,
+    "kit_id": 4,
+    "diagram_id": "marcy_scale",
+    "secondary_diagram_id": "soporte",
+    "photo_webp": "/images/productos/balanza-marcy.webp",
+    "default_material": "A49",
+    "available_materials": [
+      "A49",
+      "A05"
+    ],
+    "config_options_es": [
+      {
+        "value": "A49",
+        "label": "INOX-304 — Vaso Calibrado Acero Inoxidable 304 (1000 cm³) + 12 Anillos SG (2.2 a 4.4)"
+      },
+      {
+        "value": "A05",
+        "label": "KIT-2VASOS — Balanza Marcy + 2 Vasos 1000 cm³ (Inox 304 + Acrílico) para Balance 3 Vasos"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "A49",
+        "label": "SS-304 — Calibrated 304 Stainless Steel Cup (1000 cm³) + 12 SG Rings (2.2 to 4.4)"
+      },
+      {
+        "value": "A05",
+        "label": "2-CUP-KIT — Marcy Scale + 2 Cups 1000 cm³ (304 SS + Acrylic) for 3-Cup Cyclone Balance"
+      }
+    ],
+    "mass_kg": 6.5,
+    "hardness_spec": "Carátula sellada + Vaso calibrado 1000 cm³ ±0.5 cm³ en Acero Inoxidable 304/316L",
+    "niosh_mode": "MANUAL_SAFE",
+    "geometric_triplet_mm": {
+      "a_id_mm": 105,
+      "b_od_mm": 254,
+      "c_thickness_mm": 185,
+      "tolerance_std": "ISO 2768-m",
+      "label_es": "A: Ø Vaso 105.0 mm | B: Ø Carátula 254.0 mm | C: Altura Vaso 185.0 mm",
+      "label_en": "A: Cup ID 105.0 mm | B: Dial OD 254.0 mm | C: Cup Height 185.0 mm"
+    },
+    "sat_tuple": {
+      "clave_prod_serv": "41111500",
+      "clave_unidad": "H87",
+      "uso_cfdi": "I04",
+      "fraccion_arancelaria": "9016.00.99.00"
+    },
+    "everyday_scale_es": "Espesor de aguja y carátula calibrada: 0.76 mm (1 tarjeta bancaria ISO/IEC 7810) para lectura directa sin paralaje",
+    "everyday_scale_en": "Calibrated pointer and dial clearance: 0.76 mm (1 ISO/IEC 7810 bank card) for zero-parallax direct reading",
+    "telemetry_hooks": {
+      "marcy_sg_range": [
+        1.05,
+        2.2
+      ],
+      "plitt_d50_um_range": [
+        38,
+        850
+      ],
+      "wear_life_hours_range": [
+        8000,
+        20000
+      ]
+    },
+    "summary_es": "Báscula metalúrgica de suspensión para lectura directa de gravedad específica de pulpa (Sf, Su, So) y porcentaje de sólidos en peso (%Cw) sin tablas externas en circuitos de molienda e hidrociclones.",
+    "summary_en": "Hanging metallurgical pulp scale for direct reading of slurry specific gravity (Sf, Su, So) and percent solids by weight (%Cw) without external charts across grinding and hydrocyclone circuits.",
+    "warehouse_audit": {
+      "physical_audit_date": "2026-11-10",
+      "warehouse_total_mxn": 1646850,
+      "warehouse_total_units": 383,
+      "warehouse_active_sku_count": 35,
+      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
+      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
+      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/balanza-marcy.webp",
+        "caption_es": "Carátula graduada de lectura directa en gravedad específica",
+        "caption_en": "Direct-reading pulp density and specific gravity dial face"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/balanza-marcy-v2.webp",
+        "caption_es": "Balanza Marcy con vaso inoxidable de 1,000 ml ensamblado",
+        "caption_en": "Marcy scale assembly with 1,000 ml stainless steel cup"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/balanza-marcy-v3.webp",
+        "caption_es": "Equipo calibrado en mostrador listo para despacho",
+        "caption_en": "Bench-calibrated unit ready for immediate dispatch"
+      }
+    ]
+  },
+  {
+    "id": "SMAT-LAB-VASO-1000",
+    "sku_id": "SMAT-LAB-VASO-1000",
+    "legacy_sku_id": "SKU-QC-02",
+    "slug_es": "vaso-balanza-marcy-1000ml",
+    "slug_en": "marcy-scale-cup-1000ml",
+    "aliases_es": [
+      "vaso-marcy-acero-inoxidable-1000ml"
+    ],
+    "aliases_en": [
+      "stainless-steel-marcy-cup-1000ml"
+    ],
+    "vertical": "control",
+    "avenue": "avenida_5_laboratorio",
+    "secondary_avenues": [
+      "avenida_2_hidrociclones"
+    ],
+    "stock_regime": "hay",
+    "availability_regime": "stock_durango",
+    "gate_lock": "G3",
+    "title_es": "Vaso Calibrado de 1000 mL en Acero Inoxidable 304 / Acrílico para Balanza Marcy",
+    "title_en": "1000 mL Calibrated 304 Stainless Steel / Acrylic Cup for Marcy Pulp Scale",
+    "oem_cross_ref": "SMAT-LAB-VASO-1000 (Capacidad Volumétrica 1000 cm³ con Orificios de Rebose)",
+    "atomic_codes": [],
+    "linked_atomic_codes": [],
+    "coupled_pair_sku": "SMAT-LAB-MARCY-1000",
+    "reorder_window_days": 180,
+    "kit_id": 4,
+    "diagram_id": "marcy_scale",
+    "secondary_diagram_id": "clasificacion",
+    "photo_webp": "/images/productos/vaso-balanza-marcy-1000ml.webp",
+    "default_material": "A49",
+    "available_materials": [
+      "A49",
+      "PU"
+    ],
+    "config_options_es": [
+      {
+        "value": "A49",
+        "label": "INOX-304 — Vaso de 1000 mL en Acero Inoxidable 304 con Ranuras de Enrase (Molienda / Ciclones)"
+      },
+      {
+        "value": "PU",
+        "label": "ACRILICO-1000 — Vaso de 1000 mL en Acrílico de Alto Impacto Transparente (Flotación / Espesadores)"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "A49",
+        "label": "SS-304 — 1000 mL 304 Stainless Steel Slurry Cup with Overflow Slots (Grinding / Cyclones)"
+      },
+      {
+        "value": "PU",
+        "label": "ACRYLIC-1000 — 1000 mL High-Impact Clear Acrylic Slurry Cup (Flotation / Thickeners)"
+      }
+    ],
+    "mass_kg": 1.2,
+    "hardness_spec": "Acero Inoxidable 304 / 316L con volumen 1000.0 ± 0.5 cm³ y asa de suspensión calibrada",
+    "niosh_mode": "MANUAL_SAFE",
+    "geometric_triplet_mm": {
+      "a_id_mm": 100,
+      "b_od_mm": 104,
+      "c_thickness_mm": 165,
+      "tolerance_std": "ISO 2768-m",
+      "label_es": "A: Ø Interior 100.0 mm | B: Ø Exterior 104.0 mm | C: Altura Rebose 165.0 mm",
+      "label_en": "A: Inner ID 100.0 mm | B: Outer OD 104.0 mm | C: Overflow Height 165.0 mm"
+    },
+    "sat_tuple": {
+      "clave_prod_serv": "41121800",
+      "clave_unidad": "H87",
+      "uso_cfdi": "G03",
+      "fraccion_arancelaria": "9016.00.99.00"
+    },
+    "everyday_scale_es": "Pared de acero inoxidable de 1.52 mm (2 tarjetas bancarias ISO/IEC 7810) resistente a abolladuras en muestreo de planta",
+    "everyday_scale_en": "1.52 mm stainless steel wall (2 ISO/IEC 7810 bank cards) dent-resistant during plant slurry sampling",
+    "telemetry_hooks": {
+      "marcy_sg_range": [
+        1.05,
+        2.2
+      ],
+      "plitt_d50_um_range": [
+        38,
+        850
+      ],
+      "wear_life_hours_range": [
+        4000,
+        9000
+      ]
+    },
+    "summary_es": "Recipiente cilíndrico de 1000 mL exactos con ranuras laterales de enrase para muestreo rápido de alimentación, descarga (underflow) y rebose (overflow) en el balance de 3 vasos de hidrociclones.",
+    "summary_en": "Precision 1000 mL cylindrical slurry cup with side overflow slots for rapid sampling of cyclone feed, underflow, and overflow in 3-cup metallurgical mass balances.",
+    "warehouse_audit": {
+      "physical_audit_date": "2026-11-10",
+      "warehouse_total_mxn": 1646850,
+      "warehouse_total_units": 383,
+      "warehouse_active_sku_count": 35,
+      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
+      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
+      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/vaso-balanza-marcy-1000ml.webp",
+        "caption_es": "Vaso taredo 1,000 ml en acero inoxidable con asas",
+        "caption_en": "Tared 1,000 ml stainless steel slurry cup with bail"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/vaso-balanza-marcy-1000ml-v2.webp",
+        "caption_es": "Cilindro de acero inoxidable de espesor calibrado",
+        "caption_en": "Calibrated stainless steel sample cylinder"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/vaso-balanza-marcy-1000ml-v3.webp",
+        "caption_es": "Orificios de enrase exacto a 1,000 ml en borde superior",
+        "caption_en": "Precision 1,000 ml overflow ports on upper rim"
+      }
+    ]
+  },
+  {
+    "id": "SMAT-LAB-TAMIZ-E11",
+    "sku_id": "SMAT-LAB-TAMIZ-E11",
+    "legacy_sku_id": "SKU-QC-03",
+    "slug_es": "tamices-certificados-astm-e11",
+    "slug_en": "astm-e11-certified-test-sieves",
+    "aliases_es": [
+      "mallas-tamices-laboratorio-astm-e11"
+    ],
+    "aliases_en": [
+      "laboratory-test-sieves-astm-e11"
+    ],
+    "vertical": "control",
+    "avenue": "avenida_5_laboratorio",
+    "secondary_avenues": [
+      "avenida_3_cribas_mallas"
+    ],
+    "stock_regime": "hay",
+    "availability_regime": "stock_durango",
+    "gate_lock": "G3",
+    "title_es": "Tamices de Prueba Certificados ASTM E11 de 8\" en Acero Inoxidable (#100 a #635)",
+    "title_en": "8\" ASTM E11 Certified Stainless Steel Test Sieves (#100 to #635 Mesh)",
+    "oem_cross_ref": "SMAT-LAB-TAMIZ-E11 (Bastidor 8\" Ø 203.2 mm sin Costuras · Mallas #100, #140, #200, #270, #325, #400, #635)",
+    "atomic_codes": [],
+    "linked_atomic_codes": [],
+    "coupled_pair_sku": "SMAT-LAB-ROTAP-MECH",
+    "reorder_window_days": 120,
+    "kit_id": 4,
+    "diagram_id": "astm_sieves",
+    "secondary_diagram_id": "clasificacion",
+    "photo_webp": "/images/productos/tamices-certificados-astm-e11.webp",
+    "default_material": "A49",
+    "available_materials": [
+      "A49"
+    ],
+    "config_options_es": [
+      {
+        "value": "A49",
+        "label": "ASTM-E11-8IN — Serie Mallas Inox 316L #100 a #400 (Ø 8\" · 203.2 mm) + Tapa y Fondo"
+      },
+      {
+        "value": "MESH-200",
+        "label": "MALLA-200 — Tamiz Individual de Control P80 Malla #200 (75 µm · Acero Inox 316L ASTM E11)"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "A49",
+        "label": "ASTM-E11-8IN — 316L Stainless Sieve Stack #100 to #400 (Ø 8\" · 203.2 mm) + Cover & Pan"
+      },
+      {
+        "value": "MESH-200",
+        "label": "MESH-200 — Single P80 Control Test Sieve #200 Mesh (75 µm · 316L SS ASTM E11)"
+      }
+    ],
+    "mass_kg": 0.45,
+    "hardness_spec": "Malla tejida en Acero Inoxidable 316L tensada ópticamente bajo norma ASTM E11 / ISO 3310-1",
+    "niosh_mode": "MANUAL_SAFE",
+    "geometric_triplet_mm": {
+      "a_id_mm": 203.2,
+      "b_od_mm": 210,
+      "c_thickness_mm": 50.8,
+      "tolerance_std": "ISO 2768-m",
+      "label_es": "A: Ø Tamiz 203.2 mm (8\") | B: Ø Aro 210.0 mm | C: Altura 50.8 mm (2\")",
+      "label_en": "A: Sieve ID 203.2 mm (8\") | B: Rim OD 210.0 mm | C: Full Height 50.8 mm (2\")"
+    },
+    "sat_tuple": {
+      "clave_prod_serv": "41104800",
+      "clave_unidad": "H87",
+      "uso_cfdi": "G03",
+      "fraccion_arancelaria": "9027.89.99.00"
+    },
+    "everyday_scale_es": "Abertura Malla #200 (75 µm) = 1/10 del grosor de 1 tarjeta bancaria ISO/IEC 7810 (0.76 mm)",
+    "everyday_scale_en": "Mesh #200 opening (75 µm) = 1/10th the thickness of 1 ISO/IEC 7810 bank card (0.76 mm)",
+    "telemetry_hooks": {
+      "marcy_sg_range": [
+        1.1,
+        2.1
+      ],
+      "plitt_d50_um_range": [
+        20,
+        250
+      ],
+      "wear_life_hours_range": [
+        2000,
+        5000
+      ]
+    },
+    "summary_es": "Serie de tamices granulométricos de 8 pulgadas en acero inoxidable con certificado individual de cumplimiento ASTM E11 para auditoría de molienda P80 y eficiencia de clasificación en hidrociclones.",
+    "summary_en": "8-inch stainless steel test sieve series with individual ASTM E11 compliance certificates for grinding P80 auditing and hydrocyclone classification efficiency verification.",
+    "warehouse_audit": {
+      "physical_audit_date": "2026-11-10",
+      "warehouse_total_mxn": 1646850,
+      "warehouse_total_units": 383,
+      "warehouse_active_sku_count": 35,
+      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
+      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
+      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/tamices-certificados-astm-e11.webp",
+        "caption_es": "Tamiz certificado ASTM E11 de 8 pulgadas en bronce",
+        "caption_en": "8-inch ASTM E11 certified brass test sieve"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/tamices-certificados-astm-e11-v2.webp",
+        "caption_es": "Malla #30 serie Tyler / ASTM E11 para corte P80",
+        "caption_en": "No. 30 mesh Tyler / ASTM E11 sieve for P80 control"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/tamices-certificados-astm-e11-v3.webp",
+        "caption_es": "Placa de identificación e integridad de soldadura en malla",
+        "caption_en": "Serial identification plate and perimeter mesh solder"
+      }
+    ]
+  },
+  {
+    "id": "SMAT-LAB-ROTAP-MECH",
+    "sku_id": "SMAT-LAB-ROTAP-MECH",
+    "legacy_sku_id": "SKU-QC-04",
+    "slug_es": "tamizador-mecanico-laboratorio",
+    "slug_en": "mechanical-sieve-shaker",
+    "aliases_es": [
+      "rotap-tamizador-mecanico-duratap"
+    ],
+    "aliases_en": [
+      "rotap-mechanical-test-sieve-shaker"
+    ],
+    "vertical": "control",
+    "avenue": "avenida_5_laboratorio",
+    "secondary_avenues": [
+      "avenida_3_cribas_mallas"
+    ],
+    "stock_regime": "se_pide",
+    "availability_regime": "fast_assembly",
+    "gate_lock": "G3",
+    "title_es": "Tamizador Mecánico Orbital con Martillo Percutor (Tipo Ro-Tap) para Tamices de 8\"",
+    "title_en": "Orbital Mechanical Sieve Shaker with Tapping Hammer (Ro-Tap Style) for 8\" Sieves",
+    "oem_cross_ref": "SMAT-LAB-ROTAP-MECH (278 Oscilaciones/min + 150 Golpes/min · Capacidad 6 Tamices + Fondo)",
+    "atomic_codes": [],
+    "linked_atomic_codes": [],
+    "coupled_pair_sku": "SMAT-LAB-TAMIZ-E11",
+    "reorder_window_days": 365,
+    "kit_id": 4,
+    "diagram_id": "astm_sieves",
+    "secondary_diagram_id": "soporte",
+    "photo_webp": "/images/productos/tamizador-mecanico-laboratorio.webp",
+    "default_material": "A05",
+    "available_materials": [
+      "A05",
+      "A49"
+    ],
+    "config_options_es": [
+      {
+        "value": "A05",
+        "label": "ROTAP-8IN — Tamizador Orbital con Martillo Percutor para 6 Tamices de 8\" (110V / 220V 60Hz)"
+      },
+      {
+        "value": "A49",
+        "label": "ROTAP-KIT-E11 — Tamizador Orbital + Columna de 6 Tamices ASTM E11 Inox 316L (#100 a #400)"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "A05",
+        "label": "ROTAP-8IN — Orbital Sieve Shaker with Tapping Hammer for 6 × 8\" Sieves (110V / 220V 60Hz)"
+      },
+      {
+        "value": "A49",
+        "label": "ROTAP-KIT-E11 — Orbital Sieve Shaker + 6-Sieve ASTM E11 316L SS Stack (#100 to #400)"
+      }
+    ],
+    "mass_kg": 82,
+    "hardness_spec": "Leva y engranaje en acero tratado térmicamente 55 HRC + Amortiguadores de neopreno",
+    "niosh_mode": "HOIST_REQUIRED",
+    "geometric_triplet_mm": {
+      "a_id_mm": 203.2,
+      "b_od_mm": 710,
+      "c_thickness_mm": 640,
+      "tolerance_std": "ISO 2768-m",
+      "label_es": "A: Ø Columna 203.2 mm (8\") | B: Base 710.0 mm | C: Altura 640.0 mm",
+      "label_en": "A: Sieve Stack 203.2 mm (8\") | B: Base 710.0 mm | C: Height 640.0 mm"
+    },
+    "sat_tuple": {
+      "clave_prod_serv": "41104800",
+      "clave_unidad": "H87",
+      "uso_cfdi": "I04",
+      "fraccion_arancelaria": "8474.10.99.00"
+    },
+    "everyday_scale_es": "Holgura libre de caída del martillo percutor: 1.52 mm (2 tarjetas bancarias ISO/IEC 7810) para energía de impacto repetible",
+    "everyday_scale_en": "Hammer tap drop clearance: 1.52 mm (2 ISO/IEC 7810 bank cards) for repeatable tapping impact energy",
+    "telemetry_hooks": {
+      "marcy_sg_range": [
+        1.2,
+        2
+      ],
+      "plitt_d50_um_range": [
+        38,
+        500
+      ],
+      "wear_life_hours_range": [
+        10000,
+        25000
+      ]
+    },
+    "summary_es": "Agitador mecánico de laboratorio que combina movimiento circular horizontal con percusión vertical sincronizada para garantizar análisis granulométricos reproducibles según normas ASTM.",
+    "summary_en": "Laboratory mechanical sieve shaker combining horizontal circular motion with synchronized vertical tapping to ensure reproducible particle-size distributions per ASTM standards.",
+    "warehouse_audit": {
+      "physical_audit_date": "2026-11-10",
+      "warehouse_total_mxn": 1646850,
+      "warehouse_total_units": 383,
+      "warehouse_active_sku_count": 35,
+      "availability_tier": "TIER_2_SCHEDULED_PRODUCTION",
+      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
+      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/tamizador-mecanico-laboratorio.webp",
+        "caption_es": "Tamizador mecánico rotativo y golpeteo vertical",
+        "caption_en": "Rotary and vertical tapping mechanical sieve shaker"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/tamizador-mecanico-laboratorio-v2.webp",
+        "caption_es": "Tapa superior y plato receptor para torre de tamices",
+        "caption_en": "Brass cover and receiver pan for 8-inch sieve stack"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/tamizador-mecanico-laboratorio-v3.webp",
+        "caption_es": "Accesorios y juegos de mallas calibradas ASTM E11",
+        "caption_en": "Accessory stack of ASTM E11 calibrated wire sieves"
+      }
+    ]
+  },
+  {
+    "id": "SMAT-LAB-PLATO-TENT",
+    "sku_id": "SMAT-LAB-PLATO-TENT",
+    "legacy_sku_id": "SKU-QC-07",
+    "slug_es": "plato-tentadura-metalurgico",
+    "slug_en": "metallurgical-gold-pan",
+    "aliases_es": [
+      "plato-tentadura"
+    ],
+    "aliases_en": [
+      "concentrate-panning-dish"
+    ],
+    "vertical": "control",
+    "avenue": "avenida_5_laboratorio",
+    "secondary_avenues": [
+      "avenida_4_flotacion_valvulas"
+    ],
+    "stock_regime": "hay",
+    "availability_regime": "stock_durango",
+    "gate_lock": "G3",
+    "title_es": "Plato de Tentadura Metalúrgico con Riflas Desbastadoras para Control en Celdas y Mesas",
+    "title_en": "Metallurgical Panning Dish with Rougher Riffles for Flotation & Gravity Control",
+    "oem_cross_ref": "SMAT-LAB-PLATO-TENT (Polímero Negro/Azul de Alto Contraste con 3 Riflas de Retención)",
+    "atomic_codes": [],
+    "linked_atomic_codes": [],
+    "coupled_pair_sku": "SMAT-LAB-VASO-1000",
+    "reorder_window_days": 180,
+    "kit_id": 2,
+    "diagram_id": "lab_comminution_pan",
+    "secondary_diagram_id": "flotacion",
+    "photo_webp": "/images/productos/plato-tentadura-metalurgico.webp",
+    "default_material": "PU",
+    "available_materials": [
+      "PU",
+      "R55"
+    ],
+    "config_options_es": [
+      {
+        "value": "PU",
+        "label": "POLIMERO-14IN — Plato de Tentadura Negro/Azul Antirreflejo Ø 14\" (355 mm) con 3 Riflas"
+      },
+      {
+        "value": "R55",
+        "label": "HULE- ESTRIADO — Plato de Tentadura en Hule Natural Vulcanizado para Inspección de Sulfuros"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "PU",
+        "label": "POLYMER-14IN — Matte Black/Blue Ø 14\" (355 mm) Panning Dish with 3 Rougher Riffles"
+      },
+      {
+        "value": "R55",
+        "label": "RUBBER-RIFFLED — Vulcanized Natural Rubber Panning Dish for Sulfide Tailings Inspection"
+      }
+    ],
+    "mass_kg": 0.38,
+    "hardness_spec": "Polímero de Alto Impacto Resistente a Xantatos y Espumantes con Superficie Mate Antirreflejo",
+    "niosh_mode": "MANUAL_SAFE",
+    "geometric_triplet_mm": {
+      "a_id_mm": 180,
+      "b_od_mm": 355.6,
+      "c_thickness_mm": 76.2,
+      "tolerance_std": "ISO 2768-m",
+      "label_es": "A: Ø Fondo 180.0 mm | B: Ø Superior 355.6 mm (14\") | C: Profundidad 76.2 mm",
+      "label_en": "A: Bottom ID 180.0 mm | B: Top OD 355.6 mm (14\") | C: Depth 76.2 mm"
+    },
+    "sat_tuple": {
+      "clave_prod_serv": "41104800",
+      "clave_unidad": "H87",
+      "uso_cfdi": "G03",
+      "fraccion_arancelaria": "3926.90.99.00"
+    },
+    "everyday_scale_es": "Escalón de rifla concentradora: 1.52 mm (2 tarjetas bancarias ISO/IEC 7810) para retener sulfuros pesados y oro libre",
+    "everyday_scale_en": "Concentrating riffle step: 1.52 mm (2 ISO/IEC 7810 bank cards) to trap heavy sulfides and free gold",
+    "telemetry_hooks": {
+      "marcy_sg_range": [
+        1.15,
+        1.85
+      ],
+      "plitt_d50_um_range": [
+        20,
+        300
+      ],
+      "wear_life_hours_range": [
+        3000,
+        8000
+      ]
+    },
+    "summary_es": "Batea de tentadura de alto contraste óptico utilizada por operadores de flotación y molienda para inspección visual inmediata de colas, arrastre de sulfuros y liberación mineral en banco de celdas.",
+    "summary_en": "High-contrast metallurgical panning dish used by flotation and grinding operators for instant visual inspection of tailings losses, sulfide carryover, and mineral liberation at the cell bank.",
+    "warehouse_audit": {
+      "physical_audit_date": "2026-11-10",
+      "warehouse_total_mxn": 1646850,
+      "warehouse_total_units": 383,
+      "warehouse_active_sku_count": 35,
+      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
+      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
+      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/plato-tentadura-metalurgico.webp",
+        "caption_es": "Platos de tentadura en acero inoxidable grado laboratorio",
+        "caption_en": "Stainless steel laboratory gold panning dishes"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/plato-tentadura-metalurgico-v2.webp",
+        "caption_es": "Prueba en húmedo con concentrado mineral en planta",
+        "caption_en": "Wet mineral concentration panning verification in plant"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/plato-tentadura-metalurgico-v3.webp",
+        "caption_es": "Perfil cónico balanceado para lavado de muestra",
+        "caption_en": "Balanced conical dish profile for assay washing"
+      }
+    ]
+  },
+  {
+    "id": "SMAT-LAB-PULV-DISC",
+    "sku_id": "SMAT-LAB-PULV-DISC",
+    "legacy_sku_id": "SKU-QC-15",
+    "slug_es": "pulverizador-discos-laboratorio",
+    "slug_en": "laboratory-disc-pulverizer",
+    "aliases_es": [
+      "pulverizador-mecanico-discos-laboratorio",
+      "discos-molienda-alto-cromo-pulverizador"
+    ],
+    "aliases_en": [
+      "mechanical-lab-disc-pulverizer",
+      "high-chrome-pulverizer-grinding-discs"
+    ],
+    "vertical": "control",
+    "avenue": "avenida_5_laboratorio",
+    "secondary_avenues": [
+      "avenida_3_cribas_mallas"
+    ],
+    "stock_regime": "se_pide",
+    "availability_regime": "fast_assembly",
+    "gate_lock": "G3",
+    "title_es": "Pulverizador de Discos de Laboratorio y Discos de Repuesto en Aleación de Alto Cromo",
+    "title_en": "Laboratory Disc Pulverizer & High-Chrome Replacement Grinding Discs",
+    "oem_cross_ref": "SMAT-LAB-PULV-DISC (Discos Ø 8\" en Alto Cromo A05 para Preparación de Muestras a -200 Mallas)",
+    "atomic_codes": [],
+    "linked_atomic_codes": [],
+    "coupled_pair_sku": "SMAT-LAB-TAMIZ-E11",
+    "reorder_window_days": 150,
+    "kit_id": 4,
+    "diagram_id": "lab_comminution_pan",
+    "secondary_diagram_id": "astm_sieves",
+    "photo_webp": "/images/productos/pulverizador-discos-laboratorio.webp",
+    "default_material": "A05",
+    "available_materials": [
+      "A05",
+      "A49"
+    ],
+    "mass_kg": 115,
+    "hardness_spec": "Discos de molienda fundidos en Alto Cromo ≥ 620 HB (58–60 HRC)",
+    "niosh_mode": "HOIST_REQUIRED",
+    "geometric_triplet_mm": {
+      "a_id_mm": 50.8,
+      "b_od_mm": 203.2,
+      "c_thickness_mm": 28.5,
+      "tolerance_std": "ISO 2768-m",
+      "label_es": "A: Ø Centro 50.8 mm | B: Ø Disco 203.2 mm (8\") | C: Espesor 28.5 mm",
+      "label_en": "A: Bore ID 50.8 mm | B: Disc OD 203.2 mm (8\") | C: Thickness 28.5 mm"
+    },
+    "sat_tuple": {
+      "clave_prod_serv": "41102900",
+      "clave_unidad": "H87",
+      "uso_cfdi": "I04",
+      "fraccion_arancelaria": "8474.20.99.00"
+    },
+    "everyday_scale_es": "Ajuste micrométrico entre discos estacionario y rotatorio: 0.76 mm (1 tarjeta bancaria ISO/IEC 7810) para descarga a malla #200",
+    "everyday_scale_en": "Micrometer gap between stationary and rotating discs: 0.76 mm (1 ISO/IEC 7810 bank card) for #200 mesh discharge",
+    "telemetry_hooks": {
+      "marcy_sg_range": [
+        1.25,
+        2.1
+      ],
+      "plitt_d50_um_range": [
+        45,
+        150
+      ],
+      "wear_life_hours_range": [
+        1800,
+        4200
+      ]
+    },
+    "summary_es": "Pulverizador mecánico de discos y juegos de discos de desgaste en Alto Cromo para conminución rápida de muestras de cabeza, concentrado y jales en el laboratorio químico-metalúrgico.",
+    "summary_en": "Mechanical laboratory disc pulverizer and high-chrome wear disc sets for rapid comminution of head, concentrate, and tailings assay samples.",
+    "warehouse_audit": {
+      "physical_audit_date": "2026-11-10",
+      "warehouse_total_mxn": 1646850,
+      "warehouse_total_units": 383,
+      "warehouse_active_sku_count": 35,
+      "availability_tier": "TIER_2_SCHEDULED_PRODUCTION",
+      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
+      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/pulverizador-discos-laboratorio.webp",
+        "caption_es": "Discos de molienda en aleación Cr-Ni de alta dureza",
+        "caption_en": "High-hardness Cr-Ni alloy UA grinding discs"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/pulverizador-discos-laboratorio-v2.webp",
+        "caption_es": "Pulverizador de discos UA para muestra analítica fina",
+        "caption_en": "UA disc pulverizer for analytical assay preparation"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/pulverizador-discos-laboratorio-v3.webp",
+        "caption_es": "Unidad instalada en gabinete con acceso a cámara de discos",
+        "caption_en": "Cabinet-mounted pulverizer with hinged grinding chamber"
+      }
+    ]
+  },
+  {
+    "id": "SMAT-LAB-FILTRO-BATCH",
+    "sku_id": "SMAT-LAB-FILTRO-BATCH",
+    "legacy_sku_id": "SKU-QC-16",
+    "slug_es": "filtro-prensa-batch-laboratorio",
+    "slug_en": "laboratory-batch-pressure-filter",
+    "aliases_es": [
+      "filtro-prensa-laboratorio-neumatico",
+      "filtro-presion-batch-100psi-inox"
+    ],
+    "aliases_en": [
+      "pneumatic-lab-batch-filter-press",
+      "stainless-100psi-batch-pressure-filter"
+    ],
+    "vertical": "control",
+    "avenue": "avenida_5_laboratorio",
+    "secondary_avenues": [
+      "avenida_5_filtracion"
+    ],
+    "stock_regime": "hay",
+    "availability_regime": "stock_durango",
+    "gate_lock": "G5",
+    "title_es": "Filtro a Presión Batch de Laboratorio (100 psi) en Acero Inoxidable con Bastidor de Volteo",
+    "title_en": "Laboratory Batch Pressure Filter (100 psi) in Stainless Steel with Tilting Stand",
+    "oem_cross_ref": "SMAT-LAB-FILTRO-BATCH (Barril Ø 8\" x 10\" a 100 psi con Regulador y Válvula de Alivio)",
+    "atomic_codes": [],
+    "linked_atomic_codes": [],
+    "coupled_pair_sku": "SMAT-LAB-MARCY-1000",
+    "reorder_window_days": 180,
+    "kit_id": 4,
+    "diagram_id": "batch_filter",
+    "secondary_diagram_id": "desaguado",
+    "photo_webp": "/images/productos/filtro-prensa-batch-laboratorio.webp",
+    "default_material": "A49",
+    "available_materials": [
+      "A49",
+      "R55"
+    ],
+    "config_options_es": [
+      {
+        "value": "A49",
+        "label": "INOX-100PSI — Cilindro y Tapa en Acero Inoxidable 304 (Capacidad 8 L · 100 psi) + Regulador"
+      },
+      {
+        "value": "R55",
+        "label": "KIT-SELLOS — Juego de Empaques O-Ring + Lonas Filtrantes Ø 8\" para Filtro Batch 100 psi"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "A49",
+        "label": "SS304-100PSI — 304 Stainless Steel Barrel & Lid (8 L Capacity · 100 psi) + Air Regulator"
+      },
+      {
+        "value": "R55",
+        "label": "SEAL-CLOTH-KIT — Replacement O-Ring Gasket Set + Ø 8\" Filter Cloths for 100 psi Batch Filter"
+      }
+    ],
+    "mass_kg": 21.5,
+    "hardness_spec": "Cilindro bridado en Acero Inoxidable 304 probado hidrostáticamente a 150 psi (Operación 100 psi)",
+    "niosh_mode": "ASSISTED_SHAFT_MOUNT_2P",
+    "geometric_triplet_mm": {
+      "a_id_mm": 203.2,
+      "b_od_mm": 245,
+      "c_thickness_mm": 254,
+      "tolerance_std": "ISO 2768-m",
+      "label_es": "A: Ø Cámara 203.2 mm (8\") | B: Ø Brida 245.0 mm | C: Altura Cilindro 254.0 mm",
+      "label_en": "A: Chamber ID 203.2 mm (8\") | B: Flange OD 245.0 mm | C: Barrel Height 254.0 mm"
+    },
+    "sat_tuple": {
+      "clave_prod_serv": "41104900",
+      "clave_unidad": "H87",
+      "uso_cfdi": "I04",
+      "fraccion_arancelaria": "8421.29.99.00"
+    },
+    "everyday_scale_es": "Empaque anular de sellado O-Ring comprimido 1.52 mm (2 tarjetas bancarias ISO/IEC 7810) para estanqueidad neumática a 100 psi",
+    "everyday_scale_en": "O-ring sealing gasket compressed 1.52 mm (2 ISO/IEC 7810 bank cards) for 100 psi pneumatic tightness",
+    "telemetry_hooks": {
+      "marcy_sg_range": [
+        1.15,
+        1.95
+      ],
+      "plitt_d50_um_range": [
+        15,
+        250
+      ],
+      "wear_life_hours_range": [
+        6000,
+        15000
+      ]
+    },
+    "summary_es": "Unidad de filtración neumática por lotes a 100 psi para deshidratación rápida de muestras de pulpa tomadas con vaso Marcy, permitiendo secar y pesar tortas para cálculo exacto de % de sólidos.",
+    "summary_en": "100 psi pneumatic batch filtration unit for rapid dewatering of Marcy cup slurry samples, enabling fast cake drying and weighing for exact percent solids determination.",
+    "warehouse_audit": {
+      "physical_audit_date": "2026-11-10",
+      "warehouse_total_mxn": 1646850,
+      "warehouse_total_units": 383,
+      "warehouse_active_sku_count": 35,
+      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
+      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
+      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/filtro-prensa-batch-laboratorio.webp",
+        "caption_es": "Filtro prensa batch de laboratorio con cámara de aluminio",
+        "caption_en": "Laboratory batch pressure filter with heavy aluminum cylinder"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/filtro-prensa-batch-laboratorio-v2.webp",
+        "caption_es": "Bastidor de doble columna y tornillo de cierre rápido",
+        "caption_en": "Twin-column frame with quick-clamp top handwheel"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/filtro-prensa-batch-laboratorio-v3.webp",
+        "caption_es": "Detalle de válvula superior de aire comprimido y sello",
+        "caption_en": "Top pneumatic air valve and chamber O-ring seal detail"
+      }
+    ]
   }
 ]

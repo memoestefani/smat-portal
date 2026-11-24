@@ -205,9 +205,39 @@ pub fn verify_catalog_mining_groups_and_webp(site_root: &Path) -> Result<(), Str
         .unwrap_or(0);
     if manifest_skus != 19 {
         return Err(format!(
-            "Manifiesto V6.0 debe registrar 19 SKUs (encontrados: {})",
+            "Manifiesto V7.0 debe registrar 19 SKUs (encontrados: {})",
             manifest_skus
         ));
+    }
+    if manifest_val.get("cross_folder_sha256_clones").and_then(|v| v.as_u64()) != Some(0) {
+        return Err("Manifiesto V7.0 debe garantizar cross_folder_sha256_clones == 0".to_string());
+    }
+
+    let partes_dir = site_root.join("public/images/partes");
+    let mut partes_webp = 0usize;
+    if partes_dir.is_dir() {
+        for entry in fs::read_dir(&partes_dir).map_err(|e| e.to_string())?.flatten() {
+            if entry.file_name().to_string_lossy().ends_with(".webp") {
+                partes_webp += 1;
+            }
+        }
+    }
+    if partes_webp < 13 {
+        return Err(format!(
+            "V7.0 requiere >= 13 fotos reales .webp en public/images/partes (hay {})",
+            partes_webp
+        ));
+    }
+
+    for retired in [
+        "dist/equipos/index.html",
+        "dist/en/process-equipment/index.html",
+        "dist/bombeo/skid/index.html",
+        "dist/bombeo/impulsor/index.html",
+    ] {
+        if site_root.join(retired).exists() {
+            return Err(format!("Ruta espejo retirada presente en dist/: {}", retired));
+        }
     }
 
     Ok(())

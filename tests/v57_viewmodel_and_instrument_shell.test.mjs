@@ -128,8 +128,8 @@ test('D4-V57..D9-V57: InstrumentShell Input-First, CFDI I08, EST-03, Filtración
   assert.equal(qcard.includes('EN STOCK DURANGO'), false);
   assert.equal(qcard.includes('Foto Real Cero-OEM'), false);
 
-  const sealIsland = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/SealDriveBearingIsland.astro'), 'utf8');
-  assert.ok(sealIsland.includes('roleObj?.flow_range'), 'SealDriveBearingIsland debe proyectar roles.json::flow_range');
+  const sealCore = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/SealDriveBearingCore.astro'), 'utf8');
+  assert.ok(sealCore.includes('sealDrive'), 'SealDriveBearingCore debe declarar root sealDrive');
 
   const mgJson = JSON.parse(fs.readFileSync(path.join(SITE_ROOT, 'data/mining_groups.json'), 'utf8'));
   assert.equal('total_groups' in mgJson, false, 'mining_groups.json no debe conservar total_groups huérfano');

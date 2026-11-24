@@ -57,16 +57,16 @@ const isEs = lang === 'es';
         <h4 class="col-heading">{isEs ? 'Bombas para Lodos' : 'Slurry Pumps'}</h4>
         <ul class="footer-links">
           <li><a href={isEs ? SMAT_SUPPLY_DOORS.door2.hrefEs : SMAT_SUPPLY_DOORS.door2.hrefEn}><strong>{isEs ? SMAT_SUPPLY_DOORS.door2.labelEs : SMAT_SUPPLY_DOORS.door2.labelEn}</strong></a></li>
-          <li><a href={isEs ? '/bombeo/skid/' : '/en/pumping/skid/'}>{isEs ? 'Bombas Completas para Lodos' : 'Complete Slurry Pumps'}</a></li>
-          <li><a href={isEs ? '/bombeo/impulsor/' : '/en/pumping/impeller/'}>{isEs ? 'Impulsores para Bomba de Lodos' : 'Slurry Pump Impellers'}</a></li>
-          <li><a href={isEs ? '/bombeo/revestimientos/' : '/en/pumping/liners/'}>{isEs ? 'Revestimientos, Volutas y Cuellos' : 'Volutes & Throatbushes'}</a></li>
-          <li><a href={isEs ? '/bombeo/sello/' : '/en/pumping/seal/'}>{isEs ? 'Expulsor Centrífugo y Prensaestopa' : 'Centrifugal Expeller & Stuffing Box'}</a></li>
+          <li><a href={isEs ? '/bombeo/' : '/en/pumping/'}>{isEs ? 'Bombas Completas para Lodos' : 'Complete Slurry Pumps'}</a></li>
+          <li><a href={isEs ? '/productos/impulsor-bomba-lodos-serie-ah/' : '/en/products/ah-series-slurry-pump-impeller/'}>{isEs ? 'Impulsores para Bomba de Lodos' : 'Slurry Pump Impellers'}</a></li>
+          <li><a href={isEs ? '/productos/lote-humedo-554-bomba-ah/' : '/en/products/slurry-pump-554-wet-end-lot/'}>{isEs ? 'Revestimientos, Volutas y Cuellos' : 'Volutes & Throatbushes'}</a></li>
+          <li><a href={isEs ? '/productos/kit-sellado-seco-expeller-ah/' : '/en/products/expeller-centrifugal-dry-seal-kit/'}>{isEs ? 'Expulsor Centrífugo y Prensaestopa' : 'Centrifugal Expeller & Stuffing Box'}</a></li>
           <li><a href={isEs ? '/catalogo/d075c21/' : '/en/catalog/d075c21/'}>{isEs ? 'Camisa de Flecha D075C21 (420 SS / SiC)' : 'Shaft Sleeve D075C21 (420 SS / SiC)'}</a></li>
-          <li><a href={isEs ? '/bombeo/soporte/' : '/en/pumping/bearing-assembly/'}>{isEs ? 'Bearing Assembly / Housing' : 'Bearing Assembly / Housing'}</a></li>
+          <li><a href={isEs ? '/productos/cartucho-rodamientos-005m/' : '/en/products/bearing-assembly-cartridge-005m/'}>{isEs ? 'Bearing Assembly / Housing' : 'Bearing Assembly / Housing'}</a></li>
         </ul>
       </div>
 
-      <!-- Columna 3: Equipos de Proceso, Flotación, Filtros Prensa y Control (11 Rutas) -->
+      <!-- Columna 3: Equipos de Proceso, Flotación, Filtros Prensa y Control -->
       <div class="footer-col">
         <h4 class="col-heading">{isEs ? 'Equipos de Proceso y Control' : 'Process Equipment & Control'}</h4>
         <ul class="footer-links">
@@ -74,13 +74,11 @@ const isEs = lang === 'es';
           <li><a href={isEs ? '/clasificacion/' : '/en/classification/'}><strong>{isEs ? 'Hidrociclones, Apex y Vortex (Balance 3 Vasos Marcy)' : 'Hydrocyclones, Apex & Vortex (3-Cup Marcy Balance)'}</strong></a></li>
           <li><a href={isEs ? SMAT_SUPPLY_DOORS.door3.hrefEs : SMAT_SUPPLY_DOORS.door3.hrefEn}><strong>{isEs ? SMAT_SUPPLY_DOORS.door3.labelEs : SMAT_SUPPLY_DOORS.door3.labelEn}</strong></a></li>
           <li><a href={isEs ? '/flotacion/' : '/en/flotation/'}><strong>{isEs ? 'Mecanismos de Flotación y Acondicionadores' : 'Flotation Mechanisms & Conditioners'}</strong></a></li>
-          <li><a href={isEs ? '/flotacion/celdas/' : '/en/flotation/cells/'}>{isEs ? 'Mecanismos para Celdas (50 a 300 ft³)' : 'Flotation Mechanisms (50 to 300 ft³)'}</a></li>
-          <li><a href={isEs ? '/flotacion/mecanismos/' : '/en/flotation/mechanisms/'}>{isEs ? 'Rotores y Estatores de Flotación' : 'Rotors & Stator Diffusers'}</a></li>
-          <li><a href={isEs ? '/filtracion/' : '/en/filtration/'}><strong>{isEs ? 'Filtros Prensa' : 'Filter Presses'}</strong></a></li>
-          <li><a href={isEs ? '/filtracion/prensa/' : '/en/filtration/press/'}>{isEs ? 'Filtros Prensa (800 a 1500 mm)' : 'Filter Presses (800 to 1500 mm)'}</a></li>
-          <li><a href={isEs ? '/filtracion/repuestos/' : '/en/filtration/parts/'}>{isEs ? 'Placas Filtrantes y Telas' : 'Filter Plates & Cloths'}</a></li>
+          <li><a href={isEs ? '/productos/mecanismo-suspendido-flotacion-18sp/' : '/en/products/suspended-flotation-mechanism-18sp/'}>{isEs ? 'Mecanismos #18 SP / #24 / #30 y Kits PU' : 'Mechanisms #18 SP / #24 / #30 & PU Kits'}</a></li>
+          <li><a href={isEs ? '/filtracion/' : '/en/filtration/'}><strong>{isEs ? 'Filtros Prensa 16 bar' : '16-Bar Filter Presses'}</strong></a></li>
+          <li><a href={isEs ? '/productos/lonas-y-placas-filtro-prensa-16bar/' : '/en/products/filter-press-plates-and-cloths-16bar/'}>{isEs ? 'Placas Filtrantes y Lonas Calandradas' : 'Filter Plates & Calendered Cloths'}</a></li>
           <li><a href={isEs ? '/diagnostico/' : '/en/diagnostics/'}>{isEs ? 'Diagnóstico de Fallas en Planta' : 'Plant Equipment Failure Diagnostics'}</a></li>
-          <li><a href={isEs ? '/cotizar/' : '/en/quote/'}>{isEs ? 'Simulador Hidráulico y Cotizador' : 'Hydraulic Simulator & Quote Workbench'}</a></li>
+          <li><a href={isEs ? '/cotizar/' : '/en/quote/'}>{isEs ? 'Cotizador Formal y Lista SAP' : 'Formal RFQ & SAP List Builder'}</a></li>
         </ul>
       </div>
 
@@ -88,9 +86,10 @@ const isEs = lang === 'es';
       <div class="footer-col">
         <h4 class="col-heading">{isEs ? 'Almacén & Protocolo' : 'Warehouse & Protocol'}</h4>
         <ul class="footer-links smat-footer-links-spaced">
-          <li><a href={isEs ? '/catalogo/' : '/en/catalog/'}><strong>{isEs ? 'Catálogo Digital (PDF / Móvil)' : 'Digital Catalog (PDF / Mobile)'}</strong></a></li>
+          <li><a href={isEs ? '/catalogo/' : '/en/catalog/'}><strong>{isEs ? 'Catálogo Completo (19 Productos)' : 'Full Catalog (19 SKUs)'}</strong></a></li>
+          <li><a href={isEs ? '/cumplimiento/' : '/en/compliance/'}>{isEs ? 'Alta de Proveedor y CFDI 4.0' : 'Vendor Onboarding & CFDI 4.0'}</a></li>
           <li><a href={isEs ? '/garantia/' : '/en/warranty/'}>{isEs ? 'Garantía de Ajuste Dimensional 1:1' : '1:1 Dimensional Fit Warranty'}</a></li>
-          <li><a href={isEs ? '/nosotros/' : '/en/about/'}>{isEs ? 'Almacén Central y Capacidad de Ensamble' : 'Central Warehouse & Assembly Rig'}</a></li>
+          <li><a href={isEs ? '/nosotros/' : '/en/about/'}>{isEs ? 'Almacén Central y Patio Durango' : 'Durango Central Warehouse'}</a></li>
           <li><a href={isEs ? '/contacto/' : '/en/contact/'}>{isEs ? 'Atención Técnica y Despacho' : 'Technical Hotline & Dispatch'}</a></li>
           <li><a href={isEs ? '/acuse/' : '/en/thank-you/'}>{isEs ? 'Acuse Formal Imprimible ERP' : 'Printable ERP Requisition Form'}</a></li>
         </ul>

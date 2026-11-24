@@ -628,6 +628,25 @@ label:has(> input[type="radio"]),
     grid-area: details;
   }
 }
+
+@media (max-width: 767px) {
+  .smat-dropin-core {
+    gap: 0.35rem;
+  }
+  .smat-dropin-core .smat-kicker {
+    font-size: 0.68rem;
+  }
+  .smat-dropin-core .dropin-helper-text {
+    font-size: 0.75rem;
+    line-height: 1.3;
+    margin: 0;
+  }
+  .smat-dropin-root-badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    gap: 0.3rem;
+  }
+}
 }
 
 @media print {

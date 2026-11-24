@@ -2,7 +2,7 @@
 // Arquitectura PWA Soberana: Network-First para navegación HTML, Cache-First para estáticos versionados.
 // Purga determinista de versiones previas en evento 'activate'.
 
-const CACHE_NAME = 'smat-pwa-v5.5'; // Purges smat-pwa-v5.4 and older legacy caches
+const CACHE_NAME = 'smat-pwa-v7.0'; // Purges smat-pwa-v5.5 and older legacy caches
 
 const PRECACHE_SHELL = [
   '/',
@@ -21,6 +21,8 @@ const PRECACHE_SHELL = [
   '/en/classification/',
   '/catalogo/',
   '/en/catalog/',
+  '/cumplimiento/',
+  '/en/compliance/',
   '/diagnostico/',
   '/en/diagnostics/',
   '/garantia/',

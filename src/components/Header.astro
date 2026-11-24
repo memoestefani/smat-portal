@@ -12,20 +12,20 @@ const { lang = 'es', currentPath = '/', alternatePath = '/en/' } = Astro.props;
 const isEs = lang === 'es';
 
 const productCategories = isEs ? [
-  { href: '/catalogo/', label: 'Catálogo completo (19 productos)', sub: 'Todas las refacciones y equipos con foto real y compatibilidad 1:1' },
   { href: '/bombeo/', label: 'Bombas para lodos y refacciones', sub: 'Impulsores Cr27, volutas 5-5-4, sellos secos y Bearing Assembly' },
   { href: '/clasificacion/', label: 'Hidrociclones D6–D20 y cribas', sub: 'Boquillas Ápex SiC, paquete casado y mallas TH48-30 / 1\'x1\'' },
   { href: '/flotacion/', label: 'Flotación y acondicionamiento', sub: 'Mecanismos #18 SP / #24 / #30 y kits rotor-estator en poliuretano' },
   { href: '/filtracion/', label: 'Filtros prensa 16 bar y placas', sub: 'Placas de polipropileno 800–1500 mm, lonas y corre-placas' },
   { href: '/control-de-procesos/', label: 'Laboratorio y control de pulpa', sub: 'Balanzas Marcy, filtros batch, tamices ASTM E11 y pulverizadores' },
+  { href: '/cumplimiento/', label: 'Cumplimiento fiscal y aduanal', sub: 'CFDI 4.0 SAT, pedimentos en México y trazabilidad por colada' },
   { href: '/nosotros/', label: 'Almacén Central Durango', sub: 'Inventario físico, cotejo dimensional 1:1 y envío directo a mina' },
 ] : [
-  { href: '/en/catalog/', label: 'Full Catalog (19 SKUs)', sub: 'All process equipment and wear spares with warehouse photography' },
   { href: '/en/pumping/', label: 'Slurry Pumps & Spare Parts', sub: '27% Cr impellers, 5-5-4 wet-end lots, dry seals & Bearing Assemblies' },
   { href: '/en/classification/', label: 'Hydrocyclones & Screens', sub: 'SiC Apex spigots, coupled package & TH48-30 / 1\'x1\' urethane mats' },
   { href: '/en/flotation/', label: 'Flotation & Conditioners', sub: '#18 SP / #24 / #30 mechanisms & drop-in polyurethane rotor-stators' },
   { href: '/en/filtration/', label: '16-Bar Filter Press & Plates', sub: '800–1500 mm virgin PP plates, cloths & automatic plate shifters' },
   { href: '/en/process-control/', label: 'Metallurgical Lab & Control', sub: 'Marcy scales, batch filters, ASTM E11 sieves & disc pulverizers' },
+  { href: '/en/compliance/', label: 'Tax & Customs Compliance', sub: 'CFDI 4.0 invoicing, Mexican customs clearance & heat traceability' },
   { href: '/en/about/', label: 'Durango Central Warehouse', sub: 'In-country inventory, 1:1 dimensional checks & mine-site dispatch' },
 ];
 ---

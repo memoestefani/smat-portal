@@ -1,0 +1,167 @@
+---
+import atomicParts from '../../data/atomic_parts.json';
+import rolesData from '../../data/roles.json';
+import { buildCatalogFacetedViewModel } from '../scripts/catalogFacetedViewModel.js';
+
+interface Props {
+  locale?: 'es' | 'en';
+}
+
+const { locale = 'es' } = Astro.props;
+const isEs = locale === 'es';
+const { seriesRows } = buildCatalogFacetedViewModel({ atomicParts, rolesData, locale });
+---
+
+<div class="catalog-table-wrap" id={isEs ? 'tabla-parametrica' : 'parametric-table'}>
+  <div class="table-header-flex">
+    <div>
+      <h4 class="table-title">
+        {isEs
+          ? 'Matriz Paramétrica Completa — 9 Series de Bombeo de Pulpa (1.5x1" a 14x12")'
+          : 'Complete Parametric Matrix — 9 Heavy-Duty Slurry Pump Series (1.5x1" to 14x12")'}
+      </h4>
+      <span class="table-subtitle">
+        {isEs
+          ? 'Consolidado dimensional oficial de las 9 series hidráulicas, pasaje de sólidos (Top Size), potencias y caudales'
+          : 'Official dimensional matrix across all 9 hydraulic pump frames, solid top size passage, drive power, and flow capacity'}
+      </span>
+    </div>
+    <span class="matrix-badge">{isEs ? '9 SERIES • NORMA DIMENSIONAL 1:1' : '9 FRAMES • 1:1 DROP-IN STANDARD'}</span>
+  </div>
+
+  <div class="mounting-diagram-box no-print" id="pump-mounting-diagram">
+    <div class="diagram-meta">
+      <span class="diagram-tag">
+        {isEs ? 'CROQUIS ESQUEMÁTICO DE ACOPLE Y ANCLAJE (ESTÁNDAR ANSI 1:1)' : 'SCHEMATIC FOOTPRINT & FLANGE DIAGRAM (ANSI 1:1 STANDARD)'}
+      </span>
+      <small>
+        {isEs
+          ? 'Pase el cursor sobre cualquier fila de la tabla inferior para resaltar las cotas de banco en tiempo real.'
+          : 'Hover over any table row below to highlight baseplate bolt centers and flange sizes in real time.'}
+      </small>
+    </div>
+    <div class="diagram-flex">
+      <svg class="pump-svg-scheme" viewBox="0 0 340 120" width="100%" height="120" aria-label={isEs ? 'Esquema acotado de bomba de pulpa' : 'Dimensional slurry pump scheme'}>
+        <defs>
+          <marker id="dim-arrow-c" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#7c2d12" />
+          </marker>
+          <marker id="dim-arrow-blue" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1d4ed8" />
+          </marker>
+        </defs>
+        <rect x="50" y="85" width="240" height="20" rx="3" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5" />
+        <circle cx="70" cy="95" r="4" fill="#475569" />
+        <circle cx="270" cy="95" r="4" fill="#475569" />
+        <line x1="70" y1="112" x2="270" y2="112" stroke="#7c2d12" stroke-width="1.5" stroke-dasharray="3,3" marker-start="url(#dim-arrow-c)" marker-end="url(#dim-arrow-c)" />
+        <text x="170" y="109" font-size="10" font-family="var(--smat-font-mono, monospace)" fill="#7c2d12" text-anchor="middle" font-weight="bold" class="svg-dim-c pro-tabular-nums">
+          {isEs ? 'Cota C: Distancia entre Barrenos' : 'Dim C: Hold-Down Bolt Centers'}
+        </text>
+        <circle cx="120" cy="55" r="32" fill="#cbd5e1" stroke="#475569" stroke-width="1.5" />
+        <rect x="25" y="43" width="15" height="24" rx="2" fill="#94a3b8" stroke="#334155" stroke-width="1.5" />
+        <line x1="40" y1="55" x2="90" y2="55" stroke="#334155" stroke-width="1.5" />
+        <text x="20" y="38" font-size="10" font-family="var(--smat-font-mono, monospace)" fill="#0f172a" font-weight="bold" class="svg-dim-a pro-tabular-nums">
+          {isEs ? 'Ø A (Succión)' : 'Ø A (Suction)'}
+        </text>
+        <rect x="108" y="8" width="24" height="15" rx="2" fill="#94a3b8" stroke="#334155" stroke-width="1.5" />
+        <line x1="120" y1="23" x2="120" y2="55" stroke="#334155" stroke-width="1.5" />
+        <text x="140" y="18" font-size="10" font-family="var(--smat-font-mono, monospace)" fill="#0f172a" font-weight="bold" class="svg-dim-b pro-tabular-nums">
+          {isEs ? 'Ø B (Descarga)' : 'Ø B (Discharge)'}
+        </text>
+        <line x1="295" y1="55" x2="295" y2="85" stroke="#1d4ed8" stroke-width="1.5" marker-start="url(#dim-arrow-blue)" marker-end="url(#dim-arrow-blue)" />
+        <text x="300" y="73" font-size="10" font-family="var(--smat-font-mono, monospace)" fill="#1d4ed8" font-weight="bold" class="svg-dim-d pro-tabular-nums">
+          {isEs ? 'Cota D' : 'Dim D'}
+        </text>
+      </svg>
+      <div class="diagram-legend">
+        <span class="legend-item"><strong>Ø A:</strong> {isEs ? 'Diámetro nominal de brida de succión (1.5" a 14")' : 'Nominal suction flange diameter (1.5" to 14")'}</span>
+        <span class="legend-item"><strong>Ø B:</strong> {isEs ? 'Diámetro nominal de brida de descarga (1" a 12")' : 'Nominal discharge flange diameter (1" to 12")'}</span>
+        <span class="legend-item"><strong>{isEs ? 'Cota C:' : 'Dim C:'}</strong> {isEs ? 'Distancia entre centros de anclaje a patines' : 'Baseplate anchor bolt center distance'}</span>
+        <span class="legend-item"><strong>{isEs ? 'Cota D:' : 'Dim D:'}</strong> {isEs ? 'Altura de centro de eje a base de concreto' : 'Centerline shaft height to skid base'}</span>
+      </div>
+    </div>
+  </div>
+
+  <table class="catalog-table pro-tabular-nums" id="parametric-pumps-table">
+    <thead>
+      <tr>
+        <th>{isEs ? 'Serie' : 'Series'}</th>
+        <th>{isEs ? 'Succión × Descarga (D Hidráulico)' : 'Suction × Discharge (Dia)'}</th>
+        <th>{isEs ? 'Caudal Operativo' : 'Operating Flow'}</th>
+        <th>{isEs ? 'Carga Dinámica (TDH)' : 'Dynamic Head (TDH)'}</th>
+        <th>{isEs ? 'Top Size (Sólidos máx)' : 'Max Solids (Top Size)'}</th>
+        <th>{isEs ? 'Potencia de Motor' : 'Motor Power'}</th>
+        <th>{isEs ? 'Materiales en Contacto Húmedo' : 'Wet-End Materials'}</th>
+        <th>{isEs ? 'Aplicaciòn en Planta' : 'Plant Duty'}</th>
+        <th class="no-print">{isEs ? 'Acción Rápida' : 'Quick Action'}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {seriesRows.map((row: any) => (
+        <tr class="dim-row" data-dimension="dim-c" data-series={row.key}>
+          <td><span class={`series-pill ${row.highlight ? 'highlight' : ''}`}>{row.label}</span></td>
+          <td>{isEs ? row.dimsEs : row.dimsEn}</td>
+          <td>{row.flow}</td>
+          <td>{row.head}</td>
+          <td><strong>{row.topSize}</strong></td>
+          <td>{row.power}</td>
+          <td>{isEs ? row.materialsEs : row.materialsEn}</td>
+          <td>{isEs ? row.appEs : row.appEn}</td>
+          <td class="no-print"><span class="series-pill">{row.key}</span></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<script is:inline>
+  (function () {
+    function bindParametricTable() {
+      var table = document.getElementById('parametric-pumps-table');
+      var svg = document.querySelector('.pump-svg-scheme');
+      if (!table || !svg || table.getAttribute('data-parametric-bound') === '1') return;
+      table.setAttribute('data-parametric-bound', '1');
+      var rows = table.querySelectorAll('tbody tr');
+      var dimA = svg.querySelector('.svg-dim-a');
+      var dimB = svg.querySelector('.svg-dim-b');
+      var dimC = svg.querySelector('.svg-dim-c');
+      var dimD = svg.querySelector('.svg-dim-d');
+      var isEn = document.documentElement.lang === 'en';
+      var defaultA = isEn ? 'Ø A (Suction)' : 'Ø A (Succión)';
+      var defaultB = isEn ? 'Ø B (Discharge)' : 'Ø B (Descarga)';
+      var defaultC = isEn ? 'Dim C: Hold-Down Bolt Centers' : 'Cota C: Distancia entre Barrenos';
+      var defaultD = isEn ? 'Dim D' : 'Cota D';
+      var seriesDims = {
+        '1.5x1"': { a: 'Ø 40 mm (1.5")', b: 'Ø 25 mm (1")', c: 'C: 260 mm', d: 'D: 185 mm' },
+        '2x1.5"': { a: 'Ø 50 mm (2")', b: 'Ø 40 mm (1.5")', c: 'C: 310 mm', d: 'D: 210 mm' },
+        '3x2"': { a: 'Ø 80 mm (3")', b: 'Ø 50 mm (2")', c: 'C: 370 mm', d: 'D: 245 mm' },
+        '4x3"': { a: 'Ø 100 mm (4")', b: 'Ø 75 mm (3")', c: 'C: 420 mm', d: 'D: 280 mm' },
+        '6x4"': { a: 'Ø 150 mm (6")', b: 'Ø 100 mm (4")', c: 'C: 580 mm', d: 'D: 355 mm' },
+        '8x6"': { a: 'Ø 200 mm (8")', b: 'Ø 150 mm (6")', c: 'C: 740 mm', d: 'D: 450 mm' },
+        '10x8"': { a: 'Ø 250 mm (10")', b: 'Ø 200 mm (8")', c: 'C: 920 mm', d: 'D: 560 mm' },
+        '12x10"': { a: 'Ø 300 mm (12")', b: 'Ø 250 mm (10")', c: 'C: 1120 mm', d: 'D: 680 mm' },
+        '14x12"': { a: 'Ø 350 mm (14")', b: 'Ø 300 mm (12")', c: 'C: 1280 mm', d: 'D: 790 mm' },
+      };
+      rows.forEach(function (row) {
+        var seriesPill = row.querySelector('.series-pill');
+        var seriesKey = seriesPill ? seriesPill.textContent.trim() : '';
+        var data = seriesDims[seriesKey];
+        row.addEventListener('mouseenter', function () {
+          if (!data) return;
+          if (dimA) { dimA.textContent = data.a; dimA.classList.add('is-dim-active'); }
+          if (dimB) { dimB.textContent = data.b; dimB.classList.add('is-dim-active'); }
+          if (dimC) { dimC.textContent = data.c; dimC.classList.add('is-dim-active'); }
+          if (dimD) { dimD.textContent = data.d; dimD.classList.add('is-dim-active'); }
+        });
+        row.addEventListener('mouseleave', function () {
+          if (dimA) { dimA.textContent = defaultA; dimA.classList.remove('is-dim-active'); }
+          if (dimB) { dimB.textContent = defaultB; dimB.classList.remove('is-dim-active'); }
+          if (dimC) { dimC.textContent = defaultC; dimC.classList.remove('is-dim-active'); }
+          if (dimD) { dimD.textContent = defaultD; dimD.classList.remove('is-dim-active'); }
+        });
+      });
+    }
+    bindParametricTable();
+    document.addEventListener('astro:page-load', bindParametricTable);
+  })();
+</script>

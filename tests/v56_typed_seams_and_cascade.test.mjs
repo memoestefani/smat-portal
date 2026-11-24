@@ -152,8 +152,8 @@ test('SLICE-V56-16C: Cero @ts-nocheck, cero HTML roto, etiquetas humanas y CSS e
     assert.equal(/<button\b/i.test(blk), false, 'LiveEngineeringDossier no debe anidar <button> dentro de <summary>');
   }
 
-  const atomicSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/AtomicPartIsland.astro'), 'utf8');
-  assert.equal(atomicSrc.includes('${fullSpec.niosh_handling_mode}'), false, 'AtomicPartIsland no debe interpolar HOIST_REQUIRED crudo');
+  const pdpSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/ProductDetailIsland.astro'), 'utf8');
+  assert.equal(pdpSrc.includes('${atomicPart.niosh_handling_mode}'), false, 'ProductDetailIsland no debe interpolar HOIST_REQUIRED crudo');
 
   assert.equal(formatUrgencyBandHuman('HOIST_REQUIRED', 'en').includes('HOIST_REQUIRED'), false);
   assert.equal(formatMaterialKeyHuman('alto_cromo_cr27', 'en').includes('alto_cromo'), false);

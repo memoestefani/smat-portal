@@ -7,6 +7,7 @@ import CircuitNavigator from '../CircuitNavigator.astro';
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import SharePurchasing from '../SharePurchasing.astro';
 import PumpAssemblyReport from '../PumpAssemblyReport.astro';
+import PumpingParametricTable from '../PumpingParametricTable.astro';
 import ProductStorefrontCard from '../ProductStorefrontCard.astro';
 import atomicParts from '../../../data/atomic_parts.json';
 import { getAtomicPartSpecs, formatNioshErgonomicStatus, buildWizardUrl } from '../../scripts/workbenchBus.js';
@@ -134,7 +135,7 @@ const systems = [
     metaLabelEn: 'Range:',
     metaEs: '1.5x1" hasta 14x12"',
     metaEn: '1.5x1" to 14x12"',
-    specHref: isEs ? '/bombeo/skid/' : '/en/pumping/skid/',
+    specHref: isEs ? '#bombeo-main-section' : '#bombeo-main-section',
     specCtaEs: 'Ver Diagrama y Ficha',
     specCtaEn: 'View Diagram & Specs',
     quoteHref: `${quoteBase}?circuito=bombeo&equipo=skid_bomba#rfq`,
@@ -148,7 +149,7 @@ const systems = [
     metaLabelEn: 'Supply:',
     metaEs: 'Unidad Armada Completa',
     metaEn: 'Complete Assembled Unit',
-    specHref: isEs ? '/bombeo/soporte/' : '/en/pumping/bearing-assembly/',
+    specHref: isEs ? '/productos/cartucho-rodamientos-005m/' : '/en/products/bearing-assembly-cartridge-005m/',
     specCtaEs: 'Ver Cartucho Bearing',
     specCtaEn: 'View Bearing Assembly',
     quoteHref: `${quoteBase}?circuito=bombeo&equipo=soporte&estacion=S1#rfq`,
@@ -162,7 +163,7 @@ const systems = [
     metaLabelEn: 'Materials:',
     metaEs: 'Alto Cromo, Hule, Poliuretano y SiC',
     metaEn: 'High Chrome, Rubber, Polyurethane & SiC',
-    specHref: isEs ? '/bombeo/impulsor/' : '/en/pumping/impeller/',
+    specHref: isEs ? '/productos/impulsor-bomba-lodos-serie-ah/' : '/en/products/ah-series-slurry-pump-impeller/',
     specCtaEs: 'Características del Impulsor',
     specCtaEn: 'Impeller Characteristics',
     quoteHref: `${quoteBase}?circuito=bombeo&equipo=impulsor&estacion=S3#rfq`,
@@ -176,7 +177,7 @@ const systems = [
     metaLabelEn: 'Materials:',
     metaEs: 'Alto Cromo, Hule, Poliuretano y SiC',
     metaEn: 'High Chrome, Rubber, Polyurethane & SiC',
-    specHref: isEs ? '/bombeo/revestimientos/' : '/en/pumping/liners/',
+    specHref: isEs ? '/productos/lote-humedo-554-bomba-ah/' : '/en/products/slurry-pump-554-wet-end-lot/',
     specCtaEs: 'Ver Piezas y Lotes',
     specCtaEn: 'View Parts & Lots',
     quoteHref: `${quoteBase}?circuito=bombeo&equipo=revestimientos&estacion=S4#rfq`,
@@ -190,7 +191,7 @@ const systems = [
     metaLabelEn: 'Sealing:',
     metaEs: 'Expulsor y Empaquetadura PTFE/Grafito',
     metaEn: 'Expeller & PTFE/Graphite Stuffing Box',
-    specHref: isEs ? '/bombeo/sello/' : '/en/pumping/seal/',
+    specHref: isEs ? '/productos/kit-sellado-seco-expeller-ah/' : '/en/products/expeller-centrifugal-dry-seal-kit/',
     specCtaEs: 'Ver Conjunto de Sellado',
     specCtaEn: 'View Sealing Assembly',
     quoteHref: `${quoteBase}?circuito=bombeo&equipo=sello&estacion=S2#rfq`,
@@ -579,6 +580,16 @@ const tcoRows = [
             </tbody>
           </table>
         </div>
+
+        <details class="wb-progressive-drawer smat-mt-md" id="bombeo-parametric-drawer">
+          <summary class="wb-progressive-summary">
+            <span>{isEs ? 'Tabla paramétrica de 9 series de bombas (1.5x1" a 14x12") y croquis ANSI 1:1' : 'Parametric matrix of 9 slurry pump frames (1.5x1" to 14x12") & ANSI 1:1 footprint'}</span>
+            <span class="wb-step1-more-arrow">▾</span>
+          </summary>
+          <div class="wb-progressive-body">
+            <PumpingParametricTable locale={locale} />
+          </div>
+        </details>
       </div>
     </section>
   )}

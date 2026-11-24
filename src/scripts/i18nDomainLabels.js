@@ -312,38 +312,38 @@ export function formatCatalogPartCodeHuman(rawCode = '', lang = 'es') {
 }
 
 /**
- * Fuente Única de Verdad (SSOT) para la taxonomía de las 3 Puertas de Don Manuel (D2-V53C).
+ * Taxonomía comercial limpia de las líneas operativas (sin etiquetas internas de puertas).
  */
 export const SMAT_SUPPLY_DOORS = Object.freeze({
   door1: Object.freeze({
     id: 'door1',
-    hrefEs: '/equipos/',
-    hrefEn: '/en/process-equipment/',
-    badgeEs: 'Puerta 1 • Equipos de Proceso',
-    badgeEn: 'Door 1 • Process Equipment',
-    labelEs: 'Puerta 1: Equipos de Proceso',
-    labelEn: 'Door 1: Process Equipment',
+    hrefEs: '/catalogo/',
+    hrefEn: '/en/catalog/',
+    badgeEs: 'Equipos de Proceso y Refacciones',
+    badgeEn: 'Process Equipment & Spares',
+    labelEs: 'Catálogo Maestro (Equipos y Refacciones)',
+    labelEn: 'Master Catalog (Equipment & Spares)',
   }),
   door2: Object.freeze({
     id: 'door2',
     hrefEs: '/bombeo/',
     hrefEn: '/en/pumping/',
-    badgeEs: 'Puerta 2 • Bombas para Lodos y Spare Parts',
-    badgeEn: 'Door 2 • Slurry Pumps & Spare Parts',
-    labelEs: 'Puerta 2: Bombas para Lodos y Spare Parts',
-    labelEn: 'Door 2: Slurry Pumps & Spare Parts',
+    badgeEs: 'Bombas para Lodos y Lotes 5-5-4',
+    badgeEn: 'Slurry Pumps & 5-5-4 Wear Lots',
+    labelEs: 'Bombas para Lodos y Refacciones',
+    labelEn: 'Slurry Pumps & Spare Parts',
   }),
   door3: Object.freeze({
     id: 'door3',
     hrefEs: '/control-de-procesos/',
     hrefEn: '/en/process-control/',
-    badgeEs: 'Puerta 3 • Control de Procesos y Laboratorio',
-    badgeEn: 'Door 3 • Process Control & Laboratory',
-    labelEs: 'Puerta 3: Control de Procesos y Laboratorio',
-    labelEn: 'Door 3: Process Control & Laboratory',
+    badgeEs: 'Control de Procesos y Laboratorio',
+    badgeEn: 'Process Control & Laboratory',
+    labelEs: 'Control de Procesos y Laboratorio',
+    labelEn: 'Process Control & Laboratory',
   }),
-  classificationSubEs: 'Sub-circuito • Puerta 1 · Clasificación e Hidrociclones',
-  classificationSubEn: 'Sub-circuit • Door 1 · Classification & Hydrocyclones',
+  classificationSubEs: 'Clasificación • Hidrociclones D6–D20 y Cribas',
+  classificationSubEn: 'Classification • D6–D20 Hydrocyclones & Screens',
 });
 
 const HUMAN_DISCHARGE_REGIME_LABELS = Object.freeze({

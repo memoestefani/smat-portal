@@ -8,12 +8,25 @@ interface Props {
   sku: any;
   lang: 'es' | 'en';
   canonicalSlug?: string;
+  atomicPart?: any;
+  primaryPhotoOverride?: string;
 }
 
-const { sku, lang = 'es' } = Astro.props;
+const { sku, lang = 'es', atomicPart = null, primaryPhotoOverride = '' } = Astro.props;
 const isEs = lang === 'es';
-const title = String(isEs ? sku.title_es : sku.title_en || sku.title_es);
-const summary = String(isEs ? sku.summary_es : sku.summary_en || sku.summary_es);
+const isAtomic = Boolean(atomicPart && (atomicPart.part_number || atomicPart.code));
+const baseTitle = String(isEs ? sku.title_es : sku.title_en || sku.title_es);
+const title = isAtomic
+  ? `${atomicPart.part_number} — ${isEs ? atomicPart.name_es : atomicPart.name_en}`
+  : baseTitle;
+const summary = isAtomic
+  ? String((isEs ? atomicPart.summary_es : atomicPart.summary_en) || (isEs ? sku.summary_es : sku.summary_en))
+  : String(isEs ? sku.summary_es : sku.summary_en || sku.summary_es);
+const displayMass = isAtomic && atomicPart.weight_kg ? atomicPart.weight_kg : sku.mass_kg;
+const displayHardness = isAtomic && atomicPart.hardness ? `${atomicPart.metallurgy} (${atomicPart.hardness})` : sku.hardness_spec;
+const displayCode = isAtomic ? String(atomicPart.part_number || atomicPart.code).toUpperCase() : (sku.atomic_codes?.[0] || sku.id);
+const displayKicker = isAtomic ? `${displayCode} · ${sku.id}` : sku.id;
+const resolvedPhotoOverride = primaryPhotoOverride || (isAtomic ? (atomicPart.photo_webp || `/images/partes/${String(atomicPart.code).toLowerCase()}.webp`) : '');
 const avail = formatAvailabilityBadgeHuman(sku.stock_regime, lang);
 
 const sat = sku.sat_tuple || {
@@ -95,13 +108,17 @@ const configOptions = (isEs ? sku.config_options_es : sku.config_options_en) ||
 const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
 const catalogBase = isEs ? '/catalogo/' : '/en/catalog/';
 const waInitialMsg = isEs
-  ? `[SMAT-DGO] Hola SMAT, solicito confirmar disponibilidad y tiempo de entrega para ${sku.id} (${title}) en configuración ${sku.default_material} [Masa: ${sku.mass_kg} kg].`
-  : `[SMAT-DGO] Hello SMAT, please confirm availability and lead time for ${sku.id} (${title}) in ${sku.default_material} [Mass: ${sku.mass_kg} kg].`;
-const showTradeIn = sku.id === 'SMAT-PUMP-BRG-005M' || (Array.isArray(sku.atomic_codes) && sku.atomic_codes.includes('DAM005'));
+  ? `[SMAT-DGO] Hola SMAT, solicito confirmar disponibilidad y tiempo de entrega para ${displayCode} (${title}) en configuración ${sku.default_material} [Masa: ${displayMass} kg].`
+  : `[SMAT-DGO] Hello SMAT, please confirm availability and lead time for ${displayCode} (${title}) in ${sku.default_material} [Mass: ${displayMass} kg].`;
+const showTradeIn =
+  sku.id === 'SMAT-PUMP-BRG-005M' ||
+  (Array.isArray(sku.atomic_codes) && sku.atomic_codes.includes('DAM005')) ||
+  (isAtomic && String(atomicPart.code || '').toLowerCase() === 'dam005');
 const coupledSlug = coupledSku ? (isEs ? `/productos/${coupledSku.slug_es}/` : `/en/products/${coupledSku.slug_en}/`) : catalogBase;
+const parentSkuSlug = isEs ? `/productos/${sku.slug_es}/` : `/en/products/${sku.slug_en}/`;
 ---
 
-<section class="smat-slug-main" data-pdp-root={sku.id} data-lang={lang}>
+<section class="smat-slug-main" data-pdp-root={sku.id} data-lang={lang} data-atomic-code={isAtomic ? displayCode : ''}>
   <!-- Breadcrumb compacto Amazon-style -->
   <nav class="smat-slug-breadcrumb" aria-label="Breadcrumb">
     <div class="smat-slug-breadcrumb-links">
@@ -111,35 +128,42 @@ const coupledSlug = coupledSku ? (isEs ? `/productos/${coupledSku.slug_es}/` : `
       <span>/</span>
       <a href={isEs ? areaMeta.hrefEs : areaMeta.hrefEn} class="smat-slug-nav-link">{isEs ? areaMeta.es : areaMeta.en}</a>
       <span>/</span>
-      <span class="smat-slug-breadcrumb-current">{sku.id}</span>
+      <span class="smat-slug-breadcrumb-current">{isAtomic ? displayCode : sku.id}</span>
     </div>
   </nav>
 
-  <!-- Above-the-Fold 2 Columnas: Foto Grande (7fr) + Buy Box Directo (5fr) -->
+  <!-- Above-the-Fold 2 Columnas: Foto Grande (minmax 7fr) + Buy Box Directo (minmax 5fr) -->
   <div class="smat-slug-layout-grid">
     <div class="smat-slug-col-left">
-      <ProductQuickCard sku={sku} lang={lang} mode="media-only" />
+      <ProductQuickCard sku={sku} lang={lang} mode="media-only" primaryPhotoOverride={resolvedPhotoOverride} />
     </div>
 
     <aside class="smat-slug-checkout-aside">
       <div class="smat-slug-aside-head">
-        <span class="smat-slug-aside-kicker">{sku.id}</span>
+        <span class="smat-slug-aside-kicker">{displayKicker}</span>
         <span class={`smat-sf-badge smat-sf-badge--${avail.tone}`}>{avail.label}</span>
       </div>
 
       <div>
         <h1 class="smat-slug-h1 smat-slug-pdp-title">{title}</h1>
         <p class="smat-slug-lead">{summary}</p>
+        {isAtomic && (
+          <p class="smat-slug-coupled-note">
+            <a href={parentSkuSlug} class="smat-slug-nav-link">
+              {isEs ? `Ver ensamble completo: ${baseTitle} →` : `View complete assembly: ${baseTitle} →`}
+            </a>
+          </p>
+        )}
       </div>
 
       <div class="smat-slug-badge-row">
-        <span class="smat-slug-badge smat-slug-badge--neutral">{isEs ? 'Peso' : 'Weight'}: {sku.mass_kg} kg</span>
+        <span class="smat-slug-badge smat-slug-badge--neutral">{isEs ? 'Peso' : 'Weight'}: {displayMass} kg</span>
         <span class={`smat-slug-badge ${niosh.cls}`}>{niosh.label}</span>
       </div>
 
       <div class="smat-slug-specs-compact">
         <div><strong>{isEs ? 'Compatibilidad 1:1:' : '1:1 Drop-In Fit:'}</strong> {sku.oem_cross_ref}</div>
-        <div><strong>{isEs ? 'Especificación:' : 'Specification:'}</strong> {sku.hardness_spec}</div>
+        <div><strong>{isEs ? 'Especificación:' : 'Specification:'}</strong> {displayHardness}</div>
       </div>
 
       <div class="smat-slug-buybox-controls">
@@ -160,46 +184,62 @@ const coupledSlug = coupledSku ? (isEs ? `/productos/${coupledSku.slug_es}/` : `
         </div>
       </div>
 
+      {showTradeIn && (
+        <div class="smat-tradein-radio-group" role="radiogroup" aria-label={isEs ? 'Modalidad de suministro DAM005' : 'DAM005 supply option'}>
+          <label class="smat-tradein-option">
+            <input type="radio" name="smat-tradein-mode" value="exchange" data-tradein-mode="exchange" checked />
+            <span>{isEs ? 'Con intercambio de núcleo usado (-22% DAM005)' : 'With used core trade-in (-22% DAM005)'}</span>
+          </label>
+          <label class="smat-tradein-option">
+            <input type="radio" name="smat-tradein-mode" value="new" data-tradein-mode="new" />
+            <span>{isEs ? 'Compra nueva sin devolución de casco (100%)' : 'Outright new purchase (100%)'}</span>
+          </label>
+        </div>
+      )}
+
       <div class="smat-slug-cta-stack">
         <button
           type="button"
           data-quick-tray-add={sku.id}
           data-slug-add-to-tray={sku.id}
           data-sku-title={title}
-          data-sku-code={sku.atomic_codes?.[0] || sku.id}
+          data-sku-code={displayCode}
           data-sku-material={sku.default_material || 'A05'}
           data-sku-regime={sku.stock_regime || 'hay'}
-          data-sku-mass={String(sku.mass_kg || 15)}
+          data-sku-mass={String(displayMass || 15)}
           data-sku-qty="1"
+          data-sku-tradein={showTradeIn ? 'exchange' : 'none'}
           class="smat-slug-btn-primary"
         >
-          {isEs ? `Agregar a cotización (${sku.id}) →` : `Add to quote (${sku.id}) →`}
+          {isEs ? `Agregar a cotización (${isAtomic ? displayCode : sku.id}) →` : `Add to quote (${isAtomic ? displayCode : sku.id}) →`}
         </button>
 
-        <a
-          href={`https://wa.me/526183670664?text=${encodeURIComponent(waInitialMsg)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-slug-wa-btn={sku.id}
-          data-sku-id={sku.id}
-          data-sku-title={title}
-          data-sku-regime={sku.stock_regime || 'hay'}
-          data-sku-mass={String(sku.mass_kg)}
-          data-sku-lang={lang}
-          class="smat-slug-btn-wa"
-        >
-          {isEs ? 'Confirmar existencia por WhatsApp' : 'Confirm stock via WhatsApp'}
-        </a>
+        <div class="smat-slug-secondary-links">
+          <a
+            href={`https://wa.me/526183670664?text=${encodeURIComponent(waInitialMsg)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-slug-wa-btn={sku.id}
+            data-sku-id={sku.id}
+            data-sku-title={title}
+            data-sku-regime={sku.stock_regime || 'hay'}
+            data-sku-mass={String(displayMass)}
+            data-sku-lang={lang}
+            class="smat-slug-link-wa"
+          >
+            {isEs ? 'Confirmar stock por WhatsApp' : 'Confirm stock via WhatsApp'}
+          </a>
 
-        <a
-          href={`${quoteBase}?sku=${encodeURIComponent(sku.id)}&mat=${encodeURIComponent(sku.default_material || 'A05')}#rfq`}
-          data-slug-workbench-btn={sku.id}
-          data-sku-id={sku.id}
-          data-sku-lang={lang}
-          class="smat-slug-btn-workbench"
-        >
-          {isEs ? 'Ir al cotizador formal →' : 'Go to formal RFQ builder →'}
-        </a>
+          <a
+            href={`${quoteBase}?sku=${encodeURIComponent(sku.id)}&mat=${encodeURIComponent(sku.default_material || 'A05')}#rfq`}
+            data-slug-workbench-btn={sku.id}
+            data-sku-id={sku.id}
+            data-sku-lang={lang}
+            class="smat-slug-link-workbench"
+          >
+            {isEs ? 'Cotizador formal →' : 'Formal RFQ →'}
+          </a>
+        </div>
       </div>
 
       <div class="smat-slug-passport-box">
@@ -423,6 +463,22 @@ const coupledSlug = coupledSku ? (isEs ? `/productos/${coupledSku.slug_es}/` : `
       qtyInput.addEventListener('input', syncControls);
       qtyInput.addEventListener('change', syncControls);
     }
+
+    root.querySelectorAll('input[data-tradein-mode]').forEach((radio) => {
+      const inputEl = radio as HTMLInputElement;
+      if (inputEl.dataset.tradeinRadioBound === '1') return;
+      inputEl.dataset.tradeinRadioBound = '1';
+      inputEl.addEventListener('change', () => {
+        if (!inputEl.checked) return;
+        const modeVal = inputEl.getAttribute('data-tradein-mode') || 'new';
+        if (trayBtn) trayBtn.setAttribute('data-sku-tradein', modeVal);
+        const coreToggle = root.querySelector('#wb-core-tradein-toggle') as HTMLInputElement | null;
+        if (coreToggle) {
+          coreToggle.checked = modeVal === 'exchange';
+          coreToggle.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+    });
   }
 
   initProductDetailIsland();

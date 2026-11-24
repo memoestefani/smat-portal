@@ -23,6 +23,10 @@ pub fn verify_single_main_and_zero_raw_tokens(site_root: &Path) -> Result<(), St
         "AV-01",
         "AV-02",
         "Estrato 1",
+        "Raíz normalizada",
+        "Puerta 1",
+        "Puerta 2",
+        "Puerta 3",
     ];
     let script_re = Regex::new(r"(?is)<script\b[^>]*>[\s\S]*?</script>").unwrap();
     let style_re = Regex::new(r"(?is)<style\b[^>]*>[\s\S]*?</style>").unwrap();
@@ -114,6 +118,16 @@ pub fn verify_v60_storefront_photo_first(site_root: &Path) -> Result<(), String>
         .map_err(|e| format!("Falta ProductDetailIsland.astro V6.0: {}", e))?;
     if !pdp.contains("data-slug-add-to-tray") {
         return Err("ProductDetailIsland.astro debe exponer Buy Box [data-slug-add-to-tray]".to_string());
+    }
+
+    if site_root.join("src/components/islands/AtomicPartIsland.astro").exists() {
+        return Err("AtomicPartIsland.astro debe estar eliminado en V7.0 (unificado en ProductDetailIsland.astro)".to_string());
+    }
+
+    let slug_css = fs::read_to_string(site_root.join("src/styles/productSlugSolar.css"))
+        .map_err(|e| format!("Error leyendo productSlugSolar.css: {}", e))?;
+    if !slug_css.contains("minmax(0, 7fr) minmax(0, 5fr)") {
+        return Err("productSlugSolar.css debe usar minmax(0, 7fr) minmax(0, 5fr) para evitar desborde".to_string());
     }
     Ok(())
 }
