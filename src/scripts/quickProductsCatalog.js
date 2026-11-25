@@ -104,22 +104,22 @@ export const AVENUE_METADATA = Object.freeze({
 const STOCK_REGIME_LABELS = Object.freeze({
   hay: {
     code: 'hay',
-    badgeEs: '[EN STOCK] DURANGO (24–72 h)',
-    badgeEn: '[IN STOCK] DURANGO (24–72 h)',
+    badgeEs: 'Disponible · Durango',
+    badgeEn: 'Available · Durango',
     leadTimeDaysRange: [1, 3],
     advancePaymentRequiredPct: 0
   },
   se_pide: {
     code: 'se_pide',
-    badgeEs: '[PROGRAMADO] LOTE SE PIDE (2–4 sem)',
-    badgeEn: '[SCHEDULED] BATCH ORDER (2–4 wks)',
+    badgeEs: 'Programado · 2–4 sem',
+    badgeEn: 'Scheduled · 2–4 wks',
     leadTimeDaysRange: [14, 28],
     advancePaymentRequiredPct: 30
   },
   se_fabrica: {
     code: 'se_fabrica',
-    badgeEs: '[BAJO PLANO] SE FABRICA (50% ANTICIPO)',
-    badgeEn: '[MADE TO ORDER] CUSTOM FAB (50% ADVANCE)',
+    badgeEs: 'Sobre fabricación · Durango',
+    badgeEn: 'Made to Order · Durango',
     leadTimeDaysRange: [28, 45],
     advancePaymentRequiredPct: 50
   }

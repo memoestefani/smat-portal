@@ -19,6 +19,7 @@ import {
   hydrateRfqSessionFromUrl,
   loadRfqSession,
 } from './rfqSessionStore.js';
+import { getTrayState } from './requisitionTrayBus.js';
 import { PIPE_SERIES_DIAMETER_MM } from './slurryEngine.js';
 import {
   generateSmatPartCode,
@@ -119,5 +120,40 @@ export function initQuoteWizardController() {
   initCoreTradeInWidgets(document, isEs ? 'es' : 'en');
   initMiningPresetTelemetryBridge(document);
 
+  const bomDialog = /** @type {HTMLDialogElement | null} */ (document.getElementById('smat-bom-import-dialog'));
+  const openBomBtn = document.getElementById('wb-open-bom-modal-btn');
+  const closeBomBtn = document.getElementById('wb-close-bom-modal-btn');
+  if (bomDialog && openBomBtn && openBomBtn.dataset.bomModalBound !== '1') {
+    openBomBtn.dataset.bomModalBound = '1';
+    openBomBtn.addEventListener('click', () => {
+      if (typeof bomDialog.showModal === 'function' && !bomDialog.open) bomDialog.showModal();
+    });
+    closeBomBtn?.addEventListener('click', () => bomDialog.close());
+    bomDialog.addEventListener('click', (ev) => {
+      if (ev.target === bomDialog) bomDialog.close();
+    });
+  }
+
+  const syncFabricacionTerms = () => {
+    const fabWrap = document.getElementById('wb-fab-advance-wrap');
+    if (!fabWrap) return;
+    const tray = getTrayState();
+    const needsFab = hasFabricacionItem(tray.items || []);
+    fabWrap.classList.toggle('hidden', !needsFab);
+    fabWrap.hidden = !needsFab;
+  };
+  syncFabricacionTerms();
+  win?.addEventListener('smat:tray-updated', syncFabricacionTerms);
+  win?.addEventListener(RFQ_SESSION_UPDATE_EVENT, syncFabricacionTerms);
+
   return actions.updateDossier();
+}
+
+/**
+ * Predicado puro: indica si alguna partida del carrito requiere fabricación bajo plano (`se_fabrica`).
+ * @param {any[]} [items=[]]
+ * @returns {boolean}
+ */
+function hasFabricacionItem(items = []) {
+  return Array.isArray(items) && items.some((it) => it?.stockRegime === 'se_fabrica');
 }

@@ -244,7 +244,7 @@ const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waTe
     </div>
 
     {!isMediaOnly && (
-      <span class={`smat-sf-badge smat-sf-badge--${avail.tone}`}>
+      <span class={`smat-sf-badge smat-sf-badge--${avail.tone} smat-stock-badge`}>
         {avail.label}
       </span>
     )}
@@ -359,12 +359,12 @@ const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waTe
     overflow: hidden;
     box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
   }
-  .smat-qcard-stage { position: relative; width: 100%; background: #ffffff; aspect-ratio: 4 / 3; }
+  .smat-qcard-stage { position: relative; width: 100%; background: #f8fafc; aspect-ratio: 4 / 3; }
   .smat-qcard-panel { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 0.75rem; overflow: auto; }
-  .smat-qcard-panel--photo { padding: 0; overflow: hidden; }
+  .smat-qcard-panel--photo { padding: 0; overflow: hidden; background: #f8fafc; }
   .smat-qcard-panel.hidden, .smat-qcard-panel[hidden] { display: none !important; }
   .smat-qcard-diagram-wrap { width: 100%; }
-  .smat-qcard-photo { width: 100%; height: 100%; object-fit: cover; display: block; border: none; border-radius: 0; }
+  .smat-qcard-photo { width: 100%; height: 100%; object-fit: contain; display: block; border: none; border-radius: 0; }
   .smat-qcard-scale-box { padding: 1.25rem; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; font-size: 0.88rem; color: #0f172a; display: grid; gap: 0.5rem; max-width: 92%; }
   .smat-qcard-scale-title { color: #7c2d12; font-size: 0.95rem; }
   .smat-qcard-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.6rem 0.9rem; background: #f8fafc; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }

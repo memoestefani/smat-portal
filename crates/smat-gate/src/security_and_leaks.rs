@@ -161,6 +161,13 @@ pub fn verify_security_headers_nap_and_honest_sla(site_root: &Path) -> Result<()
                         entry.path().display()
                     ));
                 }
+                if let Some(bad_sla) = find_v90_prohibited_sla_copy(&text) {
+                    return Err(format!(
+                        "SLA inflado V9.0 prohibido '{}' detectado en {}",
+                        bad_sla,
+                        entry.path().display()
+                    ));
+                }
             }
         }
     }
@@ -320,6 +327,23 @@ pub fn verify_v80_media_gallery_spec_zero_oem(site_root: &Path) -> Result<(), St
         ));
     }
     Ok(())
+}
+
+pub fn find_v90_prohibited_sla_copy(text: &str) -> Option<&'static str> {
+    let lower = text.to_ascii_lowercase();
+    for forbidden in [
+        "24-48h",
+        "24–48 h",
+        "24-48 h",
+        "24–48h",
+        "metalurgia de fundición oem",
+        "oem foundry metallurgy",
+    ] {
+        if lower.contains(forbidden) {
+            return Some(forbidden);
+        }
+    }
+    None
 }
 
 pub fn find_v80_oem_brand_in_spec(raw: &str) -> Option<&'static str> {

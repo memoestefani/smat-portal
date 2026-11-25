@@ -17,9 +17,9 @@ const inspectionProtocolText = isEs
   : (companyData.logistics?.client_inspection_protocol_en || 'On-site 1:1 dimensional verification prior to dispatch.');
 ---
 
-<!-- PANEL DERECHO: Live Engineering Dossier A4 (`SLICE-V80-B06`, <= 350 LOC, 0 defaults 6x4 sintéticos) -->
-<div class="workbench-preview-panel" id="live-engineering-dossier-wrapper">
-  <div class="dossier-role-banner">{isEs ? '2. DOCUMENTO OFICIAL SMAT • EMISIÓN EN TIEMPO REAL (A4)' : '2. OFFICIAL SMAT SPECIFICATION • REAL-TIME EMISSION (A4)'}</div>
+<!-- PANEL DERECHO: Live Engineering Dossier A4 (`SLICE-V90-A13`, bajo demanda cuando hay partidas) -->
+<div class="workbench-preview-panel" id="live-engineering-dossier" data-dossier-mode="empty">
+  <div class="dossier-role-banner">{isEs ? '2. RESUMEN DE REQUISICIÓN Y FOLIO SMAT (A4)' : '2. REQUISITION SUMMARY & SMAT FOLIO (A4)'}</div>
   <div class="dossier-card" id="main-dossier-card">
     <div class="dossier-tab-switcher" role="tablist">
       <button type="button" class="dossier-tab-btn active" id="tab-btn-maint" role="tab" aria-selected="true">
@@ -30,20 +30,22 @@ const inspectionProtocolText = isEs
       </button>
     </div>
 
-    <!-- Guía limpia sin botones redundantes ni SKU ficticio cuando la bandeja está vacía -->
+    <!-- Guía limpia sin botones redundantes cuando la bandeja está vacía -->
     <div class="dossier-section" data-dossier-empty-guide>
       <span class="dossier-section-title">{isEs ? 'GUÍA RÁPIDA EN 3 PASOS' : '3-STEP QUICK START GUIDE'}</span>
       <p class="part-details-text">
         {isEs
-          ? '1) Agregue partidas arriba o desde el catálogo · 2) Capture solicitante y mina · 3) Envíe a Durango y exporte folio A4 / TSV.'
-          : '1) Add line items above or from catalog · 2) Enter requester & mine site · 3) Dispatch to Durango and export A4 / TSV.'}
+          ? '1) Agregue partidas o importe Excel/SAP · 2) Capture solicitante y mina · 3) Envíe a Durango y exporte folio A4 / TSV.'
+          : '1) Add items or import Excel/SAP · 2) Enter requester & mine site · 3) Dispatch to Durango and export A4 / TSV.'}
       </p>
       <div class="dossier-passport-actions">
-        <a href={catalogHref} class="btn btn-outline smat-tap-btn">
+        <a href={catalogHref} class="btn btn-outline smat-tap-btn smat-nav-cta">
           {isEs ? 'Explorar Catálogo Completo (19 SKUs) →' : 'Browse Full Catalog (19 SKUs) →'}
         </a>
       </div>
     </div>
+
+    <div data-dossier-on-demand-body class="hidden">
 
     <div class="dossier-header">
       <div class="dossier-brand">
@@ -210,9 +212,9 @@ const inspectionProtocolText = isEs
             <strong id="sap-live-anexo22-tuple" data-testid="sap-live-anexo22-tuple" class="font-mono-tech dossier-anexo22-tuple">{isEs ? 'En espera de partida para asignar fracción SAT' : 'Awaiting line item for SAT tax tuple'}</strong>
           </div>
           <div class="dossier-passport-actions">
-            <button type="button" id="btn-download-vendor-json" data-testid="btn-download-vendor-json" class="btn-pill-action dossier-btn-json">{isEs ? 'Pasaporte ERP (.JSON)' : 'ERP Passport (.JSON)'}</button>
-            <button type="button" id="btn-download-vendor-vcf" data-testid="btn-download-vendor-vcf" class="btn-pill-action dossier-btn-vcf">{isEs ? 'Contacto (.VCF)' : 'Contact (.VCF)'}</button>
-            <small id="sap-vendor-passport-status" class="hidden font-mono-tech dossier-passport-status"></small>
+            <a href={isEs ? '/cumplimiento/' : '/en/compliance/'} class="btn-pill-action dossier-btn-json">
+              {isEs ? 'Expediente Fiscal SAT (.JSON / .VCF) →' : 'SAT Tax Dossier (.JSON / .VCF) →'}
+            </a>
           </div>
         </div>
       </div>
@@ -266,6 +268,7 @@ const inspectionProtocolText = isEs
         {isEs ? 'Partidas y folio copiados. Listo para pegar en SAP, Excel o correo.' : 'Spec & folio copied! Ready to paste into SAP, Excel or email.'}
       </div>
       <div class="privacy-pledge-footer"><small>{isEs ? 'Trato Directo: Sus datos se utilizan exclusivamente para emitir su cotización formal.' : 'Direct Contact Guarantee: Used strictly for your official quote.'}</small></div>
+    </div>
     </div>
   </div>
 </div>

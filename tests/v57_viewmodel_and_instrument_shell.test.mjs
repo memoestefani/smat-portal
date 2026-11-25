@@ -49,6 +49,8 @@ test('D1-V57/D3-V57: Ciclo de vida EMPTY -> DRAFT -> VERIFIED y defaults honesto
   const dossierSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/LiveEngineeringDossier.astro'), 'utf8');
   assert.equal(dossierSrc.includes('id="live-folio">SMAT-2026-8810'), false, 'LiveEngineeringDossier no debe pre-inyectar folio sintético SMAT-2026-8810 en #live-folio');
   assert.equal(dossierSrc.includes('contacto@minera.com'), false, 'LiveEngineeringDossier no debe pre-inyectar correo ficticio');
+  assert.ok(dossierSrc.includes('data-dossier-on-demand-body'), 'LiveEngineeringDossier debe ocultar el cuerpo técnico bajo demanda hasta que haya partidas');
+  assert.equal(dossierSrc.includes('id="btn-download-vendor-json"'), false, 'LiveEngineeringDossier no debe duplicar descarga .JSON/.VCF');
 
   const traySrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/RequisitionTraySummary.astro'), 'utf8');
   assert.equal(traySrc.includes('SMAT-7A4F-9C12'), false, 'RequisitionTraySummary no debe mostrar referencia sintética cuando la bandeja está vacía');

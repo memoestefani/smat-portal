@@ -101,6 +101,51 @@ pub fn verify_print_pwa_and_core_hygiene(site_root: &Path) -> Result<(), String>
     verify_v59_xray_and_mobile_cols(site_root)?;
     verify_v60_storefront_photo_first(site_root)?;
     verify_v80_zero_dossier_duplicate_cta(site_root)?;
+    verify_v90_purchase_first_wave_a(site_root)?;
+
+    Ok(())
+}
+
+/// Invariante V9.0 Ola A: Tokens 2-tonos, PDP Lightbox nativo + CTA, modal Excel/SAP opt-in y stepper +/- táctil.
+pub fn verify_v90_purchase_first_wave_a(site_root: &Path) -> Result<(), String> {
+    let tokens = fs::read_to_string(site_root.join("src/styles/tokens.css"))
+        .map_err(|e| format!("Error leyendo tokens.css: {}", e))?;
+    if !tokens.contains("--smat-cta-buy") || !tokens.contains("--smat-cta-nav") {
+        return Err("tokens.css debe definir --smat-cta-buy y --smat-cta-nav (V9.0)".to_string());
+    }
+
+    let pdp = fs::read_to_string(site_root.join("src/components/islands/ProductDetailIsland.astro"))
+        .map_err(|e| format!("Error leyendo ProductDetailIsland.astro: {}", e))?;
+    if !pdp.contains("smat-pdp-lightbox") || !pdp.contains("data-pdp-add-cta") {
+        return Err("ProductDetailIsland.astro requiere lightbox nativo smat-pdp-lightbox y [data-pdp-add-cta]".to_string());
+    }
+
+    let bom = fs::read_to_string(site_root.join("src/components/wizard/FastLaneBomBar.astro"))
+        .map_err(|e| format!("Error leyendo FastLaneBomBar.astro: {}", e))?;
+    if !bom.contains("smat-bom-import-dialog") {
+        return Err("FastLaneBomBar.astro debe encapsularse en <dialog id=\"smat-bom-import-dialog\">".to_string());
+    }
+
+    let tray_sum = fs::read_to_string(site_root.join("src/components/RequisitionTraySummary.astro"))
+        .map_err(|e| format!("Error leyendo RequisitionTraySummary.astro: {}", e))?;
+    if !tray_sum.contains("data-tray-qty-delta") {
+        return Err("RequisitionTraySummary.astro requiere paridad táctil data-tray-qty-delta (-/+)".to_string());
+    }
+
+    if site_root.join("src/components/cores/DropInVerifierCore.astro").exists() {
+        return Err("V9.0: DropInVerifierCore.astro debe permanecer retirado".to_string());
+    }
+    if !site_root.join("src/components/DiagnosticFailureCard.astro").exists() {
+        return Err("V9.0: Falta DiagnosticFailureCard.astro (seam LCOM4)".to_string());
+    }
+    let catalog = fs::read_to_string(site_root.join("src/components/islands/CatalogFacetedIsland.astro"))
+        .map_err(|e| format!("Error leyendo CatalogFacetedIsland.astro: {}", e))?;
+    if !catalog.contains("fichas-atomicas")
+        || catalog.contains("#catalog-bombeo-drawer")
+        || catalog.contains("#catalog-processes-drawer")
+    {
+        return Err("V9.0: CatalogFacetedIsland.astro debe exponer #fichas-atomicas sin drawers heredados".to_string());
+    }
 
     Ok(())
 }

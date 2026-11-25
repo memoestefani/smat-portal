@@ -47,7 +47,9 @@ const categoryFilters = [
       ))}
     </div>
     <span class="avenues-count-readout" id="catalog-visible-readout">
-      {isEs ? `Mostrando ${allSkus.length} de ${allSkus.length} productos` : `Showing ${allSkus.length} of ${allSkus.length} products`}
+      {isEs ? 'Mostrando ' : 'Showing '}
+      <strong id="catalog-visible-sku-count" data-schema-output="catalogFacet.visibleSkuCount">{allSkus.length}</strong>
+      {isEs ? ` de ${allSkus.length} productos` : ` of ${allSkus.length} products`}
     </span>
   </div>
 
@@ -110,12 +112,13 @@ const categoryFilters = [
         slot.style.display = show ? '' : 'none';
         if (show) visible += 1;
       });
-      if (readout) {
+      if (countBadge) {
+        countBadge.textContent = String(visible);
+      } else if (readout) {
         readout.textContent = isEn
           ? `Showing ${visible} of ${slots.length} products`
           : `Mostrando ${visible} de ${slots.length} productos`;
       }
-      if (countBadge) countBadge.textContent = String(visible);
     };
 
     catBtns.forEach((btn) => {
@@ -145,8 +148,8 @@ const categoryFilters = [
 <style>
   .catalog-avenues-ssot-section { margin: 0 0 1.75rem; }
   .avenues-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 1.15rem; }
-  .avenues-filter-row { display: flex; flex-wrap: nowrap; overflow-x: auto; max-width: 100%; padding-bottom: 0.25rem; gap: 0.45rem; scrollbar-width: thin; }
-  @media (min-width: 768px) { .avenues-filter-row { flex-wrap: wrap; overflow-x: visible; padding-bottom: 0; } }
+  .avenues-filter-row { display: flex; flex-wrap: nowrap; overflow-x: auto; max-width: 100%; padding: 0 1.5rem 0.25rem 0; gap: 0.45rem; scrollbar-width: thin; -webkit-mask-image: linear-gradient(to right, #000 88%, transparent); mask-image: linear-gradient(to right, #000 88%, transparent); }
+  @media (min-width: 768px) { .avenues-filter-row { flex-wrap: wrap; overflow-x: visible; padding: 0; -webkit-mask-image: none; mask-image: none; } }
   .smat-cat-filter-btn { flex: 0 0 auto; white-space: nowrap; min-height: 48px; min-width: 48px; padding: 0.45rem 0.9rem; border-radius: 9999px; border: 1px solid #cbd5e1; background: #ffffff; color: #0f172a; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
   .smat-cat-filter-btn:hover { border-color: #7c2d12; color: #7c2d12; }
   .smat-cat-filter-btn.is-active { background: #0f172a; border-color: #0f172a; color: #ffffff; }

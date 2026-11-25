@@ -26,6 +26,7 @@ const FOTOS_ROOT = path.resolve(SITE_ROOT, '../../2_smat/ideas/fotos_sitio');
 const CURADA_ROOT = path.resolve(SITE_ROOT, '../../2_smat/ideas/fototeca_curada_smat/01_APROBADAS_LIMPIAS');
 
 const MAX_WEBP_BYTES = 45 * 1024; // 46080 bytes (estricto <= 45 KB)
+const MAX_HD_WEBP_BYTES = 120 * 1024; // 122880 bytes (estricto <= 120 KB para Lightbox HD lazy)
 
 function readGallerySpec() {
   return JSON.parse(fs.readFileSync(GALLERY_SPEC_PATH, 'utf8'));
@@ -77,7 +78,12 @@ function sha256File(filePath) {
   return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
 }
 
-async function processPhotoToWebp(sourceImgPath, spec) {
+async function processPhotoToWebp(sourceImgPath, spec, opts = {}) {
+  const targetWidth = opts.width || 640;
+  const targetHeight = opts.height || 480;
+  const maxBytes = opts.maxBytes || MAX_WEBP_BYTES;
+  const qualities = opts.qualities || [80, 72, 64, 56, 48, 40];
+
   let basePipe = sharp(sourceImgPath).rotate();
   if (spec.rotateDeg && Number.isFinite(Number(spec.rotateDeg))) {
     basePipe = basePipe.rotate(Number(spec.rotateDeg));
@@ -94,20 +100,19 @@ async function processPhotoToWebp(sourceImgPath, spec) {
   }
 
   const resizedBuf = await workPipe
-    .resize(640, 480, {
+    .resize(targetWidth, targetHeight, {
       fit: spec.fit || 'cover',
       position: 'centre',
-      background: spec.background || { r: 255, g: 255, b: 255, alpha: 1 }
+      background: spec.background || { r: 248, g: 250, b: 252, alpha: 1 }
     })
     .toBuffer();
 
-  const qualities = [80, 72, 64, 56, 48, 40];
   let webpBuffer = await sharp(resizedBuf).webp({ quality: qualities[0], effort: 4 }).toBuffer();
-  for (let i = 1; i < qualities.length && webpBuffer.length > MAX_WEBP_BYTES; i += 1) {
+  for (let i = 1; i < qualities.length && webpBuffer.length > maxBytes; i += 1) {
     webpBuffer = await sharp(resizedBuf).webp({ quality: qualities[i], effort: 5 }).toBuffer();
   }
-  if (webpBuffer.length > MAX_WEBP_BYTES) {
-    throw new Error(`[E_WEBP_BUDGET_EXCEEDED] ${path.basename(sourceImgPath)} supera ${MAX_WEBP_BYTES} bytes (${webpBuffer.length})`);
+  if (webpBuffer.length > maxBytes) {
+    throw new Error(`[E_WEBP_BUDGET_EXCEEDED] ${path.basename(sourceImgPath)} (${targetWidth}x${targetHeight}) supera ${maxBytes} bytes (${webpBuffer.length})`);
   }
   const outMeta = await sharp(webpBuffer).metadata();
   if (outMeta.exif) {
@@ -164,15 +169,25 @@ export async function generateAllProductWebpImages() {
       perSkuSources.add(sourceKey);
 
       const outFileName = idx === 0 ? `${sku.slug_es}.webp` : `${sku.slug_es}-${slide.slot || `v${idx + 1}`}.webp`;
+      const hdFileName = outFileName.replace(/\.webp$/, '-hd.webp');
       if (/expo/i.test(outFileName)) {
         throw new Error(`[E_FORBIDDEN_OUTPUT_FILENAME] Salida contiene token prohibido: ${outFileName}`);
       }
 
       const sourceSha256 = sha256File(sourceImgPath);
       const webpBuffer = await processPhotoToWebp(sourceImgPath, slide);
+      const hdBuffer = await processPhotoToWebp(sourceImgPath, slide, {
+        width: 1200,
+        height: 900,
+        maxBytes: MAX_HD_WEBP_BYTES,
+        qualities: [82, 74, 66, 58, 50, 42, 34, 28]
+      });
       const outFullPath = path.join(OUTPUT_DIR, outFileName);
+      const hdFullPath = path.join(OUTPUT_DIR, hdFileName);
       fs.writeFileSync(outFullPath, webpBuffer);
+      fs.writeFileSync(hdFullPath, hdBuffer);
       keepProductFiles.add(outFileName);
+      keepProductFiles.add(hdFileName);
 
       const dhash64 = await computeImageDHash64(webpBuffer);
       const sha256 = crypto.createHash('sha256').update(webpBuffer).digest('hex');
@@ -183,13 +198,16 @@ export async function generateAllProductWebpImages() {
         slug: sku.slug_es,
         slot: slide.slot || (idx === 0 ? 'primary' : `v${idx + 1}`),
         src: `/images/productos/${outFileName}`,
+        hd_src: `/images/productos/${hdFileName}`,
         fileName: outFileName,
+        hdFileName,
         sourceRoot: slide.root,
         sourceRelPath: slide.relPath,
         source_sha256: sourceSha256,
         material_class: slide.material_class,
         visual_brand_audit: slide.visual_brand_audit,
         bytes: webpBuffer.length,
+        hd_bytes: hdBuffer.length,
         sha256,
         dhash64,
         captionEs: slide.captionEs || '',
@@ -310,21 +328,28 @@ export async function generateAllProductWebpImages() {
     galleriesBySku[slide.id].push({
       slot: slide.slot,
       src: slide.src,
+      hd_src: slide.hd_src,
       bytes: slide.bytes,
+      hd_bytes: slide.hd_bytes,
       captionEs: slide.captionEs,
       captionEn: slide.captionEn
     });
   }
+  const maxHdBytes = Math.max(...allProductSlides.map((r) => r.hd_bytes));
 
   const manifest = {
     schema_version: 'v7.0',
-    hygiene_version: 'v8.0-zero-oem',
+    hygiene_version: 'v9.0-zero-oem',
     exif_stripped_all: true,
     generated_at: new Date().toISOString(),
     width: 640,
     height: 480,
+    hd_width: 1200,
+    hd_height: 900,
     max_bytes_limit: MAX_WEBP_BYTES,
     max_bytes: maxBytes,
+    max_hd_bytes_limit: MAX_HD_WEBP_BYTES,
+    max_hd_bytes: maxHdBytes,
     unique_sources: uniqueSources,
     unique_source_sha256: uniqueSourceSha,
     unique_sha256: uniqueSha,
@@ -333,6 +358,7 @@ export async function generateAllProductWebpImages() {
     closest_pair: closestPair,
     cross_folder_sha256_clones: 0,
     total_product_slides: allProductSlides.length,
+    total_hd_slides: allProductSlides.length,
     total_atomic_part_photos: atomicResults.length,
     skus: primaryResults,
     galleries: galleriesBySku,

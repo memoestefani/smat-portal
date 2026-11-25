@@ -107,8 +107,7 @@ test('V70-03: Layout PDP minmax(7fr, 5fr), miniaturas 48x48, PumpingParametricTa
   assert.ok(qcardSrc.includes('data-qcard-tab="photo"') && qcardSrc.includes('aria-selected="true"'));
   assert.ok(qcardSrc.includes('qcard-thumb-btn'), 'Faltan miniaturas cuadradas de galería');
 
-  const dropInSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/DropInVerifierCore.astro'), 'utf8');
-  assert.equal(dropInSrc.includes('Raíz normalizada'), false, 'No exponer "Raíz normalizada" en DropInVerifierCore');
+  assert.equal(fs.existsSync(path.join(SITE_ROOT, 'src/components/cores/DropInVerifierCore.astro')), false, 'DropInVerifierCore.astro retirado en V9.0');
 
   const pumpHub = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/PumpingHubIsland.astro'), 'utf8');
   assert.ok(pumpHub.includes('PumpingParametricTable'), 'PumpingParametricTable no puede quedar huérfano');

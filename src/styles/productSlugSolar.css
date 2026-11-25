@@ -1002,13 +1002,111 @@
 }
 
 @media (max-width: 767px) {
+  .smat-slug-main {
+    padding: 0.3rem 0.6rem 1.25rem;
+  }
+  .smat-slug-layout-grid,
+  .smat-slug-pdp-top-grid {
+    gap: 0.35rem;
+  }
+  .smat-slug-col-left {
+    position: relative;
+  }
   .smat-qcard-stage-ratio[data-qcard-media-only="1"] {
-    max-height: 225px;
+    max-height: 112px;
+  }
+  .smat-pdp-lightbox-trigger {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: auto;
+    min-width: 48px;
+    min-height: 48px;
+    margin-top: 0;
+    padding: 0.25rem 0.55rem;
+    background: rgba(255, 255, 255, 0.94);
+    z-index: 3;
+  }
+  .smat-slug-breadcrumb,
+  .smat-slug-badge-row,
+  .smat-slug-coupled-note,
+  .smat-qcard-thumbs-row,
+  .smat-slug-lead,
+  .smat-slug-specs-compact {
+    display: none;
   }
   .smat-slug-checkout-aside {
-    padding: 1rem;
-    gap: 0.75rem;
+    padding: 0.5rem 0.65rem;
+    gap: 0.32rem;
   }
+  .smat-slug-pdp-title {
+    font-size: 1rem;
+    line-height: 1.15;
+    margin-bottom: 0.1rem;
+  }
+  .smat-slug-mat-pills {
+    gap: 0.28rem;
+  }
+  .smat-slug-mat-chip {
+    min-height: 48px;
+    padding: 0.22rem 0.5rem;
+  }
+  .smat-slug-buybox-controls {
+    display: grid;
+    grid-template-columns: 1fr 78px;
+    gap: 0.4rem;
+  }
+}
+
+.smat-pdp-lightbox-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.smat-pdp-lightbox-trigger:hover {
+  border-color: #7c2d12;
+  color: #7c2d12;
+  background: #fffbeb;
+}
+
+.smat-pdp-tab-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.5rem;
+}
+
+.smat-pdp-tab-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 48px;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.smat-pdp-tab-pill:hover {
+  border-color: #7c2d12;
+  color: #7c2d12;
 }
 
 .smat-slug-below-fold {
@@ -1060,8 +1158,22 @@
   color: #334155;
 }
 
+@media (max-width: 767px) {
+  .smat-pdp-lightbox-trigger {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: auto;
+    min-width: 48px;
+    min-height: 48px;
+    margin-top: 0;
+    padding: 0.25rem 0.55rem;
+    background: rgba(255, 255, 255, 0.94);
+    z-index: 3;
+  }
+}
+
 @media (max-width: 540px) {
-  .smat-slug-buybox-controls,
   .smat-slug-coupled-card {
     grid-template-columns: 1fr;
   }

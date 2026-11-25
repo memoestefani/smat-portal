@@ -101,9 +101,12 @@ test('V80-A09/A10: media_gallery_spec y manifest WebP 100% curados sin marcas OE
   const manifest = JSON.parse(
     fs.readFileSync(path.join(SITE_ROOT, 'public/images/productos/manifest.json'), 'utf8')
   );
-  assert.equal(manifest.hygiene_version, 'v8.0-zero-oem');
+  assert.equal(manifest.hygiene_version, 'v9.0-zero-oem');
   assert.equal(manifest.unique_source_sha256, 19);
   assert.equal(manifest.exif_stripped_all, true);
+
+  const guardSrc = fs.readFileSync(path.join(SITE_ROOT, 'tools/media_hygiene_guard.mjs'), 'utf8');
+  assert.ok(guardSrc.includes('CAD_RENDER') && guardSrc.includes('AI_GENERATED'), 'media_hygiene_guard.mjs debe vetar CAD_RENDER y AI_GENERATED');
 });
 
 test('V80-A11..A14: 0 slugs rotos en Footer/Core/Scripts y productSlugSolar.css importado en [code].astro ES/EN', () => {
@@ -115,8 +118,9 @@ test('V80-A11..A14: 0 slugs rotos en Footer/Core/Scripts y productSlugSolar.css 
   assert.equal(cycCore.includes('malla-criba-poliuretano-alta-frecuencia'), false);
   assert.ok(cycCore.includes('mallas-finas-uretano-th48-30/'));
 
+  assert.equal(fs.existsSync(path.join(SITE_ROOT, 'src/components/cores/DropInVerifierCore.astro')), false);
   for (const rel of [
-    'src/components/cores/DropInVerifierCore.astro',
+    'src/components/islands/CatalogFacetedIsland.astro',
     'src/scripts/pumpingSealAndTribologyCalculators.js',
     'src/scripts/verticalBidirectionalHydrationLens.js',
     'src/scripts/catalogDropInAndJrpProjector.js'

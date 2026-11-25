@@ -82,8 +82,8 @@ export function buildTribologyAssemblyViewModel(params = {}, lang = 'es') {
     technicalDetails: [
       { key: 'ceramicSafeTipSpeed', label: isEn ? 'SiC Tip Limit (≤28 m/s)' : 'Límite Punta SiC (≤28 m/s)', value: ceramicSafeTipSpeed ? (isEn ? 'Safe' : 'Seguro') : (isEn ? 'Exceeded' : 'Excedido') },
       { key: 'radialBeltLoadKn', label: isEn ? 'Belt Radial Load F_r' : 'Carga Radial Banda F_r', value: `${radialLoadKn.toFixed(2)} kN` },
-      { key: 'hybridBomParts', label: isEn ? 'Hybrid BOM Parts' : 'Piezas BOM Híbridas', value: String(hybridPartsCount) },
-      { key: 'assemblyBomSpec', label: isEn ? '5-5-4 Branch BOM' : 'BOM Rama 5-5-4', value: bomTotalCount > 0 ? `${activeBranchPartsCount}/${bomTotalCount}` : '14' },
+      { key: 'hybridBomParts', label: isEn ? 'Hybrid Kit Parts' : 'Piezas Kit Híbrido', value: String(hybridPartsCount) },
+      { key: 'assemblyBomSpec', label: isEn ? '5-5-4 Branch List' : 'Lista Rama 5-5-4', value: bomTotalCount > 0 ? `${activeBranchPartsCount}/${bomTotalCount}` : '14' },
       { key: 'canonicalSequence', label: isEn ? 'Canonical Order' : 'Orden Canónico', value: canonicalSeqText },
     ],
     collisionAlert: {

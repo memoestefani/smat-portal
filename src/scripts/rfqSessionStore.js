@@ -120,6 +120,34 @@ function createDefaultSession() {
 }
 
 /**
+ * Verifica de forma estricta si existe un carrito comprometido real (`ephemeralTelemetry ⊥ committedCart`).
+ * Retorna `true` únicamente con partidas confirmadas en bandeja, parámetros explícitos de SKU/bandeja
+ * en la URL, o un snapshot explícitamente marcado con `committedToQuote: true`.
+ * @param {Partial<SmatRfqSessionV3>|null} [session=null]
+ * @param {string} [urlSearch='']
+ * @returns {boolean}
+ */
+export function isCommittedCartActive(session = null, urlSearch = '') {
+  const s = /** @type {Record<string, any>} */ (session || loadRfqSession());
+  const items = Array.isArray(s?.items) ? s.items : [];
+  if (items.length > 0) return true;
+
+  const rawSearch = String(urlSearch || '');
+  if (rawSearch) {
+    const cleanQuery = rawSearch.startsWith('?') ? rawSearch.slice(1) : rawSearch;
+    const params = new URLSearchParams(cleanQuery);
+    if (['sku', 'tray', 'rfq_v3', 'codigo'].some((k) => Boolean(String(params.get(k) || '').trim()))) {
+      return true;
+    }
+  }
+
+  const snapshots = s?.stationSnapshots && typeof s.stationSnapshots === 'object' ? s.stationSnapshots : {};
+  return Object.entries(snapshots).some(
+    ([k, snap]) => k !== 'outbox' && snap && typeof snap === 'object' && snap.committedToQuote === true
+  );
+}
+
+/**
  * Deriva el estado explícito del ciclo de vida de sesión (`EMPTY` -> `DRAFT` -> `VERIFIED`)
  * ignorando telemetría pasiva y entradas vacías de outbox cuando no existe compromiso real.
  * @param {Partial<SmatRfqSessionV3>|null} [session=null]
@@ -130,7 +158,14 @@ export function deriveSessionLifecycleState(session = null) {
   const items = Array.isArray(s?.items) ? s.items : [];
   const snapshots = s?.stationSnapshots && typeof s.stationSnapshots === 'object' ? s.stationSnapshots : {};
   const hasSnapshots = Object.entries(snapshots).some(
-    ([k, snap]) => k !== 'outbox' && snap && typeof snap === 'object' && snap.passive !== true && snap.committed !== false && Object.keys(snap).length > 0
+    ([k, snap]) =>
+      k !== 'outbox' &&
+      snap &&
+      typeof snap === 'object' &&
+      snap.passive !== true &&
+      snap.ephemeral !== true &&
+      snap.committed !== false &&
+      Object.keys(snap).length > 0
   );
   const contact = s?.contact || {};
   const plant = s?.plantContext || {};

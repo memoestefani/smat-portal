@@ -76,8 +76,8 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
                 ? 'Repuestos en poliuretano y hule para mecanismos de celdas de flotación y acondicionadores (50 a 300 ft³).'
                 : 'Polyurethane and molded rubber replacement rotors, diffusers, and coated shafts for 50 to 300 ft³ cells.')
             : (isEs
-                ? 'Calibre flujo superficial de burbuja Gorain (Sb = 6 Jg / d32), tasa cinética (k = P·Sb·Rf) y suspensión Zwietering Njs sin obra civil.'
-                : 'Calibrate Gorain bubble surface area flux (Sb = 6 Jg / d32), kinetic rate (k = P·Sb·Rf), and Zwietering solids suspension speed Njs.')}
+                ? 'Mecanismos suspendidos, rotores y estatores con acople 1:1 para bancos de flotación y acondicionadores sin obra civil.'
+                : 'Suspended flotation mechanisms, rotors, and stators with 1:1 drop-in fit for cells and conditioners without structural rework.')}
         </p>
       </div>
     </section>
@@ -93,6 +93,16 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
         </div>
         <div class={variant !== 'hub' ? 'card detail-card' : ''}>
           <div class="flotation-5zone-box" id={stratumId} data-cell-dropin-matrix="gorain-1997" data-stratum-1-instrument>
+            <div class="smat-cta-row smat-mb-sm">
+              <button type="button" class="btn btn-primary smat-tap-btn smat-buy-cta" data-add-calculated-kit="flotacion">
+                {isEs ? '+ Agregar kit recomendado de flotación' : '+ Add recommended flotation kit'}
+              </button>
+            </div>
+            <details class="wb-progressive-drawer smat-sim-accordion" id="flot-sim-accordion">
+              <summary class="wb-progressive-summary">
+                <span>{isEs ? 'Asistente opcional: Dimensionar dispersión de aire y velocidad de celda ▾' : 'Optional sizing assistant: Air dispersion & cell speed ▾'}</span>
+              </summary>
+              <div class="smat-mt-sm">
             {variant === 'hub' ? (
               <FlotationCore locale={locale} variant={variant} showVerticalActions={true} panelClass="flot-core-standalone" />
             ) : (
@@ -111,11 +121,11 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
                         ? 'Selección directa de impulsores, estatores y ejes recubiertos en poliuretano Shore 90A o hule R55 con acople 1:1.'
                         : 'Direct selection of rotors, diffusers, and elastomer-coated shafts in 90A polyurethane or R55 rubber with 1:1 drop-in fit.')
                     : (isEs
-                        ? 'Celdas y mecanismos suspendidos precalibrados sin obra civil. Para simular parámetros cinéticos (Sb, Njs, k), utilice el simulador maestro.'
-                        : 'Pre-calibrated suspended cells and retrofit mechanisms. For interactive aeration and suspension calculations (Sb, Njs, k), use the master simulator.')}
+                        ? 'Celdas y mecanismos suspendidos precalibrados sin obra civil.'
+                        : 'Pre-calibrated suspended cells and retrofit mechanisms.')}
                 </p>
                 <div class="smat-cta-row smat-mt-sm">
-                  <a href={`${flotBase}?variant=${variant}#flotacion-main-section`} class="btn btn-primary smat-tap-btn">
+                  <a href={`${flotBase}?variant=${variant}#flotacion-main-section`} class="btn btn-primary smat-tap-btn smat-nav-cta">
                     {isEs ? 'Abrir Simulador de Flotación →' : 'Open Flotation Simulator →'}
                   </a>
                   <a href={`${quoteBase}?circuito=flotacion&equipo=${quoteEquipo}&serie=100ft#rfq`} class="btn btn-outline smat-tap-btn">
@@ -124,11 +134,8 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
                 </div>
               </div>
             )}
-            <div class="smat-cta-row smat-mt-sm">
-              <button type="button" class="btn btn-primary smat-tap-btn" data-add-calculated-kit="flotacion">
-                {isEs ? '+ Agregar kit de flotación a cotización' : '+ Add flotation kit to quote'}
-              </button>
-            </div>
+              </div>
+            </details>
           </div>
 
           <div class="smat-mb-md">
@@ -322,7 +329,7 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
               ? (isEs ? 'Impulsor y Difusor de Celda de Flotación' : 'Flotation Cell Impeller & Diffuser')
               : (isEs ? 'Mecanismos para Celdas de Flotación y Rotor-Estator' : 'Flotation Cell Mechanisms & Rotor-Stator')}
             partCode="SMAT-FLOT-MECH-18SP"
-            specs={isEs ? 'Cotejo Drop-In 1:1 en 5 zonas (#18 SP, #24, #30) · Gorain Sb ≥ 50 s⁻¹' : 'Drop-In 1:1 across 5 zones (#18 SP, #24, #30) · Gorain Sb ≥ 50 s⁻¹'}
+            specs={isEs ? 'Cotejo Drop-In 1:1 en 5 zonas (#18 SP, #24, #30) · Estator-Rotor HD' : 'Drop-In 1:1 across 5 zones (#18 SP, #24, #30) · HD Rotor-Stator'}
             metallurgy={isEs ? 'Poliuretano U01 (85–95 Shore A) / Hule Natural R55' : 'Polyurethane U01 (85–95 Shore A) / R55 Natural Rubber'}
             series="50 ft³ – 300 ft³"
             roleId={variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacion'}

@@ -468,8 +468,8 @@ export function formatAvailabilityBadgeHuman(stockRegime = 'hay', lang = 'es') {
     };
   }
   return {
-    label: isEn ? 'Available in Durango · 24–48h Dispatch' : 'Disponible en Durango · Despacho 24–48 h',
+    label: isEn ? 'Available · Durango' : 'Disponible · Durango',
     tone: 'hay',
-    leadTime: isEn ? '24–48h dispatch from Durango' : 'Despacho 24–48 h desde Durango',
+    leadTime: isEn ? 'Direct dispatch from Durango' : 'Despacho directo desde Durango',
   };
 }

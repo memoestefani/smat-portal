@@ -9,13 +9,48 @@
   }
 
   .workbench-header {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    text-align: left;
     margin-bottom: 0.85rem;
+  }
+
+  .workbench-header-copy {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .wb-header-durango-thumb {
+    width: 144px;
+    height: 108px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    .wb-header-durango-thumb {
+      width: 96px;
+      height: 72px;
+    }
+  }
+
+  .smat-acuse-empty-cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 0.4rem 0.75rem;
+    font-weight: 800;
+    text-decoration: underline;
+    color: #7c2d12;
   }
 
   .badge-row {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 0.6rem;
     margin-bottom: 0.45rem;
     flex-wrap: wrap;
@@ -1196,5 +1231,116 @@
     display: block;
     font-size: 0.72rem;
     opacity: 0.86;
+  }
+
+  .smat-qty-stepper-btn {
+    min-width: 48px;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #0f172a;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .smat-qty-stepper-btn:hover {
+    border-color: #7c2d12;
+    color: #7c2d12;
+    background: #fffbeb;
+  }
+
+  dialog.smat-bom-dialog {
+    margin: auto;
+    padding: 0;
+    width: min(94vw, 680px);
+    max-height: 88vh;
+    border: 1px solid #cbd5e1;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 24px 54px rgba(15, 23, 42, 0.35);
+    overflow-y: auto;
+  }
+
+  dialog.smat-bom-dialog::backdrop {
+    background: rgba(9, 13, 22, 0.72);
+  }
+
+  .smat-bom-dialog-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .smat-bom-dialog-close {
+    min-width: 48px;
+    min-height: 48px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #0f172a;
+    font-weight: 800;
+    font-size: 1.05rem;
+    cursor: pointer;
+  }
+
+  @media screen and (max-width: 768px) {
+    .sheet-table {
+      display: block;
+      width: 100%;
+    }
+
+    .sheet-table thead {
+      display: none;
+    }
+
+    .sheet-table tbody {
+      display: grid;
+      gap: 0.65rem;
+      width: 100%;
+    }
+
+    .sheet-table tr {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+      padding: 0.7rem 0.8rem;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+    }
+
+    .sheet-table td {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      padding: 0.25rem 0;
+      border: none;
+      border-bottom: 1px dashed #e2e8f0;
+      word-break: break-word;
+    }
+
+    .sheet-table td:last-child {
+      border-bottom: none;
+    }
+
+    .sheet-table td::before {
+      content: attr(data-label);
+      font-family: var(--smat-font-mono, monospace);
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #475569;
+    }
   }
 }

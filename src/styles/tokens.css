@@ -80,6 +80,14 @@
   --smat-copper-border: #ea580c;
   --smat-copper-glow: rgba(194, 94, 0, 0.15);
 
+  /* Jerarquía CTA 2 Tonos v9.0 Purchase-First */
+  --smat-cta-buy: #7c2d12;
+  --smat-cta-buy-hover: #9a3412;
+  --smat-cta-buy-ink: #ffffff;
+  --smat-cta-nav: #0f172a;
+  --smat-cta-nav-hover: #1e293b;
+  --smat-cta-nav-ink: #ffffff;
+
   /* Polaridad Solar AAA (Tajo Abierto 50,000 lux - WCAG 2.1 AAA >= 7.0:1 + APCA |Lc| >= 75) */
   --smat-copper-surface-aaa: #E56B38;
   --smat-on-copper-aaa: #090D16;

@@ -136,12 +136,16 @@ const parentSkuSlug = isEs ? `/productos/${sku.slug_es}/` : `/en/products/${sku.
   <div class="smat-slug-layout-grid">
     <div class="smat-slug-col-left">
       <ProductQuickCard sku={sku} lang={lang} mode="media-only" primaryPhotoOverride={resolvedPhotoOverride} />
+      <button type="button" class="smat-pdp-lightbox-trigger" data-lightbox-open>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
+        <span>{isEs ? 'Ampliar fotografía HD' : 'View HD photo'}</span>
+      </button>
     </div>
 
     <aside class="smat-slug-checkout-aside">
       <div class="smat-slug-aside-head">
         <span class="smat-slug-aside-kicker">{displayKicker}</span>
-        <span class={`smat-sf-badge smat-sf-badge--${avail.tone}`}>{avail.label}</span>
+        <span class={`smat-sf-badge smat-sf-badge--${avail.tone} smat-stock-badge`}>{avail.label}</span>
       </div>
 
       <div>
@@ -202,6 +206,7 @@ const parentSkuSlug = isEs ? `/productos/${sku.slug_es}/` : `/en/products/${sku.
           type="button"
           data-quick-tray-add={sku.id}
           data-slug-add-to-tray={sku.id}
+          data-pdp-add-cta={sku.id}
           data-sku-title={title}
           data-sku-code={displayCode}
           data-sku-material={sku.default_material || 'A05'}
@@ -209,7 +214,7 @@ const parentSkuSlug = isEs ? `/productos/${sku.slug_es}/` : `/en/products/${sku.
           data-sku-mass={String(displayMass || 15)}
           data-sku-qty="1"
           data-sku-tradein={showTradeIn ? 'exchange' : 'none'}
-          class="smat-slug-btn-primary"
+          class="smat-slug-btn-primary smat-buy-cta"
         >
           {isEs ? `Agregar a cotización (${isAtomic ? displayCode : sku.id}) →` : `Add to quote (${isAtomic ? displayCode : sku.id}) →`}
         </button>
@@ -404,6 +409,16 @@ const parentSkuSlug = isEs ? `/productos/${sku.slug_es}/` : `/en/products/${sku.
       </div>
     </details>
   </div>
+
+  <dialog id="smat-pdp-lightbox" class="smat-lightbox-dialog" aria-label={title}>
+    <div class="smat-lightbox-header">
+      <p class="smat-lightbox-title">{title} ({isAtomic ? displayCode : sku.id})</p>
+      <button type="button" class="smat-lightbox-close" data-lightbox-close aria-label={isEs ? 'Cerrar vista ampliada' : 'Close enlarged view'}>×</button>
+    </div>
+    <div class="smat-lightbox-body">
+      <img id="smat-lightbox-img" src="" alt={title} class="smat-lightbox-img" decoding="async" />
+    </div>
+  </dialog>
 </section>
 
 <script>
@@ -417,6 +432,34 @@ const parentSkuSlug = isEs ? `/productos/${sku.slug_es}/` : `/en/products/${sku.
     const lang = root.dataset.lang === 'en' ? 'en' : 'es';
     initCoreTradeInWidgets(root, lang);
     initHarmonicJrpWindowAndPairCard(root, lang);
+
+    const lightbox = document.getElementById('smat-pdp-lightbox') as HTMLDialogElement | null;
+    const lightboxImg = document.getElementById('smat-lightbox-img') as HTMLImageElement | null;
+    const lightboxOpenBtn = root.querySelector('[data-lightbox-open]') as HTMLButtonElement | null;
+    const lightboxCloseBtn = lightbox?.querySelector('[data-lightbox-close]') as HTMLButtonElement | null;
+    if (lightbox && lightboxImg && lightboxOpenBtn && lightboxOpenBtn.dataset.lightboxBound !== '1') {
+      lightboxOpenBtn.dataset.lightboxBound = '1';
+      lightboxOpenBtn.addEventListener('click', () => {
+        const activePhotoPanel = root.querySelector('.smat-qcard-panel--photo:not(.hidden) img.smat-qcard-photo') as HTMLImageElement | null;
+        const firstPhoto = root.querySelector('img.smat-qcard-photo') as HTMLImageElement | null;
+        const baseSrc = activePhotoPanel?.getAttribute('src') || firstPhoto?.getAttribute('src') || '';
+        if (baseSrc) {
+          const hdSrc = baseSrc.includes('-hd.webp') ? baseSrc : baseSrc.replace(/\.webp(\?.*)?$/, '-hd.webp');
+          lightboxImg.onerror = () => {
+            lightboxImg.onerror = null;
+            lightboxImg.src = baseSrc;
+          };
+          lightboxImg.src = hdSrc;
+        }
+        if (typeof lightbox.showModal === 'function' && !lightbox.open) {
+          lightbox.showModal();
+        }
+      });
+      lightboxCloseBtn?.addEventListener('click', () => lightbox.close());
+      lightbox.addEventListener('click', (ev) => {
+        if (ev.target === lightbox) lightbox.close();
+      });
+    }
 
     const winEl = document.getElementById('wb-jrp-window-days');
     if (winEl && !winEl.dataset.sepAdded) {

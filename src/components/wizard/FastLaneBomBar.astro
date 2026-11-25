@@ -1,146 +1,63 @@
 ---
-import { MINING_GROUPS_CATALOG, MINING_UNITS_COUNT } from '../../scripts/wizardCatalogData.js';
-import { getQuickProductsCatalog } from '../../scripts/quickProductsCatalog.js';
-
 interface Props {
   lang?: 'es' | 'en';
 }
 
 const { lang = 'es' } = Astro.props;
 const isEs = lang === 'es';
-const quickPicks = ['SMAT-PUMP-IMP-AH', 'SMAT-PUMP-WETKIT-554', 'SMAT-PUMP-BRG-005M', 'SMAT-CYC-D6-D20', 'SMAT-FILT-CLOTH-PLATE', 'SMAT-LAB-MARCY-1000']
-  .map((id) => getQuickProductsCatalog().find((s) => s.id === id))
-  .filter(Boolean);
-const stations = isEs
-  ? [
-      { href: '/bombeo/', label: 'Bombeo y Sellos' },
-      { href: '/clasificacion/', label: 'Ciclones y Criba' },
-      { href: '/flotacion/', label: 'Flotación' },
-      { href: '/filtracion/', label: 'Filtración Prensa' },
-      { href: '/control-de-procesos/', label: 'Balanzas y Tamices' },
-    ]
-  : [
-      { href: '/en/pumping/', label: 'Pumping & Seals' },
-      { href: '/en/classification/', label: 'Cyclones & Screens' },
-      { href: '/en/flotation/', label: 'Flotation' },
-      { href: '/en/filtration/', label: 'Filter Press' },
-      { href: '/en/process-control/', label: 'Scales & Sieves' },
-    ];
 ---
 
-<div id="bom-fastlane">
-<section class="fastlane-bom-bar" id="fastlane-bom-bar" aria-labelledby="fastlane-bom-heading">
-  <div class="fastlane-bom-head">
-    <div>
-      <strong id="fastlane-bom-heading" class="fastlane-title">
-        {isEs ? 'Reorden Rápido por SKU o Lista BOM (Pegar desde Excel / SAP)' : 'Quick SKU / BOM Reorder (Paste from Excel / SAP)'}
-      </strong>
-      <p class="fastlane-sub">
-        {isEs
-          ? 'Pegue uno o varios códigos SMAT o equivalencias operativas con cantidad (ej. SMAT-PUMP-WETKIT-554 2).'
-          : 'Paste one or more SMAT SKUs or operational references with qty (e.g. SMAT-PUMP-WETKIT-554 2).'}
-      </p>
-    </div>
-  </div>
-
-  <div class="fastlane-bom-input-row">
-    <textarea
-      id="fastlane-bom-input"
-      class="wb-input font-mono-tech fastlane-textarea"
-      rows="2"
-      aria-label={isEs ? 'Pegar lista de códigos o SKU' : 'Paste SKU or BOM list'}
-      placeholder={isEs ? "SMAT-PUMP-WETKIT-554\t2\n4x SMAT-CYC-D6-D20" : "SMAT-PUMP-WETKIT-554\t2\n4x SMAT-CYC-D6-D20"}
-    ></textarea>
-    <button type="button" id="fastlane-bom-apply-btn" class="btn btn-primary fastlane-apply-btn">
-      {isEs ? 'Agregar Lista a Bandeja' : 'Add List to Tray'}
+<dialog id="smat-bom-import-dialog" class="smat-bom-dialog" aria-labelledby="fastlane-bom-heading">
+  <div class="smat-bom-dialog-head">
+    <strong id="fastlane-bom-heading" class="fastlane-title">
+      {isEs ? 'Importar lista de códigos (Excel / SAP)' : 'Import SKU / Part List (Excel / SAP)'}
+    </strong>
+    <button
+      type="button"
+      id="wb-close-bom-modal-btn"
+      class="smat-bom-dialog-close"
+      aria-label={isEs ? 'Cerrar ventana' : 'Close dialog'}
+    >
+      ×
     </button>
   </div>
-  <p id="fastlane-bom-summary" class="fastlane-feedback font-mono-tech hidden" role="status" aria-live="polite"></p>
-  <p id="fastlane-bom-feedback" class="fastlane-feedback font-mono-tech hidden" role="status" aria-live="polite"></p>
-  <p id="share-purchasing-feedback" class="fastlane-feedback font-mono-tech hidden" role="status" aria-live="polite"></p>
 
-  <div class="fastlane-visual-picker" id="fastlane-visual-picker" aria-label={isEs ? 'Selección rápida de refacciones frecuentes' : 'Quick selection of top spares'}>
-    <span class="qw-mini-label">{isEs ? 'O agregue en 1 clic por foto real:' : 'Or 1-click add by warehouse photo:'}</span>
-    <div class="fastlane-picker-grid">
-      {quickPicks.map((sku: any) => (
-        <button
-          type="button"
-          class="fastlane-pick-chip"
-          data-quick-tray-add={sku.id}
-          data-sku-title={isEs ? sku.title_es : sku.title_en}
-          data-sku-code={sku.atomic_codes?.[0] || sku.id}
-          data-sku-material={sku.default_material || 'A05'}
-          data-sku-regime={sku.stock_regime || 'hay'}
-          data-sku-mass={String(sku.mass_kg || 15)}
-        >
-          <img src={sku.photo_webp} alt={sku.id} width="64" height="48" loading="lazy" decoding="async" />
-          <span class="fastlane-pick-meta">
-            <strong>{sku.id}</strong>
-            <small>{isEs ? '+ Agregar' : '+ Add'}</small>
-          </span>
+  <div id="bom-fastlane" class="fastlane-modal-inner">
+    <section class="fastlane-bom-bar" id="fastlane-bom-bar" aria-labelledby="fastlane-bom-heading">
+      <p class="fastlane-sub">
+        {isEs
+          ? 'Pega tu lista de códigos SMAT o equivalencias con cantidad (ej. SMAT-PUMP-WETKIT-554 2) desde Excel o SAP.'
+          : 'Paste one or more SMAT SKUs or part references with quantity (e.g. SMAT-PUMP-WETKIT-554 2) from Excel or SAP.'}
+      </p>
+
+      <div class="fastlane-bom-input-row">
+        <textarea
+          id="fastlane-bom-input"
+          class="wb-input font-mono-tech fastlane-textarea"
+          rows="4"
+          aria-label={isEs ? 'Pegar lista de códigos desde Excel o SAP' : 'Paste codes from Excel or SAP'}
+          placeholder={isEs ? "SMAT-PUMP-WETKIT-554\t2\n4x SMAT-CYC-D6-D20" : "SMAT-PUMP-WETKIT-554\t2\n4x SMAT-CYC-D6-D20"}
+        ></textarea>
+        <button type="button" id="fastlane-bom-apply-btn" class="btn btn-primary smat-buy-cta fastlane-apply-btn">
+          {isEs ? 'Agregar partidas al pedido' : 'Add Items to Order'}
         </button>
-      ))}
-    </div>
+      </div>
+      <p id="fastlane-bom-summary" class="fastlane-feedback font-mono-tech hidden" role="status" aria-live="polite"></p>
+      <p id="fastlane-bom-feedback" class="fastlane-feedback font-mono-tech hidden" role="status" aria-live="polite"></p>
+      <p id="share-purchasing-feedback" class="fastlane-feedback font-mono-tech hidden" role="status" aria-live="polite"></p>
+    </section>
   </div>
-
-  <div class="smat-mt-sm" id="fastlane-mine-controls">
-    <div class="fastlane-mine-grid">
-      <div class="form-group">
-        <label for="wb-mining-group-select" class="qw-mini-label">
-          {isEs ? `Grupo Minero (${MINING_GROUPS_CATALOG.length} grupos):` : `Mining Group (${MINING_GROUPS_CATALOG.length} groups):`}
-        </label>
-        <select id="wb-mining-group-select" class="wb-select qw-compact-select">
-          <option value="">{isEs ? `— Seleccionar grupo (${MINING_GROUPS_CATALOG.length}) —` : `— Select group (${MINING_GROUPS_CATALOG.length}) —`}</option>
-          {MINING_GROUPS_CATALOG.map((grp) => (
-            <option value={grp.id}>{grp.name}</option>
-          ))}
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="wb-mining-unit-select" class="qw-mini-label">
-          {isEs ? `Unidad Minera (${MINING_UNITS_COUNT} unidades):` : `Mining Unit (${MINING_UNITS_COUNT} units):`}
-        </label>
-        <select id="wb-mining-unit-select" class="wb-select qw-compact-select">
-          <option value="">{isEs ? '— Seleccionar unidad o distrito —' : '— Select site or district —'}</option>
-        </select>
-      </div>
-    </div>
-    <div id="wb-step1-pulp-profile-badge" class="unit-pulp-profile-badge hidden qw-pulp-badge"></div>
-    <div id="wb-mining-preset-telemetry" data-mining-preset-telemetry class="qw-mining-telemetry hidden"></div>
-    <details class="wb-progressive-drawer fastlane-mine-drawer smat-mt-sm" id="fastlane-mine-drawer">
-      <summary class="wb-progressive-summary">
-        <span>{isEs ? '¿Requiere dimensionar una estación antes?' : 'Need to size a circuit station first?'}</span>
-        <span class="wb-step1-more-arrow">▾</span>
-      </summary>
-      <div class="wb-progressive-body">
-        <nav class="fastlane-stations-nav" aria-label={isEs ? 'Calculadoras especializadas por estación' : 'Specialized station calculators'}>
-          <div class="fastlane-stations-links">
-            {stations.map((st) => (
-              <a href={st.href} class="fastlane-station-link">{st.label} →</a>
-            ))}
-          </div>
-        </nav>
-      </div>
-    </details>
-  </div>
-</section>
-</div>
+</dialog>
 
 <style>
+  .fastlane-modal-inner {
+    padding: 0.9rem 1rem 1.15rem;
+  }
   .fastlane-bom-bar {
     background: #f8fafc;
     border: 1px solid #cbd5e1;
     border-radius: 10px;
     padding: 0.9rem 1rem;
-    margin-bottom: 1rem;
-  }
-  .fastlane-bom-head {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 0.75rem;
-    margin-bottom: 0.65rem;
   }
   .fastlane-title {
     display: block;
@@ -148,8 +65,8 @@ const stations = isEs
     color: #0f172a;
   }
   .fastlane-sub {
-    margin: 0.2rem 0 0;
-    font-size: 0.8rem;
+    margin: 0 0 0.65rem;
+    font-size: 0.82rem;
     color: #334155;
   }
   .fastlane-bom-input-row {
@@ -159,11 +76,10 @@ const stations = isEs
     align-items: stretch;
   }
   .fastlane-textarea {
-    min-height: 54px;
+    min-height: 92px;
     resize: vertical;
   }
-  .fastlane-apply-btn,
-  .fastlane-share-btn {
+  .fastlane-apply-btn {
     min-height: 48px;
     min-width: 48px;
     white-space: nowrap;
@@ -173,88 +89,9 @@ const stations = isEs
     font-size: 0.78rem;
     color: #065f46;
   }
-  .fastlane-mine-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 0.75rem;
-    margin-top: 0.75rem;
-  }
-  .fastlane-stations-nav {
-    margin-top: 0.75rem;
-    padding-top: 0.65rem;
-    border-top: 1px dashed #cbd5e1;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .fastlane-stations-label {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: #1e293b;
-  }
-  .fastlane-stations-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-  }
-  .fastlane-station-link {
-    font-size: 0.78rem;
-    color: #0c4a6e;
-    text-decoration: underline;
-    padding: 0.2rem 0.35rem;
-  }
   @media (max-width: 640px) {
     .fastlane-bom-input-row {
       grid-template-columns: 1fr;
     }
-  }
-  .fastlane-visual-picker {
-    margin-top: 0.75rem;
-    padding-top: 0.65rem;
-    border-top: 1px dashed #cbd5e1;
-  }
-  .fastlane-picker-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-    gap: 0.45rem;
-    margin-top: 0.35rem;
-  }
-  .fastlane-pick-chip {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    min-height: 48px;
-    padding: 0.3rem 0.5rem;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    background: #ffffff;
-    cursor: pointer;
-    text-align: left;
-  }
-  .fastlane-pick-chip:hover {
-    border-color: #7c2d12;
-    background: #fffbeb;
-  }
-  .fastlane-pick-chip img {
-    width: 56px;
-    height: 42px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .fastlane-pick-meta {
-    display: flex;
-    flex-direction: column;
-    font-size: 0.72rem;
-    line-height: 1.2;
-  }
-  .fastlane-pick-meta strong {
-    color: #0f172a;
-    font-family: var(--smat-font-mono, monospace);
-  }
-  .fastlane-pick-meta small {
-    color: #7c2d12;
-    font-weight: 800;
   }
 </style>

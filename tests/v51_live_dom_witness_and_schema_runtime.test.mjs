@@ -328,11 +328,7 @@ test('V51-T1 DOM Real en dist/ & Cero Bifurcaciones {isEmbedded}: 11 Dominios Bi
   const cotizarHtml = hasDist ? fs.readFileSync(distCotizar, 'utf8') : loadCompositeQuoteWizardSourceFallback();
   const catalogHtml = hasDist
     ? fs.readFileSync(distCatalog, 'utf8')
-    : [
-      fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/CatalogFacetedIsland.astro'), 'utf8'),
-      fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/DropInVerifierCore.astro'), 'utf8'),
-    ].join('\n');
-  const homeDropInHtml = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/DropInVerifierCore.astro'), 'utf8');
+    : fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/CatalogFacetedIsland.astro'), 'utf8');
   const verticalsHtml = hasDist
     ? [distBombeo, distFlot, distFilt, distClas, distCtrl].map((p) => fs.readFileSync(p, 'utf8')).join('\n')
     : [
@@ -349,7 +345,7 @@ test('V51-T1 DOM Real en dist/ & Cero Bifurcaciones {isEmbedded}: 11 Dominios Bi
       'src/components/islands/ProcessControlIsland.astro',
       'src/components/cores/MetrologyLabCore.astro',
     ].map((rel) => fs.readFileSync(path.join(SITE_ROOT, rel), 'utf8')).join('\n');
-  const fullCorpus = `${cotizarHtml}\n${catalogHtml}\n${homeDropInHtml}\n${verticalsHtml}`;
+  const fullCorpus = `${cotizarHtml}\n${catalogHtml}\n${verticalsHtml}`;
 
   const declared = listAllDeclaredDomIds();
   const missingInputs = declared.inputs.filter((id) => !fullCorpus.includes(`id="${id}"`));
@@ -591,16 +587,16 @@ test('V53-T1 Ola C1: Único <main>, Formateo Humano, Zero Hardcodes SSR y <dialo
     assert.ok(combinedSlugSrc.includes("insertAdjacentText('afterend', ' · ')"), `${slugRel} / ProductDetailIsland debe insertar ' · ' tras #wb-jrp-window-days`);
   }
 
-  // 4. SealDriveBearingCore SSR dinámico (cero 1001 RPM / 42800 hardcoded) & DropInVerifierCore neutro
+  // 4. SealDriveBearingCore SSR dinámico (cero 1001 RPM / 42800 hardcoded) y DropInVerifierCore retirado
   const sdbSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/SealDriveBearingCore.astro'), 'utf8');
   assert.equal(sdbSrc.includes('calculateDriveAndBearingKinematics'), true);
   assert.equal(sdbSrc.includes('1001 RPM'), false);
   assert.equal(sdbSrc.includes('l10h=42800'), false);
 
-  const dropInSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/DropInVerifierCore.astro'), 'utf8');
-  const dropInBadge = dropInSrc.slice(dropInSrc.indexOf('smat-dropin-root-badge'));
-  assert.equal(dropInBadge.includes('>A05<'), false);
-  assert.equal(dropInBadge.includes('>SAT H87<'), false);
+  assert.equal(fs.existsSync(path.join(SITE_ROOT, 'src/components/cores/DropInVerifierCore.astro')), false);
+  const catalogSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/CatalogFacetedIsland.astro'), 'utf8');
+  assert.equal(catalogSrc.includes('>A05<'), false);
+  assert.equal(catalogSrc.includes('>SAT H87<'), false);
 
   // 5. Consolidación en Cyclone, Filtration y Flotation
   const cycSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/cores/CycloneScreenCore.astro'), 'utf8');

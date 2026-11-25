@@ -116,6 +116,7 @@ export function saveTrayState(nextState = {}) {
       saveRfqSession({
         ...unified,
         items: normalized.items,
+        committedToQuote: normalized.items.length > 0,
         coreReturnEnabled: Boolean(normalized.coreReturnEnabled),
         plantContext: {
           ...(unified.plantContext || {}),
@@ -253,8 +254,8 @@ export function buildCmuPrioritySubjectLine(trayState = {}, telemetry = {}) {
   const isEn = String(telemetry?.lang || (typeof document !== 'undefined' ? document.documentElement?.lang : '') || '').toLowerCase() === 'en';
   if (!state.items.length) {
     return isEn
-      ? '[SMAT-DGO] [DRAFT — NO ACTIVE ITEMS | Add SKUs or paste BOM]'
-      : '[SMAT-DGO] [BORRADOR — SIN PARTIDAS | Agregue SKUs o pegue lista BOM]';
+      ? '[SMAT-DGO] [DRAFT — NO ACTIVE ITEMS | Add SKUs or paste parts list]'
+      : '[SMAT-DGO] [BORRADOR — SIN PARTIDAS | Agregue SKUs o pegue lista de partes]';
   }
   const skuCount = state.items.length;
   const isLineStop = state.criticalityMode === 'PARO_DE_LINEA' || state.items.some((i) => i.criticalityMode === 'PARO_DE_LINEA');

@@ -79,24 +79,32 @@ const productCategories = isEs ? [
         </li>
 
         <li>
-          <a href={isEs ? '/garantia/' : '/en/warranty/'} class:list={['nav-item', { active: currentPath.includes('garantia') || currentPath.includes('warranty') }]}>
-            {isEs ? 'Garantía' : 'Warranty'}
-          </a>
-        </li>
-
-        <li>
-          <a href={isEs ? '/nosotros/' : '/en/about/'} class:list={['nav-item', { active: currentPath.includes('nosotros') || currentPath.includes('about') }]}>
-            {isEs ? 'Almacén' : 'Warehouse'}
-          </a>
-        </li>
-
-        <li>
           <a href={isEs ? '/contacto/' : '/en/contact/'} class:list={['nav-item', { active: currentPath.includes('contacto') || currentPath.includes('contact') }]}>
             {isEs ? 'Contacto' : 'Contact'}
           </a>
         </li>
       </ul>
     </nav>
+
+    <form
+      id="header-omnibox-form"
+      action={isEs ? '/catalogo/' : '/en/catalog/'}
+      method="get"
+      class="header-omnibox-form"
+      role="search"
+      aria-label={isEs ? 'Buscador rápido de refacciones y códigos' : 'Quick SKU and part search'}
+    >
+      <input
+        id="header-omnibox-input"
+        name="q"
+        type="search"
+        autocomplete="off"
+        class="header-omnibox-input"
+        aria-label={isEs ? 'Buscar SKU, código o equipo' : 'Search SKU, part code or unit'}
+        placeholder={isEs ? 'Buscar código o equipo (Ej. E4147, Marcy)…' : 'Search part code or unit (e.g. E4147)…'}
+      />
+      <div id="header-omnibox-results" class="header-omnibox-results" hidden aria-live="polite"></div>
+    </form>
 
     <div class="header-actions">
       <div class="lang-switch" role="group" aria-label="Language Switcher">
@@ -158,7 +166,12 @@ const productCategories = isEs ? [
 
 <script>
   import { loadRfqSession } from '../scripts/rfqSessionStore.js';
+  import { initHeaderOmniboxSearch } from '../scripts/catalogOmniboxSearch.js';
+
   function initHeaderInteractions() {
+    const lang = document.documentElement.lang === 'en' ? 'en' : 'es';
+    initHeaderOmniboxSearch(document, lang);
+
     const syncOutboxBadge = () => {
       const outBadge = document.getElementById('header-outbox-pending-badge');
       const outCount = document.getElementById('header-outbox-pending-count');

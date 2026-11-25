@@ -58,7 +58,7 @@ const ssrEmptyVm = buildAcuseViewModel({ lifecycleState: 'EMPTY', items: [], loc
             ? '¿Aún no ha armado su lista de refacciones? '
             : 'Need to assemble your spare parts list first? '}
         </span>
-        <a href={isEs ? '/cotizar/#rfq' : '/en/quote/#rfq'}>
+        <a href={isEs ? '/cotizar/#rfq' : '/en/quote/#rfq'} class="smat-acuse-empty-cta">
           {isEs ? 'Crear nueva requisición en el cotizador →' : 'Start a new requisition in Quote Wizard →'}
         </a>
       </div>
@@ -69,19 +69,19 @@ const ssrEmptyVm = buildAcuseViewModel({ lifecycleState: 'EMPTY', items: [], loc
           <tbody>
             <tr>
               <th class="acuse-th-25">{isEs ? 'Solicitante / Cargo:' : 'Applicant Name / Role:'}</th>
-              <td class="acuse-td-35" id="field-name">{isEs ? 'No especificado' : 'Not specified'}</td>
+              <td class="acuse-td-35" id="field-name" data-label={isEs ? 'Solicitante / Cargo' : 'Applicant Name / Role'}>{isEs ? 'No especificado' : 'Not specified'}</td>
               <th class="acuse-th-20">{isEs ? 'Mina / Empresa:' : 'Mine / Company:'}</th>
-              <td class="acuse-td-20" id="field-company">{isEs ? 'No especificado' : 'Not specified'}</td>
+              <td class="acuse-td-20" id="field-company" data-label={isEs ? 'Mina / Empresa' : 'Mine / Company'}>{isEs ? 'No especificado' : 'Not specified'}</td>
             </tr>
             <tr>
               <th>{isEs ? 'Teléfono / WhatsApp:' : 'Phone / WhatsApp:'}</th>
-              <td id="field-phone">{isEs ? 'No especificado' : 'Not specified'}</td>
+              <td id="field-phone" data-label={isEs ? 'Teléfono / WhatsApp' : 'Phone / WhatsApp'}>{isEs ? 'No especificado' : 'Not specified'}</td>
               <th>{isEs ? 'Correo Corporativo:' : 'Corporate Email:'}</th>
-              <td id="field-email">{isEs ? 'No especificado' : 'Not specified'}</td>
+              <td id="field-email" data-label={isEs ? 'Correo Corporativo' : 'Corporate Email'}>{isEs ? 'No especificado' : 'Not specified'}</td>
             </tr>
             <tr>
               <th>{isEs ? 'Destino de Entrega:' : 'Delivery Destination:'}</th>
-              <td colspan="3" id="field-destination">
+              <td colspan="3" id="field-destination" data-label={isEs ? 'Destino de Entrega' : 'Delivery Destination'}>
                 {isEs ? 'Almacén Central Durango / Retiro Coordinado con Folio' : 'Durango Central Warehouse / Folio Scheduled Pickup'}
               </td>
             </tr>
@@ -166,7 +166,7 @@ const ssrEmptyVm = buildAcuseViewModel({ lifecycleState: 'EMPTY', items: [], loc
           </thead>
           <tbody id="acuse-multi-item-tray-tbody">
             <tr>
-              <td colspan="4" class="acuse-empty-row">
+              <td colspan="4" class="acuse-empty-row" data-label={isEs ? 'Estado' : 'Status'}>
                 {isEs ? 'Cargando partidas de requisición y tuplas SAT CFDI 4.0...' : 'Loading requisition line items and SAT CFDI 4.0 tuples...'}
               </td>
             </tr>
@@ -295,7 +295,8 @@ const ssrEmptyVm = buildAcuseViewModel({ lifecycleState: 'EMPTY', items: [], loc
   .acuse-mono-bold { font-family: monospace; font-weight: 700; }
   .acuse-sap-pre { margin: 1rem 0 0; padding: 0.85rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace; font-size: 0.76rem; color: #0f172a; overflow-x: auto; white-space: pre-wrap; }
   .acuse-payload-details { margin-top: 0.85rem; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.6rem 0.85rem; background: #ffffff; }
-  .acuse-payload-summary { cursor: pointer; font-weight: 700; font-size: 0.8rem; color: #0f172a; min-height: 44px; display: flex; align-items: center; }
+  .acuse-payload-summary { cursor: pointer; font-weight: 700; font-size: 0.8rem; color: #0f172a; min-height: 48px; display: flex; align-items: center; }
+  .smat-acuse-empty-cta { display: inline-flex; align-items: center; min-height: 48px; padding: 0.35rem 0.65rem; font-weight: 800; color: #7c2d12; text-decoration: underline; }
   .acuse-btn-svg { display: inline-block; vertical-align: middle; margin-right: 4px; }
   :global(.acuse-cell-sku) { font-family: monospace; font-weight: 700; }
   :global(.acuse-cell-sat) { font-family: monospace; color: #475569; }

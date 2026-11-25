@@ -79,11 +79,11 @@ const quoteHref = isEs ? '/cotizar/#rfq' : '/en/quote/#rfq';
     </div>
 
     <div class="smat-qtray-actions">
-      <a id="smat-qtray-pdf-link" data-qtray-pdf-btn href={quoteHref} class="smat-qtray-wa-btn">
-        {isEs ? 'Ir al cotizador y generar Folio →' : 'Proceed to RFQ & Folio →'}
+      <a id="smat-qtray-pdf-link" data-qtray-pdf-btn href={quoteHref} class="smat-qtray-wa-btn smat-buy-cta">
+        {isEs ? 'Ir al cotizador y confirmar →' : 'Proceed to quote checkout →'}
       </a>
       <a href={isEs ? '/cotizar/#bom-fastlane' : '/en/quote/#bom-fastlane'} class="smat-qtray-share-btn">
-        {isEs ? 'Pegar lista SAP / Excel' : 'Paste SAP / Excel list'}
+        {isEs ? 'Importar lista Excel / SAP' : 'Import Excel / SAP list'}
       </a>
       <a
         id="smat-qtray-wa-link"
@@ -94,9 +94,6 @@ const quoteHref = isEs ? '/cotizar/#rfq' : '/en/quote/#rfq';
       >
         {isEs ? 'Enviar lista por WhatsApp' : 'Send List via WhatsApp'}
       </a>
-      <button type="button" id="smat-qtray-share-btn" class="smat-qtray-share-btn">
-        {isEs ? 'Copiar enlace para Compras' : 'Copy Link for Purchasing'}
-      </button>
       <button type="button" id="smat-qtray-clear-btn" class="smat-qtray-share-btn hidden" hidden>
         {isEs ? 'Vaciar bandeja' : 'Clear tray'}
       </button>
@@ -331,5 +328,5 @@ const quoteHref = isEs ? '/cotizar/#rfq' : '/en/quote/#rfq';
   .smat-qtray-pdf-btn { background: #065f46; color: #ffffff; border: 1px solid #064e3b; }
   .smat-qtray-share-btn { background: #f8fafc; color: #0f172a; border: 1px solid #cbd5e1; }
   .smat-qtray-item-controls { display: inline-flex; align-items: center; gap: 0.25rem; }
-  .smat-qtray-qty-btn { padding: 0.2rem 0.5rem; border-radius: 4px; border: 1px solid #cbd5e1; background: #ffffff; font-weight: 700; cursor: pointer; }
+  :global(.smat-qtray-qty-btn) { min-width: 48px; min-height: 48px; padding: 0.25rem 0.55rem; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; font-weight: 800; cursor: pointer; touch-action: manipulation; }
 </style>

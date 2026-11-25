@@ -81,7 +81,7 @@ const plantAreas = [
     <div class="smat-home-hero-copy">
       <div class="hero-badge-pill">
         <span class="live-dot" aria-hidden="true"></span>
-        <span>{isEs ? 'Almacén Central en Durango · Despacho 24–48 h' : 'Durango Central Warehouse · 24–48h Dispatch'}</span>
+        <span>{isEs ? 'Almacén Central en Durango · Despacho Directo a Mina' : 'Durango Central Warehouse · Direct Mine Dispatch'}</span>
       </div>
 
       <h1>
@@ -109,7 +109,7 @@ const plantAreas = [
               class="home-omnibox-input"
               placeholder={isEs ? 'Ej. E4147, Marcy' : 'e.g. E4147, Marcy'}
             />
-            <button type="submit" class="btn btn-primary smat-tap-btn home-omnibox-submit">
+            <button type="submit" class="btn btn-primary smat-tap-btn home-omnibox-submit smat-buy-cta">
               {isEs ? 'Buscar →' : 'Search →'}
             </button>
           </div>
@@ -118,11 +118,11 @@ const plantAreas = [
       </div>
 
       <div class="hero-actions">
-        <a href={catalogPath} class="btn btn-primary btn-lg">
+        <a href={catalogPath} class="btn btn-primary btn-lg smat-buy-cta">
           {isEs ? `Ver catálogo completo (${quickCatalog.length} productos) →` : `Browse full catalog (${quickCatalog.length} SKUs) →`}
         </a>
-        <a href={`${quotePath}#rfq`} class="btn btn-outline btn-lg">
-          {isEs ? 'Cotizar lista SAP / Excel' : 'Quote SAP / BOM list'}
+        <a href={`${quotePath}#rfq`} class="btn btn-outline btn-lg smat-nav-cta">
+          {isEs ? 'Ir al cotizador' : 'Open quote console'}
         </a>
       </div>
     </div>
@@ -234,17 +234,17 @@ const plantAreas = [
 </script>
 
 <style>
-  .hero-home { background-color: var(--smat-bg-canvas); color: var(--smat-text-primary); padding: 1.15rem 0 1.35rem; border-bottom: 1px solid var(--smat-border-light); }
-  .smat-home-hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 1.35rem; align-items: center; }
-  .smat-home-hero-copy { display: flex; flex-direction: column; gap: 0.65rem; min-width: 0; }
-  .hero-badge-pill { display: inline-flex; width: fit-content; align-items: center; gap: 0.5rem; background: #ffffff; border: 1px solid #cbd5e1; color: #334155; padding: 0.28rem 0.75rem; border-radius: 999px; font-size: 0.74rem; font-weight: 700; white-space: nowrap; }
+  .hero-home { background-color: var(--smat-bg-canvas); color: var(--smat-text-primary); padding: 0.75rem 0 0.85rem; border-bottom: 1px solid var(--smat-border-light); }
+  .smat-home-hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1rem; align-items: center; }
+  .smat-home-hero-copy { display: flex; flex-direction: column; gap: 0.45rem; min-width: 0; }
+  .hero-badge-pill { display: inline-flex; width: fit-content; align-items: center; gap: 0.45rem; background: #ffffff; border: 1px solid #cbd5e1; color: #334155; padding: 0.22rem 0.65rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
   .live-dot { width: 8px; height: 8px; background-color: #059669; border-radius: 50%; display: inline-block; }
-  .hero-home h1 { color: var(--smat-text-primary); font-size: clamp(1.55rem, 2.5vw, 2.2rem); margin: 0; letter-spacing: -0.025em; line-height: 1.12; }
-  .smat-home-lead { margin: 0; font-size: 0.94rem; color: #334155; line-height: 1.42; }
-  .dropin-verifier-solar { padding: 0.75rem 0.9rem; border-radius: 10px; background: #ffffff; border: 1.5px solid #cbd5e1; border-left: 4px solid #7c2d12; }
-  .home-omnibox-form { display: flex; flex-direction: column; gap: 0.4rem; position: relative; }
-  .home-omnibox-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: stretch; }
-  .home-omnibox-input { flex: 1 1 200px; min-width: 0; min-height: 48px; padding: 0.5rem 0.75rem; border: 1px solid #94a3b8; border-radius: 8px; font-size: 0.9rem; color: #0f172a; background: #ffffff; }
+  .hero-home h1 { color: var(--smat-text-primary); font-size: clamp(1.42rem, 2.25vw, 1.95rem); margin: 0; letter-spacing: -0.025em; line-height: 1.12; }
+  .smat-home-lead { margin: 0; font-size: 0.88rem; color: #334155; line-height: 1.38; }
+  .dropin-verifier-solar { padding: 0.55rem 0.75rem; border-radius: 10px; background: #ffffff; border: 1.5px solid #cbd5e1; border-left: 4px solid #7c2d12; }
+  .home-omnibox-form { display: flex; flex-direction: column; gap: 0.3rem; position: relative; }
+  .home-omnibox-row { display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: stretch; }
+  .home-omnibox-input { flex: 1 1 200px; min-width: 0; min-height: 48px; padding: 0.42rem 0.75rem; border: 1px solid #94a3b8; border-radius: 8px; font-size: 0.88rem; color: #0f172a; background: #ffffff; }
   .home-omnibox-submit { flex: 0 0 auto; min-height: 48px; white-space: nowrap; }
   .home-omnibox-results { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.35rem; border-top: 1px solid #e2e8f0; padding-top: 0.45rem; }
   :global(.home-omnibox-item) { display: flex; align-items: center; gap: 0.65rem; padding: 0.45rem 0.6rem; border-radius: 8px; border: 1px solid #cbd5e1; background: #f8fafc; text-decoration: none; color: #0f172a; }
@@ -253,15 +253,15 @@ const plantAreas = [
   :global(.home-omnibox-text) { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
   :global(.home-omnibox-text strong) { font-size: 0.82rem; color: #0f172a; }
   :global(.home-omnibox-text small) { font-size: 0.72rem; color: #475569; }
-  .smat-home-hero-media { display: grid; gap: 0.6rem; }
-  .smat-home-hero-main-fig { margin: 0; border-radius: 14px; overflow: hidden; border: 1px solid #cbd5e1; background: #ffffff; aspect-ratio: 4 / 3; }
+  .smat-home-hero-media { display: grid; gap: 0.45rem; }
+  .smat-home-hero-main-fig { margin: 0; border-radius: 12px; overflow: hidden; border: 1px solid #cbd5e1; background: #f8fafc; aspect-ratio: 4 / 3; max-height: 225px; }
   .smat-home-hero-main-fig img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .smat-home-hero-thumbs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
-  .smat-home-hero-thumbs img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; border: 1px solid #cbd5e1; }
-  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center; }
-  .btn-lg { min-height: 48px; padding: 0.7rem 1.25rem; font-size: 0.9rem; }
-  .equipment-showcase-section { padding: 2rem 0 2.5rem; background: #ffffff; border-bottom: 1px solid #e2e8f0; }
-  .showcase-header { margin-bottom: 1.15rem; gap: 1rem; }
+  .smat-home-hero-thumbs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; }
+  .smat-home-hero-thumbs img { width: 100%; max-height: 82px; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e1; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.55rem; align-items: center; }
+  .btn-lg { min-height: 48px; padding: 0.55rem 1.05rem; font-size: 0.86rem; }
+  .equipment-showcase-section { padding: 1.15rem 0 2rem; background: #ffffff; border-bottom: 1px solid #e2e8f0; }
+  .showcase-header { margin-bottom: 0.75rem; gap: 0.75rem; }
   .section-eyebrow { display: inline-block; font-family: var(--smat-font-mono, monospace); font-size: 0.72rem; font-weight: 800; color: #7c2d12; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.25rem; }
   .showcase-header h2 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); margin: 0; color: #0f172a; }
   .showcase-cta-primary { display: inline-flex; align-items: center; min-height: 48px; font-size: 0.88rem; font-weight: 800; color: #7c2d12; text-decoration: none; white-space: nowrap; }
@@ -279,12 +279,16 @@ const plantAreas = [
   .part-chip-strip { display: flex; flex-wrap: wrap; gap: 0.45rem; }
   .part-chip { display: inline-flex; align-items: center; min-height: 48px; min-width: 48px; padding: 0.45rem 0.85rem; border-radius: 8px; background: #f8fafc; border: 1px solid #cbd5e1; color: #0f172a; font-size: 0.8rem; font-weight: 700; text-decoration: none; }
   @media (max-width: 900px) {
-    .hero-home { padding: 0.65rem 0 0.9rem; }
-    .smat-home-hero-grid { grid-template-columns: 1fr; gap: 0.75rem; }
-    .smat-home-hero-copy { gap: 0.45rem; }
-    .hero-home h1 { font-size: clamp(1.3rem, 5vw, 1.75rem); }
-    .smat-home-lead { font-size: 0.85rem; line-height: 1.35; }
-    .dropin-verifier-solar { padding: 0.55rem 0.7rem; }
-    .smat-home-hero-main-fig { max-height: 210px; }
+    .hero-home { padding: 0.35rem 0 0.35rem; }
+    .smat-home-hero-grid { grid-template-columns: 1fr; gap: 0.3rem; }
+    .smat-home-hero-copy { gap: 0.3rem; }
+    .hero-badge-pill, .smat-home-lead, .smat-home-hero-thumbs, .home-omnibox-form .smat-field-label, .showcase-header .section-eyebrow { display: none; }
+    .hero-home h1 { font-size: 1.08rem; line-height: 1.12; }
+    .dropin-verifier-solar { padding: 0.3rem 0.45rem; }
+    .smat-home-hero-main-fig { max-height: 76px; aspect-ratio: 21 / 9; }
+    .hero-actions { display: grid; grid-template-columns: 1fr auto; gap: 0.4rem; }
+    .hero-actions .btn-lg { min-height: 48px; padding: 0.35rem 0.65rem; font-size: 0.78rem; }
+    .equipment-showcase-section { padding: 0.4rem 0 1.25rem; }
+    .showcase-header { margin-bottom: 0.3rem; }
   }
 </style>

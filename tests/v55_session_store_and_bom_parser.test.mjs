@@ -1,5 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import {
   RFQ_SESSION_STORAGE_KEY,
@@ -101,4 +104,8 @@ test('SLICE-V55-07/08: interactiveRoutes vs readonlyRoutes y clasificacion nomin
   assert.ok(nominalCyc.cvUnderflow < 0.52, `cvUnderflow inicial debe ser <0.52 (actual=${nominalCyc.cvUnderflow})`);
   assert.ok(nominalCyc.circulatingLoadPct < 400, `CC% inicial debe ser nominal (actual=${nominalCyc.circulatingLoadPct})`);
   assert.equal(nominalCyc.isRopingCritical, false);
+
+  const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+  const bomSrc = fs.readFileSync(path.join(siteRoot, 'src/components/wizard/FastLaneBomBar.astro'), 'utf8');
+  assert.ok(bomSrc.includes('<dialog id="smat-bom-import-dialog"'), 'FastLaneBomBar debe abrirse en modal dialog opt-in');
 });

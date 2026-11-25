@@ -42,13 +42,12 @@ const massText = sku.mass_kg ? `${sku.mass_kg} kg` : '';
 
   <div class="smat-sf-body">
     <div class="smat-sf-meta-row">
-      <span class={`smat-sf-badge smat-sf-badge--${avail.tone}`}>
+      <span class={`smat-sf-badge smat-sf-badge--${avail.tone} smat-stock-badge`}>
         {avail.label}
       </span>
+      <span class="smat-sf-sku-code">{sku.id}</span>
       {massText && <span class="smat-sf-mass">{massText}</span>}
     </div>
-
-    <div class="smat-sf-sku-code">{sku.id}</div>
 
     <h3 class="smat-sf-title">
       <a href={detailHref} class="smat-sf-title-link">{title}</a>
@@ -59,7 +58,8 @@ const massText = sku.mass_kg ? `${sku.mass_kg} kg` : '';
     <div class="smat-sf-actions">
       <button
         type="button"
-        class="smat-sf-btn-add"
+        class="smat-sf-btn-add smat-buy-cta"
+        data-add-tray-sku={sku.id}
         data-quick-tray-add={sku.id}
         data-sku-title={title}
         data-sku-code={trayCode}
@@ -67,10 +67,10 @@ const massText = sku.mass_kg ? `${sku.mass_kg} kg` : '';
         data-sku-regime={sku.stock_regime || 'hay'}
         data-sku-mass={String(sku.mass_kg || 15)}
       >
-        {isEs ? '+ Agregar a cotización' : '+ Add to quote'}
+        {isEs ? '+ Agregar' : '+ Add'}
       </button>
-      <a href={detailHref} class="smat-sf-btn-detail">
-        {isEs ? 'Ver producto →' : 'View product →'}
+      <a href={detailHref} class="smat-sf-btn-detail smat-nav-cta">
+        {isEs ? 'Ver ficha →' : 'View specs →'}
       </a>
     </div>
   </div>

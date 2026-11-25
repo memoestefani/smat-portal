@@ -180,7 +180,7 @@ const canonicalFlotSku = String(defaultFlotation.recommendedSkuId || 'SMAT-FLOT-
 
   <div slot="details">
     <p class="smat-basis-note font-mono-tech smat-mb-sm">
-      {isEs ? 'Base de cálculo: cinética de dispersión (Gorain) y suspensión sólida (Zwietering).' : 'Calculation basis: bubble dispersion (Gorain) & solids suspension (Zwietering).'}
+      {isEs ? 'Base de cálculo: cinética de dispersión de burbuja y suspensión sólida en celda.' : 'Calculation basis: bubble dispersion kinetics & solids suspension in cell.'}
     </p>
     <div class="embedded-res-grid font-mono-tech">
       <div class="embedded-res-cell"><strong>{isEs ? 'Flotabilidad P:' : 'Floatability P:'}</strong> <span id="wb-flot-res-p" data-testid="wb-flot-res-p" data-schema-output="flotation.floatabilityP">{defaultFlotation.floatabilityP}</span></div>

@@ -241,18 +241,19 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
               });
               return `
             <tr>
-              <td class="acuse-cell-sku">${it.id}<br/><small>${it.material || 'STD'}</small></td>
-              <td><strong>${isEn ? it.nameEn : it.nameEs}</strong><br/><small class="acuse-cell-sat">${it.satLine}</small></td>
-              <td class="acuse-cell-qty">${it.qty}</td>
-              <td class="acuse-cell-jrp">${it.coupledPairSku} (${isEn ? 'Cycle' : 'Ciclo'}: T10=${itemJrp.t10InspectionDays}d / T50=${itemJrp.t50ReorderTriggerDays}d / T80=${itemJrp.t80CriticalChangeoutDays}d · Buffer ${itemJrp.leadTimeBufferDays}d · Sev ${itemJrp.wearSeverityFactor}× · ${itemJrp.wearAcceleratedLifeHours}h · ${isEn ? itemJrp.dispatchModeLabelEn : itemJrp.dispatchModeLabelEs} · ${formatCheckoutLaneHuman(checkoutMeta.lane, uiLang)})</td>
+              <td class="acuse-cell-sku" data-label="SKU">${it.id}<br/><small>${it.material || 'STD'}</small></td>
+              <td data-label="${isEn ? 'Description' : 'Descripción'}"><strong>${isEn ? it.nameEn : it.nameEs}</strong><br/><small class="acuse-cell-sat">${it.satLine}</small></td>
+              <td class="acuse-cell-qty" data-label="${isEn ? 'Qty' : 'Cantidad'}">${it.qty}</td>
+              <td class="acuse-cell-jrp" data-label="${isEn ? 'Availability' : 'Disponibilidad'}">${it.coupledPairSku} (${isEn ? 'Cycle' : 'Ciclo'}: T10=${itemJrp.t10InspectionDays}d / T50=${itemJrp.t50ReorderTriggerDays}d / T80=${itemJrp.t80CriticalChangeoutDays}d · Buffer ${itemJrp.leadTimeBufferDays}d · Sev ${itemJrp.wearSeverityFactor}× · ${itemJrp.wearAcceleratedLifeHours}h · ${isEn ? itemJrp.dispatchModeLabelEn : itemJrp.dispatchModeLabelEs} · ${formatCheckoutLaneHuman(checkoutMeta.lane, uiLang)})</td>
             </tr>`;
             }
           )
           .join('');
       } else {
-        trayTbody.innerHTML = `<tr><td colspan="4" class="acuse-empty-row">${isEn
-            ? `Single-component technical specification (${jrpWindow.policySummaryEn})`
-            : `Especificación técnica de componente individual (${jrpWindow.policySummaryEs})`
+        const catalogHref = isEn ? '/en/catalog/' : '/catalogo/';
+        trayTbody.innerHTML = `<tr class="acuse-empty-row-tr"><td colspan="4" class="acuse-empty-row" data-label="${isEn ? 'Status' : 'Estado'}">${isEn
+            ? `No confirmed line items in your requisition yet. <a class="acuse-empty-cta" href="${catalogHref}">Explore Durango Catalog →</a>`
+            : `Aún no hay partidas confirmadas en tu requisición. <a class="acuse-empty-cta" href="${catalogHref}">Explorar Catálogo Durango →</a>`
           }</td></tr>`;
       }
     }
@@ -546,8 +547,8 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
       : [];
     const sapBlockText = isEmptyRequisition
       ? (isEn
-        ? `FOLIO: ${folio} | STATUS: DRAFT (NO ACTIVE LINE ITEMS)\nACTION: Select spares or paste BOM in /en/quote/ before dispatching to Durango Warehouse.`
-        : `FOLIO: ${folio} | ESTADO: BORRADOR SIN PARTIDAS ACTIVAS\nACCIÓN: Seleccione refacciones o pegue lista BOM en /cotizar/ antes de enviar al Almacén Durango.`)
+        ? `FOLIO: ${folio} | STATUS: DRAFT (NO ACTIVE LINE ITEMS)\nACTION: Select spares or paste parts list in /en/quote/ before dispatching to Durango Warehouse.`
+        : `FOLIO: ${folio} | ESTADO: BORRADOR SIN PARTIDAS ACTIVAS\nACCIÓN: Seleccione refacciones o pegue lista de partes en /cotizar/ antes de enviar al Almacén Durango.`)
       : [
         `FOLIO: ${folio} | ORDER_HASH: ${orderHashCode} | GATE: ${gateClassVal} | BOUNDARY: ${trustBoundaryId} | ${isEn ? 'LANE' : 'CARRIL'}: ${formatCheckoutLaneHuman(checkoutMeta.lane, uiLang)}`,
         `${isEn ? 'COMPANY' : 'EMPRESA'}: ${empresa} | ${isEn ? 'REQUESTER' : 'SOLICITANTE'}: ${nombre}`,

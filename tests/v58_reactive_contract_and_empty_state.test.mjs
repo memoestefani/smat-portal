@@ -14,7 +14,15 @@ import {
   buildTribologyAssemblyViewModel,
   projectViewModelToDom,
 } from '../src/scripts/instrumentViewModels.js';
-import { resolvePumpingTabDeepLink } from '../src/scripts/pumpingTabRouter.js';
+import {
+  buildAcuseViewModel,
+} from '../src/scripts/acuseSheetController.js';
+import {
+  isCommittedCartActive,
+} from '../src/scripts/rfqSessionStore.js';
+import {
+  resolvePumpingTabDeepLink,
+} from '../src/scripts/pumpingTabRouter.js';
 import {
   buildCmuPrioritySubjectLine,
   computeCmuPriorityDescriptor,
@@ -165,6 +173,19 @@ test('V58-G3: Runtime EMPTY Guard, bilingual roles/catalog, reactive ViewModels 
   assert.equal(dossierSrc.includes("defaultPartSpecs.hardness || '≥ 650 HB"), false);
   const acuseCtrl = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/acuseSheetController.js'), 'utf8');
   assert.ok(acuseCtrl.includes('isEmptyRequisition'));
+  assert.ok(acuseCtrl.includes('data-label='));
+
+  assert.equal(
+    isCommittedCartActive({ items: [], stationSnapshots: { pumping: { passive: true, flowM3H: 200 } } }, ''),
+    false,
+    'Telemetría pasiva sin partidas no debe activar el carrito'
+  );
+  assert.equal(
+    isCommittedCartActive({ items: [{ skuId: 'SMAT-PUMP-6X4-WETKIT', qty: 1 }] }, ''),
+    true
+  );
+  assert.equal(isCommittedCartActive({ items: [] }, '?sku=SMAT-CYC-D6-D20'), true);
+  assert.equal(buildAcuseViewModel({ items: [], locale: 'es' }).isEmptyRequisition, true);
 });
 
 test('V58-G4: Mobile Menu, 3-Step QuoteWizard Stepper, Pumping Station 4 & SSOT Surface', () => {
@@ -178,7 +199,7 @@ test('V58-G4: Mobile Menu, 3-Step QuoteWizard Stepper, Pumping Station 4 & SSOT 
   const fastLaneSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/wizard/FastLaneBomBar.astro'), 'utf8');
   assert.ok(qwSrc.includes('id="qw-stepper-bar"'));
   assert.ok(qwSrc.includes('data-qw-step-tab="1"') && qwSrc.includes('data-qw-step-tab="2"') && qwSrc.includes('data-qw-step-tab="3"'));
-  assert.ok(fastLaneSrc.indexOf('wb-mining-unit-select') < fastLaneSrc.indexOf('<details'));
+  assert.ok(qwSrc.includes('wb-mining-unit-select') && fastLaneSrc.includes('id="smat-bom-import-dialog"'));
 
   const pumpingSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/PumpingAssistantStratum2.astro'), 'utf8');
   assert.ok(pumpingSrc.includes('pumpingTabRouter.js'));

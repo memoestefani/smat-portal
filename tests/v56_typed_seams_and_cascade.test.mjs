@@ -145,6 +145,11 @@ test('SLICE-V56-16C: Cero @ts-nocheck, cero HTML roto, etiquetas humanas y CSS e
 
   const fastLaneSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/wizard/FastLaneBomBar.astro'), 'utf8');
   assert.equal(fastLaneSrc.includes('&#10;'), false, 'FastLaneBomBar no debe emitir &#10; literal');
+  assert.ok(fastLaneSrc.includes('<dialog id="smat-bom-import-dialog"'), 'FastLaneBomBar debe encapsularse en modal dialog opt-in');
+
+  const qwSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/QuoteWizard.astro'), 'utf8');
+  assert.ok(qwSrc.includes('id="wb-fab-advance-wrap"'), 'Anticipo 50%/50% debe condicionarse en #wb-fab-advance-wrap');
+  assert.ok(qwSrc.includes('id="wb-mining-unit-select"'), 'Grupo/Unidad Minera debe ubicarse en QuoteWizard');
 
   const dossierSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/LiveEngineeringDossier.astro'), 'utf8');
   const summaryBlocks = dossierSrc.match(/<summary\b[^>]*>[\s\S]*?<\/summary>/gi) || [];

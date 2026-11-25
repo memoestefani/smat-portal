@@ -30,7 +30,12 @@ import {
   computeCmuPriorityDescriptor,
   getTrayState,
 } from './requisitionTrayBus.js';
-import { deriveSessionLifecycleState, loadEngineeringContextSnapshot, loadRfqSession } from './rfqSessionStore.js';
+import {
+  deriveSessionLifecycleState,
+  isCommittedCartActive,
+  loadEngineeringContextSnapshot,
+  loadRfqSession,
+} from './rfqSessionStore.js';
 import {
   INTERNAL_PRIVATE_OUTPUT_KEYS,
   OUTPUT_VISIBILITY_TAXONOMY,
@@ -207,8 +212,20 @@ export function projectLiveDossierSummary(ctx = {}) {
       email: capturedEmail,
     },
   });
-  const isEmptySession = lifecycleState === 'EMPTY' && !hasUrlContext;
+  const isCartCommitted = isCommittedCartActive(
+    { ...session, items: trayStateNow.items || session.items || [] },
+    typeof window !== 'undefined' ? window.location?.search || '' : ''
+  );
+  const isEmptySession = (lifecycleState === 'EMPTY' || !isCartCommitted) && !hasUrlContext;
 
+  const dossierRoot = doc.getElementById('live-engineering-dossier');
+  if (dossierRoot) {
+    dossierRoot.setAttribute('data-dossier-mode', isEmptySession ? 'empty' : 'active');
+  }
+  const dossierBody = doc.querySelector('[data-dossier-on-demand-body]');
+  if (dossierBody) {
+    dossierBody.classList.toggle('hidden', isEmptySession && trayStateNow.items.length === 0);
+  }
   const emptyGuide = doc.querySelector('[data-dossier-empty-guide]');
   if (emptyGuide) emptyGuide.classList.toggle('hidden', !isEmptySession);
   const pumpSection = doc.getElementById('live-section-pump-hydraulics');
@@ -219,6 +236,20 @@ export function projectLiveDossierSummary(ctx = {}) {
   const miniFolioEl = doc.getElementById('mini-folio-text');
   if (miniFolioEl && isEmptySession) {
     miniFolioEl.textContent = isEs ? 'BORRADOR' : 'DRAFT';
+  }
+
+  if (isEmptySession && (!trayStateNow.items || trayStateNow.items.length === 0)) {
+    const emptyCode = isEs ? 'SMAT-BORRADOR (Sin partidas)' : 'SMAT-DRAFT (No items)';
+    setText('live-smat-code', emptyCode);
+    setText('live-part-name', isEs ? 'Sin partidas en carrito todavía' : 'No line items in cart yet');
+    setText('gate-lead-status', isEs ? 'CARRITO VACÍO • AGREGUE PARTIDAS PARA COTIZAR' : 'EMPTY CART • ADD ITEMS TO QUOTE');
+    return {
+      mode: 'empty',
+      isEmpty: true,
+      schemaCount: 0,
+      scopeContainmentValid: true,
+      smatCode: emptyCode,
+    };
   }
 
   const smatCode = isEmptySession
@@ -245,7 +276,7 @@ export function projectLiveDossierSummary(ctx = {}) {
   setText('sap-live-dest', destVal);
 
   const partLabel = isEmptySession
-    ? (isEs ? 'Sin partidas agregadas todavía (use Lista Rápida o Catálogo)' : 'No items in tray yet (use Quick BOM or Catalog)')
+    ? (isEs ? 'Sin partidas agregadas todavía (use Lista Rápida o Catálogo)' : 'No items in tray yet (use Quick Parts List or Catalog)')
     : (primaryTray
       ? `${isEs ? primaryTray.nameEs : primaryTray.nameEn} (×${primaryTray.qty})`
       : formatCatalogPartCodeHuman(smatCode, isEs ? 'es' : 'en'));

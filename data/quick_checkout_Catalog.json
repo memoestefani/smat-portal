@@ -1351,20 +1351,20 @@
       {
         "slot": "primary",
         "src": "/images/productos/mecanismo-suspendido-flotacion-18sp.webp",
-        "caption_es": "Celda de flotación con mecanismo suspendido #18 SP / #24 / #30",
-        "caption_en": "Flotation tank cell with suspended #18 SP / #24 / #30 mechanism"
+        "caption_es": "Puente motriz de 15 HP y mecanismo suspendido en almacén",
+        "caption_en": "15 HP drive bridge and suspended mechanism in warehouse"
       },
       {
         "slot": "v2",
         "src": "/images/productos/mecanismo-suspendido-flotacion-18sp-v2.webp",
-        "caption_es": "Corte interno de estator radial, rotor y tubo camisa",
-        "caption_en": "Internal view of radial stator, rotor and standpipe"
+        "caption_es": "Celda y tanque agitador 2000×2000 con puente motriz 15 HP",
+        "caption_en": "2000×2000 agitation tank cell with 15 HP drive bridge"
       },
       {
         "slot": "v3",
         "src": "/images/productos/mecanismo-suspendido-flotacion-18sp-v3.webp",
-        "caption_es": "Puente motriz de 15 HP ensamblado en taller",
-        "caption_en": "15 HP drive bridge and standpipe assembled in shop"
+        "caption_es": "Cabezal reductor pesado, flecha vertical y volante de elevación",
+        "caption_en": "Heavy-duty geared drive head, vertical shaft and lifting handwheel"
       }
     ]
   },
@@ -1837,20 +1837,20 @@
       {
         "slot": "primary",
         "src": "/images/productos/tamizador-mecanico-laboratorio.webp",
-        "caption_es": "Tamizador mecánico rotativo y golpeteo vertical",
-        "caption_en": "Rotary and vertical tapping mechanical sieve shaker"
+        "caption_es": "Cabezal mecánico, placas base y cilindros para torre de tamices",
+        "caption_en": "Mechanical sieve-shaker base plates and support cylinders"
       },
       {
         "slot": "v2",
         "src": "/images/productos/tamizador-mecanico-laboratorio-v2.webp",
-        "caption_es": "Tapa superior y plato receptor para torre de tamices",
+        "caption_es": "Tapa superior y plato receptor en bronce para torre de tamices 8\"",
         "caption_en": "Brass cover and receiver pan for 8-inch sieve stack"
       },
       {
         "slot": "v3",
         "src": "/images/productos/tamizador-mecanico-laboratorio-v3.webp",
-        "caption_es": "Accesorios y juegos de mallas calibradas ASTM E11",
-        "caption_en": "Accessory stack of ASTM E11 calibrated wire sieves"
+        "caption_es": "Vista superior de malla tejida ASTM E11 de 8\" montada en aro",
+        "caption_en": "Top view of 8-inch ASTM E11 woven wire sieve frame"
       }
     ]
   },

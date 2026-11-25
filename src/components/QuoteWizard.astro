@@ -5,6 +5,7 @@ import LiveEngineeringDossier from './LiveEngineeringDossier.astro';
 import FastLaneBomBar from './wizard/FastLaneBomBar.astro';
 import RequisitionTraySummary from './RequisitionTraySummary.astro';
 import { calculateDriveAndBearingKinematics } from '../scripts/slurryEngine.js';
+import { MINING_GROUPS_CATALOG, MINING_UNITS_COUNT } from '../scripts/wizardCatalogData.js';
 import { SMAT_WORKBENCH_EVENT, getAtomicPartSpecs } from '../scripts/workbenchBus.js';
 
 interface Props { lang?: 'es' | 'en'; defaultRole?: string; defaultType?: 'capex' | 'opex'; }
@@ -33,7 +34,7 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
   data-workbench-event={SMAT_WORKBENCH_EVENT}
   data-hq-city={companyData.address.city}
 >
-  <section class="workbench-header workbench-header-with-thumb">
+  <section class="workbench-header">
     <div class="workbench-header-copy">
       <div class="badge-row">
         <span class="badge badge-copper"><span class="live-dot"></span>{isEs ? 'CONSOLA DE REQUISICIÓN Y ALMACÉN DURANGO' : 'DURANGO REQUISITION & CENTRAL WAREHOUSE'}</span>
@@ -42,25 +43,24 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
       <h1 class="workbench-title">{isEs ? 'Requisición B2B de Equipos y Refacciones' : 'B2B Equipment & Spares Requisition'}</h1>
       <p class="workbench-subtitle">
         {isEs
-          ? 'Confirme su lista de códigos, revise su resumen técnico y despache su solicitud formal hacia Almacén Central Durango.'
-          : 'Confirm your SKU list, review technical summary, and dispatch your formal requisition to Durango Central Warehouse.'}
+          ? 'Confirme su lista de partidas, capture los datos de su unidad minera y envíe su cotización directa a Durango.'
+          : 'Confirm your line items, enter your mining facility details, and submit your quote directly to Durango.'}
       </p>
     </div>
-    <figure class="workbench-header-photo">
-      <img
-        src="/images/almacen/almacen-bomba-6x4-dah.webp"
-        alt={isEs ? 'Almacén Central SMAT en Durango' : 'SMAT Central Warehouse in Durango'}
-        width="120"
-        height="90"
-        loading="eager"
-        decoding="async"
-      />
-    </figure>
+    <img
+      src="/images/almacen/almacen-bomba-6x4-dah.webp"
+      alt={isEs ? 'Almacén Central SMAT Durango' : 'SMAT Durango Central Warehouse'}
+      width="144"
+      height="108"
+      loading="eager"
+      decoding="async"
+      class="wb-header-durango-thumb"
+    />
   </section>
 
   <div class="workbench-split">
     <div class="workbench-controls-panel console-bay">
-      <div class="console-bay-banner">{isEs ? '1. QUÉ NECESITA • BANDEJA Y REORDEN RÁPIDO' : '1. WHAT YOU NEED • TRAY & QUICK REORDER'}</div>
+      <div class="console-bay-banner">{isEs ? '1. QUÉ NECESITA • PARTIDAS DE TU PEDIDO' : '1. WHAT YOU NEED • ORDER LINE ITEMS'}</div>
 
       <div id="offline-network-pill" class="offline-network-pill hidden" role="status">
         <span class="offline-dot"></span>
@@ -69,10 +69,10 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
 
       <div class="smat-station-tabs qw-stepper-bar" id="qw-stepper-bar" role="tablist" aria-label={isEs ? 'Pasos de Requisición' : 'Requisition Steps'}>
         <button type="button" role="tab" aria-selected="true" class="smat-station-tab-btn is-active" data-qw-step-tab="1">
-          {isEs ? '1. Partidas y Unidad Minera' : '1. Line Items & Mine Site'}
+          {isEs ? '1. Revisar Partidas' : '1. Review Items'}
         </button>
         <button type="button" role="tab" aria-selected="false" class="smat-station-tab-btn" data-qw-step-tab="2">
-          {isEs ? '2. Operación y Contacto' : '2. Duty & Contact'}
+          {isEs ? '2. Unidad Minera y Contacto' : '2. Mine Site & Contact'}
         </button>
         <button type="button" role="tab" aria-selected="false" class="smat-station-tab-btn" data-qw-step-tab="3">
           {isEs ? '3. Enviar y Exportar' : '3. Dispatch & Export'}
@@ -82,7 +82,13 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
       <section class="control-card" id="stage-diagnostic" data-testid="stage-diagnostic" data-stage="stage-diagnostic" data-wb-step-panel="1" data-qw-step-section="1">
         <div class="control-card-header">
           <span class="step-num">01</span>
-          <h2>{isEs ? 'Partidas, Identificación y Memorias Adjuntas' : 'Line Items, Identification & Attached Notes'}</h2>
+          <h2>{isEs ? 'Partidas en tu Carrito' : 'Items in Your Requisition'}</h2>
+        </div>
+
+        <div class="smat-cta-row">
+          <button type="button" id="wb-open-bom-modal-btn" class="btn btn-outline smat-nav-cta">
+            {isEs ? 'Importar lista Excel / SAP' : 'Import Excel / SAP List'}
+          </button>
         </div>
 
         <FastLaneBomBar lang={lang} />
@@ -94,8 +100,8 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
         </div>
 
         <div class="smat-cta-row smat-mt-sm">
-          <button type="button" class="btn btn-primary" data-qw-next-step="2">
-            {isEs ? 'Siguiente: Operación y Contacto →' : 'Next: Duty & Contact →'}
+          <button type="button" class="btn btn-primary smat-buy-cta" data-qw-next-step="2">
+            {isEs ? 'Continuar con mis datos →' : 'Continue to Contact & Mine Site →'}
           </button>
         </div>
       </section>
@@ -103,8 +109,32 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
       <section class="control-card hidden" id="stage-specs-contact" data-stage="stage-specs-contact" data-wb-step-panel="2" data-qw-step-section="2" hidden>
         <div class="control-card-header">
           <span class="step-num">02</span>
-          <h2>{isEs ? 'Parámetros de Operación, Trade-In y Solicitante' : 'Duty Parameters, Trade-In & Requester Details'}</h2>
+          <h2>{isEs ? 'Unidad Minera, DAM005 Trade-In y Solicitante' : 'Mining Site, DAM005 Trade-In & Requester'}</h2>
         </div>
+
+        <div class="form-row smat-mt-sm" id="fastlane-mine-controls">
+          <div class="form-group col-half">
+            <label for="wb-mining-group-select">
+              <strong>{isEs ? `Grupo Minero (${MINING_GROUPS_CATALOG.length}):` : `Mining Group (${MINING_GROUPS_CATALOG.length}):`}</strong>
+            </label>
+            <select id="wb-mining-group-select" class="wb-select">
+              <option value="">{isEs ? `— Seleccionar grupo (${MINING_GROUPS_CATALOG.length}) —` : `— Select group (${MINING_GROUPS_CATALOG.length}) —`}</option>
+              {MINING_GROUPS_CATALOG.map((grp) => (
+                <option value={grp.id}>{grp.name}</option>
+              ))}
+            </select>
+          </div>
+          <div class="form-group col-half">
+            <label for="wb-mining-unit-select">
+              <strong>{isEs ? `Unidad Minera (${MINING_UNITS_COUNT}):` : `Mining Unit (${MINING_UNITS_COUNT}):`}</strong>
+            </label>
+            <select id="wb-mining-unit-select" class="wb-select">
+              <option value="">{isEs ? '— Seleccionar unidad o distrito —' : '— Select site or district —'}</option>
+            </select>
+          </div>
+        </div>
+        <div id="wb-step1-pulp-profile-badge" class="unit-pulp-profile-badge hidden qw-pulp-badge"></div>
+        <div id="wb-mining-preset-telemetry" data-mining-preset-telemetry class="qw-mining-telemetry hidden"></div>
 
         <div class="intent-selector smat-mt-sm">
           <label class="intent-btn selected" id="btn-intent-opex">
@@ -119,7 +149,7 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
 
         <details class="wb-progressive-drawer smat-mt-sm" id="qw-preventive-schedule-drawer">
           <summary class="wb-progressive-summary">
-            <span>{isEs ? 'Opcional: Programar calendario preventivo y reemplazo de casco DAM005 ▾' : 'Optional: Preventive schedule & DAM005 core trade-in ▾'}</span>
+            <span>{isEs ? 'Opcional: DAM005 Trade-In y programa preventivo ▾' : 'Optional: DAM005 Trade-In & preventive schedule ▾'}</span>
           </summary>
           <div class="form-row smat-mt-sm" data-domain-root="jrp">
             <div class="form-group col-half">
@@ -144,7 +174,7 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
               <span>Voluta / forro <strong id="jrp-stage-3-days" data-schema-output="jrp.voluteLinerOverhaulDay">180 d</strong></span>
               <label class="jrp-tradein-inline-label" for="wb-core-tradein-toggle">
                 <input type="checkbox" id="wb-core-tradein-toggle" data-schema-input="jrp.coreReturnEnabled" />
-                <span>{isEs ? 'Trade-In Casco DAM005:' : 'DAM005 Core Trade-In:'}</span>
+                <span>DAM005 Trade-In:</span>
                 <strong id="wb-core-tradein-eligible" data-schema-output="jrp.eligible">{isEs ? 'Evaluar' : 'Check'}</strong>
               </label>
             </div>
@@ -195,7 +225,7 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
           </div>
         </div>
 
-        <div class="form-group qw-g5-terms">
+        <div id="wb-fab-advance-wrap" class="form-group qw-g5-terms hidden" hidden>
           <label class="qw-g5-label">
             <input type="checkbox" id="wb-g5-advance-confirm" name="g5_advance_confirm" data-g5-advance-confirm checked />
             <span><strong>{isEs ? 'Condición de fabricación bajo plano:' : 'Made-to-Order Terms:'}</strong> {isEs ? '50% anticipo para fundición y 50% contra aviso de embarque con reporte dimensional.' : '50% advance for casting and 50% upon ready-to-ship notice with dimensional report.'}</span>

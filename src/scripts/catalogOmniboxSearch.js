@@ -130,15 +130,21 @@ function searchCatalogAndAtomic(rawQuery = '', lang = 'es') {
 }
 
 /**
- * Conecta el Omnibox de 1 línea `#home-omnibox-input` en Portada ES/EN (`debounce 150 ms`).
- * @param {ParentNode | Document | null} [root]
- * @param {'es'|'en'} [lang='es']
+ * Conecta un Omnibox 1:1 (Portada o Cabecera Global) sobre IDs configurables (`debounce 150 ms`, `0 localStorage`).
+ * @param {{ root?: ParentNode | Document | null, lang?: 'es'|'en', inputSelector?: string, resultsSelector?: string, formSelector?: string }} [opts={}]
  */
-export function initHomeOmniboxSearch(root = typeof document !== 'undefined' ? document : null, lang = 'es') {
+function bindOmniboxInstance(opts = {}) {
+  const {
+    root = typeof document !== 'undefined' ? document : null,
+    lang = 'es',
+    inputSelector = '#home-omnibox-input',
+    resultsSelector = '#home-omnibox-results',
+    formSelector = '#home-omnibox-form',
+  } = opts;
   if (!root || typeof root.querySelector !== 'function') return;
-  const input = /** @type {HTMLInputElement | null} */ (root.querySelector('#home-omnibox-input'));
-  const resultsBox = /** @type {HTMLElement | null} */ (root.querySelector('#home-omnibox-results'));
-  const form = /** @type {HTMLFormElement | null} */ (root.querySelector('#home-omnibox-form'));
+  const input = /** @type {HTMLInputElement | null} */ (root.querySelector(inputSelector));
+  const resultsBox = /** @type {HTMLElement | null} */ (root.querySelector(resultsSelector));
+  const form = /** @type {HTMLFormElement | null} */ (root.querySelector(formSelector));
   if (!input || !resultsBox) return;
   if (input.dataset.omniboxBound === '1') return;
   input.dataset.omniboxBound = '1';
@@ -147,11 +153,15 @@ export function initHomeOmniboxSearch(root = typeof document !== 'undefined' ? d
   /** @type {ReturnType<typeof setTimeout> | null} */
   let debounceTimer = null;
 
+  const hideResults = () => {
+    resultsBox.replaceChildren();
+    resultsBox.hidden = true;
+  };
+
   const renderResults = () => {
     const q = input.value.trim();
     if (!q) {
-      resultsBox.replaceChildren();
-      resultsBox.hidden = true;
+      hideResults();
       return;
     }
 
@@ -201,6 +211,22 @@ export function initHomeOmniboxSearch(root = typeof document !== 'undefined' ? d
     debounceTimer = setTimeout(renderResults, 150);
   });
 
+  input.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape') {
+      hideResults();
+      input.blur();
+    }
+  });
+
+  if (typeof document !== 'undefined') {
+    document.addEventListener('click', (ev) => {
+      const target = /** @type {Node | null} */ (ev.target);
+      if (form && target && !form.contains(target)) {
+        resultsBox.hidden = true;
+      }
+    });
+  }
+
   if (form) {
     form.addEventListener('submit', (ev) => {
       const q = input.value.trim();
@@ -212,4 +238,34 @@ export function initHomeOmniboxSearch(root = typeof document !== 'undefined' ? d
       }
     });
   }
+}
+
+/**
+ * Conecta el Omnibox de 1 línea `#home-omnibox-input` en Portada ES/EN (`debounce 150 ms`).
+ * @param {ParentNode | Document | null} [root]
+ * @param {'es'|'en'} [lang='es']
+ */
+export function initHomeOmniboxSearch(root = typeof document !== 'undefined' ? document : null, lang = 'es') {
+  bindOmniboxInstance({
+    root,
+    lang,
+    inputSelector: '#home-omnibox-input',
+    resultsSelector: '#home-omnibox-results',
+    formSelector: '#home-omnibox-form',
+  });
+}
+
+/**
+ * Conecta el Buscador Global 1:1 `#header-omnibox-input` en Header.astro (`debounce 150 ms`).
+ * @param {ParentNode | Document | null} [root]
+ * @param {'es'|'en'} [lang='es']
+ */
+export function initHeaderOmniboxSearch(root = typeof document !== 'undefined' ? document : null, lang = 'es') {
+  bindOmniboxInstance({
+    root,
+    lang,
+    inputSelector: '#header-omnibox-input',
+    resultsSelector: '#header-omnibox-results',
+    formSelector: '#header-omnibox-form',
+  });
 }

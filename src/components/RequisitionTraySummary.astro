@@ -76,6 +76,7 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
     getTrayState,
     addTrayItem,
     removeTrayItem,
+    updateTrayItemQty,
     computeCmuPriorityDescriptor,
     buildCmuPrioritySubjectLine,
     hydrateTrayFromReorderQuery
@@ -144,8 +145,8 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
       if (!state.items.length) {
         tbody.innerHTML = `<tr><td colspan="5" class="req-tray-empty">${
           isEn
-            ? 'No items in tray yet. Enter codes above or add products from /en/catalog/.'
-            : 'Sin partidas en bandeja. Capture códigos arriba o seleccione productos en /catalogo/.'
+            ? 'No items in tray yet. Import an Excel/SAP list or add products from /en/catalog/.'
+            : 'Sin partidas en carrito todavía. Importe lista Excel/SAP o agregue productos en /catalogo/.'
         }</td></tr>`;
         return;
       }
@@ -156,13 +157,29 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
           <tr data-tray-row="${item.id}">
             <td><strong>${item.skuId}</strong></td>
             <td>${isEn ? item.nameEn : item.nameEs}</td>
-            <td><strong>${item.qty}</strong></td>
+            <td>
+              <div class="req-qty-stepper">
+                <button type="button" class="smat-qty-stepper-btn" data-tray-qty-delta="-1" data-tray-item-id="${item.id}" data-tray-current-qty="${item.qty}" aria-label="${isEn ? 'Decrease qty' : 'Disminuir cantidad'}">−</button>
+                <strong class="req-qty-val">${item.qty}</strong>
+                <button type="button" class="smat-qty-stepper-btn" data-tray-qty-delta="1" data-tray-item-id="${item.id}" data-tray-current-qty="${item.qty}" aria-label="${isEn ? 'Increase qty' : 'Aumentar cantidad'}">+</button>
+              </div>
+            </td>
             <td><span class="req-mode-pill">${item.criticalityMode === 'PARO_DE_LINEA' ? (isEn ? 'LINE-STOP' : 'PARO DE LÍNEA') : (isEn ? 'STOCK REPLENISHMENT' : 'REPOSICIÓN STOCK')}</span></td>
-            <td><button type="button" class="req-remove-btn" data-remove-sku="${item.id}">×</button></td>
+            <td><button type="button" class="req-remove-btn smat-qty-stepper-btn" data-remove-sku="${item.id}" aria-label="${isEn ? 'Remove' : 'Eliminar'}">×</button></td>
           </tr>
         `
         )
         .join('');
+
+      tbody.querySelectorAll('[data-tray-qty-delta]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-tray-item-id') || '';
+          const delta = Number(btn.getAttribute('data-tray-qty-delta') || 0);
+          const curr = Number(btn.getAttribute('data-tray-current-qty') || 1);
+          updateTrayItemQty(target, Math.max(0, curr + delta));
+          renderTray();
+        });
+      });
 
       tbody.querySelectorAll('[data-remove-sku]').forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -202,5 +219,7 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
   .req-tray-table th, .req-tray-table td { padding: 0.5rem 0.6rem; border-bottom: 1px solid #e2e8f0; text-align: left; }
   .req-tray-empty { color: #64748b; font-style: italic; }
   .req-mode-pill { display: inline-block; padding: 0.15rem 0.45rem; background: #f0f9ff; color: #082f49; border-radius: 4px; font-family: var(--smat-font-mono, monospace); font-size: 0.7rem; font-weight: 700; }
-  .req-remove-btn { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; border-radius: 4px; padding: 0.15rem 0.5rem; font-weight: 800; cursor: pointer; }
+  .req-qty-stepper { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .req-qty-val { min-width: 1.4rem; text-align: center; font-variant-numeric: tabular-nums; }
+  .req-remove-btn { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; border-radius: 6px; padding: 0.15rem 0.5rem; font-weight: 800; cursor: pointer; }
 </style>

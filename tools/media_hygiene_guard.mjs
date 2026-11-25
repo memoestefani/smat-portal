@@ -18,7 +18,17 @@ export const FORBIDDEN_BRAND_TOKENS = Object.freeze([
   'copilot',
   'caterpillar',
   '0371-67315555',
-  'expo'
+  'expo',
+  'weg',
+  'eam028a05',
+  'equipo_rotatorio_laboratorio_verde',
+  'celda_flotacion_mecanismo_suspendido',
+  'celda_flotacion_rotor_estator_corte'
+]);
+
+export const FORBIDDEN_VISUAL_AUDITS = Object.freeze([
+  'CAD_RENDER',
+  'AI_GENERATED'
 ]);
 
 export const VALID_BRAND_AUDITS = Object.freeze([
@@ -73,6 +83,11 @@ export function assertEntryHygiene(entry, expectedMaterialClass, contextLabel) {
   assertZeroOemTextOrPath(entry.captionEs || '', `${contextLabel}.captionEs`);
   assertZeroOemTextOrPath(entry.captionEn || '', `${contextLabel}.captionEn`);
 
+  const rawAudit = String(entry.visual_brand_audit || '').toUpperCase();
+  const rawOrigin = String(entry.origin || '').toUpperCase();
+  if (FORBIDDEN_VISUAL_AUDITS.includes(rawAudit) || FORBIDDEN_VISUAL_AUDITS.includes(rawOrigin)) {
+    throw new Error(`[E_CAD_OR_AI_RENDER_VETOED] ${contextLabel} bloqueado por política v9.0 cero-CAD/IA`);
+  }
   if (!VALID_BRAND_AUDITS.includes(entry.visual_brand_audit)) {
     throw new Error(
       `[E_UNAUDITED_BRAND_IMAGE] ${contextLabel} requiere visual_brand_audit válido (${VALID_BRAND_AUDITS.join('|')}), recibido: ${entry.visual_brand_audit}`
