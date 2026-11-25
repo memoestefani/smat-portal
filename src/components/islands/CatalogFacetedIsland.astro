@@ -71,26 +71,21 @@ const {
 
   <p id="sap-vendor-passport-status" data-passport-status class="passport-status-line no-print"></p>
 
-  <section id="stratum1-dropin-verifier" class="card no-print smat-island-card smat-mb-md" data-stratum-1-instrument data-dropin-verifier data-domain-root="dropIn">
-    <div class="smat-stratum1-display">
-      <div class="smat-flex-between">
-        <div>
-          <h1 class="verifier-title">{isEs ? 'Verificador Drop-In 1:1 y Catálogo Técnico' : '1:1 Drop-In Verifier & Technical Catalog'}</h1>
-        </div>
-        <div class="smat-chip-row">
-          <span class="smat-badge-solar">{ATOMIC_PARTS_SSOT_COUNT} {isEs ? 'Piezas' : 'Parts'}</span>
-          <span class="smat-badge-solar">{canonicalSeriesCount} {isEs ? 'Series' : 'Frames'}</span>
-          <span class="smat-badge-solar"><strong id="catalog-visible-sku-count">{totalCatalogSkusCount}</strong> {isEs ? 'productos disponibles' : 'products available'}</span>
-        </div>
+  <section id="stratum1-dropin-verifier" class="card no-print smat-island-card smat-mb-sm" data-stratum-1-instrument data-dropin-verifier data-domain-root="dropIn">
+    <div class="smat-flex-between">
+      <h1 class="verifier-title">{isEs ? 'Catálogo Técnico y Buscador 1:1' : 'Technical Catalog & 1:1 Verifier'}</h1>
+      <div class="smat-chip-row">
+        <button type="button" class="smat-badge-solar part-chip" data-family-chip="all" aria-pressed="true">
+          <strong>{totalCatalogSkusCount}</strong> {isEs ? 'Equipos/Kits' : 'SKUs'}
+        </button>
+        <button type="button" class="smat-badge-solar part-chip" data-family-chip="atomicas" aria-pressed="false">
+          {ATOMIC_PARTS_SSOT_COUNT} {isEs ? 'Piezas Atómicas' : 'Atomic Parts'}
+        </button>
+        <span class="smat-badge-solar"><strong id="catalog-visible-sku-count">{totalCatalogSkusCount}</strong> {isEs ? 'visibles' : 'visible'}</span>
       </div>
     </div>
 
-    <div class="catalog-omnibox-bar">
-      <label class="smat-field-label" for="catalog-facet-search">
-        {isEs
-          ? 'Buscar producto, SKU o código de pieza (ej. E4147, D075C21, DAM005, TH48-30, Marcy):'
-          : 'Search product, SKU, or part code (e.g. E4147, D075C21, DAM005, TH48-30, Marcy):'}
-      </label>
+    <div class="catalog-omnibox-bar smat-mt-sm">
       <div class="smat-cta-row compact-row dropin-input-row">
         <input
           id="catalog-facet-search"
@@ -98,14 +93,15 @@ const {
           data-dropin-input
           data-omnibox-dropin
           data-schema-input="catalogFacet.searchQuery"
-          placeholder={isEs ? 'SKU, código de plano (E4147, D075C21), aleación o malla ASTM...' : 'SKU, part number (E4147, D075C21), alloy or ASTM sieve...'}
+          aria-label={isEs ? 'Buscar producto, SKU o código de pieza' : 'Search product, SKU, or part code'}
+          placeholder={isEs ? 'SKU, código o malla ASTM...' : 'SKU, part code, or sieve...'}
           class="smat-search-input full-width-input"
         />
         <button type="button" data-dropin-btn class="smat-btn-primary smat-tap-btn">
           {isEs ? 'Verificar 1:1 →' : 'Verify 1:1 Fit →'}
         </button>
       </div>
-      <div class="smat-dropin-root-badge font-mono-tech smat-mt-sm">
+      <div class="smat-dropin-root-badge font-mono-tech smat-mt-sm hidden" hidden>
         <span>{isEs ? 'Compatibilidad 1:1:' : '1:1 Fit Match:'}</span>
         <code data-dropin-root data-schema-output="dropIn.normalizedRoot">—</code>
         <span data-dropin-alloy data-schema-output="dropIn.alloySuffix" class="smat-dropin-meta-pill">—</span>

@@ -21,6 +21,17 @@ import companyData from '../../data/company.json';
 
   <section class="section-spacing">
     <div class="container">
+      <figure class="contact-warehouse-banner">
+        <img
+          src="/images/almacen/almacen-volutas-cromo-caja.webp"
+          alt="Volutas de Alto Cromo 27% preparadas para despacho en Almacén Central SMAT Durango"
+          width="640"
+          height="480"
+          loading="eager"
+          decoding="async"
+        />
+        <figcaption>Almacén Central SMAT en Durango · Volutas Cr27%, impulsores y cartuchos con despacho verificado</figcaption>
+      </figure>
       <div class="contact-grid">
         <!-- Tarjeta Oficial de Datos de Planta (NAP) -->
         <div class="card nap-detail-card">
@@ -250,5 +261,29 @@ import companyData from '../../data/company.json';
     .contact-grid {
       grid-template-columns: 1fr;
     }
+  }
+
+  .contact-warehouse-banner {
+    margin: 0 0 1.5rem;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 640px;
+  }
+
+  .contact-warehouse-banner img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+  }
+
+  .contact-warehouse-banner figcaption {
+    padding: 0.55rem 0.9rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #334155;
   }
 </style>

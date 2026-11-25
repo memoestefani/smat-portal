@@ -26,6 +26,8 @@ pub fn verify_catalog_and_ssot_parity(site_root: &Path) -> Result<(), String> {
         return Err("Debris detectado: data/roles.copy.json debe permanecer eliminado".to_string());
     }
 
+    verify_v80_media_gallery_spec_zero_oem(site_root)?;
+
     for rel in [
         "src/components/Footer.astro",
         "src/components/LiveEngineeringDossier.astro",
@@ -301,6 +303,46 @@ pub fn find_v60_prohibited_commercial_copy(rel_norm: &str, text: &str) -> Option
     None
 }
 
+/// Invariante V8.0: Valida `data/media_gallery_spec.json` y rechaza marcas OEM/chatarra.
+pub fn verify_v80_media_gallery_spec_zero_oem(site_root: &Path) -> Result<(), String> {
+    let spec_path = site_root.join("data/media_gallery_spec.json");
+    if !spec_path.exists() {
+        return Err("Falta data/media_gallery_spec.json V8.0".to_string());
+    }
+    let raw = fs::read_to_string(&spec_path)
+        .map_err(|e| format!("Error leyendo data/media_gallery_spec.json: {}", e))?;
+    let _: serde_json::Value = serde_json::from_str(&raw)
+        .map_err(|e| format!("JSON invalido en data/media_gallery_spec.json: {}", e))?;
+    if let Some(oem) = find_v80_oem_brand_in_spec(&raw) {
+        return Err(format!(
+            "Marca OEM o basura prohibida '{}' en data/media_gallery_spec.json",
+            oem
+        ));
+    }
+    Ok(())
+}
+
+pub fn find_v80_oem_brand_in_spec(raw: &str) -> Option<&'static str> {
+    let lower = raw.to_ascii_lowercase();
+    for tok in [
+        "warman",
+        "safematic",
+        "tyler",
+        "ro-tap",
+        "ro tap",
+        "metso",
+        "ruite",
+        "longteng",
+        "xkjgroup",
+        "copilot_2026",
+    ] {
+        if lower.contains(tok) {
+            return Some(tok);
+        }
+    }
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::{
@@ -308,7 +350,15 @@ mod tests {
         find_v58_en_leak_in_html,
         find_v59_disallowed_storage_write,
         find_v60_prohibited_commercial_copy,
+        find_v80_oem_brand_in_spec,
     };
+
+    #[test]
+    fn rejects_v80_oem_brands_in_media_gallery_spec() {
+        assert_eq!(find_v80_oem_brand_in_spec(r#"{"caption":"Warman AH"}"#), Some("warman"));
+        assert_eq!(find_v80_oem_brand_in_spec(r#"{"src":"Copilot_20260412.png"}"#), Some("copilot_2026"));
+        assert_eq!(find_v80_oem_brand_in_spec(r#"{"src":"almacen-bomba-6x4-dah.webp"}"#), None);
+    }
 
     #[test]
     fn detects_v57_prohibited_copy_and_ascii_exponents() {

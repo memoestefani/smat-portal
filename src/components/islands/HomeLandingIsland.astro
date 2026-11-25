@@ -1,11 +1,10 @@
 ---
 /**
- * HomeLandingIsland.astro — Escaparate Compra-First SMAT Minerals V6.0
- * Cowan scrollY=0 <= 4 bloques focales (Hero foto real + Buscador Drop-In + 1 CTA).
+ * HomeLandingIsland.astro — Escaparate Compra-First SMAT Minerals V8.0
+ * Cowan <= 4 bloques focales: Hero foto real + Omnibox FNV-1a 1-línea + CTA.
  */
 import TrustMatrix from '../TrustMatrix.astro';
 import ProductStorefrontCard from '../ProductStorefrontCard.astro';
-import DropInVerifierCore from '../cores/DropInVerifierCore.astro';
 import { getQuickProductsCatalog } from '../../scripts/quickProductsCatalog.js';
 
 interface Props {
@@ -76,7 +75,7 @@ const plantAreas = [
 ];
 ---
 
-<!-- Pliegue Principal (Cowan N <= 4): Título + Buscador + 1 CTA + Foto Real -->
+<!-- Pliegue Principal (Cowan N <= 4): Título + Omnibox 1-línea + CTA + Foto Real -->
 <section class="hero-home">
   <div class="container smat-home-hero-grid">
     <div class="smat-home-hero-copy">
@@ -97,7 +96,25 @@ const plantAreas = [
       </p>
 
       <div id="workbench" class="dropin-verifier-solar">
-        <DropInVerifierCore lang={lang} variant="home" />
+        <form id="home-omnibox-form" action={catalogPath} method="get" class="home-omnibox-form">
+          <label class="smat-field-label" for="home-omnibox-input">
+            {isEs ? 'Buscador directo 1:1 (SKU, parte o equipo):' : '1:1 Direct Search (SKU, part code or unit):'}
+          </label>
+          <div class="home-omnibox-row">
+            <input
+              id="home-omnibox-input"
+              name="q"
+              type="search"
+              autocomplete="off"
+              class="home-omnibox-input"
+              placeholder={isEs ? 'Ej. E4147, Marcy' : 'e.g. E4147, Marcy'}
+            />
+            <button type="submit" class="btn btn-primary smat-tap-btn home-omnibox-submit">
+              {isEs ? 'Buscar →' : 'Search →'}
+            </button>
+          </div>
+          <div id="home-omnibox-results" class="home-omnibox-results" hidden aria-live="polite"></div>
+        </form>
       </div>
 
       <div class="hero-actions">
@@ -191,7 +208,7 @@ const plantAreas = [
         {isEs ? 'Asistentes técnicos opcionales (hidráulica, hidrociclones 3 vasos, flotación y prensa 16 bar) ▾' : 'Optional engineering calculators (hydraulics, 3-cup cyclone, flotation & 16-bar filter press) ▾'}
       </summary>
       <div class="part-chip-strip smat-mt-sm">
-        <a href={isEs ? '/bombeo/#bombeo-main-section' : '/en/pumping/#bombeo-main-section'} class="part-chip">{isEs ? 'Calculadora Hidráulica Bombeo →' : 'Slurry Pumping Calculator →'}</a>
+        <a href={isEs ? '/bombeo/#bombeo-asistente' : '/en/pumping/#bombeo-asistente'} class="part-chip">{isEs ? 'Calculadora Hidráulica Bombeo →' : 'Slurry Pumping Calculator →'}</a>
         <a href={isEs ? '/clasificacion/#marcy-3cup-cyclone-calculator' : '/en/classification/#marcy-3cup-cyclone-calculator'} class="part-chip">{isEs ? 'Balance 3 Vasos Hidrociclón →' : '3-Cup Hydrocyclone Balance →'}</a>
         <a href={isEs ? '/flotacion/#flotacion-main-section' : '/en/flotation/#flotacion-main-section'} class="part-chip">{isEs ? 'Cinética de Flotación →' : 'Flotation Cell Sizing →'}</a>
         <a href={isEs ? '/filtracion/#filtracion-main-section' : '/en/filtration/#filtracion-main-section'} class="part-chip">{isEs ? 'Ciclo Filtro Prensa →' : 'Filter Press Cycle →'}</a>
@@ -203,12 +220,12 @@ const plantAreas = [
 <TrustMatrix lang={lang} hideBoundaries={true} />
 
 <script>
-  import { bindHomeCatalogDrawerAndDropIn } from '../../scripts/homeAndEquipmentCatalogFilter.js';
+  import { initHomeOmniboxSearch } from '../../scripts/catalogOmniboxSearch.js';
   import { bindAtomicPartTrayButtons } from '../../scripts/verticalStateAndCtaSyncBridge.js';
 
   function initHomeIsland() {
     const lang = document.documentElement.lang === 'en' ? 'en' : 'es';
-    bindHomeCatalogDrawerAndDropIn(document, lang);
+    initHomeOmniboxSearch(document, lang);
     bindAtomicPartTrayButtons(document);
   }
 
@@ -217,21 +234,32 @@ const plantAreas = [
 </script>
 
 <style>
-  .hero-home { background-color: var(--smat-bg-canvas); color: var(--smat-text-primary); padding: 1.5rem 0; border-bottom: 1px solid var(--smat-border-light); }
-  .smat-home-hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; align-items: center; }
-  .smat-home-hero-copy { display: flex; flex-direction: column; gap: 0.75rem; }
-  .hero-badge-pill { display: inline-flex; width: fit-content; align-items: center; gap: 0.5rem; background: #ffffff; border: 1px solid #cbd5e1; color: #334155; padding: 0.28rem 0.75rem; border-radius: 999px; font-size: 0.74rem; font-weight: 700; }
+  .hero-home { background-color: var(--smat-bg-canvas); color: var(--smat-text-primary); padding: 1.15rem 0 1.35rem; border-bottom: 1px solid var(--smat-border-light); }
+  .smat-home-hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 1.35rem; align-items: center; }
+  .smat-home-hero-copy { display: flex; flex-direction: column; gap: 0.65rem; min-width: 0; }
+  .hero-badge-pill { display: inline-flex; width: fit-content; align-items: center; gap: 0.5rem; background: #ffffff; border: 1px solid #cbd5e1; color: #334155; padding: 0.28rem 0.75rem; border-radius: 999px; font-size: 0.74rem; font-weight: 700; white-space: nowrap; }
   .live-dot { width: 8px; height: 8px; background-color: #059669; border-radius: 50%; display: inline-block; }
-  .hero-home h1 { color: var(--smat-text-primary); font-size: clamp(1.65rem, 2.7vw, 2.3rem); margin: 0; letter-spacing: -0.025em; line-height: 1.14; }
-  .smat-home-lead { margin: 0; font-size: 0.96rem; color: #334155; line-height: 1.45; }
-  .smat-home-hero-media { display: grid; gap: 0.65rem; }
+  .hero-home h1 { color: var(--smat-text-primary); font-size: clamp(1.55rem, 2.5vw, 2.2rem); margin: 0; letter-spacing: -0.025em; line-height: 1.12; }
+  .smat-home-lead { margin: 0; font-size: 0.94rem; color: #334155; line-height: 1.42; }
+  .dropin-verifier-solar { padding: 0.75rem 0.9rem; border-radius: 10px; background: #ffffff; border: 1.5px solid #cbd5e1; border-left: 4px solid #7c2d12; }
+  .home-omnibox-form { display: flex; flex-direction: column; gap: 0.4rem; position: relative; }
+  .home-omnibox-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: stretch; }
+  .home-omnibox-input { flex: 1 1 200px; min-width: 0; min-height: 48px; padding: 0.5rem 0.75rem; border: 1px solid #94a3b8; border-radius: 8px; font-size: 0.9rem; color: #0f172a; background: #ffffff; }
+  .home-omnibox-submit { flex: 0 0 auto; min-height: 48px; white-space: nowrap; }
+  .home-omnibox-results { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.35rem; border-top: 1px solid #e2e8f0; padding-top: 0.45rem; }
+  :global(.home-omnibox-item) { display: flex; align-items: center; gap: 0.65rem; padding: 0.45rem 0.6rem; border-radius: 8px; border: 1px solid #cbd5e1; background: #f8fafc; text-decoration: none; color: #0f172a; }
+  :global(.home-omnibox-item:hover) { border-color: #7c2d12; background: #fffbeb; }
+  :global(.home-omnibox-code) { font-family: var(--smat-font-mono, monospace); font-size: 0.72rem; font-weight: 800; color: #7c2d12; background: #fff7ed; border: 1px solid #fed7aa; padding: 0.15rem 0.45rem; border-radius: 4px; white-space: nowrap; }
+  :global(.home-omnibox-text) { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+  :global(.home-omnibox-text strong) { font-size: 0.82rem; color: #0f172a; }
+  :global(.home-omnibox-text small) { font-size: 0.72rem; color: #475569; }
+  .smat-home-hero-media { display: grid; gap: 0.6rem; }
   .smat-home-hero-main-fig { margin: 0; border-radius: 14px; overflow: hidden; border: 1px solid #cbd5e1; background: #ffffff; aspect-ratio: 4 / 3; }
   .smat-home-hero-main-fig img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .smat-home-hero-thumbs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+  .smat-home-hero-thumbs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
   .smat-home-hero-thumbs img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; border: 1px solid #cbd5e1; }
-  .dropin-verifier-solar { padding: 0.85rem 1rem; border-radius: 10px; background: #ffffff; border: 1.5px solid #cbd5e1; border-left: 4px solid #7c2d12; }
-  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
-  .btn-lg { min-height: 48px; padding: 0.75rem 1.35rem; font-size: 0.92rem; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center; }
+  .btn-lg { min-height: 48px; padding: 0.7rem 1.25rem; font-size: 0.9rem; }
   .equipment-showcase-section { padding: 2rem 0 2.5rem; background: #ffffff; border-bottom: 1px solid #e2e8f0; }
   .showcase-header { margin-bottom: 1.15rem; gap: 1rem; }
   .section-eyebrow { display: inline-block; font-family: var(--smat-font-mono, monospace); font-size: 0.72rem; font-weight: 800; color: #7c2d12; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.25rem; }
@@ -251,12 +279,12 @@ const plantAreas = [
   .part-chip-strip { display: flex; flex-wrap: wrap; gap: 0.45rem; }
   .part-chip { display: inline-flex; align-items: center; min-height: 48px; min-width: 48px; padding: 0.45rem 0.85rem; border-radius: 8px; background: #f8fafc; border: 1px solid #cbd5e1; color: #0f172a; font-size: 0.8rem; font-weight: 700; text-decoration: none; }
   @media (max-width: 900px) {
-    .hero-home { padding: 0.75rem 0 1rem; }
-    .smat-home-hero-grid { grid-template-columns: 1fr; gap: 0.85rem; }
-    .smat-home-hero-copy { gap: 0.5rem; }
-    .hero-home h1 { font-size: clamp(1.35rem, 5.2vw, 1.8rem); }
-    .smat-home-lead { font-size: 0.86rem; line-height: 1.38; }
-    .dropin-verifier-solar { padding: 0.6rem 0.75rem; }
-    .smat-home-hero-main-fig { max-height: 220px; }
+    .hero-home { padding: 0.65rem 0 0.9rem; }
+    .smat-home-hero-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+    .smat-home-hero-copy { gap: 0.45rem; }
+    .hero-home h1 { font-size: clamp(1.3rem, 5vw, 1.75rem); }
+    .smat-home-lead { font-size: 0.85rem; line-height: 1.35; }
+    .dropin-verifier-solar { padding: 0.55rem 0.7rem; }
+    .smat-home-hero-main-fig { max-height: 210px; }
   }
 </style>

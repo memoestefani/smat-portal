@@ -209,6 +209,18 @@ export function projectLiveDossierSummary(ctx = {}) {
   });
   const isEmptySession = lifecycleState === 'EMPTY' && !hasUrlContext;
 
+  const emptyGuide = doc.querySelector('[data-dossier-empty-guide]');
+  if (emptyGuide) emptyGuide.classList.toggle('hidden', !isEmptySession);
+  const pumpSection = doc.getElementById('live-section-pump-hydraulics');
+  const activeCircuitCandidate = String(primaryTray?.circuit || state.currentCircuit || 'bombeo').toLowerCase();
+  if (pumpSection) {
+    pumpSection.classList.toggle('hidden', isEmptySession || activeCircuitCandidate !== 'bombeo');
+  }
+  const miniFolioEl = doc.getElementById('mini-folio-text');
+  if (miniFolioEl && isEmptySession) {
+    miniFolioEl.textContent = isEs ? 'BORRADOR' : 'DRAFT';
+  }
+
   const smatCode = isEmptySession
     ? (isEs ? 'SMAT-BORRADOR (Sin partidas)' : 'SMAT-DRAFT (No items)')
     : (primaryTray?.id ||
@@ -373,7 +385,7 @@ export function projectLiveDossierSummary(ctx = {}) {
     'live-table-sobol-drivers',
     `${sobolSummary} • Cv ${FORMATTERS_BY_FIELD.solidsVolumetricPercent(hm.solidsVolumetricPercent)} • ${DOSSIER_FORMATTERS_BY_FIELD.actualPipeVelocityMs(hm.actualPipeVelocityMs)}`
   );
-  setText('dossier-metric-sobol-driver', `${isEs ? 'Driver Sobol' : 'Sobol Driver'}: ${sobolDominantSiText}`);
+  setText('dossier-metric-sobol-driver', `${isEs ? 'Factor Principal' : 'Primary Driver'}: ${sobolDominantSiText}`);
 
   const anexo = buildSapAnexo22ComplianceSummary({
     circuit: state.currentCircuit || 'bombeo',
@@ -386,6 +398,8 @@ export function projectLiveDossierSummary(ctx = {}) {
 
   setText('live-material-reason', isEs ? hm.materialReasonEs : hm.materialReasonEn);
 
+  const totalTrayQty = (trayStateNow.items || []).reduce((acc, it) => acc + Math.max(1, Number(it?.qty || 1)), 0);
+  if (dom.erpQuantity && totalTrayQty > 0) dom.erpQuantity.value = String(totalTrayQty);
   const folio = doc.getElementById('live-folio')?.textContent?.trim() || (isEmptySession ? (isEs ? 'BORRADOR' : 'DRAFT') : 'SMAT-2026-8810');
   const phoneVal = capturedPhone || '';
   const emailVal = capturedEmail || '';
@@ -398,7 +412,7 @@ export function projectLiveDossierSummary(ctx = {}) {
     delivery_destination: destVal,
     placa_ref: clientRefVal,
     smat_code: smatCode,
-    quantity: Number(dom.erpQuantity?.value || 1),
+    quantity: Number(dom.erpQuantity?.value || totalTrayQty || 1),
     logistics_mode: dom.inputDest?.value || 'retiro_durango',
   });
   const erpDictamen = isEmptySession

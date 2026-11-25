@@ -20,8 +20,8 @@
           "solution_en": "Horizontal centrifugal slurry pumps with wet-end wear parts in High Chrome, Rubber, or Polyurethane and 1:1 dimensional verification in Durango.",
           "stock_es": "Cotización por equipo o lote de contacto húmedo desde Almacén Central Durango",
           "stock_en": "Quotation by complete pump or wet-end wear lot from Durango Central Warehouse",
-          "link_es": "/bombeo/skid/",
-          "link_en": "/en/pumping/skid/"
+          "link_es": "/productos/lote-humedo-554-bomba-ah/",
+          "link_en": "/en/products/slurry-pump-554-wet-end-lot/"
         },
         {
           "id": "impulsor_ciclones",
@@ -36,8 +36,8 @@
           "solution_en": "650+ HB white iron with 1:1 Drop-In dimensional fit and batch traceability in Durango.",
           "stock_es": "Cotejo dimensional 1:1 para geometrías 1.5x1\" a 10x8\" en Almacén Central Durango",
           "stock_en": "1:1 dimensional verification for 1.5x1\" to 10x8\" geometries at Durango Central Warehouse",
-          "link_es": "/bombeo/impulsor/",
-          "link_en": "/en/pumping/impeller/"
+          "link_es": "/productos/impulsor-bomba-lodos-serie-ah/",
+          "link_en": "/en/products/ah-series-slurry-pump-impeller/"
         },
         {
           "id": "voluta_desgaste",
@@ -52,8 +52,8 @@
           "solution_en": "Reinforced liner wall thickness in High Chrome, Rubber, or Polyurethane for extended campaign run-time.",
           "stock_es": "Suministro por lote proporcional según desgaste operativo en planta",
           "stock_en": "Proportional lot supply matched to plant wear cycles",
-          "link_es": "/bombeo/revestimientos/",
-          "link_en": "/en/pumping/liners/"
+          "link_es": "/productos/lainas-succion-y-platos-ah/",
+          "link_en": "/en/products/throatbush-and-frame-plate-liners/"
         },
         {
           "id": "caja_sello",
@@ -68,8 +68,8 @@
           "solution_en": "Dry centrifugal expeller and braided PTFE/graphite stuffing box (we do not sell mechanical seals due to severe slurry abrasion and corrosion).",
           "stock_es": "Conjuntos de sellado centrífugo y Bearing Assembly / Housing completo",
           "stock_en": "Centrifugal sealing assemblies and complete Bearing Assembly / Housing units",
-          "link_es": "/bombeo/sello/",
-          "link_en": "/en/pumping/seal/"
+          "link_es": "/productos/kit-sellado-seco-expeller-ah/",
+          "link_en": "/en/products/expeller-centrifugal-dry-seal-kit/"
         }
       ]
     },
@@ -93,8 +93,8 @@
           "solution_en": "Drive heads, shafts, air standpipes, and agitation mechanisms for Rougher, Cleaner, and Scavenger banks.",
           "stock_es": "Suministro e ingeniería bajo especificación técnica desde Durango",
           "stock_en": "Supply and engineering per technical specification from Durango",
-          "link_es": "/flotacion/celdas/",
-          "link_en": "/en/flotation/cells/"
+          "link_es": "/productos/mecanismo-suspendido-flotacion-18sp/",
+          "link_en": "/en/products/suspended-flotation-mechanism-18sp/"
         },
         {
           "id": "mecanismo_rotor",
@@ -109,8 +109,8 @@
           "solution_en": "4140 quenched and tempered steel shaft, heavy bearings, and anti-cavitation dispersers.",
           "stock_es": "Conjuntos listos para izaje y reemplazo programado",
           "stock_en": "Pre-assembled mechanisms ready for scheduled crane installation",
-          "link_es": "/flotacion/mecanismos/",
-          "link_en": "/en/flotation/mechanisms/"
+          "link_es": "/productos/mecanismo-suspendido-flotacion-18sp/",
+          "link_en": "/en/products/suspended-flotation-mechanism-18sp/"
         }
       ]
     },
@@ -134,8 +134,8 @@
           "solution_en": "16 bar electro-hydraulic closing with polypropylene plates for concentrates and dry tailings.",
           "stock_es": "Proyectos de suministro bajo especificación de planta",
           "stock_en": "Equipment supply per plant engineering specification",
-          "link_es": "/filtracion/prensa/",
-          "link_en": "/en/filtration/press/"
+          "link_es": "/productos/lonas-y-placas-filtro-prensa-16bar/",
+          "link_en": "/en/products/filter-press-cloths-and-pp-plates-16bar/"
         },
         {
           "id": "telas_placas_repuesto",
@@ -150,8 +150,8 @@
           "solution_en": "16 bar rated plates and cloths, plus Marcy-type scales with 1000 cm³ container and 12 interchangeable dials.",
           "stock_es": "Suministro de refacciones de filtración e instrumentación de densidad en México",
           "stock_en": "Filtration spares and pulp density instrumentation supply across Mexico",
-          "link_es": "/filtracion/repuestos/",
-          "link_en": "/en/filtration/parts/"
+          "link_es": "/productos/lonas-y-placas-filtro-prensa-16bar/",
+          "link_en": "/en/products/filter-press-cloths-and-pp-plates-16bar/"
         }
       ]
     }

@@ -10,6 +10,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
+import { assertUniqueSourceSha256, validateMediaGallerySpec } from './media_hygiene_guard.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,6 +23,7 @@ const ALMACEN_DIR = path.join(SITE_ROOT, 'public/images/almacen');
 const PARTES_DIR = path.join(SITE_ROOT, 'public/images/partes');
 const MEMO_ROOT = path.resolve(SITE_ROOT, '../../2_smat/ideas/PAGINA SMAT MEMO');
 const FOTOS_ROOT = path.resolve(SITE_ROOT, '../../2_smat/ideas/fotos_sitio');
+const CURADA_ROOT = path.resolve(SITE_ROOT, '../../2_smat/ideas/fototeca_curada_smat/01_APROBADAS_LIMPIAS');
 
 const MAX_WEBP_BYTES = 45 * 1024; // 46080 bytes (estricto <= 45 KB)
 
@@ -66,14 +68,21 @@ function hammingDistanceHex64(hexA, hexB) {
 }
 
 function resolveSourcePath(spec) {
+  if (spec.root === 'curada') return path.join(CURADA_ROOT, spec.relPath);
   const baseDir = spec.root === 'fotos' ? FOTOS_ROOT : MEMO_ROOT;
   return path.join(baseDir, spec.relPath);
 }
 
+function sha256File(filePath) {
+  return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
+}
+
 async function processPhotoToWebp(sourceImgPath, spec) {
-  const { data: rotatedBuf, info: rotInfo } = await sharp(sourceImgPath)
-    .rotate()
-    .toBuffer({ resolveWithObject: true });
+  let basePipe = sharp(sourceImgPath).rotate();
+  if (spec.rotateDeg && Number.isFinite(Number(spec.rotateDeg))) {
+    basePipe = basePipe.rotate(Number(spec.rotateDeg));
+  }
+  const { data: rotatedBuf, info: rotInfo } = await basePipe.toBuffer({ resolveWithObject: true });
 
   let workPipe = sharp(rotatedBuf);
   if (spec.cropBox && rotInfo.width && rotInfo.height) {
@@ -100,6 +109,10 @@ async function processPhotoToWebp(sourceImgPath, spec) {
   if (webpBuffer.length > MAX_WEBP_BYTES) {
     throw new Error(`[E_WEBP_BUDGET_EXCEEDED] ${path.basename(sourceImgPath)} supera ${MAX_WEBP_BYTES} bytes (${webpBuffer.length})`);
   }
+  const outMeta = await sharp(webpBuffer).metadata();
+  if (outMeta.exif) {
+    throw new Error(`[E_EXIF_LEAK] ${path.basename(sourceImgPath)} conserva metadatos EXIF tras conversión`);
+  }
   return webpBuffer;
 }
 
@@ -119,6 +132,9 @@ export async function generateAllProductWebpImages() {
   const specDoc = readGallerySpec();
   const catalog = JSON.parse(fs.readFileSync(CATALOG_PATH, 'utf8'));
   const atomicParts = JSON.parse(fs.readFileSync(ATOMIC_PARTS_PATH, 'utf8'));
+
+  // Compuerta Cero-OEM y congruencia material-visual (D03-C+, D04-C+, ARB-SMAT-71)
+  validateMediaGallerySpec(specDoc, catalog, atomicParts);
 
   const primaryResults = [];
   const allProductSlides = [];
@@ -152,6 +168,7 @@ export async function generateAllProductWebpImages() {
         throw new Error(`[E_FORBIDDEN_OUTPUT_FILENAME] Salida contiene token prohibido: ${outFileName}`);
       }
 
+      const sourceSha256 = sha256File(sourceImgPath);
       const webpBuffer = await processPhotoToWebp(sourceImgPath, slide);
       const outFullPath = path.join(OUTPUT_DIR, outFileName);
       fs.writeFileSync(outFullPath, webpBuffer);
@@ -169,6 +186,9 @@ export async function generateAllProductWebpImages() {
         fileName: outFileName,
         sourceRoot: slide.root,
         sourceRelPath: slide.relPath,
+        source_sha256: sourceSha256,
+        material_class: slide.material_class,
+        visual_brand_audit: slide.visual_brand_audit,
         bytes: webpBuffer.length,
         sha256,
         dhash64,
@@ -200,15 +220,18 @@ export async function generateAllProductWebpImages() {
   const uniqueSha = new Set(primaryResults.map((r) => r.sha256)).size;
   const uniqueDhash = new Set(primaryResults.map((r) => r.dhash64)).size;
   const uniqueSources = new Set(primaryResults.map((r) => `${r.sourceRoot}:${r.sourceRelPath}`)).size;
+  const uniqueSourceSha = new Set(primaryResults.map((r) => r.source_sha256)).size;
   const maxBytes = Math.max(...allProductSlides.map((r) => r.bytes));
 
+  assertUniqueSourceSha256(primaryResults);
+
   console.log(
-    `[build_product_images] ${primaryResults.length} SKUs / ${allProductSlides.length} slides WebP (640x480, max=${maxBytes} B <= ${MAX_WEBP_BYTES} B, primSources=${uniqueSources}/19, sha=${uniqueSha}/19, dHash=${uniqueDhash}/19, minHamming=${minHamming})`
+    `[build_product_images] ${primaryResults.length} SKUs / ${allProductSlides.length} slides WebP (640x480, max=${maxBytes} B <= ${MAX_WEBP_BYTES} B, srcSha=${uniqueSourceSha}/19, sha=${uniqueSha}/19, dHash=${uniqueDhash}/19, minHamming=${minHamming})`
   );
 
-  if (uniqueSources !== 19 || uniqueSha !== 19 || uniqueDhash !== 19) {
+  if (uniqueSources !== 19 || uniqueSha !== 19 || uniqueDhash !== 19 || uniqueSourceSha !== 19) {
     throw new Error(
-      `[E_IMAGE_COLLISION] Se requieren 19/19 fuentes, SHA-256 y dHash64 únicos (sources=${uniqueSources}, sha=${uniqueSha}, dhash=${uniqueDhash})`
+      `[E_IMAGE_COLLISION] Se requieren 19/19 fuentes, source_sha256, SHA-256 y dHash64 únicos (sources=${uniqueSources}, srcSha=${uniqueSourceSha}, sha=${uniqueSha}, dhash=${uniqueDhash})`
     );
   }
   if (minHamming < 8) {
@@ -224,6 +247,7 @@ export async function generateAllProductWebpImages() {
     if (!fs.existsSync(srcPath)) {
       throw new Error(`[E_ALMACEN_PHOTO_NOT_FOUND] No existe fotografía de almacén: ${srcPath}`);
     }
+    const sourceSha256 = sha256File(srcPath);
     const webpBuffer = await processPhotoToWebp(srcPath, item);
     const sha256 = crypto.createHash('sha256').update(webpBuffer).digest('hex');
     if (productShaSet.has(sha256)) {
@@ -238,6 +262,7 @@ export async function generateAllProductWebpImages() {
       src: `/images/almacen/${item.fileName}`,
       sourceRoot: item.root,
       sourceRelPath: item.relPath,
+      source_sha256: sourceSha256,
       bytes: webpBuffer.length,
       sha256,
       captionEs: item.captionEs,
@@ -245,6 +270,7 @@ export async function generateAllProductWebpImages() {
     });
   }
   pruneOrphanWebps(ALMACEN_DIR, keepAlmacenFiles);
+  assertUniqueSourceSha256([...primaryResults, ...almacenResults]);
 
   const atomicResults = [];
   const keepPartesFiles = new Set();
@@ -258,6 +284,7 @@ export async function generateAllProductWebpImages() {
     if (!fs.existsSync(srcPath)) {
       throw new Error(`[E_ATOMIC_PART_SOURCE_NOT_FOUND] No existe fotografía para ${code}: ${srcPath}`);
     }
+    const sourceSha256 = sha256File(srcPath);
     const webpBuffer = await processPhotoToWebp(srcPath, spec);
     const fileName = `${code}.webp`;
     const outPath = path.join(PARTES_DIR, fileName);
@@ -270,6 +297,7 @@ export async function generateAllProductWebpImages() {
       src: `/images/partes/${fileName}`,
       sourceRoot: spec.root,
       sourceRelPath: spec.relPath,
+      source_sha256: sourceSha256,
       bytes: webpBuffer.length,
       sha256: crypto.createHash('sha256').update(webpBuffer).digest('hex')
     });
@@ -290,12 +318,15 @@ export async function generateAllProductWebpImages() {
 
   const manifest = {
     schema_version: 'v7.0',
+    hygiene_version: 'v8.0-zero-oem',
+    exif_stripped_all: true,
     generated_at: new Date().toISOString(),
     width: 640,
     height: 480,
     max_bytes_limit: MAX_WEBP_BYTES,
     max_bytes: maxBytes,
     unique_sources: uniqueSources,
+    unique_source_sha256: uniqueSourceSha,
     unique_sha256: uniqueSha,
     unique_dhash64: uniqueDhash,
     min_hamming_distance: minHamming,

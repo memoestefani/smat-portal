@@ -1,8 +1,7 @@
 ---
 // src/components/RequisitionTraySummary.astro
-// MVP v3.0 (D3, D5): Bandeja de Requisición Multi-Ítem B2B con Regla de Prioridad Generalizada c*mu
-// (Van Mieghem 1995), Conmutador Paro de Línea vs Stock (s,S) y Código de Orden Determinista FNV-1a
-import quickCatalog from '../../data/quick_checkout_Catalog.json';
+// Bandeja Unificada de Requisición Multi-Ítem B2B (`SLICE-V80-B05`)
+// Sin <select> redundante: FastLaneBomBar en Paso 1 actúa como único canal de alta.
 
 interface Props {
   lang?: 'es' | 'en';
@@ -13,14 +12,19 @@ const isEs = lang === 'es';
 const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tray';
 ---
 
-<section class="req-tray-card" id="smat-requisition-tray-summary" data-requisition-tray aria-labelledby="req-tray-title">
+<section
+  class="req-tray-card"
+  id="smat-requisition-tray-summary"
+  data-requisition-tray
+  aria-labelledby="req-tray-title"
+>
   <div class="req-tray-header">
     <div>
       <span class="req-tray-badge">
-        {isEs ? 'PARTIDAS ADICIONALES DE LA REQUISICIÓN INDUSTRIAL' : 'MULTI-ITEM B2B REQUISITION TRAY'}
+        {isEs ? 'PARTIDAS ACTIVAS DE LA REQUISICIÓN INDUSTRIAL' : 'MULTI-ITEM B2B REQUISITION TRAY'}
       </span>
       <h3 id="req-tray-title" class="req-tray-title">
-        {isEs ? 'Partidas Activas y Enrutamiento Prioritario de Despacho' : 'Active Line Items & Priority Dispatch Routing'}
+        {isEs ? 'Resumen de Partidas y Prioridad de Despacho' : 'Active Line Items & Priority Dispatch Routing'}
       </h3>
     </div>
     <button type="button" class="req-tray-clear-btn hidden" id="tray-clear-btn">
@@ -42,38 +46,6 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
     </div>
   </div>
 
-  <details class="wb-progressive-drawer req-tray-quickadd-drawer" id="req-tray-quickadd-drawer">
-    <summary class="wb-progressive-summary">
-      <span>{isEs ? '+ Agregar SKUs adicionales a la orden (opcional)' : '+ Add additional SKUs to requisition (optional)'}</span>
-      <span class="wb-step1-more-arrow">▾</span>
-    </summary>
-    <div class="wb-progressive-body">
-      <div class="req-tray-quickadd">
-        <select id="tray-quick-sku-select" class="req-tray-select" aria-label={isEs ? 'Seleccionar SKU de configuración rápida' : 'Select Quick-Checkout SKU'}>
-          {quickCatalog.map((item) => (
-            <option
-              value={item.id}
-              data-atomic={item.atomic_codes[0] || item.id}
-              data-name-es={item.title_es}
-              data-name-en={item.title_en}
-              data-circuit={item.vertical}
-            >
-              {item.id} — {isEs ? item.title_es : item.title_en}
-            </option>
-          ))}
-        </select>
-        <input type="number" id="tray-quick-qty-input" class="req-tray-qty" min="1" max="999" value="1" aria-label={isEs ? 'Cantidad' : 'Quantity'} />
-        <select id="tray-quick-mode-select" class="req-tray-mode" aria-label={isEs ? 'Modo de criticidad' : 'Criticality mode'}>
-          <option value="PARO_DE_LINEA">{isEs ? 'Paro de Línea (Urgente)' : 'Line-Stop (Urgent)'}</option>
-          <option value="STOCK_SS">{isEs ? 'Reposición Programada de Stock' : 'Scheduled Stock Replenishment'}</option>
-        </select>
-        <button type="button" id="tray-quick-add-btn" class="req-tray-add-btn">
-          {isEs ? '+ Añadir SKU' : '+ Add SKU'}
-        </button>
-      </div>
-    </div>
-  </details>
-
   <div class="req-tray-table-wrap">
     <table class="req-tray-table">
       <thead>
@@ -89,8 +61,8 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
         <tr>
           <td colspan="5" class="req-tray-empty">
             {isEs
-              ? 'Sin partidas adicionales en bandeja. Añada SKUs arriba o desde las fichas /productos/ para consolidar su orden.'
-              : 'No additional items in tray. Add SKUs above or from /en/products/ sheets to consolidate your order.'}
+              ? 'Sin partidas en bandeja. Capture códigos arriba o seleccione productos del catálogo.'
+              : 'No items in tray yet. Enter codes above or add products from the catalog.'}
           </td>
         </tr>
       </tbody>
@@ -110,6 +82,7 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
   } from '../scripts/requisitionTrayBus.js';
   import { hydrateRfqSessionFromUrl } from '../scripts/rfqSessionStore.js';
   import { formatCheckoutLaneHuman, formatUrgencyBandHuman } from '../scripts/i18nDomainLabels.js';
+  import { getQuickProductsCatalog } from '../scripts/quickProductsCatalog.js';
 
   function initRequisitionTraySummary() {
     hydrateRfqSessionFromUrl(window.location.search);
@@ -120,30 +93,25 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
     const tbody = root.querySelector('#tray-items-tbody') as HTMLElement | null;
     const cmuCode = root.querySelector('#tray-cmu-subject-line') as HTMLElement | null;
     const cmuMeta = root.querySelector('#tray-priority-sla-meta') as HTMLElement | null;
-    const skuSelect = root.querySelector('#tray-quick-sku-select') as HTMLSelectElement | null;
-    const qtyInput = root.querySelector('#tray-quick-qty-input') as HTMLInputElement | null;
-    const modeSelect = root.querySelector('#tray-quick-mode-select') as HTMLSelectElement | null;
-    const addBtn = root.querySelector('#tray-quick-add-btn') as HTMLElement | null;
     const clearBtn = root.querySelector('#tray-clear-btn') as HTMLElement | null;
 
     if (typeof window !== 'undefined' && window.location.search.includes('tray=')) {
       hydrateTrayFromReorderQuery(window.location.search);
     }
-    if (typeof window !== 'undefined' && window.location.search.includes('sku=') && skuSelect) {
+    if (typeof window !== 'undefined' && window.location.search.includes('sku=')) {
       const params = new URLSearchParams(window.location.search);
       const urlSku = (params.get('sku') || '').trim().toUpperCase();
       if (urlSku) {
-        const matchOpt = Array.from(skuSelect.options).find((o) => o.value.toUpperCase() === urlSku);
-        if (matchOpt) {
-          skuSelect.value = matchOpt.value;
+        const matched = getQuickProductsCatalog().find((item) => String(item.id || '').toUpperCase() === urlSku);
+        if (matched) {
           const currentTray = getTrayState();
-          if (!currentTray.items.some((i: any) => i.skuId === matchOpt.value)) {
+          if (!currentTray.items.some((i: any) => i.skuId === matched.id)) {
             addTrayItem({
-              skuId: matchOpt.value,
-              atomicCode: matchOpt.getAttribute('data-atomic') || matchOpt.value,
-              nameEs: matchOpt.getAttribute('data-name-es') || matchOpt.value,
-              nameEn: matchOpt.getAttribute('data-name-en') || matchOpt.value,
-              circuit: matchOpt.getAttribute('data-circuit') || 'bombeo',
+              skuId: matched.id,
+              atomicCode: matched.atomic_codes?.[0] || matched.id,
+              nameEs: matched.title_es || matched.id,
+              nameEn: matched.title_en || matched.id,
+              circuit: matched.vertical || 'bombeo',
               qty: 1,
               criticalityMode: 'PARO_DE_LINEA'
             });
@@ -176,8 +144,8 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
       if (!state.items.length) {
         tbody.innerHTML = `<tr><td colspan="5" class="req-tray-empty">${
           isEn
-            ? 'No additional items in tray. Add SKUs above or from /en/products/ sheets to consolidate your order.'
-            : 'Sin partidas adicionales en bandeja. Añada SKUs arriba o desde las fichas /productos/ para consolidar su orden.'
+            ? 'No items in tray yet. Enter codes above or add products from /en/catalog/.'
+            : 'Sin partidas en bandeja. Capture códigos arriba o seleccione productos en /catalogo/.'
         }</td></tr>`;
         return;
       }
@@ -205,23 +173,6 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
       });
     };
 
-    if (addBtn && skuSelect) {
-      addBtn.addEventListener('click', () => {
-        const opt = skuSelect.options[skuSelect.selectedIndex];
-        if (!opt) return;
-        addTrayItem({
-          skuId: opt.value,
-          atomicCode: opt.getAttribute('data-atomic') || opt.value,
-          nameEs: opt.getAttribute('data-name-es') || opt.value,
-          nameEn: opt.getAttribute('data-name-en') || opt.value,
-          circuit: opt.getAttribute('data-circuit') || 'bombeo',
-          qty: qtyInput ? Number(qtyInput.value) || 1 : 1,
-          criticalityMode: modeSelect ? modeSelect.value : 'PARO_DE_LINEA'
-        });
-        renderTray();
-      });
-    }
-
     if (clearBtn) {
       clearBtn.addEventListener('click', () => {
         const state = getTrayState();
@@ -238,140 +189,18 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
 </script>
 
 <style>
-  .req-tray-card {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
-    padding: 1.25rem;
-    margin-bottom: 1.5rem;
-  }
-  .req-tray-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-    margin-bottom: 0.85rem;
-  }
-  .req-tray-badge {
-    display: inline-block;
-    font-family: var(--smat-font-mono, monospace);
-    font-size: 0.7rem;
-    font-weight: 800;
-    color: #7c2d12;
-    background: #fff7ed;
-    border: 1px solid #fed7aa;
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
-    margin-bottom: 0.35rem;
-  }
-  .req-tray-title {
-    margin: 0;
-    font-size: 1.05rem;
-    color: #090d16;
-  }
-  .req-tray-clear-btn {
-    background: #f8fafc;
-    border: 1px solid #cbd5e1;
-    color: #475569;
-    padding: 0.35rem 0.7rem;
-    border-radius: 6px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .req-tray-cmu-strip {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-left: 3px solid #082f49;
-    padding: 0.6rem 0.85rem;
-    border-radius: 6px;
-    margin-bottom: 0.9rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-  .req-tray-cmu-label {
-    font-size: 0.68rem;
-    font-weight: 800;
-    color: #475569;
-  }
-  .req-tray-cmu-code {
-    font-family: var(--smat-font-mono, monospace);
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #082f49;
-    word-break: break-all;
-  }
-  .req-tray-quickadd {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 0.9rem;
-  }
-  .req-tray-select {
-    flex: 1 1 220px;
-    padding: 0.45rem 0.6rem;
-    border: 1px solid #94a3b8;
-    border-radius: 6px;
-    font-size: 0.82rem;
-  }
-  .req-tray-qty {
-    width: 72px;
-    padding: 0.45rem;
-    border: 1px solid #94a3b8;
-    border-radius: 6px;
-    font-size: 0.82rem;
-  }
-  .req-tray-mode {
-    padding: 0.45rem 0.6rem;
-    border: 1px solid #94a3b8;
-    border-radius: 6px;
-    font-size: 0.82rem;
-  }
-  .req-tray-add-btn {
-    background: #0f172a;
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.45rem 0.85rem;
-    font-size: 0.82rem;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .req-tray-table-wrap {
-    overflow-x: auto;
-  }
-  .req-tray-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.82rem;
-  }
-  .req-tray-table th, .req-tray-table td {
-    padding: 0.5rem 0.6rem;
-    border-bottom: 1px solid #e2e8f0;
-    text-align: left;
-  }
-  .req-tray-empty {
-    color: #64748b;
-    font-style: italic;
-  }
-  .req-mode-pill {
-    display: inline-block;
-    padding: 0.15rem 0.45rem;
-    background: #f0f9ff;
-    color: #082f49;
-    border-radius: 4px;
-    font-family: var(--smat-font-mono, monospace);
-    font-size: 0.7rem;
-    font-weight: 700;
-  }
-  .req-remove-btn {
-    background: #fef2f2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
-    border-radius: 4px;
-    padding: 0.15rem 0.5rem;
-    font-weight: 800;
-    cursor: pointer;
-  }
+  .req-tray-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 1.15rem; margin-bottom: 1.25rem; }
+  .req-tray-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem; }
+  .req-tray-badge { display: inline-block; font-family: var(--smat-font-mono, monospace); font-size: 0.7rem; font-weight: 800; color: #7c2d12; background: #fff7ed; border: 1px solid #fed7aa; padding: 0.15rem 0.5rem; border-radius: 4px; margin-bottom: 0.35rem; }
+  .req-tray-title { margin: 0; font-size: 1.05rem; color: #090d16; }
+  .req-tray-clear-btn { background: #f8fafc; border: 1px solid #cbd5e1; color: #475569; padding: 0.35rem 0.7rem; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+  .req-tray-cmu-strip { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 3px solid #082f49; padding: 0.55rem 0.8rem; border-radius: 6px; margin-bottom: 0.85rem; display: flex; flex-direction: column; gap: 0.25rem; }
+  .req-tray-cmu-label { font-size: 0.68rem; font-weight: 800; color: #475569; }
+  .req-tray-cmu-code { font-family: var(--smat-font-mono, monospace); font-size: 0.8rem; font-weight: 700; color: #082f49; word-break: break-all; }
+  .req-tray-table-wrap { overflow-x: auto; }
+  .req-tray-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  .req-tray-table th, .req-tray-table td { padding: 0.5rem 0.6rem; border-bottom: 1px solid #e2e8f0; text-align: left; }
+  .req-tray-empty { color: #64748b; font-style: italic; }
+  .req-mode-pill { display: inline-block; padding: 0.15rem 0.45rem; background: #f0f9ff; color: #082f49; border-radius: 4px; font-family: var(--smat-font-mono, monospace); font-size: 0.7rem; font-weight: 700; }
+  .req-remove-btn { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; border-radius: 4px; padding: 0.15rem 0.5rem; font-weight: 800; cursor: pointer; }
 </style>

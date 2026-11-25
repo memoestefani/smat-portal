@@ -9,8 +9,8 @@
       "capex": [
         {
           "role_id": "skid_bomba",
-          "slug_es": "/bombeo/skid/",
-          "slug_en": "/en/pumping/skid/",
+          "slug_es": "/productos/lote-humedo-554-bomba-ah/",
+          "slug_en": "/en/products/slurry-pump-554-wet-end-lot/",
           "title_es": "Bombas para Lodos",
           "title_en": "Complete Slurry Pumps",
           "series": "4x3\" hasta 10x8\" (Succión × Descarga)",
@@ -32,8 +32,8 @@
       "opex": [
         {
           "role_id": "impulsor",
-          "slug_es": "/bombeo/impulsor/",
-          "slug_en": "/en/pumping/impeller/",
+          "slug_es": "/productos/impulsor-bomba-lodos-serie-ah/",
+          "slug_en": "/en/products/ah-series-slurry-pump-impeller/",
           "title_es": "Impulsor para Bomba de Lodos",
           "title_en": "Slurry Pump Impeller",
           "metallurgy": "Alto Cromo, Hule y Poliuretano",
@@ -51,8 +51,8 @@
         },
         {
           "role_id": "revestimientos",
-          "slug_es": "/bombeo/revestimientos/",
-          "slug_en": "/en/pumping/liners/",
+          "slug_es": "/productos/lainas-succion-y-platos-ah/",
+          "slug_en": "/en/products/throatbush-and-frame-plate-liners/",
           "title_es": "Revestimientos, Volutas y Cuellos",
           "title_en": "Volute Liners, Throatbushes & Liners",
           "metallurgy": "Alto Cromo, Hule y Poliuretano",
@@ -70,8 +70,8 @@
         },
         {
           "role_id": "sello",
-          "slug_es": "/bombeo/sello/",
-          "slug_en": "/en/pumping/seal/",
+          "slug_es": "/productos/kit-sellado-seco-expeller-ah/",
+          "slug_en": "/en/products/expeller-centrifugal-dry-seal-kit/",
           "title_es": "Expulsor Centrífugo y Prensaestopa (Sin Sello Mecánico)",
           "title_en": "Centrifugal Expeller & Stuffing Box (No Mechanical Seal)",
           "metallurgy": "Alto Cromo, Acero Inoxidable y Empaque Trenzado",
@@ -89,8 +89,8 @@
         },
         {
           "role_id": "soporte",
-          "slug_es": "/bombeo/soporte/",
-          "slug_en": "/en/pumping/bearing-assembly/",
+          "slug_es": "/productos/cartucho-rodamientos-005m/",
+          "slug_en": "/en/products/bearing-assembly-cartridge-005m/",
           "title_es": "Bearing Assembly / Housing",
           "title_en": "Bearing Assembly / Housing",
           "metallurgy": "Fundición Nodular y Rodamientos Timken/SKF",
@@ -117,8 +117,8 @@
       "capex": [
         {
           "role_id": "celda_completa",
-          "slug_es": "/flotacion/celdas/",
-          "slug_en": "/en/flotation/cells/",
+          "slug_es": "/productos/mecanismo-suspendido-flotacion-18sp/",
+          "slug_en": "/en/products/suspended-flotation-mechanism-18sp/",
           "title_es": "Mecanismos para Celdas de Flotación y Acondicionadores",
           "title_en": "Flotation Cell Mechanisms & Conditioners",
           "series": "50, 100, 200 y 300 ft³ (1.4 a 8.5 m³)",
@@ -140,8 +140,8 @@
       "opex": [
         {
           "role_id": "mecanismos_flotacion",
-          "slug_es": "/flotacion/mecanismos/",
-          "slug_en": "/en/flotation/mechanisms/",
+          "slug_es": "/productos/mecanismo-suspendido-flotacion-18sp/",
+          "slug_en": "/en/products/suspended-flotation-mechanism-18sp/",
           "title_es": "Rotores, Estatores y Flechas para Flotación",
           "title_en": "Flotation Rotors, Stators & Shafts",
           "metallurgy": "Hule y Poliuretano",
@@ -168,8 +168,8 @@
       "capex": [
         {
           "role_id": "prensa_completa",
-          "slug_es": "/filtracion/prensa/",
-          "slug_en": "/en/filtration/press/",
+          "slug_es": "/productos/lonas-y-placas-filtro-prensa-16bar/",
+          "slug_en": "/en/products/filter-press-cloths-and-pp-plates-16bar/",
           "title_es": "Filtros Prensa",
           "title_en": "Filter Presses",
           "series": "Placas de 800x800 mm a 1500x1500 mm",
@@ -191,8 +191,8 @@
       "opex": [
         {
           "role_id": "repuestos_prensa",
-          "slug_es": "/filtracion/repuestos/",
-          "slug_en": "/en/filtration/parts/",
+          "slug_es": "/productos/lonas-y-placas-filtro-prensa-16bar/",
+          "slug_en": "/en/products/filter-press-cloths-and-pp-plates-16bar/",
           "title_es": "Telas Filtrantes y Placas de Polipropileno",
           "title_en": "Filter Cloths & Polypropylene Plates",
           "metallurgy": "Polipropileno Virgen Copolímero y Fieltro Agujado",

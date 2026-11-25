@@ -250,6 +250,7 @@ const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waTe
     )}
   </div>
 
+  {!isMediaOnly && (
   <div class="smat-qcard-footer">
     <div class="smat-qcard-footer-row">
       <div class="smat-qcard-meta">
@@ -280,25 +281,24 @@ const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waTe
         )}
       </div>
 
-      {!isMediaOnly && (
-        <div class="smat-qcard-controls">
-          <select class="smat-qcard-config-select" data-qcard-config={sku.id} aria-label={isEs ? `Material para ${sku.title_es}` : `Material for ${sku.title_en}`}>
-            {configOptions.map((opt) => (
-              <option value={opt.value} selected={opt.value === sku.default_material}>{opt.label}</option>
-            ))}
-          </select>
-          <div class="smat-qcard-actions">
-            <a href={waDefaultHref} target="_blank" rel="noopener noreferrer" data-qcard-wa-btn={sku.id} data-sku-id={sku.id} data-sku-title={skuTitle} data-sku-sat={`${satTuple.clave_prod_serv}/${satTuple.clave_unidad}`} data-sku-lang={lang} class="smat-qcard-wa-btn">
-              {isEs ? 'WhatsApp' : 'WhatsApp'}
-            </a>
-            <button type="button" data-qcard-add-btn={sku.id} data-quick-tray-add={sku.id} data-sku-title={skuTitle} data-sku-code={sku.atomic_codes[0] || sku.id} data-sku-material={sku.default_material} data-sku-regime={sku.stock_regime || 'hay'} data-sku-mass={sku.mass_kg} class="smat-qcard-cta-btn">
-              {isEs ? '+ Agregar a cotización' : '+ Add to quote'}
-            </button>
-          </div>
+      <div class="smat-qcard-controls">
+        <select class="smat-qcard-config-select" data-qcard-config={sku.id} aria-label={isEs ? `Material para ${sku.title_es}` : `Material for ${sku.title_en}`}>
+          {configOptions.map((opt) => (
+            <option value={opt.value} selected={opt.value === sku.default_material}>{opt.label}</option>
+          ))}
+        </select>
+        <div class="smat-qcard-actions">
+          <a href={waDefaultHref} target="_blank" rel="noopener noreferrer" data-qcard-wa-btn={sku.id} data-sku-id={sku.id} data-sku-title={skuTitle} data-sku-sat={`${satTuple.clave_prod_serv}/${satTuple.clave_unidad}`} data-sku-lang={lang} class="smat-qcard-wa-btn">
+            {isEs ? 'WhatsApp' : 'WhatsApp'}
+          </a>
+          <button type="button" data-qcard-add-btn={sku.id} data-quick-tray-add={sku.id} data-sku-title={skuTitle} data-sku-code={sku.atomic_codes[0] || sku.id} data-sku-material={sku.default_material} data-sku-regime={sku.stock_regime || 'hay'} data-sku-mass={sku.mass_kg} class="smat-qcard-cta-btn">
+            {isEs ? '+ Agregar a cotización' : '+ Add to quote'}
+          </button>
         </div>
-      )}
+      </div>
     </div>
   </div>
+  )}
 </section>
 
 <script>

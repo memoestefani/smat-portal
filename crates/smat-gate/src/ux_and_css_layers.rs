@@ -27,6 +27,8 @@ pub fn verify_single_main_and_zero_raw_tokens(site_root: &Path) -> Result<(), St
         "Puerta 1",
         "Puerta 2",
         "Puerta 3",
+        "Pinza Térmica IEC",
+        "EN_COLA_OFFLINE",
     ];
     let script_re = Regex::new(r"(?is)<script\b[^>]*>[\s\S]*?</script>").unwrap();
     let style_re = Regex::new(r"(?is)<style\b[^>]*>[\s\S]*?</style>").unwrap();
@@ -98,7 +100,25 @@ pub fn verify_print_pwa_and_core_hygiene(site_root: &Path) -> Result<(), String>
     verify_v58_instrument_and_mobile_header(site_root)?;
     verify_v59_xray_and_mobile_cols(site_root)?;
     verify_v60_storefront_photo_first(site_root)?;
+    verify_v80_zero_dossier_duplicate_cta(site_root)?;
 
+    Ok(())
+}
+
+/// Invariante V8.0: Cero botones duplicados `[data-add-tray-sku]` ni defaults sintéticos en `LiveEngineeringDossier.astro`.
+pub fn verify_v80_zero_dossier_duplicate_cta(site_root: &Path) -> Result<(), String> {
+    let dossier = fs::read_to_string(site_root.join("src/components/LiveEngineeringDossier.astro"))
+        .map_err(|e| format!("Error leyendo LiveEngineeringDossier.astro: {}", e))?;
+    verify_v80_dossier_markup(&dossier)
+}
+
+pub fn verify_v80_dossier_markup(dossier_src: &str) -> Result<(), String> {
+    if dossier_src.contains("data-add-tray-sku") {
+        return Err("LiveEngineeringDossier.astro no debe exponer botones duplicados [data-add-tray-sku]".to_string());
+    }
+    if dossier_src.contains("SMAT-PUMP-6X4-WETKIT") {
+        return Err("LiveEngineeringDossier.astro no debe inyectar SMAT-PUMP-6X4-WETKIT en SSR vacio".to_string());
+    }
     Ok(())
 }
 
@@ -410,6 +430,7 @@ mod tests {
         verify_v58_cores_css_text,
         verify_v59_mobile_cols_css,
         verify_v60_qcard_photo_default,
+        verify_v80_dossier_markup,
     };
 
     #[test]
@@ -461,5 +482,12 @@ mod tests {
     fn enforces_v60_storefront_card_and_photo_tab_default() {
         assert!(verify_v60_qcard_photo_default("<button data-qcard-tab=\"photo\" aria-selected=\"true\">Foto</button>").is_ok());
         assert!(verify_v60_qcard_photo_default("<button data-qcard-tab=\"svg\">Plano</button>").is_err());
+    }
+
+    #[test]
+    fn enforces_v80_zero_dossier_duplicate_cta_and_synthetic_sku() {
+        assert!(verify_v80_dossier_markup("<a href=\"/catalogo/\">Ver catálogo</a>").is_ok());
+        assert!(verify_v80_dossier_markup("<button data-add-tray-sku=\"X\">Agregar</button>").is_err());
+        assert!(verify_v80_dossier_markup("<span>SMAT-PUMP-6X4-WETKIT</span>").is_err());
     }
 }

@@ -3,6 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import ProductDetailIsland from '../../../components/islands/ProductDetailIsland.astro';
 import atomicParts from '../../../../data/atomic_parts.json';
 import { resolveParentSkuForAtomicCode } from '../../../scripts/quickProductsCatalog.js';
+import '../../../styles/productSlugSolar.css';
 
 export function getStaticPaths() {
   return atomicParts.map((part) => ({

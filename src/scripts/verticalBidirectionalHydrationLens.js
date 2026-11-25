@@ -224,8 +224,8 @@ export function syncReactiveTraySkuButton(root, spec = {}) {
 }
 
 /**
- * Controlador canónico unificado (ES/EN) del Inspector ISO 281:2007 en `/bombeo/soporte/`
- * y `/en/pumping/bearing-assembly/` con pre-hidratación `GetPut` (`D3-V48`, purga `DEB-V48-03`).
+ * Controlador canónico unificado (ES/EN) del Inspector ISO 281:2007 en `/bombeo/`
+ * y `/en/pumping/` con pre-hidratación `GetPut` (`D3-V48`, consolidado V8.0).
  *
  * @param {any} [root]
  * @param {string} [lang]
@@ -323,9 +323,9 @@ export function initBearingSupportInspector(root = typeof document !== 'undefine
 }
 
 /**
- * Controlador canónico unificado (ES/EN) del Calibrador Cinemático en `/bombeo/skid/`
- * y `/en/pumping/skid/` con `GetPut`, 5/5 materiales (`hybrid_a05_r55`), `commitVerticalSimulation`,
- * widget Core Trade-In `DAM005` y `+ Bandeja` (`D3-V48`, `D9-V48`, purga `DEB-V48-04`).
+ * Controlador canónico unificado (ES/EN) del Calibrador Cinemático en `/bombeo/`
+ * y `/en/pumping/` con `GetPut`, 5/5 materiales (`hybrid_a05_r55`), `commitVerticalSimulation`,
+ * widget Core Trade-In `DAM005` y `+ Bandeja` (`D3-V48`, `D9-V48`, consolidado V8.0).
  *
  * @param {any} [root]
  * @param {string} [lang]

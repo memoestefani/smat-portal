@@ -92,7 +92,7 @@ export function evaluateCentrifugalSealPressureBalance(params = {}) {
 
 /**
  * Conecta de forma canónica la calculadora interactiva de Sellado Centrífugo (Estación 02: 02A vs 02B)
- * en `/bombeo/sello/` y `/en/pumping/seal/` (`D9-V43`).
+ * en `/bombeo/` y `/en/pumping/` (`D9-V43`, consolidada V8.0).
  */
 export function bindCanonicalSealBalanceCalculator(root, lang = 'es') {
   if (!root || typeof root.querySelector !== 'function') return null;
@@ -216,7 +216,7 @@ export function bindCanonicalSealBalanceCalculator(root, lang = 'es') {
 
 /**
  * Conecta de forma canónica el selector tribológico Finnie-Hutchings + Tenacidad K_Ic + Despiece 5-5-4
- * en `/bombeo/impulsor/`, `/bombeo/revestimientos/`, `/en/pumping/impeller/` y `/en/pumping/liners/` (`D10-V43`).
+ * en `/bombeo/` y `/en/pumping/` (`D10-V43`, consolidada V8.0).
  */
 const TRIBOLOGY_BRANCH_OVERRIDE_MAP = {
   metal: { branch: 'metal', key: 'alto_cromo_cr27', es: 'Alto Cromo 27% (A05)', en: '27% High Chrome (A05)' },

@@ -316,10 +316,10 @@ test('D1-V43, D2-V43, D4-V43 & D11-V43: Zero phantom DOM IDs in checkout/vertica
 
   const bombeoEs = fs.readFileSync(path.join(SITE_ROOT, 'src/pages/bombeo/index.astro'), 'utf8');
   const bombeoEn = fs.readFileSync(path.join(SITE_ROOT, 'src/pages/en/pumping/index.astro'), 'utf8');
-  const pumpingIsland = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/PumpingHubIsland.astro'), 'utf8');
+  const pumpingStratum2 = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/PumpingAssistantStratum2.astro'), 'utf8');
   assert.ok(bombeoEs.includes('<PumpingHubIsland'));
   assert.ok(bombeoEn.includes('<PumpingHubIsland'));
-  assert.ok(pumpingIsland.includes('1. Kits por Material (5)') || pumpingIsland.includes('lotes-por-material'));
-  assert.ok(pumpingIsland.includes('1. Kits by Material (5)') || pumpingIsland.includes('kits-by-material'));
-  assert.ok(pumpingIsland.includes('data-hybrid-branch-d-card'));
+  assert.ok(pumpingStratum2.includes('1. Kits por Material (5)') || pumpingStratum2.includes('lotes-por-material'));
+  assert.ok(pumpingStratum2.includes('1. Kits by Material (5)') || pumpingStratum2.includes('kits-by-material'));
+  assert.ok(pumpingStratum2.includes('data-hybrid-branch-d-card'));
 });

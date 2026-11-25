@@ -1,77 +1,50 @@
 ---
 import companyData from '../../data/company.json';
-import { calculateSlurryMetrics } from '../scripts/slurryEngine.js';
-import { formatNioshErgonomicStatus } from '../scripts/workbenchBus.js';
 
 interface Props {
   lang?: 'es' | 'en';
-  defaultKinematics: any;
-  defaultPartSpecs: any;
+  defaultKinematics?: any;
+  defaultPartSpecs?: any;
   activeCircuit?: string;
 }
 
-const {
-  lang = 'es',
-  defaultKinematics,
-  defaultPartSpecs,
-  activeCircuit = 'bombeo',
-} = Astro.props;
+const { lang = 'es' } = Astro.props;
 const isEs = lang === 'es';
-const showPumpTable = activeCircuit === 'bombeo' || !activeCircuit;
-const defaultNioshEval = formatNioshErgonomicStatus(defaultPartSpecs, isEs ? 'es' : 'en');
-const defaultSlurryEval = calculateSlurryMetrics({
-  flowM3H: 180,
-  solidsWeightPercent: 45,
-  particleSizeD80Microns: 180,
-  solidsSpecificGravity: 2.7,
-  pipeSeries: '6x4',
-  altitudeM: 2200,
-  pH: 7.0,
-});
+const catalogHref = isEs ? '/catalogo/' : '/en/catalog/';
 const advancePaymentPct = 50;
 const inspectionProtocolText = isEs
   ? (companyData.logistics?.client_inspection_protocol || 'Cotejo dimensional 1:1 previo al embarque.')
   : (companyData.logistics?.client_inspection_protocol_en || 'On-site 1:1 dimensional verification prior to dispatch.');
 ---
 
-<!-- PANEL DERECHO: Live Engineering Dossier A4 (Parnas Slice MS-05) -->
+<!-- PANEL DERECHO: Live Engineering Dossier A4 (`SLICE-V80-B06`, <= 350 LOC, 0 defaults 6x4 sintéticos) -->
 <div class="workbench-preview-panel" id="live-engineering-dossier-wrapper">
   <div class="dossier-role-banner">{isEs ? '2. DOCUMENTO OFICIAL SMAT • EMISIÓN EN TIEMPO REAL (A4)' : '2. OFFICIAL SMAT SPECIFICATION • REAL-TIME EMISSION (A4)'}</div>
   <div class="dossier-card" id="main-dossier-card">
-    
-    <!-- Selector de Pestañas Dual (Decisión 8-A: Mantenimiento vs Compras/SAP) -->
     <div class="dossier-tab-switcher" role="tablist">
       <button type="button" class="dossier-tab-btn active" id="tab-btn-maint" role="tab" aria-selected="true">
-        <span>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="dossier-inline-svg"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          {isEs ? 'Vista Mantenimiento' : 'Maintenance View'}
-        </span>
+        <span>{isEs ? 'Vista Mantenimiento' : 'Maintenance View'}</span>
       </button>
       <button type="button" class="dossier-tab-btn" id="tab-btn-sap" role="tab" aria-selected="false">
-        <span>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="dossier-inline-svg"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-          {isEs ? 'Vista Compras / SAP' : 'Purchasing / SAP View'}
-        </span>
+        <span>{isEs ? 'Vista Compras / SAP' : 'Purchasing / SAP View'}</span>
       </button>
     </div>
 
-    <!-- Guía rápida sin partidas activas -->
+    <!-- Guía limpia sin botones redundantes ni SKU ficticio cuando la bandeja está vacía -->
     <div class="dossier-section" data-dossier-empty-guide>
       <span class="dossier-section-title">{isEs ? 'GUÍA RÁPIDA EN 3 PASOS' : '3-STEP QUICK START GUIDE'}</span>
       <p class="part-details-text">
         {isEs
-          ? '1) Agregue partidas o pegue su lista SAP/Excel · 2) Capture solicitante y mina · 3) Envíe a Durango y exporte folio A4 / TSV.'
-          : '1) Add items or paste SAP/Excel list · 2) Enter requester & mine site · 3) Dispatch to Durango and export A4 / TSV.'}
+          ? '1) Agregue partidas arriba o desde el catálogo · 2) Capture solicitante y mina · 3) Envíe a Durango y exporte folio A4 / TSV.'
+          : '1) Add line items above or from catalog · 2) Enter requester & mine site · 3) Dispatch to Durango and export A4 / TSV.'}
       </p>
       <div class="dossier-passport-actions">
-        <button type="button" class="btn btn-outline smat-tap-btn" data-add-tray-sku="SMAT-PUMP-WETKIT-554">{isEs ? '+ Lote 5-5-4' : '+ 5-5-4 Kit'}</button>
-        <button type="button" class="btn btn-outline smat-tap-btn" data-add-tray-sku="SMAT-PUMP-IMP-AH">{isEs ? '+ Impulsor A05' : '+ Impeller A05'}</button>
-        <button type="button" class="btn btn-outline smat-tap-btn" data-add-tray-sku="SMAT-PUMP-BRG-005M">{isEs ? '+ Cartucho DAM005' : '+ DAM005 Cartridge'}</button>
-        <button type="button" class="btn btn-outline smat-tap-btn" data-add-tray-sku="SMAT-FILT-CLOTH-PLATE">{isEs ? '+ Lonas y Placas' : '+ Cloths & Plates'}</button>
+        <a href={catalogHref} class="btn btn-outline smat-tap-btn">
+          {isEs ? 'Explorar Catálogo Completo (19 SKUs) →' : 'Browse Full Catalog (19 SKUs) →'}
+        </a>
       </div>
     </div>
 
-    <!-- Membrete de la Ficha Técnica -->
     <div class="dossier-header">
       <div class="dossier-brand">
         <span class="brand-title">SMAT MINERALS</span>
@@ -81,18 +54,17 @@ const inspectionProtocolText = isEs
       <div class="dossier-folio-wrap">
         <span class="folio-label">{isEs ? 'FOLIO INSTITUCIONAL' : 'OFFICIAL FOLIO'}</span>
         <strong class="folio-code" id="live-folio">{isEs ? 'Pendiente de envío' : 'Pending submission'}</strong>
-        <span class="smat-part-code-tag" id="live-smat-code">SMAT-PUMP-6X4-WETKIT</span>
+        <span class="smat-part-code-tag" id="live-smat-code">{isEs ? 'SMAT-BORRADOR' : 'SMAT-DRAFT'}</span>
         <span class="dossier-date" id="live-date">{new Date().toISOString().slice(0, 10)}</span>
       </div>
     </div>
 
     <div class="dossier-divider"></div>
 
-    <!-- Estatus de Prioridad y Horario -->
     <div class="dossier-sla-bar" id="dossier-sla-bar">
-      <span class="sla-badge" id="live-priority-tag">{isEs ? 'Sin partidas activas' : 'No active items'}</span>
-      <span class="sla-badge" id="live-budget-category-pill">{isEs ? 'Presupuesto: Refacciones y Desgaste' : 'Budget: Operating Wear Spares'}</span>
-      <span class="sla-badge dossier-gate-pill" id="gate-lead-status" data-testid="gate-lead-status">{isEs ? 'Listo para requisición' : 'Ready for requisition'}</span>
+      <span class="sla-badge" id="live-priority-tag">{isEs ? 'Borrador sin partidas' : 'Draft — Empty Tray'}</span>
+      <span class="sla-badge" id="live-budget-category-pill">{isEs ? 'Carril: Por asignar' : 'Lane: Pending items'}</span>
+      <span class="sla-badge dossier-gate-pill" id="gate-lead-status" data-testid="gate-lead-status">{isEs ? 'Borrador en captura' : 'Draft in progress'}</span>
       <span class="sla-clock" data-emergency-hotline={String(companyData.contact.whatsapp.emergency_hotline)}>Durango: {companyData.contact.phones[0].display} • WhatsApp: {companyData.contact.whatsapp.display} • {isEs ? companyData.logistics.warehouse_hours : companyData.logistics.warehouse_hours_en}</span>
     </div>
     <div>
@@ -103,206 +75,122 @@ const inspectionProtocolText = isEs
       </div>
     </div>
 
-    <!-- PANE 1: VISTA MANTENIMIENTO -->
     <div class="dossier-pane active-pane" id="pane-maint">
       <div class="dossier-section">
         <span class="dossier-section-title">{isEs ? '1. LUGAR DE ENTREGA O RETIRO EN DURANGO' : '1. DELIVERY LOCATION & DURANGO DISPATCH'}</span>
         <dl class="spec-grid">
-          <div class="spec-pair">
-            <dt class="spec-label">{isEs ? 'Solicitante' : 'Requester'}</dt>
-            <dd class="spec-value" id="live-requester">{isEs ? 'Pendiente de captura' : 'Pending entry'}</dd>
-          </div>
-          <div class="spec-pair">
-            <dt class="spec-label">{isEs ? 'Mina / Corporativo' : 'Mine / Company'}</dt>
-            <dd class="spec-value" id="live-company">{isEs ? 'Pendiente de captura' : 'Pending entry'}</dd>
-          </div>
-          <div class="spec-pair">
-            <dt class="spec-label">{isEs ? 'Contacto Directo' : 'Direct Contact'}</dt>
-            <dd class="spec-value" id="live-contact">{isEs ? 'Pendiente de captura' : 'Pending entry'}</dd>
-          </div>
-          <div class="spec-pair">
-            <dt class="spec-label">{isEs ? 'Punto de Despacho' : 'Dispatch Point'}</dt>
-            <dd class="spec-value" id="live-destination">{isEs ? 'Retiro en Almacén Central Durango' : 'Durango Central Warehouse Pickup'}</dd>
-          </div>
+          <div class="spec-pair"><dt class="spec-label">{isEs ? 'Solicitante' : 'Requester'}</dt><dd class="spec-value" id="live-requester">{isEs ? 'Pendiente de captura' : 'Pending entry'}</dd></div>
+          <div class="spec-pair"><dt class="spec-label">{isEs ? 'Mina / Corporativo' : 'Mine / Company'}</dt><dd class="spec-value" id="live-company">{isEs ? 'Pendiente de captura' : 'Pending entry'}</dd></div>
+          <div class="spec-pair"><dt class="spec-label">{isEs ? 'Contacto Directo' : 'Direct Contact'}</dt><dd class="spec-value" id="live-contact">{isEs ? 'Pendiente de captura' : 'Pending entry'}</dd></div>
+          <div class="spec-pair"><dt class="spec-label">{isEs ? 'Punto de Despacho' : 'Dispatch Point'}</dt><dd class="spec-value" id="live-destination">{isEs ? 'Retiro en Almacén Central Durango' : 'Durango Central Warehouse Pickup'}</dd></div>
         </dl>
       </div>
 
-      <!-- Especificación Técnica y Partida -->
       <div class="dossier-section">
-        <span class="dossier-section-title">{isEs ? '2. ESPECIFICACIÓN TÉCNICA DE INGENIERÍA' : '2. ENGINEERING SPECIFICATION'}</span>
+        <span class="dossier-section-title">{isEs ? '2. ESPECIFICACIÓN TÉCNICA DE PARTIDAS' : '2. ENGINEERING SPECIFICATION'}</span>
         <div class="dossier-part-box">
           <div class="part-header-row">
-            <strong class="part-name" id="live-part-name">{isEs ? 'Kit Extremo Húmedo Completo' : 'Complete Wet-End Kit'}</strong>
-            <span class="part-fit-badge" id="dossier-part-hardness" data-testid="dossier-part-hardness">{defaultPartSpecs.hardness || (lang === 'en' ? 'Pending part selection (Draft)' : 'Por especificar (Borrador)')}</span>
+            <strong class="part-name" id="live-part-name">{isEs ? 'Sin partidas agregadas todavía' : 'No line items added yet'}</strong>
+            <span class="part-fit-badge" id="dossier-part-hardness" data-testid="dossier-part-hardness">{isEs ? 'Por asignar según selección' : 'Assigned upon SKU selection'}</span>
           </div>
-          <p class="part-details-text" id="live-part-details">
-            {isEs ? 'Verificación dimensional de acople 1:1 en Almacén Central Durango.' : '1:1 dimensional check at Durango Central Warehouse.'}
-          </p>
-          <p class="part-details-text dossier-fit-guarantee" id="dossier-part-fit-guarantee" data-testid="dossier-part-fit-guarantee">
-            {isEs ? (defaultPartSpecs.fit_guarantee_es || 'Cotejo dimensional 1:1 en Almacén Central Durango.') : (defaultPartSpecs.fit_guarantee_en || '1:1 dimensional verification at Durango Central Warehouse.')}
-          </p>
-          <div id="live-client-ref-box" class="live-client-ref-box hidden">
-            <span class="ref-label">{isEs ? 'Referencia Confidencial Cliente:' : 'Client Confidential Ref:'}</span>
-            <strong id="live-client-ref-text"></strong>
-          </div>
-          <div id="live-custom-box" class="live-client-ref-box hidden dossier-tight-top">
-            <span class="ref-label">{isEs ? 'Equipo Especial Fuera de Catálogo:' : 'Custom Engineered Equipment:'}</span>
-            <strong id="live-custom-text"></strong>
-          </div>
+          <p class="part-details-text" id="live-part-details">{isEs ? 'Verificación dimensional 1:1 en Almacén Central Durango.' : '1:1 dimensional verification at Durango Central Warehouse.'}</p>
+          <p class="part-details-text dossier-fit-guarantee" id="dossier-part-fit-guarantee" data-testid="dossier-part-fit-guarantee">{isEs ? 'Cotejo dimensional 1:1 previo al embarque.' : 'Pre-dispatch 1:1 dimensional fit check.'}</p>
+          <div id="live-client-ref-box" class="live-client-ref-box hidden"><span class="ref-label">{isEs ? 'Referencia Cliente:' : 'Client Ref:'}</span> <strong id="live-client-ref-text"></strong></div>
+          <div id="live-custom-box" class="live-client-ref-box hidden dossier-tight-top"><span class="ref-label">{isEs ? 'Equipo Especial:' : 'Custom Item:'}</span> <strong id="live-custom-text"></strong></div>
           <div id="live-pipe-meta-box" class="live-pipe-meta-box">
-            <span class="spec-label" id="live-pipe-header">{isEs ? 'Línea de Tubería / Capacidad:' : 'Process Line / Capacity:'}</span>
-            <strong id="live-pipe-text" class="font-mono-tech">{isEs ? 'Tubería 6" a 4" (Línea Principal de Proceso)' : '6" to 4" Piping (Main Process Slurry)'}</strong>
-            <span class="spec-label dossier-meta-gap" id="live-stress-header">{isEs ? 'Condición de Operación en Planta:' : 'Plant Operating Condition:'}</span>
-            <strong id="live-stress-text" class="font-mono-tech">{isEs ? 'Pendiente de dictamen en campo (Asesoría SMAT solicitada)' : 'Pending field assessment (SMAT technical advice requested)'}</strong>
-            <span class="spec-label dossier-meta-gap" id="live-criteria-header">{isEs ? 'Criterios de Aceptación Operativa (Rol):' : 'Role Acceptance Criteria:'}</span>
-            <strong id="live-role-criteria" data-testid="live-role-criteria" class="font-mono-tech">{isEs ? 'Intercambiabilidad dimensional 1:1 • Dureza >600 HB • Disponibilidad en Almacén Durango' : '1:1 dimensional fit • Hardness >600 HB • Durango Warehouse availability'}</strong>
+            <span class="spec-label" id="live-pipe-header">{isEs ? 'Alcance Técnico:' : 'Technical Scope:'}</span>
+            <strong id="live-pipe-text" class="font-mono-tech">{isEs ? 'En espera de partidas o archivo SAP/Excel' : 'Awaiting line items or SAP/Excel list'}</strong>
+            <span class="spec-label dossier-meta-gap" id="live-stress-header">{isEs ? 'Condición de Operación:' : 'Plant Condition:'}</span>
+            <strong id="live-stress-text" class="font-mono-tech">{isEs ? 'Pendiente de captura de partidas' : 'Pending line item capture'}</strong>
+            <span class="spec-label dossier-meta-gap" id="live-criteria-header">{isEs ? 'Criterios Operativos:' : 'Acceptance Criteria:'}</span>
+            <strong id="live-role-criteria" data-testid="live-role-criteria" class="font-mono-tech">{isEs ? 'Compatibilidad 1:1 • Almacén Central Durango' : '1:1 drop-in fit • Durango Central Warehouse'}</strong>
             <div class="font-mono-tech dossier-inline-spec-strip">
-              <span data-wb-field="actualPipeVelocityMs">3.15 m/s</span> •{' '}
-              <span data-wb-field="slurrySpecificGravity">1.40 kg/L</span> •{' '}
-              <span data-wb-field="sealBranch">{isEs ? 'Expulsor Seco' : 'Dry Expeller'}</span> •{' '}
-              b₂ <span data-wb-field="impellerExitWidthMm">48 mm</span> • C <span data-wb-field="dynamicCapacityCkN">145 kN</span> •{' '}
-              <span id="dossier-metric-sobol-driver">{isEs ? 'Factor clave: Caudal Q' : 'Primary factor: Flow Q'}</span>
+              <span data-wb-field="actualPipeVelocityMs">—</span> • <span data-wb-field="slurrySpecificGravity">—</span> • <span data-wb-field="sealBranch">—</span> • <span data-wb-field="impellerExitWidthMm">—</span> • <span data-wb-field="dynamicCapacityCkN">—</span> • <span id="dossier-metric-sobol-driver">{isEs ? 'En espera de selección' : 'Awaiting selection'}</span>
             </div>
           </div>
           <div id="live-recirc-warning-dossier" class="live-recirc-warning-dossier hidden">
             <span class="recirc-warn-tag">{isEs ? 'AVISO DE RECIRCULACIÓN' : 'RECIRCULATION NOTICE'}</span>
-            <p class="recirc-warn-text">
-              {isEs 
-                ? 'Reemplazo de pieza individual. Se aconseja cotejar holgura axial en voluta para mitigar recirculación prematura.' 
-                : 'Single part replacement. Axial clearance verification inside volute recommended to mitigate recirculation.'}
-            </p>
+            <p class="recirc-warn-text">{isEs ? 'Reemplazo individual: cotejar holgura axial en voluta para mitigar recirculación.' : 'Single-part swap: check axial volute clearance.'}</p>
           </div>
           <div class="dossier-backend-telemetry font-mono-tech" id="dossier-backend-telemetry">
-            <div><strong>{isEs ? 'Motivo Metalúrgico:' : 'Alloy Rationale:'}</strong> <span id="live-material-reason">{isEs ? defaultSlurryEval.materialReasonEs : defaultSlurryEval.materialReasonEn}</span></div>
-            <div><strong>{isEs ? 'Bastidor y Rodamiento:' : 'Bearing Frame:'}</strong> <span id="live-bearing-frame-label">{isEs ? defaultKinematics.bearingFrameLabelEs : defaultKinematics.bearingFrameLabelEn}</span></div>
-            <div><strong>{isEs ? 'Riesgo de Colisión Axial:' : 'Axial Collision Check:'}</strong> <span id="live-collision-risk">{isEs ? 'Sin colisión axial S1→S5 dentro de tolerancia.' : 'No axial interference S1→S5 within tolerance.'}</span></div>
-            <div><strong>{isEs ? 'Recomendación Operativa:' : 'Engineering Recommendation:'}</strong> <span id="live-recommendation">{defaultSlurryEval.results?.flowConditionText || (isEs ? 'Operación segura dentro de rango de flujo.' : 'Safe operation within flow envelope.')}</span></div>
-            <div><strong>{isEs ? 'Anticipo Fabricación:' : 'Build Advance Terms:'}</strong> <span id="live-advance-payment-pct">{advancePaymentPct}%</span> • <strong>{isEs ? 'Protocolo Presencial:' : 'Site Witness Protocol:'}</strong> <span id="live-inspection-protocol">{inspectionProtocolText}</span></div>
+            <div><strong>{isEs ? 'Material / Aleación:' : 'Alloy / Material:'}</strong> <span id="live-material-reason">{isEs ? 'Se asigna conforme al SKU seleccionado.' : 'Assigned per selected SKU.'}</span></div>
+            <div><strong>{isEs ? 'Bastidor y Rodamiento:' : 'Bearing Frame:'}</strong> <span id="live-bearing-frame-label">—</span></div>
+            <div><strong>{isEs ? 'Revisión Axial:' : 'Axial Check:'}</strong> <span id="live-collision-risk">—</span></div>
+            <div><strong>{isEs ? 'Recomendación:' : 'Recommendation:'}</strong> <span id="live-recommendation">{isEs ? 'Agregue una partida para activar análisis.' : 'Add a line item to generate analysis.'}</span></div>
+            <div><strong>{isEs ? 'Condición:' : 'Terms:'}</strong> <span id="live-advance-payment-pct">{advancePaymentPct}%</span> • <strong>{isEs ? 'Protocolo:' : 'Witness:'}</strong> <span id="live-inspection-protocol">{inspectionProtocolText}</span></div>
           </div>
         </div>
       </div>
 
-      <!-- Memoria de Cálculo Hidráulico Durand (contextual por circuito) -->
-      <div class={showPumpTable ? 'dossier-section' : 'dossier-section hidden'} id="live-section-pump-hydraulics">
-        <span class="dossier-section-title">{isEs ? '3. CÁLCULO DE FLUJO PARA PREVENIR EMBANCAMIENTO (DURAND-CONDOLIOS)' : '3. SLURRY TRANSPORT AUDIT (DURAND-CONDOLIOS)'}</span>
+      <!-- Memoria Hidráulica oculta en estado vacío hasta capturar partidas de bombeo -->
+      <div class="dossier-section hidden" id="live-section-pump-hydraulics">
+        <span class="dossier-section-title">{isEs ? '3. MEMORIA HIDRÁULICA DE TRANSPORTE DE PULPA' : '3. SLURRY HYDRAULIC TRANSPORT SUMMARY'}</span>
         <table class="dossier-table">
           <tbody>
-            <tr>
-              <td><strong>{isEs ? 'Caudal y % Sólidos:' : 'Flow & Solids:'}</strong></td>
-              <td id="live-table-flow">{isEs ? '180 m³/h @ 45% Sólidos (Cp)' : '180 m³/h @ 45% Solids (Cp)'}</td>
-            </tr>
-            <tr>
-              <td><strong>{isEs ? 'Granulometría (d80):' : 'Particle Size (d80):'}</strong></td>
-              <td id="live-table-d80">{isEs ? 'd80 = 180 µm (Cuarzo / Abrasivo Grueso)' : 'd80 = 180 µm (Quartz / Coarse Abrasive)'}</td>
-            </tr>
-            <tr>
-              <td><strong>{isEs ? 'Velocidad Crítica Durand (Vc):' : 'Durand Critical Velocity (Vc):'}</strong></td>
-              <td id="live-table-vc" class="highlight-cell">{isEs ? '2.42 m/s (Margen seguro: 3.02 m/s)' : '2.42 m/s (Safe margin: 3.02 m/s)'}</td>
-            </tr>
-            <tr>
-              <td><strong>{isEs ? 'Abatimiento (HR / ηr) y Vida:' : 'Derating (HR / ηr) & Wear Life:'}</strong></td>
-              <td id="live-table-derating-wear">
-                HR = <strong id="metric-hr" data-testid="metric-hr">0.880</strong> | ηr = <strong id="metric-er" data-testid="metric-er">0.857</strong> | {isEs ? 'Vida Est.:' : 'Est. Life:'} <strong id="metric-wear-hours" data-testid="metric-wear-hours">2,400 h (3.8x vs FG)</strong>
-              </td>
-            </tr>
-            <tr>
-              <td><strong>{isEs ? 'Altitud y Pinza Térmica IEC:' : 'Altitude & IEC Thermal Pincer:'}</strong></td>
-              <td id="live-table-altitude">
-                Patm = <strong id="metric-patm-mca" data-testid="metric-patm-mca">7.89 mca</strong> (<span id="dossier-metric-delta-npsh" data-testid="dossier-metric-delta-npsh">-2.44 m NPSHa</span>) | IEC = <strong id="metric-motor-iec" data-testid="metric-motor-iec">0.880</strong> | K_motor,alt = <strong id="metric-k-motor-alt" data-testid="metric-k-motor-alt">1.326x</strong>
-              </td>
-            </tr>
-            <tr>
-              <td><strong>{isEs ? 'Metalurgia Dictaminada:' : 'Dictated Metallurgy:'}</strong></td>
-              <td id="live-table-mat" class="highlight-cell">{isEs ? 'Dictamen técnico según severidad de pulpa (Durango)' : 'Technical metallurgy dictated per slurry severity (Durango)'}</td>
-            </tr>
-            <tr>
-              <td><strong>{isEs ? 'Claro Axial y Cinemática:' : 'Axial Clearance & Kinematics:'}</strong></td>
-              <td id="live-table-kinematics">δ = 0.75 mm (Δη_v = -1.6%, ΔV_pipe = -<span id="wb-pipe-vel-loss" data-testid="wb-pipe-vel-loss">1.2%</span>) | {isEs ? 'Arreglo CV' : 'CV Arrangement'} | u₂ = {defaultKinematics.tipSpeedMs} m/s | L₁₀ₕ = {defaultKinematics.bearingL10Hours.toLocaleString()} h | <span id="live-assembly-collision-note" data-testid="live-assembly-collision-note">{isEs ? 'Secuencia S1→S5 libre de colisión axial' : 'S1→S5 sequence collision-free'}</span></td>
-            </tr>
-            <tr>
-              <td><strong>{isEs ? 'Ficha Física / NIOSH:' : 'Physical Spec / NIOSH:'}</strong></td>
-              <td id="live-table-part-specs">{defaultPartSpecs.station_number} ({defaultPartSpecs.code}) | {defaultPartSpecs.weight_kg} kg ({isEs ? defaultNioshEval.badgeEs : defaultNioshEval.badgeEn}) | ØD₂ {defaultPartSpecs.impeller_diameter_mm} mm</td>
-            </tr>
-            <tr id="live-row-metrology" class="hidden">
-              <td><strong>{isEs ? 'Cédula Metrológica Lab:' : 'Lab Metrology Spec:'}</strong></td>
-              <td id="live-table-metrology">—</td>
-            </tr>
-            <tr id="live-row-circuit-physics" data-testid="live-row-circuit-physics">
-              <td><strong id="live-table-circuit-physics-label">{isEs ? 'Telemetría de Circuito y Reorden:' : 'Circuit Telemetry & Reorder:'}</strong></td>
-              <td id="live-table-circuit-physics-val">{isEs ? 'Ciclo preventivo sugerido: 90 días • Despacho Programado Durango' : 'Suggested preventive cycle: 90 days • Durango Scheduled Dispatch'}</td>
-            </tr>
-            <tr id="live-row-sobol-drivers" data-testid="live-row-sobol-drivers" data-sobol-model="S1">
-              <td><strong>{isEs ? 'Factor Principal y Límite Físico:' : 'Primary Driver & Physical Bounds:'}</strong></td>
-              <td id="live-table-sobol-drivers" class="font-mono-tech">{isEs ? 'Caudal dominante • Parámetros en rango físico' : 'Flow dominant • Parameters within physical bounds'}</td>
-            </tr>
+            <tr><td><strong>{isEs ? 'Caudal y Sólidos:' : 'Flow & Solids:'}</strong></td><td id="live-table-flow">—</td></tr>
+            <tr><td><strong>{isEs ? 'Granulometría (d80):' : 'Particle Size (d80):'}</strong></td><td id="live-table-d80">—</td></tr>
+            <tr><td><strong>{isEs ? 'Velocidad Límite (Vc):' : 'Critical Velocity (Vc):'}</strong></td><td id="live-table-vc" class="highlight-cell">—</td></tr>
+            <tr><td><strong>{isEs ? 'Abatimiento y Vida:' : 'Derating & Life:'}</strong></td><td id="live-table-derating-wear">HR = <strong id="metric-hr" data-testid="metric-hr">—</strong> | ηr = <strong id="metric-er" data-testid="metric-er">—</strong> | <strong id="metric-wear-hours" data-testid="metric-wear-hours">—</strong></td></tr>
+            <tr><td><strong>{isEs ? 'Altitud y Derrateo Motor:' : 'Altitude & Motor Derate:'}</strong></td><td id="live-table-altitude">Patm = <strong id="metric-patm-mca" data-testid="metric-patm-mca">—</strong> (<span id="dossier-metric-delta-npsh" data-testid="dossier-metric-delta-npsh">—</span>) | f_alt = <strong id="metric-motor-iec" data-testid="metric-motor-iec">—</strong> | K_alt = <strong id="metric-k-motor-alt" data-testid="metric-k-motor-alt">—</strong></td></tr>
+            <tr><td><strong>{isEs ? 'Metalurgia Dictaminada:' : 'Dictated Metallurgy:'}</strong></td><td id="live-table-mat" class="highlight-cell">—</td></tr>
+            <tr><td><strong>{isEs ? 'Holgura y Cinemática:' : 'Clearance & Kinematics:'}</strong></td><td id="live-table-kinematics"><span id="wb-pipe-vel-loss" data-testid="wb-pipe-vel-loss">—</span> <span id="live-assembly-collision-note" data-testid="live-assembly-collision-note"></span></td></tr>
+            <tr><td><strong>{isEs ? 'Ficha Física:' : 'Physical Spec:'}</strong></td><td id="live-table-part-specs">—</td></tr>
+            <tr id="live-row-metrology" class="hidden"><td><strong>{isEs ? 'Cédula Metrológica Lab:' : 'Lab Metrology:'}</strong></td><td id="live-table-metrology">—</td></tr>
+            <tr id="live-row-circuit-physics" data-testid="live-row-circuit-physics"><td><strong id="live-table-circuit-physics-label">{isEs ? 'Reorden de Circuito:' : 'Circuit Reorder:'}</strong></td><td id="live-table-circuit-physics-val">—</td></tr>
+            <tr id="live-row-sobol-drivers" data-testid="live-row-sobol-drivers" data-sobol-model="S1"><td><strong>{isEs ? 'Factor Dominante:' : 'Primary Driver:'}</strong></td><td id="live-table-sobol-drivers" class="font-mono-tech">—</td></tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Sello Metrológico de Almacén Durango y Domicilio Fiscal -->
       <div class="dossier-section">
-        <span class="dossier-section-title">{isEs ? '4. INSPECCIÓN Y PROTOCOLO DE ALMACÉN CENTRAL' : '4. CENTRAL WAREHOUSE INSPECTION & PROTOCOL'}</span>
+        <span class="dossier-section-title">{isEs ? '4. INSPECCIÓN Y PROTOCOLO DE ALMACÉN CENTRAL' : '4. CENTRAL WAREHOUSE PROTOCOL'}</span>
         <div class="durango-seal-box" id="durango-seal-box">
           <div class="seal-badge-header">
-            <span class="seal-icon"><svg class="smat-inline-svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg></span>
-            <span class="seal-title">{isEs ? 'VERIFICACIÓN METROLÓGICA EN ALMACÉN CENTRAL DURANGO' : 'DURANGO CENTRAL WAREHOUSE METROLOGICAL VERIFICATION'}</span>
+            <span class="seal-title">{isEs ? 'VERIFICACIÓN METROLÓGICA EN ALMACÉN CENTRAL DURANGO' : 'DURANGO CENTRAL WAREHOUSE INSPECTION'}</span>
           </div>
           <div class="seal-specs-grid">
-            <span class="seal-spec-item font-mono-tech">{isEs ? 'Cotejo Durango: Triplete (A, B, C) ISO 2768-m • Acople Brida 1:1' : 'Durango Check: (A, B, C) Triplet ISO 2768-m • 1:1 Flange Coupling'}</span>
-            <span class="seal-spec-item font-mono-tech">{isEs ? 'Origen Fundición: ISO 1940 Grado G2.5 (<0.05 mm)' : 'Foundry Origin: ISO 1940 Grade G2.5 (<0.05 mm)'}</span>
-            <span class="seal-spec-item font-mono-tech">{isEs ? 'Dureza Metalúrgica Certificada (ASTM A532 ≥650 HB)' : 'Certified Metallurgy Hardness (ASTM A532 ≥650 HB)'}</span>
+            <span class="seal-spec-item font-mono-tech">{isEs ? 'Cotejo Durango: Triplete (A, B, C) ISO 2768-m' : 'Durango Check: (A, B, C) Triplet ISO 2768-m'}</span>
+            <span class="seal-spec-item font-mono-tech">{isEs ? 'Balanceo ISO 1940 Grado G2.5 (<0.05 mm)' : 'ISO 1940 Grade G2.5 (<0.05 mm runout)'}</span>
+            <span class="seal-spec-item font-mono-tech">{isEs ? 'Dureza Certificada ASTM A532 ≥650 HB' : 'Certified Hardness ASTM A532 ≥650 HB'}</span>
           </div>
           <p class="seal-address-note" id="live-clause-text">
-            {isEs 
-              ? `Garantía de acople dimensional 1:1 en Almacén Central Durango SMAT (verificación física de Triplete Geométrico A, B, C bajo ISO 2768-m). Domicilio fiscal y patio de maniobras: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166.` 
-              : `SMAT 1:1 dimensional fit warranty (physical verification of A, B, C Geometric Triplet under ISO 2768-m). Fiscal HQ & staging yard: Mariano Salas #114, Col. Primer Presidente, Durango, Mexico ZIP 34166.`}
+            {isEs
+              ? 'Garantía de acople dimensional 1:1 en Almacén Central Durango SMAT. Domicilio fiscal: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166.'
+              : 'SMAT 1:1 dimensional fit warranty at Durango Central Warehouse. Fiscal HQ: Mariano Salas #114, Durango, Mexico ZIP 34166.'}
           </p>
-          <small class="dossier-maneuvers-access-note">
-            {isEs ? companyData.logistics.maneuvers_access : companyData.logistics.maneuvers_access_en}
-          </small>
+          <small class="dossier-maneuvers-access-note">{isEs ? companyData.logistics.maneuvers_access : companyData.logistics.maneuvers_access_en}</small>
         </div>
       </div>
 
-      <!-- Micro-Anclaje Fiduciario TCO vs Paro de Planta -->
       <div class="tco-downtime-anchor-card">
         <div class="tco-anchor-header">
-          <span class="anchor-badge font-mono-tech">{isEs ? '[TCO / PARO PROTEGIDO]' : '[TCO / PROTECTED UPTIME]'}</span>
+          <span class="anchor-badge font-mono-tech">{isEs ? '[PROTECCIÓN CONTRA PARO]' : '[UPTIME PROTECTION]'}</span>
           <span class="anchor-stat font-mono-tech">{isEs ? '40,000 USD/hora' : '40,000 USD/hour'}</span>
         </div>
         <p class="anchor-desc">
-          {isEs 
-            ? 'Inversión en Kit de Paro Integral para prevenir detenciones no programadas en planta concentradora (Referencia industrial: 40,000 USD/hora en producción diferida). Renovación total de holguras hidráulicas en una sola intervención de mantenimiento.' 
-            : 'Complete Spare Kit investment to prevent unscheduled concentrator shutdowns (Industry benchmark: 40,000 USD/hour in deferred production). Full hydraulic clearance renewal in a single maintenance window.'}
+          {isEs
+            ? 'Prevención de detenciones no programadas en planta concentradora con refaccionamiento dimensionalmente verificado en Durango.'
+            : 'Preventing unscheduled concentrator downtime with dimensionally verified wear parts from Durango.'}
         </p>
       </div>
     </div>
 
-    <!-- PANE 2: VISTA COMPRAS / SAP -->
-    <div class="dossier-subdivider"><span class="subdivider-tag font-mono-tech">{isEs ? "PARTIDA ERP & DATOS FISCALES" : "ERP LINE ITEM & FISCAL DATA"}</span></div>
+    <div class="dossier-subdivider"><span class="subdivider-tag font-mono-tech">{isEs ? 'PARTIDA ERP & DATOS FISCALES' : 'ERP LINE ITEM & FISCAL DATA'}</span></div>
     <div class="dossier-pane hidden-pane" id="pane-sap">
       <div class="dossier-section">
-        <span class="dossier-section-title">{isEs ? '1. ESTRUCTURA DE PARTIDAS NORMALIZADA (SAP / ERP)' : '1. NORMALIZED REQUISITION ITEMS (SAP / ERP)'}</span>
+        <span class="dossier-section-title">{isEs ? '1. ESTRUCTURA DE PARTIDAS (SAP / ERP)' : '1. REQUISITION LINE ITEMS (SAP / ERP)'}</span>
         <div class="sap-table-wrap">
           <table class="dossier-table sap-item-table">
-            <thead>
-              <tr>
-                <th>{isEs ? 'Pos.' : 'Item'}</th>
-                <th>{isEs ? 'Partida / Código SMAT' : 'Line Item / SMAT Code'}</th>
-                <th>{isEs ? 'Material / Norma' : 'Material / Spec'}</th>
-                <th>{isEs ? 'Destino' : 'Destination'}</th>
-              </tr>
-            </thead>
+            <thead><tr><th>{isEs ? 'Pos.' : 'Item'}</th><th>{isEs ? 'Partida / Código SMAT' : 'Line Item / SMAT Code'}</th><th>{isEs ? 'Material / Norma' : 'Material / Spec'}</th><th>{isEs ? 'Destino' : 'Destination'}</th></tr></thead>
             <tbody>
               <tr>
                 <td><strong>010</strong></td>
                 <td>
-                  <span id="sap-live-part">{isEs ? 'Kit Extremo Húmedo Completo' : 'Complete Wet-End Kit'}</span>
-                  <small class="sap-code-badge" id="sap-live-code">SMAT-PUMP-6X4-WETKIT</small>
-                  <div class="sap-tag-line font-mono-tech dossier-sap-tag-line">
-                    TAG: <strong id="sap-live-tag">CIRCUIT-BOMBEO</strong> • SAT: 8413.91.01 • {isEs ? 'Despacho: Almacén Central Durango' : 'Dispatch: Durango Central Hub'}
-                  </div>
+                  <span id="sap-live-part">{isEs ? 'Sin partidas agregadas todavía' : 'No line items added yet'}</span>
+                  <small class="sap-code-badge" id="sap-live-code">{isEs ? 'SMAT-BORRADOR' : 'SMAT-DRAFT'}</small>
+                  <div class="sap-tag-line font-mono-tech dossier-sap-tag-line">TAG: <strong id="sap-live-tag">PENDING</strong> • Durango</div>
                 </td>
-                <td id="sap-live-mat">{isEs ? 'Dictamen según severidad de pulpa (Durango)' : 'Metallurgy dictated by slurry severity (Durango)'}</td>
+                <td id="sap-live-mat">{isEs ? 'Por definir según SKU' : 'Per selected SKU'}</td>
                 <td id="sap-live-dest">{isEs ? 'Almacén Central Durango' : 'Durango Central Warehouse'}</td>
               </tr>
             </tbody>
@@ -311,106 +199,46 @@ const inspectionProtocolText = isEs
       </div>
 
       <div class="dossier-section">
-        <span class="dossier-section-title">{isEs ? '2. DATOS FISCALES PARA ALTA DE PROVEEDOR' : '2. VENDOR ONBOARDING FISCAL DATA'}</span>
+        <span class="dossier-section-title">{isEs ? '2. DATOS FISCALES PROVEEDOR' : '2. VENDOR FISCAL DATA'}</span>
         <div class="sap-vendor-box">
-          <div class="sap-vendor-row">
-            <span>{isEs ? 'Razón Social / Emisor:' : 'Legal Entity:'}</span>
-            <strong>SMAT MINERALS</strong>
-          </div>
-          <div class="sap-vendor-row">
-            <span>{isEs ? 'Domicilio Fiscal:' : 'Fiscal HQ Address:'}</span>
-            <span>Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166</span>
-          </div>
-          <div class="sap-vendor-row">
-            <span>{isEs ? 'Almacén Central y Despacho:' : 'Central Warehouse & Dispatch:'}</span>
-            <span id="dossier-maneuvers-access" data-testid="dossier-maneuvers-access">{isEs ? (companyData.logistics?.maneuvers_access || 'Durango, Dgo. (Patio de Maniobras)') : (companyData.logistics?.maneuvers_access_en || 'Durango, Dgo. (Heavy Freight Yard)')}</span>
-          </div>
-          <div class="sap-vendor-row">
-            <span>{isEs ? 'Contacto Directo:' : 'Direct Contact:'}</span>
-            <span>{companyData.contact.phones[0].display} • WhatsApp {companyData.contact.whatsapp.display} • {companyData.contact.emails[0].address} • {companyData.contact.emails[1].address}</span>
-          </div>
+          <div class="sap-vendor-row"><span>{isEs ? 'Razón Social:' : 'Legal Entity:'}</span><strong>SMAT MINERALS</strong></div>
+          <div class="sap-vendor-row"><span>{isEs ? 'Domicilio Fiscal:' : 'Fiscal HQ:'}</span><span>Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166</span></div>
+          <div class="sap-vendor-row"><span>{isEs ? 'Almacén Central:' : 'Warehouse:'}</span><span id="dossier-maneuvers-access" data-testid="dossier-maneuvers-access">{isEs ? (companyData.logistics?.maneuvers_access || 'Durango, Dgo.') : (companyData.logistics?.maneuvers_access_en || 'Durango, Mexico')}</span></div>
+          <div class="sap-vendor-row"><span>{isEs ? 'Contacto:' : 'Contact:'}</span><span>{companyData.contact.phones[0].display} • WhatsApp {companyData.contact.whatsapp.display} • {companyData.contact.emails[0].address}</span></div>
           <div class="sap-vendor-row dossier-sap-divider-row">
-            <span>{isEs ? 'Validación Fiscal CFDI 4.0 / Anexo 22:' : 'CFDI 4.0 / Anexo 22 Tax Validation:'}</span>
-            <strong id="sap-live-anexo22-tuple" data-testid="sap-live-anexo22-tuple" class="font-mono-tech dossier-anexo22-tuple">
-              {isEs
-                ? 'SMAT-PUMP-6X4-WETKIT | SAT ProdServ: 40142000 | Clave SAT • Pieza (H87) | TIGIE: 8413.91.99.00 | UNSPSC: 40151500'
-                : 'SMAT-PUMP-6X4-WETKIT | SAT ProdServ: 40142000 | SAT Unit • Piece (H87) | TIGIE: 8413.91.99.00 | UNSPSC: 40151500'}
-            </strong>
+            <span>{isEs ? 'Validación CFDI 4.0:' : 'CFDI 4.0 Tuple:'}</span>
+            <strong id="sap-live-anexo22-tuple" data-testid="sap-live-anexo22-tuple" class="font-mono-tech dossier-anexo22-tuple">{isEs ? 'En espera de partida para asignar fracción SAT' : 'Awaiting line item for SAT tax tuple'}</strong>
           </div>
           <div class="dossier-passport-actions">
-            <button type="button" id="btn-download-vendor-json" data-testid="btn-download-vendor-json" class="btn-pill-action dossier-btn-json">
-              <span>{isEs ? 'Descargar Pasaporte ERP (.JSON SAP/Coupa)' : 'Download ERP Vendor Passport (.JSON SAP/Coupa)'}</span>
-            </button>
-            <button type="button" id="btn-download-vendor-vcf" data-testid="btn-download-vendor-vcf" class="btn-pill-action dossier-btn-vcf">
-              <span>{isEs ? 'Guardar Contacto Industrial (.VCF RFC 6350)' : 'Save Industrial Contact (.VCF RFC 6350)'}</span>
-            </button>
+            <button type="button" id="btn-download-vendor-json" data-testid="btn-download-vendor-json" class="btn-pill-action dossier-btn-json">{isEs ? 'Pasaporte ERP (.JSON)' : 'ERP Passport (.JSON)'}</button>
+            <button type="button" id="btn-download-vendor-vcf" data-testid="btn-download-vendor-vcf" class="btn-pill-action dossier-btn-vcf">{isEs ? 'Contacto (.VCF)' : 'Contact (.VCF)'}</button>
             <small id="sap-vendor-passport-status" class="hidden font-mono-tech dossier-passport-status"></small>
           </div>
         </div>
       </div>
 
-      <!-- Bloque de Justificación Técnica para Orden de Compra -->
       <div class="dossier-section">
-        <span class="dossier-section-title">{isEs ? '3. JUSTIFICACIÓN TÉCNICA PARA ORDEN DE COMPRA (SAP / ERP / COUPA)' : '3. TECHNICAL JUSTIFICATION FOR PURCHASE ORDER (SAP / ERP / COUPA)'}</span>
+        <span class="dossier-section-title">{isEs ? '3. JUSTIFICACIÓN TÉCNICA SAP / ERP' : '3. SAP / ERP TECHNICAL JUSTIFICATION'}</span>
         <div class="sap-justification-container">
-          <div class="justification-executive-summary">
-            <span class="justification-dot"></span>
-            <p id="sap-justification-summary">
-              {isEs
-                ? 'Suministro de refaccionamiento crítico con verificación dimensional 1:1 en Almacén Central Durango para evitar interrupciones operativas.'
-                : 'Critical wear supply with 1:1 dimensional verification at Durango Central Warehouse to prevent operational downtime.'}
-            </p>
-          </div>
-          <div class="sap-justification-actions">
-            <button type="button" class="btn-copy-justification" id="btn-copy-justification" title={isEs ? 'Copiar justificación' : 'Copy justification'}>
-              {isEs ? 'Copiar justificación' : 'Copy justification'}
-            </button>
-          </div>
+          <div class="justification-executive-summary"><span class="justification-dot"></span><p id="sap-justification-summary">{isEs ? 'Suministro de refaccionamiento crítico con verificación dimensional 1:1 en Durango.' : 'Critical wear supply with 1:1 dimensional verification in Durango.'}</p></div>
+          <div class="sap-justification-actions"><button type="button" class="btn-copy-justification" id="btn-copy-justification">{isEs ? 'Copiar justificación' : 'Copy justification'}</button></div>
           <details class="erp-justification-drawer" id="erp-justification-drawer">
-            <summary class="erp-justification-summary-btn">
-              <span>{isEs ? '▾ Ver justificación completa para SAP/ERP' : '▾ View full justification text for SAP/ERP'}</span>
-            </summary>
-            <div class="sap-justification-box">
-              <p id="sap-justification-text">
-                {isEs
-                  ? 'Suministro de refaccionamiento de desgaste de alta criticidad para circuito de planta. Componente con verificación dimensional de acople 1:1, concentricidad metrológica y especificación validada en Almacén Central Durango para evitar detenciones no programadas.'
-                  : 'Critical wear replacement part supply for plant mineral processing circuit. Inspected with 1:1 dimensional fit verification, metrological concentricity check, and validated specification at Durango Central Warehouse to prevent unscheduled shutdowns.'}
-              </p>
-            </div>
+            <summary class="erp-justification-summary-btn"><span>{isEs ? '▾ Ver texto completo para SAP/ERP' : '▾ View full SAP/ERP text'}</span></summary>
+            <div class="sap-justification-box"><p id="sap-justification-text">{isEs ? 'Componente con verificación dimensional 1:1 y concentricidad validada en Almacén Central Durango.' : 'Verified 1:1 dimensional coupling and concentricity at Durango Central Warehouse.'}</p></div>
           </details>
         </div>
       </div>
-
-      <!-- Micro-Anclaje Fiduciario TCO vs Paro de Planta -->
-      <div class="tco-downtime-anchor-card">
-        <div class="tco-anchor-header">
-          <span class="anchor-badge font-mono-tech">{isEs ? '[TCO / PARO PROTEGIDO]' : '[TCO / PROTECTED UPTIME]'}</span>
-          <span class="anchor-stat font-mono-tech">{isEs ? '40,000 USD/hora' : '40,000 USD/hour'}</span>
-        </div>
-        <p class="anchor-desc">
-          {isEs
-            ? 'Protección contra detención no programada de línea: 40,000 USD/hora en producción diferida estimada. Suministro desde Almacén Central Durango (sujeto a existencias en folio) con verificación de concentricidad <0.05 mm.'
-            : 'Protection against unscheduled line shutdown: 40,000 USD/hour in estimated deferred production. Supplied from Durango Central Warehouse (per folio stock check) with <0.05 mm runout bench check.'}
-        </p>
-      </div>
     </div>
 
-    <!-- Suite Jerárquica de Exportación B2B -->
     <div class="dossier-export-section" data-domain-root="erpExport">
       <span class="export-heading">{isEs ? 'ACCIONES DE EXPORTACIÓN Y DESPACHO:' : 'SPEC EXPORT & DISPATCH ACTIONS:'}</span>
-
-      <!-- Botón Rey Dominante: WhatsApp Técnico a Durango -->
       <button type="button" class="export-btn-king export-btn-whatsapp" id="wb-whatsapp-btn" data-schema-output="erpExport.whatsappUrl">
-        <span class="king-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-        </span>
         <div class="king-text">
           <strong>{isEs ? 'Enviar Requisición por WhatsApp a Durango' : 'Send Requisition via WhatsApp to Durango'}</strong>
-          <small>{isEs ? 'Atención técnica de planta en Almacén Central • L-V 08:00 a 18:00 CST • Retiro o flete coordinado' : 'Plant technical engineering at Central Warehouse • Mon-Fri 08:00-18:00 CST • Scheduled dispatch'}</small>
+          <small>{isEs ? 'Ingeniería de planta en Almacén Central • L-V 08:00–18:00 CST' : 'Plant engineering at Central Warehouse • Mon-Fri 08:00-18:00 CST'}</small>
         </div>
       </button>
 
-      <!-- Barra de Acciones Secundarias en Pastillas (desplegable para mantener Cowan <= 8.50; Paso 3 expone TSV y Compras directo) -->
       <details class="wb-progressive-drawer smat-mt-sm" id="dossier-secondary-exports-drawer">
         <summary class="wb-progressive-summary">
           <span>{isEs ? 'Exportar SAP TSV, PDF A4, Cotejo 1:1 y Enlace Compras' : 'Export SAP TSV, A4 PDF, 1:1 Fit & Purchasing Link'}</span>
@@ -418,50 +246,18 @@ const inspectionProtocolText = isEs
         </summary>
         <div class="wb-progressive-body">
           <div class="secondary-export-row" id="dossier-actions-row">
-            <button type="button" class="btn-pill-action" id="wb-copy-btn">
-              <span class="pill-icon">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-              </span>
-              <span>{isEs ? 'Copiar para ERP / SAP' : 'Copy for ERP / SAP'}</span>
-            </button>
-
-            <button type="button" class="btn-pill-action" id="wb-pdf-btn" data-schema-output="erpExport.acuseUrlParams">
-              <span class="pill-icon">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-              </span>
-              <span>{isEs ? 'Requisición PDF' : 'PDF Requisition'}</span>
-            </button>
-
-            <button type="button" class="btn-pill-action btn-pill-tsv" id="wb-copy-tsv-btn" data-schema-output="erpExport.sapTsv">
-              <span class="pill-icon">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
-              </span>
-              <span>{isEs ? 'Tabla TSV (SAP)' : 'TSV Table (SAP)'}</span>
-            </button>
-
-            <button type="button" class="btn-pill-action btn-pill-cotejo" id="wb-cotejo-btn" title={isEs ? 'Descargar Ficha de Cotejo Dimensional ANSI 1:1' : 'Download 1:1 ANSI Dimensional Verification Sheet'}>
-              <span class="pill-icon">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0l12.6 12.6z"/><line x1="14.5" y1="5.5" x2="18.5" y2="9.5"/><line x1="8.5" y1="11.5" x2="11.5" y2="14.5"/></svg>
-              </span>
-              <span>{isEs ? 'Cotejo ANSI 1:1' : 'ANSI 1:1 Fit'}</span>
-            </button>
-
-            <button type="button" class="btn-pill-action" id="wb-email-btn" data-testid="btn-quote-mailto">
-              <span class="pill-icon">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-              </span>
-              <span>{isEs ? 'Enviar Correo' : 'Send Email'}</span>
-            </button>
-
-            <button type="button" class="btn-pill-action" id="btn-share-purchasing-link">
-              <span>{isEs ? 'Copiar enlace a Compras' : 'Copy Link for Purchasing'}</span>
-            </button>
+            <button type="button" class="btn-pill-action" id="wb-copy-btn"><span>{isEs ? 'Copiar para ERP / SAP' : 'Copy for ERP / SAP'}</span></button>
+            <button type="button" class="btn-pill-action" id="wb-pdf-btn" data-schema-output="erpExport.acuseUrlParams"><span>{isEs ? 'Requisición PDF' : 'PDF Requisition'}</span></button>
+            <button type="button" class="btn-pill-action btn-pill-tsv" id="wb-copy-tsv-btn" data-schema-output="erpExport.sapTsv"><span>{isEs ? 'Tabla TSV (SAP)' : 'TSV Table (SAP)'}</span></button>
+            <button type="button" class="btn-pill-action btn-pill-cotejo" id="wb-cotejo-btn"><span>{isEs ? 'Cotejo ANSI 1:1' : 'ANSI 1:1 Fit'}</span></button>
+            <button type="button" class="btn-pill-action" id="wb-email-btn" data-testid="btn-quote-mailto"><span>{isEs ? 'Enviar Correo' : 'Send Email'}</span></button>
+            <button type="button" class="btn-pill-action" id="btn-share-purchasing-link"><span>{isEs ? 'Copiar enlace Compras' : 'Copy Link for Purchasing'}</span></button>
           </div>
           <div class="dossier-erp-summary-strip font-mono-tech smat-mt-sm">
-            <span>{isEs ? 'Compromiso SLA:' : 'SLA Commitment:'} <strong id="dossier-sla-commitment" data-schema-output="erpExport.slaCommitmentEs">{isEs ? 'Sin SLA activo hasta capturar partidas' : 'No active SLA until items are added'}</strong></span>
-            <span>{isEs ? 'Carril Checkout:' : 'Checkout Lane:'} <strong id="dossier-dual-checkout" data-schema-output="erpExport.dualCheckout">{isEs ? 'Borrador sin partidas (Vacío)' : 'Empty Draft (No Line Items)'}</strong></span>
-            <span>{isEs ? 'Dictamen:' : 'Verdict:'} <strong id="dossier-structural-verdict" data-schema-output="erpExport.dictamen_estructural">{isEs ? 'En espera de partidas' : 'Awaiting line items'}</strong></span>
-            <span>{isEs ? 'Compuerta:' : 'Gate:'} <strong id="dossier-gate-classification" data-schema-output="erpExport.clasificacion_compuerta">P0</strong></span>
+            <span>{isEs ? 'Compromiso SLA:' : 'SLA:'} <strong id="dossier-sla-commitment" data-schema-output="erpExport.slaCommitmentEs">{isEs ? 'Sin SLA activo hasta capturar partidas' : 'No active SLA until items added'}</strong></span>
+            <span>{isEs ? 'Carril:' : 'Lane:'} <strong id="dossier-dual-checkout" data-schema-output="erpExport.dualCheckout">{isEs ? 'Borrador vacío' : 'Empty Draft'}</strong></span>
+            <span>{isEs ? 'Dictamen:' : 'Verdict:'} <strong id="dossier-structural-verdict" data-schema-output="erpExport.dictamen_estructural">{isEs ? 'En espera de partidas' : 'Awaiting items'}</strong></span>
+            <span>{isEs ? 'Prioridad:' : 'Priority:'} <strong id="dossier-gate-classification" data-schema-output="erpExport.clasificacion_compuerta">P0</strong></span>
           </div>
         </div>
       </details>
@@ -469,131 +265,68 @@ const inspectionProtocolText = isEs
       <div id="wb-toast" class="wb-toast hidden" role="status" aria-live="polite">
         {isEs ? 'Partidas y folio copiados. Listo para pegar en SAP, Excel o correo.' : 'Spec & folio copied! Ready to paste into SAP, Excel or email.'}
       </div>
-
-      <div class="privacy-pledge-footer">
-        <small>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="dossier-inline-svg"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          {isEs ? 'Trato Directo: Sus datos se utilizan exclusivamente para emitir su cotización formal. Cero llamadas comerciales.' : 'Direct Contact Guarantee: Your information is used strictly for your official quote. Zero sales calls.'}
-        </small>
-      </div>
+      <div class="privacy-pledge-footer"><small>{isEs ? 'Trato Directo: Sus datos se utilizan exclusivamente para emitir su cotización formal.' : 'Direct Contact Guarantee: Used strictly for your official quote.'}</small></div>
     </div>
-
   </div>
 </div>
 
-<!-- BARRA FLOTANTE INFERIOR: Mini-Dossier Bar para Móviles y Laptops -->
 <div class="mini-dossier-bar" id="mini-dossier-bar">
   <div class="mini-dossier-info">
-    <span class="mini-folio" id="mini-folio-text">SMAT-2026-8810</span>
+    <span class="mini-folio" id="mini-folio-text">{isEs ? 'BORRADOR' : 'DRAFT'}</span>
     <span class="mini-alloy-badge" id="mini-alloy-badge">{isEs ? 'Acople 1:1 Certificado' : 'Certified 1:1 Fit'}</span>
   </div>
   <div class="mini-dossier-actions">
-    <button type="button" class="btn-open-drawer" id="btn-open-drawer">
-      <span>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="dossier-inline-svg"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-        {isEs ? 'Ver Requisición & Exportar' : 'View Spec & Export'}
-      </span>
-    </button>
+    <button type="button" class="btn-open-drawer" id="btn-open-drawer">{isEs ? 'Ver Requisición & Exportar' : 'View Spec & Export'}</button>
   </div>
 </div>
 
-<!-- BOTTOM SHEET DRAWER: Modal Deslizable en Móvil -->
 <div class="drawer-overlay hidden" id="drawer-overlay" hidden>
   <div class="drawer-sheet" id="drawer-sheet">
-    <div class="drawer-handle-bar" id="drawer-handle">
-      <div class="drawer-handle-pill"></div>
-    </div>
-    <div class="drawer-header">
-      <strong>{isEs ? 'Requisición Oficial SMAT Minerals' : 'SMAT Official Technical Spec'}</strong>
-      <button type="button" class="btn-close-drawer" id="btn-close-drawer" aria-label={isEs ? 'Cerrar' : 'Close'}>&times;</button>
-    </div>
+    <div class="drawer-handle-bar" id="drawer-handle"><div class="drawer-handle-pill"></div></div>
+    <div class="drawer-header"><strong>{isEs ? 'Requisición Oficial SMAT Minerals' : 'SMAT Official Technical Spec'}</strong><button type="button" class="btn-close-drawer" id="btn-close-drawer" aria-label={isEs ? 'Cerrar' : 'Close'}>&times;</button></div>
     <div class="drawer-body" id="drawer-dossier-mount"></div>
   </div>
 </div>
 
-<!-- MODAL DE FICHA DE COTEJO DIMENSIONAL ANSI 1:1 -->
 <div class="drawer-overlay hidden" id="quality-report-modal" hidden>
   <div class="cotejo-modal-card">
     <div class="drawer-header">
-      <div>
-        <span class="badge badge-copper">{isEs ? 'BANCO CENTRAL DURANGO • PROTOCOLO METROLÓGICO' : 'DURANGO CENTRAL HUB • METROLOGICAL PROTOCOL'}</span>
-        <h3 class="cotejo-modal-title">{isEs ? 'Ficha de Cotejo Dimensional ANSI 1:1' : '1:1 ANSI Dimensional Verification Sheet'}</h3>
-        <small>{isEs ? 'Verificación milimétrica previa al embarque para eliminar riesgo de desajuste en mina.' : 'Warehouse dimensional verification prior to mine dispatch.'}</small>
-      </div>
+      <div><span class="badge badge-copper">{isEs ? 'BANCO CENTRAL DURANGO • PROTOCOLO METROLÓGICO' : 'DURANGO CENTRAL HUB • METROLOGICAL PROTOCOL'}</span><h3 class="cotejo-modal-title">{isEs ? 'Ficha de Cotejo Dimensional ANSI 1:1' : '1:1 ANSI Dimensional Verification Sheet'}</h3></div>
       <button type="button" class="btn-close-drawer" id="btn-close-cotejo" aria-label={isEs ? 'Cerrar' : 'Close'}>&times;</button>
     </div>
-
     <div class="cotejo-modal-body">
       <div class="iso-title-block">
         <div class="iso-cell"><span>{isEs ? 'NORMA:' : 'STANDARD:'}</span> <strong>ANSI B16.5 / ISO 1940</strong></div>
-        <div class="iso-cell"><span>{isEs ? 'TOLERANCIA:' : 'TOLERANCE:'}</span> <strong>{isEs ? '<0.05 mm (Concentricidad)' : '<0.05 mm (Concentricity)'}</strong></div>
+        <div class="iso-cell"><span>{isEs ? 'TOLERANCIA:' : 'TOLERANCE:'}</span> <strong>&lt;0.05 mm</strong></div>
         <div class="iso-cell"><span>{isEs ? 'ALMACÉN:' : 'HUB:'}</span> <strong>Mariano Salas #114, Durango</strong></div>
-        <div class="iso-cell"><span>{isEs ? 'ESTATUS:' : 'STATUS:'}</span> <strong class="dossier-iso-ok">{isEs ? 'SUPERADO / CONFORME' : 'PASSED / COMPLIANT'}</strong></div>
+        <div class="iso-cell"><span>{isEs ? 'ESTATUS:' : 'STATUS:'}</span> <strong class="dossier-iso-ok">{isEs ? 'CONFORME' : 'COMPLIANT'}</strong></div>
       </div>
-
-      <div class="cotejo-drawing-wrap">
-        <svg viewBox="0 0 460 180" width="100%" height="180" class="cotejo-svg">
-          <rect x="20" y="20" width="420" height="140" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" rx="4"/>
-          <rect x="60" y="120" width="340" height="24" rx="2" fill="#e2e8f0" stroke="#94a3b8"/>
-          <circle cx="85" cy="132" r="5" fill="#475569"/>
-          <circle cx="375" cy="132" r="5" fill="#475569"/>
-          <line x1="85" y1="152" x2="375" y2="152" stroke="#c25e00" stroke-width="1.5" stroke-dasharray="3,3"/>
-          <text x="230" y="148" font-size="11" font-family="monospace" fill="#c25e00" text-anchor="middle" font-weight="bold">{isEs ? 'Cota C: Anclaje Bastidor Canal C' : 'Dim C: Base Channel Frame Bolts'}</text>
-          <circle cx="160" cy="75" r="42" fill="#cbd5e1" stroke="#334155" stroke-width="2"/>
-          <rect x="35" y="60" width="20" height="30" fill="#94a3b8" stroke="#1e293b"/>
-          <text x="35" y="52" font-size="10" font-family="monospace" fill="#0f172a" font-weight="bold">{isEs ? 'Ø A Succión (ANSI)' : 'Ø A Suction (ANSI)'}</text>
-          <rect x="145" y="15" width="30" height="20" fill="#94a3b8" stroke="#1e293b"/>
-          <text x="185" y="26" font-size="10" font-family="monospace" fill="#0f172a" font-weight="bold">{isEs ? 'Ø B Descarga (ANSI)' : 'Ø B Discharge (ANSI)'}</text>
-          <line x1="390" y1="75" x2="390" y2="120" stroke="#2563eb" stroke-width="1.5"/>
-          <text x="400" y="100" font-size="10" font-family="monospace" fill="#2563eb" font-weight="bold">{isEs ? 'Cota D (Centro Flecha)' : 'Dim D (Shaft Centerline)'}</text>
-        </svg>
-      </div>
-
-      <div class="cotejo-specs-table">
-        <div class="cotejo-spec-row">
-          <span>{isEs ? 'Verificación de Barrenado y Flecha:' : 'Bolt Hole & Shaft Check:'}</span>
-          <strong>{isEs ? 'Cotejo 1:1 en plantilla de acero antes de embarcar' : '1:1 steel-gauge verification prior to dispatch'}</strong>
-        </div>
-        <div class="cotejo-spec-row">
-          <span>{isEs ? 'Concentricidad y Tolerancia en Flecha:' : 'Shaft Concentricity & Tolerance:'}</span>
-          <strong>{isEs ? 'ISO 1940 Grado G2.5 (<0.05 mm excentricidad radial)' : 'ISO 1940 Grade G2.5 (<0.05 mm radial runout)'}</strong>
-        </div>
-        <div class="cotejo-spec-row">
-          <span>{isEs ? 'Dureza Metalúrgica en Pieza:' : 'Hardness Certification:'}</span>
-          <strong>{isEs ? 'Dureza certificada según severidad de pulpa en Almacén Central Durango' : 'Certified hardness per slurry severity at Durango Central Warehouse'}</strong>
-        </div>
-      </div>
-
       <div class="cotejo-modal-actions">
-        <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">
-          {isEs ? 'Imprimir Ficha de Cotejo (A4)' : 'Print 1:1 Fit Sheet (A4)'}
-        </button>
-        <button type="button" class="btn btn-secondary btn-sm" id="btn-close-cotejo-2">
-          {isEs ? 'Cerrar' : 'Close'}
-        </button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">{isEs ? 'Imprimir Ficha (A4)' : 'Print Sheet (A4)'}</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-close-cotejo-2">{isEs ? 'Cerrar' : 'Close'}</button>
       </div>
     </div>
   </div>
 </div>
 
 <style>
-  .folio-code, .smat-part-code-tag { white-space: nowrap; }
-  .dossier-inline-svg { display: inline-block; vertical-align: middle; margin-right: 4px; }
-  .dossier-gate-pill { background: #065f46; color: #ffffff; padding: 0.15rem 0.45rem; border-radius: 3px; font-size: 0.68rem; }
-  .dossier-trust-alert { margin: 0.4rem 0; padding: 0.5rem 0.7rem; background: #fef2f2; border-left: 4px solid #991b1b; border-radius: 4px; font-size: 0.75rem; color: #7f1d1d; }
-  .dossier-trust-reason { margin: 0.15rem 0 0; }
-  .dossier-fit-guarantee { margin-top: 0.25rem; font-weight: 600; color: #065f46; }
-  .dossier-tight-top { margin-top: 0.25rem; }
-  .dossier-meta-gap { margin-top: 0.3rem; }
-  .dossier-inline-spec-strip { margin-top: 0.25rem; font-size: 0.7rem; color: #475569; }
-  .dossier-maneuvers-access-note { display: block; margin-top: 0.25rem; font-size: 0.68rem; color: #334155; }
-  .dossier-sap-tag-line { font-size: 0.65rem; color: #075985; margin-top: 2px; }
-  .dossier-sap-divider-row { margin-top: 0.35rem; padding-top: 0.35rem; border-top: 1px dashed #cbd5e1; }
-  .dossier-anexo22-tuple { font-size: 0.71rem; color: #065f46; }
-  .dossier-passport-actions { margin-top: 0.55rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
-  .dossier-btn-json { background: #0c4a6e; color: #ffffff; border-color: #082f49; font-size: 0.72rem; padding: 0.35rem 0.7rem; }
-  .dossier-btn-vcf { background: #065f46; color: #ffffff; border-color: #064e3b; font-size: 0.72rem; padding: 0.35rem 0.7rem; }
-  .dossier-passport-status { font-size: 0.69rem; color: #065f46; font-weight: 700; }
-  .dossier-embedded-tray-section { margin: 0.85rem 0; }
-  .dossier-iso-ok { color: #047857; }
+  @layer components {
+    .folio-code, .smat-part-code-tag { white-space: nowrap; }
+    .dossier-gate-pill { background: #065f46; color: #ffffff; padding: 0.15rem 0.45rem; border-radius: 3px; font-size: 0.68rem; }
+    .dossier-trust-alert { margin: 0.4rem 0; padding: 0.5rem 0.7rem; background: #fef2f2; border-left: 4px solid #991b1b; border-radius: 4px; font-size: 0.75rem; color: #7f1d1d; }
+    .dossier-trust-reason { margin: 0.15rem 0 0; }
+    .dossier-fit-guarantee { margin-top: 0.25rem; font-weight: 600; color: #065f46; }
+    .dossier-tight-top { margin-top: 0.25rem; }
+    .dossier-meta-gap { margin-top: 0.3rem; }
+    .dossier-inline-spec-strip { margin-top: 0.25rem; font-size: 0.7rem; color: #475569; }
+    .dossier-maneuvers-access-note { display: block; margin-top: 0.25rem; font-size: 0.68rem; color: #334155; }
+    .dossier-sap-tag-line { font-size: 0.65rem; color: #075985; margin-top: 2px; }
+    .dossier-sap-divider-row { margin-top: 0.35rem; padding-top: 0.35rem; border-top: 1px dashed #cbd5e1; }
+    .dossier-anexo22-tuple { font-size: 0.71rem; color: #065f46; }
+    .dossier-passport-actions { margin-top: 0.55rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .dossier-btn-json { background: #0c4a6e; color: #ffffff; border-color: #082f49; font-size: 0.72rem; padding: 0.35rem 0.7rem; }
+    .dossier-btn-vcf { background: #065f46; color: #ffffff; border-color: #064e3b; font-size: 0.72rem; padding: 0.35rem 0.7rem; }
+    .dossier-passport-status { font-size: 0.69rem; color: #065f46; font-weight: 700; }
+    .dossier-iso-ok { color: #047857; }
+  }
 </style>

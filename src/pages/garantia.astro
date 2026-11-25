@@ -29,6 +29,32 @@ import FaqAccordion from '../components/FaqAccordion.astro';
         <TrustMatrix lang="es" />
       </div>
 
+      <!-- Evidencia Fotográfica Real de Inspección XRF Cr27% y Metrología en Durango -->
+      <div class="trust-evidence-grid">
+        <figure class="trust-evidence-fig">
+          <img
+            src="/images/productos/impulsor-bomba-lodos-serie-ah-v2.webp"
+            alt="Lectura real de espectrometría XRF confirmando 27.209% Cromo (Cr27) en lote SMAT Durango"
+            width="640"
+            height="480"
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption>Espectrometría PMI / XRF real en colada de Alto Cromo (27.209% Cr · ASTM A532)</figcaption>
+        </figure>
+        <figure class="trust-evidence-fig">
+          <img
+            src="/images/almacen/almacen-impulsor-cr27.webp"
+            alt="Impulsor maquinado en Alto Cromo 27% inspeccionado en Almacén Central Durango"
+            width="640"
+            height="480"
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption>Inspección de barrenado y concentricidad en Almacén Central Durango</figcaption>
+        </figure>
+      </div>
+
       <!-- Protocolos de Verificación Dimensional en Almacén Durango -->
       <div class="protocol-request-card">
         <div class="protocol-card-header">
@@ -222,5 +248,35 @@ import FaqAccordion from '../components/FaqAccordion.astro';
 
   .pickup-action {
     flex-shrink: 0;
+  }
+
+  .trust-evidence-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .trust-evidence-fig {
+    margin: 0;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .trust-evidence-fig img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+  }
+
+  .trust-evidence-fig figcaption {
+    padding: 0.55rem 0.85rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #334155;
   }
 </style>

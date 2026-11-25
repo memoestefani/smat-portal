@@ -1,0 +1,891 @@
+{
+  "schema_version": "v8.0-curated-master",
+  "generated_at": "2026-11-25T15:57:06.257Z",
+  "immutable_sources": {
+    "memo_root": "2_smat/ideas/PAGINA SMAT MEMO",
+    "fotos_root": "2_smat/ideas/fotos_sitio",
+    "curated_root": "2_smat/ideas/fototeca_curada_smat"
+  },
+  "total_scanned": 651,
+  "bucket_counts": {
+    "00_CUARENTENA_MARCAS_Y_AGUA": 54,
+    "01_APROBADAS_LIMPIAS": 75,
+    "02_PENDIENTES_RETOQUE_O_RECORTE": 374,
+    "03_DESCARTADAS_BAJA_CALIDAD": 20,
+    "04_EXPANSION_FUTURA": 128
+  },
+  "approved_assets": [
+    {
+      "clean_file": "malla_fina_poliuretano_rojo_panel.png",
+      "source_root": "memo",
+      "source_rel_path": "03_renders_web_transparentes/poliuretano expo.png",
+      "source_sha256": "b8a7fb804ac4e03cba01ed58fb3c65aca73e03c181f715422f9fcc89c2f496f5",
+      "bytes": 1116490,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "celda_flotacion_mecanismo_suspendido.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/02_bombas_y_equipos_de_planta/celda tanque.JPG",
+      "source_sha256": "c4f79f79d71fa67ab699ae31eb7318d20401ee3961990ad1fc308dba7ea5795b",
+      "bytes": 93717,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "celda_flotacion_rotor_estator_corte.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/02_bombas_y_equipos_de_planta/mecanismo.JPG",
+      "source_sha256": "c3f6b773f5d516409100ced2f675e963f7c839aa05f678c283fd195c29b94a03",
+      "bytes": 34132,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "tamiz_astm_e11_bronce_malla_superior.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/03_tamices_e_instrumental/1I4in.jpg",
+      "source_sha256": "333eeeaf73c6d6e4cb5969b066d2cb25ed0c1451902baac185dd183e01a98c94",
+      "bytes": 33676,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "tamizador_tapa_plato_receptor_bronce.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/03_tamices_e_instrumental/brass cover.jpg",
+      "source_sha256": "40488a7a5d3a66281ae0c71f0d0fe35fa61963b11870bf89c7c5a8ad25b79967",
+      "bytes": 15403,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "tamiz_astm_e11_control_abertura_superior.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/03_tamices_e_instrumental/IMG_0395.JPG",
+      "source_sha256": "4dcd70d9ffb75724e40fa8d203ec3582609404f1c4cc8fc714477b127257522b",
+      "bytes": 26905,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "tamiz_astm_e11_lote_malla_calibrada.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/03_tamices_e_instrumental/IMG_0648.JPG",
+      "source_sha256": "c0de4b9ff1c6b6c9d78f5c18224066b1282f03b83d9361bf86d1bfcee54d4059",
+      "bytes": 20855,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "balanza_marcy_caratula_sg.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/balanza.jpg",
+      "source_sha256": "a6edfb9f8095a19e797006e74def05ff53f323638f292a5a6d641542c41fc7c2",
+      "bytes": 53937,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "balanza_marcy_vaso_inoxidable.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/IMG_0185.JPG",
+      "source_sha256": "71d20577d8147db3332568d30270697945663273cf0d9dee5a54042ac6d9d753",
+      "bytes": 1427011,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "balanza_marcy_calibrada_despacho.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/IMG_0186.JPG",
+      "source_sha256": "6b0179798e96dc7ff728f95965946e34711c63abe67a0f0ba8776af3c7561f53",
+      "bytes": 1510502,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "vaso_marcy_orificios_enrase.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/IMG_0187.JPG",
+      "source_sha256": "ae4899c4c774e05134f177716ee409267871bc872a076d9f91e60632db970e65",
+      "bytes": 1507437,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "modulo_amarillo_pines_negros_set.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/IMG_0516.JPG",
+      "source_sha256": "0c478e59dba424d7d2675ad7424a6d89af5eb742a70214186929310988648135",
+      "bytes": 1643479,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "malla_poliuretano_abertura_modular.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/IMG_0517.JPG",
+      "source_sha256": "afa782a5231f6655603fd4bbafedac65fc5771e8d276108b5c314d496dcdab6f",
+      "bytes": 1596008,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "malla_poliuretano_tarima_almacen.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/IMG_0518.JPG",
+      "source_sha256": "3db539f83e8d0ec1bd351380c5518edec83c4600497469bab570c71f3095f218",
+      "bytes": 1155833,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "tamizador_cilindros_soporte_lab.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/IMG_3858.jpg",
+      "source_sha256": "fba85e4474a4e40761f2549700d54e14e5e480461cfe065f66bd33a13a953a7e",
+      "bytes": 2852574,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "filtro_prensa_batch_bastidor.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/IMG_8649.JPG",
+      "source_sha256": "94506dc1d2fc7787fd81c5d6d5655be2aa2173919a2bc6ef27404e2b6bcbfb43",
+      "bytes": 84842,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "filtro_prensa_batch_valvula_sello.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/IMG_8650.JPG",
+      "source_sha256": "931eb8d5c31a980aa5c9108bab5b2c5326881a17f30037b86beabfcb89159033",
+      "bytes": 120650,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "bomba_lodos_inspeccion_durango.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/IMG_9761.JPG",
+      "source_sha256": "d2f0cfad9254f7c10004064ed87075fd55bc4137c214577482a6b6263ff18351",
+      "bytes": 1586751,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "vaso_marcy_cilindro_calibrado.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/IMG_9946.JPG",
+      "source_sha256": "3f776a61c872d23cc217e4b4caaca4619e372315bba51156c5e52346f59eb992",
+      "bytes": 2132136,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "laina_metal_hule_comparativa.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/laina 2.jpg",
+      "source_sha256": "044782fd54c32b8236f44dcfb704cc1dec479e960799d5c60cb28b8242046a48",
+      "bytes": 33346,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "laina_succion_bomba_ah.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/laina succion bomba 2.jpg",
+      "source_sha256": "a86a1ff9c6fac22dd524b57eec9ff069f594fa3e6e5c336f4bb06c64b17020a9",
+      "bytes": 34108,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "modulo_poliuretano_1x1_kit.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/Modulo poliuretano.jpg",
+      "source_sha256": "83ac82e55f03700571f8910d700a93a87a245d4118d3ab18493e391a7e73b27c",
+      "bytes": 31272,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "fijacion_pin_camisa_poliuretano.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/Pin sleeves.jpg",
+      "source_sha256": "99231b7a91a348a53ed9998077a5861ace307923c5ae54ff3c25c8151144ed4e",
+      "bytes": 17193,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "plato_tentadura_inox_lab.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/platostentinox.jpg",
+      "source_sha256": "7cf01723048b44a1dfba15e9deabaa90d611e562677132bdff7cc6ce30adb6bb",
+      "bytes": 24222,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "filtro_prensa_batch_laboratorio.jpg",
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/Pressure Filter.jpg",
+      "source_sha256": "cac747448ec246a5618f4b47765b7d8382faa578e99ed7e4e26af77c208a2f00",
+      "bytes": 33691,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "cartucho_rodamientos_sae4140_ah.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "assembly AH Y hh/Bearing Assembly AH.jpg",
+      "source_sha256": "c1ae6b4afdb7931ede22102ba0e2ef2e99204e091b1398413dcf2f7679e0bdb9",
+      "bytes": 66355,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "almacen_rodamientos_sae4140_patio.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "assembly AH Y hh/Bearing Assembly HH.jpg",
+      "source_sha256": "bad64d3a5da5eade35786473b2679486892cd8f5b3803af74f65d3528694d113",
+      "bytes": 73964,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "parte_dam005_cartucho_rodamientos.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "assembly AH Y hh/Bearing Assembly.jpg",
+      "source_sha256": "cdec305a2f2e3b2508e6f92b0831e82beccdcc41ae3841cc3b258cb2e42f272f",
+      "bytes": 32205,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "flechas_templadas_roscadas_ah.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "assembly AH Y hh/SHAFT  BOMBA LODO  AH.jpg",
+      "source_sha256": "b2492883c4cfd33cef6d65f62424f4b9dd9735e4e8df407d34a690febf6ad201",
+      "bytes": 58026,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "plato_tentadura_perfil_conico.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "Balanza marcy/IMG-20201203-WA0006.jpg",
+      "source_sha256": "ebbded473f9317db505880cb2e6caea358e631e0850102d15217d19e97db0d47",
+      "bytes": 140644,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "plato_tentadura_prueba_humedo.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "Balanza marcy/Plato de Tentadura.jpg",
+      "source_sha256": "d7b9768961b2297c8db9c205461e00b97560db3ac7173a163102af98f9eb21f3",
+      "bytes": 40594,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "vaso_marcy_inoxidable_1000ml.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "Balanza marcy/vaso onox balanza marcy.jpg",
+      "source_sha256": "ad37b6421500e9278e2d8c63eab54524581fbe72d169000ca49f5004334f0f38",
+      "bytes": 39078,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "bomba_centrifuga_lodos_3x2_ah.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "bOMBAS LODOS/bomba 3X2.jpg",
+      "source_sha256": "c3f8bfd23fa73887bbc80c69159f0c006f87e5fc127307749e9f76a1a60b342f",
+      "bytes": 92093,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "bomba_centrifuga_lodos_8x6_ah.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "bOMBAS LODOS/bomba 8x6.jpg",
+      "source_sha256": "bd13f2a4ae90b5c23b29af50f1a1338e4dae831d610060bec8fa7aa7f1179c47",
+      "bytes": 71760,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "almacen_bomba_6x4_dah_ensamblada.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "bOMBAS LODOS/Bomba Lodos 6x4 DAH.jpg",
+      "source_sha256": "be1e1ebd192f312f655de9736bf9e8ccf54aee1f9c532ecb5c1daaf5cf748903",
+      "bytes": 96039,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "parte_d4018_forro_succion_4x3.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "COVER PLATE LINER/IMG-20220314-WA0035.jpg",
+      "source_sha256": "61f065df94db20909c880f759ecbaf6617b4dd7d22c4fc65b3b7d00758d823c3",
+      "bytes": 125917,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "forro_plato_frontal_moldeado.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "Cover-plate-liner  1.jpg",
+      "source_sha256": "69e6771993c8418fc47f66836767bbbd72a1bc4c2dc3d2b0a110cc3317c9ef0a",
+      "bytes": 125871,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "kit_expeller_a05_amarillo_patio.jpeg",
+      "source_root": "fotos",
+      "source_rel_path": "expeller expeller ring/IMG-20210216-WA0014.jpeg",
+      "source_sha256": "0146b007f21a2adcc4d3d411a54ed2ef19ab7ead25f361f9e15f154a314d5b2b",
+      "bytes": 1441992,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "parte_d4028_expulsor_6x4_amarillo.jpeg",
+      "source_root": "fotos",
+      "source_rel_path": "expeller expeller ring/IMG-20210216-WA0016.jpeg",
+      "source_sha256": "8d860c25b93fd0004b06ef9fdbf53b71ce31e6f514b63c524329f14b79b961db",
+      "bytes": 1163818,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "parte_d4029_camara_expulsora_amarilla.jpeg",
+      "source_root": "fotos",
+      "source_rel_path": "expeller expeller ring/IMG-20210216-WA0018.jpeg",
+      "source_sha256": "d3ea3945cf281902fa5b15b82e2543723ff49f4a1dab38fe029193655543e9ac",
+      "bytes": 1473190,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "parte_dam028_anillo_expulsor_4x3.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "expeller expeller ring/IMG-20210515-WA0002.jpg",
+      "source_sha256": "180ac9ef04c8ffd9c8a188c8eb4f375f6516dbbdf20456f42a1ee70693772e27",
+      "bytes": 19362,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "expeller_alabes_a05_mecanizado.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "expeller expeller ring/IMG-20210515-WA0004.jpg",
+      "source_sha256": "89f893d36b5bc535171bb22273bdfa3737d73bc2e07fb3dda7a5e4530dbbdde1",
+      "bytes": 59263,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "parte_eam028_anillo_expulsor_6x4.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "expeller expeller ring/IMG-20211210-WA0000.jpg",
+      "source_sha256": "c4320031ce7f8ee74a5f4797e6b1f43a570e0f4fac199494431feb7740308fdf",
+      "bytes": 262585,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "cartucho_carcasa_hierro_ductil.jpeg",
+      "source_root": "fotos",
+      "source_rel_path": "expeller expeller ring/IMG-20211216-WA0006.jpeg",
+      "source_sha256": "82ffa1ef6384cd79c81c6aa4c184e32a9e822b80e691856b49fd3b0b1150d38c",
+      "bytes": 1202001,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "kit_expeller_anillo_cr27_ah.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "EXPELLER RING  BOMBA LODOS AH ALTO CROMO.jpg",
+      "source_sha256": "a24a29e4052d25615a010386ba1efb266cf5304864b908b8ebc6caa6e176f678",
+      "bytes": 419025,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "mecanismo_plate_shifter_viga_lateral.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "Filtro Presion/20210609_150734.jpg",
+      "source_sha256": "0f956102ff05787e2f7e5d580292745185cc759c8fb02e9ed41bab47233a5ae0",
+      "bytes": 3006152,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "filtro_prensa_cabeza_hidraulica.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "Filtro Presion/IMG-20201120-WA0005.jpg",
+      "source_sha256": "81dba84e6c673454e29cb6b7dd4939cda4d4eb07754d3e278fb4f2a6716b2e81",
+      "bytes": 63306,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "mecanismo_plate_shifter_carro_azul.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "Filtro Presion/IMG-20210208-WA0005.jpg",
+      "source_sha256": "d080197781fb9ed4f03bacbc2cb1af189ed46f26aaac44309f85a5b5b052e4a7",
+      "bytes": 95479,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "mecanismo_plate_shifter_banco_16bar.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "Filtro Presion/IMG-20210208-WA0006.jpg",
+      "source_sha256": "8074088d1dac8ad31c0a4a0e986eb246dc68ad37f0e826dd84230569652ea7d5",
+      "bytes": 129178,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "almacen_filtro_prensa_16bar_planta.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "Filtro Presion/IMG-20210208-WA0023.jpg",
+      "source_sha256": "20f678967319d8850eac495b0963ec25c671e5c8c7ca02a3fbe6d35f5381641b",
+      "bytes": 197887,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "filtro_prensa_alineacion_placas.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "Filtro Presion/IMG-20210412-WA0047.jpg",
+      "source_sha256": "cc5dd485ae12043775ac521a1accfaff27f7d5dd875670ab36a6280b5c853ff1",
+      "bytes": 83791,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "filtro_prensa_placas_16bar_lonas.jpeg",
+      "source_root": "fotos",
+      "source_rel_path": "Filtro Presion/IMG-20210704-WA0035.jpeg",
+      "source_sha256": "bbcc1e7c15a451e3354eda25b2f41c1c1c6492f619baab3fb4a2a79c37ada1fd",
+      "bytes": 1779609,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "parte_e4132_plato_posterior_6x4.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "FRAME PLATE LINER/IMG-20210225-WA0050.jpg",
+      "source_sha256": "448ed2c8495d6c7bcbc79670c5a7e652ca8d3a78966a2676446569a5b0e67b5d",
+      "bytes": 102289,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "lote_humedo_554_plato_posterior.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "FRAME PLATE LINER/IMG-20210301-WA0058.jpg",
+      "source_sha256": "e5bcccd4953e492bd38f02371f20b5a139c8f8a5c96a9f2f4040d4ccf209e56d",
+      "bytes": 191584,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "bateria_hidrociclones_distribuidor.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "Hidrociclone/grupo  hidrociclone.jpg",
+      "source_sha256": "9868d29dfd4cf5bbde097f3fe83bbd02f4bfc8d03993ac2514b737c8841492c2",
+      "bytes": 30026,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "hidrociclon_forro_reemplazable.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "Hidrociclone/hidrocilone.jpg",
+      "source_sha256": "7180120496fc67432136978b1eaf6e4dae94eb29ea1ce0ee5a708d22862fcf83",
+      "bytes": 125883,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "hidrociclon_cuerpo_conos_apex.webp",
+      "source_root": "fotos",
+      "source_rel_path": "Hidrociclone/OIP.webp",
+      "source_sha256": "b348e7a72f4be694dcaa1160cde46a2bbcffd835393881fd6d883bb3435425c3",
+      "bytes": 2640,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "parte_d3147_impulsor_4x3_a05.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "impulsor/IMG-20210219-WA0045.jpg",
+      "source_sha256": "77937246d7fd60b25e886a25fb5e0350f7ce63f516dda8ccf9148770824a7b7f",
+      "bytes": 70059,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "parte_e4147_impulsor_6x4_a05.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "impulsor/IMG-20210219-WA0046.jpg",
+      "source_sha256": "0b2fd2488a5b052a676f23b13e7efcb1cd8a4722a9f561a247f80894ca9e428f",
+      "bytes": 67920,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "impulsor_a05_metal_mecanizado.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "impulsor/IMG-20210312-WA0008.jpg",
+      "source_sha256": "7fdf1a830549012ecc16ec7770a728fb1ade6f44d7ac893fe5cda20c347f737c",
+      "bytes": 98846,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "impulsor_a05_xrf_cr27_verificado.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "impulsor/IMG-20210830-WA0003.jpg",
+      "source_sha256": "7544f2a9178605d4affe719fa19be917fd9149e31b7d16a35659a312cbe62575",
+      "bytes": 184572,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "almacen_impulsor_cr27_mecanizado.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "impulsor/IMG-20220317-WA0011.jpg",
+      "source_sha256": "83011b7e38c1632860a463175c29040e3ea65d20ba70f948f82359b896866a2b",
+      "bytes": 136977,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "impulsor_ah_geometria_alabes.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "Impulsor  Hule  metal poliuretano/impulsor Bomba Lodos Tipo AH.jpg",
+      "source_sha256": "a9024e24a0d228b284f29313d6eba491ec30dc44ccec81b8fe8bbc1c88a810b7",
+      "bytes": 75430,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "parte_f6147_impulsor_8x6.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "Impulsor  Hule  metal poliuretano/impulsor.jpg",
+      "source_sha256": "0ad2920ebcd9203501b4f467e9498ec192a8ca04d467ef74c8bee5c688688c85",
+      "bytes": 400413,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "pulverizador_unidad_camara_discos.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "PULVERIZADOR/IMG-20220311-WA0009.jpg",
+      "source_sha256": "a19c99a11ab56562cace948133f420f11f9409dc51fc1af2d687639bfb905a15",
+      "bytes": 80937,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "pulverizador_discos_ua_gabinete.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "PULVERIZADOR/pulverizador.jpg",
+      "source_sha256": "4b734b28a7153bace7cdd93c3b2082d2dfaeb3325b10e70e4e723f6c589f5baf",
+      "bytes": 109493,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "equipo_rotatorio_laboratorio_verde.webp",
+      "source_root": "fotos",
+      "source_rel_path": "PULVERIZADOR/Test-Type-Stone-Grinding-Laboratory-Disk-Pulverizer-Machine.webp",
+      "source_sha256": "603be547e7737f57cc1d40cc2186927bb06ff825193ac537a64007b80ca6c999",
+      "bytes": 28992,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "pulverizador_discos_ua_cr_ni.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "PULVERIZADOR/UA 2000RS Grinding Plates, chrome alloy.jpg",
+      "source_sha256": "b417e928ae7f23813e36a5c85f45d84f5a4029eb4898601c6a6c4b2081d1bf52",
+      "bytes": 311959,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "parte_d075c21_camisa_flecha.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "Shaft Sleeve/shaft sleeve tipo ah.jpg",
+      "source_sha256": "a4c26cd79e5f82794c9f6c7ae44cc427106c50556783144ffdbab671e15e1c95",
+      "bytes": 94001,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "tanque_acondicionador_puente_15hp.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "tanuqes/acondicionador 2000 x2000 15 hp.jpg",
+      "source_sha256": "491c13c8562d12a63aea40b24b174113b5347b6f93795f96b63ed28ff75d0768",
+      "bytes": 41247,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "parte_e4083_plato_succion_6x4.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "TROAHT BUSH/IMG-20210515-WA0000.jpg",
+      "source_sha256": "d8013695b6152be8a8fb03b862f6c24ce64eacc91179faff8f1adac7572e9867",
+      "bytes": 32915,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "lote_humedo_554_voluta_a05.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "volute and troatbush metal/IMG-20210718-WA0028.jpg",
+      "source_sha256": "82112e165d5e00a4016d9378cda6ee11c63453d026bf9cb69dc325f2192462ce",
+      "bytes": 87673,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "lote_humedo_554_succion_a05.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "volute and troatbush metal/IMG-20210718-WA0029.jpg",
+      "source_sha256": "d0385b51f19295c05188c726e952a921dd0b3b3450606bcf7387fc054254a197",
+      "bytes": 92412,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "almacen_volutas_a05_cr27_inspeccion.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "volute and troatbush metal/IMG-20220317-WA0000.jpg",
+      "source_sha256": "8a53bc7a5bb4f6ae230ddd34c7de49bcb942bf535d90c6b3cff90947091eb1e8",
+      "bytes": 211180,
+      "link_mode": "hardlink"
+    },
+    {
+      "clean_file": "parte_d3110_voluta_4x3_a05.jpg",
+      "source_root": "fotos",
+      "source_rel_path": "volute and troatbush metal/IMG-20220317-WA0001.jpg",
+      "source_sha256": "d0d88c022bd348398d68d8ca10c3a382d8b6166fe657b97ef30d10faa0fee34f",
+      "bytes": 217118,
+      "link_mode": "hardlink"
+    }
+  ],
+  "quarantined_assets": [
+    {
+      "source_root": "memo",
+      "source_rel_path": "03_renders_web_transparentes/Ro Tap expo.png",
+      "source_sha256": "9e8d628ee8dfca27793b58867dc4b240fdc6f60f12539c31af3b7b09b8c854d2"
+    },
+    {
+      "source_root": "memo",
+      "source_rel_path": "03_renders_web_transparentes/Tamices de Laboratorio expo.png",
+      "source_sha256": "237654e0b6a6a353cfa4b03c037fba852a0309a11ef6727ff7d053d2a8d69ed9"
+    },
+    {
+      "source_root": "memo",
+      "source_rel_path": "03_renders_web_transparentes/tamices expo.png",
+      "source_sha256": "0f1e928033c5064226f8235a08e4187d68dc50a6300b6c4814c78d9576124213"
+    },
+    {
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/01_sesion_taller_alta_resolucion/DSCF7828.JPG",
+      "source_sha256": "0f14ad185c8d42c5bbf784e3276f006f1ff8892a06f3d13e953047b8c13c2017"
+    },
+    {
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/01_sesion_taller_alta_resolucion/DSCF7835.JPG",
+      "source_sha256": "054c865d283cde70261055360b66472784e18bf0aa25fd0b964b7f9bb0967130"
+    },
+    {
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/02_bombas_y_equipos_de_planta/bomba warman 1.jpg",
+      "source_sha256": "b99fd8e8f1bddd9cffa96cfc019cce84ee74d4f183c56f412dddd942ee4d88f6"
+    },
+    {
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/02_bombas_y_equipos_de_planta/Bomba warman 8 x 6.jpg",
+      "source_sha256": "777db79d893818ed83a5062c440345a55c2e9270f2551b233a0f7538439312bc"
+    },
+    {
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/02_bombas_y_equipos_de_planta/bomba warman.jpg",
+      "source_sha256": "981dcd068a8acdc02411e6fe5315c5aed1baf308708f5f0a5548ce6519e4e21b"
+    },
+    {
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/03_tamices_e_instrumental/30tyler.JPG",
+      "source_sha256": "e64196e1b143fab52e1327ea82e91a95af0c248f36bf30000fcad1706509bb73"
+    },
+    {
+      "source_root": "memo",
+      "source_rel_path": "04_fototeca_de_productos/04_piezas_y_stock_almacen/IMG_4895.JPG",
+      "source_sha256": "9289b3f0047f97bd04c01d73a61e8f622f43275ae96b261477627101bfb71faf"
+    },
+    {
+      "source_root": "memo",
+      "source_rel_path": "05_archivo_historico_picasa/picasa_tamices_sieves/30tyler.JPG",
+      "source_sha256": "839b1ee2683413a92ae227b5c634504f814b0eaa876abf0e2f3bc8621cc0f75f"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Balanza marcy/balanza marcy  grupo estemon.png",
+      "source_sha256": "6e3baad50a4b9cf205627d846cd947a41b2f468fa4d458a1f9134180adc7ecd6"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "bOMBA lODOS vERTICAL/warman 100RV-SPR X1200  MM.jpg",
+      "source_sha256": "060f6f1a8eaf794c30ccbbcc5fd86b6af176006f0e6a704a7898cef2ea415a09"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_193246.png",
+      "source_sha256": "93db72d7d6c24a0c1ab5305a5ed091acd1332da109f1df3c7aedd7558ec54368"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_193534.png",
+      "source_sha256": "407093442eeade06013a8170f3fafde223f184adc8a97325eaf66e174badcc8b"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_194537.png",
+      "source_sha256": "087b83479732d7f4e916d73124295213bbd349a045f4b8a0dca0708ef7e50d2a"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_194807.png",
+      "source_sha256": "cba8b3130b408ad29e9f48f154713467da34cc760f3b757fd381be9c87c8ce99"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_195049.png",
+      "source_sha256": "6e766e013041c822e9ea3dfa0ab436c670f91e05c6477fdc051d5e2321c3e662"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_195258.png",
+      "source_sha256": "a8f3b0010c88ec899187ce612c12a71f89910461182e701a8f08cea05fc8048d"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_195647.png",
+      "source_sha256": "b18a25e572878698a44b4a18b6e0ca77eca8e62d7eff0d33e0a140e2f408409c"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_195908.png",
+      "source_sha256": "e70d1960445fc965d56a4b1f4f2d7ffadfc25dba5745644a818857671d6b5293"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_200148.png",
+      "source_sha256": "a2eb3029649572830fc2916a28a75e8b458b362733a6d54ee775e7e7433017ff"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_200502.png",
+      "source_sha256": "950fbc3653a87e8be61e3fba35bc0c6fcd6cc6ab6f550dd132e55dc938a0890e"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_203830.png",
+      "source_sha256": "9433c912a21c9c0460377bc9ae63274f4b97ec5784506943910936d39f354497"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_204159.png",
+      "source_sha256": "5a0d2e2751c1a00478a49d28a419cb1e0e2afc4bfe371f17a81da698cbe2eae2"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_204331.png",
+      "source_sha256": "00213ac40325fe14efc178180b56d1fbb1d9ca7448985ebdb767fe287c9ca9c3"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_204719.png",
+      "source_sha256": "773cc420d9809873bbb99fe2329bc6a60481e042ed1dd74d7f1a5a1038704037"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_205032.png",
+      "source_sha256": "33e35b8657f4991ce3f01caeaba366c66cb478d372aed1505002a8341b0b1d6d"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_221107.png",
+      "source_sha256": "948704449c05d5638dd92fb4fec362bee66c6750c0a6922dc5c0a3050b635a0d"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_221254.png",
+      "source_sha256": "e4d31da572889d47441844b43be0c76357cb14b46d6270f3310a4313df9e46c4"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_221517.png",
+      "source_sha256": "29a0262d932d1600727e9a5dccfcd4d84a2c2376dd49ad8bf2e72471b505fc79"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_221929.png",
+      "source_sha256": "591549fcf042c8296252924065b7262c9e88f4a5bf05605e32c8b5b42cc500b3"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_222048.png",
+      "source_sha256": "7c2c16a613cc9525863bc9e37f2deb3441c726b6759e12827fa029dddbfab8f5"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_222230.png",
+      "source_sha256": "f2f076f4d2baf1e9d46a419e7a104320a60ec1ac3480710ad13d13ae845cc196"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_222401.png",
+      "source_sha256": "ca2683df4b1d6bb3c4194e016807a123b789c59e2fac537e2483bd06c937caba"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_222711.png",
+      "source_sha256": "2f88f6afafa39c03806fdbe6da397cc464f080c44f9030838e4092d6e7eb1351"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_222952.png",
+      "source_sha256": "aa41757663a1269e4c012c432ceeb4f2001f33b2d0dea26bdaca8fff19ffc7ba"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260531_223203.png",
+      "source_sha256": "83e107bea0013adaaa534482dfe41f69fa5d9a8311870fdf0f4efc82f5f96066"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260603_223315.png",
+      "source_sha256": "f6547f5e528900b68fc6800a0488c3cb955fc163632e4f9b9f99f51f7fe9ef92"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260603_223450.png",
+      "source_sha256": "2eaae037d5ab9ee7d5bb27be623906e1d7a422a8c8fac2506b64a108e4fae35b"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260604_073650.png",
+      "source_sha256": "1cebd4376aacb39fe657ad4cc9919a0b00bbda124b69b9ceb47a65b0ba909bdd"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260604_074214.png",
+      "source_sha256": "db58d08b29342b2dae6795ef93648ff8ebcb2223936c8d98261449594b3a804d"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260604_183812.png",
+      "source_sha256": "2155ae516a67eaf19372ea8488763f610ad69f45f723efe55582c82563672ab5"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260605_215754.png",
+      "source_sha256": "e4fcea7c146f81c22e35e0e810511a279d0b03c0461c553ef76a8f1fd1739583"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260605_220246.png",
+      "source_sha256": "9e058256b1b196d6525afbf41680a9313d38bc579a2b7166b5dafbf4bd5285ef"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260606_085207.png",
+      "source_sha256": "c734588597b4ce14bf54720f984bd6c5c1e1c8fb8bd129b862c58cf6b86c3ba7"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260610_183558.png",
+      "source_sha256": "8ed377e9ffb95840dc1e56a1e71225cdec6e94a307835f11c16f5ccbfc6b9a02"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260610_183923.png",
+      "source_sha256": "73ac6bb8d755a48ebdc1940ebd2d1c697ad9615b65bb5c1cb322122e95abf710"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "Copilot_20260627_125553 SUCCION.png",
+      "source_sha256": "8ede46d67242eb3adf12470a9096e16cddab7c73ebd04d5c90938cb680e0c155"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "EXPELLER  DELANTERO.jpg",
+      "source_sha256": "198d9114fb9604b8199e080214fc9c5c9a0d6658ea4dc0071ff81beecc6276ec"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "expeller expeller ring/IMG-20210224-WA0019.jpg",
+      "source_sha256": "14ec0018c80d9de47867a90c5cd0ad3242cb044af07020d2992c07873eff0f1d"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "expeller expeller ring/IMG-20211210-WA0001.jpg",
+      "source_sha256": "251fb4b2ba68a81fa543f3cbc2697f649efa6ed0da7d74bf52194ca90940f14b"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "GRUPO ESTEMON.png",
+      "source_sha256": "ddb601ff952954551a567bdcd6acf734146c572dcbb4d3a06f7fc6db2d78e6bc"
+    },
+    {
+      "source_root": "fotos",
+      "source_rel_path": "impulsor/IMG-20211108-WA0034.jpg",
+      "source_sha256": "7f460c4da6dbcc6e79e6eb9752c2f43ce412006c2e864f33de6b8c9c1794178a"
+    }
+  ]
+}

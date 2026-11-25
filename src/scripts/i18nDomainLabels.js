@@ -57,13 +57,13 @@ const DOMAIN_LABELS_I18N = Object.freeze({
       title: 'Mecanismos de Flotación y Aireación',
       fluxLabel: 'Velocidad Superficial de Aire (Jg)',
       recoveryLabel: 'Recuperación Cinética Estimada',
-      methodologyNote: 'Cinética Gorain Sb-Jg y tiempo de residencia para celdas mecánicas 50–300 ft³.'
+      methodologyNote: 'Cinética de dispersión aire-pulpa y tiempo de residencia para celdas mecánicas 50–300 ft³.'
     },
     en: {
       title: 'Flotation Cell Aeration & Recovery',
       fluxLabel: 'Superficial Gas Velocity (Jg)',
       recoveryLabel: 'Estimated Kinetic Recovery',
-      methodologyNote: 'Gorain Sb-Jg flotation rate model across 50–300 ft³ cell banks.'
+      methodologyNote: 'Air-slurry dispersion kinetics and residence time across 50–300 ft³ cell banks.'
     }
   },
   filtration: {
@@ -71,13 +71,13 @@ const DOMAIN_LABELS_I18N = Object.freeze({
       title: 'Desaguado y Filtración de Concentrados / Jales',
       complianceLabel: 'Cumplimiento Apilamiento en Seco',
       deflectionLabel: 'Rigidez Estructural de Viga',
-      methodologyNote: 'Criterio Darcy de torta comprimida, flexión Timoshenko (16 bar) y norma NOM-141-SEMARNAT.'
+      methodologyNote: 'Ciclo de desaguado de torta, verificación estructural de viga (16 bar) y norma NOM-141-SEMARNAT.'
     },
     en: {
       title: 'Concentrate & Tailings Filter Press Dewatering',
       complianceLabel: 'Dry-Stack Structural Compliance',
       deflectionLabel: 'Sidebar Structural Deflection',
-      methodologyNote: 'Darcy cake dewatering cycle, Timoshenko beam check (16 bar), and dry-stack stability.'
+      methodologyNote: 'Filter cake dewatering cycle, sidebar structural deflection check (16 bar), and dry-stack stability.'
     }
   },
   metrology: {

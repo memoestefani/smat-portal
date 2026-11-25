@@ -1,6 +1,6 @@
 ---
 // src/pages/en/compliance.astro
-// Decision 7-C++: B2B Vendor Onboarding Passport (SAT CFDI 4.0, UNSPSC, EXW/DAP Durango Incoterms, ASTM A532 Certification)
+// B2B Vendor Onboarding Passport (SAT CFDI 4.0, UNSPSC, EXW/DAP Durango Incoterms, ASTM A532 Certification)
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { buildSmatVendorPassportPayload } from '../../scripts/requisitionTrayBus.js';
 
@@ -18,10 +18,10 @@ const passport = buildSmatVendorPassportPayload();
   <section class="compliance-page-main">
     <div class="container">
       <div class="compliance-header">
-        <span class="badge badge-copper" data-smat-decision="D7">FAST-TRACK MINING PROCUREMENT VENDOR DOSSIER · SAT CFDI 4.0</span>
+        <span class="badge badge-copper">FAST-TRACK MINING PROCUREMENT VENDOR DOSSIER · SAT CFDI 4.0</span>
         <h1 class="compliance-title">B2B Vendor Onboarding &amp; Compliance Passport (SAT CFDI 4.0)</h1>
         <p class="compliance-lead">
-          Streamline vendor registration across SAP Ariba, Coupa, and Oracle ERP. Download our corporate vCard (<code>.vcf</code>) or copy the structured JSON payload containing UNSPSC commodity codes, SAT CFDI 4.0 fiscal status, EXW/DAP Durango Warehouse Incoterms, and ASTM A532 foundry heat traceability.
+          Streamline vendor registration across SAP Ariba, Coupa, and Oracle ERP. Download our corporate vCard (<code>.vcf</code>) or copy the structured JSON record containing UNSPSC commodity codes, SAT CFDI 4.0 fiscal status, EXW/DAP Durango Warehouse Incoterms, and ASTM A532 foundry heat traceability.
         </p>
       </div>
 
@@ -42,6 +42,18 @@ const passport = buildSmatVendorPassportPayload();
             <a href="/en/warranty/" class="btn btn-outline">View Warranty Charter →</a>
           </div>
         </div>
+
+        <figure class="compliance-yard-figure">
+          <img
+            src="/images/almacen/almacen-bomba-6x4-dah.webp"
+            alt="SMAT Central Warehouse and loading yard in Durango ready for physical dimensional witness inspection"
+            width="640"
+            height="480"
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption>SMAT Central Warehouse &amp; Freight Staging Yard · Mariano Salas #114, Durango ZIP 34166</figcaption>
+        </figure>
 
         <div class="compliance-grid">
           <div class="compliance-panel">
@@ -64,7 +76,7 @@ const passport = buildSmatVendorPassportPayload();
               ))}
               <li><strong>Alloy Certification:</strong> {passport.metallurgyCert}</li>
               <li><strong>Petty Cash Fast-Lane:</strong> Orders &le; 25,000 MXN eligible for same-day CFDI 4.0 invoice issuance during plant emergencies.</li>
-              <li><strong>Circular Economy Program (-22%):</strong> Core Trade-In credit on Station 01 Bearing Cartridges (DAM005) upon returning GGG40 housing barrel to Durango Warehouse.</li>
+              <li><strong>Circular Economy Program (-22%):</strong> Core Trade-In credit on Bearing Cartridges (DAM005) upon returning GGG40 housing barrel to Durango Warehouse.</li>
             </ul>
           </div>
         </div>
@@ -91,13 +103,13 @@ const passport = buildSmatVendorPassportPayload();
           </table>
         </div>
 
-        <div class="compliance-json-box">
-          <div class="compliance-json-header">
-            <strong>Structured ERP JSON Payload (SAP Ariba / Coupa)</strong>
+        <details class="compliance-json-box" id="compliance-json-drawer">
+          <summary class="compliance-json-header compliance-json-summary">
+            <strong>View Structured ERP JSON Record (SAP Ariba / Coupa) ▾</strong>
             <span id="vendor-passport-status" class="compliance-status">Ready for ERP import</span>
-          </div>
+          </summary>
           <pre id="vendor-passport-json-pre">{JSON.stringify(passport.jsonMetadata, null, 2)}</pre>
-        </div>
+        </details>
       </section>
     </div>
   </section>
@@ -112,8 +124,8 @@ const passport = buildSmatVendorPassportPayload();
 
   if (vcfBtn) {
     vcfBtn.addEventListener('click', () => {
-      const payload = buildSmatVendorPassportPayload();
-      const blob = new Blob([payload.vcardText], { type: 'text/vcard;charset=utf-8' });
+      const data = buildSmatVendorPassportPayload();
+      const blob = new Blob([data.vcardText], { type: 'text/vcard;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -128,8 +140,8 @@ const passport = buildSmatVendorPassportPayload();
 
   if (jsonBtn) {
     jsonBtn.addEventListener('click', async () => {
-      const payload = buildSmatVendorPassportPayload();
-      const text = JSON.stringify(payload.jsonMetadata, null, 2);
+      const data = buildSmatVendorPassportPayload();
+      const text = JSON.stringify(data.jsonMetadata, null, 2);
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(text);
       }
@@ -139,190 +151,33 @@ const passport = buildSmatVendorPassportPayload();
 </script>
 
 <style>
-  .compliance-page-main {
-    padding: clamp(0.65rem, 1.8vw, 1.75rem) 0 3rem;
-    background-color: #fafaf9;
-    color: #0f172a;
-  }
-
-  .compliance-header {
-    max-width: 860px;
-    margin: 0 auto clamp(0.65rem, 1.5vw, 1.35rem);
-    text-align: center;
-  }
-
-  .compliance-title {
-    font-family: var(--smat-font-editorial);
-    font-size: clamp(1.25rem, 2.8vw, 2.25rem);
-    line-height: 1.15;
-    color: #0f172a;
-    margin: 0.35rem 0 0.25rem;
-  }
-
-  .compliance-lead {
-    font-size: clamp(0.82rem, 1.2vw, 0.98rem);
-    color: #334155;
-    line-height: 1.4;
-    margin: 0;
-  }
-
-  @media (max-width: 640px) {
-    .compliance-header {
-      text-align: left;
-    }
-    .compliance-lead {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-  }
-
-  .compliance-card {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-top: 4px solid var(--smat-copper-accent, #7c2d12);
-    border-radius: 12px;
-    padding: clamp(1rem, 2vw, 1.85rem);
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
-  }
-
-  .compliance-card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1.25rem;
-    flex-wrap: wrap;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid #e2e8f0;
-  }
-
-  .compliance-tag {
-    display: inline-block;
-    font-family: var(--smat-font-mono);
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--smat-solar-accent, #7c2d12);
-    background: #fff7ed;
-    border: 1px solid #92400e;
-    padding: 0.2rem 0.55rem;
-    border-radius: 6px;
-    margin-bottom: 0.45rem;
-  }
-
-  .compliance-card-top h2 {
-    margin: 0 0 0.35rem;
-    font-size: 1.45rem;
-    color: #0f172a;
-  }
-
-  .compliance-hub {
-    margin: 0;
-    font-size: 0.9rem;
-    color: #334155;
-  }
-
-  .compliance-actions {
-    display: flex;
-    gap: 0.65rem;
-    flex-wrap: wrap;
-  }
-
-  .compliance-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.25rem;
-    margin-top: 1.5rem;
-  }
-
-  .compliance-panel {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 1.25rem;
-  }
-
-  .compliance-panel h3 {
-    margin: 0 0 0.75rem;
-    font-size: 1rem;
-    color: #0f172a;
-  }
-
-  .compliance-list {
-    margin: 0;
-    padding-left: 1.15rem;
-    font-size: 0.88rem;
-    color: #334155;
-    line-height: 1.6;
-  }
-
-  .compliance-list li {
-    margin-bottom: 0.4rem;
-  }
-
-  .compliance-table-wrap {
-    margin-top: 1.5rem;
-    overflow-x: auto;
-  }
-
-  .compliance-table-wrap h3 {
-    font-size: 1rem;
-    color: #0f172a;
-    margin: 0 0 0.75rem;
-  }
-
-  .compliance-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.88rem;
-  }
-
-  .compliance-table th,
-  .compliance-table td {
-    padding: 0.7rem 0.85rem;
-    border-bottom: 1px solid #e2e8f0;
-    text-align: left;
-  }
-
-  .compliance-table th {
-    background: #f8fafc;
-    color: #0f172a;
-    font-weight: 700;
-  }
-
-  .compliance-json-box {
-    margin-top: 1.5rem;
-    background: #f8fafc;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    padding: 1rem;
-  }
-
-  .compliance-json-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    margin-bottom: 0.6rem;
-    font-size: 0.82rem;
-  }
-
-  .compliance-status {
-    font-family: var(--smat-font-mono);
-    font-size: 0.75rem;
-    color: #14532d;
-    background: #dcfce7;
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
-  }
-
-  .compliance-json-box pre {
-    margin: 0;
-    font-family: var(--smat-font-mono);
-    font-size: 0.78rem;
-    color: #0f172a;
-    overflow-x: auto;
-  }
+  .compliance-page-main { padding: clamp(0.65rem, 1.8vw, 1.75rem) 0 3rem; background-color: #fafaf9; color: #0f172a; }
+  .compliance-header { max-width: 860px; margin: 0 auto clamp(0.65rem, 1.5vw, 1.35rem); text-align: center; }
+  .compliance-title { font-family: var(--smat-font-editorial); font-size: clamp(1.25rem, 2.8vw, 2.25rem); line-height: 1.15; color: #0f172a; margin: 0.35rem 0 0.25rem; }
+  .compliance-lead { font-size: clamp(0.82rem, 1.2vw, 0.98rem); color: #334155; line-height: 1.4; margin: 0; }
+  @media (max-width: 640px) { .compliance-header { text-align: left; } }
+  .compliance-card { background: #ffffff; border: 1px solid #cbd5e1; border-top: 4px solid var(--smat-copper-accent, #7c2d12); border-radius: 12px; padding: clamp(1rem, 2vw, 1.85rem); box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04); }
+  .compliance-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1.25rem; flex-wrap: wrap; padding-bottom: 1.25rem; border-bottom: 1px solid #e2e8f0; }
+  .compliance-tag { display: inline-block; font-family: var(--smat-font-mono); font-size: 0.72rem; font-weight: 700; color: var(--smat-solar-accent, #7c2d12); background: #fff7ed; border: 1px solid #92400e; padding: 0.2rem 0.55rem; border-radius: 6px; margin-bottom: 0.45rem; }
+  .compliance-card-top h2 { margin: 0 0 0.35rem; font-size: 1.45rem; color: #0f172a; }
+  .compliance-hub { margin: 0; font-size: 0.9rem; color: #334155; }
+  .compliance-actions { display: flex; gap: 0.65rem; flex-wrap: wrap; }
+  .compliance-yard-figure { margin: 1.25rem 0 0; border-radius: 10px; overflow: hidden; border: 1px solid #cbd5e1; background: #f8fafc; max-width: 560px; }
+  .compliance-yard-figure img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
+  .compliance-yard-figure figcaption { padding: 0.5rem 0.85rem; font-size: 0.78rem; color: #334155; font-weight: 600; }
+  .compliance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; margin-top: 1.25rem; }
+  .compliance-panel { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.25rem; }
+  .compliance-panel h3 { margin: 0 0 0.75rem; font-size: 1rem; color: #0f172a; }
+  .compliance-list { margin: 0; padding-left: 1.15rem; font-size: 0.88rem; color: #334155; line-height: 1.6; }
+  .compliance-list li { margin-bottom: 0.4rem; }
+  .compliance-table-wrap { margin-top: 1.5rem; overflow-x: auto; }
+  .compliance-table-wrap h3 { font-size: 1rem; color: #0f172a; margin: 0 0 0.75rem; }
+  .compliance-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  .compliance-table th, .compliance-table td { padding: 0.7rem 0.85rem; border-bottom: 1px solid #e2e8f0; text-align: left; }
+  .compliance-table th { background: #f8fafc; color: #0f172a; font-weight: 700; }
+  .compliance-json-box { margin-top: 1.5rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.85rem 1rem; }
+  .compliance-json-summary { cursor: pointer; list-style: none; min-height: 44px; }
+  .compliance-json-header { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap; font-size: 0.84rem; }
+  .compliance-status { font-family: var(--smat-font-mono); font-size: 0.75rem; color: #14532d; background: #dcfce7; padding: 0.15rem 0.5rem; border-radius: 4px; }
+  .compliance-json-box pre { margin: 0.75rem 0 0; font-family: var(--smat-font-mono); font-size: 0.78rem; color: #0f172a; overflow-x: auto; }
 </style>
-

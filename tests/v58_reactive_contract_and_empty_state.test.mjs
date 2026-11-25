@@ -180,9 +180,13 @@ test('V58-G4: Mobile Menu, 3-Step QuoteWizard Stepper, Pumping Station 4 & SSOT 
   assert.ok(qwSrc.includes('data-qw-step-tab="1"') && qwSrc.includes('data-qw-step-tab="2"') && qwSrc.includes('data-qw-step-tab="3"'));
   assert.ok(fastLaneSrc.indexOf('wb-mining-unit-select') < fastLaneSrc.indexOf('<details'));
 
-  const pumpingSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/PumpingHubIsland.astro'), 'utf8');
+  const pumpingSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/PumpingAssistantStratum2.astro'), 'utf8');
   assert.ok(pumpingSrc.includes('pumpingTabRouter.js'));
   assert.ok(pumpingSrc.includes('id="pumping-assembly-station"'));
+
+  const dossierSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/LiveEngineeringDossier.astro'), 'utf8');
+  assert.equal(dossierSrc.includes('SMAT-PUMP-6X4-WETKIT'), false, 'LiveEngineeringDossier SSR vacío no debe inyectar SKU sintético');
+  assert.equal(dossierSrc.includes('Kit Extremo Húmedo Completo'), false, 'LiveEngineeringDossier SSR vacío no debe inyectar ficha sintética');
 
   const partCodeRouteSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/pages/catalogo/[code].astro'), 'utf8');
   const atomicJsonRaw = fs.readFileSync(path.join(SITE_ROOT, 'data/atomic_parts.json'), 'utf8');

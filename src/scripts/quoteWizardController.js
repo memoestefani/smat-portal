@@ -104,6 +104,7 @@ export function initQuoteWizardController() {
     isOpex: true,
     currentCircuit: sessionSnapshot.plantContext?.activeCircuit || 'bombeo',
     urlCtx: win?.location?.search ? parseUrlContextParams(win.location.search) : {},
+    hasTrayItems: Array.isArray(sessionSnapshot.items) && sessionSnapshot.items.length > 0,
     sessionKey: RFQ_SESSION_STORAGE_KEY,
     sessionEvent: RFQ_SESSION_UPDATE_EVENT,
   };

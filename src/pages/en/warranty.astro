@@ -29,6 +29,32 @@ import FaqAccordion from '../../components/FaqAccordion.astro';
         <TrustMatrix lang="en" />
       </div>
 
+      <!-- Real XRF Cr27% Inspection & Warehouse Metrology Photography -->
+      <div class="trust-evidence-grid">
+        <figure class="trust-evidence-fig">
+          <img
+            src="/images/productos/impulsor-bomba-lodos-serie-ah-v2.webp"
+            alt="Verified XRF spectrometry test confirming 27.209% Chromium (ASTM A532 Class III) in SMAT batch"
+            width="640"
+            height="480"
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption>Verified XRF / PMI alloy reading on High Chrome melt (27.209% Cr · ASTM A532)</figcaption>
+        </figure>
+        <figure class="trust-evidence-fig">
+          <img
+            src="/images/almacen/almacen-impulsor-cr27.webp"
+            alt="Machined 27% High Chrome impeller staged for dimensional check at Durango Central Warehouse"
+            width="640"
+            height="480"
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption>Dimensional bolt-circle &amp; concentricity check at Durango Central Warehouse</figcaption>
+        </figure>
+      </div>
+
       <!-- Shop Dimensional Verification Protocol in Durango -->
       <div class="protocol-request-card">
         <div class="protocol-card-header">
@@ -222,5 +248,35 @@ import FaqAccordion from '../../components/FaqAccordion.astro';
 
   .pickup-action {
     flex-shrink: 0;
+  }
+
+  .trust-evidence-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .trust-evidence-fig {
+    margin: 0;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .trust-evidence-fig img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+  }
+
+  .trust-evidence-fig figcaption {
+    padding: 0.55rem 0.85rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #334155;
   }
 </style>

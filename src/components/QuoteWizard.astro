@@ -33,22 +33,29 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
   data-workbench-event={SMAT_WORKBENCH_EVENT}
   data-hq-city={companyData.address.city}
 >
-  <section class="workbench-header">
-    <div class="badge-row">
-      <span class="badge badge-copper"><span class="live-dot"></span>{isEs ? 'CONSOLA DE REQUISICIÓN Y ALMACÉN DURANGO' : 'DURANGO REQUISITION & CENTRAL WAREHOUSE'}</span>
-      <span class="badge badge-emerald">{isEs ? 'ATENCIÓN DE PLANTA: LUN-VIE 08:00 A 18:00 CST' : 'PLANT DESK: MON-FRI 08:00 TO 18:00 CST'}</span>
+  <section class="workbench-header workbench-header-with-thumb">
+    <div class="workbench-header-copy">
+      <div class="badge-row">
+        <span class="badge badge-copper"><span class="live-dot"></span>{isEs ? 'CONSOLA DE REQUISICIÓN Y ALMACÉN DURANGO' : 'DURANGO REQUISITION & CENTRAL WAREHOUSE'}</span>
+        <span class="badge badge-emerald">{isEs ? 'ATENCIÓN DE PLANTA: LUN-VIE 08:00 A 18:00 CST' : 'PLANT DESK: MON-FRI 08:00 TO 18:00 CST'}</span>
+      </div>
+      <h1 class="workbench-title">{isEs ? 'Requisición B2B de Equipos y Refacciones' : 'B2B Equipment & Spares Requisition'}</h1>
+      <p class="workbench-subtitle">
+        {isEs
+          ? 'Confirme su lista de códigos, revise su resumen técnico y despache su solicitud formal hacia Almacén Central Durango.'
+          : 'Confirm your SKU list, review technical summary, and dispatch your formal requisition to Durango Central Warehouse.'}
+      </p>
     </div>
-    <h1 class="workbench-title">{isEs ? 'Requisición B2B de Equipos y Refacciones' : 'B2B Equipment & Spares Requisition'}</h1>
-    <p class="workbench-subtitle">
-      {isEs
-        ? 'Confirme su lista de códigos, revise memorias técnicas adjuntas y despache su solicitud formal hacia Durango.'
-        : 'Confirm your SKU list, review attached engineering notes, and dispatch your formal requisition to Durango.'}
-    </p>
-    <p class="smat-mt-sm">
-      <a href={isEs ? '/cumplimiento/' : '/en/compliance/'} class="btn btn-outline smat-tap-btn">
-        {isEs ? 'Ver expediente fiscal SAT / CFDI 4.0 y documentación de proveedor →' : 'View SAT / CFDI 4.0 tax compliance & vendor dossier →'}
-      </a>
-    </p>
+    <figure class="workbench-header-photo">
+      <img
+        src="/images/almacen/almacen-bomba-6x4-dah.webp"
+        alt={isEs ? 'Almacén Central SMAT en Durango' : 'SMAT Central Warehouse in Durango'}
+        width="120"
+        height="90"
+        loading="eager"
+        decoding="async"
+      />
+    </figure>
   </section>
 
   <div class="workbench-split">
@@ -142,6 +149,12 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
               </label>
             </div>
           </div>
+          <div class="form-row smat-mt-sm" data-domain-root="erpExport">
+            <div class="form-group col-half">
+              <label for="wb-erp-quantity"><strong>{isEs ? 'Lote de referencia ERP (pzas):' : 'ERP reference batch (units):'}</strong></label>
+              <input type="number" id="wb-erp-quantity" data-schema-input="erpExport.quantity" min="1" max="500" step="1" value="1" class="wb-input font-mono-tech" />
+            </div>
+          </div>
         </details>
 
         <div class="form-row smat-mt-sm">
@@ -176,13 +189,9 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
               </select>
             </div>
             <div class="form-group col-half">
-              <label for="wb-erp-quantity"><strong>{isEs ? 'Cantidad Global / Lotes:' : 'Lot / Unit Quantity:'}</strong></label>
-              <input type="number" id="wb-erp-quantity" data-schema-input="erpExport.quantity" min="1" max="500" step="1" value="1" class="wb-input font-mono-tech" />
+              <label for="wb-erp-destination"><strong>{isEs ? 'Ciudad o Unidad Destino (ERP):' : 'Destination City or Mine Site (ERP):'}</strong></label>
+              <input type="text" id="wb-erp-destination" data-schema-input="erpExport.delivery_destination" class="wb-input" value="Durango" />
             </div>
-          </div>
-          <div class="form-group">
-            <label for="wb-erp-destination"><strong>{isEs ? 'Ciudad o Unidad Destino (ERP):' : 'Destination City or Mine Site (ERP):'}</strong></label>
-            <input type="text" id="wb-erp-destination" data-schema-input="erpExport.delivery_destination" class="wb-input" value="Durango" />
           </div>
         </div>
 
@@ -221,6 +230,9 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
           <button type="button" id="wb-step3-tsv-btn" class="btn btn-outline">
             {isEs ? 'Copiar Tabla TSV (SAP / Excel)' : 'Copy TSV Table (SAP / Excel)'}
           </button>
+          <a href={isEs ? '/cumplimiento/' : '/en/compliance/'} class="btn btn-outline smat-tap-btn">
+            {isEs ? 'Expediente fiscal SAT / CFDI 4.0 →' : 'SAT / CFDI 4.0 Tax Dossier →'}
+          </a>
         </div>
 
         <div class="smat-cta-row smat-mt-sm">
@@ -244,3 +256,33 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
   initQuoteWizardController();
   initQuoteOutboxController();
 </script>
+
+<style>
+  @layer components {
+    .workbench-header-with-thumb {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .workbench-header-copy {
+      flex: 1 1 320px;
+      min-width: 0;
+    }
+    .workbench-header-photo {
+      margin: 0;
+      flex: 0 0 auto;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+    }
+    .workbench-header-photo img {
+      display: block;
+      width: 120px;
+      height: 90px;
+      object-fit: cover;
+    }
+  }
+</style>

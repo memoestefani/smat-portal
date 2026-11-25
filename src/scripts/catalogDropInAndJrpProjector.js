@@ -2,7 +2,7 @@
  * catalogDropInAndJrpProjector.js
  * ---------------------------------------------------------------------------
  * Costura Modular Cohesiva LCOM4 = 1 ($\partial(C) = 0$) para:
- *   1. Verificador Zero-OEM FNV-1a + Triplete Geométrico $(A,B,C)$ en `/`, `/catalogo/` y `/equipos/` (`D8-V48`).
+ *   1. Verificador Zero-OEM FNV-1a + Triplete Geométrico $(A,B,C)$ en `/` y `/catalogo/` (`D8-V48`).
  *   2. Tarjeta Armónica JRP `(s, c, S)` de 3 etapas hidratada desde el bus unificado con toggle
  *      `normal` vs `paro_planta` + Par Casado sincronizado en `/catalogo/[code]/` y `/productos/[slug]/` (`D7-V48`).
  *   3. Clausura `Def-Use` 100% en `/control-de-procesos/` (`MARCY_STANDARD_RINGS`, Gy, ASTM E11) (`D6/D10-V48`).
