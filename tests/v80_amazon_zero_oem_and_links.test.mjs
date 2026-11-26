@@ -84,7 +84,7 @@ test('V80-A09/A10: media_gallery_spec y manifest WebP 100% curados sin marcas OE
   const atomicParts = JSON.parse(fs.readFileSync(path.join(SITE_ROOT, 'data/atomic_parts.json'), 'utf8'));
 
   const validation = validateMediaGallerySpec(specDoc, catalog, atomicParts);
-  assert.equal(validation.checkedSkus, 19);
+  assert.equal(validation.checkedSkus, 23);
   assert.equal(validation.checkedAtomic, 13);
 
   const impSlides = specDoc.sku_galleries['SMAT-PUMP-IMP-AH'].slides;
@@ -102,7 +102,7 @@ test('V80-A09/A10: media_gallery_spec y manifest WebP 100% curados sin marcas OE
     fs.readFileSync(path.join(SITE_ROOT, 'public/images/productos/manifest.json'), 'utf8')
   );
   assert.equal(manifest.hygiene_version, 'v9.0-zero-oem');
-  assert.equal(manifest.unique_source_sha256, 19);
+  assert.equal(manifest.unique_source_sha256, 23);
   assert.equal(manifest.exif_stripped_all, true);
 
   const guardSrc = fs.readFileSync(path.join(SITE_ROOT, 'tools/media_hygiene_guard.mjs'), 'utf8');

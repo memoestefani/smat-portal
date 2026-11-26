@@ -42,9 +42,9 @@ function installBrowserStub() {
   };
 }
 
-test('SLICE-V55-24: Proyección SSOT única en wizardCatalogData desde getQuickProductsCatalog (19 SKUs, 52 minas)', () => {
+test('SLICE-V55-24: Proyección SSOT única en wizardCatalogData desde getQuickProductsCatalog (23 SKUs, 52 minas)', () => {
   const catalog = getQuickProductsCatalog();
-  assert.equal(catalog.length, 19);
+  assert.equal(catalog.length, 23);
   assert.equal(QUICK_CHECKOUT_SKU_LIST.length, catalog.length);
   assert.equal(QUICK_CHECKOUT_SKU_LIST[0].id, catalog[0].id);
   assert.equal(MINING_UNITS_COUNT, 52);

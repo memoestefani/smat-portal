@@ -122,6 +122,11 @@ test('D4-V57..D9-V57: InstrumentShell Input-First, CFDI I08, EST-03, Filtración
 
   const diagHub = fs.readFileSync(path.join(SITE_ROOT, 'src/components/DiagnosticsHub.astro'), 'utf8');
   assert.ok(diagHub.includes('resolvedStationNumber'), 'DiagnosticsHub debe derivar el número de estación desde station_id');
+  const diagCard = fs.readFileSync(path.join(SITE_ROOT, 'src/components/DiagnosticFailureCard.astro'), 'utf8');
+  assert.ok(
+    diagCard.indexOf('smat-diag-thumb') < diagCard.indexOf('diag-body'),
+    'DiagnosticFailureCard debe mostrar la fotografía antes de .diag-body'
+  );
 
   const flotBridge = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/flotationFiltrationBridge.js'), 'utf8');
   assert.ok(flotBridge.includes('shifterSku') && flotBridge.includes('Corre-Placas'), 'Filtración debe distinguir Placas/Tela vs Corre-Placas');

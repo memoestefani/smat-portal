@@ -21,7 +21,7 @@ const inspectionProtocolText = isEs
 <div class="workbench-preview-panel" id="live-engineering-dossier" data-dossier-mode="empty">
   <div class="dossier-role-banner">{isEs ? '2. RESUMEN DE REQUISICIÓN Y FOLIO SMAT (A4)' : '2. REQUISITION SUMMARY & SMAT FOLIO (A4)'}</div>
   <div class="dossier-card" id="main-dossier-card">
-    <div class="dossier-tab-switcher" role="tablist">
+    <div class="dossier-tab-switcher hidden" data-dossier-tabs-bar="1" role="tablist">
       <button type="button" class="dossier-tab-btn active" id="tab-btn-maint" role="tab" aria-selected="true">
         <span>{isEs ? 'Vista Mantenimiento' : 'Maintenance View'}</span>
       </button>
@@ -40,7 +40,7 @@ const inspectionProtocolText = isEs
       </p>
       <div class="dossier-passport-actions">
         <a href={catalogHref} class="btn btn-outline smat-tap-btn smat-nav-cta">
-          {isEs ? 'Explorar Catálogo Completo (19 SKUs) →' : 'Browse Full Catalog (19 SKUs) →'}
+          {isEs ? 'Explorar Catálogo Completo (23 productos) →' : 'Browse Full Catalog (23 SKUs) →'}
         </a>
       </div>
     </div>

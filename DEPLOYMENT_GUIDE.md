@@ -1,4 +1,4 @@
-# Guía Canónica de Despliegue ($0/mes) — SMAT Minerals Site v7.0
+# Guía Canónica de Despliegue ($0/mes) — SMAT Minerals Site v10.0
 
 > **Repositorio:** [`memoestefani/smat-portal`](https://github.com/memoestefani/smat-portal) (rama de producción: `main`)  
 > **Dominio:** https://smatminerals.com  
@@ -23,15 +23,15 @@ No hay variables de entorno obligatorias. Única opcional: `PUBLIC_GA_ID`.
 
 ## 2. Invariantes que Bloquean un Despliegue
 
-Un cambio **no se publica** si alguno falla. Las **11 compuertas comportamentales** (`smat-gate v2.2` + reglas V6.0) y sus **8 unit tests Rust** viven en [`crates/smat-gate`](crates/smat-gate/src/lib.rs) (`physics_and_schema.rs`, `security_and_leaks.rs`, `seo_and_i18n.rs`, `ux_and_css_layers.rs`) junto con **75 pruebas en Node.js** dentro de `tests/*.test.mjs`:
+Un cambio **no se publica** si alguno falla. Las **11 compuertas comportamentales** (`smat-gate v2.2` + reglas V10.0) y sus **19 unit tests Rust** viven en [`crates/smat-gate`](crates/smat-gate/src/lib.rs) (`physics_and_schema.rs`, `security_and_leaks.rs`, `seo_and_i18n.rs`, `ux_and_css_layers.rs`) junto con las suites en Node.js dentro de `tests/*.test.mjs`:
 
-1. **Paridad de catálogo y cero debris:** `data/roles.json`, `data/quick_checkout_Catalog.json` y `data/atomic_parts.json` válidos; `0` archivos `roles.copy.json`, `0` módulos `@ts-nocheck` en `src/scripts/`.
+1. **Paridad de catálogo y cero debris:** `data/roles.json`, `data/quick_checkout_Catalog.json` (23 SKUs: 19 stock/fabricación + 4 `"Bajo proyecto · Durango"`), y `data/atomic_parts.json` válidos; `0` archivos `roles.copy.json`, `0` módulos `@ts-nocheck` en `src/scripts/`.
 2. **Cero fugas comerciales:** sin `$` seguido de cifras ni `margen:` en `data/`, `public/` o `src/`.
-3. **Cero marcas ajenas:** sin `warman`, `denver`, `metso`, `outotec`, ni transportistas (`castores`, `tresguerras`, `potosinos`).
-4. **Cero palabras prohibidas:** `taller`, `workshop`.
+3. **Cero marcas ajenas:** sin `warman`, `denver`, `metso`, `outotec`, ni terceros/OEMs vetados en `media_gallery_spec.json` ni `<= 2` familias por foto en `public/images/almacen/`.
+4. **Cero palabras prohibidas y pureza bilingüe ES/EN:** sin `taller`/`workshop`; sin `Class III Type A` ni `Piezas Atómicas` en rutas ES.
 5. **Cero promesas falsas ni SLA inflado:** sin `45 min`, `24/7`, `24-48h`, "servicio de emergencia", "2.5x garantizado".
-6. **Cascada CSS `@layer` y accesibilidad DOM:** todas las hojas CSS encapsuladas en `@layer` (salvo `.hidden`/`[hidden]` y `@media print`), `0` `<button>` anidados dentro de `<summary>`, `0` elementos `data-schema-*` ocultos (`hidden`/`sr-only`) y landmark `<main>` único por HTML.
-7. **Simetría bilingüe, cero fugas en `/en/` y `541` redirects 301:** `0` fugas ES ni enums internos crudos (`HOIST_REQUIRED`, `CAJA_CHICA_CFDI40`, `alto_cromo_cr27`, `PARO PROTEGIDO`, `PARO DE LÍNEA`, `USD/hora`) en `dist/en/` ni en snapshots hidratados; redirecciones 301 deterministas de 1 salto desde `data/redirects.csv` hacia `19` PDP ES/EN + `13` piezas atómicas ES/EN canónicas.
+6. **Cascada CSS `@layer` y accesibilidad DOM:** todas las hojas CSS encapsuladas en `@layer` (salvo `.hidden`/`[hidden]` y `@media print`), `:where(.smat-sf-card)` antes de `--horizontal`, `0` `<button>` anidados dentro de `<summary>`, `0` elementos `data-schema-*` ocultos (`hidden`/`sr-only`) y landmark `<main>` único por HTML.
+7. **Simetría bilingüe, cero fugas en `/en/`, `EMPTY_CART_GATE` y redirects 301:** `0` fugas ES ni enums internos crudos en `dist/en/`, `0` `FOLIO: SMAT-2026-RFQ` / `DESPACHO PRIORITARIO` en `/acuse/` vacío, y redirecciones 301 deterministas hacia `23` PDP ES/EN + `13` refacciones por código ES/EN canónicas.
 8. **NAP consistente** (Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166).
 9. **Cabeceras de seguridad** (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`) y vista imprimible del acuse (`A4`).
 10. **IDs críticos del cotizador** (`rfq`, `live-folio`, `wb-pdf-btn`, `wb-copy-btn`, `wb-submit-outbox-btn`, etc.) y payload ligero en `/cotizar/`.
@@ -50,7 +50,7 @@ Antes de cada publicación verifica que no reaparezcan:
 Desde `c:\Users\52331\Documents\Proyectos\smat\site`:
 
 ```powershell
-# Verificación completa unificada (19 WebP + 5 almacén + 541 redirects + tsc + astro check + build + 75 pruebas Node + 11 compuertas Rust)
+# Verificación completa unificada (23 SKUs / 69 WebP + 7 almacén + redirects + tsc + astro check + build + pruebas Node + 11 compuertas Rust)
 npm run preflight
 ```
 
@@ -58,9 +58,9 @@ Si deseas ejecutar cada etapa individualmente (en hosts de 8 GB RAM usar `-j 1` 
 
 ```powershell
 tsc --noEmit                                  # esperado: 0 errors
-npx astro check                               # esperado: 0 errors, 0 warnings
+npx astro check                               # esperado: 0 errors
 npx astro build                               # genera dist/
-npm test                                      # esperado: 75/75 PASS
+npm test                                      # esperado: 100% PASS
 npm run gate                                  # esperado: 11/11 PASS
 cargo test --manifest-path crates/smat-gate/Cargo.toml -j 1 -- --test-threads=1
 npm run preview                               # revisión visual en http://localhost:4321
@@ -109,7 +109,7 @@ Archivos que Cloudflare lee automáticamente desde `dist/`:
 curl.exe -s -I https://smatminerals.com | Select-String "x-frame-options|x-content-type-options|strict-transport-security|content-security-policy"
 
 # 2. Páginas clave devuelven 200 (y espejos retirados devuelven 301)
-foreach ($p in "/", "/cotizar/", "/bombeo/", "/catalogo/", "/productos/lote-humedo-554-bomba-ah/", "/catalogo/d075c21/", "/diagnostico/", "/nosotros/", "/flotacion/", "/filtracion/", "/en/", "/en/quote/", "/en/pumping/", "/en/catalog/") {
+foreach ($p in "/", "/cotizar/", "/bombeo/", "/catalogo/", "/productos/lote-humedo-554-bomba-ah/", "/productos/quebradora-quijada-cono-proyecto/", "/catalogo/d075c21/", "/diagnostico/", "/nosotros/", "/flotacion/", "/filtracion/", "/en/", "/en/quote/", "/en/pumping/", "/en/catalog/") {
   "{0} -> {1}" -f $p, (curl.exe -s -o NUL -w "%{http_code}" "https://smatminerals.com$p")
 }
 ```

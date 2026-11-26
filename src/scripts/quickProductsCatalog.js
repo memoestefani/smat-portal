@@ -122,6 +122,13 @@ const STOCK_REGIME_LABELS = Object.freeze({
     badgeEn: 'Made to Order · Durango',
     leadTimeDaysRange: [28, 45],
     advancePaymentRequiredPct: 50
+  },
+  bajo_proyecto: {
+    code: 'bajo_proyecto',
+    badgeEs: 'Bajo proyecto · Durango',
+    badgeEn: 'Project Order · Durango',
+    leadTimeDaysRange: [30, 60],
+    advancePaymentRequiredPct: 50
   }
 });
 
@@ -237,6 +244,10 @@ export function getQuickProductsCatalog() {
       ...sku,
       id: sku.id || sku.sku_id,
       sku_id: sku.sku_id || sku.id,
+      short_title_es: sku.short_title_es || sku.title_es,
+      short_title_en: sku.short_title_en || sku.title_en,
+      compat_short_es: sku.compat_short_es || sku.oem_cross_ref,
+      compat_short_en: sku.compat_short_en || sku.oem_cross_ref,
       atomic_codes: resolvedCodes,
       linked_atomic_codes: resolvedCodes,
       gallery_webp: Array.isArray(sku.gallery_webp) && sku.gallery_webp.length > 0
@@ -396,7 +407,7 @@ export function verifyCatalogReferentialIntegrity() {
     valid:
       orphanCodes.length === 0 &&
       nonPumpContamination.length === 0 &&
-      quickCheckoutCatalog.length === 19 &&
+      quickCheckoutCatalog.length === 23 &&
       atomicPartsCatalog.length === 13 &&
       coveredPartNumbers.size === 13,
     skuCount: quickCheckoutCatalog.length,

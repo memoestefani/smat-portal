@@ -28,7 +28,9 @@
     "physical_audit_date": "2026-11-10",
     "warehouse_total_mxn": 1646850,
     "warehouse_total_units": 383,
-    "photo_webp": "/images/partes/d3147.webp"
+    "photo_webp": "/images/partes/d3147.webp",
+    "metallurgy_es": "Alto Cromo A05 (27% Cr, ASTM A532 Clase III Tipo A)",
+    "metallurgy_en": "High Chrome A05 (27% Cr, ASTM A532 Class III Type A)"
   },
   {
     "code": "e4147",
@@ -59,7 +61,9 @@
     "physical_audit_date": "2026-11-10",
     "warehouse_total_mxn": 1646850,
     "warehouse_total_units": 383,
-    "photo_webp": "/images/partes/e4147.webp"
+    "photo_webp": "/images/partes/e4147.webp",
+    "metallurgy_es": "Alto Cromo A05 (27% Cr, ASTM A532 Clase III Tipo A)",
+    "metallurgy_en": "High Chrome A05 (27% Cr, ASTM A532 Class III Type A)"
   },
   {
     "code": "f6147",
@@ -90,7 +94,9 @@
     "physical_audit_date": "2026-11-10",
     "warehouse_total_mxn": 1646850,
     "warehouse_total_units": 383,
-    "photo_webp": "/images/partes/f6147.webp"
+    "photo_webp": "/images/partes/f6147.webp",
+    "metallurgy_es": "Alto Cromo A05 (27% Cr, ASTM A532 Clase III Tipo A)",
+    "metallurgy_en": "High Chrome A05 (27% Cr, ASTM A532 Class III Type A)"
   },
   {
     "code": "dam028",
@@ -121,7 +127,9 @@
     "physical_audit_date": "2026-11-10",
     "warehouse_total_mxn": 1646850,
     "warehouse_total_units": 383,
-    "photo_webp": "/images/partes/dam028.webp"
+    "photo_webp": "/images/partes/dam028.webp",
+    "metallurgy_es": "Alto Cromo A05 (27% Cr, ASTM A532 Clase III Tipo A)",
+    "metallurgy_en": "High Chrome A05 (27% Cr, ASTM A532 Class III Type A)"
   },
   {
     "code": "eam028",
@@ -152,13 +160,15 @@
     "physical_audit_date": "2026-11-10",
     "warehouse_total_mxn": 1646850,
     "warehouse_total_units": 383,
-    "photo_webp": "/images/partes/eam028.webp"
+    "photo_webp": "/images/partes/eam028.webp",
+    "metallurgy_es": "Alto Cromo A05 (27% Cr, ASTM A532 Clase III Tipo A)",
+    "metallurgy_en": "High Chrome A05 (27% Cr, ASTM A532 Class III Type A)"
   },
   {
     "code": "e4083",
     "part_number": "E4083",
     "frame": "6x4",
-    "name_es": "Cuello de Succión (Throatbush) A05 para Bomba 6x4",
+    "name_es": "Cuello de Succión A05 para Bomba 6x4",
     "name_en": "High Chrome A05 Throatbush for 6x4 Pump",
     "type_es": "Cuello Frontal de Succión de Desgaste",
     "type_en": "Front Suction Wear Throatbush",
@@ -169,7 +179,7 @@
     "impeller_diameter_mm": 380,
     "max_particle_mm": 45,
     "station_number": 3,
-    "assembly_order": "11. Cuello de Succión Cónico Throatbush (Estación 03 / Calibración 05)",
+    "assembly_order": "11. Cuello de Succión Cónico (Estación 03 / Calibración 05)",
     "wet_end_kit_ratio": "5:5:4",
     "niosh_handling_mode": "HOIST_REQUIRED",
     "circuit_es": "Succión de bombas 6x4 en molienda, clasificación a ciclones y transferencia de colas",
@@ -183,7 +193,9 @@
     "physical_audit_date": "2026-11-10",
     "warehouse_total_mxn": 1646850,
     "warehouse_total_units": 383,
-    "photo_webp": "/images/partes/e4083.webp"
+    "photo_webp": "/images/partes/e4083.webp",
+    "metallurgy_es": "Alto Cromo A05 (27% Cr, ASTM A532 Clase III Tipo A)",
+    "metallurgy_en": "High Chrome A05 (27% Cr, ASTM A532 Class III Type A)"
   },
   {
     "code": "d075c21",
@@ -222,13 +234,15 @@
     "physical_audit_date": "2026-11-10",
     "warehouse_total_mxn": 1646850,
     "warehouse_total_units": 383,
-    "photo_webp": "/images/partes/d075c21.webp"
+    "photo_webp": "/images/partes/d075c21.webp",
+    "metallurgy_es": "Sustrato Acero Inoxidable 420 + Recubrimiento HVOF WC-10Co-4Cr / Cerámica C21",
+    "metallurgy_en": "420 Stainless Steel Substrate + HVOF WC-10Co-4Cr / Ceramic C21 Armor"
   },
   {
     "code": "dam005",
     "part_number": "DAM005",
     "frame": "6x4",
-    "name_es": "Cartucho de Rodamientos Completo (Bearing Assembly) 6x4",
+    "name_es": "Cartucho de Rodamientos Completo 6x4",
     "name_en": "Complete Cartridge Bearing Assembly 6x4",
     "type_es": "Sub-ensamble Mecánico de Soporte y Eje ISO 281",
     "type_en": "Mechanical Shaft & Bearing Housing Sub-assembly ISO 281",
@@ -249,7 +263,7 @@
     "diagram_id": "soporte",
     "circuit_es": "Extremo motriz de bombas 6x4 con ajuste axial micrométrico",
     "circuit_en": "Drive end of 6x4 slurry pumps with micrometer axial clearance adjustment",
-    "fit_guarantee_es": "Intercambiabilidad drop-in en cuna estándar verificada antes de embarque desde Durango.",
+    "fit_guarantee_es": "Intercambiabilidad directa 1:1 en cuna estándar verificada antes de embarque desde Durango.",
     "fit_guarantee_en": "Drop-in interchangeability in standard base frame verified prior to shipping from Durango.",
     "summary_es": "Cartucho de rodamientos de rodillos cónicos en arreglo espalda con espalda (ISO 281) sellado con laberinto purgante para resistir cargas radiales severas en transmisión por bandas V.",
     "summary_en": "Tapered roller bearing cartridge in back-to-back arrangement (ISO 281) sealed with grease-purged labyrinths to withstand severe V-belt radial loads.",
@@ -258,13 +272,15 @@
     "physical_audit_date": "2026-11-10",
     "warehouse_total_mxn": 1646850,
     "warehouse_total_units": 383,
-    "photo_webp": "/images/partes/dam005.webp"
+    "photo_webp": "/images/partes/dam005.webp",
+    "metallurgy_es": "Acero Aleado SAE 4140 + Hierro Dúctil GGG40 + Sellos de Laberinto Purgante",
+    "metallurgy_en": "SAE 4140 Alloy Steel + GGG40 Ductile Iron + Grease-Purged Labyrinth Seals"
   },
   {
     "code": "e4132",
     "part_number": "E4132",
     "frame": "6x4",
-    "name_es": "Forro de Plato Trasero (FPL Liner) en Elastómero R55 para 6x4",
+    "name_es": "Forro de Plato Trasero (FPL) en Elastómero R55 para 6x4",
     "name_en": "Frame Plate Liner Insert (FPL) in R55 Elastomer for 6x4",
     "type_es": "Revestimiento Posterior de Cámara Húmeda",
     "type_en": "Rear Wet-End Chamber Liner Insert",
@@ -294,13 +310,15 @@
     "physical_audit_date": "2026-11-10",
     "warehouse_total_mxn": 1646850,
     "warehouse_total_units": 383,
-    "photo_webp": "/images/partes/e4132.webp"
+    "photo_webp": "/images/partes/e4132.webp",
+    "metallurgy_es": "Elastómero de Caucho Natural Vulcanizado R55 (Shore A 55 ± 5)",
+    "metallurgy_en": "Vulcanized R55 Natural Rubber Elastomer (Shore A 55 ± 5)"
   },
   {
     "code": "d3110",
     "part_number": "D3110",
     "frame": "4x3",
-    "name_es": "Voluta de Revestimiento (Volute Liner) Cr27 A05 para Bomba 4x3",
+    "name_es": "Voluta de Revestimiento Cr27 A05 para Bomba 4x3",
     "name_en": "High Chrome A05 Volute Liner for 4x3 Pump",
     "type_es": "Carcasa Interior Espiral de Contención Hidráulica",
     "type_en": "Spiral Inner Hydraulic Containment Volute Liner",
@@ -330,7 +348,9 @@
     "physical_audit_date": "2026-11-10",
     "warehouse_total_mxn": 1646850,
     "warehouse_total_units": 383,
-    "photo_webp": "/images/partes/d3110.webp"
+    "photo_webp": "/images/partes/d3110.webp",
+    "metallurgy_es": "Alto Cromo A05 (27% Cr, ASTM A532 Clase III Tipo A)",
+    "metallurgy_en": "High Chrome A05 (27% Cr, ASTM A532 Class III Type A)"
   },
   {
     "code": "d4018",
@@ -348,7 +368,7 @@
     "max_particle_mm": 45,
     "wall_thickness_mm": 30,
     "station_number": 3,
-    "assembly_order": "11. Plato de Succión / Throatbush (Estación 03)",
+    "assembly_order": "11. Plato de Succión (Estación 03)",
     "wet_end_kit_ratio": "5:5:4",
     "niosh_handling_mode": "HOIST_REQUIRED",
     "kit_ids": [
@@ -366,13 +386,15 @@
     "physical_audit_date": "2026-11-10",
     "warehouse_total_mxn": 1646850,
     "warehouse_total_units": 383,
-    "photo_webp": "/images/partes/d4018.webp"
+    "photo_webp": "/images/partes/d4018.webp",
+    "metallurgy_es": "Alto Cromo A05 (27% Cr, ASTM A532 Clase III Tipo A)",
+    "metallurgy_en": "High Chrome A05 (27% Cr, ASTM A532 Class III Type A)"
   },
   {
     "code": "d4028",
     "part_number": "D4028",
     "frame": "6x4",
-    "name_es": "Expulsor Dinámico Seco (Dry Expeller) Cr27 A05 para 6x4",
+    "name_es": "Expulsor Dinámico Seco Cr27 A05 para 6x4",
     "name_en": "High Chrome A05 Dynamic Dry Expeller for 6x4",
     "type_es": "Turbina Secundaria de Sellado Centrífugo en Seco",
     "type_en": "Secondary Dry Centrifugal Sealing Expeller Vane Wheel",
@@ -402,13 +424,15 @@
     "physical_audit_date": "2026-11-10",
     "warehouse_total_mxn": 1646850,
     "warehouse_total_units": 383,
-    "photo_webp": "/images/partes/d4028.webp"
+    "photo_webp": "/images/partes/d4028.webp",
+    "metallurgy_es": "Alto Cromo A05 (27% Cr, ASTM A532 Clase III Tipo A)",
+    "metallurgy_en": "High Chrome A05 (27% Cr, ASTM A532 Class III Type A)"
   },
   {
     "code": "d4029",
     "part_number": "D4029",
     "frame": "6x4",
-    "name_es": "Cámara y Anillo Expulsor (Expeller Ring) Cr27 A05 para 6x4",
+    "name_es": "Cámara y Anillo Expulsor Cr27 A05 para 6x4",
     "name_en": "High Chrome A05 Expeller Ring & Chamber for 6x4",
     "type_es": "Cámara Estática de Contención de Sello Centrífugo",
     "type_en": "Static Centrifugal Seal Containment Ring",
@@ -438,6 +462,8 @@
     "physical_audit_date": "2026-11-10",
     "warehouse_total_mxn": 1646850,
     "warehouse_total_units": 383,
-    "photo_webp": "/images/partes/d4029.webp"
+    "photo_webp": "/images/partes/d4029.webp",
+    "metallurgy_es": "Alto Cromo A05 (27% Cr, ASTM A532 Clase III Tipo A)",
+    "metallurgy_en": "High Chrome A05 (27% Cr, ASTM A532 Class III Type A)"
   }
 ]

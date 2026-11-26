@@ -579,11 +579,12 @@ test('V53-T1 Ola C1: Único <main>, Formateo Humano, Zero Hardcodes SSR y <dialo
     assert.equal(/<main\b/i.test(content), false, `${rel} no debe introducir <main> anidado dentro de BaseLayout`);
   }
 
-  // 3. Separador tipográfico después de #wb-jrp-window-days en fichas [slug] / ProductDetailIsland
+  // 3. Separador tipográfico después de #wb-jrp-window-days en fichas [slug] / ProductDetailIsland + pdpBuyBoxController
   const pdpIslandSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/ProductDetailIsland.astro'), 'utf8');
+  const pdpCtrlSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/pdpBuyBoxController.js'), 'utf8');
   for (const slugRel of ['src/pages/productos/[slug].astro', 'src/pages/en/products/[slug].astro']) {
     const slugSrc = fs.readFileSync(path.join(SITE_ROOT, slugRel), 'utf8');
-    const combinedSlugSrc = `${slugSrc}\n${pdpIslandSrc}`;
+    const combinedSlugSrc = `${slugSrc}\n${pdpIslandSrc}\n${pdpCtrlSrc}`;
     assert.ok(combinedSlugSrc.includes("insertAdjacentText('afterend', ' · ')"), `${slugRel} / ProductDetailIsland debe insertar ' · ' tras #wb-jrp-window-days`);
   }
 

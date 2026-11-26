@@ -48,13 +48,14 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
       </p>
     </div>
     <img
-      src="/images/almacen/almacen-bomba-6x4-dah.webp"
-      alt={isEs ? 'Almacén Central SMAT Durango' : 'SMAT Durango Central Warehouse'}
+      src="/images/almacen/almacen-patio-cotizador.webp"
+      alt={isEs ? 'Embarque industrial SMAT Durango en patio' : 'SMAT Durango freight staging yard'}
       width="144"
       height="108"
       loading="eager"
       decoding="async"
-      class="wb-header-durango-thumb"
+      class="wb-header-durango-thumb hidden"
+      data-wb-empty-hide="1"
     />
   </section>
 
@@ -85,10 +86,63 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
           <h2>{isEs ? 'Partidas en tu Carrito' : 'Items in Your Requisition'}</h2>
         </div>
 
-        <div class="smat-cta-row">
-          <button type="button" id="wb-open-bom-modal-btn" class="btn btn-outline smat-nav-cta">
-            {isEs ? 'Importar lista Excel / SAP' : 'Import Excel / SAP List'}
-          </button>
+        <div id="wb-empty-starter-card" data-wb-empty-starter="1" class="wb-empty-starter-card">
+          <p class="wb-empty-starter-lead">
+            {isEs
+              ? 'Tu carrito está vacío. Explora el catálogo con fotos reales, agrega uno de los SKUs más solicitados o importa tu lista Excel/SAP:'
+              : 'Your requisition tray is empty. Browse our photo catalog, add a top-selling SKU below, or import your Excel/SAP list:'}
+          </p>
+          <div class="smat-cta-row">
+            <a href={isEs ? '/catalogo/' : '/en/catalog/'} class="btn btn-primary smat-buy-cta smat-tap-btn">
+              {isEs ? 'Explorar catálogo con fotos →' : 'Browse catalog with photos →'}
+            </a>
+            <button type="button" id="wb-open-bom-modal-btn" class="btn btn-outline smat-nav-cta">
+              {isEs ? 'Importar lista Excel / SAP' : 'Import Excel / SAP List'}
+            </button>
+          </div>
+          <div class="wb-quick-popular-strip" aria-label={isEs ? 'Accesos rápidos a refacciones frecuentes' : 'Quick popular spares'}>
+            <span class="wb-quick-popular-label">{isEs ? 'Más solicitados:' : 'Popular spares:'}</span>
+            <button
+              type="button"
+              class="wb-quick-sku-btn"
+              data-quick-tray-add="SMAT-PUMP-IMP-AH"
+              data-add-tray-sku="SMAT-PUMP-IMP-AH"
+              data-sku-title={isEs ? 'Impulsor Cerrado 5 Álabe A05 Serie AH' : '5-Vane Closed Impeller A05 AH Series'}
+              data-sku-material="A05"
+              data-sku-regime="hay"
+              data-sku-mass="68"
+            >+ Impulsor AH Cr27</button>
+            <button
+              type="button"
+              class="wb-quick-sku-btn"
+              data-quick-tray-add="SMAT-PUMP-WETKIT-554"
+              data-add-tray-sku="SMAT-PUMP-WETKIT-554"
+              data-sku-title={isEs ? 'Lote Húmedo 5-5-4 Serie AH' : '5-5-4 Wet-End Lot AH Series'}
+              data-sku-material="A05"
+              data-sku-regime="hay"
+              data-sku-mass="202"
+            >+ Lote Húmedo 5-5-4</button>
+            <button
+              type="button"
+              class="wb-quick-sku-btn"
+              data-quick-tray-add="SMAT-CYC-D6-D20"
+              data-add-tray-sku="SMAT-CYC-D6-D20"
+              data-sku-title={isEs ? 'Hidrociclón y Boquillas SiC D6–D20' : 'Hydrocyclone & SiC Spigots D6–D20'}
+              data-sku-material="SiC"
+              data-sku-regime="hay"
+              data-sku-mass="45"
+            >+ Hidrociclón D6–D20</button>
+            <button
+              type="button"
+              class="wb-quick-sku-btn"
+              data-quick-tray-add="SMAT-LAB-MARCY-1000"
+              data-add-tray-sku="SMAT-LAB-MARCY-1000"
+              data-sku-title={isEs ? 'Balanza Marcy con Vaso 1000 mL' : 'Marcy Pulp Density Scale 1000 mL'}
+              data-sku-material="INOX"
+              data-sku-regime="hay"
+              data-sku-mass="3.5"
+            >+ Balanza Marcy</button>
+          </div>
         </div>
 
         <FastLaneBomBar lang={lang} />
@@ -100,7 +154,7 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
         </div>
 
         <div class="smat-cta-row smat-mt-sm">
-          <button type="button" class="btn btn-primary smat-buy-cta" data-qw-next-step="2">
+          <button type="button" class="btn btn-primary smat-buy-cta" data-qw-next-step="2" disabled aria-disabled="true">
             {isEs ? 'Continuar con mis datos →' : 'Continue to Contact & Mine Site →'}
           </button>
         </div>
@@ -313,6 +367,49 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
       width: 120px;
       height: 90px;
       object-fit: cover;
+    }
+    .wb-empty-starter-card {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 0.95rem 1.05rem;
+      margin-bottom: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+    .wb-empty-starter-lead {
+      margin: 0;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: #1e293b;
+      font-weight: 500;
+    }
+    .wb-quick-popular-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .wb-quick-popular-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #475569;
+    }
+    .wb-quick-sku-btn {
+      min-height: 44px;
+      padding: 0.35rem 0.7rem;
+      border-radius: 9999px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .wb-quick-sku-btn:hover {
+      border-color: #7c2d12;
+      color: #7c2d12;
     }
   }
 </style>

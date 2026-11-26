@@ -12,7 +12,27 @@ const ssrEmptyVm = buildAcuseViewModel({ lifecycleState: 'EMPTY', items: [], loc
 
 <section class="ack-main" data-island-standalone="acuseSheet" data-lang={lang}>
   <div class="container ack-container">
-    <div class="requisition-sheet" id="print-sheet">
+    <div id="acuse-empty-state-card" data-acuse-empty-card="1" class="acuse-empty-state-card">
+      <span class="acuse-empty-eyebrow">{isEs ? 'REQUISICIÓN B2B SMAT DURANGO' : 'SMAT DURANGO B2B REQUISITION'}</span>
+      <h1 id="acuse-empty-heading" class="acuse-empty-heading">
+        {isEs ? 'Aún no has generado una requisición' : "You haven't generated a requisition yet"}
+      </h1>
+      <p class="acuse-empty-lead">
+        {isEs
+          ? 'Agrega refacciones con fotografía real en el catálogo o arma tu solicitud en el cotizador para generar aquí tu acuse formal A4 y descarga para SAP/Excel.'
+          : 'Add spare parts from the photo catalog or build your request in the B2B quote wizard to generate your printable A4 requisition receipt and SAP/Excel export here.'}
+      </p>
+      <div class="smat-cta-row">
+        <a href={isEs ? '/catalogo/' : '/en/catalog/'} class="btn btn-primary smat-buy-cta smat-tap-btn">
+          {isEs ? 'Explorar catálogo con fotos →' : 'Browse catalog with photos →'}
+        </a>
+        <a href={isEs ? '/cotizar/#rfq' : '/en/quote/#rfq'} class="btn btn-outline smat-nav-cta smat-tap-btn">
+          {isEs ? 'Abrir cotizador B2B →' : 'Open B2B Quote Wizard →'}
+        </a>
+      </div>
+    </div>
+
+    <div class="requisition-sheet hidden" id="print-sheet">
       <div class="sheet-header">
         <div class="company-brand">
           <span class="brand-logo-text">SMAT MINERALS</span>
@@ -39,9 +59,9 @@ const ssrEmptyVm = buildAcuseViewModel({ lifecycleState: 'EMPTY', items: [], loc
       <div class="sheet-divider"></div>
 
       <div class="sheet-title-bar">
-        <h1 class="acuse-sheet-h1" id="dossier-title">
+        <h2 class="acuse-sheet-h1" id="dossier-title">
           {isEs ? 'ACUSE FORMAL DE SOLICITUD DE COTIZACIÓN TÉCNICA' : 'FORMAL ENGINEERING REQUISITION & QUOTATION RECEIPT'}
-        </h1>
+        </h2>
         <span class="badge-sla" id="dossier-order-code" data-hash-algo="fnv1a">
           {ssrEmptyVm.orderCodeLabel}
         </span>
@@ -189,9 +209,7 @@ const ssrEmptyVm = buildAcuseViewModel({ lifecycleState: 'EMPTY', items: [], loc
             ? 'Esta propuesta técnica y su respaldo operativo son válidos para componentes inspeccionados y despachados en Almacén Central SMAT Durango (Incoterms EXW / DAP Durango • UNSPSC 40151500 / 20121500 / 40161500 / 41111500 • Certificación de Colada ASTM A532 Cr27 HRC ≥ 58). Equipos y paquetes acoplados completos se configuran bajo pedido según variables de pulpa del cliente; refacciones de desgaste comunes en rotación continua de inventario.'
             : 'This technical proposal and operational backing are valid for components inspected and dispatched from Durango Central Warehouse (Incoterms EXW / DAP Durango • UNSPSC 40151500 / 20121500 / 40161500 / 41111500 • ASTM A532 Cr27 Melt Cert HRC ≥ 58). Complete equipment and coupled packages are built-to-order based on customer slurry variables; common wear parts maintain continuous inventory rotation.'}
         </div>
-        <pre id="sap-plaintext-block" data-hash-algo="fnv1a" class="acuse-sap-pre">
-          {isEs ? 'FOLIO: SMAT-2026-RFQ | FOLIO DE VERIFICACIÓN TÉCNICA' : 'FOLIO: SMAT-2026-RFQ | TECHNICAL VERIFICATION FOLIO'}
-        </pre>
+        <pre id="sap-plaintext-block" data-hash-algo="fnv1a" class="acuse-sap-pre">{ssrEmptyVm.sapPreviewText}</pre>
         <details class="acuse-payload-details" id="acuse-full-payload-details">
           <summary class="acuse-payload-summary">
             {isEs
@@ -219,7 +237,7 @@ const ssrEmptyVm = buildAcuseViewModel({ lifecycleState: 'EMPTY', items: [], loc
       </div>
     </div>
 
-    <div class="screen-actions no-print">
+    <div class="screen-actions no-print hidden" id="acuse-screen-actions">
       <button type="button" class="btn btn-primary btn-print" id="print-btn" onclick="window.print()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="acuse-btn-svg"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
         {isEs ? 'Imprimir / Guardar en PDF (SAP / Coupa)' : 'Print / Save as PDF (SAP / Coupa)'}
@@ -253,6 +271,10 @@ const ssrEmptyVm = buildAcuseViewModel({ lifecycleState: 'EMPTY', items: [], loc
 <style>
   .ack-main { padding: 3rem 1.5rem 5rem; background-color: var(--smat-bg-page); }
   .ack-container { max-width: 880px; margin: 0 auto; }
+  .acuse-empty-state-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: clamp(1.4rem, 3vw, 2.25rem); display: flex; flex-direction: column; gap: 0.85rem; box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06); }
+  .acuse-empty-eyebrow { font-family: var(--smat-font-mono, monospace); font-size: 0.74rem; font-weight: 800; color: #7c2d12; letter-spacing: 0.04em; }
+  .acuse-empty-heading { margin: 0; font-family: var(--smat-font-editorial); font-size: clamp(1.35rem, 2.8vw, 1.85rem); line-height: 1.2; color: #0f172a; }
+  .acuse-empty-lead { margin: 0; font-size: 0.96rem; line-height: 1.5; color: #334155; max-width: 64ch; }
   .requisition-sheet { background: #ffffff; color: #0f172a; border-radius: 8px; padding: 2.5rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   .sheet-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1.5rem; flex-wrap: wrap; }
   .company-brand { display: flex; flex-direction: column; gap: 0.15rem; }
@@ -303,7 +325,10 @@ const ssrEmptyVm = buildAcuseViewModel({ lifecycleState: 'EMPTY', items: [], loc
   :global(.acuse-cell-qty) { text-align: center; font-weight: 700; }
   :global(.acuse-cell-jrp) { font-family: monospace; font-size: 0.75rem; }
   :global(.acuse-empty-row) { color: #475569; font-size: 0.82rem; }
-  :global(.hidden) { display: none; }
+  :global(.hidden),
+  .acuse-empty-state-card.hidden,
+  .requisition-sheet.hidden,
+  .screen-actions.hidden { display: none; }
   @media (max-width: 640px) {
     .ack-main { padding: 0.65rem 0.5rem 2rem; }
     .requisition-sheet { padding: 0.85rem; }

@@ -66,15 +66,15 @@ test('V70-01: 20 rutas espejo y 4 islands redundantes retirados con cobertura 30
   }
 });
 
-test('V70-02: Galería multiángulo WebP v7.0, 0 clones almacen/productos, 13 partes y orden comercial', () => {
+test('V70-02: Galería multiángulo WebP v7.0+, 0 clones almacen/productos, 13 partes y orden comercial', () => {
   const manifest = JSON.parse(
     fs.readFileSync(path.join(SITE_ROOT, 'public/images/productos/manifest.json'), 'utf8')
   );
   assert.equal(manifest.schema_version, 'v7.0');
-  assert.equal(manifest.skus.length, 19);
-  assert.ok(manifest.total_product_slides >= 57, `Esperados >= 57 slides WebP, actual=${manifest.total_product_slides}`);
+  assert.equal(manifest.skus.length, 23);
+  assert.ok(manifest.total_product_slides >= 69, `Esperados >= 69 slides WebP, actual=${manifest.total_product_slides}`);
   assert.equal(manifest.cross_folder_sha256_clones, 0);
-  assert.equal(manifest.almacen_gallery.length, 5);
+  assert.ok(manifest.almacen_gallery.length >= 5);
   assert.equal(manifest.atomic_parts.length, 13);
   assert.ok(manifest.max_bytes <= 46080);
   assert.ok(manifest.min_hamming_distance >= 8);
@@ -90,7 +90,7 @@ test('V70-02: Galería multiángulo WebP v7.0, 0 clones almacen/productos, 13 pa
   const catalog = JSON.parse(
     fs.readFileSync(path.join(SITE_ROOT, 'data/quick_checkout_Catalog.json'), 'utf8')
   );
-  assert.equal(catalog.length, 19);
+  assert.equal(catalog.length, 23);
   for (let i = 0; i < 6; i += 1) {
     assert.equal(catalog[i].vertical, 'bombeo', `Posición ${i + 1} debe ser bombeo/5-5-4`);
   }

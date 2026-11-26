@@ -253,9 +253,7 @@ export function buildCmuPrioritySubjectLine(trayState = {}, telemetry = {}) {
   const state = getTrayState(trayState);
   const isEn = String(telemetry?.lang || (typeof document !== 'undefined' ? document.documentElement?.lang : '') || '').toLowerCase() === 'en';
   if (!state.items.length) {
-    return isEn
-      ? '[SMAT-DGO] [DRAFT — NO ACTIVE ITEMS | Add SKUs or paste parts list]'
-      : '[SMAT-DGO] [BORRADOR — SIN PARTIDAS | Agregue SKUs o pegue lista de partes]';
+    return '';
   }
   const skuCount = state.items.length;
   const isLineStop = state.criticalityMode === 'PARO_DE_LINEA' || state.items.some((i) => i.criticalityMode === 'PARO_DE_LINEA');

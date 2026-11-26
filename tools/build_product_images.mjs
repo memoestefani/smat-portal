@@ -103,7 +103,7 @@ async function processPhotoToWebp(sourceImgPath, spec, opts = {}) {
     .resize(targetWidth, targetHeight, {
       fit: spec.fit || 'cover',
       position: 'centre',
-      background: spec.background || { r: 248, g: 250, b: 252, alpha: 1 }
+      background: spec.background || { r: 241, g: 245, b: 249, alpha: 1 }
     })
     .toBuffer();
 
@@ -243,13 +243,19 @@ export async function generateAllProductWebpImages() {
 
   assertUniqueSourceSha256(primaryResults);
 
+  const expectedSkuCount = catalog.length;
   console.log(
-    `[build_product_images] ${primaryResults.length} SKUs / ${allProductSlides.length} slides WebP (640x480, max=${maxBytes} B <= ${MAX_WEBP_BYTES} B, srcSha=${uniqueSourceSha}/19, sha=${uniqueSha}/19, dHash=${uniqueDhash}/19, minHamming=${minHamming})`
+    `[build_product_images] ${primaryResults.length} SKUs / ${allProductSlides.length} slides WebP (640x480, max=${maxBytes} B <= ${MAX_WEBP_BYTES} B, srcSha=${uniqueSourceSha}/${expectedSkuCount}, sha=${uniqueSha}/${expectedSkuCount}, dHash=${uniqueDhash}/${expectedSkuCount}, minHamming=${minHamming})`
   );
 
-  if (uniqueSources !== 19 || uniqueSha !== 19 || uniqueDhash !== 19 || uniqueSourceSha !== 19) {
+  if (
+    uniqueSources !== expectedSkuCount ||
+    uniqueSha !== expectedSkuCount ||
+    uniqueDhash !== expectedSkuCount ||
+    uniqueSourceSha !== expectedSkuCount
+  ) {
     throw new Error(
-      `[E_IMAGE_COLLISION] Se requieren 19/19 fuentes, source_sha256, SHA-256 y dHash64 únicos (sources=${uniqueSources}, srcSha=${uniqueSourceSha}, sha=${uniqueSha}, dhash=${uniqueDhash})`
+      `[E_IMAGE_COLLISION] Se requieren ${expectedSkuCount}/${expectedSkuCount} fuentes, source_sha256, SHA-256 y dHash64 únicos (sources=${uniqueSources}, srcSha=${uniqueSourceSha}, sha=${uniqueSha}, dhash=${uniqueDhash})`
     );
   }
   if (minHamming < 8) {

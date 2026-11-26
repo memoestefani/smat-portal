@@ -169,9 +169,6 @@ const plantAreas = [
         <span class="section-eyebrow">{isEs ? 'INVENTARIO FÍSICO EN DURANGO' : 'IN-STOCK WAREHOUSE INVENTORY'}</span>
         <h2>{isEs ? 'Más solicitados · Despacho desde Durango' : 'Most requested · Dispatched from Durango'}</h2>
       </div>
-      <a href={catalogPath} class="showcase-cta-primary">
-        {isEs ? `Ver los ${quickCatalog.length} productos →` : `View all ${quickCatalog.length} products →`}
-      </a>
     </div>
 
     <div class="smat-sf-grid">
@@ -278,6 +275,9 @@ const plantAreas = [
   .home-avenues-summary { cursor: pointer; min-height: 48px; display: flex; align-items: center; font-weight: 700; font-size: 0.86rem; color: #0f172a; }
   .part-chip-strip { display: flex; flex-wrap: wrap; gap: 0.45rem; }
   .part-chip { display: inline-flex; align-items: center; min-height: 48px; min-width: 48px; padding: 0.45rem 0.85rem; border-radius: 8px; background: #f8fafc; border: 1px solid #cbd5e1; color: #0f172a; font-size: 0.8rem; font-weight: 700; text-decoration: none; }
+  @media (min-width: 769px) {
+    .dropin-verifier-solar { display: none; }
+  }
   @media (max-width: 900px) {
     .hero-home { padding: 0.35rem 0 0.35rem; }
     .smat-home-hero-grid { grid-template-columns: 1fr; gap: 0.3rem; }
@@ -285,7 +285,8 @@ const plantAreas = [
     .hero-badge-pill, .smat-home-lead, .smat-home-hero-thumbs, .home-omnibox-form .smat-field-label, .showcase-header .section-eyebrow { display: none; }
     .hero-home h1 { font-size: 1.08rem; line-height: 1.12; }
     .dropin-verifier-solar { padding: 0.3rem 0.45rem; }
-    .smat-home-hero-main-fig { max-height: 76px; aspect-ratio: 21 / 9; }
+    .home-omnibox-row { flex-wrap: nowrap; }
+    .smat-home-hero-main-fig { width: 100%; max-width: 100%; height: 104px; max-height: 104px; aspect-ratio: auto; }
     .hero-actions { display: grid; grid-template-columns: 1fr auto; gap: 0.4rem; }
     .hero-actions .btn-lg { min-height: 48px; padding: 0.35rem 0.65rem; font-size: 0.78rem; }
     .equipment-showcase-section { padding: 0.4rem 0 1.25rem; }

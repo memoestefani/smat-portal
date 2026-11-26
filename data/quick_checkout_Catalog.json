@@ -116,7 +116,11 @@
         "caption_es": "Inserto de plato posterior balanceado en lote 5-5-4",
         "caption_en": "Balanced frame plate liner insert for 5-5-4 wear lot"
       }
-    ]
+    ],
+    "short_title_es": "Lote Húmedo 5:5:4 Completo Cr27 / Hule R55 (Series AH)",
+    "short_title_en": "Complete 5:5:4 Wet-End Lot Cr27 / R55 Rubber (AH Series)",
+    "compat_short_es": "Bastidores 4x3, 6x4 y 8x6 · Acople 1:1",
+    "compat_short_en": "4x3, 6x4 & 8x6 Horizontal Frames · 1:1 Drop-In"
   },
   {
     "id": "SMAT-PUMP-IMP-AH",
@@ -228,7 +232,11 @@
         "caption_es": "Opción elastomérica / recubrimiento para pulpa fina",
         "caption_en": "Elastomer molded option for fine abrasive slurries"
       }
-    ]
+    ],
+    "short_title_es": "Impulsor Cerrado 5 Álabes A05 (Cr27) / R55 · Serie AH",
+    "short_title_en": "Closed 5-Vane Impeller A05 (27% Cr) / R55 · AH Series",
+    "compat_short_es": "E4147 / D3147 / F6147 · Series 4x3, 6x4, 8x6",
+    "compat_short_en": "E4147 / D3147 / F6147 · 4x3, 6x4, 8x6 Frames"
   },
   {
     "id": "SMAT-PUMP-LINERS-AH",
@@ -258,7 +266,7 @@
     "stock_regime": "hay",
     "availability_regime": "stock_durango",
     "gate_lock": "G1",
-    "title_es": "Cuello de Succión (Throatbush), Platos de Desgaste (FPL Insert) y Voluta en Cr27 / Hule R55",
+    "title_es": "Cuello de Succión, Platos de Desgaste (FPL) y Voluta en Cr27 / Hule R55",
     "title_en": "Suction Throatbush, Frame Plate Liner Inserts (FPL) & Volute Liners in Cr27 / R55 Rubber",
     "oem_cross_ref": "E4083 / D4018 / E4132 / D3110 (Forros Estáticos de Cámara Húmeda 4x3 y 6x4 Drop-In)",
     "atomic_codes": [
@@ -353,7 +361,11 @@
         "caption_es": "Revestimiento elastomérico moldeado con insertos",
         "caption_en": "Molded elastomer cover plate liner with steel inserts"
       }
-    ]
+    ],
+    "short_title_es": "Forros de Voluta, Succión y Plato Cr27 / R55 (5-5-4)",
+    "short_title_en": "Volute, Throatbush & FPL Insert Liners Cr27 / R55",
+    "compat_short_es": "E4083 / E4110 / E4041 · Acople 1:1 Serie AH",
+    "compat_short_en": "E4083 / E4110 / E4041 · 1:1 AH Frame Fit"
   },
   {
     "id": "SMAT-PUMP-EXPELLER-KIT",
@@ -481,7 +493,11 @@
         "caption_es": "Álabes centrífugos mecanizados de alto cromo A05",
         "caption_en": "Machined A05 high-chrome centrifugal expeller vanes"
       }
-    ]
+    ],
+    "short_title_es": "Kit Sello Seco: Expulsor + Anillo + Camisa HVOF",
+    "short_title_en": "Dry Centrifugal Seal Kit: Expeller + Ring + Sleeve",
+    "compat_short_es": "DAM028 / EAM028 / D4029 / D075C21 · Cero Dilución",
+    "compat_short_en": "DAM028 / EAM028 / D4029 / D075C21 · Zero-Water Seal"
   },
   {
     "id": "SMAT-PUMP-BRG-005M",
@@ -501,7 +517,7 @@
     "stock_regime": "hay",
     "availability_regime": "stock_durango",
     "gate_lock": "G2",
-    "title_es": "Cartucho de Rodamientos Completo (Bearing Assembly 005M) con Eje SAE 4140 y Sellos Laberinto",
+    "title_es": "Cartucho de Rodamientos Completo (Serie 005M) con Eje SAE 4140 y Sellos Laberinto",
     "title_en": "Complete Bearing Assembly Cartridge (005M) with SAE 4140 Shaft & Labyrinth Seals",
     "oem_cross_ref": "DAM005 / EAM005 / 005M (Estación 01 Extremo Motriz Drop-In con Programa Core Trade-In -22%)",
     "atomic_codes": [
@@ -586,7 +602,11 @@
         "caption_es": "Flechas templadas y roscadas de repuesto serie AH",
         "caption_en": "Hardened replacement alloy shafts for AH series pumps"
       }
-    ]
+    ],
+    "short_title_es": "Cartucho Rodamientos Completo 005M · Eje SAE 4140",
+    "short_title_en": "Complete Bearing Assembly Cartridge 005M · SAE 4140",
+    "compat_short_es": "DAM005M / EAM005M / FAM005M · Stock / Exchange",
+    "compat_short_en": "DAM005M / EAM005M / FAM005M · Outright / Trade-In"
   },
   {
     "id": "SMAT-COUPLED-PUMP-CYC",
@@ -699,7 +719,11 @@
         "caption_es": "Conjunto completo inspeccionado en patio de Durango",
         "caption_en": "Inspected heavy-duty slurry pump unit in Durango yard"
       }
-    ]
+    ],
+    "short_title_es": "Paquete Casado Bomba + Hidrociclón 5:5:4 (4x3–8x6)",
+    "short_title_en": "Coupled Slurry Pump + Hydrocyclone Package (4x3–8x6)",
+    "compat_short_es": "D10 / D15 / D20 · Corte P80 Estabilizado",
+    "compat_short_en": "D10 / D15 / D20 · Tight d50c Classification"
   },
   {
     "id": "SMAT-CYC-D6-D20",
@@ -820,7 +844,11 @@
         "caption_es": "Cuerpo modular con cono superior, medio e inferior y ápex",
         "caption_en": "Modular cyclone stack with upper/lower cones & apex"
       }
-    ]
+    ],
+    "short_title_es": "Hidrociclón Completo D6–D20 y Ápex / Vortex en SiC",
+    "short_title_en": "Complete Hydrocyclone D6–D20 & SiC Apex / Vortex",
+    "compat_short_es": "Carburo de Silicio (SiC) y PU · Series D6 a D20",
+    "compat_short_en": "Sintered SiC & PU Liners · D6 to D20 Series"
   },
   {
     "id": "SMAT-SCR-TH48-30",
@@ -919,7 +947,11 @@
         "caption_es": "Lote de refacciones y paneles modulares en tarima",
         "caption_en": "Palletized modular screening panels & inserts in warehouse"
       }
-    ]
+    ],
+    "short_title_es": "Malla Fina Poliuretano Alta Frecuencia TH48-30",
+    "short_title_en": "TH48-30 High-Frequency Fine Urethane Screen Panel",
+    "compat_short_es": "48\"×30\" · Alivio Anti-Cegamiento (85 Shore A)",
+    "compat_short_en": "48\"×30\" · Anti-Blinding Relief (85 Shore A)"
   },
   {
     "id": "SMAT-SCR-MOD-1X1",
@@ -1018,7 +1050,11 @@
         "caption_es": "Juego de repuestos de fijación para cubiertas modulares",
         "caption_en": "Replacement deck fastening pin and sleeve hardware set"
       }
-    ]
+    ],
+    "short_title_es": "Módulos Criba Poliuretano 1'×1' (Pin y Camisa)",
+    "short_title_en": "1'×1' Modular Polyurethane Screen Panels (Pin-Lock)",
+    "compat_short_es": "305×305 mm · Fijación Rápida Libre de Soldadura",
+    "compat_short_en": "305×305 mm · Weld-Free Pin & Sleeve Lock"
   },
   {
     "id": "SMAT-FILT-CLOTH-PLATE",
@@ -1152,7 +1188,11 @@
         "caption_es": "Cabeza hidráulica de cierre y banco de filtrado",
         "caption_en": "Hydraulic closing ram and filtrate manifold bank"
       }
-    ]
+    ],
+    "short_title_es": "Placas Polipropileno y Lonas Filtro Prensa (16 bar)",
+    "short_title_en": "16-Bar Polypropylene Filter Plates & Calendered Cloths",
+    "compat_short_es": "Marcos 800 a 1500 mm · Cámara y Membrana",
+    "compat_short_en": "800 to 1500 mm Frames · Chamber & Membrane"
   },
   {
     "id": "SMAT-FILT-SHIFTER-CHAIN",
@@ -1172,7 +1212,7 @@
     "stock_regime": "hay",
     "availability_regime": "stock_durango",
     "gate_lock": "G5",
-    "title_es": "Mecanismo Corre-Placas (Plate Shifter), Gatillos de Arrastre, Piñones y Cadenas para Filtro Prensa",
+    "title_es": "Mecanismo Corre-Placas, Gatillos de Arrastre, Piñones y Cadenas para Filtro Prensa",
     "title_en": "Filter Press Plate Shifter Mechanism, Catcher Pawls, Sprockets & Drive Chains",
     "oem_cross_ref": "SMAT-FILT-SHIFTER-CHAIN (Carro Corre-Placas Bidireccional + Cadenas Paso ANSI/ISO en Acero Tratado)",
     "atomic_codes": [],
@@ -1237,7 +1277,7 @@
       {
         "slot": "primary",
         "src": "/images/productos/mecanismo-plate-shifter-y-cadenas.webp",
-        "caption_es": "Mecanismo corre-placas (Plate Shifter) y cadena arrastre",
+        "caption_es": "Mecanismo corre-placas y cadena arrastre",
         "caption_en": "Automatic plate shifter carriage and roller chain drive"
       },
       {
@@ -1252,7 +1292,11 @@
         "caption_es": "Conjunto completo de riel, uñas y tensores de cadena",
         "caption_en": "Complete shifter rail, pawls and chain tension assembly"
       }
-    ]
+    ],
+    "short_title_es": "Corre-Placas Automático, Gatillos y Cadena (16 bar)",
+    "short_title_en": "Automatic Plate Shifter, Catcher Pawls & Drive Chain",
+    "compat_short_es": "Filtro Prensa 800–1500 mm · Repuesto Inmediato",
+    "compat_short_en": "800–1500 mm Filter Press · Ready Spares"
   },
   {
     "id": "SMAT-FLOT-MECH-18SP",
@@ -1282,7 +1326,7 @@
     "stock_regime": "se_fabrica",
     "availability_regime": "make_to_order",
     "gate_lock": "G4",
-    "title_es": "Mecanismo Suspendido de Flotación (#18 SP / #24 / #30) y Kit Rotor + Estator Drop-In en Poliuretano",
+    "title_es": "Mecanismo Suspendido de Flotación (#18 SP / #24 / #30) y Kit Rotor + Estator 1:1 en Poliuretano",
     "title_en": "Suspended Flotation Mechanism (#18 SP / #24 / #30) & Polyurethane Drop-In Rotor + Stator Kit",
     "oem_cross_ref": "FLOTDROPIN1P1 / 18SP (Árbol Motriz Suspendido y Rotor/Estator #18 SP, #24 y #30 Drop-In)",
     "atomic_codes": [],
@@ -1336,7 +1380,7 @@
         9000
       ]
     },
-    "summary_es": "Mecanismo suspendido completo y kit de reemplazo directo (Drop-In) de rotor estrella y difusor estatórico en poliuretano para celdas #18 SP, #24 y #30, sosteniendo la cinética de burbuja Sb ≥ 55 s⁻¹ sin cambiar el tanque.",
+    "summary_es": "Mecanismo suspendido completo y kit de reemplazo directo (Acople 1:1) de rotor estrella y difusor estatórico en poliuretano para celdas #18 SP, #24 y #30, sosteniendo la cinética de burbuja Sb ≥ 55 s⁻¹ sin cambiar el tanque.",
     "summary_en": "Complete suspended drive mechanism and direct drop-in polyurethane star rotor and stator hood kit for #18 SP, #24, and #30 flotation cells, sustaining bubble surface area flux Sb ≥ 55 s⁻¹ without tank replacement.",
     "warehouse_audit": {
       "physical_audit_date": "2026-11-10",
@@ -1366,7 +1410,11 @@
         "caption_es": "Cabezal reductor pesado, flecha vertical y volante de elevación",
         "caption_en": "Heavy-duty geared drive head, vertical shaft and lifting handwheel"
       }
-    ]
+    ],
+    "short_title_es": "Mecanismo de Flotación #18 SP / #24 y Kit Rotor PU",
+    "short_title_en": "Suspended Flotation Mechanism #18 SP / #24 & PU Rotor",
+    "compat_short_es": "Acople 1:1 Rotor-Estator en Poliuretano Antiabrasivo",
+    "compat_short_en": "Drop-In Abrasion Urethane Rotor-Stator Assembly"
   },
   {
     "id": "SMAT-LAB-MARCY-1000",
@@ -1490,7 +1538,11 @@
         "caption_es": "Equipo calibrado en mostrador listo para despacho",
         "caption_en": "Bench-calibrated unit ready for immediate dispatch"
       }
-    ]
+    ],
+    "short_title_es": "Balanza Marcy de Densidad de Pulpa + Vaso 1000 mL",
+    "short_title_en": "Marcy Pulp Density Scale with 1000 mL Calibrated Cup",
+    "compat_short_es": "Lectura Directa SG y % Sólidos en Campo / Lab",
+    "compat_short_en": "Direct SG & % Solids Reading · Lab / Mill"
   },
   {
     "id": "SMAT-LAB-VASO-1000",
@@ -1611,7 +1663,11 @@
         "caption_es": "Orificios de enrase exacto a 1,000 ml en borde superior",
         "caption_en": "Precision 1,000 ml overflow ports on upper rim"
       }
-    ]
+    ],
+    "short_title_es": "Vaso Calibrado Inox 304 / Acrílico 1000 mL Marcy",
+    "short_title_en": "1000 mL Calibrated 304 Stainless Cup for Marcy Scale",
+    "compat_short_es": "Tara 1000.0 g Verificada · Orificios de Enrase",
+    "compat_short_en": "Verified 1000.0 g Tare · Overflow Gauge Holes"
   },
   {
     "id": "SMAT-LAB-TAMIZ-E11",
@@ -1731,7 +1787,11 @@
         "caption_es": "Placa de identificación e integridad de soldadura en malla",
         "caption_en": "Serial identification plate and perimeter mesh solder"
       }
-    ]
+    ],
+    "short_title_es": "Tamices Certificados ASTM E11 8\" Inox (#100–#635)",
+    "short_title_en": "8\" ASTM E11 Certified Test Sieves (#100 to #635)",
+    "compat_short_es": "Serie Malla Fina ISO 3310 · Certificado por Tamiz",
+    "compat_short_en": "Fine Mesh Series ISO 3310 · NIST Traceable"
   },
   {
     "id": "SMAT-LAB-ROTAP-MECH",
@@ -1852,7 +1912,11 @@
         "caption_es": "Vista superior de malla tejida ASTM E11 de 8\" montada en aro",
         "caption_en": "Top view of 8-inch ASTM E11 woven wire sieve frame"
       }
-    ]
+    ],
+    "short_title_es": "Tamizador Mecánico Orbital con Martillo (Tamices 8\")",
+    "short_title_en": "Orbital Mechanical Sieve Shaker + Hammer (8\" Stack)",
+    "compat_short_es": "Torre ASTM E11 · Temporizador Digital Repetible",
+    "compat_short_en": "ASTM E11 Stack · Repeatable Timer & Tap Action"
   },
   {
     "id": "SMAT-LAB-PLATO-TENT",
@@ -1973,7 +2037,11 @@
         "caption_es": "Perfil cónico balanceado para lavado de muestra",
         "caption_en": "Balanced conical dish profile for assay washing"
       }
-    ]
+    ],
+    "short_title_es": "Plato de Tentadura Inox 304 · Control Metalúrgico",
+    "short_title_en": "304 Stainless Assay Panning Dish for Mill Control",
+    "compat_short_es": "Cono Balanceado con Riflas · Oro / Plata / Sulfuros",
+    "compat_short_en": "Balanced Riffle Cone · Gold, Silver & Sulfides"
   },
   {
     "id": "SMAT-LAB-PULV-DISC",
@@ -2076,7 +2144,11 @@
         "caption_es": "Unidad instalada en gabinete con acceso a cámara de discos",
         "caption_en": "Cabinet-mounted pulverizer with hinged grinding chamber"
       }
-    ]
+    ],
+    "short_title_es": "Pulverizador de Discos Lab y Platos en Alto Cromo",
+    "short_title_en": "Laboratory Disc Pulverizer & High-Chrome Plates",
+    "compat_short_es": "Malla -100 / -200 · Discos Estáticos y Giratorios",
+    "compat_short_en": "-100 / -200 Mesh · Static & Rotating Hard Plates"
   },
   {
     "id": "SMAT-LAB-FILTRO-BATCH",
@@ -2198,6 +2270,510 @@
         "src": "/images/productos/filtro-prensa-batch-laboratorio-v3.webp",
         "caption_es": "Detalle de válvula superior de aire comprimido y sello",
         "caption_en": "Top pneumatic air valve and chamber O-ring seal detail"
+      }
+    ],
+    "short_title_es": "Filtro Prensa Batch Lab 100 psi en Acero Inox 304",
+    "short_title_en": "100 psi Stainless Batch Pressure Filter (8 L Lab)",
+    "compat_short_es": "Bastidor de Volteo Ø 8\" · Desaguado Rápido Pulpa",
+    "compat_short_en": "Ø 8\" Tilting Frame · Fast Slurry Cake Dewatering"
+  },
+  {
+    "id": "SMAT-CRUSH-JAW-CONE",
+    "sku_id": "SMAT-CRUSH-JAW-CONE",
+    "legacy_sku_id": "SKU-QC-20",
+    "slug_es": "trituradora-quijada-cono-mn18",
+    "slug_en": "jaw-cone-crusher-mn18",
+    "aliases_es": [
+      "trituradora-quijada-mn18cr2",
+      "quebradora-quijada-mineria"
+    ],
+    "aliases_en": [
+      "jaw-crusher-mn18cr2-liners",
+      "cone-crusher-mantle-concave"
+    ],
+    "vertical": "clasificacion",
+    "avenue": "avenida_3_cribas_mallas",
+    "secondary_avenues": [],
+    "stock_regime": "bajo_proyecto",
+    "availability_regime": "project_order",
+    "gate_lock": "G3",
+    "short_title_es": "Trituradora Quijada / Cono y Muelas Mn18Cr2 (Proyecto)",
+    "short_title_en": "Jaw / Cone Crusher Assembly & Mn18Cr2 Wear Liners",
+    "compat_short_es": "PE / Cono HP-CS · Muelas, Cóncavos y Mantos Mn18Cr2",
+    "compat_short_en": "PE Jaw & Cone Series · Mn18Cr2 Jaws, Concaves & Mantles",
+    "title_es": "Trituradora de Quijada / Cono Hidráulico y Blindajes en Acero al Manganeso Mn18Cr2",
+    "title_en": "Heavy-Duty Jaw & Cone Crusher Assembly with Mn18Cr2 Manganese Wear Liners",
+    "oem_cross_ref": "Series PE 600×900 / 750×1060 y Conos HP-CS (Muelas, Mantos y Cóncavos Drop-In Mn18Cr2)",
+    "atomic_codes": [],
+    "linked_atomic_codes": [],
+    "coupled_pair_sku": "SMAT-SCR-TH48-30",
+    "reorder_window_days": 180,
+    "kit_id": 2,
+    "diagram_id": "urethane_screen_th48",
+    "secondary_diagram_id": "clasificacion",
+    "photo_webp": "/images/productos/trituradora-quijada-cono-mn18.webp",
+    "default_material": "A05",
+    "available_materials": [
+      "A05",
+      "A49"
+    ],
+    "config_options_es": [
+      {
+        "value": "A05",
+        "label": "MN18CR2 — Muelas, Cóncavos y Mantos en Acero al Manganeso ASTM A128 Gr. E1"
+      },
+      {
+        "value": "A49",
+        "label": "EQUIPO-COMPLETO — Unidad Trituradora Montada sobre Bastidor con Motor y Guardas"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "A05",
+        "label": "MN18CR2 — Jaws, Concaves & Mantles in ASTM A128 Gr. E1 Manganese Steel"
+      },
+      {
+        "value": "A49",
+        "label": "COMPLETE-UNIT — Skid-Mounted Crusher Package with Motor Base & Safety Guards"
+      }
+    ],
+    "mass_kg": 1850,
+    "hardness_spec": "Acero Austenítico al Manganeso Mn18Cr2 (Endurecible 220 → 520 HB en impacto, ASTM A128)",
+    "niosh_mode": "HOIST_REQUIRED",
+    "geometric_triplet_mm": {
+      "a_id_mm": 600,
+      "b_od_mm": 900,
+      "c_thickness_mm": 125,
+      "tolerance_std": "ISO 2768-m",
+      "label_es": "A: Boca 600 mm | B: Longitud 900 mm | C: Espesor Muela 125 mm",
+      "label_en": "A: Feed Gap 600 mm | B: Jaw Width 900 mm | C: Plate Thickness 125 mm"
+    },
+    "sat_tuple": {
+      "clave_prod_serv": "22101500",
+      "clave_unidad": "H87",
+      "uso_cfdi": "I04",
+      "fraccion_arancelaria": "8474.20.99.00"
+    },
+    "everyday_scale_es": "Ajuste CSS (Closed Side Setting) verificado con galga paso 0.76 mm para control de alimentación a molienda",
+    "everyday_scale_en": "Closed-Side Setting (CSS) shims checked to 0.76 mm gauge before ball mill circuit feeding",
+    "telemetry_hooks": {
+      "marcy_sg_range": [
+        2.6,
+        3.2
+      ],
+      "plitt_d50_um_range": [
+        9500,
+        38000
+      ],
+      "wear_life_hours_range": [
+        1200,
+        3200
+      ]
+    },
+    "summary_es": "Suministro bajo proyecto de trituradoras primarias de quijada, trituradores de cono y juegos de blindajes Mn18Cr2 verificados dimensionalmente contra plano de planta en Durango.",
+    "summary_en": "Project-engineered primary jaw crushers, hydraulic cone units, and Mn18Cr2 manganese wear liner sets dimensionally inspected in Durango against plant drawings.",
+    "warehouse_audit": {
+      "physical_audit_date": "2026-11-10",
+      "warehouse_total_mxn": 1646850,
+      "warehouse_total_units": 383,
+      "warehouse_active_sku_count": 35,
+      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
+      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
+      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/trituradora-quijada-cono-mn18.webp",
+        "caption_es": "Trituradora de quijada con volantes balanceados en montaje",
+        "caption_en": "Primary jaw crusher with balanced flywheels in shop bay"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/trituradora-quijada-cono-mn18-v2.webp",
+        "caption_es": "Muelas fijas y móviles en acero al manganeso Mn18Cr2",
+        "caption_en": "Mn18Cr2 manganese steel fixed and swing jaw plates"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/trituradora-quijada-cono-mn18-v3.webp",
+        "caption_es": "Cámara de trituración y blindajes laterales antiabrasivos",
+        "caption_en": "Crushing chamber and Mn18Cr2 cheek wear plates"
+      }
+    ]
+  },
+  {
+    "id": "SMAT-MILL-BALL-LINER",
+    "sku_id": "SMAT-MILL-BALL-LINER",
+    "legacy_sku_id": "SKU-QC-21",
+    "slug_es": "molino-bolas-forros-crmo",
+    "slug_en": "ball-mill-crmo-liners",
+    "aliases_es": [
+      "corazas-molino-bolas-crmo",
+      "forros-molino-mineria"
+    ],
+    "aliases_en": [
+      "ball-mill-crmo-shell-liners",
+      "ball-mill-trunnion-grates"
+    ],
+    "vertical": "clasificacion",
+    "avenue": "avenida_2_hidrociclones",
+    "secondary_avenues": [],
+    "stock_regime": "bajo_proyecto",
+    "availability_regime": "project_order",
+    "gate_lock": "G3",
+    "short_title_es": "Molino de Bolas, Corazas Cr-Mo y Trunnions (Proyecto)",
+    "short_title_en": "Ball Mill Shell Assembly, Cr-Mo Liners & Trunnions",
+    "compat_short_es": "Corazas Acero Cr-Mo (320–380 HB), Parrillas y Corona",
+    "compat_short_en": "Cr-Mo Lifter Liners (320–380 HB), Grates & Girth Gear",
+    "title_es": "Molino de Bolas Completo, Corazas Cr-Mo (ASTM A532 / ZG310) y Parrillas de Descarga",
+    "title_en": "Complete Ball Mill Assembly, Cr-Mo Shell Lifter Liners & Discharge Grates",
+    "oem_cross_ref": "Molinos de Bolas 5'×10' a 10'×16' (Corazas Wave / Lifter Cr-Mo, Parrillas y Trunnions Bajo Plano)",
+    "atomic_codes": [],
+    "linked_atomic_codes": [],
+    "coupled_pair_sku": "SMAT-CYC-D6-D20",
+    "reorder_window_days": 240,
+    "kit_id": 2,
+    "diagram_id": "cyclone_d6_d20",
+    "secondary_diagram_id": "clasificacion",
+    "photo_webp": "/images/productos/molino-bolas-forros-crmo.webp",
+    "default_material": "A05",
+    "available_materials": [
+      "A05",
+      "R55"
+    ],
+    "config_options_es": [
+      {
+        "value": "A05",
+        "label": "CR-MO-360HB — Juego de Corazas Elevadoras + Parrillas de Descarga en Acero Cr-Mo"
+      },
+      {
+        "value": "R55",
+        "label": "HIBRIDO-R55 — Revestimiento Combinado Hule Estructural + Insertos Cr-Mo / Proyecto"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "A05",
+        "label": "CR-MO-360HB — Full Set of Cr-Mo Steel Lifter Liners & Discharge Grates"
+      },
+      {
+        "value": "R55",
+        "label": "HYBRID-R55 — Rubber Shell Liners with Cr-Mo Lifter Inserts / Project Build"
+      }
+    ],
+    "mass_kg": 2400,
+    "hardness_spec": "Acero Aleado Cromo-Molibdeno (320–380 HB resistente al impacto, cero fractura frágil en caída de bola)",
+    "niosh_mode": "HOIST_REQUIRED",
+    "geometric_triplet_mm": {
+      "a_id_mm": 42,
+      "b_od_mm": 980,
+      "c_thickness_mm": 110,
+      "tolerance_std": "ISO 2768-m",
+      "label_es": "A: Barreno Ø 42 mm | B: Largo Coraza 980 mm | C: Espesor 110 mm",
+      "label_en": "A: Bolt Hole 42 mm | B: Liner Length 980 mm | C: Wave Thickness 110 mm"
+    },
+    "sat_tuple": {
+      "clave_prod_serv": "22101500",
+      "clave_unidad": "H87",
+      "uso_cfdi": "I04",
+      "fraccion_arancelaria": "8474.90.99.00"
+    },
+    "everyday_scale_es": "Cierre de juntas entre corazas menor a 0.76 mm (1 tarjeta ISO/IEC 7810) para evitar lavado abrasivo del casco",
+    "everyday_scale_en": "Shell liner inter-plate gap under 0.76 mm (1 ISO/IEC 7810 card) preventing abrasive shell wash",
+    "telemetry_hooks": {
+      "marcy_sg_range": [
+        1.65,
+        2.15
+      ],
+      "plitt_d50_um_range": [
+        74,
+        210
+      ],
+      "wear_life_hours_range": [
+        3600,
+        7200
+      ]
+    },
+    "summary_es": "Fabricación y suministro bajo proyecto de corazas en acero Cr-Mo, parrillas de descarga, tapas alimentadoras y conjuntos motrices para circuito de molienda húmeda.",
+    "summary_en": "Project-engineered Cr-Mo steel ball mill lifter liners, discharge grate plates, feed trunnions, and complete grinding assemblies.",
+    "warehouse_audit": {
+      "physical_audit_date": "2026-11-10",
+      "warehouse_total_mxn": 1646850,
+      "warehouse_total_units": 383,
+      "warehouse_active_sku_count": 35,
+      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
+      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
+      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/molino-bolas-forros-crmo.webp",
+        "caption_es": "Corazas Cr-Mo y parrillas de descarga inspeccionadas",
+        "caption_en": "Cr-Mo shell lifter liners and discharge grates staged in yard"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/molino-bolas-forros-crmo-v2.webp",
+        "caption_es": "Lote de revestimientos barrenados listos para montaje",
+        "caption_en": "Drilled ball mill shell liner batch ready for mill reline"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/molino-bolas-forros-crmo-v3.webp",
+        "caption_es": "Control dimensional de barrenos y altura de lifters",
+        "caption_en": "Dimensional bolt-pattern and lifter profile check"
+      }
+    ]
+  },
+  {
+    "id": "SMAT-THICK-MECH",
+    "sku_id": "SMAT-THICK-MECH",
+    "legacy_sku_id": "SKU-QC-22",
+    "slug_es": "mecanismo-espesador-puente-rastras",
+    "slug_en": "thickener-drive-bridge-rakes",
+    "aliases_es": [
+      "mecanismo-espesador-central",
+      "reductor-puente-espesador"
+    ],
+    "aliases_en": [
+      "thickener-center-drive-head",
+      "rake-lift-thickener-mechanism"
+    ],
+    "vertical": "filtracion",
+    "avenue": "avenida_5_filtracion",
+    "secondary_avenues": [],
+    "stock_regime": "bajo_proyecto",
+    "availability_regime": "project_order",
+    "gate_lock": "G5",
+    "short_title_es": "Mecanismo Espesador de Puente, Reductor y Levante",
+    "short_title_en": "Thickener Drive Head, Torque Reducer & Lift Bridge",
+    "compat_short_es": "Espesadores 6–24 m · Volante, Rastras y Deslode",
+    "compat_short_en": "6–24 m Thickeners · Torque Guard, Rakes & Underflow",
+    "title_es": "Mecanismo Central de Espesador con Puente Motriz, Corona Reductora y Sistema de Levante",
+    "title_en": "Center-Drive Thickener Mechanism with Bridge Frame, Bull Gear & Rake Lift System",
+    "oem_cross_ref": "Espesadores de Concentrado y Jales Ø 6 m a 24 m (Puente, Corona Dentada, Indicador de Torque y Rastras)",
+    "atomic_codes": [],
+    "linked_atomic_codes": [],
+    "coupled_pair_sku": "SMAT-FILT-CLOTH-PLATE",
+    "reorder_window_days": 360,
+    "kit_id": 4,
+    "diagram_id": "filter_press",
+    "secondary_diagram_id": "desaguado",
+    "photo_webp": "/images/productos/mecanismo-espesador-puente-rastras.webp",
+    "default_material": "A49",
+    "available_materials": [
+      "A49",
+      "PU"
+    ],
+    "config_options_es": [
+      {
+        "value": "A49",
+        "label": "PUENTE-REDUCTOR — Cabezal Motriz Completo + Volante de Levante + Corona SAE 4140"
+      },
+      {
+        "value": "PU",
+        "label": "REPUESTO-CORONA — Corona Dentada, Piñón, Rastras y Recubrimiento Anticorrosivo PU"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "A49",
+        "label": "BRIDGE-DRIVE — Complete Center Drive Head + Manual/Hydraulic Lift + Bull Gear"
+      },
+      {
+        "value": "PU",
+        "label": "GEAR-RAKE-KIT — Bull Gear, Pinion Shaft & Abrasion Coated Rake Arms"
+      }
+    ],
+    "mass_kg": 1120,
+    "hardness_spec": "Acero Estructural A36 con Corona SAE 4140 Cementada (58–60 HRC en flanco de diente)",
+    "niosh_mode": "HOIST_REQUIRED",
+    "geometric_triplet_mm": {
+      "a_id_mm": 220,
+      "b_od_mm": 1420,
+      "c_thickness_mm": 380,
+      "tolerance_std": "ISO 2768-m",
+      "label_es": "A: Ø Flecha 220 mm | B: Ø Corona 1420 mm | C: Carrera Levante 380 mm",
+      "label_en": "A: Shaft Bore 220 mm | B: Bull Gear OD 1420 mm | C: Rake Lift 380 mm"
+    },
+    "sat_tuple": {
+      "clave_prod_serv": "22101500",
+      "clave_unidad": "H87",
+      "uso_cfdi": "I04",
+      "fraccion_arancelaria": "8474.90.99.00"
+    },
+    "everyday_scale_es": "Juego axial de pista en corona de giro calibrado por debajo de 0.76 mm para operación continua sin atasco de rastras",
+    "everyday_scale_en": "Turntable bearing axial backlash held below 0.76 mm for continuous rake torque protection",
+    "telemetry_hooks": {
+      "marcy_sg_range": [
+        1.35,
+        1.85
+      ],
+      "plitt_d50_um_range": [
+        15,
+        120
+      ],
+      "wear_life_hours_range": [
+        18000,
+        35000
+      ]
+    },
+    "summary_es": "Mecanismos motrices completos y repuestos mayores de espesadores para recuperación de agua, espesamiento de concentrados y preparación de pulpa hacia filtro prensa.",
+    "summary_en": "Heavy-duty thickener drive heads and major torque assemblies for tailings water recovery, concentrate thickening, and filter-press feed preparation.",
+    "warehouse_audit": {
+      "physical_audit_date": "2026-11-10",
+      "warehouse_total_mxn": 1646850,
+      "warehouse_total_units": 383,
+      "warehouse_active_sku_count": 35,
+      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
+      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
+      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/mecanismo-espesador-puente-rastras.webp",
+        "caption_es": "Cabezal motriz y puente de espesador armado en planta",
+        "caption_en": "Bridge-mounted thickener drive head with manual rake lift"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/mecanismo-espesador-puente-rastras-v2.webp",
+        "caption_es": "Corona dentada, piñón y columna motriz en armado",
+        "caption_en": "Machined bull gear, pinion drive and vertical shaft column"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/mecanismo-espesador-puente-rastras-v3.webp",
+        "caption_es": "Ensamble integral de reductor de torque en taller",
+        "caption_en": "Full torque-reducer housing assembly under dimensional check"
+      }
+    ]
+  },
+  {
+    "id": "SMAT-PUMP-VERT-SP",
+    "sku_id": "SMAT-PUMP-VERT-SP",
+    "legacy_sku_id": "SKU-QC-23",
+    "slug_es": "bomba-vertical-lodos-sumidero-sp",
+    "slug_en": "vertical-cantilever-sump-slurry-pump",
+    "aliases_es": [
+      "bomba-vertical-carcamo-sp-spr",
+      "bomba-lodos-vertical-cantilever"
+    ],
+    "aliases_en": [
+      "vertical-sump-slurry-pump-sp",
+      "cantilever-rubber-sump-pump-spr"
+    ],
+    "vertical": "bombeo",
+    "avenue": "avenida_1_bombeo",
+    "secondary_avenues": [],
+    "stock_regime": "bajo_proyecto",
+    "availability_regime": "project_order",
+    "gate_lock": "G1",
+    "short_title_es": "Bomba Vertical de Sumidero (SP/SPR) Libre de Sellos",
+    "short_title_en": "Cantilever Vertical Sump Slurry Pump (Seal-Less SP)",
+    "compat_short_es": "65QV-SP a 150SV-SP · Cantilever A05 o Hule R55",
+    "compat_short_en": "65QV-SP to 150SV-SP · Seal-Less Cantilever A05 / R55",
+    "title_es": "Bomba Vertical Cantilever para Lodos en Sumidero (Serie SP / SPR) Libre de Sellos Sumergidos",
+    "title_en": "Heavy-Duty Vertical Cantilever Sump Slurry Pump (SP / SPR Series) with Zero Submerged Seals",
+    "oem_cross_ref": "Bastidores Verticales 40PV / 65QV / 100RV / 150SV (A05 Alto Cromo o Elastómero R55 — Columna 900–1800 mm)",
+    "atomic_codes": [],
+    "linked_atomic_codes": [],
+    "coupled_pair_sku": "SMAT-PUMP-IMP-AH",
+    "reorder_window_days": 150,
+    "kit_id": 1,
+    "diagram_id": "pump",
+    "secondary_diagram_id": "bombeo",
+    "photo_webp": "/images/productos/bomba-vertical-lodos-sumidero-sp.webp",
+    "default_material": "A05",
+    "available_materials": [
+      "A05",
+      "R55"
+    ],
+    "config_options_es": [
+      {
+        "value": "A05",
+        "label": "SP-A05-CR27 — Extremo Húmedo Sumergido en Alto Cromo 27% (≥650 HB) · Columna Cantilever"
+      },
+      {
+        "value": "R55",
+        "label": "SPR-HULE-R55 — Voluta e Impulsor Recubiertos en Elastómero R55 para Lodos Corrosivos"
+      }
+    ],
+    "config_options_en": [
+      {
+        "value": "A05",
+        "label": "SP-A05-CR27 — 27% High Chrome Wet-End (≥650 HB) on Seal-Less Cantilever Column"
+      },
+      {
+        "value": "R55",
+        "label": "SPR-R55-RUBBER — Molded R55 Elastomer Covered Volute & Impeller for Acidic Sumps"
+      }
+    ],
+    "mass_kg": 480,
+    "hardness_spec": "Impulsor y Cuerpo Sumergido en Alto Cromo A05 (≥650 HB) o Elastómero R55 sin rodamientos bajo nivel de pulpa",
+    "niosh_mode": "HOIST_REQUIRED",
+    "geometric_triplet_mm": {
+      "a_id_mm": 65,
+      "b_od_mm": 1200,
+      "c_thickness_mm": 150,
+      "tolerance_std": "ISO 2768-m",
+      "label_es": "A: Descarga Ø 65–150 mm | B: Columna 900–1800 mm | C: Sólidos hasta 40 mm",
+      "label_en": "A: Discharge Ø 65–150 mm | B: Column 900–1800 mm | C: Max Solids 40 mm"
+    },
+    "sat_tuple": {
+      "clave_prod_serv": "40151510",
+      "clave_unidad": "H87",
+      "uso_cfdi": "I04",
+      "fraccion_arancelaria": "8413.70.99.00"
+    },
+    "everyday_scale_es": "Claro axial del impulsor semiabierto calibrado a 0.76 mm sobre el plato de succión desde el pedestal superior",
+    "everyday_scale_en": "Semi-open impeller axial clearance adjusted to 0.76 mm from dry upper bearing housing",
+    "telemetry_hooks": {
+      "marcy_sg_range": [
+        1.1,
+        1.85
+      ],
+      "plitt_d50_um_range": [
+        38,
+        1200
+      ],
+      "wear_life_hours_range": [
+        2400,
+        5200
+      ]
+    },
+    "summary_es": "Bombeo vertical cantilever diseñado para cárcamos de derrames, fosas de concentrado y limpieza continua de pisos de molienda sin sellos ni rodamientos sumergidos.",
+    "summary_en": "Vertical cantilever sump slurry pumps engineered for floor cleanup, spillage sumps, and intermittent froth pumping without submerged seals or bearings.",
+    "warehouse_audit": {
+      "physical_audit_date": "2026-11-10",
+      "warehouse_total_mxn": 1646850,
+      "warehouse_total_units": 383,
+      "warehouse_active_sku_count": 35,
+      "availability_tier": "TIER_1_IN_PATIO_DURANGO",
+      "dehoratius_audit_badge_es": "Auditoría Física Durango (DeHoratius 2008) — 1,646,850 MXN / 383 pzas (35 SKUs)",
+      "dehoratius_audit_badge_en": "Durango Physical Audit (DeHoratius 2008) — 1,646,850 MXN / 383 pcs (35 SKUs)"
+    },
+    "gallery_webp": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/bomba-vertical-lodos-sumidero-sp.webp",
+        "caption_es": "Bombas verticales cantilever serie SP/SPR con guarda y tubería de descarga",
+        "caption_en": "Vertical cantilever SP/SPR slurry sump pumps with belt guard and riser pipe"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/bomba-vertical-lodos-sumidero-sp-v2.webp",
+        "caption_es": "Columna cantilever libre de sellos con canastilla de succión",
+        "caption_en": "Seal-less vertical cantilever column with bottom suction strainer"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/bomba-vertical-lodos-sumidero-sp-v3.webp",
+        "caption_es": "Patín de bombeo y vacío industrial montado sobre bastidor",
+        "caption_en": "Skid-mounted plant pump and vacuum package staged on chassis"
       }
     ]
   }

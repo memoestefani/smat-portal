@@ -27,6 +27,7 @@ pub fn verify_catalog_and_ssot_parity(site_root: &Path) -> Result<(), String> {
     }
 
     verify_v80_media_gallery_spec_zero_oem(site_root)?;
+    verify_v100_almacen_reuse_cap(site_root)?;
 
     for rel in [
         "src/components/Footer.astro",
@@ -359,6 +360,10 @@ pub fn find_v80_oem_brand_in_spec(raw: &str) -> Option<&'static str> {
         "longteng",
         "xkjgroup",
         "copilot_2026",
+        "shibo",
+        "pinnxun",
+        "allpumpscn",
+        "029a05",
     ] {
         if lower.contains(tok) {
             return Some(tok);
@@ -367,9 +372,125 @@ pub fn find_v80_oem_brand_in_spec(raw: &str) -> Option<&'static str> {
     None
 }
 
+pub fn check_almacen_reuse_cap_entries(pairs: &[(&str, &str)], max_uses: usize) -> Result<(), String> {
+    use std::collections::{HashMap, HashSet};
+    let mut by_img: HashMap<&str, HashSet<&str>> = HashMap::new();
+    for &(route_family, img) in pairs {
+        by_img.entry(img).or_default().insert(route_family);
+    }
+    for (img, routes) in by_img {
+        if routes.len() > max_uses {
+            return Err(format!(
+                "Reciclaje excesivo de foto de almacen '{}' en {} familias (> {}): {:?}",
+                img,
+                routes.len(),
+                max_uses,
+                routes
+            ));
+        }
+    }
+    Ok(())
+}
+
+pub fn verify_v100_almacen_reuse_cap(site_root: &Path) -> Result<(), String> {
+    let re_img = Regex::new(r"/images/almacen/[a-z0-9\-]+\.webp").unwrap();
+    let sources: &[(&str, &str)] = &[
+        ("home", "src/components/islands/HomeLandingIsland.astro"),
+        ("cotizar", "src/components/QuoteWizard.astro"),
+        ("contacto", "src/pages/contacto.astro"),
+        ("contacto", "src/pages/en/contact.astro"),
+        ("cumplimiento", "src/pages/cumplimiento.astro"),
+        ("cumplimiento", "src/pages/en/compliance.astro"),
+        ("garantia", "src/pages/garantia.astro"),
+        ("garantia", "src/pages/en/warranty.astro"),
+        ("nosotros", "src/pages/nosotros.astro"),
+        ("nosotros", "src/pages/en/about.astro"),
+    ];
+    let mut pairs_owned: Vec<(&str, String)> = Vec::new();
+    for &(family, rel) in sources {
+        let p = site_root.join(rel);
+        if !p.exists() {
+            continue;
+        }
+        let content = fs::read_to_string(&p).map_err(|e| e.to_string())?;
+        for m in re_img.find_iter(&content) {
+            pairs_owned.push((family, m.as_str().to_string()));
+        }
+    }
+    let pairs: Vec<(&str, &str)> = pairs_owned.iter().map(|(f, s)| (*f, s.as_str())).collect();
+    check_almacen_reuse_cap_entries(&pairs, 2)
+}
+
+/// Auditoría pura V10.0 sobre HTML compilado ES vs EN y estado vacío honesto de `/acuse/`.
+pub fn find_v100_es_purity_leak_in_html(html: &str) -> Option<&'static str> {
+    for forbidden in ["Class III Type A", "Piezas Atómicas", "Piezas Atomicas"] {
+        if html.contains(forbidden) {
+            return Some(forbidden);
+        }
+    }
+    None
+}
+
+pub fn find_v100_empty_acuse_leak_in_html(html: &str) -> Option<&'static str> {
+    for forbidden in ["DESPACHO PRIORITARIO", "FOLIO: SMAT-2026-RFQ"] {
+        if html.contains(forbidden) {
+            return Some(forbidden);
+        }
+    }
+    None
+}
+
+/// Verifica en `dist/`:
+///   1. Cero `Class III Type A` ni `Piezas Atómicas` en rutas ES (`dist/` excluyendo `dist/en/`).
+///   2. Cero `DESPACHO PRIORITARIO` o `FOLIO: SMAT-2026-RFQ` en SSR vacío de `/acuse/` y `/en/thank-you/`.
+pub fn verify_v100_es_purity_and_empty_acuse(site_root: &Path) -> Result<(), String> {
+    let dist_dir = site_root.join("dist");
+    if !dist_dir.is_dir() {
+        return Ok(());
+    }
+    let dist_en_dir = dist_dir.join("en");
+    for entry in WalkDir::new(&dist_dir).into_iter().filter_map(|e| e.ok()) {
+        if !entry.file_type().is_file() {
+            continue;
+        }
+        if entry.path().extension().and_then(|s| s.to_str()) != Some("html") {
+            continue;
+        }
+        if entry.path().starts_with(&dist_en_dir) {
+            continue;
+        }
+        let html = fs::read_to_string(entry.path()).unwrap_or_default();
+        if let Some(leak) = find_v100_es_purity_leak_in_html(&html) {
+            return Err(format!(
+                "Fuga bilingüe V10.0 '{}' detectada en ruta ES {}",
+                leak,
+                entry.path().display()
+            ));
+        }
+    }
+    for acuse_rel in ["dist/acuse/index.html", "dist/en/thank-you/index.html"] {
+        let acuse_path = site_root.join(acuse_rel);
+        if !acuse_path.exists() {
+            continue;
+        }
+        let acuse_html = fs::read_to_string(&acuse_path).unwrap_or_default();
+        if let Some(leak) = find_v100_empty_acuse_leak_in_html(&acuse_html) {
+            return Err(format!(
+                "Fuga EMPTY_CART_GATE V10.0 '{}' detectada en {}",
+                leak,
+                acuse_rel
+            ));
+        }
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::{
+        check_almacen_reuse_cap_entries,
+        find_v100_empty_acuse_leak_in_html,
+        find_v100_es_purity_leak_in_html,
         find_v57_prohibited_copy_in_source,
         find_v58_en_leak_in_html,
         find_v59_disallowed_storage_write,
@@ -378,8 +499,54 @@ mod tests {
     };
 
     #[test]
+    fn rejects_v100_es_anglicisms_and_empty_acuse_leaks() {
+        assert_eq!(
+            find_v100_es_purity_leak_in_html("<span>ASTM A532 Class III Type A</span>"),
+            Some("Class III Type A")
+        );
+        assert_eq!(
+            find_v100_es_purity_leak_in_html("<h2>13 Piezas Atómicas</h2>"),
+            Some("Piezas Atómicas")
+        );
+        assert_eq!(
+            find_v100_es_purity_leak_in_html("<span>ASTM A532 Clase III Tipo A • Refacciones por Código</span>"),
+            None
+        );
+        assert_eq!(
+            find_v100_empty_acuse_leak_in_html("<span>DESPACHO PRIORITARIO ALMACÉN DURANGO</span>"),
+            Some("DESPACHO PRIORITARIO")
+        );
+        assert_eq!(
+            find_v100_empty_acuse_leak_in_html("<pre>FOLIO: SMAT-2026-RFQ</pre>"),
+            Some("FOLIO: SMAT-2026-RFQ")
+        );
+        assert_eq!(
+            find_v100_empty_acuse_leak_in_html("<h1>Aún no has generado una requisición</h1>"),
+            None
+        );
+    }
+
+    #[test]
+    fn enforces_v100_almacen_reuse_cap() {
+        assert!(check_almacen_reuse_cap_entries(
+            &[("home", "/images/almacen/a.webp"), ("nosotros", "/images/almacen/a.webp")],
+            2
+        ).is_ok());
+        assert!(check_almacen_reuse_cap_entries(
+            &[
+                ("home", "/images/almacen/a.webp"),
+                ("nosotros", "/images/almacen/a.webp"),
+                ("cotizar", "/images/almacen/a.webp")
+            ],
+            2
+        ).is_err());
+    }
+
+    #[test]
     fn rejects_v80_oem_brands_in_media_gallery_spec() {
         assert_eq!(find_v80_oem_brand_in_spec(r#"{"caption":"Warman AH"}"#), Some("warman"));
+        assert_eq!(find_v80_oem_brand_in_spec(r#"{"caption":"SHIBO crusher"}"#), Some("shibo"));
+        assert_eq!(find_v80_oem_brand_in_spec(r#"{"src":"E029A05.jpg"}"#), Some("029a05"));
         assert_eq!(find_v80_oem_brand_in_spec(r#"{"src":"Copilot_20260412.png"}"#), Some("copilot_2026"));
         assert_eq!(find_v80_oem_brand_in_spec(r#"{"src":"almacen-bomba-6x4-dah.webp"}"#), None);
     }

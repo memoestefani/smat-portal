@@ -55,19 +55,31 @@ const cycloneSkus = getQuickProductsCatalog().filter((s) =>
       </section>
 
       <section class="cyc-sim-card" id="marcy-3cup-cyclone-calculator" data-stratum-1-instrument aria-labelledby="cyc-sim-heading">
-        <div class="cyc-sim-header">
-          <h2 id="cyc-sim-heading">
-            {isEs ? 'Balance de 3 Vasos, Separación por Tamaño y Eficiencia de Criba' : '3-Cup Pulp Mass Balance, Cut-Size & Screen Separation Simulator'}
-          </h2>
-          <span class="cyc-sim-tag">{isEs ? 'CERO BÁSCULA • CERO FLUJÓMETRO' : 'ZERO BELT SCALE • ZERO FLOWMETER'}</span>
-        </div>
-
-        <CycloneScreenCore locale={locale} showVerticalActions={true} panelClass="cyc-core-standalone" />
-        <div class="cyc-cta-row">
-          <button type="button" class="btn btn-primary smat-tap-btn" data-add-calculated-kit="clasificacion">
+        <div class="cyc-cta-row smat-mb-sm">
+          <button type="button" class="btn btn-primary smat-tap-btn smat-buy-cta" data-add-calculated-kit="clasificacion">
             {isEs ? '+ Agregar kit de clasificación a cotización' : '+ Add classification kit to quote'}
           </button>
         </div>
+        <details class="wb-progressive-drawer smat-sim-accordion" id="cyc-sim-accordion">
+          <summary class="wb-progressive-summary">
+            <span id="cyc-sim-heading">
+              {isEs
+                ? 'Validar tu selección con calculadora técnica (Balance 3 Vasos y d50c)'
+                : 'Validate your selection with technical calculator (3-Cup Balance & d50c)'}
+            </span>
+            <span>▾</span>
+          </summary>
+          <div class="smat-mt-sm">
+            <div class="cyc-sim-header">
+              <h2>
+                {isEs ? 'Balance de 3 Vasos, Separación por Tamaño y Eficiencia de Criba' : '3-Cup Pulp Mass Balance, Cut-Size & Screen Separation Simulator'}
+              </h2>
+              <span class="cyc-sim-tag">{isEs ? 'CERO BÁSCULA • CERO FLUJÓMETRO' : 'ZERO BELT SCALE • ZERO FLOWMETER'}</span>
+            </div>
+
+            <CycloneScreenCore locale={locale} showVerticalActions={true} panelClass="cyc-core-standalone" />
+          </div>
+        </details>
       </section>
 
       <TechnicalDiagrams diagram="cyclone-apex-vortex" lang={lang} showXrayOverlay={true} />

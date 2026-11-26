@@ -93,6 +93,17 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
         <div class={variant !== 'hub' ? 'card detail-card' : ''}>
           <div id="nom141-plate-flexure-verifier" data-smat-calc={variant === 'hub' ? 'filtration' : undefined}>
             <div class="filtration-5family-box" id={stratumId} data-plate-flexure-panel="timoshenko-g5" data-stratum-1-instrument>
+              <div class="smat-cta-row smat-mb-sm">
+                <button type="button" class="btn btn-primary smat-tap-btn smat-buy-cta" data-add-calculated-kit="filtracion">
+                  {isEs ? '+ Agregar kit de filtración a cotización' : '+ Add filtration kit to quote'}
+                </button>
+              </div>
+              <details class="wb-progressive-drawer smat-sim-accordion" id="filt-sim-accordion">
+                <summary class="wb-progressive-summary">
+                  <span>{isEs ? 'Validar tu selección con calculadora técnica (Ciclo 16 bar y Torta NOM-141)' : 'Validate your selection with technical calculator (16-bar Cycle & NOM-141 Cake)'}</span>
+                  <span>▾</span>
+                </summary>
+                <div class="smat-mt-sm">
               {variant === 'hub' ? (
                 <FiltrationCore locale={locale} variant={variant} showVerticalActions={true} panelClass="filt-core-standalone" />
               ) : (
@@ -124,11 +135,8 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
                   </div>
                 </div>
               )}
-              <div class="smat-cta-row smat-mt-sm">
-                <button type="button" class="btn btn-primary smat-tap-btn" data-add-calculated-kit="filtracion">
-                  {isEs ? '+ Agregar kit de filtración a cotización' : '+ Add filtration kit to quote'}
-                </button>
-              </div>
+                </div>
+              </details>
             </div>
           </div>
 

@@ -174,11 +174,17 @@ const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waTe
         </p>
       </div>
     </div>
+    {isMediaOnly && (
+      <button type="button" class="smat-pdp-lightbox-overlay" data-lightbox-open aria-label={isEs ? 'Ampliar fotografía HD' : 'Zoom HD photo'}>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
+        <span>{isEs ? 'Ampliar HD' : 'Zoom HD'}</span>
+      </button>
+    )}
   </div>
 
-  <!-- Miniaturas cuadradas 48x48 debajo del visor (Estilo Amazon) -->
+  <!-- Miniaturas fotográficas debajo del visor (separadas de las pestañas técnicas CAD / A·B·C) -->
   <div class="smat-qcard-header">
-    <div class="smat-qcard-tablist smat-qcard-thumbs-row" role="tablist" aria-label={isEs ? 'Vistas y galería del producto' : 'Product gallery and technical views'}>
+    <div class="smat-qcard-tablist smat-qcard-thumbs-row smat-qcard-thumbs-photos" role="tablist" aria-label={isEs ? 'Galería fotográfica del producto' : 'Product photo gallery'}>
       <button
         type="button"
         role="tab"
@@ -219,28 +225,6 @@ const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waTe
           />
         </button>
       ))}
-      <button
-        type="button"
-        role="tab"
-        aria-selected="false"
-        data-qcard-tab="cad"
-        aria-label={isEs ? 'Diagrama técnico' : 'Technical Diagram'}
-        title={isEs ? 'Diagrama técnico 2D' : '2D Technical Diagram'}
-        class="qcard-tab-btn qcard-thumb-btn qcard-thumb-btn--spec"
-      >
-        <span>CAD</span>
-      </button>
-      <button
-        type="button"
-        role="tab"
-        aria-selected="false"
-        data-qcard-tab="xray"
-        aria-label={isEs ? 'Medidas A-B-C' : 'Dimensions A-B-C'}
-        title={isEs ? 'Medidas A-B-C y tolerancia' : 'A-B-C Dimensions & Tolerance'}
-        class="qcard-tab-btn qcard-thumb-btn qcard-thumb-btn--spec"
-      >
-        <span>A·B·C</span>
-      </button>
     </div>
 
     {!isMediaOnly && (
@@ -248,6 +232,31 @@ const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waTe
         {avail.label}
       </span>
     )}
+  </div>
+
+  <div class="smat-qcard-tech-tabs" role="tablist" aria-label={isEs ? 'Vistas técnicas y dimensionales' : 'Technical and dimensional views'}>
+    <button
+      type="button"
+      role="tab"
+      aria-selected="false"
+      data-qcard-tab="cad"
+      aria-label={isEs ? 'Diagrama técnico' : 'Technical Diagram'}
+      title={isEs ? 'Diagrama técnico 2D' : '2D Technical Diagram'}
+      class="qcard-tab-btn smat-qcard-tech-pill"
+    >
+      <span>{isEs ? 'Diagrama CAD 2D' : '2D CAD Diagram'}</span>
+    </button>
+    <button
+      type="button"
+      role="tab"
+      aria-selected="false"
+      data-qcard-tab="xray"
+      aria-label={isEs ? 'Medidas A-B-C' : 'Dimensions A-B-C'}
+      title={isEs ? 'Medidas A-B-C y tolerancia' : 'A-B-C Dimensions & Tolerance'}
+      class="qcard-tab-btn smat-qcard-tech-pill"
+    >
+      <span>{isEs ? 'Medidas A·B·C' : 'A·B·C Dimensions'}</span>
+    </button>
   </div>
 
   {!isMediaOnly && (
@@ -351,14 +360,7 @@ const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waTe
 </script>
 
 <style>
-  .product-quick-card {
-    background: #ffffff;
-    color: #0f172a;
-    border: 1px solid #cbd5e1;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
-  }
+  .product-quick-card { background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06); }
   .smat-qcard-stage { position: relative; width: 100%; background: #f8fafc; aspect-ratio: 4 / 3; }
   .smat-qcard-panel { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 0.75rem; overflow: auto; }
   .smat-qcard-panel--photo { padding: 0; overflow: hidden; background: #f8fafc; }
@@ -369,10 +371,7 @@ const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waTe
   .smat-qcard-scale-title { color: #7c2d12; font-size: 0.95rem; }
   .smat-qcard-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.6rem 0.9rem; background: #f8fafc; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
   .smat-qcard-thumbs-row { display: flex; flex-wrap: nowrap; align-items: center; gap: 0.45rem; overflow-x: auto; scrollbar-width: thin; }
-  .qcard-tab-btn { width: 52px; height: 52px; min-height: 48px; min-width: 48px; flex: 0 0 auto; padding: 2px; border-radius: 8px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; font-size: 0.68rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
-  .qcard-tab-btn.is-active { border: 2px solid #92400e; background: #fef3c7; color: #78350f; }
-  .smat-qcard-thumb-img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; display: block; }
-  @media (max-width: 767px) { .smat-qcard-stage-ratio[data-qcard-media-only="1"] { max-height: 280px; } }
+  @media (max-width: 767px) { .smat-qcard-stage-ratio[data-qcard-media-only="1"] { max-height: 220px; } }
   .smat-qcard-footer { padding: 0.8rem 0.95rem; background: #ffffff; }
   .smat-qcard-footer-row { display: flex; flex-direction: column; gap: 0.7rem; }
   @media (min-width: 768px) { .smat-qcard-footer-row { flex-direction: row; align-items: center; justify-content: space-between; } }

@@ -9,6 +9,7 @@
 
 import rolesDataJson from '../../data/roles.json' with { type: 'json' };
 import { resolveDomainMaterialSpec } from './domainMaterialSpecResolver.js';
+import { resolveEmptyRequisitionViewState } from './emptyRequisitionGate.js';
 import {
   buildRolesCriteriaMap,
   formatCatalogPartCodeHuman,
@@ -217,6 +218,20 @@ export function projectLiveDossierSummary(ctx = {}) {
     typeof window !== 'undefined' ? window.location?.search || '' : ''
   );
   const isEmptySession = (lifecycleState === 'EMPTY' || !isCartCommitted) && !hasUrlContext;
+  const emptyView = resolveEmptyRequisitionViewState(trayStateNow, isEs ? 'es' : 'en', hasUrlContext);
+  const showEmptyStarter = emptyView.isEmpty && (!trayStateNow.items || trayStateNow.items.length === 0);
+
+  const headerThumb = doc.querySelector('.wb-header-durango-thumb');
+  if (headerThumb) headerThumb.classList.toggle('hidden', showEmptyStarter);
+  const starterCard = doc.getElementById('wb-empty-starter-card');
+  if (starterCard) starterCard.classList.toggle('hidden', !showEmptyStarter);
+  const tabsBar = doc.querySelector('[data-dossier-tabs-bar]');
+  if (tabsBar) tabsBar.classList.toggle('hidden', showEmptyStarter);
+  const nextStepBtn = /** @type {HTMLButtonElement | null} */ (doc.querySelector('[data-qw-next-step="2"]'));
+  if (nextStepBtn) {
+    nextStepBtn.disabled = showEmptyStarter;
+    nextStepBtn.setAttribute('aria-disabled', showEmptyStarter ? 'true' : 'false');
+  }
 
   const dossierRoot = doc.getElementById('live-engineering-dossier');
   if (dossierRoot) {
@@ -239,10 +254,10 @@ export function projectLiveDossierSummary(ctx = {}) {
   }
 
   if (isEmptySession && (!trayStateNow.items || trayStateNow.items.length === 0)) {
-    const emptyCode = isEs ? 'SMAT-BORRADOR (Sin partidas)' : 'SMAT-DRAFT (No items)';
+    const emptyCode = '';
     setText('live-smat-code', emptyCode);
     setText('live-part-name', isEs ? 'Sin partidas en carrito todavía' : 'No line items in cart yet');
-    setText('gate-lead-status', isEs ? 'CARRITO VACÍO • AGREGUE PARTIDAS PARA COTIZAR' : 'EMPTY CART • ADD ITEMS TO QUOTE');
+    setText('gate-lead-status', emptyView.emptyStatusLabel);
     return {
       mode: 'empty',
       isEmpty: true,

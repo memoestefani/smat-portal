@@ -448,11 +448,18 @@ export function formatScientificUnit(value, unit = '', decimals = undefined) {
  * Traduce el régimen de inventario en etiqueta comercial legible (cero tokens crudos o precios literales).
  * @param {string} [stockRegime='hay']
  * @param {'es'|'en'} [lang='es']
- * @returns {{ label: string; tone: 'hay' | 'pide' | 'fabrica'; leadTime: string }}
+ * @returns {{ label: string; tone: 'hay' | 'pide' | 'fabrica' | 'proyecto'; leadTime: string }}
  */
 export function formatAvailabilityBadgeHuman(stockRegime = 'hay', lang = 'es') {
   const isEn = String(lang).toLowerCase() === 'en';
   const key = String(stockRegime || 'hay').trim().toLowerCase();
+  if (key === 'bajo_proyecto' || key === 'proyecto') {
+    return {
+      label: isEn ? 'Project Order · Durango' : 'Bajo proyecto · Durango',
+      tone: 'proyecto',
+      leadTime: isEn ? 'Engineered quote via Durango' : 'Ingeniería y suministro bajo proyecto',
+    };
+  }
   if (key === 'se_pide') {
     return {
       label: isEn ? 'Fast Assembly · 5–10 Days' : 'Ensamble rápido · 5–10 días',

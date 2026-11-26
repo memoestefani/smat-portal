@@ -1,138 +1,960 @@
 {
-  "schema_version": "v8.0",
-  "dimensions": { "width": 640, "height": 480, "max_bytes": 46080 },
+  "schema_version": "v10.0",
+  "dimensions": {
+    "width": 640,
+    "height": 480,
+    "max_bytes": 46080
+  },
   "sku_galleries": {
     "SMAT-PUMP-WETKIT-554": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "lote_humedo_554_voluta_a05.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "A05_METAL", "captionEs": "Paquete húmedo 5-5-4 en Alto Cromo 27% listo en almacén", "captionEn": "27% High-Chrome 5-5-4 wet-end lot staged in warehouse" },
-        { "slot": "v2", "root": "curada", "relPath": "lote_humedo_554_succion_a05.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "A05_METAL", "captionEs": "Vista de voluta y plato de succión A05 mecanizados", "captionEn": "Machined A05 volute liner and throatbush view" },
-        { "slot": "v3", "root": "curada", "relPath": "lote_humedo_554_plato_posterior.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "A05_METAL", "captionEs": "Inserto de plato posterior balanceado en lote 5-5-4", "captionEn": "Balanced frame plate liner insert for 5-5-4 wear lot" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "lote_humedo_554_voluta_a05.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "A05_METAL",
+          "captionEs": "Paquete húmedo 5-5-4 en Alto Cromo 27% listo en almacén",
+          "captionEn": "27% High-Chrome 5-5-4 wet-end lot staged in warehouse"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "lote_humedo_554_succion_a05.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "A05_METAL",
+          "captionEs": "Vista de voluta y plato de succión A05 mecanizados",
+          "captionEn": "Machined A05 volute liner and throatbush view"
+        },
+        {
+          "slot": "v3",
+          "root": "curada",
+          "relPath": "lote_humedo_554_plato_posterior.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "A05_METAL",
+          "captionEs": "Inserto de plato posterior balanceado en lote 5-5-4",
+          "captionEn": "Balanced frame plate liner insert for 5-5-4 wear lot"
+        }
       ]
     },
     "SMAT-PUMP-IMP-AH": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "impulsor_a05_metal_mecanizado.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "A05_METAL", "captionEs": "Impulsores cerrados 5 álabes Alto Cromo A05 (≥ 650 HB) mecanizados en almacén", "captionEn": "Machined 5-vane High-Chrome A05 (≥ 650 HB) closed impellers in stock" },
-        { "slot": "v2", "root": "curada", "relPath": "impulsor_a05_xrf_cr27_verificado.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "A05_METAL", "captionEs": "Verificación metalúrgica XRF en impulsor A05 (Cr 27.209%)", "captionEn": "Live XRF alloy assay on A05 slurry impeller (Cr 27.209%)" },
-        { "slot": "v3", "root": "curada", "relPath": "impulsor_ah_geometria_alabes.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "A05_METAL", "captionEs": "Geometría de ojo de succión y álabes expulsadores posteriores", "captionEn": "Suction eye geometry and rear pump-out vanes" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "impulsor_a05_metal_mecanizado.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "A05_METAL",
+          "captionEs": "Impulsores cerrados 5 álabes Alto Cromo A05 (≥ 650 HB) mecanizados en almacén",
+          "captionEn": "Machined 5-vane High-Chrome A05 (≥ 650 HB) closed impellers in stock"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "impulsor_a05_xrf_cr27_verificado.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "A05_METAL",
+          "captionEs": "Verificación metalúrgica XRF en impulsor A05 (Cr 27.209%)",
+          "captionEn": "Live XRF alloy assay on A05 slurry impeller (Cr 27.209%)"
+        },
+        {
+          "slot": "v3",
+          "root": "curada",
+          "relPath": "impulsor_ah_geometria_alabes.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "A05_METAL",
+          "captionEs": "Geometría de ojo de succión y álabes expulsadores posteriores",
+          "captionEn": "Suction eye geometry and rear pump-out vanes"
+        }
       ]
     },
     "SMAT-PUMP-LINERS-AH": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "laina_succion_bomba_ah.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "BIMODAL_A05_OR_R55", "captionEs": "Forros de voluta, plato frontal y posterior Cr27 y R55", "captionEn": "Cr27 and R55 volute, cover plate and frame plate liners" },
-        { "slot": "v2", "root": "curada", "relPath": "laina_metal_hule_comparativa.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "BIMODAL_A05_OR_R55", "captionEs": "Comparativa de revestimiento metálico A05 vs hule R55", "captionEn": "A05 hard metal vs R55 molded elastomer liner comparison" },
-        { "slot": "v3", "root": "curada", "relPath": "forro_plato_frontal_moldeado.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "BIMODAL_A05_OR_R55", "captionEs": "Revestimiento elastomérico moldeado con insertos", "captionEn": "Molded elastomer cover plate liner with steel inserts" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "laina_succion_bomba_ah.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "BIMODAL_A05_OR_R55",
+          "captionEs": "Forros de voluta, plato frontal y posterior Cr27 y R55",
+          "captionEn": "Cr27 and R55 volute, cover plate and frame plate liners"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "laina_metal_hule_comparativa.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "BIMODAL_A05_OR_R55",
+          "captionEs": "Comparativa de revestimiento metálico A05 vs hule R55",
+          "captionEn": "A05 hard metal vs R55 molded elastomer liner comparison"
+        },
+        {
+          "slot": "v3",
+          "root": "curada",
+          "relPath": "forro_plato_frontal_moldeado.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "BIMODAL_A05_OR_R55",
+          "captionEs": "Revestimiento elastomérico moldeado con insertos",
+          "captionEn": "Molded elastomer cover plate liner with steel inserts"
+        }
       ]
     },
     "SMAT-PUMP-EXPELLER-KIT": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "kit_expeller_anillo_cr27_ah.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "EXPELLER_DRY_SEAL", "captionEs": "Kit de sello seco dinámico con anillo y expulsor Cr27", "captionEn": "Dry centrifugal seal kit with Cr27 expeller and ring" },
-        { "slot": "v2", "root": "curada", "relPath": "kit_expeller_a05_amarillo_patio.jpeg", "rotateDeg": 90, "fit": "cover", "cropBox": { "leftRatio": 0.42, "topRatio": 0.04, "widthRatio": 0.56, "heightRatio": 0.90 }, "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM", "material_class": "EXPELLER_DRY_SEAL", "captionEs": "Anillos expulsores y cámaras A05 inspeccionados en almacén Durango", "captionEn": "A05 dynamic expellers and rings inspected in Durango warehouse" },
-        { "slot": "v3", "root": "curada", "relPath": "expeller_alabes_a05_mecanizado.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "EXPELLER_DRY_SEAL", "captionEs": "Álabes centrífugos mecanizados de alto cromo A05", "captionEn": "Machined A05 high-chrome centrifugal expeller vanes" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "kit_expeller_anillo_cr27_ah.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "EXPELLER_DRY_SEAL",
+          "captionEs": "Kit de sello seco dinámico con anillo y expulsor Cr27",
+          "captionEn": "Dry centrifugal seal kit with Cr27 expeller and ring"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "kit_expeller_a05_amarillo_patio.jpeg",
+          "rotateDeg": 90,
+          "fit": "cover",
+          "cropBox": {
+            "leftRatio": 0.42,
+            "topRatio": 0.04,
+            "widthRatio": 0.56,
+            "heightRatio": 0.9
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+          "material_class": "EXPELLER_DRY_SEAL",
+          "captionEs": "Anillos expulsores y cámaras A05 inspeccionados en almacén Durango",
+          "captionEn": "A05 dynamic expellers and rings inspected in Durango warehouse"
+        },
+        {
+          "slot": "v3",
+          "root": "curada",
+          "relPath": "expeller_alabes_a05_mecanizado.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "EXPELLER_DRY_SEAL",
+          "captionEs": "Álabes centrífugos mecanizados de alto cromo A05",
+          "captionEn": "Machined A05 high-chrome centrifugal expeller vanes"
+        }
       ]
     },
     "SMAT-PUMP-BRG-005M": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "cartucho_rodamientos_sae4140_ah.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "SAE4140_DUCTILE_IRON", "captionEs": "Cartucho completo de rodamientos con eje SAE 4140", "captionEn": "Complete heavy-duty bearing assembly cartridge with SAE 4140 shaft" },
-        { "slot": "v2", "root": "curada", "relPath": "cartucho_carcasa_hierro_ductil.jpeg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "SAE4140_DUCTILE_IRON", "captionEs": "Montaje en carcasa de hierro dúctil y ajuste axial", "captionEn": "Ductile iron pedestal mounting and axial impeller adjustment" },
-        { "slot": "v3", "root": "curada", "relPath": "flechas_templadas_roscadas_ah.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "SAE4140_DUCTILE_IRON", "captionEs": "Flechas templadas y roscadas de repuesto serie AH", "captionEn": "Hardened replacement alloy shafts for AH series pumps" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "cartucho_rodamientos_sae4140_ah.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "SAE4140_DUCTILE_IRON",
+          "captionEs": "Cartucho completo de rodamientos con eje SAE 4140",
+          "captionEn": "Complete heavy-duty bearing assembly cartridge with SAE 4140 shaft"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "cartucho_carcasa_hierro_ductil.jpeg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "SAE4140_DUCTILE_IRON",
+          "captionEs": "Montaje en carcasa de hierro dúctil y ajuste axial",
+          "captionEn": "Ductile iron pedestal mounting and axial impeller adjustment"
+        },
+        {
+          "slot": "v3",
+          "root": "curada",
+          "relPath": "flechas_templadas_roscadas_ah.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "SAE4140_DUCTILE_IRON",
+          "captionEs": "Flechas templadas y roscadas de repuesto serie AH",
+          "captionEn": "Hardened replacement alloy shafts for AH series pumps"
+        }
       ]
     },
     "SMAT-COUPLED-PUMP-CYC": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "bomba_centrifuga_lodos_8x6_ah.jpg", "fit": "cover", "cropBox": { "leftRatio": 0.02, "topRatio": 0.04, "widthRatio": 0.96, "heightRatio": 0.92 }, "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM", "material_class": "SLURRY_PUMP_ASSEMBLY", "captionEs": "Bomba centrífuga de lodos 8x6 armada para batería de ciclones", "captionEn": "8x6 horizontal slurry pump staged for hydrocyclone feed" },
-        { "slot": "v2", "root": "curada", "relPath": "bomba_centrifuga_lodos_3x2_ah.jpg", "fit": "contain", "background": { "r": 248, "g": 250, "b": 252, "alpha": 1 }, "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "SLURRY_PUMP_ASSEMBLY", "captionEs": "Bomba horizontal bridada 3x2 ensamblada sobre bastidor", "captionEn": "Flanged 3x2 horizontal slurry pump unit on structural base" },
-        { "slot": "v3", "root": "curada", "relPath": "bomba_lodos_inspeccion_durango.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "SLURRY_PUMP_ASSEMBLY", "captionEs": "Conjunto completo inspeccionado en patio de Durango", "captionEn": "Inspected heavy-duty slurry pump unit in Durango yard" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "bomba_centrifuga_lodos_8x6_ah.jpg",
+          "fit": "cover",
+          "cropBox": {
+            "leftRatio": 0.02,
+            "topRatio": 0.04,
+            "widthRatio": 0.96,
+            "heightRatio": 0.92
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+          "material_class": "SLURRY_PUMP_ASSEMBLY",
+          "captionEs": "Bomba centrífuga de lodos 8x6 armada para batería de ciclones",
+          "captionEn": "8x6 horizontal slurry pump staged for hydrocyclone feed"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "bomba_centrifuga_lodos_3x2_ah.jpg",
+          "fit": "contain",
+          "background": {
+            "r": 248,
+            "g": 250,
+            "b": 252,
+            "alpha": 1
+          },
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "SLURRY_PUMP_ASSEMBLY",
+          "captionEs": "Bomba horizontal bridada 3x2 ensamblada sobre bastidor",
+          "captionEn": "Flanged 3x2 horizontal slurry pump unit on structural base"
+        },
+        {
+          "slot": "v3",
+          "root": "curada",
+          "relPath": "bomba_lodos_inspeccion_durango.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "SLURRY_PUMP_ASSEMBLY",
+          "captionEs": "Conjunto completo inspeccionado en patio de Durango",
+          "captionEn": "Inspected heavy-duty slurry pump unit in Durango yard"
+        }
       ]
     },
     "SMAT-CYC-D6-D20": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "bateria_hidrociclones_distribuidor.jpg", "fit": "contain", "background": { "r": 248, "g": 250, "b": 252, "alpha": 1 }, "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "PU_OR_SIC_CYCLONE", "captionEs": "Batería radial de hidrociclones y cabezal distribuidor", "captionEn": "Radial hydrocyclone cluster with distributor manifold" },
-        { "slot": "v2", "root": "curada", "relPath": "hidrociclon_forro_reemplazable.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "PU_OR_SIC_CYCLONE", "captionEs": "Hidrociclones con forro interno reemplazable en campo", "captionEn": "Field-ready hydrocyclones with replaceable wear liners" },
-        { "slot": "v3", "root": "curada", "relPath": "hidrociclon_cuerpo_conos_apex.webp", "fit": "contain", "background": { "r": 248, "g": 250, "b": 252, "alpha": 1 }, "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "PU_OR_SIC_CYCLONE", "captionEs": "Cuerpo modular con cono superior, medio e inferior y ápex", "captionEn": "Modular cyclone stack with upper/lower cones & apex" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "bateria_hidrociclones_distribuidor.jpg",
+          "fit": "contain",
+          "background": {
+            "r": 248,
+            "g": 250,
+            "b": 252,
+            "alpha": 1
+          },
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "PU_OR_SIC_CYCLONE",
+          "captionEs": "Batería radial de hidrociclones y cabezal distribuidor",
+          "captionEn": "Radial hydrocyclone cluster with distributor manifold"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "hidrociclon_forro_reemplazable.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "PU_OR_SIC_CYCLONE",
+          "captionEs": "Hidrociclones con forro interno reemplazable en campo",
+          "captionEn": "Field-ready hydrocyclones with replaceable wear liners"
+        },
+        {
+          "slot": "v3",
+          "root": "curada",
+          "relPath": "hidrociclon_cuerpo_conos_apex.webp",
+          "fit": "contain",
+          "background": {
+            "r": 248,
+            "g": 250,
+            "b": 252,
+            "alpha": 1
+          },
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "PU_OR_SIC_CYCLONE",
+          "captionEs": "Cuerpo modular con cono superior, medio e inferior y ápex",
+          "captionEn": "Modular cyclone stack with upper/lower cones & apex"
+        }
       ]
     },
     "SMAT-SCR-TH48-30": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "malla_fina_poliuretano_rojo_panel.png", "fit": "cover", "cropBox": { "leftRatio": 0.18, "topRatio": 0.22, "widthRatio": 0.62, "heightRatio": 0.48 }, "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM", "material_class": "PU_URETHANE", "captionEs": "Panel de cribado fino de alta área abierta en poliuretano", "captionEn": "High open-area fine screening panel in abrasion-resistant urethane" },
-        { "slot": "v2", "root": "curada", "relPath": "malla_poliuretano_abertura_modular.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "PU_URETHANE", "captionEs": "Detalle de abertura calibrada anticegamiento en poliuretano", "captionEn": "Calibrated anti-blinding aperture detail in urethane panel" },
-        { "slot": "v3", "root": "curada", "relPath": "malla_poliuretano_tarima_almacen.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "PU_URETHANE", "captionEs": "Lote de paneles modulares listo en almacén", "captionEn": "Modular screening panel lot staged in warehouse" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "malla_poliuretano_abertura_modular.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "PU_URETHANE",
+          "captionEs": "Panel de poliuretano anticegamiento con abertura calibrada",
+          "captionEn": "Anti-blinding polyurethane screen panel with calibrated slot aperture"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "malla_poliuretano_tarima_almacen.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "PU_URETHANE",
+          "captionEs": "Lote de paneles modulares y fijaciones listo en almacén",
+          "captionEn": "Modular polyurethane deck panel lot staged in warehouse"
+        },
+        {
+          "slot": "v3",
+          "root": "memo",
+          "relPath": "04_fototeca_de_productos/04_piezas_y_stock_almacen/IMG_0516.JPG",
+          "fit": "cover",
+          "cropBox": {
+            "leftRatio": 0.15,
+            "topRatio": 0.28,
+            "widthRatio": 0.7,
+            "heightRatio": 0.42
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+          "material_class": "PU_URETHANE",
+          "captionEs": "Superficie ranurada de poliuretano colado para cribado fino",
+          "captionEn": "Slotted cast polyurethane surface for high-frequency screening"
+        }
       ]
     },
     "SMAT-SCR-MOD-1X1": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "modulo_poliuretano_1x1_kit.jpg", "fit": "cover", "cropBox": { "leftRatio": 0.04, "topRatio": 0.04, "widthRatio": 0.92, "heightRatio": 0.92 }, "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM", "material_class": "PU_URETHANE", "captionEs": "Módulos 1'×1' de poliuretano con kit pin y camisa", "captionEn": "1'×1' modular polyurethane deck panels with pin & sleeve kit" },
-        { "slot": "v2", "root": "curada", "relPath": "fijacion_pin_camisa_poliuretano.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "PU_URETHANE", "captionEs": "Detalle de fijación rápida pin-camisa libre de soldadura", "captionEn": "Weld-free pin and sleeve rapid locking fastener detail" },
-        { "slot": "v3", "root": "curada", "relPath": "modulo_amarillo_pines_negros_set.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "PU_URETHANE", "captionEs": "Juego de repuestos de fijación para cubiertas modulares", "captionEn": "Replacement deck fastening pin and sleeve hardware set" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "modulo_poliuretano_1x1_kit.jpg",
+          "fit": "cover",
+          "cropBox": {
+            "leftRatio": 0.04,
+            "topRatio": 0.04,
+            "widthRatio": 0.92,
+            "heightRatio": 0.92
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+          "material_class": "PU_URETHANE",
+          "captionEs": "Módulos 1'×1' de poliuretano con kit pin y camisa",
+          "captionEn": "1'×1' modular polyurethane deck panels with pin & sleeve kit"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "fijacion_pin_camisa_poliuretano.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "PU_URETHANE",
+          "captionEs": "Detalle de fijación rápida pin-camisa libre de soldadura",
+          "captionEn": "Weld-free pin and sleeve rapid locking fastener detail"
+        },
+        {
+          "slot": "v3",
+          "root": "curada",
+          "relPath": "modulo_amarillo_pines_negros_set.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "PU_URETHANE",
+          "captionEs": "Juego de repuestos de fijación para cubiertas modulares",
+          "captionEn": "Replacement deck fastening pin and sleeve hardware set"
+        }
       ]
     },
     "SMAT-FILT-CLOTH-PLATE": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "filtro_prensa_placas_16bar_lonas.jpeg", "fit": "cover", "cropBox": { "leftRatio": 0.16, "topRatio": 0.04, "widthRatio": 0.84, "heightRatio": 0.96 }, "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM", "material_class": "PP_AND_CLOTH", "captionEs": "Paquete de placas 16 bar en polipropileno virgen con lonas", "captionEn": "16-bar virgin polypropylene filter plate pack with cloths" },
-        { "slot": "v2", "root": "curada", "relPath": "filtro_prensa_alineacion_placas.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "PP_AND_CLOTH", "captionEs": "Alineación lateral de placas en viga principal", "captionEn": "Side-bar alignment of filter plates on press beam" },
-        { "slot": "v3", "root": "curada", "relPath": "filtro_prensa_cabeza_hidraulica.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "PP_AND_CLOTH", "captionEs": "Cabeza hidráulica de cierre y banco de filtrado", "captionEn": "Hydraulic closing ram and filtrate manifold bank" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "filtro_prensa_placas_16bar_lonas.jpeg",
+          "fit": "cover",
+          "cropBox": {
+            "leftRatio": 0.16,
+            "topRatio": 0.04,
+            "widthRatio": 0.84,
+            "heightRatio": 0.96
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+          "material_class": "PP_AND_CLOTH",
+          "captionEs": "Paquete de placas 16 bar en polipropileno virgen con lonas",
+          "captionEn": "16-bar virgin polypropylene filter plate pack with cloths"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "filtro_prensa_alineacion_placas.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "PP_AND_CLOTH",
+          "captionEs": "Alineación lateral de placas en viga principal",
+          "captionEn": "Side-bar alignment of filter plates on press beam"
+        },
+        {
+          "slot": "v3",
+          "root": "curada",
+          "relPath": "filtro_prensa_cabeza_hidraulica.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "PP_AND_CLOTH",
+          "captionEs": "Cabeza hidráulica de cierre y banco de filtrado",
+          "captionEn": "Hydraulic closing ram and filtrate manifold bank"
+        }
       ]
     },
     "SMAT-FILT-SHIFTER-CHAIN": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "mecanismo_plate_shifter_carro_azul.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "SHIFTER_CARRIAGE", "captionEs": "Mecanismo corre-placas (Plate Shifter) sobre viga lateral", "captionEn": "Automatic plate shifter carriage on side beam" },
-        { "slot": "v2", "root": "curada", "relPath": "mecanismo_plate_shifter_viga_lateral.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "SHIFTER_CARRIAGE", "captionEs": "Carro transmisor sobre viga lateral con motorreductor", "captionEn": "Side-beam shifter carriage and geared drive detail" },
-        { "slot": "v3", "root": "curada", "relPath": "mecanismo_plate_shifter_banco_16bar.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "SHIFTER_CARRIAGE", "captionEs": "Conjunto completo de riel, uñas y carro de descarga", "captionEn": "Complete shifter rail, pawls and discharge carriage assembly" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "mecanismo_plate_shifter_carro_azul.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "SHIFTER_CARRIAGE",
+          "captionEs": "Mecanismo corre-placas (Plate Shifter) sobre viga lateral",
+          "captionEn": "Automatic plate shifter carriage on side beam"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "mecanismo_plate_shifter_viga_lateral.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "SHIFTER_CARRIAGE",
+          "captionEs": "Carro transmisor sobre viga lateral con motorreductor",
+          "captionEn": "Side-beam shifter carriage and geared drive detail"
+        },
+        {
+          "slot": "v3",
+          "root": "curada",
+          "relPath": "mecanismo_plate_shifter_banco_16bar.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "SHIFTER_CARRIAGE",
+          "captionEs": "Conjunto completo de riel, uñas y carro de descarga",
+          "captionEn": "Complete shifter rail, pawls and discharge carriage assembly"
+        }
       ]
     },
     "SMAT-FLOT-MECH-18SP": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "tanque_acondicionador_puente_15hp.jpg", "fit": "contain", "background": { "r": 248, "g": 250, "b": 252, "alpha": 1 }, "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "FLOTATION_MECHANISM", "captionEs": "Puente motriz de 15 HP y mecanismo suspendido en almacén", "captionEn": "15 HP drive bridge and suspended mechanism in warehouse" },
-        { "slot": "v2", "root": "fotos", "relPath": "tanuqes/tanque  15hp 2000x200.jpg", "fit": "contain", "background": { "r": 248, "g": 250, "b": 252, "alpha": 1 }, "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "FLOTATION_MECHANISM", "captionEs": "Celda y tanque agitador 2000×2000 con puente motriz 15 HP", "captionEn": "2000×2000 agitation tank cell with 15 HP drive bridge" },
-        { "slot": "v3", "root": "fotos", "relPath": "MECANIZMO ESPESADOR/IMG-20220126-WA0036.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "FLOTATION_MECHANISM", "captionEs": "Cabezal reductor pesado, flecha vertical y volante de elevación", "captionEn": "Heavy-duty geared drive head, vertical shaft and lifting handwheel" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "tanque_acondicionador_puente_15hp.jpg",
+          "fit": "cover",
+          "cropBox": {
+            "leftRatio": 0.06,
+            "topRatio": 0.24,
+            "widthRatio": 0.88,
+            "heightRatio": 0.74
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+          "material_class": "FLOTATION_MECHANISM",
+          "captionEs": "Puente motriz 15 HP, transmisión por poleas y flecha vertical",
+          "captionEn": "15 HP drive bridge, belt-pulley guard and vertical impeller shaft"
+        },
+        {
+          "slot": "v2",
+          "root": "fotos",
+          "relPath": "tanuqes/tanque  15hp 2000x200.jpg",
+          "fit": "contain",
+          "background": {
+            "r": 241,
+            "g": 245,
+            "b": 249,
+            "alpha": 1
+          },
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "FLOTATION_MECHANISM",
+          "captionEs": "Celda y tanque agitador 2000×2000 con puente motriz 15 HP",
+          "captionEn": "2000×2000 agitation tank cell with 15 HP drive bridge"
+        },
+        {
+          "slot": "v3",
+          "root": "fotos",
+          "relPath": "MECANIZMO ESPESADOR/IMG-20220126-WA0036.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "FLOTATION_MECHANISM",
+          "captionEs": "Cabezal reductor pesado, flecha vertical y volante de elevación",
+          "captionEn": "Heavy-duty geared drive head, vertical shaft and lifting handwheel"
+        }
       ]
     },
     "SMAT-LAB-MARCY-1000": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "balanza_marcy_caratula_sg.jpg", "fit": "cover", "cropBox": { "leftRatio": 0.04, "topRatio": 0.02, "widthRatio": 0.92, "heightRatio": 0.94 }, "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM", "material_class": "LAB_METROLOGY_STEEL", "captionEs": "Carátula graduada de lectura directa en gravedad específica", "captionEn": "Direct-reading pulp density and specific gravity dial face" },
-        { "slot": "v2", "root": "curada", "relPath": "balanza_marcy_vaso_inoxidable.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "LAB_METROLOGY_STEEL", "captionEs": "Balanza Marcy con vaso inoxidable de 1,000 ml ensamblado", "captionEn": "Marcy scale assembly with 1,000 ml stainless steel cup" },
-        { "slot": "v3", "root": "curada", "relPath": "balanza_marcy_calibrada_despacho.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "LAB_METROLOGY_STEEL", "captionEs": "Equipo calibrado en mostrador listo para despacho", "captionEn": "Bench-calibrated unit ready for immediate dispatch" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "balanza_marcy_caratula_sg.jpg",
+          "fit": "contain",
+          "background": {
+            "r": 241,
+            "g": 245,
+            "b": 249,
+            "alpha": 1
+          },
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "LAB_METROLOGY_STEEL",
+          "captionEs": "Carátula completa graduada en gravedad específica sin recorte",
+          "captionEn": "Full direct-reading specific gravity Marcy dial without bezel clip"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "balanza_marcy_vaso_inoxidable.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "LAB_METROLOGY_STEEL",
+          "captionEs": "Balanza Marcy con vaso inoxidable de 1,000 ml ensamblado",
+          "captionEn": "Marcy scale assembly with 1,000 ml stainless steel cup"
+        },
+        {
+          "slot": "v3",
+          "root": "curada",
+          "relPath": "balanza_marcy_calibrada_despacho.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "LAB_METROLOGY_STEEL",
+          "captionEs": "Equipo calibrado en mostrador listo para despacho",
+          "captionEn": "Bench-calibrated unit ready for immediate dispatch"
+        }
       ]
     },
     "SMAT-LAB-VASO-1000": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "vaso_marcy_inoxidable_1000ml.jpg", "fit": "contain", "background": { "r": 248, "g": 250, "b": 252, "alpha": 1 }, "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "STAINLESS_304", "captionEs": "Vaso tarado 1,000 ml en acero inoxidable con asas", "captionEn": "Tared 1,000 ml stainless steel slurry cup with bail" },
-        { "slot": "v2", "root": "curada", "relPath": "vaso_marcy_cilindro_calibrado.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "STAINLESS_304", "captionEs": "Cilindro de acero inoxidable de espesor calibrado", "captionEn": "Calibrated stainless steel sample cylinder" },
-        { "slot": "v3", "root": "curada", "relPath": "vaso_marcy_orificios_enrase.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "STAINLESS_304", "captionEs": "Orificios de enrase exacto a 1,000 ml en borde superior", "captionEn": "Precision 1,000 ml overflow ports on upper rim" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "vaso_marcy_inoxidable_1000ml.jpg",
+          "fit": "contain",
+          "background": {
+            "r": 248,
+            "g": 250,
+            "b": 252,
+            "alpha": 1
+          },
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "STAINLESS_304",
+          "captionEs": "Vaso tarado 1,000 ml en acero inoxidable con asas",
+          "captionEn": "Tared 1,000 ml stainless steel slurry cup with bail"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "vaso_marcy_cilindro_calibrado.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "STAINLESS_304",
+          "captionEs": "Cilindro de acero inoxidable de espesor calibrado",
+          "captionEn": "Calibrated stainless steel sample cylinder"
+        },
+        {
+          "slot": "v3",
+          "root": "curada",
+          "relPath": "vaso_marcy_orificios_enrase.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "STAINLESS_304",
+          "captionEs": "Orificios de enrase exacto a 1,000 ml en borde superior",
+          "captionEn": "Precision 1,000 ml overflow ports on upper rim"
+        }
       ]
     },
     "SMAT-LAB-TAMIZ-E11": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "tamiz_astm_e11_bronce_malla_superior.jpg", "fit": "cover", "cropBox": { "leftRatio": 0.14, "topRatio": 0.04, "widthRatio": 0.72, "heightRatio": 0.44 }, "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM", "material_class": "BRASS_WIRE_SIEVE", "captionEs": "Tamiz certificado ASTM E11 de 8 pulgadas en bronce con malla tejida", "captionEn": "8-inch ASTM E11 certified brass woven-wire test sieve" },
-        { "slot": "v2", "root": "curada", "relPath": "tamiz_astm_e11_control_abertura_superior.jpg", "fit": "cover", "cropBox": { "leftRatio": 0.16, "topRatio": 0.05, "widthRatio": 0.68, "heightRatio": 0.45 }, "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM", "material_class": "BRASS_WIRE_SIEVE", "captionEs": "Malla certificada ASTM E11 #30 para control granulométrico P80", "captionEn": "No. 30 ASTM E11 calibrated sieve mesh for P80 sizing control" },
-        { "slot": "v3", "root": "curada", "relPath": "tamiz_astm_e11_lote_malla_calibrada.jpg", "fit": "cover", "cropBox": { "leftRatio": 0.18, "topRatio": 0.08, "widthRatio": 0.64, "heightRatio": 0.40 }, "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM", "material_class": "BRASS_WIRE_SIEVE", "captionEs": "Soldadura perimetral y malla calibrada de laboratorio", "captionEn": "Perimeter solder joint and calibrated laboratory wire mesh" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "tamiz_astm_e11_bronce_malla_superior.jpg",
+          "fit": "contain",
+          "background": {
+            "r": 241,
+            "g": 245,
+            "b": 249,
+            "alpha": 1
+          },
+          "cropBox": {
+            "leftRatio": 0.14,
+            "topRatio": 0.08,
+            "widthRatio": 0.72,
+            "heightRatio": 0.44
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+          "material_class": "BRASS_WIRE_SIEVE",
+          "captionEs": "Tamiz ASTM E11 de 8\" con malla tejida inspeccionada",
+          "captionEn": "8-inch ASTM E11 certified woven-wire test sieve bed"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "tamiz_astm_e11_control_abertura_superior.jpg",
+          "fit": "contain",
+          "background": {
+            "r": 241,
+            "g": 245,
+            "b": 249,
+            "alpha": 1
+          },
+          "cropBox": {
+            "leftRatio": 0.16,
+            "topRatio": 0.08,
+            "widthRatio": 0.68,
+            "heightRatio": 0.43
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+          "material_class": "BRASS_WIRE_SIEVE",
+          "captionEs": "Malla certificada ASTM E11 para corte granulométrico P80",
+          "captionEn": "Calibrated ASTM E11 test sieve mesh for P80 sizing control"
+        },
+        {
+          "slot": "v3",
+          "root": "curada",
+          "relPath": "tamiz_astm_e11_lote_malla_calibrada.jpg",
+          "fit": "contain",
+          "background": {
+            "r": 241,
+            "g": 245,
+            "b": 249,
+            "alpha": 1
+          },
+          "cropBox": {
+            "leftRatio": 0.2,
+            "topRatio": 0.12,
+            "widthRatio": 0.6,
+            "heightRatio": 0.35
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+          "material_class": "BRASS_WIRE_SIEVE",
+          "captionEs": "Aro interno en bronce y costura perimetral de laboratorio",
+          "captionEn": "Internal brass sieve wall and perimeter wire cloth bond"
+        }
       ]
     },
     "SMAT-LAB-ROTAP-MECH": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "tamizador_cilindros_soporte_lab.jpg", "fit": "cover", "cropBox": { "leftRatio": 0.16, "topRatio": 0.08, "widthRatio": 0.62, "heightRatio": 0.84 }, "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM", "material_class": "LAB_SIEVE_SHAKER", "captionEs": "Cabezal mecánico, placas base y cilindros para torre de tamices", "captionEn": "Mechanical sieve-shaker base plates and support cylinders" },
-        { "slot": "v2", "root": "curada", "relPath": "tamizador_tapa_plato_receptor_bronce.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "LAB_SIEVE_SHAKER", "captionEs": "Tapa superior y plato receptor en bronce para torre de tamices 8\"", "captionEn": "Brass cover and receiver pan for 8-inch sieve stack" },
-        { "slot": "v3", "root": "memo", "relPath": "04_fototeca_de_productos/03_tamices_e_instrumental/IMG_0395.JPG", "fit": "cover", "cropBox": { "leftRatio": 0.14, "topRatio": 0.05, "widthRatio": 0.72, "heightRatio": 0.43 }, "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM", "material_class": "LAB_SIEVE_SHAKER", "captionEs": "Vista superior de malla tejida ASTM E11 de 8\" montada en aro", "captionEn": "Top view of 8-inch ASTM E11 woven wire sieve frame" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "tamizador_tapa_plato_receptor_bronce.jpg",
+          "fit": "contain",
+          "background": {
+            "r": 241,
+            "g": 245,
+            "b": 249,
+            "alpha": 1
+          },
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "LAB_SIEVE_SHAKER",
+          "captionEs": "Cabezal de impacto, tapa superior y plato receptor en bronce",
+          "captionEn": "Brass impact cover and receiver pan assembly for 8\" stack"
+        },
+        {
+          "slot": "v2",
+          "root": "memo",
+          "relPath": "04_fototeca_de_productos/03_tamices_e_instrumental/IMG_0395.JPG",
+          "fit": "contain",
+          "background": {
+            "r": 241,
+            "g": 245,
+            "b": 249,
+            "alpha": 1
+          },
+          "cropBox": {
+            "leftRatio": 0.14,
+            "topRatio": 0.08,
+            "widthRatio": 0.72,
+            "heightRatio": 0.41
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+          "material_class": "LAB_SIEVE_SHAKER",
+          "captionEs": "Torre de tamizado granulométrico ASTM E11 de 8 pulgadas",
+          "captionEn": "8-inch ASTM E11 particle sizing stack arrangement"
+        },
+        {
+          "slot": "v3",
+          "root": "memo",
+          "relPath": "04_fototeca_de_productos/03_tamices_e_instrumental/IMG_0648.JPG",
+          "fit": "contain",
+          "background": {
+            "r": 241,
+            "g": 245,
+            "b": 249,
+            "alpha": 1
+          },
+          "cropBox": {
+            "leftRatio": 0.19,
+            "topRatio": 0.12,
+            "widthRatio": 0.62,
+            "heightRatio": 0.34
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+          "material_class": "LAB_SIEVE_SHAKER",
+          "captionEs": "Malla fina calibrada #70 montada en tren de tamizado",
+          "captionEn": "Calibrated No. 70 fine wire sieve mounted in test stack"
+        }
       ]
     },
     "SMAT-LAB-PLATO-TENT": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "plato_tentadura_inox_lab.jpg", "fit": "cover", "cropBox": { "leftRatio": 0.05, "topRatio": 0.05, "widthRatio": 0.90, "heightRatio": 0.90 }, "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM", "material_class": "STAINLESS_PAN", "captionEs": "Platos de tentadura en acero inoxidable grado laboratorio", "captionEn": "Stainless steel laboratory gold panning dishes" },
-        { "slot": "v2", "root": "curada", "relPath": "plato_tentadura_prueba_humedo.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "STAINLESS_PAN", "captionEs": "Prueba en húmedo con concentrado mineral en planta", "captionEn": "Wet mineral concentration panning verification in plant" },
-        { "slot": "v3", "root": "curada", "relPath": "plato_tentadura_perfil_conico.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "STAINLESS_PAN", "captionEs": "Perfil cónico balanceado para lavado de muestra", "captionEn": "Balanced conical dish profile for assay washing" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "plato_tentadura_perfil_conico.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "STAINLESS_PAN",
+          "captionEs": "Plato de tentadura cónico en acero inoxidable grado laboratorio",
+          "captionEn": "Conical 304 stainless steel metallurgical gold panning dish"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "plato_tentadura_prueba_humedo.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "STAINLESS_PAN",
+          "captionEs": "Prueba en húmedo con concentrado mineral en laboratorio",
+          "captionEn": "Wet mineral concentrate assay panning test in plant lab"
+        },
+        {
+          "slot": "v3",
+          "root": "curada",
+          "relPath": "plato_tentadura_inox_lab.jpg",
+          "fit": "cover",
+          "cropBox": {
+            "leftRatio": 0.01,
+            "topRatio": 0.04,
+            "widthRatio": 0.48,
+            "heightRatio": 0.46
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+          "material_class": "STAINLESS_PAN",
+          "captionEs": "Detalle superior del acabado espejo en acero inoxidable",
+          "captionEn": "Top mirror finish detail of stainless assay panning bowl"
+        }
       ]
     },
     "SMAT-LAB-PULV-DISC": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "pulverizador_discos_ua_cr_ni.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "CR_NI_GRINDING_DISC", "captionEs": "Discos de molienda en aleación Cr-Ni de alta dureza", "captionEn": "High-hardness Cr-Ni alloy UA grinding discs" },
-        { "slot": "v2", "root": "curada", "relPath": "pulverizador_discos_ua_gabinete.jpg", "fit": "contain", "background": { "r": 248, "g": 250, "b": 252, "alpha": 1 }, "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "CR_NI_GRINDING_DISC", "captionEs": "Pulverizador de discos UA para muestra analítica fina", "captionEn": "UA disc pulverizer for analytical assay preparation" },
-        { "slot": "v3", "root": "curada", "relPath": "pulverizador_unidad_camara_discos.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "CR_NI_GRINDING_DISC", "captionEs": "Unidad instalada en gabinete con acceso a cámara de discos", "captionEn": "Cabinet-mounted pulverizer with hinged grinding chamber" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "pulverizador_discos_ua_cr_ni.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "CR_NI_GRINDING_DISC",
+          "captionEs": "Discos de molienda en aleación Cr-Ni de alta dureza",
+          "captionEn": "High-hardness Cr-Ni alloy UA grinding discs"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "pulverizador_discos_ua_gabinete.jpg",
+          "fit": "contain",
+          "background": {
+            "r": 248,
+            "g": 250,
+            "b": 252,
+            "alpha": 1
+          },
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "CR_NI_GRINDING_DISC",
+          "captionEs": "Pulverizador de discos UA para muestra analítica fina",
+          "captionEn": "UA disc pulverizer for analytical assay preparation"
+        },
+        {
+          "slot": "v3",
+          "root": "curada",
+          "relPath": "pulverizador_unidad_camara_discos.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "CR_NI_GRINDING_DISC",
+          "captionEs": "Unidad instalada en gabinete con acceso a cámara de discos",
+          "captionEn": "Cabinet-mounted pulverizer with hinged grinding chamber"
+        }
       ]
     },
     "SMAT-LAB-FILTRO-BATCH": {
       "slides": [
-        { "slot": "primary", "root": "curada", "relPath": "filtro_prensa_batch_laboratorio.jpg", "fit": "cover", "cropBox": { "leftRatio": 0.04, "topRatio": 0.03, "widthRatio": 0.92, "heightRatio": 0.94 }, "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM", "material_class": "LAB_PRESSURE_FILTER", "captionEs": "Filtro prensa batch de laboratorio con cámara de aluminio", "captionEn": "Laboratory batch pressure filter with heavy aluminum cylinder" },
-        { "slot": "v2", "root": "curada", "relPath": "filtro_prensa_batch_bastidor.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "LAB_PRESSURE_FILTER", "captionEs": "Bastidor de doble columna y tornillo de cierre rápido", "captionEn": "Twin-column frame with quick-clamp top handwheel" },
-        { "slot": "v3", "root": "curada", "relPath": "filtro_prensa_batch_valvula_sello.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "LAB_PRESSURE_FILTER", "captionEs": "Detalle de válvula superior de aire comprimido y sello", "captionEn": "Top pneumatic air valve and chamber O-ring seal detail" }
+        {
+          "slot": "primary",
+          "root": "curada",
+          "relPath": "filtro_prensa_batch_laboratorio.jpg",
+          "fit": "cover",
+          "cropBox": {
+            "leftRatio": 0.04,
+            "topRatio": 0.03,
+            "widthRatio": 0.92,
+            "heightRatio": 0.94
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+          "material_class": "LAB_PRESSURE_FILTER",
+          "captionEs": "Filtro prensa batch de laboratorio con cámara de aluminio",
+          "captionEn": "Laboratory batch pressure filter with heavy aluminum cylinder"
+        },
+        {
+          "slot": "v2",
+          "root": "curada",
+          "relPath": "filtro_prensa_batch_bastidor.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "LAB_PRESSURE_FILTER",
+          "captionEs": "Bastidor de doble columna y tornillo de cierre rápido",
+          "captionEn": "Twin-column frame with quick-clamp top handwheel"
+        },
+        {
+          "slot": "v3",
+          "root": "curada",
+          "relPath": "filtro_prensa_batch_valvula_sello.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "LAB_PRESSURE_FILTER",
+          "captionEs": "Detalle de válvula superior de aire comprimido y sello",
+          "captionEn": "Top pneumatic air valve and chamber O-ring seal detail"
+        }
+      ]
+    },
+    "SMAT-CRUSH-JAW-CONE": {
+      "slides": [
+        {
+          "slot": "primary",
+          "root": "fotos",
+          "relPath": "TRITURACION/IMG-20200731-WA0035.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "MN18_CRUSHER",
+          "captionEs": "Trituradora de quijada en montaje de taller con volantes balanceados",
+          "captionEn": "Heavy-duty primary jaw crusher assembly with balanced flywheels"
+        },
+        {
+          "slot": "v2",
+          "root": "fotos",
+          "relPath": "TRITURACION/IMG-20200731-WA0036.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "MN18_CRUSHER",
+          "captionEs": "Muelas fijas y móviles en acero al manganeso Mn18Cr2",
+          "captionEn": "Mn18Cr2 manganese steel fixed and swing jaw wear plates"
+        },
+        {
+          "slot": "v3",
+          "root": "fotos",
+          "relPath": "TRITURACION/IMG-20200731-WA0038.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "MN18_CRUSHER",
+          "captionEs": "Cámara de trituración, excéntrica y blindajes laterales",
+          "captionEn": "Crushing chamber eccentric shaft and Mn18Cr2 cheek liners"
+        }
+      ]
+    },
+    "SMAT-MILL-BALL-LINER": {
+      "slides": [
+        {
+          "slot": "primary",
+          "root": "fotos",
+          "relPath": "Molino de Bolas/IMG-20201214-WA0048.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "CRMO_MILL_LINER",
+          "captionEs": "Corazas elevadoras en Cr-Mo y parrillas de descarga para molino de bolas",
+          "captionEn": "Cr-Mo alloy ball mill lifter liners and discharge grates in yard"
+        },
+        {
+          "slot": "v2",
+          "root": "fotos",
+          "relPath": "Molino de Bolas/IMG-20210117-WA0019.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "CRMO_MILL_LINER",
+          "captionEs": "Juego completo de revestimientos mecanizados y barrenados",
+          "captionEn": "Complete drilled Cr-Mo mill shell liner set staged for dispatch"
+        },
+        {
+          "slot": "v3",
+          "root": "fotos",
+          "relPath": "Molino de Bolas/IMG-20220126-WA0039.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "CRMO_MILL_LINER",
+          "captionEs": "Inspección dimensional de corazas y tapas de molino",
+          "captionEn": "Dimensional inspection of mill shell and feed-head liners"
+        }
+      ]
+    },
+    "SMAT-THICK-MECH": {
+      "slides": [
+        {
+          "slot": "primary",
+          "root": "fotos",
+          "relPath": "MECANIZMO ESPESADOR/IMG-20220126-WA0037.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "THICKENER_DRIVE",
+          "captionEs": "Cabezal reductor de espesador con levante de rastras y puente",
+          "captionEn": "Thickener center-drive reducer, torque guard and bridge lift frame"
+        },
+        {
+          "slot": "v2",
+          "root": "fotos",
+          "relPath": "MECANIZMO ESPESADOR/IMG-20220316-WA0039.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "THICKENER_DRIVE",
+          "captionEs": "Corona dentada, piñón y columna motriz en armado",
+          "captionEn": "Thickener bull gear, pinion drive and vertical torque shaft"
+        },
+        {
+          "slot": "v3",
+          "root": "fotos",
+          "relPath": "MECANIZMO ESPESADOR/IMG-20220327-WA0024.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "THICKENER_DRIVE",
+          "captionEs": "Sistema motriz de puente para espesadores de concentrado y jales",
+          "captionEn": "Bridge-mounted thickener drive assembly for tailings and concentrate"
+        }
+      ]
+    },
+    "SMAT-PUMP-VERT-SP": {
+      "slides": [
+        {
+          "slot": "primary",
+          "root": "fotos",
+          "relPath": "bOMBA lODOS vERTICAL/bombas vertica.jpg",
+          "fit": "cover",
+          "cropBox": {
+            "leftRatio": 0,
+            "topRatio": 0.14,
+            "widthRatio": 0.78,
+            "heightRatio": 0.84
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+          "material_class": "VERTICAL_SLURRY_PUMP",
+          "captionEs": "Bombas verticales cantilever libre de sellos sumergidas para cárcamos",
+          "captionEn": "Seal-less cantilever vertical sump slurry pumps assembled in bay"
+        },
+        {
+          "slot": "v2",
+          "root": "fotos",
+          "relPath": "bOMBA lODOS vERTICAL/VERTICAL PUMP.webp",
+          "fit": "contain",
+          "background": {
+            "r": 241,
+            "g": 245,
+            "b": 249,
+            "alpha": 1
+          },
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "VERTICAL_SLURRY_PUMP",
+          "captionEs": "Vista de columna cantilever y succión sumergida en cárcamo",
+          "captionEn": "Cantilever column and submerged sump suction profile"
+        },
+        {
+          "slot": "v3",
+          "root": "memo",
+          "relPath": "04_fototeca_de_productos/02_bombas_y_equipos_de_planta/bomba nash2 vacio.jpg",
+          "fit": "cover",
+          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "material_class": "VERTICAL_SLURRY_PUMP",
+          "captionEs": "Paquete de bombeo y vacío industrial montado sobre patín metálico",
+          "captionEn": "Skid-mounted plant pump and vacuum package prepared for dispatch"
+        }
       ]
     }
   },
@@ -143,7 +965,12 @@
       "root": "curada",
       "relPath": "almacen_bomba_6x4_dah_ensamblada.jpg",
       "fit": "cover",
-      "cropBox": { "leftRatio": 0.02, "topRatio": 0.42, "widthRatio": 0.94, "heightRatio": 0.56 },
+      "cropBox": {
+        "leftRatio": 0.02,
+        "topRatio": 0.42,
+        "widthRatio": 0.94,
+        "heightRatio": 0.56
+      },
       "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
       "material_class": "SLURRY_PUMP_ASSEMBLY",
       "captionEs": "Bomba centrífuga de lodos 6x4 DAH ensamblada con transmisión por poleas y guarda de seguridad.",
@@ -192,21 +1019,147 @@
       "material_class": "A05_METAL",
       "captionEs": "Impulsor Alto Cromo 27% (≥ 650 HB) fundido y rectificado listo para despacho nacional desde Durango.",
       "captionEn": "Cast and precision-machined 27% High-Chrome impeller staged for domestic dispatch from Durango."
+    },
+    {
+      "id": "almacen-bomba-zvz-patio",
+      "fileName": "almacen-bomba-zvz-patio.webp",
+      "root": "fotos",
+      "relPath": "bOMBAS LODOS/IMG-20220614-WA0038.jpg",
+      "fit": "cover",
+      "cropBox": {
+        "leftRatio": 0.05,
+        "topRatio": 0.25,
+        "widthRatio": 0.9,
+        "heightRatio": 0.65
+      },
+      "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+      "material_class": "SLURRY_PUMP_ASSEMBLY",
+      "captionEs": "Bomba centrífuga de lodos en montaje superior lista en patio Durango.",
+      "captionEn": "Overhead-mounted centrifugal slurry pump package ready at Durango yard."
+    },
+    {
+      "id": "almacen-patio-cotizador",
+      "fileName": "almacen-patio-cotizador.webp",
+      "root": "fotos",
+      "relPath": "Filtro Presion/IMG-20210412-WA0045.jpg",
+      "fit": "cover",
+      "cropBox": {
+        "leftRatio": 0,
+        "topRatio": 0.28,
+        "widthRatio": 0.85,
+        "heightRatio": 0.7
+      },
+      "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+      "material_class": "PP_AND_CLOTH",
+      "captionEs": "Paquete de placas de polipropileno en plataforma listo para embarque a mina.",
+      "captionEn": "Polypropylene filter press plate pack loaded for mine-site delivery."
     }
   ],
   "atomic_parts": {
-    "d3147": { "root": "curada", "relPath": "parte_d3147_impulsor_4x3_a05.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "A05_METAL" },
-    "e4147": { "root": "curada", "relPath": "parte_e4147_impulsor_6x4_a05.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "A05_METAL" },
-    "f6147": { "root": "curada", "relPath": "parte_f6147_impulsor_8x6.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "A05_METAL" },
-    "dam028": { "root": "curada", "relPath": "parte_dam028_anillo_expulsor_4x3.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "EXPELLER_DRY_SEAL" },
-    "eam028": { "root": "curada", "relPath": "parte_eam028_anillo_expulsor_6x4.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "EXPELLER_DRY_SEAL" },
-    "e4083": { "root": "curada", "relPath": "parte_e4083_plato_succion_6x4.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "A05_METAL" },
-    "d075c21": { "root": "curada", "relPath": "parte_d075c21_camisa_flecha.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "CERAMIC_OR_STAINLESS_SLEEVE" },
-    "dam005": { "root": "curada", "relPath": "parte_dam005_cartucho_rodamientos.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "SAE4140_DUCTILE_IRON" },
-    "e4132": { "root": "curada", "relPath": "parte_e4132_plato_posterior_6x4.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "A05_METAL" },
-    "d3110": { "root": "curada", "relPath": "parte_d3110_voluta_4x3_a05.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "A05_METAL" },
-    "d4018": { "root": "curada", "relPath": "parte_d4018_forro_succion_4x3.jpg", "fit": "cover", "visual_brand_audit": "CLEAN_ZERO_OEM", "material_class": "BIMODAL_A05_OR_R55" },
-    "d4028": { "root": "curada", "relPath": "parte_d4028_expulsor_6x4_amarillo.jpeg", "rotateDeg": 90, "fit": "cover", "cropBox": { "leftRatio": 0.14, "topRatio": 0.42, "widthRatio": 0.56, "heightRatio": 0.52 }, "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM", "material_class": "EXPELLER_DRY_SEAL" },
-    "d4029": { "root": "curada", "relPath": "parte_d4029_camara_expulsora_amarilla.jpeg", "rotateDeg": 90, "fit": "cover", "cropBox": { "leftRatio": 0.52, "topRatio": 0.05, "widthRatio": 0.36, "heightRatio": 0.42 }, "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM", "material_class": "EXPELLER_DRY_SEAL" }
+    "d3147": {
+      "root": "curada",
+      "relPath": "parte_d3147_impulsor_4x3_a05.jpg",
+      "fit": "cover",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "material_class": "A05_METAL"
+    },
+    "e4147": {
+      "root": "curada",
+      "relPath": "parte_e4147_impulsor_6x4_a05.jpg",
+      "fit": "cover",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "material_class": "A05_METAL"
+    },
+    "f6147": {
+      "root": "curada",
+      "relPath": "parte_f6147_impulsor_8x6.jpg",
+      "fit": "cover",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "material_class": "A05_METAL"
+    },
+    "dam028": {
+      "root": "curada",
+      "relPath": "parte_dam028_anillo_expulsor_4x3.jpg",
+      "fit": "cover",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "material_class": "EXPELLER_DRY_SEAL"
+    },
+    "eam028": {
+      "root": "curada",
+      "relPath": "parte_eam028_anillo_expulsor_6x4.jpg",
+      "fit": "cover",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "material_class": "EXPELLER_DRY_SEAL"
+    },
+    "e4083": {
+      "root": "curada",
+      "relPath": "parte_e4083_plato_succion_6x4.jpg",
+      "fit": "cover",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "material_class": "A05_METAL"
+    },
+    "d075c21": {
+      "root": "curada",
+      "relPath": "parte_d075c21_camisa_flecha.jpg",
+      "fit": "cover",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "material_class": "CERAMIC_OR_STAINLESS_SLEEVE"
+    },
+    "dam005": {
+      "root": "curada",
+      "relPath": "parte_dam005_cartucho_rodamientos.jpg",
+      "fit": "cover",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "material_class": "SAE4140_DUCTILE_IRON"
+    },
+    "e4132": {
+      "root": "curada",
+      "relPath": "parte_e4132_plato_posterior_6x4.jpg",
+      "fit": "cover",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "material_class": "A05_METAL"
+    },
+    "d3110": {
+      "root": "curada",
+      "relPath": "parte_d3110_voluta_4x3_a05.jpg",
+      "fit": "cover",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "material_class": "A05_METAL"
+    },
+    "d4018": {
+      "root": "curada",
+      "relPath": "parte_d4018_forro_succion_4x3.jpg",
+      "fit": "cover",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "material_class": "BIMODAL_A05_OR_R55"
+    },
+    "d4028": {
+      "root": "curada",
+      "relPath": "parte_d4028_expulsor_6x4_amarillo.jpeg",
+      "rotateDeg": 90,
+      "fit": "cover",
+      "cropBox": {
+        "leftRatio": 0.14,
+        "topRatio": 0.42,
+        "widthRatio": 0.56,
+        "heightRatio": 0.52
+      },
+      "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+      "material_class": "EXPELLER_DRY_SEAL"
+    },
+    "d4029": {
+      "root": "fotos",
+      "relPath": "expeller expeller ring/IMG-20210209-WA0006.jpeg",
+      "rotateDeg": 270,
+      "fit": "cover",
+      "cropBox": {
+        "leftRatio": 0.21,
+        "topRatio": 0.02,
+        "widthRatio": 0.25,
+        "heightRatio": 0.35
+      },
+      "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+      "material_class": "EXPELLER_DRY_SEAL"
+    }
   }
 }

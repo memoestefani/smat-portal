@@ -103,7 +103,7 @@ pub fn verify_redirects_one_hop_and_static_links(site_root: &Path) -> Result<(),
     Ok(())
 }
 
-/// Invariante 6: Catalogo maestro (19 SKUs, 13 piezas, 19 WebP, 25 grupos / 52 minas, reglas B2B).
+/// Invariante 6: Catalogo maestro (23 SKUs = 19 stock + 4 bajo proyecto, 13 piezas, 23+ WebP, 25 grupos / 52 minas, reglas B2B).
 pub fn verify_catalog_mining_groups_and_webp(site_root: &Path) -> Result<(), String> {
     let quick_raw = fs::read_to_string(site_root.join("data/quick_checkout_Catalog.json"))
         .map_err(|e| e.to_string())?;
@@ -114,9 +114,9 @@ pub fn verify_catalog_mining_groups_and_webp(site_root: &Path) -> Result<(), Str
         .and_then(|v| v.as_array())
         .or_else(|| quick_val.as_array())
         .ok_or("Formato invalido en data/quick_checkout_Catalog.json")?;
-    if skus.len() != 19 {
+    if skus.len() != 23 {
         return Err(format!(
-            "Se esperan exactamente 19 SKUs canonicos (encontrados: {})",
+            "Se esperan exactamente 23 SKUs canonicos (19 stock + 4 bajo proyecto; encontrados: {})",
             skus.len()
         ));
     }
@@ -167,15 +167,15 @@ pub fn verify_catalog_mining_groups_and_webp(site_root: &Path) -> Result<(), Str
                 webp_count += 1;
             }
         }
-        if webp_count < 19 {
+        if webp_count < 23 {
             return Err(format!(
-                "Se requieren al menos 19 imagenes .webp en public/images/productos (hay {})",
+                "Se requieren al menos 23 imagenes .webp en public/images/productos (hay {})",
                 webp_count
             ));
         }
     }
 
-    // V6.0: 5 fotos reales de Almacen Central Durango y manifiesto SHA/dHash limpio
+    // V6.0: 5+ fotos reales de Almacen Central Durango y manifiesto SHA/dHash limpio
     let almacen_dir = site_root.join("public/images/almacen");
     let mut almacen_webp = 0usize;
     if almacen_dir.is_dir() {
@@ -203,9 +203,9 @@ pub fn verify_catalog_mining_groups_and_webp(site_root: &Path) -> Result<(), Str
         .and_then(|v| v.as_array())
         .map(|a| a.len())
         .unwrap_or(0);
-    if manifest_skus != 19 {
+    if manifest_skus != 23 {
         return Err(format!(
-            "Manifiesto V7.0 debe registrar 19 SKUs (encontrados: {})",
+            "Manifiesto V10.0 debe registrar 23 SKUs (encontrados: {})",
             manifest_skus
         ));
     }

@@ -10,6 +10,7 @@
  */
 
 import { resolveDomainMaterialSpec } from './domainMaterialSpecResolver.js';
+import { resolveEmptyRequisitionViewState, shouldSuppressEmptyFolio } from './emptyRequisitionGate.js';
 import { formatCheckoutLaneHuman, formatLogisticsDestinationHuman } from './i18nDomainLabels.js';
 import { resolveHonestWebhookStatus } from './leadOutboxStateMachine.js';
 import { getQuickProductBySlugOrAlias } from './quickProductsCatalog.js';
@@ -44,12 +45,13 @@ export function buildAcuseViewModel(input = {}) {
   const items = Array.isArray(input.items) ? input.items : [];
   const hasUrlRequisition = Boolean(input.hasUrlRequisition);
   const lifecycleState = input.lifecycleState || (items.length > 0 ? 'DRAFT' : 'EMPTY');
-  const isEmptyRequisition = lifecycleState === 'EMPTY' && !hasUrlRequisition && items.length === 0;
+  const isEmptyRequisition = shouldSuppressEmptyFolio({ items }, hasUrlRequisition);
+  const emptyView = resolveEmptyRequisitionViewState({ items }, isEn ? 'en' : 'es', hasUrlRequisition);
   const leadItem = items[0] || null;
 
-  const folio = input.folioParam || (isEmptyRequisition
-    ? (isEn ? 'SMAT-DRAFT' : 'SMAT-BORRADOR')
-    : ('SMAT-' + new Date().getFullYear() + '-REQ'));
+  const folio = isEmptyRequisition
+    ? ''
+    : (input.folioParam || ('SMAT-' + new Date().getFullYear() + '-REQ'));
 
   const urgencia = isEmptyRequisition
     ? 'borrador'
@@ -64,7 +66,7 @@ export function buildAcuseViewModel(input = {}) {
   });
 
   const urgencyHeading = isEmptyRequisition
-    ? (isEn ? 'STATUS: NO REQUISITION ISSUED' : 'ESTADO: BORRADOR SIN REQUISICIÓN')
+    ? ''
     : (urgencia === 'paro'
       ? (isEn ? 'PRIORITY: PLANT SHUTDOWN' : 'PRIORIDAD: [PARO DE PLANTA]')
       : (isEn ? 'PRIORITY: SCHEDULED PROJECT' : 'PRIORIDAD: [PROYECTO / PROGRAMADO]'));
@@ -75,9 +77,10 @@ export function buildAcuseViewModel(input = {}) {
     urgencia,
     urgencyHeading,
     matSpec,
-    orderCodeLabel: isEmptyRequisition
-      ? (isEn ? 'LOCAL DRAFT • CONFIGURE SPARES IN QUOTE WIZARD' : 'BORRADOR LOCAL • CONFIGURE REFACCIONES EN COTIZADOR')
-      : '',
+    orderCodeLabel: '',
+    sapPreviewText: '',
+    emptyHeadline: emptyView.emptyStatusLabel,
+    emptyBody: emptyView.bodyText,
   };
 }
 
@@ -291,6 +294,15 @@ export function initAcuseSheetController(lang = 'es', _options = {}) {
       urgencyParam: urlParams.get('urgencia') || (cached.urgencia && cached.urgencia.includes('PARO') ? 'paro' : (wbV2.urgency === 'PARO_DE_LINEA' ? 'paro' : (wbV2.urgency === 'STOCK_SS' ? 'proyecto' : ''))),
     });
     const isEmptyRequisition = acuseVm.isEmptyRequisition;
+    const emptyCardEl = document.getElementById('acuse-empty-state-card');
+    const printSheetEl = document.getElementById('print-sheet');
+    const actionsEl = document.getElementById('acuse-screen-actions');
+    if (emptyCardEl) emptyCardEl.classList.toggle('hidden', !isEmptyRequisition);
+    if (printSheetEl) printSheetEl.classList.toggle('hidden', isEmptyRequisition);
+    if (actionsEl) actionsEl.classList.toggle('hidden', isEmptyRequisition);
+    if (isEmptyRequisition) {
+      return;
+    }
 
     const defaultRoleTitle = leadItem
       ? (isEn ? leadItem.nameEn : leadItem.nameEs)

@@ -40,10 +40,10 @@ const {
       <h1 class="verifier-title">{isEs ? 'Catálogo SMAT Minerals y Buscador 1:1' : 'SMAT Minerals Catalog & 1:1 Search'}</h1>
       <div class="smat-chip-row">
         <button type="button" class="smat-badge-solar part-chip is-active" data-family-chip="all" aria-pressed="true">
-          <strong>{totalCatalogSkusCount}</strong> {isEs ? 'Equipos/Kits' : 'Equipment/Kits'}
+          <span><strong>{totalCatalogSkusCount}</strong> {isEs ? 'Equipos y Kits' : 'Equipment & Kits'}</span>
         </button>
         <button type="button" class="smat-badge-solar part-chip" data-family-chip="atomicas" aria-pressed="false">
-          {ATOMIC_PARTS_SSOT_COUNT} {isEs ? 'Piezas Atómicas' : 'Atomic Parts'}
+          {isEs ? `Refacciones por Código (${ATOMIC_PARTS_SSOT_COUNT})` : `Part-Code Spares (${ATOMIC_PARTS_SSOT_COUNT})`}
         </button>
       </div>
     </div>
@@ -87,9 +87,18 @@ const {
           {isEs ? 'Piezas sueltas listas para cotejo dimensional 1:1 y cotización directa desde Durango.' : 'Individual wear parts ready for 1:1 fit check and direct quote from Durango.'}
         </span>
       </div>
-      <span class="matrix-badge">{enrichedAtomicParts.length} {isEs ? 'PARTES ATÓMICAS' : 'ATOMIC PARTS'}</span>
+      <span class="matrix-badge">{enrichedAtomicParts.length} {isEs ? 'REFACCIONES POR CÓDIGO' : 'PART-CODE SPARES'}</span>
     </div>
-    <div class="smat-sf-grid">
+    <details class="wb-progressive-drawer smat-mt-sm" id="atomic-parts-catalog-drawer">
+      <summary class="wb-progressive-summary">
+        <span>
+          {isEs
+            ? `Ver las ${ATOMIC_PARTS_SSOT_COUNT} refacciones por código (D4029, E4147, F6147...)`
+            : `View all ${ATOMIC_PARTS_SSOT_COUNT} part-code spares (D4029, E4147, F6147...)`}
+        </span>
+        <span>▾</span>
+      </summary>
+      <div class="smat-sf-grid smat-mt-sm">
       {enrichedAtomicParts.map((part) => {
         const partTitle = isEs ? part.name_es : part.name_en;
         const partHref = isEs ? `/catalogo/${part.code}/` : `/en/catalog/${part.code}/`;
@@ -149,7 +158,8 @@ const {
           </article>
         );
       })}
-    </div>
+      </div>
+    </details>
   </section>
 
   <section class="catalog-section" id={isEs ? 'logistica' : 'logistics'}>
@@ -224,6 +234,8 @@ const {
       if (atomicSection) {
         (atomicSection as HTMLElement).hidden = false;
         if (isAtomicOnly) {
+          const atomicDrawer = document.getElementById('atomic-parts-catalog-drawer') as HTMLDetailsElement | null;
+          if (atomicDrawer) atomicDrawer.open = true;
           atomicSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }
@@ -270,6 +282,11 @@ const {
 </script>
 
 <style>
+  @media (min-width: 769px) {
+    .catalog-omnibox-bar {
+      display: none;
+    }
+  }
   .wb-progressive-drawer {
     border: 1px solid #cbd5e1;
     border-radius: 10px;

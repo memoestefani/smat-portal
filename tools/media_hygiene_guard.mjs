@@ -21,9 +21,16 @@ export const FORBIDDEN_BRAND_TOKENS = Object.freeze([
   'expo',
   'weg',
   'eam028a05',
+  '029a05',
+  'shibo',
+  'xkjgroup',
+  'allpumpscn',
+  'pinnxun',
   'equipo_rotatorio_laboratorio_verde',
   'celda_flotacion_mecanismo_suspendido',
-  'celda_flotacion_rotor_estator_corte'
+  'celda_flotacion_rotor_estator_corte',
+  'malla_fina_poliuretano_rojo_panel',
+  'tamizador_cilindros_soporte_lab'
 ]);
 
 export const FORBIDDEN_VISUAL_AUDITS = Object.freeze([
@@ -55,7 +62,11 @@ export const SKU_EXPECTED_MATERIAL_CLASS = Object.freeze({
   'SMAT-LAB-ROTAP-MECH': 'LAB_SIEVE_SHAKER',
   'SMAT-LAB-PLATO-TENT': 'STAINLESS_PAN',
   'SMAT-LAB-PULV-DISC': 'CR_NI_GRINDING_DISC',
-  'SMAT-LAB-FILTRO-BATCH': 'LAB_PRESSURE_FILTER'
+  'SMAT-LAB-FILTRO-BATCH': 'LAB_PRESSURE_FILTER',
+  'SMAT-CRUSH-JAW-CONE': 'MN18_CRUSHER',
+  'SMAT-MILL-BALL-LINER': 'CRMO_MILL_LINER',
+  'SMAT-THICK-MECH': 'THICKENER_DRIVE',
+  'SMAT-PUMP-VERT-SP': 'VERTICAL_SLURRY_PUMP'
 });
 
 export function findForbiddenBrandToken(text) {
@@ -145,4 +156,28 @@ export function validateMediaGallerySpec(specDoc, catalogSkus, atomicParts) {
     assertEntryHygiene(spec, null, `atomic_parts[${code}]`);
   }
   return { checkedSkus: seenSkuDirs.size, checkedAtomic: (atomicParts || []).length };
+}
+
+export function assertAlmacenPhotoReuseCap(routeImageMap, maxUses = 2) {
+  const counts = new Map();
+  for (const [routeFamily, images] of Object.entries(routeImageMap || {})) {
+    const uniqueInRoute = new Set(
+      (Array.isArray(images) ? images : [images])
+        .map((src) => String(src || '').trim())
+        .filter((src) => src.includes('/images/almacen/'))
+    );
+    for (const img of uniqueInRoute) {
+      const list = counts.get(img) || [];
+      list.push(routeFamily);
+      counts.set(img, list);
+    }
+  }
+  for (const [img, routes] of counts.entries()) {
+    if (routes.length > maxUses) {
+      throw new Error(
+        `[E_ALMACEN_REUSE_CAP] ${img} aparece en ${routes.length} familias de ruta (> ${maxUses}): ${routes.join(', ')}`
+      );
+    }
+  }
+  return { checkedImages: counts.size, maxUses };
 }

@@ -30,6 +30,7 @@ import {
 import { ENGINE_SCHEMA_REGISTRY } from '../src/scripts/engineSchemaRegistry.js';
 import { getDomainRouteMode } from '../src/scripts/schemaRuntimeBinder.js';
 import { calculateThreeCupMarcyCycloneBalance } from '../src/scripts/slurryEngine.js';
+import { resolveEmptyRequisitionViewState, shouldSuppressEmptyFolio } from '../src/scripts/emptyRequisitionGate.js';
 
 function installStorageStub() {
   const localMap = new Map();
@@ -108,4 +109,28 @@ test('SLICE-V55-07/08: interactiveRoutes vs readonlyRoutes y clasificacion nomin
   const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
   const bomSrc = fs.readFileSync(path.join(siteRoot, 'src/components/wizard/FastLaneBomBar.astro'), 'utf8');
   assert.ok(bomSrc.includes('<dialog id="smat-bom-import-dialog"'), 'FastLaneBomBar debe abrirse en modal dialog opt-in');
+});
+
+test('SLICE-V10-C23/C25: EMPTY_CART_GATE suprime folios sintéticos y expone arranque honesto', () => {
+  assert.equal(shouldSuppressEmptyFolio({ items: [] }, false), true);
+  assert.equal(shouldSuppressEmptyFolio({ items: [] }, true), false);
+  assert.equal(shouldSuppressEmptyFolio({ items: [{ id: 'SMAT-PUMP-IMP-AH', qty: 1 }] }, false), false);
+
+  const emptyEs = resolveEmptyRequisitionViewState({ items: [] }, 'es', false);
+  assert.equal(emptyEs.isEmpty, true);
+  assert.equal(emptyEs.showDossierTabs, false);
+  assert.equal(emptyEs.showHeaderThumb, false);
+  assert.equal(emptyEs.allowNextStep, false);
+  assert.equal(emptyEs.emptyFolioLabel, '');
+  assert.ok(emptyEs.emptyStatusLabel.includes('Aún no has generado una requisición'));
+
+  const activeEn = resolveEmptyRequisitionViewState({ items: [{ id: 'SMAT-CYC-D6-D20', qty: 2 }] }, 'en', false);
+  assert.equal(activeEn.isEmpty, false);
+  assert.equal(activeEn.showDossierTabs, true);
+  assert.equal(activeEn.allowNextStep, true);
+
+  const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+  const acuseSrc = fs.readFileSync(path.join(siteRoot, 'src/components/islands/AcuseSheetIsland.astro'), 'utf8');
+  assert.equal(acuseSrc.includes('SMAT-2026-RFQ'), false, 'AcuseSheetIsland SSR vacío no debe emitir SMAT-2026-RFQ');
+  assert.ok(acuseSrc.includes('id="acuse-empty-state-card"'), 'AcuseSheetIsland debe renderizar tarjeta honesta vacía');
 });

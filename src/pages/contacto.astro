@@ -25,17 +25,28 @@ import companyData from '../../data/company.json';
 
   <section class="section-spacing">
     <div class="container">
-      <figure class="contact-warehouse-banner">
-        <img
-          src="/images/almacen/almacen-volutas-cromo-caja.webp"
-          alt="Volutas de Alto Cromo 27% preparadas para despacho en Almacén Central SMAT Durango"
-          width="640"
-          height="480"
-          loading="eager"
-          decoding="async"
-        />
-        <figcaption>Almacén Central SMAT en Durango · Volutas Cr27%, impulsores y cartuchos con despacho verificado</figcaption>
-      </figure>
+      <div class="smat-trust-split-grid">
+        <figure class="contact-warehouse-banner">
+          <img
+            src="/images/almacen/almacen-bomba-zvz-patio.webp"
+            alt="Bomba centrífuga ensamblada con motor superior lista para despacho en Patio SMAT Durango"
+            width="640"
+            height="480"
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption>Almacén Central SMAT en Durango · Volutas Cr27%, impulsores y cartuchos con despacho verificado</figcaption>
+        </figure>
+        <div class="smat-trust-split-summary">
+          <h3>Despacho Terrestre Directo a Mina</h3>
+          <p>Almacén físico en Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. C.P. 34166.</p>
+          <ul>
+            <li>Cotejo dimensional 1:1 en patio previo al embarque</li>
+            <li>Facturación nacional CFDI 4.0 u Orden de Compra SAP</li>
+            <li>Acceso para rabón, torton y tractocamión (L-V 08:00–18:00 CST)</li>
+          </ul>
+        </div>
+      </div>
       <div class="contact-grid">
         <!-- Tarjeta Oficial de Datos de Planta (NAP) -->
         <div class="card nap-detail-card">
@@ -102,7 +113,6 @@ import companyData from '../../data/company.json';
               Para generar su <strong>Folio Institucional en A4</strong>, tabla TSV para SAP o cotizar refacciones de bombeo, flotación, filtración o laboratorio metalúrgico, utilice nuestra consola dedicada:
             </p>
             <div class="smat-contact-cta-row">
-              <a href="/cotizar/#rfq" class="btn btn-primary">Abrir Cotizador Rápido →</a>
               <button type="button" id="contact-download-vcard-btn" data-download-passport-vcf class="btn btn-outline">
                 Descargar Tarjeta Corporativa (.VCF)
               </button>

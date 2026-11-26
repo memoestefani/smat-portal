@@ -356,6 +356,7 @@ pub fn verify_task_first_checkout_hygiene(site_root: &Path) -> Result<(), String
     let print_block_re = Regex::new(r"(?is)@media\s+print\s*\{[\s\S]*?\n\}").unwrap();
     for css_rel in [
         "src/styles/global.css",
+        "src/styles/storefront-layout.css",
         "src/styles/cores-apple.css",
         "src/styles/workbench-core.css",
         "src/styles/workbench-circuits-sticky.css",
@@ -368,6 +369,14 @@ pub fn verify_task_first_checkout_hygiene(site_root: &Path) -> Result<(), String
             return Err(format!("{} conserva !important fuera de @media print", css_rel));
         }
         verify_css_layers_in_text(css_rel, &css_raw)?;
+    }
+    let storefront_css = fs::read_to_string(site_root.join("src/styles/storefront-layout.css"))
+        .map_err(|e| e.to_string())?;
+    verify_bem_cascade_order(&storefront_css)?;
+    let contacto_src = fs::read_to_string(site_root.join("src/pages/contacto.astro"))
+        .map_err(|e| e.to_string())?;
+    if contacto_src.matches("Abrir Cotizador Rápido").count() > 1 || contacto_src.contains("btn-primary") {
+        return Err("src/pages/contacto.astro no debe duplicar 'Abrir Cotizador Rápido' ni usar btn-primary legado".to_string());
     }
 
     let product_slug_css = fs::read_to_string(site_root.join("src/styles/productSlugSolar.css"))
@@ -467,16 +476,41 @@ pub fn verify_css_layers_in_text(css_rel: &str, raw: &str) -> Result<(), String>
     Ok(())
 }
 
+/// D1-V10: Verifica orden BEM base < modificador con `:where(.smat-sf-card)` para evitar colapsos horizontales.
+pub fn verify_bem_cascade_order(storefront_css: &str) -> Result<(), String> {
+    let base_pos = storefront_css
+        .find(":where(.smat-sf-card)")
+        .ok_or_else(|| "storefront-layout.css debe declarar base en :where(.smat-sf-card)".to_string())?;
+    let horiz_pos = storefront_css
+        .find(".smat-sf-card--horizontal")
+        .ok_or_else(|| "storefront-layout.css debe declarar .smat-sf-card--horizontal".to_string())?;
+    if horiz_pos <= base_pos {
+        return Err(
+            "Inversion BEM detectada: .smat-sf-card--horizontal debe declararse DESPUES de :where(.smat-sf-card)".to_string(),
+        );
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::{
         check_input_first_order,
+        verify_bem_cascade_order,
         verify_css_layers_in_text,
         verify_v58_cores_css_text,
         verify_v59_mobile_cols_css,
         verify_v60_qcard_photo_default,
         verify_v80_dossier_markup,
     };
+
+    #[test]
+    fn enforces_bem_base_before_horizontal_modifier() {
+        let valid = ":where(.smat-sf-card) { display: flex; } .smat-sf-card.smat-sf-card--horizontal { display: grid; }";
+        let inverted = ".smat-sf-card--horizontal { display: grid; } :where(.smat-sf-card) { display: flex; }";
+        assert!(verify_bem_cascade_order(valid).is_ok());
+        assert!(verify_bem_cascade_order(inverted).is_err());
+    }
 
     #[test]
     fn accepts_valid_layered_css_with_print_and_hidden() {

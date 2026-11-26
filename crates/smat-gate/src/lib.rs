@@ -61,8 +61,9 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
         ),
         make_gate_report(
             "4. Simetria Bilingue ES/EN y Cero Fugas ES en /en/",
-            seo_and_i18n::verify_bilingual_symmetry_and_zero_es_leaks(site_root),
-            "OK: Rutas ES/EN simetricas y 0 fugas en dist/en/.",
+            seo_and_i18n::verify_bilingual_symmetry_and_zero_es_leaks(site_root)
+                .and_then(|_| security_and_leaks::verify_v100_es_purity_and_empty_acuse(site_root)),
+            "OK: Rutas ES/EN simetricas, 0 fugas ES/EN y EMPTY_CART_GATE verificado.",
         ),
         make_gate_report(
             "5. Redirecciones 301 en 1 Salto y Cero Enlaces /#rfq",
@@ -70,9 +71,9 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             "OK: 301s deterministas 1-hop y cero enlaces rotos.",
         ),
         make_gate_report(
-            "6. Integridad 19 SKUs, 13 Piezas Atomicas, 52 Minas y 19 WebP",
+            "6. Integridad 23 SKUs (19+4 Proyecto), 13 Piezas Atomicas, 52 Minas y 23+ WebP",
             seo_and_i18n::verify_catalog_mining_groups_and_webp(site_root),
-            "OK: Catalogo canonico, grupos mineros y assets WebP verificados.",
+            "OK: Catalogo canonico 23 SKUs, grupos mineros y assets WebP verificados.",
         ),
         make_gate_report(
             "7. Limites Fisicos y Termicos (R55 <= 70 C, SiC <= 28.0 m/s)",
@@ -129,6 +130,7 @@ mod tests {
         assert!(security_and_leaks::verify_leak_scanner_and_zero_placeholders(&root).is_ok());
         assert!(security_and_leaks::verify_security_headers_nap_and_honest_sla(&root).is_ok());
         assert!(seo_and_i18n::verify_bilingual_symmetry_and_zero_es_leaks(&root).is_ok());
+        assert!(security_and_leaks::verify_v100_es_purity_and_empty_acuse(&root).is_ok());
         assert!(seo_and_i18n::verify_redirects_one_hop_and_static_links(&root).is_ok());
         assert!(seo_and_i18n::verify_catalog_mining_groups_and_webp(&root).is_ok());
         assert!(physics_and_schema::verify_physics_and_thermal_bounds(&root).is_ok());

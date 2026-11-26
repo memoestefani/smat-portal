@@ -2,7 +2,7 @@
   "schema_version": "v7.0",
   "hygiene_version": "v9.0-zero-oem",
   "exif_stripped_all": true,
-  "generated_at": "2026-11-25T21:17:07.048Z",
+  "generated_at": "2026-11-26T14:09:14.410Z",
   "width": 640,
   "height": 480,
   "hd_width": 1200,
@@ -11,19 +11,19 @@
   "max_bytes": 43706,
   "max_hd_bytes_limit": 122880,
   "max_hd_bytes": 122290,
-  "unique_sources": 19,
-  "unique_source_sha256": 19,
-  "unique_sha256": 19,
-  "unique_dhash64": 19,
-  "min_hamming_distance": 14,
+  "unique_sources": 23,
+  "unique_source_sha256": 23,
+  "unique_sha256": 23,
+  "unique_dhash64": 23,
+  "min_hamming_distance": 18,
   "closest_pair": [
-    "SMAT-FLOT-MECH-18SP",
-    "SMAT-LAB-MARCY-1000",
-    14
+    "SMAT-PUMP-IMP-AH",
+    "SMAT-PUMP-VERT-SP",
+    18
   ],
   "cross_folder_sha256_clones": 0,
-  "total_product_slides": 57,
-  "total_hd_slides": 57,
+  "total_product_slides": 69,
+  "total_hd_slides": 69,
   "total_atomic_part_photos": 13,
   "skus": [
     {
@@ -175,16 +175,16 @@
       "fileName": "mallas-finas-uretano-th48-30.webp",
       "hdFileName": "mallas-finas-uretano-th48-30-hd.webp",
       "sourceRoot": "curada",
-      "sourceRelPath": "malla_fina_poliuretano_rojo_panel.png",
-      "source_sha256": "b8a7fb804ac4e03cba01ed58fb3c65aca73e03c181f715422f9fcc89c2f496f5",
+      "sourceRelPath": "malla_poliuretano_abertura_modular.jpg",
+      "source_sha256": "afa782a5231f6655603fd4bbafedac65fc5771e8d276108b5c314d496dcdab6f",
       "material_class": "PU_URETHANE",
-      "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
-      "bytes": 43430,
-      "hd_bytes": 95860,
-      "sha256": "dab7ffe75cc53d1ffac4a0ff1eca86c06e99d055b88c95bdba220226c4d192e0",
-      "dhash64": "72fcb830c4e17999",
-      "captionEs": "Panel de cribado fino de alta área abierta en poliuretano",
-      "captionEn": "High open-area fine screening panel in abrasion-resistant urethane"
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "bytes": 23958,
+      "hd_bytes": 72720,
+      "sha256": "50c574d0221df5a14ba09f16cd807af94ebb9c6524b8b3bc9633c1d368a34dbb",
+      "dhash64": "b39cb1b292210000",
+      "captionEs": "Panel de poliuretano anticegamiento con abertura calibrada",
+      "captionEn": "Anti-blinding polyurethane screen panel with calibrated slot aperture"
     },
     {
       "id": "SMAT-SCR-MOD-1X1",
@@ -258,13 +258,13 @@
       "sourceRelPath": "tanque_acondicionador_puente_15hp.jpg",
       "source_sha256": "491c13c8562d12a63aea40b24b174113b5347b6f93795f96b63ed28ff75d0768",
       "material_class": "FLOTATION_MECHANISM",
-      "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 30014,
-      "hd_bytes": 64942,
-      "sha256": "cb68bfdbde5e5034ee5edcab8c9ff3b32cf207a9e3ca7ba06c89e3fb7f320d7d",
-      "dhash64": "e0ccd8e4e8f8f0f0",
-      "captionEs": "Puente motriz de 15 HP y mecanismo suspendido en almacén",
-      "captionEn": "15 HP drive bridge and suspended mechanism in warehouse"
+      "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+      "bytes": 23400,
+      "hd_bytes": 51982,
+      "sha256": "86bf2f9a6402f13481850fcd1ba2c0be40547408a0c6418c71956443f4fe8b0c",
+      "dhash64": "e526a34d78337b63",
+      "captionEs": "Puente motriz 15 HP, transmisión por poleas y flecha vertical",
+      "captionEn": "15 HP drive bridge, belt-pulley guard and vertical impeller shaft"
     },
     {
       "id": "SMAT-LAB-MARCY-1000",
@@ -278,13 +278,13 @@
       "sourceRelPath": "balanza_marcy_caratula_sg.jpg",
       "source_sha256": "a6edfb9f8095a19e797006e74def05ff53f323638f292a5a6d641542c41fc7c2",
       "material_class": "LAB_METROLOGY_STEEL",
-      "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
-      "bytes": 21570,
-      "hd_bytes": 47058,
-      "sha256": "1622ebf26c557b706035d8a3504f15a0f9fa35c0563d2bb0c0b84e498d40d599",
-      "dhash64": "d4dcccf0f0f1f8f1",
-      "captionEs": "Carátula graduada de lectura directa en gravedad específica",
-      "captionEn": "Direct-reading pulp density and specific gravity dial face"
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "bytes": 16570,
+      "hd_bytes": 39776,
+      "sha256": "1d23c724e4885dca89b4018a10ec71048f6f1ee3d960dbc8e7a23ad9cbf9f419",
+      "dhash64": "f0e8e8f0f0f0f8f8",
+      "captionEs": "Carátula completa graduada en gravedad específica sin recorte",
+      "captionEn": "Full direct-reading specific gravity Marcy dial without bezel clip"
     },
     {
       "id": "SMAT-LAB-VASO-1000",
@@ -319,12 +319,12 @@
       "source_sha256": "333eeeaf73c6d6e4cb5969b066d2cb25ed0c1451902baac185dd183e01a98c94",
       "material_class": "BRASS_WIRE_SIEVE",
       "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
-      "bytes": 25680,
-      "hd_bytes": 52750,
-      "sha256": "5af06f9fbc1ce999d4d707278621ae174d77f46c404657e0c612a7806e80eb5c",
-      "dhash64": "82ac2f2f7f870f0f",
-      "captionEs": "Tamiz certificado ASTM E11 de 8 pulgadas en bronce con malla tejida",
-      "captionEn": "8-inch ASTM E11 certified brass woven-wire test sieve"
+      "bytes": 24100,
+      "hd_bytes": 49212,
+      "sha256": "12da4794a2f680e6ac0a977f576c709fa9c55132c66ce74b88cea776972434bb",
+      "dhash64": "00e8cc8e8d8e8e00",
+      "captionEs": "Tamiz ASTM E11 de 8\" con malla tejida inspeccionada",
+      "captionEn": "8-inch ASTM E11 certified woven-wire test sieve bed"
     },
     {
       "id": "SMAT-LAB-ROTAP-MECH",
@@ -335,16 +335,16 @@
       "fileName": "tamizador-mecanico-laboratorio.webp",
       "hdFileName": "tamizador-mecanico-laboratorio-hd.webp",
       "sourceRoot": "curada",
-      "sourceRelPath": "tamizador_cilindros_soporte_lab.jpg",
-      "source_sha256": "fba85e4474a4e40761f2549700d54e14e5e480461cfe065f66bd33a13a953a7e",
+      "sourceRelPath": "tamizador_tapa_plato_receptor_bronce.jpg",
+      "source_sha256": "40488a7a5d3a66281ae0c71f0d0fe35fa61963b11870bf89c7c5a8ad25b79967",
       "material_class": "LAB_SIEVE_SHAKER",
-      "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
-      "bytes": 18890,
-      "hd_bytes": 57418,
-      "sha256": "dd920bc1885dec9bc9556a784de112791bd495684caa49033de5e3d59c5b04f1",
-      "dhash64": "ea2bab39b3191f13",
-      "captionEs": "Cabezal mecánico, placas base y cilindros para torre de tamices",
-      "captionEn": "Mechanical sieve-shaker base plates and support cylinders"
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "bytes": 21808,
+      "hd_bytes": 48052,
+      "sha256": "ccba45871c28ba1afb695c94582eb3930d9f49ec57499ba7dc71ca032402d030",
+      "dhash64": "8cbedccec6c2cbe8",
+      "captionEs": "Cabezal de impacto, tapa superior y plato receptor en bronce",
+      "captionEn": "Brass impact cover and receiver pan assembly for 8\" stack"
     },
     {
       "id": "SMAT-LAB-PLATO-TENT",
@@ -355,16 +355,16 @@
       "fileName": "plato-tentadura-metalurgico.webp",
       "hdFileName": "plato-tentadura-metalurgico-hd.webp",
       "sourceRoot": "curada",
-      "sourceRelPath": "plato_tentadura_inox_lab.jpg",
-      "source_sha256": "7cf01723048b44a1dfba15e9deabaa90d611e562677132bdff7cc6ce30adb6bb",
+      "sourceRelPath": "plato_tentadura_perfil_conico.jpg",
+      "source_sha256": "ebbded473f9317db505880cb2e6caea358e631e0850102d15217d19e97db0d47",
       "material_class": "STAINLESS_PAN",
-      "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
-      "bytes": 14198,
-      "hd_bytes": 32066,
-      "sha256": "47fd77db2ce30f2653557b1865719da2f1341a683601aee92af30206e59612ad",
-      "dhash64": "990c3774e8fae664",
-      "captionEs": "Platos de tentadura en acero inoxidable grado laboratorio",
-      "captionEn": "Stainless steel laboratory gold panning dishes"
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "bytes": 41112,
+      "hd_bytes": 97216,
+      "sha256": "f475622238bb8761361aad5b5530171defe1ec748528ef738b749a48e18deefa",
+      "dhash64": "7358ccccf8feffde",
+      "captionEs": "Plato de tentadura cónico en acero inoxidable grado laboratorio",
+      "captionEn": "Conical 304 stainless steel metallurgical gold panning dish"
     },
     {
       "id": "SMAT-LAB-PULV-DISC",
@@ -405,6 +405,86 @@
       "dhash64": "311b3e343632738f",
       "captionEs": "Filtro prensa batch de laboratorio con cámara de aluminio",
       "captionEn": "Laboratory batch pressure filter with heavy aluminum cylinder"
+    },
+    {
+      "id": "SMAT-CRUSH-JAW-CONE",
+      "slug": "trituradora-quijada-cono-mn18",
+      "slot": "primary",
+      "src": "/images/productos/trituradora-quijada-cono-mn18.webp",
+      "hd_src": "/images/productos/trituradora-quijada-cono-mn18-hd.webp",
+      "fileName": "trituradora-quijada-cono-mn18.webp",
+      "hdFileName": "trituradora-quijada-cono-mn18-hd.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "TRITURACION/IMG-20200731-WA0035.jpg",
+      "source_sha256": "16bdbb912034694dfa4ee1dc102fbede959c57ab08aa1844a4be9403a053ecf5",
+      "material_class": "MN18_CRUSHER",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "bytes": 37300,
+      "hd_bytes": 109450,
+      "sha256": "9e647720e3dcf6525eeaed6d5a69a63ef2d79220ae9acbb31d0016595c745314",
+      "dhash64": "132d9a1b1f9d0d6e",
+      "captionEs": "Trituradora de quijada en montaje de taller con volantes balanceados",
+      "captionEn": "Heavy-duty primary jaw crusher assembly with balanced flywheels"
+    },
+    {
+      "id": "SMAT-MILL-BALL-LINER",
+      "slug": "molino-bolas-forros-crmo",
+      "slot": "primary",
+      "src": "/images/productos/molino-bolas-forros-crmo.webp",
+      "hd_src": "/images/productos/molino-bolas-forros-crmo-hd.webp",
+      "fileName": "molino-bolas-forros-crmo.webp",
+      "hdFileName": "molino-bolas-forros-crmo-hd.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "Molino de Bolas/IMG-20201214-WA0048.jpg",
+      "source_sha256": "405c13ac5e29b5ebdd5cc57ad215decc364d5ebabe91e9bac50486db492cb0cb",
+      "material_class": "CRMO_MILL_LINER",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "bytes": 43504,
+      "hd_bytes": 96286,
+      "sha256": "aaf54f9710d120c4e88f4f7cb465154418a78379a30b64145b7eb963e99d9a75",
+      "dhash64": "f9fdb61dda989d83",
+      "captionEs": "Corazas elevadoras en Cr-Mo y parrillas de descarga para molino de bolas",
+      "captionEn": "Cr-Mo alloy ball mill lifter liners and discharge grates in yard"
+    },
+    {
+      "id": "SMAT-THICK-MECH",
+      "slug": "mecanismo-espesador-puente-rastras",
+      "slot": "primary",
+      "src": "/images/productos/mecanismo-espesador-puente-rastras.webp",
+      "hd_src": "/images/productos/mecanismo-espesador-puente-rastras-hd.webp",
+      "fileName": "mecanismo-espesador-puente-rastras.webp",
+      "hdFileName": "mecanismo-espesador-puente-rastras-hd.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "MECANIZMO ESPESADOR/IMG-20220126-WA0037.jpg",
+      "source_sha256": "4d48fdf7005803bc732a4dd784a5250162c4be72bc58db71c72c39ec589cfdf7",
+      "material_class": "THICKENER_DRIVE",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "bytes": 37134,
+      "hd_bytes": 86884,
+      "sha256": "502e695c690b6a8bf8cd2be1958aeff01b305e4b005f0808821d0655a27c8e8f",
+      "dhash64": "1618184889393c59",
+      "captionEs": "Cabezal reductor de espesador con levante de rastras y puente",
+      "captionEn": "Thickener center-drive reducer, torque guard and bridge lift frame"
+    },
+    {
+      "id": "SMAT-PUMP-VERT-SP",
+      "slug": "bomba-vertical-lodos-sumidero-sp",
+      "slot": "primary",
+      "src": "/images/productos/bomba-vertical-lodos-sumidero-sp.webp",
+      "hd_src": "/images/productos/bomba-vertical-lodos-sumidero-sp-hd.webp",
+      "fileName": "bomba-vertical-lodos-sumidero-sp.webp",
+      "hdFileName": "bomba-vertical-lodos-sumidero-sp-hd.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "bOMBA lODOS vERTICAL/bombas vertica.jpg",
+      "source_sha256": "b1bf8d6cbb5ea1535c3788cd5bf574974625df7e2024617653b148fa02eefdc6",
+      "material_class": "VERTICAL_SLURRY_PUMP",
+      "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+      "bytes": 36414,
+      "hd_bytes": 99166,
+      "sha256": "6e9951a324ee9cf22aab27dd8dd33a454ae1dc78274b10a93ed69ada3b2c2bdd",
+      "dhash64": "63296a6a9dd9898d",
+      "captionEs": "Bombas verticales cantilever libre de sellos sumergidas para cárcamos",
+      "captionEn": "Seal-less cantilever vertical sump slurry pumps assembled in bay"
     }
   ],
   "galleries": {
@@ -616,28 +696,28 @@
         "slot": "primary",
         "src": "/images/productos/mallas-finas-uretano-th48-30.webp",
         "hd_src": "/images/productos/mallas-finas-uretano-th48-30-hd.webp",
-        "bytes": 43430,
-        "hd_bytes": 95860,
-        "captionEs": "Panel de cribado fino de alta área abierta en poliuretano",
-        "captionEn": "High open-area fine screening panel in abrasion-resistant urethane"
+        "bytes": 23958,
+        "hd_bytes": 72720,
+        "captionEs": "Panel de poliuretano anticegamiento con abertura calibrada",
+        "captionEn": "Anti-blinding polyurethane screen panel with calibrated slot aperture"
       },
       {
         "slot": "v2",
         "src": "/images/productos/mallas-finas-uretano-th48-30-v2.webp",
         "hd_src": "/images/productos/mallas-finas-uretano-th48-30-v2-hd.webp",
-        "bytes": 23958,
-        "hd_bytes": 72720,
-        "captionEs": "Detalle de abertura calibrada anticegamiento en poliuretano",
-        "captionEn": "Calibrated anti-blinding aperture detail in urethane panel"
+        "bytes": 12018,
+        "hd_bytes": 37272,
+        "captionEs": "Lote de paneles modulares y fijaciones listo en almacén",
+        "captionEn": "Modular polyurethane deck panel lot staged in warehouse"
       },
       {
         "slot": "v3",
         "src": "/images/productos/mallas-finas-uretano-th48-30-v3.webp",
         "hd_src": "/images/productos/mallas-finas-uretano-th48-30-v3-hd.webp",
-        "bytes": 12018,
-        "hd_bytes": 37272,
-        "captionEs": "Lote de paneles modulares listo en almacén",
-        "captionEn": "Modular screening panel lot staged in warehouse"
+        "bytes": 33014,
+        "hd_bytes": 84872,
+        "captionEs": "Superficie ranurada de poliuretano colado para cribado fino",
+        "captionEn": "Slotted cast polyurethane surface for high-frequency screening"
       }
     ],
     "SMAT-SCR-MOD-1X1": [
@@ -732,17 +812,17 @@
         "slot": "primary",
         "src": "/images/productos/mecanismo-suspendido-flotacion-18sp.webp",
         "hd_src": "/images/productos/mecanismo-suspendido-flotacion-18sp-hd.webp",
-        "bytes": 30014,
-        "hd_bytes": 64942,
-        "captionEs": "Puente motriz de 15 HP y mecanismo suspendido en almacén",
-        "captionEn": "15 HP drive bridge and suspended mechanism in warehouse"
+        "bytes": 23400,
+        "hd_bytes": 51982,
+        "captionEs": "Puente motriz 15 HP, transmisión por poleas y flecha vertical",
+        "captionEn": "15 HP drive bridge, belt-pulley guard and vertical impeller shaft"
       },
       {
         "slot": "v2",
         "src": "/images/productos/mecanismo-suspendido-flotacion-18sp-v2.webp",
         "hd_src": "/images/productos/mecanismo-suspendido-flotacion-18sp-v2-hd.webp",
-        "bytes": 18114,
-        "hd_bytes": 41324,
+        "bytes": 18170,
+        "hd_bytes": 41342,
         "captionEs": "Celda y tanque agitador 2000×2000 con puente motriz 15 HP",
         "captionEn": "2000×2000 agitation tank cell with 15 HP drive bridge"
       },
@@ -761,10 +841,10 @@
         "slot": "primary",
         "src": "/images/productos/balanza-marcy.webp",
         "hd_src": "/images/productos/balanza-marcy-hd.webp",
-        "bytes": 21570,
-        "hd_bytes": 47058,
-        "captionEs": "Carátula graduada de lectura directa en gravedad específica",
-        "captionEn": "Direct-reading pulp density and specific gravity dial face"
+        "bytes": 16570,
+        "hd_bytes": 39776,
+        "captionEs": "Carátula completa graduada en gravedad específica sin recorte",
+        "captionEn": "Full direct-reading specific gravity Marcy dial without bezel clip"
       },
       {
         "slot": "v2",
@@ -819,28 +899,28 @@
         "slot": "primary",
         "src": "/images/productos/tamices-certificados-astm-e11.webp",
         "hd_src": "/images/productos/tamices-certificados-astm-e11-hd.webp",
-        "bytes": 25680,
-        "hd_bytes": 52750,
-        "captionEs": "Tamiz certificado ASTM E11 de 8 pulgadas en bronce con malla tejida",
-        "captionEn": "8-inch ASTM E11 certified brass woven-wire test sieve"
+        "bytes": 24100,
+        "hd_bytes": 49212,
+        "captionEs": "Tamiz ASTM E11 de 8\" con malla tejida inspeccionada",
+        "captionEn": "8-inch ASTM E11 certified woven-wire test sieve bed"
       },
       {
         "slot": "v2",
         "src": "/images/productos/tamices-certificados-astm-e11-v2.webp",
         "hd_src": "/images/productos/tamices-certificados-astm-e11-v2-hd.webp",
-        "bytes": 19290,
-        "hd_bytes": 41360,
-        "captionEs": "Malla certificada ASTM E11 #30 para control granulométrico P80",
-        "captionEn": "No. 30 ASTM E11 calibrated sieve mesh for P80 sizing control"
+        "bytes": 16836,
+        "hd_bytes": 35226,
+        "captionEs": "Malla certificada ASTM E11 para corte granulométrico P80",
+        "captionEn": "Calibrated ASTM E11 test sieve mesh for P80 sizing control"
       },
       {
         "slot": "v3",
         "src": "/images/productos/tamices-certificados-astm-e11-v3.webp",
         "hd_src": "/images/productos/tamices-certificados-astm-e11-v3-hd.webp",
-        "bytes": 7946,
-        "hd_bytes": 18196,
-        "captionEs": "Soldadura perimetral y malla calibrada de laboratorio",
-        "captionEn": "Perimeter solder joint and calibrated laboratory wire mesh"
+        "bytes": 7170,
+        "hd_bytes": 17070,
+        "captionEs": "Aro interno en bronce y costura perimetral de laboratorio",
+        "captionEn": "Internal brass sieve wall and perimeter wire cloth bond"
       }
     ],
     "SMAT-LAB-ROTAP-MECH": [
@@ -848,28 +928,28 @@
         "slot": "primary",
         "src": "/images/productos/tamizador-mecanico-laboratorio.webp",
         "hd_src": "/images/productos/tamizador-mecanico-laboratorio-hd.webp",
-        "bytes": 18890,
-        "hd_bytes": 57418,
-        "captionEs": "Cabezal mecánico, placas base y cilindros para torre de tamices",
-        "captionEn": "Mechanical sieve-shaker base plates and support cylinders"
+        "bytes": 21808,
+        "hd_bytes": 48052,
+        "captionEs": "Cabezal de impacto, tapa superior y plato receptor en bronce",
+        "captionEn": "Brass impact cover and receiver pan assembly for 8\" stack"
       },
       {
         "slot": "v2",
         "src": "/images/productos/tamizador-mecanico-laboratorio-v2.webp",
         "hd_src": "/images/productos/tamizador-mecanico-laboratorio-v2-hd.webp",
-        "bytes": 21362,
-        "hd_bytes": 45806,
-        "captionEs": "Tapa superior y plato receptor en bronce para torre de tamices 8\"",
-        "captionEn": "Brass cover and receiver pan for 8-inch sieve stack"
+        "bytes": 14492,
+        "hd_bytes": 31812,
+        "captionEs": "Torre de tamizado granulométrico ASTM E11 de 8 pulgadas",
+        "captionEn": "8-inch ASTM E11 particle sizing stack arrangement"
       },
       {
         "slot": "v3",
         "src": "/images/productos/tamizador-mecanico-laboratorio-v3.webp",
         "hd_src": "/images/productos/tamizador-mecanico-laboratorio-v3-hd.webp",
-        "bytes": 17946,
-        "hd_bytes": 39500,
-        "captionEs": "Vista superior de malla tejida ASTM E11 de 8\" montada en aro",
-        "captionEn": "Top view of 8-inch ASTM E11 woven wire sieve frame"
+        "bytes": 6882,
+        "hd_bytes": 16322,
+        "captionEs": "Malla fina calibrada #70 montada en tren de tamizado",
+        "captionEn": "Calibrated No. 70 fine wire sieve mounted in test stack"
       }
     ],
     "SMAT-LAB-PLATO-TENT": [
@@ -877,10 +957,10 @@
         "slot": "primary",
         "src": "/images/productos/plato-tentadura-metalurgico.webp",
         "hd_src": "/images/productos/plato-tentadura-metalurgico-hd.webp",
-        "bytes": 14198,
-        "hd_bytes": 32066,
-        "captionEs": "Platos de tentadura en acero inoxidable grado laboratorio",
-        "captionEn": "Stainless steel laboratory gold panning dishes"
+        "bytes": 41112,
+        "hd_bytes": 97216,
+        "captionEs": "Plato de tentadura cónico en acero inoxidable grado laboratorio",
+        "captionEn": "Conical 304 stainless steel metallurgical gold panning dish"
       },
       {
         "slot": "v2",
@@ -888,17 +968,17 @@
         "hd_src": "/images/productos/plato-tentadura-metalurgico-v2-hd.webp",
         "bytes": 14926,
         "hd_bytes": 35234,
-        "captionEs": "Prueba en húmedo con concentrado mineral en planta",
-        "captionEn": "Wet mineral concentration panning verification in plant"
+        "captionEs": "Prueba en húmedo con concentrado mineral en laboratorio",
+        "captionEn": "Wet mineral concentrate assay panning test in plant lab"
       },
       {
         "slot": "v3",
         "src": "/images/productos/plato-tentadura-metalurgico-v3.webp",
         "hd_src": "/images/productos/plato-tentadura-metalurgico-v3-hd.webp",
-        "bytes": 41112,
-        "hd_bytes": 97216,
-        "captionEs": "Perfil cónico balanceado para lavado de muestra",
-        "captionEn": "Balanced conical dish profile for assay washing"
+        "bytes": 6964,
+        "hd_bytes": 15830,
+        "captionEs": "Detalle superior del acabado espejo en acero inoxidable",
+        "captionEn": "Top mirror finish detail of stainless assay panning bowl"
       }
     ],
     "SMAT-LAB-PULV-DISC": [
@@ -957,6 +1037,122 @@
         "hd_bytes": 58262,
         "captionEs": "Detalle de válvula superior de aire comprimido y sello",
         "captionEn": "Top pneumatic air valve and chamber O-ring seal detail"
+      }
+    ],
+    "SMAT-CRUSH-JAW-CONE": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/trituradora-quijada-cono-mn18.webp",
+        "hd_src": "/images/productos/trituradora-quijada-cono-mn18-hd.webp",
+        "bytes": 37300,
+        "hd_bytes": 109450,
+        "captionEs": "Trituradora de quijada en montaje de taller con volantes balanceados",
+        "captionEn": "Heavy-duty primary jaw crusher assembly with balanced flywheels"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/trituradora-quijada-cono-mn18-v2.webp",
+        "hd_src": "/images/productos/trituradora-quijada-cono-mn18-v2-hd.webp",
+        "bytes": 35404,
+        "hd_bytes": 86408,
+        "captionEs": "Muelas fijas y móviles en acero al manganeso Mn18Cr2",
+        "captionEn": "Mn18Cr2 manganese steel fixed and swing jaw wear plates"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/trituradora-quijada-cono-mn18-v3.webp",
+        "hd_src": "/images/productos/trituradora-quijada-cono-mn18-v3-hd.webp",
+        "bytes": 35410,
+        "hd_bytes": 81140,
+        "captionEs": "Cámara de trituración, excéntrica y blindajes laterales",
+        "captionEn": "Crushing chamber eccentric shaft and Mn18Cr2 cheek liners"
+      }
+    ],
+    "SMAT-MILL-BALL-LINER": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/molino-bolas-forros-crmo.webp",
+        "hd_src": "/images/productos/molino-bolas-forros-crmo-hd.webp",
+        "bytes": 43504,
+        "hd_bytes": 96286,
+        "captionEs": "Corazas elevadoras en Cr-Mo y parrillas de descarga para molino de bolas",
+        "captionEn": "Cr-Mo alloy ball mill lifter liners and discharge grates in yard"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/molino-bolas-forros-crmo-v2.webp",
+        "hd_src": "/images/productos/molino-bolas-forros-crmo-v2-hd.webp",
+        "bytes": 33116,
+        "hd_bytes": 72920,
+        "captionEs": "Juego completo de revestimientos mecanizados y barrenados",
+        "captionEn": "Complete drilled Cr-Mo mill shell liner set staged for dispatch"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/molino-bolas-forros-crmo-v3.webp",
+        "hd_src": "/images/productos/molino-bolas-forros-crmo-v3-hd.webp",
+        "bytes": 24166,
+        "hd_bytes": 52556,
+        "captionEs": "Inspección dimensional de corazas y tapas de molino",
+        "captionEn": "Dimensional inspection of mill shell and feed-head liners"
+      }
+    ],
+    "SMAT-THICK-MECH": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/mecanismo-espesador-puente-rastras.webp",
+        "hd_src": "/images/productos/mecanismo-espesador-puente-rastras-hd.webp",
+        "bytes": 37134,
+        "hd_bytes": 86884,
+        "captionEs": "Cabezal reductor de espesador con levante de rastras y puente",
+        "captionEn": "Thickener center-drive reducer, torque guard and bridge lift frame"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/mecanismo-espesador-puente-rastras-v2.webp",
+        "hd_src": "/images/productos/mecanismo-espesador-puente-rastras-v2-hd.webp",
+        "bytes": 28794,
+        "hd_bytes": 61992,
+        "captionEs": "Corona dentada, piñón y columna motriz en armado",
+        "captionEn": "Thickener bull gear, pinion drive and vertical torque shaft"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/mecanismo-espesador-puente-rastras-v3.webp",
+        "hd_src": "/images/productos/mecanismo-espesador-puente-rastras-v3-hd.webp",
+        "bytes": 27240,
+        "hd_bytes": 60842,
+        "captionEs": "Sistema motriz de puente para espesadores de concentrado y jales",
+        "captionEn": "Bridge-mounted thickener drive assembly for tailings and concentrate"
+      }
+    ],
+    "SMAT-PUMP-VERT-SP": [
+      {
+        "slot": "primary",
+        "src": "/images/productos/bomba-vertical-lodos-sumidero-sp.webp",
+        "hd_src": "/images/productos/bomba-vertical-lodos-sumidero-sp-hd.webp",
+        "bytes": 36414,
+        "hd_bytes": 99166,
+        "captionEs": "Bombas verticales cantilever libre de sellos sumergidas para cárcamos",
+        "captionEn": "Seal-less cantilever vertical sump slurry pumps assembled in bay"
+      },
+      {
+        "slot": "v2",
+        "src": "/images/productos/bomba-vertical-lodos-sumidero-sp-v2.webp",
+        "hd_src": "/images/productos/bomba-vertical-lodos-sumidero-sp-v2-hd.webp",
+        "bytes": 5464,
+        "hd_bytes": 11112,
+        "captionEs": "Vista de columna cantilever y succión sumergida en cárcamo",
+        "captionEn": "Cantilever column and submerged sump suction profile"
+      },
+      {
+        "slot": "v3",
+        "src": "/images/productos/bomba-vertical-lodos-sumidero-sp-v3.webp",
+        "hd_src": "/images/productos/bomba-vertical-lodos-sumidero-sp-v3-hd.webp",
+        "bytes": 33950,
+        "hd_bytes": 73340,
+        "captionEs": "Paquete de bombeo y vacío industrial montado sobre patín metálico",
+        "captionEn": "Skid-mounted plant pump and vacuum package prepared for dispatch"
       }
     ]
   },
@@ -1020,6 +1216,30 @@
       "sha256": "88822932d8ba1b05f33a54ee6b1ee062dd1874127e68fa5d449957ea0fff6df3",
       "captionEs": "Impulsor Alto Cromo 27% (≥ 650 HB) fundido y rectificado listo para despacho nacional desde Durango.",
       "captionEn": "Cast and precision-machined 27% High-Chrome impeller staged for domestic dispatch from Durango."
+    },
+    {
+      "id": "almacen-bomba-zvz-patio",
+      "fileName": "almacen-bomba-zvz-patio.webp",
+      "src": "/images/almacen/almacen-bomba-zvz-patio.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "bOMBAS LODOS/IMG-20220614-WA0038.jpg",
+      "source_sha256": "91d58946a4bf4145e687aebdc5a31513d7b65e8d16e0cefc9195e63841f7cfd8",
+      "bytes": 45322,
+      "sha256": "7db626d270040e7be096c0fc91b48c60d0a24d5c88ae05871733ede0950e58c7",
+      "captionEs": "Bomba centrífuga de lodos en montaje superior lista en patio Durango.",
+      "captionEn": "Overhead-mounted centrifugal slurry pump package ready at Durango yard."
+    },
+    {
+      "id": "almacen-patio-cotizador",
+      "fileName": "almacen-patio-cotizador.webp",
+      "src": "/images/almacen/almacen-patio-cotizador.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "Filtro Presion/IMG-20210412-WA0045.jpg",
+      "source_sha256": "284ecdb044dad6dce4ef36a6129161740b0948d7c88fb4a7e3ae735d7ae3d4e0",
+      "bytes": 44842,
+      "sha256": "9482b653df01ae38724a5d82d8cd28738f15ade16af41a38e38798f27b411dc1",
+      "captionEs": "Paquete de placas de polipropileno en plataforma listo para embarque a mina.",
+      "captionEn": "Polypropylene filter press plate pack loaded for mine-site delivery."
     }
   ],
   "atomic_parts": [
@@ -1160,11 +1380,11 @@
       "partNumber": "D4029",
       "fileName": "d4029.webp",
       "src": "/images/partes/d4029.webp",
-      "sourceRoot": "curada",
-      "sourceRelPath": "parte_d4029_camara_expulsora_amarilla.jpeg",
-      "source_sha256": "d3ea3945cf281902fa5b15b82e2543723ff49f4a1dab38fe029193655543e9ac",
-      "bytes": 18176,
-      "sha256": "83e8b4be69ca786dfc30bbdaf8714567ddd1f0e0c51167711123058156d555d2"
+      "sourceRoot": "fotos",
+      "sourceRelPath": "expeller expeller ring/IMG-20210209-WA0006.jpeg",
+      "source_sha256": "81dfa151661bd0e8551454a25a9be1e2ea2de5eec1dc154d0b5732750e97df6e",
+      "bytes": 35572,
+      "sha256": "fed27fdf41ed2c9b21b1726760ce9b3875bd2e3f2e6dc17f3ea5b2147c7a1fdf"
     }
   ]
 }

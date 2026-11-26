@@ -6,6 +6,9 @@ import { fileURLToPath } from 'node:url';
 
 import atomicParts from '../data/atomic_parts.json' with { type: 'json' };
 import rolesData from '../data/roles.json' with { type: 'json' };
+import {
+  buildAcuseViewModel,
+} from '../src/scripts/acuseSheetController.js';
 import { parseBomPasteInput } from '../src/scripts/bomPasteParser.js';
 import { buildCatalogFacetedViewModel } from '../src/scripts/catalogFacetedViewModel.js';
 import {
@@ -15,18 +18,15 @@ import {
   projectViewModelToDom,
 } from '../src/scripts/instrumentViewModels.js';
 import {
-  buildAcuseViewModel,
-} from '../src/scripts/acuseSheetController.js';
-import {
-  isCommittedCartActive,
-} from '../src/scripts/rfqSessionStore.js';
-import {
   resolvePumpingTabDeepLink,
 } from '../src/scripts/pumpingTabRouter.js';
 import {
   buildCmuPrioritySubjectLine,
   computeCmuPriorityDescriptor,
 } from '../src/scripts/requisitionTrayBus.js';
+import {
+  isCommittedCartActive,
+} from '../src/scripts/rfqSessionStore.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -137,7 +137,7 @@ test('V58-G3: Runtime EMPTY Guard, bilingual roles/catalog, reactive ViewModels 
 
   const slotList = [
     { getAttribute: (k) => (k === 'data-vm-slot' ? 'headline' : null), textContent: '' },
-    { getAttribute: (k) => (k === 'data-vm-slot' ? 'collisionAlert' : null), textContent: '', classList: { toggle() {} } },
+    { getAttribute: (k) => (k === 'data-vm-slot' ? 'collisionAlert' : null), textContent: '', classList: { toggle() { } } },
   ];
   const mockRoot = {
     querySelectorAll(sel) {
@@ -202,8 +202,22 @@ test('V58-G4: Mobile Menu, 3-Step QuoteWizard Stepper, Pumping Station 4 & SSOT 
   assert.ok(qwSrc.includes('wb-mining-unit-select') && fastLaneSrc.includes('id="smat-bom-import-dialog"'));
 
   const pumpingSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/PumpingAssistantStratum2.astro'), 'utf8');
-  assert.ok(pumpingSrc.includes('pumpingTabRouter.js'));
+  const pumpingCtrlSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/pumpingStratum2Controller.js'), 'utf8');
+  assert.ok(pumpingSrc.includes('pumpingStratum2Controller.js'));
+  assert.ok(pumpingCtrlSrc.includes('pumpingTabRouter.js'));
   assert.ok(pumpingSrc.includes('id="pumping-assembly-station"'));
+  assert.ok(pumpingSrc.includes('id="bombeo-calculator-accordion"'));
+  for (const [rel, accId] of [
+    ['src/components/islands/PumpingAssistantStratum2.astro', 'bombeo-calculator-accordion'],
+    ['src/components/islands/CycloneScreenIsland.astro', 'cyc-sim-accordion'],
+    ['src/components/islands/FiltrationCalculatorIsland.astro', 'filt-sim-accordion'],
+    ['src/components/islands/FlotationCalculatorIsland.astro', 'flot-sim-accordion'],
+  ]) {
+    const src = fs.readFileSync(path.join(SITE_ROOT, rel), 'utf8');
+    const tagMatch = src.match(new RegExp(`<details[^>]*id="${accId}"[^>]*>`));
+    assert.ok(tagMatch, `${rel} debe declarar acordeón #${accId}`);
+    assert.equal(/\bopen\b/.test(tagMatch[0]), false, `${rel} #${accId} debe iniciar cerrado`);
+  }
 
   const dossierSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/LiveEngineeringDossier.astro'), 'utf8');
   assert.equal(dossierSrc.includes('SMAT-PUMP-6X4-WETKIT'), false, 'LiveEngineeringDossier SSR vacío no debe inyectar SKU sintético');

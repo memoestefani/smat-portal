@@ -32,15 +32,11 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
     </button>
   </div>
 
-  <div class="req-tray-cmu-strip">
+  <div class="req-tray-cmu-strip hidden" id="tray-cmu-strip" data-tray-cmu-strip="1">
     <span class="req-tray-cmu-label">
       {isEs ? 'CABECERA DE PRIORIDAD DE DESPACHO DURANGO:' : 'DURANGO DISPATCH PRIORITY HEADER:'}
     </span>
-    <code id="tray-cmu-subject-line" class="req-tray-cmu-code">
-      {isEs
-        ? '[SMAT-DGO] [BORRADOR SIN PARTIDAS | 0 SKUs]'
-        : '[SMAT-DGO] [DRAFT NO ITEMS | 0 SKUs]'}
-    </code>
+    <code id="tray-cmu-subject-line" class="req-tray-cmu-code"></code>
     <div id="tray-priority-sla-meta" data-testid="tray-priority-sla-meta" class="font-mono-tech smat-tray-priority-sla-meta">
       {isEs ? `${initialUrgencyHuman} • Añada SKUs para asignar SLA` : `${initialUrgencyHuman} • Add SKUs to assign SLA`}
     </div>
@@ -92,6 +88,7 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
     const isEn = document.documentElement.lang === 'en';
     const lang: 'es' | 'en' = isEn ? 'en' : 'es';
     const tbody = root.querySelector('#tray-items-tbody') as HTMLElement | null;
+    const cmuStrip = root.querySelector('[data-tray-cmu-strip]') as HTMLElement | null;
     const cmuCode = root.querySelector('#tray-cmu-subject-line') as HTMLElement | null;
     const cmuMeta = root.querySelector('#tray-priority-sla-meta') as HTMLElement | null;
     const clearBtn = root.querySelector('#tray-clear-btn') as HTMLElement | null;
@@ -125,8 +122,11 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
       const state = getTrayState();
       const desc = computeCmuPriorityDescriptor({ ...state, lang });
       clearBtn?.classList.toggle('hidden', !state.items.length);
+      cmuStrip?.classList.toggle('hidden', !state.items.length);
       if (cmuCode) {
-        cmuCode.textContent = buildCmuPrioritySubjectLine(state, { cvPct: 52, material: 'Cr27', lang });
+        cmuCode.textContent = state.items.length
+          ? buildCmuPrioritySubjectLine(state, { cvPct: 52, material: 'Cr27', lang })
+          : '';
       }
       if (cmuMeta) {
         if (!state.items.length) {
@@ -212,6 +212,7 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
   .req-tray-title { margin: 0; font-size: 1.05rem; color: #090d16; }
   .req-tray-clear-btn { background: #f8fafc; border: 1px solid #cbd5e1; color: #475569; padding: 0.35rem 0.7rem; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
   .req-tray-cmu-strip { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 3px solid #082f49; padding: 0.55rem 0.8rem; border-radius: 6px; margin-bottom: 0.85rem; display: flex; flex-direction: column; gap: 0.25rem; }
+  .req-tray-cmu-strip.hidden { display: none; }
   .req-tray-cmu-label { font-size: 0.68rem; font-weight: 800; color: #475569; }
   .req-tray-cmu-code { font-family: var(--smat-font-mono, monospace); font-size: 0.8rem; font-weight: 700; color: #082f49; word-break: break-all; }
   .req-tray-table-wrap { overflow-x: auto; }

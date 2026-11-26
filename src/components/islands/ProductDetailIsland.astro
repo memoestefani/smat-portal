@@ -3,6 +3,7 @@ import ProductQuickCard from '../ProductQuickCard.astro';
 import JrpReorderCore from '../cores/JrpReorderCore.astro';
 import { getQuickProductBySlugOrAlias } from '../../scripts/quickProductsCatalog.js';
 import { formatAvailabilityBadgeHuman } from '../../scripts/i18nDomainLabels.js';
+import '../../styles/pdp-gallery-lightbox.css';
 
 interface Props {
   sku: any;
@@ -23,7 +24,8 @@ const summary = isAtomic
   ? String((isEs ? atomicPart.summary_es : atomicPart.summary_en) || (isEs ? sku.summary_es : sku.summary_en))
   : String(isEs ? sku.summary_es : sku.summary_en || sku.summary_es);
 const displayMass = isAtomic && atomicPart.weight_kg ? atomicPart.weight_kg : sku.mass_kg;
-const displayHardness = isAtomic && atomicPart.hardness ? `${atomicPart.metallurgy} (${atomicPart.hardness})` : sku.hardness_spec;
+const atomicMetallurgy = isEs ? (atomicPart?.metallurgy_es || atomicPart?.metallurgy) : (atomicPart?.metallurgy_en || atomicPart?.metallurgy);
+const displayHardness = isAtomic && atomicPart.hardness ? `${atomicMetallurgy} (${atomicPart.hardness})` : sku.hardness_spec;
 const displayCode = isAtomic ? String(atomicPart.part_number || atomicPart.code).toUpperCase() : (sku.atomic_codes?.[0] || sku.id);
 const displayKicker = isAtomic ? `${displayCode} · ${sku.id}` : sku.id;
 const resolvedPhotoOverride = primaryPhotoOverride || (isAtomic ? (atomicPart.photo_webp || `/images/partes/${String(atomicPart.code).toLowerCase()}.webp`) : '');
@@ -136,10 +138,6 @@ const parentSkuSlug = isEs ? `/productos/${sku.slug_es}/` : `/en/products/${sku.
   <div class="smat-slug-layout-grid">
     <div class="smat-slug-col-left">
       <ProductQuickCard sku={sku} lang={lang} mode="media-only" primaryPhotoOverride={resolvedPhotoOverride} />
-      <button type="button" class="smat-pdp-lightbox-trigger" data-lightbox-open>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
-        <span>{isEs ? 'Ampliar fotografía HD' : 'View HD photo'}</span>
-      </button>
     </div>
 
     <aside class="smat-slug-checkout-aside">
@@ -150,7 +148,6 @@ const parentSkuSlug = isEs ? `/productos/${sku.slug_es}/` : `/en/products/${sku.
 
       <div>
         <h1 class="smat-slug-h1 smat-slug-pdp-title">{title}</h1>
-        <p class="smat-slug-lead">{summary}</p>
         {isAtomic && (
           <p class="smat-slug-coupled-note">
             <a href={parentSkuSlug} class="smat-slug-nav-link">
@@ -175,7 +172,22 @@ const parentSkuSlug = isEs ? `/productos/${sku.slug_es}/` : `/en/products/${sku.
           <label for="slug-mat-select" class="smat-slug-aside-h2">
             {isEs ? '1. Material / Configuración:' : '1. Material / Configuration:'}
           </label>
-          <select id="slug-mat-select" data-slug-mat-select class="wb-select font-mono-tech">
+          <div class="smat-slug-mat-pills" role="group" aria-label={isEs ? 'Selector de aleación y configuración' : 'Alloy & configuration selector'}>
+            {configOptions.map((opt: { value: string; label: string }) => {
+              const isSelected = opt.value === sku.default_material;
+              return (
+                <button
+                  type="button"
+                  data-alloy-chip={opt.value}
+                  aria-pressed={isSelected ? 'true' : 'false'}
+                  class={`smat-slug-mat-chip${isSelected ? ' is-active is-default' : ''}`}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+          <select id="slug-mat-select" data-slug-mat-select class="wb-select font-mono-tech smat-slug-select-sr">
             {configOptions.map((opt: { value: string; label: string }) => (
               <option value={opt.value} selected={opt.value === sku.default_material}>{opt.label}</option>
             ))}
@@ -262,8 +274,12 @@ const parentSkuSlug = isEs ? `/productos/${sku.slug_es}/` : `/en/products/${sku.
     </aside>
   </div>
 
-  <!-- Debajo del Pliegue: Detalles de Ingeniería, Ventana Operativa, JRP y Par Complementario -->
+  <!-- Debajo del Pliegue: Resumen Comercial, Ingeniería, Ventana Operativa, JRP y Par Complementario -->
   <div class="smat-slug-below-fold">
+    <div class="smat-slug-below-lead">
+      <h2 class="smat-slug-section-kicker">{isEs ? 'Descripción Operativa y Aplicación en Planta' : 'Operational Summary & Mill Application'}</h2>
+      <p>{summary}</p>
+    </div>
     <div class="smat-slug-kpi-grid">
       <div class="smat-slug-kpi-box">
         <div class="smat-slug-kpi-label">{isEs ? 'Referencia Cruzada Drop-In' : 'Zero-OEM Drop-In Reference'}</div>
@@ -422,108 +438,8 @@ const parentSkuSlug = isEs ? `/productos/${sku.slug_es}/` : `/en/products/${sku.
 </section>
 
 <script>
-  import { initCoreTradeInWidgets } from '../../scripts/vendorPassportAndTradeInController.js';
-  import { initHarmonicJrpWindowAndPairCard } from '../../scripts/catalogDropInAndJrpProjector.js';
-
-  function initProductDetailIsland() {
-    if (typeof document === 'undefined') return;
-    const root = document.querySelector('[data-pdp-root]') as HTMLElement | null;
-    if (!root) return;
-    const lang = root.dataset.lang === 'en' ? 'en' : 'es';
-    initCoreTradeInWidgets(root, lang);
-    initHarmonicJrpWindowAndPairCard(root, lang);
-
-    const lightbox = document.getElementById('smat-pdp-lightbox') as HTMLDialogElement | null;
-    const lightboxImg = document.getElementById('smat-lightbox-img') as HTMLImageElement | null;
-    const lightboxOpenBtn = root.querySelector('[data-lightbox-open]') as HTMLButtonElement | null;
-    const lightboxCloseBtn = lightbox?.querySelector('[data-lightbox-close]') as HTMLButtonElement | null;
-    if (lightbox && lightboxImg && lightboxOpenBtn && lightboxOpenBtn.dataset.lightboxBound !== '1') {
-      lightboxOpenBtn.dataset.lightboxBound = '1';
-      lightboxOpenBtn.addEventListener('click', () => {
-        const activePhotoPanel = root.querySelector('.smat-qcard-panel--photo:not(.hidden) img.smat-qcard-photo') as HTMLImageElement | null;
-        const firstPhoto = root.querySelector('img.smat-qcard-photo') as HTMLImageElement | null;
-        const baseSrc = activePhotoPanel?.getAttribute('src') || firstPhoto?.getAttribute('src') || '';
-        if (baseSrc) {
-          const hdSrc = baseSrc.includes('-hd.webp') ? baseSrc : baseSrc.replace(/\.webp(\?.*)?$/, '-hd.webp');
-          lightboxImg.onerror = () => {
-            lightboxImg.onerror = null;
-            lightboxImg.src = baseSrc;
-          };
-          lightboxImg.src = hdSrc;
-        }
-        if (typeof lightbox.showModal === 'function' && !lightbox.open) {
-          lightbox.showModal();
-        }
-      });
-      lightboxCloseBtn?.addEventListener('click', () => lightbox.close());
-      lightbox.addEventListener('click', (ev) => {
-        if (ev.target === lightbox) lightbox.close();
-      });
-    }
-
-    const winEl = document.getElementById('wb-jrp-window-days');
-    if (winEl && !winEl.dataset.sepAdded) {
-      winEl.dataset.sepAdded = '1';
-      winEl.insertAdjacentText('afterend', ' · ');
-    }
-
-    const matSelect = root.querySelector('[data-slug-mat-select]') as HTMLSelectElement | null;
-    const qtyInput = root.querySelector('#slug-qty-input') as HTMLInputElement | null;
-    const trayBtn = root.querySelector('[data-slug-add-to-tray]') as HTMLElement | null;
-    const waBtn = root.querySelector('[data-slug-wa-btn]') as HTMLAnchorElement | null;
-    const wbBtn = root.querySelector('[data-slug-workbench-btn]') as HTMLAnchorElement | null;
-
-    const syncControls = () => {
-      const mat = matSelect?.value || '';
-      const qty = Math.max(1, Math.min(999, Number(qtyInput?.value) || 1));
-      if (trayBtn) {
-        if (mat) trayBtn.setAttribute('data-sku-material', mat);
-        trayBtn.setAttribute('data-sku-qty', String(qty));
-      }
-      if (waBtn && mat) {
-        const skuId = waBtn.getAttribute('data-sku-id') || '';
-        const skuTitle = waBtn.getAttribute('data-sku-title') || '';
-        const mass = waBtn.getAttribute('data-sku-mass') || '15';
-        const isEn = lang === 'en';
-        const msg = isEn
-          ? `[SMAT-DGO] Hello SMAT, please confirm availability and lead time for ${qty}x ${skuId} (${skuTitle}) in ${mat} [Mass: ${mass} kg].`
-          : `[SMAT-DGO] Hola SMAT, solicito confirmar disponibilidad para ${qty}x ${skuId} (${skuTitle}) en ${mat} [Masa: ${mass} kg].`;
-        waBtn.href = `https://wa.me/526183670664?text=${encodeURIComponent(msg)}`;
-      }
-      if (wbBtn && mat) {
-        const skuId = wbBtn.getAttribute('data-sku-id') || '';
-        const base = lang === 'en' ? '/en/quote/' : '/cotizar/';
-        wbBtn.href = `${base}?sku=${encodeURIComponent(skuId)}&mat=${encodeURIComponent(mat)}&qty=${qty}#rfq`;
-      }
-    };
-
-    if (matSelect && matSelect.dataset.slugBound !== '1') {
-      matSelect.dataset.slugBound = '1';
-      matSelect.addEventListener('change', syncControls);
-    }
-    if (qtyInput && qtyInput.dataset.slugBound !== '1') {
-      qtyInput.dataset.slugBound = '1';
-      qtyInput.addEventListener('input', syncControls);
-      qtyInput.addEventListener('change', syncControls);
-    }
-
-    root.querySelectorAll('input[data-tradein-mode]').forEach((radio) => {
-      const inputEl = radio as HTMLInputElement;
-      if (inputEl.dataset.tradeinRadioBound === '1') return;
-      inputEl.dataset.tradeinRadioBound = '1';
-      inputEl.addEventListener('change', () => {
-        if (!inputEl.checked) return;
-        const modeVal = inputEl.getAttribute('data-tradein-mode') || 'new';
-        if (trayBtn) trayBtn.setAttribute('data-sku-tradein', modeVal);
-        const coreToggle = root.querySelector('#wb-core-tradein-toggle') as HTMLInputElement | null;
-        if (coreToggle) {
-          coreToggle.checked = modeVal === 'exchange';
-          coreToggle.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      });
-    });
-  }
+  import { initProductDetailIsland } from '../../scripts/pdpBuyBoxController.js';
 
   initProductDetailIsland();
-  document.addEventListener('astro:page-load', initProductDetailIsland);
+  document.addEventListener('astro:page-load', () => initProductDetailIsland());
 </script>

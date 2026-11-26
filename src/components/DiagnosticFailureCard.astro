@@ -39,55 +39,35 @@ const cardTags = `${item.id} ${item.title_es} ${item.title_en} ${item.target_rol
 ---
 
 <article class="card diag-card" data-failure-link={item.id} data-tags={cardTags}>
+  {primaryPhoto && (
+    <div class="smat-diag-media-top">
+      <img
+        src={primaryPhoto}
+        alt={`${isEs ? item.title_es : item.title_en} — ${primarySku?.id || item.stationIdLabel}`}
+        width="240"
+        height="180"
+        loading={idx < 2 ? 'eager' : 'lazy'}
+        decoding="async"
+        class="smat-diag-thumb"
+      />
+      <span class="diag-station-chip smat-diag-float-badge">{humanCircuit}</span>
+    </div>
+  )}
+
   <div class="diag-header">
     <span class="pulsing-dot pulsing-dot-amber"></span>
     <h3 class="diag-title">{isEs ? item.title_es : item.title_en}</h3>
   </div>
 
-  <div class="diag-threshold-strip" data-diag-threshold={item.threshold} data-station-id={item.stationIdLabel}>
-    <span class="diag-station-chip">{humanCircuit}</span>
-    <span class="diag-threshold-chip">{isEs ? 'Umbral Físico:' : 'Physical Threshold:'} {item.threshold}</span>
-    <span class="diag-station-chip" data-diag-material={item.recommendedMaterial}>
-      {isEs ? 'Aleación:' : 'Alloy:'} {formatMaterialHumanLabel(item.recommendedMaterial, lang)}
-    </span>
-  </div>
-
-  <div class="diag-body">
-    <div class="diag-field">
-      <span class="field-label">{isEs ? 'Síntoma en Planta:' : 'Plant Symptom:'}</span>
-      <p class="field-text">{isEs ? item.symptom_es : item.symptom_en}</p>
-    </div>
-
-    <div class="diag-field">
-      <span class="field-label">{isEs ? 'Causa Raíz:' : 'Root Cause:'}</span>
-      <p class="field-text">{isEs ? item.root_cause_es : item.root_cause_en}</p>
-    </div>
-
-    <div class="diag-field solution-field">
-      <span class="field-label">{isEs ? 'Qué pieza poner y qué revisar en la bomba:' : 'Action & Recommended Replacement Part:'}</span>
-      <p class="field-text highlight">{isEs ? item.recommended_action_es : item.recommended_action_en}</p>
-    </div>
-  </div>
+  <p class="diag-symptom-lead">{isEs ? item.symptom_es : item.symptom_en}</p>
 
   {primarySku && (
-    <div class="smat-diag-buy-strip">
-      <img
-        src={primaryPhoto}
-        alt={primarySku.id}
-        width="96"
-        height="72"
-        loading="lazy"
-        decoding="async"
-        class="smat-diag-thumb"
-      />
+    <div class="smat-diag-buy-strip smat-diag-buy-strip--compact">
       <div class="smat-diag-buy-meta">
         <strong>{primarySku.id}</strong>
-        <span>{isEs ? primarySku.title_es : primarySku.title_en}</span>
+        <span>{isEs ? (primarySku.short_title_es || primarySku.title_es) : (primarySku.short_title_en || primarySku.title_en)}</span>
       </div>
       <div class="smat-cta-row">
-        <a href={primaryHref} class="btn smat-nav-cta btn-sm">
-          {isEs ? 'Ver ficha →' : 'View spec →'}
-        </a>
         <button
           type="button"
           class="btn smat-buy-cta btn-sm"
@@ -99,16 +79,39 @@ const cardTags = `${item.id} ${item.title_es} ${item.title_en} ${item.target_rol
           data-tray-circuit="diagnostico"
           data-tray-source="diagnostics_hub"
         >
-          {isEs ? '+ Agregar a Solicitud' : '+ Add to Quote'}
+          {isEs ? '+ Agregar' : '+ Add'}
         </button>
+        <a href={primaryHref} class="btn smat-nav-cta btn-sm">
+          {isEs ? 'Ver ficha →' : 'View spec →'}
+        </a>
       </div>
     </div>
   )}
 
   <details class="diag-actions-drawer">
     <summary class="diag-actions-summary">
-      {isEs ? `Ver SKUs y cotizar · Caso 0${idx + 1} ▾` : `View SKUs & quote · Mode 0${idx + 1} ▾`}
+      {isEs ? `Ver fundamento técnico y cotizar · Caso 0${idx + 1} ▾` : `View technical basis & quote · Mode 0${idx + 1} ▾`}
     </summary>
+    <div class="diag-threshold-strip" data-diag-threshold={item.threshold} data-station-id={item.stationIdLabel}>
+      <span class="diag-station-chip">{humanCircuit}</span>
+      <span class="diag-threshold-chip">{isEs ? 'Umbral Físico:' : 'Physical Threshold:'} {item.threshold}</span>
+      <span class="diag-station-chip" data-diag-material={item.recommendedMaterial}>
+        {isEs ? 'Aleación:' : 'Alloy:'} {formatMaterialHumanLabel(item.recommendedMaterial, lang)}
+      </span>
+    </div>
+
+    <div class="diag-body">
+      <div class="diag-field">
+        <span class="field-label">{isEs ? 'Causa Raíz:' : 'Root Cause:'}</span>
+        <p class="field-text">{isEs ? item.root_cause_es : item.root_cause_en}</p>
+      </div>
+
+      <div class="diag-field solution-field">
+        <span class="field-label">{isEs ? 'Qué pieza poner y qué revisar en la bomba:' : 'Action & Recommended Replacement Part:'}</span>
+        <p class="field-text highlight">{isEs ? item.recommended_action_es : item.recommended_action_en}</p>
+      </div>
+    </div>
+
     {item.recommendedSkusList.length > 0 && (
       <div class="smat-diag-pills-row">
         {item.recommendedSkusList.map((skuCode: string) => (
@@ -149,18 +152,6 @@ const cardTags = `${item.id} ${item.title_es} ${item.title_en} ${item.target_rol
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="smat-svg-inline--mr4"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         {isEs ? 'Cotizar Refacción →' : 'Quote Spares →'}
       </a>
-      <button
-        type="button"
-        class="btn btn-outline btn-sm diag-action-btn btn-avenue-tray smat-diag-btn-hit"
-        data-add-tray-sku={item.recommendedSkusList[0] || 'SMAT-PUMP-IMP-AH'}
-        data-tray-part-code={item.stationIdLabel}
-        data-tray-title={isEs ? item.title_es : item.title_en}
-        data-tray-material={item.recommendedMaterial}
-        data-tray-circuit="diagnostico"
-        data-tray-source="diagnostics_hub"
-      >
-        {isEs ? '+ Bandeja' : '+ Add to Tray'}
-      </button>
     </div>
   </details>
 </article>
@@ -191,7 +182,7 @@ const cardTags = `${item.id} ${item.title_es} ${item.title_en} ${item.target_rol
   .solution-field { background-color: #f8fafc; border-left: 3px solid var(--smat-copper-accent); padding: 0.75rem 1rem; border-radius: 0 var(--smat-radius-sm) var(--smat-radius-sm) 0; }
   .field-text.highlight { color: var(--smat-text-primary); font-weight: 600; }
   .smat-diag-buy-strip { display: grid; grid-template-columns: 76px 1fr auto; gap: 0.65rem; align-items: center; padding: 0.6rem 0.7rem; margin-bottom: 0.75rem; border-radius: 10px; background: #f8fafc; border: 1px solid #cbd5e1; }
-  .smat-diag-thumb { width: 76px; height: 57px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; }
+  .smat-diag-thumb { width: 100%; height: 185px; object-fit: cover; border-radius: 0; border: 0; display: block; }
   .smat-diag-buy-meta { display: flex; flex-direction: column; font-size: 0.76rem; line-height: 1.25; }
   .smat-diag-buy-meta strong { color: #7c2d12; font-family: var(--smat-font-mono, monospace); }
   .smat-diag-buy-meta span { color: #0f172a; font-weight: 600; }

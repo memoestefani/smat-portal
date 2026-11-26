@@ -16,7 +16,8 @@ const { part, routeSlug, altEsSlug } = Astro.props;
 const parentSku = resolveParentSkuForAtomicCode(part.part_number || part.code);
 const canonicalPath = `/en/catalog/${routeSlug || part.code}/`;
 const title = `${part.part_number} — ${part.name_en} | SMAT Minerals`;
-const description = `Spare part ${part.part_number}: ${part.type_en} in ${part.metallurgy} alloy (${part.hardness}). Direct dispatch from Durango Central Warehouse.`;
+const atomicMetallurgyEn = part.metallurgy_en || part.metallurgy;
+const description = `Spare part ${part.part_number}: ${part.type_en} in ${atomicMetallurgyEn} alloy (${part.hardness}). Direct dispatch from Durango Central Warehouse.`;
 ---
 
 <BaseLayout title={title} description={description} lang="en" canonicalPath={canonicalPath} alternateEsPath={`/catalogo/${altEsSlug || part.code}/`} alternateEnPath={canonicalPath}>

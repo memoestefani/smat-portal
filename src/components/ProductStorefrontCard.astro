@@ -11,11 +11,11 @@ interface Props {
 
 const { sku, lang = 'es', eager = false, compact = false, layout = 'vertical' } = Astro.props;
 const isEs = lang === 'es';
-const title = String(isEs ? sku.title_es : sku.title_en || sku.title_es || sku.id);
+const title = String((isEs ? (sku.short_title_es || sku.title_es) : (sku.short_title_en || sku.title_en)) || sku.title_es || sku.id);
 const slug = String(isEs ? sku.slug_es : sku.slug_en || sku.slug_es);
 const detailHref = isEs ? `/productos/${slug}/` : `/en/products/${slug}/`;
 const photoSrc = String(sku.photo_webp || `/images/productos/${sku.slug_es}.webp`);
-const compatLine = String(sku.oem_cross_ref || sku.hardness_spec || '');
+const compatLine = String((isEs ? (sku.compat_short_es || sku.oem_cross_ref) : (sku.compat_short_en || sku.oem_cross_ref)) || sku.hardness_spec || '');
 const avail = formatAvailabilityBadgeHuman(sku.stock_regime, lang);
 const trayCode = Array.isArray(sku.atomic_codes) && sku.atomic_codes.length > 0 ? sku.atomic_codes[0] : sku.id;
 const massText = sku.mass_kg ? `${sku.mass_kg} kg` : '';
@@ -42,11 +42,15 @@ const massText = sku.mass_kg ? `${sku.mass_kg} kg` : '';
 
   <div class="smat-sf-body">
     <div class="smat-sf-meta-row">
-      <span class={`smat-sf-badge smat-sf-badge--${avail.tone} smat-stock-badge`}>
-        {avail.label}
-      </span>
-      <span class="smat-sf-sku-code">{sku.id}</span>
-      {massText && <span class="smat-sf-mass">{massText}</span>}
+      <div class="smat-sf-meta-top">
+        <span class={`smat-sf-badge smat-sf-badge--${avail.tone} smat-stock-badge`}>
+          {avail.label}
+        </span>
+      </div>
+      <div class="smat-sf-meta-sub">
+        <span class="smat-sf-sku-code">{sku.id}</span>
+        {massText && <span class="smat-sf-mass">{massText}</span>}
+      </div>
     </div>
 
     <h3 class="smat-sf-title">

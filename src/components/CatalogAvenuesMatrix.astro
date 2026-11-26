@@ -22,13 +22,16 @@ function mapCategoryBucket(sku: any): string {
   return 'bombeo';
 }
 
+const countBucket = (id: string) => allSkus.filter((s: any) => mapCategoryBucket(s) === id).length;
+const projectOrderCount = allSkus.filter((s: any) => s.stock_regime === 'bajo_proyecto').length;
 const categoryFilters = [
   { id: 'all', es: `Todos (${allSkus.length})`, en: `All (${allSkus.length})` },
-  { id: 'bombeo', es: 'Bombeo (6)', en: 'Pumping (6)' },
-  { id: 'clasificacion', es: 'Hidrociclones y Cribas (3)', en: 'Cyclones & Screens (3)' },
-  { id: 'flotacion', es: 'Flotación (1)', en: 'Flotation (1)' },
-  { id: 'filtracion', es: 'Filtración (2)', en: 'Filtration (2)' },
-  { id: 'control', es: 'Laboratorio (7)', en: 'Laboratory (7)' },
+  { id: 'bombeo', es: `Bombeo (${countBucket('bombeo')})`, en: `Pumping (${countBucket('bombeo')})` },
+  { id: 'clasificacion', es: `Hidrociclones, Trituración y Cribas (${countBucket('clasificacion')})`, en: `Comminution & Screens (${countBucket('clasificacion')})` },
+  { id: 'flotacion', es: `Flotación (${countBucket('flotacion')})`, en: `Flotation (${countBucket('flotacion')})` },
+  { id: 'filtracion', es: `Filtración y Espesado (${countBucket('filtracion')})`, en: `Filtration & Thickeners (${countBucket('filtracion')})` },
+  { id: 'control', es: `Laboratorio (${countBucket('control')})`, en: `Laboratory (${countBucket('control')})` },
+  { id: 'bajo_proyecto', es: `Bajo proyecto (${projectOrderCount})`, en: `Project Order (${projectOrderCount})` },
 ];
 ---
 
@@ -48,7 +51,7 @@ const categoryFilters = [
     </div>
     <span class="avenues-count-readout" id="catalog-visible-readout">
       {isEs ? 'Mostrando ' : 'Showing '}
-      <strong id="catalog-visible-sku-count" data-schema-output="catalogFacet.visibleSkuCount">{allSkus.length}</strong>
+      <strong id="catalog-visible-sku-count" data-schema-output="catalogFacet.visibleSkuCount">{Math.min(8, allSkus.length)}</strong>
       {isEs ? ` de ${allSkus.length} productos` : ` of ${allSkus.length} products`}
     </span>
   </div>
@@ -56,6 +59,7 @@ const categoryFilters = [
   <div class="smat-sf-grid" id="catalog-open-sku-grid">
     {allSkus.map((sku: any, idx: number) => {
       const catBucket = mapCategoryBucket(sku);
+      const isInitialHidden = idx >= 8;
       const searchBlob = [
         sku.id,
         sku.title_es,
@@ -72,20 +76,36 @@ const categoryFilters = [
 
       return (
         <div
-          class="catalog-sku-slot"
+          class={`catalog-sku-slot${isInitialHidden ? ' is-collapsed-batch' : ''}`}
           data-catalog-sku-id={sku.id}
           data-sku-id={sku.id}
           data-sku-family={sku.vertical || 'bombeo'}
+          data-stock-regime={sku.stock_regime || 'hay'}
           data-cat-bucket={catBucket}
           data-primary-avenue={sku.avenue || ''}
           data-facet-avenues={[sku.avenue, ...(sku.secondary_avenues || [])].filter(Boolean).join(',')}
           data-search-blob={searchBlob}
+          data-initial-index={String(idx)}
+          hidden={isInitialHidden}
         >
           <ProductStorefrontCard sku={sku} lang={lang} eager={idx < 6} />
         </div>
       );
     })}
   </div>
+
+  {allSkus.length > 8 && (
+    <div class="catalog-expand-row smat-mt-md">
+      <button
+        type="button"
+        id="catalog-show-all-btn"
+        class="btn btn-outline smat-tap-btn"
+        data-expanded="0"
+      >
+        {isEs ? `Mostrar todos (${allSkus.length} productos)` : `Show all (${allSkus.length} products)`}
+      </button>
+    </div>
+  )}
 </section>
 
 <script>
@@ -94,24 +114,42 @@ const categoryFilters = [
     if (!grid) return;
     const slots = Array.from(grid.querySelectorAll<HTMLElement>('.catalog-sku-slot'));
     const catBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-cat-filter]'));
+    const showAllBtn = document.getElementById('catalog-show-all-btn') as HTMLButtonElement | null;
     const searchInput = document.getElementById('catalog-facet-search') as HTMLInputElement | null;
+    const headerInput = document.getElementById('header-omnibox-input') as HTMLInputElement | null;
     const readout = document.getElementById('catalog-visible-readout');
     const countBadge = document.getElementById('catalog-visible-sku-count');
     const isEn = document.documentElement.lang === 'en';
+    const initialQ = typeof window !== 'undefined' ? String(new URLSearchParams(window.location.search).get('q') || '').trim() : '';
+    if (initialQ) {
+      if (searchInput && !searchInput.value) searchInput.value = initialQ;
+      if (headerInput && !headerInput.value) headerInput.value = initialQ;
+    }
     let activeCat = 'all';
+    let showAllExpanded = false;
 
     const applyFilter = () => {
-      const tokens = String(searchInput?.value || '').trim().toLowerCase().split(/\s+/).filter(Boolean);
+      const rawQuery = searchInput?.value || headerInput?.value || '';
+      const tokens = String(rawQuery).trim().toLowerCase().split(/\s+/).filter(Boolean);
+      const enforceInitialCap = activeCat === 'all' && tokens.length === 0 && !showAllExpanded;
       let visible = 0;
-      slots.forEach((slot) => {
+      slots.forEach((slot, idx) => {
         const bucket = slot.getAttribute('data-cat-bucket') || 'bombeo';
+        const regime = slot.getAttribute('data-stock-regime') || 'hay';
         const blob = slot.getAttribute('data-search-blob') || '';
-        const matchCat = activeCat === 'all' || bucket === activeCat;
+        const matchCat =
+          activeCat === 'all' ||
+          (activeCat === 'bajo_proyecto' ? regime === 'bajo_proyecto' : bucket === activeCat);
         const matchQuery = tokens.length === 0 || tokens.every((t) => blob.includes(t));
-        const show = matchCat && matchQuery;
+        const withinCap = !enforceInitialCap || idx < 8;
+        const show = matchCat && matchQuery && withinCap;
+        slot.hidden = !show;
         slot.style.display = show ? '' : 'none';
         if (show) visible += 1;
       });
+      if (showAllBtn) {
+        showAllBtn.hidden = !enforceInitialCap || slots.length <= 8;
+      }
       if (countBadge) {
         countBadge.textContent = String(visible);
       } else if (readout) {
@@ -120,6 +158,15 @@ const categoryFilters = [
           : `Mostrando ${visible} de ${slots.length} productos`;
       }
     };
+
+    if (showAllBtn && showAllBtn.dataset.showAllBound !== '1') {
+      showAllBtn.dataset.showAllBound = '1';
+      showAllBtn.addEventListener('click', () => {
+        showAllExpanded = true;
+        showAllBtn.setAttribute('data-expanded', '1');
+        applyFilter();
+      });
+    }
 
     catBtns.forEach((btn) => {
       if (btn.dataset.catBound === '1') return;
@@ -139,6 +186,13 @@ const categoryFilters = [
       searchInput.dataset.openGridBound = '1';
       searchInput.addEventListener('input', applyFilter);
     }
+    if (headerInput && headerInput.dataset.openGridHeaderBound !== '1') {
+      headerInput.dataset.openGridHeaderBound = '1';
+      headerInput.addEventListener('input', applyFilter);
+    }
+    if (initialQ) {
+      applyFilter();
+    }
   }
 
   bindOpenCatalogMatrixFilters();
@@ -155,5 +209,7 @@ const categoryFilters = [
   .smat-cat-filter-btn.is-active { background: #0f172a; border-color: #0f172a; color: #ffffff; }
   .avenues-count-readout { font-family: var(--smat-font-mono, monospace); font-size: 0.8rem; font-weight: 700; color: #334155; }
   .catalog-sku-slot { display: flex; }
+  .catalog-sku-slot[hidden] { display: none; }
   .catalog-sku-slot > :global(.smat-sf-card) { width: 100%; }
+  .catalog-expand-row { display: flex; justify-content: center; }
 </style>

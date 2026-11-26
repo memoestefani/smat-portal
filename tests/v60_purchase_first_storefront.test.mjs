@@ -8,18 +8,18 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const SITE_ROOT = path.resolve(__dirname, '..');
 
-test('V60-01: 19/19 fotos reales limpias WebP (<=45 KB, Hamming >= 8) + 5 fotos Almacén Durango sin SVG overlays', () => {
+test('V60-01: 23/23 fotos reales limpias WebP (<=45 KB, Hamming >= 8) + fotos Almacén Durango sin SVG overlays', () => {
   const buildScript = fs.readFileSync(path.join(SITE_ROOT, 'tools/build_product_images.mjs'), 'utf8');
   assert.equal(buildScript.includes('buildStudioOverlaySvg'), false, 'buildStudioOverlaySvg debe estar eliminado');
 
   const manifestPath = path.join(SITE_ROOT, 'public/images/productos/manifest.json');
   assert.ok(fs.existsSync(manifestPath), 'manifest.json debe existir');
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  assert.equal(manifest.skus.length, 19, 'manifest debe listar exactamente 19 SKUs');
+  assert.equal(manifest.skus.length, 23, 'manifest debe listar exactamente 23 SKUs (19 stock + 4 bajo proyecto)');
   assert.ok(manifest.max_bytes <= 46080, `max_bytes=${manifest.max_bytes} debe ser <= 45 KB`);
   assert.ok(manifest.min_hamming_distance >= 8, `min_hamming_distance=${manifest.min_hamming_distance} debe ser >= 8`);
-  assert.equal(manifest.unique_sha256, 19);
-  assert.equal(manifest.unique_dhash64, 19);
+  assert.equal(manifest.unique_sha256, 23);
+  assert.equal(manifest.unique_dhash64, 23);
 
   for (const sku of manifest.skus) {
     assert.equal(/expo/i.test(sku.fileName), false, `Nombre de salida prohibido: ${sku.fileName}`);
@@ -28,7 +28,7 @@ test('V60-01: 19/19 fotos reales limpias WebP (<=45 KB, Hamming >= 8) + 5 fotos 
     assert.ok(fs.statSync(absWebp).size <= 46080, `${sku.fileName} supera 45 KB`);
   }
 
-  assert.equal(manifest.almacen_gallery.length, 5, 'Deben existir 5 fotos en galería Almacén Durango');
+  assert.ok(manifest.almacen_gallery.length >= 5, 'Deben existir >= 5 fotos en galería Almacén Durango');
   for (const item of manifest.almacen_gallery) {
     const absAlmacen = path.join(SITE_ROOT, 'public/images/almacen', item.fileName);
     assert.ok(fs.existsSync(absAlmacen), `Falta foto de almacén ${item.fileName}`);
@@ -65,7 +65,7 @@ test('V60-02: PDP Amazon bilingüe, Thin Wrappers (<=40 LOC), ProductQuickCard f
     }
   }
   walk(path.join(SITE_ROOT, 'src'));
-  assert.ok(srcFileCount <= 160, `src/ tiene ${srcFileCount} archivos > max_files 160`);
+  assert.ok(srcFileCount <= 165, `src/ tiene ${srcFileCount} archivos > max_files 165`);
 });
 
 test('V60-03: Catálogo abierto sin drawer cerrado, 5 verticales Product-First y fix de concatenación', () => {
@@ -118,14 +118,14 @@ test('V60-04: Bandeja sin PDF hardcoded, Contacto limpio, Galería Durango y cer
   }
 });
 
-test('V60-05: Poda canónica 19 PDP + 13 atómicas, 301 en 1 salto, tarjeta homogénea y dist compilado', async () => {
+test('V60-05: Poda canónica 23 PDP + 13 atómicas, 301 en 1 salto, tarjeta homogénea y dist compilado', async () => {
   const { getAllStaticProductRouteEntries } = await import(
     '../src/scripts/quickProductsCatalog.js'
   );
   const esEntries = getAllStaticProductRouteEntries('es');
   const enEntries = getAllStaticProductRouteEntries('en');
-  assert.equal(esEntries.length, 19, `ES PDP estáticas deben ser 19 (hay ${esEntries.length})`);
-  assert.equal(enEntries.length, 19, `EN PDP estáticas deben ser 19 (hay ${enEntries.length})`);
+  assert.equal(esEntries.length, 23, `ES PDP estáticas deben ser 23 (hay ${esEntries.length})`);
+  assert.equal(enEntries.length, 23, `EN PDP estáticas deben ser 23 (hay ${enEntries.length})`);
   const esAliases = getAllStaticProductRouteEntries('es', { includeAliases: true }).filter((e) => !e.isCanonical);
   assert.ok(esAliases.length >= 50, 'Deben existir pares alias ES cubiertos por 301');
 
@@ -159,8 +159,8 @@ test('V60-05: Poda canónica 19 PDP + 13 atómicas, 301 en 1 salto, tarjeta homo
     const esDirs = fs.readdirSync(distProductos, { withFileTypes: true }).filter((d) => d.isDirectory());
     const enDirs = fs.readdirSync(path.join(SITE_ROOT, 'dist/en/products'), { withFileTypes: true }).filter((d) => d.isDirectory());
     const catDirs = fs.readdirSync(path.join(SITE_ROOT, 'dist/catalogo'), { withFileTypes: true }).filter((d) => d.isDirectory());
-    assert.equal(esDirs.length, 19, `dist/productos/ debe tener 19 subdirectorios (hay ${esDirs.length})`);
-    assert.equal(enDirs.length, 19, `dist/en/products/ debe tener 19 subdirectorios (hay ${enDirs.length})`);
+    assert.equal(esDirs.length, 23, `dist/productos/ debe tener 23 subdirectorios (hay ${esDirs.length})`);
+    assert.equal(enDirs.length, 23, `dist/en/products/ debe tener 23 subdirectorios (hay ${enDirs.length})`);
     assert.equal(catDirs.length, 13, `dist/catalogo/ debe tener 13 piezas atómicas (hay ${catDirs.length})`);
     const indexHtml = fs.readFileSync(distIndex, 'utf8');
     assert.ok(indexHtml.includes('/images/almacen/') && indexHtml.includes('/images/productos/'));

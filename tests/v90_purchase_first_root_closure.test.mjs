@@ -29,8 +29,9 @@ test('V90-A: Omnibox global, jerarquía semántica Buy Box, Lightbox nativo y BO
   assert.ok(globalCss.includes('.smat-buy-cta') && globalCss.includes('.smat-nav-cta'));
 
   const pdpSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/ProductDetailIsland.astro'), 'utf8');
+  const pdpCtrlSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/pdpBuyBoxController.js'), 'utf8');
   assert.ok(pdpSrc.includes('id="smat-pdp-lightbox"') && pdpSrc.includes('data-pdp-add-cta'));
-  assert.ok(pdpSrc.includes('-hd.webp'), 'ProductDetailIsland.astro debe enlazar carga lazy *-hd.webp al ampliar');
+  assert.ok(pdpCtrlSrc.includes('-hd.webp'), 'pdpBuyBoxController.js debe enlazar carga lazy *-hd.webp al ampliar');
 
   const bomBarSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/wizard/FastLaneBomBar.astro'), 'utf8');
   assert.ok(bomBarSrc.includes('id="smat-bom-import-dialog"'), 'BOM importador debe vivir en <dialog>');
@@ -39,7 +40,7 @@ test('V90-A: Omnibox global, jerarquía semántica Buy Box, Lightbox nativo y BO
   assert.ok(wizardCtrl.includes('hasFabricacionItem'), 'Step 3 fabricación debe depender condicionalmente del carrito');
 });
 
-test('V90-B01..B07: Consolidación de catálogo (#fichas-atomicas) y pipeline dual WebP 57/57 HD', () => {
+test('V90-B01..B07: Consolidación de catálogo (#fichas-atomicas) y pipeline dual WebP 69/69 HD', () => {
   assert.equal(fs.existsSync(path.join(SITE_ROOT, 'src/components/cores/DropInVerifierCore.astro')), false);
 
   const catalogSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/CatalogFacetedIsland.astro'), 'utf8');
@@ -49,8 +50,8 @@ test('V90-B01..B07: Consolidación de catálogo (#fichas-atomicas) y pipeline du
 
   const manifest = JSON.parse(fs.readFileSync(path.join(SITE_ROOT, 'public/images/productos/manifest.json'), 'utf8'));
   assert.equal(manifest.hygiene_version, 'v9.0-zero-oem');
-  assert.equal(manifest.total_product_slides, 57);
-  assert.equal(manifest.total_hd_slides, 57);
+  assert.equal(manifest.total_product_slides, 69);
+  assert.equal(manifest.total_hd_slides, 69);
   assert.ok(manifest.max_bytes <= 46080, `Standard WebP max=${manifest.max_bytes} > 46080`);
   assert.ok(manifest.max_hd_bytes <= 122880, `HD WebP max=${manifest.max_hd_bytes} > 122880`);
   assert.equal(manifest.exif_stripped_all, true);
@@ -69,6 +70,22 @@ test('V90-B08..B15: Seam DiagnosticFailureCard, TrustMatrix ASTM A532, sin trunc
   assert.ok(fs.existsSync(diagCardPath), 'Debe existir DiagnosticFailureCard.astro');
   const diagCardSrc = fs.readFileSync(diagCardPath, 'utf8');
   assert.ok(diagCardSrc.includes('smat-buy-cta') && diagCardSrc.includes('primaryPhoto'));
+  assert.ok(
+    diagCardSrc.indexOf('smat-diag-thumb') !== -1 &&
+      diagCardSrc.indexOf('diag-body') !== -1 &&
+      diagCardSrc.indexOf('smat-diag-thumb') < diagCardSrc.indexOf('diag-body') &&
+      diagCardSrc.indexOf('smat-diag-thumb') < diagCardSrc.indexOf('diag-threshold-strip'),
+    'DiagnosticFailureCard.astro debe mantener orden Foto-Primero antes de detalles técnicos'
+  );
+
+  for (const warRel of ['src/pages/garantia.astro', 'src/pages/en/warranty.astro']) {
+    const warSrc = fs.readFileSync(path.join(SITE_ROOT, warRel), 'utf8');
+    const evIdx = warSrc.indexOf('trust-evidence-grid');
+    const matrixIdx = warSrc.indexOf('stratum1-warranty-trust');
+    assert.ok(evIdx !== -1 && matrixIdx !== -1 && evIdx < matrixIdx, `${warRel} debe colocar evidencia fotográfica antes de TrustMatrix`);
+    const figMatches = warSrc.match(/class="trust-evidence-fig"/g) || [];
+    assert.ok(figMatches.length >= 3, `${warRel} debe exhibir al menos 3 fotografías reales de verificación`);
+  }
 
   const diagHubSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/DiagnosticsHub.astro'), 'utf8');
   assert.ok(diagHubSrc.includes('DiagnosticFailureCard'), 'DiagnosticsHub.astro debe renderizar DiagnosticFailureCard');

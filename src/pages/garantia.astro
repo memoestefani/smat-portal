@@ -24,13 +24,8 @@ import FaqAccordion from '../components/FaqAccordion.astro';
         </p>
       </div>
 
-      <!-- Matriz de Garantía y Límites -->
-      <div id="stratum1-warranty-trust" data-stratum-1-instrument>
-        <TrustMatrix lang="es" />
-      </div>
-
-      <!-- Evidencia Fotográfica Real de Inspección XRF Cr27% y Metrología en Durango -->
-      <div class="trust-evidence-grid">
+      <!-- Evidencia Fotográfica Real de Inspección XRF Cr27% y Metrología en Durango (sobre el pliegue) -->
+      <div class="trust-evidence-grid trust-evidence-grid--3">
         <figure class="trust-evidence-fig">
           <img
             src="/images/productos/impulsor-bomba-lodos-serie-ah-v2.webp"
@@ -51,8 +46,24 @@ import FaqAccordion from '../components/FaqAccordion.astro';
             loading="eager"
             decoding="async"
           />
-          <figcaption>Inspección de barrenado y concentricidad en Almacén Central Durango</figcaption>
+          <figcaption>Cotejo de barrenado y concentricidad en Almacén Central Durango</figcaption>
         </figure>
+        <figure class="trust-evidence-fig">
+          <img
+            src="/images/almacen/almacen-bomba-zvz-patio.webp"
+            alt="Conjunto de bombeo verificado y listo para despacho en patio Durango"
+            width="640"
+            height="480"
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption>Ensamble verificado en patio Durango listo para despacho terrestre</figcaption>
+        </figure>
+      </div>
+
+      <!-- Matriz de Garantía y Límites -->
+      <div id="stratum1-warranty-trust" data-stratum-1-instrument>
+        <TrustMatrix lang="es" />
       </div>
 
       <!-- Protocolos de Verificación Dimensional en Almacén Durango -->
@@ -248,33 +259,34 @@ import FaqAccordion from '../components/FaqAccordion.astro';
     flex-shrink: 0;
   }
 
-  .trust-evidence-grid {
+  .trust-evidence-grid,
+  .trust-evidence-grid--3 {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin: 0 0 1rem;
   }
 
   .trust-evidence-fig {
     margin: 0;
     background: #ffffff;
     border: 1px solid #cbd5e1;
-    border-radius: 10px;
+    border-radius: 8px;
     overflow: hidden;
   }
 
   .trust-evidence-fig img {
     width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 3;
+    height: clamp(72px, 12vw, 148px);
     object-fit: cover;
     display: block;
   }
 
   .trust-evidence-fig figcaption {
-    padding: 0.55rem 0.85rem;
-    font-size: 0.78rem;
+    padding: 0.38rem 0.55rem;
+    font-size: clamp(0.68rem, 1vw, 0.76rem);
     font-weight: 600;
     color: #334155;
+    line-height: 1.25;
   }
 </style>

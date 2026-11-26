@@ -2,8 +2,8 @@
 /**
  * catalogOmniboxSearch.js
  * ---------------------------------------------------------------------------
- * Omnibox B2B de 1 línea para Portada ES/EN (`SLICE-V80-B01`):
- * - Busca sobre los 19 SKUs canónicos + 13 piezas atómicas en `<= 150 ms`.
+ * Omnibox B2B de 1 línea para Portada y Header ES/EN (`SLICE-V10-C09`):
+ * - Busca sobre los 23 SKUs canónicos (19 stock + 4 bajo proyecto) + 13 piezas atómicas en `<= 150 ms`.
  * - Invoca silenciosamente `verifyDropInEquivalence` (FNV-1a, 0 raíces OEM)
  *   cuando la consulta parece un código de 5+ caracteres.
  * - Cero lecturas/escrituras en `localStorage` (preserva lista blanca V5.9).
