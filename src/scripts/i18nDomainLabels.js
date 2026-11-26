@@ -124,14 +124,34 @@ const DOMAIN_LABELS_I18N = Object.freeze({
     es: {
       title: 'Catálogo Unificado de Equipos y Refacciones',
       integrityLabel: 'Trazabilidad Piezas <-> SKUs',
-      methodologyNote: 'Cobertura bidireccional verificada entre BOM atómica, 19 SKUs canónicos y diagramas técnicos.'
+      methodologyNote: 'Cobertura bidireccional verificada entre BOM atómica, catálogo maestro y diagramas técnicos.'
     },
     en: {
       title: 'Unified Process Equipment & Spares Catalog',
       integrityLabel: 'Parts <-> SKU Traceability',
-      methodologyNote: 'Verified bidirectional mapping across atomic BOM parts, 19 SKUs, and CAD schematics.'
+      methodologyNote: 'Verified bidirectional mapping across atomic BOM parts, master catalog, and CAD schematics.'
     }
   }
+});
+
+/**
+ * Etiquetas canónicas únicas del carrito / cotización en todo el embudo (Cero sinónimos mezclados).
+ */
+export const SMAT_CART_LABELS = Object.freeze({
+  es: Object.freeze({
+    noun: 'Cotización',
+    headerLabel: 'Cotización',
+    addCta: '+ Agregar a cotización',
+    addShort: '+ Cotizar',
+    emptyTitle: 'Partidas en tu Cotización',
+  }),
+  en: Object.freeze({
+    noun: 'Quote',
+    headerLabel: 'Quote',
+    addCta: '+ Add to quote',
+    addShort: '+ Quote',
+    emptyTitle: 'Items in Your Quote',
+  }),
 });
 
 /**
@@ -225,7 +245,7 @@ export function formatMaterialKeyHuman(rawKey = '', lang = 'es') {
 const HUMAN_CYCLONE_REGIME_LABELS = Object.freeze({
   SEMI_UMBRELLA_OPTIMAL: { es: 'Descarga Spray Nominal (Aire Estable)', en: 'Nominal Spray Discharge (Stable Core)' },
   SEMI_UMBRELLA: { es: 'Descarga Spray Nominal (Aire Estable)', en: 'Nominal Spray Discharge (Stable Core)' },
-  ROPING_CORDON: { es: 'Alerta Acordonamiento (Roping en Ápex)', en: 'Roping Alert (Apex Volumetric Choking)' },
+  ROPING_CORDON: { es: 'Alerta Acordonamiento (Sobrecarga en Ápex)', en: 'Roping Alert (Apex Volumetric Choking)' },
   UMBRELLA_SPRAY: { es: 'Abanico Diluido (Ápex Desgastado)', en: 'Dilute Umbrella Spray (Worn Apex)' },
 });
 

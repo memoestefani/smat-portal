@@ -10,7 +10,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
-import { assertUniqueSourceSha256, validateMediaGallerySpec } from './media_hygiene_guard.mjs';
+import { assertSiblingVerticalDhashSeparation, assertUniqueSourceSha256, validateMediaGallerySpec } from './media_hygiene_guard.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -263,6 +263,7 @@ export async function generateAllProductWebpImages() {
       `[E_DHASH_MIN_HAMMING] Distancia mínima de Hamming (${minHamming}) < 8 entre ${closestPair?.[0]} y ${closestPair?.[1]}`
     );
   }
+  assertSiblingVerticalDhashSeparation(primaryResults, catalog, 8);
 
   const almacenResults = [];
   const keepAlmacenFiles = new Set();

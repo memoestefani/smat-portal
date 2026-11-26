@@ -48,7 +48,7 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
         <h1>{isEs ? 'Control de Procesos' : 'Process Control'}</h1>
         <p class="smat-hero-sub">
           {isEs
-            ? 'Balanzas Marcy, Filtro de Presión Batch Lab (60–100 psi) y Tamices Certificados ASTM E11 / ISO 3310.'
+            ? 'Balanzas Marcy, Prensa de Laboratorio (60–100 psi) y Tamices Certificados ASTM E11 / ISO 3310.'
             : 'Marcy Pulp Density Scales, Batch Pressure Filters (60–100 psi) & ASTM E11 Test Sieves.'}
         </p>
       </div>
@@ -93,7 +93,7 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
             <span>
               <strong>
                 {isEs
-                  ? 'Fichas de Equipos (Balanza Marcy, Filtro Batch, Tamices ASTM) y Accesos Directos'
+                  ? 'Fichas de Equipos (Balanza Marcy, Prensa de Laboratorio, Tamices ASTM) y Accesos Directos'
                   : 'Equipment Sheets (Marcy Scale, Batch Filter, ASTM Sieves) & Cross-Circuit Links'}
               </strong>
             </span>
@@ -114,7 +114,7 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
               {isEs ? '1. Balanza Marcy (Ss / %Cw)' : '1. Marcy Scale (Ss / %Cw)'}
             </button>
             <button type="button" class="metrology-seg-btn" data-met-station-tab="2" aria-selected="false">
-              {isEs ? '2. Filtro Batch Lab (60–100 psi)' : '2. Lab Batch Filter (60–100 psi)'}
+              {isEs ? '2. Prensa de Laboratorio (60–100 psi)' : '2. Lab Batch Filter (60–100 psi)'}
             </button>
             <button type="button" class="metrology-seg-btn" data-met-station-tab="3" aria-selected="false">
               {isEs ? '3. Tamices ASTM E11 / √2' : '3. ASTM E11 Sieves / √2'}
@@ -142,14 +142,14 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
               </div>
               <div class="control-actions">
                 <a href={marcySkuHref} class="btn btn-primary">{isEs ? 'Ver Ficha SKU Balanza Marcy →' : 'View Marcy Scale SKU →'}</a>
-                <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-MARCY-1000" data-tray-circuit="control_procesos">{isEs ? '+ Bandeja' : '+ Tray'}</button>
+                <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-MARCY-1000" data-tray-circuit="control_procesos">{isEs ? '+ Cotización' : '+ Quote'}</button>
               </div>
             </article>
 
             <article id={isEs ? 'filtro-batch' : 'batch-filter'} class="card control-block ctrl-hidden-tab" data-instrument-card="2">
               <div class="control-block-header">
                 <span class="badge badge-copper">{isEs ? 'MUESTREO DE LABORATORIO • 60–100 PSI' : 'LAB SAMPLE DEWATERING • 60–100 PSI'}</span>
-                <h2>{isEs ? 'Filtro de Presión Batch de Laboratorio' : 'Laboratory Batch Pressure Filter'}</h2>
+                <h2>{isEs ? 'Prensa de Laboratorio Neumática' : 'Laboratory Batch Pressure Filter'}</h2>
                 <p class="block-lead">
                   {isEs
                     ? 'Desaguado neumático rápido de muestras metalúrgicas para control de humedad y preparación hacia batería de tamizado ASTM E11.'
@@ -165,8 +165,8 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
                 )}
               </div>
               <div class="control-actions">
-                <a href={`${quoteBase}?circuito=control_procesos&equipo=filtro_batch_lab#rfq`} class="btn btn-primary">{isEs ? 'Cotizar Filtro Batch →' : 'Quote Batch Filter →'}</a>
-                <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-FILTRO-BATCH" data-tray-circuit="control_procesos">{isEs ? '+ Bandeja' : '+ Tray'}</button>
+                <a href={`${quoteBase}?circuito=control_procesos&equipo=filtro_batch_lab#rfq`} class="btn btn-primary">{isEs ? 'Cotizar Prensa de Laboratorio →' : 'Quote Batch Filter →'}</a>
+                <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-FILTRO-BATCH" data-tray-circuit="control_procesos">{isEs ? '+ Cotización' : '+ Quote'}</button>
               </div>
             </article>
 
@@ -190,7 +190,7 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
               </div>
               <div class="control-actions">
                 <a href={`${quoteBase}?circuito=control_procesos&equipo=tamices_laboratorio#rfq`} class="btn btn-primary">{isEs ? 'Cotizar Tamices ASTM →' : 'Quote ASTM Sieves →'}</a>
-                <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-TAMIZ-E11" data-tray-circuit="control_procesos">{isEs ? '+ Bandeja' : '+ Tray'}</button>
+                <button type="button" class="btn btn-outline" data-add-tray-sku="SMAT-LAB-TAMIZ-E11" data-tray-circuit="control_procesos">{isEs ? '+ Cotización' : '+ Quote'}</button>
               </div>
             </article>
           </div>

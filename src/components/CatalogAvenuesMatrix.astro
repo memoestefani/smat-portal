@@ -51,7 +51,7 @@ const categoryFilters = [
     </div>
     <span class="avenues-count-readout" id="catalog-visible-readout">
       {isEs ? 'Mostrando ' : 'Showing '}
-      <strong id="catalog-visible-sku-count" data-schema-output="catalogFacet.visibleSkuCount">{Math.min(8, allSkus.length)}</strong>
+      <strong id="catalog-visible-sku-count" data-schema-output="catalogFacet.visibleSkuCount">{Math.min(6, allSkus.length)}</strong>
       {isEs ? ` de ${allSkus.length} productos` : ` of ${allSkus.length} products`}
     </span>
   </div>
@@ -59,7 +59,7 @@ const categoryFilters = [
   <div class="smat-sf-grid" id="catalog-open-sku-grid">
     {allSkus.map((sku: any, idx: number) => {
       const catBucket = mapCategoryBucket(sku);
-      const isInitialHidden = idx >= 8;
+      const isInitialHidden = idx >= 6;
       const searchBlob = [
         sku.id,
         sku.title_es,
@@ -94,7 +94,7 @@ const categoryFilters = [
     })}
   </div>
 
-  {allSkus.length > 8 && (
+  {allSkus.length > 6 && (
     <div class="catalog-expand-row smat-mt-md">
       <button
         type="button"
@@ -141,14 +141,14 @@ const categoryFilters = [
           activeCat === 'all' ||
           (activeCat === 'bajo_proyecto' ? regime === 'bajo_proyecto' : bucket === activeCat);
         const matchQuery = tokens.length === 0 || tokens.every((t) => blob.includes(t));
-        const withinCap = !enforceInitialCap || idx < 8;
+        const withinCap = !enforceInitialCap || idx < 6;
         const show = matchCat && matchQuery && withinCap;
         slot.hidden = !show;
         slot.style.display = show ? '' : 'none';
         if (show) visible += 1;
       });
       if (showAllBtn) {
-        showAllBtn.hidden = !enforceInitialCap || slots.length <= 8;
+        showAllBtn.hidden = !enforceInitialCap || slots.length <= 6;
       }
       if (countBadge) {
         countBadge.textContent = String(visible);

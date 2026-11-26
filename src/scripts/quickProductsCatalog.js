@@ -226,7 +226,7 @@ export function getQuickProductsCatalog() {
     const materials = Array.isArray(sku.available_materials) && sku.available_materials.length > 0
       ? sku.available_materials
       : [sku.default_material || 'A05'];
-    const defaultDimEs = sku.geometric_triplet_mm?.label_es || 'Geometría Estándar Drop-In 1:1';
+    const defaultDimEs = sku.geometric_triplet_mm?.label_es || 'Acople dimensional 1:1 estándar';
     const defaultDimEn = sku.geometric_triplet_mm?.label_en || 'Standard 1:1 Drop-In Geometry';
     const configOptionsEs = Array.isArray(sku.config_options_es) && sku.config_options_es.length > 0
       ? sku.config_options_es
@@ -443,4 +443,21 @@ export function verifyDiagramSurjectivity() {
     missingKinds: missing,
     missingV32Kinds: missingV32
   };
+}
+
+/**
+ * Proyector SSOT por área vertical (garantiza inclusión de los 23 SKUs incluidos Bajo Proyecto).
+ */
+export function getVerticalCatalogSubset(vertical) {
+  const target = String(vertical || '').trim().toLowerCase();
+  const catalog = getQuickProductsCatalog();
+  if (!target || target === 'all' || target === 'todos') return catalog;
+  return catalog.filter((sku) => String(sku.vertical || '').toLowerCase() === target);
+}
+
+/**
+ * Devuelve exclusivamente los 4 equipos pesados de fabricación/suministro bajo proyecto.
+ */
+export function getProjectCatalogSkus() {
+  return getQuickProductsCatalog().filter((sku) => sku.stock_regime === 'bajo_proyecto');
 }

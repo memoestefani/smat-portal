@@ -84,26 +84,26 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
     <section class={`section ${variant !== 'hub' ? 'section-spacing smat-stage-compact' : ''}`} id="filtracion-main-section">
       <div class={`container ${variant !== 'hub' ? 'content-container' : ''}`}>
         <div class="smat-mb-md" aria-label={isEs ? 'Productos de filtración prensa' : 'Filter press products'}>
-          <div class="smat-featured-row-list">
+          <div class="smat-sf-grid">
             {filtrationSkus.map((sku, idx) => (
-              <ProductStorefrontCard sku={sku} lang={lang} eager={idx < 2} layout="horizontal" />
+              <ProductStorefrontCard sku={sku} lang={lang} eager={idx < 3} />
             ))}
           </div>
         </div>
         <div class={variant !== 'hub' ? 'card detail-card' : ''}>
           <div id="nom141-plate-flexure-verifier" data-smat-calc={variant === 'hub' ? 'filtration' : undefined}>
             <div class="filtration-5family-box" id={stratumId} data-plate-flexure-panel="timoshenko-g5" data-stratum-1-instrument>
-              <div class="smat-cta-row smat-mb-sm">
-                <button type="button" class="btn btn-primary smat-tap-btn smat-buy-cta" data-add-calculated-kit="filtracion">
-                  {isEs ? '+ Agregar kit de filtración a cotización' : '+ Add filtration kit to quote'}
-                </button>
-              </div>
               <details class="wb-progressive-drawer smat-sim-accordion" id="filt-sim-accordion">
                 <summary class="wb-progressive-summary">
                   <span>{isEs ? 'Validar tu selección con calculadora técnica (Ciclo 16 bar y Torta NOM-141)' : 'Validate your selection with technical calculator (16-bar Cycle & NOM-141 Cake)'}</span>
                   <span>▾</span>
                 </summary>
                 <div class="smat-mt-sm">
+                  <div class="smat-cta-row smat-mb-sm">
+                    <button type="button" class="btn btn-primary smat-tap-btn smat-buy-cta" data-add-calculated-kit="filtracion">
+                      {isEs ? '+ Agregar paquete de filtración a cotización' : '+ Add filtration kit to quote'}
+                    </button>
+                  </div>
               {variant === 'hub' ? (
                 <FiltrationCore locale={locale} variant={variant} showVerticalActions={true} panelClass="filt-core-standalone" />
               ) : (
@@ -140,9 +140,15 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
             </div>
           </div>
 
-          <div class="smat-mb-md">
-            <TechnicalDiagrams diagram="filter" lang={lang} />
-          </div>
+          <details class="wb-progressive-drawer smat-mb-md" id="filt-diagram-drawer">
+            <summary class="wb-progressive-summary">
+              <span>{isEs ? 'Ver esquema técnico de placas y prensa 16 bar (Opcional)' : 'View 16-bar plate & press technical diagram (Optional)'}</span>
+              <span>▾</span>
+            </summary>
+            <div class="smat-mt-sm">
+              <TechnicalDiagrams diagram="filter" lang={lang} />
+            </div>
+          </details>
 
           {variant === 'hub' ? (
             <details class="wb-progressive-drawer smat-mb-md" id="filt-sublines-drawer">
@@ -264,7 +270,7 @@ const quoteEquipo = variant === 'parts' ? 'placas_telas' : 'filtro_prensa';
                   <div class="smat-cta-row">
                     <a href={`${quoteBase}?circuito=filtracion&equipo=${quoteEquipo}&serie=800&filt_condition=ciclo_lento#rfq`} class="btn btn-outline">800×800 mm</a>
                     <a href={`${quoteBase}?circuito=filtracion&equipo=${quoteEquipo}&serie=1200&filt_condition=${variant === 'parts' ? 'fuga_chorreo' : 'jales_secos'}#rfq`} class="btn btn-outline">1200×1200 mm</a>
-                    <a href={`${quoteBase}?circuito=filtracion&equipo=${quoteEquipo}&serie=1500&filt_condition=jales_secos#rfq`} class="btn btn-outline">1500×1500 mm (Dry Stacking)</a>
+                    <a href={`${quoteBase}?circuito=filtracion&equipo=${quoteEquipo}&serie=1500&filt_condition=jales_secos#rfq`} class="btn btn-outline">{isEs ? '1500×1500 mm (Apilado seco)' : '1500×1500 mm (Dry Stacking)'}</a>
                   </div>
                 </div>
               </details>

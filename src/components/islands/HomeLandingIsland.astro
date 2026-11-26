@@ -5,7 +5,7 @@
  */
 import TrustMatrix from '../TrustMatrix.astro';
 import ProductStorefrontCard from '../ProductStorefrontCard.astro';
-import { getQuickProductsCatalog } from '../../scripts/quickProductsCatalog.js';
+import { getQuickProductsCatalog, getProjectCatalogSkus } from '../../scripts/quickProductsCatalog.js';
 
 interface Props {
   locale?: 'es' | 'en';
@@ -16,6 +16,7 @@ const isEs = locale === 'es';
 const lang = locale;
 
 const quickCatalog = getQuickProductsCatalog();
+const projectSkus = getProjectCatalogSkus();
 const featuredIds = [
   'SMAT-PUMP-IMP-AH',
   'SMAT-PUMP-WETKIT-554',
@@ -37,7 +38,7 @@ const plantAreas = [
     img: '/images/productos/impulsor-bomba-lodos-serie-ah.webp',
     titleEs: 'Bombas y Extremo Húmedo',
     titleEn: 'Slurry Pumps & Wet-End',
-    subEs: 'Impulsores Cr27%, volutas, sellos secos y Bearing Assembly.',
+    subEs: 'Impulsores Cr27%, volutas, sellos secos y Cartuchos de Rodamientos.',
     subEn: '27% Cr impellers, volutes, dry expellers & Bearing Assemblies.',
   },
   {
@@ -91,8 +92,8 @@ const plantAreas = [
       </h1>
       <p class="smat-home-lead">
         {isEs
-          ? 'Compatibilidad dimensional 1:1, facturación nacional CFDI 4.0 u Orden de Compra SAP y envío directo a unidad minera.'
-          : '1:1 dimensional drop-in interchangeability, domestic CFDI 4.0 or SAP PO procurement, and direct mine-site dispatch.'}
+          ? 'Compatibilidad dimensional 1:1, facturación CFDI 4.0 y despacho directo desde Durango.'
+          : '1:1 dimensional interchangeability, domestic invoicing, and direct dispatch from Durango.'}
       </p>
 
       <div id="workbench" class="dropin-verifier-solar">
@@ -150,7 +151,7 @@ const plantAreas = [
         />
         <img
           src="/images/almacen/almacen-rodamientos-ah.webp"
-          alt={isEs ? 'Cartuchos de rodamientos Bearing Assembly armados' : 'Assembled Bearing Assembly cartridges in stock'}
+          alt={isEs ? 'Cartuchos de rodamientos armados en Durango' : 'Assembled Bearing Assembly cartridges in stock'}
           width="640"
           height="480"
           loading="eager"
@@ -214,6 +215,27 @@ const plantAreas = [
   </div>
 </section>
 
+<!-- Sección 4: Equipos Mayores de Ingeniería y Proyecto -->
+<section class="smat-home-project-band" id="home-project-equipment" aria-label={isEs ? 'Equipos de ingeniería y proyecto' : 'Engineering and project equipment'}>
+  <div class="container">
+    <div class="showcase-header smat-flex-between">
+      <div>
+        <span class="section-eyebrow">{isEs ? 'INGENIERÍA Y EQUIPAMIENTO DE PROYECTO' : 'PROJECT & PLANT EQUIPMENT'}</span>
+        <h2>{isEs ? 'Equipos mayores bajo ingeniería y proyecto' : 'Engineered plant & project equipment'}</h2>
+      </div>
+      <a href={`${quotePath}#rfq`} class="showcase-cta-primary">
+        {isEs ? 'Solicitar ingeniería de proyecto →' : 'Request project quote →'}
+      </a>
+    </div>
+
+    <div class="smat-sf-grid">
+      {projectSkus.map((sku) => (
+        <ProductStorefrontCard sku={sku} lang={lang} />
+      ))}
+    </div>
+  </div>
+</section>
+
 <TrustMatrix lang={lang} hideBoundaries={true} />
 
 <script>
@@ -251,13 +273,14 @@ const plantAreas = [
   :global(.home-omnibox-text strong) { font-size: 0.82rem; color: #0f172a; }
   :global(.home-omnibox-text small) { font-size: 0.72rem; color: #475569; }
   .smat-home-hero-media { display: grid; gap: 0.45rem; }
-  .smat-home-hero-main-fig { margin: 0; border-radius: 12px; overflow: hidden; border: 1px solid #cbd5e1; background: #f8fafc; aspect-ratio: 4 / 3; max-height: 225px; }
+  .smat-home-hero-main-fig { margin: 0; border-radius: 12px; overflow: hidden; border: 1px solid #cbd5e1; background: #f8fafc; aspect-ratio: 16 / 10; max-height: 235px; width: 100%; }
   .smat-home-hero-main-fig img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .smat-home-hero-thumbs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; }
   .smat-home-hero-thumbs img { width: 100%; max-height: 82px; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e1; }
   .hero-actions { display: flex; flex-wrap: wrap; gap: 0.55rem; align-items: center; }
   .btn-lg { min-height: 48px; padding: 0.55rem 1.05rem; font-size: 0.86rem; }
   .equipment-showcase-section { padding: 1.15rem 0 2rem; background: #ffffff; border-bottom: 1px solid #e2e8f0; }
+  .smat-home-project-band { padding: 1.45rem 0; background: #ffffff; border-bottom: 1px solid #e2e8f0; }
   .showcase-header { margin-bottom: 0.75rem; gap: 0.75rem; }
   .section-eyebrow { display: inline-block; font-family: var(--smat-font-mono, monospace); font-size: 0.72rem; font-weight: 800; color: #7c2d12; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.25rem; }
   .showcase-header h2 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); margin: 0; color: #0f172a; }
@@ -284,9 +307,9 @@ const plantAreas = [
     .smat-home-hero-copy { gap: 0.3rem; }
     .hero-badge-pill, .smat-home-lead, .smat-home-hero-thumbs, .home-omnibox-form .smat-field-label, .showcase-header .section-eyebrow { display: none; }
     .hero-home h1 { font-size: 1.08rem; line-height: 1.12; }
-    .dropin-verifier-solar { padding: 0.3rem 0.45rem; }
+    .dropin-verifier-solar { padding: 0.3rem 0.45rem; border-left: 1.5px solid #cbd5e1; }
     .home-omnibox-row { flex-wrap: nowrap; }
-    .smat-home-hero-main-fig { width: 100%; max-width: 100%; height: 104px; max-height: 104px; aspect-ratio: auto; }
+    .smat-home-hero-main-fig { width: 100%; max-width: 100%; height: auto; max-height: 170px; aspect-ratio: 16 / 9; }
     .hero-actions { display: grid; grid-template-columns: 1fr auto; gap: 0.4rem; }
     .hero-actions .btn-lg { min-height: 48px; padding: 0.35rem 0.65rem; font-size: 0.78rem; }
     .equipment-showcase-section { padding: 0.4rem 0 1.25rem; }

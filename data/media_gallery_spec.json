@@ -631,17 +631,11 @@
           "slot": "primary",
           "root": "curada",
           "relPath": "tamizador_tapa_plato_receptor_bronce.jpg",
-          "fit": "contain",
-          "background": {
-            "r": 241,
-            "g": 245,
-            "b": 249,
-            "alpha": 1
-          },
+          "fit": "cover",
           "visual_brand_audit": "CLEAN_ZERO_OEM",
           "material_class": "LAB_SIEVE_SHAKER",
-          "captionEs": "Cabezal de impacto, tapa superior y plato receptor en bronce",
-          "captionEn": "Brass impact cover and receiver pan assembly for 8\" stack"
+          "captionEs": "Cabezal de impacto, tapa superior y plato receptor en bronce para torre 8 pulgadas",
+          "captionEn": "Brass impact cover and receiver pan assembly for 8-inch shaker stack"
         },
         {
           "slot": "v2",
@@ -649,9 +643,9 @@
           "relPath": "04_fototeca_de_productos/03_tamices_e_instrumental/IMG_0395.JPG",
           "fit": "contain",
           "background": {
-            "r": 241,
-            "g": 245,
-            "b": 249,
+            "r": 248,
+            "g": 250,
+            "b": 252,
             "alpha": 1
           },
           "cropBox": {
@@ -662,8 +656,8 @@
           },
           "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
           "material_class": "LAB_SIEVE_SHAKER",
-          "captionEs": "Torre de tamizado granulométrico ASTM E11 de 8 pulgadas",
-          "captionEn": "8-inch ASTM E11 particle sizing stack arrangement"
+          "captionEs": "Torre de tamizado granulométrico ASTM E11 de 8 pulgadas para tamizador orbital",
+          "captionEn": "8-inch ASTM E11 particle sizing stack arrangement for orbital shaker"
         },
         {
           "slot": "v3",
@@ -1053,6 +1047,39 @@
       "material_class": "PP_AND_CLOTH",
       "captionEs": "Paquete de placas de polipropileno en plataforma listo para embarque a mina.",
       "captionEn": "Polypropylene filter press plate pack loaded for mine-site delivery."
+    },
+    {
+      "id": "almacen-bomba-8x6-piso",
+      "fileName": "almacen-bomba-8x6-piso.webp",
+      "root": "memo",
+      "relPath": "04_fototeca_de_productos/04_piezas_y_stock_almacen/Bomba 8 x 6.jpg",
+      "fit": "cover",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "material_class": "SLURRY_PUMP_ASSEMBLY",
+      "captionEs": "Bomba centrífuga de lodos 8×6 ensamblada en piso de almacén Durango lista para despacho.",
+      "captionEn": "Assembled 8×6 horizontal slurry pump on Durango warehouse floor ready for dispatch."
+    },
+    {
+      "id": "almacen-voluta-r55-empaque",
+      "fileName": "almacen-voluta-r55-empaque.webp",
+      "root": "fotos",
+      "relPath": "FRAME PLATE LINER/IMG-20210225-WA0055.jpg",
+      "fit": "cover",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "material_class": "BIMODAL_A05_OR_R55",
+      "captionEs": "Forro moldeado en hule natural R55 protegido con empaque para envío directo a unidad minera.",
+      "captionEn": "Molded R55 natural rubber liner protected in shipping wrap for direct mine dispatch."
+    },
+    {
+      "id": "almacen-impulsor-pu-huacal",
+      "fileName": "almacen-impulsor-pu-huacal.webp",
+      "root": "fotos",
+      "relPath": "impulsor/IMG-20210515-WA0008.jpg",
+      "fit": "cover",
+      "visual_brand_audit": "CLEAN_ZERO_OEM",
+      "material_class": "A05_METAL",
+      "captionEs": "Impulsor de álabes en poliuretano antiabrasivo acondicionado en huacal de madera.",
+      "captionEn": "Anti-abrasive polyurethane impeller packed inside wooden shipping crate."
     }
   ],
   "atomic_parts": {
@@ -1149,14 +1176,13 @@
     },
     "d4029": {
       "root": "fotos",
-      "relPath": "expeller expeller ring/IMG-20210209-WA0006.jpeg",
-      "rotateDeg": 270,
+      "relPath": "expeller expeller ring/IMG-20210224-WA0020.jpeg",
       "fit": "cover",
       "cropBox": {
-        "leftRatio": 0.21,
-        "topRatio": 0.02,
-        "widthRatio": 0.25,
-        "heightRatio": 0.35
+        "leftRatio": 0.04,
+        "topRatio": 0.08,
+        "widthRatio": 0.44,
+        "heightRatio": 0.78
       },
       "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
       "material_class": "EXPELLER_DRY_SEAL"

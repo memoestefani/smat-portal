@@ -2,6 +2,7 @@
 import LogoSmat from './LogoSmat.astro';
 import companyData from '../../data/company.json';
 import { SMAT_SUPPLY_DOORS } from '../scripts/i18nDomainLabels.js';
+import { getQuickProductsCatalog } from '../scripts/quickProductsCatalog.js';
 
 interface Props {
   lang?: 'es' | 'en';
@@ -9,6 +10,7 @@ interface Props {
 
 const { lang = 'es' } = Astro.props;
 const isEs = lang === 'es';
+const catalogCount = getQuickProductsCatalog().length;
 ---
 
 <footer class="site-footer">
@@ -62,7 +64,7 @@ const isEs = lang === 'es';
           <li><a href={isEs ? '/productos/lote-humedo-554-bomba-ah/' : '/en/products/slurry-pump-554-wet-end-lot/'}>{isEs ? 'Revestimientos, Volutas y Cuellos' : 'Volutes & Throatbushes'}</a></li>
           <li><a href={isEs ? '/productos/kit-sellado-seco-expeller-ah/' : '/en/products/expeller-centrifugal-dry-seal-kit/'}>{isEs ? 'Expulsor Centrífugo y Prensaestopa' : 'Centrifugal Expeller & Stuffing Box'}</a></li>
           <li><a href={isEs ? '/catalogo/d075c21/' : '/en/catalog/d075c21/'}>{isEs ? 'Camisa de Flecha D075C21 (420 SS / SiC)' : 'Shaft Sleeve D075C21 (420 SS / SiC)'}</a></li>
-          <li><a href={isEs ? '/productos/cartucho-rodamientos-005m/' : '/en/products/bearing-assembly-cartridge-005m/'}>{isEs ? 'Bearing Assembly / Housing' : 'Bearing Assembly / Housing'}</a></li>
+          <li><a href={isEs ? '/productos/cartucho-rodamientos-005m/' : '/en/products/bearing-assembly-cartridge-005m/'}>{isEs ? 'Cartucho de Rodamientos (005M)' : 'Bearing Assembly / Housing'}</a></li>
         </ul>
       </div>
 
@@ -86,7 +88,7 @@ const isEs = lang === 'es';
       <div class="footer-col">
         <h4 class="col-heading">{isEs ? 'Almacén & Protocolo' : 'Warehouse & Protocol'}</h4>
         <ul class="footer-links smat-footer-links-spaced">
-          <li><a href={isEs ? '/catalogo/' : '/en/catalog/'}><strong>{isEs ? 'Catálogo Completo (19 Productos)' : 'Full Catalog (19 SKUs)'}</strong></a></li>
+          <li><a href={isEs ? '/catalogo/' : '/en/catalog/'}><strong>{isEs ? `Catálogo Completo (${catalogCount} Productos)` : `Full Catalog (${catalogCount} SKUs)`}</strong></a></li>
           <li><a href={isEs ? '/cumplimiento/' : '/en/compliance/'}>{isEs ? 'Alta de Proveedor y CFDI 4.0' : 'Vendor Onboarding & CFDI 4.0'}</a></li>
           <li><a href={isEs ? '/garantia/' : '/en/warranty/'}>{isEs ? 'Garantía de Ajuste Dimensional 1:1' : '1:1 Dimensional Fit Warranty'}</a></li>
           <li><a href={isEs ? '/nosotros/' : '/en/about/'}>{isEs ? 'Almacén Central y Patio Durango' : 'Durango Central Warehouse'}</a></li>
@@ -136,6 +138,7 @@ const isEs = lang === 'es';
 <style>
   .site-footer {
     background-color: var(--smat-navy-deep);
+    color: #e2e8f0;
     border-top: 1px solid var(--smat-navy-border);
     padding-top: 4rem;
     padding-bottom: 2rem;
@@ -159,7 +162,7 @@ const isEs = lang === 'es';
   .brand-sub {
     display: block;
     font-size: 0.75rem;
-    color: var(--smat-copper-accent);
+    color: #fdba74;
     font-weight: 600;
     margin-bottom: 0.75rem;
   }
@@ -168,6 +171,7 @@ const isEs = lang === 'es';
     font-size: 0.875rem;
     line-height: 1.5;
     margin-bottom: 1rem;
+    color: #cbd5e1;
   }
 
   .heritage-tag {
@@ -198,13 +202,17 @@ const isEs = lang === 'es';
   }
 
   .footer-links a {
-    color: var(--smat-border-medium);
+    color: #cbd5e1;
     font-size: 0.875rem;
     transition: color 0.2s;
   }
 
+  .footer-links a strong {
+    color: #f8fafc;
+  }
+
   .footer-links a:hover {
-    color: var(--smat-copper-accent);
+    color: #fdba74;
     padding-left: 4px;
   }
 
@@ -213,10 +221,19 @@ const isEs = lang === 'es';
     flex-direction: column;
     gap: 0.75rem;
     font-size: 0.875rem;
+    color: #cbd5e1;
+  }
+
+  .nap-item {
+    color: #cbd5e1;
+  }
+
+  .nap-item strong {
+    color: #f8fafc;
   }
 
   .nap-item a {
-    color: #cbd5e1;
+    color: #e2e8f0;
     text-decoration: underline;
   }
 
@@ -232,13 +249,14 @@ const isEs = lang === 'es';
     align-items: center;
     gap: 0.5rem;
     font-size: 0.8125rem;
-    color: #f59e0b;
+    color: #fbbf24;
     margin-bottom: 0.25rem;
   }
 
   .logistics-text {
     font-size: 0.8125rem;
     line-height: 1.4;
+    color: #cbd5e1;
   }
 
   .footer-bottom {

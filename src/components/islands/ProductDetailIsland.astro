@@ -256,6 +256,9 @@ const parentSkuSlug = isEs ? `/productos/${sku.slug_es}/` : `/en/products/${sku.
           >
             {isEs ? 'Cotizador formal →' : 'Formal RFQ →'}
           </a>
+          <button type="button" class="smat-slug-link-workbench no-print" onclick="window.print()">
+            {isEs ? 'Imprimir ficha A4' : 'Print A4 Sheet'}
+          </button>
         </div>
       </div>
 
@@ -282,7 +285,7 @@ const parentSkuSlug = isEs ? `/productos/${sku.slug_es}/` : `/en/products/${sku.
     </div>
     <div class="smat-slug-kpi-grid">
       <div class="smat-slug-kpi-box">
-        <div class="smat-slug-kpi-label">{isEs ? 'Referencia Cruzada Drop-In' : 'Zero-OEM Drop-In Reference'}</div>
+        <div class="smat-slug-kpi-label">{isEs ? 'Referencia Cruzada 1:1' : 'Zero-OEM Drop-In Reference'}</div>
         <div class="smat-slug-kpi-value smat-slug-kpi-value--amber">{sku.oem_cross_ref}</div>
       </div>
       <div class="smat-slug-kpi-box">
@@ -364,14 +367,14 @@ const parentSkuSlug = isEs ? `/productos/${sku.slug_es}/` : `/en/products/${sku.
             reorderDays={Number(sku.reorder_window_days) || 90}
             traySource="product_slug_stratum1"
             showTradeIn={false}
-            showPrimaryTrayBtn={true}
-            showPairBtn={true}
+            showPrimaryTrayBtn={false}
+            showPairBtn={false}
           />
         </div>
       </details>
     </div>
 
-    <details class="wb-progressive-drawer" id="slug-coupled-and-codes-drawer" open>
+    <details class="wb-progressive-drawer" id="slug-coupled-and-codes-drawer">
       <summary class="wb-progressive-summary">
         <span>{isEs ? `Producto complementario recomendado (${sku.coupled_pair_sku}) y códigos vinculados` : `Recommended Complementary Part (${sku.coupled_pair_sku}) & Linked Codes`}</span>
         <span>▾</span>

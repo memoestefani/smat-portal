@@ -38,7 +38,7 @@ const humanCircuit = isEs
 const cardTags = `${item.id} ${item.title_es} ${item.title_en} ${item.target_role} ${humanCircuit} ${formatMaterialHumanLabel(item.recommendedMaterial, lang)}`.toLowerCase();
 ---
 
-<article class="card diag-card" data-failure-link={item.id} data-tags={cardTags}>
+<article class="card diag-card" data-ergos-homogeneous-card="1" data-failure-link={item.id} data-tags={cardTags}>
   {primaryPhoto && (
     <div class="smat-diag-media-top">
       <img

@@ -39,12 +39,9 @@ const {
     <div class="smat-flex-between">
       <h1 class="verifier-title">{isEs ? 'Catálogo SMAT Minerals y Buscador 1:1' : 'SMAT Minerals Catalog & 1:1 Search'}</h1>
       <div class="smat-chip-row">
-        <button type="button" class="smat-badge-solar part-chip is-active" data-family-chip="all" aria-pressed="true">
-          <span><strong>{totalCatalogSkusCount}</strong> {isEs ? 'Equipos y Kits' : 'Equipment & Kits'}</span>
-        </button>
-        <button type="button" class="smat-badge-solar part-chip" data-family-chip="atomicas" aria-pressed="false">
-          {isEs ? `Refacciones por Código (${ATOMIC_PARTS_SSOT_COUNT})` : `Part-Code Spares (${ATOMIC_PARTS_SSOT_COUNT})`}
-        </button>
+        <span class="smat-badge-solar">
+          <strong>{totalCatalogSkusCount}</strong> {isEs ? 'Equipos y Kits' : 'Equipment & Kits'} · {ATOMIC_PARTS_SSOT_COUNT} {isEs ? 'Refacciones por Código' : 'Part-Code Spares'}
+        </span>
       </div>
     </div>
 
@@ -163,35 +160,34 @@ const {
   </section>
 
   <section class="catalog-section" id={isEs ? 'logistica' : 'logistics'}>
-    <div class="section-title-wrap">
-      <span class="section-num">05</span>
-      <div>
-        <h2>{isEs ? 'Protocolo de Calidad, Almacén Central y Despacho' : 'Quality Protocol, Central Warehouse & Mine Dispatch'}</h2>
-        <span class="section-subtitle">{isEs ? 'Cotejo dimensional en Durango, certificación metalúrgica PMI y modalidades de entrega en mina' : 'Dimensional verification in Durango, metallurgical certification & nationwide mine logistics'}</span>
+    <details class="wb-progressive-drawer" id="catalog-logistics-drawer">
+      <summary class="wb-progressive-summary">
+        <span>{isEs ? 'Protocolo de Calidad, Almacén Central y Despacho Nacional' : 'Quality Protocol, Central Warehouse & Mine Dispatch'}</span>
+        <span>▾</span>
+      </summary>
+      <div class="trust-charter-grid smat-mt-sm">
+        <div class="trust-box">
+          <span class="t-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></span>
+          <h4>{isEs ? 'Cotejo Dimensional de Tripleta Geométrica (ISO 2768-m)' : 'Geometric Triplet Verification (ISO 2768-m)'}</h4>
+          <p>{isEs ? 'Todo impulsor y componente de desgaste pasa por verificación física de Tripleta Geométrica (A, B, C) y dureza Brinell/Rockwell en nuestro Almacén Central en Durango.' : 'Every wear component undergoes physical Geometric Triplet (A, B, C) inspection and Brinell/Rockwell testing in Durango before dispatch.'}</p>
+        </div>
+        <div class="trust-box">
+          <span class="t-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg></span>
+          <h4>{isEs ? 'Alto Cromo 27% Cr (A05), Hule y Poliuretano' : '27% Cr High Chrome (A05), Rubber & Polyurethane'}</h4>
+          <p>{isEs ? 'Coladas de fundición al 27% Cr (≥650 HB) y elastómeros seleccionados según abrasión, tamaño de partícula y pH.' : '27% Cr white iron heats (≥650 HB) and abrasion elastomers engineered for slurry pH and particle size.'}</p>
+        </div>
+        <div class="trust-box">
+          <span class="t-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="16" height="13" x="1" y="3" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
+          <h4>{isEs ? '3 Modalidades de Despacho Nacional' : '3 Nationwide Dispatch Modes'}</h4>
+          <p>{isEs ? '1. Retiro directo en Almacén Central Durango. 2. Fletera consolidada nacional (ocurre). 3. Flete dedicado directo a mina o multimodal marítimo.' : '1. Durango Central Warehouse pickup. 2. Consolidated freight terminal. 3. Dedicated direct-to-mine flatbeds.'}</p>
+        </div>
+        <div class="trust-box">
+          <span class="t-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+          <h4>{isEs ? 'Atención Técnica Especializada' : 'Dedicated Plant Engineering Support'}</h4>
+          <p>{isEs ? 'Lunes a Viernes de 08:00 a 18:00 CST. Atención directa para cotizaciones por lote y programación de embarques.' : 'Mon–Fri 08:00–18:00 CST. Direct plant support for batch requisitions and mine dispatch.'}</p>
+        </div>
       </div>
-    </div>
-    <div class="trust-charter-grid">
-      <div class="trust-box">
-        <span class="t-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></span>
-        <h4>{isEs ? 'Cotejo Dimensional de Tripleta Geométrica (ISO 2768-m)' : 'Geometric Triplet Verification (ISO 2768-m)'}</h4>
-        <p>{isEs ? 'Todo impulsor y componente de desgaste pasa por verificación física de Tripleta Geométrica (A, B, C) y dureza Brinell/Rockwell en nuestro Almacén Central en Durango.' : 'Every wear component undergoes physical Geometric Triplet (A, B, C) inspection and Brinell/Rockwell testing in Durango before dispatch.'}</p>
-      </div>
-      <div class="trust-box">
-        <span class="t-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg></span>
-        <h4>{isEs ? 'Alto Cromo 27% Cr (A05), Hule y Poliuretano' : '27% Cr High Chrome (A05), Rubber & Polyurethane'}</h4>
-        <p>{isEs ? 'Coladas de fundición al 27% Cr (≥650 HB) y elastómeros seleccionados según abrasión, tamaño de partícula y pH.' : '27% Cr white iron heats (≥650 HB) and abrasion elastomers engineered for slurry pH and particle size.'}</p>
-      </div>
-      <div class="trust-box">
-        <span class="t-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="16" height="13" x="1" y="3" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
-        <h4>{isEs ? '3 Modalidades de Despacho Nacional' : '3 Nationwide Dispatch Modes'}</h4>
-        <p>{isEs ? '1. Retiro directo en Almacén Central Durango. 2. Fletera consolidada nacional (ocurre). 3. Flete dedicado directo a mina o multimodal marítimo.' : '1. Durango Central Warehouse pickup. 2. Consolidated freight terminal. 3. Dedicated direct-to-mine flatbeds.'}</p>
-      </div>
-      <div class="trust-box">
-        <span class="t-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-        <h4>{isEs ? 'Atención Técnica Especializada' : 'Dedicated Plant Engineering Support'}</h4>
-        <p>{isEs ? 'Lunes a Viernes de 08:00 a 18:00 CST. Atención directa para cotizaciones por lote y programación de embarques.' : 'Mon–Fri 08:00–18:00 CST. Direct plant support for batch requisitions and mine dispatch.'}</p>
-      </div>
-    </div>
+    </details>
   </section>
 
   <footer class="catalog-official-footer">
@@ -285,6 +281,19 @@ const {
   @media (min-width: 769px) {
     .catalog-omnibox-bar {
       display: none;
+    }
+  }
+  @media (max-width: 768px) {
+    .smat-island-card {
+      padding: 0.7rem 0.8rem;
+    }
+    .verifier-title {
+      font-size: 1.15rem;
+      line-height: 1.2;
+      margin: 0;
+    }
+    .smat-chip-row {
+      margin-top: 0.45rem;
     }
   }
   .wb-progressive-drawer {

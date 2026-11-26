@@ -8,7 +8,7 @@ import ProductStorefrontCard from '../ProductStorefrontCard.astro';
 import PumpingParametricTable from '../PumpingParametricTable.astro';
 import PumpingAssistantStratum2 from './PumpingAssistantStratum2.astro';
 import { SMAT_SUPPLY_DOORS } from '../../scripts/i18nDomainLabels.js';
-import { getQuickProductsCatalog } from '../../scripts/quickProductsCatalog.js';
+import { getVerticalCatalogSubset } from '../../scripts/quickProductsCatalog.js';
 
 interface Props {
   locale?: 'es' | 'en';
@@ -18,9 +18,7 @@ interface Props {
 const { locale = 'es', mode = 'standalone' } = Astro.props;
 const isEs = locale === 'es';
 const showVerticalShell = mode === 'standalone';
-const pumpingSkus = getQuickProductsCatalog().filter((s) =>
-  ['SMAT-PUMP-IMP-AH', 'SMAT-PUMP-WETKIT-554', 'SMAT-PUMP-EXPELLER-KIT', 'SMAT-PUMP-BRG-005M', 'SMAT-PUMP-LINERS-AH', 'SMAT-COUPLED-PUMP-CYC'].includes(s.id)
-);
+const pumpingSkus = getVerticalCatalogSubset('bombeo');
 ---
 
 <div data-island-standalone="pumping" data-island-mode={mode} data-lang={locale}>
@@ -33,7 +31,7 @@ const pumpingSkus = getQuickProductsCatalog().filter((s) =>
         <h1>{isEs ? 'Bombas para Lodos y Refacciones' : 'Slurry Pumps & Spare Parts'}</h1>
         <p class="smat-bombeo-hero-lead">
           {isEs
-            ? <>Selección directa en 1 clic de partes de desgaste en lotes balanceados <strong>5-5-4</strong> (<strong>Alto Cromo ≥650 HB, Hule Natural y Poliuretano</strong>), cartuchos completos <strong>Bearing Assembly</strong> y simulador hidráulico en vivo.</>
+            ? <>Selección directa en 1 clic de partes de desgaste en lotes balanceados <strong>5-5-4</strong> (<strong>Alto Cromo ≥650 HB, Hule Natural y Poliuretano</strong>), <strong>Cartuchos de Rodamientos</strong> completos y simulador hidráulico en vivo.</>
             : <>Direct 1-click selection of wet-end wear parts in balanced <strong>5-5-4</strong> lots (<strong>High Chrome ≥650 HB, Natural Rubber, and Polyurethane</strong>), complete <strong>Bearing Assembly</strong> cartridges, and live slurry hydraulic simulator.</>}
         </p>
       </div>

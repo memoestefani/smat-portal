@@ -59,6 +59,7 @@ const fullEsUrl = `${siteUrl}${alternateEsPath}`;
 const fullEnUrl = `${siteUrl}${alternateEnPath}`;
 const gaId = import.meta.env.PUBLIC_GA_ID;
 const isTransactionTerminal = /^\/(cotizar|en\/quote|acuse|en\/thank-you)(\/|$)/.test(canonicalPath);
+const fullTitle = /SMAT Minerals/i.test(title) ? title : `${title} | SMAT Minerals`;
 
 // Domicilio Fiscal Oficial: Mariano Salas #114, Col. Primer Presidente, Durango, Dgo. CP 34166 (Inyectado vía SchemaOrg.astro)
 ---
@@ -68,7 +69,7 @@ const isTransactionTerminal = /^\/(cotizar|en\/quote|acuse|en\/thank-you)(\/|$)/
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title} | SMAT Minerals</title>
+    <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={fullCanonicalUrl} />
 

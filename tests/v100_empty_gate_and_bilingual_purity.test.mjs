@@ -97,7 +97,7 @@ test('V100-C16..C22: Descompresión Cowan, 8/23 inicial en catálogo y Diagnóst
 
   const avenuesSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/CatalogAvenuesMatrix.astro'), 'utf8');
   assert.ok(avenuesSrc.includes('id="catalog-show-all-btn"'));
-  assert.ok(avenuesSrc.includes('Math.min(8, allSkus.length)'));
+  assert.ok(avenuesSrc.includes('Math.min(6, allSkus.length)'));
 
   const diagCardSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/DiagnosticFailureCard.astro'), 'utf8');
   assert.ok(diagCardSrc.indexOf('smat-diag-media-top') < diagCardSrc.indexOf('diag-header'));

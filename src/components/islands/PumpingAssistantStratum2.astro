@@ -7,7 +7,6 @@
 import PumpingHydraulicsCore from '../cores/PumpingHydraulicsCore.astro';
 import TribologyAlloyCore from '../cores/TribologyAlloyCore.astro';
 import SealDriveBearingCore from '../cores/SealDriveBearingCore.astro';
-import CircuitNavigator from '../CircuitNavigator.astro';
 import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import SharePurchasing from '../SharePurchasing.astro';
 import PumpAssemblyReport from '../PumpAssemblyReport.astro';
@@ -138,7 +137,7 @@ const systems = [
     quoteHref: `${quoteBase}?circuito=bombeo&equipo=skid_bomba#rfq`,
   },
   {
-    titleEs: 'Bearing Assembly / Housing (Soporte)',
+    titleEs: 'Cartucho de Rodamientos / Soporte',
     titleEn: 'Bearing Assembly / Housing',
     descEs: 'Cartucho completo armado listo para instalación directa: carcasa cilíndrica, flecha de acero aleado, rodamientos cónicos de servicio pesado y sellos laberinto.',
     descEn: 'Complete assembled cartridge unit ready for installation: cylindrical housing, alloy shaft, heavy-duty tapered roller bearings, and labyrinth seals.',
@@ -147,7 +146,7 @@ const systems = [
     metaEs: 'Unidad Armada Completa',
     metaEn: 'Complete Assembled Unit',
     specHref: isEs ? '/productos/cartucho-rodamientos-005m/' : '/en/products/bearing-assembly-cartridge-005m/',
-    specCtaEs: 'Ver Cartucho Bearing',
+    specCtaEs: 'Ver Cartucho de Rodamientos',
     specCtaEn: 'View Bearing Assembly',
     quoteHref: `${quoteBase}?circuito=bombeo&equipo=soporte&estacion=S1#rfq`,
   },
@@ -168,7 +167,7 @@ const systems = [
   {
     titleEs: 'Revestimientos de Voluta y Plato de Succión',
     titleEn: 'Volute Liners & Throatbushes',
-    descEs: 'Volutas, platos de succión (Throatbush) e insertos de plato posterior para zona en contacto húmedo, disponibles en lotes balanceados de desgaste.',
+    descEs: 'Volutas, platos de succión e insertos de plato posterior para zona en contacto húmedo, disponibles en lotes balanceados de desgaste.',
     descEn: 'Volutes, throatbushes, and frame plate liner inserts for wet-end contact zones, available in multi-unit wear lots.',
     metaLabelEs: 'Materiales:',
     metaLabelEn: 'Materials:',
@@ -213,7 +212,7 @@ const tcoRows = [
     oemEn: 'Rigid bundles with slow-moving items',
     reactiveEs: 'Pieza suelta (holguras dispares al armar)',
     reactiveEn: 'Single part (mismatched wear clearances)',
-    smatEs: 'Lotes balanceados (ej. 5 Impulsores + 5 Throatbushes + 4 Volutas)',
+    smatEs: 'Lotes balanceados (ej. 5 Impulsores + 5 Platos de Succión + 4 Volutas)',
     smatEn: 'Custom lots (e.g. 5 Impellers + 5 Throatbushes + 4 Volutes)',
   },
   {
@@ -321,21 +320,6 @@ const tcoRows = [
 
           <div class="card smat-bombeo-sim-card smat-station-panel" id="pumping-assembly-station" data-station-panel="assembly" hidden>
             <PumpAssemblyReport lang={locale} />
-            <details class="bombeo-circuit-drawer smat-mt-sm" id="bombeo-circuit-drawer">
-              <summary class="bombeo-circuit-drawer__summary">
-                <span>
-                  {isEs
-                    ? 'Ver Mapa P&ID del Circuito de Molienda y Reglas Metalúrgicas por Rol'
-                    : 'View Grinding Circuit P&ID Map & Metallurgical Rules by Role'}
-                </span>
-                <span class="bombeo-circuit-drawer__badge">
-                  {isEs ? 'APÉNDICE P&ID ▾' : 'P&ID APPENDIX ▾'}
-                </span>
-              </summary>
-              <div class="bombeo-circuit-drawer__body">
-                <CircuitNavigator currentCircuit="molienda" lang={locale} />
-              </div>
-            </details>
           </div>
         </div>
       </details>
@@ -407,7 +391,7 @@ const tcoRows = [
                           data-tray-circuit="bombeo"
                           data-tray-source="bombeo_tab1_kit"
                         >
-                          {isEs ? '+ Bandeja' : '+ Tray'}
+                          {isEs ? '+ Cotización' : '+ Quote'}
                         </button>
                       </div>
                     </article>
@@ -486,7 +470,7 @@ const tcoRows = [
                             data-tray-circuit="bombeo"
                             data-tray-source="bombeo_atomic_sheet"
                           >
-                            {isEs ? '+ Bandeja' : '+ Tray'}
+                            {isEs ? '+ Cotización' : '+ Quote'}
                           </button>
                           <a href={quoteHref} class="btn btn-primary smat-bombeo-mini-btn">{isEs ? 'Cotizar →' : 'Quote →'}</a>
                         </div>
@@ -500,7 +484,7 @@ const tcoRows = [
             <SharePurchasing
               roleTitle={isEs ? 'Bombas para Lodos y Lote de Refacciones Húmedas (5-5-4)' : 'Slurry Pumps & Wet-End Spare Parts Lot (5-5-4)'}
               specs={isEs
-                ? 'Lote balanceado de 5 Impulsores + 5 Platos de Succión + 4 Volutas y cartucho Bearing Assembly / Housing'
+                ? 'Lote balanceado de 5 Impulsores + 5 Platos de Succión + 4 Volutas y Cartucho de Rodamientos'
                 : 'Balanced lot of 5 Impellers + 5 Throatbushes + 4 Volute Liners and Bearing Assembly / Housing'}
               metallurgy={isEs
                 ? 'Alto Cromo 27% A05 (≥650 HB), Hule Natural Antiabrasivo y Poliuretano'
@@ -524,7 +508,7 @@ const tcoRows = [
           <h2>{isEs ? 'Compra por Lote Húmedo vs. Pieza Suelta de Emergencia' : 'Wet-End Lot Procurement vs. Single-Piece Purchasing'}</h2>
           <p>
             {isEs
-              ? <>Para bombas centrífugas de lodos, las plantas concentradoras programan lotes balanceados acoplados a su tasa real de desgaste (por ejemplo: <strong>5 impulsores, 5 platos de succión y 4 volutas</strong>) junto con un cartucho <strong>Bearing Assembly / Housing</strong> de respaldo.</>
+              ? <>Para bombas centrífugas de lodos, las plantas concentradoras programan lotes balanceados acoplados a su tasa real de desgaste (por ejemplo: <strong>5 impulsores, 5 platos de succión y 4 volutas</strong>) junto con un <strong>Cartucho de Rodamientos</strong> de respaldo.</>
               : <>For slurry pumps, concentrator plants order balanced wet-end lots matched to component wear rates (for example: <strong>5 impellers, 5 throatbushes, and 4 volute liners</strong>) alongside a complete spare <strong>Bearing Assembly / Housing</strong>.</>}
           </p>
         </div>

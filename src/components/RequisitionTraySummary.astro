@@ -9,11 +9,12 @@ interface Props {
 
 const { lang = 'es' } = Astro.props;
 const isEs = lang === 'es';
-const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tray';
+const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Quote';
 ---
 
 <section
-  class="req-tray-card"
+  class="req-tray-card hidden"
+  hidden
   id="smat-requisition-tray-summary"
   data-requisition-tray
   aria-labelledby="req-tray-title"
@@ -21,14 +22,14 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
   <div class="req-tray-header">
     <div>
       <span class="req-tray-badge">
-        {isEs ? 'PARTIDAS ACTIVAS DE LA REQUISICIÓN INDUSTRIAL' : 'MULTI-ITEM B2B REQUISITION TRAY'}
+        {isEs ? 'PARTIDAS ACTIVAS DE LA COTIZACIÓN INDUSTRIAL' : 'MULTI-ITEM B2B QUOTE ITEMS'}
       </span>
       <h3 id="req-tray-title" class="req-tray-title">
         {isEs ? 'Resumen de Partidas y Prioridad de Despacho' : 'Active Line Items & Priority Dispatch Routing'}
       </h3>
     </div>
     <button type="button" class="req-tray-clear-btn hidden" id="tray-clear-btn">
-      {isEs ? 'Vaciar Bandeja' : 'Clear Tray'}
+      {isEs ? 'Vaciar Cotización' : 'Clear Quote'}
     </button>
   </div>
 
@@ -57,8 +58,8 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
         <tr>
           <td colspan="5" class="req-tray-empty">
             {isEs
-              ? 'Sin partidas en bandeja. Capture códigos arriba o seleccione productos del catálogo.'
-              : 'No items in tray yet. Enter codes above or add products from the catalog.'}
+              ? 'Sin partidas en cotización todavía. Capture códigos arriba o seleccione productos del catálogo.'
+              : 'No items in quote yet. Enter codes above or add products from the catalog.'}
           </td>
         </tr>
       </tbody>
@@ -121,17 +122,20 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
     const renderTray = () => {
       const state = getTrayState();
       const desc = computeCmuPriorityDescriptor({ ...state, lang });
-      clearBtn?.classList.toggle('hidden', !state.items.length);
-      cmuStrip?.classList.toggle('hidden', !state.items.length);
+      const hasItems = Array.isArray(state.items) && state.items.length > 0;
+      root.classList.toggle('hidden', !hasItems);
+      root.hidden = !hasItems;
+      clearBtn?.classList.toggle('hidden', !hasItems);
+      cmuStrip?.classList.toggle('hidden', !hasItems);
       if (cmuCode) {
-        cmuCode.textContent = state.items.length
+        cmuCode.textContent = hasItems
           ? buildCmuPrioritySubjectLine(state, { cvPct: 52, material: 'Cr27', lang })
           : '';
       }
       if (cmuMeta) {
-        if (!state.items.length) {
+        if (!hasItems) {
           cmuMeta.textContent = isEn
-            ? 'Draft — Empty Tray • Add SKUs to assign priority & SLA'
+            ? 'Draft — Empty Quote • Add SKUs to assign priority & SLA'
             : 'Borrador sin partidas • Añada SKUs para asignar prioridad y SLA';
         } else {
           const urgencyHuman = formatUrgencyBandHuman(state.criticalityMode, lang);
@@ -142,11 +146,11 @@ const initialUrgencyHuman = isEs ? 'Borrador sin partidas' : 'Draft — Empty Tr
         }
       }
       if (!tbody) return;
-      if (!state.items.length) {
+      if (!hasItems) {
         tbody.innerHTML = `<tr><td colspan="5" class="req-tray-empty">${
           isEn
-            ? 'No items in tray yet. Import an Excel/SAP list or add products from /en/catalog/.'
-            : 'Sin partidas en carrito todavía. Importe lista Excel/SAP o agregue productos en /catalogo/.'
+            ? 'No items in quote yet. Import an Excel/SAP list or add products from /en/catalog/.'
+            : 'Sin partidas en cotización todavía. Importe lista Excel/SAP o agregue productos en /catalogo/.'
         }</td></tr>`;
         return;
       }

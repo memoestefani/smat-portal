@@ -1,6 +1,8 @@
 ---
 import LogoSmat from './LogoSmat.astro';
 import companyData from '../../data/company.json';
+import { getQuickProductsCatalog } from '../scripts/quickProductsCatalog.js';
+import { SMAT_CART_LABELS } from '../scripts/i18nDomainLabels.js';
 
 interface Props {
   lang?: 'es' | 'en';
@@ -10,9 +12,10 @@ interface Props {
 
 const { lang = 'es', currentPath = '/', alternatePath = '/en/' } = Astro.props;
 const isEs = lang === 'es';
+const catalogCount = getQuickProductsCatalog().length;
 
 const productCategories = isEs ? [
-  { href: '/bombeo/', label: 'Bombas para lodos y refacciones', sub: 'Impulsores Cr27, volutas 5-5-4, sellos secos y Bearing Assembly' },
+  { href: '/bombeo/', label: 'Bombas para lodos y refacciones', sub: 'Impulsores Cr27, volutas 5-5-4, sellos secos y Cartuchos de Rodamientos' },
   { href: '/clasificacion/', label: 'Hidrociclones D6–D20 y cribas', sub: 'Boquillas Ápex SiC, paquete casado y mallas TH48-30 / 1\'x1\'' },
   { href: '/flotacion/', label: 'Flotación y acondicionamiento', sub: 'Mecanismos #18 SP / #24 / #30 y kits rotor-estator en poliuretano' },
   { href: '/filtracion/', label: 'Filtros prensa 16 bar y placas', sub: 'Placas de polipropileno 800–1500 mm, lonas y corre-placas' },
@@ -113,7 +116,7 @@ const productCategories = isEs ? [
         <a href={!isEs ? currentPath : alternatePath} class:list={['lang-btn', { active: !isEs }]} data-lang="en" title="English">EN</a>
       </div>
 
-      <!-- Único botón unificado de Bandeja / Carrito de Cotización -->
+      <!-- Único botón unificado de Cotización -->
       <button
         type="button"
         id="header-qtray-trigger"
@@ -121,8 +124,9 @@ const productCategories = isEs ? [
         aria-haspopup="dialog"
         aria-controls="smat-qtray-drawer"
         aria-expanded="false"
+        data-cart-label={isEs ? SMAT_CART_LABELS.es.headerLabel : SMAT_CART_LABELS.en.headerLabel}
       >
-        <span>{isEs ? 'Bandeja' : 'Quote Tray'}</span>
+        <span>{isEs ? 'Cotización' : 'Quote'}</span>
         <span id="header-qtray-count" class="header-qtray-count">0</span>
       </button>
 
@@ -141,7 +145,7 @@ const productCategories = isEs ? [
           <span>{isEs ? 'Menú' : 'Menu'}</span>
         </summary>
         <nav class="header-mobile-panel" aria-label={isEs ? 'Menú Móvil' : 'Mobile Menu'}>
-          <a href={isEs ? '/catalogo/' : '/en/catalog/'} class="mobile-nav-link">{isEs ? 'Catálogo (23 productos)' : 'Catalog (23 SKUs)'}</a>
+          <a href={isEs ? '/catalogo/' : '/en/catalog/'} class="mobile-nav-link">{isEs ? `Catálogo (${catalogCount} productos)` : `Catalog (${catalogCount} SKUs)`}</a>
           <a href={isEs ? '/bombeo/' : '/en/pumping/'} class="mobile-nav-link">{isEs ? 'Bombas y Refacciones' : 'Pumping & Spares'}</a>
           <a href={isEs ? '/clasificacion/' : '/en/classification/'} class="mobile-nav-link">{isEs ? 'Hidrociclones y Cribas' : 'Cyclones & Screens'}</a>
           <a href={isEs ? '/flotacion/' : '/en/flotation/'} class="mobile-nav-link">{isEs ? 'Flotación' : 'Flotation'}</a>

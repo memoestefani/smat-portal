@@ -109,10 +109,13 @@ Archivos que Cloudflare lee automáticamente desde `dist/`:
 curl.exe -s -I https://smatminerals.com | Select-String "x-frame-options|x-content-type-options|strict-transport-security|content-security-policy"
 
 # 2. Páginas clave devuelven 200 (y espejos retirados devuelven 301)
-foreach ($p in "/", "/cotizar/", "/bombeo/", "/catalogo/", "/productos/lote-humedo-554-bomba-ah/", "/productos/quebradora-quijada-cono-proyecto/", "/catalogo/d075c21/", "/diagnostico/", "/nosotros/", "/flotacion/", "/filtracion/", "/en/", "/en/quote/", "/en/pumping/", "/en/catalog/") {
+foreach ($p in "/", "/cotizar/", "/bombeo/", "/catalogo/", "/productos/lote-humedo-554-bomba-ah/", "/productos/trituradora-quijada-cono-mn18/", "/productos/molino-bolas-forros-crmo/", "/productos/mecanismo-espesador-puente-rastras/", "/productos/bomba-vertical-lodos-sumidero-sp/", "/catalogo/d075c21/", "/diagnostico/", "/nosotros/", "/flotacion/", "/filtracion/", "/en/", "/en/quote/", "/en/pumping/", "/en/catalog/") {
   "{0} -> {1}" -f $p, (curl.exe -s -o NUL -w "%{http_code}" "https://smatminerals.com$p")
 }
 ```
+
+> **Compuerta v10.1 (`smat-gate` Gate 12 + `tests/v101_ssot_projection_buybox_and_a11y.test.mjs`):**  
+> Bloquea títulos con marca duplicada, asegura alcanzabilidad de los `23/23` SKUs desde Home + 5 Verticales ES/EN, exige conteo dinámico y alto contraste WCAG en `Footer.astro`, y prohíbe fugas ES en `/en/quote/`.
 
 Revisión manual en producción (2 minutos):
 1. El botón de WhatsApp abre `wa.me/526183670664`.

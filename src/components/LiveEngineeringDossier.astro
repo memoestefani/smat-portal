@@ -10,7 +10,6 @@ interface Props {
 
 const { lang = 'es' } = Astro.props;
 const isEs = lang === 'es';
-const catalogHref = isEs ? '/catalogo/' : '/en/catalog/';
 const advancePaymentPct = 50;
 const inspectionProtocolText = isEs
   ? (companyData.logistics?.client_inspection_protocol || 'Cotejo dimensional 1:1 previo al embarque.')
@@ -30,7 +29,7 @@ const inspectionProtocolText = isEs
       </button>
     </div>
 
-    <!-- Guía limpia sin botones redundantes cuando la bandeja está vacía -->
+    <!-- Guía limpia sin botones redundantes cuando la cotización está vacía -->
     <div class="dossier-section" data-dossier-empty-guide>
       <span class="dossier-section-title">{isEs ? 'GUÍA RÁPIDA EN 3 PASOS' : '3-STEP QUICK START GUIDE'}</span>
       <p class="part-details-text">
@@ -38,11 +37,6 @@ const inspectionProtocolText = isEs
           ? '1) Agregue partidas o importe Excel/SAP · 2) Capture solicitante y mina · 3) Envíe a Durango y exporte folio A4 / TSV.'
           : '1) Add items or import Excel/SAP · 2) Enter requester & mine site · 3) Dispatch to Durango and export A4 / TSV.'}
       </p>
-      <div class="dossier-passport-actions">
-        <a href={catalogHref} class="btn btn-outline smat-tap-btn smat-nav-cta">
-          {isEs ? 'Explorar Catálogo Completo (23 productos) →' : 'Browse Full Catalog (23 SKUs) →'}
-        </a>
-      </div>
     </div>
 
     <div data-dossier-on-demand-body class="hidden">
@@ -64,7 +58,7 @@ const inspectionProtocolText = isEs
     <div class="dossier-divider"></div>
 
     <div class="dossier-sla-bar" id="dossier-sla-bar">
-      <span class="sla-badge" id="live-priority-tag">{isEs ? 'Borrador sin partidas' : 'Draft — Empty Tray'}</span>
+      <span class="sla-badge" id="live-priority-tag">{isEs ? 'Borrador sin partidas' : 'Draft — Empty Quote'}</span>
       <span class="sla-badge" id="live-budget-category-pill">{isEs ? 'Carril: Por asignar' : 'Lane: Pending items'}</span>
       <span class="sla-badge dossier-gate-pill" id="gate-lead-status" data-testid="gate-lead-status">{isEs ? 'Borrador en captura' : 'Draft in progress'}</span>
       <span class="sla-clock" data-emergency-hotline={String(companyData.contact.whatsapp.emergency_hotline)}>Durango: {companyData.contact.phones[0].display} • WhatsApp: {companyData.contact.whatsapp.display} • {isEs ? companyData.logistics.warehouse_hours : companyData.logistics.warehouse_hours_en}</span>

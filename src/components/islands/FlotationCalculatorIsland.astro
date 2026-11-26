@@ -84,25 +84,54 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
 
     <section class={`section ${variant !== 'hub' ? 'section-spacing smat-stage-compact' : ''}`} id="flotacion-main-section">
       <div class={`container ${variant !== 'hub' ? 'content-container' : ''}`}>
-        <div class="smat-mb-md" aria-label={isEs ? 'Mecanismos de flotación en catálogo' : 'Flotation mechanisms in catalog'}>
-          <div class="smat-featured-row-list">
+        <div class="smat-mb-md" aria-label={isEs ? 'Mecanismos de flotación y tanques acondicionadores' : 'Flotation mechanisms and conditioning tanks'}>
+          <div class="smat-sf-grid">
             {flotationSkus.map((sku) => (
-              <ProductStorefrontCard sku={sku} lang={lang} eager={true} layout="horizontal" />
+              <ProductStorefrontCard sku={sku} lang={lang} eager={true} />
             ))}
+            <article class="smat-sf-card" aria-label={isEs ? 'Tanque acondicionador 15 HP en patio Durango' : '15 HP conditioning tank staged in Durango'}>
+              <div class="smat-sf-media">
+                <img
+                  src="/images/productos/mecanismo-suspendido-flotacion-18sp-v2.webp"
+                  alt={isEs ? 'Tanque acondicionador con puente motriz 15 HP para circuito de flotación' : '15 HP bridge-mounted conditioning tank for flotation circuit'}
+                  width="640"
+                  height="480"
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
+              <div class="smat-sf-body">
+                <div class="smat-sf-meta-row">
+                  <span class="smat-sf-badge smat-sf-badge--fabrica">{isEs ? 'Fabricación bajo plano' : 'Made to Order'}</span>
+                  <span class="smat-sf-mass">15–60 HP</span>
+                </div>
+                <span class="smat-sf-sku">SMAT-FLOT-TANK-COND</span>
+                <h3 class="smat-sf-title">{isEs ? 'Tanques Acondicionadores de Pulpa y Cabezales' : 'Pulp Conditioning Tanks & Drive Heads'}</h3>
+                <p class="smat-sf-compat">{isEs ? '5×5 a 12×12 ft · Impulsor axial en poliuretano y hule' : '5×5 to 12×12 ft · Polyurethane & rubber axial agitator'}</p>
+                <div class="smat-sf-actions">
+                  <a href={`${quoteBase}?circuito=flotacion&equipo=celda_flotacion&serie=100ft#rfq`} class="btn btn-primary smat-sf-btn smat-buy-cta">
+                    {isEs ? 'Cotizar tanque →' : 'Quote tank →'}
+                  </a>
+                  <button type="button" class="btn btn-outline smat-sf-btn" onclick="window.print()">
+                    {isEs ? 'Ficha A4' : 'A4 Spec'}
+                  </button>
+                </div>
+              </div>
+            </article>
           </div>
         </div>
         <div class={variant !== 'hub' ? 'card detail-card' : ''}>
           <div class="flotation-5zone-box" id={stratumId} data-cell-dropin-matrix="gorain-1997" data-stratum-1-instrument>
-            <div class="smat-cta-row smat-mb-sm">
-              <button type="button" class="btn btn-primary smat-tap-btn smat-buy-cta" data-add-calculated-kit="flotacion">
-                {isEs ? '+ Agregar kit recomendado de flotación' : '+ Add recommended flotation kit'}
-              </button>
-            </div>
             <details class="wb-progressive-drawer smat-sim-accordion" id="flot-sim-accordion">
               <summary class="wb-progressive-summary">
                 <span>{isEs ? 'Validar tu selección con calculadora técnica (Dispersión de Aire y Celda) ▾' : 'Validate your selection with technical calculator (Air Dispersion & Cell) ▾'}</span>
               </summary>
               <div class="smat-mt-sm">
+                <div class="smat-cta-row smat-mb-sm">
+                  <button type="button" class="btn btn-primary smat-tap-btn smat-buy-cta" data-add-calculated-kit="flotacion">
+                    {isEs ? '+ Agregar kit calculado a cotización' : '+ Add calculated kit to quote'}
+                  </button>
+                </div>
             {variant === 'hub' ? (
               <FlotationCore locale={locale} variant={variant} showVerticalActions={true} panelClass="flot-core-standalone" />
             ) : (
@@ -113,7 +142,7 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
                       ? (isEs ? 'CONFIGURACIÓN DE REPUESTOS ROTOR-ESTATOR (#18 SP A #30)' : 'ROTOR-STATOR SPARES CONFIGURATION (#18 SP TO #30)')
                       : (isEs ? 'FICHA TÉCNICA DE CELDAS Y MECANISMOS (50–300 FT³)' : 'FLOTATION CELLS & MECHANISMS APPLICATION SHEET (50–300 FT³)')}
                   </strong>
-                  <span class="embedded-badge">Drop-In #18 SP / #24 / #30</span>
+                  <span class="embedded-badge">{isEs ? 'Acople 1:1 #18 SP / #24 / #30' : 'Drop-In #18 SP / #24 / #30'}</span>
                 </div>
                 <p class="smat-hero-sub smat-mt-sm">
                   {variant === 'mechanisms'
@@ -138,9 +167,15 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
             </details>
           </div>
 
-          <div class="smat-mb-md">
-            <TechnicalDiagrams diagram="flotation" lang={lang} />
-          </div>
+          <details class="wb-progressive-drawer smat-mb-md" id="flot-diagram-drawer">
+            <summary class="wb-progressive-summary">
+              <span>{isEs ? 'Ver esquema mecánico del rotor-estator y medidas A·B·C (Opcional)' : 'View rotor-stator mechanical schematic & A·B·C dimensions (Optional)'}</span>
+              <span>▾</span>
+            </summary>
+            <div class="smat-mt-sm">
+              <TechnicalDiagrams diagram="flotation" lang={lang} />
+            </div>
+          </details>
 
           {variant === 'hub' ? (
             <details class="wb-progressive-drawer smat-mb-md" id="flot-catalog-matrix-drawer">
@@ -270,7 +305,7 @@ const quoteEquipo = variant === 'mechanisms' ? 'rotor_estator' : 'celda_flotacio
                     <td>50 ft³ (1.4 m³), 100 ft³ (2.8 m³), 200 ft³ (5.6 m³), 300 ft³ (8.5 m³)</td>
                   </tr>
                   <tr>
-                    <td>{isEs ? 'Despiece en 5 Zonas Drop-In' : '5-Zone Drop-In Retrofit'}</td>
+                    <td>{isEs ? 'Despiece en 5 Zonas Acople 1:1' : '5-Zone Drop-In Retrofit'}</td>
                     <td>{isEs ? 'Cabezal, Eje Hueco, Tubo de Tiro, Rotor Estrella y Difusor/Estator (#18 SP, #24, #30)' : 'Pedestal, Hollow Shaft, Draft Tube, Star Rotor & Stator (#18 SP, #24, #30)'}</td>
                   </tr>
                   <tr>

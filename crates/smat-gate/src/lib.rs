@@ -3,6 +3,7 @@ use std::path::{Path, PathBuf};
 pub mod physics_and_schema;
 pub mod security_and_leaks;
 pub mod seo_and_i18n;
+pub mod storefront_reachability_and_a11y;
 pub mod ux_and_css_layers;
 
 pub struct GateReport {
@@ -100,6 +101,11 @@ pub fn run_all_checks(site_root: &Path) -> Vec<GateReport> {
             ux_and_css_layers::verify_task_first_checkout_hygiene(site_root),
             "OK: Checkout /cotizar/ ligero, plano y con IDs unicos.",
         ),
+        make_gate_report(
+            "12. V10.1 Alcanzabilidad 23/23, Titulo Unico, Contraste Footer y /en/quote/ Puro",
+            storefront_reachability_and_a11y::verify_storefront_reachability_and_a11y(site_root),
+            "OK: 0 titulos duplicados, 23/23 SKUs alcanzables, Footer WCAG y /en/quote/ sin fugas.",
+        ),
     ]
 }
 
@@ -138,5 +144,6 @@ mod tests {
         assert!(ux_and_css_layers::verify_single_main_and_zero_raw_tokens(&root).is_ok());
         assert!(ux_and_css_layers::verify_print_pwa_and_core_hygiene(&root).is_ok());
         assert!(ux_and_css_layers::verify_task_first_checkout_hygiene(&root).is_ok());
+        assert!(storefront_reachability_and_a11y::verify_storefront_reachability_and_a11y(&root).is_ok());
     }
 }

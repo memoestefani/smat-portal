@@ -227,7 +227,7 @@
     padding: 1.25rem 1.35rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 0.65rem;
   }
 
@@ -323,5 +323,21 @@
       line-height: 1.2;
       min-height: 44px;
     }
+  }
+
+  .smat-sf-media-link {
+    background: #f8fafc;
+  }
+
+  .btn:disabled,
+  .btn[disabled],
+  button:disabled,
+  button[disabled] {
+    background: #e2e8f0;
+    color: #0f172a;
+    border-color: #94a3b8;
+    cursor: not-allowed;
+    opacity: 1;
+    box-shadow: none;
   }
 }

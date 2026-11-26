@@ -12,7 +12,7 @@ import SharePurchasing from '../SharePurchasing.astro';
 import CycloneAndScreenReport from '../CycloneAndScreenReport.astro';
 import ProductStorefrontCard from '../ProductStorefrontCard.astro';
 import { SMAT_SUPPLY_DOORS } from '../../scripts/i18nDomainLabels.js';
-import { getQuickProductsCatalog } from '../../scripts/quickProductsCatalog.js';
+import { getVerticalCatalogSubset } from '../../scripts/quickProductsCatalog.js';
 
 interface Props {
   locale?: 'es' | 'en';
@@ -24,9 +24,7 @@ const isEs = locale === 'es';
 const lang = locale;
 const showVerticalShell = mode === 'standalone';
 const productsBase = isEs ? '/productos/' : '/en/products/';
-const cycloneSkus = getQuickProductsCatalog().filter((s) =>
-  ['SMAT-CYC-D6-D20', 'SMAT-COUPLED-PUMP-CYC', 'SMAT-SCR-TH48-30', 'SMAT-SCR-MOD-1X1'].includes(s.id)
-);
+const cycloneSkus = getVerticalCatalogSubset('clasificacion');
 ---
 
 {showVerticalShell && (
@@ -34,15 +32,15 @@ const cycloneSkus = getQuickProductsCatalog().filter((s) =>
     <div class="container">
       <header class="cyc-hero">
         <div class="smat-flex-between">
-          <h1>{isEs ? 'Clasificación por Hidrociclones y Diagnóstico de Roping' : 'Hydrocyclone Classification & Roping Diagnostics'}</h1>
+          <h1>{isEs ? 'Trituración, Molienda, Hidrociclones y Cribas' : 'Comminution, Milling, Cyclones & Screens'}</h1>
           <span class="cyc-badge" data-smat-decision="D7">
             {isEs ? SMAT_SUPPLY_DOORS.classificationSubEs : SMAT_SUPPLY_DOORS.classificationSubEn}
           </span>
         </div>
         <p class="cyc-lead">
           {isEs
-            ? 'Hidrociclones D6–D20, boquillas Ápex SiC y mallas finas de uretano TH48-30 listas para cotización y despacho desde Durango.'
-            : 'D6–D20 hydrocyclones, SiC apex spigots, and TH48-30 urethane screens ready for immediate quoting from Durango.'}
+            ? 'Trituración, molinos, hidrociclones D6–D20, boquillas Ápex SiC y mallas TH48-30 listas para cotización y despacho desde Durango.'
+            : 'Crushers, grinding mills, D6–D20 hydrocyclones, SiC apex spigots, and TH48-30 urethane screens ready for quoting from Durango.'}
         </p>
       </header>
 
@@ -55,11 +53,6 @@ const cycloneSkus = getQuickProductsCatalog().filter((s) =>
       </section>
 
       <section class="cyc-sim-card" id="marcy-3cup-cyclone-calculator" data-stratum-1-instrument aria-labelledby="cyc-sim-heading">
-        <div class="cyc-cta-row smat-mb-sm">
-          <button type="button" class="btn btn-primary smat-tap-btn smat-buy-cta" data-add-calculated-kit="clasificacion">
-            {isEs ? '+ Agregar kit de clasificación a cotización' : '+ Add classification kit to quote'}
-          </button>
-        </div>
         <details class="wb-progressive-drawer smat-sim-accordion" id="cyc-sim-accordion">
           <summary class="wb-progressive-summary">
             <span id="cyc-sim-heading">
@@ -70,6 +63,11 @@ const cycloneSkus = getQuickProductsCatalog().filter((s) =>
             <span>▾</span>
           </summary>
           <div class="smat-mt-sm">
+            <div class="cyc-cta-row smat-mb-sm">
+              <button type="button" class="btn btn-primary smat-tap-btn smat-buy-cta" data-add-calculated-kit="clasificacion">
+                {isEs ? '+ Agregar kit de clasificación a cotización' : '+ Add classification kit to quote'}
+              </button>
+            </div>
             <div class="cyc-sim-header">
               <h2>
                 {isEs ? 'Balance de 3 Vasos, Separación por Tamaño y Eficiencia de Criba' : '3-Cup Pulp Mass Balance, Cut-Size & Screen Separation Simulator'}
@@ -100,7 +98,7 @@ const cycloneSkus = getQuickProductsCatalog().filter((s) =>
               <h3>{isEs ? 'Boquilla Ápex / Spigot (SiC / Cr27)' : 'Apex Spigot Nozzle (SiC / Cr27)'}</h3>
               <p>
                 {isEs
-                  ? 'Geometría cónica rectificada para conservar descarga semi-paraguas y prevenir acordonamiento (roping).'
+                  ? 'Geometría cónica rectificada para conservar descarga semi-paraguas y prevenir acordonamiento en la descarga.'
                   : 'Precision taper bore preserving semi-umbrella spray angle and preventing roping.'}
               </p>
               <a href={`${productsBase}${isEs ? 'hidrociclon-completo-y-boquillas-d6-d20/' : 'hydrocyclone-assembly-and-spigots-d6-d20/'}`}>

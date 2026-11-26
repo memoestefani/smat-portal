@@ -2,7 +2,7 @@
   "schema_version": "v7.0",
   "hygiene_version": "v9.0-zero-oem",
   "exif_stripped_all": true,
-  "generated_at": "2026-11-26T14:09:14.410Z",
+  "generated_at": "2026-11-26T17:03:04.189Z",
   "width": 640,
   "height": 480,
   "hd_width": 1200,
@@ -339,12 +339,12 @@
       "source_sha256": "40488a7a5d3a66281ae0c71f0d0fe35fa61963b11870bf89c7c5a8ad25b79967",
       "material_class": "LAB_SIEVE_SHAKER",
       "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 21808,
-      "hd_bytes": 48052,
-      "sha256": "ccba45871c28ba1afb695c94582eb3930d9f49ec57499ba7dc71ca032402d030",
-      "dhash64": "8cbedccec6c2cbe8",
-      "captionEs": "Cabezal de impacto, tapa superior y plato receptor en bronce",
-      "captionEn": "Brass impact cover and receiver pan assembly for 8\" stack"
+      "bytes": 21362,
+      "hd_bytes": 45806,
+      "sha256": "920c9129640b2edf72e6e55707e3591e682592fcbc3563d03dc86c7665adf42e",
+      "dhash64": "8c3edece46c2c969",
+      "captionEs": "Cabezal de impacto, tapa superior y plato receptor en bronce para torre 8 pulgadas",
+      "captionEn": "Brass impact cover and receiver pan assembly for 8-inch shaker stack"
     },
     {
       "id": "SMAT-LAB-PLATO-TENT",
@@ -928,19 +928,19 @@
         "slot": "primary",
         "src": "/images/productos/tamizador-mecanico-laboratorio.webp",
         "hd_src": "/images/productos/tamizador-mecanico-laboratorio-hd.webp",
-        "bytes": 21808,
-        "hd_bytes": 48052,
-        "captionEs": "Cabezal de impacto, tapa superior y plato receptor en bronce",
-        "captionEn": "Brass impact cover and receiver pan assembly for 8\" stack"
+        "bytes": 21362,
+        "hd_bytes": 45806,
+        "captionEs": "Cabezal de impacto, tapa superior y plato receptor en bronce para torre 8 pulgadas",
+        "captionEn": "Brass impact cover and receiver pan assembly for 8-inch shaker stack"
       },
       {
         "slot": "v2",
         "src": "/images/productos/tamizador-mecanico-laboratorio-v2.webp",
         "hd_src": "/images/productos/tamizador-mecanico-laboratorio-v2-hd.webp",
-        "bytes": 14492,
-        "hd_bytes": 31812,
-        "captionEs": "Torre de tamizado granulométrico ASTM E11 de 8 pulgadas",
-        "captionEn": "8-inch ASTM E11 particle sizing stack arrangement"
+        "bytes": 14478,
+        "hd_bytes": 31726,
+        "captionEs": "Torre de tamizado granulométrico ASTM E11 de 8 pulgadas para tamizador orbital",
+        "captionEn": "8-inch ASTM E11 particle sizing stack arrangement for orbital shaker"
       },
       {
         "slot": "v3",
@@ -1240,6 +1240,42 @@
       "sha256": "9482b653df01ae38724a5d82d8cd28738f15ade16af41a38e38798f27b411dc1",
       "captionEs": "Paquete de placas de polipropileno en plataforma listo para embarque a mina.",
       "captionEn": "Polypropylene filter press plate pack loaded for mine-site delivery."
+    },
+    {
+      "id": "almacen-bomba-8x6-piso",
+      "fileName": "almacen-bomba-8x6-piso.webp",
+      "src": "/images/almacen/almacen-bomba-8x6-piso.webp",
+      "sourceRoot": "memo",
+      "sourceRelPath": "04_fototeca_de_productos/04_piezas_y_stock_almacen/Bomba 8 x 6.jpg",
+      "source_sha256": "777db79d893818ed83a5062c440345a55c2e9270f2551b233a0f7538439312bc",
+      "bytes": 27202,
+      "sha256": "742f635a737f0a7d447af89d3e6a95c7dbda3537f365fc6c75c967131755e5f3",
+      "captionEs": "Bomba centrífuga de lodos 8×6 ensamblada en piso de almacén Durango lista para despacho.",
+      "captionEn": "Assembled 8×6 horizontal slurry pump on Durango warehouse floor ready for dispatch."
+    },
+    {
+      "id": "almacen-voluta-r55-empaque",
+      "fileName": "almacen-voluta-r55-empaque.webp",
+      "src": "/images/almacen/almacen-voluta-r55-empaque.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "FRAME PLATE LINER/IMG-20210225-WA0055.jpg",
+      "source_sha256": "4d2a311ceff91ddcb02e7cf116e7796070f9a5a42131c890e24ce1290a251b4d",
+      "bytes": 41334,
+      "sha256": "5d93d5906d503b762b22fc69ea5d182e80856c6dd3025e5f7310b9de8d501c40",
+      "captionEs": "Forro moldeado en hule natural R55 protegido con empaque para envío directo a unidad minera.",
+      "captionEn": "Molded R55 natural rubber liner protected in shipping wrap for direct mine dispatch."
+    },
+    {
+      "id": "almacen-impulsor-pu-huacal",
+      "fileName": "almacen-impulsor-pu-huacal.webp",
+      "src": "/images/almacen/almacen-impulsor-pu-huacal.webp",
+      "sourceRoot": "fotos",
+      "sourceRelPath": "impulsor/IMG-20210515-WA0008.jpg",
+      "source_sha256": "1b1ebb385864ef505eb63749bc983782e9ee2713e6a2e7f6cf0a0739879787c5",
+      "bytes": 21374,
+      "sha256": "6f768cb13ef2b5bbc55232b0c8d8636e2e6567884bda5fb5d6653bf11a134475",
+      "captionEs": "Impulsor de álabes en poliuretano antiabrasivo acondicionado en huacal de madera.",
+      "captionEn": "Anti-abrasive polyurethane impeller packed inside wooden shipping crate."
     }
   ],
   "atomic_parts": [
@@ -1381,10 +1417,10 @@
       "fileName": "d4029.webp",
       "src": "/images/partes/d4029.webp",
       "sourceRoot": "fotos",
-      "sourceRelPath": "expeller expeller ring/IMG-20210209-WA0006.jpeg",
-      "source_sha256": "81dfa151661bd0e8551454a25a9be1e2ea2de5eec1dc154d0b5732750e97df6e",
-      "bytes": 35572,
-      "sha256": "fed27fdf41ed2c9b21b1726760ce9b3875bd2e3f2e6dc17f3ea5b2147c7a1fdf"
+      "sourceRelPath": "expeller expeller ring/IMG-20210224-WA0020.jpeg",
+      "source_sha256": "603b64d73018574ef444cf32e9762cf06f337334aac4b50b2fa0abc561763bfd",
+      "bytes": 21040,
+      "sha256": "51a90243174edfb579d36e968ba943239f530699d1c6c3dc5a8efb56844c0bc4"
     }
   ]
 }

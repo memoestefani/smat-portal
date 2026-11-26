@@ -181,3 +181,36 @@ export function assertAlmacenPhotoReuseCap(routeImageMap, maxUses = 2) {
   }
   return { checkedImages: counts.size, maxUses };
 }
+
+export function assertSiblingVerticalDhashSeparation(primaryRecords, catalogSkus, minHamming = 8) {
+  const verticalMap = new Map(
+    (catalogSkus || []).map((s) => [String(s.sku_id || s.id), String(s.vertical || '')])
+  );
+  const violations = [];
+  for (let i = 0; i < (primaryRecords || []).length; i += 1) {
+    for (let j = i + 1; j < primaryRecords.length; j += 1) {
+      const a = primaryRecords[i];
+      const b = primaryRecords[j];
+      const va = verticalMap.get(a.id);
+      const vb = verticalMap.get(b.id);
+      if (va && va === vb && a.dhash64 && b.dhash64) {
+        let diff = BigInt(`0x${a.dhash64}`) ^ BigInt(`0x${b.dhash64}`);
+        let dist = 0;
+        while (diff > 0n) {
+          dist += Number(diff & 1n);
+          diff >>= 1n;
+        }
+        if (dist < minHamming) {
+          violations.push({ a: a.id, b: b.id, vertical: va, dist });
+        }
+      }
+    }
+  }
+  if (violations.length > 0) {
+    const first = violations[0];
+    throw new Error(
+      `[E_SIBLING_VISUAL_CLONE] SKUs hermanos en '${first.vertical}' casi gemelos (${first.a} vs ${first.b}, Hamming=${first.dist} < ${minHamming})`
+    );
+  }
+  return { checked: (primaryRecords || []).length, minHamming };
+}
