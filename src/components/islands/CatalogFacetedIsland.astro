@@ -37,41 +37,26 @@ const {
 >
   <section id="stratum1-dropin-verifier" class="card no-print smat-island-card smat-mb-sm" data-stratum-1-instrument data-dropin-verifier data-domain-root="dropIn">
     <div class="smat-flex-between">
-      <h1 class="verifier-title">{isEs ? 'Catálogo SMAT Minerals y Buscador 1:1' : 'SMAT Minerals Catalog & 1:1 Search'}</h1>
+      <div>
+        <h1 class="verifier-title">{isEs ? 'Catálogo SMAT Minerals' : 'SMAT Minerals Catalog'}</h1>
+        <p class="table-subtitle">
+          {isEs
+            ? 'Usa el buscador superior para filtrar cualquier código de pieza, equipo o aleación.'
+            : 'Use the top search bar to filter any part number, assembly or alloy.'}
+        </p>
+      </div>
       <div class="smat-chip-row">
         <span class="smat-badge-solar">
           <strong>{totalCatalogSkusCount}</strong> {isEs ? 'Equipos y Kits' : 'Equipment & Kits'} · {ATOMIC_PARTS_SSOT_COUNT} {isEs ? 'Refacciones por Código' : 'Part-Code Spares'}
         </span>
+        <a href={isEs ? '/cotizar/?openBom=1#rfq' : '/en/quote/?openBom=1#rfq'} class="btn btn-outline btn-sm">
+          {isEs ? 'Importar Excel / SAP →' : 'Import Excel / SAP →'}
+        </a>
       </div>
-    </div>
-
-    <div class="catalog-omnibox-bar smat-mt-sm">
-      <div class="smat-cta-row compact-row dropin-input-row">
-        <input
-          id="catalog-facet-search"
-          type="search"
-          data-dropin-input
-          data-omnibox-dropin
-          data-schema-input="catalogFacet.searchQuery"
-          aria-label={isEs ? 'Buscar producto, SKU o código de pieza' : 'Search product, SKU, or part code'}
-          placeholder={isEs ? 'SKU, código o malla ASTM...' : 'SKU, part code, or sieve...'}
-          class="smat-search-input full-width-input"
-        />
-        <button type="button" data-dropin-btn class="smat-btn-primary smat-tap-btn smat-buy-cta">
-          {isEs ? 'Verificar 1:1 →' : 'Verify 1:1 Fit →'}
-        </button>
-      </div>
-      <div class="smat-dropin-root-badge font-mono-tech smat-mt-sm hidden" hidden>
-        <span>{isEs ? 'Compatibilidad 1:1:' : '1:1 Fit Match:'}</span>
-        <code data-dropin-root data-schema-output="dropIn.normalizedRoot">—</code>
-        <span data-dropin-alloy data-schema-output="dropIn.alloySuffix" class="smat-dropin-meta-pill">—</span>
-        <span data-dropin-sat data-schema-output="dropIn.satTuple" class="smat-dropin-meta-pill">—</span>
-      </div>
-      <div data-dropin-result data-schema-output="dropIn.canonicalSkuId" class="smat-result-box dropin-result-banner smat-hidden-init" hidden></div>
     </div>
   </section>
 
-  <!-- Grid Visual Abierto V9.0: 19 Equipos/Kits con Foto Real y Botón de Compra Directo -->
+  <!-- Grid Visual Abierto V11.0: 23 Equipos/Kits con Foto Real y Botón de Compra Directo -->
   <CatalogAvenuesMatrix lang={lang} />
 
   <section class="atomic-parts-catalog-block smat-mb-md" id="fichas-atomicas" aria-labelledby="atomic-parts-heading">
@@ -86,16 +71,7 @@ const {
       </div>
       <span class="matrix-badge">{enrichedAtomicParts.length} {isEs ? 'REFACCIONES POR CÓDIGO' : 'PART-CODE SPARES'}</span>
     </div>
-    <details class="wb-progressive-drawer smat-mt-sm" id="atomic-parts-catalog-drawer">
-      <summary class="wb-progressive-summary">
-        <span>
-          {isEs
-            ? `Ver las ${ATOMIC_PARTS_SSOT_COUNT} refacciones por código (D4029, E4147, F6147...)`
-            : `View all ${ATOMIC_PARTS_SSOT_COUNT} part-code spares (D4029, E4147, F6147...)`}
-        </span>
-        <span>▾</span>
-      </summary>
-      <div class="smat-sf-grid smat-mt-sm">
+    <div class="smat-sf-grid smat-mt-sm">
       {enrichedAtomicParts.map((part) => {
         const partTitle = isEs ? part.name_es : part.name_en;
         const partHref = isEs ? `/catalogo/${part.code}/` : `/en/catalog/${part.code}/`;
@@ -156,7 +132,6 @@ const {
         );
       })}
       </div>
-    </details>
   </section>
 
   <section class="catalog-section" id={isEs ? 'logistica' : 'logistics'}>
@@ -230,8 +205,6 @@ const {
       if (atomicSection) {
         (atomicSection as HTMLElement).hidden = false;
         if (isAtomicOnly) {
-          const atomicDrawer = document.getElementById('atomic-parts-catalog-drawer') as HTMLDetailsElement | null;
-          if (atomicDrawer) atomicDrawer.open = true;
           atomicSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }
@@ -256,11 +229,11 @@ const {
       el.addEventListener('click', () => switchCatalogFamily('all'));
     });
 
-    const searchInput = document.getElementById('catalog-facet-search') as HTMLInputElement | null;
-    if (searchInput && searchInput.dataset.drawerAutoBound !== '1') {
-      searchInput.dataset.drawerAutoBound = '1';
-      searchInput.addEventListener('input', () => {
-        if (searchInput.value.trim().length > 0) switchCatalogFamily('all');
+    const headerSearchInput = document.getElementById('header-omnibox-input') as HTMLInputElement | null;
+    if (headerSearchInput && headerSearchInput.dataset.drawerAutoBound !== '1') {
+      headerSearchInput.dataset.drawerAutoBound = '1';
+      headerSearchInput.addEventListener('input', () => {
+        if (headerSearchInput.value.trim().length > 0) switchCatalogFamily('all');
       });
     }
 
@@ -278,11 +251,6 @@ const {
 </script>
 
 <style>
-  @media (min-width: 769px) {
-    .catalog-omnibox-bar {
-      display: none;
-    }
-  }
   @media (max-width: 768px) {
     .smat-island-card {
       padding: 0.7rem 0.8rem;

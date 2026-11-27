@@ -151,7 +151,8 @@ export function bindHomeCatalogDrawerAndDropIn(
   const chips = root.querySelectorAll('[data-family-chip]');
   const avenueBtns = root.querySelectorAll('[data-facet-avenue-btn]');
   const facetSearch = /** @type {HTMLInputElement | null} */ (
-    typeof root.querySelector === 'function' ? root.querySelector('#catalog-facet-search') : null
+    (typeof root.querySelector === 'function' ? root.querySelector('#header-omnibox-input, [data-schema-input="catalogFacet.searchQuery"]') : null)
+    || (typeof document !== 'undefined' ? document.querySelector('#header-omnibox-input') : null)
   );
 
   let activeFamily = 'all';

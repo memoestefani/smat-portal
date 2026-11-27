@@ -80,12 +80,13 @@ const cycloneSkus = getVerticalCatalogSubset('clasificacion');
         </details>
       </section>
 
-      <TechnicalDiagrams diagram="cyclone-apex-vortex" lang={lang} showXrayOverlay={true} />
-
       <details class="wb-progressive-drawer smat-mt-sm" id="cyc-report-and-spares-drawer">
         <summary class="tier2-cyc-summary">
-          {isEs ? 'Repuestos Críticos (Ápex / Vortex / Malla TH48-30) y Reporte de Geometría ▾' : 'Critical Spares (Apex / Vortex / TH48-30 Screen) & Geometry Report ▾'}
+          {isEs ? 'Diagrama técnico, Repuestos Críticos (Ápex / Vortex / Malla TH48-30) y Reporte de Geometría ▾' : 'Technical Diagram, Critical Spares (Apex / Vortex / TH48-30 Screen) & Geometry Report ▾'}
         </summary>
+        <div class="smat-mt-sm">
+          <TechnicalDiagrams diagram="cyclone-apex-vortex" lang={lang} showXrayOverlay={true} />
+        </div>
         <section class="cyc-sku-catalog" aria-label={isEs ? 'Repuestos críticos de hidrociclón' : 'Critical Hydrocyclone Spares'}>
           <h2>
             {isEs

@@ -51,7 +51,7 @@ const categoryFilters = [
     </div>
     <span class="avenues-count-readout" id="catalog-visible-readout">
       {isEs ? 'Mostrando ' : 'Showing '}
-      <strong id="catalog-visible-sku-count" data-schema-output="catalogFacet.visibleSkuCount">{Math.min(6, allSkus.length)}</strong>
+      <strong id="catalog-visible-sku-count" data-schema-output="catalogFacet.visibleSkuCount">{allSkus.length}</strong>
       {isEs ? ` de ${allSkus.length} productos` : ` of ${allSkus.length} products`}
     </span>
   </div>
@@ -59,7 +59,6 @@ const categoryFilters = [
   <div class="smat-sf-grid" id="catalog-open-sku-grid">
     {allSkus.map((sku: any, idx: number) => {
       const catBucket = mapCategoryBucket(sku);
-      const isInitialHidden = idx >= 6;
       const searchBlob = [
         sku.id,
         sku.title_es,
@@ -76,7 +75,7 @@ const categoryFilters = [
 
       return (
         <div
-          class={`catalog-sku-slot${isInitialHidden ? ' is-collapsed-batch' : ''}`}
+          class="catalog-sku-slot"
           data-catalog-sku-id={sku.id}
           data-sku-id={sku.id}
           data-sku-family={sku.vertical || 'bombeo'}
@@ -86,26 +85,13 @@ const categoryFilters = [
           data-facet-avenues={[sku.avenue, ...(sku.secondary_avenues || [])].filter(Boolean).join(',')}
           data-search-blob={searchBlob}
           data-initial-index={String(idx)}
-          hidden={isInitialHidden}
+          data-ergos-homogeneous-card="1"
         >
           <ProductStorefrontCard sku={sku} lang={lang} eager={idx < 6} />
         </div>
       );
     })}
   </div>
-
-  {allSkus.length > 6 && (
-    <div class="catalog-expand-row smat-mt-md">
-      <button
-        type="button"
-        id="catalog-show-all-btn"
-        class="btn btn-outline smat-tap-btn"
-        data-expanded="0"
-      >
-        {isEs ? `Mostrar todos (${allSkus.length} productos)` : `Show all (${allSkus.length} products)`}
-      </button>
-    </div>
-  )}
 </section>
 
 <script>
@@ -114,26 +100,21 @@ const categoryFilters = [
     if (!grid) return;
     const slots = Array.from(grid.querySelectorAll<HTMLElement>('.catalog-sku-slot'));
     const catBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-cat-filter]'));
-    const showAllBtn = document.getElementById('catalog-show-all-btn') as HTMLButtonElement | null;
-    const searchInput = document.getElementById('catalog-facet-search') as HTMLInputElement | null;
     const headerInput = document.getElementById('header-omnibox-input') as HTMLInputElement | null;
     const readout = document.getElementById('catalog-visible-readout');
     const countBadge = document.getElementById('catalog-visible-sku-count');
     const isEn = document.documentElement.lang === 'en';
     const initialQ = typeof window !== 'undefined' ? String(new URLSearchParams(window.location.search).get('q') || '').trim() : '';
-    if (initialQ) {
-      if (searchInput && !searchInput.value) searchInput.value = initialQ;
-      if (headerInput && !headerInput.value) headerInput.value = initialQ;
+    if (initialQ && headerInput && !headerInput.value) {
+      headerInput.value = initialQ;
     }
     let activeCat = 'all';
-    let showAllExpanded = false;
 
     const applyFilter = () => {
-      const rawQuery = searchInput?.value || headerInput?.value || '';
+      const rawQuery = headerInput?.value || '';
       const tokens = String(rawQuery).trim().toLowerCase().split(/\s+/).filter(Boolean);
-      const enforceInitialCap = activeCat === 'all' && tokens.length === 0 && !showAllExpanded;
       let visible = 0;
-      slots.forEach((slot, idx) => {
+      slots.forEach((slot) => {
         const bucket = slot.getAttribute('data-cat-bucket') || 'bombeo';
         const regime = slot.getAttribute('data-stock-regime') || 'hay';
         const blob = slot.getAttribute('data-search-blob') || '';
@@ -141,15 +122,11 @@ const categoryFilters = [
           activeCat === 'all' ||
           (activeCat === 'bajo_proyecto' ? regime === 'bajo_proyecto' : bucket === activeCat);
         const matchQuery = tokens.length === 0 || tokens.every((t) => blob.includes(t));
-        const withinCap = !enforceInitialCap || idx < 6;
-        const show = matchCat && matchQuery && withinCap;
+        const show = matchCat && matchQuery;
         slot.hidden = !show;
         slot.style.display = show ? '' : 'none';
         if (show) visible += 1;
       });
-      if (showAllBtn) {
-        showAllBtn.hidden = !enforceInitialCap || slots.length <= 6;
-      }
       if (countBadge) {
         countBadge.textContent = String(visible);
       } else if (readout) {
@@ -158,15 +135,6 @@ const categoryFilters = [
           : `Mostrando ${visible} de ${slots.length} productos`;
       }
     };
-
-    if (showAllBtn && showAllBtn.dataset.showAllBound !== '1') {
-      showAllBtn.dataset.showAllBound = '1';
-      showAllBtn.addEventListener('click', () => {
-        showAllExpanded = true;
-        showAllBtn.setAttribute('data-expanded', '1');
-        applyFilter();
-      });
-    }
 
     catBtns.forEach((btn) => {
       if (btn.dataset.catBound === '1') return;
@@ -182,10 +150,6 @@ const categoryFilters = [
       });
     });
 
-    if (searchInput && searchInput.dataset.openGridBound !== '1') {
-      searchInput.dataset.openGridBound = '1';
-      searchInput.addEventListener('input', applyFilter);
-    }
     if (headerInput && headerInput.dataset.openGridHeaderBound !== '1') {
       headerInput.dataset.openGridHeaderBound = '1';
       headerInput.addEventListener('input', applyFilter);

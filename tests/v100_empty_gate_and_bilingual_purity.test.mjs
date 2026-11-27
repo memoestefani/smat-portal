@@ -66,7 +66,7 @@ test('V100-C23..C25: EMPTY_CART_GATE puro y sin folios ni badges sintéticos en 
   assert.ok(qwSrc.includes('id="wb-empty-starter-card"'));
   assert.ok(qwSrc.includes('wb-header-durango-thumb hidden'));
   assert.ok(qwSrc.includes('data-qw-next-step="2" disabled'));
-  assert.equal((qwSrc.match(/class="wb-quick-sku-btn"/g) || []).length, 4);
+  assert.equal((qwSrc.match(/class="wb-quick-sku-btn"/g) || []).length, 0);
 
   const traySrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/RequisitionTraySummary.astro'), 'utf8');
   assert.equal(traySrc.includes('[SMAT-DGO] [BORRADOR'), false);
@@ -81,13 +81,12 @@ test('V100-C23..C25: EMPTY_CART_GATE puro y sin folios ni badges sintéticos en 
   assert.equal(acuseSrc.includes('DESPACHO PRIORITARIO'), false);
 });
 
-test('V100-C16..C22: Descompresión Cowan, 8/23 inicial en catálogo y Diagnóstico Foto-Primero', () => {
+test('V100-C16..C22: Calculadoras opt-in, catálogo abierto 23+13 y Diagnóstico Foto-Primero', () => {
   for (const [rel, accId] of [
     ['src/components/islands/PumpingAssistantStratum2.astro', 'bombeo-calculator-accordion'],
     ['src/components/islands/CycloneScreenIsland.astro', 'cyc-sim-accordion'],
     ['src/components/islands/FiltrationCalculatorIsland.astro', 'filt-sim-accordion'],
     ['src/components/islands/FlotationCalculatorIsland.astro', 'flot-sim-accordion'],
-    ['src/components/islands/CatalogFacetedIsland.astro', 'atomic-parts-catalog-drawer'],
   ]) {
     const src = fs.readFileSync(path.join(SITE_ROOT, rel), 'utf8');
     const tag = src.match(new RegExp(`<details[^>]*id="${accId}"[^>]*>`));
@@ -95,9 +94,14 @@ test('V100-C16..C22: Descompresión Cowan, 8/23 inicial en catálogo y Diagnóst
     assert.equal(/\bopen\b/.test(tag[0]), false, `${rel} #${accId} no debe iniciar abierto`);
   }
 
+  const catSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/CatalogFacetedIsland.astro'), 'utf8');
+  assert.equal(catSrc.includes('id="atomic-parts-catalog-drawer"'), false, 'Las 13 refacciones deben estar abiertas sin drawer cerrado');
+  assert.ok(catSrc.includes('id="fichas-atomicas"'));
+
   const avenuesSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/CatalogAvenuesMatrix.astro'), 'utf8');
-  assert.ok(avenuesSrc.includes('id="catalog-show-all-btn"'));
-  assert.ok(avenuesSrc.includes('Math.min(6, allSkus.length)'));
+  assert.equal(avenuesSrc.includes('id="catalog-show-all-btn"'), false);
+  assert.equal(avenuesSrc.includes('Math.min(6,'), false);
+  assert.ok(avenuesSrc.includes('data-ergos-homogeneous-card="1"'));
 
   const diagCardSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/DiagnosticFailureCard.astro'), 'utf8');
   assert.ok(diagCardSrc.indexOf('smat-diag-media-top') < diagCardSrc.indexOf('diag-header'));

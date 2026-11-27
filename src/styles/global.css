@@ -1,6 +1,7 @@
 /* SMAT Minerals - Sistema de Diseño Luminous Executive Editorial */
 @layer reset, tokens, base, components, utilities;
 @import './tokens.css' layer(tokens);
+@import './base-reset.css' layer(base);
 @import './cores-apple.css' layer(components);
 
 @layer tokens {
@@ -1097,12 +1098,21 @@
   @media (max-width: 768px) {
     .main-nav-container {
       min-height: 54px;
-      padding-top: 0.3rem;
-      padding-bottom: 0.3rem;
+      padding-top: 0.35rem;
+      padding-bottom: 0.45rem;
+      flex-wrap: wrap;
+      row-gap: 0.45rem;
     }
 
     .header-omnibox-form {
-      display: none;
+      order: 3;
+      flex: 1 1 100%;
+      max-width: 100%;
+      display: block;
+    }
+
+    .header-omnibox-input {
+      min-height: 48px;
     }
   }
 

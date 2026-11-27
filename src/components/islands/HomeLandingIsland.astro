@@ -96,28 +96,6 @@ const plantAreas = [
           : '1:1 dimensional interchangeability, domestic invoicing, and direct dispatch from Durango.'}
       </p>
 
-      <div id="workbench" class="dropin-verifier-solar">
-        <form id="home-omnibox-form" action={catalogPath} method="get" class="home-omnibox-form">
-          <label class="smat-field-label" for="home-omnibox-input">
-            {isEs ? 'Buscador directo 1:1 (SKU, parte o equipo):' : '1:1 Direct Search (SKU, part code or unit):'}
-          </label>
-          <div class="home-omnibox-row">
-            <input
-              id="home-omnibox-input"
-              name="q"
-              type="search"
-              autocomplete="off"
-              class="home-omnibox-input"
-              placeholder={isEs ? 'Ej. E4147, Marcy' : 'e.g. E4147, Marcy'}
-            />
-            <button type="submit" class="btn btn-primary smat-tap-btn home-omnibox-submit smat-buy-cta">
-              {isEs ? 'Buscar →' : 'Search →'}
-            </button>
-          </div>
-          <div id="home-omnibox-results" class="home-omnibox-results" hidden aria-live="polite"></div>
-        </form>
-      </div>
-
       <div class="hero-actions">
         <a href={catalogPath} class="btn btn-primary btn-lg smat-buy-cta">
           {isEs ? `Ver catálogo completo (${quickCatalog.length} productos) →` : `Browse full catalog (${quickCatalog.length} SKUs) →`}
@@ -239,12 +217,9 @@ const plantAreas = [
 <TrustMatrix lang={lang} hideBoundaries={true} />
 
 <script>
-  import { initHomeOmniboxSearch } from '../../scripts/catalogOmniboxSearch.js';
   import { bindAtomicPartTrayButtons } from '../../scripts/verticalStateAndCtaSyncBridge.js';
 
   function initHomeIsland() {
-    const lang = document.documentElement.lang === 'en' ? 'en' : 'es';
-    initHomeOmniboxSearch(document, lang);
     bindAtomicPartTrayButtons(document);
   }
 
@@ -255,23 +230,11 @@ const plantAreas = [
 <style>
   .hero-home { background-color: var(--smat-bg-canvas); color: var(--smat-text-primary); padding: 0.75rem 0 0.85rem; border-bottom: 1px solid var(--smat-border-light); }
   .smat-home-hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1rem; align-items: center; }
-  .smat-home-hero-copy { display: flex; flex-direction: column; gap: 0.45rem; min-width: 0; }
+  .smat-home-hero-copy { display: flex; flex-direction: column; gap: 0.55rem; min-width: 0; }
   .hero-badge-pill { display: inline-flex; width: fit-content; align-items: center; gap: 0.45rem; background: #ffffff; border: 1px solid #cbd5e1; color: #334155; padding: 0.22rem 0.65rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
   .live-dot { width: 8px; height: 8px; background-color: #059669; border-radius: 50%; display: inline-block; }
   .hero-home h1 { color: var(--smat-text-primary); font-size: clamp(1.42rem, 2.25vw, 1.95rem); margin: 0; letter-spacing: -0.025em; line-height: 1.12; }
   .smat-home-lead { margin: 0; font-size: 0.88rem; color: #334155; line-height: 1.38; }
-  .dropin-verifier-solar { padding: 0.55rem 0.75rem; border-radius: 10px; background: #ffffff; border: 1.5px solid #cbd5e1; border-left: 4px solid #7c2d12; }
-  .home-omnibox-form { display: flex; flex-direction: column; gap: 0.3rem; position: relative; }
-  .home-omnibox-row { display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: stretch; }
-  .home-omnibox-input { flex: 1 1 200px; min-width: 0; min-height: 48px; padding: 0.42rem 0.75rem; border: 1px solid #94a3b8; border-radius: 8px; font-size: 0.88rem; color: #0f172a; background: #ffffff; }
-  .home-omnibox-submit { flex: 0 0 auto; min-height: 48px; white-space: nowrap; }
-  .home-omnibox-results { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.35rem; border-top: 1px solid #e2e8f0; padding-top: 0.45rem; }
-  :global(.home-omnibox-item) { display: flex; align-items: center; gap: 0.65rem; padding: 0.45rem 0.6rem; border-radius: 8px; border: 1px solid #cbd5e1; background: #f8fafc; text-decoration: none; color: #0f172a; }
-  :global(.home-omnibox-item:hover) { border-color: #7c2d12; background: #fffbeb; }
-  :global(.home-omnibox-code) { font-family: var(--smat-font-mono, monospace); font-size: 0.72rem; font-weight: 800; color: #7c2d12; background: #fff7ed; border: 1px solid #fed7aa; padding: 0.15rem 0.45rem; border-radius: 4px; white-space: nowrap; }
-  :global(.home-omnibox-text) { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
-  :global(.home-omnibox-text strong) { font-size: 0.82rem; color: #0f172a; }
-  :global(.home-omnibox-text small) { font-size: 0.72rem; color: #475569; }
   .smat-home-hero-media { display: grid; gap: 0.45rem; }
   .smat-home-hero-main-fig { margin: 0; border-radius: 12px; overflow: hidden; border: 1px solid #cbd5e1; background: #f8fafc; aspect-ratio: 16 / 10; max-height: 235px; width: 100%; }
   .smat-home-hero-main-fig img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -298,21 +261,16 @@ const plantAreas = [
   .home-avenues-summary { cursor: pointer; min-height: 48px; display: flex; align-items: center; font-weight: 700; font-size: 0.86rem; color: #0f172a; }
   .part-chip-strip { display: flex; flex-wrap: wrap; gap: 0.45rem; }
   .part-chip { display: inline-flex; align-items: center; min-height: 48px; min-width: 48px; padding: 0.45rem 0.85rem; border-radius: 8px; background: #f8fafc; border: 1px solid #cbd5e1; color: #0f172a; font-size: 0.8rem; font-weight: 700; text-decoration: none; }
-  @media (min-width: 769px) {
-    .dropin-verifier-solar { display: none; }
-  }
   @media (max-width: 900px) {
-    .hero-home { padding: 0.35rem 0 0.35rem; }
-    .smat-home-hero-grid { grid-template-columns: 1fr; gap: 0.3rem; }
-    .smat-home-hero-copy { gap: 0.3rem; }
-    .hero-badge-pill, .smat-home-lead, .smat-home-hero-thumbs, .home-omnibox-form .smat-field-label, .showcase-header .section-eyebrow { display: none; }
-    .hero-home h1 { font-size: 1.08rem; line-height: 1.12; }
-    .dropin-verifier-solar { padding: 0.3rem 0.45rem; border-left: 1.5px solid #cbd5e1; }
-    .home-omnibox-row { flex-wrap: nowrap; }
-    .smat-home-hero-main-fig { width: 100%; max-width: 100%; height: auto; max-height: 170px; aspect-ratio: 16 / 9; }
-    .hero-actions { display: grid; grid-template-columns: 1fr auto; gap: 0.4rem; }
-    .hero-actions .btn-lg { min-height: 48px; padding: 0.35rem 0.65rem; font-size: 0.78rem; }
-    .equipment-showcase-section { padding: 0.4rem 0 1.25rem; }
-    .showcase-header { margin-bottom: 0.3rem; }
+    .hero-home { padding: 0.45rem 0 0.55rem; }
+    .smat-home-hero-grid { grid-template-columns: 1fr; gap: 0.45rem; }
+    .smat-home-hero-copy { gap: 0.35rem; }
+    .hero-badge-pill, .smat-home-lead, .smat-home-hero-thumbs, .showcase-header .section-eyebrow { display: none; }
+    .hero-home h1 { font-size: 1.12rem; line-height: 1.15; }
+    .smat-home-hero-main-fig { width: 100%; max-width: 100%; height: auto; max-height: 185px; aspect-ratio: 16 / 9; }
+    .hero-actions { display: grid; grid-template-columns: 1fr auto; gap: 0.45rem; }
+    .hero-actions .btn-lg { min-height: 48px; padding: 0.38rem 0.68rem; font-size: 0.8rem; }
+    .equipment-showcase-section { padding: 0.55rem 0 1.25rem; }
+    .showcase-header { margin-bottom: 0.35rem; }
   }
 </style>

@@ -484,8 +484,8 @@
       {
         "slot": "v2",
         "src": "/images/productos/kit-sellado-seco-expeller-ah-v2.webp",
-        "caption_es": "Cartucho de sellado mecánico y bridas rectificadas",
-        "caption_en": "Precision machined mechanical seal cartridge & collars"
+        "caption_es": "Anillo expulsor centrífugo, cámara de expulsor y bridas rectificadas",
+        "caption_en": "Precision machined centrifugal expeller ring & collars"
       },
       {
         "slot": "v3",
@@ -781,7 +781,8 @@
       "R55",
       "A05"
     ],
-    "mass_kg": 19.2,
+    "mass_kg": 480,
+    "mass_is_estimate": true,
     "hardness_spec": "Ápex y Vortex SiC ≥ 2200 HV (Mohs 9.2) + Conos de Poliuretano 85 Shore A (Escalón δ_r ≤ 0.76 mm)",
     "niosh_mode": "ASSISTED_SHAFT_MOUNT_2P",
     "geometric_triplet_mm": {
@@ -1347,7 +1348,8 @@
       "R55",
       "A05"
     ],
-    "mass_kg": 42,
+    "mass_kg": 185,
+    "mass_is_estimate": true,
     "hardness_spec": "Poliuretano Colado 85 Shore A / Elastómero R55 (60 Shore A) + Eje en Acero 4140 Rectificado",
     "niosh_mode": "HOIST_REQUIRED",
     "geometric_triplet_mm": {

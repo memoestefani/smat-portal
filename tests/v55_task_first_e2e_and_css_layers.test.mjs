@@ -100,7 +100,10 @@ test('SLICE-V55-25B: Capas CSS @layer, 0 !important no-print, Superficie Única 
 
   const baseLayout = fs.readFileSync(path.join(SITE_ROOT, 'src/layouts/BaseLayout.astro'), 'utf8');
   assert.equal(baseLayout.includes('!important'), false);
-  assert.ok(baseLayout.includes('clip-path: inset(50%)'));
+  assert.equal(/<style\b/i.test(baseLayout), false, 'BaseLayout.astro debe mantener 0 <style> sin @layer');
+  const baseReset = fs.readFileSync(path.join(SITE_ROOT, 'src/styles/base-reset.css'), 'utf8');
+  assert.ok(baseReset.includes('@layer base'));
+  assert.ok(baseReset.includes('clip-path: inset(50%)'));
 
   const qwSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/QuoteWizard.astro'), 'utf8');
   assert.ok(qwSrc.includes('qw-stepper-bar'));

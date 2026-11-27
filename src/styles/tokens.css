@@ -1,11 +1,10 @@
-/* SMAT Minerals - Design Tokens & Executive Editorial Industrial Palette (@layer tokens V5.5) */
-/* Conciliación estética: Elegancia editorial financiera (Garamond/Newsreader, papel blanco nítido, tinta carbón) */
-/* combinada con precisión de instrumental de ingeniería de planta y cobrizos industriales */
+/* SMAT Minerals - Design Tokens & Industrial Purchase-First Palette (@layer tokens V11.0) */
+/* Tipografía Sans-Serif Industrial Nativa Zero-CDN (x-height >= 0.52em, cero fallback Georgia serif) */
 
 :root {
-  /* --- TIPOGRAFÍA HÍBRIDA (Decisión 1-C) --- */
-  --smat-font-editorial: 'Newsreader', 'EB Garamond', Garamond, Georgia, serif;
-  --smat-font-ui: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  /* --- TIPOGRAFÍA INDUSTRIAL NATIVA ZERO-CDN (D4 / INV-SMAT-SCI-15/22) --- */
+  --smat-font-editorial: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+  --smat-font-ui: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
   --smat-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* --- PALETA LUMINOUS EXECUTIVE EDITORIAL & CORPORATE IDENTITY (Decisiones 1-B, 2-B, 3-B) --- */
@@ -148,13 +147,8 @@
   --smat-space-2xl: 80px;
   --smat-space-3xl: 96px;
 
-  /* --- APPLE INDUSTRIAL DESIGN TOKENS & SPECULAR ARCHITECTURE (Décima Cuarta Ola) --- */
-  --apple-bg-canvas: #0a0d14;
+  /* --- TOKENS INDUSTRIALES Y ANIMACIÓN COMPARTIDA --- */
   --apple-bg-surface: #111622;
-  --apple-bg-surface-elevated: #161d2e;
-  --apple-bg-surface-hover: #1d263b;
-
-  --apple-border-subtle: rgba(255, 255, 255, 0.06);
   --apple-border-standard: rgba(255, 255, 255, 0.10);
   --apple-border-specular: inset 0 1px 0 rgba(255, 255, 255, 0.12);
   --apple-shadow-elevation: 0 8px 32px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -164,9 +158,7 @@
   --apple-status-green: #10b981;
   --apple-status-amber: #f59e0b;
   --apple-status-red: #ef4444;
-  --apple-accent-blue: #38bdf8;
   --apple-titanium: #94a3b8;
 
   --apple-spring-snappy: cubic-bezier(0.16, 1, 0.3, 1);
-  --apple-spring-smooth: 240ms cubic-bezier(0.16, 1, 0.3, 1);
 }

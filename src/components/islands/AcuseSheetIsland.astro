@@ -1,5 +1,6 @@
 ---
 import { buildAcuseViewModel } from '../../scripts/acuseSheetController.js';
+import JrpReorderCore from '../cores/JrpReorderCore.astro';
 
 interface Props {
   lang?: 'es' | 'en';
@@ -265,6 +266,32 @@ const ssrEmptyVm = buildAcuseViewModel({ lifecycleState: 'EMPTY', items: [], loc
         {isEs ? 'Seguimiento Inmediato por WhatsApp' : 'Immediate Follow-up via WhatsApp'}
       </a>
     </div>
+
+    <aside id="acuse-jrp-upsell-section" class="smat-mt-md no-print" aria-label={isEs ? 'Programa preventivo de reorden 90/180 días' : '90/180-day preventive reorder schedule'}>
+      <details class="wb-progressive-drawer" id="acuse-jrp-upsell-drawer">
+        <summary class="wb-progressive-summary">
+          <span>
+            {isEs
+              ? 'Programar reabastecimiento preventivo (90 / 180 días) sin paro de planta ▾'
+              : 'Schedule preventive reorder (90 / 180 days) with zero unplanned downtime ▾'}
+          </span>
+        </summary>
+        <div class="smat-mt-sm">
+          <JrpReorderCore
+            lang={lang}
+            mode="acuse"
+            skuId="SMAT-PUMP-IMP-AH"
+            partCode="E4147"
+            title={isEs ? 'Impulsor Cerrado Alto Cromo 27% (E4147)' : 'High Chrome 27% Closed Impeller (E4147)'}
+            reorderDays={90}
+            traySource="acuse_jrp_upsell"
+            showTradeIn={false}
+            showPrimaryTrayBtn={true}
+            showPairBtn={true}
+          />
+        </div>
+      </details>
+    </aside>
   </div>
 </section>
 

@@ -1,0 +1,243 @@
+// @ts-check
+/**
+ * pumpingKitPresets.js
+ * ---------------------------------------------------------------------------
+ * Fuente Única de Verdad (SSOT) para presets 5-5-4, subconjuntos y matriz TCO
+ * en PumpingAssistantStratum2.astro (`GOLD-744` / `SLICE-V11-A06`).
+ * Todos los kits de material apuntan al SKU canónico real `SMAT-PUMP-WETKIT-554`
+ * con variante explícita (`A05`, `R55`, `U01`, `SiC`, `HYBRID`), cero SKUs fantasma.
+ */
+
+export const CANONICAL_WETKIT_SKU = 'SMAT-PUMP-WETKIT-554';
+
+/**
+ * Devuelve los 5 lotes 5-5-4 por material mapeados al SKU canónico real.
+ * @param {string} quoteBase
+ */
+export function getPumping554MaterialKits(quoteBase) {
+  return [
+    {
+      badgeEs: 'ALTO CROMO Cr27% • ≥650 HB',
+      badgeEn: 'HIGH CHROME Cr27% • ≥650 HB',
+      titleEs: 'Kit Metálico (Descarga Molino y Alimentación Hidrociclón)',
+      titleEn: 'Metallic Kit (Primary Mill & Cyclone Feed)',
+      partsEs: 'Voluta Monolítica + Impulsor 5 Álabe + Cuello + Inserto FPL.',
+      partsEn: 'Monolithic Volute + 5-Vane Impeller + Throatbush + FPL Insert.',
+      envEs: 'Impacto grueso d₅₀ > 6 mm, u₂ ≤ 32 m/s, pH 4.0–12.0.',
+      envEn: 'Coarse impact d₅₀ > 6 mm, u₂ ≤ 32 m/s, pH 4.0–12.0.',
+      href: `${quoteBase}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=lote_554&material=alto_cromo_cr27&estacion=S4#rfq`,
+      ctaEs: 'Cotizar Kit Alto Cromo →',
+      ctaEn: 'Quote High Chrome Kit →',
+      sku: CANONICAL_WETKIT_SKU,
+      variantCode: 'A05',
+      code: 'LOTE-554-A05',
+      trayTitleEs: 'Lote Húmedo 5-5-4 — Alto Cromo A05 (27% Cr)',
+      trayTitleEn: '5-5-4 Wet-End Lot — High Chrome A05 (27% Cr)',
+      material: 'A05',
+      isHybrid: false,
+    },
+    {
+      badgeEs: 'HULE NATURAL • 55–65 SHORE A',
+      badgeEn: 'NATURAL RUBBER • 55–65 SHORE A',
+      titleEs: 'Kit Elastómero (Jales Finos y Flotación)',
+      titleEn: 'Elastomer Kit (Fine Tailings & Flotation)',
+      partsEs: 'Forro Succión (CPL) + Forro Flecha (FPL) con alma acero + Impulsor + Cuello.',
+      partsEn: 'Cover Plate Liner (CPL) + Frame Plate Liner (FPL) + Impeller + Throatbush.',
+      envEs: 'Pulpa fina d₅₀ ≤ 5 mm, u₂ ≤ 27.5 m/s, pH 1.5–11.0.',
+      envEn: 'Fine slurry d₅₀ ≤ 5 mm, u₂ ≤ 27.5 m/s, pH 1.5–11.0.',
+      href: `${quoteBase}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=lote_554&material=hule_natural&estacion=S4#rfq`,
+      ctaEs: 'Cotizar Kit Hule Natural →',
+      ctaEn: 'Quote Natural Rubber Kit →',
+      sku: CANONICAL_WETKIT_SKU,
+      variantCode: 'R55',
+      code: 'LOTE-554-R55',
+      trayTitleEs: 'Lote Húmedo 5-5-4 — Hule Natural R55',
+      trayTitleEn: '5-5-4 Wet-End Lot — Natural Rubber R55',
+      material: 'R55',
+      isHybrid: false,
+    },
+    {
+      badgeEs: 'POLIURETANO • 85–95 SHORE A',
+      badgeEn: 'POLYURETHANE • 85–95 SHORE A',
+      titleEs: 'Kit Poliuretano (Ciclones y Reactivos)',
+      titleEn: 'Polyurethane Kit (Cyclones & Reagents)',
+      partsEs: 'Forros CPL + FPL Poliuretano + Impulsor PU + Cuello PU.',
+      partsEn: 'Polyurethane CPL + FPL Liners + PU Impeller + PU Throatbush.',
+      envEs: 'Partícula angular d₅₀ ≤ 8 mm, resistente a reactivos, aceites y espumas.',
+      envEn: 'Sharp particles d₅₀ ≤ 8 mm, reagent, oil, and froth resistance.',
+      href: `${quoteBase}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=lote_554&material=poliuretano&estacion=S4#rfq`,
+      ctaEs: 'Cotizar Kit Poliuretano →',
+      ctaEn: 'Quote Polyurethane Kit →',
+      sku: CANONICAL_WETKIT_SKU,
+      variantCode: 'U01',
+      code: 'LOTE-554-U01',
+      trayTitleEs: 'Lote Húmedo 5-5-4 — Poliuretano U01',
+      trayTitleEn: '5-5-4 Wet-End Lot — Polyurethane U01',
+      material: 'U01',
+      isHybrid: false,
+    },
+    {
+      badgeEs: 'CERÁMICA SiC • ≥2200 HV (MOHS 9.2)',
+      badgeEn: 'SiC CERAMIC • ≥2200 HV (MOHS 9.2)',
+      titleEs: 'Kit Carburo de Silicio Compuesto (Sílice Fina y pH Extremo)',
+      titleEn: 'Silicon Carbide Composite Kit (Fine Silica & Extreme pH)',
+      partsEs: 'Voluta Compuesta SiC + Cuello SiC + Impulsor Cr27/SiC.',
+      partsEn: 'SiC Composite Volute + SiC Throatbush + Cr27/SiC Impeller.',
+      envEs: 'Sílice severa d₈₀ ≤ 800 µm, u₂ ≤ 28.0 m/s, tenacidad 4.1 MPa·√m, pH 1.0–13.5.',
+      envEn: 'Severe silica d₈₀ ≤ 800 µm, u₂ ≤ 28.0 m/s, toughness 4.1 MPa·√m, pH 1.0–13.5.',
+      href: `${quoteBase}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=lote_554&material=ceramica_sic&estacion=S4#rfq`,
+      ctaEs: 'Cotizar Kit Cerámica SiC →',
+      ctaEn: 'Quote SiC Ceramic Kit →',
+      sku: CANONICAL_WETKIT_SKU,
+      variantCode: 'SiC',
+      code: 'LOTE-554-SIC',
+      trayTitleEs: 'Lote Húmedo 5-5-4 — Carburo de Silicio SiC',
+      trayTitleEn: '5-5-4 Wet-End Lot — Silicon Carbide SiC',
+      material: 'SiC',
+      isHybrid: false,
+    },
+    {
+      badgeEs: 'CONFIGURACIÓN HÍBRIDA • IMPULSOR A05 + LINERS R55',
+      badgeEn: 'HYBRID CONFIGURATION • A05 IMPELLER + R55 LINERS',
+      titleEs: 'Kit Híbrido A05 + R55 (Alimentación Ciclones)',
+      titleEn: 'Hybrid A05 + R55 Kit (Cyclone Feed)',
+      partsEs: 'Impulsor cerrado Alto Cromo 27% (A05 ≥650 HB) + Forros Hule Natural R55 FPL/CPL.',
+      partsEn: '27% High Chrome Closed Impeller (A05 ≥650 HB) + Split R55 Natural Rubber Liners FPL/CPL.',
+      envEs: 'Alimentación mixta a ciclones d₈₀ = 150–400 µm, u₂ ≤ 24.5 m/s, -28% masa.',
+      envEn: 'Mixed cyclone feed d₈₀ = 150–400 µm, u₂ ≤ 24.5 m/s, -28% mass reduction.',
+      href: `${quoteBase}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=lote_554&material=hibrido_a05_r55&estacion=S3#rfq`,
+      ctaEs: 'Cotizar Kit Híbrido A05+R55 →',
+      ctaEn: 'Quote Hybrid A05+R55 Kit →',
+      sku: CANONICAL_WETKIT_SKU,
+      variantCode: 'HYBRID',
+      code: 'LOTE-554-HYB',
+      trayTitleEs: 'Lote Húmedo 5-5-4 — Híbrido (Impulsor A05 + Forros R55)',
+      trayTitleEn: '5-5-4 Wet-End Lot — Hybrid (A05 Impeller + R55 Liners)',
+      material: 'HYBRID',
+      isHybrid: true,
+    },
+  ];
+}
+
+/**
+ * Devuelve tarjetas de subconjuntos de bombas para lodos.
+ * @param {boolean} isEs
+ * @param {string} quoteBase
+ */
+export function getPumpingSubsystems(isEs, quoteBase) {
+  return [
+    {
+      titleEs: 'Bombas Completas para Lodos',
+      titleEn: 'Complete Slurry Pumps',
+      descEs: 'Bombas centrífugas horizontales de servicio pesado desde 1.5x1" hasta 14x12" para descarga de molino, ciclones, flotación y jales.',
+      descEn: 'Heavy-duty horizontal centrifugal slurry pumps from 1.5x1" to 14x12" for mill discharge, cyclone feed, flotation, and tailings.',
+      metaLabelEs: 'Rango:',
+      metaLabelEn: 'Range:',
+      metaEs: '1.5x1" hasta 14x12"',
+      metaEn: '1.5x1" to 14x12"',
+      specHref: '#bombeo-asistente',
+      specCtaEs: 'Ver Diagrama y Ficha',
+      specCtaEn: 'View Diagram & Specs',
+      quoteHref: `${quoteBase}?circuito=bombeo&equipo=skid_bomba#rfq`,
+    },
+    {
+      titleEs: 'Cartucho de Rodamientos / Soporte',
+      titleEn: 'Bearing Assembly / Housing',
+      descEs: 'Cartucho armado listo para instalación directa: carcasa cilíndrica, flecha aleada, rodamientos cónicos y sellos laberinto.',
+      descEn: 'Complete assembled cartridge unit ready for drop-in mount: housing, alloy shaft, heavy-duty tapered roller bearings & labyrinth seals.',
+      metaLabelEs: 'Suministro:',
+      metaLabelEn: 'Supply:',
+      metaEs: 'Unidad Armada Completa',
+      metaEn: 'Complete Assembled Unit',
+      specHref: isEs ? '/productos/cartucho-rodamientos-005m/' : '/en/products/bearing-assembly-cartridge-005m/',
+      specCtaEs: 'Ver Cartucho de Rodamientos',
+      specCtaEn: 'View Bearing Assembly',
+      quoteHref: `${quoteBase}?circuito=bombeo&equipo=soporte&estacion=S1#rfq`,
+    },
+    {
+      titleEs: 'Impulsor (Impeller)',
+      titleEn: 'Impeller',
+      descEs: 'Impulsores cerrados de 5 álabes y paso amplio para lodos con álabes expulsadores para abatir presión en caja y recirculación.',
+      descEn: '5-vane closed and wide-passage slurry impellers with front and rear expeller vanes to reduce stuffing box pressure and recirculation.',
+      metaLabelEs: 'Materiales:',
+      metaLabelEn: 'Materials:',
+      metaEs: 'Alto Cromo, Hule, Poliuretano y SiC',
+      metaEn: 'High Chrome, Rubber, Polyurethane & SiC',
+      specHref: isEs ? '/productos/impulsor-bomba-lodos-serie-ah/' : '/en/products/ah-series-slurry-pump-impeller/',
+      specCtaEs: 'Características del Impulsor',
+      specCtaEn: 'Impeller Characteristics',
+      quoteHref: `${quoteBase}?circuito=bombeo&equipo=impulsor&estacion=S3#rfq`,
+    },
+    {
+      titleEs: 'Revestimientos de Voluta y Cuello de Succión',
+      titleEn: 'Volute Liners & Throatbushes',
+      descEs: 'Volutas, cuellos de succión e insertos de plato posterior en lotes balanceados de desgaste 5-5-4.',
+      descEn: 'Volutes, throatbushes, and frame plate liner inserts in balanced 5-5-4 wet-end wear lots.',
+      metaLabelEs: 'Materiales:',
+      metaLabelEn: 'Materials:',
+      metaEs: 'Alto Cromo, Hule, Poliuretano y SiC',
+      metaEn: 'High Chrome, Rubber, Polyurethane & SiC',
+      specHref: isEs ? '/productos/lote-humedo-554-bomba-ah/' : '/en/products/slurry-pump-554-wet-end-lot/',
+      specCtaEs: 'Ver Piezas y Lotes',
+      specCtaEn: 'View Parts & Lots',
+      quoteHref: `${quoteBase}?circuito=bombeo&equipo=revestimientos&estacion=S4#rfq`,
+    },
+    {
+      titleEs: 'Expulsor Centrífugo y Prensaestopa',
+      titleEn: 'Centrifugal Expeller & Stuffing Box',
+      descEs: 'Expulsor centrífugo en seco, anillo expulsor (Expeller Ring), camisa cerámica y estopera trenzada PTFE/Grafito para cero dilución.',
+      descEn: 'Dry centrifugal expeller, expeller ring, ceramic shaft sleeve & PTFE/graphite stuffing box for zero slurry dilution.',
+      metaLabelEs: 'Sellado:',
+      metaLabelEn: 'Sealing:',
+      metaEs: 'Expulsor y Empaquetadura PTFE/Grafito',
+      metaEn: 'Expeller & PTFE/Graphite Stuffing Box',
+      specHref: isEs ? '/productos/kit-sellado-seco-expeller-ah/' : '/en/products/expeller-centrifugal-dry-seal-kit/',
+      specCtaEs: 'Ver Conjunto de Sellado',
+      specCtaEn: 'View Sealing Assembly',
+      quoteHref: `${quoteBase}?circuito=bombeo&equipo=sello&estacion=S2#rfq`,
+    },
+  ];
+}
+
+export const PUMPING_TCO_ROWS = Object.freeze([
+  {
+    metricEs: 'Plazo de Entrega',
+    metricEn: 'International Lead Time',
+    oemEs: '16 a 24 semanas (Flete marítimo y aduanas)',
+    oemEn: '16 to 24 weeks (Ocean freight & customs)',
+    reactiveEs: 'Órdenes de emergencia fragmentadas',
+    reactiveEn: 'Fragmented emergency orders',
+    smatEs: 'Suministro programado por lotes (Facturación fiscal nacional)',
+    smatEn: 'Scheduled lot supply (Domestic tax invoice)',
+  },
+  {
+    metricEs: 'Configuración de Lote Húmedo',
+    metricEn: 'Wet-End Lot Configuration',
+    oemEs: 'Paquetes rígidos con refacciones de baja rotación',
+    oemEn: 'Rigid bundles with slow-moving items',
+    reactiveEs: 'Pieza suelta (holguras dispares al armar)',
+    reactiveEn: 'Single part (mismatched wear clearances)',
+    smatEs: 'Lotes balanceados (5 Impulsores + 5 Cuellos + 4 Volutas)',
+    smatEn: 'Balanced lots (5 Impellers + 5 Throatbushes + 4 Volutes)',
+  },
+  {
+    metricEs: 'Materiales de Desgaste',
+    metricEn: 'Wear Materials',
+    oemEs: 'Aleación estándar única',
+    oemEn: 'Single standard alloy',
+    reactiveEs: 'Fundición sin trazabilidad (<500 HB)',
+    reactiveEn: 'Unverified casting (<500 HB)',
+    smatEs: 'Alto Cromo Cr27% (≥650 HB), Hule Natural, Poliuretano y SiC',
+    smatEn: 'High Chrome (≥650 HB), Rubber, Polyurethane & SiC',
+  },
+  {
+    metricEs: 'Riesgo de Paro en Molino',
+    metricEn: 'Mill Downtime Risk',
+    oemEs: 'Alto capital de trabajo inmovilizado en tránsito',
+    oemEn: 'High working capital tied up in transit',
+    reactiveEs: 'Paro prolongado esperando cuello o impulsor',
+    reactiveEn: 'Extended downtime waiting for throatbush or impeller',
+    smatEs: 'Programación de lotes acoplada al desgaste real (5-5-4)',
+    smatEn: 'Batch scheduling matched to actual wet-end wear (5-5-4)',
+  },
+]);

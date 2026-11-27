@@ -7,11 +7,8 @@
 import PumpingHydraulicsCore from '../cores/PumpingHydraulicsCore.astro';
 import TribologyAlloyCore from '../cores/TribologyAlloyCore.astro';
 import SealDriveBearingCore from '../cores/SealDriveBearingCore.astro';
-import TechnicalDiagrams from '../TechnicalDiagrams.astro';
 import SharePurchasing from '../SharePurchasing.astro';
-import PumpAssemblyReport from '../PumpAssemblyReport.astro';
-import atomicParts from '../../../data/atomic_parts.json';
-import { getAtomicPartSpecs, formatNioshErgonomicStatus, buildWizardUrl } from '../../scripts/workbenchBus.js';
+import { getPumping554MaterialKits, PUMPING_TCO_ROWS } from '../../scripts/pumpingKitPresets.js';
 
 interface Props {
   locale?: 'es' | 'en';
@@ -23,219 +20,8 @@ const isEs = locale === 'es';
 const showVerticalShell = mode === 'standalone';
 const quoteBase = isEs ? '/cotizar/' : '/en/quote/';
 
-const kits = [
-  {
-    badgeEs: 'ALTO CROMO Cr27% • ≥650 HB',
-    badgeEn: 'HIGH CHROME Cr27% • ≥650 HB',
-    titleEs: 'Kit Metálico (Descarga Molino y Alimentación Hidrociclón)',
-    titleEn: 'Metallic Kit (Primary Mill & Cyclone Feed)',
-    partsEs: 'Voluta Monolítica + Impulsor 5 Álabe + Plato de Succión + Inserto FPL.',
-    partsEn: 'Monolithic Volute + 5-Vane Impeller + Throatbush + FPL Insert.',
-    envEs: 'Impacto grueso d₅₀ > 6 mm, u₂ ≤ 32 m/s, pH 4.0–12.0.',
-    envEn: 'Coarse impact d₅₀ > 6 mm, u₂ ≤ 32 m/s, pH 4.0–12.0.',
-    href: `${quoteBase}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=lote_554&material=alto_cromo_cr27&estacion=S4#rfq`,
-    ctaEs: 'Cotizar Kit Alto Cromo →',
-    ctaEn: 'Quote High Chrome Kit →',
-    sku: 'SMAT-PUMP-KIT-554-A05',
-    code: 'LOTE-554-A05',
-    trayTitleEs: 'Kit Lote 5-5-4 Metálico Alto Cromo Cr27%',
-    trayTitleEn: '5-5-4 Metallic Wet-End Kit High Chrome Cr27%',
-    material: 'A05',
-    isHybrid: false,
-  },
-  {
-    badgeEs: 'HULE NATURAL • 55–65 SHORE A',
-    badgeEn: 'NATURAL RUBBER • 55–65 SHORE A',
-    titleEs: 'Kit Elastómero (Jales Finos y Flotación)',
-    titleEn: 'Elastomer Kit (Fine Tailings & Flotation)',
-    partsEs: 'Revestimiento Succión (CPL) + Revestimiento Flecha (FPL) con alma acero + Impulsor + Plato Succión.',
-    partsEn: 'Cover Plate Liner (CPL) + Frame Plate Liner (FPL) with steel backing + Impeller + Throatbush.',
-    envEs: 'Pulpa fina d₅₀ ≤ 5 mm, u₂ ≤ 27.5 m/s, pH 1.5–11.0.',
-    envEn: 'Fine slurry d₅₀ ≤ 5 mm, u₂ ≤ 27.5 m/s, pH 1.5–11.0.',
-    href: `${quoteBase}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=lote_554&material=hule_natural&estacion=S4#rfq`,
-    ctaEs: 'Cotizar Kit Hule Natural →',
-    ctaEn: 'Quote Natural Rubber Kit →',
-    sku: 'SMAT-PUMP-KIT-554-R55',
-    code: 'LOTE-554-R55',
-    trayTitleEs: 'Kit Lote 5-5-4 Elastómero Hule Natural R55',
-    trayTitleEn: '5-5-4 Elastomer Wet-End Kit Natural Rubber R55',
-    material: 'R55',
-    isHybrid: false,
-  },
-  {
-    badgeEs: 'POLIURETANO • 85–95 SHORE A',
-    badgeEn: 'POLYURETHANE • 85–95 SHORE A',
-    titleEs: 'Kit Poliuretano (Ciclones y Reactivos)',
-    titleEn: 'Polyurethane Kit (Cyclones & Reagents)',
-    partsEs: 'Revestimientos CPL + FPL Poliuretano + Impulsor PU + Plato Succión PU.',
-    partsEn: 'Polyurethane CPL + FPL Liners + PU Impeller + PU Throatbush.',
-    envEs: 'Partícula angular d₅₀ ≤ 8 mm, resistente a reactivos, aceites y espumas.',
-    envEn: 'Sharp particles d₅₀ ≤ 8 mm, reagent, oil, and froth resistance.',
-    href: `${quoteBase}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=lote_554&material=poliuretano&estacion=S4#rfq`,
-    ctaEs: 'Cotizar Kit Poliuretano →',
-    ctaEn: 'Quote Polyurethane Kit →',
-    sku: 'SMAT-PUMP-KIT-554-U01',
-    code: 'LOTE-554-U01',
-    trayTitleEs: 'Kit Lote 5-5-4 Poliuretano U01',
-    trayTitleEn: '5-5-4 Polyurethane Wet-End Kit U01',
-    material: 'U01',
-    isHybrid: false,
-  },
-  {
-    badgeEs: 'CERÁMICA SiC • ≥2200 HV (MOHS 9.2)',
-    badgeEn: 'SiC CERAMIC • ≥2200 HV (MOHS 9.2)',
-    titleEs: 'Kit Carburo de Silicio Compuesto (Sílice Fina y pH Extremo)',
-    titleEn: 'Silicon Carbide Composite Kit (Fine Silica & Extreme pH)',
-    partsEs: 'Voluta Compuesta SiC + Plato Succión SiC + Impulsor Cr27/SiC.',
-    partsEn: 'SiC Composite Volute + SiC Throatbush + Cr27/SiC Impeller.',
-    envEs: 'Sílice severa d₈₀ ≤ 800 µm, u₂ ≤ 28.0 m/s, tenacidad 4.1 MPa·√m, pH 1.0–13.5.',
-    envEn: 'Severe silica d₈₀ ≤ 800 µm, u₂ ≤ 28.0 m/s, toughness 4.1 MPa·√m, pH 1.0–13.5.',
-    href: `${quoteBase}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=lote_554&material=ceramica_sic&estacion=S4#rfq`,
-    ctaEs: 'Cotizar Kit Cerámica SiC →',
-    ctaEn: 'Quote SiC Ceramic Kit →',
-    sku: 'SMAT-PUMP-KIT-554-SIC',
-    code: 'LOTE-554-SIC',
-    trayTitleEs: 'Kit Lote 5-5-4 Carburo de Silicio Compuesto',
-    trayTitleEn: '5-5-4 Silicon Carbide Composite Wet-End Kit',
-    material: 'SiC',
-    isHybrid: false,
-  },
-  {
-    badgeEs: 'CONFIGURACIÓN HÍBRIDA • IMPULSOR A05 + LINERS R55',
-    badgeEn: 'HYBRID CONFIGURATION • A05 IMPELLER + R55 LINERS',
-    titleEs: 'Kit Híbrido A05 + R55 (Alimentación Ciclones)',
-    titleEn: 'Hybrid A05 + R55 Kit (Cyclone Feed)',
-    partsEs: 'Impulsor cerrado Alto Cromo 27% (A05 ≥650 HB, álabes anti-recirculación) + Revestimientos Hule Natural R55 FPL/CPL (55 Shore A).',
-    partsEn: '27% High Chrome Closed Impeller (A05 ≥650 HB, clearing back-vanes) + Split R55 Natural Rubber Liners FPL/CPL (55 Shore A).',
-    envEs: 'Alimentación mixta a ciclones d₈₀ = 150–400 µm, u₂ ≤ 24.5 m/s, -28% reducción de masa y maniobra ágil.',
-    envEn: 'Mixed cyclone feed d₈₀ = 150–400 µm, u₂ ≤ 24.5 m/s, -28% mass reduction & easier rigging.',
-    href: `${quoteBase}?circuito=bombeo&equipo=bombeo_hule_cromo&pieza=lote_554&material=hibrido_a05_r55&estacion=S3#rfq`,
-    ctaEs: 'Cotizar Kit Híbrido A05+R55 →',
-    ctaEn: 'Quote Hybrid A05+R55 Kit →',
-    sku: 'SMAT-PUMP-KIT-554-HYBRID',
-    code: 'LOTE-554-HYB',
-    trayTitleEs: 'Kit Lote 5-5-4 Config. Híbrida (Impulsor A05 + Liners R55)',
-    trayTitleEn: '5-5-4 Hybrid Configuration Kit (A05 Impeller + R55 Liners)',
-    material: 'HYBRID',
-    isHybrid: true,
-  },
-];
-
-const systems = [
-  {
-    titleEs: 'Bombas Completas para Lodos',
-    titleEn: 'Complete Slurry Pumps',
-    descEs: 'Bombas centrífugas horizontales de servicio pesado desde 1.5x1" hasta 14x12" para descarga de molino, alimentación de ciclones, flotación y transporte de jales.',
-    descEn: 'Heavy-duty horizontal centrifugal slurry pumps from 1.5x1" to 14x12" for mill discharge, cyclone feed, flotation, and tailings transport.',
-    metaLabelEs: 'Rango:',
-    metaLabelEn: 'Range:',
-    metaEs: '1.5x1" hasta 14x12"',
-    metaEn: '1.5x1" to 14x12"',
-    specHref: '#bombeo-asistente',
-    specCtaEs: 'Ver Diagrama y Ficha',
-    specCtaEn: 'View Diagram & Specs',
-    quoteHref: `${quoteBase}?circuito=bombeo&equipo=skid_bomba#rfq`,
-  },
-  {
-    titleEs: 'Cartucho de Rodamientos / Soporte',
-    titleEn: 'Bearing Assembly / Housing',
-    descEs: 'Cartucho completo armado listo para instalación directa: carcasa cilíndrica, flecha de acero aleado, rodamientos cónicos de servicio pesado y sellos laberinto.',
-    descEn: 'Complete assembled cartridge unit ready for installation: cylindrical housing, alloy shaft, heavy-duty tapered roller bearings, and labyrinth seals.',
-    metaLabelEs: 'Suministro:',
-    metaLabelEn: 'Supply:',
-    metaEs: 'Unidad Armada Completa',
-    metaEn: 'Complete Assembled Unit',
-    specHref: isEs ? '/productos/cartucho-rodamientos-005m/' : '/en/products/bearing-assembly-cartridge-005m/',
-    specCtaEs: 'Ver Cartucho de Rodamientos',
-    specCtaEn: 'View Bearing Assembly',
-    quoteHref: `${quoteBase}?circuito=bombeo&equipo=soporte&estacion=S1#rfq`,
-  },
-  {
-    titleEs: 'Impulsor (Impeller)',
-    titleEn: 'Impeller',
-    descEs: 'Impulsores cerrados de 5 álabes y paso amplio para lodos con álabes expulsadores frontales y posteriores para abatir presión en caja y recirculación.',
-    descEn: '5-vane closed and wide-passage slurry impellers with front and rear expeller vanes to reduce stuffing box pressure and recirculation.',
-    metaLabelEs: 'Materiales:',
-    metaLabelEn: 'Materials:',
-    metaEs: 'Alto Cromo, Hule, Poliuretano y SiC',
-    metaEn: 'High Chrome, Rubber, Polyurethane & SiC',
-    specHref: isEs ? '/productos/impulsor-bomba-lodos-serie-ah/' : '/en/products/ah-series-slurry-pump-impeller/',
-    specCtaEs: 'Características del Impulsor',
-    specCtaEn: 'Impeller Characteristics',
-    quoteHref: `${quoteBase}?circuito=bombeo&equipo=impulsor&estacion=S3#rfq`,
-  },
-  {
-    titleEs: 'Revestimientos de Voluta y Plato de Succión',
-    titleEn: 'Volute Liners & Throatbushes',
-    descEs: 'Volutas, platos de succión e insertos de plato posterior para zona en contacto húmedo, disponibles en lotes balanceados de desgaste.',
-    descEn: 'Volutes, throatbushes, and frame plate liner inserts for wet-end contact zones, available in multi-unit wear lots.',
-    metaLabelEs: 'Materiales:',
-    metaLabelEn: 'Materials:',
-    metaEs: 'Alto Cromo, Hule, Poliuretano y SiC',
-    metaEn: 'High Chrome, Rubber, Polyurethane & SiC',
-    specHref: isEs ? '/productos/lote-humedo-554-bomba-ah/' : '/en/products/slurry-pump-554-wet-end-lot/',
-    specCtaEs: 'Ver Piezas y Lotes',
-    specCtaEn: 'View Parts & Lots',
-    quoteHref: `${quoteBase}?circuito=bombeo&equipo=revestimientos&estacion=S4#rfq`,
-  },
-  {
-    titleEs: 'Expulsor Centrífugo y Prensaestopa',
-    titleEn: 'Centrifugal Expeller & Stuffing Box',
-    descEs: 'Expulsor centrífugo en seco, anillo expulsor (Expeller Ring), camisa de flecha y caja estopera trenzada sin sellos mecánicos para cero dilución de pulpa.',
-    descEn: 'Dry centrifugal expeller, expeller ring, shaft sleeve, and braided-packing stuffing box (no mechanical seals) for zero slurry dilution.',
-    metaLabelEs: 'Sellado:',
-    metaLabelEn: 'Sealing:',
-    metaEs: 'Expulsor y Empaquetadura PTFE/Grafito',
-    metaEn: 'Expeller & PTFE/Graphite Stuffing Box',
-    specHref: isEs ? '/productos/kit-sellado-seco-expeller-ah/' : '/en/products/expeller-centrifugal-dry-seal-kit/',
-    specCtaEs: 'Ver Conjunto de Sellado',
-    specCtaEn: 'View Sealing Assembly',
-    quoteHref: `${quoteBase}?circuito=bombeo&equipo=sello&estacion=S2#rfq`,
-  },
-];
-
-const tcoRows = [
-  {
-    metricEs: 'Plazo de Entrega',
-    metricEn: 'International Lead Time',
-    oemEs: '16 a 24 semanas (Flete marítimo y aduanas)',
-    oemEn: '16 to 24 weeks (Ocean freight & customs)',
-    reactiveEs: 'Órdenes de emergencia fragmentadas',
-    reactiveEn: 'Fragmented emergency orders',
-    smatEs: 'Suministro programado por lotes (Facturación fiscal nacional)',
-    smatEn: 'Scheduled lot supply (Domestic tax invoice)',
-  },
-  {
-    metricEs: 'Configuración de Lote Húmedo',
-    metricEn: 'Wet-End Lot Configuration',
-    oemEs: 'Paquetes rígidos con refacciones de baja rotación',
-    oemEn: 'Rigid bundles with slow-moving items',
-    reactiveEs: 'Pieza suelta (holguras dispares al armar)',
-    reactiveEn: 'Single part (mismatched wear clearances)',
-    smatEs: 'Lotes balanceados (ej. 5 Impulsores + 5 Platos de Succión + 4 Volutas)',
-    smatEn: 'Custom lots (e.g. 5 Impellers + 5 Throatbushes + 4 Volutes)',
-  },
-  {
-    metricEs: 'Materiales de Desgaste',
-    metricEn: 'Wear Materials',
-    oemEs: 'Aleación estándar única',
-    oemEn: 'Single standard alloy',
-    reactiveEs: 'Fundición sin trazabilidad (<500 HB)',
-    reactiveEn: 'Unverified casting (<500 HB)',
-    smatEs: 'Alto Cromo Cr27% (≥650 HB), Hule Natural, Poliuretano y SiC',
-    smatEn: 'High Chrome (≥650 HB), Rubber, Polyurethane & SiC',
-  },
-  {
-    metricEs: 'Riesgo de Paro en Molino (20k–40k USD/hora)',
-    metricEn: 'Mill Downtime Risk (20k–40,000 USD/hour)',
-    oemEs: 'Alto capital de trabajo inmovilizado en tránsito',
-    oemEn: 'High working capital tied up in transit',
-    reactiveEs: 'Paro prolongado esperando plato de succión o impulsor',
-    reactiveEn: 'Extended downtime waiting for throatbush or impeller',
-    smatEs: 'Programación de lotes acoplada al desgaste real (5-5-4)',
-    smatEn: 'Batch scheduling matched to actual wet-end wear (5-5-4)',
-  },
-];
+const kits = getPumping554MaterialKits(quoteBase);
+const tcoRows = PUMPING_TCO_ROWS;
 ---
 
 <div id="bombeo-asistente" data-pumping-stratum2 data-lang={locale}>
@@ -319,7 +105,31 @@ const tcoRows = [
           </div>
 
           <div class="card smat-bombeo-sim-card smat-station-panel" id="pumping-assembly-station" data-station-panel="assembly" hidden>
-            <PumpAssemblyReport lang={locale} />
+            <section id={isEs ? 'como-se-arma-una-bomba' : 'how-a-slurry-pump-is-assembled'} class="smat-assembly-compact">
+              <span class="badge badge-copper">
+                {isEs ? 'ARMADO EN 5 ESTACIONES · CALIBRACIÓN AXIAL δ = 0.5–1.0 MM' : '5-STATION ASSEMBLY · AXIAL CLEARANCE δ = 0.5–1.0 MM'}
+              </span>
+              <h3>
+                {isEs
+                  ? 'Secuencia de armado de bomba para lodos (5 Estaciones)'
+                  : 'Slurry Pump 5-Station Assembly Sequence'}
+              </h3>
+              <ol class="smat-assembly-steps">
+                <li><strong>S1 · DAM005:</strong> {isEs ? 'Cartucho de rodamientos con flecha SAE 4140 y ajuste H7.' : 'Bearing assembly cartridge with SAE 4140 shaft and H7 bore.'}</li>
+                <li><strong>S2 · D4028/D4029:</strong> {isEs ? 'Cámara de sello seco dinámico centrífugo (sin agua de sello).' : 'Dry centrifugal expeller seal ring (zero gland water option).'}</li>
+                <li><strong>S3 · E4110/E4036:</strong> {isEs ? 'Voluta y plato posterior en Alto Cromo A05 (≥650 HB) o elastómero R55.' : 'Volute and backplate in High Chrome A05 (≥650 HB) or R55 rubber.'}</li>
+                <li><strong>S4 · E4147/E4083:</strong> {isEs ? 'Impulsor cerrado y plato de succión (Cuello) acoplados 1:1.' : 'Closed impeller and 1:1 matched throatbush suction liner.'}</li>
+                <li><strong>S5 · CAL-AXIAL:</strong> {isEs ? 'Ajuste de claro axial frontal δ = 0.5–1.0 mm antes de arranque.' : 'Front axial clearance calibration δ = 0.5–1.0 mm prior to startup.'}</li>
+              </ol>
+              <div class="smat-cta-row smat-mt-sm">
+                <a href={isEs ? '/catalogo/#fichas-atomicas' : '/en/catalog/#fichas-atomicas'} class="btn btn-outline smat-tap-btn">
+                  {isEs ? 'Ver 13 Refacciones por Código (fotos y CAD) →' : 'View 13 Part Number Spares (photos & CAD) →'}
+                </a>
+                <a href={`${quoteBase}?circuito=bombeo&equipo=kit_wet_end#rfq`} class="btn btn-primary smat-buy-cta smat-tap-btn">
+                  {isEs ? 'Cotizar Lote Húmedo 5-5-4 →' : 'Quote 5-5-4 Wet-End Lot →'}
+                </a>
+              </div>
+            </section>
           </div>
         </div>
       </details>
@@ -329,155 +139,48 @@ const tcoRows = [
           <summary class="bombeo-circuit-drawer__summary">
             <span>
               {isEs
-                ? 'Planos CAD, Kits 5-5-4 por Material y Fichas Part Number (13 piezas)'
-                : 'Slurry Pump CAD, 5-5-4 Material Kits & Universal Part Sheets (13 parts)'}
+                ? 'Kits 5-5-4 por Material y enlace a 13 Refacciones por Código'
+                : '5-5-4 Material Kits & link to 13 Part Number Spares'}
             </span>
             <span class="bombeo-circuit-drawer__badge">
-              {isEs ? 'VER PLANOS Y DESPIECE ▾' : 'VIEW CAD & PARTS LIST ▾'}
+              {isEs ? 'VER KITS 5-5-4 ▾' : 'VIEW 5-5-4 KITS ▾'}
             </span>
           </summary>
           <div class="bombeo-circuit-drawer__body">
-            <TechnicalDiagrams diagram="pump" lang={locale} />
-            <div class="bombeo-catalog-tabs" id="bombeo-catalog-tabs" data-canonical-single-console="true">
-              <div class="bombeo-tabs-header">
-                <div>
-                  <span class="section-eyebrow">
-                    {isEs ? 'CATÁLOGO DE BOMBEO Y PARTES HÚMEDAS' : 'PUMPING & WET-END WEAR SPARES CATALOG'}
-                  </span>
-                  <h2 class="smat-bombeo-console-heading">
-                    {isEs ? 'Selección de bomba, partes húmedas y armado' : 'Slurry pump, wet-end lots & assembly'}
-                  </h2>
-                </div>
-                <div class="bombeo-tab-switcher" role="tablist" aria-label={isEs ? 'Selector de Kits y Fichas' : 'Material Kits & Sheets Selector'}>
-                  <button type="button" role="tab" aria-selected="true" class="bombeo-tab-btn is-active" data-bombeo-tab="kits">
-                    {isEs ? '1. Kits por Material (5)' : '1. Kits by Material (5)'}
-                  </button>
-                  <button type="button" role="tab" aria-selected="false" class="bombeo-tab-btn" data-bombeo-tab="systems">
-                    {isEs ? '2. Subconjuntos y Bombas (5)' : '2. Sub-Assemblies & Pumps (5)'}
-                  </button>
-                  <button type="button" role="tab" aria-selected="false" class="bombeo-tab-btn" data-bombeo-tab="atomic">
-                    {isEs ? '3. Fichas Part Number Universal (13)' : '3. Universal Part Number Sheets (13)'}
-                  </button>
-                </div>
-              </div>
-
-              <div class="bombeo-tab-panel is-active material-kits-showcase" id={isEs ? 'lotes-por-material' : 'kits-by-material'} data-bombeo-panel="kits">
-                <span id={isEs ? 'kits-by-material' : 'lotes-por-material'} aria-hidden="true"></span>
-                <p class="smat-bombeo-panel-lead">
-                  {isEs
-                    ? 'Compare la geometría física de cada lote húmedo: voluta monolítica en Alto Cromo Cr27% o compuesto Cerámico SiC frente a revestimientos divididos (FPL + CPL) en Hule Natural o Poliuretano.'
-                    : 'Compare the physical geometry of each wet-end kit: monolithic High Chrome Cr27% or SiC Ceramic volute vs. split two-half liners (FPL + CPL) in Natural Rubber or Polyurethane.'}
-                </p>
-                <TechnicalDiagrams diagram="material_kit_grid" lang={locale} />
-                <div class="grid-3-atomic smat-bombeo-grid-gap">
-                  {kits.map((kit) => (
-                    <article class="card atomic-silo-card" data-hybrid-branch-d-card={kit.isHybrid ? 'true' : undefined}>
-                      <span class="badge badge-copper smat-bombeo-card-badge">{isEs ? kit.badgeEs : kit.badgeEn}</span>
-                      <strong class="smat-bombeo-card-title">{isEs ? kit.titleEs : kit.titleEn}</strong>
-                      <p class="smat-bombeo-card-copy">
-                        <strong>{isEs ? 'Incluye:' : 'Kit parts:'}</strong> {isEs ? kit.partsEs : kit.partsEn}<br />
-                        <strong>{isEs ? 'Operación:' : 'Duty:'}</strong> {isEs ? kit.envEs : kit.envEn}
-                      </p>
-                      <div class="smat-bombeo-card-actions">
-                        <a href={kit.href} class="btn btn-primary smat-bombeo-cta-flex">{isEs ? kit.ctaEs : kit.ctaEn}</a>
-                        <button
-                          type="button"
-                          class="btn btn-outline btn-avenue-tray smat-bombeo-tray-btn"
-                          data-add-tray-sku={kit.sku}
-                          data-tray-part-code={kit.code}
-                          data-tray-title={isEs ? kit.trayTitleEs : kit.trayTitleEn}
-                          data-tray-series="5-5-4"
-                          data-tray-material={kit.material}
-                          data-tray-circuit="bombeo"
-                          data-tray-source="bombeo_tab1_kit"
-                        >
-                          {isEs ? '+ Cotización' : '+ Quote'}
-                        </button>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </div>
-
-              <div class="bombeo-tab-panel" data-bombeo-panel="systems">
-                <div class="grid-2 smat-bombeo-grid-gap">
-                  {systems.map((sys) => (
-                    <div class="card">
-                      <strong class="smat-bombeo-card-title">{isEs ? sys.titleEs : sys.titleEn}</strong>
-                      <p>{isEs ? sys.descEs : sys.descEn}</p>
-                      <p class="smat-bombeo-sys-meta">
-                        <strong>{isEs ? sys.metaLabelEs : sys.metaLabelEn}</strong> {isEs ? sys.metaEs : sys.metaEn}
-                      </p>
-                      <div class="smat-bombeo-sys-actions">
-                        <a href={sys.specHref} class="btn btn-outline">{isEs ? sys.specCtaEs : sys.specCtaEn}</a>
-                        <a href={sys.quoteHref} class="btn btn-primary">{isEs ? 'Cotizar →' : 'Quote →'}</a>
-                      </div>
+            <div class="material-kits-showcase" id={isEs ? 'lotes-por-material' : 'kits-by-material'}>
+              <span id={isEs ? 'kits-by-material' : 'lotes-por-material'} aria-hidden="true"></span>
+              <div class="grid-3-atomic smat-bombeo-grid-gap">
+                {kits.map((kit) => (
+                  <article class="card atomic-silo-card" data-hybrid-branch-d-card={kit.isHybrid ? 'true' : undefined}>
+                    <span class="badge badge-copper smat-bombeo-card-badge">{isEs ? kit.badgeEs : kit.badgeEn}</span>
+                    <strong class="smat-bombeo-card-title">{isEs ? kit.titleEs : kit.titleEn}</strong>
+                    <p class="smat-bombeo-card-copy">
+                      <strong>{isEs ? 'Incluye:' : 'Kit parts:'}</strong> {isEs ? kit.partsEs : kit.partsEn}<br />
+                      <strong>{isEs ? 'Operación:' : 'Duty:'}</strong> {isEs ? kit.envEs : kit.envEn}
+                    </p>
+                    <div class="smat-bombeo-card-actions">
+                      <a href={kit.href} class="btn btn-primary smat-bombeo-cta-flex">{isEs ? kit.ctaEs : kit.ctaEn}</a>
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-avenue-tray smat-bombeo-tray-btn"
+                        data-add-tray-sku={kit.sku}
+                        data-tray-part-code={kit.code}
+                        data-tray-title={isEs ? kit.trayTitleEs : kit.trayTitleEn}
+                        data-tray-series="5-5-4"
+                        data-tray-material={kit.material}
+                        data-tray-circuit="bombeo"
+                        data-tray-source="bombeo_tab1_kit"
+                      >
+                        {isEs ? '+ Cotización' : '+ Quote'}
+                      </button>
                     </div>
-                  ))}
-                </div>
+                  </article>
+                ))}
               </div>
-
-              <div class="bombeo-tab-panel atomic-silo-block" data-bombeo-panel="atomic">
-                <h3 class="smat-bombeo-atomic-heading">
-                  {isEs ? 'Fichas de Part Number Universal (Contacto Húmedo y Sellado)' : 'Universal Part Number Spare Parts Sheets (Wet-End & Sealing)'}
-                </h3>
-                <p class="smat-bombeo-atomic-lead">
-                  {isEs
-                    ? 'Especificaciones metalúrgicas individuales para impulsores cerrados, platos de succión y anillos expulsores con peso verificado (umbral de izaje con polipasto ≥23 kg) en Almacén Central Durango.'
-                    : 'Individual metallurgical specs for closed impellers, throatbushes, and expeller rings with verified mass (≥23 kg hoist handling threshold) at Durango Central Warehouse.'}
-                </p>
-                <div class="grid-3-atomic">
-                  {atomicParts.map((part) => {
-                    const specs = getAtomicPartSpecs(part.part_number);
-                    const niosh = formatNioshErgonomicStatus(specs, locale);
-                    const quoteHref = buildWizardUrl({
-                      lang: locale,
-                      circuit: 'bombeo',
-                      role: specs.role,
-                      code: part.part_number,
-                      series: specs.series || '6x4',
-                      station: specs.station_code,
-                      material: part.part_number === 'DAM005' ? undefined : 'alto_cromo_cr27',
-                      weightKg: specs.weight_kg,
-                      arrangement: 'CV',
-                    });
-                    const partCatalogHref = isEs ? `/catalogo/${part.code}/` : `/en/catalog/${part.code}/`;
-                    return (
-                      <div class="card atomic-silo-card" data-atomic-code={part.part_number} data-niosh-tier={niosh.tier} data-niosh-tone={niosh.cssTone}>
-                        <div class="smat-bombeo-atomic-head">
-                          <span class="badge badge-copper">{part.part_number}</span>
-                          <span class="smat-bombeo-atomic-frame">
-                            {isEs ? `Serie ${part.frame}` : `Series ${part.frame}`} • {specs.station_number}
-                          </span>
-                        </div>
-                        <strong class="smat-bombeo-card-title">{isEs ? part.name_es : part.name_en}</strong>
-                        <p class="smat-bombeo-atomic-sub">{isEs ? part.type_es : part.type_en} • {part.hardness}</p>
-                        <div class="atomic-niosh-meta smat-bombeo-niosh-box">
-                          <strong>{isEs ? `Masa: ${specs.weight_kg} kg` : `Mass: ${specs.weight_kg} kg`}</strong> • {isEs ? niosh.badgeEs : niosh.badgeEn}
-                        </div>
-                        <div class="smat-bombeo-card-actions">
-                          <a href={partCatalogHref} class="btn btn-outline smat-bombeo-mini-btn">
-                            {isEs ? `Ver Ficha ${part.part_number}` : `View Sheet ${part.part_number}`}
-                          </a>
-                          <button
-                            type="button"
-                            class="btn btn-outline btn-avenue-tray smat-bombeo-mini-tray"
-                            data-add-tray-sku={part.part_number === 'DAM005' ? 'SMAT-PUMP-BRG-005M' : `SMAT-PUMP-${part.part_number}`}
-                            data-tray-part-code={part.part_number}
-                            data-tray-title={isEs ? part.name_es : part.name_en}
-                            data-tray-series={part.frame}
-                            data-tray-material={part.part_number === 'DAM005' ? 'GGG40' : 'A05'}
-                            data-tray-circuit="bombeo"
-                            data-tray-source="bombeo_atomic_sheet"
-                          >
-                            {isEs ? '+ Cotización' : '+ Quote'}
-                          </button>
-                          <a href={quoteHref} class="btn btn-primary smat-bombeo-mini-btn">{isEs ? 'Cotizar →' : 'Quote →'}</a>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+              <div class="smat-cta-row smat-mt-sm">
+                <a href={isEs ? '/catalogo/#fichas-atomicas' : '/en/catalog/#fichas-atomicas'} class="btn btn-outline smat-tap-btn">
+                  {isEs ? 'Explorar 13 Refacciones por Código (fotos y CAD) →' : 'Browse 13 Part Number Spares (photos & CAD) →'}
+                </a>
               </div>
             </div>
 

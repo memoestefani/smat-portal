@@ -328,7 +328,10 @@ test('V51-T1 DOM Real en dist/ & Cero Bifurcaciones {isEmbedded}: 11 Dominios Bi
   const cotizarHtml = hasDist ? fs.readFileSync(distCotizar, 'utf8') : loadCompositeQuoteWizardSourceFallback();
   const catalogHtml = hasDist
     ? fs.readFileSync(distCatalog, 'utf8')
-    : fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/CatalogFacetedIsland.astro'), 'utf8');
+    : [
+      'src/components/Header.astro',
+      'src/components/islands/CatalogFacetedIsland.astro',
+    ].map((rel) => fs.readFileSync(path.join(SITE_ROOT, rel), 'utf8')).join('\n');
   const verticalsHtml = hasDist
     ? [distBombeo, distFlot, distFilt, distClas, distCtrl].map((p) => fs.readFileSync(p, 'utf8')).join('\n')
     : [
@@ -645,9 +648,11 @@ test('V53-T3 Ola C3: SSOT SMAT_SUPPLY_DOORS, Higiene APL-03, Checkboxes Fitts y 
   assert.equal(formatDischargeRegimeHuman('ROPING_CORDON', 'en').includes('ROPING_CORDON'), false);
 
   const layoutSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/layouts/BaseLayout.astro'), 'utf8');
-  assert.ok(layoutSrc.includes('label:has(> input[type="checkbox"])'));
-  assert.ok(layoutSrc.includes('clip-path: inset(50%)'));
-  assert.ok(layoutSrc.includes('width: 20px'));
+  const baseResetCss = fs.readFileSync(path.join(SITE_ROOT, 'src/styles/base-reset.css'), 'utf8');
+  assert.ok(baseResetCss.includes('label:has(> input[type="checkbox"])'));
+  assert.ok(baseResetCss.includes('clip-path: inset(50%)'));
+  assert.ok(baseResetCss.includes('width: 20px'));
+  assert.equal(/<style\b/i.test(layoutSrc), false, 'BaseLayout.astro debe tener 0 bloques <style> sin @layer');
   assert.equal(layoutSrc.includes('!important'), false, 'BaseLayout.astro debe tener 0 !important globales');
 
   const globalCss = fs.readFileSync(path.join(SITE_ROOT, 'src/styles/global.css'), 'utf8');

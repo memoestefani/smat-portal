@@ -84,7 +84,8 @@ async function processPhotoToWebp(sourceImgPath, spec, opts = {}) {
   const maxBytes = opts.maxBytes || MAX_WEBP_BYTES;
   const qualities = opts.qualities || [80, 72, 64, 56, 48, 40];
 
-  let basePipe = sharp(sourceImgPath).rotate();
+  const orientedBuf = await sharp(sourceImgPath).rotate().toBuffer();
+  let basePipe = sharp(orientedBuf);
   if (spec.rotateDeg && Number.isFinite(Number(spec.rotateDeg))) {
     basePipe = basePipe.rotate(Number(spec.rotateDeg));
   }

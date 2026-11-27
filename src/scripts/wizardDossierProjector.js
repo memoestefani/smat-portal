@@ -234,6 +234,17 @@ export function projectLiveDossierSummary(ctx = {}) {
   }
 
   const dossierRoot = doc.getElementById('live-engineering-dossier');
+  const dossierDisclosure = doc.getElementById('qw-dossier-disclosure');
+  const workbenchSplit = doc.querySelector('.workbench-split');
+  const hasCommittedCart = Array.isArray(trayStateNow.items) && trayStateNow.items.length > 0;
+  if (workbenchSplit) {
+    workbenchSplit.setAttribute('data-wb-has-items', hasCommittedCart ? '1' : '0');
+  }
+  if (dossierDisclosure) {
+    const hideEmptyDossier = !hasCommittedCart && isEmptySession;
+    dossierDisclosure.classList.toggle('hidden', hideEmptyDossier);
+    dossierDisclosure.hidden = hideEmptyDossier;
+  }
   if (dossierRoot) {
     dossierRoot.setAttribute('data-dossier-mode', isEmptySession ? 'empty' : 'active');
   }

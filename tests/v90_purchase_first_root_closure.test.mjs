@@ -29,8 +29,9 @@ test('V90-A: Omnibox global, jerarquía semántica Buy Box, Lightbox nativo y BO
   assert.ok(globalCss.includes('.smat-buy-cta') && globalCss.includes('.smat-nav-cta'));
 
   const pdpSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/ProductDetailIsland.astro'), 'utf8');
+  const buyBoxSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/ProductBuyBox.astro'), 'utf8');
   const pdpCtrlSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/scripts/pdpBuyBoxController.js'), 'utf8');
-  assert.ok(pdpSrc.includes('id="smat-pdp-lightbox"') && pdpSrc.includes('data-pdp-add-cta'));
+  assert.ok(pdpSrc.includes('id="smat-pdp-lightbox"') && buyBoxSrc.includes('data-pdp-add-cta'));
   assert.ok(pdpCtrlSrc.includes('-hd.webp'), 'pdpBuyBoxController.js debe enlazar carga lazy *-hd.webp al ampliar');
 
   const bomBarSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/wizard/FastLaneBomBar.astro'), 'utf8');

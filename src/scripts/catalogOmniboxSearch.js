@@ -241,21 +241,6 @@ function bindOmniboxInstance(opts = {}) {
 }
 
 /**
- * Conecta el Omnibox de 1 línea `#home-omnibox-input` en Portada ES/EN (`debounce 150 ms`).
- * @param {ParentNode | Document | null} [root]
- * @param {'es'|'en'} [lang='es']
- */
-export function initHomeOmniboxSearch(root = typeof document !== 'undefined' ? document : null, lang = 'es') {
-  bindOmniboxInstance({
-    root,
-    lang,
-    inputSelector: '#home-omnibox-input',
-    resultsSelector: '#home-omnibox-results',
-    formSelector: '#home-omnibox-form',
-  });
-}
-
-/**
  * Conecta el Buscador Global 1:1 `#header-omnibox-input` en Header.astro (`debounce 150 ms`).
  * @param {ParentNode | Document | null} [root]
  * @param {'es'|'en'} [lang='es']

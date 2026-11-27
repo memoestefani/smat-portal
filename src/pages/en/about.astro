@@ -22,35 +22,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       </p>
       <div class="smat-cta-row smat-mt-sm">
         <a href="/en/catalog/" class="btn smat-buy-cta">Browse Stock Catalog in Durango →</a>
-        <a href="https://wa.me/526183670664?text=Hello%20SMAT%20Minerals,%20checking%20immediate%20stock%20availability%20in%20Durango" target="_blank" rel="noopener noreferrer" class="btn smat-nav-cta">WhatsApp Engineering (618) 367-0664</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Key Executive Metrics -->
-  <section class="metrics-bar">
-    <div class="container">
-      <div class="metrics-grid">
-        <div class="metric-card">
-          <span class="metric-val">20k – 150k</span>
-          <span class="metric-unit">USD / Shift</span>
-          <p class="metric-label">Economic loss per unscheduled 8-hour mill line shutdown</p>
-        </div>
-        <div class="metric-card">
-          <span class="metric-val">16 – 24</span>
-          <span class="metric-unit">Weeks</span>
-          <p class="metric-label">Transoceanic shipping lead-time eliminated via in-country stock</p>
-        </div>
-        <div class="metric-card">
-          <span class="metric-val">≥ 650 HB</span>
-          <span class="metric-unit">Brinell</span>
-          <p class="metric-label">Guaranteed metallurgy in certified High Chrome A05 alloy</p>
-        </div>
-        <div class="metric-card">
-          <span class="metric-val">3</span>
-          <span class="metric-unit">Core Circuits</span>
-          <p class="metric-label">Full wet plant coverage: Slurry Pumping, Flotation & Filtration</p>
-        </div>
+        <a href="https://wa.me/526183670664?text=Hello%20SMAT%20Minerals,%20checking%20stock%20availability%20in%20Durango" target="_blank" rel="noopener noreferrer" class="btn smat-nav-cta">WhatsApp Engineering (618) 367-0664</a>
       </div>
     </div>
   </section>
@@ -97,6 +69,32 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         </div>
       </div>
 
+      <!-- Key Executive Metrics -->
+      <div class="metrics-bar smat-mb-md">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <span class="metric-val">20k – 150k</span>
+            <span class="metric-unit">USD / Shift</span>
+            <p class="metric-label">Economic loss per unscheduled 8-hour mill line shutdown</p>
+          </div>
+          <div class="metric-card">
+            <span class="metric-val">16 – 24</span>
+            <span class="metric-unit">Weeks</span>
+            <p class="metric-label">Transoceanic shipping lead-time eliminated via in-country stock</p>
+          </div>
+          <div class="metric-card">
+            <span class="metric-val">≥ 650 HB</span>
+            <span class="metric-unit">Brinell</span>
+            <p class="metric-label">Guaranteed metallurgy in certified High Chrome A05 alloy</p>
+          </div>
+          <div class="metric-card">
+            <span class="metric-val">3</span>
+            <span class="metric-unit">Core Circuits</span>
+            <p class="metric-label">Full wet plant coverage: Slurry Pumping, Flotation & Filtration</p>
+          </div>
+        </div>
+      </div>
+
       <!-- Vendor Qualification CTA -->
       <div class="briefing-cta-box smat-mb-md">
         <h3>Initiate Corporate Vendor Qualification for Your Mine</h3>
@@ -109,7 +107,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
       <details class="wb-progressive-drawer smat-mt-sm">
         <summary class="wb-progressive-summary">
-          <span>Read full executive briefing on supply resilience &amp; AISC compression ▾</span>
+          <span>Read technical briefing on in-country inventory &amp; plant continuity ▾</span>
         </summary>
         <div class="smat-mt-sm">
           <div class="briefing-block">
@@ -473,5 +471,26 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   .btn-secondary:hover {
     background: #1e293b;
     border-color: #1e293b;
+  }
+
+  @media (max-width: 767px) {
+    .page-hero {
+      padding: 0.7rem 0 0.8rem;
+    }
+    .page-hero h1 {
+      font-size: 1.4rem;
+      margin: 0.45rem 0 0.4rem;
+    }
+    .subtitle {
+      font-size: 0.94rem;
+      line-height: 1.4;
+      margin-bottom: 0.4rem;
+    }
+    .briefing-content {
+      padding-top: 0.65rem;
+    }
+    .facility-full-card {
+      padding: 0.85rem;
+    }
   }
 </style>

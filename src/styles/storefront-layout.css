@@ -307,22 +307,33 @@
 
   @media (max-width: 640px) {
     .smat-qcard-stage {
-      aspect-ratio: 16 / 9;
-      max-height: 195px;
+      aspect-ratio: 4 / 3;
+      min-height: 240px;
+      max-height: 320px;
     }
 
     .smat-pdp-alloy-chips {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.35rem;
+      gap: 0.45rem;
     }
 
     .smat-pdp-alloy-chip {
-      padding: 0.35rem 0.5rem;
-      font-size: 0.74rem;
-      line-height: 1.2;
-      min-height: 44px;
+      padding: 0.45rem 0.6rem;
+      font-size: 0.76rem;
+      line-height: 1.25;
+      min-height: 48px;
+      height: auto;
+      white-space: normal;
     }
+  }
+
+  .page-hero {
+    margin-bottom: 1.25rem;
+  }
+
+  .page-hero + .section {
+    padding-top: 1.5rem;
   }
 
   .smat-sf-media-link {

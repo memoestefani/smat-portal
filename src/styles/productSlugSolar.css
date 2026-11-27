@@ -388,47 +388,47 @@
 
   @media (max-width: 767px) {
     .smat-slug-main {
-      padding: 0.3rem 0.65rem 1.25rem;
+      padding: 0.45rem 0.75rem 1.35rem;
     }
 
     .smat-slug-layout-grid {
-      gap: 0.4rem;
+      gap: 0.75rem;
     }
 
     .smat-qcard-stage-ratio[data-qcard-media-only="1"] {
-      max-height: 118px;
+      aspect-ratio: 4 / 3;
+      min-height: 240px;
+      max-height: 320px;
     }
 
-    .smat-slug-breadcrumb,
-    .smat-slug-badge-row,
-    .smat-slug-coupled-note,
-    .smat-slug-specs-compact {
-      display: none;
+    .smat-slug-coupled-note {
+      display: block;
+      font-size: 0.76rem;
     }
 
     .smat-slug-checkout-aside {
-      padding: 0.45rem 0.65rem;
-      gap: 0.3rem;
+      padding: 0.85rem 0.9rem;
+      gap: 0.65rem;
     }
 
     .smat-slug-aside-head {
-      padding-bottom: 0.28rem;
+      padding-bottom: 0.45rem;
     }
 
     .smat-slug-pdp-title {
-      font-size: 0.98rem;
-      line-height: 1.15;
-      margin-bottom: 0.06rem;
+      font-size: 1.1rem;
+      line-height: 1.22;
+      margin-bottom: 0.15rem;
     }
 
     .smat-slug-aside-h2 {
-      margin: 0 0 0.16rem 0;
-      font-size: 0.8rem;
+      margin: 0 0 0.25rem 0;
+      font-size: 0.84rem;
     }
 
     .smat-slug-buybox-controls {
       grid-template-columns: 1fr;
-      gap: 0.32rem;
+      gap: 0.5rem;
     }
 
     .smat-slug-buybox-qty-wrap {
@@ -444,25 +444,26 @@
     .smat-slug-mat-pills {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.32rem;
+      gap: 0.45rem;
     }
 
     .smat-slug-mat-chip {
-      min-height: 44px;
-      max-height: 48px;
-      padding: 0.22rem 0.4rem;
-      font-size: 0.68rem;
-      line-height: 1.15;
+      min-height: 48px;
+      height: auto;
+      padding: 0.45rem 0.6rem;
+      font-size: 0.76rem;
+      line-height: 1.25;
       text-align: center;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
+      white-space: normal;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .smat-slug-qty-input {
-      width: 84px;
-      min-height: 44px;
+      width: 88px;
+      min-height: 48px;
+      font-variant-numeric: tabular-nums;
     }
   }
 

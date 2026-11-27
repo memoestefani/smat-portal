@@ -86,7 +86,7 @@ test('V101-09..12: PDP compacto móvil, QuoteWizard sin fugas EN, Header Cotizac
   assert.ok(pdpCss.includes('@media print'));
 
   const qwSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/QuoteWizard.astro'), 'utf8');
-  assert.equal((qwSrc.match(/class="wb-quick-thumb"/g) || []).length, 4);
+  assert.equal((qwSrc.match(/class="wb-quick-thumb"/g) || []).length, 0);
   assert.ok(qwSrc.includes("'Sleeve inspection'") && qwSrc.includes("'Wet-end swap'") && qwSrc.includes("'Volute / liner'"));
   assert.equal(qwSrc.includes('Partidas en tu Carrito'), false);
 

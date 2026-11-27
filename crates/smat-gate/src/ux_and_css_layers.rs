@@ -102,7 +102,73 @@ pub fn verify_print_pwa_and_core_hygiene(site_root: &Path) -> Result<(), String>
     verify_v60_storefront_photo_first(site_root)?;
     verify_v80_zero_dossier_duplicate_cta(site_root)?;
     verify_v90_purchase_first_wave_a(site_root)?;
+    verify_v110_root_closure_invariants(site_root)?;
 
+    Ok(())
+}
+
+/// Invariante V11.0 (Anti-Goodhart): 0 estilos inline sin @layer en BaseLayout.astro, 0 SKUs fantasma y 0 fallback Newsreader.
+pub fn verify_v110_root_closure_invariants(site_root: &Path) -> Result<(), String> {
+    let layout_astro = fs::read_to_string(site_root.join("src/layouts/BaseLayout.astro"))
+        .map_err(|e| format!("Error leyendo BaseLayout.astro: {}", e))?;
+    verify_baselayout_zero_unlayered_style(&layout_astro)?;
+
+    let tokens_css = fs::read_to_string(site_root.join("src/styles/tokens.css"))
+        .map_err(|e| format!("Error leyendo tokens.css: {}", e))?;
+    if tokens_css.contains("Newsreader") {
+        return Err("tokens.css no debe declarar 'Newsreader' (fallback Georgia serif prohibido V11.0)".to_string());
+    }
+
+    let slug_css = fs::read_to_string(site_root.join("src/styles/productSlugSolar.css"))
+        .map_err(|e| format!("Error leyendo productSlugSolar.css: {}", e))?;
+    let chip_clip_re = Regex::new(r"(?s)\.smat-slug-mat-chip\s*\{[^}]*max-height\s*:\s*48px").unwrap();
+    if chip_clip_re.is_match(&slug_css) {
+        return Err("productSlugSolar.css no debe fijar max-height: 48px en .smat-slug-mat-chip".to_string());
+    }
+
+    verify_v110_zero_phantom_skus(site_root)?;
+    Ok(())
+}
+
+pub fn verify_baselayout_zero_unlayered_style(layout_src: &str) -> Result<(), String> {
+    let style_re = Regex::new(r"(?is)<style\b[^>]*>([\s\S]*?)</style>").unwrap();
+    for cap in style_re.captures_iter(layout_src) {
+        let inner = cap.get(1).map(|m| m.as_str()).unwrap_or("");
+        verify_css_layers_in_text("src/layouts/BaseLayout.astro <style>", inner)?;
+    }
+    Ok(())
+}
+
+pub fn verify_v110_zero_phantom_skus(site_root: &Path) -> Result<(), String> {
+    let catalog_raw = fs::read_to_string(site_root.join("data/quick_checkout_Catalog.json"))
+        .map_err(|e| format!("Error leyendo quick_checkout_Catalog.json: {}", e))?;
+    for required in ["SMAT-PUMP-WETKIT-554", "SMAT-FLOT-MECH-18SP"] {
+        if !catalog_raw.contains(required) {
+            return Err(format!("SSOT quick_checkout_Catalog.json omite SKU canonico '{}'", required));
+        }
+    }
+    for entry in WalkDir::new(site_root.join("src"))
+        .into_iter()
+        .filter_map(|e| e.ok())
+    {
+        if !entry.file_type().is_file() {
+            continue;
+        }
+        let ext = entry.path().extension().and_then(|s| s.to_str()).unwrap_or("");
+        if !["astro", "js", "ts"].contains(&ext) {
+            continue;
+        }
+        let text = fs::read_to_string(entry.path()).unwrap_or_default();
+        for phantom in ["SMAT-PUMP-KIT-554-", "SMAT-FLOT-TANK-COND"] {
+            if text.contains(phantom) && !catalog_raw.contains(phantom) {
+                return Err(format!(
+                    "SKU fantasma '{}' detectado en {}",
+                    phantom,
+                    entry.path().display()
+                ));
+            }
+        }
+    }
     Ok(())
 }
 
@@ -496,6 +562,7 @@ pub fn verify_bem_cascade_order(storefront_css: &str) -> Result<(), String> {
 mod tests {
     use super::{
         check_input_first_order,
+        verify_baselayout_zero_unlayered_style,
         verify_bem_cascade_order,
         verify_css_layers_in_text,
         verify_v58_cores_css_text,
@@ -568,5 +635,15 @@ mod tests {
         assert!(verify_v80_dossier_markup("<a href=\"/catalogo/\">Ver catálogo</a>").is_ok());
         assert!(verify_v80_dossier_markup("<button data-add-tray-sku=\"X\">Agregar</button>").is_err());
         assert!(verify_v80_dossier_markup("<span>SMAT-PUMP-6X4-WETKIT</span>").is_err());
+    }
+
+    #[test]
+    fn enforces_v110_baselayout_zero_unlayered_style() {
+        let bad_layout = "<html><head><style is:inline>button { min-height: 48px; }</style></head></html>";
+        let good_layout = "<html><head></head></html>";
+        let good_layered = "<html><head><style>@layer base { button { min-height: 48px; } }</style></head></html>";
+        assert!(verify_baselayout_zero_unlayered_style(bad_layout).is_err());
+        assert!(verify_baselayout_zero_unlayered_style(good_layout).is_ok());
+        assert!(verify_baselayout_zero_unlayered_style(good_layered).is_ok());
     }
 }

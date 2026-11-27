@@ -132,15 +132,26 @@ export function initQuoteWizardController() {
     bomDialog.addEventListener('click', (ev) => {
       if (ev.target === bomDialog) bomDialog.close();
     });
+    if (win?.location?.search?.includes('openBom=1') && typeof bomDialog.showModal === 'function' && !bomDialog.open) {
+      bomDialog.showModal();
+    }
   }
 
   const syncFabricacionTerms = () => {
-    const fabWrap = document.getElementById('wb-fab-advance-wrap');
-    if (!fabWrap) return;
     const tray = getTrayState();
-    const needsFab = hasFabricacionItem(tray.items || []);
-    fabWrap.classList.toggle('hidden', !needsFab);
-    fabWrap.hidden = !needsFab;
+    const items = tray.items || [];
+    const fabWrap = document.getElementById('wb-fab-advance-wrap');
+    if (fabWrap) {
+      const needsFab = hasFabricacionItem(items);
+      fabWrap.classList.toggle('hidden', !needsFab);
+      fabWrap.hidden = !needsFab;
+    }
+    const step2TradeInWrap = document.getElementById('wb-step2-tradein-wrap');
+    if (step2TradeInWrap) {
+      const hasCoreSku = items.some((it) => String(it?.id || '').includes('005M') || String(it?.atomicCode || '').includes('DAM005'));
+      step2TradeInWrap.classList.toggle('hidden', !hasCoreSku);
+      step2TradeInWrap.hidden = !hasCoreSku;
+    }
   };
   syncFabricacionTerms();
   win?.addEventListener('smat:tray-updated', syncFabricacionTerms);

@@ -64,29 +64,39 @@ const marcySkuHref = isEs ? '/productos/balanza-marcy/' : '/en/products/marcy-pu
           </div>
         </div>
 
-        <div id="metrology-calculator" class="card metrology-calc-card smat-mb-md" data-stratum-1-instrument>
-          <div class="metrology-calc-header">
-            <span class="badge badge-copper">
-              {isEs ? 'HERRAMIENTA DE CONTROL METALÚRGICO EN PLANTA' : 'PLANT METALLURGICAL CONTROL INSTRUMENT'}
-            </span>
-            <h2>
+        <details class="wb-progressive-drawer smat-sim-accordion smat-mb-md" id="met-sim-accordion">
+          <summary class="wb-progressive-summary">
+            <span>
               {isEs
-                ? 'Simulador de Carátula Marcy, Filtro Prensa Lab y Serie √2 ASTM E11'
-                : 'Marcy Dial Simulator, Lab Filter Press & ASTM E11 √2 Sieve Stack'}
-            </h2>
-          </div>
+                ? 'Validar tu selección con calculadora técnica (Balanza Marcy, Filtro Batch y Tamices √2)'
+                : 'Validate your selection with technical calculator (Marcy Scale, Batch Filter & √2 Sieves)'}
+            </span>
+            <span>▾</span>
+          </summary>
+          <div id="metrology-calculator" class="card metrology-calc-card smat-mt-sm" data-stratum-1-instrument>
+            <div class="metrology-calc-header">
+              <span class="badge badge-copper">
+                {isEs ? 'HERRAMIENTA DE CONTROL METALÚRGICO EN PLANTA' : 'PLANT METALLURGICAL CONTROL INSTRUMENT'}
+              </span>
+              <h2>
+                {isEs
+                  ? 'Simulador de Carátula Marcy, Filtro Prensa Lab y Serie √2 ASTM E11'
+                  : 'Marcy Dial Simulator, Lab Filter Press & ASTM E11 √2 Sieve Stack'}
+              </h2>
+            </div>
 
-          <MetrologyLabCore locale={locale} showRoleSelectors={false} panelClass="metrology-core-standalone" />
+            <MetrologyLabCore locale={locale} showRoleSelectors={false} panelClass="metrology-core-standalone" />
 
-          <div class="met-calc-footer">
-            <a id="met-quote-cta" href={`${quoteBase}?circuito=control_procesos&equipo=balanza_marcy#rfq`} class="btn btn-primary">
-              {isEs ? 'Cotizar con esta Calibración Metrológica →' : 'Quote With This Metrology Calibration →'}
-            </a>
-            <button type="button" class="btn btn-outline smat-tap-btn" data-add-calculated-kit="control">
-              {isEs ? '+ Agregar kit de control a cotización' : '+ Add control kit to quote'}
-            </button>
+            <div class="met-calc-footer">
+              <a id="met-quote-cta" href={`${quoteBase}?circuito=control_procesos&equipo=balanza_marcy#rfq`} class="btn btn-primary smat-buy-cta smat-tap-btn">
+                {isEs ? 'Cotizar con esta Calibración Metrológica →' : 'Quote With This Metrology Calibration →'}
+              </a>
+              <button type="button" class="btn btn-outline smat-tap-btn" data-add-calculated-kit="control">
+                {isEs ? '+ Agregar kit de control a cotización' : '+ Add control kit to quote'}
+              </button>
+            </div>
           </div>
-        </div>
+        </details>
 
         <details class="metrology-circuit-drawer smat-mb-md" id="metrology-equipment-drawer">
           <summary class="metrology-circuit-drawer-summary">

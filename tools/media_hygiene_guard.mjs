@@ -214,3 +214,41 @@ export function assertSiblingVerticalDhashSeparation(primaryRecords, catalogSkus
   }
   return { checked: (primaryRecords || []).length, minHamming };
 }
+
+export function assertBimodalAndFramingContract(manifest, specDoc) {
+  if (!manifest || !specDoc) {
+    throw new Error('[E_BIMODAL_MANIFEST_MISSING] Manifest y media_gallery_spec requeridos');
+  }
+  const maxThumbBytes = Number(manifest.max_bytes_limit || 46080);
+  const maxHdBytes = Number(manifest.max_hd_bytes_limit || 122880);
+  if (Number(manifest.max_bytes || 0) > maxThumbBytes) {
+    throw new Error(`[E_THUMB_BUDGET_EXCEEDED] max_bytes=${manifest.max_bytes} > ${maxThumbBytes}`);
+  }
+  if (Number(manifest.max_hd_bytes || 0) > maxHdBytes) {
+    throw new Error(`[E_HD_BUDGET_EXCEEDED] max_hd_bytes=${manifest.max_hd_bytes} > ${maxHdBytes}`);
+  }
+  if (Number(manifest.total_hd_slides || 0) < Number(manifest.total_product_slides || 0)) {
+    throw new Error('[E_HD_PARITY_MISMATCH] Faltan activos -hd.webp para galería PDP');
+  }
+  for (const [skuId, g] of Object.entries(specDoc.sku_galleries || {})) {
+    for (let idx = 0; idx < (g.slides || []).length; idx += 1) {
+      const s = g.slides[idx];
+      const captions = `${s.captionEs || ''} ${s.captionEn || ''}`.toLowerCase();
+      if (/\btaller\b|\bworkshop\b/i.test(captions)) {
+        throw new Error(`[E_FORBIDDEN_CAPTION_TERM] ${skuId}[${idx}] expone léxico prohibido (taller/workshop)`);
+      }
+      if (s.cropBox) {
+        const { leftRatio, topRatio, widthRatio, heightRatio } = s.cropBox;
+        if (leftRatio < 0 || topRatio < 0 || widthRatio <= 0.1 || heightRatio <= 0.1 || leftRatio + widthRatio > 1.001 || topRatio + heightRatio > 1.001) {
+          throw new Error(`[E_INVALID_CROPBOX] ${skuId}[${idx}] fuera de límites [0..1]`);
+        }
+      }
+    }
+  }
+  return {
+    checkedSlides: Number(manifest.total_product_slides || 0),
+    checkedHdSlides: Number(manifest.total_hd_slides || 0),
+    maxBytes: manifest.max_bytes,
+    maxHdBytes: manifest.max_hd_bytes,
+  };
+}

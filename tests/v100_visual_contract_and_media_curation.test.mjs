@@ -79,13 +79,13 @@ test('V100-C05..C08: 23 SKUs (19+4 Proyecto), short_title <= 62 chars, reuso alm
   assertAlmacenPhotoReuseCap(routeMap, 2);
 });
 
-test('V100-C09..C12: Buscador único desktop, Catálogo limpio, PDP Buy Box compacto y módulos extraídos', () => {
+test('V100-C09..C12: Buscador único global, Catálogo limpio, PDP Buy Box compacto y módulos extraídos', () => {
   const home = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/HomeLandingIsland.astro'), 'utf8');
-  assert.ok(home.includes('@media (min-width: 769px)') && home.includes('.dropin-verifier-solar { display: none; }'));
+  assert.equal(home.includes('id="home-omnibox-form"'), false, 'HomeLandingIsland no debe duplicar buscador del Header');
   assert.equal(home.includes('Ver los 19 productos'), false);
 
   const catFacet = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/CatalogFacetedIsland.astro'), 'utf8');
-  assert.ok(catFacet.includes('.catalog-omnibox-bar'));
+  assert.equal(catFacet.includes('id="catalog-facet-search"'), false, 'CatalogFacetedIsland no debe duplicar buscador del Header');
   assert.equal(catFacet.includes('Piezas Atómicas'), false, 'CatalogFacetedIsland no debe usar Piezas Atómicas');
   assert.ok(catFacet.includes('Refacciones por Código'));
 
@@ -98,5 +98,6 @@ test('V100-C09..C12: Buscador único desktop, Catálogo limpio, PDP Buy Box comp
   assert.ok(qcard.includes('smat-pdp-lightbox-overlay') && qcard.includes('smat-qcard-tech-tabs'));
 
   const pdp = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/ProductDetailIsland.astro'), 'utf8');
-  assert.ok(pdp.includes('data-alloy-chip') && pdp.includes('smat-slug-below-lead'));
+  const buyBox = fs.readFileSync(path.join(SITE_ROOT, 'src/components/ProductBuyBox.astro'), 'utf8');
+  assert.ok(buyBox.includes('data-alloy-chip') && pdp.includes('smat-slug-below-lead'));
 });

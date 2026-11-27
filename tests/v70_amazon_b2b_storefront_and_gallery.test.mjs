@@ -194,7 +194,7 @@ test('V70-05: Diagnóstico foto+ficha 6/6, /nosotros/ foto arriba del pliegue, R
 
   const trayLines = fs.readFileSync(path.join(SITE_ROOT, 'src/components/QuickOrderTray.astro'), 'utf8').split(/\r?\n/);
   const traySrc = trayLines.join('\n');
-  assert.ok(traySrc.includes('/cotizar/#bom-fastlane'), 'QuickOrderTray debe incluir acceso directo a Pegar lista SAP/Excel');
+  assert.ok(traySrc.includes('?openBom=1#rfq'), 'QuickOrderTray debe incluir acceso directo a Pegar lista SAP/Excel');
   assert.ok(trayLines.length < 410, `QuickOrderTray excede 410 LOC (${trayLines.length})`);
 
   const qwLines = fs.readFileSync(path.join(SITE_ROOT, 'src/components/QuoteWizard.astro'), 'utf8').split(/\r?\n/);

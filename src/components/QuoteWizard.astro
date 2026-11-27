@@ -59,7 +59,7 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
     />
   </section>
 
-  <div class="workbench-split">
+  <div class="workbench-split" data-wb-has-items="0">
     <div class="workbench-controls-panel console-bay">
       <div class="console-bay-banner">{isEs ? '1. QUÉ NECESITA • PARTIDAS DE TU PEDIDO' : '1. WHAT YOU NEED • ORDER LINE ITEMS'}</div>
 
@@ -89,8 +89,8 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
         <div id="wb-empty-starter-card" data-wb-empty-starter="1" class="wb-empty-starter-card">
           <p class="wb-empty-starter-lead">
             {isEs
-              ? 'Tu cotización está vacía. Explora el catálogo con fotos reales, agrega uno de los SKUs más solicitados o importa tu lista Excel/SAP:'
-              : 'Your quote is empty. Browse our photo catalog, add a top-selling SKU below, or import your Excel/SAP list:'}
+              ? 'Tu cotización aún no tiene partidas. Selecciona equipos o refacciones con fotografía real en el catálogo, o importa tu lista desde Excel/SAP:'
+              : 'Your quote has no line items yet. Select equipment or spares in the photo catalog, or import your Excel/SAP list:'}
           </p>
           <div class="smat-cta-row">
             <a href={isEs ? '/catalogo/' : '/en/catalog/'} class="btn btn-primary smat-buy-cta smat-tap-btn">
@@ -98,61 +98,6 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
             </a>
             <button type="button" id="wb-open-bom-modal-btn" class="btn btn-outline smat-nav-cta">
               {isEs ? 'Importar lista Excel / SAP' : 'Import Excel / SAP List'}
-            </button>
-          </div>
-          <div class="wb-quick-popular-strip" aria-label={isEs ? 'Accesos rápidos a refacciones frecuentes' : 'Quick popular spares'}>
-            <span class="wb-quick-popular-label">{isEs ? 'Más solicitados:' : 'Popular spares:'}</span>
-            <button
-              type="button"
-              class="wb-quick-sku-btn"
-              data-quick-tray-add="SMAT-PUMP-IMP-AH"
-              data-add-tray-sku="SMAT-PUMP-IMP-AH"
-              data-sku-title={isEs ? 'Impulsor Cerrado 5 Álabe A05 Serie AH' : '5-Vane Closed Impeller A05 AH Series'}
-              data-sku-material="A05"
-              data-sku-regime="hay"
-              data-sku-mass="68"
-            >
-              <img src="/images/productos/impulsor-bomba-lodos-serie-ah.webp" alt={isEs ? 'Impulsor AH Cr27' : 'AH Cr27 Impeller'} width="64" height="48" loading="eager" decoding="async" class="wb-quick-thumb" />
-              <span>{isEs ? '+ Impulsor AH Cr27' : '+ AH Cr27 Impeller'}</span>
-            </button>
-            <button
-              type="button"
-              class="wb-quick-sku-btn"
-              data-quick-tray-add="SMAT-PUMP-WETKIT-554"
-              data-add-tray-sku="SMAT-PUMP-WETKIT-554"
-              data-sku-title={isEs ? 'Lote Húmedo 5-5-4 Serie AH' : '5-5-4 Wet-End Lot AH Series'}
-              data-sku-material="A05"
-              data-sku-regime="hay"
-              data-sku-mass="202"
-            >
-              <img src="/images/productos/lote-humedo-554-bomba-ah.webp" alt={isEs ? 'Lote Húmedo 5-5-4' : '5-5-4 Wet-End Lot'} width="64" height="48" loading="eager" decoding="async" class="wb-quick-thumb" />
-              <span>{isEs ? '+ Lote Húmedo 5-5-4' : '+ 5-5-4 Wet-End Lot'}</span>
-            </button>
-            <button
-              type="button"
-              class="wb-quick-sku-btn"
-              data-quick-tray-add="SMAT-CYC-D6-D20"
-              data-add-tray-sku="SMAT-CYC-D6-D20"
-              data-sku-title={isEs ? 'Hidrociclón y Boquillas SiC D6–D20' : 'Hydrocyclone & SiC Spigots D6–D20'}
-              data-sku-material="SiC"
-              data-sku-regime="hay"
-              data-sku-mass="45"
-            >
-              <img src="/images/productos/hidrociclon-completo-y-boquillas-d6-d20.webp" alt={isEs ? 'Hidrociclón D6–D20' : 'D6–D20 Hydrocyclone'} width="64" height="48" loading="eager" decoding="async" class="wb-quick-thumb" />
-              <span>{isEs ? '+ Hidrociclón D6–D20' : '+ D6–D20 Cyclone'}</span>
-            </button>
-            <button
-              type="button"
-              class="wb-quick-sku-btn"
-              data-quick-tray-add="SMAT-LAB-MARCY-1000"
-              data-add-tray-sku="SMAT-LAB-MARCY-1000"
-              data-sku-title={isEs ? 'Balanza Marcy con Vaso 1000 mL' : 'Marcy Pulp Density Scale 1000 mL'}
-              data-sku-material="INOX"
-              data-sku-regime="hay"
-              data-sku-mass="3.5"
-            >
-              <img src="/images/productos/balanza-marcy.webp" alt={isEs ? 'Balanza Marcy 1000 mL' : 'Marcy Scale 1000 mL'} width="64" height="48" loading="eager" decoding="async" class="wb-quick-thumb" />
-              <span>{isEs ? '+ Balanza Marcy' : '+ Marcy Scale'}</span>
             </button>
           </div>
         </div>
@@ -175,7 +120,7 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
       <section class="control-card hidden" id="stage-specs-contact" data-stage="stage-specs-contact" data-wb-step-panel="2" data-qw-step-section="2" hidden>
         <div class="control-card-header">
           <span class="step-num">02</span>
-          <h2>{isEs ? 'Unidad Minera, DAM005 Trade-In y Solicitante' : 'Mining Site, DAM005 Trade-In & Requester'}</h2>
+          <h2>{isEs ? 'Unidad Minera y Solicitante' : 'Mining Site & Requester'}</h2>
         </div>
 
         <div class="form-row smat-mt-sm" id="fastlane-mine-controls">
@@ -215,7 +160,7 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
 
         <details class="wb-progressive-drawer smat-mt-sm" id="qw-preventive-schedule-drawer">
           <summary class="wb-progressive-summary">
-            <span>{isEs ? 'Opcional: DAM005 Trade-In y programa preventivo ▾' : 'Optional: DAM005 Trade-In & preventive schedule ▾'}</span>
+            <span>{isEs ? 'Opcional: Programa preventivo de reorden ▾' : 'Optional: Preventive reorder schedule ▾'}</span>
           </summary>
           <div class="form-row smat-mt-sm" data-domain-root="jrp">
             <div class="form-group col-half">
@@ -238,11 +183,13 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
               <span>{isEs ? 'Inspección camisa' : 'Sleeve inspection'} <strong id="jrp-stage-1-days" data-schema-output="jrp.sleeveInspectionDay">90 d</strong></span>
               <span>{isEs ? 'Cambio húmedo' : 'Wet-end swap'} <strong id="jrp-stage-2-days" data-schema-output="jrp.impellerThroatbushSwapDay">150 d</strong></span>
               <span>{isEs ? 'Voluta / forro' : 'Volute / liner'} <strong id="jrp-stage-3-days" data-schema-output="jrp.voluteLinerOverhaulDay">180 d</strong></span>
-              <label class="jrp-tradein-inline-label" for="wb-core-tradein-toggle">
-                <input type="checkbox" id="wb-core-tradein-toggle" data-schema-input="jrp.coreReturnEnabled" />
-                <span>DAM005 Trade-In:</span>
-                <strong id="wb-core-tradein-eligible" data-schema-output="jrp.eligible">{isEs ? 'Evaluar' : 'Check'}</strong>
-              </label>
+              <div id="wb-step2-tradein-wrap" class="hidden" hidden>
+                <label class="jrp-tradein-inline-label" for="wb-core-tradein-toggle">
+                  <input type="checkbox" id="wb-core-tradein-toggle" data-schema-input="jrp.coreReturnEnabled" />
+                  <span>DAM005 Trade-In:</span>
+                  <strong id="wb-core-tradein-eligible" data-schema-output="jrp.eligible">{isEs ? 'Evaluar' : 'Check'}</strong>
+                </label>
+              </div>
             </div>
           </div>
           <div class="form-row smat-mt-sm" data-domain-root="erpExport">
@@ -339,7 +286,7 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
       </section>
     </div>
 
-    <section class="smat-mt-md" id="qw-dossier-disclosure">
+    <section class="smat-mt-md hidden" id="qw-dossier-disclosure" hidden>
       <LiveEngineeringDossier lang={lang} defaultKinematics={defaultKinematics} defaultPartSpecs={defaultPartSpecs} />
     </section>
   </div>
@@ -355,6 +302,10 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
 
 <style>
   @layer components {
+    .workbench-split[data-wb-has-items="0"] {
+      grid-template-columns: minmax(0, 760px);
+      justify-content: center;
+    }
     .workbench-header-with-thumb {
       display: flex;
       align-items: center;
@@ -396,46 +347,6 @@ const defaultPartSpecs = getAtomicPartSpecs('kit_wet_end', '6x4');
       line-height: 1.45;
       color: #1e293b;
       font-weight: 500;
-    }
-    .wb-quick-popular-strip {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 0.5rem;
-      align-items: stretch;
-    }
-    .wb-quick-popular-label {
-      grid-column: 1 / -1;
-      font-size: 0.76rem;
-      font-weight: 700;
-      color: #475569;
-    }
-    .wb-quick-sku-btn {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      min-height: 76px;
-      padding: 0.4rem 0.65rem;
-      border-radius: 10px;
-      border: 1px solid #cbd5e1;
-      background: #ffffff;
-      color: #0f172a;
-      font-size: 0.78rem;
-      font-weight: 700;
-      text-align: left;
-      cursor: pointer;
-    }
-    .wb-quick-thumb {
-      width: 88px;
-      height: 66px;
-      object-fit: cover;
-      border-radius: 6px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      flex-shrink: 0;
-    }
-    .wb-quick-sku-btn:hover {
-      border-color: #7c2d12;
-      color: #7c2d12;
     }
   }
 </style>

@@ -22,7 +22,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </p>
       <div class="smat-cta-row smat-mt-sm">
         <a href="/catalogo/" class="btn smat-buy-cta">Ver Catálogo con Inventario en Durango →</a>
-        <a href="https://wa.me/526183670664?text=Hola%20SMAT%20Minerals,%20requiero%20disponibilidad%20inmediata%20en%20Durango" target="_blank" rel="noopener noreferrer" class="btn smat-nav-cta">WhatsApp Ingeniería (618) 367-0664</a>
+        <a href="https://wa.me/526183670664?text=Hola%20SMAT%20Minerals,%20requiero%20disponibilidad%20y%20cotizacion%20en%20Durango" target="_blank" rel="noopener noreferrer" class="btn smat-nav-cta">WhatsApp Ingeniería (618) 367-0664</a>
       </div>
     </div>
   </section>
@@ -470,5 +470,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .btn-secondary:hover {
     background: #1e293b;
     border-color: #1e293b;
+  }
+
+  @media (max-width: 767px) {
+    .page-hero {
+      padding: 0.7rem 0 0.8rem;
+    }
+    .page-hero h1 {
+      font-size: 1.4rem;
+      margin: 0.45rem 0 0.4rem;
+    }
+    .subtitle {
+      font-size: 0.94rem;
+      line-height: 1.4;
+      margin-bottom: 0.4rem;
+    }
+    .briefing-content {
+      padding-top: 0.65rem;
+    }
+    .facility-full-card {
+      padding: 0.85rem;
+    }
   }
 </style>

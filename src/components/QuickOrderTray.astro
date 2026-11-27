@@ -82,7 +82,7 @@ const quoteHref = isEs ? '/cotizar/#rfq' : '/en/quote/#rfq';
       <a id="smat-qtray-pdf-link" data-qtray-pdf-btn href={quoteHref} class="smat-qtray-wa-btn smat-buy-cta">
         {isEs ? 'Ir al cotizador y confirmar →' : 'Proceed to quote checkout →'}
       </a>
-      <a href={isEs ? '/cotizar/#bom-fastlane' : '/en/quote/#bom-fastlane'} class="smat-qtray-share-btn">
+      <a href={isEs ? '/cotizar/?openBom=1#rfq' : '/en/quote/?openBom=1#rfq'} class="smat-qtray-share-btn">
         {isEs ? 'Importar lista Excel / SAP' : 'Import Excel / SAP list'}
       </a>
       <a

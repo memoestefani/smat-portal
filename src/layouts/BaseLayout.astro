@@ -78,164 +78,6 @@ const fullTitle = /SMAT Minerals/i.test(title) ? title : `${title} | SMAT Minera
     <link rel="alternate" hreflang="en" href={fullEnUrl} />
     <link rel="alternate" hreflang="x-default" href={fullEsUrl} />
 
-    <!-- Tipografía Soberana Local / System Stack y Geometría Táctil Fitts >= 48x48 px (Zero External CDN Leak) -->
-    <style is:inline>
-      a,
-      button,
-      select,
-      summary,
-      input[type="text"],
-      input[type="email"],
-      input[type="tel"],
-      input[type="number"],
-      input[type="search"],
-      input[type="url"],
-      textarea,
-      label:has(> input[type="checkbox"]),
-      label:has(> input[type="radio"]),
-      details > summary,
-      .btn,
-      .nav-link,
-      .lang-btn,
-      .phone-pill,
-      .header-cta,
-      .footer-links a,
-      .atomic-code-pill,
-      .showcase-cta-primary,
-      .showcase-cta-secondary,
-      .perspective-action-btn,
-      .case-circuit-link,
-      .snippet-link,
-      .btn-table-cta,
-      .btn-action,
-      .btn-back,
-      .circuit-pill,
-      .stress-chip,
-      .flot-chip,
-      .filt-chip,
-      .preset-chip,
-      .alt-chip,
-      .role-tab {
-        min-height: 48px;
-        min-width: 48px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        box-sizing: border-box;
-      }
-      label:has(> input[type="checkbox"]),
-      label:has(> input[type="radio"]) {
-        position: relative;
-        min-height: 48px;
-        min-width: 48px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 0.65rem;
-        cursor: pointer;
-      }
-      p a:not(.btn):not([class*="cta"]) {
-        min-width: 0;
-        display: inline-flex;
-      }
-      select,
-      input[type="text"],
-      input[type="email"],
-      input[type="tel"],
-      textarea {
-        display: block;
-        padding-top: 10px;
-        padding-bottom: 10px;
-      }
-      label > input[type="radio"],
-      label > input[type="checkbox"] {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip-path: inset(50%);
-        white-space: nowrap;
-        border: 0;
-        min-width: 0;
-        min-height: 0;
-      }
-      label:has(> input[type="checkbox"])::before,
-      label:has(> input[type="radio"])::before {
-        content: '';
-        width: 20px;
-        height: 20px;
-        flex: 0 0 20px;
-        border: 2px solid #7c2d12;
-        background: #ffffff;
-        box-sizing: border-box;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 13px;
-        font-weight: 800;
-        line-height: 1;
-        color: #ffffff;
-      }
-      label:has(> input[type="checkbox"])::before {
-        border-radius: 4px;
-      }
-      label:has(> input[type="checkbox"]:checked)::before {
-        content: '';
-        background: #7c2d12;
-        box-shadow: inset 0 0 0 3px #ffffff;
-      }
-      label:has(> input[type="radio"])::before {
-        border-radius: 50%;
-      }
-      label:has(> input[type="radio"]:checked)::before {
-        background: radial-gradient(circle, #7c2d12 45%, #ffffff 50%);
-      }
-      .segment-btn:has(> input[type="radio"])::before,
-      .intent-btn:has(> input[type="radio"])::before {
-        display: none;
-      }
-      input[type="range"] {
-        min-height: 48px;
-        width: 100%;
-        cursor: pointer;
-      }
-      .wb-progressive-drawer {
-        border: 1px solid #cbd5e1;
-        border-radius: 10px;
-        background: #f8fafc;
-        padding: 0.35rem 0.85rem 0.75rem;
-      }
-      .wb-progressive-summary {
-        min-height: 48px;
-        min-width: 48px;
-        width: 100%;
-        box-sizing: border-box;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 0.75rem;
-        cursor: pointer;
-        font-weight: 700;
-        font-size: 0.84rem;
-        color: #7c2d12;
-        list-style: none;
-      }
-      .wb-progressive-summary::-webkit-details-marker {
-        display: none;
-      }
-      details:not([open]) > :not(summary) {
-        display: none;
-      }
-      @media (max-width: 960px) {
-        .desktop-nav { display: none; }
-      }
-      @media (max-width: 640px) {
-        .header-utility-strip { display: none; }
-      }
-    </style>
-
     <!-- Favicon Vectorial Dinámico + Fallback ICO (Decisión 1-B) -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate icon" href="/favicon.ico" />
@@ -243,11 +85,11 @@ const fullTitle = /SMAT Minerals/i.test(title) ? title : `${title} | SMAT Minera
     <!-- Open Graph / Redes Sociales (Decisión 2-B) -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={fullCanonicalUrl} />
-    <meta property="og:title" content={`${title} | SMAT Minerals`} />
+    <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={`${siteUrl}/images/og-card.jpg`} />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={`${title} | SMAT Minerals`} />
+    <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={`${siteUrl}/images/og-card.jpg`} />
 

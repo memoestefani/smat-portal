@@ -110,6 +110,13 @@ const productCategories = isEs ? [
     </form>
 
     <div class="header-actions">
+      <a
+        href={isEs ? '/cotizar/?openBom=1#rfq' : '/en/quote/?openBom=1#rfq'}
+        class="header-bom-link"
+        title={isEs ? 'Pegar lista BOM Excel / SAP' : 'Paste Excel / SAP BOM list'}
+      >
+        {isEs ? 'Excel / SAP' : 'Excel / SAP'}
+      </a>
       <div class="lang-switch" role="group" aria-label="Language Switcher">
         <a href={isEs ? currentPath : alternatePath} class:list={['lang-btn', { active: isEs }]} data-lang="es" title="Español">ES</a>
         <span class="lang-sep">/</span>
@@ -271,9 +278,11 @@ const productCategories = isEs ? [
   .lang-btn { color: #334155; text-decoration: none; }
   .lang-btn.active { color: #0f172a; font-weight: 800; }
   .lang-sep { color: #64748b; }
+  .header-bom-link { display: inline-flex; align-items: center; min-height: 44px; padding: 0.25rem 0.6rem; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; color: #0f172a; font-size: 0.76rem; font-weight: 700; text-decoration: none; white-space: nowrap; }
+  .header-bom-link:hover { border-color: #7c2d12; color: #7c2d12; }
   .header-qtray-trigger { display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; min-height: 48px; min-width: 48px; padding: 0.45rem 0.95rem; border-radius: 8px; border: 1px solid #431407; background: #7c2d12; color: #ffffff; font-size: 0.82rem; font-weight: 800; cursor: pointer; white-space: nowrap; }
   .header-qtray-trigger[hidden] { display: none !important; }
   .header-qtray-trigger:hover { background: #431407; }
   .header-qtray-count { display: inline-flex; min-width: 1.3rem; height: 1.3rem; padding: 0 0.35rem; align-items: center; justify-content: center; border-radius: 9999px; background: #ffffff; color: #7c2d12; font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.72rem; font-weight: 800; }
-  @media (max-width: 960px) { .desktop-nav, .lang-switch { display: none; } }
+  @media (max-width: 960px) { .desktop-nav, .lang-switch, .header-bom-link { display: none; } }
 </style>

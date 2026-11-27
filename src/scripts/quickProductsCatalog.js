@@ -134,30 +134,58 @@ const STOCK_REGIME_LABELS = Object.freeze({
 
 const MATERIAL_DISPLAY_LABELS = Object.freeze({
   A05: {
-    es: 'Alto Cromo 27% Cr (ASTM A532 III-A · ≥650 HB)',
-    en: '27% High-Chrome Iron (ASTM A532 III-A · ≥650 HB)'
+    es: 'Alto Cromo 27% Cr (≥650 HB)',
+    en: '27% High-Chrome A05 (≥650 HB)'
   },
   A49: {
-    es: 'Aleación Inoxidable / Alto Cromo A49 (pH Ácido / Laboratorio)',
-    en: 'Stainless / High-Chrome A49 Alloy (Acidic pH / Laboratory)'
+    es: 'Aleación Inox / A49 (pH Ácido)',
+    en: 'Stainless / A49 Alloy (Acidic pH)'
   },
   R55: {
-    es: 'Elastómero Hule Natural Antiabrasivo R55 (55 Shore A)',
-    en: 'Anti-Abrasive Natural Rubber R55 Elastomer (55 Shore A)'
+    es: 'Hule Natural R55 (55 Shore A)',
+    en: 'Natural Rubber R55 (55 Shore A)'
   },
   PU: {
-    es: 'Poliuretano Colado Anti-Cegamiento PU (85 Shore A)',
-    en: 'Anti-Blinding Cast Polyurethane PU (85 Shore A)'
+    es: 'Poliuretano U01 (85 Shore A)',
+    en: 'Cast Polyurethane U01 (85 Shore A)'
+  },
+  U01: {
+    es: 'Poliuretano U01 (85 Shore A)',
+    en: 'Cast Polyurethane U01 (85 Shore A)'
   },
   SiC: {
-    es: 'Cerámica Sinterizada Carburo de Silicio SiC (≥2200 HV)',
-    en: 'Sintered Silicon Carbide SiC Ceramic (≥2200 HV)'
+    es: 'Carburo de Silicio SiC (≥2200 HV)',
+    en: 'Silicon Carbide SiC (≥2200 HV)'
   },
   C21: {
-    es: 'Acero 420 con Recubrimiento Cerámico HVOF WC-Co-Cr (≥68 HRC)',
-    en: '420 Steel with HVOF WC-Co-Cr Ceramic Coating (≥68 HRC)'
+    es: 'Camisa Cerámica HVOF C21 (≥68 HRC)',
+    en: 'HVOF Ceramic Sleeve C21 (≥68 HRC)'
   }
 });
+
+/**
+ * Formatea masa honesta respetando `mass_is_estimate` para equipos ensamblados (`INV-SMAT-SCI-40`).
+ */
+export function formatSkuMassLabel(sku, lang = 'es') {
+  const mass = Number(sku?.mass_kg ?? sku?.weight_kg ?? 0);
+  if (!Number.isFinite(mass) || mass <= 0) return lang === 'en' ? 'Per configuration' : 'Según configuración';
+  const numStr = Number.isInteger(mass) ? String(mass) : mass.toFixed(1).replace(/\.0$/, '');
+  if (sku?.mass_is_estimate) {
+    return lang === 'en' ? `From ${numStr} kg (per configuration)` : `Desde ${numStr} kg (según configuración)`;
+  }
+  return `${numStr} kg`;
+}
+
+/**
+ * Vincula el copy del CTA primario al `stock_regime` real del SKU.
+ */
+export function getSkuPrimaryCtaLabel(sku, lang = 'es') {
+  const regime = String(sku?.stock_regime || 'hay');
+  if (regime === 'bajo_proyecto') {
+    return lang === 'en' ? 'Request manufacturing quote' : 'Solicitar cotización de fabricación';
+  }
+  return lang === 'en' ? '+ Add to quote' : '+ Agregar a cotización';
+}
 
 /**
  * Mapa biyectivo de compatibilidad entre IDs legados (SKU-QC-01..19 e intermedios)
@@ -226,19 +254,17 @@ export function getQuickProductsCatalog() {
     const materials = Array.isArray(sku.available_materials) && sku.available_materials.length > 0
       ? sku.available_materials
       : [sku.default_material || 'A05'];
-    const defaultDimEs = sku.geometric_triplet_mm?.label_es || 'Acople dimensional 1:1 estándar';
-    const defaultDimEn = sku.geometric_triplet_mm?.label_en || 'Standard 1:1 Drop-In Geometry';
     const configOptionsEs = Array.isArray(sku.config_options_es) && sku.config_options_es.length > 0
       ? sku.config_options_es
       : materials.map((mat) => ({
         value: mat,
-        label: `${mat} — ${(MATERIAL_DISPLAY_LABELS[mat]?.es) || mat} · (${defaultDimEs.split('|')[0].trim()})`
+        label: `${mat} — ${(MATERIAL_DISPLAY_LABELS[mat]?.es) || mat}`
       }));
     const configOptionsEn = Array.isArray(sku.config_options_en) && sku.config_options_en.length > 0
       ? sku.config_options_en
       : materials.map((mat) => ({
         value: mat,
-        label: `${mat} — ${(MATERIAL_DISPLAY_LABELS[mat]?.en) || mat} · (${defaultDimEn.split('|')[0].trim()})`
+        label: `${mat} — ${(MATERIAL_DISPLAY_LABELS[mat]?.en) || mat}`
       }));
     return {
       ...sku,

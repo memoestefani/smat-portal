@@ -124,13 +124,12 @@
           "slot": "v2",
           "root": "curada",
           "relPath": "kit_expeller_a05_amarillo_patio.jpeg",
-          "rotateDeg": 90,
           "fit": "cover",
           "cropBox": {
-            "leftRatio": 0.42,
-            "topRatio": 0.04,
-            "widthRatio": 0.56,
-            "heightRatio": 0.9
+            "leftRatio": 0.02,
+            "topRatio": 0.30,
+            "widthRatio": 0.96,
+            "heightRatio": 0.39
           },
           "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
           "material_class": "EXPELLER_DRY_SEAL",
@@ -481,14 +480,20 @@
           "slot": "primary",
           "root": "curada",
           "relPath": "balanza_marcy_caratula_sg.jpg",
-          "fit": "contain",
+          "fit": "cover",
+          "cropBox": {
+            "leftRatio": 0.06,
+            "topRatio": 0.02,
+            "widthRatio": 0.88,
+            "heightRatio": 0.66
+          },
           "background": {
             "r": 241,
             "g": 245,
             "b": 249,
             "alpha": 1
           },
-          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
           "material_class": "LAB_METROLOGY_STEEL",
           "captionEs": "Carátula completa graduada en gravedad específica sin recorte",
           "captionEn": "Full direct-reading specific gravity Marcy dial without bezel clip"
@@ -497,8 +502,21 @@
           "slot": "v2",
           "root": "curada",
           "relPath": "balanza_marcy_vaso_inoxidable.jpg",
-          "fit": "cover",
-          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "rotateDeg": -90,
+          "fit": "contain",
+          "cropBox": {
+            "leftRatio": 0.08,
+            "topRatio": 0.03,
+            "widthRatio": 0.84,
+            "heightRatio": 0.94
+          },
+          "background": {
+            "r": 248,
+            "g": 250,
+            "b": 252,
+            "alpha": 1
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
           "material_class": "LAB_METROLOGY_STEEL",
           "captionEs": "Balanza Marcy con vaso inoxidable de 1,000 ml ensamblado",
           "captionEn": "Marcy scale assembly with 1,000 ml stainless steel cup"
@@ -507,11 +525,24 @@
           "slot": "v3",
           "root": "curada",
           "relPath": "balanza_marcy_calibrada_despacho.jpg",
-          "fit": "cover",
-          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "rotateDeg": -90,
+          "fit": "contain",
+          "cropBox": {
+            "leftRatio": 0.08,
+            "topRatio": 0.03,
+            "widthRatio": 0.84,
+            "heightRatio": 0.94
+          },
+          "background": {
+            "r": 248,
+            "g": 250,
+            "b": 252,
+            "alpha": 1
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
           "material_class": "LAB_METROLOGY_STEEL",
           "captionEs": "Equipo calibrado en mostrador listo para despacho",
-          "captionEn": "Bench-calibrated unit ready for immediate dispatch"
+          "captionEn": "Bench-calibrated unit ready for scheduled dispatch"
         }
       ]
     },
@@ -522,13 +553,19 @@
           "root": "curada",
           "relPath": "vaso_marcy_inoxidable_1000ml.jpg",
           "fit": "contain",
+          "cropBox": {
+            "leftRatio": 0.16,
+            "topRatio": 0.07,
+            "widthRatio": 0.68,
+            "heightRatio": 0.82
+          },
           "background": {
             "r": 248,
             "g": 250,
             "b": 252,
             "alpha": 1
           },
-          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
           "material_class": "STAINLESS_304",
           "captionEs": "Vaso tarado 1,000 ml en acero inoxidable con asas",
           "captionEn": "Tared 1,000 ml stainless steel slurry cup with bail"
@@ -538,7 +575,13 @@
           "root": "curada",
           "relPath": "vaso_marcy_cilindro_calibrado.jpg",
           "fit": "cover",
-          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "cropBox": {
+            "leftRatio": 0.14,
+            "topRatio": 0.04,
+            "widthRatio": 0.72,
+            "heightRatio": 0.90
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
           "material_class": "STAINLESS_304",
           "captionEs": "Cilindro de acero inoxidable de espesor calibrado",
           "captionEn": "Calibrated stainless steel sample cylinder"
@@ -808,32 +851,50 @@
         {
           "slot": "primary",
           "root": "fotos",
-          "relPath": "TRITURACION/IMG-20200731-WA0035.jpg",
+          "relPath": "TRITURACION/IMG-20210106-WA0002.jpg",
           "fit": "cover",
-          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "cropBox": {
+            "leftRatio": 0.22,
+            "topRatio": 0.16,
+            "widthRatio": 0.62,
+            "heightRatio": 0.74
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
           "material_class": "MN18_CRUSHER",
-          "captionEs": "Trituradora de quijada en montaje de taller con volantes balanceados",
+          "captionEs": "Trituradora de quijada y blindajes Mn18Cr2 con volantes balanceados",
           "captionEn": "Heavy-duty primary jaw crusher assembly with balanced flywheels"
         },
         {
           "slot": "v2",
           "root": "fotos",
-          "relPath": "TRITURACION/IMG-20200731-WA0036.jpg",
+          "relPath": "TRITURACION/IMG-20210112-WA0000.jpg",
           "fit": "cover",
-          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "cropBox": {
+            "leftRatio": 0.01,
+            "topRatio": 0.05,
+            "widthRatio": 0.98,
+            "heightRatio": 0.86
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
           "material_class": "MN18_CRUSHER",
-          "captionEs": "Muelas fijas y móviles en acero al manganeso Mn18Cr2",
-          "captionEn": "Mn18Cr2 manganese steel fixed and swing jaw wear plates"
+          "captionEs": "Mantos y cóncavos fundidos en acero al manganeso Mn18Cr2",
+          "captionEn": "Mn18Cr2 manganese steel cone crusher mantles and bowls"
         },
         {
           "slot": "v3",
           "root": "fotos",
-          "relPath": "TRITURACION/IMG-20200731-WA0038.jpg",
+          "relPath": "TRITURACION/IMG-20210105-WA0003.jpg",
           "fit": "cover",
-          "visual_brand_audit": "CLEAN_ZERO_OEM",
+          "cropBox": {
+            "leftRatio": 0.1,
+            "topRatio": 0.14,
+            "widthRatio": 0.8,
+            "heightRatio": 0.72
+          },
+          "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
           "material_class": "MN18_CRUSHER",
-          "captionEs": "Cámara de trituración, excéntrica y blindajes laterales",
-          "captionEn": "Crushing chamber eccentric shaft and Mn18Cr2 cheek liners"
+          "captionEs": "Volante motriz acanalado de trituración en patio Durango SMAT",
+          "captionEn": "Machined multi-groove crusher flywheel sheave in SMAT Durango yard"
         }
       ]
     },
@@ -1163,13 +1224,12 @@
     "d4028": {
       "root": "curada",
       "relPath": "parte_d4028_expulsor_6x4_amarillo.jpeg",
-      "rotateDeg": 90,
       "fit": "cover",
       "cropBox": {
-        "leftRatio": 0.14,
-        "topRatio": 0.42,
-        "widthRatio": 0.56,
-        "heightRatio": 0.52
+        "leftRatio": 0.0,
+        "topRatio": 0.69,
+        "widthRatio": 0.44,
+        "heightRatio": 0.28
       },
       "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
       "material_class": "EXPELLER_DRY_SEAL"
@@ -1179,10 +1239,10 @@
       "relPath": "expeller expeller ring/IMG-20210224-WA0020.jpeg",
       "fit": "cover",
       "cropBox": {
-        "leftRatio": 0.04,
-        "topRatio": 0.08,
-        "widthRatio": 0.44,
-        "heightRatio": 0.78
+        "leftRatio": 0.02,
+        "topRatio": 0.01,
+        "widthRatio": 0.88,
+        "heightRatio": 0.42
       },
       "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
       "material_class": "EXPELLER_DRY_SEAL"

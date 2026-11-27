@@ -359,7 +359,7 @@ export const ENGINE_SCHEMA_REGISTRY = Object.freeze({
     inputsSchema: [
       { field: 'avenueFilter', type: 'enum', defaultValue: 'all', sobolTier: 1, sobolSensitivityScore: 0.40, domBinding: '[data-facet-avenue-btn]', schemaKey: 'catalogFacet.avenueFilter', aliasBindings: ['[data-schema-input="catalogFacet.avenueFilter"]'] },
       { field: 'verticalFilter', type: 'enum', defaultValue: 'all', sobolTier: 1, sobolSensitivityScore: 0.35, domBinding: '[data-family-chip]', schemaKey: 'catalogFacet.verticalFilter', aliasBindings: ['[data-schema-input="catalogFacet.verticalFilter"]'] },
-      { field: 'searchQuery', type: 'string', defaultValue: '', sobolTier: 1, sobolSensitivityScore: 0.45, domBinding: '#catalog-facet-search', schemaKey: 'catalogFacet.searchQuery', aliasBindings: ['[data-schema-input="catalogFacet.searchQuery"]'] }
+      { field: 'searchQuery', type: 'string', defaultValue: '', sobolTier: 1, sobolSensitivityScore: 0.45, domBinding: '#header-omnibox-input', schemaKey: 'catalogFacet.searchQuery', aliasBindings: ['[data-schema-input="catalogFacet.searchQuery"]'] }
     ],
     outputsSchema: [
       { field: 'visibleSkuCount', unit: 'count', decimals: 0, isoPure: true, domBinding: '#catalog-visible-sku-count', schemaKey: 'catalogFacet.visibleSkuCount', aliasBindings: ['[data-schema-output="catalogFacet.visibleSkuCount"]'] },

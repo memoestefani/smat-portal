@@ -2,24 +2,24 @@
   "schema_version": "v7.0",
   "hygiene_version": "v9.0-zero-oem",
   "exif_stripped_all": true,
-  "generated_at": "2026-11-26T17:03:04.189Z",
+  "generated_at": "2026-11-27T15:49:15.190Z",
   "width": 640,
   "height": 480,
   "hd_width": 1200,
   "hd_height": 900,
   "max_bytes_limit": 46080,
-  "max_bytes": 43706,
+  "max_bytes": 43710,
   "max_hd_bytes_limit": 122880,
-  "max_hd_bytes": 122290,
+  "max_hd_bytes": 122646,
   "unique_sources": 23,
   "unique_source_sha256": 23,
   "unique_sha256": 23,
   "unique_dhash64": 23,
-  "min_hamming_distance": 18,
+  "min_hamming_distance": 9,
   "closest_pair": [
-    "SMAT-PUMP-IMP-AH",
-    "SMAT-PUMP-VERT-SP",
-    18
+    "SMAT-CYC-D6-D20",
+    "SMAT-LAB-VASO-1000",
+    9
   ],
   "cross_folder_sha256_clones": 0,
   "total_product_slides": 69,
@@ -39,9 +39,9 @@
       "source_sha256": "82112e165d5e00a4016d9378cda6ee11c63453d026bf9cb69dc325f2192462ce",
       "material_class": "A05_METAL",
       "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 33036,
-      "hd_bytes": 82494,
-      "sha256": "434a36845bd89b73d1ec780d846d1fc2956b077c968f521bd980777508d376cc",
+      "bytes": 32988,
+      "hd_bytes": 82826,
+      "sha256": "729412d30418a995f156bedbb209a88fe993a0a0b11835b3269fa46b273cb25d",
       "dhash64": "603d549c8cce769f",
       "captionEs": "Paquete húmedo 5-5-4 en Alto Cromo 27% listo en almacén",
       "captionEn": "27% High-Chrome 5-5-4 wet-end lot staged in warehouse"
@@ -59,9 +59,9 @@
       "source_sha256": "7fdf1a830549012ecc16ec7770a728fb1ade6f44d7ac893fe5cda20c347f737c",
       "material_class": "A05_METAL",
       "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 40730,
-      "hd_bytes": 91836,
-      "sha256": "5dd85bea1d893e285d1dc51dbce3d6e96c6455b62a58856caa060ef40df16738",
+      "bytes": 40672,
+      "hd_bytes": 91336,
+      "sha256": "9a82f61653992584b161a56c07612ef45aca79291c0460dd8735ca45dbd6441a",
       "dhash64": "63e94a20b8c2cccc",
       "captionEs": "Impulsores cerrados 5 álabes Alto Cromo A05 (≥ 650 HB) mecanizados en almacén",
       "captionEn": "Machined 5-vane High-Chrome A05 (≥ 650 HB) closed impellers in stock"
@@ -79,9 +79,9 @@
       "source_sha256": "a86a1ff9c6fac22dd524b57eec9ff069f594fa3e6e5c336f4bb06c64b17020a9",
       "material_class": "BIMODAL_A05_OR_R55",
       "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 23724,
-      "hd_bytes": 53874,
-      "sha256": "c7473f5a4202e4940df606d7c16243989bd3271c8a970d015f13b831d919821f",
+      "bytes": 23772,
+      "hd_bytes": 54322,
+      "sha256": "3bcfd4e70ce992969d58f08f852c8e1855f4615e89a0a3683d5e09274408b415",
       "dhash64": "2905c5cee7e787cd",
       "captionEs": "Forros de voluta, plato frontal y posterior Cr27 y R55",
       "captionEn": "Cr27 and R55 volute, cover plate and frame plate liners"
@@ -99,9 +99,9 @@
       "source_sha256": "a24a29e4052d25615a010386ba1efb266cf5304864b908b8ebc6caa6e176f678",
       "material_class": "EXPELLER_DRY_SEAL",
       "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 31888,
-      "hd_bytes": 84634,
-      "sha256": "46bde59f326aa47868874ba01543e084ed60054e2b1da508f5205294a18a7ff8",
+      "bytes": 32184,
+      "hd_bytes": 84540,
+      "sha256": "134eb8b073605c6a930fa3c8951fb247e7f0794473b0723866f63fe1818619ce",
       "dhash64": "b39b63fb73b3ab6b",
       "captionEs": "Kit de sello seco dinámico con anillo y expulsor Cr27",
       "captionEn": "Dry centrifugal seal kit with Cr27 expeller and ring"
@@ -119,9 +119,9 @@
       "source_sha256": "c1ae6b4afdb7931ede22102ba0e2ef2e99204e091b1398413dcf2f7679e0bdb9",
       "material_class": "SAE4140_DUCTILE_IRON",
       "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 31778,
-      "hd_bytes": 70410,
-      "sha256": "d57c95be47f50235bd7fef32ee6441b04ab0adf38a4c005832f06ec15f246fb0",
+      "bytes": 31670,
+      "hd_bytes": 70544,
+      "sha256": "c5c10d6429dc22b8f5ff86b95d847195d142e43670266c09c859428d512ccc81",
       "dhash64": "310d591cdcd46645",
       "captionEs": "Cartucho completo de rodamientos con eje SAE 4140",
       "captionEn": "Complete heavy-duty bearing assembly cartridge with SAE 4140 shaft"
@@ -139,10 +139,10 @@
       "source_sha256": "bd13f2a4ae90b5c23b29af50f1a1338e4dae831d610060bec8fa7aa7f1179c47",
       "material_class": "SLURRY_PUMP_ASSEMBLY",
       "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
-      "bytes": 22228,
-      "hd_bytes": 52014,
-      "sha256": "372b33f78aa0c2dbb75c6fabd8eb8070702f5edbb1fd3d76606c22c515d19b62",
-      "dhash64": "9b2c6d1e4c646628",
+      "bytes": 22542,
+      "hd_bytes": 52028,
+      "sha256": "479c7594f62e62720228af4bf794b0b6b73964984cbbc957cad99d3b8011be74",
+      "dhash64": "9b2c6d1e6c646628",
       "captionEs": "Bomba centrífuga de lodos 8x6 armada para batería de ciclones",
       "captionEn": "8x6 horizontal slurry pump staged for hydrocyclone feed"
     },
@@ -159,9 +159,9 @@
       "source_sha256": "9868d29dfd4cf5bbde097f3fe83bbd02f4bfc8d03993ac2514b737c8841492c2",
       "material_class": "PU_OR_SIC_CYCLONE",
       "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 13462,
-      "hd_bytes": 29332,
-      "sha256": "cc46182a337542798dc363d04752c5097dd5d4524f14f9d51fd560f96fa8206d",
+      "bytes": 14122,
+      "hd_bytes": 29448,
+      "sha256": "ad0fec905d30ebd104a3c05c60bdda77057ea40289d19cea94596fc447de899b",
       "dhash64": "716969696969e162",
       "captionEs": "Batería radial de hidrociclones y cabezal distribuidor",
       "captionEn": "Radial hydrocyclone cluster with distributor manifold"
@@ -179,9 +179,9 @@
       "source_sha256": "afa782a5231f6655603fd4bbafedac65fc5771e8d276108b5c314d496dcdab6f",
       "material_class": "PU_URETHANE",
       "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 23958,
-      "hd_bytes": 72720,
-      "sha256": "50c574d0221df5a14ba09f16cd807af94ebb9c6524b8b3bc9633c1d368a34dbb",
+      "bytes": 23912,
+      "hd_bytes": 72546,
+      "sha256": "abc46de2021758213834483d95f86f65e4c4bf2f03be9d261b610d91fde01a0b",
       "dhash64": "b39cb1b292210000",
       "captionEs": "Panel de poliuretano anticegamiento con abertura calibrada",
       "captionEn": "Anti-blinding polyurethane screen panel with calibrated slot aperture"
@@ -199,9 +199,9 @@
       "source_sha256": "83ac82e55f03700571f8910d700a93a87a245d4118d3ab18493e391a7e73b27c",
       "material_class": "PU_URETHANE",
       "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
-      "bytes": 22572,
-      "hd_bytes": 48138,
-      "sha256": "ca58bd85d54a7d729a862e42b5d9193ee6f54d2addebb2056616c3f2b8457f26",
+      "bytes": 22616,
+      "hd_bytes": 48188,
+      "sha256": "60e0200ca81c88f81766d2233038233b27c2833008c7f9e31e65ff7fdffd3556",
       "dhash64": "4c6d68785096f0e0",
       "captionEs": "Módulos 1'×1' de poliuretano con kit pin y camisa",
       "captionEn": "1'×1' modular polyurethane deck panels with pin & sleeve kit"
@@ -219,10 +219,10 @@
       "source_sha256": "bbcc1e7c15a451e3354eda25b2f41c1c1c6492f619baab3fb4a2a79c37ada1fd",
       "material_class": "PP_AND_CLOTH",
       "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
-      "bytes": 36904,
-      "hd_bytes": 96292,
-      "sha256": "afab4f1d0faee383f311f29a05f598136d786110ba9bd5a290bdeb18982abfbc",
-      "dhash64": "76b71284783ece73",
+      "bytes": 36854,
+      "hd_bytes": 96302,
+      "sha256": "1efd612fec4ee931edf83f30ef5e0281726612e6554b315dca8a7b2dfa9cb0a9",
+      "dhash64": "76b71284781ece73",
       "captionEs": "Paquete de placas 16 bar en polipropileno virgen con lonas",
       "captionEn": "16-bar virgin polypropylene filter plate pack with cloths"
     },
@@ -240,8 +240,8 @@
       "material_class": "SHIFTER_CARRIAGE",
       "visual_brand_audit": "CLEAN_ZERO_OEM",
       "bytes": 36208,
-      "hd_bytes": 85326,
-      "sha256": "45139df54f7f847069f15eb767efbc05732487f8516c640811fc45437def8c59",
+      "hd_bytes": 85342,
+      "sha256": "b3f5b58affa6b67abe0a3689f18ad28aefd729d4fd6c58d30b57d9eaba68309c",
       "dhash64": "789f7c3c1cc4e5e8",
       "captionEs": "Mecanismo corre-placas (Plate Shifter) sobre viga lateral",
       "captionEn": "Automatic plate shifter carriage on side beam"
@@ -259,10 +259,10 @@
       "source_sha256": "491c13c8562d12a63aea40b24b174113b5347b6f93795f96b63ed28ff75d0768",
       "material_class": "FLOTATION_MECHANISM",
       "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
-      "bytes": 23400,
-      "hd_bytes": 51982,
-      "sha256": "86bf2f9a6402f13481850fcd1ba2c0be40547408a0c6418c71956443f4fe8b0c",
-      "dhash64": "e526a34d78337b63",
+      "bytes": 23262,
+      "hd_bytes": 52020,
+      "sha256": "3f095a75cd739cd99e02c02ccfec28f5b7ed62283442df506b4a153fa7042736",
+      "dhash64": "e526a34d78337b6b",
       "captionEs": "Puente motriz 15 HP, transmisión por poleas y flecha vertical",
       "captionEn": "15 HP drive bridge, belt-pulley guard and vertical impeller shaft"
     },
@@ -278,11 +278,11 @@
       "sourceRelPath": "balanza_marcy_caratula_sg.jpg",
       "source_sha256": "a6edfb9f8095a19e797006e74def05ff53f323638f292a5a6d641542c41fc7c2",
       "material_class": "LAB_METROLOGY_STEEL",
-      "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 16570,
-      "hd_bytes": 39776,
-      "sha256": "1d23c724e4885dca89b4018a10ec71048f6f1ee3d960dbc8e7a23ad9cbf9f419",
-      "dhash64": "f0e8e8f0f0f0f8f8",
+      "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+      "bytes": 27430,
+      "hd_bytes": 59444,
+      "sha256": "27a08ec37c469f21da677fd4be79f2489226b2edc90e78e787def54455bc3a1c",
+      "dhash64": "68ccd4dcccf8f0f1",
       "captionEs": "Carátula completa graduada en gravedad específica sin recorte",
       "captionEn": "Full direct-reading specific gravity Marcy dial without bezel clip"
     },
@@ -298,11 +298,11 @@
       "sourceRelPath": "vaso_marcy_inoxidable_1000ml.jpg",
       "source_sha256": "ad37b6421500e9278e2d8c63eab54524581fbe72d169000ca49f5004334f0f38",
       "material_class": "STAINLESS_304",
-      "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 5062,
-      "hd_bytes": 13966,
-      "sha256": "61832a5a7512187a72804248baf5cfe029871aee7f73ad25ec1359edfa5a50b5",
-      "dhash64": "3333717171717133",
+      "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+      "bytes": 6482,
+      "hd_bytes": 17370,
+      "sha256": "d9100651f432f1f8fed68f230545f03bf4eb56f890386c961b980d4be129820a",
+      "dhash64": "3369696969797971",
       "captionEs": "Vaso tarado 1,000 ml en acero inoxidable con asas",
       "captionEn": "Tared 1,000 ml stainless steel slurry cup with bail"
     },
@@ -319,9 +319,9 @@
       "source_sha256": "333eeeaf73c6d6e4cb5969b066d2cb25ed0c1451902baac185dd183e01a98c94",
       "material_class": "BRASS_WIRE_SIEVE",
       "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
-      "bytes": 24100,
-      "hd_bytes": 49212,
-      "sha256": "12da4794a2f680e6ac0a977f576c709fa9c55132c66ce74b88cea776972434bb",
+      "bytes": 24140,
+      "hd_bytes": 49196,
+      "sha256": "280c0e09adbe734a67adc476f3fb22008645003836b63e80d55923cf4140ab77",
       "dhash64": "00e8cc8e8d8e8e00",
       "captionEs": "Tamiz ASTM E11 de 8\" con malla tejida inspeccionada",
       "captionEn": "8-inch ASTM E11 certified woven-wire test sieve bed"
@@ -339,9 +339,9 @@
       "source_sha256": "40488a7a5d3a66281ae0c71f0d0fe35fa61963b11870bf89c7c5a8ad25b79967",
       "material_class": "LAB_SIEVE_SHAKER",
       "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 21362,
-      "hd_bytes": 45806,
-      "sha256": "920c9129640b2edf72e6e55707e3591e682592fcbc3563d03dc86c7665adf42e",
+      "bytes": 20968,
+      "hd_bytes": 46030,
+      "sha256": "e7df8e09e9e8e9d597dd888820b1e3ffe7c472bfa82aa2aae30cf90c129359ae",
       "dhash64": "8c3edece46c2c969",
       "captionEs": "Cabezal de impacto, tapa superior y plato receptor en bronce para torre 8 pulgadas",
       "captionEn": "Brass impact cover and receiver pan assembly for 8-inch shaker stack"
@@ -359,10 +359,10 @@
       "source_sha256": "ebbded473f9317db505880cb2e6caea358e631e0850102d15217d19e97db0d47",
       "material_class": "STAINLESS_PAN",
       "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 41112,
-      "hd_bytes": 97216,
-      "sha256": "f475622238bb8761361aad5b5530171defe1ec748528ef738b749a48e18deefa",
-      "dhash64": "7358ccccf8feffde",
+      "bytes": 41042,
+      "hd_bytes": 97246,
+      "sha256": "7af7183f6bed4324d23474743ce55b05ae160e25d0bc9f8eab26913fa13272fe",
+      "dhash64": "7358ccccf8fefede",
       "captionEs": "Plato de tentadura cónico en acero inoxidable grado laboratorio",
       "captionEn": "Conical 304 stainless steel metallurgical gold panning dish"
     },
@@ -379,9 +379,9 @@
       "source_sha256": "b417e928ae7f23813e36a5c85f45d84f5a4029eb4898601c6a6c4b2081d1bf52",
       "material_class": "CR_NI_GRINDING_DISC",
       "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 42652,
-      "hd_bytes": 117070,
-      "sha256": "9548171f19e8ff9d4f761dabecaeed5a048a40a54ea57c5551caed759b832c55",
+      "bytes": 42668,
+      "hd_bytes": 117116,
+      "sha256": "d76d588a5f8bfddfc6a2ca1f21cd4be1cd12ee2c62a480c3f78d2b714e58dd03",
       "dhash64": "49d1d47032727a68",
       "captionEs": "Discos de molienda en aleación Cr-Ni de alta dureza",
       "captionEn": "High-hardness Cr-Ni alloy UA grinding discs"
@@ -399,9 +399,9 @@
       "source_sha256": "cac747448ec246a5618f4b47765b7d8382faa578e99ed7e4e26af77c208a2f00",
       "material_class": "LAB_PRESSURE_FILTER",
       "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
-      "bytes": 23276,
-      "hd_bytes": 52314,
-      "sha256": "b8263b3b85349581e77284fc28160374c0537800c85126651d504f982bdad14a",
+      "bytes": 23262,
+      "hd_bytes": 52402,
+      "sha256": "f2dce610dad4ca78b354eeb8e05d87af9d843733adea59be71712884bc17344a",
       "dhash64": "311b3e343632738f",
       "captionEs": "Filtro prensa batch de laboratorio con cámara de aluminio",
       "captionEn": "Laboratory batch pressure filter with heavy aluminum cylinder"
@@ -415,15 +415,15 @@
       "fileName": "trituradora-quijada-cono-mn18.webp",
       "hdFileName": "trituradora-quijada-cono-mn18-hd.webp",
       "sourceRoot": "fotos",
-      "sourceRelPath": "TRITURACION/IMG-20200731-WA0035.jpg",
-      "source_sha256": "16bdbb912034694dfa4ee1dc102fbede959c57ab08aa1844a4be9403a053ecf5",
+      "sourceRelPath": "TRITURACION/IMG-20210106-WA0002.jpg",
+      "source_sha256": "c84418437e50f31e09030236ee334b747f53d450eb98e67133e3939b1a088da5",
       "material_class": "MN18_CRUSHER",
-      "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 37300,
-      "hd_bytes": 109450,
-      "sha256": "9e647720e3dcf6525eeaed6d5a69a63ef2d79220ae9acbb31d0016595c745314",
-      "dhash64": "132d9a1b1f9d0d6e",
-      "captionEs": "Trituradora de quijada en montaje de taller con volantes balanceados",
+      "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
+      "bytes": 21494,
+      "hd_bytes": 49410,
+      "sha256": "c63585dccd8b8c25e5c62498d2bbdacafc7feed23aa9c1440449747c0164bf2e",
+      "dhash64": "9c0e0f0f27333337",
+      "captionEs": "Trituradora de quijada y blindajes Mn18Cr2 con volantes balanceados",
       "captionEn": "Heavy-duty primary jaw crusher assembly with balanced flywheels"
     },
     {
@@ -439,10 +439,10 @@
       "source_sha256": "405c13ac5e29b5ebdd5cc57ad215decc364d5ebabe91e9bac50486db492cb0cb",
       "material_class": "CRMO_MILL_LINER",
       "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 43504,
-      "hd_bytes": 96286,
-      "sha256": "aaf54f9710d120c4e88f4f7cb465154418a78379a30b64145b7eb963e99d9a75",
-      "dhash64": "f9fdb61dda989d83",
+      "bytes": 43190,
+      "hd_bytes": 96188,
+      "sha256": "12b9124b96bbe1270700fadd4b61d72b1cc6a07187ee92504acd15dc51b94818",
+      "dhash64": "f9fdb69cda989d83",
       "captionEs": "Corazas elevadoras en Cr-Mo y parrillas de descarga para molino de bolas",
       "captionEn": "Cr-Mo alloy ball mill lifter liners and discharge grates in yard"
     },
@@ -459,9 +459,9 @@
       "source_sha256": "4d48fdf7005803bc732a4dd784a5250162c4be72bc58db71c72c39ec589cfdf7",
       "material_class": "THICKENER_DRIVE",
       "visual_brand_audit": "CLEAN_ZERO_OEM",
-      "bytes": 37134,
-      "hd_bytes": 86884,
-      "sha256": "502e695c690b6a8bf8cd2be1958aeff01b305e4b005f0808821d0655a27c8e8f",
+      "bytes": 37490,
+      "hd_bytes": 87044,
+      "sha256": "1e2aa6be45e5c88dffbef066c79e8625587710773cbafd2f60d00820c6899a20",
       "dhash64": "1618184889393c59",
       "captionEs": "Cabezal reductor de espesador con levante de rastras y puente",
       "captionEn": "Thickener center-drive reducer, torque guard and bridge lift frame"
@@ -479,9 +479,9 @@
       "source_sha256": "b1bf8d6cbb5ea1535c3788cd5bf574974625df7e2024617653b148fa02eefdc6",
       "material_class": "VERTICAL_SLURRY_PUMP",
       "visual_brand_audit": "CROPPED_CLEAN_ZERO_OEM",
-      "bytes": 36414,
-      "hd_bytes": 99166,
-      "sha256": "6e9951a324ee9cf22aab27dd8dd33a454ae1dc78274b10a93ed69ada3b2c2bdd",
+      "bytes": 36352,
+      "hd_bytes": 99064,
+      "sha256": "dc1bc24a0d77a3fced0aaf8e67638a2c910dc4fbb5e19404cbf6a9c6e3f53480",
       "dhash64": "63296a6a9dd9898d",
       "captionEs": "Bombas verticales cantilever libre de sellos sumergidas para cárcamos",
       "captionEn": "Seal-less cantilever vertical sump slurry pumps assembled in bay"
@@ -493,8 +493,8 @@
         "slot": "primary",
         "src": "/images/productos/lote-humedo-554-bomba-ah.webp",
         "hd_src": "/images/productos/lote-humedo-554-bomba-ah-hd.webp",
-        "bytes": 33036,
-        "hd_bytes": 82494,
+        "bytes": 32988,
+        "hd_bytes": 82826,
         "captionEs": "Paquete húmedo 5-5-4 en Alto Cromo 27% listo en almacén",
         "captionEn": "27% High-Chrome 5-5-4 wet-end lot staged in warehouse"
       },
@@ -502,8 +502,8 @@
         "slot": "v2",
         "src": "/images/productos/lote-humedo-554-bomba-ah-v2.webp",
         "hd_src": "/images/productos/lote-humedo-554-bomba-ah-v2-hd.webp",
-        "bytes": 35492,
-        "hd_bytes": 72772,
+        "bytes": 35516,
+        "hd_bytes": 73180,
         "captionEs": "Vista de voluta y plato de succión A05 mecanizados",
         "captionEn": "Machined A05 volute liner and throatbush view"
       },
@@ -511,8 +511,8 @@
         "slot": "v3",
         "src": "/images/productos/lote-humedo-554-bomba-ah-v3.webp",
         "hd_src": "/images/productos/lote-humedo-554-bomba-ah-v3-hd.webp",
-        "bytes": 18278,
-        "hd_bytes": 47678,
+        "bytes": 18292,
+        "hd_bytes": 47620,
         "captionEs": "Inserto de plato posterior balanceado en lote 5-5-4",
         "captionEn": "Balanced frame plate liner insert for 5-5-4 wear lot"
       }
@@ -522,8 +522,8 @@
         "slot": "primary",
         "src": "/images/productos/impulsor-bomba-lodos-serie-ah.webp",
         "hd_src": "/images/productos/impulsor-bomba-lodos-serie-ah-hd.webp",
-        "bytes": 40730,
-        "hd_bytes": 91836,
+        "bytes": 40672,
+        "hd_bytes": 91336,
         "captionEs": "Impulsores cerrados 5 álabes Alto Cromo A05 (≥ 650 HB) mecanizados en almacén",
         "captionEn": "Machined 5-vane High-Chrome A05 (≥ 650 HB) closed impellers in stock"
       },
@@ -531,8 +531,8 @@
         "slot": "v2",
         "src": "/images/productos/impulsor-bomba-lodos-serie-ah-v2.webp",
         "hd_src": "/images/productos/impulsor-bomba-lodos-serie-ah-v2-hd.webp",
-        "bytes": 40160,
-        "hd_bytes": 98472,
+        "bytes": 40050,
+        "hd_bytes": 98446,
         "captionEs": "Verificación metalúrgica XRF en impulsor A05 (Cr 27.209%)",
         "captionEn": "Live XRF alloy assay on A05 slurry impeller (Cr 27.209%)"
       },
@@ -540,8 +540,8 @@
         "slot": "v3",
         "src": "/images/productos/impulsor-bomba-lodos-serie-ah-v3.webp",
         "hd_src": "/images/productos/impulsor-bomba-lodos-serie-ah-v3-hd.webp",
-        "bytes": 42748,
-        "hd_bytes": 99618,
+        "bytes": 42862,
+        "hd_bytes": 99556,
         "captionEs": "Geometría de ojo de succión y álabes expulsadores posteriores",
         "captionEn": "Suction eye geometry and rear pump-out vanes"
       }
@@ -551,8 +551,8 @@
         "slot": "primary",
         "src": "/images/productos/lainas-succion-y-platos-ah.webp",
         "hd_src": "/images/productos/lainas-succion-y-platos-ah-hd.webp",
-        "bytes": 23724,
-        "hd_bytes": 53874,
+        "bytes": 23772,
+        "hd_bytes": 54322,
         "captionEs": "Forros de voluta, plato frontal y posterior Cr27 y R55",
         "captionEn": "Cr27 and R55 volute, cover plate and frame plate liners"
       },
@@ -560,8 +560,8 @@
         "slot": "v2",
         "src": "/images/productos/lainas-succion-y-platos-ah-v2.webp",
         "hd_src": "/images/productos/lainas-succion-y-platos-ah-v2-hd.webp",
-        "bytes": 24968,
-        "hd_bytes": 55622,
+        "bytes": 24794,
+        "hd_bytes": 56030,
         "captionEs": "Comparativa de revestimiento metálico A05 vs hule R55",
         "captionEn": "A05 hard metal vs R55 molded elastomer liner comparison"
       },
@@ -569,8 +569,8 @@
         "slot": "v3",
         "src": "/images/productos/lainas-succion-y-platos-ah-v3.webp",
         "hd_src": "/images/productos/lainas-succion-y-platos-ah-v3-hd.webp",
-        "bytes": 10798,
-        "hd_bytes": 26212,
+        "bytes": 10958,
+        "hd_bytes": 26322,
         "captionEs": "Revestimiento elastomérico moldeado con insertos",
         "captionEn": "Molded elastomer cover plate liner with steel inserts"
       }
@@ -580,8 +580,8 @@
         "slot": "primary",
         "src": "/images/productos/kit-sellado-seco-expeller-ah.webp",
         "hd_src": "/images/productos/kit-sellado-seco-expeller-ah-hd.webp",
-        "bytes": 31888,
-        "hd_bytes": 84634,
+        "bytes": 32184,
+        "hd_bytes": 84540,
         "captionEs": "Kit de sello seco dinámico con anillo y expulsor Cr27",
         "captionEn": "Dry centrifugal seal kit with Cr27 expeller and ring"
       },
@@ -589,8 +589,8 @@
         "slot": "v2",
         "src": "/images/productos/kit-sellado-seco-expeller-ah-v2.webp",
         "hd_src": "/images/productos/kit-sellado-seco-expeller-ah-v2-hd.webp",
-        "bytes": 25976,
-        "hd_bytes": 76658,
+        "bytes": 35870,
+        "hd_bytes": 99994,
         "captionEs": "Anillos expulsores y cámaras A05 inspeccionados en almacén Durango",
         "captionEn": "A05 dynamic expellers and rings inspected in Durango warehouse"
       },
@@ -598,8 +598,8 @@
         "slot": "v3",
         "src": "/images/productos/kit-sellado-seco-expeller-ah-v3.webp",
         "hd_src": "/images/productos/kit-sellado-seco-expeller-ah-v3-hd.webp",
-        "bytes": 41442,
-        "hd_bytes": 87868,
+        "bytes": 41446,
+        "hd_bytes": 88558,
         "captionEs": "Álabes centrífugos mecanizados de alto cromo A05",
         "captionEn": "Machined A05 high-chrome centrifugal expeller vanes"
       }
@@ -609,8 +609,8 @@
         "slot": "primary",
         "src": "/images/productos/cartucho-rodamientos-005m.webp",
         "hd_src": "/images/productos/cartucho-rodamientos-005m-hd.webp",
-        "bytes": 31778,
-        "hd_bytes": 70410,
+        "bytes": 31670,
+        "hd_bytes": 70544,
         "captionEs": "Cartucho completo de rodamientos con eje SAE 4140",
         "captionEn": "Complete heavy-duty bearing assembly cartridge with SAE 4140 shaft"
       },
@@ -618,8 +618,8 @@
         "slot": "v2",
         "src": "/images/productos/cartucho-rodamientos-005m-v2.webp",
         "hd_src": "/images/productos/cartucho-rodamientos-005m-v2-hd.webp",
-        "bytes": 25540,
-        "hd_bytes": 64268,
+        "bytes": 25524,
+        "hd_bytes": 64266,
         "captionEs": "Montaje en carcasa de hierro dúctil y ajuste axial",
         "captionEn": "Ductile iron pedestal mounting and axial impeller adjustment"
       },
@@ -627,8 +627,8 @@
         "slot": "v3",
         "src": "/images/productos/cartucho-rodamientos-005m-v3.webp",
         "hd_src": "/images/productos/cartucho-rodamientos-005m-v3-hd.webp",
-        "bytes": 15352,
-        "hd_bytes": 35506,
+        "bytes": 15372,
+        "hd_bytes": 35420,
         "captionEs": "Flechas templadas y roscadas de repuesto serie AH",
         "captionEn": "Hardened replacement alloy shafts for AH series pumps"
       }
@@ -638,8 +638,8 @@
         "slot": "primary",
         "src": "/images/productos/paquete-casado-bomba-hidrociclon.webp",
         "hd_src": "/images/productos/paquete-casado-bomba-hidrociclon-hd.webp",
-        "bytes": 22228,
-        "hd_bytes": 52014,
+        "bytes": 22542,
+        "hd_bytes": 52028,
         "captionEs": "Bomba centrífuga de lodos 8x6 armada para batería de ciclones",
         "captionEn": "8x6 horizontal slurry pump staged for hydrocyclone feed"
       },
@@ -647,8 +647,8 @@
         "slot": "v2",
         "src": "/images/productos/paquete-casado-bomba-hidrociclon-v2.webp",
         "hd_src": "/images/productos/paquete-casado-bomba-hidrociclon-v2-hd.webp",
-        "bytes": 15834,
-        "hd_bytes": 48738,
+        "bytes": 15840,
+        "hd_bytes": 48724,
         "captionEs": "Bomba horizontal bridada 3x2 ensamblada sobre bastidor",
         "captionEn": "Flanged 3x2 horizontal slurry pump unit on structural base"
       },
@@ -656,8 +656,8 @@
         "slot": "v3",
         "src": "/images/productos/paquete-casado-bomba-hidrociclon-v3.webp",
         "hd_src": "/images/productos/paquete-casado-bomba-hidrociclon-v3-hd.webp",
-        "bytes": 19766,
-        "hd_bytes": 48690,
+        "bytes": 19796,
+        "hd_bytes": 48792,
         "captionEs": "Conjunto completo inspeccionado en patio de Durango",
         "captionEn": "Inspected heavy-duty slurry pump unit in Durango yard"
       }
@@ -667,8 +667,8 @@
         "slot": "primary",
         "src": "/images/productos/hidrociclon-completo-y-boquillas-d6-d20.webp",
         "hd_src": "/images/productos/hidrociclon-completo-y-boquillas-d6-d20-hd.webp",
-        "bytes": 13462,
-        "hd_bytes": 29332,
+        "bytes": 14122,
+        "hd_bytes": 29448,
         "captionEs": "Batería radial de hidrociclones y cabezal distribuidor",
         "captionEn": "Radial hydrocyclone cluster with distributor manifold"
       },
@@ -676,8 +676,8 @@
         "slot": "v2",
         "src": "/images/productos/hidrociclon-completo-y-boquillas-d6-d20-v2.webp",
         "hd_src": "/images/productos/hidrociclon-completo-y-boquillas-d6-d20-v2-hd.webp",
-        "bytes": 39168,
-        "hd_bytes": 89128,
+        "bytes": 39052,
+        "hd_bytes": 91206,
         "captionEs": "Hidrociclones con forro interno reemplazable en campo",
         "captionEn": "Field-ready hydrocyclones with replaceable wear liners"
       },
@@ -685,8 +685,8 @@
         "slot": "v3",
         "src": "/images/productos/hidrociclon-completo-y-boquillas-d6-d20-v3.webp",
         "hd_src": "/images/productos/hidrociclon-completo-y-boquillas-d6-d20-v3-hd.webp",
-        "bytes": 6240,
-        "hd_bytes": 12444,
+        "bytes": 6284,
+        "hd_bytes": 12418,
         "captionEs": "Cuerpo modular con cono superior, medio e inferior y ápex",
         "captionEn": "Modular cyclone stack with upper/lower cones & apex"
       }
@@ -696,8 +696,8 @@
         "slot": "primary",
         "src": "/images/productos/mallas-finas-uretano-th48-30.webp",
         "hd_src": "/images/productos/mallas-finas-uretano-th48-30-hd.webp",
-        "bytes": 23958,
-        "hd_bytes": 72720,
+        "bytes": 23912,
+        "hd_bytes": 72546,
         "captionEs": "Panel de poliuretano anticegamiento con abertura calibrada",
         "captionEn": "Anti-blinding polyurethane screen panel with calibrated slot aperture"
       },
@@ -705,8 +705,8 @@
         "slot": "v2",
         "src": "/images/productos/mallas-finas-uretano-th48-30-v2.webp",
         "hd_src": "/images/productos/mallas-finas-uretano-th48-30-v2-hd.webp",
-        "bytes": 12018,
-        "hd_bytes": 37272,
+        "bytes": 12026,
+        "hd_bytes": 37238,
         "captionEs": "Lote de paneles modulares y fijaciones listo en almacén",
         "captionEn": "Modular polyurethane deck panel lot staged in warehouse"
       },
@@ -714,8 +714,8 @@
         "slot": "v3",
         "src": "/images/productos/mallas-finas-uretano-th48-30-v3.webp",
         "hd_src": "/images/productos/mallas-finas-uretano-th48-30-v3-hd.webp",
-        "bytes": 33014,
-        "hd_bytes": 84872,
+        "bytes": 32686,
+        "hd_bytes": 85294,
         "captionEs": "Superficie ranurada de poliuretano colado para cribado fino",
         "captionEn": "Slotted cast polyurethane surface for high-frequency screening"
       }
@@ -725,8 +725,8 @@
         "slot": "primary",
         "src": "/images/productos/modulos-poliuretano-1x1-pin-camisa.webp",
         "hd_src": "/images/productos/modulos-poliuretano-1x1-pin-camisa-hd.webp",
-        "bytes": 22572,
-        "hd_bytes": 48138,
+        "bytes": 22616,
+        "hd_bytes": 48188,
         "captionEs": "Módulos 1'×1' de poliuretano con kit pin y camisa",
         "captionEn": "1'×1' modular polyurethane deck panels with pin & sleeve kit"
       },
@@ -734,8 +734,8 @@
         "slot": "v2",
         "src": "/images/productos/modulos-poliuretano-1x1-pin-camisa-v2.webp",
         "hd_src": "/images/productos/modulos-poliuretano-1x1-pin-camisa-v2-hd.webp",
-        "bytes": 12310,
-        "hd_bytes": 27340,
+        "bytes": 12312,
+        "hd_bytes": 27278,
         "captionEs": "Detalle de fijación rápida pin-camisa libre de soldadura",
         "captionEn": "Weld-free pin and sleeve rapid locking fastener detail"
       },
@@ -743,8 +743,8 @@
         "slot": "v3",
         "src": "/images/productos/modulos-poliuretano-1x1-pin-camisa-v3.webp",
         "hd_src": "/images/productos/modulos-poliuretano-1x1-pin-camisa-v3-hd.webp",
-        "bytes": 26596,
-        "hd_bytes": 86148,
+        "bytes": 26456,
+        "hd_bytes": 86150,
         "captionEs": "Juego de repuestos de fijación para cubiertas modulares",
         "captionEn": "Replacement deck fastening pin and sleeve hardware set"
       }
@@ -754,8 +754,8 @@
         "slot": "primary",
         "src": "/images/productos/lonas-y-placas-filtro-prensa-16bar.webp",
         "hd_src": "/images/productos/lonas-y-placas-filtro-prensa-16bar-hd.webp",
-        "bytes": 36904,
-        "hd_bytes": 96292,
+        "bytes": 36854,
+        "hd_bytes": 96302,
         "captionEs": "Paquete de placas 16 bar en polipropileno virgen con lonas",
         "captionEn": "16-bar virgin polypropylene filter plate pack with cloths"
       },
@@ -763,8 +763,8 @@
         "slot": "v2",
         "src": "/images/productos/lonas-y-placas-filtro-prensa-16bar-v2.webp",
         "hd_src": "/images/productos/lonas-y-placas-filtro-prensa-16bar-v2-hd.webp",
-        "bytes": 24662,
-        "hd_bytes": 64240,
+        "bytes": 24500,
+        "hd_bytes": 63086,
         "captionEs": "Alineación lateral de placas en viga principal",
         "captionEn": "Side-bar alignment of filter plates on press beam"
       },
@@ -772,8 +772,8 @@
         "slot": "v3",
         "src": "/images/productos/lonas-y-placas-filtro-prensa-16bar-v3.webp",
         "hd_src": "/images/productos/lonas-y-placas-filtro-prensa-16bar-v3-hd.webp",
-        "bytes": 13958,
-        "hd_bytes": 32856,
+        "bytes": 13946,
+        "hd_bytes": 32838,
         "captionEs": "Cabeza hidráulica de cierre y banco de filtrado",
         "captionEn": "Hydraulic closing ram and filtrate manifold bank"
       }
@@ -784,7 +784,7 @@
         "src": "/images/productos/mecanismo-plate-shifter-y-cadenas.webp",
         "hd_src": "/images/productos/mecanismo-plate-shifter-y-cadenas-hd.webp",
         "bytes": 36208,
-        "hd_bytes": 85326,
+        "hd_bytes": 85342,
         "captionEs": "Mecanismo corre-placas (Plate Shifter) sobre viga lateral",
         "captionEn": "Automatic plate shifter carriage on side beam"
       },
@@ -792,8 +792,8 @@
         "slot": "v2",
         "src": "/images/productos/mecanismo-plate-shifter-y-cadenas-v2.webp",
         "hd_src": "/images/productos/mecanismo-plate-shifter-y-cadenas-v2-hd.webp",
-        "bytes": 43706,
-        "hd_bytes": 115362,
+        "bytes": 43710,
+        "hd_bytes": 115054,
         "captionEs": "Carro transmisor sobre viga lateral con motorreductor",
         "captionEn": "Side-beam shifter carriage and geared drive detail"
       },
@@ -801,8 +801,8 @@
         "slot": "v3",
         "src": "/images/productos/mecanismo-plate-shifter-y-cadenas-v3.webp",
         "hd_src": "/images/productos/mecanismo-plate-shifter-y-cadenas-v3-hd.webp",
-        "bytes": 42790,
-        "hd_bytes": 122290,
+        "bytes": 42712,
+        "hd_bytes": 122646,
         "captionEs": "Conjunto completo de riel, uñas y carro de descarga",
         "captionEn": "Complete shifter rail, pawls and discharge carriage assembly"
       }
@@ -812,8 +812,8 @@
         "slot": "primary",
         "src": "/images/productos/mecanismo-suspendido-flotacion-18sp.webp",
         "hd_src": "/images/productos/mecanismo-suspendido-flotacion-18sp-hd.webp",
-        "bytes": 23400,
-        "hd_bytes": 51982,
+        "bytes": 23262,
+        "hd_bytes": 52020,
         "captionEs": "Puente motriz 15 HP, transmisión por poleas y flecha vertical",
         "captionEn": "15 HP drive bridge, belt-pulley guard and vertical impeller shaft"
       },
@@ -821,8 +821,8 @@
         "slot": "v2",
         "src": "/images/productos/mecanismo-suspendido-flotacion-18sp-v2.webp",
         "hd_src": "/images/productos/mecanismo-suspendido-flotacion-18sp-v2-hd.webp",
-        "bytes": 18170,
-        "hd_bytes": 41342,
+        "bytes": 18080,
+        "hd_bytes": 41520,
         "captionEs": "Celda y tanque agitador 2000×2000 con puente motriz 15 HP",
         "captionEn": "2000×2000 agitation tank cell with 15 HP drive bridge"
       },
@@ -830,8 +830,8 @@
         "slot": "v3",
         "src": "/images/productos/mecanismo-suspendido-flotacion-18sp-v3.webp",
         "hd_src": "/images/productos/mecanismo-suspendido-flotacion-18sp-v3-hd.webp",
-        "bytes": 40590,
-        "hd_bytes": 90372,
+        "bytes": 40406,
+        "hd_bytes": 90240,
         "captionEs": "Cabezal reductor pesado, flecha vertical y volante de elevación",
         "captionEn": "Heavy-duty geared drive head, vertical shaft and lifting handwheel"
       }
@@ -841,8 +841,8 @@
         "slot": "primary",
         "src": "/images/productos/balanza-marcy.webp",
         "hd_src": "/images/productos/balanza-marcy-hd.webp",
-        "bytes": 16570,
-        "hd_bytes": 39776,
+        "bytes": 27430,
+        "hd_bytes": 59444,
         "captionEs": "Carátula completa graduada en gravedad específica sin recorte",
         "captionEn": "Full direct-reading specific gravity Marcy dial without bezel clip"
       },
@@ -850,8 +850,8 @@
         "slot": "v2",
         "src": "/images/productos/balanza-marcy-v2.webp",
         "hd_src": "/images/productos/balanza-marcy-v2-hd.webp",
-        "bytes": 17890,
-        "hd_bytes": 60438,
+        "bytes": 12024,
+        "hd_bytes": 37980,
         "captionEs": "Balanza Marcy con vaso inoxidable de 1,000 ml ensamblado",
         "captionEn": "Marcy scale assembly with 1,000 ml stainless steel cup"
       },
@@ -859,10 +859,10 @@
         "slot": "v3",
         "src": "/images/productos/balanza-marcy-v3.webp",
         "hd_src": "/images/productos/balanza-marcy-v3-hd.webp",
-        "bytes": 19086,
-        "hd_bytes": 65674,
+        "bytes": 12612,
+        "hd_bytes": 40684,
         "captionEs": "Equipo calibrado en mostrador listo para despacho",
-        "captionEn": "Bench-calibrated unit ready for immediate dispatch"
+        "captionEn": "Bench-calibrated unit ready for scheduled dispatch"
       }
     ],
     "SMAT-LAB-VASO-1000": [
@@ -870,8 +870,8 @@
         "slot": "primary",
         "src": "/images/productos/vaso-balanza-marcy-1000ml.webp",
         "hd_src": "/images/productos/vaso-balanza-marcy-1000ml-hd.webp",
-        "bytes": 5062,
-        "hd_bytes": 13966,
+        "bytes": 6482,
+        "hd_bytes": 17370,
         "captionEs": "Vaso tarado 1,000 ml en acero inoxidable con asas",
         "captionEn": "Tared 1,000 ml stainless steel slurry cup with bail"
       },
@@ -879,8 +879,8 @@
         "slot": "v2",
         "src": "/images/productos/vaso-balanza-marcy-1000ml-v2.webp",
         "hd_src": "/images/productos/vaso-balanza-marcy-1000ml-v2-hd.webp",
-        "bytes": 9282,
-        "hd_bytes": 43924,
+        "bytes": 11234,
+        "hd_bytes": 47488,
         "captionEs": "Cilindro de acero inoxidable de espesor calibrado",
         "captionEn": "Calibrated stainless steel sample cylinder"
       },
@@ -888,8 +888,8 @@
         "slot": "v3",
         "src": "/images/productos/vaso-balanza-marcy-1000ml-v3.webp",
         "hd_src": "/images/productos/vaso-balanza-marcy-1000ml-v3-hd.webp",
-        "bytes": 19000,
-        "hd_bytes": 63196,
+        "bytes": 18974,
+        "hd_bytes": 63156,
         "captionEs": "Orificios de enrase exacto a 1,000 ml en borde superior",
         "captionEn": "Precision 1,000 ml overflow ports on upper rim"
       }
@@ -899,8 +899,8 @@
         "slot": "primary",
         "src": "/images/productos/tamices-certificados-astm-e11.webp",
         "hd_src": "/images/productos/tamices-certificados-astm-e11-hd.webp",
-        "bytes": 24100,
-        "hd_bytes": 49212,
+        "bytes": 24140,
+        "hd_bytes": 49196,
         "captionEs": "Tamiz ASTM E11 de 8\" con malla tejida inspeccionada",
         "captionEn": "8-inch ASTM E11 certified woven-wire test sieve bed"
       },
@@ -908,8 +908,8 @@
         "slot": "v2",
         "src": "/images/productos/tamices-certificados-astm-e11-v2.webp",
         "hd_src": "/images/productos/tamices-certificados-astm-e11-v2-hd.webp",
-        "bytes": 16836,
-        "hd_bytes": 35226,
+        "bytes": 16844,
+        "hd_bytes": 35190,
         "captionEs": "Malla certificada ASTM E11 para corte granulométrico P80",
         "captionEn": "Calibrated ASTM E11 test sieve mesh for P80 sizing control"
       },
@@ -917,8 +917,8 @@
         "slot": "v3",
         "src": "/images/productos/tamices-certificados-astm-e11-v3.webp",
         "hd_src": "/images/productos/tamices-certificados-astm-e11-v3-hd.webp",
-        "bytes": 7170,
-        "hd_bytes": 17070,
+        "bytes": 7216,
+        "hd_bytes": 17006,
         "captionEs": "Aro interno en bronce y costura perimetral de laboratorio",
         "captionEn": "Internal brass sieve wall and perimeter wire cloth bond"
       }
@@ -928,8 +928,8 @@
         "slot": "primary",
         "src": "/images/productos/tamizador-mecanico-laboratorio.webp",
         "hd_src": "/images/productos/tamizador-mecanico-laboratorio-hd.webp",
-        "bytes": 21362,
-        "hd_bytes": 45806,
+        "bytes": 20968,
+        "hd_bytes": 46030,
         "captionEs": "Cabezal de impacto, tapa superior y plato receptor en bronce para torre 8 pulgadas",
         "captionEn": "Brass impact cover and receiver pan assembly for 8-inch shaker stack"
       },
@@ -937,8 +937,8 @@
         "slot": "v2",
         "src": "/images/productos/tamizador-mecanico-laboratorio-v2.webp",
         "hd_src": "/images/productos/tamizador-mecanico-laboratorio-v2-hd.webp",
-        "bytes": 14478,
-        "hd_bytes": 31726,
+        "bytes": 14508,
+        "hd_bytes": 31688,
         "captionEs": "Torre de tamizado granulométrico ASTM E11 de 8 pulgadas para tamizador orbital",
         "captionEn": "8-inch ASTM E11 particle sizing stack arrangement for orbital shaker"
       },
@@ -946,8 +946,8 @@
         "slot": "v3",
         "src": "/images/productos/tamizador-mecanico-laboratorio-v3.webp",
         "hd_src": "/images/productos/tamizador-mecanico-laboratorio-v3-hd.webp",
-        "bytes": 6882,
-        "hd_bytes": 16322,
+        "bytes": 6856,
+        "hd_bytes": 16172,
         "captionEs": "Malla fina calibrada #70 montada en tren de tamizado",
         "captionEn": "Calibrated No. 70 fine wire sieve mounted in test stack"
       }
@@ -957,8 +957,8 @@
         "slot": "primary",
         "src": "/images/productos/plato-tentadura-metalurgico.webp",
         "hd_src": "/images/productos/plato-tentadura-metalurgico-hd.webp",
-        "bytes": 41112,
-        "hd_bytes": 97216,
+        "bytes": 41042,
+        "hd_bytes": 97246,
         "captionEs": "Plato de tentadura cónico en acero inoxidable grado laboratorio",
         "captionEn": "Conical 304 stainless steel metallurgical gold panning dish"
       },
@@ -966,8 +966,8 @@
         "slot": "v2",
         "src": "/images/productos/plato-tentadura-metalurgico-v2.webp",
         "hd_src": "/images/productos/plato-tentadura-metalurgico-v2-hd.webp",
-        "bytes": 14926,
-        "hd_bytes": 35234,
+        "bytes": 14898,
+        "hd_bytes": 35178,
         "captionEs": "Prueba en húmedo con concentrado mineral en laboratorio",
         "captionEn": "Wet mineral concentrate assay panning test in plant lab"
       },
@@ -975,8 +975,8 @@
         "slot": "v3",
         "src": "/images/productos/plato-tentadura-metalurgico-v3.webp",
         "hd_src": "/images/productos/plato-tentadura-metalurgico-v3-hd.webp",
-        "bytes": 6964,
-        "hd_bytes": 15830,
+        "bytes": 6950,
+        "hd_bytes": 15914,
         "captionEs": "Detalle superior del acabado espejo en acero inoxidable",
         "captionEn": "Top mirror finish detail of stainless assay panning bowl"
       }
@@ -986,8 +986,8 @@
         "slot": "primary",
         "src": "/images/productos/pulverizador-discos-laboratorio.webp",
         "hd_src": "/images/productos/pulverizador-discos-laboratorio-hd.webp",
-        "bytes": 42652,
-        "hd_bytes": 117070,
+        "bytes": 42668,
+        "hd_bytes": 117116,
         "captionEs": "Discos de molienda en aleación Cr-Ni de alta dureza",
         "captionEn": "High-hardness Cr-Ni alloy UA grinding discs"
       },
@@ -995,8 +995,8 @@
         "slot": "v2",
         "src": "/images/productos/pulverizador-discos-laboratorio-v2.webp",
         "hd_src": "/images/productos/pulverizador-discos-laboratorio-v2-hd.webp",
-        "bytes": 14780,
-        "hd_bytes": 30986,
+        "bytes": 14748,
+        "hd_bytes": 31190,
         "captionEs": "Pulverizador de discos UA para muestra analítica fina",
         "captionEn": "UA disc pulverizer for analytical assay preparation"
       },
@@ -1004,8 +1004,8 @@
         "slot": "v3",
         "src": "/images/productos/pulverizador-discos-laboratorio-v3.webp",
         "hd_src": "/images/productos/pulverizador-discos-laboratorio-v3-hd.webp",
-        "bytes": 10942,
-        "hd_bytes": 26570,
+        "bytes": 10916,
+        "hd_bytes": 26530,
         "captionEs": "Unidad instalada en gabinete con acceso a cámara de discos",
         "captionEn": "Cabinet-mounted pulverizer with hinged grinding chamber"
       }
@@ -1015,8 +1015,8 @@
         "slot": "primary",
         "src": "/images/productos/filtro-prensa-batch-laboratorio.webp",
         "hd_src": "/images/productos/filtro-prensa-batch-laboratorio-hd.webp",
-        "bytes": 23276,
-        "hd_bytes": 52314,
+        "bytes": 23262,
+        "hd_bytes": 52402,
         "captionEs": "Filtro prensa batch de laboratorio con cámara de aluminio",
         "captionEn": "Laboratory batch pressure filter with heavy aluminum cylinder"
       },
@@ -1024,8 +1024,8 @@
         "slot": "v2",
         "src": "/images/productos/filtro-prensa-batch-laboratorio-v2.webp",
         "hd_src": "/images/productos/filtro-prensa-batch-laboratorio-v2-hd.webp",
-        "bytes": 13076,
-        "hd_bytes": 30850,
+        "bytes": 13104,
+        "hd_bytes": 30814,
         "captionEs": "Bastidor de doble columna y tornillo de cierre rápido",
         "captionEn": "Twin-column frame with quick-clamp top handwheel"
       },
@@ -1033,8 +1033,8 @@
         "slot": "v3",
         "src": "/images/productos/filtro-prensa-batch-laboratorio-v3.webp",
         "hd_src": "/images/productos/filtro-prensa-batch-laboratorio-v3-hd.webp",
-        "bytes": 25788,
-        "hd_bytes": 58262,
+        "bytes": 25800,
+        "hd_bytes": 58420,
         "captionEs": "Detalle de válvula superior de aire comprimido y sello",
         "captionEn": "Top pneumatic air valve and chamber O-ring seal detail"
       }
@@ -1044,28 +1044,28 @@
         "slot": "primary",
         "src": "/images/productos/trituradora-quijada-cono-mn18.webp",
         "hd_src": "/images/productos/trituradora-quijada-cono-mn18-hd.webp",
-        "bytes": 37300,
-        "hd_bytes": 109450,
-        "captionEs": "Trituradora de quijada en montaje de taller con volantes balanceados",
+        "bytes": 21494,
+        "hd_bytes": 49410,
+        "captionEs": "Trituradora de quijada y blindajes Mn18Cr2 con volantes balanceados",
         "captionEn": "Heavy-duty primary jaw crusher assembly with balanced flywheels"
       },
       {
         "slot": "v2",
         "src": "/images/productos/trituradora-quijada-cono-mn18-v2.webp",
         "hd_src": "/images/productos/trituradora-quijada-cono-mn18-v2-hd.webp",
-        "bytes": 35404,
-        "hd_bytes": 86408,
-        "captionEs": "Muelas fijas y móviles en acero al manganeso Mn18Cr2",
-        "captionEn": "Mn18Cr2 manganese steel fixed and swing jaw wear plates"
+        "bytes": 37192,
+        "hd_bytes": 82510,
+        "captionEs": "Mantos y cóncavos fundidos en acero al manganeso Mn18Cr2",
+        "captionEn": "Mn18Cr2 manganese steel cone crusher mantles and bowls"
       },
       {
         "slot": "v3",
         "src": "/images/productos/trituradora-quijada-cono-mn18-v3.webp",
         "hd_src": "/images/productos/trituradora-quijada-cono-mn18-v3-hd.webp",
-        "bytes": 35410,
-        "hd_bytes": 81140,
-        "captionEs": "Cámara de trituración, excéntrica y blindajes laterales",
-        "captionEn": "Crushing chamber eccentric shaft and Mn18Cr2 cheek liners"
+        "bytes": 40984,
+        "hd_bytes": 90200,
+        "captionEs": "Volante motriz acanalado de trituración en patio Durango SMAT",
+        "captionEn": "Machined multi-groove crusher flywheel sheave in SMAT Durango yard"
       }
     ],
     "SMAT-MILL-BALL-LINER": [
@@ -1073,8 +1073,8 @@
         "slot": "primary",
         "src": "/images/productos/molino-bolas-forros-crmo.webp",
         "hd_src": "/images/productos/molino-bolas-forros-crmo-hd.webp",
-        "bytes": 43504,
-        "hd_bytes": 96286,
+        "bytes": 43190,
+        "hd_bytes": 96188,
         "captionEs": "Corazas elevadoras en Cr-Mo y parrillas de descarga para molino de bolas",
         "captionEn": "Cr-Mo alloy ball mill lifter liners and discharge grates in yard"
       },
@@ -1082,8 +1082,8 @@
         "slot": "v2",
         "src": "/images/productos/molino-bolas-forros-crmo-v2.webp",
         "hd_src": "/images/productos/molino-bolas-forros-crmo-v2-hd.webp",
-        "bytes": 33116,
-        "hd_bytes": 72920,
+        "bytes": 33564,
+        "hd_bytes": 73184,
         "captionEs": "Juego completo de revestimientos mecanizados y barrenados",
         "captionEn": "Complete drilled Cr-Mo mill shell liner set staged for dispatch"
       },
@@ -1091,8 +1091,8 @@
         "slot": "v3",
         "src": "/images/productos/molino-bolas-forros-crmo-v3.webp",
         "hd_src": "/images/productos/molino-bolas-forros-crmo-v3-hd.webp",
-        "bytes": 24166,
-        "hd_bytes": 52556,
+        "bytes": 24468,
+        "hd_bytes": 52428,
         "captionEs": "Inspección dimensional de corazas y tapas de molino",
         "captionEn": "Dimensional inspection of mill shell and feed-head liners"
       }
@@ -1102,8 +1102,8 @@
         "slot": "primary",
         "src": "/images/productos/mecanismo-espesador-puente-rastras.webp",
         "hd_src": "/images/productos/mecanismo-espesador-puente-rastras-hd.webp",
-        "bytes": 37134,
-        "hd_bytes": 86884,
+        "bytes": 37490,
+        "hd_bytes": 87044,
         "captionEs": "Cabezal reductor de espesador con levante de rastras y puente",
         "captionEn": "Thickener center-drive reducer, torque guard and bridge lift frame"
       },
@@ -1111,8 +1111,8 @@
         "slot": "v2",
         "src": "/images/productos/mecanismo-espesador-puente-rastras-v2.webp",
         "hd_src": "/images/productos/mecanismo-espesador-puente-rastras-v2-hd.webp",
-        "bytes": 28794,
-        "hd_bytes": 61992,
+        "bytes": 28774,
+        "hd_bytes": 61664,
         "captionEs": "Corona dentada, piñón y columna motriz en armado",
         "captionEn": "Thickener bull gear, pinion drive and vertical torque shaft"
       },
@@ -1120,8 +1120,8 @@
         "slot": "v3",
         "src": "/images/productos/mecanismo-espesador-puente-rastras-v3.webp",
         "hd_src": "/images/productos/mecanismo-espesador-puente-rastras-v3-hd.webp",
-        "bytes": 27240,
-        "hd_bytes": 60842,
+        "bytes": 27296,
+        "hd_bytes": 60850,
         "captionEs": "Sistema motriz de puente para espesadores de concentrado y jales",
         "captionEn": "Bridge-mounted thickener drive assembly for tailings and concentrate"
       }
@@ -1131,8 +1131,8 @@
         "slot": "primary",
         "src": "/images/productos/bomba-vertical-lodos-sumidero-sp.webp",
         "hd_src": "/images/productos/bomba-vertical-lodos-sumidero-sp-hd.webp",
-        "bytes": 36414,
-        "hd_bytes": 99166,
+        "bytes": 36352,
+        "hd_bytes": 99064,
         "captionEs": "Bombas verticales cantilever libre de sellos sumergidas para cárcamos",
         "captionEn": "Seal-less cantilever vertical sump slurry pumps assembled in bay"
       },
@@ -1140,8 +1140,8 @@
         "slot": "v2",
         "src": "/images/productos/bomba-vertical-lodos-sumidero-sp-v2.webp",
         "hd_src": "/images/productos/bomba-vertical-lodos-sumidero-sp-v2-hd.webp",
-        "bytes": 5464,
-        "hd_bytes": 11112,
+        "bytes": 5388,
+        "hd_bytes": 11040,
         "captionEs": "Vista de columna cantilever y succión sumergida en cárcamo",
         "captionEn": "Cantilever column and submerged sump suction profile"
       },
@@ -1149,8 +1149,8 @@
         "slot": "v3",
         "src": "/images/productos/bomba-vertical-lodos-sumidero-sp-v3.webp",
         "hd_src": "/images/productos/bomba-vertical-lodos-sumidero-sp-v3-hd.webp",
-        "bytes": 33950,
-        "hd_bytes": 73340,
+        "bytes": 33626,
+        "hd_bytes": 71900,
         "captionEs": "Paquete de bombeo y vacío industrial montado sobre patín metálico",
         "captionEn": "Skid-mounted plant pump and vacuum package prepared for dispatch"
       }
@@ -1164,8 +1164,8 @@
       "sourceRoot": "curada",
       "sourceRelPath": "almacen_bomba_6x4_dah_ensamblada.jpg",
       "source_sha256": "be1e1ebd192f312f655de9736bf9e8ccf54aee1f9c532ecb5c1daaf5cf748903",
-      "bytes": 38428,
-      "sha256": "63059bb1ff19384341c6dfb7c691aec3314b49da032fa282c9badda8f4b797cd",
+      "bytes": 38374,
+      "sha256": "400a16fba364fc16cab2045667d069ac91719fe557abe07b1d50edd912b0cc18",
       "captionEs": "Bomba centrífuga de lodos 6x4 DAH ensamblada con transmisión por poleas y guarda de seguridad.",
       "captionEn": "Assembled 6x4 DAH horizontal slurry pump package with belt drive and safety guard."
     },
@@ -1176,8 +1176,8 @@
       "sourceRoot": "curada",
       "sourceRelPath": "almacen_volutas_a05_cr27_inspeccion.jpg",
       "source_sha256": "8a53bc7a5bb4f6ae230ddd34c7de49bcb942bf535d90c6b3cff90947091eb1e8",
-      "bytes": 33834,
-      "sha256": "9c447f8c6e0e91cdfe545436d11e93d8f346238b24b2a593ee23d0dea5ac3bf2",
+      "bytes": 33722,
+      "sha256": "49fa8598630a68149809a85d53d98fea4860af1aa41b98950aefe7c147775124",
       "captionEs": "Volutas y platos de succión en Alto Cromo 27% (≥ 650 HB) inspeccionados antes de embarque.",
       "captionEn": "27% High-Chrome (≥ 650 HB) volute liners and throatbushes staged prior to dispatch."
     },
@@ -1188,8 +1188,8 @@
       "sourceRoot": "curada",
       "sourceRelPath": "almacen_rodamientos_sae4140_patio.jpg",
       "source_sha256": "bad64d3a5da5eade35786473b2679486892cd8f5b3803af74f65d3528694d113",
-      "bytes": 28208,
-      "sha256": "9d5d9bf728b034092cf600eb3e777bcbed551564bb200a8c896e54ca1c20a5e0",
+      "bytes": 28010,
+      "sha256": "b8ade06a36ce0ee41e3f17a1b3296771c4cb736d1696518fb2103629369e476d",
       "captionEs": "Cartuchos de rodamientos Bearing Assembly armados con eje SAE 4140 y sellos laberinto en patio.",
       "captionEn": "Pre-assembled Bearing Assembly cartridges with SAE 4140 shafts and labyrinth seals on warehouse rack."
     },
@@ -1200,8 +1200,8 @@
       "sourceRoot": "curada",
       "sourceRelPath": "almacen_filtro_prensa_16bar_planta.jpg",
       "source_sha256": "20f678967319d8850eac495b0963ec25c671e5c8c7ca02a3fbe6d35f5381641b",
-      "bytes": 42654,
-      "sha256": "3c853e1e313e20ac35a67c3c3a5b7acfa9f7305028b3a8b0b20c574f6a47a46b",
+      "bytes": 42366,
+      "sha256": "07a1e7a6e7de7860fa052ae46160f0eacc033c45579a2e4eec4a10fbedc96816",
       "captionEs": "Filtro prensa industrial 16 bar en puesta en marcha con paquete de placas PP y válvulas de filtrado.",
       "captionEn": "16-bar industrial filter press during plant commissioning with PP plate pack and filtrate valves."
     },
@@ -1212,8 +1212,8 @@
       "sourceRoot": "curada",
       "sourceRelPath": "almacen_impulsor_cr27_mecanizado.jpg",
       "source_sha256": "83011b7e38c1632860a463175c29040e3ea65d20ba70f948f82359b896866a2b",
-      "bytes": 38922,
-      "sha256": "88822932d8ba1b05f33a54ee6b1ee062dd1874127e68fa5d449957ea0fff6df3",
+      "bytes": 38904,
+      "sha256": "f88b303f4a936de2ef034a31d1469b83a53cee77d8ec7dc7d53c13fdff4aca69",
       "captionEs": "Impulsor Alto Cromo 27% (≥ 650 HB) fundido y rectificado listo para despacho nacional desde Durango.",
       "captionEn": "Cast and precision-machined 27% High-Chrome impeller staged for domestic dispatch from Durango."
     },
@@ -1224,8 +1224,8 @@
       "sourceRoot": "fotos",
       "sourceRelPath": "bOMBAS LODOS/IMG-20220614-WA0038.jpg",
       "source_sha256": "91d58946a4bf4145e687aebdc5a31513d7b65e8d16e0cefc9195e63841f7cfd8",
-      "bytes": 45322,
-      "sha256": "7db626d270040e7be096c0fc91b48c60d0a24d5c88ae05871733ede0950e58c7",
+      "bytes": 45160,
+      "sha256": "049426ce03f092c902f006ff5f241d6cf935d024a5865b457e9c2bcd7189cf92",
       "captionEs": "Bomba centrífuga de lodos en montaje superior lista en patio Durango.",
       "captionEn": "Overhead-mounted centrifugal slurry pump package ready at Durango yard."
     },
@@ -1236,8 +1236,8 @@
       "sourceRoot": "fotos",
       "sourceRelPath": "Filtro Presion/IMG-20210412-WA0045.jpg",
       "source_sha256": "284ecdb044dad6dce4ef36a6129161740b0948d7c88fb4a7e3ae735d7ae3d4e0",
-      "bytes": 44842,
-      "sha256": "9482b653df01ae38724a5d82d8cd28738f15ade16af41a38e38798f27b411dc1",
+      "bytes": 44894,
+      "sha256": "b0522e7cfb283e9a5e6cfe05fcd362926a45561aa3810b856f759ccd0b6fa487",
       "captionEs": "Paquete de placas de polipropileno en plataforma listo para embarque a mina.",
       "captionEn": "Polypropylene filter press plate pack loaded for mine-site delivery."
     },
@@ -1248,8 +1248,8 @@
       "sourceRoot": "memo",
       "sourceRelPath": "04_fototeca_de_productos/04_piezas_y_stock_almacen/Bomba 8 x 6.jpg",
       "source_sha256": "777db79d893818ed83a5062c440345a55c2e9270f2551b233a0f7538439312bc",
-      "bytes": 27202,
-      "sha256": "742f635a737f0a7d447af89d3e6a95c7dbda3537f365fc6c75c967131755e5f3",
+      "bytes": 27098,
+      "sha256": "cfdc281af1be4729bc10a1d1c8bb5e4408fcc2ccfb6013d06dabe8be8b35e90f",
       "captionEs": "Bomba centrífuga de lodos 8×6 ensamblada en piso de almacén Durango lista para despacho.",
       "captionEn": "Assembled 8×6 horizontal slurry pump on Durango warehouse floor ready for dispatch."
     },
@@ -1260,8 +1260,8 @@
       "sourceRoot": "fotos",
       "sourceRelPath": "FRAME PLATE LINER/IMG-20210225-WA0055.jpg",
       "source_sha256": "4d2a311ceff91ddcb02e7cf116e7796070f9a5a42131c890e24ce1290a251b4d",
-      "bytes": 41334,
-      "sha256": "5d93d5906d503b762b22fc69ea5d182e80856c6dd3025e5f7310b9de8d501c40",
+      "bytes": 41326,
+      "sha256": "fcc07f8a059f14a0a7761149c396ac0dbc95673f88477d143170da20f5b84a44",
       "captionEs": "Forro moldeado en hule natural R55 protegido con empaque para envío directo a unidad minera.",
       "captionEn": "Molded R55 natural rubber liner protected in shipping wrap for direct mine dispatch."
     },
@@ -1272,8 +1272,8 @@
       "sourceRoot": "fotos",
       "sourceRelPath": "impulsor/IMG-20210515-WA0008.jpg",
       "source_sha256": "1b1ebb385864ef505eb63749bc983782e9ee2713e6a2e7f6cf0a0739879787c5",
-      "bytes": 21374,
-      "sha256": "6f768cb13ef2b5bbc55232b0c8d8636e2e6567884bda5fb5d6653bf11a134475",
+      "bytes": 21496,
+      "sha256": "fb0a9bd66ec6b75e1ff92e95c882cdb745364e4be8b9b7976d3fd6176dc91fef",
       "captionEs": "Impulsor de álabes en poliuretano antiabrasivo acondicionado en huacal de madera.",
       "captionEn": "Anti-abrasive polyurethane impeller packed inside wooden shipping crate."
     }
@@ -1287,8 +1287,8 @@
       "sourceRoot": "curada",
       "sourceRelPath": "parte_d3147_impulsor_4x3_a05.jpg",
       "source_sha256": "77937246d7fd60b25e886a25fb5e0350f7ce63f516dda8ccf9148770824a7b7f",
-      "bytes": 23548,
-      "sha256": "f0782df05840baec5d8cd6da460fa1fbb3deca1ee7d04f77f8539068648bc308"
+      "bytes": 23572,
+      "sha256": "08146a6a80cfe67c7c4c5e067e3f6617bad0ab6efb647c29edb4379fee34a7be"
     },
     {
       "code": "e4147",
@@ -1309,8 +1309,8 @@
       "sourceRoot": "curada",
       "sourceRelPath": "parte_f6147_impulsor_8x6.jpg",
       "source_sha256": "0ad2920ebcd9203501b4f467e9498ec192a8ca04d467ef74c8bee5c688688c85",
-      "bytes": 39926,
-      "sha256": "e67355992a40bdd8037d81c012ee54bba33497c3faa76b42ce1d50d3c5825879"
+      "bytes": 40138,
+      "sha256": "9fc7ca2a07616f58883b852e678af57e58ddaf63459e76dbe51dad9cf263e3a2"
     },
     {
       "code": "dam028",
@@ -1320,8 +1320,8 @@
       "sourceRoot": "curada",
       "sourceRelPath": "parte_dam028_anillo_expulsor_4x3.jpg",
       "source_sha256": "180ac9ef04c8ffd9c8a188c8eb4f375f6516dbbdf20456f42a1ee70693772e27",
-      "bytes": 7478,
-      "sha256": "c50d98e3629d899735f5ba25da49d3e068488f00ffd1f65afe65c97af0fa5203"
+      "bytes": 7468,
+      "sha256": "b37acc803ac540e8f024178cdd0036a5159c81f6888ab0266e2868b9e635a437"
     },
     {
       "code": "eam028",
@@ -1331,8 +1331,8 @@
       "sourceRoot": "curada",
       "sourceRelPath": "parte_eam028_anillo_expulsor_6x4.jpg",
       "source_sha256": "c4320031ce7f8ee74a5f4797e6b1f43a570e0f4fac199494431feb7740308fdf",
-      "bytes": 38080,
-      "sha256": "ef93ba878ba38012046431e243b3b4f1fde0fa5baaa4d2d635d4fbd043273824"
+      "bytes": 38562,
+      "sha256": "bf5ed8ee85230b556e2957858566614fecfc26e26e944dfbb29ebc82baad54ca"
     },
     {
       "code": "e4083",
@@ -1342,8 +1342,8 @@
       "sourceRoot": "curada",
       "sourceRelPath": "parte_e4083_plato_succion_6x4.jpg",
       "source_sha256": "d8013695b6152be8a8fb03b862f6c24ce64eacc91179faff8f1adac7572e9867",
-      "bytes": 17446,
-      "sha256": "de4e5c76cb233883f46f3ecc3107f555724db02f75963263d84cd810aad11795"
+      "bytes": 17458,
+      "sha256": "7b80434b74c3b3db785a4751bd9f125fc26e1c956cf1544dd54c0d74def3ec5d"
     },
     {
       "code": "d075c21",
@@ -1353,8 +1353,8 @@
       "sourceRoot": "curada",
       "sourceRelPath": "parte_d075c21_camisa_flecha.jpg",
       "source_sha256": "a4c26cd79e5f82794c9f6c7ae44cc427106c50556783144ffdbab671e15e1c95",
-      "bytes": 23452,
-      "sha256": "4e4fe9a9b15e7d388cd3973c723e2667026d291f652cde2076e342eedc232551"
+      "bytes": 23126,
+      "sha256": "eaae8dea2e59952fef7f1909588ce4bcd7e1164d5dd515a4b61f7a4c4663f4c5"
     },
     {
       "code": "dam005",
@@ -1364,8 +1364,8 @@
       "sourceRoot": "curada",
       "sourceRelPath": "parte_dam005_cartucho_rodamientos.jpg",
       "source_sha256": "cdec305a2f2e3b2508e6f92b0831e82beccdcc41ae3841cc3b258cb2e42f272f",
-      "bytes": 29340,
-      "sha256": "4ef2188516dbce769039242aa46592306608ec047c1cff9d4001ffa7ab9489aa"
+      "bytes": 29200,
+      "sha256": "33a2677581a08563151c6e3574f3a72a44ae2ac5cac51dee756a8a3374f52c60"
     },
     {
       "code": "e4132",
@@ -1375,8 +1375,8 @@
       "sourceRoot": "curada",
       "sourceRelPath": "parte_e4132_plato_posterior_6x4.jpg",
       "source_sha256": "448ed2c8495d6c7bcbc79670c5a7e652ca8d3a78966a2676446569a5b0e67b5d",
-      "bytes": 41016,
-      "sha256": "1376600efde604db7c1377b4e9d052acd1948e522060ff3f2cc774d0fee71731"
+      "bytes": 41036,
+      "sha256": "8795937f54a8662c0f2e43c2ff2e965aff58f91258921b8b46519a4b430d5f34"
     },
     {
       "code": "d3110",
@@ -1386,8 +1386,8 @@
       "sourceRoot": "curada",
       "sourceRelPath": "parte_d3110_voluta_4x3_a05.jpg",
       "source_sha256": "d0d88c022bd348398d68d8ca10c3a382d8b6166fe657b97ef30d10faa0fee34f",
-      "bytes": 35958,
-      "sha256": "fc48633215a0490b0cc79e59c767efe7ba1f56f1ea63055930db040e7028c508"
+      "bytes": 35848,
+      "sha256": "3b2ac28033276001c141f9e3fd97e43a9043807f0a89b70a561fd9ab45467b60"
     },
     {
       "code": "d4018",
@@ -1397,8 +1397,8 @@
       "sourceRoot": "curada",
       "sourceRelPath": "parte_d4018_forro_succion_4x3.jpg",
       "source_sha256": "61f065df94db20909c880f759ecbaf6617b4dd7d22c4fc65b3b7d00758d823c3",
-      "bytes": 20514,
-      "sha256": "d7ae306f02b355cc273615a0a8dd9a49e0540bbf0e7ebdf8d0ef4d63359e046f"
+      "bytes": 20452,
+      "sha256": "cf8465f122dac8036e8fa80e2983526c7e47d2c223613112b28b9140c268a705"
     },
     {
       "code": "d4028",
@@ -1408,8 +1408,8 @@
       "sourceRoot": "curada",
       "sourceRelPath": "parte_d4028_expulsor_6x4_amarillo.jpeg",
       "source_sha256": "8d860c25b93fd0004b06ef9fdbf53b71ce31e6f514b63c524329f14b79b961db",
-      "bytes": 17232,
-      "sha256": "28003119af87503331daa1994da6c6738fdd9b0f6f7b4e75abd2575de80070cd"
+      "bytes": 13038,
+      "sha256": "800598cbcfe9dc7936b922420b33136dc6c07e5357d14bd153bc09d1c527c454"
     },
     {
       "code": "d4029",
@@ -1419,8 +1419,8 @@
       "sourceRoot": "fotos",
       "sourceRelPath": "expeller expeller ring/IMG-20210224-WA0020.jpeg",
       "source_sha256": "603b64d73018574ef444cf32e9762cf06f337334aac4b50b2fa0abc561763bfd",
-      "bytes": 21040,
-      "sha256": "51a90243174edfb579d36e968ba943239f530699d1c6c3dc5a8efb56844c0bc4"
+      "bytes": 24174,
+      "sha256": "01f79f2ba08f872b76d4baece0438d6671d3585eadd13c48db1665b608394ee3"
     }
   ]
 }

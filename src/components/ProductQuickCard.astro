@@ -86,6 +86,9 @@ for (const g of baseGallery) {
   addSlide(g.src, String((isEs ? g.caption_es : g.caption_en) || (isEs ? sku.title_es : sku.title_en)));
 }
 const photoSlides = mergedSlides.length > 0 ? mergedSlides : [{ tabKey: 'photo', src: photoUrl, caption: isEs ? sku.title_es : sku.title_en }];
+const pdpHeroPhotoSrc = isMediaOnly && !primaryPhotoOverride
+  ? photoSlides[0].src.replace(/\.webp$/, '-hd.webp')
+  : photoSlides[0].src;
 const atomicSheetMap = new Map(
   (atomicPartsCatalog as Array<{ part_number?: string; code?: string }>).map((part) => [
     String(part.part_number || '').toUpperCase(),
@@ -130,10 +133,11 @@ const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waTe
     {/* Slide 0 literal por invariante smat-gate V6/V7 + slides multiángulo adicionales */}
     <div data-qcard-panel="photo" class="smat-qcard-panel smat-qcard-panel--photo">
       <img
-        src={photoSlides[0].src}
+        src={pdpHeroPhotoSrc}
+        onerror={`this.onerror=null;this.src='${photoSlides[0].src}';`}
         alt={photoSlides[0].caption || skuTitle}
-        width="640"
-        height="480"
+        width={isMediaOnly ? '1200' : '640'}
+        height={isMediaOnly ? '900' : '480'}
         loading={isMediaOnly ? 'eager' : 'lazy'}
         fetchpriority={isMediaOnly ? 'high' : 'auto'}
         decoding="async"
@@ -371,7 +375,8 @@ const waDefaultHref = `https://wa.me/526183670664?text=${encodeURIComponent(waTe
   .smat-qcard-scale-title { color: #7c2d12; font-size: 0.95rem; }
   .smat-qcard-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.6rem 0.9rem; background: #f8fafc; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
   .smat-qcard-thumbs-row { display: flex; flex-wrap: nowrap; align-items: center; gap: 0.45rem; overflow-x: auto; scrollbar-width: thin; }
-  @media (max-width: 767px) { .smat-qcard-stage-ratio[data-qcard-media-only="1"] { max-height: 220px; } }
+  @media (max-width: 767px) { .smat-qcard-stage-ratio[data-qcard-media-only="1"] { min-height: 240px; max-height: 320px; aspect-ratio: 4 / 3; } }
+  @media print { .smat-qcard-panel[data-qcard-panel="cad"] { display: block !important; } }
   .smat-qcard-footer { padding: 0.8rem 0.95rem; background: #ffffff; }
   .smat-qcard-footer-row { display: flex; flex-direction: column; gap: 0.7rem; }
   @media (min-width: 768px) { .smat-qcard-footer-row { flex-direction: row; align-items: center; justify-content: space-between; } }

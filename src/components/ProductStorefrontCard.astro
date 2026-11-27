@@ -1,5 +1,6 @@
 ---
 import { formatAvailabilityBadgeHuman } from '../scripts/i18nDomainLabels.js';
+import { formatSkuMassLabel } from '../scripts/quickProductsCatalog.js';
 
 interface Props {
   sku: any;
@@ -18,7 +19,13 @@ const photoSrc = String(sku.photo_webp || `/images/productos/${sku.slug_es}.webp
 const compatLine = String((isEs ? (sku.compat_short_es || sku.oem_cross_ref) : (sku.compat_short_en || sku.oem_cross_ref)) || sku.hardness_spec || '');
 const avail = formatAvailabilityBadgeHuman(sku.stock_regime, lang);
 const trayCode = Array.isArray(sku.atomic_codes) && sku.atomic_codes.length > 0 ? sku.atomic_codes[0] : sku.id;
-const massText = sku.mass_kg ? `${sku.mass_kg} kg` : '';
+const massText = sku.mass_kg
+  ? (sku.mass_is_estimate
+      ? (isEs ? `Desde ${sku.mass_kg} kg` : `From ${sku.mass_kg} kg`)
+      : formatSkuMassLabel(sku, lang))
+  : '';
+const isProjectSku = String(sku.stock_regime || '') === 'bajo_proyecto';
+void isProjectSku;
 ---
 
 <article

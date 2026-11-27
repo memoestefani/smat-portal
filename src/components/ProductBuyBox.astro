@@ -1,0 +1,231 @@
+---
+import JrpReorderCore from './cores/JrpReorderCore.astro';
+import { formatAvailabilityBadgeHuman } from '../scripts/i18nDomainLabels.js';
+import { formatSkuMassLabel, getSkuPrimaryCtaLabel } from '../scripts/quickProductsCatalog.js';
+
+interface ConfigOption {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  sku: any;
+  lang: 'es' | 'en';
+  title: string;
+  baseTitle: string;
+  isAtomic: boolean;
+  displayCode: string;
+  displayKicker: string;
+  displayMass: number;
+  displayHardness: string;
+  parentSkuSlug: string;
+  configOptions: ConfigOption[];
+  showTradeIn: boolean;
+  waInitialMsg: string;
+  quoteBase: string;
+}
+
+const {
+  sku,
+  lang = 'es',
+  title,
+  baseTitle,
+  isAtomic,
+  displayCode,
+  displayKicker,
+  displayMass,
+  displayHardness,
+  parentSkuSlug,
+  configOptions,
+  showTradeIn,
+  waInitialMsg,
+  quoteBase,
+} = Astro.props;
+
+const isEs = lang === 'es';
+const avail = formatAvailabilityBadgeHuman(sku.stock_regime, lang);
+const massLabel = isAtomic ? `${displayMass} kg` : formatSkuMassLabel(sku, lang);
+const primaryCtaLabel = isAtomic
+  ? (isEs ? `Agregar a cotización (${displayCode}) →` : `Add to quote (${displayCode}) →`)
+  : `${getSkuPrimaryCtaLabel(sku, lang)} (${sku.id}) →`;
+const isProjectSku = String(sku.stock_regime || '') === 'bajo_proyecto';
+const sat = sku.sat_tuple || {
+  clave_prod_serv: '40142000',
+  clave_unidad: 'H87',
+  fraccion_arancelaria: '8413.91.99.00',
+};
+const triplet = sku.geometric_triplet_mm || {
+  label_es: 'A: Ø Int. 100 mm | B: Ø Ext. 400 mm | C: Espesor 80 mm',
+  label_en: 'A: Bore ID 100 mm | B: Outer OD 400 mm | C: Thickness 80 mm',
+};
+
+const nioshBadges: Record<string, { label: string; cls: string }> = {
+  MANUAL_SAFE: {
+    label: isEs ? 'Manejo manual (< 11.1 kg)' : 'Manual handling (< 11.1 kg)',
+    cls: 'smat-slug-badge--emerald',
+  },
+  ASSISTED_SHAFT_MOUNT_2P: {
+    label: isEs ? 'Maniobra 2 personas (11–23 kg)' : '2-person mount (11–23 kg)',
+    cls: 'smat-slug-badge--amber',
+  },
+  HOIST_REQUIRED: {
+    label: isEs ? 'Requiere polipasto (> 23 kg)' : 'Hoist required (> 23 kg)',
+    cls: 'smat-slug-badge--rose',
+  },
+};
+const niosh = nioshBadges[sku.niosh_mode] || nioshBadges.HOIST_REQUIRED;
+---
+
+<aside class="smat-slug-checkout-aside" data-product-buybox="v11">
+  <div class="smat-slug-aside-head">
+    <span class="smat-slug-aside-kicker">{displayKicker}</span>
+    <span class={`smat-sf-badge smat-sf-badge--${avail.tone} smat-stock-badge`}>{avail.label}</span>
+  </div>
+
+  <div>
+    <h1 class="smat-slug-h1 smat-slug-pdp-title">{title}</h1>
+    {isAtomic && (
+      <p class="smat-slug-coupled-note">
+        <a href={parentSkuSlug} class="smat-slug-nav-link">
+          {isEs ? `Ver ensamble completo: ${baseTitle} →` : `View complete assembly: ${baseTitle} →`}
+        </a>
+      </p>
+    )}
+  </div>
+
+  <div class="smat-slug-badge-row">
+    <span class="smat-slug-badge smat-slug-badge--neutral">{isEs ? 'Peso' : 'Weight'}: {massLabel}</span>
+    <span class={`smat-slug-badge ${niosh.cls}`}>{niosh.label}</span>
+  </div>
+
+  <dl class="smat-slug-specs-compact" aria-label={isEs ? 'Especificaciones clave' : 'Key specifications'}>
+    <div><dt>{isEs ? 'Compatibilidad 1:1:' : '1:1 Drop-In Fit:'}</dt> <dd>{sku.oem_cross_ref}</dd></div>
+    <div><dt>{isEs ? 'Medidas A·B·C:' : 'Dimensions A·B·C:'}</dt> <dd>{isEs ? triplet.label_es : triplet.label_en}</dd></div>
+    <div><dt>{isEs ? 'Metalurgia:' : 'Metallurgy:'}</dt> <dd>{displayHardness}</dd></div>
+  </dl>
+
+  <div class="smat-slug-buybox-controls">
+    <div class="smat-slug-buybox-mat-wrap">
+      <label for="slug-mat-select" class="smat-slug-aside-h2">
+        {isEs ? '1. Material / Configuración:' : '1. Material / Configuration:'}
+      </label>
+      <div class="smat-slug-mat-pills" role="group" aria-label={isEs ? 'Selector de aleación y configuración' : 'Alloy & configuration selector'}>
+        {configOptions.map((opt) => {
+          const isSelected = opt.value === sku.default_material;
+          return (
+            <button
+              type="button"
+              data-alloy-chip={opt.value}
+              aria-pressed={isSelected ? 'true' : 'false'}
+              class={`smat-slug-mat-chip${isSelected ? ' is-active is-default' : ''}`}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
+      <select id="slug-mat-select" data-slug-mat-select class="wb-select font-mono-tech smat-slug-select-sr">
+        {configOptions.map((opt) => (
+          <option value={opt.value} selected={opt.value === sku.default_material}>{opt.label}</option>
+        ))}
+      </select>
+    </div>
+
+    <div class="smat-slug-buybox-qty-wrap">
+      <label for="slug-qty-input" class="smat-slug-aside-h2">{isEs ? 'Cantidad:' : 'Qty:'}</label>
+      <input id="slug-qty-input" type="number" min="1" max="999" value="1" class="wb-input smat-slug-qty-input" />
+    </div>
+  </div>
+
+  {showTradeIn && (
+    <div class="smat-tradein-radio-group" role="radiogroup" aria-label={isEs ? 'Modalidad de suministro DAM005' : 'DAM005 supply option'}>
+      <label class="smat-tradein-option">
+        <input type="radio" name="smat-tradein-mode" value="exchange" data-tradein-mode="exchange" checked />
+        <span>{isEs ? 'Con intercambio de núcleo usado (-22% DAM005)' : 'With used core trade-in (-22% DAM005)'}</span>
+      </label>
+      <label class="smat-tradein-option">
+        <input type="radio" name="smat-tradein-mode" value="new" data-tradein-mode="new" />
+        <span>{isEs ? 'Compra nueva sin devolución de casco (100%)' : 'Outright new purchase (100%)'}</span>
+      </label>
+    </div>
+  )}
+
+  <div class="smat-slug-cta-stack">
+    <button
+      type="button"
+      data-quick-tray-add={sku.id}
+      data-slug-add-to-tray={sku.id}
+      data-pdp-add-cta={sku.id}
+      data-sku-title={title}
+      data-sku-code={displayCode}
+      data-sku-material={sku.default_material || 'A05'}
+      data-sku-regime={sku.stock_regime || 'hay'}
+      data-sku-mass={String(displayMass || 15)}
+      data-sku-qty="1"
+      data-sku-tradein={showTradeIn ? 'exchange' : 'none'}
+      class="smat-slug-btn-primary smat-buy-cta"
+    >
+      {primaryCtaLabel}
+    </button>
+
+    <div class="smat-slug-secondary-links">
+      <a
+        href={`https://wa.me/526183670664?text=${encodeURIComponent(waInitialMsg)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-slug-wa-btn={sku.id}
+        data-sku-id={sku.id}
+        data-sku-title={title}
+        data-sku-regime={sku.stock_regime || 'hay'}
+        data-sku-mass={String(displayMass)}
+        data-sku-lang={lang}
+        class="smat-slug-link-wa"
+      >
+        {isProjectSku
+          ? (isEs ? 'Consultar fabricación WhatsApp' : 'Project inquiry via WhatsApp')
+          : (isEs ? 'Consultar por WhatsApp' : 'Ask via WhatsApp')}
+      </a>
+
+      <a
+        href={`${quoteBase}?sku=${encodeURIComponent(sku.id)}&mat=${encodeURIComponent(sku.default_material || 'A05')}#rfq`}
+        data-slug-workbench-btn={sku.id}
+        data-sku-id={sku.id}
+        data-sku-lang={lang}
+        class="smat-slug-link-workbench"
+      >
+        {isEs ? 'Cotizador formal →' : 'Formal RFQ →'}
+      </a>
+      <button type="button" class="smat-slug-link-workbench no-print" onclick="window.print()">
+        {isEs ? 'Imprimir ficha A4' : 'Print A4 Sheet'}
+      </button>
+    </div>
+  </div>
+
+  <div class="smat-slug-passport-box">
+    <div class="smat-slug-passport-title">
+      {isEs ? 'Respaldo de compra en México:' : 'Direct procurement support in Mexico:'}
+    </div>
+    <p>• {isEs ? 'Compra directa CFDI 4.0 u Orden de Compra SAP/ERP' : 'Direct CFDI 4.0 invoice or SAP/ERP Purchase Order'}</p>
+    <p>• SAT {sat.clave_prod_serv} · {sat.clave_unidad} · {sat.fraccion_arancelaria}</p>
+    <p>• {avail.leadTime}</p>
+  </div>
+
+  {showTradeIn && (
+    <JrpReorderCore lang={lang} mode="tradein" skuId={sku.id} showJrpCard={false} showTradeIn={true} />
+  )}
+</aside>
+
+<style>
+  @layer components {
+    .smat-slug-specs-compact dt {
+      display: inline;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .smat-slug-specs-compact dd {
+      display: inline;
+      margin: 0;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+</style>

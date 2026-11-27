@@ -158,8 +158,10 @@ test('V80-B01..B14: Omnibox Home, Stratum2<=350 LOC, Checkout honesto, Trust Pho
   assert.equal(dossier.includes('SMAT-PUMP-6X4-WETKIT'), false);
   assert.equal(dossier.includes('Pinza Térmica IEC'), false);
 
+  const headerSrc = fs.readFileSync(path.join(SITE_ROOT, 'src/components/Header.astro'), 'utf8');
+  assert.ok(headerSrc.includes('id="header-omnibox-input"'), 'Header.astro debe exponer #header-omnibox-input único');
   const homeIsland = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/HomeLandingIsland.astro'), 'utf8');
-  assert.ok(homeIsland.includes('id="home-omnibox-input"'), 'HomeLandingIsland debe exponer #home-omnibox-input');
+  assert.equal(homeIsland.includes('id="home-omnibox-input"'), false, 'HomeLandingIsland no debe duplicar #home-omnibox-input');
 
   const stratum2 = fs.readFileSync(path.join(SITE_ROOT, 'src/components/islands/PumpingAssistantStratum2.astro'), 'utf8');
   assert.ok(stratum2.includes(':global(#wb-pipe-size)') && stratum2.includes('max-width: 100%'));
